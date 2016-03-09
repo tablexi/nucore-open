@@ -21,9 +21,8 @@ class JournalRowUpdater
   end
 
   def recreate_journal_rows
-    journal_rows.each do |journal_row|
-      journal = journal_row.journal
-      journal_row.destroy
+    journal_rows.group_by(&:journal).each do |journal, rows|
+      rows.each(&:destroy)
       JournalRowBuilder.create_for_single_order_detail!(journal, order_detail)
     end
   end

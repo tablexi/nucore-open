@@ -8,12 +8,11 @@ class JournalRowBuilder
   attr_reader :order_details, :journal, :journal_rows, :errors, :options,
               :recharge_enabled, :product_recharges, :journaled_facility_ids
 
-
   # This is for when you need to create a journal row without all the additional
   # validations and error checking
   def self.create_for_single_order_detail!(journal, order_detail)
-    journal_row = new(journal, nil).order_detail_to_journal_row(order_detail)
-    journal_row.save!
+    journal_rows = new(journal, [order_detail]).build_order_detail_journal_rows
+    journal_rows.each(&:save!)
   end
 
   def initialize(journal, order_details)
@@ -31,15 +30,26 @@ class JournalRowBuilder
     @recharge_enabled = SettingsHelper.feature_on?(:recharge_accounts)
   end
 
+  # Builds journal rows based the order details coming back from the Transformer
+  # Does not do any validation.
+  def build_order_detail_journal_rows
+    reset
+
+    virtual_order_details = Reports::TransformerFactory.instance(order_details).perform
+    virtual_order_details.each do |virtual_order_detail|
+      yield virtual_order_detail if block_given?
+      @journal_rows << order_detail_to_journal_row(virtual_order_detail)
+    end
+
+    journal_rows
+  end
+
   # Idempotent method that builds an array of new journal_rows. Also adds to
   # errors if any problems occur. Does not save anything to the database.
   # Returns self to support chaining.
   def build
-    reset
-    virtual_order_details = Reports::TransformerFactory.instance(order_details).perform
-    virtual_order_details.each do |virtual_order_detail|
+    build_order_detail_journal_rows do |virtual_order_detail|
       validate_order_detail(virtual_order_detail)
-      @journal_rows << order_detail_to_journal_row(virtual_order_detail)
     end
 
     order_details.each { |order_detail| update_product_recharges(order_detail) }

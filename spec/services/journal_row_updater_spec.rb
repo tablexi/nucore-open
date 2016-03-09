@@ -20,20 +20,24 @@ RSpec.describe JournalRowUpdater, type: :service do
   describe "when the order detail is on a failed journal" do
     let(:user) { FactoryGirl.create(:user) }
     let(:facility) { FactoryGirl.create(:setup_facility) }
-    let(:account) { FactoryGirl.create(:setup_account, owner: user) }
+    let(:account) { FactoryGirl.create(:split_account, owner: user) }
     # Original costs: actual: 20, subsidy: 10
     let(:order_detail) { place_and_complete_item_order(user, facility, account, true) }
     let(:journal) { FactoryGirl.create(:journal, is_successful: false, facility: facility) }
+    let(:journal2) { FactoryGirl.create(:journal, is_successful: false, facility: facility) }
 
     before do
       journal.create_journal_rows!([order_detail])
-      OrderDetail.where(journal_id: journal.id).update_all(journal_id: nil)
+      journal2.create_journal_rows!([order_detail])
+      order_detail.update_attributes(journal_id: nil)
     end
+
+    let(:journal_rows) { journal.journal_rows.where(order_detail_id: order_detail.id) }
+    let(:journal2_rows) { journal2.journal_rows.where(order_detail_id: order_detail.id) }
 
     describe "and I update the pricing" do
       before do
         order_detail.reload
-        allow(order_detail.account).to receive(:recreate_journal_rows_on_order_detail_update?).and_return true
         order_detail.update_attributes(actual_cost: 20.37)
       end
 
@@ -42,8 +46,22 @@ RSpec.describe JournalRowUpdater, type: :service do
         expect(order_detail.total).to eq(10.37)
       end
 
-      it "updates the journal row" do
-        expect(JournalRow.find_by_order_detail_id(order_detail.id).amount).to eq(10.37)
+      it "has four journal rows" do
+        expect(JournalRow.where(order_detail_id: order_detail.id).count).to eq(4)
+      end
+
+      it "has the two journal rows on different journals" do
+        expect(JournalRow.where(order_detail_id: order_detail.id).map(&:journal)).to contain_exactly(journal, journal, journal2, journal2)
+      end
+
+      it "has the right accounts" do
+        expect(journal_rows.map(&:account_id)).to contain_exactly(*account.subaccounts.map(&:id))
+        expect(journal2_rows.map(&:account_id)).to contain_exactly(*account.subaccounts.map(&:id))
+      end
+
+      it "updates the journal rows" do
+        expect(journal_rows.map(&:amount)).to contain_exactly(5.18, 5.19)
+        expect(journal2_rows.map(&:amount)).to contain_exactly(5.18, 5.19)
       end
     end
   end
