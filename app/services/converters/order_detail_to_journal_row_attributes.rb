@@ -10,13 +10,14 @@ module Converters
     end
 
     def convert
-      [{
+      {
+        account_id: order_detail.account_id,
         account: order_detail.product.account,
         amount: total,
         description: order_detail.long_description,
         order_detail_id: order_detail.id,
         journal_id: journal.try(:id),
-      }]
+      }
     end
 
   end

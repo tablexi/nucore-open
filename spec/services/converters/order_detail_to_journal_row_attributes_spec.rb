@@ -23,31 +23,25 @@ RSpec.describe Converters::OrderDetailToJournalRowAttributes, type: :service do
   describe "#convert" do
     let(:returned) { converter.convert }
 
-    it "returns one journal row" do
-      expect(returned.size).to eq(1)
-    end
-
     context "for first journal row" do
-      let(:row) { returned.first }
-
       it "sets account" do
-        expect(row[:account]).to eq(order_detail.product.account)
+        expect(returned[:account]).to eq(order_detail.product.account)
       end
 
       it "sets amount" do
-        expect(row[:amount]).to eq(order_detail.total)
+        expect(returned[:amount]).to eq(order_detail.total)
       end
 
       it "sets description" do
-        expect(row[:description]).to eq(order_detail.long_description)
+        expect(returned[:description]).to eq(order_detail.long_description)
       end
 
       it "sets order_detail_id" do
-        expect(row[:order_detail_id]).to eq(order_detail.id)
+        expect(returned[:order_detail_id]).to eq(order_detail.id)
       end
 
       it "sets journal_id" do
-        expect(row[:journal_id]).to eq(journal.id)
+        expect(returned[:journal_id]).to eq(journal.id)
       end
     end
   end

@@ -26,27 +26,22 @@ RSpec.describe Converters::ProductToJournalRowAttributes, type: :service do
   describe "#convert" do
     let(:returned) { converter.convert }
 
-    it "returns one journal row" do
-      expect(returned.size).to eq(1)
-    end
-
-    context "for first journal row" do
-      let(:row) { returned.first }
+    context "for the journal row attributes" do
 
       it "sets account" do
-        expect(row[:account]).to eq(product.facility_account.revenue_account)
+        expect(returned[:account]).to eq(product.facility_account.revenue_account)
       end
 
       it "sets amount" do
-        expect(row[:amount]).to eq(-100)
+        expect(returned[:amount]).to eq(-100)
       end
 
       it "sets description" do
-        expect(row[:description]).to eq(product.to_s)
+        expect(returned[:description]).to eq(product.to_s)
       end
 
       it "sets journal_id" do
-        expect(row[:journal_id]).to eq(journal.id)
+        expect(returned[:journal_id]).to eq(journal.id)
       end
     end
   end

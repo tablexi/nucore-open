@@ -14,14 +14,10 @@ financial:
   default_journal_cutoff_time: "16:45"
 
 converters:
-  default:
-    product_to_journal_rows: Converters::ProductToJournalRowAttributes
-    order_detail_to_journal_rows: Converters::OrderDetailToJournalRowAttributes
-  split_accounts/split_account:
-    order_detail_to_journal_rows: SplitAccounts::Converters::OrderDetailToJournalRowAttributes
+  product_to_journal_rows: Converters::ProductToJournalRowAttributes
+  order_detail_to_journal_rows: Converters::OrderDetailToJournalRowAttributes
 
 reports:
-  transformer: SplitAccounts::Reports::Transformer
   export_raw:
     class_name: Reports::ExportRaw
 
@@ -59,6 +55,7 @@ order_details:
   status_change_hooks:
     pending_approval: StatusChangeNotifications::NotifyFacilityHook
     approved: StatusChangeNotifications::NotifyPurchaserHook
+  list_transformer: SplitAccounts::OrderDetailListTransformer
 
 reservations:
   grace_period: <%= 5.minutes %>
