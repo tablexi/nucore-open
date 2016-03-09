@@ -12,8 +12,8 @@ class JournalRowBuilder
   # This is for when you need to create a journal row without all the additional
   # validations and error checking
   def self.create_for_single_order_detail!(journal, order_detail)
-    attribute_rows = new(journal, nil).order_detail_to_journal_rows(order_detail)
-    attribute_rows.each { |attr| JournalRow.create!(attr) }
+    attribute_row = new(journal, nil).order_detail_to_journal_row_attributes(order_detail)
+    JournalRow.create!(attribute_row)
   end
 
   def initialize(journal, order_details)
@@ -36,12 +36,13 @@ class JournalRowBuilder
   # Returns self to support chaining.
   def build
     reset
-    order_details.each do |order_detail|
-      validate_order_detail(order_detail)
-      new_journal_rows = order_detail_to_journal_rows(order_detail)
-      update_product_recharges(order_detail)
-      @journal_rows.concat(new_journal_rows)
+    virtual_order_details = Reports::TransformerFactory.instance(order_details).perform
+    virtual_order_details.each do |virtual_order_detail|
+      validate_order_detail(virtual_order_detail)
+      @journal_rows << order_detail_to_journal_row_attributes(virtual_order_detail)
     end
+
+    order_details.each { |order_detail| update_product_recharges(order_detail) }
     add_journal_rows_from_product_recharges
     self
   end
@@ -126,17 +127,15 @@ class JournalRowBuilder
 
   # Given an order detail, return an array of one or more new JournalRow
   # objects.
-  def order_detail_to_journal_rows(order_detail)
-    factory = Converters::ConverterFactory.new(account: order_detail.account)
-    klass = factory.for("order_detail_to_journal_rows")
+  def order_detail_to_journal_row_attributes(order_detail)
+    klass = Converters::ConverterFactory.for("order_detail_to_journal_rows")
     klass.new(journal, order_detail).convert
   end
 
   # Given a product and total, return an array of one or more new JournalRow
   # objects.
-  def product_to_journal_rows(product, total)
-    factory = Converters::ConverterFactory.new
-    klass = factory.for("product_to_journal_rows")
+  def product_to_journal_row(product, total)
+    klass = Converters::ConverterFactory.for("product_to_journal_rows")
     klass.new(journal, product, total).convert
   end
 
@@ -158,8 +157,8 @@ class JournalRowBuilder
   def add_journal_rows_from_product_recharges
     product_recharges.each_pair do |product_id, total|
       product = Product.find(product_id)
-      new_journal_rows = product_to_journal_rows(product, total)
-      @journal_rows.concat(new_journal_rows)
+      new_journal_row = product_to_journal_row(product, total)
+      @journal_rows << new_journal_row
     end
   end
 

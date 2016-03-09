@@ -10,12 +10,12 @@ module Converters
     end
 
     def convert
-      [{
+      {
         account: product.facility_account.revenue_account,
         amount: total * -1,
         description: product.to_s,
         journal_id: journal.try(:id),
-      }]
+      }
     end
 
   end

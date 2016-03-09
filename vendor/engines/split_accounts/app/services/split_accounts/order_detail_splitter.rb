@@ -32,6 +32,7 @@ module SplitAccounts
 
     def build_split_order_detail(split)
       split_order_detail = SplitOrderDetailDecorator.new(order_detail.dup)
+      split_order_detail.id = order_detail.id
       split_order_detail.split = split
       split_order_detail.account = split.subaccount
       splittable_attrs.each do |attr|
