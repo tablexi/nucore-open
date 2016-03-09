@@ -147,7 +147,7 @@ class FacilityJournalsController < ApplicationController
 
   def set_earliest_journal_date
     @earliest_journal_date = [
-      @order_details.collect { |od| od.fulfilled_at }.max,
+      @order_details.collect(&:fulfilled_at).max,
       JournalCutoffDate.first_valid_date
     ].compact.max
   end

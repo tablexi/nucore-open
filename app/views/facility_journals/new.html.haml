@@ -1,19 +1,20 @@
-= content_for :head_content do
-  :javascript
-    $(function(){
-      var today = "#{l(Time.zone.now.to_date, format: :usa)}";
+- if @earliest_journal_date
+  = content_for :head_content do
+    :javascript
+      $(function(){
+        var today = "#{l(Time.zone.now.to_date, format: :usa)}";
 
-      $("#journal_date").val(today).datepicker({
-        "minDate": "#{l(@earliest_journal_date, format: :usa)}",
-        "maxDate": today
+        $("#journal_date").val(today).datepicker({
+          "minDate": "#{l(@earliest_journal_date, format: :usa)}",
+          "maxDate": today
+        });
       });
-    });
 
-    $(function(){
-      $('#journals_create_form').submit(function(e) {
-        $(e.target).find(':submit').attr('disabled', 'true');
+      $(function(){
+        $('#journals_create_form').submit(function(e) {
+          $(e.target).find(':submit').attr('disabled', 'true');
+        });
       });
-    });
 
 = render :partial => "shared/transactions/headers"
 = content_for :h1 do
@@ -23,6 +24,7 @@
 
 = content_for :top_block do
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }
+
 - if @order_details.any?
   = content_for :action_instructions do
     - if has_pending_journals?
