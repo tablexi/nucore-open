@@ -12,8 +12,8 @@ class JournalRowBuilder
   # This is for when you need to create a journal row without all the additional
   # validations and error checking
   def self.create_for_single_order_detail!(journal, order_detail)
-    attribute_row = new(journal, nil).order_detail_to_journal_row_attributes(order_detail)
-    JournalRow.create!(attribute_row)
+    journal_row = new(journal, nil).order_detail_to_journal_row(order_detail)
+    journal_row.save!
   end
 
   def initialize(journal, order_details)
