@@ -18,7 +18,6 @@ converters:
   order_detail_to_journal_rows: Converters::OrderDetailToJournalRowAttributes
 
 reports:
-  transformer: SplitAccounts::Reports::Transformer
   export_raw:
     class_name: Reports::ExportRaw
 
@@ -56,6 +55,7 @@ order_details:
   status_change_hooks:
     pending_approval: StatusChangeNotifications::NotifyFacilityHook
     approved: StatusChangeNotifications::NotifyPurchaserHook
+  list_transformer: SplitAccounts::OrderDetailListTransformer
 
 reservations:
   grace_period: <%= 5.minutes %>

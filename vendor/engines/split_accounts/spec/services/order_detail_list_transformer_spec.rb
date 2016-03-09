@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SplitAccounts::Reports::Transformer, type: :service do
+RSpec.describe SplitAccounts::OrderDetailListTransformer, type: :service do
 
   let(:subaccount_1) { build_stubbed(:nufs_account) }
   let(:subaccount_2) { build_stubbed(:nufs_account) }

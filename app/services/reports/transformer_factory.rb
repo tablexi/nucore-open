@@ -2,7 +2,7 @@ module Reports
 
   class TransformerFactory
 
-    @@klass = Settings.reports.transformer.constantize
+    @@klass = Settings.order_details.list_transformer.constantize
 
     def self.instance(*args)
       @@klass.new(*args)

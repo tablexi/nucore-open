@@ -55,7 +55,7 @@ FactoryGirl.define do
     max_reserve_mins 120
 
     after(:build) do |product|
-      product.facility_account = product.facility.facility_accounts.first
+      product.facility_account ||= product.facility.facility_accounts.first
     end
 
     after(:create) do |product|

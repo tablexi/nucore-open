@@ -39,7 +39,7 @@ class JournalRowBuilder
     virtual_order_details = Reports::TransformerFactory.instance(order_details).perform
     virtual_order_details.each do |virtual_order_detail|
       validate_order_detail(virtual_order_detail)
-      @journal_rows << order_detail_to_journal_row_attributes(virtual_order_detail)
+      @journal_rows << order_detail_to_journal_row(virtual_order_detail)
     end
 
     order_details.each { |order_detail| update_product_recharges(order_detail) }
@@ -55,7 +55,7 @@ class JournalRowBuilder
   def create
     build
     if valid? && journal_rows.present?
-      journal_rows.each { |journal_row| JournalRow.create!(journal_row) }
+      journal_rows.each { |journal_row| journal_row.save! }
       set_journal_for_order_details(journal, order_details.map(&:id))
     end
     self
@@ -127,16 +127,18 @@ class JournalRowBuilder
 
   # Given an order detail, return an array of one or more new JournalRow
   # objects.
-  def order_detail_to_journal_row_attributes(order_detail)
+  def order_detail_to_journal_row(order_detail)
     klass = Converters::ConverterFactory.for("order_detail_to_journal_rows")
-    klass.new(journal, order_detail).convert
+    attributes = klass.new(journal, order_detail).convert
+    JournalRow.new(attributes)
   end
 
   # Given a product and total, return an array of one or more new JournalRow
   # objects.
   def product_to_journal_row(product, total)
     klass = Converters::ConverterFactory.for("product_to_journal_rows")
-    klass.new(journal, product, total).convert
+    attributes = klass.new(journal, product, total).convert
+    JournalRow.new(attributes)
   end
 
   # If recharge_enabled, then sum up the product_recharges by product so each
