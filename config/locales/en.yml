@@ -137,6 +137,9 @@ en:
         user: "Search by User"
         account: "Search By Payment Source"
         add_account: "Add Payment Source"
+    timeline:
+      facility_tooltip:
+        admin_reservation: Administrative Reservation
 
   order_search:
     search: "Search by Order #"
