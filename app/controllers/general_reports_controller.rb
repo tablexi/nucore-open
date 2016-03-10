@@ -7,7 +7,7 @@ class GeneralReportsController < ReportsController
 
 
   def account
-    render_report(1, 'Description') {|od| od.account.to_s }
+    render_report(1, 'Description') { |od| od.account }
   end
 
 
