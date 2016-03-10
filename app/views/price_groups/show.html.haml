@@ -1,13 +1,13 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'price_groups' }
+  = render "admin/shared/sidenav_admin", sidenav_tab: "price_groups"
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_price_group', :locals => { :secondary_tab => @tab.to_s }
+  = render "admin/shared/tabnav_price_group", secondary_tab: @tab.to_s
 
-%h3=h @price_group.name
+%h3= @price_group.name
 - case @tab
 - when :accounts
-  = render(:partial => 'accounts')
+  = render "accounts"
 - when :users
-  = render(:partial => 'users')
+  = render "users"
