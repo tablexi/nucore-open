@@ -35,7 +35,7 @@ class JournalRowBuilder
   def build_order_detail_journal_rows
     reset
 
-    virtual_order_details = Reports::TransformerFactory.instance(order_details).perform
+    virtual_order_details = OrderDetailListTransformerFactory.instance(order_details).perform
     virtual_order_details.each do |virtual_order_detail|
       yield virtual_order_detail if block_given?
       @journal_rows << order_detail_to_journal_row(virtual_order_detail)

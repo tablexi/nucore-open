@@ -14,7 +14,7 @@ module Reports
     end
 
     def perform
-      Reports::TransformerFactory.instance(order_details).perform
+      OrderDetailListTransformerFactory.instance(order_details).perform
     end
 
     def order_details
