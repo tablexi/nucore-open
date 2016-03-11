@@ -28,7 +28,7 @@ class PriceGroupsController < ApplicationController
 
   # GET /facilities/:facility_id/price_groups/:id/users
   def users
-    unless @price_group_ability.can?(:read, UserPriceGroupMember)
+    unless SettingsHelper.feature_on?(:user_based_price_groups) && @price_group_ability.can?(:read, UserPriceGroupMember)
       raise ActiveRecord::RecordNotFound
     end
 

@@ -231,6 +231,8 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.to be_allowed_to(:switch_to, User) }
+    it { is_expected.to be_allowed_to(:read, UserPriceGroupMember) }
+
     it_behaves_like "it can destroy admistrative reservations"
   end
 
