@@ -15,7 +15,9 @@ class Ability
 
     if user.administrator?
       if resource.is_a?(PriceGroup)
-        can :manage, UserPriceGroupMember if resource.admin_editable?
+        if SettingsHelper.feature_on?(:user_based_price_groups) && resource.admin_editable?
+          can :manage, UserPriceGroupMember
+        end
         can :manage, AccountPriceGroupMember
       else
         can :manage, :all
@@ -31,11 +33,12 @@ class Ability
 
     if resource.is_a?(PriceGroup)
       if !resource.global? && user.manager_of?(resource.facility)
-        can :manage, [AccountPriceGroupMember, UserPriceGroupMember]
+        can :manage, AccountPriceGroupMember
+        can :manage, UserPriceGroupMember if SettingsHelper.feature_on?(:user_based_price_groups)
       end
 
       if user_has_facility_role?(user) && editable_global_group?(resource)
-        can :read, UserPriceGroupMember
+        can :read, UserPriceGroupMember if SettingsHelper.feature_on?(:user_based_price_groups)
       end
     end
 
@@ -78,8 +81,9 @@ class Ability
           OrderDetail,
           ProductUser,
           TrainingRequest,
-          UserPriceGroupMember,
         ]
+
+        can :manage, UserPriceGroupMember if SettingsHelper.feature_on?(:user_based_price_groups)
 
         can :read, Notification
 

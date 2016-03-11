@@ -78,7 +78,13 @@ RSpec.describe Ability do
       context "when the price group has a facility" do
         let(:subject_resource) { create(:price_group, facility: facility) }
 
-        it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
+        context "when user-based price groups are active", feature_setting: { user_based_price_groups: true } do
+          it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
+        end
+
+        context "when user-based price groups are inactive", feature_setting: { user_based_price_groups: false } do
+          it { is_expected.not_to be_allowed_to(:manage, UserPriceGroupMember) }
+        end
       end
 
       context "when the price group is global" do
@@ -89,7 +95,13 @@ RSpec.describe Ability do
         context "when it's the cancer center price group" do
           let(:subject_resource) { create(:price_group, :cancer_center) }
 
-          it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
+          context "when user-based price groups are active", feature_setting: { user_based_price_groups: true } do
+            it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
+          end
+
+          context "when user-based price groups are inactive", feature_setting: { user_based_price_groups: false } do
+            it { is_expected.not_to be_allowed_to(:manage, UserPriceGroupMember) }
+          end
         end
       end
     end
@@ -191,7 +203,13 @@ RSpec.describe Ability do
       context "when the price group has a facility" do
         let(:subject_resource) { create(:price_group, facility: facility) }
 
-        it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
+        context "when user-based price groups are active", feature_setting: { user_based_price_groups: true } do
+          it { is_expected.to be_allowed_to(:manage, UserPriceGroupMember) }
+        end
+
+        context "when user-based price groups are inactive", feature_setting: { user_based_price_groups: false } do
+          it { is_expected.not_to be_allowed_to(:manage, UserPriceGroupMember) }
+        end
       end
 
       context "when the price group is global" do
@@ -231,6 +249,15 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.to be_allowed_to(:switch_to, User) }
+
+    context "when user-based price groups are active", feature_setting: { user_based_price_groups: true } do
+      it { is_expected.to be_allowed_to(:read, UserPriceGroupMember) }
+    end
+
+    context "when user-based price groups are inactive", feature_setting: { user_based_price_groups: false } do
+      it { is_expected.not_to be_allowed_to(:read, UserPriceGroupMember) }
+    end
+
     it_behaves_like "it can destroy admistrative reservations"
   end
 
