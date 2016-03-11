@@ -75,10 +75,44 @@ RSpec.describe PriceGroupsController do
         @action = :users
       end
 
-      it_should_allow_managers_only do
-        expect(assigns(:user_members)).to be_kind_of(ActiveRecord::Relation)
-        expect(assigns(:tab)).to eq(:users)
-        is_expected.to render_template("show")
+      context "when user-based price groups are enabled", feature_setting: { user_based_price_groups: true } do
+        it_should_allow_managers_only do
+          expect(assigns(:user_members)).to be_kind_of(ActiveRecord::Relation)
+          expect(assigns(:tab)).to eq(:users)
+          is_expected.to render_template("show")
+        end
+      end
+
+      context "when user-based price groups are disabled", feature_setting: { user_based_price_groups: false } do
+        before(:each) do
+          maybe_grant_always_sign_in(user)
+          do_request
+        end
+
+        context "for admins" do
+          let(:user) { :admin }
+          it { expect(response.code).to eq("404") }
+        end
+
+        context "for directors" do
+          let(:user) { :director }
+          it { expect(response.code).to eq("404") }
+        end
+
+        context "for senior staff" do
+          let(:user) { :senior_staff }
+          it { expect(response.code).to eq("403") }
+        end
+
+        context "for staff" do
+          let(:user) { :staff }
+          it { expect(response.code).to eq("403") }
+        end
+
+        context "for guests" do
+          let(:user) { :staff }
+          it { expect(response.code).to eq("403") }
+        end
       end
     end
 
