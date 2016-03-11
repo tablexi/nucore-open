@@ -1,21 +1,25 @@
 - if @accounts.blank?
-  %p.notice= t('facility_accounts.account_balances.notice')
+  %p.notice= t(".notice")
 
 - else
   %table.table.table-striped.table-hover
     %thead
       %tr
-        %th= t('facility_accounts.account_balances.th.account')
-        %th= t('facility_accounts.account_balances.th.owner')
-        %th.currency= t('facility_accounts.account_balances.th.total')
+        %th= t(".th.account")
+        %th= t(".th.owner")
+        %th.currency= t(".th.total")
     %tbody
       - @accounts.each do |account|
         %tr
-          %td= link_to account, facility_account_path(current_facility, account)
-          %td=h account.owner_user.full_name if account.owner_user
-          %td.currency=h number_to_currency account.unreconciled_total(current_facility)
-  - if params[:search_term].nil?
-    = will_paginate(@accounts)
+          %td= payment_source_link_or_text(account)
+          %td= account.owner_user.full_name if account.owner_user
+          %td.currency
+            = number_to_currency(account.unreconciled_total(current_facility))
+
+  - if params[:search_term].present?
+    = will_paginate(@accounts, class: "ajax_links",
+      params: { search_term: params[:search_term] })
   - else
-    = will_paginate(@accounts, :class => 'ajax_links', :params => {:search_term => params[:search_term]})
-  %p.footnote= t('facility_accounts.account_balances.foot')
+    = will_paginate(@accounts)
+
+  %p.footnote= t(".foot")

@@ -6,17 +6,6 @@
   %tbody
     - @accounts.each do |account|
       %tr
-        %td
-          - case
-          - when !current_ability.can?(:manage, account)
-            = account
-
-          - when current_facility.cross_facility?
-            = link_to account, facility_account_path(current_facility, account)
-
-          - else
-            = link_to account,
-              facility_account_orders_path(current_facility, account)
-
+        %td= payment_source_link_or_text(account)
         %td{style: "padding-left: 50px"}
           = account.facility || "<i>All</i>".html_safe
