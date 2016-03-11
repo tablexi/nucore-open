@@ -67,20 +67,6 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
     it "splits estimated_subsidy" do
       expect(results.map(&:estimated_subsidy)).to contain_exactly(20.0, 19.99)
     end
-
-    describe "with a reservation" do
-      let(:reservation) { build_stubbed(:reservation, duration_mins: 25, actual_duration_mins: 35, order_detail: order_detail) }
-      before { order_detail.reservation = reservation }
-      let(:result_reservations) { results.map(&:reservation) }
-
-      it "splits the reservation minutes" do
-        expect(result_reservations.map(&:duration_mins)).to contain_exactly(12.5, 12.5)
-      end
-
-      it "splits the actual minutes" do
-        expect(result_reservations.map(&:actual_duration_mins)).to contain_exactly(17.5, 17.5)
-      end
-    end
   end
 
 end

@@ -24,11 +24,9 @@ module SplitAccounts
       ]
     end
 
-    def splittable_reservation_attrs
-      [
-        :duration_mins,
-        :actual_duration_mins,
-      ]
+    def split(&block)
+      @block = block
+      build_split_order_details
     end
 
     def build_split_order_details
@@ -46,15 +44,7 @@ module SplitAccounts
         split_order_detail.send "#{attr}=", floored_amount(split.percent, order_detail.send(attr))
       end
 
-      if order_detail.reservation
-        split_reservation = order_detail.reservation.dup
-        split_order_detail.reservation = split_reservation
-        split_reservation.order_detail = split_order_detail
-
-        splittable_reservation_attrs.each do |attr|
-          split_reservation.send "#{attr}=", floored_amount(split.percent, order_detail.reservation.send(attr))
-        end
-      end
+      @block.call(split_order_detail, split) if @block
 
       split_order_detail
     end
