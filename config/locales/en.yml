@@ -293,15 +293,23 @@ en:
         journaled: "There are no orders to be journaled at this time"
         close: "You may not generate a new journal until the pending journal is closed."
       instructions_html: |
-          <p>
-          You should only update this journal after receiving confirmation of a successful or failed journal from
-          NU Financials.  If the journal was processed successfully without any changes, you may choose "Succeeded, no errors".
-          This will mark all orders included in the journal as reconciled and you will be unable to make any further changes to them.</p>
-          <p>
-          If the journal succeeded, but if pricing or payment source changes were necessary to one or more orders
-          or if one more more orders were removed from the journal for the journal to succeed, choose "Succeeded, with errors".
-          This will mark the journal as successfully, but you will need to reconcile the orders individually.</p>
-          <p>If the journal failed, you may choose "Failed".  This will allow you to include all orders in a new journal.</p>
+        <p>
+          You should only update this journal after receiving confirmation of a
+          successful or failed journal from NU Financials. If the journal was
+          processed successfully without any changes, you may choose "Succeeded,
+          no errors". This will mark all orders included in the journal as
+          reconciled and you will be unable to make further changes to them.
+        </p>
+        <p>
+          If any orders required pricing or payment source changes, or orders
+          were removed from the journal in order to succeed, choose "Succeeded,
+          with errors". This will mark the journal as successful, but you will
+          need to reconcile the orders individually.
+        </p>
+        <p>
+          If the journal failed, you may choose "Failed".
+          This will allow you to include all orders in a new journal.
+        </p>
       th:
         download: "Download"
         journaled_at: Journaled On
