@@ -9,15 +9,15 @@ module SplitAccounts
     end
 
     def perform
-      order_details.map do |order_detail|
+      order_details.each_with_object([]) do |order_detail, results|
         # We will need to refactor the general_reports_controller_spec in
         # order to remove the `try` methods below.
         if order_detail.account.try(:splits).try(:present?)
-          SplitAccounts::OrderDetailSplitter.new(order_detail).build_split_order_details
+          results.concat SplitAccounts::OrderDetailSplitter.new(order_detail).build_split_order_details
         else
-          order_detail
+          results << order_detail
         end
-      end.flatten
+      end
     end
 
   end
