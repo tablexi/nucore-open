@@ -12,7 +12,7 @@ module InstrumentReporter
       .includes(:order_detail)
 
     order_details = reservations.map(&:order_detail)
-    virtual_order_details = OrderDetailListTransformerFactory.instance(order_details).perform
+    virtual_order_details = OrderDetailListTransformerFactory.instance(order_details).perform(reservations: true)
     virtual_order_details.map(&:reservation)
   end
 
