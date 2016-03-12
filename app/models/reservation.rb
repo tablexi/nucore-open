@@ -264,6 +264,11 @@ class Reservation < ActiveRecord::Base
     !(admin_editable? || can_edit_actuals?)
   end
 
+  # Used in instrument utilization reports
+  def quantity
+    1
+  end
+
   protected
 
   def has_order_detail?

@@ -21,7 +21,6 @@ RSpec.describe SplitAccounts::ReservationSplitter do
       order_detail.estimated_cost = BigDecimal("29.99")
       order_detail.estimated_subsidy = BigDecimal("39.99")
       order_detail.account = split_account
-      # allow(order_detail).to receive(:account).and_return(split_account)
     end
   end
 

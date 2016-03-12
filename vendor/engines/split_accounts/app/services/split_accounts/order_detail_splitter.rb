@@ -37,6 +37,7 @@ module SplitAccounts
       AttributeSplitter.new(
         :duration_mins,
         :actual_duration_mins,
+        :quantity,
       )
     end
 
@@ -59,7 +60,6 @@ module SplitAccounts
     def build_split_reservation(split_order_detail, split)
       split_reservation = SplitReservationDecorator.new(order_detail.reservation.dup)
       reservation_attribute_splitter.split(order_detail.reservation, split_reservation, split)
-      split_reservation.order_detail = split_order_detail
       split_order_detail.reservation = split_reservation
     end
 
