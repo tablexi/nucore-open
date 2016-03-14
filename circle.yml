@@ -21,3 +21,4 @@ test:
     - bundle exec teaspoon
       --suppress-log
       --format junit > $CIRCLE_TEST_REPORTS/teaspoon.xml
+    - bundle exec report_coverage
