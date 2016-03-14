@@ -54,7 +54,7 @@ module SplitAccounts
     end
 
     def split_reservations?
-      @split_reservations
+      @split_reservations.present?
     end
 
     def build_split_reservation(split_order_detail, split)

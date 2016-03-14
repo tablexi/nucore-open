@@ -20,7 +20,7 @@ module SplitAccounts
     end
 
     def self.primary_key
-      OrderDetail.primary_key
+      __getobj__.class.primary_key
     end
 
   end
