@@ -6,6 +6,14 @@ module AccountsHelper
     end
   end
 
+  def payment_source_link_or_text(account)
+    if current_ability.can?(:manage, account)
+      link_to account, facility_account_path(current_facility, account)
+    else
+      account.to_s
+    end
+  end
+
   private
 
   def available_accounts_array
