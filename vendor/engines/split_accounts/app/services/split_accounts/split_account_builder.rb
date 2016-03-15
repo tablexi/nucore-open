@@ -18,13 +18,21 @@ module SplitAccounts
     # Hooks into superclass's `build` method.
     def after_build
       set_expires_at
+      setup_default_splits if account.splits.none?
     end
+
+    private
 
     # Sets `expires_at` to match the earliest expiring subaccount.
     # Make sure this happens after the splits are built.
     def set_expires_at
       account.expires_at = account.earliest_expiring_subaccount.try(:expires_at)
       account
+    end
+
+    def setup_default_splits
+      account.splits.build(percent: 50, extra_penny: true)
+      account.splits.build(percent: 50)
     end
 
   end

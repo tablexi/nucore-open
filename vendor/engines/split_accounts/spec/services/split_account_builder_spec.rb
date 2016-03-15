@@ -10,6 +10,9 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, :enable_split_accounts do
   end
 
   describe "#build" do
+    let(:account) { builder.build }
+    let(:splits) { account.splits }
+
     let(:options) do
       {
         account_type: "SplitAccounts::SplitAccount",
@@ -43,12 +46,16 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, :enable_split_accounts do
       let(:subaccount_1) { create(:setup_account, expires_at: (Time.zone.now + 1.month).change(usec: 0)) }
       let(:subaccount_2) { create(:setup_account, expires_at: (Time.zone.now + 2.months).change(usec: 0)) }
 
+      it "is a split account" do
+        expect(account).to be_a SplitAccounts::SplitAccount
+      end
+
       it "sets splits" do
-        expect(builder.build.splits.size).to be(2)
+        expect(splits.size).to be(2)
       end
 
       it "sets expired_at to earliest expiring subaccount" do
-        expect(builder.build.expires_at).to eq(subaccount_1.expires_at)
+        expect(account.expires_at).to eq(subaccount_1.expires_at)
       end
     end
 
@@ -68,7 +75,24 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, :enable_split_accounts do
       end
 
       it "does not error" do
-        expect(builder.build.splits).to be_one
+        expect(splits).to be_one
+      end
+    end
+
+    describe "with no subaccounts" do
+      let(:params) { {} }
+
+      it "has two default subaccounts" do
+        expect(splits.size).to eq(2)
+      end
+
+      it "sets them all to 50%" do
+        expect(splits.map(&:percent)).to all(eq(50))
+      end
+
+      it "sets the first one, and only the first one to extra_penny" do
+        expect(splits.first).to be_extra_penny
+        expect(splits.second).not_to be_extra_penny
       end
     end
   end
