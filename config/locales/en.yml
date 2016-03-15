@@ -295,7 +295,7 @@ en:
       instructions_html: |
         <p>
           You should only update this journal after receiving confirmation of a
-          successful or failed journal from NU Financials. If the journal was
+          successful or failed journal. If the journal was
           processed successfully without any changes, you may choose "Succeeded,
           no errors". This will mark all orders included in the journal as
           reconciled and you will be unable to make further changes to them.
