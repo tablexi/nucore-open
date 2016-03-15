@@ -37,6 +37,10 @@ en:
         reservations: "Reservations"
         accounts: "Payment Sources"
         access_list: "Access List"
+      tabnav_payment_method:
+        details: Details
+        members: Members
+        statements: Statements
 
   pages:
     admin_billing: Billing
@@ -123,10 +127,6 @@ en:
       transact: "Transactions"
       statement: "Statements"
       members: "Members"
-    tabnav_payment_method:
-      details: Details
-      members: Members
-      statements: Statements
     tabnav_price_group:
       accounts: "Payment Sources"
       users: "Users"
