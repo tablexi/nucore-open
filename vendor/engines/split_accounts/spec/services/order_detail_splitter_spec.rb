@@ -1,4 +1,3 @@
-
 require "rails_helper"
 
 RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
@@ -13,8 +12,10 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
     end
   end
 
+  let(:order) { build_stubbed(:order) }
+
   let(:order_detail) do
-    build_stubbed(:order_detail).tap do |order_detail|
+    build_stubbed(:order_detail, order: order).tap do |order_detail|
       order_detail.created_by = 1 # for testing dup
 
       order_detail.quantity = 3
@@ -41,6 +42,12 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
     it "dups original order detail" do
       results.each do |result|
         expect(result.created_by).to eq(order_detail.created_by)
+      end
+    end
+
+    it "maintains the ID display" do
+      results.each do |result|
+        expect(result.to_s).to eq(order_detail.to_s)
       end
     end
 

@@ -2,6 +2,8 @@ require 'csv'
 class Reports::ExportRaw
   include DateHelper
 
+  attr_reader :order_status_ids, :facility, :date_range_field
+
   def initialize(arguments)
     [:action_name, :date_end, :date_start, :headers, :facility, :order_status_ids].each do |property|
       if arguments[property].present?
@@ -169,12 +171,14 @@ class Reports::ExportRaw
   end
 
   def report_data_query
-    return [] if @order_status_ids.blank?
-
-    OrderDetail.where(order_status_id: @order_status_ids)
-      .for_facility(@facility)
-      .action_in_date_range(@date_range_field, date_start, date_end)
-      .includes(:account, :order, :order_status, :price_policy, :product, :reservation, :statement)
+    Reports::Querier.new(
+      order_status_id: @order_status_ids,
+      current_facility: @facility,
+      date_range_field: @date_range_field,
+      date_range_start: date_start,
+      date_range_end: date_end,
+      includes: [:reservation, :statement],
+    ).perform
   end
 
   def as_currency(number)

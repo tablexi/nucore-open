@@ -88,7 +88,7 @@ class GeneralReportsController < ReportsController
   end
 
 
-  def init_report_headers(report_on_label)
+  def init_report_headers(report_on_label = nil)
     if !report_data_request?
       @headers=[ report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
     else

@@ -98,6 +98,7 @@ RSpec.describe GeneralReportsController do
 
       sign_in @admin
     end
+
     context 'ordered_at search' do
       before :each do
         @params.merge!(:date_range_field => :ordered_at)
