@@ -4,3 +4,4 @@
   - if @account.statements.any?
     = tab t(".statements"), facility_account_statement_path(current_facility, @account, "list"), (secondary_tab == "statements")
   = tab t(".members"), facility_account_members_path(current_facility, @account), (secondary_tab == "members")
+  = tab t(".orders"), facility_account_orders_path(current_facility, @account), (secondary_tab == "orders")
