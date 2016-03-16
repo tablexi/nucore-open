@@ -89,6 +89,39 @@ RSpec.describe FacilityAccountsController do
 
   end
 
+  describe "new" do
+    let(:director) { FactoryGirl.create(:user, :facility_director, facility: facility) }
+    let(:owner) { FactoryGirl.create(:user) }
+    before do
+      sign_in director
+      get :new, facility_id: facility.url_name, account_type: account_type, owner_user_id: owner.id
+    end
+
+    context "PurchaseOrderAccount" do
+      let(:account_type) { "PurchaseOrderAccount" }
+
+      it "is a successful response" do
+        expect(response).to be_success
+      end
+
+      it "loads the account" do
+        expect(assigns(:account)).to be_a(PurchaseOrderAccount)
+      end
+    end
+
+    context "CreditCardAccount" do
+      let(:account_type) { "CreditCardAccount" }
+
+      it "is a successful response" do
+        expect(response).to be_success
+      end
+
+      it "loads the account" do
+        expect(assigns(:account)).to be_a(CreditCardAccount)
+      end
+    end
+  end
+
 
   context 'create' do
     before :each do

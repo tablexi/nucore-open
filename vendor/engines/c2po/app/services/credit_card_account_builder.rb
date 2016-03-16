@@ -35,8 +35,9 @@ class CreditCardAccountBuilder < AccountBuilder
 
   # Sets `expires_at` based off of the credit card expiration year and month.
   def set_expires_at
-    account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i).end_of_month.end_of_day
-    account
+    if account.expiration_year.present? && account.expiration_month.present?
+      account.expires_at = Date.civil(account.expiration_year.to_i, account.expiration_month.to_i).end_of_month.end_of_day
+    end
   end
 
 end
