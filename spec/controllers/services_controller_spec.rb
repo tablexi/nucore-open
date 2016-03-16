@@ -35,11 +35,11 @@ RSpec.describe ServicesController do
     end
   end
 
-  context "show" do
-    before :each do
-      @method=:get
-      @action=:show
-      @params.merge!(:id => @service.url_name)
+  describe "#show" do
+    before(:each) do
+      @method = :get
+      @action = :show
+      @params.merge!(id: service.url_name)
     end
 
     it "should allow public access" do
@@ -55,12 +55,16 @@ RSpec.describe ServicesController do
       expect(response).to render_template('services/show')
     end
 
-    it "should fail without a valid account" do
-      sign_in @guest
-      do_request
-      expect(flash).not_to be_empty
-      expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('no_accounts')
+    context "when signed in as a guest" do
+      before(:each) do
+        sign_in @guest
+        do_request
+      end
+
+      it "fails" do
+        expect(flash[:notice]).to include("could not find a valid payment source")
+        expect(assigns[:add_to_cart]).to be false
+      end
     end
 
     context "when the service requires approval" do

@@ -41,60 +41,19 @@ class ProductsCommonController < ApplicationController
   # GET /facilities/:facility_id/(services|items|bundles)/:(service|item|bundle)_id
   # TODO InstrumentsController#show has a lot in common; refactor/extract/consolidate
   def show
-    assert_product_is_accessible!
-    add_to_cart = true
-    @login_required = false
+    @show_product = ShowProduct.new(self, @product, acting_user, session_user, acting_as?)
+    @add_to_cart = @show_product.able_to_add_to_cart?
+    @login_required = @show_product.login_required
+    @error = @show_product.error
 
-    # does the product have active price policies?
-    unless @product.available_for_purchase?
-      add_to_cart = false
-      @error = "not_available"
+    if @show_product.redirect.present?
+      flash[:notice] = @show_product.error if @show_product.error
+      redirect_to @show_product.redirect
+    else
+      flash.now[:notice] = @show_product.error if @show_product.error
+      @active_tab = "home"
+      render layout: "application"
     end
-
-    # is user logged in?
-    if add_to_cart && acting_user.blank?
-      @login_required = true
-      add_to_cart = false
-    end
-
-    # when ordering on behalf of, does the staff have permissions for this facility?
-    if add_to_cart && acting_as? && !session_user.operator_of?(@product.facility)
-      add_to_cart = false
-      @error = "not_authorized_acting_as"
-    end
-
-    # does the user have a valid payment source for purchasing this reservation?
-    if add_to_cart && acting_user.accounts_for_product(@product).blank?
-      add_to_cart = false
-      @error = "no_accounts"
-    end
-
-    # does the product have any price policies for any of the groups the user is a member of?
-    if add_to_cart && !price_policy_available_for_product?
-      add_to_cart = false
-      @error = "not_in_price_group"
-    end
-
-    # is the user approved?
-    if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
-      if SettingsHelper.feature_on?(:training_requests)
-        if TrainingRequest.submitted?(session_user, @product)
-          flash[:notice] = t_model_error(Product, "already_requested_access", product: @product)
-          return redirect_to facility_path(current_facility)
-        else
-          return redirect_to new_facility_product_training_request_path(current_facility, @product)
-        end
-      else
-        add_to_cart = false
-        @error = "requires_approval"
-      end
-    end
-
-    flash.now[:notice] = t_model_error(@product.class, @error) if @error
-
-    @add_to_cart = add_to_cart
-    @active_tab = "home"
-    render layout: "application"
   end
 
   # GET /services/new
@@ -151,22 +110,9 @@ class ProductsCommonController < ApplicationController
 
   private
 
-  def assert_product_is_accessible!
-    raise NUCore::PermissionDenied unless product_is_accessible?
-  end
-
-  def product_is_accessible?
-    is_operator = session_user && session_user.operator_of?(current_facility)
-    !(@product.is_archived? || (@product.is_hidden? && !is_operator))
-  end
   # The equivalent of calling current_facility.services or current_facility.items
   def current_facility_products
     return current_facility.send(:"#{plural_object_name}")
-  end
-
-  def price_policy_available_for_product?
-    groups = (acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }
-    @product.can_purchase?(groups)
   end
 
   # Dynamically get the proper object from the database based on the controller name
@@ -178,15 +124,13 @@ class ProductsCommonController < ApplicationController
   def save_product_into_object_name_instance
     instance_variable_set("@#{singular_object_name}", @product)
   end
+
   # Get the object name to work off of. E.g. In ServicesController, this returns "services"
   def plural_object_name
     self.class.name.underscore.gsub(/_controller$/, "")
   end
+
   def singular_object_name
     plural_object_name.singularize
-  end
-
-  def session_user_can_override_restrictions?(product)
-    session_user.present? && session_user.can_override_restrictions?(product)
   end
 end

@@ -21,72 +21,16 @@ class InstrumentsController < ProductsCommonController
 
   # GET /facilities/:facility_id/instruments/:instrument_id
   def show
-    assert_product_is_accessible!
-    add_to_cart = true
-    login_required = false
+    @show_product = ShowProduct.new(self, @instrument, acting_user, session_user, acting_as?)
+    user_may_add_product_to_cart = @show_product.able_to_add_to_cart?
+    error = @show_product.error
 
-    # does the product have active price policies and schedule rules?
-    unless @instrument.available_for_purchase?
-      add_to_cart = false
-      flash[:notice] =
-        t_model_error(@instrument.class, "not_available", instrument: @instrument)
-    end
+    flash[:notice] = error if error.present?
 
-    # is user logged in?
-    if add_to_cart && acting_user.blank?
-      login_required = true
-      add_to_cart = false
-    end
-
-    if add_to_cart && !@instrument.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@instrument)
-      if SettingsHelper.feature_on?(:training_requests)
-        if TrainingRequest.submitted?(current_user, @instrument)
-          flash[:notice] = t_model_error(Product, "already_requested_access", product: @instrument)
-          return redirect_to facility_path(current_facility)
-        else
-          return redirect_to new_facility_product_training_request_path(current_facility, @instrument)
-        end
-      else
-        add_to_cart = false
-        flash[:notice] = t_model_error(
-          @instrument.class,
-          "requires_approval_html",
-          email: @instrument.email,
-          facility: @instrument.facility,
-          instrument: @instrument,
-        ).html_safe
-      end
-    end
-
-    # does the user have a valid payment source for purchasing this reservation?
-    if add_to_cart && acting_user.accounts_for_product(@instrument).blank?
-      add_to_cart = false
-      flash[:notice] = t_model_error(@instrument.class, "no_accounts")
-    end
-
-    # does the product have any price policies for any of the groups the user is a member of?
-    if add_to_cart && !acting_user_can_purchase?
-      add_to_cart = false
-      flash[:notice] = t_model_error(
-        @instrument.class,
-        "no_price_groups",
-        instrument_name: @instrument.to_s,
-      )
-    end
-
-    # when ordering on behalf of, does the staff have permissions for this facility?
-    if add_to_cart && acting_as? && !session_user.operator_of?(@instrument.facility)
-      add_to_cart = false
-      flash[:notice] =
-        t_model_error(@instrument.class, "not_authorized_to_order_on_behalf")
-    end
-
-    @add_to_cart = add_to_cart
-
-    if login_required
+    if @show_product.login_required
       return redirect_to new_user_session_path
-    elsif !add_to_cart
-      return redirect_to facility_path(current_facility)
+    elsif !user_may_add_product_to_cart
+      return redirect_to @show_product.redirect || facility_path(current_facility)
     end
 
     redirect_to add_order_path(
