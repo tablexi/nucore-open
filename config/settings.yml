@@ -19,7 +19,7 @@ converters:
 
 reports:
   export_raw:
-    transformers: []
+    transformers: [ 'SplitAccounts::Reports::ExportRawTransformer' ]
 
 statement_pdf:
   class_name: StatementPdf

@@ -47,6 +47,12 @@ class Reports::ExportRaw
     "#{date_start.strftime("%Y%m%d")}-#{date_end.strftime("%Y%m%d")}"
   end
 
+  def column_headers
+    report_hash.keys.map do |key|
+      I18n.t("controllers.general_reports.headers.#{key}")
+    end
+  end
+
   private
 
   def report_hash
@@ -117,13 +123,7 @@ class Reports::ExportRaw
   end
 
   def csv_header
-    report_hash_keys_to_s.join(",") + "\n"
-  end
-
-  def report_hash_keys_to_s
-    report_hash.keys.map do |key|
-      I18n.t("controllers.general_reports.headers.#{key}")
-    end
+    column_headers.join(",") + "\n"
   end
 
   def order_detail_row(order_detail)
