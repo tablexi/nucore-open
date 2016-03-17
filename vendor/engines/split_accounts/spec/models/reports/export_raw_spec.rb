@@ -1,6 +1,7 @@
 require "rails_helper"
+require_relative "../../split_accounts_spec_helper"
 
-RSpec.describe Reports::ExportRaw do
+RSpec.describe Reports::ExportRaw, :enable_split_accounts do
 
   let(:account) do
     FactoryGirl.build(:split_account, without_splits: true, account_users_attributes: account_users_attributes_hash(user: user)).tap do |account|

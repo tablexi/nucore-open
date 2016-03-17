@@ -51,13 +51,12 @@ class GeneralReportsController < ReportsController
   end
 
   def raw_report
-    Reports::ExportRawFactory.instance(
+    Reports::ExportRaw.new(
       facility: current_facility,
       date_range_field: params[:date_range_field],
       date_start: @date_start,
       date_end: @date_end,
       order_status_ids: @status_ids,
-      headers: @headers,
       action_name: action_name,
     )
   end
@@ -87,15 +86,9 @@ class GeneralReportsController < ReportsController
     super
   end
 
-
   def init_report_headers(report_on_label = nil)
-    if !report_data_request?
-      @headers=[ report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
-    else
-      @headers=I18n.t 'controllers.general_reports.headers.data'
-    end
+    @headers = [ report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
   end
-
 
   def init_report_data(report_on_label, &report_on)
     @report_data=report_data
