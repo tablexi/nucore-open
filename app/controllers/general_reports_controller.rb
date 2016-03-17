@@ -51,7 +51,7 @@ class GeneralReportsController < ReportsController
   end
 
   def raw_report
-    Reports::ExportRawFactory.instance(
+    Reports::ExportRaw.new(
       facility: current_facility,
       date_range_field: params[:date_range_field],
       date_start: @date_start,

@@ -19,7 +19,7 @@ converters:
 
 reports:
   export_raw:
-    class_name: Reports::ExportRaw
+    transformers: []
 
 statement_pdf:
   class_name: StatementPdf
