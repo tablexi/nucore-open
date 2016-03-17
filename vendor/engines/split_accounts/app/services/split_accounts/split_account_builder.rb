@@ -27,6 +27,9 @@ module SplitAccounts
     # Make sure this happens after the splits are built.
     def set_expires_at
       account.expires_at = account.earliest_expiring_subaccount.try(:expires_at)
+      # Only set a fallback expires_at when subaccounts aren't present to help
+      # suppress unnecesary misleading errors.
+      account.expires_at ||= Time.current
       account
     end
 
