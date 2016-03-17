@@ -245,7 +245,7 @@ class Account < ActiveRecord::Base
   end
 
   def is_active?
-    expires_at > Time.zone.now && suspended_at.nil?
+    !expired? && !suspended?
   end
 
   def account_number_to_s

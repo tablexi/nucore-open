@@ -146,4 +146,141 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
     end
   end
 
+  describe "#suspended?" do
+    context "when subaccounts and parent account are not suspended" do
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.save
+        end
+      end
+
+      it "does not suspend parent split_account" do
+        expect(split_account).not_to be_suspended
+      end
+    end
+
+    context "when parent account is suspended" do
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.suspended_at = Time.current
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.save
+        end
+      end
+
+      it "suspends parent split_account" do
+        expect(split_account).to be_suspended
+      end
+    end
+
+    context "when any subaccount is suspended" do
+      let(:suspended_subaccount) { build(:setup_account, suspended_at: Time.current) }
+
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: suspended_subaccount)
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.save
+        end
+      end
+
+      it "suspends the parent split_account" do
+        expect(split_account).to be_suspended
+      end
+
+      context "when subaccount unsuspends" do
+        before do
+          split_account
+          suspended_subaccount.suspended_at = nil
+          suspended_subaccount.save
+        end
+
+        it "keeps parent split_account suspended" do
+          expect(split_account.reload).to be_suspended
+        end
+      end
+    end
+  end
+
+  describe "#expired?" do
+    context "when subaccounts and parent account are not expired" do
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.save
+        end
+      end
+
+      it "does not expire parent split_account" do
+        expect(split_account).not_to be_expired
+      end
+    end
+
+    context "when any subaccount is expired" do
+      let(:expired_subaccount) { build(:setup_account, expires_at: Time.current) }
+
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: expired_subaccount)
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.save
+        end
+      end
+
+      it "expires the parent split_account" do
+        expect(split_account).to be_expired
+      end
+
+      context "when subaccount unexpires" do
+        before do
+          split_account
+          expired_subaccount.expires_at = Time.current + 1.year
+          expired_subaccount.save
+        end
+
+        it "unexpires the parent split_account" do
+          expect(split_account.reload).not_to be_expired
+        end
+      end
+    end
+  end
+
+  describe "#earliest_suspended_subaccount" do
+    context "with a suspended subaccount and an unsuspended subaccount" do
+      let(:suspended_subaccount) { build_stubbed(:setup_account, suspended_at: 1.day.ago) }
+      let(:unsuspended_subaccount) { build_stubbed(:setup_account, suspended_at: nil) }
+
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: suspended_subaccount)
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: unsuspended_subaccount)
+        end
+      end
+
+      it "returns earliest suspended subaccount" do
+        expect(split_account.earliest_suspended_subaccount).to eq(suspended_subaccount)
+      end
+    end
+
+    context "without a suspended subaccount" do
+      let(:unsuspended_subaccount) { build_stubbed(:setup_account, suspended_at: nil) }
+      let(:unsuspended_subaccount2) { build_stubbed(:setup_account, suspended_at: nil) }
+
+      let(:split_account) do
+        build(:split_account, without_splits: true).tap do |split_account|
+          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: unsuspended_subaccount)
+          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: unsuspended_subaccount2)
+        end
+      end
+
+      it "returns nil" do
+        expect(split_account.earliest_suspended_subaccount).to be_nil
+      end
+    end
+  end
+
 end
