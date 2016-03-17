@@ -161,18 +161,6 @@ en:
         statemented_on: 'Statemented On'
         journal_date: 'Journal Date'
         reconciled_note: 'Reconciled Note'
-        data: [
-          'Facility', 'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
-          'Ordered By', 'First Name', 'Last Name', 'Email', 'Purchaser', 'Purchaser First Name',
-          'Purchaser Last Name', 'Purchaser Email', 'Product ID', 'Product Type',
-          'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
-          'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',
-          'Owner Last Name', 'Owner Email', 'Price Group', 'Estimated Cost', 'Estimated Subsidy',
-          'Estimated Total', 'Actual Cost', 'Actual Subsidy', 'Actual Total', 'Reservation Start Time', 'Reservation End Time',
-          'Reservation Minutes', 'Actual Start Time', 'Actual End Time', 'Actual Minutes', 'Canceled At', 'Canceled By', 'Note',
-          'Disputed At', 'Dispute Reason', 'Dispute Resolved At', 'Dispute Resolved Reason', 'Reviewed At',
-          'Statemented On', 'Journal Date', 'Reconciled Note'
-        ]
 
     notifications:
       no_notices: "You have no notifications at this time"
