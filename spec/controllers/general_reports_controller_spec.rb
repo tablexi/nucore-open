@@ -205,13 +205,7 @@ RSpec.describe GeneralReportsController do
 
 
   def report_headers(label)
-    if export_all_request?
-      headers=I18n.t 'controllers.general_reports.headers.data'
-    else
-      headers=[ label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
-    end
-
-    headers
+    [label, 'Quantity', 'Total Cost', 'Percent of Cost']
   end
 
 
