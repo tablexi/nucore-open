@@ -180,6 +180,9 @@ en:
     orders:
       purchase:
         future_dating_error: "Order dates in the future are not allowed"
+        quantities_changed: Quantities have changed. Please review updated prices then click "Purchase"
+        reservation:
+          success: Reservation completed successfully
 
     order_imports:
       create:
