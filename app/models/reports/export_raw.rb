@@ -4,6 +4,10 @@ class Reports::ExportRaw
 
   attr_reader :order_status_ids, :facility, :date_range_field
 
+  def self.transformers
+    @@transformers ||= []
+  end
+
   def initialize(arguments)
     [:action_name, :date_end, :date_start, :facility, :order_status_ids].each do |property|
       if arguments[property].present?
@@ -62,7 +66,7 @@ class Reports::ExportRaw
   end
 
   def transformers
-    Array(Settings.reports.try(:[], "export_raw").try(:[], "transformers"))
+    self.class.transformers
   end
 
   def default_report_hash
