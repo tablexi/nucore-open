@@ -24,4 +24,4 @@ en:
   controllers:
     general_reports:
       headers:
-        split_percentage: "Split Percentage"
+        split_percent: "Split Percent"

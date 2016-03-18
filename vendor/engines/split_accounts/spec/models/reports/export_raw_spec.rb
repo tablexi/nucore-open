@@ -117,7 +117,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   end
 
   context "for split percentage" do
-    let(:column_index) { headers.index("Split Percentage") }
+    let(:column_index) { headers.index("Split Percent") }
 
     it "has the column" do
       expect(column_index).not_to be_nil
