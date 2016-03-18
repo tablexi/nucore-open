@@ -61,6 +61,8 @@ gem "projects",         "~> 0.0.1", path: "vendor/engines/projects"
 gem "split_accounts",   "~> 0.0.1", path: "vendor/engines/split_accounts"
 gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
 
+gem "net-telnet"
+
 group :development do
   gem "better_errors"
   gem "binding_of_caller"
@@ -112,7 +114,7 @@ group :assets do
   gem "sass-rails",   "~> 3.2.6"
   gem "coffee-rails", "~> 3.2.2"
   gem "uglifier",     "~> 2.7.2"
-  gem "therubyracer"
+  # gem 'therubyracer'
   gem "turbo-sprockets-rails3"
 end
 
