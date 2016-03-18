@@ -110,7 +110,7 @@ class Reports::ExportRaw
       reservation_end_time: -> (od) { od.reservation.reserve_end_at if od.reservation },
       reservation_minutes: -> (od) { od.reservation.try(:duration_mins) },
       actual_start_time: -> (od) { od.reservation.actual_start_at if od.reservation },
-      actual_end_Time: -> (od) { od.reservation.actual_end_at if od.reservation },
+      actual_end_time: -> (od) { od.reservation.actual_end_at if od.reservation },
       actual_minutes: -> (od) { od.reservation.try(:actual_duration_mins) },
       canceled_at: -> (od) { od.reservation.canceled_at if od.reservation },
       canceled_by: -> (od) { canceled_by_name(od.reservation) if od.reservation },
