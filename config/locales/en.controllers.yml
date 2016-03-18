@@ -109,18 +109,58 @@ en:
 
     general_reports:
       headers:
-        data: [
-        'Facility', 'Order', 'Ordered At', 'Fulfilled At', 'Order Status', 'Order State',
-        'Ordered By', 'First Name', 'Last Name', 'Email', 'Purchaser', 'Purchaser First Name',
-        'Purchaser Last Name', 'Purchaser Email', 'Product ID', 'Product Type',
-        'Product', 'Quantity', 'Bundled Products', 'Account Type', 'Affiliate', 'Account',
-        'Account Description', 'Account Expiration', 'Account Owner', 'Owner First Name',
-        'Owner Last Name', 'Owner Email', 'Price Group', 'Estimated Cost', 'Estimated Subsidy',
-        'Estimated Total', 'Actual Cost', 'Actual Subsidy', 'Actual Total', 'Reservation Start Time', 'Reservation End Time',
-        'Reservation Minutes', 'Actual Start Time', 'Actual End Time', 'Actual Minutes', 'Canceled At', 'Canceled By', 'Note',
-        'Disputed At', 'Dispute Reason', 'Dispute Resolved At', 'Dispute Resolved Reason', 'Reviewed At',
-        'Statemented On', 'Journal Date', 'Reconciled Note'
-      ]
+        facility: 'Facility'
+        order: 'Order'
+        ordered_at: 'Ordered At'
+        fulfilled_at: 'Fulfilled At'
+        order_status: 'Order Status'
+        order_state: 'Order State'
+        ordered_by: 'Ordered By'
+        first_name: 'First Name'
+        last_name: 'Last Name'
+        email: 'Email'
+        purchaser: 'Purchaser'
+        purchaser_first_name: 'Purchaser First Name'
+        purchaser_last_name: 'Purchaser Last Name'
+        purchaser_email: 'Purchaser Email'
+        product_id: 'Product ID'
+        product_type: 'Product Type'
+        product: 'Product'
+        quantity: 'Quantity'
+        bundled_products: 'Bundled Products'
+        account_type: 'Account Type'
+        affiliate: 'Affiliate'
+        account: 'Account'
+        account_description: 'Account Description'
+        account_expiration: 'Account Expiration'
+        account_owner: 'Account Owner'
+        owner_first_name: 'Owner First Name'
+        owner_last_name: 'Owner Last Name'
+        owner_email: 'Owner Email'
+        price_group: 'Price Group'
+        estimated_cost: 'Estimated Cost'
+        estimated_subsidy: 'Estimated Subsidy'
+        estimated_total: 'Estimated Total'
+        actual_cost: 'Actual Cost'
+        actual_subsidy: 'Actual Subsidy'
+        actual_total: 'Actual Total'
+        reservation_start_time: 'Reservation Start Time'
+        reservation_end_time: 'Reservation End Time'
+        reservation_minutes: 'Reservation Minutes'
+        actual_start_time: 'Actual Start Time'
+        actual_end_Time: 'Actual End Time'
+        actual_minutes: 'Actual Minutes'
+        canceled_at: 'Canceled At'
+        canceled_by: 'Canceled By'
+        note: 'Note'
+        disputed_at: 'Disputed At'
+        dispute_reason: 'Dispute Reason'
+        dispute_resolved_at: 'Dispute Resolved At'
+        dispute_resolved_reason: 'Dispute Resolved Reason'
+        reviewed_at: 'Reviewed At'
+        statemented_on: 'Statemented On'
+        journal_date: 'Journal Date'
+        reconciled_note: 'Reconciled Note'
 
     notifications:
       no_notices: "You have no notifications at this time"

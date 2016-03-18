@@ -9,6 +9,8 @@ module SplitAccounts
       # Add views to view hooks in main rails app
       ViewHook.add_hook "accounts.show", "after_end_of_form", "split_accounts/shared/show_splits"
       ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "split_accounts/shared/show_splits"
+
+      ::Reports::ExportRaw.transformers << "SplitAccounts::Reports::ExportRawTransformer"
     end
 
     # This needs to undo everything that enable! does. Used in specs for testing for turning the feature on or off
@@ -18,6 +20,8 @@ module SplitAccounts
 
       ViewHook.remove_hook "accounts.show", "after_end_of_form", "split_accounts/shared/show_splits"
       ViewHook.remove_hook "facility_accounts.show", "after_end_of_form", "split_accounts/shared/show_splits"
+
+      ::Reports::ExportRaw.transformers.delete "SplitAccounts::Reports::ExportRawTransformer"
     end
 
     config.to_prepare do

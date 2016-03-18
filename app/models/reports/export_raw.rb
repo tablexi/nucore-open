@@ -4,8 +4,12 @@ class Reports::ExportRaw
 
   attr_reader :order_status_ids, :facility, :date_range_field
 
+  def self.transformers
+    @@transformers ||= []
+  end
+
   def initialize(arguments)
-    [:action_name, :date_end, :date_start, :headers, :facility, :order_status_ids].each do |property|
+    [:action_name, :date_end, :date_start, :facility, :order_status_ids].each do |property|
       if arguments[property].present?
         instance_variable_set("@#{property}".to_sym, arguments[property])
       else
@@ -47,116 +51,100 @@ class Reports::ExportRaw
     "#{date_start.strftime("%Y%m%d")}-#{date_end.strftime("%Y%m%d")}"
   end
 
-  private
-
-  def csv_header
-    @headers.to_csv
-  end
-
-  def basic_info_columns(order_detail)
-    [
-      order_detail.facility,
-      order_detail.to_s,
-      format_usa_datetime(order_detail.order.ordered_at),
-      format_usa_datetime(order_detail.fulfilled_at),
-      order_detail.order_status.name,
-      order_detail.state,
-    ]
-  end
-
-  def user_info_columns(user)
-    [
-      user.username,
-      user.first_name,
-      user.last_name,
-      user.email,
-    ]
-  end
-
-  def product_info_columns(order_detail)
-    product = order_detail.product
-    bundle_desc = product.is_a?(Bundle) ? product.products.collect(&:name).join(' & ') : nil
-    [
-      product.url_name,
-      product.type.underscore.humanize,
-      product.name,
-      order_detail.quantity,
-      bundle_desc,
-    ]
-  end
-
-  def account_info_columns(account)
-    [
-      account.type.underscore.humanize,
-      account.affiliate_to_s,
-      account.account_number,
-      account.description_to_s,
-      format_usa_datetime(account.expires_at)
-    ]
-  end
-
-  def pricing_info_columns(order_detail)
-    [
-      order_detail.price_policy.try(:price_group).try(:name),
-      as_currency(order_detail.estimated_cost),
-      as_currency(order_detail.estimated_subsidy),
-      as_currency(order_detail.estimated_total),
-      as_currency(order_detail.actual_cost),
-      as_currency(order_detail.actual_subsidy),
-      as_currency(order_detail.actual_total),
-    ]
-  end
-
-  def reservation_info_columns(reservation)
-    if reservation.present?
-      [
-        format_usa_datetime(reservation.reserve_start_at),
-        format_usa_datetime(reservation.reserve_end_at),
-        reservation.duration_mins,
-        format_usa_datetime(reservation.actual_start_at),
-        format_usa_datetime(reservation.actual_end_at),
-        reservation.actual_duration_mins,
-        format_usa_datetime(reservation.canceled_at),
-        canceled_by_name(reservation),
-      ]
-    else
-      [nil, nil, nil, nil, nil, nil, nil, nil]
+  def column_headers
+    report_hash.keys.map do |key|
+      I18n.t("controllers.general_reports.headers.#{key}")
     end
   end
 
-  def dispute_info_columns(order_detail)
-    [
-      format_usa_datetime(order_detail.dispute_at),
-      order_detail.dispute_reason,
-      format_usa_datetime(order_detail.dispute_resolved_at),
-      order_detail.dispute_resolved_reason,
-    ]
+  private
+
+  def report_hash
+    transformers.reduce(default_report_hash) do |result, class_name|
+      class_name.constantize.new.transform(result)
+    end
   end
 
-  def statement_datetime_column(statement)
-    [ statement.present? ? format_usa_datetime(statement.created_at) : nil ]
+  def transformers
+    self.class.transformers
   end
 
-  def journal_datetime_column(journal)
-    [ journal.present? ? format_usa_datetime(journal.created_at) : nil ]
+  def default_report_hash
+    {
+      facility: :facility,
+      order: :to_s,
+      ordered_at: -> (od) { od.order.ordered_at },
+      fulfilled_at: -> (od) { od.fulfilled_at },
+      order_status: -> (od) { od.order_status.name },
+      order_state: :state,
+      ordered_by: -> (od) { od.order.created_by_user.username },
+      first_name: -> (od) { od.order.created_by_user.first_name },
+      last_name: -> (od) { od.order.created_by_user.last_name },
+      email: -> (od) { od.order.created_by_user.email },
+      purchaser: -> (od) { od.order.user.username },
+      purchaser_first_name: -> (od) { od.order.user.first_name },
+      purchaser_last_name: -> (od) { od.order.user.last_name },
+      purchaser_email: -> (od) { od.order.user.email },
+      product_id: -> (od) { od.product.url_name },
+      product_type: -> (od) { od.product.type.underscore.humanize },
+      product: -> (od) { od.product.name },
+      quantity: :quantity,
+      bundled_products: -> (od) { od.product.is_a?(Bundle) ? od.product.products.collect(&:name).join(' & ') : nil },
+      account_type: -> (od) { od.account.type.underscore.humanize },
+      affiliate: -> (od) { od.account.affiliate_to_s },
+      account: -> (od) { od.account.account_number },
+      account_description: -> (od) { od.account.description_to_s },
+      account_expiration: -> (od) { od.account.expires_at },
+      account_owner: -> (od) { od.account.owner_user.username },
+      owner_first_name: -> (od) { od.account.owner_user.first_name },
+      owner_last_name: -> (od) { od.account.owner_user.last_name },
+      owner_email: -> (od) { od.account.owner_user.email },
+      price_group: -> (od) { od.price_policy.try(:price_group).try(:name) },
+      estimated_cost: -> (od) { as_currency(od.estimated_cost) },
+      estimated_subsidy: -> (od) { as_currency(od.estimated_subsidy) },
+      estimated_total: -> (od) { as_currency(od.estimated_total) },
+      actual_cost: -> (od) { as_currency(od.actual_cost) },
+      actual_subsidy: -> (od) { as_currency(od.actual_subsidy) },
+      actual_total: -> (od) { as_currency(od.actual_total) },
+      reservation_start_time: -> (od) { od.reservation.reserve_start_at if od.reservation },
+      reservation_end_time: -> (od) { od.reservation.reserve_end_at if od.reservation },
+      reservation_minutes: -> (od) { od.reservation.try(:duration_mins) },
+      actual_start_time: -> (od) { od.reservation.actual_start_at if od.reservation },
+      actual_end_time: -> (od) { od.reservation.actual_end_at if od.reservation },
+      actual_minutes: -> (od) { od.reservation.try(:actual_duration_mins) },
+      canceled_at: -> (od) { od.reservation.canceled_at if od.reservation },
+      canceled_by: -> (od) { canceled_by_name(od.reservation) if od.reservation },
+      note: :note,
+      disputed_at: -> (od) { od.dispute_at },
+      dispute_reason: :dispute_at,
+      dispute_resolved_at: -> (od) { od.dispute_resolved_at },
+      dispute_resolved_reason: :dispute_resolved_reason,
+      reviewed_at: -> (od) { od.reviewed_at },
+      statemented_on: -> (od) { od.statement.created_at if od.statement },
+      journal_date: -> (od) { od.journal.journal_date if od.journal },
+      reconciled_note: :reconciled_note,
+    }
+  end
+
+  def csv_header
+    column_headers.join(",") + "\n"
   end
 
   def order_detail_row(order_detail)
     begin
-      basic_info_columns(order_detail) +
-      user_info_columns(order_detail.order.created_by_user) +
-      user_info_columns(order_detail.order.user) +
-      product_info_columns(order_detail) +
-      account_info_columns(order_detail.account) +
-      user_info_columns(order_detail.account.owner_user) +
-      pricing_info_columns(order_detail) +
-      reservation_info_columns(order_detail.reservation) +
-      [ order_detail.note ] +
-      dispute_info_columns(order_detail) +
-      [ format_usa_datetime(order_detail.reviewed_at) ] +
-      statement_datetime_column(order_detail.statement) +
-      journal_datetime_column(order_detail.journal) +
-      [ order_detail.reconciled_note ]
+      report_hash.values.map do |callable|
+        result = if callable.is_a?(Symbol)
+          order_detail.public_send(callable)
+        else
+          callable.call(order_detail)
+        end
+
+        if result.is_a?(DateTime)
+          format_usa_datetime(result)
+        else
+          result
+        end
+      end
     rescue => e
       [ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***" ]
     end

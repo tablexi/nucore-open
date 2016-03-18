@@ -1,6 +1,7 @@
 require "rails_helper"
+require_relative "../../split_accounts_spec_helper"
 
-RSpec.describe Reports::ExportRaw do
+RSpec.describe Reports::ExportRaw, :enable_split_accounts do
 
   let(:account) do
     FactoryGirl.build(:split_account, without_splits: true, account_users_attributes: account_users_attributes_hash(user: user)).tap do |account|
@@ -35,14 +36,13 @@ RSpec.describe Reports::ExportRaw do
       action_name: "general",
       facility: facility,
       order_status_ids: [order_detail.order_status_id],
-      headers: headers,
       date_end: 1.day.from_now,
       date_start: 1.day.ago,
       date_range_field: "ordered_at"
     }
   end
 
-  let(:headers) { I18n.t("controllers.general_reports.headers.data") }
+  let(:headers) { report.column_headers }
   let(:lines) { report.to_csv.split("\n") }
   let(:cells) { lines.map{ |line| line.split(",") } }
   let(:cells_without_headers) { cells[1..-1] }
@@ -52,8 +52,8 @@ RSpec.describe Reports::ExportRaw do
     expect(lines.length).to eq(3)
   end
 
-  it "returns headers as first line item" do
-    expect(lines.first).to eq(headers.join(","))
+  it "has all the headers headers as first line item" do
+    expect(cells.first).to eq(headers)
   end
 
   context "for quantity column values" do
@@ -114,6 +114,59 @@ RSpec.describe Reports::ExportRaw do
     it "splits actual_subsidy" do
       expect(column_values).to contain_exactly("$19.99", "$20.00")
     end
+  end
+
+  context "for split percentage" do
+    let(:column_index) { headers.index("Split Percent") }
+
+    it "has the column" do
+      expect(column_index).not_to be_nil
+    end
+
+    it "has the splits" do
+      expect(column_values).to eq(["50%", "50%"])
+    end
+  end
+
+  describe "with a non-split account" do
+    let(:account) { FactoryGirl.create(:setup_account, owner: user) }
+
+    it "exports correct number of line items" do
+      expect(lines.length).to eq(2)
+    end
+
+    context "for estimated cost column values" do
+      let(:column_index) { headers.index("Estimated Cost") }
+
+      it "has the actual_cost" do
+        expect(column_values).to contain_exactly("$39.99")
+      end
+    end
+
+    context "for estimated subsidy column values" do
+      let(:column_index) { headers.index("Estimated Subsidy") }
+
+      it "has the actual_cost" do
+        expect(column_values).to contain_exactly("$29.99")
+      end
+    end
+
+    context "for actual subsidy column values" do
+      let(:column_index) { headers.index("Actual Subsidy") }
+
+      it "has the actual_cost" do
+        expect(column_values).to contain_exactly("$9.99")
+      end
+    end
+
+    context "for actual cost column values" do
+      let(:column_index) { headers.index("Actual Cost") }
+
+      it "has the actual_cost" do
+        expect(column_values).to contain_exactly("$19.99")
+      end
+    end
+
   end
 
 end
