@@ -21,7 +21,9 @@ module SplitAccounts
     end
 
     def percent_total
-      splits.reduce(0) { |sum, split| sum + split.percent }
+      splits.reduce(0) do |sum, split|
+        split.percent.present? ? sum + split.percent : sum
+      end
     end
 
     def one_split_has_extra_penny
@@ -42,8 +44,9 @@ module SplitAccounts
 
     def duplicate_subaccounts?
       splits.map(&:subaccount_id)
-        .group_by { |e| e }
-        .any? { |k, v| v.size > 1 }
+        .group_by { |subaccount_id| subaccount_id }
+        .reject { |key, value| key.blank? }
+        .any? { |key, value| value.size > 1 }
     end
 
     def more_than_one_split
