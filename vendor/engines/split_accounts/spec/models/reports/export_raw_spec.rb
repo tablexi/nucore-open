@@ -128,4 +128,45 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
     end
   end
 
+  describe "with a non-split account" do
+    let(:account) { FactoryGirl.create(:setup_account, owner: user) }
+
+    it "exports correct number of line items" do
+      expect(lines.length).to eq(2)
+    end
+
+    context "for estimated cost column values" do
+      let(:column_index) { headers.index("Estimated Cost") }
+
+      it "has the actual_cost" do
+        expect(column_values).to contain_exactly("$39.99")
+      end
+    end
+
+    context "for estimated subsidy column values" do
+      let(:column_index) { headers.index("Estimated Subsidy") }
+
+      it "has the actual_cost" do
+        expect(column_values).to contain_exactly("$29.99")
+      end
+    end
+
+    context "for actual subsidy column values" do
+      let(:column_index) { headers.index("Actual Subsidy") }
+
+      it "has the actual_cost" do
+        expect(column_values).to contain_exactly("$9.99")
+      end
+    end
+
+    context "for actual cost column values" do
+      let(:column_index) { headers.index("Actual Cost") }
+
+      it "has the actual_cost" do
+        expect(column_values).to contain_exactly("$19.99")
+      end
+    end
+
+  end
+
 end

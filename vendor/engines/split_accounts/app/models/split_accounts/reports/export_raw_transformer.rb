@@ -12,7 +12,9 @@ module SplitAccounts
       private
 
       def split_percent(order_detail)
-        number_with_precision(order_detail.split.percent, strip_insignificant_zeros: true) + "%" if order_detail.split
+        if order_detail.respond_to?(:split) && order_detail.split
+          number_with_precision(order_detail.split.percent, strip_insignificant_zeros: true) + "%"
+        end
       end
     end
   end
