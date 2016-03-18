@@ -7,6 +7,10 @@ FactoryGirl.define do
     description "Facility Description"
     is_active true
     sequence(:url_name) { |n| "facility#{n}" }
+
+    trait :with_order_notification do
+      sequence(:order_notification_recipient) { |n| "orders#{n}@example.com" }
+    end
   end
 
   factory :setup_facility, class: Facility, parent: :facility do

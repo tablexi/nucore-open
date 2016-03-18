@@ -1,12 +1,13 @@
-= render :partial => 'shared/headers/ckeditor'
+= render "shared/headers/ckeditor"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
+
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'overview' }
+  = render "admin/shared/sidenav_admin", sidenav_tab: "overview"
 
 = simple_form_for([current_facility]) do |f|
   .form-inputs
-    = render :partial => 'facility_fields', :locals => {:f => f}
-  = f.button :submit, 'Save', :class => ['btn', 'btn-primary']
-  = link_to 'Cancel', manage_facility_path(current_facility)
+    = render "facility_fields", f: f
+  = f.button :submit, "Save", class: %w(btn btn-primary)
+  = link_to "Cancel", manage_facility_path(current_facility)

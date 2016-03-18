@@ -1,4 +1,5 @@
-#{t(".intro")}
+- if @greeting.present?
+  #{@greeting}
 ==
 
 #{t(".label.ordered_at")}: #{l(@order.ordered_at, format: :receipt)}

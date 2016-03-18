@@ -1,12 +1,15 @@
 require "rails_helper"
 
 RSpec.describe Facility do
-  it "should require name" do
+  it "validates", :aggregate_failures do
     is_expected.to validate_presence_of(:name)
-  end
-
-  it "should require abbreviation" do
     is_expected.to validate_presence_of(:abbreviation)
+
+    is_expected.to allow_value("or-der@test.example.com", "", nil)
+      .for(:order_notification_recipient)
+
+    is_expected.not_to allow_value("test.", "*", "@")
+      .for(:order_notification_recipient)
   end
 
   context "when finding problem orders and reservations" do

@@ -21,7 +21,6 @@ RSpec.describe FacilitiesController do
   end
 
   context "new" do
-
     before(:each) do
       @method = :get
       @action = :new
@@ -34,10 +33,8 @@ RSpec.describe FacilitiesController do
     it_should_allow :admin do
       expect(@controller).to receive(:init_current_facility).never
       do_request
-      expect(response).to be_success
-      expect(response).to render_template("facilities/new")
+      expect(response).to be_success.and render_template("facilities/new")
     end
-
   end
 
   context "create" do
@@ -91,10 +88,9 @@ RSpec.describe FacilitiesController do
         expect(assigns(:facility).journal_mask).not_to eq("C17")
       end
     end
-
   end
 
-  describe "update" do
+  describe "PUT #update" do
     let(:facility) { FactoryGirl.create(:facility) }
     before(:each) do
       @method = :put
@@ -102,11 +98,19 @@ RSpec.describe FacilitiesController do
       @params = {
         facility_id: facility.url_name,
         facility: {
-          name: "A New Facility", abbreviation: "anf", description: "A boring description",
-          is_active: 0, url_name: "anf", short_description: "A short boring desc",
-          accepts_multi_add: false, show_instrument_availability: false,
-          address: "Test Address", phone_number: "555-1223", fax_number: "555-3211",
-          email: "facility@example.com"
+          abbreviation: "anf",
+          accepts_multi_add: false,
+          address: "Test Address",
+          description: "A boring description",
+          email: "facility@example.com",
+          fax_number: "555-3211",
+          is_active: 0,
+          name: "A New Facility",
+          order_notification_recipient: "order@example.net",
+          phone_number: "555-1223",
+          short_description: "A short boring desc",
+          show_instrument_availability: false,
+          url_name: "anf",
         },
       }
     end
@@ -120,19 +124,22 @@ RSpec.describe FacilitiesController do
 
       it "sets all the fields", :aggregate_failures do
         do_request
+        facility.reload
 
-        expect(facility.reload.name).to eq("A New Facility")
         expect(facility.abbreviation).to eq("anf")
-        expect(facility.description).to eq("A boring description")
-        expect(facility).not_to be_is_active
-        expect(facility.url_name).to eq("anf")
-        expect(facility.short_description).to eq("A short boring desc")
-        expect(facility).not_to be_accepts_multi_add
-        expect(facility).not_to be_show_instrument_availability
         expect(facility.address).to eq("Test Address")
-        expect(facility.phone_number).to eq("555-1223")
-        expect(facility.fax_number).to eq("555-3211")
+        expect(facility.description).to eq("A boring description")
         expect(facility.email).to eq("facility@example.com")
+        expect(facility.fax_number).to eq("555-3211")
+        expect(facility.name).to eq("A New Facility")
+        expect(facility.order_notification_recipient).to eq("order@example.net")
+        expect(facility.phone_number).to eq("555-1223")
+        expect(facility.short_description).to eq("A short boring desc")
+        expect(facility.url_name).to eq("anf")
+
+        expect(facility).not_to be_accepts_multi_add
+        expect(facility).not_to be_is_active
+        expect(facility).not_to be_show_instrument_availability
       end
 
       it "does not allow setting journal_mask" do
@@ -144,7 +151,6 @@ RSpec.describe FacilitiesController do
   end
 
   context "index" do
-
     before(:each) do
       @method = :get
       @action = :index
@@ -152,14 +158,11 @@ RSpec.describe FacilitiesController do
 
     it_should_allow_all [:admin, :guest] do
       expect(assigns[:facilities]).to eq([@authable])
-      expect(response).to be_success
-      expect(response).to render_template("facilities/index")
+      expect(response).to be_success.and render_template("facilities/index")
     end
-
   end
 
   context "manage" do
-
     before(:each) do
       @method = :get
       @action = :manage
@@ -171,10 +174,8 @@ RSpec.describe FacilitiesController do
     it_should_deny :guest
 
     it_should_allow :director do
-      expect(response).to be_success
-      expect(response).to render_template("facilities/manage")
+      expect(response).to be_success.and render_template("facilities/manage")
     end
-
   end
 
   context "show" do
@@ -186,8 +187,7 @@ RSpec.describe FacilitiesController do
 
     it_should_allow_all ([:guest] + facility_operators) do
       expect(@controller.current_facility).to eq(facility)
-      expect(response).to be_success
-      expect(response).to render_template("facilities/show")
+      expect(response).to be_success.and render_template("facilities/show")
     end
 
     describe "daily view link" do
@@ -221,7 +221,6 @@ RSpec.describe FacilitiesController do
   end
 
   context "list" do
-
     before(:each) do
       @method = :get
       @action = :list
@@ -232,7 +231,6 @@ RSpec.describe FacilitiesController do
     it_should_deny :guest
 
     context "as facility operators with two facilities" do
-
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
         allow(@controller).to receive(:current_facility).and_return(@authable)
@@ -242,8 +240,7 @@ RSpec.describe FacilitiesController do
 
       it_should_allow_all facility_operators do
         expect(assigns(:facilities)).to eq([@authable, @facility2])
-        expect(response).to be_success
-        expect(response).to render_template("facilities/list")
+        expect(response).to be_success.and render_template("facilities/list")
       end
     end
 
@@ -273,7 +270,6 @@ RSpec.describe FacilitiesController do
     end
 
     context "as administrator" do
-
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
         allow(@controller).to receive(:current_facility).and_return(@authable)
@@ -281,11 +277,9 @@ RSpec.describe FacilitiesController do
 
       it_should_allow :admin do
         expect(assigns[:facilities]).to eq([@authable, @facility2])
-        expect(response).to be_success
-        expect(response).to render_template("facilities/list")
+        expect(response).to be_success.and render_template("facilities/list")
       end
     end
-
   end
 
   shared_context "transactions" do |action|

@@ -43,11 +43,17 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, t("notifier.account_update.subject")
   end
 
+  def order_notification(order, recipient)
+    @order = order
+    send_nucore_mail recipient, t("notifier.order_notification.subject"), "order_receipt"
+  end
+
   # Custom order forms send out a confirmation email when filled out by a
   # customer. Customer gets one along with PI/Admin/Lab Manager.
   def order_receipt(args)
     @user = args[:user]
     @order = args[:order]
+    @greeting = t("notifier.order_receipt.intro")
     send_nucore_mail args[:user].email, t("notifier.order_receipt.subject")
   end
 

@@ -14,6 +14,8 @@ class Order < ActiveRecord::Base
 
   scope :for_user, ->(user) { { conditions: ["user_id = ? AND ordered_at IS NOT NULL AND state = ?", user.id, "purchased"] } }
 
+  delegate :order_notification_recipient, to: :facility
+
   def self.created_by_user(user)
     where(created_by: user.id)
   end

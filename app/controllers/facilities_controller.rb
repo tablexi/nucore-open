@@ -161,9 +161,22 @@ class FacilitiesController < ApplicationController
   end
 
   def self.permitted_facility_params
-    @@permitted_facility_params ||= [:name, :abbreviation, :url_name, :short_description,
-                                     :description, :accepts_multi_add, :show_instrument_availability, :is_active,
-                                     :address, :phone_number, :fax_number, :email]
+    @@permitted_facility_params ||=
+      %i(
+        abbreviation
+        accepts_multi_add
+        address
+        description
+        email
+        fax_number
+        is_active
+        name
+        order_notification_recipient
+        phone_number
+        short_description
+        show_instrument_availability
+        url_name
+      )
   end
 
   def ensure_order_details_selected

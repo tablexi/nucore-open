@@ -1,24 +1,30 @@
-= f.input :name,         :hint => t('facilities.facility_fields.name')
-= f.input :abbreviation, :hint => t('facilities.facility_fields.abbreviation')
-= f.input :url_name,     :hint => begin facility_url(f.object) rescue facility_url('url-name') end, :as => :string
-= f.input :short_description, :input_html => {:class => 'wide'}, :hint => t('facilities.facility_fields.short_description')
-= f.input :description,       :input_html => {:class => 'editor'},      :hint => t('facilities.facility_fields.description')
+= f.input :name, hint: t(".name")
+= f.input :abbreviation, hint: t(".abbreviation")
+= f.input :url_name, hint: facility_url(f.object.url_name || "url-name"), as: :string
+= f.input :short_description, input_html: { class: "wide" }, hint: t(".short_description")
+= f.input :description, input_html: { class: "editor" }, hint: t(".description")
 
 .well
   %p
-    = f.input :accepts_multi_add, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.accepts_multi_add')
+    = f.input :accepts_multi_add,
+      as: :boolean, label: false, inline_label: t(".accepts_multi_add")
   %p
-    = f.input :show_instrument_availability, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.show_instrument_availability')
+    = f.input :show_instrument_availability,
+      as: :boolean, label: false, inline_label: t(".show_instrument_availability")
 
 = render_view_hook("before_is_active", f: f)
 
 .well
-  %p= t('facilities.facility_fields.inactive')
-  = f.input :is_active, :as => :boolean, :label => false, :inline_label => t('facilities.facility_fields.is_active')
+  %p= t(".inactive")
+  = f.input :is_active, as: :boolean, label: false, inline_label: t(".is_active")
 
 .well
-  %p= t('facilities.facility_fields.contact')
-  = f.input :address, :input_html => {:cols => 46, :rows => 5}
+  %p= t(".contact")
+  = f.input :address, input_html: { cols: 46, rows: 5 }
   = f.input :phone_number
   = f.input :fax_number
   = f.input :email
+
+.well
+  %p= t(".order_notification")
+  = f.input :order_notification_recipient, hint: f.object.email

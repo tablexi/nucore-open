@@ -226,7 +226,7 @@ class OrdersController < ApplicationController
     load_statuses
     params[:order_datetime] = build_order_date if acting_as?
     @order.transaction do
-      if update_order_details
+      if OrderDetailUpdater.new(@order, order_update_params).update
         # Must show instead of render to maintain "more options" state when
         # ordering on behalf of
         render :show
@@ -238,71 +238,37 @@ class OrdersController < ApplicationController
     end
   end
 
-  # PUT /orders/1/purchase
+  # PUT /orders/:id/purchase
   def purchase
-    facility_ability = Ability.new(session_user, @order.facility, self)
-    # revalidate the cart, but only if the user is not an admin
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
+    @order.ordered_at = build_order_date if ordering_on_behalf_with_date_params?
 
-    @order.ordered_at = build_order_date if params[:order_date].present? && params[:order_time].present? && acting_as?
+    order_purchaser.purchase!
 
-    begin
-      @order.transaction do
-        # try update
-        quantities_before = @order.order_details.order("order_details.id").collect(&:quantity)
-        if update_order_details
-          quantities_after = @order.order_details.order("order_details.id").collect(&:quantity)
-
-          if quantities_after != quantities_before
-            flash[:notice] = "Quantities have changed, please review updated prices then click \"Purchase\""
-            return redirect_to order_path(@order)
-          end
+    if order_purchaser.quantities_changed?
+      flash[:notice] = I18n.t("controllers.orders.purchase.quantities_changed")
+      redirect_to order_path(@order)
+    else
+      if single_reservation? && !acting_as?
+        flash[:notice] = I18n.t("controllers.orders.purchase.reservation.success")
+        if can_switch_instrument_on?
+          redirect_to switch_instrument_path
         else
-          logger.debug "errors #{@order.errors.full_messages}"
-          flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
-          return render :show
+          redirect_to reservations_path
         end
-
-        # Empty message because validate_order! and purchase! don't give us useful messages as to why they failed
-        raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
-
-        if facility_ability.can? :order_in_past, @order
-          raise NUCore::PurchaseException.new(I18n.t("controllers.orders.purchase.future_dating_error")) unless @order.can_backdate_order_details?
-
-          # update order detail statuses if you've changed it while acting as
-          if acting_as? && params[:order_status_id].present?
-            @order.backdate_order_details!(session_user, params[:order_status_id])
-          else
-            @order.complete_past_reservations!
-          end
-        end
-
-        Notifier.delay.order_receipt(user: @order.user, order: @order) if should_send_notification?
-
-        # If we're only making a single reservation, we'll redirect
-        if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
-          od = @order.order_details[0]
-
-          if od.reservation.can_switch_instrument_on?
-            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, switch: "on", redirect_to: reservations_path)
-          else
-            redirect_to reservations_path
-          end
-
-          flash[:notice] = "Reservation completed successfully"
-        else
-          redirect_to receipt_order_path(@order)
-        end
-
-        return
+      else
+        redirect_to receipt_order_path(@order)
       end
-    rescue => e
-      flash[:error] = I18n.t("orders.purchase.error")
-      flash[:error] += " #{e.message}" if e.message
-      puts e.message
-      @order.reload.invalidate!
-      redirect_to(order_path(@order)) && return
     end
+  rescue NUCore::OrderDetailUpdateException => e
+    logger.debug "errors #{@order.errors.full_messages}"
+    flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
+    render :show
+  rescue => e
+    flash[:error] = I18n.t("orders.purchase.error")
+    flash[:error] += " #{e.message}" if e.message
+    @order.reload.invalidate!
+    redirect_to order_path(@order)
   end
 
   # GET /orders/1/receipt
@@ -336,36 +302,60 @@ class OrdersController < ApplicationController
 
   private
 
-  def update_order_details
-    # don't run if no updates for order_details
-
-    order_detail_updates = {}
-    params.each do |key, value|
-      if /\A(quantity)(\d+)\z/ =~ key && value.present?
-        order_detail_updates[Regexp.last_match(2).to_i] ||= {}
-        order_detail_updates[Regexp.last_match(2).to_i][Regexp.last_match(1).to_sym] = value
-      end
-      if /\A(note)(\d+)\z/ =~ key
-        order_detail_updates[Regexp.last_match(2).to_i] ||= {}
-        order_detail_updates[Regexp.last_match(2).to_i][Regexp.last_match(1).to_sym] = value
-      end
-    end
-
-    @order.update_details(order_detail_updates)
-  end
-
   def build_order_date
     if params[:order_date].present? && params[:order_time].present?
       parse_usa_date(params[:order_date], join_time_select_values(params[:order_time]))
     end
   end
 
+  def can_switch_instrument_on?
+    first_order_detail.reservation.can_switch_instrument_on?
+  end
+
+  def facility_ability
+    @facility_ability ||= Ability.new(session_user, @order.facility, self)
+  end
+
+  def first_order_detail
+    @first_order_detail ||= @order.order_details.first
+  end
+
   def load_statuses
     @order_statuses = OrderStatus.non_protected_statuses(@order.facility)
   end
 
-  def should_send_notification?
-    !acting_as? || params[:send_notification] == "1"
+  def order_purchaser
+    @order_purchaser ||= OrderPurchaser.new(
+      acting_as: acting_as?,
+      order: @order,
+      order_in_past: facility_ability.can?(:order_in_past, @order),
+      params: params,
+      user: session_user,
+    )
+  end
+
+  def order_update_params
+    @order_update_params ||= OrderDetailUpdateParamHashExtractor.new(params).to_h
+  end
+
+  def ordering_on_behalf_with_date_params?
+    params[:order_date].present? && params[:order_time].present? && acting_as?
+  end
+
+  def single_reservation?
+    @order.order_details.size == 1 &&
+      @order.order_details.first.product.is_a?(Instrument) &&
+      !@order.order_details.first.bundled?
+  end
+
+  def switch_instrument_path
+    order_order_detail_reservation_switch_instrument_path(
+      @order,
+      first_order_detail,
+      first_order_detail.reservation,
+      switch: "on",
+      redirect_to: reservations_path,
+    )
   end
 
 end

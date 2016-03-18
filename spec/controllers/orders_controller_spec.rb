@@ -27,11 +27,11 @@ RSpec.describe OrdersController do
     expect(get: "/orders/1/choose_account").to route_to(controller: "orders", action: "choose_account", id: "1")
   end
 
-  before :each do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @item = @authable.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
+  before(:each) do
+    @authable = facility
+    @facility_account = facility.facility_accounts.create(attributes_for(:facility_account))
+    @price_group = facility.price_groups.create(attributes_for(:price_group))
+    @item = facility.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
     @account = add_account_for_user(:staff, @item, @price_group)
     @order = @staff.orders.create(FactoryGirl.attributes_for(:order, created_by: @staff.id, account: @account))
 
@@ -41,6 +41,7 @@ RSpec.describe OrdersController do
   end
 
   let(:account) { @account }
+  let(:facility) { create(:facility) }
   let(:item) { @item }
   let(:params) { @params }
   let(:price_group) { @price_group }
@@ -275,8 +276,9 @@ RSpec.describe OrdersController do
         do_request
       end
 
-      it "updates the quantity" do
+      it "updates the quantity", :aggregate_failures do
         @order_detail.reload
+        expect(flash[:notice]).to include("Quantities have changed")
         expect(@order_detail.quantity).to eq(5)
       end
 
@@ -443,34 +445,65 @@ RSpec.describe OrdersController do
         expect(response).to redirect_to receipt_order_url(@order)
       end
 
-      describe "notification sending" do
-        it "sends a notification" do
-          expect(Notifier).to receive(:order_receipt).once.and_return(DummyNotifier.new)
-          sign_in @admin
-          do_request
+      describe "emailed receipts" do
+        before { sign_in @admin }
+
+        context "when ordering" do
+          it "sends receipts" do
+            expect(Notifier).to receive(:order_receipt).once { DummyNotifier.new }
+            do_request
+          end
         end
 
-        it "does not send an email by default when acting as" do
-          expect(Notifier).to receive(:order_receipt).never
-          sign_in @admin
-          switch_to @staff
-          do_request
+        context "when ordering on behalf of (acting as)" do
+          before { switch_to @staff }
+
+          context "when send_notification is checked" do
+            before { @params[:send_notification] = "1" }
+
+            it "sends receipts" do
+              expect(Notifier).to receive(:order_receipt).once { DummyNotifier.new }
+              do_request
+            end
+          end
+
+          context "when send_notification is unchecked" do
+            before { @params[:send_notification] = "" }
+
+            it "does not send receipts" do
+              expect(Notifier).not_to receive(:order_receipt)
+              do_request
+            end
+          end
+        end
+      end
+
+      describe "emailed order notifications" do
+        before { sign_in @admin }
+
+        context "when the facility has an order_notification_recipient" do
+          let(:facility) { create(:facility, :with_order_notification) }
+
+          it "sends order notifications" do
+            expect(Notifier).to receive(:order_notification).once { DummyNotifier.new }
+            do_request
+          end
+
+          context "when the order was made on behalf of another user" do
+            before { switch_to @staff }
+
+            it "does not send order notifications" do
+              expect(Notifier).not_to receive(:order_notification)
+              do_request
+            end
+          end
         end
 
-        it "does not send an email when acting as and unchecks the checkbox" do
-          expect(Notifier).to receive(:order_receipt).never
-          sign_in @admin
-          switch_to @staff
-          @params[:send_notification] = "0"
-          do_request
-        end
-
-        it "sends an email when acting as and checks the checkbox" do
-          expect(Notifier).to receive(:order_receipt).once.and_return(DummyNotifier.new)
-          sign_in @admin
-          switch_to @staff
-          @params[:send_notification] = "1"
-          do_request
+        context "when the facility has no order_notification_recipient" do
+          it "sends no order notifications" do
+            expect(Notifier).not_to receive(:order_notification)
+            do_request
+          end
         end
       end
     end

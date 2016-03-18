@@ -139,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20160325213918) do
     t.string   "email"
     t.string   "journal_mask",                 :limit => 50,                     :null => false
     t.boolean  "show_instrument_availability",                :default => false, :null => false
+    t.string   "order_notification_recipient"
   end
 
   add_index "facilities", ["abbreviation"], :name => "index_facilities_on_abbreviation", :unique => true
