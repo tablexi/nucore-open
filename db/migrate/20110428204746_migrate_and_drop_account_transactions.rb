@@ -14,13 +14,12 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       j_rows.each do |j_row|
         journal=j_row.journal
 
-        if journal.open? || journal.is_successful? == true
-          od.journal=journal
+        next unless journal.open? || journal.is_successful? == true
+        od.journal=journal
 
-          if journal.is_successful? == true
-            od.state='reconciled'
-            od.order_status=OrderStatus.reconciled.first
-          end
+        if journal.is_successful? == true
+          od.state='reconciled'
+          od.order_status=OrderStatus.reconciled.first
         end
       end
 
