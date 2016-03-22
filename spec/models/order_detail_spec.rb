@@ -203,7 +203,7 @@ RSpec.describe OrderDetail do
         it 'reassigns them' do
           @user_accounts.reverse.each do |account|
             expect { OrderDetail.reassign_account!(account, [@order_detail]) }
-              .to change{@order_detail.account}.to account
+              .to change {@order_detail.account}.to account
           end
         end
       end
@@ -1402,14 +1402,14 @@ RSpec.describe OrderDetail do
             context 'admin waives the fee' do
               it 'is removed from its statement' do
                 expect { cancel_order_detail(admin: true, apply_cancel_fee: false) }
-                  .to change{order_detail.statement}.from(statement).to(nil)
+                  .to change {order_detail.statement}.from(statement).to(nil)
               end
             end
 
             context 'admin does not waive the fee' do
               it 'remains on its statement' do
                 expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
-                  .not_to change{order_detail.statement}
+                  .not_to change {order_detail.statement}
               end
             end
           end
@@ -1421,7 +1421,7 @@ RSpec.describe OrderDetail do
 
             it 'is removed from its statement' do
               expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
-                .to change{order_detail.statement}.from(statement).to(nil)
+                .to change {order_detail.statement}.from(statement).to(nil)
             end
           end
         end
@@ -1440,7 +1440,7 @@ RSpec.describe OrderDetail do
 
           it 'is removed from its statement' do
             expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
-              .to change{order_detail.statement}.from(statement).to(nil)
+              .to change {order_detail.statement}.from(statement).to(nil)
           end
         end
       end
@@ -1460,7 +1460,7 @@ RSpec.describe OrderDetail do
 
         it 'should destroy merge order when its last detail is killed' do
           @order_detail.destroy
-          assert_raise(ActiveRecord::RecordNotFound){ Order.find @order.id }
+          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
         end
 
         it 'should not destroy merge order when there are other details' do

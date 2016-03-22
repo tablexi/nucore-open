@@ -64,7 +64,7 @@ RSpec.describe OrderDetail do
       def move_to_new_account
         order_detail.account = new_account
         expect { order_detail.save }
-          .to change{order_detail.statement}.from(original_statement).to(nil)
+          .to change {order_detail.statement}.from(original_statement).to(nil)
         expect(order_detail.account).to be new_account
       end
 
@@ -136,14 +136,14 @@ RSpec.describe OrderDetail do
         end
 
         it 'should remove itself from its statement' do
-          expect { move_to_new_account }.to change{order_detail.statement}
+          expect { move_to_new_account }.to change {order_detail.statement}
             .from(original_statement).to(nil)
           expect(original_statement.rows_for_order_detail(order_detail)).to be_none
         end
 
         it 'should not have a statement date' do
           original_statement_date = order_detail.statement_date
-          expect { move_to_new_account }.to change{order_detail.statement_date}
+          expect { move_to_new_account }.to change {order_detail.statement_date}
             .from(original_statement_date).to(nil)
         end
 

@@ -43,7 +43,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
 
   let(:headers) { report.column_headers }
   let(:lines) { report.to_csv.split("\n") }
-  let(:cells) { lines.map{ |line| line.split(",") } }
+  let(:cells) { lines.map { |line| line.split(",") } }
   let(:cells_without_headers) { cells[1..-1] }
   let(:column_values) { cells_without_headers.map { |line| line[column_index] } }
 

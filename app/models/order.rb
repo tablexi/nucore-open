@@ -183,7 +183,7 @@ class Order < ActiveRecord::Base
   end
 
   def has_subsidies?
-    order_details.any?{|od| od.has_subsidies?}
+    order_details.any? {|od| od.has_subsidies?}
   end
 
   def only_reservation

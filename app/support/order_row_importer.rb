@@ -22,7 +22,7 @@ class OrderRowImporter
     :quantity,
     :order_date,
     :fulfillment_date
-  ].map{ |k| HEADERS[k] }
+  ].map { |k| HEADERS[k] }
 
   def self.order_key_for_row(row)
     new(row, nil).order_key

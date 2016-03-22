@@ -247,20 +247,20 @@ RSpec.describe ScheduleRule do
       expect(@not_available.size).to eq(14)
       # should mark each rule as unavailable
       assert_equal true, @not_available.first.unavailable
-      @not_calendar = @not_available.collect{ |na| na.as_calendar_object }.flatten
+      @not_calendar = @not_available.collect { |na| na.as_calendar_object }.flatten
 
       # days should be same as above
       # even times should be 12 am to 9 am
       # odd times should be 5 pm to 12 pm
-      even = (0..@not_available.size).select{ |i| i.even? }
-      odd  = (0..@not_available.size).select{ |i| i.odd? }
+      even = (0..@not_available.size).select { |i| i.even? }
+      odd  = (0..@not_available.size).select { |i| i.odd? }
 
-      even.collect{ |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
+      even.collect { |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
         expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days}"))
         expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + i.days} 9:00"))
       end
 
-      odd.collect{ |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
+      odd.collect { |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
         expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days} 17:00"))
         expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + (i + 1).days}"))
       end
@@ -316,17 +316,17 @@ RSpec.describe ScheduleRule do
       # build not available rules from the available rules collection, 3 for tue and 1 each for rest of days
       @not_available = ScheduleRule.unavailable([@rule1, @rule2])
       expect(@not_available.size).to eq(9)
-      @not_calendar  = @not_available.collect{ |na| na.as_calendar_object }.flatten
+      @not_calendar  = @not_available.collect { |na| na.as_calendar_object }.flatten
 
       # rules for tuesday should be 12am-1am, 3am-7am, 9pm-12pm
-      @tuesday_times = @not_calendar.select{ |hash| Time.zone.parse(hash['start']).to_date == @tuesday }.collect do |hash|
+      @tuesday_times = @not_calendar.select { |hash| Time.zone.parse(hash['start']).to_date == @tuesday }.collect do |hash|
         [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
       end
 
       expect(@tuesday_times).to eq([[0, 1], [3, 7], [9, 0]])
 
       # rules for other days should be 12am-12pm
-      @other_times = @not_calendar.select{ |hash| Time.zone.parse(hash['start']).to_date != @tuesday }.collect do |hash|
+      @other_times = @not_calendar.select { |hash| Time.zone.parse(hash['start']).to_date != @tuesday }.collect do |hash|
         [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
       end
       expect(@other_times).to eq([[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]])

@@ -49,7 +49,7 @@ class AccountConfig
   # Facility can be a NullObject (used when not in the context of a facility)
   # and the NullObject always returns `true` for cross_facility?.
   def account_types_for_facility(facility)
-    return account_types.select{ |type| type.constantize.cross_facility? } if facility.try(:cross_facility?)
+    return account_types.select { |type| type.constantize.cross_facility? } if facility.try(:cross_facility?)
     account_types
   end
 

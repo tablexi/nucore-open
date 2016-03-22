@@ -167,7 +167,7 @@ class ProductsCommonController < ApplicationController
   end
 
   def price_policy_available_for_product?
-    groups = (acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect{ |pg| pg.id }
+    groups = (acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect { |pg| pg.id }
     @product.can_purchase?(groups)
   end
 

@@ -14,7 +14,7 @@ class IppConverter
   end
 
   def error_to_log(e, obj)
-    "#{obj.class.name} #{obj.id} :: #{e.message}\n#{e.backtrace.keep_if{|t| t =~ /\/nucore-/ }.join("\n")}"
+    "#{obj.class.name} #{obj.id} :: #{e.message}\n#{e.backtrace.keep_if {|t| t =~ /\/nucore-/ }.join("\n")}"
   end
 
   def new_policy_from(detail)

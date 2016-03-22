@@ -22,12 +22,12 @@ RSpec.describe ProductApprover do
   context '#approve_access' do
     it 'grants usage approval to a product' do
       expect { product_approver.approve_access(product) }
-        .to change{product.can_be_used_by?(user)}.from(false).to(true)
+        .to change {product.can_be_used_by?(user)}.from(false).to(true)
     end
 
     it 'grants usage approval to a product' do
       expect { product_approver.approve_access(product) }
-        .to change{product.can_be_used_by?(user)}.from(false).to(true)
+        .to change {product.can_be_used_by?(user)}.from(false).to(true)
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe ProductApprover do
 
     it 'revokes usage approval to a product' do
       expect { product_approver.revoke_access(product) }
-        .to change{product.can_be_used_by?(user)}.from(true).to(false)
+        .to change {product.can_be_used_by?(user)}.from(true).to(false)
     end
   end
 

@@ -27,7 +27,7 @@ RSpec.describe SurveyResponse do
   end
 
   it 'creates an external service receiver' do
-    expect { survey_response.save! }.to change{ ExternalServiceReceiver.count }.by 1
+    expect { survey_response.save! }.to change { ExternalServiceReceiver.count }.by 1
     esr = ExternalServiceReceiver.last
     expect(esr.receiver).to eq external_service_receiver.receiver
     expect(esr.external_service).to eq external_service
@@ -45,7 +45,7 @@ RSpec.describe SurveyResponse do
     expect do
       survey_response.save!
       survey_response.save!
-    end.to change{ ExternalServiceReceiver.count }.by 1
+    end.to change { ExternalServiceReceiver.count }.by 1
   end
 
   it 'updates the response_data if it has changed' do
@@ -57,7 +57,7 @@ RSpec.describe SurveyResponse do
       params[:survey_url] = new_survey_url
       receiver = described_class.new(params).save!
       expect(receiver.show_url).to eq new_survey_url
-    end.to change{ ExternalServiceReceiver.count }.by 1
+    end.to change { ExternalServiceReceiver.count }.by 1
   end
 
   it 'stores the survey_id as the external_id' do
