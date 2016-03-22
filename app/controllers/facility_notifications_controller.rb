@@ -29,7 +29,7 @@ class FacilityNotificationsController < ApplicationController
 
   # GET /facilities/notifications/send
   def send_notifications
-    if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
+    if params[:order_detail_ids].nil? || params[:order_detail_ids].empty?
       flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'
       redirect_to :action => :index
       return
@@ -59,7 +59,7 @@ class FacilityNotificationsController < ApplicationController
 
   # GET /facilities/notifications/in_review/mark
   def mark_as_reviewed
-    if params[:order_detail_ids].nil? or params[:order_detail_ids].empty?
+    if params[:order_detail_ids].nil? || params[:order_detail_ids].empty?
       flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'
     else
       @errors = []

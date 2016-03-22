@@ -25,7 +25,7 @@ module Role
     # Each returns true if #user_roles has the role for the given facility.
     define_method(role.gsub(/\s/, '_').downcase + '_of?') do |facility|
       is=false
-      user_roles.each {|ur| is=true and break if ur.facility == facility && ur.role == role }
+      user_roles.each {|ur| (is=true) && break if ur.facility == facility && ur.role == role }
       is
     end
 
@@ -44,7 +44,7 @@ module Role
     # Creates method #manageable_facilities
     # returns relation of facilities for which this user is a director or admin
     define_method(:manageable_facilities) do
-      if self.try(:administrator?) or self.try(:billing_administrator?)
+      if self.try(:administrator?) || self.try(:billing_administrator?)
         Facility.sorted
       else
         facilities.sorted.where("user_roles.role IN (?)", UserRole.facility_management_roles)
@@ -97,7 +97,7 @@ module Role
     # Each returns true if #account_users has the user_role for the given account.
     define_method(role.gsub(/\s/, '_').downcase + '_of?') do |account|
       is=false
-      account_users.each {|au| is=true and break if au.account == account && au.user_role == role }
+      account_users.each {|au| (is=true) && break if au.account == account && au.user_role == role }
       is
     end
   end

@@ -8,10 +8,10 @@ class UserPasswordController < ApplicationController
     @user = current_user
 
     unless @user.password_updatable?
-      render :no_password, :layout => "application" and return
+      render(:no_password, :layout => "application") && (return)
     end
     
-    if request.post? and @user.update_password_confirm_current(params[:user])
+    if request.post? && @user.update_password_confirm_current(params[:user])
       @user.clean_up_passwords
       flash[:notice] = I18n.t("user_password.edit.success")
     end    
@@ -19,7 +19,7 @@ class UserPasswordController < ApplicationController
 
   
   def reset
-    if request.post? and params[:user]
+    if request.post? && params[:user]
       @user = User.find_by_email(params[:user][:email])
       if @user
         if @user.password_updatable?
@@ -36,16 +36,16 @@ class UserPasswordController < ApplicationController
   end
   
   def edit
-    unless params[:reset_password_token] and @user = User.find_by_reset_password_token(params[:reset_password_token]) and @user.password_updatable? and @user.reset_password_period_valid?
+    unless params[:reset_password_token] && (@user = User.find_by_reset_password_token(params[:reset_password_token])) && @user.password_updatable? && @user.reset_password_period_valid?
       flash[:error] = I18n.t("activerecord.errors.models.user.invalid_token")
       redirect_to :action => :reset  
     end
   end
   
   def update
-    unless params[:user] and params[:user][:reset_password_token] and @user = User.find_by_reset_password_token(params[:user][:reset_password_token]) and @user.password_updatable? and @user.reset_password_period_valid?
+    unless params[:user] && params[:user][:reset_password_token] && (@user = User.find_by_reset_password_token(params[:user][:reset_password_token])) && @user.password_updatable? && @user.reset_password_period_valid?
       flash[:error] = I18n.t("activerecord.errors.models.user.invalid_token")
-      redirect_to :action => :reset and return  
+      redirect_to(:action => :reset) && (return)  
     end
     # devise's reset has problems with the ldap module enabled and no ldap.yml
     # @user = User.reset_password_by_token(params[:user])
@@ -53,7 +53,7 @@ class UserPasswordController < ApplicationController
     if @user.errors.empty?
       flash[:notice] = I18n.t("user_password.edit.success")
       sign_in(@user)
-      redirect_to :root and return
+      redirect_to(:root) && (return)
     end
     render :action => :edit
   end

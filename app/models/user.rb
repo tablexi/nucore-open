@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
     end
 
     self.errors.add(:password, :empty) if params[:password].blank?
-    self.errors.add(:password, :password_too_short) if params[:password] and params[:password].strip.length < 6
+    self.errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 6
     self.errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
 
     if self.errors.empty?
@@ -146,7 +146,7 @@ class User < ActiveRecord::Base
 
 
   def full_name
-    unless first_name.nil? and last_name.nil?
+    unless first_name.nil? && last_name.nil?
       full = ""
       full += first_name unless first_name.nil?
       full += " " unless first_name.nil? || last_name.nil?

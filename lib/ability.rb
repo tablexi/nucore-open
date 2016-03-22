@@ -39,7 +39,7 @@ class Ability
       end
     end
 
-    can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)
+    can :list, Facility if user.facilities.size > 0 && controller.is_a?(FacilitiesController)
     can :read, Notification if user.notifications.active.any?
 
     if user.account_manager?

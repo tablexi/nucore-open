@@ -17,14 +17,14 @@ class OrdersController < ApplicationController
 
   def protect_purchased_orders
     if @order.state == 'purchased'
-      redirect_to receipt_order_path(@order) and return
+      redirect_to(receipt_order_path(@order)) && (return)
     end
   end
 
   # GET /orders/cart
   def cart
     @order = acting_user.cart(session_user)
-    redirect_to order_path(@order) and return
+    redirect_to(order_path(@order)) && (return)
   end
 
   # GET /orders/:id
@@ -38,20 +38,20 @@ class OrdersController < ApplicationController
   # PUT /orders/:id/clear
   def clear
     @order.clear!
-    redirect_to order_path(@order) and return
+    redirect_to(order_path(@order)) && (return)
   end
 
   # GET /orders/2/add/
   # PUT /orders/2/add/
   def add
     ## get items to add from the form post or from the session
-    ods_from_params = (params[:order].presence and params[:order][:order_details].presence) || []
+    ods_from_params = (params[:order].presence && params[:order][:order_details].presence) || []
     items =  ods_from_params.presence || session[:add_to_cart].presence || []
     session[:add_to_cart] = nil
 
 
     # ignore ods w/ empty or 0 quantities
-    items = items.select { |od| od.is_a?(Hash) and od[:quantity].present? and (od[:quantity] = od[:quantity].to_i) > 0 }
+    items = items.select { |od| od.is_a?(Hash) && od[:quantity].present? && (od[:quantity] = od[:quantity].to_i) > 0 }
     return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
 
     first_product = Product.find(items.first[:product_id])
@@ -60,13 +60,13 @@ class OrdersController < ApplicationController
     # if acting_as, make sure the session user can place orders for the facility
     if acting_as? && facility_ability.cannot?(:act_as, first_product.facility)
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
-      redirect_to order_path(@order) and return
+      redirect_to(order_path(@order)) && (return)
     end
 
 
 
     ## handle a single instrument reservation
-    if items.size == 1 and (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
+    if items.size == 1 && (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
       if first_product.respond_to?(:reservations)                              # and product is reservable
 
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
@@ -89,7 +89,7 @@ class OrdersController < ApplicationController
 
       ## save the state to the session and redirect
       session[:add_to_cart] = items
-      redirect_to choose_account_order_path(@order) and return
+      redirect_to(choose_account_order_path(@order)) && (return)
     end
 
     ## process each item
@@ -191,9 +191,9 @@ class OrdersController < ApplicationController
     @errors   = {}
     details   = @order.order_details
     @accounts.each do |account|
-      if session[:add_to_cart] and
-         ods = session[:add_to_cart].presence and
-         product_id = ods.first[:product_id]
+      if session[:add_to_cart] &&
+         (ods = session[:add_to_cart].presence) &&
+         (product_id = ods.first[:product_id])
         error = account.validate_against_product(Product.find(product_id), acting_user)
         @errors[account.id] = error if error
       end
@@ -215,7 +215,7 @@ class OrdersController < ApplicationController
   def update_or_purchase
     # When returning from an external service, we may be called with a get; in that
     # case, we should just redirect to the show path
-    redirect_to action: :show and return if request.get?
+    redirect_to(action: :show) && (return) if request.get?
 
     # if update button was clicked
     if params[:commit] == "Update"
@@ -305,7 +305,7 @@ class OrdersController < ApplicationController
       flash[:error] += " #{e.message}" if e.message
       puts e.message
       @order.reload.invalidate!
-      redirect_to order_path(@order) and return
+      redirect_to(order_path(@order)) && (return)
     end
   end
 

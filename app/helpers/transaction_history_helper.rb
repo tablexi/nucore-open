@@ -29,7 +29,7 @@ module TransactionHistoryHelper
   def chosen_field(field, label, value_field = "id", label_field = "name", from_collection_method = nil)
     var = instance_variable_get("@#{field}")
     enabled = var && var.size > 1
-    @search_fields[field] = [var.first.send(value_field.to_sym)] if value_field and var.size == 1
+    @search_fields[field] = [var.first.send(value_field.to_sym)] if value_field && var.size == 1
     html = "<li class=\"#{enabled ? '' : 'disabled'}\">"
     html << (label_tag field, label.pluralize)
     from_collection = from_collection_method ? self.send(from_collection_method, var, @search_fields[field]) : options_from_collection_for_select(var, value_field, label_field, @search_fields[field])
