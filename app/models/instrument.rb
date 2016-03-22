@@ -80,13 +80,13 @@ class Instrument < Product
     return unless reserve_interval.to_i > 0 && field_value > 0
 
     if field_value % reserve_interval != 0
-      self.errors.add attribute, :not_interval, reserve_interval: reserve_interval
+      errors.add attribute, :not_interval, reserve_interval: reserve_interval
     end
   end
 
   def max_reservation_not_less_than_min
     if max_reserve_mins && min_reserve_mins && max_reserve_mins < min_reserve_mins
-      self.errors.add :max_reserve_mins, :max_less_than_min
+      errors.add :max_reserve_mins, :max_less_than_min
     end
   end
 

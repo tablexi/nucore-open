@@ -32,7 +32,7 @@ class Accessories::Scaling::Default < SimpleDelegator
     if other.is_a? OrderDetail
       order_detail == other
     else
-      self.equal? other
+      equal? other
     end
   end
 

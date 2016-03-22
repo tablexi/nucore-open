@@ -43,15 +43,15 @@ class Reports::InstrumentUtilizationReport
     end
 
     def +(other)
-      DataRow.new(self.quantity + other.quantity,
-                  self.reserved_mins + other.reserved_mins,
-                  self.actual_mins + other.actual_mins)
+      DataRow.new(quantity + other.quantity,
+                  reserved_mins + other.reserved_mins,
+                  actual_mins + other.actual_mins)
     end
 
     def /(other)
-      DataRow.new(to_percent(safe_divide(self.quantity, other.quantity)),
-                  to_percent(safe_divide(self.reserved_mins, other.reserved_mins)),
-                  to_percent(safe_divide(self.actual_mins, other.actual_mins.to_f)))
+      DataRow.new(to_percent(safe_divide(quantity, other.quantity)),
+                  to_percent(safe_divide(reserved_mins, other.reserved_mins)),
+                  to_percent(safe_divide(actual_mins, other.actual_mins.to_f)))
     end
 
     def safe_divide(a, b)

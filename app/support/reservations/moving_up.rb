@@ -25,10 +25,10 @@ module Reservations::MovingUp
       if save
         return true
       else
-        self.errors.add(:base, :move_failed)
+        errors.add(:base, :move_failed)
       end
     else
-      self.errors.add(:base, :cannot_move)
+      errors.add(:base, :cannot_move)
     end
     false
   end

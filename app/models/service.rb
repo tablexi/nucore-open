@@ -17,12 +17,12 @@ class Service < Product
 
   # returns true if there is at least 1 active survey; false otherwise
   def active_survey?
-    !self.active_survey.blank?
+    !active_survey.blank?
   end
 
   # returns true if there is an active template... false otherwise
   def active_template?
-    self.stored_files.template.count > 0
+    stored_files.template.count > 0
   end
 
 end

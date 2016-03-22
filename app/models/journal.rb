@@ -91,7 +91,7 @@ class Journal < ActiveRecord::Base
   end
 
   def facility_abbreviations
-    Facility.where(id: self.facility_ids).collect(&:abbreviation)
+    Facility.where(id: facility_ids).collect(&:abbreviation)
   end
 
   def amount
@@ -186,7 +186,7 @@ class Journal < ActiveRecord::Base
     row_errors = create_journal_rows!(@order_details_for_creation)
     if row_errors.any?
       row_errors.each { |e| errors.add(:base, e) }
-      self.destroy # so it's treated as a new record
+      destroy # so it's treated as a new record
       raise ActiveRecord::RecordInvalid.new(self)
     end
   end

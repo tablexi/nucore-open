@@ -59,13 +59,13 @@ class ScheduleRule < ActiveRecord::Base
     rules = instrument.schedule_rules.reject {|r| r.id == id} # select all rules except self
     Date::ABBR_DAYNAMES.each do |day|
       # skip unless this rule occurs on this day
-      next unless self.send("on_#{day.downcase}?")
+      next unless send("on_#{day.downcase}?")
       # check all existing rules for this day
       rules.select{ |r| r.send("on_#{day.downcase}?") }.each do |rule|
-        next if self.start_time_int == rule.end_time_int || self.end_time_int == rule.start_time_int # start and end times may touch
-        if self.start_time_int.between?(rule.start_time_int, rule.end_time_int) ||
-           self.end_time_int.between?(rule.start_time_int, rule.end_time_int) ||
-           (self.start_time_int < rule.start_time_int && self.end_time_int > rule.end_time_int)
+        next if start_time_int == rule.end_time_int || end_time_int == rule.start_time_int # start and end times may touch
+        if start_time_int.between?(rule.start_time_int, rule.end_time_int) ||
+           end_time_int.between?(rule.start_time_int, rule.end_time_int) ||
+           (start_time_int < rule.start_time_int && end_time_int > rule.end_time_int)
           # overlap
           errors.add(:base, "This rule conflicts with an existing rule on #{day}")
         end
@@ -81,7 +81,7 @@ class ScheduleRule < ActiveRecord::Base
   def days_string
     days = []
     Date::ABBR_DAYNAMES.each do |day|
-      days << day if self.send("on_#{day.downcase}?")
+      days << day if send("on_#{day.downcase}?")
     end
     days.join ', '
   end
@@ -98,12 +98,12 @@ class ScheduleRule < ActiveRecord::Base
 
   # Compare the start time of this with another schedule rule's
   def cmp_start(other)
-    self.start_time_int <=> other.start_time_int
+    start_time_int <=> other.start_time_int
   end
 
   # Compare the end time of this with another schedule rule's
   def cmp_end(other)
-    self.end_time_int <=> other.end_time_int
+    end_time_int <=> other.end_time_int
   end
 
   def start_time
@@ -116,7 +116,7 @@ class ScheduleRule < ActiveRecord::Base
 
   def includes_datetime(dt)
     dt_int = dt.hour * 100 + dt.min
-    self.send("on_#{dt.strftime("%a").downcase}?") && dt_int >= start_time_int && dt_int <= end_time_int
+    send("on_#{dt.strftime("%a").downcase}?") && dt_int >= start_time_int && dt_int <= end_time_int
   end
 
   # build weekly calendar object
@@ -136,7 +136,7 @@ class ScheduleRule < ActiveRecord::Base
       end_at = date.change hour: end_hour, min: end_min
 
       # check if rule occurs on this day
-      if self.send("on_#{Date::ABBR_DAYNAMES[date.wday].downcase}?")
+      if send("on_#{Date::ABBR_DAYNAMES[date.wday].downcase}?")
         array << {
           "className" => unavailable ? 'unavailable' : 'default',
           "title"  => title,
@@ -160,7 +160,7 @@ class ScheduleRule < ActiveRecord::Base
     duration = (end_at - start_at)/60
     # TODO: rewrite to be more efficient; don't iterate over every minute
     while start_at < end_at
-      if start_at.hour*100+start_at.min >= start_time_int && start_at.hour*100+start_at.min < end_time_int && self.send("on_#{start_at.strftime("%a").downcase}?")
+      if start_at.hour*100+start_at.min >= start_time_int && start_at.hour*100+start_at.min < end_time_int && send("on_#{start_at.strftime("%a").downcase}?")
         overlap += 1
       end
       start_at += 60

@@ -25,7 +25,7 @@ class OrderRowImporter
   ].map{ |k| HEADERS[k] }
 
   def self.order_key_for_row(row)
-    self.new(row, nil).order_key
+    new(row, nil).order_key
   end
 
   def self.headers_to_s

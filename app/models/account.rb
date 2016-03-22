@@ -51,27 +51,27 @@ class Account < ActiveRecord::Base
 
   # Returns true if this account type is limited to a single facility.
   def self.single_facility?
-    config.single_facility?(self.name)
+    config.single_facility?(name)
   end
 
   # Returns true if this account type can cross multiple facilities.
   def self.cross_facility?
-    config.cross_facility?(self.name)
+    config.cross_facility?(name)
   end
 
   # Returns true if this account type supports affiliate.
   def self.using_affiliate?
-    config.using_affiliate?(self.name)
+    config.using_affiliate?(name)
   end
 
   # Returns true if this account type supports statements.
   def self.using_statements?
-    config.using_statements?(self.name)
+    config.using_statements?(name)
   end
 
   # Returns true if this account type supports journal.
   def self.using_journal?
-    config.using_journal?(self.name)
+    config.using_journal?(name)
   end
 
   def self.for_facility(facility)
@@ -131,7 +131,7 @@ class Account < ActiveRecord::Base
   end
 
   def business_admin_users
-    self.business_admins.collect{|au| au.user}
+    business_admins.collect{|au| au.user}
   end
 
   def notify_users
@@ -140,12 +140,12 @@ class Account < ActiveRecord::Base
 
   def suspend!
     self.suspended_at = Time.zone.now
-    self.save!
+    save!
   end
 
   def unsuspend!
     self.suspended_at = nil
-    self.save!
+    save!
   end
 
   def display_status
@@ -157,7 +157,7 @@ class Account < ActiveRecord::Base
   end
 
   def suspended?
-    !self.suspended_at.blank?
+    !suspended_at.blank?
   end
 
   def expired?
@@ -182,15 +182,15 @@ class Account < ActiveRecord::Base
 
   def validate_against_product(product, user)
     # does the facility accept payment method?
-    return "#{product.facility.name} does not accept #{self.type_string} payment" unless product.facility.can_pay_with_account?(self)
+    return "#{product.facility.name} does not accept #{type_string} payment" unless product.facility.can_pay_with_account?(self)
 
     # does the product have a price policy for the user or account groups?
-    return "The #{self.type_string} has insufficient price groups" unless product.can_purchase?((self.price_groups + user.price_groups).flatten.uniq.collect {|pg| pg.id})
+    return "The #{type_string} has insufficient price groups" unless product.can_purchase?((price_groups + user.price_groups).flatten.uniq.collect {|pg| pg.id})
 
     # check chart string account number
-    if self.is_a?(NufsAccount)
+    if is_a?(NufsAccount)
       accts=product.is_a?(Bundle) ? product.products.collect(&:account) : [ product.account ]
-      accts.uniq.each {|acct| return "The #{self.type_string} is not open for the required account" unless self.account_open?(acct) }
+      accts.uniq.each {|acct| return "The #{type_string} is not open for the required account" unless account_open?(acct) }
     end
 
     nil
@@ -251,7 +251,7 @@ class Account < ActiveRecord::Base
   end
 
   def account_number_to_s
-    self.account_number.to_s
+    account_number.to_s
   end
 
   def to_s(with_owner = false, flag_suspended = true)
@@ -281,7 +281,7 @@ class Account < ActiveRecord::Base
       # expire old owner if new
       if new_role == AccountUser::ACCOUNT_OWNER
         # expire old owner record
-        @old_owner = self.owner
+        @old_owner = owner
         if @old_owner
           @old_owner.deleted_at = Time.zone.now
           @old_owner.deleted_by = session_user.id
@@ -292,7 +292,7 @@ class Account < ActiveRecord::Base
       # find non-deleted record for this user and account or init new one
       # deleted_at MUST be nil to preserve existing audit trail
       @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
-        self.id,
+        id,
         user.id,
         nil
       )
@@ -301,9 +301,9 @@ class Account < ActiveRecord::Base
       # set creation information
       @account_user.created_by = session_user.id
 
-      self.account_users << @account_user
+      account_users << @account_user
 
-      raise ActiveRecord::Rollback unless self.save
+      raise ActiveRecord::Rollback unless save
     end
 
     @account_user

@@ -28,11 +28,11 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def global?
-    self.facility.nil?
+    facility.nil?
   end
 
   def can_purchase?(product)
-    !PriceGroupProduct.find_by_price_group_id_and_product_id(self.id, product.id).nil?
+    !PriceGroupProduct.find_by_price_group_id_and_product_id(id, product.id).nil?
   end
 
   def name
@@ -40,7 +40,7 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def to_s
-    self.name
+    name
   end
 
   def type_string

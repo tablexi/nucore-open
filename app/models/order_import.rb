@@ -37,7 +37,7 @@ class OrderImport < ActiveRecord::Base
   def process_upload!
     init_error_report
 
-    if self.fail_on_error?
+    if fail_on_error?
       handle_save_nothing_on_error
     else
       handle_save_clean_orders
@@ -45,7 +45,7 @@ class OrderImport < ActiveRecord::Base
 
     store_error_report if result.failed?
     self.processed_at = Time.zone.now
-    self.save!
+    save!
   end
 
   def result
@@ -77,7 +77,7 @@ class OrderImport < ActiveRecord::Base
       user: row_importer.user,
       created_by_user: creator,
       ordered_at: row_importer.order_date,
-      order_import_id: self.id,
+      order_import_id: id,
     )
   end
 
@@ -134,7 +134,7 @@ class OrderImport < ActiveRecord::Base
     end
 
     if result.succeeded?
-      send_notifications(processed_orders) if self.send_receipts?
+      send_notifications(processed_orders) if send_receipts?
       discard_error_report
     end
   end
@@ -205,8 +205,8 @@ class OrderImport < ActiveRecord::Base
       created_by: creator.id,
     )
 
-    self.error_file.file.instance_write(:file_name, "error_report.csv")
-    self.error_file.save!
+    error_file.file.instance_write(:file_name, "error_report.csv")
+    error_file.save!
   end
 
   def upload_file_path

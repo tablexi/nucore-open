@@ -33,7 +33,7 @@ module TransactionHistoryHelper
     @search_fields[field] = [var.first.send(value_field.to_sym)] if value_field && var.size == 1
     html = "<li class=\"#{enabled ? '' : 'disabled'}\">"
     html << (label_tag field, label.pluralize)
-    from_collection = from_collection_method ? self.send(from_collection_method, var, @search_fields[field]) : options_from_collection_for_select(var, value_field, label_field, @search_fields[field])
+    from_collection = from_collection_method ? send(from_collection_method, var, @search_fields[field]) : options_from_collection_for_select(var, value_field, label_field, @search_fields[field])
     options = {:multiple => true, :"data-placeholder" => "Select #{label.pluralize.downcase}"}
     options[:disabled] = :disabled unless enabled
     html << (select_tag field, from_collection, options)

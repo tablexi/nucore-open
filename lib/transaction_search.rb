@@ -13,7 +13,7 @@ module TransactionSearch
   module ClassMethods
 
     def transaction_search(*actions)
-      self.before_filter :remove_ugly_params_and_redirect, only: actions
+      before_filter :remove_ugly_params_and_redirect, only: actions
     end
 
     # If a method is tagged with _with_search at the end, then define the normal controller
@@ -25,7 +25,7 @@ module TransactionSearch
       @@methods_with_remove_ugly_filter ||= []
       if name.to_s =~ /(.*)_with_search$/
         @@methods_with_remove_ugly_filter << Regexp.last_match(1)
-        self.before_filter :remove_ugly_params_and_redirect, only: @@methods_with_remove_ugly_filter
+        before_filter :remove_ugly_params_and_redirect, only: @@methods_with_remove_ugly_filter
         define_search_method(Regexp.last_match(1), $&)
       end
     end

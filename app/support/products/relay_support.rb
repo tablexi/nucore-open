@@ -17,7 +17,7 @@ module Products::RelaySupport
 
   # control mechanism for instrument
   def control_mechanism
-    @control_mechanism || self.relay.try(:control_mechanism)
+    @control_mechanism || relay.try(:control_mechanism)
   end
 
   def current_instrument_status
@@ -44,10 +44,10 @@ module Products::RelaySupport
   # and populate self.errors ourselves
   def check_relay_with_right_type
     # only run this if passed in control_mechanism and relay
-    return true if self.relay.nil? || control_mechanism == 'manual'
+    return true if relay.nil? || control_mechanism == 'manual'
 
     # transform to right type
-    a_relay = self.relay.becomes(self.relay.type.constantize)
+    a_relay = relay.becomes(relay.type.constantize)
     # relay loses reference to instrument after #becomes
     a_relay.instrument = self
 
@@ -56,7 +56,7 @@ module Products::RelaySupport
 
     # stuff relay's error messages into self.errors
     a_relay.errors.full_messages.each do |error_msg|
-      self.errors[:relay] << error_msg
+      errors[:relay] << error_msg
     end
 
     valid
@@ -67,13 +67,13 @@ module Products::RelaySupport
   # setup from scratch.
   def destroy_and_init_relay
     attrs = relay.try(:attributes) || {}
-    self.relay.try :destroy
+    relay.try :destroy
 
     case control_mechanism
     when Relay::CONTROL_MECHANISMS[:timer]
       self.relay = RelayDummy.new
     when Relay::CONTROL_MECHANISMS[:relay]
-      self.build_relay attrs
+      build_relay attrs
     end
   end
 

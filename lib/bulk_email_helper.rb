@@ -6,7 +6,7 @@ module BulkEmailHelper
 
   def do_search(search_fields)
     return unless BulkEmailHelper.search_types.include? search_fields[:search_type].to_sym
-    @users = self.send(:"search_#{search_fields[:search_type]}", search_fields)
+    @users = send(:"search_#{search_fields[:search_type]}", search_fields)
   end
 
   def search_customers(search_fields)
@@ -41,7 +41,7 @@ module BulkEmailHelper
 
   def self.search_types_and_titles
     # This can be changed to just Hash once we no longer have to support ruby 1.8.7
-    ActiveSupport::OrderedHash[self.search_types.map {|a| [a, I18n.t("bulk_email.search_type.#{a}")]}]
+    ActiveSupport::OrderedHash[search_types.map {|a| [a, I18n.t("bulk_email.search_type.#{a}")]}]
   end
 
   private

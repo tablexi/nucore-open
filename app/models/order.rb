@@ -74,7 +74,7 @@ class Order < ActiveRecord::Base
   end
 
   def has_valid_payment?
-    self.account.present? &&                                 # order has account
+    account.present? &&                                 # order has account
       order_details.all? {|od| od.account_id == account_id} && # order detail accounts match order account
       facility.can_pay_with_account?(account) &&               # payment is accepted by facility
       account.can_be_used_by?(user) &&                         # user can pay with account
@@ -82,7 +82,7 @@ class Order < ActiveRecord::Base
   end
 
   def has_details?
-    self.order_details.count > 0
+    order_details.count > 0
   end
 
   def to_be_merged?
@@ -90,31 +90,31 @@ class Order < ActiveRecord::Base
   end
 
   def clear_cart?
-    self.order_details.destroy_all
+    order_details.destroy_all
     self.facility = nil
     self.account = nil
-    self.save
+    save
   end
 
   # set the ordered time and send emails
   def place_order?
     # set the ordered_at date
     self.ordered_at ||= Time.zone.now
-    self.save
+    save
   end
   #####
   # END acts_as_state_machine
 
   def instrument_order_details
-    self.order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Instrument' })
+    order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Instrument' })
   end
 
   def service_order_details
-    self.order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Service' })
+    order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Service' })
   end
 
   def item_order_details
-    self.order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Item' })
+    order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Item' })
   end
 
   def add(product, quantity=1, attributes={})
@@ -143,7 +143,7 @@ class Order < ActiveRecord::Base
         logger.debug "errors on #{order_detail.id}"
         order_detail.errors.each do |attr, error|
           logger.debug "#{attr} #{error}"
-          self.errors.add attr, error
+          errors.add attr, error
         end
         next
       end
@@ -152,7 +152,7 @@ class Order < ActiveRecord::Base
       order_detail.save
     end
 
-    self.errors.empty?
+    errors.empty?
   end
 
   def can_backdate_order_details?
@@ -179,7 +179,7 @@ class Order < ActiveRecord::Base
   end
 
   def max_group_id
-    self.order_details.maximum(:group_id).to_i + 1
+    order_details.maximum(:group_id).to_i + 1
   end
 
   def has_subsidies?

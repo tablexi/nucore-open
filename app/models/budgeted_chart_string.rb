@@ -16,14 +16,14 @@ class BudgetedChartString < ActiveRecord::Base
       return
     end
 
-    deleted   = self.count
+    deleted   = count
     imported  = 0
     skipped   = 0
     invalid   = 0
 
-    self.transaction do
+    transaction do
       # delete all records
-      self.delete_all
+      delete_all
 
       # import records
       begin

@@ -233,7 +233,7 @@ class OrderDetail < ActiveRecord::Base
 
   def in_review?
     # check in the database if self.id is in the scope
-    self.class.all_in_review.find_by_id(self.id) ? true :false
+    self.class.all_in_review.find_by_id(id) ? true :false
     # this would work without hitting the database again, but duplicates the functionality of the scope
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
   end
@@ -243,7 +243,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def can_be_viewed_by?(user)
-    self.order.user_id == user.id || self.account.owner_user.id == user.id || self.account.business_admins.any?{|au| au.user_id == user.id}
+    order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any?{|au| au.user_id == user.id}
   end
 
   scope :need_statement, lambda { |facility| 
@@ -445,7 +445,7 @@ class OrderDetail < ActiveRecord::Base
     unless new_status == order_status
       self.order_status = new_status
       yield(self) if block
-      self.save!
+      save!
     end
     true
   end
@@ -539,7 +539,7 @@ class OrderDetail < ActiveRecord::Base
   # set the object's response_set
   def response_set!(response_set)
     self.response_set = response_set
-    self.save
+    save
   end
 
   # returns true if the associated survey response set has been completed
@@ -628,7 +628,7 @@ class OrderDetail < ActiveRecord::Base
       nil # no file templates
     else
       # check for a template result
-      results = self.stored_files.template_result
+      results = stored_files.template_result
       "Please upload an order form" if results.empty?
     end
   end
@@ -671,7 +671,7 @@ class OrderDetail < ActiveRecord::Base
 
   def assign_estimated_price!(second_account=nil, date = Time.zone.now)
     assign_estimated_price(second_account, date)
-    self.save!
+    save!
   end
 
   def assign_estimated_price_from_policy(price_policy)
@@ -733,7 +733,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cancel_reservation(canceled_by, order_status = OrderStatus.canceled.first, admin_cancellation = false, admin_with_cancel_fee=false)
-    res = self.reservation
+    res = reservation
     res.canceled_by = canceled_by.id
 
     if admin_cancellation
@@ -781,7 +781,7 @@ class OrderDetail < ActiveRecord::Base
   #   B) Has a reservation with missing usage information
   # the method will return true, otherwise false
   def problem_order?
-    self.problem
+    problem
   end
 
   def missing_price_policy?
@@ -789,11 +789,11 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def in_open_journal?
-    self.journal && self.journal.open?
+    journal && journal.open?
   end
 
   def in_closed_journal?
-    self.journal && !self.journal.open?
+    journal && !journal.open?
   end
 
   def can_reconcile?
@@ -955,11 +955,11 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cancel_with_fee(order_status)
-    fee = self.cancellation_fee
+    fee = cancellation_fee
     self.actual_cost = fee
     self.actual_subsidy = 0
-    self.change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
-    self.save! if self.changed? # If the cancel goes from complete => complete, change status doesn't save
+    change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
+    save! if changed? # If the cancel goes from complete => complete, change status doesn't save
     true
   end
 

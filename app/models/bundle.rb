@@ -25,7 +25,7 @@ class Bundle < Product
   end
 
   def products_active?
-    return true if products.empty? && !self.is_archived?
+    return true if products.empty? && !is_archived?
     return false if products.empty? || products.any?{|p| p.is_archived?}
     true
   end
