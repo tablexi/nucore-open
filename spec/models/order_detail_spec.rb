@@ -43,7 +43,7 @@ RSpec.describe OrderDetail do
                                                        price_group_id: price_group.id,
                                                        start_date: 8.years.ago,
                                                        expire_date: nil,
-        ))
+                                                      ))
       end
 
       let!(:current_price_policy) do
@@ -53,7 +53,7 @@ RSpec.describe OrderDetail do
                                                        price_group_id: price_group.id,
                                                        start_date: 1.day.ago,
                                                        expire_date: nil,
-        ))
+                                                      ))
       end
     end
 
@@ -294,7 +294,7 @@ RSpec.describe OrderDetail do
                                            reserve_start_at: Time.now,
                                            reserve_end_at: Time.now+1.hour,
                                            :product=> @instrument
-              )
+                                          )
         @order_detail.product = @instrument
         @order_detail.save
         assert @order_detail.reservation
@@ -453,7 +453,7 @@ RSpec.describe OrderDetail do
                created_by: user.id,
                account: account,
                ordered_at: Time.zone.now,
-        )
+              )
       end
 
       let(:order_details) do
@@ -471,7 +471,7 @@ RSpec.describe OrderDetail do
         create(:reservation,
                order_detail: order_detail_with_actuals_and_price_policy,
                product: instrument_with_actuals_and_price_policy,
-        )
+              )
       end
 
       def create_price_policy(params)
@@ -494,18 +494,18 @@ RSpec.describe OrderDetail do
         create(:reservation,
                product: instrument_without_actuals,
                order_detail: order_detail_without_actuals,
-        )
+              )
         create(:reservation,
                product: instrument_with_actuals,
                order_detail: order_detail_with_actuals,
-        )
+              )
 
         create(:reservation,
                product: instrument_with_actuals_and_price_policy,
                reserve_start_at: reservation_for_instrument_with_actuals_and_price_policy.reserve_start_at + 1.hour,
                duration_mins: 60,
                order_detail: order_detail_without_price_policy,
-        )
+              )
 
         Timecop.travel(2.days.from_now) do
           order_details.each do |order_detail|
@@ -1305,7 +1305,7 @@ RSpec.describe OrderDetail do
              cancellation_cost: 100,
              price_group: price_group,
              product: instrument,
-      )
+            )
     end
 
     let(:instrument_reservation_price_policy) do
@@ -1313,7 +1313,7 @@ RSpec.describe OrderDetail do
              cancellation_cost: 100,
              price_group: price_group,
              product: instrument,
-      )
+            )
     end
 
     let(:instrument_usage_price_policy) do
@@ -1321,7 +1321,7 @@ RSpec.describe OrderDetail do
              cancellation_cost: 100,
              price_group: price_group,
              product: instrument,
-      )
+            )
     end
 
     let(:reservation) do
@@ -1329,7 +1329,7 @@ RSpec.describe OrderDetail do
              reserve_start_at: 4.hours.from_now,
              reserve_end_at: 5.hours.from_now,
              product: instrument,
-      )
+            )
     end
 
     before :each do

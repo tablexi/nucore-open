@@ -18,7 +18,7 @@ RSpec.describe PricePolicyMassAssigner do
                      created_by: user.id,
                      account: account,
                      facility: facility,
-      )
+                    )
     end
     let(:order_detail) do
       create(:order_detail,
@@ -26,7 +26,7 @@ RSpec.describe PricePolicyMassAssigner do
              fulfilled_at: fulfilled_at,
              order: order,
              product: product,
-      )
+            )
     end
     let(:price_group) { create(:price_group, facility: facility) }
     let(:product) { facility.items.create(item_attributes) }
@@ -46,7 +46,7 @@ RSpec.describe PricePolicyMassAssigner do
                                                           price_group_id: price_group.id,
                                                           start_date: 8.years.ago,
                                                           expire_date: nil,
-        ))
+                                                         ))
       end
 
       let!(:current_price_policy) do
@@ -54,7 +54,7 @@ RSpec.describe PricePolicyMassAssigner do
                                                           price_group_id: price_group.id,
                                                           start_date: 1.day.ago,
                                                           expire_date: nil,
-        ))
+                                                         ))
       end
 
       context "when order details are fulfilled" do

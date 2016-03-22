@@ -7,7 +7,7 @@ RSpec.describe Journal do
           facility: facility,
           created_by: 1,
           journal_date: journal_date,
-    )
+         )
   end
 
   let(:facility) { create(:facility) }

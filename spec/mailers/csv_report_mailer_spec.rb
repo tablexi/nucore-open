@@ -12,7 +12,7 @@ RSpec.describe CsvReportMailer do
              description: subject_line,
              text_content: text_content,
              has_attachment?: true,
-      )
+            )
     end
     let(:subject_line) { "Subject Line" }
     let(:text_content) { "Text Content" }

@@ -7,7 +7,7 @@ RSpec.describe OrderRowImporter do
   let(:account) do
     create(:nufs_account,
            account_users_attributes: [ attributes_for(:account_user, user: user) ],
-    )
+          )
   end
   let(:facility) { create(:facility) }
   let(:facility_account) do
@@ -18,7 +18,7 @@ RSpec.describe OrderRowImporter do
     create(:setup_service,
            facility: facility,
            facility_account: facility_account,
-    )
+          )
   end
   let(:user) { create(:user) }
 

@@ -72,7 +72,7 @@ class Orders::ItemAdder
       quantity: 1,
       account: @order.account,
       created_by: @order.created_by
-      )
+    )
     @order.order_details.create!(options)
   end
 
