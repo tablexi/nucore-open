@@ -17,7 +17,7 @@ module BulkEmailHelper
 
   def search_account_owners(search_fields)
     order_details = find_order_details_for_roles(search_fields, [AccountUser::ACCOUNT_OWNER])
-    User.find_by_sql(order_details.joins(account: {account_users: :user})
+    User.find_by_sql(order_details.joins(account: { account_users: :user })
                                    .select("distinct(users.id), users.*")
                                    .reorder("users.last_name, users.first_name").to_sql)
   end
@@ -32,7 +32,7 @@ module BulkEmailHelper
     result = User.joins(:product_users)
     # if we don't have any products, listed get them all for the current facility
     product_ids = search_fields[:products].presence || Facility.find(search_fields[:facility_id]).products.map(&:id)
-    result.where(product_users: {product_id: product_ids}).reorder(*BulkEmailHelper::DEFAULT_SORT)
+    result.where(product_users: { product_id: product_ids }).reorder(*BulkEmailHelper::DEFAULT_SORT)
   end
   
   def self.search_types
@@ -48,7 +48,7 @@ module BulkEmailHelper
 
   def find_order_details(search_fields)
     order_details = OrderDetail.for_products(search_fields[:products])
-    order_details = order_details.joins(:order).where(orders: {facility_id: search_fields[:facility_id]})
+    order_details = order_details.joins(:order).where(orders: { facility_id: search_fields[:facility_id] })
 
     start_date = parse_usa_date(search_fields[:start_date].to_s.to_s.tr("-", "/")) if search_fields[:start_date]
     end_date = parse_usa_date(search_fields[:end_date].to_s.to_s.tr("-", "/")) if search_fields[:end_date]

@@ -95,7 +95,7 @@ module C2po
               od.save!
             end
           rescue
-            @error_fields = {od.id => od.errors.collect { |field, _error| field }}
+            @error_fields = { od.id => od.errors.collect { |field, _error| field } }
             errors = od.errors.full_messages
             errors = [$!.message] if errors.empty?
             flash.now[:error] = (["There was an error processing the #{model_class.name.underscore.humanize.downcase} payments"] + errors).join("<br />")

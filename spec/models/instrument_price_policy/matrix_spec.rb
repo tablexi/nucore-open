@@ -133,13 +133,13 @@ RSpec.describe InstrumentPricePolicy do
     it_behaves_like 'calculation', 'Res 4-6, Actual 4-6' do
       let(:reservation_cost) { { cost: 108, subsidy: 0 } }
       let(:usage)   { { cost: 108, subsidy: 0 } }
-      let(:overage) { {cost: 108, subsidy: 0} }
+      let(:overage) { { cost: 108, subsidy: 0 } }
     end
 
     it_behaves_like 'calculation', 'Res 4-6, Actual 4-6:15' do
       let(:reservation_cost) { { cost: 108, subsidy: 0 } }
       let(:usage)   { { cost: 120, subsidy: 0 } }
-      let(:overage) { {cost: 120, subsidy: 0} }
+      let(:overage) { { cost: 120, subsidy: 0 } }
     end
 
     it_behaves_like 'calculation', 'Res 4-6, Actual 4:15-5:45' do
@@ -186,13 +186,13 @@ RSpec.describe InstrumentPricePolicy do
     it_behaves_like 'calculation', 'Res 4-6, Actual 4-6' do
       let(:reservation_cost) { { cost: 108, subsidy: 36 } }
       let(:usage)   { { cost: 108, subsidy: 36 } }
-      let(:overage) { {cost: 108, subsidy: 36 } }
+      let(:overage) { { cost: 108, subsidy: 36 } }
     end
 
     it_behaves_like 'calculation', 'Res 4-6, Actual 4-6:15' do
       let(:reservation_cost) { { cost: 108, subsidy: 36 } }
       let(:usage)   { { cost: 120, subsidy: 40 } }
-      let(:overage) { {cost: 120, subsidy: 40 } }
+      let(:overage) { { cost: 120, subsidy: 40 } }
     end
 
     it_behaves_like 'calculation', 'Res 4-6, Actual 4:15-5:45' do
@@ -239,13 +239,13 @@ RSpec.describe InstrumentPricePolicy do
     it_behaves_like 'calculation', 'Res 4-6, Actual 4-6' do
       let(:reservation_cost) { { cost: 108, subsidy: 0 } }
       let(:usage)   { { cost: 108, subsidy: 0 } }
-      let(:overage) { {cost: 108, subsidy: 0} }
+      let(:overage) { { cost: 108, subsidy: 0 } }
     end
 
     it_behaves_like 'calculation', 'Res 4-6, Actual 4-6:15' do
       let(:reservation_cost) { { cost: 108, subsidy: 0 } }
       let(:usage)   { { cost: 120, subsidy: 0 } }
-      let(:overage) { {cost: 120, subsidy: 0} }
+      let(:overage) { { cost: 120, subsidy: 0 } }
     end
 
     it_behaves_like 'calculation', 'Res 4-6, Actual 4:15-5:45' do

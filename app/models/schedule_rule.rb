@@ -15,7 +15,7 @@ class ScheduleRule < ActiveRecord::Base
   validate :at_least_one_day_selected, :end_time_is_after_start_time, :end_time_is_valid, :no_overlap_with_existing_rules, :no_conflict_with_existing_reservation
 
   def self.available_to_user(user)
-    where(product_users: {user_id: user.id})
+    where(product_users: { user_id: user.id })
       .joins(instrument: :product_users).
     # instrument doesn't have any restrictions at all, or has one that matches the product_user
       where("(not EXISTS (SELECT * FROM product_access_schedule_rules WHERE product_access_schedule_rules.schedule_rule_id = schedule_rules.id)

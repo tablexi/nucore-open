@@ -92,7 +92,7 @@ class InstrumentsController < ProductsCommonController
 
     redirect_to add_order_path(
       acting_user.cart(session_user),
-      order: { order_details: [{ product_id: @instrument.id, quantity: 1}] },
+      order: { order_details: [{ product_id: @instrument.id, quantity: 1 }] },
     )
   end
 

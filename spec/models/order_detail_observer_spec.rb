@@ -79,7 +79,7 @@ RSpec.describe OrderDetailObserver do
 
       expect(@order_detail.reload.order.state).to eq('purchased')
 
-      Settings.order_details.status_change_hooks = {in_process: 'DummyHooks::DummyHook1', new: 'DummyHooks::DummyHook2'}
+      Settings.order_details.status_change_hooks = { in_process: 'DummyHooks::DummyHook1', new: 'DummyHooks::DummyHook2' }
       expect(@order_detail.order_status).to eq(OrderStatus.new_os.first)
     end
     it 'should trigger a notification on change to inprogress' do

@@ -51,7 +51,7 @@ class Instrument < Product
   end
 
   def restriction_levels_for(user)
-    product_access_groups.joins(:product_users).where(product_users: {user_id: user.id})
+    product_access_groups.joins(:product_users).where(product_users: { user_id: user.id })
   end
 
   def set_default_pricing

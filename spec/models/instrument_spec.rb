@@ -191,7 +191,7 @@ RSpec.describe Instrument do
       context "update with new control_mechanism: 'relay' (Timer with relay)" do
         context "when validations not met" do
           before :each do
-            @updated = @instrument.update_attributes(control_mechanism: "relay", relay_attributes: {type: 'RelaySynaccessRevA'})
+            @updated = @instrument.update_attributes(control_mechanism: "relay", relay_attributes: { type: 'RelaySynaccessRevA' })
           end
 
           it "should fail" do
@@ -289,7 +289,7 @@ RSpec.describe Instrument do
       context "update with new control_mechanism: 'relay' (Timer with relay)" do
         context "when validations not met" do
           before :each do
-            @updated = @instrument.update_attributes(control_mechanism: "relay", relay_attributes: {type: 'RelaySynaccessRevA'})
+            @updated = @instrument.update_attributes(control_mechanism: "relay", relay_attributes: { type: 'RelaySynaccessRevA' })
           end
 
           it "should fail" do
@@ -405,8 +405,8 @@ RSpec.describe Instrument do
       @reservation2 = @instrument.reservations.create(reserve_start_at: @start - 30.minutes, reserve_end_at: @start + 30.minutes)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 10:30 am, using reserve_start_date, reserve_start_hour, reserve_start_min, reserve_start_meridian
-      @options      = {reserve_start_date: @start.to_s, reserve_start_hour: '9', reserve_start_min: '30',
-                       reserve_start_meridian: 'am', duration_value: '60', duration_unit: 'minutes'}
+      @options      = { reserve_start_date: @start.to_s, reserve_start_hour: '9', reserve_start_min: '30',
+                       reserve_start_meridian: 'am', duration_value: '60', duration_unit: 'minutes' }
       @reservation2 = @instrument.reservations.create(@options)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 11:30 am

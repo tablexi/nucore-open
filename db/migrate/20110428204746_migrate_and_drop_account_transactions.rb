@@ -9,7 +9,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       od = OrderDetail.find(at_row.order_detail_id)
       next if od.account_id != at_row.account_id
 
-      j_rows = JournalRow.find(:all, conditions: {account_transaction_id: at_row.id})
+      j_rows = JournalRow.find(:all, conditions: { account_transaction_id: at_row.id })
 
       j_rows.each do |j_row|
         journal = j_row.journal

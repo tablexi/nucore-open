@@ -157,7 +157,7 @@ RSpec.describe ReservationsController do
 
     context "upcoming" do
       before :each do
-        @params = {status: 'upcoming'}
+        @params = { status: 'upcoming' }
         @upcoming = FactoryGirl.create(:purchased_reservation, product: @instrument)
         @in_progress = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
         @in_progress.update_attributes!(actual_start_at: Time.zone.now)
@@ -230,7 +230,7 @@ RSpec.describe ReservationsController do
 
     context 'all' do
       before :each do
-        @params = {status: 'all'}
+        @params = { status: 'all' }
       end
 
       it 'should respond with all reservations' do
@@ -372,7 +372,7 @@ RSpec.describe ReservationsController do
 
       context 'creating a reservation in the past' do
         before :each do
-          @params.deep_merge!(reservation: {reserve_start_date: 1.day.ago})
+          @params.deep_merge!(reservation: { reserve_start_date: 1.day.ago })
         end
 
         it_should_allow_all facility_operators, 'to create a reservation in the past and have it be complete' do
@@ -395,7 +395,7 @@ RSpec.describe ReservationsController do
 
       context 'creating a reservation in the future' do
         before :each do
-          @params.deep_merge!(reservation: {reserve_start_date: 1.day.from_now})
+          @params.deep_merge!(reservation: { reserve_start_date: 1.day.from_now })
         end
 
         it_should_allow_all facility_operators, 'to create a reservation in the future' do
@@ -408,7 +408,7 @@ RSpec.describe ReservationsController do
 
     context 'creating a reservation in the future' do
       before :each do
-        @params.deep_merge!(reservation: {reserve_start_date: Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
+        @params.deep_merge!(reservation: { reserve_start_date: Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
       end
       it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
         assert_redirected_to purchase_order_path(@order)

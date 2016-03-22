@@ -18,7 +18,7 @@ class Account < ActiveRecord::Base
   # TODO Consider changing when we get to Rails 4.
   has_one    :owner, class_name: 'AccountUser', conditions: "account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL"
   has_one    :owner_user, through: :owner, source: :user
-  has_many   :business_admins, class_name: 'AccountUser', conditions: {user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil}
+  has_many   :business_admins, class_name: 'AccountUser', conditions: { user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil }
   has_many   :price_group_members
   has_many   :order_details
   has_many   :orders

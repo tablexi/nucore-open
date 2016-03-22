@@ -13,7 +13,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
 
     search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)] if collection_size == 1
 
-    select_options = {:multiple => true, :"data-placeholder" => placeholder_label }
+    select_options = { :multiple => true, :"data-placeholder" => placeholder_label }
     select_options[:disabled] = :disabled unless collection_size > 1
 
     template.select_tag(attribute_name, option_data, select_options).html_safe
