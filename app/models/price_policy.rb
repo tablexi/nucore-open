@@ -146,7 +146,7 @@ class PricePolicy < ActiveRecord::Base
   def start_date_is_unique
     type          = self.class.name.downcase.gsub(/pricepolicy$/, '')
     price_group   = self.price_group
-    unless (product.nil? || price_group.nil?)
+    unless product.nil? || price_group.nil?
       if id.nil?
         pp = PricePolicy.find(:first, conditions: ["price_group_id = ? AND product_id = ? AND start_date = ?", price_group.id, product.id, start_date])
       else

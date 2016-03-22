@@ -74,7 +74,7 @@ module OldInstrumentPricePolicyCalculations
     end
 
     ## make sure actuals are entered
-    return nil unless (reservation.actual_start_at && reservation.actual_end_at)
+    return nil unless reservation.actual_start_at && reservation.actual_end_at
 
     ## the instrument is free to use, so no costs matter
     if free?

@@ -147,7 +147,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def save_as_user(user)
-    if (user.operator_of?(product.facility))
+    if user.operator_of?(product.facility)
       @reserved_by_admin = true
       self.save
     else

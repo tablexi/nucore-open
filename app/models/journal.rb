@@ -134,7 +134,7 @@ class Journal < ActiveRecord::Base
     start_fy = SettingsHelper.fiscal_year_beginning(d)
     end_fy = SettingsHelper.fiscal_year_end(d)
     order_details.each do |od|
-      return true if (od.fulfilled_at < start_fy || od.fulfilled_at >= end_fy)
+      return true if od.fulfilled_at < start_fy || od.fulfilled_at >= end_fy
     end
     false
   end

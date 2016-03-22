@@ -37,14 +37,14 @@ class OldInstrumentPricePolicy < PricePolicy
   end
 
   def subsidy_less_than_rate?
-    if (reservation_subsidy && reservation_rate)
-      errors.add("reservation_subsidy", "cannot be greater than the Reservation cost") if (reservation_subsidy > reservation_rate)
+    if reservation_subsidy && reservation_rate
+      errors.add("reservation_subsidy", "cannot be greater than the Reservation cost") if reservation_subsidy > reservation_rate
     end
-    if (usage_subsidy && usage_rate)
-      errors.add("usage_subsidy", "cannot be greater than the Usage cost") if (usage_subsidy > usage_rate)
+    if usage_subsidy && usage_rate
+      errors.add("usage_subsidy", "cannot be greater than the Usage cost") if usage_subsidy > usage_rate
     end
-    if (overage_subsidy && overage_rate)
-      errors.add("overage_subsidy", "cannot be greater than the Overage cost") if (overage_subsidy > overage_rate)
+    if overage_subsidy && overage_rate
+      errors.add("overage_subsidy", "cannot be greater than the Overage cost") if overage_subsidy > overage_rate
     end
   end
 

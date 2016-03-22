@@ -159,7 +159,7 @@ class ScheduleRule < ActiveRecord::Base
     overlap  = 0
     duration = (end_at - start_at)/60
     # TODO: rewrite to be more efficient; don't iterate over every minute
-    while (start_at < end_at)
+    while start_at < end_at
       if start_at.hour*100+start_at.min >= start_time_int && start_at.hour*100+start_at.min < end_time_int && self.send("on_#{start_at.strftime("%a").downcase}?")
         overlap += 1
       end
