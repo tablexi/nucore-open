@@ -9,6 +9,7 @@ module SplitAccounts
     end
 
     def perform(options = {})
+      options ||= {} # in case it comes in as nil
       order_details.each_with_object([]) do |order_detail, results|
         # We will need to refactor the general_reports_controller_spec in
         # order to remove the `try` methods below.

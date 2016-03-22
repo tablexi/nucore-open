@@ -109,10 +109,10 @@ class Reports::ExportRaw
       actual_total: -> (od) { as_currency(od.actual_total) },
       reservation_start_time: -> (od) { od.reservation.reserve_start_at if od.reservation },
       reservation_end_time: -> (od) { od.reservation.reserve_end_at if od.reservation },
-      reservation_minutes: -> (od) { od.reservation.try(:duration_mins) },
+      reservation_minutes: -> (od) { od.reservation.duration_mins if od.reservation },
       actual_start_time: -> (od) { od.reservation.actual_start_at if od.reservation },
       actual_end_time: -> (od) { od.reservation.actual_end_at if od.reservation },
-      actual_minutes: -> (od) { od.reservation.try(:actual_duration_mins) },
+      actual_minutes: -> (od) { od.reservation.actual_duration_mins if od.reservation },
       canceled_at: -> (od) { od.reservation.canceled_at if od.reservation },
       canceled_by: -> (od) { canceled_by_name(od.reservation) if od.reservation },
       note: :note,
@@ -150,7 +150,7 @@ class Reports::ExportRaw
   end
 
   def csv_body
-    CSVHelper::CSV.generate do |csv|
+    CSV.generate do |csv|
       report_data.each do |order_detail|
         csv << order_detail_row(order_detail)
       end
@@ -165,6 +165,7 @@ class Reports::ExportRaw
       date_range_start: date_start,
       date_range_end: date_end,
       includes: [:reservation, :statement],
+      transformer_options: { reservations: true },
     ).perform
   end
 
