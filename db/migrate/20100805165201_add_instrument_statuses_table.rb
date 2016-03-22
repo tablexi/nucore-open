@@ -1,4 +1,5 @@
 class AddInstrumentStatusesTable < ActiveRecord::Migration
+
   def self.up
     create_table :instrument_statuses do |t|
       t.references :instrument,      :null => false
@@ -11,4 +12,5 @@ class AddInstrumentStatusesTable < ActiveRecord::Migration
   def self.down
     drop_table :instrument_statuses
   end
+
 end

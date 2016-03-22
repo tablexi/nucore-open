@@ -2,6 +2,7 @@ require "hash_helper"
 module SplitAccounts
   module Reports
     class ExportRawTransformer
+
       include HashHelper
       include ActionView::Helpers::NumberHelper
 
@@ -16,6 +17,7 @@ module SplitAccounts
           number_with_precision(order_detail.split.percent, strip_insignificant_zeros: true) + "%"
         end
       end
+
     end
   end
 end

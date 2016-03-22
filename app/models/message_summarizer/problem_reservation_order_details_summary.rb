@@ -1,4 +1,5 @@
 class MessageSummarizer::ProblemReservationOrderDetailsSummary < MessageSummarizer::FacilityMessageSummary
+
   private
 
   def allowed?
@@ -16,4 +17,5 @@ class MessageSummarizer::ProblemReservationOrderDetailsSummary < MessageSummariz
   def path
     controller.show_problems_facility_reservations_path(facility)
   end
+
 end

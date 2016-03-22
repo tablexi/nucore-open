@@ -1,4 +1,5 @@
 class Schedule < ActiveRecord::Base
+
   
   # Associations
   # --------
@@ -40,4 +41,5 @@ class Schedule < ActiveRecord::Base
     "#{I18n.t(key)}: #{name}"
   end
   
+
 end

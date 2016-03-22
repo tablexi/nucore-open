@@ -1,4 +1,5 @@
 class CreateQuestions < ActiveRecord::Migration
+
   def self.up
     create_table :questions do |t|
       # Context
@@ -33,4 +34,5 @@ class CreateQuestions < ActiveRecord::Migration
   def self.down
     drop_table :questions
   end
+
 end

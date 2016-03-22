@@ -1,4 +1,5 @@
 class RemoveAccountOwnerUserId < ActiveRecord::Migration
+
   def self.up
     accounts = Account.all
     accounts.each do |a|
@@ -17,4 +18,5 @@ class RemoveAccountOwnerUserId < ActiveRecord::Migration
     end
     change_column :accounts, :owner_user_id, :integer, :null => false
   end
+
 end

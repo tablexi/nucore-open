@@ -1,4 +1,5 @@
 class OrderStatusesController < ApplicationController
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -78,4 +79,5 @@ class OrderStatusesController < ApplicationController
   def ensure_editable
     raise ActiveRecord::RecordNotFound unless @order_status.editable?
   end
+
 end

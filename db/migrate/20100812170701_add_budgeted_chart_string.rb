@@ -1,4 +1,5 @@
 class AddBudgetedChartString < ActiveRecord::Migration
+
   def self.up
     create_table :budgeted_chart_strings do |t|
       t.string    :fund,        :limit => 20, :null => false
@@ -14,4 +15,5 @@ class AddBudgetedChartString < ActiveRecord::Migration
   def self.down
     drop_table :budgeted_chart_strings
   end
+
 end

@@ -1,8 +1,10 @@
 class AddEvenMoreIndexes < ActiveRecord::Migration
+
   def change
     add_index :orders, :user_id
     add_index :product_users, :product_access_group_id
     add_index :journals, :facility_id
     add_index :price_group_members, :user_id
   end
+
 end

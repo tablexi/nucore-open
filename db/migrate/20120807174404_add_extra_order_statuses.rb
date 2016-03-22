@@ -1,4 +1,5 @@
 class AddExtraOrderStatuses < ActiveRecord::Migration
+
   # Looks at settings.yml and finds any of the statuses declared to have a hook when an order
   # detail enters that status. Then check to make sure that status is in the database as a 
   # substatus of New.
@@ -15,4 +16,5 @@ class AddExtraOrderStatuses < ActiveRecord::Migration
       OrderStatus.destroy_all(:name => status.to_s.titleize, :facility_id => nil, :parent_id => new_status.id)
     end
   end
+
 end

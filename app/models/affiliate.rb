@@ -1,4 +1,5 @@
 class Affiliate < ActiveRecord::Base
+
   validates_presence_of :name
   validates_uniqueness_of :name
 
@@ -15,4 +16,5 @@ class Affiliate < ActiveRecord::Base
   def destroyable?
     self != self.class.OTHER
   end
+
 end

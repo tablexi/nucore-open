@@ -1,4 +1,5 @@
 class CreditCardAccount < Account
+
   include AffiliateAccount
   include ReconcilableAccount
 
@@ -26,4 +27,5 @@ class CreditCardAccount < Account
   def setup_false_credit_card_number
     self.account_number = "xxxx-xxxx-xxxx-xxxx"
   end
+
 end

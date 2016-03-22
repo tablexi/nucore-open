@@ -1,4 +1,5 @@
 class OrderDetailsController < ApplicationController
+
   include OrderDetailFileDownload
 
   customer_tab  :all
@@ -116,4 +117,5 @@ class OrderDetailsController < ApplicationController
   def ability_resource
     @order_detail
   end
+
 end

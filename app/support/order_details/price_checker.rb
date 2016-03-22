@@ -1,4 +1,5 @@
 class OrderDetails::PriceChecker
+
   include ActionView::Helpers::NumberHelper
 
   def initialize(order_detail)

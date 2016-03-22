@@ -1,4 +1,5 @@
 class BundleProductsController < ApplicationController
+
   customer_tab  :show
   admin_tab     :create, :destroy, :new, :edit, :index, :update, :manage
   before_filter :authenticate_user!, :except => :show
@@ -70,4 +71,5 @@ class BundleProductsController < ApplicationController
   def init_bundle_product
     @bundle_product = @bundle.bundle_products.find(params[:id])
   end
+
 end

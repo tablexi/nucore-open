@@ -1,4 +1,5 @@
 class AddDescriptionToAccount < ActiveRecord::Migration
+
   def self.up
     add_column :accounts, :description, :string, :limit => 200, :null => true
     execute "UPDATE accounts SET description = 'description'"
@@ -8,4 +9,5 @@ class AddDescriptionToAccount < ActiveRecord::Migration
   def self.down
     remove_column :accounts, :description
   end
+
 end

@@ -1,4 +1,5 @@
 class PricePoliciesController < ApplicationController
+
   include DateHelper
 
   admin_tab     :all
@@ -154,4 +155,5 @@ class PricePoliciesController < ApplicationController
       params,
     )
   end
+
 end

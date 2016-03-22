@@ -1,4 +1,5 @@
 class FacilityOrderDetailsController < ApplicationController
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -60,4 +61,5 @@ class FacilityOrderDetailsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @order
     @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
   end
+
 end

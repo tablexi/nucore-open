@@ -1,4 +1,5 @@
 class FacilityAccountUsersController < ApplicationController
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -68,4 +69,5 @@ class FacilityAccountUsersController < ApplicationController
   def current_owner?
     @account.owner_user == @user
   end
+
 end

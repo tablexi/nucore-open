@@ -1,4 +1,5 @@
 class CreateSplits < ActiveRecord::Migration
+
   def up
     create_table :splits do |t|
       t.integer :parent_split_account_id, null: false
@@ -14,4 +15,5 @@ class CreateSplits < ActiveRecord::Migration
   def down
     drop_table :splits
   end
+
 end

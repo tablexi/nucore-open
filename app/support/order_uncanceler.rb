@@ -1,4 +1,5 @@
 class OrderUncanceler
+
   def initialize
     @complete_status = OrderStatus.complete.first
     @canceled_status = OrderStatus.canceled.first
@@ -39,4 +40,5 @@ class OrderUncanceler
       end
     end
   end
+
 end

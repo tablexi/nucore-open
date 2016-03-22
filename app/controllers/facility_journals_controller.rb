@@ -1,4 +1,5 @@
 class FacilityJournalsController < ApplicationController
+
   include NUCore::Database::ArrayHelper
   include DateHelper
   include CSVHelper
@@ -189,4 +190,5 @@ class FacilityJournalsController < ApplicationController
 
     flash[:error] = msg.html_safe if msg.present?
   end
+
 end

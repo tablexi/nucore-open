@@ -1,4 +1,5 @@
 class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
+
   disable :required
 
   def input
@@ -52,4 +53,5 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
       template.options_from_collection_for_select(collection_items, options[:value_method], options[:label_method], search_fields[attribute_name])
     end
   end
+
 end

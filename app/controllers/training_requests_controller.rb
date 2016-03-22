@@ -1,4 +1,5 @@
 class TrainingRequestsController < ApplicationController
+
   admin_tab :index
 
   before_filter :authenticate_user!
@@ -58,4 +59,5 @@ class TrainingRequestsController < ApplicationController
     @product =
       current_facility.products.active.find_by_url_name!(params[:product_id])
   end
+
 end

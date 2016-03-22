@@ -1,4 +1,5 @@
 class OrderImportsController < ApplicationController
+
   include ActionView::Helpers::TextHelper
 
   admin_tab     :all
@@ -92,4 +93,5 @@ class OrderImportsController < ApplicationController
   def upload_file
     @upload_file ||= params[:order_import].delete(:upload_file)
   end
+
 end

@@ -1,4 +1,5 @@
 class AddIndexesToOrderDetails < ActiveRecord::Migration
+
   def change
     add_index :order_details, :assigned_user_id
     add_index :order_details, :order_status_id
@@ -8,4 +9,5 @@ class AddIndexesToOrderDetails < ActiveRecord::Migration
     add_index :order_details, :journal_id
     add_index :order_details, :state
   end
+
 end

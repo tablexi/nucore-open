@@ -7,5 +7,6 @@ module SplitAccounts
         cannot :manage, SplitAccounts::SplitAccount
       end
     end
+
   end
 end

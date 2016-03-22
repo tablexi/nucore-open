@@ -1,4 +1,5 @@
 class RemoveFacilityFromOrder < ActiveRecord::Migration
+
   def self.up
     change_table :orders do |t|
       t.remove :facility_id
@@ -23,4 +24,5 @@ class RemoveFacilityFromOrder < ActiveRecord::Migration
       t.change :price_policy_id, :integer, :null => false
     end
   end
+
 end

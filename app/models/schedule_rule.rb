@@ -1,4 +1,5 @@
 class ScheduleRule < ActiveRecord::Base
+
   belongs_to :instrument
 
   # oracle has a maximum table name length of 30, so we have to abbreviate it down
@@ -231,4 +232,5 @@ class ScheduleRule < ActiveRecord::Base
   def hour_floor
     end_min == 0 ? end_hour - 1 : end_hour
   end
+
 end

@@ -1,4 +1,5 @@
 class Reports::InstrumentDayReport
+
   def initialize(reservations)
     @reservations = reservations
   end
@@ -25,6 +26,7 @@ class Reports::InstrumentDayReport
   end
 
   class DataRow
+
     def initialize(*_args)
       @data = [0,0,0,0,0,0,0]
     end
@@ -38,9 +40,11 @@ class Reports::InstrumentDayReport
     def to_ary
       @data.map { |value| @report_type.try(:transform, value) }
     end
+
   end
 
   class DayValue
+
     def initialize(reservation)
       @reservation = reservation
     end
@@ -52,15 +56,19 @@ class Reports::InstrumentDayReport
     def transform(data)
       data
     end
+
   end
 
   class ReservedQuantity < DayValue
+
     def day; @reservation.reserve_start_at.wday; end
 
     def value; 1; end
+
   end
 
   class ReservedHours < DayValue
+
     include ReportsHelper
 
     def day; @reservation.reserve_start_at.wday; end
@@ -70,9 +78,11 @@ class Reports::InstrumentDayReport
     def transform(data)
       to_hours(data, 1)
     end
+
   end
 
   class ActualHours < DayValue
+
     include ReportsHelper
 
     def day
@@ -86,9 +96,11 @@ class Reports::InstrumentDayReport
     def transform(data)
       to_hours(data, 1)
     end
+
   end
 
   class ActualQuantity < DayValue
+
     def day
       @reservation.actual_start_at.try(:wday) || 0
     end
@@ -96,6 +108,7 @@ class Reports::InstrumentDayReport
     def value
       @reservation.actual_start_at.present? ? 1 : 0
     end
+
   end
 
 end

@@ -1,4 +1,5 @@
 class MigrateRelays < ActiveRecord::Migration
+
   def self.up
     Relay.reset_column_information
 
@@ -39,4 +40,5 @@ class MigrateRelays < ActiveRecord::Migration
       relay.destroy
     end
   end
+
 end

@@ -1,4 +1,5 @@
 class Accessories::Accessorizer
+
   def initialize(order_detail)
     @order_detail = order_detail
   end
@@ -122,4 +123,5 @@ class Accessories::Accessorizer
       build_accessory_order_detail(accessory)
     end
   end
+
 end

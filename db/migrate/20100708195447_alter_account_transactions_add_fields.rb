@@ -1,4 +1,5 @@
 class AlterAccountTransactionsAddFields < ActiveRecord::Migration
+
   def self.up
     execute "DELETE FROM account_transactions"
     remove_column :account_transactions, :balance
@@ -11,4 +12,5 @@ class AlterAccountTransactionsAddFields < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

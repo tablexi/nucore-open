@@ -1,4 +1,5 @@
 class AlterOrdersAddOrderImport < ActiveRecord::Migration
+
   def self.up
     add_column :orders, :order_import_id, :integer
     add_index :orders, :order_import_id
@@ -8,4 +9,5 @@ class AlterOrdersAddOrderImport < ActiveRecord::Migration
     remove_column :orders, :order_import_id
     remove_index :orders, :order_import_id
   end
+
 end

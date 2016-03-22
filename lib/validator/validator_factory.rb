@@ -22,4 +22,5 @@ class ValidatorFactory
     return true if method_sym.in?([:validator_class, :instance])
     validator_class.respond_to? method_sym, include_private
   end
+
 end

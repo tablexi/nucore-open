@@ -1,4 +1,5 @@
 class OrderSearcher
+
   include NUCore::Database::CaseSensitivityHelper
 
   def initialize(user)
@@ -37,4 +38,5 @@ class OrderSearcher
       ability.can? :show, od
     end
   end
+
 end

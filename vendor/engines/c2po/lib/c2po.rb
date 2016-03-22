@@ -2,6 +2,7 @@ module C2po
   C2PO_ACCOUNT_TYPES = ["CreditCardAccount", "PurchaseOrderAccount"]
 
   class Engine < Rails::Engine
+
     config.autoload_paths << File.join(File.dirname(__FILE__), "../lib")
 
     config.to_prepare do
@@ -36,5 +37,6 @@ module C2po
       index = app_paths.find_index { |path| path.include? 'c2po' }
       app_paths.unshift app_paths.delete_at(index)
     end
+
   end
 end

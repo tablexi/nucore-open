@@ -1,6 +1,7 @@
 require 'set'
 
 class Journal < ActiveRecord::Base
+
   class CreationError < StandardError; end
 
   module Overridable

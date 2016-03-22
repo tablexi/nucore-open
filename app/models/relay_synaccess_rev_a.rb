@@ -1,4 +1,5 @@
 class RelaySynaccessRevA < Relay
+
   # Supports Synaccess Models: NP-02
 
   include PowerRelay
@@ -13,4 +14,5 @@ class RelaySynaccessRevA < Relay
     clazz = "#{Settings.relays.connect_module}::RevA".constantize
     @relay_connection ||= clazz.new(host, connection_options)
   end
+
 end

@@ -1,4 +1,5 @@
 class OrderManagement::OrderDetailsController < ApplicationController
+
   include OrderDetailFileDownload
 
   load_resource :facility, :find_by => :url_name
@@ -106,4 +107,5 @@ class OrderManagement::OrderDetailsController < ApplicationController
   def edit_disabled?
     @order_detail.in_open_journal? || @order_detail.reconciled?
   end
+
 end

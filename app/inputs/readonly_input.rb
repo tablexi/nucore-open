@@ -1,4 +1,5 @@
 class ReadonlyInput < SimpleForm::Inputs::Base
+
   include DateHelper
 
   disable :required

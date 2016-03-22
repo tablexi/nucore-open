@@ -9,5 +9,7 @@
 raise "Remove #{__FILE__} for Rails 4+" if Rails.version >= "4"
 
 class ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter
+
   NATIVE_DATABASE_TYPES[:primary_key] = "int(11) auto_increment PRIMARY KEY"
+
 end

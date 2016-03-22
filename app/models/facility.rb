@@ -1,4 +1,5 @@
 class Facility < ActiveRecord::Base
+
   include ActiveModel::ForbiddenAttributesProtection
 
   module Overridable
@@ -136,4 +137,5 @@ class Facility < ActiveRecord::Base
       'C01'
                         end
   end
+
 end

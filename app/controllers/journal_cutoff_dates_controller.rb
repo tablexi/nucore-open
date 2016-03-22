@@ -1,4 +1,5 @@
 class JournalCutoffDatesController < ApplicationController
+
   before_filter :authenticate_user!
   load_and_authorize_resource
 
@@ -54,4 +55,5 @@ class JournalCutoffDatesController < ApplicationController
       params[:cutoff_date] = parse_usa_date(params[:cutoff_date]) if params[:cutoff_date].is_a?(String)
     end
   end
+
 end

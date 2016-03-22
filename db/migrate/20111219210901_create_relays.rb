@@ -1,4 +1,5 @@
 class CreateRelays < ActiveRecord::Migration
+
   def self.up
     create_table :relays do |t|
       t.integer "instrument_id"
@@ -18,4 +19,5 @@ class CreateRelays < ActiveRecord::Migration
     remove_index :relays, :instrument_id
     drop_table :relays
   end
+
 end

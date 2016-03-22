@@ -1,4 +1,5 @@
 class OrderDetails::ParamUpdater
+
   def initialize(order_detail, options = {})
     @order_detail = order_detail
     @editing_user = options[:user]
@@ -77,4 +78,5 @@ class OrderDetails::ParamUpdater
   def is_order_detail_clean
     @order_detail.errors.none? && (@order_detail.reservation.nil? || @order_detail.reservation.errors.none?)
   end
+
 end

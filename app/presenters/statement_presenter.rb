@@ -1,4 +1,5 @@
 class StatementPresenter < SimpleDelegator
+
   include Rails.application.routes.url_helpers
 
   def self.wrap(statements)
@@ -22,4 +23,5 @@ class StatementPresenter < SimpleDelegator
   rescue ActiveRecord::RecordNotFound
     I18n.t("statements.show.created_by.unknown")
   end
+
 end

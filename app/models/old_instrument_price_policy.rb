@@ -1,4 +1,5 @@
 class OldInstrumentPricePolicy < PricePolicy
+
   include OldInstrumentPricePolicyCalculations
 
   @@intervals = [1, 5, 10, 15, 30, 60]
@@ -55,4 +56,5 @@ class OldInstrumentPricePolicy < PricePolicy
   def free?
     @is_free ||= (reservation_rate.to_f == 0 && usage_rate.to_f == 0 && overage_rate.to_f == 0)
   end
+
 end

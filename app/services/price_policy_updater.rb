@@ -1,4 +1,5 @@
 class PricePolicyUpdater
+
   def self.update_all!(price_policies, start_date, expire_date, params)
     self.new(price_policies, start_date, expire_date, params).update_all!
   end
@@ -51,4 +52,5 @@ class PricePolicyUpdater
   def initial_price_group_attributes(price_group)
     @params["price_policy_#{price_group.id}"] || { can_purchase: false }
   end
+
 end

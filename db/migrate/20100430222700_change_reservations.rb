@@ -1,4 +1,5 @@
 class ChangeReservations < ActiveRecord::Migration
+
   def self.up
     change_table :reservations do |t|
       t.references  :order_detail
@@ -22,4 +23,5 @@ class ChangeReservations < ActiveRecord::Migration
       t.remove   :actual_end_at
     end
   end
+
 end

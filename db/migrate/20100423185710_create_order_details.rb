@@ -1,4 +1,5 @@
 class CreateOrderDetails < ActiveRecord::Migration
+
   def self.up
     create_table :statements do |t|
     end
@@ -41,4 +42,5 @@ class CreateOrderDetails < ActiveRecord::Migration
     drop_table :reservations
     drop_table :statements
   end
+
 end

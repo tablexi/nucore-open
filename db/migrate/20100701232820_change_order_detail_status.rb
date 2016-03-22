@@ -1,4 +1,5 @@
 class ChangeOrderDetailStatus < ActiveRecord::Migration
+
   def self.up
     add_column :order_details, :order_status_id, :integer, :null => true
   
@@ -24,4 +25,5 @@ class ChangeOrderDetailStatus < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

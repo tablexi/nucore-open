@@ -1,4 +1,5 @@
 class Accessories::Scaling::Default < SimpleDelegator
+
   attr_accessor :enabled
 
   def order_detail
@@ -34,4 +35,5 @@ class Accessories::Scaling::Default < SimpleDelegator
       self.equal? other
     end
   end
+
 end

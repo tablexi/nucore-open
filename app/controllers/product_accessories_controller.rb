@@ -1,4 +1,5 @@
 class ProductAccessoriesController < ApplicationController
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -42,4 +43,5 @@ class ProductAccessoriesController < ApplicationController
     non_available_accessories += @product_accessories.map{|pa| pa.accessory_id } if @product_accessories.present?
     @available_accessories = current_facility.products.non_instruments.exclude(non_available_accessories).order(:name).all
   end
+
 end

@@ -1,4 +1,5 @@
 class NotificationSender
+
   attr_reader :errors, :current_facility, :account_ids_to_notify
 
   def initialize(current_facility, order_detail_ids)
@@ -86,6 +87,7 @@ class NotificationSender
   end
 
   class AccountNotifier
+
     def notify_accounts(accounts_to_notify)
       accounts_to_notify.each do |account_id, facility_id|
         account = Account.find(account_id)
@@ -94,6 +96,7 @@ class NotificationSender
         end
       end
     end
+
   end
 
   def notify_accounts

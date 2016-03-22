@@ -1,4 +1,5 @@
 class UpdatePoAndInvoiceFields < ActiveRecord::Migration
+
   def self.up
     # add PO remit-to
     add_column :accounts, :remittance_information, :text, :null => true
@@ -21,4 +22,5 @@ class UpdatePoAndInvoiceFields < ActiveRecord::Migration
     remove_column :facilities, :fax_number
     remove_column :facilities, :email
   end
+
 end

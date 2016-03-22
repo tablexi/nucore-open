@@ -1,4 +1,5 @@
 class AccountsController < ApplicationController
+
   customer_tab  :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -59,4 +60,5 @@ class AccountsController < ApplicationController
   def ability_resource
     return @account
   end
+
 end

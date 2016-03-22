@@ -1,4 +1,5 @@
 class UserPasswordController < ApplicationController
+
   before_filter :authenticate_user!, :only => :edit_current
   before_filter :no_user_allowed, :only => [:reset, :edit, :update]
   layout "application"
@@ -66,4 +67,5 @@ class UserPasswordController < ApplicationController
       return false
     end
   end
+
 end

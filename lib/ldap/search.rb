@@ -1,5 +1,6 @@
 module Ldap
   class Search
+
     def search(query)
       return [] unless query
       escaped_query = Net::LDAP::Filter.escape(query)
@@ -16,5 +17,6 @@ module Ldap
     def make_user_from_ldap(ldap_user)
       Ldap::UserConverter.new(ldap_user).user
     end
+
   end
 end

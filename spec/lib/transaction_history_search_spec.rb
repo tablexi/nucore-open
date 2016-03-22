@@ -8,6 +8,7 @@ RSpec.describe TransactionSearch do
   let(:user) { @user }
 
   class TransactionSearcher < ApplicationController
+
     attr_reader :facility, :facilities, :account, :accounts, :account_owners, :products, :order_statuses
     attr_writer :facility, :account
     # give us a way to set the user
@@ -25,6 +26,7 @@ RSpec.describe TransactionSearch do
     def all_order_details_with_search
       # everything that needs to be done will be done by the module
     end
+
   end
 
   before :each do

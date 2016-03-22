@@ -1,4 +1,5 @@
 class ReservationInstrumentSwitcher
+
   attr_reader :reservation
 
   def initialize(reservation)
@@ -61,4 +62,5 @@ class ReservationInstrumentSwitcher
   def relay_error_msg
     'An error was encountered while attempted to toggle the instrument. Please try again.'
   end
+
 end

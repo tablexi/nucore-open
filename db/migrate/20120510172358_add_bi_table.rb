@@ -1,4 +1,5 @@
 class AddBiTable < ActiveRecord::Migration
+
   def self.up
     if NUCore::Database.oracle?
       create_table :bi_netids do |t|
@@ -25,4 +26,5 @@ class AddBiTable < ActiveRecord::Migration
     remove_index :bi_netids, :facility_id
     drop_table :bi_netids
   end
+
 end

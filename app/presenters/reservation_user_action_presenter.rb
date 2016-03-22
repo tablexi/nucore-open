@@ -1,4 +1,5 @@
 class ReservationUserActionPresenter
+
   attr_accessor :reservation, :controller
   delegate :order_detail, :order,
            :can_switch_instrument?, :can_switch_instrument_on?, :can_switch_instrument_off?,
@@ -98,4 +99,5 @@ class ReservationUserActionPresenter
     order_detail.reservation.canceled_at = old_value
     result
   end
+
 end

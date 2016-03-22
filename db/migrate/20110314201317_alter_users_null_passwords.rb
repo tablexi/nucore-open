@@ -1,4 +1,5 @@
 class AlterUsersNullPasswords < ActiveRecord::Migration
+
   def self.up
     change_column(:users, :encrypted_password, :string, :null => true, :default => nil)
     change_column(:users, :password_salt, :string, :null => true, :default => nil)
@@ -8,4 +9,5 @@ class AlterUsersNullPasswords < ActiveRecord::Migration
     change_column(:users, :encrypted_password, :string, :null => false, :default => '')
     change_column(:users, :password_salt, :string, :null => false, :default => '')
   end
+
 end

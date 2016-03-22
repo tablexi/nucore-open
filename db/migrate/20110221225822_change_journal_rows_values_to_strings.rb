@@ -1,4 +1,5 @@
 class ChangeJournalRowsValuesToStrings < ActiveRecord::Migration
+
   def self.up
     add_column :journal_rows, :fund_string,     :string, :limit => 3, :null => true, :after => :fund
     add_column :journal_rows, :dept_string,     :string, :limit => 7, :null => true, :after => :dept
@@ -39,4 +40,5 @@ class ChangeJournalRowsValuesToStrings < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

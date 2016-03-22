@@ -1,6 +1,7 @@
 require 'rack/utils'
 
 class FlashSessionCookieMiddleware
+
   def initialize(app, session_key = '_session_id')
     @app = app
     @session_key = session_key
@@ -13,4 +14,5 @@ class FlashSessionCookieMiddleware
     end
     @app.call(env)
   end
+
 end

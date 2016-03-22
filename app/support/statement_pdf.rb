@@ -1,4 +1,5 @@
 class StatementPdf
+
   include ActionView::Helpers::NumberHelper
   include DateHelper
 
@@ -104,4 +105,5 @@ class StatementPdf
       ]
     end
   end
+
 end

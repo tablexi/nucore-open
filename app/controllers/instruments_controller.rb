@@ -1,4 +1,5 @@
 class InstrumentsController < ProductsCommonController
+
   customer_tab  :show, :public_schedule
   admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
 
@@ -201,4 +202,5 @@ class InstrumentsController < ProductsCommonController
     .uniq
     .map(&:id)
   end
+
 end

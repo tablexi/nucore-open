@@ -235,4 +235,5 @@ class Product < ActiveRecord::Base
   def product_user_exists?(user)
     find_product_user(user).present?
   end
+
 end

@@ -1,4 +1,5 @@
 class ChangePricePolicies < ActiveRecord::Migration
+
   def self.up
     change_table :price_policies do |t|
       t.references  :product
@@ -8,4 +9,5 @@ class ChangePricePolicies < ActiveRecord::Migration
   def self.down
     remove_column :price_policies, :product_id
   end
+
 end

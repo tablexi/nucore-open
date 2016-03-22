@@ -1,4 +1,5 @@
 class BulkEmailController < ApplicationController
+
 	include BulkEmailHelper
   include CSVHelper
   

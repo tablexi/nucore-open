@@ -1,11 +1,13 @@
 class ViewHook
 
   class << self
+
     def instance
       @@instance ||= new
     end
 
     delegate :add_hook, :remove_hook, :render_view_hook, to: :instance
+
   end
 
   # Best used through `render_view_hook` helper method

@@ -1,4 +1,5 @@
 class PriceGroupProduct < ActiveRecord::Base
+
   DEFAULT_RESERVATION_WINDOW=14
 
   belongs_to :price_group
@@ -9,4 +10,5 @@ class PriceGroupProduct < ActiveRecord::Base
   def self.for_product(product)
   	where(:product => product)
   end
+
 end

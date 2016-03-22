@@ -1,4 +1,5 @@
 class AddFacilityAccountToAccountTransactions < ActiveRecord::Migration
+
   def self.up
     change_table :account_transactions do |t|
       t.references :facility_account, :null => false
@@ -9,4 +10,5 @@ class AddFacilityAccountToAccountTransactions < ActiveRecord::Migration
   def self.down
     remove_column :account_transactions, :facility_account_id
   end
+
 end

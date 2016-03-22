@@ -1,4 +1,5 @@
 class FacilityReservationsController < ApplicationController
+
   include ProblemOrderDetailsController
   include TabCountHelper
   include Timelineable
@@ -258,4 +259,5 @@ class FacilityReservationsController < ApplicationController
     @min_date     = Time.zone.now.strftime("%Y%m%d")
     @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
   end
+
 end

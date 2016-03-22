@@ -16,4 +16,5 @@ class RelayDummy < Relay
   def control_mechanism
     CONTROL_MECHANISMS[:timer]
   end
+
 end

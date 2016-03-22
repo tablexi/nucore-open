@@ -1,4 +1,5 @@
 class Ability
+
   include CanCan::Ability
 
   #
@@ -210,4 +211,5 @@ class Ability
   def editable_global_group?(resource)
     resource.global? && resource.admin_editable?
   end
+
 end

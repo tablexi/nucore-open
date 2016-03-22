@@ -1,4 +1,5 @@
 class AddAccountAndRevenueAccountFields < ActiveRecord::Migration
+
   def self.up
     add_column :products, :account, :integer, :null => true
     add_column :facility_accounts, :revenue_account, :integer, :null => true
@@ -12,4 +13,5 @@ class AddAccountAndRevenueAccountFields < ActiveRecord::Migration
     remove_column :products, :account
     remove_column :facility_accounts, :revenue_account
   end
+
 end

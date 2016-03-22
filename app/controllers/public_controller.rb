@@ -11,4 +11,5 @@ class PublicController < ApplicationController
     session[:acting_ref_url] = nil
     redirect_to ref_url
   end
+
 end

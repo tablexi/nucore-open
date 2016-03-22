@@ -1,4 +1,5 @@
 class ProductUsersController < ApplicationController
+
   admin_tab :index, :new
   before_filter :authenticate_user!
   before_filter :check_acting_as
@@ -96,4 +97,5 @@ class ProductUsersController < ApplicationController
     @product = current_facility.products.find_by_url_name!(params[:instrument_id] || params[:service_id] || params[:item_id])
     @product_user=ProductUser.first # for CanCan auth
   end
+
 end

@@ -1,4 +1,5 @@
 class Statement < ActiveRecord::Base
+
   has_many :order_details, :inverse_of => :statement
   has_many :statement_rows, :dependent => :destroy
   has_many :payments, inverse_of: :statement
@@ -59,4 +60,5 @@ class Statement < ActiveRecord::Base
   def rows_for_order_detail(order_detail)
     statement_rows.where(order_detail_id: order_detail.id)
   end
+
 end

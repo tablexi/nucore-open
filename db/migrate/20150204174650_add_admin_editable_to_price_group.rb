@@ -1,4 +1,5 @@
 class AddAdminEditableToPriceGroup < ActiveRecord::Migration
+
   def up
     add_column :price_groups, :admin_editable, :boolean, after: :is_internal, null: false, default: true
 
@@ -10,4 +11,5 @@ class AddAdminEditableToPriceGroup < ActiveRecord::Migration
   def down
     remove_column :price_groups, :admin_editable
   end
+
 end

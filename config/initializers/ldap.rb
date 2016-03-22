@@ -5,6 +5,7 @@ Rails.application.config.to_prepare do
     User.send(:devise, :ldap_authenticatable)
 
     class User
+
       # If a Devise Strategy calls `validate` with a resource and it returns false,
       # then the strategy chain is halted. Previous versions of the LDAP strategy
       # would only call `validate` with a fully authenticated resource, but 0.8+
@@ -14,6 +15,7 @@ Rails.application.config.to_prepare do
         resource = super
         resource unless resource.authenticated_locally?
       end
+
     end
 
     UsersController.send(:include, Ldap::UsersControllerExtension)

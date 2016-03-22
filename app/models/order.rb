@@ -1,4 +1,5 @@
 class Order < ActiveRecord::Base
+
   belongs_to :user
   belongs_to :created_by_user, :class_name => 'User', :foreign_key => :created_by
   belongs_to :merge_order, :class_name => 'Order', :foreign_key => :merge_with_order_id

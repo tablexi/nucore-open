@@ -3,6 +3,7 @@ require "set"
 # Ported from Journal model.
 # We should improve upon this logic.
 class JournalRowBuilder
+
   include NUCore::Database::ArrayHelper
 
   attr_reader :order_details, :journal, :journal_rows, :errors, :options,

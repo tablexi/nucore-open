@@ -1,5 +1,6 @@
 require 'csv'
 class Reports::ExportRaw
+
   include DateHelper
 
   attr_reader :order_status_ids, :facility, :date_range_field
@@ -184,4 +185,5 @@ class Reports::ExportRaw
       reservation.canceled_by_user.try(:full_name)
     end
   end
+
 end

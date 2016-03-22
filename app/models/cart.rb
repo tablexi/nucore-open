@@ -1,4 +1,5 @@
 class Cart
+
   def initialize(user, created_by_user = nil)
     @user = user
     @created_by_user = created_by_user || @user
@@ -52,4 +53,5 @@ class Cart
       .created_by_user(@created_by_user)
       .carts.order('updated_at DESC')
   end
+
 end

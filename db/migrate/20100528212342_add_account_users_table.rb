@@ -1,4 +1,5 @@
 class AddAccountUsersTable < ActiveRecord::Migration
+
   def self.up
     create_table :account_users do |t|
       t.references :account,    :null => false
@@ -15,4 +16,5 @@ class AddAccountUsersTable < ActiveRecord::Migration
   def self.down
     drop_table :account_users
   end
+
 end

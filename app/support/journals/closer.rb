@@ -1,4 +1,5 @@
 class Journals::Closer
+
   attr_reader :journal, :params
 
   def initialize(journal, params)
@@ -60,4 +61,5 @@ class Journals::Closer
       end
     end
   end
+
 end

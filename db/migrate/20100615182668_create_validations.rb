@@ -1,4 +1,5 @@
 class CreateValidations < ActiveRecord::Migration
+
   def self.up
     create_table :validations do |t|
       # Context
@@ -17,4 +18,5 @@ class CreateValidations < ActiveRecord::Migration
   def self.down
     drop_table :validations
   end
+
 end

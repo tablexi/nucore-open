@@ -1,4 +1,5 @@
 class RemoveOrdersTotals < ActiveRecord::Migration
+
   def self.up
     remove_column :orders, :total_cost
     remove_column :orders, :total_subsidy
@@ -18,4 +19,5 @@ class RemoveOrdersTotals < ActiveRecord::Migration
     change_column :orders, :total_subsidy, :decimal, :precision => 8, :scale => 2, :null => false
     change_column :orders, :total,         :decimal, :precision => 8, :scale => 2, :null => false
   end
+
 end

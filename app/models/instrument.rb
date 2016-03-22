@@ -1,4 +1,5 @@
 class Instrument < Product
+
   include Products::RelaySupport
   include Products::SchedulingSupport
 

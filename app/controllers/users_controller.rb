@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+
   module Overridable
     # Should be overridden by custom lookups (e.g. LDAP)
     def service_username_lookup(_username)
