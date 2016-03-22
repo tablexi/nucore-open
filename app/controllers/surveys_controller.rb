@@ -8,12 +8,10 @@ class SurveysController < ApplicationController
 
   load_and_authorize_resource :class => 'ExternalService'
 
-
   def initialize
     @active_tab = 'admin_products'
     super
   end
-
 
   # PUT /facilities/1/services/1/surveys/2/activate
   def activate
@@ -22,14 +20,12 @@ class SurveysController < ApplicationController
     redirect_to request.referer
   end
 
-
   # PUT /facilities/1/services/1/surveys/2/deactivate
   def deactivate
     @survey.deactivate
     flash[:notice] = "Survey de-activated"
     redirect_to request.referer
   end
-
 
   def complete
     begin
@@ -41,13 +37,11 @@ class SurveysController < ApplicationController
     redirect_to params[:referer]
   end
 
-
   private
 
   def init_survey
     @survey = Survey.new @service, params
   end
-
 
   def init_service
     @service = current_facility.services.find_by_url_name!(params[:service_id])

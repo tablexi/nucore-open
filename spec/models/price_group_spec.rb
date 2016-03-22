@@ -7,7 +7,6 @@ RSpec.describe PriceGroup do
     @price_group  = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
   end
 
-
   it "should create using factory" do
     expect(@price_group).to be_valid
   end
@@ -21,7 +20,6 @@ RSpec.describe PriceGroup do
     expect(@price_group2).not_to be_valid
     expect(@price_group2.errors[:name]).not_to be_nil
   end
-
 
   context 'can_purchase?' do
 
@@ -83,7 +81,6 @@ RSpec.describe PriceGroup do
       end
     end
   end
-
 
   # global price groups are special cases; we don't test them here because price groups are required to have facilities
   # it "should not be deletable if its a global price group" do

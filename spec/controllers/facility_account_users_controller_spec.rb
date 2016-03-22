@@ -11,7 +11,6 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
     @account=create_nufs_account_with_owner
   end
 
-
   context 'user_search' do
 
     before(:each) do
@@ -30,7 +29,6 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
     end
 
   end
-
 
   context 'new' do
 
@@ -53,7 +51,6 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
     end
 
   end
-
 
   context 'create' do
 
@@ -110,7 +107,6 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
           assert_redirected_to facility_account_members_path(@authable, @account)
         end
       end
-
 
       context 'with a missing owner' do
 
@@ -183,7 +179,6 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
       end
     end
   end
-
 
   context 'destroy' do
 

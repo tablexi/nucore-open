@@ -400,7 +400,6 @@ RSpec.describe OldInstrumentPricePolicy do
     end
   end
 
-
   def ipp_attributes(overrides={})
     attrs={
       :start_date          => Date.current,
@@ -446,7 +445,6 @@ RSpec.describe OldInstrumentPricePolicy do
         :reserve_end_at => @now + @ipp.usage_mins.minutes
       )
     end
-
 
     context 'free with actuals' do
       before :each do

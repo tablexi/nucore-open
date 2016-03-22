@@ -5,7 +5,6 @@ class GlobalSettingsController < ApplicationController
 
   layout 'two_column'
 
-
   def initialize
     @active_tab = 'global_settings'
     super

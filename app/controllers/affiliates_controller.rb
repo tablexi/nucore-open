@@ -4,7 +4,6 @@ class AffiliatesController < GlobalSettingsController
     @affiliate=Affiliate.new
   end
 
-
   def create
     attrs=params[:affiliate]
 
@@ -20,7 +19,6 @@ class AffiliatesController < GlobalSettingsController
     redirect_to affiliates_path
   end
 
-
   def edit
     id=params[:id]
 
@@ -31,7 +29,6 @@ class AffiliatesController < GlobalSettingsController
       return redirect_to affiliates_path
     end
   end
-
 
   def update
     id=params[:id]
@@ -55,7 +52,6 @@ class AffiliatesController < GlobalSettingsController
 
     redirect_to affiliates_path
   end
-
 
   def destroy
     id=params[:id]

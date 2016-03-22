@@ -21,7 +21,6 @@ class FacilityReservationsController < ApplicationController
       'reserved_by'   => "#{User.table_name}.first_name, #{User.table_name}.last_name"
   }
 
-
   def initialize
     super
     @active_tab = 'admin_reservations'
@@ -65,7 +64,6 @@ class FacilityReservationsController < ApplicationController
     @reservation.assign_times_from_params(params[:reservation])
 
     additional_notice = ''
-
 
     if @order_detail.price_policy
       update_prices

@@ -6,7 +6,6 @@ class OrderDetailObserver < ActiveRecord::Observer
     order.destroy if order.to_be_merged? && order.order_details.empty?
   end
 
-
   def before_save(order_detail)
     order=order_detail.order
     product=order_detail.product
@@ -19,7 +18,6 @@ class OrderDetailObserver < ActiveRecord::Observer
       order_detail.order_id=order.merge_order.id
     end
   end
-
 
   def after_save(order_detail)
   	if order_detail.order_status_id_changed?
@@ -42,7 +40,6 @@ class OrderDetailObserver < ActiveRecord::Observer
     end
   end
 
-
   def self.status_change_hooks
     hash = Settings.try(:order_details).try(:status_change_hooks).try(:to_hash) || {}
     new_hash = {}
@@ -55,7 +52,6 @@ class OrderDetailObserver < ActiveRecord::Observer
     end
     new_hash
   end
-
 
   private
 

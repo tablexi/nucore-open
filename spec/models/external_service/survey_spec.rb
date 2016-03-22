@@ -5,7 +5,6 @@ RSpec.describe Survey do
 
   subject(:survey) { described_class.new external_service_passer.passer, params }
 
-
   it 'has a service accessor' do
     expect(survey.service).to eq external_service_passer.passer
   end

@@ -4,7 +4,6 @@ require 'product_shared_examples'
 RSpec.describe Instrument do
   it_should_behave_like 'ReservationProduct', :instrument
 
-
   let(:facility) { create :facility }
   let(:facility_account) { facility.facility_accounts.create attributes_for(:facility_account) }
   subject(:instrument) { build :instrument, :facility => facility, :facility_account => facility_account }
@@ -173,7 +172,6 @@ RSpec.describe Instrument do
       end
     end
   end
-
 
   context "updating nested relay" do
     before :each do

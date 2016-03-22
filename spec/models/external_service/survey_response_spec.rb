@@ -9,9 +9,7 @@ RSpec.describe SurveyResponse do
   } 
   end
 
-
   subject(:survey_response) { described_class.new params }
-
 
   it 'has a params accessor' do
     expect(survey_response.params).to eq params

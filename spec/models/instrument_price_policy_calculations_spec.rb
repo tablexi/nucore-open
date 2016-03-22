@@ -20,7 +20,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
     )
   end
 
-
   it 'uses the given order detail to #calculate_cost_and_subsidy' do
     fake_order_detail = double 'OrderDetail', reservation: double('Reservation')
     expect(policy).to receive(:calculate_cost_and_subsidy).with fake_order_detail.reservation
@@ -36,7 +35,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
     policy.usage_subsidy = 5
     expect(policy.calculate_subsidy(120, 0.15).to_f).to eq 1.5
   end
-
 
   describe 'calculating with two effective schedule rules, one discounting one not' do
     context 'usage cost is more than the policy minimum' do
@@ -105,7 +103,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
     end
   end
 
-
   describe 'estimating cost and subsidy from an order detail' do
     it 'uses the given order detail to #estimate_cost_and_subsidy' do
       fake_reservation = double 'Reservation', reserve_start_at: now, reserve_end_at: now + 1.hour
@@ -119,7 +116,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
       expect(policy.estimate_cost_and_subsidy_from_order_detail fake_order_detail).to be_nil
     end
   end
-
 
   describe 'estimating cost and subsidy' do
     it 'returns nil if purchase is restricted' do
@@ -193,7 +189,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
       expect(results[:subsidy]).to eq subsidy
     end
   end
-
 
   describe 'calculating cost and subsidy' do
     before :each do
@@ -372,7 +367,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
     end
   end
 
-
   describe 'determining whether or not a cancellation should be penalized' do
     before(:each) { allow(policy.product).to receive(:min_cancel_hours).and_return 3 }
 
@@ -386,7 +380,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
       expect(policy.cancellation_penalty?(reservation)).to be false
     end
   end
-
 
   describe 'calculating cancellation costs' do
     let(:reservation) { double 'Reservation' }

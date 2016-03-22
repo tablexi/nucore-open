@@ -78,7 +78,6 @@ class OrderRowImporter
       User.find_by_username(user_field) || User.find_by_email(user_field)
   end
 
-
   def add_error(message)
     @errors.add(message) if message.present?
   end

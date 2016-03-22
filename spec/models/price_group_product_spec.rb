@@ -11,7 +11,6 @@ RSpec.describe PriceGroupProduct do
     @price_group=FactoryGirl.create(:price_group, :facility => @facility)
   end
 
-
   it 'should require product' do
     expect(PriceGroupProduct.new(:price_group => @price_group)).to validate_presence_of :product_id
   end

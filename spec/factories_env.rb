@@ -5,7 +5,6 @@
 
 include ActionDispatch::TestProcess
 
-
 #
 # Configure test env for specified validator
 #
@@ -19,7 +18,6 @@ if validator_helper.present?
   require Rails.root.join(validator_helper)
   include File.basename(validator_helper).camelize.constantize
 end
-
 
 #
 # Allows overriding of factories by engines, etc.

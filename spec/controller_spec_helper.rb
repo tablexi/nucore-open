@@ -65,7 +65,6 @@ def switch_to(user)
   session[:acting_user_id] = user.id
 end
 
-
 #
 # The helpers below are useful for testing the authentication
 # and authorization frameworks. They rely on the existence
@@ -85,7 +84,6 @@ def it_should_require_login
   end
 end
 
-
 #
 # Asserts that the user is denied authorization
 # [_user_sym_]
@@ -99,7 +97,6 @@ def it_should_deny(user_sym, spec_desc='')
     is_expected.to render_template('403')
   end
 end
-
 
 #
 # Grants a user a role based on their username and signs them in
@@ -131,7 +128,6 @@ def it_should_deny_all(user_syms, spec_desc='')
   user_syms.each { |user_sym| it_should_deny user_sym, spec_desc }
 end
 
-
 def it_should_allow_all(user_syms, spec_desc='', &eval)
   user_syms.each do |user_sym|
     it "should allow #{user_sym} " + spec_desc, :auth => true do
@@ -142,7 +138,6 @@ def it_should_allow_all(user_syms, spec_desc='', &eval)
   end
 end
 
-
 #
 # Convenient params for *_all helpers
 #
@@ -151,16 +146,13 @@ def facility_managers
   [ :admin, :director ]
 end
 
-
 def facility_operators
   facility_managers + [ :staff, :senior_staff ]
 end
 
-
 def facility_users
   facility_operators + [ :guest ]
 end
-
 
 #
 # Bundles the common test suite of ensuring an action requires
@@ -204,7 +196,6 @@ def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc=
 
 end
 
-
 #
 # Similar to #it_should_allow_managers_only, but for operators
 def it_should_allow_operators_only(response=:success, spec_desc='', &eval)
@@ -218,7 +209,6 @@ def it_should_allow_operators_only(response=:success, spec_desc='', &eval)
   end
 
 end
-
 
 #
 # Similar to #it_should_allow_managers_only, but tests admin access
@@ -237,7 +227,6 @@ def it_should_allow_admin_only(response=:success, spec_desc='', &eval)
   end
 
 end
-
 
 #
 # Helpers for the above API. Stand-alone use is discouraged.
@@ -296,7 +285,6 @@ def split_date_to_params(key, date)
     :"#{key}_meridian" => date.strftime('%p')
   }
 end
-
 
 # Takes a parameter set and replaces _start_at and _end_at DateTime parameters split up into their other fields
 # like reserve_start_date, reserve_start_hour, and duration_unit

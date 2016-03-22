@@ -36,7 +36,6 @@ class Reservation < ActiveRecord::Base
   delegate :lock_window, to: :product, prefix: true
   delegate :owner, :to => :account, :allow_nil => true
 
-
   ## AR Hooks
   after_save :save_note
   after_update :auto_save_order_detail, :if => :order_detail
@@ -133,7 +132,6 @@ class Reservation < ActiveRecord::Base
     order_detail.assign_price_policy
     order_detail.complete!
   end
-
 
   def round_reservation_times
     interval = product.reserve_interval.minutes # Round to the nearest reservation interval

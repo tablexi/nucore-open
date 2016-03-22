@@ -142,7 +142,6 @@ class FacilityAccountsController < ApplicationController
     @user = User.find(params[:user_id])
   end
 
-
   # GET /facilities/:facility_id/accounts/:account_id/members
   def members
   end
@@ -222,6 +221,5 @@ class FacilityAccountsController < ApplicationController
       params: params,
     ).build
   end
-
 
 end

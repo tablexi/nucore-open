@@ -27,7 +27,6 @@ RSpec.describe Cart do
       expect(carts).not_to include @item_order
     end
 
-
     context 'destroy_all_instrument_only_carts' do
       let(:all_orders) { Order.all }
       before :each do

@@ -72,8 +72,6 @@ class OrderDetail < ActiveRecord::Base
     journal_date || statement_date
   end
 
-
-
   alias merge! save!
 
   validates_presence_of :product_id, :order_id, :created_by
@@ -376,8 +374,6 @@ class OrderDetail < ActiveRecord::Base
     )
   end
 
-
-
   def self.ordered_or_reserved_in_range(start_date, end_date)
     start_date = start_date.beginning_of_day if start_date
     end_date = end_date.end_of_day if end_date
@@ -667,7 +663,6 @@ class OrderDetail < ActiveRecord::Base
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
-
 
     @estimated_price_policy = product.cheapest_price_policy(self, date)
     assign_estimated_price_from_policy @estimated_price_policy

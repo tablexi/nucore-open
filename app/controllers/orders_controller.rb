@@ -49,7 +49,6 @@ class OrdersController < ApplicationController
     items =  ods_from_params.presence || session[:add_to_cart].presence || []
     session[:add_to_cart] = nil
 
-
     # ignore ods w/ empty or 0 quantities
     items = items.select { |od| od.is_a?(Hash) && od[:quantity].present? && (od[:quantity] = od[:quantity].to_i) > 0 }
     return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
@@ -62,8 +61,6 @@ class OrdersController < ApplicationController
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
       redirect_to(order_path(@order)) && (return)
     end
-
-
 
     ## handle a single instrument reservation
     if items.size == 1 && (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
@@ -209,7 +206,6 @@ class OrdersController < ApplicationController
   def add_account
     flash.now[:notice] = "This page is still in development; please add an account administratively"
   end
-
 
   # PUT /orders/:id/update (submission from a cart)
   def update_or_purchase

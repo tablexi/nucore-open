@@ -6,7 +6,6 @@ class NotificationsController < ApplicationController
 
   #respond_to :js, :only => :update
 
-
   def index
   end
 
@@ -23,7 +22,6 @@ class NotificationsController < ApplicationController
   #
   #  respond_with nil
   #end
-
 
   private
 

@@ -5,14 +5,12 @@ require 'report_spec_helper'
 RSpec.describe InstrumentDayReportsController do
   include ReportSpecHelper
 
-
   run_report_tests([
     { :action => :reserved_quantity, :index => 4, :report_on_label => nil, :report_on => Proc.new{|res| Reports::InstrumentDayReport::ReservedQuantity.new(res) } },
     { :action => :reserved_hours, :index => 5, :report_on_label => nil, :report_on => Proc.new{|res| Reports::InstrumentDayReport::ReservedHours.new(res) } },
     { :action => :actual_quantity, :index => 6, :report_on_label => nil, :report_on => Proc.new{|res| Reports::InstrumentDayReport::ActualQuantity.new(res) } },
     { :action => :actual_hours, :index => 7, :report_on_label => nil, :report_on => Proc.new{|res| Reports::InstrumentDayReport::ActualHours.new(res) } }
   ])
-
 
   private
 
@@ -24,13 +22,11 @@ RSpec.describe InstrumentDayReportsController do
     assert @reservation.save(:validate => false)
   end
 
-
   def report_headers(_label)
     headers=[ 'Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
     headers += report_attributes(@reservation, @instrument) if export_all_request?
     headers
   end
-
 
   def assert_report_init(_label)
     expect(assigns(:totals)).to be_is_a Array
@@ -55,7 +51,6 @@ RSpec.describe InstrumentDayReportsController do
       row[1..-1].all?{|data| expect(data).to be_is_a(Numeric)}
     end
   end
-
 
   def assert_report_data_init(_label)
     expect(assigns(:report_data)).to eq(Reservation.all)

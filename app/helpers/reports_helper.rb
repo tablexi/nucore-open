@@ -23,13 +23,11 @@ module ReportsHelper
     end
   end
 
-
   def report_attribute_values(*records)
     combine_attributes(*records) do |ar|
       order_and_filter_attributes(ar).collect{|attr| attr[1]}
     end
   end
-
 
   private
 
@@ -38,7 +36,6 @@ module ReportsHelper
     records.each {|ar| attrs += yield(ar) }
     attrs
   end
-
 
   def order_and_filter_attributes(ar)
     attrs=ar.attributes.to_a

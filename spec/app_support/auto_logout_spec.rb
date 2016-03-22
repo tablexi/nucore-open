@@ -48,7 +48,6 @@ RSpec.describe AutoLogout, :timecop_freeze do
     end
   end
 
-
   describe 'a new reservation prior to log out time' do
     let!(:reservation) do
       start_at = 30.minutes.ago # 9:01am

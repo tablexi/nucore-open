@@ -10,12 +10,10 @@ class ReportsController < ApplicationController
 
   load_and_authorize_resource :class => ReportsController
 
-
   def initialize
     @active_tab = 'admin_reports'
     super
   end
-
 
   private
 
@@ -26,7 +24,6 @@ class ReportsController < ApplicationController
     name += (user.first_name || '')
     "#{name} (#{user.username})"
   end
-
 
   def init_report_params
     @date_start = parse_usa_date(params[:date_start])
@@ -44,21 +41,17 @@ class ReportsController < ApplicationController
                 end
   end
 
-
   def init_report(_report_on_label)
     raise 'Subclass must implement!'
   end
-
 
   def init_report_data(_report_on_label)
     raise 'Subclass must implement!'
   end
 
-
   def init_report_headers(_report_on_label)
     raise 'Subclass must implement!'
   end
-
 
   def page_report(rows)
     # Don't paginate reports if we're exporting
@@ -68,7 +61,6 @@ class ReportsController < ApplicationController
       rows.paginate(:page => params[:page], :per_page => 25)
             end
   end
-
 
   def render_report(tab_index, report_on_label, &report_on)
     @selected_index=tab_index
@@ -116,7 +108,6 @@ class ReportsController < ApplicationController
     end
   end
 
-
   def render_csv(filename = nil, action=nil)
     filename ||= params[:action]
     filename += "_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}.csv"
@@ -125,7 +116,6 @@ class ReportsController < ApplicationController
 
     render :template => "reports/#{action ? action : action_name}", :layout => false
   end
-
 
   def report_data_request?
     params[:export_id] && params[:export_id] == 'report_data'

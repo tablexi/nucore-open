@@ -83,7 +83,6 @@ class SchemaCleanup < ActiveRecord::Migration
     change_column :users, :created_at, :datetime, :null => true
     change_column :users, :updated_at, :datetime, :null => true
 
-
     change_column :versions, :created_at, :datetime, :null => true
     change_column :versions, :updated_at, :datetime, :null => true
   end

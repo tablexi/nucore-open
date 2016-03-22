@@ -31,7 +31,6 @@ module Products::RelaySupport
     relay && !relay.is_a?(RelayDummy) && relay.ip && relay.port
   end
 
-
   private ###################################
 
   # this is necessary because when rails builds the attached relay

@@ -14,7 +14,6 @@ class IppMigrationReporter
     end
   end
 
-
   def report_order_details(od_ids)
     headers = %w(id facility instrument state policy_mode reserve_start reserve_end actual_start actual_end)
     details = OrderDetail.includes(product: :facility).includes(:price_policy, :reservation).where id: od_ids
@@ -24,16 +23,13 @@ class IppMigrationReporter
     end
   end
 
-
   def report_journaled_details(oids_to_attrs)
     report_journal_details oids_to_attrs, 'journaled_details', :journaled_details_row
   end
 
-
   def report_statemented_details(oids_to_attrs)
     report_journal_details oids_to_attrs, 'statemented_details', :statemented_detail_row
   end
-
 
   private
 
@@ -44,12 +40,10 @@ class IppMigrationReporter
     csv.close
   end
 
-
   def price_policy_row(pp)
     product = pp.product
     [ product.facility.name, product.name ]
   end
-
 
   def order_detail_row(od)
     product = od.product
@@ -68,7 +62,6 @@ class IppMigrationReporter
     ]
   end
 
-
   def report_journal_details(oids_to_attrs, csv_name, row_method)
     headers = %w(id facility instrument actual_cost actual_subsidy estimated_cost estimated_subsidy
                  old_actual_cost old_actual_subsidy old_estimated_cost old_estimated_subsidy final_amount)
@@ -80,20 +73,17 @@ class IppMigrationReporter
     end
   end
 
-
   def journaled_detail_row(od, old_attrs)
     row = journal_detail_row od, old_attrs
     row << od.journal.journal_rows.where(order_detail_id: od.id).first.amount
     row
   end
 
-
   def statemented_detail_row(od, old_attrs)
     row = journal_detail_row od, old_attrs
     row << od.statement.statement_rows.where(order_detail_id: od.id).first.amount
     row
   end
-
 
   def journal_detail_row(od, old_attrs)
     product = od.product

@@ -101,5 +101,4 @@ RSpec.describe Schedule do
     end
   end
 
-
 end

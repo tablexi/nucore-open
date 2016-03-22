@@ -10,7 +10,6 @@ class IppJsonBuilder
     File.write 'order_details.json', json.join("\n")
   end
 
-
   def parse_json_file(filename)
     parsed = {}
 

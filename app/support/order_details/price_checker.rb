@@ -26,5 +26,4 @@ class OrderDetails::PriceChecker
     @order_detail.price_group.try(:name) || @order_detail.estimated_price_group.try(:name)
   end
 
-
 end

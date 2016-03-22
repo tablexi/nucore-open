@@ -1,16 +1,13 @@
 class InstrumentReportsController < ReportsController
   include InstrumentReporter
 
-
   def instrument
     render_report(0, nil) {|r| [ r.product.name ] }
   end
 
-
   def account
     render_report(1, 'Description') {|r| [ r.product.name, r.order_detail.account.to_s ]}
   end
-
 
   def account_owner
     render_report(2, 'Name') do |r|
@@ -19,7 +16,6 @@ class InstrumentReportsController < ReportsController
     end
   end
 
-
   def purchaser
     render_report(3, 'Name') do |r|
       usr=r.order_detail.order.user
@@ -27,14 +23,12 @@ class InstrumentReportsController < ReportsController
     end
   end
 
-
   private
 
   def init_report_headers(report_on_label)
     @headers=[ 'Instrument', 'Quantity', 'Reserved Time (h)', 'Percent of Reserved', 'Actual Time (h)', 'Percent of Actual Time' ]
     @headers.insert(1, report_on_label) if report_on_label
   end
-
 
   def init_report(_report_on_label, &report_on)
     report = Reports::InstrumentUtilizationReport.new(report_data)
@@ -46,7 +40,6 @@ class InstrumentReportsController < ReportsController
     rows = report.rows
     page_report(rows)
   end
-
 
   def init_report_data(_report_on_label)
     @totals = [0,0]

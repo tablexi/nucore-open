@@ -14,7 +14,6 @@ RSpec.describe Order do
       @order        = @user.orders.create(FactoryGirl.attributes_for(:order, :created_by => @user.id, :account => @account, :facility => @facility))
   end
 
-
   it "should not allow validate if the account type is not allowed by the facility" do
     # facility does not accept credit card accounts
     @facility.accepts_cc = false

@@ -104,7 +104,6 @@ class Order < ActiveRecord::Base
   #####
   # END acts_as_state_machine
 
-
   def instrument_order_details
     self.order_details.find(:all, :joins => 'LEFT JOIN products p ON p.id = order_details.product_id', :conditions => { 'p.type' => 'Instrument' })
   end

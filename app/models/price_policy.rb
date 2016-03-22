@@ -70,7 +70,6 @@ class PricePolicy < ActiveRecord::Base
            .map &:to_date
   end
 
-
   def truncate_existing_policies
     logger.debug("Truncating existing policies")
     existing_policies = PricePolicy.current.where(:type => self.class.name,
@@ -97,7 +96,6 @@ class PricePolicy < ActiveRecord::Base
     raise "subclass must implement!"
   end
 
-
   #
   # Same as #estimate_cost_and_subsidy, but with actual prices
   def calculate_cost_and_subsidy(*_args)
@@ -113,7 +111,6 @@ class PricePolicy < ActiveRecord::Base
   end
 
   alias restrict_purchase? restrict_purchase
-
 
   #
   # Dis/allows the purchase of this PricePolicy's +Product+ by this
@@ -132,7 +129,6 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
-
   #
   # Returns true if this +PricePolicy+ is assigned
   # to any order, false otherwise
@@ -140,14 +136,12 @@ class PricePolicy < ActiveRecord::Base
     !OrderDetail.find_all_by_price_policy_id(self.id).empty?
   end
 
-
   #
   # Returns true if #expire_date is prior to or the same
   # as today's date, false otherwise
   def expired?
     expire_date <= Time.zone.now
   end
-
 
   def start_date_is_unique
     type          = self.class.name.downcase.gsub(/pricepolicy$/, '')
@@ -161,7 +155,6 @@ class PricePolicy < ActiveRecord::Base
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
     end
   end
-
 
   #
   # Given a +PricePolicy+ or +Date+ determine the next

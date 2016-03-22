@@ -9,16 +9,13 @@ class PriceGroupProductsController < ApplicationController
 
   layout 'two_column'
 
-
   def initialize
     @active_tab = 'admin_products'
     super
   end
 
-
   def edit
   end
-
 
   def update
     window_errors=[]

@@ -4,21 +4,17 @@ class AccountUser < ActiveRecord::Base
 
   scope :active, :conditions => {:deleted_at => nil}
 
-
   ACCOUNT_PURCHASER='Purchaser'
   ACCOUNT_OWNER='Owner'
   ACCOUNT_ADMINISTRATOR='Business Administrator'
-
 
   def self.read_only_user_roles
     [ ACCOUNT_PURCHASER ]
   end
 
-
   def self.admin_user_roles
     [ ACCOUNT_OWNER, ACCOUNT_ADMINISTRATOR ]
   end
-
 
   def self.user_roles
     admin_user_roles + read_only_user_roles
@@ -75,11 +71,9 @@ class AccountUser < ActiveRecord::Base
     create!(:user => user, :user_role => role, :account => account, :created_by => granting_user.id)
   end
 
-
   def can_administer?
     deleted_at.nil? && AccountUser.admin_user_roles.any? { |r| r == user_role }
   end
-
 
   validates_presence_of :created_by
   validates_inclusion_of :user_role, :in => user_roles, :message => 'is invalid'

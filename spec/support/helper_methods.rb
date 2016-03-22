@@ -168,7 +168,6 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
         :min_reserve_mins => 60,
         :max_reserve_mins => 60)
 
-
   assert @instrument.valid?
   @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24)) if @instrument.schedule_rules.empty?
 
@@ -189,7 +188,6 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
   @reservation.save(:validate => false)
   @reservation
 end
-
 
 #
 # Sets up an environment for testing reservations by creating records for
@@ -268,7 +266,6 @@ def setup_user_for_purchase(user, price_group)
   @pg_member        = FactoryGirl.create(:user_price_group_member, :user => user, :price_group => price_group)
   create(:account_price_group_member, account: @account, price_group: PriceGroup.base.first)
 end
-
 
 # If you changed Settings anywhere in your spec, include this as
 # in after :all to reset to the normal settings.

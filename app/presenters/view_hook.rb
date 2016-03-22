@@ -23,7 +23,6 @@ class ViewHook
     _view_hooks[view.to_s][placement.to_s].delete partial.to_s
   end
 
-
   def find(view, placement)
     _view_hooks[view.to_s][placement.to_s]
   end

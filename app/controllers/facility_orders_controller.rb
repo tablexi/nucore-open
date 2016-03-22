@@ -14,7 +14,6 @@ class FacilityOrdersController < ApplicationController
 
   include FacilityOrderStatusHelper
 
-
   def initialize
     @active_tab = 'admin_orders'
     super
@@ -61,7 +60,6 @@ class FacilityOrdersController < ApplicationController
       redirect_to @order ? facility_order_path(current_facility, @order) : root_path
     end
   end
-
 
   def update
     product = Product.find(params[:product_add].to_i)

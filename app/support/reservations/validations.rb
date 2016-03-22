@@ -176,5 +176,4 @@ module Reservations::Validations
     product.price_group_products.map(&:reservation_window).min
   end
 
-
 end

@@ -157,7 +157,6 @@ RSpec.describe Reservation do
       assert @reservation.valid?
     end
 
-
     it('should not be canceled') { expect(@reservation).not_to be_canceled }
 
     it 'should be canceled' do
@@ -504,7 +503,6 @@ RSpec.describe Reservation do
         expect(@reservation1).not_to be_requires_but_missing_actuals
       end
 
-
       it 'should be false when price policy has no usage rate' do
         @instrument_pp.update_attribute :usage_rate, 0
 
@@ -515,7 +513,6 @@ RSpec.describe Reservation do
 
         expect(@reservation1).not_to be_requires_but_missing_actuals
       end
-
 
       it 'should be false when price policy has zero usage rate' do
         @instrument_pp.usage_rate=0
@@ -528,7 +525,6 @@ RSpec.describe Reservation do
 
         expect(@reservation1).not_to be_requires_but_missing_actuals
       end
-
 
       it 'should be false when there is a usage rate and actuals' do
         @instrument_pp.usage_rate=5

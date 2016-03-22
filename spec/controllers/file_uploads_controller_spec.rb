@@ -20,7 +20,6 @@ RSpec.describe FileUploadsController do
     assert @service.valid?
   end
 
-
   context 'upload info' do
 
     before :each do
@@ -39,7 +38,6 @@ RSpec.describe FileUploadsController do
     end
 
   end
-
 
   context "create info" do
 
@@ -74,7 +72,6 @@ RSpec.describe FileUploadsController do
 
   end
 
-
   context 'uploader_create' do
 
     before :each do
@@ -108,7 +105,6 @@ RSpec.describe FileUploadsController do
 
   end
 
-
   context 'product_survey' do
 
     before :each do
@@ -126,7 +122,6 @@ RSpec.describe FileUploadsController do
     end
 
   end
-
 
   context 'create_product_survey' do
 
@@ -164,7 +159,6 @@ RSpec.describe FileUploadsController do
     end
 
   end
-
 
   context 'destroy' do
 
@@ -208,7 +202,6 @@ RSpec.describe FileUploadsController do
 
     end
   end
-
 
   def create_order_detail
     @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)

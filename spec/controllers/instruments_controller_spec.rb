@@ -388,7 +388,6 @@ RSpec.describe InstrumentsController do
 
     end
 
-
     def assert_successful_creation
       expect(assigns(:instrument)).to be_kind_of Instrument
       expect(assigns(:instrument).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
@@ -448,7 +447,6 @@ RSpec.describe InstrumentsController do
         end
       end
 
-
     end
 
     context 'dummy relay' do
@@ -506,7 +504,6 @@ RSpec.describe InstrumentsController do
       @params[:instrument_id] = @params[:id]
       @params.delete(:id)
     end
-
 
     context "schedule" do
 
@@ -637,7 +634,6 @@ RSpec.describe InstrumentsController do
       end
 
     end
-
 
     context "switch" do
 

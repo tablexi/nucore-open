@@ -35,13 +35,11 @@ class StatementsController < ApplicationController
     end
   end
 
-
   private
 
   def ability_resource
     return @account
   end
-
 
   def init_account
     # CanCan will make sure that we're authorizing the account

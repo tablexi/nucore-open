@@ -98,7 +98,6 @@ module Products::SchedulingSupport
     end
   end
 
-
   private
 
   def reservation_in_week(after, duration, rules, options)
@@ -139,7 +138,6 @@ module Products::SchedulingSupport
       self.schedule.update_attributes(:name => "#{self.name} Schedule")
     end
   end
-
 
   class ReservationFinder
     attr_accessor :time, :rule, :day_start, :day_end, :options

@@ -1,15 +1,12 @@
 class GeneralReportsController < ReportsController
 
-
   def product
     render_report(0, 'Name') {|od| od.product.name }
   end
 
-
   def account
     render_report(1, 'Description') { |od| od.account }
   end
-
 
   def account_owner
     render_report(2, 'Name') do |od|
@@ -18,21 +15,17 @@ class GeneralReportsController < ReportsController
     end
   end
 
-
   def purchaser
     render_report(3, 'Name') {|od| format_username od.order.user}
   end
-
 
   def price_group
     render_report(4, 'Name') {|od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned' }
   end
 
-
   def assigned_to
     render_report(5, 'Name') {|od| od.assigned_user.presence ? format_username(od.assigned_user) : 'Unassigned' }
   end
-
 
   private
 
@@ -94,7 +87,6 @@ class GeneralReportsController < ReportsController
     @report_data=report_data
   end
 
-
   def init_report(_report_on_label)
     sums, rows, @total_quantity, @total_cost={}, [], 0, 0.0
     report_data.each do |od|
@@ -125,7 +117,6 @@ class GeneralReportsController < ReportsController
 
     page_report(rows)
   end
-
 
   def report_data
     @report_data = report_data_query(@status_ids, @date_range_field)

@@ -11,7 +11,6 @@ module PricePolicySupport
       before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
   	 end
 
-
     def subsidy_more_than_cost?
       errors.add("unit_subsidy", "cannot be greater than the Unit cost") if (unit_subsidy > unit_cost)
     end
