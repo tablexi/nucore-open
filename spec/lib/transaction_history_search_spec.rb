@@ -15,13 +15,9 @@ RSpec.describe TransactionSearch do
     attr_accessor :session_user, :order_details
 
     include TransactionSearch
-    def params
-      @params
-    end
+    attr_reader :params
 
-    def params=(params)
-      @params = params
-    end
+    attr_writer :params
 
     def all_order_details_with_search
       # everything that needs to be done will be done by the module
