@@ -280,7 +280,7 @@ class OrderDetail < ActiveRecord::Base
   } }
 
   scope :statemented, lambda {|facility| {
-      joins: :order,
+    joins: :order,
       order: 'order_details.created_at DESC',
       conditions: [ 'orders.facility_id = ? AND order_details.statement_id IS NOT NULL', facility.id ] }
   }

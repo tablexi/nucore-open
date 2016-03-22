@@ -9,7 +9,7 @@ RSpec.describe UrlService do
   let(:order_detail) { create :order_detail, order: order, product: service }
 
   let(:host_params) do {
-      host: 'localhost.test',
+    host: 'localhost.test',
       port: 8080,
       protocol: 'https'
   } 

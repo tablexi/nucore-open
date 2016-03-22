@@ -258,7 +258,7 @@ RSpec.describe ReservationsController do
         order_detail_id: @order_detail.id,
         order_account: @account.id,
         reservation: {
-            reserve_start_date: format_usa_date(Time.zone.now.to_date - 5.days),
+          reserve_start_date: format_usa_date(Time.zone.now.to_date - 5.days),
             reserve_start_hour: '9',
             reserve_start_min: '0',
             reserve_start_meridian: 'am',
@@ -305,7 +305,7 @@ RSpec.describe ReservationsController do
       @params.merge!(
         order_account: @account.id,
         reservation: {
-            reserve_start_date: format_usa_date(Time.zone.now.to_date+1.day),
+          reserve_start_date: format_usa_date(Time.zone.now.to_date+1.day),
             reserve_start_hour: '9',
             reserve_start_min: '0',
             reserve_start_meridian: 'am',

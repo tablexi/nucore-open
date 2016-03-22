@@ -7,7 +7,7 @@ RSpec.describe Accessories::ChildUpdater do
                   order: order,
                   child_order_details: [],
                   attributes: {
-                   order_id: order.id
+                    order_id: order.id
                   }
   end
 
