@@ -16,9 +16,9 @@ RSpec.describe Notifier do
 
       @files.each do |f|
         it "should render template order_status_changed_to_#{f} successfully" do
-          expect {
+          expect do
             Notifier.order_detail_status_change(@order_detail, nil, OrderStatus.find_or_create_by_name(f.titleize), 'to@example.org')
-          }.not_to raise_error
+          end.not_to raise_error
         end
       end
     end

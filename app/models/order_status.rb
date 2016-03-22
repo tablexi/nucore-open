@@ -75,18 +75,18 @@ class OrderStatus < ActiveRecord::Base
 
     def initial_statuses (facility)
       first_invalid_status = self.find_by_name('Canceled')
-      statuses = self.find(:all).sort {|a,b| a.lft <=> b.lft }.reject {|os|
+      statuses = self.find(:all).sort {|a,b| a.lft <=> b.lft }.reject do|os|
         !os.is_left_of?(first_invalid_status)
-      }
+      end
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } if !facility.nil?
       statuses
     end
 
     def non_protected_statuses (facility)
       first_protected_status = self.find_by_name('Reconciled')
-      statuses = self.find(:all).sort {|a,b| a.lft <=> b.lft }.reject {|os|
+      statuses = self.find(:all).sort {|a,b| a.lft <=> b.lft }.reject do|os|
         !os.is_left_of?(first_protected_status)
-      }
+      end
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } if !facility.nil?
       statuses
     end

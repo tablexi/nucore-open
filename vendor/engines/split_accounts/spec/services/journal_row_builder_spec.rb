@@ -17,10 +17,10 @@ RSpec.describe JournalRowBuilder, :enable_split_accounts, type: :service do
   let(:account) { build_stubbed(:split_account, splits: splits) }
   let(:user) { build_stubbed(:user) }
   let(:order) { create(:order, facility: facility, user: user, created_by: user.id) }
-  let(:order_details) { [
+  let(:order_details) do [
     build_stubbed(:order_detail, actual_cost: 20.00, actual_subsidy: 0, account: account, product: product, order: order, fulfilled_at: Time.current),
     build_stubbed(:order_detail, actual_cost: 3, actual_subsidy: 0, account: account, product: product2, order: order, fulfilled_at: Time.current)
-  ] }
+  ] end
 
   context "with a three way split" do
     let(:splits) do

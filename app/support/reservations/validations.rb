@@ -112,19 +112,19 @@ module Reservations::Validations
     end
 
     mins  = (end_at - start_at)/60
-    (0..mins).each { |n|
+    (0..mins).each do |n|
       dt    = start_at.advance(:minutes => n)
       found = false
-      rules.each { |s|
+      rules.each do |s|
         if s.includes_datetime(dt)
           found = true
           break
         end
-      }
+      end
       unless found
         return false
       end
-    }
+    end
     true
   end
 
