@@ -1,7 +1,7 @@
 class AddFacilitiesJournalMaskColumn < ActiveRecord::Migration
 
   def self.up
-    add_column :facilities, :journal_mask, :string, limit: 50, null: true #TODO: why? , :after =>
+    add_column :facilities, :journal_mask, :string, limit: 50, null: true # TODO: why? , :after =>
     i = 0
     Facility.all.each do |facility|
       i += 1

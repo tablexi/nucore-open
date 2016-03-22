@@ -64,21 +64,21 @@ RSpec.describe FacilityAccount do
     end
 
     # we no longer validate facility accounts against BCS table
-    #it "should not allow account that has expired" do
+    # it "should not allow account that has expired" do
     #  @bcs = BudgetedChartString.create(:fund => '123', :dept => '1234567', :starts_at => @starts_at, :expires_at => @starts_at)
     #  @options[:account_number] = '123-1234567'
     #  @account = FacilityAccount.create(@options)
     #  assert !@account.valid?
     #  assert_equal "Account has expired", @account.errors[:base]
-    #end
+    # end
 
     # we no longer validate facility accounts against BCS table
-    #it "should not allow account that has not started" do
+    # it "should not allow account that has not started" do
     #  @bcs = BudgetedChartString.create(:fund => '123', :dept => '1234567', :starts_at => @starts_at+1.year, :expires_at => @expires_at)
     #  @options[:account_number] = '123-1234567'
     #  @account = FacilityAccount.create(@options)
     #  assert !@account.valid?
     #  assert_equal "Account is not active", @account.errors[:base]
-    #end
+    # end
   end
 end

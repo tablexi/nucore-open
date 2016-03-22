@@ -6,7 +6,7 @@ module ApplicationHelper
 
   def app_name
     t :app_name
-    #NUCore.app_name
+    # NUCore.app_name
   end
 
   def can_create_users?

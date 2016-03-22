@@ -4,8 +4,8 @@ require 'base64'
 
 module Encryption
 
-  #Basic AES symmetric encryption functions
-  #based on http://snippets.dzone.com/posts/show/4975
+  # Basic AES symmetric encryption functions
+  # based on http://snippets.dzone.com/posts/show/4975
 
   def self.encrypt(text)
     aes  = FastAES.new(Settings.aes_crypt_key)

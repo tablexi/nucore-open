@@ -600,7 +600,7 @@ RSpec.describe Instrument do
       @price_group_member = create(:account_price_group_member, account: account, price_group: @price_group)
       @user.reload
       @price_policy = FactoryGirl.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
-      #TODO: remove this line
+      # TODO: remove this line
       FactoryGirl.create(:price_group_product, price_group: @price_group, product: @instrument)
     end
 

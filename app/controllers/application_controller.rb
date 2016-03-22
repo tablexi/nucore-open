@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound unless current_facility
   end
 
-  #TODO: refactor existing calls of this definition to use this helper
+  # TODO: refactor existing calls of this definition to use this helper
   def current_cart
     acting_user.cart(session_user)
   end

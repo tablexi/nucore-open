@@ -64,10 +64,10 @@ RSpec.configure do |config|
     @epg = PriceGroup.find_or_create_by_name(name: Settings.price_group.name.external, is_internal: false, display_order: 3)
     @epg.save(validate: false)
 
-    #now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
+    # now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
     Timecop.return
     now=(SettingsHelper.fiscal_year_beginning(Date.today) + 1.year + 10.days).change(hour: 9, min: 30)
-    #puts "travelling to #{now}"
+    # puts "travelling to #{now}"
     Timecop.travel(now)
   end
 

@@ -182,7 +182,7 @@ class InstrumentsController < ProductsCommonController
     rescue => e
       logger.error "ERROR: #{e.message}"
       @status = InstrumentStatus.new(instrument: @instrument, error_message: e.message)
-      #raise ActiveRecord::RecordNotFound
+      # raise ActiveRecord::RecordNotFound
     end
     respond_to do |format|
       format.html { render action: :instrument_status, layout: false }

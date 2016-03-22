@@ -9,7 +9,7 @@ class ChangeOrderDetailStatus < ActiveRecord::Migration
     end
 
     ## this would work if oracle wasn't stupid
-    #execute "UPDATE order_details od SET od.order_status_id = (SELECT * FROM (SELECT order_status_id FROM order_detail_statuses ods WHERE ods.order_detail_id = od.id ORDER BY ods.created_at DESC ) WHERE ROWNUM <= 1)"
+    # execute "UPDATE order_details od SET od.order_status_id = (SELECT * FROM (SELECT order_status_id FROM order_detail_statuses ods WHERE ods.order_detail_id = od.id ORDER BY ods.created_at DESC ) WHERE ROWNUM <= 1)"
     
     ## so instead we do this
     OrderDetail.find(:all).each do |od|

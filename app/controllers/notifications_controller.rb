@@ -5,7 +5,7 @@ class NotificationsController < ApplicationController
   before_filter :check_acting_as
   before_filter :check_notifications
 
-  #respond_to :js, :only => :update
+  # respond_to :js, :only => :update
 
   def index
   end
@@ -13,7 +13,7 @@ class NotificationsController < ApplicationController
   #
   # Currently not routed to, but if you want to allow
   # dismissal of notifications you should enable this action
-  #def update
+  # def update
   #  begin
   #    notice=Notification.find params[:id].to_i
   #    notice.update_attribute :dismissed_at, Time.zone.now
@@ -22,7 +22,7 @@ class NotificationsController < ApplicationController
   #  end
   #
   #  respond_with nil
-  #end
+  # end
 
   private
 
