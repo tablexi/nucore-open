@@ -90,12 +90,12 @@ class GeneralReportsController < ReportsController
     @headers = [ report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost' ]
   end
 
-  def init_report_data(report_on_label, &report_on)
+  def init_report_data(_report_on_label)
     @report_data=report_data
   end
 
 
-  def init_report(report_on_label)
+  def init_report(_report_on_label)
     sums, rows, @total_quantity, @total_cost={}, [], 0, 0.0
     report_data.each do |od|
       key=yield od

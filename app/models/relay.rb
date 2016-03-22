@@ -36,7 +36,7 @@ class Relay < ActiveRecord::Base
 
   private
 
-  def toggle(status)
+  def toggle(_status)
     raise NotImplementedError.new('Subclass must define')
   end
 

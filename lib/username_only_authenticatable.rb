@@ -8,7 +8,7 @@ require 'devise/strategies/database_authenticatable'
 module Devise
   module Models
     module UsernameOnlyAuthenticatable
-      def valid_password?(password)
+      def valid_password?(_password)
         true
       end
     end

@@ -232,7 +232,7 @@ RSpec.describe GeneralReportsController do
   end
 
 
-  def assert_report_init(label)
+  def assert_report_init(_label)
     expect(response).to be_success
     expect(assigns(:total_quantity)).to be_instance_of Fixnum
 
@@ -266,7 +266,7 @@ RSpec.describe GeneralReportsController do
     end
   end
 
-  def assert_report_data_init(label)
+  def assert_report_data_init(_label)
     expect(assigns :report_on).to be_a Proc
   end
 

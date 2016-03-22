@@ -91,17 +91,17 @@ module ReportSpecHelper
   end
 
 
-  def report_headers(label)
+  def report_headers(_label)
     raise 'Including class must implement!'
   end
 
 
-  def assert_report_init(label, &report_on)
+  def assert_report_init(_label)
     raise 'Including class must implement!'
   end
 
 
-  def assert_report_data_init(label)
+  def assert_report_data_init(_label)
     raise 'Including class must implement!'
   end
 

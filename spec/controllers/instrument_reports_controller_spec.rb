@@ -16,7 +16,7 @@ RSpec.describe InstrumentReportsController do
 
   private
 
-  def setup_extra_test_data(user)
+  def setup_extra_test_data(_user)
     start_at = parse_usa_date(@params[:date_start], '10:00 AM') + 10.days
     place_reservation(@authable, @order_detail, start_at)
     @reservation.actual_start_at = start_at
@@ -34,7 +34,7 @@ RSpec.describe InstrumentReportsController do
   end
 
 
-  def assert_report_init(label, &report_on)
+  def assert_report_init(_label)
     expect(assigns(:totals).size).to eq(5)
     reservations=Reservation.all
     expect(assigns(:totals)[0]).to eq(reservations.size)
@@ -51,7 +51,7 @@ RSpec.describe InstrumentReportsController do
   end
 
 
-  def assert_report_data_init(label)
+  def assert_report_data_init(_label)
     reservations=Reservation.all
     expect(assigns(:report_data)).to eq(reservations)
     expect(assigns(:totals)).to be_is_a Array

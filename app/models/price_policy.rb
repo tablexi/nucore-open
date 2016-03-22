@@ -93,14 +93,14 @@ class PricePolicy < ActiveRecord::Base
   #
   # A price estimate for a +Product+.
   # Must return { :cost => estimated_cost, :subsidy => estimated_subsidy }
-  def estimate_cost_and_subsidy(*args)
+  def estimate_cost_and_subsidy(*_args)
     raise "subclass must implement!"
   end
 
 
   #
   # Same as #estimate_cost_and_subsidy, but with actual prices
-  def calculate_cost_and_subsidy(*args)
+  def calculate_cost_and_subsidy(*_args)
     raise "subclass must implement!"
   end
 
