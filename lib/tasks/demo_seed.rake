@@ -328,12 +328,12 @@ namespace :demo do
 
         builder = AccountBuilder.for("SplitAccounts::SplitAccount")
 
-        split_account = builder.new( account_type: "SplitAccounts::SplitAccount",
+        split_account = builder.new(account_type: "SplitAccounts::SplitAccount",
           current_user: user_director,
           owner_user: user_pi,
           params: params).build
 
-        split_account.account_users.build( user_id: user_student.id,
+        split_account.account_users.build(user_id: user_student.id,
           user_role: "Purchaser",
           created_by: user_director.id)
 

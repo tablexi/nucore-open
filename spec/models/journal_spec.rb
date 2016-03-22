@@ -209,33 +209,33 @@ RSpec.describe Journal do
       end
 
       it "should not allow creation of a journal for A" do
-        expect { create_pending_journal_for( @facilitya) }.to raise_error(Journal::CreationError)
+        expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
       end
     end
 
     context "(with: pending journal for A & B)" do
       before :each do
-        create_pending_journal_for( @facilitya, @facilityb )
+        create_pending_journal_for(@facilitya, @facilityb)
       end
 
       it "should not allow creation of a journal for B & C (journal pending on B)" do
-        expect { create_pending_journal_for( @facilityb, @facilityc ) }.to raise_error(Journal::CreationError)
+        expect { create_pending_journal_for(@facilityb, @facilityc) }.to raise_error(Journal::CreationError)
       end
 
       it "should not allow creation of a journal for A (journal pending on A)" do
-        expect { create_pending_journal_for( @facilitya ) }.to raise_error(Journal::CreationError)
+        expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
       end
 
       it "should not allow creation of a journal for B (journal pending on B)" do
-        expect { create_pending_journal_for( @facilityb ) }.to raise_error(Journal::CreationError)
+        expect { create_pending_journal_for(@facilityb) }.to raise_error(Journal::CreationError)
       end
 
       it "should allow creation of a journal for C" do
-        expect { create_pending_journal_for( @facilityc ) }.to_not raise_error
+        expect { create_pending_journal_for(@facilityc) }.to_not raise_error
       end
 
       it "should allow creation of a journal for C & D (no journals on either C or D)" do
-        expect { create_pending_journal_for( @facilityc, @facilityd ) }.to_not raise_error
+        expect { create_pending_journal_for(@facilityc, @facilityd) }.to_not raise_error
       end
     end
   end

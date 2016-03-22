@@ -16,7 +16,7 @@ class Statement < ActiveRecord::Base
     at = order_details.find(:first,
                             joins: "INNER JOIN statement_rows ON statement_rows.statement_id=statements.id",
                             conditions: ["order_details.reviewed_at <= ? AND order_details.account_id = ?", invoice_date, account.id],
-                            select: 'SUM(statement_rows.amount) AS balance' )
+                            select: 'SUM(statement_rows.amount) AS balance')
     at.nil? ? 0 : at.balance.to_f
   end
 

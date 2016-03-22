@@ -37,7 +37,7 @@ RSpec.describe PriceGroupProductsController do
       @action = :update
 
       PriceGroup.all.each do |pg|
-        @params.merge!( pg_key(pg) => { reservation_window: 5, purchase: '1' })
+        @params.merge!(pg_key(pg) => { reservation_window: 5, purchase: '1' })
       end
     end
 
