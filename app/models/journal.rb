@@ -71,7 +71,7 @@ class Journal < ActiveRecord::Base
     # run it and get the results back (a list)
     pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
 
-    return pending_facility_ids
+    pending_facility_ids
   end
 
   def create_journal_rows!(order_details)

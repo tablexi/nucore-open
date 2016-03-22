@@ -63,7 +63,7 @@ class AccountUsersController < ApplicationController
   private
 
   def ability_resource
-    return @account
+    @account
   end
 
 end

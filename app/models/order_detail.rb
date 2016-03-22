@@ -447,7 +447,7 @@ class OrderDetail < ActiveRecord::Base
       yield(self) if block
       self.save!
     end
-    return true
+    true
   end
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
@@ -582,7 +582,7 @@ class OrderDetail < ActiveRecord::Base
 
     return nil if product.can_purchase_order_detail? self
 
-    return 'No assigned price groups allow purchase of this product'
+    'No assigned price groups allow purchase of this product'
   end
 
   def valid_for_purchase?
@@ -931,7 +931,7 @@ class OrderDetail < ActiveRecord::Base
       end
     end
 
-    return msg_hash
+    msg_hash
   end
 
   def can_be_assigned_to_account?(account)

@@ -122,7 +122,7 @@ class Order < ActiveRecord::Base
     ods = adder.add(product, quantity, attributes)
 
     ods.each { |od| od.assign_estimated_price! }
-    return ods
+    ods
   end
 
   ## TODO: this doesn't pass errors up to the caller.. does it need to?
@@ -152,7 +152,7 @@ class Order < ActiveRecord::Base
       order_detail.save
     end
 
-    return self.errors.empty?
+    self.errors.empty?
   end
 
   def can_backdate_order_details?

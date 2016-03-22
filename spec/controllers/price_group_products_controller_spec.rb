@@ -94,7 +94,7 @@ RSpec.describe PriceGroupProductsController do
   private
 
   def pg_key(price_group)
-    return "price_group_#{price_group.id}".to_sym
+    "price_group_#{price_group.id}".to_sym
   end
 
   def create_price_group_products

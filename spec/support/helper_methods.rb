@@ -113,7 +113,7 @@ def place_and_complete_item_order(ordered_by, facility, account=nil, reviewed=fa
 
   od_attrs[:reviewed_at] = Time.zone.now-1.day if reviewed
   @order_detail.update_attributes(od_attrs)
-  return @order_detail
+  @order_detail
 end
 
 #

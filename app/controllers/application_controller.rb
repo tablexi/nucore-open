@@ -193,7 +193,7 @@ class ApplicationController < ActionController::Base
   # is returned by this method. By default it is #current_facility.
   # Override here to easily change the resource.
   def ability_resource
-    return current_facility
+    current_facility
   end
 
   def remove_ugly_params_and_redirect

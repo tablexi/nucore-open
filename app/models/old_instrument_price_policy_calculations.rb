@@ -144,7 +144,7 @@ module OldInstrumentPricePolicyCalculations
       actual_cost    = minimum_cost
       actual_subsidy = 0
     end
-    return {cost: actual_cost, subsidy: actual_subsidy}
+    {cost: actual_cost, subsidy: actual_subsidy}
   end
 
   private

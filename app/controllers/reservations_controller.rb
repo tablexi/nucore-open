@@ -322,7 +322,7 @@ class ReservationsController < ApplicationController
   end
 
   def ability_resource
-    return @reservation
+    @reservation
   end
 
   # TODO: you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)

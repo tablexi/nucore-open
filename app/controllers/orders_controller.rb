@@ -351,7 +351,7 @@ class OrdersController < ApplicationController
       end
     end
 
-    return @order.update_details(order_detail_updates)
+    @order.update_details(order_detail_updates)
   end
 
   def build_order_date

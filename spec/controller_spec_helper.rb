@@ -265,7 +265,7 @@ end
 def grant_and_sign_in(user)
   grant_role(user) unless user == @guest || user == @admin
   sign_in user
-  return user
+  user
 end
 
 def maybe_grant_always_sign_in(user_sym)

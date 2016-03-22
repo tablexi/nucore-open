@@ -136,7 +136,7 @@ RSpec.describe OrderImport, :timecop_freeze do
       end
     end
   
-    return StringIO.new whole_csv
+    StringIO.new whole_csv
   end
 
   context "when in save-clean-orders mode" do

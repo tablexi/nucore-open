@@ -163,7 +163,7 @@ class ProductsCommonController < ApplicationController
 
   # The equivalent of calling current_facility.services or current_facility.items
   def current_facility_products
-    return current_facility.send(:"#{plural_object_name}")
+    current_facility.send(:"#{plural_object_name}")
   end
 
   def price_policy_available_for_product?

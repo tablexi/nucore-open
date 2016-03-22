@@ -32,7 +32,7 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def can_purchase?(product)
-    return !PriceGroupProduct.find_by_price_group_id_and_product_id(self.id, product.id).nil?
+    !PriceGroupProduct.find_by_price_group_id_and_product_id(self.id, product.id).nil?
   end
 
   def name

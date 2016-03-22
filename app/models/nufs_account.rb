@@ -24,7 +24,7 @@ class NufsAccount < Account
       return false
     end
 
-    return true
+    true
   end
 
   def can_reconcile?(order_detail)

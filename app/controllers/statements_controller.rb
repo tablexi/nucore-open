@@ -39,7 +39,7 @@ class StatementsController < ApplicationController
   private
 
   def ability_resource
-    return @account
+    @account
   end
 
   def init_account
