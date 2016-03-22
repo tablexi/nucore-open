@@ -59,7 +59,7 @@ RSpec.describe FacilityOrderDetailsController do
   def prepare_reservation
     @order_detail.update_attributes(:price_policy => nil)
     @instrument = FactoryGirl.create(:instrument, :facility => @authable,
-      :facility_account => @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)))
+                                                  :facility_account => @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)))
     @instrument_price_policy=FactoryGirl.create(:instrument_price_policy,
                                             :product => @instrument,
                                             :price_group => @price_group,

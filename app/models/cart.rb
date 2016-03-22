@@ -10,7 +10,7 @@ class Cart
 
   def new_cart
     Order.create(:user => @user,
-      :created_by => @created_by_user.id)
+                 :created_by => @created_by_user.id)
   end
 
   def self.destroy_all_instrument_only_carts(before = Time.zone.now)

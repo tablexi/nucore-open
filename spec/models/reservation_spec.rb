@@ -567,22 +567,22 @@ RSpec.describe Reservation do
   context 'conflicting reservations' do
     let!(:reservation) do
       @instrument.reservations.create!(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                      :duration_value => '60', :duration_unit => 'minutes')
+                                       :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                       :duration_value => '60', :duration_unit => 'minutes')
     end
 
     let (:conflicting_reservation) do
       res = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                      :duration_value => '60', :duration_unit => 'minutes')
+                                           :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                           :duration_value => '60', :duration_unit => 'minutes')
       res.valid?
       res
     end
 
     let(:conflicting_admin_reservation) do
       res = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                      :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                      :duration_value => '60', :duration_unit => 'minutes')
+                                           :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                           :duration_value => '60', :duration_unit => 'minutes')
       res.valid?
       allow(res).to receive(:admin?).and_return(true)
       res
@@ -631,8 +631,8 @@ RSpec.describe Reservation do
       context 'completely within a blacked out time' do
         before :each do
           @reservation = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 6,
-                                      :reserve_start_min => 0, :reserve_start_meridian => 'pm',
-                                      :duration_value => '60', :duration_unit => 'minutes')
+                                                        :reserve_start_min => 0, :reserve_start_meridian => 'pm',
+                                                        :duration_value => '60', :duration_unit => 'minutes')
         end
 
         it 'should allow an admin reservation' do
@@ -649,8 +649,8 @@ RSpec.describe Reservation do
       context 'overlapping a border of blacked out time' do
         before :each do
           @reservation = @instrument.reservations.build(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 5,
-                                      :reserve_start_min => 30, :reserve_start_meridian => 'pm',
-                                      :duration_value => '60', :duration_unit => 'minutes')
+                                                        :reserve_start_min => 30, :reserve_start_meridian => 'pm',
+                                                        :duration_value => '60', :duration_unit => 'minutes')
         end
 
         it 'should allow an admin reservation' do
@@ -673,23 +673,23 @@ RSpec.describe Reservation do
 
     it "should not let reservations exceed the maximum length" do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                   :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                   :duration_value => 61, :duration_unit => 'minutes')
+                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                     :duration_value => 61, :duration_unit => 'minutes')
       expect(@reservation).not_to be_valid
       expect(@reservation.errors[:base]).to include "The reservation is too long"
     end
 
     it "should allow reservations that don't exceed the maximum length" do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                   :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                   :duration_value => 60, :duration_unit => 'minutes')
+                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                     :duration_value => 60, :duration_unit => 'minutes')
       expect(@reservation).to be_valid
     end
 
     it 'should allow admin reservation to exceed the maximum length' do
       @reservation = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
-                                                   :reserve_start_min => 0, :reserve_start_meridian => 'am',
-                                                   :duration_value => 75, :duration_unit => 'minutes')
+                                                     :reserve_start_min => 0, :reserve_start_meridian => 'am',
+                                                     :duration_value => 75, :duration_unit => 'minutes')
       allow(@reservation).to receive(:admin?).and_return(true)
       expect(@reservation).to be_valid
     end
@@ -834,8 +834,8 @@ RSpec.describe Reservation do
     it "should not allow reservations starting before now" do
       @earlier = Date.today - 1
       @reservation = @instrument.reservations.create(:reserve_start_date => @earlier, :reserve_start_hour => 10,
-                                      :reserve_start_min => 0, :reserve_start_meridian => 'pm',
-                                      :duration_value => 4, :duration_unit => 'hours')
+                                                     :reserve_start_min => 0, :reserve_start_meridian => 'pm',
+                                                     :duration_value => 4, :duration_unit => 'hours')
       assert @reservation.invalid?
     end
 
@@ -881,13 +881,13 @@ RSpec.describe Reservation do
           @restriction_level = @rule_5_to_7.product_access_groups.create(FactoryGirl.attributes_for(:product_access_group, :product => @instrument))
           @instrument.reload
           @reservation = Reservation.new(:reserve_start_date => Date.today + 1,
-                                                      :reserve_start_hour => 6,
-                                                      :reserve_start_min => 0,
-                                                      :reserve_start_meridian => 'pm',
-                                                      :duration_value => 1,
-                                                      :duration_unit => 'hours',
-                                                      :order_detail => @order_detail,
-                                                      :product => @instrument)
+                                         :reserve_start_hour => 6,
+                                         :reserve_start_min => 0,
+                                         :reserve_start_meridian => 'pm',
+                                         :duration_value => 1,
+                                         :duration_unit => 'hours',
+                                         :order_detail => @order_detail,
+                                         :product => @instrument)
         end
         it "should allow a user to reserve if it doesn't require approval" do
           @instrument.update_attributes(:requires_approval => false)
@@ -988,7 +988,7 @@ RSpec.describe Reservation do
   context "as_calendar_obj" do
     before :each do
       @reservation = @instrument.reservations.create!(:reserve_start_at => 1.hour.ago,
-                                                     :duration_value => 60, :duration_unit => 'minutes')
+                                                      :duration_value => 60, :duration_unit => 'minutes')
       @reserve_start_at_timestamp = @reservation.reserve_start_at.strftime("%a, %d %b %Y %H:%M:%S")
       @reserve_end_at_timestamp = @reservation.reserve_end_at.strftime("%a, %d %b %Y %H:%M:%S")
 
@@ -1031,13 +1031,13 @@ RSpec.describe Reservation do
       @instrument.update_attribute :reserve_interval, 15
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 24))
       @spans_day_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.end_of_day - 1.hour,
-                                                     :duration_value => 120, :duration_unit => 'minutes')
+                                                                :duration_value => 120, :duration_unit => 'minutes')
       @today_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.beginning_of_day + 8.hours,
-                                                     :duration_value => 120, :duration_unit => 'minutes')
+                                                            :duration_value => 120, :duration_unit => 'minutes')
       @yeserday_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.beginning_of_day - 16.hours,
-                                                     :duration_value => 120, :duration_unit => 'minutes')
+                                                               :duration_value => 120, :duration_unit => 'minutes')
       @tomorrow_reservation = @instrument.reservations.create!(:reserve_start_at => Time.zone.now.end_of_day + 8.hours,
-                                                     :duration_value => 120, :duration_unit => 'minutes')
+                                                               :duration_value => 120, :duration_unit => 'minutes')
     end
     it 'should return reservations from a single day' do
       expect(Reservation.for_date(Time.zone.now - 1.day)).to contain_all [@yeserday_reservation]

@@ -569,7 +569,7 @@ RSpec.describe OldInstrumentPricePolicy do
       context 'with usage rates instead of reservation rates' do
         before :each do
           @ipp.update_attributes!(:reservation_rate => nil, :reservation_subsidy => nil,
-              :usage_rate => 100, :usage_subsidy => 99)
+                                  :usage_rate => 100, :usage_subsidy => 99)
         end
         it 'should return nil' do
           @costs = @ipp.calculate_cost_and_subsidy(@reservation)

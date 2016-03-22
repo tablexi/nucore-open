@@ -303,9 +303,9 @@ RSpec.describe OrderManagement::OrderDetailsController do
         context 'with a cancellation fee and was completed' do
           before :each do
             reservation.update_attributes(:reserve_start_at => 24.hours.ago,
-              :reserve_end_at => 23.hours.ago,
-              :actual_start_at => nil,
-              :actual_end_at => nil)
+                                          :reserve_end_at => 23.hours.ago,
+                                          :actual_start_at => nil,
+                                          :actual_end_at => nil)
             Timecop.travel(7.days.from_now) do
               order_detail.change_status!(OrderStatus.find_by_name!('Complete'))
             end

@@ -57,21 +57,21 @@ RSpec.describe ReservationsController do
 
       it 'should include a reservation from today' do
         @reservation = @instrument.reservations.create(:reserve_start_at => @now, :order_detail => @order_detail,
-                                                      :duration_value => 60, :duration_unit => 'minutes')
+                                                       :duration_value => 60, :duration_unit => 'minutes')
         do_request
         expect(assigns[:reservations]).to match_array([@reservation])
       end
 
       it 'should not contain reservations from before start date' do
         @reservation = @instrument.reservations.create(:reserve_start_at => @now - 1.day, :order_detail => @order_detail,
-                                                      :duration_value => 60, :duration_unit => 'minutes')
+                                                       :duration_value => 60, :duration_unit => 'minutes')
         do_request
         expect(assigns[:reservations]).not_to include @reservation
       end
 
       it 'should not contain reservations from after the end date' do
         @reservation = @instrument.reservations.create(:reserve_start_at => @now + 3.days, :order_detail => @order_detail,
-                                                      :duration_value => 60, :duration_unit => 'minutes')
+                                                       :duration_value => 60, :duration_unit => 'minutes')
         @params[:end] = @now + 2.days
         do_request
         expect(assigns[:reservations]).not_to include @reservation
@@ -1089,7 +1089,7 @@ RSpec.describe ReservationsController do
 
           context 'and there is another reservation still going on' do
             let!(:reservation2) { create(:purchased_reservation, product: @instrument,
-              reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at) }
+                                                                 reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at) }
 
             it 'allows it to start' do
               do_request
@@ -1164,8 +1164,8 @@ RSpec.describe ReservationsController do
 
         context 'and a reservation using the same relay as another running reservation' do
           let!(:reservation_running) { create(:purchased_reservation, product: @instrument,
-            actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
-            reserve_end_at: 30.minutes.from_now) }
+                                                                      actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
+                                                                      reserve_end_at: 30.minutes.from_now) }
 
           before { @params[:reservation_id] = reservation_running.id }
 

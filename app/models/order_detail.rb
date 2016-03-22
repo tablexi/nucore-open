@@ -101,8 +101,8 @@ class OrderDetail < ActiveRecord::Base
                                     :order => 'order_details.created_at DESC' }}
 
   scope :finalized, lambda {|facility| { :joins => :order,
-                                               :conditions => ['orders.facility_id = ? AND order_details.reviewed_at < ?', facility.id, Time.zone.now],
-                                               :order => 'order_details.created_at DESC' }}
+                                         :conditions => ['orders.facility_id = ? AND order_details.reviewed_at < ?', facility.id, Time.zone.now],
+                                         :order => 'order_details.created_at DESC' }}
 
   def self.for_facility(facility)
     for_facility_id(facility.id)
