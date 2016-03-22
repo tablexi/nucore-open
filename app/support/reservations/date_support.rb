@@ -197,7 +197,7 @@ module Reservations::DateSupport
   def set_reserve_start_at
     return unless self.reserve_start_at.blank?
     if @reserve_start_date and @reserve_start_hour and @reserve_start_min and @reserve_start_meridian
-      self.reserve_start_at = parse_usa_date(@reserve_start_date, "#{@reserve_start_hour.to_s}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
+      self.reserve_start_at = parse_usa_date(@reserve_start_date, "#{@reserve_start_hour}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
     end
   end
 
@@ -220,14 +220,14 @@ module Reservations::DateSupport
   def set_actual_start_at
     return if self.actual_start_at.present?
     if @actual_start_date && @actual_start_hour && @actual_start_min && @actual_start_meridian
-      self.actual_start_at = parse_usa_date(@actual_start_date, "#{@actual_start_hour.to_s}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
+      self.actual_start_at = parse_usa_date(@actual_start_date, "#{@actual_start_hour}:#{@actual_start_min.to_s.rjust(2, '0')} #{@actual_start_meridian}")
     end
   end
 
   def set_actual_end_at
     return if self.actual_end_at.present?
     if @actual_end_date && @actual_end_hour && @actual_end_min && @actual_end_meridian
-      self.actual_end_at = parse_usa_date(@actual_end_date, "#{@actual_end_hour.to_s}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
+      self.actual_end_at = parse_usa_date(@actual_end_date, "#{@actual_end_hour}:#{@actual_end_min.to_s.rjust(2, '0')} #{@actual_end_meridian}")
     elsif @actual_duration_mins && self.actual_start_at
       self.actual_end_at = self.actual_start_at + @actual_duration_mins.to_i.minutes
     end

@@ -46,7 +46,7 @@ end
 #
 # Factory wrapper for creating an account with owner
 def create_nufs_account_with_owner(owner=:owner)
-  owner = instance_variable_get("@#{owner.to_s}")
+  owner = instance_variable_get("@#{owner}")
   FactoryGirl.create(:nufs_account,
     account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]
   )

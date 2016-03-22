@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Schedule do
   let(:schedule) { FactoryGirl.create(:schedule) }
-  let(:first_reservation_time) { Time.zone.parse("#{Date.today.to_s} 10:00:00") + 1.day }
+  let(:first_reservation_time) { Time.zone.parse("#{Date.today} 10:00:00") + 1.day }
 
   context 'single instrument on schedule' do
     let(:instrument) { FactoryGirl.create(:setup_instrument) }

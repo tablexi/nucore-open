@@ -3,14 +3,14 @@ require "rails_helper"
 RSpec.describe AutoCanceler do
   before :each do
     # Need to travel later in the day so that previous reservations can be made in the day
-    Timecop.travel(Time.zone.parse("#{Date.today.to_s} 12:30:00"))
+    Timecop.travel(Time.zone.parse("#{Date.today} 12:30:00"))
   end
 
   after :each do
     Timecop.return
   end
 
-  let(:base_date) { Time.zone.parse("#{Date.today.to_s} 12:30:00") }
+  let(:base_date) { Time.zone.parse("#{Date.today} 12:30:00") }
   let(:instrument) { FactoryGirl.create :setup_instrument }
   let!(:future_reservation) { FactoryGirl.create :purchased_reservation,
     :product => instrument,

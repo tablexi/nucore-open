@@ -720,7 +720,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def description
-    "Order # #{to_s}"
+    "Order # #{self}"
   end
 
   def long_description
