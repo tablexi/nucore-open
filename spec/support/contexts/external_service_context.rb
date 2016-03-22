@@ -12,6 +12,7 @@ RSpec.shared_context 'external service' do
     survey_id: 'CX-12345',
     survey_url: 'http://survey.local/show',
     survey_edit_url: 'http://survey.local/edit'
-  } end
+  } 
+  end
 
 end

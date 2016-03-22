@@ -717,7 +717,8 @@ RSpec.describe Instrument do
         let!(:reservation) do FactoryGirl.create :purchased_reservation,
                                                 :reserve_start_at => 30.minutes.ago,
                                                 :reserve_end_at   => 30.minutes.from_now,
-                                                :product => instrument end
+                                                :product => instrument 
+        end
 
         it { is_expected.not_to be_available }
 
@@ -752,7 +753,8 @@ RSpec.describe Instrument do
         let!(:reservation) do FactoryGirl.create :purchased_reservation,
                                                 :reserve_start_at => 30.minutes.ago,
                                                 :reserve_end_at   => 30.minutes.from_now,
-                                                :product => instrument end
+                                                :product => instrument 
+        end
 
         context 'and is started' do
           before :each do
