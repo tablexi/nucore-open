@@ -11,7 +11,7 @@ module SplitAccounts
     end
 
     def quantity=(value)
-      @quantity_override = BigDecimal("#{value}")
+      @quantity_override = BigDecimal(value.to_s)
     end
 
     # Let it pretend to be a real OrderDetail
