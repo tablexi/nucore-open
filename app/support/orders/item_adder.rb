@@ -65,7 +65,7 @@ class Orders::ItemAdder
         quantity: bp.quantity,
         bundle_product_id: product.id,
         group_id: group_id}.merge(
-        attributes))
+          attributes))
     end
   end
 

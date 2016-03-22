@@ -107,7 +107,7 @@ class JournalRowBuilder
     unless journaled_facility_ids.member?(facility_id)
       if pending_facility_ids.member?(facility_id)
         raise ::Journal::CreationError.new(I18n.t(
-          "activerecord.errors.models.journal.pending_overlap",
+                                             "activerecord.errors.models.journal.pending_overlap",
           label: order_detail.to_s,
           facility: Facility.find(facility_id)
         ))

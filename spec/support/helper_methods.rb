@@ -162,7 +162,7 @@ end
 def place_reservation(facility, order_detail, reserve_start, extra_reservation_attrs=nil)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
   @instrument ||= FactoryGirl.create(
-        :instrument,
+    :instrument,
         :facility => facility,
         :facility_account => facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)),
         :min_reserve_mins => 60,
