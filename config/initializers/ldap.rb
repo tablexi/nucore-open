@@ -11,7 +11,7 @@ Rails.application.config.to_prepare do
       # would only call `validate` with a fully authenticated resource, but 0.8+
       # will find the resource in the database first and then call against the LDAP
       # server. This prevents the LDAP authentication for external users.
-      def self.find_for_ldap_authentication(attributes={})
+      def self.find_for_ldap_authentication(attributes = {})
         resource = super
         resource unless resource.authenticated_locally?
       end

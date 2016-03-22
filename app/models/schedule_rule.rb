@@ -120,7 +120,7 @@ class ScheduleRule < ActiveRecord::Base
   end
 
   # build weekly calendar object
-  def as_calendar_object(options={})
+  def as_calendar_object(options = {})
     start_date = options[:start_date].presence || self.class.sunday_last
     num_days = options[:num_days] ? options[:num_days].to_i : 7
     title = ''

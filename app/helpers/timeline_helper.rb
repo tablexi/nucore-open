@@ -1,6 +1,6 @@
 module TimelineHelper
 
-  def reservation_classes(reservation, product=nil)
+  def reservation_classes(reservation, product = nil)
     classes = ['unit']
     if reservation.product == product
       classes << 'tip' unless reservation.blackout?

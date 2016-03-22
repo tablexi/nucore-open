@@ -349,12 +349,12 @@ RSpec.describe FacilityOrdersController do
       assert_redirected_to facility_order_path(@authable, order.to_be_merged? ? order.merge_order : order)
     end
 
-    def assert_no_merge_order(original_order, product, detail_count=1)
+    def assert_no_merge_order(original_order, product, detail_count = 1)
       expect(original_order.reload.order_details.size).to eq(detail_count)
       assert_update_success original_order, product
     end
 
-    def assert_merge_order(original_order, product, detail_count=1, original_detail_count=0)
+    def assert_merge_order(original_order, product, detail_count = 1, original_detail_count = 0)
       expect(original_order.reload.order_details.size).to eq(original_detail_count)
       merges=Order.where(merge_with_order_id: original_order.id).all
       expect(merges.size).to eq(1)

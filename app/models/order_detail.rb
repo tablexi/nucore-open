@@ -657,7 +657,7 @@ class OrderDetail < ActiveRecord::Base
     JournalRowUpdater.new(self).update
   end
 
-  def assign_estimated_price(second_account=nil, date = Time.zone.now)
+  def assign_estimated_price(second_account = nil, date = Time.zone.now)
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
     second_account=account unless second_account
@@ -669,7 +669,7 @@ class OrderDetail < ActiveRecord::Base
     assign_estimated_price_from_policy @estimated_price_policy
   end
 
-  def assign_estimated_price!(second_account=nil, date = Time.zone.now)
+  def assign_estimated_price!(second_account = nil, date = Time.zone.now)
     assign_estimated_price(second_account, date)
     save!
   end
@@ -732,7 +732,7 @@ class OrderDetail < ActiveRecord::Base
     dispute_at.present? && !canceled?
   end
 
-  def cancel_reservation(canceled_by, order_status = OrderStatus.canceled.first, admin_cancellation = false, admin_with_cancel_fee=false)
+  def cancel_reservation(canceled_by, order_status = OrderStatus.canceled.first, admin_cancellation = false, admin_with_cancel_fee = false)
     res = reservation
     res.canceled_by = canceled_by.id
 
@@ -879,7 +879,7 @@ class OrderDetail < ActiveRecord::Base
   #                   (since this class method is also used to update
   #                   order_details associated with reservations)
   #                   defaults to 'orders'
-  def self.batch_update(order_detail_ids, current_facility, session_user, update_params, msg_type='orders')
+  def self.batch_update(order_detail_ids, current_facility, session_user, update_params, msg_type = 'orders')
     msg_hash = {}
 
     unless order_detail_ids.present?

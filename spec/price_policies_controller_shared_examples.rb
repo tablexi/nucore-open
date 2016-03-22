@@ -470,7 +470,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
     create :"#{@product_type}_price_policy", extra_attr.merge(price_group: price_group, product: @product)
   end
 
-  def set_policy_date(time_in_future=0)
+  def set_policy_date(time_in_future = 0)
     @price_policy.start_date = Time.zone.now.beginning_of_day + time_in_future
     @price_policy.expire_date = PricePolicy.generate_expire_date(@price_policy)
     assert @price_policy.save

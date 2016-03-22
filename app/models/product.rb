@@ -76,7 +76,7 @@ class Product < ActiveRecord::Base
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
 
-  def current_price_policies(date=Time.zone.now)
+  def current_price_policies(date = Time.zone.now)
     price_policies.current_for_date(date).purchaseable
   end
 
