@@ -39,7 +39,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     end
 
     Statement.all.each do |stmt|
-      aid_rows=Statement.find_by_sql(%Q<
+      aid_rows=Statement.find_by_sql(%<
         SELECT
           DISTINCT at.account_id
         FROM
@@ -55,7 +55,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
         statement.account=acct
         statement.save!
 
-        at_rows=Statement.find_by_sql(%Q<
+        at_rows=Statement.find_by_sql(%<
           SELECT * FROM
             account_transactions
           WHERE
