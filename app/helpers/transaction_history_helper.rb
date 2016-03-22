@@ -5,7 +5,7 @@ module TransactionHistoryHelper
   end
 
   def product_options(products, search_fields)
-    search_fields.map! { |i| i.to_s } if search_fields
+    search_fields.map!(&:to_s) if search_fields
     options = []
     products.each do |product|
       options << [product.name, product.id, { :"data-facility" => product.facility_id,
@@ -16,7 +16,7 @@ module TransactionHistoryHelper
   end
 
   def order_statuses_options(order_statuses, search_fields)
-    search_fields.map! { |i| i.to_s } if search_fields
+    search_fields.map!(&:to_s) if search_fields
     options = []
     order_statuses.each do |order_status|
       attributes = {}

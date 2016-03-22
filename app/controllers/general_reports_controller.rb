@@ -5,7 +5,7 @@ class GeneralReportsController < ReportsController
   end
 
   def account
-    render_report(1, "Description") { |od| od.account }
+    render_report(1, "Description", &:account)
   end
 
   def account_owner

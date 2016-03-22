@@ -59,7 +59,7 @@ RSpec.describe Reservation do
       end
 
       it "should be persisted" do
-        instrument.price_policies.all? { |pp| pp.persisted? }
+        instrument.price_policies.all?(&:persisted?)
       end
 
       it "should be the newly created price group" do

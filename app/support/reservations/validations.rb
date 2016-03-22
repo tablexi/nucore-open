@@ -165,8 +165,8 @@ module Reservations::Validations
   # return the longest available reservation window for the groups
   def longest_reservation_window(groups = [])
     return default_reservation_window if groups.empty?
-    pgps = product.price_group_products.find(:all, conditions: { price_group_id: groups.collect { |pg| pg.id } })
-    pgps.collect { |pgp| pgp.reservation_window }.max
+    pgps = product.price_group_products.find(:all, conditions: { price_group_id: groups.collect(&:id) })
+    pgps.collect(&:reservation_window).max
   end
 
   private

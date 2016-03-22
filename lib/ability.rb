@@ -58,9 +58,7 @@ class Ability
       can :manage, [Account, Journal, Order, OrderDetail, Reservation]
       cannot :administer, [Order, OrderDetail, Reservation]
       can :manage_billing, Facility.cross_facility
-      can [:disputed_orders, :movable_transactions, :transactions], Facility do |facility|
-        facility.cross_facility?
-      end
+      can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
     end
 
     return unless resource
@@ -97,7 +95,7 @@ class Ability
           :update_admin,
         ], Reservation
 
-        can(:destroy, Reservation) { |r| r.admin? }
+        can(:destroy, Reservation, &:admin?)
 
         can [
           :administer,

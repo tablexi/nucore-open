@@ -10,7 +10,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
 
     # Delete the default price groups since they get in the way of testing
-    PriceGroup.all.each { |pg| pg.delete }
+    PriceGroup.all.each(&:delete)
 
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @price_group2     = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
@@ -88,7 +88,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         make_price_policy(@price_group2)
         do_request
         expect(assigns[:price_policies].size).to eq(2)
-        expect(assigns[:price_policies].all? { |pp| pp.can_purchase? }).to be true
+        expect(assigns[:price_policies].all?(&:can_purchase?)).to be true
       end
       it "should render the new template" do
         do_request

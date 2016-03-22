@@ -3,7 +3,7 @@ class Account < ActiveRecord::Base
   module Overridable
 
     def price_groups
-      (price_group_members.collect { |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
+      (price_group_members.collect(&:price_group) + (owner_user ? owner_user.price_groups : [])).flatten.uniq
     end
 
   end
@@ -131,7 +131,7 @@ class Account < ActiveRecord::Base
   end
 
   def business_admin_users
-    business_admins.collect { |au| au.user }
+    business_admins.collect(&:user)
   end
 
   def notify_users
@@ -185,7 +185,7 @@ class Account < ActiveRecord::Base
     return "#{product.facility.name} does not accept #{type_string} payment" unless product.facility.can_pay_with_account?(self)
 
     # does the product have a price policy for the user or account groups?
-    return "The #{type_string} has insufficient price groups" unless product.can_purchase?((price_groups + user.price_groups).flatten.uniq.collect { |pg| pg.id })
+    return "The #{type_string} has insufficient price groups" unless product.can_purchase?((price_groups + user.price_groups).flatten.uniq.collect(&:id))
 
     # check chart string account number
     if is_a?(NufsAccount)
@@ -203,18 +203,18 @@ class Account < ActiveRecord::Base
   def self.need_statements(facility)
     # find details that are complete, not yet statemented, priced, and not in dispute
     details = OrderDetail.need_statement(facility)
-    find(details.collect { |detail| detail.account_id }.uniq || [])
+    find(details.collect(&:account_id).uniq || [])
   end
 
   def self.need_notification(facility)
     # find details that are complete, not yet notified, priced, and not in dispute
     details = OrderDetail.for_facility(facility).need_notification
-    find(details.collect { |detail| detail.account_id }.uniq || [])
+    find(details.collect(&:account_id).uniq || [])
   end
 
   def facility_balance(facility, date = Time.zone.now)
     details = OrderDetail.for_facility(facility).complete.where("order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?", date, id)
-    details.collect { |od| od.total }.sum.to_f
+    details.collect(&:total).sum.to_f
   end
 
   def unreconciled_order_details(facility)

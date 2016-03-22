@@ -66,7 +66,7 @@ class JournalRowBuilder
   def create
     build
     if valid? && journal_rows.present?
-      journal_rows.each { |journal_row| journal_row.save! }
+      journal_rows.each(&:save!)
       set_journal_for_order_details(journal, order_details.map(&:id))
     end
     self

@@ -52,9 +52,7 @@ class Statement < ActiveRecord::Base
   end
 
   def remove_order_detail(order_detail)
-    rows_for_order_detail(order_detail).each do |statement_row|
-      statement_row.destroy
-    end
+    rows_for_order_detail(order_detail).each(&:destroy)
   end
 
   def rows_for_order_detail(order_detail)

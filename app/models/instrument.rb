@@ -47,7 +47,7 @@ class Instrument < Product
   end
 
   def max_reservation_window
-    days = price_group_products.collect { |pgp| pgp.reservation_window }.max.to_i
+    days = price_group_products.collect(&:reservation_window).max.to_i
   end
 
   def restriction_levels_for(user)
