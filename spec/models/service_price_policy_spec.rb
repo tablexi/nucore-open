@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ServicePricePolicy do
   it "should create a price policy for tomorrow if no policies already exist for that day" do
-    is_expected.to allow_value(Date.today+1).for(:start_date)
+    is_expected.to allow_value(Date.today + 1).for(:start_date)
   end
 
   it "should create a price policy for yesterday" do
@@ -31,7 +31,7 @@ RSpec.describe ServicePricePolicy do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
       @service = @facility.services.create(FactoryGirl.attributes_for(:service, facility_account: @facility_account))
-      @price_group_product=FactoryGirl.create(:price_group_product, product: @service, price_group: @price_group, reservation_window: nil)
+      @price_group_product = FactoryGirl.create(:price_group_product, product: @service, price_group: @price_group, reservation_window: nil)
     end
 
     it "should create using factory" do
@@ -96,8 +96,8 @@ RSpec.describe ServicePricePolicy do
 
     it "should return the date for upcoming policies" do
       @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today, price_group_id: @price_group.id)
-      spp2=@service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today + 7.days, price_group_id: @price_group.id)
-      spp3=@service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today + 14.days, price_group_id: @price_group.id)
+      spp2 = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today + 7.days, price_group_id: @price_group.id)
+      spp3 = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today + 14.days, price_group_id: @price_group.id)
 
       expect(ServicePricePolicy.next_date(@service)).to eq(spp2.start_date.to_date)
       next_dates = ServicePricePolicy.next_dates(@service)

@@ -16,7 +16,7 @@ RSpec.describe Affiliate do
   end
 
   it 'should allow non-OTHER affiliates to be destroyed' do
-    affiliate=Affiliate.create!(name: 'aff1')
+    affiliate = Affiliate.create!(name: 'aff1')
     affiliate.destroy
     expect(affiliate).to be_destroyed
   end

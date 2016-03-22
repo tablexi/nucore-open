@@ -10,12 +10,12 @@ module ReportSpecHelper
     base.before(:all) { create_users }
 
     base.before(:each) do
-      @method=:get
-      @authable=FactoryGirl.create(:facility)
-      @params={
+      @method = :get
+      @authable = FactoryGirl.create(:facility)
+      @params = {
         facility_id: @authable.url_name,
         date_start: Time.zone.now.strftime('%m/%d/%Y'),
-        date_end: (Time.zone.now+1.year).strftime('%m/%d/%Y')
+        date_end: (Time.zone.now + 1.year).strftime('%m/%d/%Y')
       }
 
       setup_extra_params(@params)
@@ -28,11 +28,11 @@ module ReportSpecHelper
       tests.each do |test|
         context test[:action].to_s do
           before :each do
-            @action=test[:action]
+            @action = test[:action]
             [ :owner, :staff, :purchaser ].each do |user|
-              acct=create_nufs_account_with_owner user
+              acct = create_nufs_account_with_owner user
               place_and_complete_item_order(instance_variable_get("@#{user}"), @authable, acct)
-              @order.ordered_at=parse_usa_date(@params[:date_start])+15.days
+              @order.ordered_at = parse_usa_date(@params[:date_start]) + 15.days
               assert @order.save
               setup_extra_test_data(user)
             end
@@ -64,7 +64,7 @@ module ReportSpecHelper
 
             context 'export data' do
               before :each do
-                @params[:export_id]='report_data'
+                @params[:export_id] = 'report_data'
               end
 
               it_should_allow :director do
@@ -103,8 +103,8 @@ module ReportSpecHelper
   end
 
   def assert_report_params_init
-    now=Date.today
-    date_start=Date.new(now.year, now.month, 1) - 1.month
+    now = Date.today
+    date_start = Date.new(now.year, now.month, 1) - 1.month
 
     if @params[:date_start].blank?
       expect(assigns(:date_start)).to eq(date_start)
@@ -113,7 +113,7 @@ module ReportSpecHelper
     end
 
     if @params[:date_end].blank?
-      date_end=date_start + 42.days
+      date_end = date_start + 42.days
       expect(assigns(:date_end)).to eq(Date.new(date_end.year, date_end.month) - 1.day)
     else
       expect(assigns(:date_end)).to eq(parse_usa_date(@params[:date_end]).end_of_day)

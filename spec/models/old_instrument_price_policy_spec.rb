@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe OldInstrumentPricePolicy do
 
-  it { is_expected.to allow_value(Date.current+1).for(:start_date) }
+  it { is_expected.to allow_value(Date.current + 1).for(:start_date) }
 
   it { is_expected.to allow_value(Date.current - 1).for(:start_date) }
 
@@ -30,18 +30,18 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it 'should require usage or reservation rate, but not both' do
-      @ipp.restrict_purchase=false
+      @ipp.restrict_purchase = false
 
       expect(@ipp).to be_valid
-      @ipp.reservation_rate=nil
-      @ipp.usage_rate=nil
+      @ipp.reservation_rate = nil
+      @ipp.usage_rate = nil
       expect(@ipp).not_to be_valid
 
-      @ipp.usage_rate=1
+      @ipp.usage_rate = 1
       expect(@ipp).to be_valid
 
-      @ipp.usage_rate=nil
-      @ipp.reservation_rate=1
+      @ipp.usage_rate = nil
+      @ipp.reservation_rate = 1
       expect(@ipp).to be_valid
     end
 
@@ -100,7 +100,7 @@ RSpec.describe OldInstrumentPricePolicy do
                                              facility: @facility,
                                              reserve_interval: 30,
                                              facility_account: @facility_account)
-      @price_group_product=FactoryGirl.create(:price_group_product, price_group: @price_group, product: @instrument)
+      @price_group_product = FactoryGirl.create(:price_group_product, price_group: @price_group, product: @instrument)
       # create rule every day from 9 am to 5 pm, no discount, duration= 30 minutes
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     end
@@ -352,7 +352,7 @@ RSpec.describe OldInstrumentPricePolicy do
     it "should return nil for cost if purchase is restricted" do
       options = {
         start_date: Date.current,
-        expire_date: Date.current+7.days,
+        expire_date: Date.current + 7.days,
         price_group: @price_group,
         product: @instrument
       }
@@ -376,7 +376,7 @@ RSpec.describe OldInstrumentPricePolicy do
                                              facility: @facility,
                                              reserve_interval: 30,
                                              facility_account: @facility_account)
-      @price_group_product=FactoryGirl.create(:price_group_product, price_group: @price_group, product: @instrument)
+      @price_group_product = FactoryGirl.create(:price_group_product, price_group: @price_group, product: @instrument)
       @rule = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24))
       @pp = create :old_instrument_price_policy, ipp_attributes
     end
@@ -401,9 +401,9 @@ RSpec.describe OldInstrumentPricePolicy do
   end
 
   def ipp_attributes(overrides = {})
-    attrs={
+    attrs = {
       start_date: Date.current,
-      expire_date: Date.current+7.days,
+      expire_date: Date.current + 7.days,
       usage_rate: 10.75,
       usage_subsidy: 0,
       usage_mins: 15,
@@ -487,7 +487,7 @@ RSpec.describe OldInstrumentPricePolicy do
     it "should correctly calculate cost with usage rate and subsidy and overage using usage rate for overage rate and usage subsidy for overage subsidy" do
       # actual usage == twice as long as the reservation window
       @reservation.actual_start_at = @reservation.reserve_start_at
-      @reservation.actual_end_at = @reservation.actual_start_at + (@ipp.usage_mins*2).minutes
+      @reservation.actual_end_at = @reservation.actual_start_at + (@ipp.usage_mins * 2).minutes
 
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
 

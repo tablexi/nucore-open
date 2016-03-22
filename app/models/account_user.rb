@@ -5,9 +5,9 @@ class AccountUser < ActiveRecord::Base
 
   scope :active, conditions: {deleted_at: nil}
 
-  ACCOUNT_PURCHASER='Purchaser'.freeze
-  ACCOUNT_OWNER='Owner'.freeze
-  ACCOUNT_ADMINISTRATOR='Business Administrator'.freeze
+  ACCOUNT_PURCHASER = 'Purchaser'.freeze
+  ACCOUNT_OWNER = 'Owner'.freeze
+  ACCOUNT_ADMINISTRATOR = 'Business Administrator'.freeze
 
   def self.read_only_user_roles
     [ ACCOUNT_PURCHASER ]

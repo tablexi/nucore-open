@@ -1,6 +1,6 @@
 class PriceGroupProduct < ActiveRecord::Base
 
-  DEFAULT_RESERVATION_WINDOW=14
+  DEFAULT_RESERVATION_WINDOW = 14
 
   belongs_to :price_group
   belongs_to :product

@@ -14,16 +14,16 @@ RSpec.describe FacilityReservationsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, facility: @authable)
-    @product=FactoryGirl.create(:instrument,
+    @authable = FactoryGirl.create(:facility)
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
+    @product = FactoryGirl.create(:instrument,
                                 facility_account: @facility_account,
                                 facility: @authable
                                )
-    @schedule_rule=FactoryGirl.create(:schedule_rule, instrument: @product)
+    @schedule_rule = FactoryGirl.create(:schedule_rule, instrument: @product)
     @product.reload
     @account = create_nufs_account_with_owner :director
-    @order=FactoryGirl.create(:order,
+    @order = FactoryGirl.create(:order,
                               facility: @authable,
                               user: @director,
                               created_by: @director.id,
@@ -32,11 +32,11 @@ RSpec.describe FacilityReservationsController do
                               state: 'purchased'
                              )
 
-    @reservation=FactoryGirl.create(:reservation, product: @product)
+    @reservation = FactoryGirl.create(:reservation, product: @product)
     expect(@reservation).not_to be_new_record
     @order_detail = create(:order_detail, account: account, order: @order, product: product, reservation: @reservation)
     @order_detail.set_default_status!
-    @params={ facility_id: @authable.url_name, order_id: @order.id, order_detail_id: @order_detail.id, id: @reservation.id }
+    @params = { facility_id: @authable.url_name, order_id: @order.id, order_detail_id: @order_detail.id, id: @reservation.id }
   end
 
   context '#assign_price_policies_to_problem_orders' do
@@ -103,10 +103,10 @@ RSpec.describe FacilityReservationsController do
 
   context '#create' do
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @time = 1.hour.from_now.change(sec: 0)
-      @params={
+      @params = {
         facility_id: @authable.url_name,
         instrument_id: @product.url_name,
         reservation: FactoryGirl.attributes_for(:reservation, reserve_start_at: @time, reserve_end_at: @time + 1.hour)
@@ -165,8 +165,8 @@ RSpec.describe FacilityReservationsController do
 
   context '#edit' do
     before :each do
-      @method=:get
-      @action=:edit
+      @method = :get
+      @action = :edit
     end
 
     it_should_allow_operators_only do
@@ -190,8 +190,8 @@ RSpec.describe FacilityReservationsController do
 
   context '#index' do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_operators_only {}
@@ -205,7 +205,7 @@ RSpec.describe FacilityReservationsController do
         # setup_reservation overwrites @order_detail
         @order_detail_reservation = @order_detail
 
-        @product=FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+        @product = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
         @order_detail_item = place_product_order(@director, @authable, @product, @account)
         @order_detail.order.update_attributes!(state: 'purchased')
 
@@ -219,9 +219,9 @@ RSpec.describe FacilityReservationsController do
 
   context '#new' do
     before :each do
-      @method=:get
-      @action=:new
-      @params={ facility_id: @authable.url_name, instrument_id: @product.url_name }
+      @method = :get
+      @action = :new
+      @params = { facility_id: @authable.url_name, instrument_id: @product.url_name }
     end
 
     it_should_allow_operators_only
@@ -229,8 +229,8 @@ RSpec.describe FacilityReservationsController do
 
   context '#show' do
     before :each do
-      @method=:get
-      @action=:show
+      @method = :get
+      @action = :show
     end
 
     it_should_allow_operators_only
@@ -273,7 +273,7 @@ RSpec.describe FacilityReservationsController do
     context 'orders' do
       before :each do
         # create unpurchased reservation
-        @order2=FactoryGirl.create(:order,
+        @order2 = FactoryGirl.create(:order,
                                    facility: @authable,
                                    user: @director,
                                    created_by: @director.id,
@@ -284,8 +284,8 @@ RSpec.describe FacilityReservationsController do
         # make sure the reservations are happening today
         @reservation.update_attributes!(reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
 
-        @unpurchased_reservation=FactoryGirl.create(:reservation, product: @product, reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
-        @order_detail2=FactoryGirl.create(:order_detail, order: @order2, product: @product, reservation: @unpurchased_reservation)
+        @unpurchased_reservation = FactoryGirl.create(:reservation, product: @product, reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
+        @order_detail2 = FactoryGirl.create(:order_detail, order: @order2, product: @product, reservation: @unpurchased_reservation)
 
         @canceled_reservation = FactoryGirl.create(:reservation, product: @product, reserve_start_at: 2.hours.from_now, reserve_end_at: 3.hours.from_now)
         @order_detail3 = FactoryGirl.create(:order_detail, order: @order, product: @product, reservation: @canceled_reservation)
@@ -297,7 +297,7 @@ RSpec.describe FacilityReservationsController do
         maybe_grant_always_sign_in :director
         @method = :get
         @action = :timeline
-        @params={ facility_id: @authable.url_name }
+        @params = { facility_id: @authable.url_name }
         do_request
       end
 
@@ -327,8 +327,8 @@ RSpec.describe FacilityReservationsController do
 
   context '#update' do
     before :each do
-      @method=:put
-      @action=:update
+      @method = :put
+      @action = :update
       @params.merge!(reservation: FactoryGirl.attributes_for(:reservation))
     end
 
@@ -344,10 +344,10 @@ RSpec.describe FacilityReservationsController do
         expect(@order_detail.price_policy).to be_nil
         @order_detail.account = @account
         @order_detail.save!
-        @price_group=FactoryGirl.create(:price_group, facility: @authable)
+        @price_group = FactoryGirl.create(:price_group, facility: @authable)
         create(:account_price_group_member, account: account, price_group: @price_group)
-        @instrument_pp=@product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, price_group_id: @price_group.id))
-        @instrument_pp.reload.restrict_purchase=false
+        @instrument_pp = @product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, price_group_id: @price_group.id))
+        @instrument_pp.reload.restrict_purchase = false
         @reservation.update_attributes(actual_start_at: nil, actual_end_at: nil)
         @params.merge!(reservation: {
                          reserve_start_at: @reservation.reserve_start_at,
@@ -371,11 +371,11 @@ RSpec.describe FacilityReservationsController do
     context 'completed order' do
       before :each do
         expect(@order_detail.price_policy).to be_nil
-        @price_group=FactoryGirl.create(:price_group, facility: @authable)
+        @price_group = FactoryGirl.create(:price_group, facility: @authable)
         create(:account_price_group_member, account: account, price_group: @price_group)
-        @instrument_pp=create(:instrument_price_policy, product: @product, price_group_id: @price_group.id, usage_rate: 2)
-        @instrument_pp.reload.restrict_purchase=false
-        @now=@reservation.reserve_start_at+3.hours
+        @instrument_pp = create(:instrument_price_policy, product: @product, price_group_id: @price_group.id, usage_rate: 2)
+        @instrument_pp.reload.restrict_purchase = false
+        @now = @reservation.reserve_start_at + 3.hours
         maybe_grant_always_sign_in :director
         Timecop.freeze(@now) { @order_detail.to_complete! }
       end
@@ -383,10 +383,10 @@ RSpec.describe FacilityReservationsController do
       context 'update actuals' do
         before :each do
           @reservation.update_attributes(actual_start_at: nil, actual_end_at: nil)
-          @reservation_attrs=FactoryGirl.attributes_for(
+          @reservation_attrs = FactoryGirl.attributes_for(
             :reservation,
-              actual_start_at: @now-2.hours,
-              actual_end_at: @now-1.hour
+              actual_start_at: @now - 2.hours,
+              actual_end_at: @now - 1.hour
           )
           @params.merge!(reservation: @reservation_attrs)
         end
@@ -412,10 +412,10 @@ RSpec.describe FacilityReservationsController do
       context 'update reserve' do
         before :each do
           @reservation.update_attributes(actual_start_at: @reservation.reserve_start_at, actual_end_at: @reservation.reserve_end_at)
-          @reservation_attrs=FactoryGirl.attributes_for(
+          @reservation_attrs = FactoryGirl.attributes_for(
             :reservation,
-              reserve_start_at: @now-3.hours,
-              reserve_end_at: @now-1.hour,
+              reserve_start_at: @now - 3.hours,
+              reserve_end_at: @now - 1.hour,
               actual_start_at: @reservation.reserve_start_at,
               actual_end_at: @reservation.reserve_end_at
           )
@@ -450,16 +450,16 @@ RSpec.describe FacilityReservationsController do
 
   context 'admin' do
     before :each do
-      @reservation.order_detail_id=nil
+      @reservation.order_detail_id = nil
       @reservation.save
       @reservation.reload
-      @params={ facility_id: @authable.url_name, instrument_id: @product.url_name, reservation_id: @reservation.id }
+      @params = { facility_id: @authable.url_name, instrument_id: @product.url_name, reservation_id: @reservation.id }
     end
 
     context '#edit_admin' do
       before :each do
-        @method=:get
-        @action=:edit_admin
+        @method = :get
+        @action = :edit_admin
       end
 
       it_should_allow_operators_only
@@ -467,8 +467,8 @@ RSpec.describe FacilityReservationsController do
 
     context '#update_admin' do
       before :each do
-        @method=:put
-        @action=:update_admin
+        @method = :put
+        @action = :update_admin
         @params.merge!(reservation: FactoryGirl.attributes_for(:reservation))
       end
 

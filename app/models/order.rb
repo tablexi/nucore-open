@@ -236,7 +236,7 @@ class Order < ActiveRecord::Base
   def total_cost(order_detail_method)
     cost = 0
     order_details.each do |od|
-      od_cost=od.method(order_detail_method.to_sym).call
+      od_cost = od.method(order_detail_method.to_sym).call
       cost += od_cost if od_cost
     end
     cost

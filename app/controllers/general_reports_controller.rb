@@ -68,7 +68,7 @@ class GeneralReportsController < ReportsController
               status_ids.reject(&:blank?).collect{|si| OrderStatus.find(si.to_i) }
             end
 
-    @status_ids=[]
+    @status_ids = []
 
     stati.each do |stat|
       @status_ids << stat.id
@@ -84,7 +84,7 @@ class GeneralReportsController < ReportsController
   end
 
   def init_report_data(_report_on_label)
-    @report_data=report_data
+    @report_data = report_data
   end
 
   def init_report(_report_on_label)
@@ -93,15 +93,15 @@ class GeneralReportsController < ReportsController
     @total_quantity = 0
     @total_cost = 0.0
     report_data.each do |od|
-      key=yield od
+      key = yield od
 
       key = "Undefined" if key.blank?
 
-      sums[key]=[0, 0] unless sums.key?(key)
+      sums[key] = [0, 0] unless sums.key?(key)
       sums[key][0] += od.quantity
       @total_quantity += od.quantity
 
-      total=od.total
+      total = od.total
       # total can be nil, in which case don't add to cost
       # stats. Report remains true but can appear off since
       # quantity goes up but not cost.
@@ -112,7 +112,7 @@ class GeneralReportsController < ReportsController
     end
 
     sums.each do |k, v|
-      percent_cost=to_percent(@total_cost > 0 ? v[1] / @total_cost : 1)
+      percent_cost = to_percent(@total_cost > 0 ? v[1] / @total_cost : 1)
       rows << v.push(percent_cost).unshift(k)
     end
 

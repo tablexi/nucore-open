@@ -34,15 +34,15 @@ RSpec.describe FacilityAccountsController do
 
     context 'with affiliate' do
       before :each do
-        user=FactoryGirl.create(:user)
+        user = FactoryGirl.create(:user)
 
-        owner={
+        owner = {
           user: user,
           created_by: user.id,
           user_role: 'Owner'
         }
 
-        account_attrs={
+        account_attrs = {
           created_by: user.id,
           account_users_attributes: [owner],
         }
@@ -54,7 +54,7 @@ RSpec.describe FacilityAccountsController do
         @params[:purchase_order_account] = @account.attributes
 
         @params[:purchase_order_account][:affiliate_id] = Affiliate.OTHER.id.to_s
-        @params[:purchase_order_account][:affiliate_other] ='Jesus Charisma'
+        @params[:purchase_order_account][:affiliate_other] = 'Jesus Charisma'
       end
 
       it_should_allow :director, 'to change affiliate to other' do
@@ -120,7 +120,7 @@ RSpec.describe FacilityAccountsController do
       @method = :post
       @action = :create
 
-      @expiration_year        = Time.zone.now.year+1
+      @expiration_year        = Time.zone.now.year + 1
       @acct_attrs             = FactoryGirl.attributes_for(:purchase_order_account)
       @acct_attrs[:affiliate_id] = @acct_attrs.delete(:affiliate).id.to_s
 
@@ -270,7 +270,7 @@ RSpec.describe FacilityAccountsController do
 
   context 'update_credit_cards' do
     before :each do
-      ccact=FactoryGirl.build(:credit_card_account)
+      ccact = FactoryGirl.build(:credit_card_account)
       prepare_for_account_update(:update_credit_cards, ccact)
     end
 
@@ -290,7 +290,7 @@ RSpec.describe FacilityAccountsController do
 
   context 'update_purchase_orders' do
     before :each do
-      @poact=FactoryGirl.build(:purchase_order_account)
+      @poact = FactoryGirl.build(:purchase_order_account)
       prepare_for_account_update(:update_purchase_orders, @poact)
     end
 
@@ -323,7 +323,7 @@ RSpec.describe FacilityAccountsController do
 
     @order_detail.change_status!(OrderStatus.complete.first)
 
-    @params={
+    @params = {
       facility_id: @authable.url_name,
       order_detail: {
         @order_detail.id.to_s => {

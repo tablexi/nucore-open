@@ -101,7 +101,7 @@ class FacilityAccountsController < ApplicationController
   # GET/POST /facilities/:facility_id/accounts/search_results
   # TODO: use a service object here
   def search_results
-    owner_where_clause =<<-end_of_where
+    owner_where_clause = <<-end_of_where
       (
         LOWER(users.first_name) LIKE :term
         OR LOWER(users.last_name) LIKE :term

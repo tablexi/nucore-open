@@ -4,10 +4,10 @@ RSpec.describe NufsAccount do
   context "account number validations" do
     before(:each) do
       @user     = FactoryGirl.create(:user)
-      @options  = FactoryGirl.attributes_for(:nufs_account, description: "account description", expires_at: Time.zone.now+1.day, created_by: @user,
+      @options  = FactoryGirl.attributes_for(:nufs_account, description: "account description", expires_at: Time.zone.now + 1.day, created_by: @user,
                                                             account_users_attributes: account_users_attributes_hash(user: @user))
-      @starts_at  = Time.zone.now-3.days
-      @expires_at = Time.zone.now+3.days
+      @starts_at  = Time.zone.now - 3.days
+      @expires_at = Time.zone.now + 3.days
     end
 
     it "should copy account_number to display_account_number" do

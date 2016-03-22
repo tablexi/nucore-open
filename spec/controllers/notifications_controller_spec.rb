@@ -20,7 +20,7 @@ RSpec.describe NotificationsController do
 
   before :each do
     create_users
-    request.env["HTTP_REFERER"]=root_path
+    request.env["HTTP_REFERER"] = root_path
 
     facility_users.each do |usr|
       create_merge_notification_subject
@@ -31,8 +31,8 @@ RSpec.describe NotificationsController do
   context 'index' do
     before :each do
       @authable = create(:facility)
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_require_login

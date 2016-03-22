@@ -27,7 +27,7 @@ module Dataprobe
       write_status_cmd socket
       reply = socket.recv 100
       stats = reply.unpack 'C*'
-      stats[outlet-1] == 1
+      stats[outlet - 1] == 1
     ensure
       socket.close
     end

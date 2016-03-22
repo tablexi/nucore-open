@@ -308,7 +308,7 @@ RSpec.describe Journal do
       d1 = Time.zone.parse('2020-01-01')
       @order_details = []
       (0..23).each do |i|
-        order=@owner.orders.create(FactoryGirl.attributes_for(:order, created_by: @owner.id))
+        order = @owner.orders.create(FactoryGirl.attributes_for(:order, created_by: @owner.id))
         od = order.order_details.create(FactoryGirl.attributes_for(:order_detail, product: @item))
         od.update_attributes(actual_cost: 20, actual_subsidy: 0)
         od.to_complete!

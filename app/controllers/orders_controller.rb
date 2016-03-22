@@ -281,7 +281,7 @@ class OrdersController < ApplicationController
 
         # If we're only making a single reservation, we'll redirect
         if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
-          od=@order.order_details[0]
+          od = @order.order_details[0]
 
           if od.reservation.can_switch_instrument_on?
             redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, switch: 'on', redirect_to: reservations_path)
@@ -289,7 +289,7 @@ class OrdersController < ApplicationController
             redirect_to reservations_path
           end
 
-          flash[:notice]='Reservation completed successfully'
+          flash[:notice] = 'Reservation completed successfully'
         else
           redirect_to receipt_order_path(@order)
         end

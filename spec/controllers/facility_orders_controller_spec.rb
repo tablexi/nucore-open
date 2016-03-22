@@ -11,16 +11,16 @@ RSpec.describe FacilityOrdersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, facility: @authable)
-    @product=FactoryGirl.create(:item,
+    @authable = FactoryGirl.create(:facility)
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
+    @product = FactoryGirl.create(:item,
                                 facility_account: @facility_account,
                                 facility: @authable
                                )
     @account = create_nufs_account_with_owner :director
     @order_detail = place_product_order(@director, @authable, @product, @account)
     @order_detail.order.update_attributes!(state: 'purchased')
-    @params={ facility_id: @authable.url_name }
+    @params = { facility_id: @authable.url_name }
   end
 
   context '#assign_price_policies_to_problem_orders' do
@@ -84,8 +84,8 @@ RSpec.describe FacilityOrdersController do
 
   context '#disputed' do
     before :each do
-      @method=:get
-      @action=:disputed
+      @method = :get
+      @action = :disputed
     end
 
     it_should_allow_managers_only
@@ -93,8 +93,8 @@ RSpec.describe FacilityOrdersController do
 
   context '#index' do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_operators_only {}
@@ -144,8 +144,8 @@ RSpec.describe FacilityOrdersController do
 
   context '#show_problems' do
     before :each do
-      @method=:get
-      @action=:show_problems
+      @method = :get
+      @action = :show_problems
     end
 
     it_should_allow_managers_only
@@ -172,8 +172,8 @@ RSpec.describe FacilityOrdersController do
 
   context '#update' do
     before :each do
-      @method=:put
-      @action=:update
+      @method = :put
+      @action = :update
       @params.merge!( id: @order.id,
         product_add: @product.id,
         product_add_quantity: 0)
@@ -186,7 +186,7 @@ RSpec.describe FacilityOrdersController do
 
     context 'with quantity' do
       before :each do
-        @params[:product_add_quantity]=1
+        @params[:product_add_quantity] = 1
         @order.order_details.each{|od| od.destroy }
       end
 
@@ -196,12 +196,12 @@ RSpec.describe FacilityOrdersController do
 
       context 'with instrument' do
         before :each do
-          @instrument=FactoryGirl.create(:instrument,
+          @instrument = FactoryGirl.create(:instrument,
                                          facility: @authable,
                                          facility_account: @facility_account,
                                          min_reserve_mins: 60,
                                          max_reserve_mins: 60)
-          @params[:product_add]=@instrument.id
+          @params[:product_add] = @instrument.id
         end
 
         it_should_allow :director, 'to add an instrument to existing order via merge' do
@@ -211,8 +211,8 @@ RSpec.describe FacilityOrdersController do
 
       context 'with service' do
         before :each do
-          @service=@authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
-          @params[:product_add]=@service.id
+          @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+          @params[:product_add] = @service.id
         end
 
         context 'with active survey' do
@@ -253,14 +253,14 @@ RSpec.describe FacilityOrdersController do
 
       context 'with bundle' do
         before :each do
-          @bundle=@authable.bundles.create(FactoryGirl.attributes_for(:bundle, facility_account_id: @facility_account.id))
-          @params[:product_add]=@bundle.id
+          @bundle = @authable.bundles.create(FactoryGirl.attributes_for(:bundle, facility_account_id: @facility_account.id))
+          @params[:product_add] = @bundle.id
           BundleProduct.create!(bundle: @bundle, product: @product, quantity: 1)
         end
 
         context 'has items' do
           before :each do
-            item=FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+            item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
             BundleProduct.create!(bundle: @bundle, product: item, quantity: 1)
           end
 
@@ -286,7 +286,7 @@ RSpec.describe FacilityOrdersController do
 
         context 'has service' do
           before :each do
-            @service=@authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+            @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
             BundleProduct.create!(bundle: @bundle, product: @service, quantity: 1)
           end
 
@@ -335,7 +335,7 @@ RSpec.describe FacilityOrdersController do
           expect(product.products).to be_include(od.product)
         end
       else
-        order_detail=order.order_details[0]
+        order_detail = order.order_details[0]
         expect(order_detail.product).to eq(product)
         expect(order_detail.order_status).to eq(OrderStatus.default_order_status)
       end
@@ -356,9 +356,9 @@ RSpec.describe FacilityOrdersController do
 
     def assert_merge_order(original_order, product, detail_count = 1, original_detail_count = 0)
       expect(original_order.reload.order_details.size).to eq(original_detail_count)
-      merges=Order.where(merge_with_order_id: original_order.id).all
+      merges = Order.where(merge_with_order_id: original_order.id).all
       expect(merges.size).to eq(1)
-      merge_order=merges[0]
+      merge_order = merges[0]
       expect(merge_order.merge_order).to eq(original_order)
       expect(merge_order.facility_id).to eq(original_order.facility_id)
       expect(merge_order.account_id).to eq(original_order.account_id)
@@ -375,7 +375,7 @@ RSpec.describe FacilityOrdersController do
     before :each do
       @method = :get
       @action = :tab_counts
-      @order_detail2=FactoryGirl.create(:order_detail, order: @order, product: @product)
+      @order_detail2 = FactoryGirl.create(:order_detail, order: @order, product: @product)
 
       expect(@authable.order_details.non_reservations.new_or_inprocess.size).to eq(2)
 

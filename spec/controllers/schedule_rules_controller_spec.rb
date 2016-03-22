@@ -13,14 +13,14 @@ RSpec.describe ScheduleRulesController do
     @instrument       = FactoryGirl.create(:instrument, facility: @authable, facility_account_id: @facility_account.id)
     @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
     expect(@price_policy).to be_valid
-    @params={ facility_id: @authable.url_name, instrument_id: @instrument.url_name }
+    @params = { facility_id: @authable.url_name, instrument_id: @instrument.url_name }
   end
 
   context "index" do
 
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_allow_operators_only do |_user|
@@ -34,8 +34,8 @@ RSpec.describe ScheduleRulesController do
   context "new" do
 
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_and_senior_staff_only do
@@ -49,8 +49,8 @@ RSpec.describe ScheduleRulesController do
   context 'create' do
 
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @params.merge!(
         schedule_rule: FactoryGirl.attributes_for(:schedule_rule, instrument_id: @instrument.id)
       )
@@ -90,15 +90,15 @@ RSpec.describe ScheduleRulesController do
   context 'needs schedule rule' do
 
     before :each do
-      @rule=@instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       @params.merge!(id: @rule.id)
     end
 
     context "edit" do
 
       before :each do
-        @method=:get
-        @action=:edit
+        @method = :get
+        @action = :edit
       end
 
       it_should_allow_managers_and_senior_staff_only do
@@ -111,8 +111,8 @@ RSpec.describe ScheduleRulesController do
     context 'update' do
 
       before :each do
-        @method=:put
-        @action=:update
+        @method = :put
+        @action = :update
         @params.merge!(
           schedule_rule: FactoryGirl.attributes_for(:schedule_rule)
         )
@@ -159,8 +159,8 @@ RSpec.describe ScheduleRulesController do
     context 'destroy' do
 
       before :each do
-        @method=:delete
-        @action=:destroy
+        @method = :delete
+        @action = :destroy
       end
 
       it_should_allow_managers_and_senior_staff_only :redirect do

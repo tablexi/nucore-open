@@ -1,10 +1,10 @@
 class AlterOrderDetailsDropDisputeResolvedCredit < ActiveRecord::Migration
 
   def self.up
-    details=OrderDetail.find(:all, conditions: 'dispute_resolved_credit IS NOT NULL')
+    details = OrderDetail.find(:all, conditions: 'dispute_resolved_credit IS NOT NULL')
 
     details.each do |detail|
-      detail.actual_cost=detail_actual_cost-detail.dispute_resolved_credit
+      detail.actual_cost = detail_actual_cost - detail.dispute_resolved_credit
       detail.save!
     end
 

@@ -50,7 +50,7 @@ RSpec.describe Relay do
       before :each do
         @relay.destroy
         expect(@relay).to be_destroyed
-        @relay=RelayDummy.create!(instrument_id: @instrument.id)
+        @relay = RelayDummy.create!(instrument_id: @instrument.id)
       end
 
       it 'should turn on the relay' do

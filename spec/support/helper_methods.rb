@@ -23,12 +23,12 @@ end
 # Asserts that the model +var+
 # no longer exists in the DB
 def should_be_destroyed(var)
-  dead=false
+  dead = false
 
   begin
     var.class.find var.id
   rescue
-    dead=true
+    dead = true
   end
 
   assert dead
@@ -62,18 +62,18 @@ end
 # [_account_]
 #   The account under which the order is placed
 def place_product_order(ordered_by, facility, product, account = nil, purchased = true)
-  @price_group=FactoryGirl.create(:price_group, facility: facility)
+  @price_group = FactoryGirl.create(:price_group, facility: facility)
 
-  o_attrs={ created_by: ordered_by.id, facility: facility, ordered_at: Time.zone.now }
+  o_attrs = { created_by: ordered_by.id, facility: facility, ordered_at: Time.zone.now }
   o_attrs[:account_id] = account.id if account
   o_attrs[:state] = 'purchased' if purchased
-  @order=ordered_by.orders.create(FactoryGirl.attributes_for(:order, o_attrs))
+  @order = ordered_by.orders.create(FactoryGirl.attributes_for(:order, o_attrs))
 
   FactoryGirl.create(:user_price_group_member, user: ordered_by, price_group: @price_group)
   create(:account_price_group_member, account: account, price_group: @price_group) if account.present?
-  @item_pp=product.send(:"#{product.class.name.downcase}_price_policies").create(FactoryGirl.attributes_for(:"#{product.class.name.downcase}_price_policy", price_group_id: @price_group.id))
-  @item_pp.reload.restrict_purchase=false
-  od_attrs={ product_id: product.id }
+  @item_pp = product.send(:"#{product.class.name.downcase}_price_policies").create(FactoryGirl.attributes_for(:"#{product.class.name.downcase}_price_policy", price_group_id: @price_group.id))
+  @item_pp.reload.restrict_purchase = false
+  od_attrs = { product_id: product.id }
   od_attrs[:account_id] = account.id if account
   @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(od_attrs))
 
@@ -93,8 +93,8 @@ end
 # [_reviewed_]
 #   true if the completed order should also be marked as reviewed, false by default
 def place_and_complete_item_order(ordered_by, facility, account = nil, reviewed = false)
-  @facility_account=facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-  @item=facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+  @facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+  @item = facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
   place_product_order(ordered_by, facility, @item, account)
 
   # act like the parent order is valid
@@ -105,13 +105,13 @@ def place_and_complete_item_order(ordered_by, facility, account = nil, reviewed 
 
   @order_detail.change_status!(OrderStatus.complete.first)
 
-  od_attrs={
+  od_attrs = {
     actual_cost: 20,
     actual_subsidy: 10,
     price_policy_id: @item_pp.id
   }
 
-  od_attrs[:reviewed_at] = Time.zone.now-1.day if reviewed
+  od_attrs[:reviewed_at] = Time.zone.now - 1.day if reviewed
   @order_detail.update_attributes(od_attrs)
   @order_detail
 end
@@ -134,7 +134,7 @@ def place_reservation_for_instrument(ordered_by, instrument, account, reserve_st
   order_detail = place_product_order(ordered_by, instrument.facility, instrument, account, false)
 
   instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule)) if instrument.schedule_rules.empty?
-  res_attrs={
+  res_attrs = {
     reserve_start_at: reserve_start,
     order_detail: order_detail,
     duration_value: 60,
@@ -171,7 +171,7 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
   assert @instrument.valid?
   @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24)) if @instrument.schedule_rules.empty?
 
-  res_attrs={
+  res_attrs = {
     reserve_start_at: reserve_start,
     order_detail: order_detail,
     duration_value: 60,
@@ -181,7 +181,7 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
   order_detail.order.update_attributes!(state: 'purchased')
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
-  @reservation=@instrument.reservations.build(res_attrs)
+  @reservation = @instrument.reservations.build(res_attrs)
   # force validation to run to set reserve_end_at, but ignore the errors
   # we don't need to be worried about all the validations when running this method
   @reservation.valid?

@@ -67,15 +67,15 @@ class ReservationsController < ApplicationController
   def list
     notices = []
 
-    relation=acting_user.order_details
-    in_progress=relation.in_progress_reservations.all
-    @status=params[:status]
+    relation = acting_user.order_details
+    in_progress = relation.in_progress_reservations.all
+    @status = params[:status]
     @available_statuses = [ in_progress.blank? ? 'upcoming' : 'upcoming_and_in_progress', 'all' ]
 
     if @status == 'all'
       @order_details = relation.all_reservations.all
     elsif @status == 'upcoming'
-      @status=@available_statuses.first
+      @status = @available_statuses.first
       @order_details = in_progress + relation.upcoming_reservations.all
     else
       return redirect_to reservations_status_path(status: "upcoming")
@@ -97,7 +97,7 @@ class ReservationsController < ApplicationController
     @reservation = @order_detail.build_reservation(reservation_create_params)
 
     if !@order_detail.bundled? && params[:order_account].blank?
-      flash.now[:error]=I18n.t 'controllers.reservations.create.no_selection'
+      flash.now[:error] = I18n.t 'controllers.reservations.create.no_selection'
       @reservation.valid? # run validations so it sets reserve_end_at
       set_windows
       render(:new) && return
@@ -107,7 +107,7 @@ class ReservationsController < ApplicationController
     @reservation.transaction do
       begin
         unless params[:order_account].blank?
-          account=Account.find(params[:order_account].to_i)
+          account = Account.find(params[:order_account].to_i)
           if account != @order.account
             @order.invalidate
             @order.update_attributes!(account: account)
@@ -115,7 +115,7 @@ class ReservationsController < ApplicationController
         end
 
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
-        mergeable=@order_detail.order.to_be_merged?
+        mergeable = @order_detail.order.to_be_merged?
 
         save_reservation_and_order_detail
 

@@ -65,8 +65,8 @@ class FacilityJournalsController < ApplicationController
     # are selected. We've seen Apache not like stuff like that and give a "malformed
     # header from script. Bad header" error which causes the page to completely bomb out.
     # (See Task #48311). This is just preventative.
-    referer=response.headers['Referer']
-    response.headers['Referer']=referer[0..referrer.index('?')] if referer.present?
+    referer = response.headers['Referer']
+    response.headers['Referer'] = referer[0..referrer.index('?')] if referer.present?
 
     if @journal.errors.blank? && @journal.save
       @journal.create_spreadsheet if Settings.financial.journal_format.xls
@@ -167,7 +167,7 @@ class FacilityJournalsController < ApplicationController
 
   def init_journals
     @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1).includes(:journal_rows).order("journals.created_at DESC")
-    jid=params[:id] || params[:journal_id]
+    jid = params[:id] || params[:journal_id]
     @journal = @journals.find(jid) if jid
     @journals = @journals.paginate(page: params[:page], per_page: 10)
   end

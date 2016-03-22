@@ -372,17 +372,17 @@ RSpec.describe Instrument do
     it "should allow 1 hour reservations between 9 and 5" do
       # 9 am - 10 am
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
-      @reservation1 = @instrument.reservations.create(reserve_start_at: @start, reserve_end_at: @start+1.hour)
+      @reservation1 = @instrument.reservations.create(reserve_start_at: @start, reserve_end_at: @start + 1.hour)
       assert @reservation1.valid?
       # should allow 10 am - 11 am
-      @reservation2 = @instrument.reservations.create(reserve_start_at: @start+1.hour, reserve_end_at: @start+2.hours)
+      @reservation2 = @instrument.reservations.create(reserve_start_at: @start + 1.hour, reserve_end_at: @start + 2.hours)
       assert @reservation2.valid?
       # should find 2 upcoming reservations when both are in the future
       assert_equal [@reservation1, @reservation2], @instrument.reservations.upcoming
       # should find 2 upcoming reservations when both are in the future or happening now
-      assert_equal [@reservation1, @reservation2], @instrument.reservations.upcoming(@start+1.minute)
+      assert_equal [@reservation1, @reservation2], @instrument.reservations.upcoming(@start + 1.minute)
       # should find 1 upcoming when 1 is in the past
-      assert_equal [@reservation2], @instrument.reservations.upcoming(@start+1.hour)
+      assert_equal [@reservation2], @instrument.reservations.upcoming(@start + 1.hour)
     end
 
     it "should allow 1 hour reservations between 9 and 5, using duration_value, duration_unit virtual attribute" do
@@ -396,13 +396,13 @@ RSpec.describe Instrument do
     it "should not allow overlapping reservations between 9 and 5" do
       # 10 am - 11 am
       @start        = Time.zone.now.end_of_day + 1.second + 10.hours
-      @reservation1 = @instrument.reservations.create(reserve_start_at: @start, reserve_end_at: @start+1.hour)
+      @reservation1 = @instrument.reservations.create(reserve_start_at: @start, reserve_end_at: @start + 1.hour)
       assert @reservation1.valid?
       # not allow 10 am - 11 am
-      @reservation2 = @instrument.reservations.create(reserve_start_at: @start, reserve_end_at: @start+1.hour)
+      @reservation2 = @instrument.reservations.create(reserve_start_at: @start, reserve_end_at: @start + 1.hour)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 10:30 am
-      @reservation2 = @instrument.reservations.create(reserve_start_at: @start-30.minutes, reserve_end_at: @start+30.minutes)
+      @reservation2 = @instrument.reservations.create(reserve_start_at: @start - 30.minutes, reserve_end_at: @start + 30.minutes)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 10:30 am, using reserve_start_date, reserve_start_hour, reserve_start_min, reserve_start_meridian
       @options      = {reserve_start_date: @start.to_s, reserve_start_hour: '9', reserve_start_min: '30',
@@ -410,26 +410,26 @@ RSpec.describe Instrument do
       @reservation2 = @instrument.reservations.create(@options)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 11:30 am
-      @reservation2 = @instrument.reservations.create(reserve_start_at: @start-30.minutes, reserve_end_at: @start+90.minutes)
+      @reservation2 = @instrument.reservations.create(reserve_start_at: @start - 30.minutes, reserve_end_at: @start + 90.minutes)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 10:30 am - 10:45 am
-      @reservation2 = @instrument.reservations.create(reserve_start_at: @start+30.minutes, reserve_end_at: @start+45.minutes)
+      @reservation2 = @instrument.reservations.create(reserve_start_at: @start + 30.minutes, reserve_end_at: @start + 45.minutes)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 10:30 am - 11:30 am
-      @reservation2 = @instrument.reservations.create(reserve_start_at: @start+30.minutes, reserve_end_at: @start+90.minutes)
+      @reservation2 = @instrument.reservations.create(reserve_start_at: @start + 30.minutes, reserve_end_at: @start + 90.minutes)
       expect(@reservation2.errors[:base]).not_to be_empty
     end
 
     it "should allow adjacent reservations" do
       # 10 am - 11 am
       @start        = Time.zone.now.end_of_day + 1.second + 10.hours
-      @reservation1 = @instrument.reservations.create(reserve_start_at: @start, reserve_end_at: @start+1.hour)
+      @reservation1 = @instrument.reservations.create(reserve_start_at: @start, reserve_end_at: @start + 1.hour)
       assert @reservation1.valid?
       # should allow 9 am - 10 am
-      @reservation2 = @instrument.reservations.create(reserve_start_at: @start-1.hour, reserve_end_at: @start)
+      @reservation2 = @instrument.reservations.create(reserve_start_at: @start - 1.hour, reserve_end_at: @start)
       assert @reservation2.valid?
       # should allow 11 am - 12 pm
-      @reservation3 = @instrument.reservations.create(reserve_start_at: @start+1.hour, reserve_end_at: @start+2.hours)
+      @reservation3 = @instrument.reservations.create(reserve_start_at: @start + 1.hour, reserve_end_at: @start + 2.hours)
       assert @reservation3.valid?
     end
   end
@@ -457,13 +457,13 @@ RSpec.describe Instrument do
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 9, @next_reservation.reserve_start_at.hour
       # find next reservation after 9:01 am today at 10 am today
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day+9.hours+1.minute)
+      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day + 9.hours + 1.minute)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 10, @next_reservation.reserve_start_at.hour
       assert_equal 0, @next_reservation.reserve_start_at.min
       # find next reservation after 4:01 pm today at 9 am tomorrow
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day+16.hours+1.minute)
-      assert_equal (Time.zone.now+1.day).day, @next_reservation.reserve_start_at.day
+      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day + 16.hours + 1.minute)
+      assert_equal (Time.zone.now + 1.day).day, @next_reservation.reserve_start_at.day
       assert_equal 9, @next_reservation.reserve_start_at.hour
       assert_equal 0, @next_reservation.reserve_start_at.min
     end
@@ -486,12 +486,12 @@ RSpec.describe Instrument do
       assert_equal 9, @next_reservation.reserve_start_at.hour
       assert_equal 0, @next_reservation.reserve_start_at.min
       # find next reservation after 9:01 am today at 9:05 am today
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day+9.hours+1.minute)
+      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day + 9.hours + 1.minute)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 9, @next_reservation.reserve_start_at.hour
       assert_equal 5, @next_reservation.reserve_start_at.min
       # find next reservation after 3:45 pm today at 3:45 pm today
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day+15.hours+45.minutes)
+      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day + 15.hours + 45.minutes)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 15, @next_reservation.reserve_start_at.hour
       assert_equal 45, @next_reservation.reserve_start_at.min
@@ -503,8 +503,8 @@ RSpec.describe Instrument do
       @reservation1 = @instrument.reservations.create(reserve_start_at: @start, duration_value: 60, duration_unit: 'minutes')
       assert @reservation1.valid?
       # find next reservation after 12 am tomorrow at 10 am tomorrow
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.end_of_day+1.second)
-      assert_equal (Time.zone.now+1.day).day, @next_reservation.reserve_start_at.day
+      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.end_of_day + 1.second)
+      assert_equal (Time.zone.now + 1.day).day, @next_reservation.reserve_start_at.day
       assert_equal 10, @next_reservation.reserve_start_at.hour
     end
   end
@@ -562,7 +562,7 @@ RSpec.describe Instrument do
                                              facility_account: facility_account,
                                              min_reserve_mins: 60,
                                              max_reserve_mins: 60)
-      @price_group_product=FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)
+      @price_group_product = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)
       assert @instrument.valid?
 
       # create price policy with default window of 1 day
@@ -577,13 +577,13 @@ RSpec.describe Instrument do
 
     it "should use max window of all price polices to calculate dates" do
       # create price policy with window of 15 days
-      @price_group_product.reservation_window=15
+      @price_group_product.reservation_window = 15
       assert @price_group_product.save
       @options       = FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id)
       @price_policy2 = @instrument.instrument_price_policies.new(@options)
       @price_policy2.save(validate: false) # save without validations
       assert_equal 15, @instrument.max_reservation_window
-      assert_equal (Time.zone.now+15.days).to_date, @instrument.last_reserve_date
+      assert_equal (Time.zone.now + 15.days).to_date, @instrument.last_reserve_date
     end
   end
 

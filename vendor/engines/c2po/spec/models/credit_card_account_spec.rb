@@ -13,7 +13,7 @@ RSpec.describe CreditCardAccount do
       user_role: "Owner"
     }
 
-    @account_attrs={
+    @account_attrs = {
       expiration_month: 1,
       expiration_year: (Time.zone.now + 1.year).year,
       expires_at: Time.zone.now + 1.year,

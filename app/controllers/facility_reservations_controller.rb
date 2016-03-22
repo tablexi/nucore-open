@@ -14,7 +14,7 @@ class FacilityReservationsController < ApplicationController
   helper_method :sort_column, :sort_direction
 
   ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
-    'date'          => 'reservations.reserve_start_at',
+    'date' => 'reservations.reserve_start_at',
       'reserve_range' => 'CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)',
       'product_name'  => 'products.name',
       'status'        => 'order_statuses.name',
@@ -34,7 +34,7 @@ class FacilityReservationsController < ApplicationController
     order_by_clause = [real_sort_clause, sort_direction].join(' ')
     @order_details = new_or_in_process_orders(order_by_clause)
 
-    @order_details=@order_details.paginate(page: params[:page])
+    @order_details = @order_details.paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id/edit

@@ -131,13 +131,13 @@ RSpec.describe Account do
   it 'should be expired' do
     owner   = FactoryGirl.create(:user)
     account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: owner))
-    account.expires_at=Time.zone.now
+    account.expires_at = Time.zone.now
     assert account.save
     expect(account).to be_expired
   end
 
   it "should validate description <= 50 chars" do
-    @user    = FactoryGirl.create(:user)
+    @user = FactoryGirl.create(:user)
     account = Account.new(FactoryGirl.attributes_for(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user)))
     account.description = random_string = SecureRandom.hex(51)
     expect(account).not_to be_valid
@@ -233,7 +233,7 @@ RSpec.describe Account do
       @facility_account  = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @item              = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
       @price_group       = FactoryGirl.create(:price_group, facility: @facility)
-      @price_group_product=FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+      @price_group_product = FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
       @price_policy = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
       @price_group_member = create(:account_price_group_member, account: @nufs_account, price_group: @price_group)
     end
@@ -294,7 +294,7 @@ RSpec.describe Account do
     item     = facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: facility_account.id))
     account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
     order    = user.orders.create(FactoryGirl.attributes_for(:order, created_by: user.id, facility: facility))
-    order_detail = order.order_details.create!(FactoryGirl.attributes_for(:order_detail, reviewed_at: (Time.zone.now-1.day)).update(product_id: item.id, account_id: account.id))
+    order_detail = order.order_details.create!(FactoryGirl.attributes_for(:order_detail, reviewed_at: (Time.zone.now - 1.day)).update(product_id: item.id, account_id: account.id))
     statement = Statement.create(facility: facility, created_by: 1, account: account)
     account.update_order_details_with_statement(statement)
     expect(order_detail.reload.statement).to eq(statement)

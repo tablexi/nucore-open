@@ -50,7 +50,7 @@ end
 # [_params_]
 #   Overrides the @params variable
 def do_request(params = nil)
-  params=@params unless params
+  params = @params unless params
   if @method == :xhr
     xhr :get, @action, params
   else
@@ -131,7 +131,7 @@ end
 def it_should_allow_all(user_syms, spec_desc = '', &eval)
   user_syms.each do |user_sym|
     it "should allow #{user_sym} " + spec_desc, auth: true do
-      user=maybe_grant_always_sign_in(user_sym)
+      user = maybe_grant_always_sign_in(user_sym)
       do_request
       instance_exec(user, &eval)
     end
@@ -247,7 +247,7 @@ def grant_role(user, authable = nil)
   when 'owner'
       # Creating a NufsAccount requires an owner to be present, and some pre-Rails3 tests try to add the same user
       # to the same account with the same role of owner. That's a uniqueness error on AccountUser. Avoid it.
-    existing=AccountUser.find_by_user_id_and_account_id_and_user_role(user.id, authable.id, AccountUser::ACCOUNT_OWNER)
+    existing = AccountUser.find_by_user_id_and_account_id_and_user_role(user.id, authable.id, AccountUser::ACCOUNT_OWNER)
       AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin) unless existing
       expect(user.reload).to be_owner_of(authable)
   when 'purchaser'
@@ -269,7 +269,7 @@ def grant_and_sign_in(user)
 end
 
 def maybe_grant_always_sign_in(user_sym)
-  user=instance_variable_get("@#{user_sym}")
+  user = instance_variable_get("@#{user_sym}")
   grant_and_sign_in(user)
 end
 

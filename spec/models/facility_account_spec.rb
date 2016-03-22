@@ -7,12 +7,12 @@ RSpec.describe FacilityAccount do
       @facility = FactoryGirl.create(:facility)
       assert @facility.valid?
       @options = Hash[is_active: 1, created_by: @user.id, facility_id: @facility.id, revenue_account: 51_234]
-      @starts_at  = Time.zone.now-3.days
-      @expires_at = Time.zone.now+3.days
+      @starts_at  = Time.zone.now - 3.days
+      @expires_at = Time.zone.now + 3.days
     end
 
     it "should create using factory" do
-      attrs=FactoryGirl.attributes_for(:facility_account)
+      attrs = FactoryGirl.attributes_for(:facility_account)
       define_open_account(attrs[:revenue_account], attrs[:account_number])
       @facility_account = @facility.facility_accounts.create(attrs)
       assert @facility_account.valid?

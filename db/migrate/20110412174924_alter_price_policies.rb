@@ -7,9 +7,9 @@ class AlterPricePolicies < ActiveRecord::Migration
     PricePolicy.reset_column_information
 
     PricePolicy.all.each do |pp|
-      start_date=pp.start_date
-      expire_date=Date.strptime("#{start_date.year}-8-31")
-      expire_date=Date.strptime("#{start_date.year+1}-8-31") if start_date >= expire_date
+      start_date = pp.start_date
+      expire_date = Date.strptime("#{start_date.year}-8-31")
+      expire_date = Date.strptime("#{start_date.year + 1}-8-31") if start_date >= expire_date
 
       # for some reason ActiveRecord attribute set and save will not work
       execute("UPDATE price_policies SET expire_date=TO_DATE('#{expire_date}') WHERE id=#{pp.id}")

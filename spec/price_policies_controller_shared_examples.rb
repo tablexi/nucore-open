@@ -17,13 +17,13 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
     @product          = create product_type, facility_account_id: @facility_account.id, facility: @authable
     @price_policy     = make_price_policy(@price_group)
     expect(@price_policy).to be_valid
-    @params={ :facility_id => @authable.url_name, :"#{product_type}_id" => @product.url_name }
+    @params = { :facility_id => @authable.url_name, :"#{product_type}_id" => @product.url_name }
   end
 
   context "index" do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
       @price_policy_past = make_price_policy(@price_group, start_date: 1.year.ago, expire_date: PricePolicy.generate_expire_date(1.year.ago))
       @price_policy_future = make_price_policy(@price_group, start_date: 1.year.from_now, expire_date: PricePolicy.generate_expire_date(1.year.from_now))
     end
@@ -38,8 +38,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
   context 'new' do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only {}
@@ -144,8 +144,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
   context "edit" do
     before :each do
-      @method=:get
-      @action=:edit
+      @method = :get
+      @action = :edit
       set_policy_date
       @params.merge!(id: @price_policy.start_date.to_s)
     end
@@ -205,10 +205,10 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
     context "create" do
       before :each do
-        @method=:post
-        @action=:create
-        @start_date=Time.zone.now+1.year
-        @expire_date=PricePolicy.generate_expire_date(@start_date)
+        @method = :post
+        @action = :create
+        @start_date = Time.zone.now + 1.year
+        @expire_date = PricePolicy.generate_expire_date(@start_date)
         @params[:start_date] = @start_date.to_s
         @params[:expire_date] = @expire_date.to_s
 

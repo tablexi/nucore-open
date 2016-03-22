@@ -218,9 +218,9 @@ RSpec.describe OrderDetail do
 
   context 'bundle' do
     before :each do
-      @bundle=create(:bundle, facility_account: @facility_account, facility: @facility)
-      @bundle_product=BundleProduct.create!(bundle: @bundle, product: @item, quantity: 1)
-      @order_detail.bundle=@bundle
+      @bundle = create(:bundle, facility_account: @facility_account, facility: @facility)
+      @bundle_product = BundleProduct.create!(bundle: @bundle, product: @item, quantity: 1)
+      @order_detail.bundle = @bundle
       assert @order_detail.save
     end
 
@@ -229,7 +229,7 @@ RSpec.describe OrderDetail do
     end
 
     it 'should not be bundled' do
-      @order_detail.bundle=nil
+      @order_detail.bundle = nil
       assert @order_detail.save
       expect(@order_detail).not_to be_bundled
     end
@@ -288,17 +288,17 @@ RSpec.describe OrderDetail do
         @price_group = create(:price_group, facility: @facility)
         create(:price_group_product, product: @instrument, price_group: @price_group)
         create(:account_price_group_member, account: account, price_group: @price_group)
-        @pp=create(:instrument_price_policy, product: @instrument, price_group: @price_group)
+        @pp = create(:instrument_price_policy, product: @instrument, price_group: @price_group)
         @rule = @instrument.schedule_rules.create(attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
         @order_detail.reservation = create(:reservation,
                                            reserve_start_at: Time.now,
-                                           reserve_end_at: Time.now+1.hour,
+                                           reserve_end_at: Time.now + 1.hour,
                                            product: @instrument
                                           )
         @order_detail.product = @instrument
         @order_detail.save
         assert @order_detail.reservation
-        @start_stop = [Time.now, Time.now+1.hour]
+        @start_stop = [Time.now, Time.now + 1.hour]
       end
 
       it "should assign_estimated_price" do
@@ -363,8 +363,8 @@ RSpec.describe OrderDetail do
 
   context "service purchase validation" do
     before(:each) do
-      @account        = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-     @price_group    = create(:price_group, facility: @facility)
+      @account = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+     @price_group = create(:price_group, facility: @facility)
      create(:account_price_group_member, account: account, price_group: @price_group)
      @order          = @user.orders.create(attributes_for(:order, facility_id: @facility.id, account_id: @account.id, created_by: @user.id))
      @service        = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
@@ -653,7 +653,7 @@ RSpec.describe OrderDetail do
       end
 
       it 'should assign a price policy' do
-        pp=create(:item_price_policy, product: @item, price_group: @price_group3)
+        pp = create(:item_price_policy, product: @item, price_group: @price_group3)
         expect(@order_detail.price_policy).to be_nil
         @order_detail.to_inprocess!
         @order_detail.to_complete!
@@ -663,7 +663,7 @@ RSpec.describe OrderDetail do
         expect(@order_detail).not_to be_problem_order
         expect(@order_detail.fulfilled_at).not_to be_nil
 
-        costs=pp.calculate_cost_and_subsidy(@order_detail.quantity)
+        costs = pp.calculate_cost_and_subsidy(@order_detail.quantity)
         expect(@order_detail.actual_cost).to eq(costs[:cost])
         expect(@order_detail.actual_subsidy).to eq(costs[:subsidy])
       end
@@ -696,7 +696,7 @@ RSpec.describe OrderDetail do
       end
 
       it "should not transition to canceled if part of journal" do
-        journal=create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: Time.zone.now)
+        journal = create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: Time.zone.now)
         @order_detail.update_attribute :journal_id, journal.id
         expect(@order_detail.reload.journal).to eq(journal)
         @order_detail.to_inprocess!
@@ -762,7 +762,7 @@ RSpec.describe OrderDetail do
 
   context 'statement' do
     before :each do
-      @statement=create(:statement, facility: @facility, created_by: @user.id, account: @account)
+      @statement = create(:statement, facility: @facility, created_by: @user.id, account: @account)
     end
 
     it { is_expected.to allow_value(nil).for(:statement) }
@@ -771,7 +771,7 @@ RSpec.describe OrderDetail do
 
   context 'journal' do
     before :each do
-      @journal=create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: Time.zone.now)
+      @journal = create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: Time.zone.now)
     end
 
     it { is_expected.to allow_value(nil).for(:journal) }
@@ -786,34 +786,34 @@ RSpec.describe OrderDetail do
   end
 
   it "should include ids in description" do
-    desc=@order_detail.to_s
+    desc = @order_detail.to_s
     expect(desc).to match(/#{@order_detail.id}/)
     expect(desc).to match(/#{@order_detail.order.id}/)
   end
 
   context 'is_in_dispute?' do
     it 'should be in dispute' do
-      @order_detail.dispute_at=Time.zone.now
-      @order_detail.dispute_resolved_at=nil
+      @order_detail.dispute_at = Time.zone.now
+      @order_detail.dispute_resolved_at = nil
       expect(@order_detail).to be_in_dispute
     end
 
     it 'should not be in dispute if dispute_at is nil' do
-      @order_detail.dispute_at=nil
-      @order_detail.dispute_resolved_at="all good"
+      @order_detail.dispute_at = nil
+      @order_detail.dispute_resolved_at = "all good"
       expect(@order_detail).not_to be_in_dispute
     end
 
     it 'should not be in dispute if dispute_resolved_at is not nil' do
-      @order_detail.dispute_at=Time.zone.now
-      @order_detail.dispute_resolved_at=Time.zone.now+1.day
+      @order_detail.dispute_at = Time.zone.now
+      @order_detail.dispute_resolved_at = Time.zone.now + 1.day
       expect(@order_detail).not_to be_in_dispute
     end
 
     it 'should not be in dispute if order detail is canceled' do
       @order_detail.to_canceled!
-      @order_detail.dispute_at=Time.zone.now
-      @order_detail.dispute_resolved_at=nil
+      @order_detail.dispute_at = Time.zone.now
+      @order_detail.dispute_resolved_at = nil
       expect(@order_detail).not_to be_in_dispute
     end
   end
@@ -876,7 +876,7 @@ RSpec.describe OrderDetail do
 
   context 'named scopes' do
     before :each do
-      @order.facility=@facility
+      @order.facility = @facility
       assert @order.save
 
       # extra facility records to make sure we scope properly
@@ -890,46 +890,46 @@ RSpec.describe OrderDetail do
     end
 
     it 'should give recent order details of given facility only' do
-      ods=OrderDetail.facility_recent(@facility)
+      ods = OrderDetail.facility_recent(@facility)
       expect(ods.size).to eq(1)
       expect(ods.first).to eq(@order_detail)
     end
 
     it 'should give all order details for a facility' do
-      ods=OrderDetail.for_facility(@facility)
+      ods = OrderDetail.for_facility(@facility)
       expect(ods.size).to eq(1)
       expect(ods.first).to eq(@order_detail)
     end
 
     context 'reservations' do
       before :each do
-        @now=Time.zone.now
+        @now = Time.zone.now
         setup_reservation @facility, @facility_account, @account, @user
       end
 
       it 'should be upcoming' do
-        start_time=@now+2.days
-        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time+1.hour
-        upcoming=OrderDetail.upcoming_reservations.all
+        start_time = @now + 2.days
+        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour
+        upcoming = OrderDetail.upcoming_reservations.all
         expect(upcoming.size).to eq(1)
         expect(upcoming[0]).to eq(@order_detail)
       end
 
       it 'should not be upcoming because reserve_end_at is in the past' do
-        start_time=@now-2.days
-        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time+1.hour
+        start_time = @now - 2.days
+        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour
         expect(OrderDetail.upcoming_reservations.all).to be_blank
       end
 
       it 'should not be upcoming because actual_start_at exists' do
-        start_time=@now+2.days
-        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time+1.hour, actual_start_at: start_time
+        start_time = @now + 2.days
+        place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour, actual_start_at: start_time
         expect(OrderDetail.upcoming_reservations.all).to be_blank
       end
 
       it 'should be in progress' do
         place_reservation @facility, @order_detail, @now, actual_start_at: @now
-        upcoming=OrderDetail.in_progress_reservations.all
+        upcoming = OrderDetail.in_progress_reservations.all
         expect(upcoming.size).to eq(1)
         expect(upcoming[0]).to eq(@order_detail)
       end
@@ -940,8 +940,8 @@ RSpec.describe OrderDetail do
       end
 
       it 'should not be in progress because actual_end_at exists' do
-        start_time=@now-3.hours
-        place_reservation @facility, @order_detail, start_time, actual_start_at: start_time, actual_end_at: start_time+1.hour
+        start_time = @now - 3.hours
+        place_reservation @facility, @order_detail, start_time, actual_start_at: start_time, actual_end_at: start_time + 1.hour
         expect(OrderDetail.in_progress_reservations.all).to be_empty
       end
     end
@@ -950,20 +950,20 @@ RSpec.describe OrderDetail do
 
       before :each do
         @statement = Statement.create(facility: @facility, created_by: 1, account: @account)
-        @order_detail.update_attributes(statement: @statement, reviewed_at: (Time.zone.now-1.day))
+        @order_detail.update_attributes(statement: @statement, reviewed_at: (Time.zone.now - 1.day))
         @statement2 = Statement.create(facility: @facility2, created_by: 1, account: @account)
-        @order_detail2.statement=@statement2
+        @order_detail2.statement = @statement2
         assert @order_detail2.save
       end
 
       it 'should give all order details with statements for a facility' do
-        ods=OrderDetail.statemented(@facility)
+        ods = OrderDetail.statemented(@facility)
         expect(ods.size).to eq(1)
         expect(ods.first).to eq(@order_detail)
       end
 
       it 'should give finalized order details of given facility only' do
-        ods=OrderDetail.finalized(@facility)
+        ods = OrderDetail.finalized(@facility)
         expect(ods.size).to eq(1)
         expect(ods.first).to eq(@order_detail)
       end
@@ -977,8 +977,8 @@ RSpec.describe OrderDetail do
 
       context 'journaled_or_statemented' do
         before :each do
-          @journal=create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: 2.days.ago)
-          @statement=create(:statement, facility: @facility, created_by: @user.id, account: @account, created_at: 1.day.ago)
+          @journal = create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: 2.days.ago)
+          @statement = create(:statement, facility: @facility, created_by: @user.id, account: @account, created_at: 1.day.ago)
           @order_detail.to_complete!
           @order_detail2.to_complete!
           @order_detail.update_attribute :journal_id, @journal.id
@@ -1027,7 +1027,7 @@ RSpec.describe OrderDetail do
       @od_today = place_product_order(@user, @facility, @item, @account)
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument=create(:instrument,
+      @instrument = create(:instrument,
                          facility: @facility,
                          facility_account: @facility_account,
                          min_reserve_mins: 60,
@@ -1464,7 +1464,7 @@ RSpec.describe OrderDetail do
         end
 
         it 'should not destroy merge order when there are other details' do
-          @service=@facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
+          @service = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
           allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
           @order.order_details.create(attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
           expect(@order.order_details.size).to eq(2)
@@ -1493,7 +1493,7 @@ RSpec.describe OrderDetail do
         end
 
         it 'should update order_id but not delete merge order when there is another detail' do
-          @service=@facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
+          @service = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
           allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
           @order.order_details.create(attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
           assert @order_detail.reload.save
@@ -1531,9 +1531,9 @@ RSpec.describe OrderDetail do
 
       context 'service' do
         before :each do
-          @service=@facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
+          @service = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
           allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
-          @service_order_detail=@order.order_details.create(attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
+          @service_order_detail = @order.order_details.create(attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
         end
 
         it 'should not update order_id if there is an incomplete active survey' do
@@ -1574,7 +1574,7 @@ RSpec.describe OrderDetail do
                                facility_account_id: @facility_account.id,
                                min_reserve_mins: 60,
                                max_reserve_mins: 60)
-          @instrument_order_detail=@order.order_details.create(attributes_for(:order_detail, product_id: @instrument.id, account_id: @account.id))
+          @instrument_order_detail = @order.order_details.create(attributes_for(:order_detail, product_id: @instrument.id, account_id: @account.id))
         end
 
         it 'should not update order_id if there is an incomplete reservation' do
@@ -1610,7 +1610,7 @@ RSpec.describe OrderDetail do
     end
 
     def setup_merge_order
-      @merge_to_order=@order.dup
+      @merge_to_order = @order.dup
       assert @merge_to_order.save
       @order.update_attribute :merge_with_order_id, @merge_to_order.id
       @order_detail.reload

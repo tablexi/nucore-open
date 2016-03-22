@@ -4,13 +4,13 @@ namespace :chart_strings do
   task update_expiration: :environment do
     NufsAccount.all.each do |fs|
       next if fs.suspended?
-      validator=NucsValidator.new(fs.account_number)
+      validator = NucsValidator.new(fs.account_number)
 
       now = Time.zone.now
       latest = validator.latest_expiration
       # don't change date on previously expired accounts
       next if latest.nil? && fs.expires_at && fs.expires_at < now
-      fs.expires_at=(latest.nil? || !validator.components_exist?) ? now : latest
+      fs.expires_at = (latest.nil? || !validator.components_exist?) ? now : latest
 
       # TBD: Could we encounter a valid chart string not in the GL066?
       # If so it might mean that chart string never expires, and

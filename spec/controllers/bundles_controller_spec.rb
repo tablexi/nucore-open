@@ -10,9 +10,9 @@ RSpec.describe BundlesController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, facility: @authable)
-    @bundle=FactoryGirl.create(:bundle, facility_account: @facility_account, facility: @authable)
+    @authable = FactoryGirl.create(:facility)
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
+    @bundle = FactoryGirl.create(:bundle, facility_account: @facility_account, facility: @authable)
 
     # Create at least one item in the bundle, otherwise bundle.can_purchase? will return false
     item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
@@ -23,9 +23,9 @@ RSpec.describe BundlesController do
 
   context 'index' do
     before(:each) do
-      @method=:get
-      @action=:index
-      @params={ facility_id: @authable.url_name }
+      @method = :get
+      @action = :index
+      @params = { facility_id: @authable.url_name }
     end
 
     it_should_require_login
@@ -39,7 +39,7 @@ RSpec.describe BundlesController do
     end
 
     it 'should show archived facilities' do
-      @bundle.is_archived=true
+      @bundle.is_archived = true
       assert @bundle.save
       maybe_grant_always_sign_in(:director)
       @params[:archived] = 'true'
@@ -51,9 +51,9 @@ RSpec.describe BundlesController do
 
   context 'show' do
     before(:each) do
-      @method=:get
-      @action=:show
-      @params={ facility_id: @authable.url_name, id: @bundle.url_name }
+      @method = :get
+      @action = :show
+      @params = { facility_id: @authable.url_name, id: @bundle.url_name }
     end
 
     it 'should flash and falsify @add_to_cart if bundle cannot be purchased' do
@@ -175,9 +175,9 @@ RSpec.describe BundlesController do
 
   context 'new' do
     before(:each) do
-      @method=:get
-      @action=:new
-      @params={ facility_id: @authable.url_name }
+      @method = :get
+      @action = :new
+      @params = { facility_id: @authable.url_name }
     end
 
     it_should_require_login
@@ -191,9 +191,9 @@ RSpec.describe BundlesController do
 
   context 'edit' do
     before(:each) do
-      @method=:get
-      @action=:edit
-      @params={ facility_id: @authable.url_name, id: @bundle.url_name }
+      @method = :get
+      @action = :edit
+      @params = { facility_id: @authable.url_name, id: @bundle.url_name }
     end
 
     it_should_require_login
@@ -225,9 +225,9 @@ RSpec.describe BundlesController do
 
   context 'update' do
     before(:each) do
-      @method=:put
-      @action=:update
-      @params={
+      @method = :put
+      @action = :update
+      @params = {
         facility_id: @authable.url_name,
         id: @bundle.url_name,
         bundle: FactoryGirl.attributes_for(:bundle, url_name: @bundle.url_name)

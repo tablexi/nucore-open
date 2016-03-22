@@ -7,15 +7,15 @@ RSpec.describe AccountUsersController do
   before(:all) { create_users }
 
   before :each do
-    @authable=create_nufs_account_with_owner
+    @authable = create_nufs_account_with_owner
   end
 
   context 'user_search' do
 
     before :each do
-      @method=:get
-      @action=:user_search
-      @params={ account_id: @authable.id }
+      @method = :get
+      @action = :user_search
+      @params = { account_id: @authable.id }
     end
 
     it_should_require_login
@@ -31,9 +31,9 @@ RSpec.describe AccountUsersController do
   context 'new' do
 
     before :each do
-      @method=:get
-      @action=:new
-      @params={ account_id: @authable.id, user_id: @purchaser }
+      @method = :get
+      @action = :new
+      @params = { account_id: @authable.id, user_id: @purchaser }
     end
 
     it_should_require_login
@@ -52,9 +52,9 @@ RSpec.describe AccountUsersController do
   context 'create' do
 
     before :each do
-      @method=:post
-      @action=:create
-      @params={
+      @method = :post
+      @action = :create
+      @params = {
         account_id: @authable.id,
         user_id: @purchaser.id,
         account_user: { user_role: AccountUser::ACCOUNT_PURCHASER }
@@ -80,13 +80,13 @@ RSpec.describe AccountUsersController do
   context 'destroy' do
 
     before :each do
-      @method=:delete
-      @action=:destroy
-      @account_user=FactoryGirl.create(:account_user, user_role: AccountUser::ACCOUNT_ADMINISTRATOR,
+      @method = :delete
+      @action = :destroy
+      @account_user = FactoryGirl.create(:account_user, user_role: AccountUser::ACCOUNT_ADMINISTRATOR,
         account_id: @authable.id,
         user_id: @staff.id,
         created_by: @admin.id)
-      @params={ account_id: @authable.id, id: @account_user.id }
+      @params = { account_id: @authable.id, id: @account_user.id }
     end
 
     it_should_require_login

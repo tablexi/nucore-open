@@ -9,10 +9,10 @@ include ActionDispatch::TestProcess
 # Configure test env for specified validator
 #
 
-validator_factory=Settings.validator.test.factory
+validator_factory = Settings.validator.test.factory
 require Rails.root.join(validator_factory) if validator_factory.present?
 
-validator_helper=Settings.validator.test.helper
+validator_helper = Settings.validator.test.helper
 
 if validator_helper.present?
   require Rails.root.join(validator_helper)

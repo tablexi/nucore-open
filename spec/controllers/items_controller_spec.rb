@@ -19,13 +19,13 @@ RSpec.describe ItemsController do
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @item             = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     @item_pp          = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @nupg))
-    @params={ facility_id: @authable.url_name, id: @item.url_name }
+    @params = { facility_id: @authable.url_name, id: @item.url_name }
   end
 
   context "index" do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
       @params.delete(:id)
     end
 
@@ -38,8 +38,8 @@ RSpec.describe ItemsController do
 
   context "manage" do
     before :each do
-      @method=:get
-      @action=:manage
+      @method = :get
+      @action = :manage
     end
 
     it_should_allow_operators_only do |_user|
@@ -51,9 +51,9 @@ RSpec.describe ItemsController do
 
   context "show" do
     before :each do
-      @method=:get
-      @action=:show
-      @block=proc do
+      @method = :get
+      @action = :show
+      @block = proc do
         expect(assigns[:item]).to eq(@item)
         expect(response).to be_success
         expect(response).to render_template('items/show')
@@ -146,8 +146,8 @@ RSpec.describe ItemsController do
 
   context "new" do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
@@ -158,8 +158,8 @@ RSpec.describe ItemsController do
 
   context "edit" do
     before :each do
-      @method=:get
-      @action=:edit
+      @method = :get
+      @action = :edit
     end
 
     it_should_allow_managers_only do
@@ -169,8 +169,8 @@ RSpec.describe ItemsController do
 
   context "create" do
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @params.merge!(item: FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     end
 
@@ -183,8 +183,8 @@ RSpec.describe ItemsController do
 
   context "update" do
     before :each do
-      @method=:put
-      @action=:update
+      @method = :put
+      @action = :update
       @params.merge!(item: FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     end
 
@@ -198,8 +198,8 @@ RSpec.describe ItemsController do
 
   context "destroy" do
     before :each do
-      @method=:delete
-      @action=:destroy
+      @method = :delete
+      @action = :destroy
     end
 
     it_should_allow_managers_only :redirect do

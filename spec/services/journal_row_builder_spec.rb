@@ -66,7 +66,7 @@ RSpec.describe JournalRowBuilder, type: :service do
     context "when recharge_accounts enabled", feature_setting: {recharge_accounts: true} do
 
       it "builds two journal_rows for each order_detail" do
-        expect(builder.build.journal_rows.size).to eq(order_details.size*2)
+        expect(builder.build.journal_rows.size).to eq(order_details.size * 2)
       end
 
       it "builds a product_recharge for each order_detail" do

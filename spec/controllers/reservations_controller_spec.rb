@@ -22,7 +22,7 @@ RSpec.describe ReservationsController do
     @order_detail = @order.order_details.first
     assert @order_detail.persisted?
 
-    @params={ order_id: @order.id, order_detail_id: @order_detail.id }
+    @params = { order_id: @order.id, order_detail_id: @order_detail.id }
     create(:account_price_group_member, account: @account, price_group: @price_group)
   end
 
@@ -33,8 +33,8 @@ RSpec.describe ReservationsController do
       @order.validate_order!
       @order.purchase!
 
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
       @params.merge!(instrument_id: @instrument.url_name, facility_id: @authable.url_name)
     end
 
@@ -143,8 +143,8 @@ RSpec.describe ReservationsController do
 
   context 'list' do
     before :each do
-      @method=:get
-      @action=:list
+      @method = :get
+      @action = :list
       @params = {}
     end
 
@@ -247,13 +247,13 @@ RSpec.describe ReservationsController do
 
   context 'creating a reservation in the past' do
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @order = @guest.orders.create(FactoryGirl.attributes_for(:order, created_by: @admin.id, account: @account))
       @order.add(@instrument, 1)
       @order_detail = @order.order_details.first
       @price_policy_past = create(:instrument_price_policy, product: @instrument, price_group_id: @price_group.id, start_date: 7.days.ago, expire_date: 1.day.ago, usage_rate: 120, charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage])
-      @params={
+      @params = {
         order_id: @order.id,
         order_detail_id: @order_detail.id,
         order_account: @account.id,
@@ -300,12 +300,12 @@ RSpec.describe ReservationsController do
 
   context 'create' do
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @params.merge!(
         order_account: @account.id,
         reservation: {
-          reserve_start_date: format_usa_date(Time.zone.now.to_date+1.day),
+          reserve_start_date: format_usa_date(Time.zone.now.to_date + 1.day),
             reserve_start_hour: '9',
             reserve_start_min: '0',
             reserve_start_meridian: 'am',
@@ -347,7 +347,7 @@ RSpec.describe ReservationsController do
 
     context 'merge order' do
       before :each do
-        @merge_to_order=@order.dup
+        @merge_to_order = @order.dup
         assert @merge_to_order.save
         assert @order.update_attribute :merge_with_order_id, @merge_to_order.id
       end
@@ -359,9 +359,9 @@ RSpec.describe ReservationsController do
 
       context 'extra order details' do
         before :each do
-          @service=@authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+          @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
           allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
-          @service_order_detail=@order.order_details.create(FactoryGirl.attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
+          @service_order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
         end
 
         it_should_allow :director, 'to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed' do
@@ -421,7 +421,7 @@ RSpec.describe ReservationsController do
 
     context 'creating a reservation in the future with no price policy' do
       before :each do
-        @params[:reservation][:reserve_start_date] = format_usa_date(@price_policy.expire_date+1.day)
+        @params[:reservation][:reserve_start_date] = format_usa_date(@price_policy.expire_date + 1.day)
         @price_group_product.update_attributes(reservation_window: 365)
         sign_in @guest
         do_request
@@ -447,7 +447,7 @@ RSpec.describe ReservationsController do
         expect(assigns[:reservation].duration_unit).to eq("minutes")
       end
       it 'should not lose the time' do
-        expect(assigns[:reservation].reserve_start_date).to eq(format_usa_date(Time.zone.now.to_date+1.day))
+        expect(assigns[:reservation].reserve_start_date).to eq(format_usa_date(Time.zone.now.to_date + 1.day))
         expect(assigns[:reservation].reserve_start_hour).to eq(9)
         expect(assigns[:reservation].reserve_start_min).to eq(0)
         expect(assigns[:reservation].reserve_start_meridian).to eq('am')
@@ -464,7 +464,7 @@ RSpec.describe ReservationsController do
     context 'with new account' do
 
       before :each do
-        @account2=FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @guest))
+        @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @guest))
         define_open_account(@instrument.account, @account2.account_number)
         @params[:order_account] = @account2.id
         expect(@order.account).to eq(@account)
@@ -517,8 +517,8 @@ RSpec.describe ReservationsController do
 
   context 'new' do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_all facility_users do
@@ -528,14 +528,14 @@ RSpec.describe ReservationsController do
       expect(assigns(:reservation)).to be_kind_of Reservation
       expect(assigns(:max_window)).to be_kind_of Integer
 
-      expect(assigns[:max_date]).to eq((Time.zone.now+assigns[:max_window].days).strftime("%Y%m%d"))
+      expect(assigns[:max_date]).to eq((Time.zone.now + assigns[:max_window].days).strftime("%Y%m%d"))
     end
 
     # Managers should be able to go far out into the future
     it_should_allow_all facility_operators do
       expect(assigns[:max_window]).to eq(365)
       expect(assigns[:max_days_ago]).to eq(-365)
-      expect(assigns[:min_date]).to eq((Time.zone.now+assigns[:max_days_ago].days).strftime("%Y%m%d"))
+      expect(assigns[:min_date]).to eq((Time.zone.now + assigns[:max_days_ago].days).strftime("%Y%m%d"))
       expect(assigns[:max_date]).to eq((Time.zone.now + 365.days).strftime("%Y%m%d"))
     end
 
@@ -706,8 +706,8 @@ RSpec.describe ReservationsController do
 
     context 'show' do
       before :each do
-        @method=:get
-        @action=:show
+        @method = :get
+        @action = :show
         @params.merge!(id: @reservation.id)
       end
 
@@ -892,7 +892,7 @@ RSpec.describe ReservationsController do
     context 'valid short reservation' do
       before :each do
         @reservation = @instrument.reservations.create(
-          reserve_start_at: Time.zone.now+1.day,
+          reserve_start_at: Time.zone.now + 1.day,
           order_detail: @order_detail,
           duration_value: 60,
           duration_unit: 'minutes'
@@ -918,7 +918,7 @@ RSpec.describe ReservationsController do
         FactoryGirl.create(:all_day_schedule_rule, instrument: @instrument)
 
         @reservation = @instrument.reservations.create!(
-          reserve_start_at: Time.zone.now+1.day,
+          reserve_start_at: Time.zone.now + 1.day,
           order_detail: @order_detail,
           duration_value: 24,
           duration_unit: 'hours'
@@ -988,11 +988,11 @@ RSpec.describe ReservationsController do
 
     context 'move' do
       before :each do
-        @method=:post
-        @action=:move
+        @method = :post
+        @action = :move
         expect(@reservation.earliest_possible).to be_nil
-        @orig_start_at=@reservation.reserve_start_at
-        @orig_end_at=@reservation.reserve_end_at
+        @orig_start_at = @reservation.reserve_start_at
+        @orig_end_at = @reservation.reserve_end_at
         @params.merge!(reservation_id: @reservation.id)
       end
 
@@ -1011,7 +1011,7 @@ RSpec.describe ReservationsController do
     context 'switch_instrument', :timecop_freeze do
       before :each do
         @method = :get
-        @action=  :switch_instrument
+        @action = :switch_instrument
         @params[:reservation_id] = @reservation.id
         create(:relay, instrument: @instrument)
         @random_user = create(:user)
@@ -1152,8 +1152,8 @@ RSpec.describe ReservationsController do
              ## (setup stolen from orders_controller_spec)
              ## create a purchasable item
              @item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
-             @item_pp=@item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id))
-             @item_pp.reload.restrict_purchase=false
+             @item_pp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id))
+             @item_pp.reload.restrict_purchase = false
 
              ## make it an accessory of the reserved product
              @instrument.product_accessories.create!(accessory: @item)

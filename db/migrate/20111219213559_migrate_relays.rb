@@ -6,8 +6,8 @@ class MigrateRelays < ActiveRecord::Migration
     Instrument.all.each do |inst|
       next if inst[:relay_type].blank? && inst[:relay_ip].blank? && inst[:relay_port].blank? && inst[:relay_username].blank? && inst[:relay_password].blank?
 
-      relay_type=inst[:relay_type]
-      relay_type='RelaySynaccessRevA' if relay_type == 'SynaccessRevA'
+      relay_type = inst[:relay_type]
+      relay_type = 'RelaySynaccessRevA' if relay_type == 'SynaccessRevA'
 
       begin
         relay_type.constantize.create!(

@@ -124,7 +124,7 @@ RSpec.describe OrderImport, :timecop_freeze do
       csv << CSV_HEADERS
       args.each do |opts|
         row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
-                                        opts[:username]           || 'guest',
+                                        opts[:username] || 'guest',
           opts[:account_number]     || "111-2222222-33333333-01",
           opts[:product_name]       || "Example Item",
           opts[:quantity]           || 1,

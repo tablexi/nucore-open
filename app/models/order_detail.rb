@@ -660,7 +660,7 @@ class OrderDetail < ActiveRecord::Base
   def assign_estimated_price(second_account = nil, date = Time.zone.now)
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
-    second_account=account unless second_account
+    second_account = account unless second_account
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
@@ -830,7 +830,7 @@ class OrderDetail < ActiveRecord::Base
   def to_notice(notification_class, *_args)
     case notification_class.name
     when MergeNotification.name
-      notice="<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
+      notice = "<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
 
         notice += case product
                   when Instrument then 'has an incomplete reservation.'
@@ -950,7 +950,7 @@ class OrderDetail < ActiveRecord::Base
 
   def make_complete
     assign_price_policy
-    self.fulfilled_at=Time.zone.now
+    self.fulfilled_at = Time.zone.now
     self.reviewed_at = Time.zone.now unless SettingsHelper.has_review_period?
   end
 
