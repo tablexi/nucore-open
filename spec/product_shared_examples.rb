@@ -92,8 +92,8 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
 
     context 'past policies' do
       before :each do
-        @pp_past_group1 = make_price_policy(:unit_cost => 7, :price_group => @price_group2, :start_date => 3.days.ago, :expire_date => 1.days.ago)
-        @pp_past_group2 = make_price_policy(:unit_cost => 8, :price_group => @price_group, :start_date => 3.days.ago, :expire_date => 1.days.ago)
+        @pp_past_group1 = make_price_policy(:unit_cost => 7, :price_group => @price_group2, :start_date => 3.days.ago, :expire_date => 1.day.ago)
+        @pp_past_group2 = make_price_policy(:unit_cost => 8, :price_group => @price_group, :start_date => 3.days.ago, :expire_date => 1.day.ago)
       end
       it 'should find the cheapest policy of two past policies' do
         expect(@product.cheapest_price_policy(@order_detail, 2.days.ago)).to eq(@pp_past_group1)
@@ -204,8 +204,8 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
     end
     context 'past policies' do
       before :each do
-        @pp_past_group1 = make_price_policy(:usage_rate => 7, :price_group => @price_group2, :start_date => 3.days.ago, :expire_date => 1.days.ago)
-        @pp_past_group2 = make_price_policy(:usage_rate => 8, :price_group => @price_group, :start_date => 3.days.ago, :expire_date => 1.days.ago)
+        @pp_past_group1 = make_price_policy(:usage_rate => 7, :price_group => @price_group2, :start_date => 3.days.ago, :expire_date => 1.day.ago)
+        @pp_past_group2 = make_price_policy(:usage_rate => 8, :price_group => @price_group, :start_date => 3.days.ago, :expire_date => 1.day.ago)
         expect(@product.price_policies.current_for_date(2.days.ago)).to eq([@pp_past_group1, @pp_past_group2])
       end
       it 'should find the cheapest policy of two past policies' do

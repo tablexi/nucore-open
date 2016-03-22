@@ -27,7 +27,7 @@ RSpec.describe AutoCanceler do
     res = FactoryGirl.create :purchased_reservation,
       :product => instrument,
       :reserve_start_at => base_date - 3.hours,
-      :reserve_end_at => base_date - 2.hour,
+      :reserve_end_at => base_date - 2.hours,
       :reserved_by_admin => true
     res.order_detail.to_complete!
     res

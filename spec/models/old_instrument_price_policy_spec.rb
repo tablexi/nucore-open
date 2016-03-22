@@ -392,7 +392,7 @@ RSpec.describe OldInstrumentPricePolicy do
     it "should correctly estimate cost across multiple days" do
       # 2 hour (8 intervals)
       start_dt = Time.zone.parse("#{Date.current + 1.day} 23:00")
-      end_dt   = Time.zone.parse("#{Date.current + 2.day} 1:00")
+      end_dt   = Time.zone.parse("#{Date.current + 2.days} 1:00")
       costs    = @pp.estimate_cost_and_subsidy(start_dt, end_dt)
       expect(costs[:cost]).to    eq(10.75 * 8)
       expect(costs[:subsidy]).to eq(0)

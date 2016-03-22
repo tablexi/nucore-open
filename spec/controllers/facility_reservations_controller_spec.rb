@@ -376,7 +376,7 @@ RSpec.describe FacilityReservationsController do
         create(:account_price_group_member, account: account, price_group: @price_group)
         @instrument_pp=create(:instrument_price_policy, :product => @product, :price_group_id => @price_group.id, :usage_rate => 2)
         @instrument_pp.reload.restrict_purchase=false
-        @now=@reservation.reserve_start_at+3.hour
+        @now=@reservation.reserve_start_at+3.hours
         maybe_grant_always_sign_in :director
         Timecop.freeze(@now) { @order_detail.to_complete! }
       end
@@ -386,7 +386,7 @@ RSpec.describe FacilityReservationsController do
           @reservation.update_attributes(:actual_start_at => nil, :actual_end_at => nil)
           @reservation_attrs=FactoryGirl.attributes_for(
               :reservation,
-              :actual_start_at => @now-2.hour,
+              :actual_start_at => @now-2.hours,
               :actual_end_at => @now-1.hour
           )
           @params.merge!(:reservation => @reservation_attrs)
@@ -415,7 +415,7 @@ RSpec.describe FacilityReservationsController do
           @reservation.update_attributes(:actual_start_at => @reservation.reserve_start_at, :actual_end_at => @reservation.reserve_end_at)
           @reservation_attrs=FactoryGirl.attributes_for(
               :reservation,
-              :reserve_start_at => @now-3.hour,
+              :reserve_start_at => @now-3.hours,
               :reserve_end_at   => @now-1.hour,
               :actual_start_at  => @reservation.reserve_start_at,
               :actual_end_at    => @reservation.reserve_end_at

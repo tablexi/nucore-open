@@ -950,7 +950,7 @@ RSpec.describe OrderDetail do
 
 
       it 'should not be in progress because actual_end_at exists' do
-        start_time=@now-3.hour
+        start_time=@now-3.hours
         place_reservation @facility, @order_detail, start_time, { actual_start_at: start_time, actual_end_at: start_time+1.hour }
         expect(OrderDetail.in_progress_reservations.all).to be_empty
       end
@@ -987,7 +987,7 @@ RSpec.describe OrderDetail do
 
       context 'journaled_or_statemented' do
         before :each do
-          @journal=create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: 2.day.ago)
+          @journal=create(:journal, facility: @facility, reference: 'xyz', created_by: @user.id, journal_date: 2.days.ago)
           @statement=create(:statement, facility: @facility, created_by: @user.id, account: @account, created_at: 1.day.ago)
           @order_detail.to_complete!
           @order_detail2.to_complete!
