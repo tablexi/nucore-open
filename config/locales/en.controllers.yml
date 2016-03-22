@@ -148,7 +148,7 @@ en:
         reservation_end_time: 'Reservation End Time'
         reservation_minutes: 'Reservation Minutes'
         actual_start_time: 'Actual Start Time'
-        actual_end_Time: 'Actual End Time'
+        actual_end_time: 'Actual End Time'
         actual_minutes: 'Actual Minutes'
         canceled_at: 'Canceled At'
         canceled_by: 'Canceled By'
