@@ -10,7 +10,6 @@ module Products::SchedulingSupport
 
     before_save :create_default_schedule, :unless => :schedule
     before_save :update_schedule_name, :if => :name_changed?
-
   end
 
   def active_reservations

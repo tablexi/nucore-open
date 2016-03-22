@@ -360,5 +360,4 @@ Nucore::Application.routes.draw do
   namespace :api do
     resources :order_details, :only => [:show]
   end
-
 end

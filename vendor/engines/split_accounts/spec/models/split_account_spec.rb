@@ -2,7 +2,6 @@ require "rails_helper"
 require_relative "../split_accounts_spec_helper"
 
 RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model do
-
   it "is an account type" do
     expect(described_class.new).to be_an(Account)
   end
@@ -13,7 +12,6 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
   end
 
   describe "validations" do
-
     let(:subaccount_1) { build_stubbed(:setup_account) }
     let(:subaccount_2) { build_stubbed(:setup_account) }
 
@@ -89,7 +87,6 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
     end
 
     context "when splits share one or more subaccount" do
-
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
           split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
@@ -282,5 +279,4 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
       end
     end
   end
-
 end

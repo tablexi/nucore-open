@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Dataprobe::Ipio do
-
   let(:ip) { '192.168.10.15' }
   let(:fake_socket) { double 'TCPSocket', recv: nil, write: nil, close: nil }
   subject(:relay) { described_class.new ip }
@@ -86,5 +85,4 @@ RSpec.describe Dataprobe::Ipio do
     expect(fake_socket).to receive :close
     expect(relay.status 1).to eq bool
   end
-
 end

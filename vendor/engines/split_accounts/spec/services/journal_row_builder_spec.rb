@@ -2,7 +2,6 @@ require "rails_helper"
 require_relative "../split_accounts_spec_helper"
 
 RSpec.describe JournalRowBuilder, :enable_split_accounts, type: :service do
-
   let(:builder) do
     described_class.new(journal, order_details)
   end
@@ -53,7 +52,5 @@ RSpec.describe JournalRowBuilder, :enable_split_accounts, type: :service do
       expect(rows2.first.amount).to eq(-3)
       expect(rows2.first.order_detail_id).to be_blank
     end
-
   end
-
 end

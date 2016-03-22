@@ -2,7 +2,6 @@ require "rails_helper"
 require_relative "../split_accounts_spec_helper"
 
 RSpec.describe SplitAccounts::Split, :enable_split_accounts, type: :model do
-
   # TODO: remove this if/when we do factory linting
   it "has a valid factory" do
     expect(build(:split)).to be_valid
@@ -39,7 +38,5 @@ RSpec.describe SplitAccounts::Split, :enable_split_accounts, type: :model do
         expect(split.errors).to include(:percent)
       end
     end
-
   end
-
 end

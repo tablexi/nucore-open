@@ -1,9 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Facility do
-
   context 'can_pay_with_account?' do
-
     before :each do
       @facility=FactoryGirl.create(:facility)
       owner=FactoryGirl.create(:user)
@@ -45,7 +43,5 @@ RSpec.describe Facility do
         expect(@facility.can_pay_with_account?(@account)).to be true
       end
     end
-
   end
-
 end
