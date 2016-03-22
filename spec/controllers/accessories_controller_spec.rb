@@ -109,8 +109,8 @@ RSpec.describe AccessoriesController do
           @params.merge! accessories: {
             quantity_accessory.id.to_s => {
               quantity: "3",
-              enabled: "true"
-            }
+              enabled: "true",
+            },
           }
         end
 
@@ -181,8 +181,8 @@ RSpec.describe AccessoriesController do
           @params.merge! accessories: {
             quantity_accessory.id.to_s => {
               quantity: "30",
-              enabled: "true"
-            }
+              enabled: "true",
+            },
           }
         end
 
@@ -226,8 +226,8 @@ RSpec.describe AccessoriesController do
           @params.merge! accessories: {
             quantity_accessory.id.to_s => {
               quantity: "40",
-              enabled: "true"
-            }
+              enabled: "true",
+            },
           }
         end
 

@@ -58,7 +58,7 @@ class IppMigrationReporter
       reservation.reserve_start_at,
       reservation.reserve_end_at,
       reservation.actual_start_at,
-      reservation.actual_end_at
+      reservation.actual_end_at,
     ]
   end
 
@@ -99,7 +99,7 @@ class IppMigrationReporter
       old_attrs["actual_cost"],
       old_attrs["actual_subsidy"],
       old_attrs["estimated_cost"],
-      old_attrs["estimated_subsidy"]
+      old_attrs["estimated_subsidy"],
     ]
   end
 

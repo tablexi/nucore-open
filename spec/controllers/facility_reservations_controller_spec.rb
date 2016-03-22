@@ -109,7 +109,7 @@ RSpec.describe FacilityReservationsController do
       @params = {
         facility_id: @authable.url_name,
         instrument_id: @product.url_name,
-        reservation: FactoryGirl.attributes_for(:reservation, reserve_start_at: @time, reserve_end_at: @time + 1.hour)
+        reservation: FactoryGirl.attributes_for(:reservation, reserve_start_at: @time, reserve_end_at: @time + 1.hour),
       }
       parametrize_dates(@params[:reservation], :reserve)
     end
@@ -351,7 +351,7 @@ RSpec.describe FacilityReservationsController do
         @reservation.update_attributes(actual_start_at: nil, actual_end_at: nil)
         @params.merge!(reservation: {
                          reserve_start_at: @reservation.reserve_start_at,
-                reserve_end_at: @reservation.reserve_end_at - 15.minutes
+                reserve_end_at: @reservation.reserve_end_at - 15.minutes,
                        },
                       )
       end

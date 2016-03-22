@@ -4,7 +4,7 @@ RSpec.describe StatusChangeNotifications do
     @order_status = FactoryGirl.create(:order_status)
     Settings.order_details ||= {}
     Settings.order_details.status_change_hooks = {
-      :"#{@order_status.downcase_name}" => "StatusChangeNotifications::#{self.class.description}"
+      :"#{@order_status.downcase_name}" => "StatusChangeNotifications::#{self.class.description}",
     }
     SettingsHelper.enable_feature(:product_specific_contacts)
     @user = FactoryGirl.create(:user)

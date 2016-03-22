@@ -17,7 +17,7 @@ Affiliate.find_or_create_by_name("Other")
 [
   PriceGroup.new(name: Settings.price_group.name.base, is_internal: true, admin_editable: false),
   PriceGroup.new(name: Settings.price_group.name.cancer_center, is_internal: true, admin_editable: true),
-  PriceGroup.new(name: Settings.price_group.name.external, is_internal: false, admin_editable: false)
+  PriceGroup.new(name: Settings.price_group.name.external, is_internal: false, admin_editable: false),
 ].each_with_index do |price_group, index|
   price_group.display_order = index + 1
   price_group.save(validate: false)

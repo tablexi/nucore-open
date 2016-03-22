@@ -108,7 +108,7 @@ def place_and_complete_item_order(ordered_by, facility, account = nil, reviewed 
   od_attrs = {
     actual_cost: 20,
     actual_subsidy: 10,
-    price_policy_id: @item_pp.id
+    price_policy_id: @item_pp.id,
   }
 
   od_attrs[:reviewed_at] = Time.zone.now - 1.day if reviewed
@@ -138,7 +138,7 @@ def place_reservation_for_instrument(ordered_by, instrument, account, reserve_st
     reserve_start_at: reserve_start,
     order_detail: order_detail,
     duration_value: 60,
-    duration_unit: "minutes"
+    duration_unit: "minutes",
   }
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
@@ -175,7 +175,7 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
     reserve_start_at: reserve_start,
     order_detail: order_detail,
     duration_value: 60,
-    duration_unit: "minutes"
+    duration_unit: "minutes",
   }
   order_detail.update_attributes!(product: @instrument)
   order_detail.order.update_attributes!(state: "purchased")

@@ -27,7 +27,7 @@ module ProductsHelper
     {
       RelaySynaccessRevA => RelaySynaccessRevA.name,
       RelaySynaccessRevB => RelaySynaccessRevB.name,
-      RelayDataprobe => RelayDataprobe.name
+      RelayDataprobe => RelayDataprobe.name,
     }
   end
 

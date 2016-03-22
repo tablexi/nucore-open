@@ -29,7 +29,7 @@ RSpec.describe FileUploadsController do
         facility_id: @authable.url_name,
         product: "services",
         product_id: @service.url_name,
-        file_type: "info"
+        file_type: "info",
       }
     end
 
@@ -51,8 +51,8 @@ RSpec.describe FileUploadsController do
         stored_file: {
           name: "File 1",
           file_type: "info",
-          file: fixture_file_upload("#{Rails.root}/spec/files/template1.txt")
-        }
+          file: fixture_file_upload("#{Rails.root}/spec/files/template1.txt"),
+        },
       }
     end
 
@@ -85,7 +85,7 @@ RSpec.describe FileUploadsController do
         fileData: ActionDispatch::TestProcess.fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", "application/x-shockwave-flash"),
         Filename: "#{Rails.root}/spec/files/flash_file.swf",
         file_type: "info",
-        order_detail_id: @order_detail.id
+        order_detail_id: @order_detail.id,
       }
     end
 
@@ -135,8 +135,8 @@ RSpec.describe FileUploadsController do
         :product => @service.id,
         :product_id => @service.url_name,
         @survey_param => {
-          location: @ext_service_location
-        }
+          location: @ext_service_location,
+        },
       }
     end
 
@@ -177,7 +177,7 @@ RSpec.describe FileUploadsController do
         facility_id: @authable.url_name,
         product: "services",
         product_id: @service.url_name,
-        id: @file_upload.id
+        id: @file_upload.id,
       }
     end
 

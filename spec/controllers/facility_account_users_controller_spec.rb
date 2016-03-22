@@ -61,7 +61,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
         facility_id: @authable.url_name,
         account_id: @account.id,
         user_id: @purchaser.id,
-        account_user: { user_role: AccountUser::ACCOUNT_PURCHASER }
+        account_user: { user_role: AccountUser::ACCOUNT_PURCHASER },
       }
     end
 

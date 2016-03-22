@@ -5,7 +5,7 @@ class InstrumentPricePolicy < PricePolicy
   CHARGE_FOR = {
     usage: "usage",
     overage: "overage",
-    reservation: "reservation"
+    reservation: "reservation",
   }.freeze
 
   validates :usage_rate, :minimum_cost, :usage_subsidy, :cancellation_cost, numericality: { allow_nil: true, greater_than_or_equal_to: 0 }

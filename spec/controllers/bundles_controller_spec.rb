@@ -230,7 +230,7 @@ RSpec.describe BundlesController do
       @params = {
         facility_id: @authable.url_name,
         id: @bundle.url_name,
-        bundle: FactoryGirl.attributes_for(:bundle, url_name: @bundle.url_name)
+        bundle: FactoryGirl.attributes_for(:bundle, url_name: @bundle.url_name),
       }
     end
 

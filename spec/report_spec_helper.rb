@@ -15,7 +15,7 @@ module ReportSpecHelper
       @params = {
         facility_id: @authable.url_name,
         date_start: Time.zone.now.strftime("%m/%d/%Y"),
-        date_end: (Time.zone.now + 1.year).strftime("%m/%d/%Y")
+        date_end: (Time.zone.now + 1.year).strftime("%m/%d/%Y"),
       }
 
       setup_extra_params(@params)

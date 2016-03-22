@@ -10,7 +10,7 @@ RSpec.describe CreditCardAccount do
     @owner = {
       user: @user,
       created_by: @user.id,
-      user_role: "Owner"
+      user_role: "Owner",
     }
 
     @account_attrs = {
@@ -20,7 +20,7 @@ RSpec.describe CreditCardAccount do
       description: "account description",
       name_on_card: "Person",
       created_by: @user.id,
-      account_users_attributes: [@owner]
+      account_users_attributes: [@owner],
     }
   end
 

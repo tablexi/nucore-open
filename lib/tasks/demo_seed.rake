@@ -322,8 +322,8 @@ namespace :demo do
                 percent: 50,
                 extra_penny: false,
               },
-            ]
-          }
+            ],
+          },
         }
 
         builder = AccountBuilder.for("SplitAccounts::SplitAccount")

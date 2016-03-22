@@ -101,7 +101,7 @@ class StatementPdf
       [
         human_datetime(order_detail.fulfilled_at),
         "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? "" : "\n#{order_detail.note}"),
-        number_to_currency(order_detail.actual_total)
+        number_to_currency(order_detail.actual_total),
       ]
     end
   end

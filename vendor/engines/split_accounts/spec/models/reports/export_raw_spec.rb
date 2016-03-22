@@ -37,7 +37,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
       order_status_ids: [order_detail.order_status_id],
       date_end: 1.day.from_now,
       date_start: 1.day.ago,
-      date_range_field: "ordered_at"
+      date_range_field: "ordered_at",
     }
   end
 

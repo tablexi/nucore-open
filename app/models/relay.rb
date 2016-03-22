@@ -14,7 +14,7 @@ class Relay < ActiveRecord::Base
   CONTROL_MECHANISMS = {
     manual: nil,
     timer: "timer",
-    relay: "relay"
+    relay: "relay",
   }.freeze
 
   def get_status

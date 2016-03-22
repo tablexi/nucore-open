@@ -25,7 +25,7 @@ class Daemons::Base
       backtrace: true,
       monitor: monitor?,
       log_output: true,
-      log_dir: File.join(@rails_root, "log")
+      log_dir: File.join(@rails_root, "log"),
     }
   end
 

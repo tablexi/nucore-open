@@ -130,7 +130,7 @@ RSpec.describe OrderImport, :timecop_freeze do
           opts[:quantity]           || 1,
           opts[:order_date]         || nucore_format_date(default_order_date),
           opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date),
-          opts[:note]               || "Test Note"
+          opts[:note]               || "Test Note",
                                       ])
         csv << row
       end

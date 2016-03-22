@@ -59,7 +59,7 @@ class Reports::AccountTransactionsReport
       "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
       Account.model_name.human,
       Account.human_attribute_name("owner"),
-      OrderDetail.human_attribute_name("order_status")
+      OrderDetail.human_attribute_name("order_status"),
     ]
   end
 
@@ -86,7 +86,7 @@ class Reports::AccountTransactionsReport
       order_detail.account.description,
       order_detail.account.account_number,
       order_detail.account.owner_user,
-      order_detail.order_status
+      order_detail.order_status,
     ]
   end
 

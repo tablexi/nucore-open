@@ -44,8 +44,8 @@ RSpec.describe BundleProductsController do
         bundle_id: @bundle.url_name,
         bundle_product: {
           product_id: item2.id,
-          quantity: 2
-        }
+          quantity: 2,
+        },
       }
     end
 
@@ -104,8 +104,8 @@ RSpec.describe BundleProductsController do
         bundle_id: @bundle.url_name,
         id: @bundle_product.id,
         bundle_product: {
-          quantity: 3
-        }
+          quantity: 3,
+        },
       }
     end
 

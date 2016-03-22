@@ -30,7 +30,7 @@ class JournalCutoffDate < ActiveRecord::Base
     {
       hour: cutoff_date.strftime("%-l"),
       minute:  "%02d" % cutoff_date.min,
-      ampm: cutoff_date.strftime("%p")
+      ampm: cutoff_date.strftime("%p"),
     }
   end
 

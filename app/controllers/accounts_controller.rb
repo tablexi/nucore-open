@@ -45,7 +45,7 @@ class AccountsController < ApplicationController
     @order_detail_link = {
       text: "Dispute",
       display?: proc { |order_detail| order_detail.can_dispute? },
-      proc: proc { |order_detail| order_order_detail_path(order_detail.order, order_detail) }
+      proc: proc { |order_detail| order_order_detail_path(order_detail.order, order_detail) },
     }
   end
 

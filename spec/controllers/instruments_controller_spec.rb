@@ -431,7 +431,7 @@ RSpec.describe InstrumentsController do
             username: "username",
             password: "password",
             type: RelaySynaccessRevA.name,
-            instrument_id: @instrument.id
+            instrument_id: @instrument.id,
           })
       end
 

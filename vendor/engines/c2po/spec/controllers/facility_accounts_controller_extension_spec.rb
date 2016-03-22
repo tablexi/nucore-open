@@ -27,7 +27,7 @@ RSpec.describe FacilityAccountsController do
       @params = {
         facility_id: @authable.url_name,
         id: @account.id,
-        purchase_order_account: FactoryGirl.attributes_for(:purchase_order_account)
+        purchase_order_account: FactoryGirl.attributes_for(:purchase_order_account),
       }
       @params[:purchase_order_account][:affiliate_id] = @params[:purchase_order_account].delete(:affiliate).id
     end
@@ -39,7 +39,7 @@ RSpec.describe FacilityAccountsController do
         owner = {
           user: user,
           created_by: user.id,
-          user_role: "Owner"
+          user_role: "Owner",
         }
 
         account_attrs = {
@@ -131,7 +131,7 @@ RSpec.describe FacilityAccountsController do
         facility_id: @authable.url_name,
         owner_user_id: @owner.id,
         purchase_order_account: @acct_attrs,
-        account_type: "PurchaseOrderAccount"
+        account_type: "PurchaseOrderAccount",
       }
 
       @params[:purchase_order_account] = @acct_attrs
@@ -328,9 +328,9 @@ RSpec.describe FacilityAccountsController do
       order_detail: {
         @order_detail.id.to_s => {
           reconciled: "1",
-          notes: "this transaction is fake"
-        }
-      }
+          notes: "this transaction is fake",
+        },
+      },
     }
   end
 

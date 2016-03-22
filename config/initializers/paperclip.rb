@@ -11,5 +11,5 @@ end
 # XLS files created by the spreadsheet gem have problems with their filetypes
 # https://github.com/zdavatz/spreadsheet/issues/97
 Paperclip.options[:content_type_mappings] = {
-  xls: "CDF V2 Document, No summary info"
+  xls: "CDF V2 Document, No summary info",
 }

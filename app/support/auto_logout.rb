@@ -29,7 +29,7 @@ class AutoLogout
     configured = [
       reserve_end_at,
       auto_logout_minutes,
-      relay.try(:auto_logout)
+      relay.try(:auto_logout),
     ].all?
 
     configured && (reserve_end_at < auto_logout_minutes.minutes.ago)
