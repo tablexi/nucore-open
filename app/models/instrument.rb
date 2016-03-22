@@ -3,7 +3,7 @@ class Instrument < Product
   include Products::RelaySupport
   include Products::SchedulingSupport
 
-  RESERVE_INTERVALS = [ 1, 5, 10, 15, 30, 60 ]
+  RESERVE_INTERVALS = [ 1, 5, 10, 15, 30, 60 ].freeze
 
   # Associations
   # -------

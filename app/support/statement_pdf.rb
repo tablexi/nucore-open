@@ -3,14 +3,14 @@ class StatementPdf
   include ActionView::Helpers::NumberHelper
   include DateHelper
 
-  LABEL_ROW_STYLE = { font_style: :bold, background_color: 'cccccc' }
+  LABEL_ROW_STYLE = { font_style: :bold, background_color: 'cccccc' }.freeze
 
   DEFAULT_OPTIONS = {
     left_margin: 50,
     right_margin: 50,
     top_margin: 50,
     bottom_margin: 75,
-  }
+  }.freeze
 
   def options
     if download?

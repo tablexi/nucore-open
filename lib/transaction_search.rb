@@ -3,7 +3,7 @@ module TransactionSearch
   DATE_RANGE_FIELDS = [['Ordered', 'ordered_at'],
                        ['Fulfilled', 'fulfilled_at'],
                        ['Journaled/Statement', 'journal_or_statement_date']
-                      ]
+                      ].freeze
 
   def self.included(base)
     base.extend(ClassMethods)

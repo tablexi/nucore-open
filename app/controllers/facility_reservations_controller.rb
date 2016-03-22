@@ -20,7 +20,7 @@ class FacilityReservationsController < ApplicationController
       'status'        => 'order_statuses.name',
       'assigned_to'   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
       'reserved_by'   => "#{User.table_name}.first_name, #{User.table_name}.last_name"
-  }
+  }.freeze
 
   def initialize
     super

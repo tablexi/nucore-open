@@ -13,7 +13,7 @@ class OrderRowImporter
     fulfillment_date: "Fulfillment Date",
     notes: "Note",
     errors: "Errors",
-  }
+  }.freeze
 
   REQUIRED_HEADERS = [
     :user,

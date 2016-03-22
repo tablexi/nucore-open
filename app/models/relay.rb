@@ -15,7 +15,7 @@ class Relay < ActiveRecord::Base
     manual: nil,
     timer: 'timer',
     relay: 'relay'
-  }
+  }.freeze
 
   def get_status
     query_status

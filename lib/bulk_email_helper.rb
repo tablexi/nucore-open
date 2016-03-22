@@ -1,8 +1,8 @@
 module BulkEmailHelper
 
   
-  DEFAULT_SORT = [:last_name, :first_name]
-  SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users]
+  DEFAULT_SORT = [:last_name, :first_name].freeze
+  SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users].freeze
 
   def do_search(search_fields)
     return unless BulkEmailHelper.search_types.include? search_fields[:search_type].to_sym
