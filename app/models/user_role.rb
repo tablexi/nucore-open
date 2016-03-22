@@ -60,7 +60,7 @@ class UserRole < ActiveRecord::Base
   end
 
   validates_presence_of :user_id
-  validates_inclusion_of :role, in: ->(roles) { valid_roles }, message: "is not a valid value"
+  validates_inclusion_of :role, in: ->(_roles) { valid_roles }, message: "is not a valid value"
   validates_uniqueness_of :role,
     scope: [:facility_id, :user_id]
   validates_with UserRoleFacilityValidator

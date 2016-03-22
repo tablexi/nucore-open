@@ -69,7 +69,7 @@ class OrderDetails::ParamUpdater
   end
 
   def merge_reservation_errors
-    @order_detail.reservation.errors.each do |error, message|
+    @order_detail.reservation.errors.each do |_error, message|
       @order_detail.errors.add('reservation.base', message)
     end
   end

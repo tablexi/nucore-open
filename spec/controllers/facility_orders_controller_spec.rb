@@ -381,13 +381,13 @@ RSpec.describe FacilityOrdersController do
 
       expect(@authable.order_details.non_reservations.new_or_inprocess.size).to eq(2)
 
-      @problem_order_details = (1..3).map do |i|
+      @problem_order_details = (1..3).map do |_i|
         order_detail = place_and_complete_item_order(@staff, @authable)
         order_detail.update_attributes(:price_policy_id => nil)
         order_detail
       end
 
-      @disputed_order_details = (1..4).map do |i|
+      @disputed_order_details = (1..4).map do |_i|
         order_detail = place_and_complete_item_order(@staff, @authable)
         order_detail.update_attributes({
           :dispute_at => Time.zone.now,

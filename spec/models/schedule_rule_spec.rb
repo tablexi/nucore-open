@@ -301,14 +301,14 @@ RSpec.describe ScheduleRule do
 
       # times should be tue 1 am - 3 am
       @calendar1  = @rule1.as_calendar_object
-      @calendar1.each_with_index do |hash, i|
+      @calendar1.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 1.hour)
         expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 3.hours)
       end
 
       # times should be tue 7 am - 9 am
       @calendar2  = @rule2.as_calendar_object
-      @calendar2.each_with_index do |hash, i|
+      @calendar2.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 7.hours)
         expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 9.hours)
       end
@@ -362,14 +362,14 @@ RSpec.describe ScheduleRule do
 
       # times should be tue 9 pm - 12 am
       @calendar1  = @rule1.as_calendar_object
-      @calendar1.each_with_index do |hash, i|
+      @calendar1.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 21.hours)
         expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 24.hours)
       end
 
       # times should be tue 12 am - 9 am
       @calendar2  = @rule2.as_calendar_object
-      @calendar2.each_with_index do |hash, i|
+      @calendar2.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash['start'])).to eq(@wednesday + 0.hours)
         expect(Time.zone.parse(hash['end'])).to eq(@wednesday + 9.hours)
       end
