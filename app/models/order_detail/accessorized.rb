@@ -30,13 +30,9 @@ module OrderDetail::Accessorized
     complete? && product.accessories.count > child_order_details.count
   end
 
-  def quantity_as_time?
-    decorated_self.quantity_as_time? #if product_accessory_id
-  end
+  delegate :quantity_as_time?, to: :decorated_self
 
-  def quantity_editable?
-    decorated_self.quantity_editable?
-  end
+  delegate :quantity_editable?, to: :decorated_self
 
   def update_children
     return unless child_order_details.any?

@@ -144,9 +144,7 @@ class Journal < ActiveRecord::Base
     is_successful?
   end
 
-  def to_s
-    id.to_s
-  end
+  delegate :to_s, to: :id
 
   private
 
