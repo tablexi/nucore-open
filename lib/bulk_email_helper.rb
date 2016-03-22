@@ -37,6 +37,7 @@ module BulkEmailHelper
   def self.search_types
     SEARCH_TYPES
   end
+
   def self.search_types_and_titles
     # This can be changed to just Hash once we no longer have to support ruby 1.8.7
     ActiveSupport::OrderedHash[self.search_types.map {|a| [a, I18n.t("bulk_email.search_type.#{a}")]}]

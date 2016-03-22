@@ -39,6 +39,7 @@ module FacilityOrderStatusHelper
       .non_reservations
       .in_dispute
   end
+
   def sort_column
     params[:sort] || 'order_number'
   end

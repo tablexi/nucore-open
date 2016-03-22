@@ -17,6 +17,7 @@ RSpec.describe TransactionSearch do
     def params
       @params
     end
+
     def params=(params)
       @params = params
     end

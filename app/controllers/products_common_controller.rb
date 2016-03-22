@@ -159,6 +159,7 @@ class ProductsCommonController < ApplicationController
     is_operator = session_user && session_user.operator_of?(current_facility)
     !(@product.is_archived? || (@product.is_hidden? && !is_operator))
   end
+
   # The equivalent of calling current_facility.services or current_facility.items
   def current_facility_products
     return current_facility.send(:"#{plural_object_name}")
@@ -178,10 +179,12 @@ class ProductsCommonController < ApplicationController
   def save_product_into_object_name_instance
     instance_variable_set("@#{singular_object_name}", @product)
   end
+
   # Get the object name to work off of. E.g. In ServicesController, this returns "services"
   def plural_object_name
     self.class.name.underscore.gsub(/_controller$/, "")
   end
+
   def singular_object_name
     plural_object_name.singularize
   end

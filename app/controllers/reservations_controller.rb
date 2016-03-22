@@ -313,6 +313,7 @@ class ReservationsController < ApplicationController
     @facility = @instrument.facility
     nil
   end
+
   def load_and_check_resources
     load_basic_resources
     #@reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
