@@ -18,10 +18,10 @@ class StatementsController < ApplicationController
     @active_tab = 'accounts'
 
     case params[:id]
-      when 'recent'
+    when 'recent'
         @order_details = @account.order_details.for_facility_with_price_policy(@facility)
         @order_details = @order_details.paginate(:page => params[:page])
-      when 'list'
+    when 'list'
         action='list'
         @statements=@statements.paginate(:page => params[:page])
     end
