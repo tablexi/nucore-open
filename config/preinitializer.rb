@@ -5,4 +5,3 @@ rescue LoadError
   require "bundler"
   Bundler.setup
 end
-

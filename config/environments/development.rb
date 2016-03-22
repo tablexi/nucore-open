@@ -42,4 +42,3 @@ end
 # What's this for?
 GOOGLE_ANALYTICS_KEY = nil
 RAKE_PATH = nil
-

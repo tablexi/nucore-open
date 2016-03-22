@@ -231,4 +231,3 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
     create :"#{@product_type}_price_policy", attr.merge(product: @product)
   end
 end
-

@@ -14,5 +14,3 @@ class OrderDetailListTransformer
   end
 
 end
-
-
