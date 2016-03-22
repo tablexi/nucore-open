@@ -219,7 +219,7 @@ RSpec.describe BundlesController do
       expect(assigns(:bundle).requires_approval).to eq(false)
       expect(assigns(:bundle)).to be_persisted
       is_expected.to set_flash
-      assert_redirected_to [ :manage, @authable, assigns(:bundle) ]
+      assert_redirected_to [:manage, @authable, assigns(:bundle)]
     end
   end
 

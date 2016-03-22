@@ -148,7 +148,7 @@ class OrderDetail < ActiveRecord::Base
   scope :for_facility_with_price_policy, lambda { |facility| 
                                            {
     joins: :order,
-    conditions: [ 'orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id ], order: 'order_details.fulfilled_at DESC' }
+    conditions: ['orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id], order: 'order_details.fulfilled_at DESC' }
   }
 
   scope :need_notification, lambda {
@@ -288,7 +288,7 @@ class OrderDetail < ActiveRecord::Base
                         {
     joins: :order,
       order: 'order_details.created_at DESC',
-      conditions: [ 'orders.facility_id = ? AND order_details.statement_id IS NOT NULL', facility.id ] }
+      conditions: ['orders.facility_id = ? AND order_details.statement_id IS NOT NULL', facility.id] }
   }
 
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")

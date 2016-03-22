@@ -200,7 +200,7 @@ RSpec.describe GeneralReportsController do
   private
 
   def setup_extra_params(params)
-    params.merge!(status_filter: [ OrderStatus.complete.first.id ], date_range_field: 'fulfilled_at')
+    params.merge!(status_filter: [OrderStatus.complete.first.id], date_range_field: 'fulfilled_at')
   end
 
   def report_headers(label)
@@ -212,7 +212,7 @@ RSpec.describe GeneralReportsController do
     expect(assigns(:status_ids)).to be_instance_of Array
 
     stati = if @params[:date_start].blank? && @params[:date_end].blank?
-              [ OrderStatus.complete.first, OrderStatus.reconciled.first ]
+              [OrderStatus.complete.first, OrderStatus.reconciled.first]
             elsif @params[:status_filter].blank?
               []
             else

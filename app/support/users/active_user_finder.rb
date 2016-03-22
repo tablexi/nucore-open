@@ -16,7 +16,7 @@ class Users::ActiveUserFinder
   private
 
   def user_fields(user)
-    [ user.id,
+    [user.id,
       user.email,
       user.username,
       user.first_name,

@@ -13,7 +13,7 @@ RSpec.describe Instrument do
     expect(instrument.type).to eq('Instrument')
   end
 
-  [ :min_reserve_mins, :auto_cancel_mins ].each do |attr|
+  [:min_reserve_mins, :auto_cancel_mins].each do |attr|
     it "should require #{attr} to be >= 0 and integers only" do
       instrument.min_reserve_mins = 0
       is_expected.to allow_value(0).for(attr)

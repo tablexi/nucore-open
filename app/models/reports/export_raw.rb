@@ -147,7 +147,7 @@ class Reports::ExportRaw
         end
       end
     rescue => e
-      [ "*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***" ]
+      ["*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***"]
     
   end
 

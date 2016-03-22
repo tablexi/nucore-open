@@ -1205,7 +1205,7 @@ RSpec.describe ReservationsController do
     end
 
     it 'considers display for every active schedule' do
-      expect(assigns(:schedules)).to match_array [ @instrument.schedule, hidden_instrument.schedule ]
+      expect(assigns(:schedules)).to match_array [@instrument.schedule, hidden_instrument.schedule]
     end
 
     it 'displays visible instruments only' do

@@ -39,7 +39,7 @@ class ProductAccessoriesController < ApplicationController
 
   def set_available_accessories
     # Already set as an accessory, or is this instrument
-    non_available_accessories = [ @product.id ]
+    non_available_accessories = [@product.id]
     non_available_accessories += @product_accessories.map { |pa| pa.accessory_id } if @product_accessories.present?
     @available_accessories = current_facility.products.non_instruments.exclude(non_available_accessories).order(:name).all
   end

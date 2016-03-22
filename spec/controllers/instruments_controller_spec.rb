@@ -113,7 +113,7 @@ RSpec.describe InstrumentsController do
           assert_redirected_to(
             add_order_path(
               Order.all.last,
-              order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
+              order: { order_details: [product_id: instrument.id, quantity: 1] },
             )
           )
         end
@@ -140,7 +140,7 @@ RSpec.describe InstrumentsController do
         assert_redirected_to(
           add_order_path(
             Order.all.last,
-            order: { order_details: [ product_id: instrument.id, quantity: 1 ] },
+            order: { order_details: [product_id: instrument.id, quantity: 1] },
           )
         )
       end

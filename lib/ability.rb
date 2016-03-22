@@ -121,10 +121,10 @@ class Ability
         can [:administer, :switch_to], User
         can :manage, User if controller.is_a?(UsersController)
 
-        can [ :list, :show ], Facility
+        can [:list, :show], Facility
         can :act_as, Facility
 
-        can :index, [ BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup ]
+        can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
         can [:instrument_status, :instrument_statuses, :switch], Instrument
         can :edit, [PriceGroupProduct]
       end

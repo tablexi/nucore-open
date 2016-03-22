@@ -143,15 +143,15 @@ end
 #
 
 def facility_managers
-  [ :admin, :director ]
+  [:admin, :director]
 end
 
 def facility_operators
-  facility_managers + [ :staff, :senior_staff ]
+  facility_managers + [:staff, :senior_staff]
 end
 
 def facility_users
-  facility_operators + [ :guest ]
+  facility_operators + [:guest]
 end
 
 #

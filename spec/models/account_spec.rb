@@ -260,14 +260,14 @@ RSpec.describe Account do
         before :each do
           @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, account: 78_960, facility_account_id: @facility_account.id))
           @bundle = @facility.bundles.create(FactoryGirl.attributes_for(:bundle, facility_account_id: @facility_account.id))
-          [ @item, @item2 ].each do |item|
+          [@item, @item2].each do |item|
             price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @price_group))
             BundleProduct.create!(quantity: 1, product: item, bundle: @bundle)
           end
         end
 
         it "should not return error if the product is a bundle and both of the bundled product's accounts are open for a chart string" do
-          [ @item, @item2 ].each { |item| define_open_account(item.account, @nufs_account.account_number) }
+          [@item, @item2].each { |item| define_open_account(item.account, @nufs_account.account_number) }
           expect(@nufs_account.validate_against_product(@bundle, @user)).to be_nil
         end
       end
@@ -307,8 +307,8 @@ RSpec.describe Account do
         @facility1        = FactoryGirl.create(:facility)
         @facility2        = FactoryGirl.create(:facility)
         @nufs_account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-        @facility1_accounts = [ @nufs_account ]
-        @facility2_accounts = [ @nufs_account ]
+        @facility1_accounts = [@nufs_account]
+        @facility2_accounts = [@nufs_account]
 
         Account.config.facility_account_types.each do |class_name|
           class_sym = class_name.underscore.to_sym

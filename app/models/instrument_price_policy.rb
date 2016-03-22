@@ -18,7 +18,7 @@ class InstrumentPricePolicy < PricePolicy
             :reservation_mins,
             :overage_mins,
             :usage_mins,
-            inclusion: [ nil ]
+            inclusion: [nil]
 
   validate :subsidy_less_than_rate?, unless: :restrict_purchase?
 

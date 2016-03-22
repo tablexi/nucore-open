@@ -87,7 +87,7 @@ class FacilityOrdersController < ApplicationController
   private
 
   def merge?(product)
-    products = product.is_a?(Bundle) ? product.products : [ product ]
+    products = product.is_a?(Bundle) ? product.products : [product]
 
     products.any? do |p|
       p.is_a?(Instrument) || (p.is_a?(Service) && (p.active_survey? || p.active_template?))

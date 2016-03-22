@@ -29,7 +29,7 @@ module ReportSpecHelper
         context test[:action].to_s do
           before :each do
             @action = test[:action]
-            [ :owner, :staff, :purchaser ].each do |user|
+            [:owner, :staff, :purchaser].each do |user|
               acct = create_nufs_account_with_owner user
               place_and_complete_item_order(instance_variable_get("@#{user}"), @authable, acct)
               @order.ordered_at = parse_usa_date(@params[:date_start]) + 15.days

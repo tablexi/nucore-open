@@ -314,7 +314,7 @@ Nucore::Application.routes.draw do
   end
 
   # notifications
-  resources :notifications, only: [ :index ] do
+  resources :notifications, only: [:index] do
     collection do
       get :count
     end
@@ -337,24 +337,24 @@ Nucore::Application.routes.draw do
   match '/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete',          to: 'surveys#complete',                 as: 'complete_survey',     via: [:get, :post]
 
   # general reports
-  match '/facilities/:facility_id/general_reports/assigned_to',   to: 'general_reports#assigned_to',   as: 'assigned_to_facility_general_reports',   via: [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/account',       to: 'general_reports#account',       as: 'account_facility_general_reports',       via: [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/price_group',   to: 'general_reports#price_group',   as: 'price_group_facility_general_reports',   via: [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/account_owner', to: 'general_reports#account_owner', as: 'account_owner_facility_general_reports', via: [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/product',       to: 'general_reports#product',       as: 'product_facility_general_reports',       via: [ :get, :post ]
-  match '/facilities/:facility_id/general_reports/purchaser',     to: 'general_reports#purchaser',     as: 'purchaser_facility_general_reports',     via: [ :get, :post ]
+  match '/facilities/:facility_id/general_reports/assigned_to',   to: 'general_reports#assigned_to',   as: 'assigned_to_facility_general_reports',   via: [:get, :post]
+  match '/facilities/:facility_id/general_reports/account',       to: 'general_reports#account',       as: 'account_facility_general_reports',       via: [:get, :post]
+  match '/facilities/:facility_id/general_reports/price_group',   to: 'general_reports#price_group',   as: 'price_group_facility_general_reports',   via: [:get, :post]
+  match '/facilities/:facility_id/general_reports/account_owner', to: 'general_reports#account_owner', as: 'account_owner_facility_general_reports', via: [:get, :post]
+  match '/facilities/:facility_id/general_reports/product',       to: 'general_reports#product',       as: 'product_facility_general_reports',       via: [:get, :post]
+  match '/facilities/:facility_id/general_reports/purchaser',     to: 'general_reports#purchaser',     as: 'purchaser_facility_general_reports',     via: [:get, :post]
 
   # instrument reports
-  match '/facilities/:facility_id/instrument_reports/account',       to: 'instrument_reports#account',       as: 'account_facility_instrument_reports',       via: [ :get, :post ]
-  match '/facilities/:facility_id/instrument_reports/account_owner', to: 'instrument_reports#account_owner', as: 'account_owner_facility_instrument_reports', via: [ :get, :post ]
-  match '/facilities/:facility_id/instrument_reports/instrument',    to: 'instrument_reports#instrument',    as: 'instrument_facility_instrument_reports',    via: [ :get, :post ]
-  match '/facilities/:facility_id/instrument_reports/purchaser',     to: 'instrument_reports#purchaser',     as: 'purchaser_facility_instrument_reports',     via: [ :get, :post ]
+  match '/facilities/:facility_id/instrument_reports/account',       to: 'instrument_reports#account',       as: 'account_facility_instrument_reports',       via: [:get, :post]
+  match '/facilities/:facility_id/instrument_reports/account_owner', to: 'instrument_reports#account_owner', as: 'account_owner_facility_instrument_reports', via: [:get, :post]
+  match '/facilities/:facility_id/instrument_reports/instrument',    to: 'instrument_reports#instrument',    as: 'instrument_facility_instrument_reports',    via: [:get, :post]
+  match '/facilities/:facility_id/instrument_reports/purchaser',     to: 'instrument_reports#purchaser',     as: 'purchaser_facility_instrument_reports',     via: [:get, :post]
 
   # instrument day reports
-  match '/facilities/:facility_id/instrument_day_reports/actual_quantity',   to: 'instrument_day_reports#actual_quantity',   as: 'actual_quantity_facility_instrument_day_reports',   via: [ :get, :post ]
-  match '/facilities/:facility_id/instrument_day_reports/reserved_quantity', to: 'instrument_day_reports#reserved_quantity', as: 'reserved_quantity_facility_instrument_day_reports', via: [ :get, :post ]
-  match '/facilities/:facility_id/instrument_day_reports/reserved_hours',    to: 'instrument_day_reports#reserved_hours',    as: 'reserved_hours_facility_instrument_day_reports',    via: [ :get, :post ]
-  match '/facilities/:facility_id/instrument_day_reports/actual_hours',      to: 'instrument_day_reports#actual_hours',      as: 'actual_hours_facility_instrument_day_reports',      via: [ :get, :post ]
+  match '/facilities/:facility_id/instrument_day_reports/actual_quantity',   to: 'instrument_day_reports#actual_quantity',   as: 'actual_quantity_facility_instrument_day_reports',   via: [:get, :post]
+  match '/facilities/:facility_id/instrument_day_reports/reserved_quantity', to: 'instrument_day_reports#reserved_quantity', as: 'reserved_quantity_facility_instrument_day_reports', via: [:get, :post]
+  match '/facilities/:facility_id/instrument_day_reports/reserved_hours',    to: 'instrument_day_reports#reserved_hours',    as: 'reserved_hours_facility_instrument_day_reports',    via: [:get, :post]
+  match '/facilities/:facility_id/instrument_day_reports/actual_hours',      to: 'instrument_day_reports#actual_hours',      as: 'actual_hours_facility_instrument_day_reports',      via: [:get, :post]
 
   # api
   namespace :api do
