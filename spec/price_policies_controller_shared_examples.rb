@@ -128,8 +128,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         end
         it 'should use the policy with the furthest out expiration date' do
           @price_policy.update_attributes(:unit_cost => 16.0)
-          @price_policy2 = make_price_policy(@price_group, :start_date => 1.year.from_now, :expire_date => SettingsHelper::fiscal_year_end(1.year.from_now), :unit_cost => 17.0)
-          @price_policy3 = make_price_policy(@price_group, :start_date => 1.year.ago, :expire_date => SettingsHelper::fiscal_year_end(1.year.ago), :unit_cost => 18.0)
+          @price_policy2 = make_price_policy(@price_group, :start_date => 1.year.from_now, :expire_date => SettingsHelper.fiscal_year_end(1.year.from_now), :unit_cost => 17.0)
+          @price_policy3 = make_price_policy(@price_group, :start_date => 1.year.ago, :expire_date => SettingsHelper.fiscal_year_end(1.year.ago), :unit_cost => 18.0)
           # Ensure the policy two is the one with the max expire date
           expect([@price_policy, @price_policy2, @price_policy3].max_by(&:expire_date)).to eq(@price_policy2)
           do_request

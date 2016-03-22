@@ -10,7 +10,7 @@ class Journal < ActiveRecord::Base
 
       # write journal spreadsheet to tmp directory
       # temp_file   = Tempfile.new("journalspreadsheet")
-      temp_file   = File.new("#{Dir::tmpdir}/journal.spreadsheet.#{Time.zone.now.strftime("%Y%m%dT%H%M%S")}.xls", "w")
+      temp_file   = File.new("#{Dir.tmpdir}/journal.spreadsheet.#{Time.zone.now.strftime("%Y%m%dT%H%M%S")}.xls", "w")
       output_file = JournalSpreadsheet.write_journal_entry(rows, :output_file => temp_file.path)
       # add/import journal spreadsheet
       status      = add_spreadsheet(output_file)
@@ -128,8 +128,8 @@ class Journal < ActiveRecord::Base
 
   def order_details_span_fiscal_years?(order_details)
     d = order_details.first.fulfilled_at
-    start_fy = SettingsHelper::fiscal_year_beginning(d)
-    end_fy = SettingsHelper::fiscal_year_end(d)
+    start_fy = SettingsHelper.fiscal_year_beginning(d)
+    end_fy = SettingsHelper.fiscal_year_end(d)
     order_details.each do |od|
       return true if (od.fulfilled_at < start_fy || od.fulfilled_at >= end_fy)
     end
