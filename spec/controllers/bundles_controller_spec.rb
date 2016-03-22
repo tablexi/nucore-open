@@ -42,7 +42,7 @@ RSpec.describe BundlesController do
       @bundle.is_archived=true
       assert @bundle.save
       maybe_grant_always_sign_in(:director)
-      @params.merge!(:archived => 'true')
+      @params[:archived] = 'true'
       do_request
       expect(assigns(:bundles).size).to eq(1)
       expect(assigns(:bundles)).to eq(@authable.bundles.archived)

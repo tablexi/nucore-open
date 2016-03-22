@@ -34,7 +34,7 @@ module TransactionHistoryHelper
     html << (label_tag field, label.pluralize)
     from_collection = from_collection_method ? self.send(from_collection_method, var, @search_fields[field]) : options_from_collection_for_select(var, value_field, label_field, @search_fields[field])
     options = {:multiple => true, :"data-placeholder" => "Select #{label.pluralize.downcase}"}
-    options.merge!({:disabled => :disabled}) unless enabled
+    options[:disabled] = :disabled unless enabled
     html << (select_tag field, from_collection, options)
     html << "</li>"
     html.html_safe

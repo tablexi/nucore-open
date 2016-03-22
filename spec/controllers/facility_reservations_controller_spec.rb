@@ -264,7 +264,7 @@ RSpec.describe FacilityReservationsController do
       end
 
       it "parses the date" do
-        @params.merge!(date: "6/14/2015")
+        @params[:date] = "6/14/2015"
         do_request
         expect(assigns[:display_datetime]).to eq(Time.zone.parse("2015-06-14T00:00"))
       end

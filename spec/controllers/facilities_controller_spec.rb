@@ -86,7 +86,7 @@ RSpec.describe FacilitiesController do
       end
 
       it "does not allow setting journal_mask" do
-        @params[:facility].merge!(journal_mask: "C17")
+        @params[:facility][:journal_mask] = "C17"
         do_request
         expect(assigns(:facility).journal_mask).not_to eq("C17")
       end
@@ -136,7 +136,7 @@ RSpec.describe FacilitiesController do
       end
 
       it "does not allow setting journal_mask" do
-        @params[:facility].merge!(journal_mask: "C17")
+        @params[:facility][:journal_mask] = "C17"
         do_request
         expect(facility.reload.journal_mask).not_to eq("C17")
       end
@@ -214,7 +214,7 @@ RSpec.describe FacilitiesController do
     end
 
     it "should 404 for invalid facility" do
-      @params.merge!(id: "randomstringofcharacters")
+      @params[:id] = "randomstringofcharacters"
       do_request
       expect(response.code).to eq("404")
     end

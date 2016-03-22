@@ -31,9 +31,7 @@ class IppConverter
     raise "#{old_policy.id} | NO PRODUCT: product_id: #{old_policy.product_id}" unless old_policy.product
 
     if !old_policy.can_purchase? && old_policy.usage_rate.nil? && old_policy.reservation_rate.nil? && old_policy.overage_rate.nil?
-      attrs.merge!(
-        'charge_for' => InstrumentPricePolicy::CHARGE_FOR[:reservation]
-      )
+      attrs['charge_for'] = InstrumentPricePolicy::CHARGE_FOR[:reservation]
     elsif old_policy.product.reservation_only? && old_policy.reservation_rate && old_policy.reservation_mins
       if old_policy.usage_rate.to_f > 0 || old_policy.overage_rate.to_f > 0
         puts error_message(old_policy, "Usage and overage are being dropped, and will set to charge for reservation")
@@ -61,7 +59,7 @@ class IppConverter
       error! old_policy, "INVALID CONFIGURATION"
     end
 
-    attrs.merge! charge_for: InstrumentPricePolicy::CHARGE_FOR[:overage] if old_policy.overage_rate
+    attrs[:charge_for] = InstrumentPricePolicy::CHARGE_FOR[:overage] if old_policy.overage_rate
 
     attrs.merge(
       'reservation_rate' => nil,

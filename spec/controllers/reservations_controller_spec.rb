@@ -72,13 +72,14 @@ RSpec.describe ReservationsController do
       it 'should not contain reservations from after the end date' do
         @reservation = @instrument.reservations.create(:reserve_start_at => @now + 3.days, :order_detail => @order_detail,
                                                       :duration_value => 60, :duration_unit => 'minutes')
-        @params.merge!(:end => @now + 2.days)
+        @params[:end] = @now + 2.days
         do_request
         expect(assigns[:reservations]).not_to include @reservation
       end
 
       it 'should not contain @unavailable if month view' do
-        @params.merge!(:start => 1.day.ago.to_i, :end => 30.days.from_now.to_i)
+        @params[:start] = 1.day.ago.to_i
+        @params[:end] = 30.days.from_now.to_i
         do_request
         expect(assigns[:unavailable]).to eq([])
       end
@@ -125,7 +126,7 @@ RSpec.describe ReservationsController do
                                               :reserve_start_at => @reservation.reserve_end_at,
                                               :reserve_end_at => @reservation.reserve_end_at + 1.hour)
         assert @reservation2.valid?
-        @params.merge!(:start => 1.day.from_now.to_i)
+        @params[:start] = 1.day.from_now.to_i
         sign_in @admin
         do_request
       end
@@ -149,7 +150,7 @@ RSpec.describe ReservationsController do
 
     it "should redirect to default view" do
       maybe_grant_always_sign_in(:staff)
-      @params.merge!(:status => 'junk')
+      @params[:status] = 'junk'
       do_request
       is_expected.to redirect_to "/reservations/upcoming"
     end
@@ -332,13 +333,13 @@ RSpec.describe ReservationsController do
       end
 
       it 'should set the option for sending notifications' do
-        @params.merge!(:send_notification => '1')
+        @params[:send_notification] = '1'
         do_request
         expect(response).to redirect_to purchase_order_path(@order, :send_notification => '1')
       end
 
       it 'should set the option for not sending notifications' do
-        @params.merge!(:send_notification => '0')
+        @params[:send_notification] = '0'
         do_request
         expect(response).to redirect_to purchase_order_path(@order)
       end
@@ -465,7 +466,7 @@ RSpec.describe ReservationsController do
       before :each do
         @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @guest))
         define_open_account(@instrument.account, @account2.account_number)
-        @params.merge!({ :order_account => @account2.id })
+        @params[:order_account] = @account2.id
         expect(@order.account).to eq(@account)
         expect(@order_detail.account).to eq(@account)
       end
@@ -897,7 +898,7 @@ RSpec.describe ReservationsController do
           :duration_unit    => 'minutes'
         )
 
-        @params.merge!(:reservation_id => @reservation.id)
+        @params[:reservation_id] = @reservation.id
         do_request
       end
 
@@ -923,7 +924,7 @@ RSpec.describe ReservationsController do
           :duration_unit    => 'hours'
         )
 
-        @params.merge!(:reservation_id => @reservation.id)
+        @params[:reservation_id] = @reservation.id
         do_request
       end
 
@@ -937,7 +938,7 @@ RSpec.describe ReservationsController do
 
     context 'invalid reservation' do
       before :each do
-        @params.merge!(:reservation_id => 999)
+        @params[:reservation_id] = 999
         do_request
       end
 
@@ -1011,7 +1012,7 @@ RSpec.describe ReservationsController do
       before :each do
         @method = :get
         @action=  :switch_instrument
-        @params.merge!(:reservation_id => @reservation.id)
+        @params[:reservation_id] = @reservation.id
         create(:relay, :instrument => @instrument)
         @random_user = create(:user)
       end
@@ -1120,7 +1121,7 @@ RSpec.describe ReservationsController do
       context 'off' do
          before :each do
            @reservation.update_attribute(:actual_start_at, @start)
-           @params.merge!(:switch => 'off')
+           @params[:switch] = 'off'
            Timecop.travel(2.seconds.from_now)
            expect(@reservation.order_detail.price_policy).to be_nil
          end

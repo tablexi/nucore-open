@@ -65,8 +65,8 @@ def place_product_order(ordered_by, facility, product, account=nil, purchased=tr
   @price_group=FactoryGirl.create(:price_group, :facility => facility)
 
   o_attrs={ :created_by => ordered_by.id, :facility => facility, :ordered_at => Time.zone.now }
-  o_attrs.merge!(:account_id => account.id) if account
-  o_attrs.merge!(:state => 'purchased') if purchased
+  o_attrs[:account_id] = account.id if account
+  o_attrs[:state] = 'purchased' if purchased
   @order=ordered_by.orders.create(FactoryGirl.attributes_for(:order, o_attrs))
 
   FactoryGirl.create(:user_price_group_member, :user => ordered_by, :price_group => @price_group)
@@ -74,7 +74,7 @@ def place_product_order(ordered_by, facility, product, account=nil, purchased=tr
   @item_pp=product.send(:"#{product.class.name.downcase}_price_policies").create(FactoryGirl.attributes_for(:"#{product.class.name.downcase}_price_policy", :price_group_id => @price_group.id))
   @item_pp.reload.restrict_purchase=false
   od_attrs={ :product_id => product.id }
-  od_attrs.merge!(:account_id => account.id) if account
+  od_attrs[:account_id] = account.id if account
   @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(od_attrs))
 
   @order_detail.set_default_status! if purchased
@@ -111,7 +111,7 @@ def place_and_complete_item_order(ordered_by, facility, account=nil, reviewed=fa
     :price_policy_id => @item_pp.id
   }
 
-  od_attrs.merge!(:reviewed_at => Time.zone.now-1.day) if reviewed
+  od_attrs[:reviewed_at] = Time.zone.now-1.day if reviewed
   @order_detail.update_attributes(od_attrs)
   return @order_detail
 end
