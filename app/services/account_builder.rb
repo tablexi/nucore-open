@@ -11,7 +11,7 @@
 class AccountBuilder
 
   attr_reader :action, :account, :account_params,
-    :account_type, :current_user, :facility, :owner_user, :params
+              :account_type, :current_user, :facility, :owner_user, :params
 
   # Initialize the instance variables.
   def initialize(options = {})

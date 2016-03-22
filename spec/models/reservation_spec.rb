@@ -1125,9 +1125,9 @@ RSpec.describe Reservation do
     context "with another reservation following" do
       before do
         create(:purchased_reservation,
-          reserve_start_at: reservation.reserve_end_at,
-          reserve_end_at: reservation.reserve_end_at + 1.hour,
-          product: reservation.product)
+               reserve_start_at: reservation.reserve_end_at,
+               reserve_end_at: reservation.reserve_end_at + 1.hour,
+               product: reservation.product)
       end
 
       it "has no available next duration" do

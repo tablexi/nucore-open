@@ -33,9 +33,9 @@ RSpec.describe EndReservationOnly, :timecop_freeze do
         end_at = 1.minute.ago
 
         create(:purchased_reservation,
-            product: create(:setup_instrument, min_reserve_mins: 1),
-            reserve_start_at: start_at,
-            reserve_end_at: end_at)
+               product: create(:setup_instrument, min_reserve_mins: 1),
+               reserve_start_at: start_at,
+               reserve_end_at: end_at)
       end
 
       before do
@@ -76,9 +76,9 @@ RSpec.describe EndReservationOnly, :timecop_freeze do
         end_at = 1.minute.ago
 
         create(:setup_reservation,
-            product: create(:setup_instrument, min_reserve_mins: 1),
-            reserve_start_at: start_at,
-            reserve_end_at: end_at)
+               product: create(:setup_instrument, min_reserve_mins: 1),
+               reserve_start_at: start_at,
+               reserve_end_at: end_at)
       end
 
       before do
@@ -104,9 +104,9 @@ RSpec.describe EndReservationOnly, :timecop_freeze do
         end_at = 1.minute.from_now
 
         create(:purchased_reservation,
-            product: create(:setup_instrument, min_reserve_mins: 1),
-            reserve_start_at: start_at,
-            reserve_end_at: end_at)
+               product: create(:setup_instrument, min_reserve_mins: 1),
+               reserve_start_at: start_at,
+               reserve_end_at: end_at)
       end
 
       before do
@@ -132,9 +132,9 @@ RSpec.describe EndReservationOnly, :timecop_freeze do
         end_at = 1.minute.ago
 
         create(:purchased_reservation,
-            product: create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna)),
-            reserve_start_at: start_at,
-            reserve_end_at: end_at)
+               product: create(:setup_instrument, min_reserve_mins: 1, relay: create(:relay_syna)),
+               reserve_start_at: start_at,
+               reserve_end_at: end_at)
       end
 
       before do

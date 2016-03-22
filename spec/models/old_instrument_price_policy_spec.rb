@@ -97,9 +97,9 @@ RSpec.describe OldInstrumentPricePolicy do
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
       @instrument       = FactoryGirl.create(:instrument,
-                                      :facility => @facility,
-                                      :reserve_interval => 30,
-                                      :facility_account => @facility_account)
+                                             :facility => @facility,
+                                             :reserve_interval => 30,
+                                             :facility_account => @facility_account)
       @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       # create rule every day from 9 am to 5 pm, no discount, duration= 30 minutes
       @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
@@ -381,9 +381,9 @@ RSpec.describe OldInstrumentPricePolicy do
       @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create!(FactoryGirl.attributes_for(:price_group))
       @instrument       = FactoryGirl.create(:instrument,
-                                      :facility => @facility,
-                                      :reserve_interval => 30,
-                                      :facility_account => @facility_account)
+                                             :facility => @facility,
+                                             :reserve_interval => 30,
+                                             :facility_account => @facility_account)
       @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       @rule             = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
       @pp = create :old_instrument_price_policy, ipp_attributes

@@ -1,19 +1,19 @@
 module BootstrapHelper
   def modal_close_button
     content_tag :button, 'x',
-      :class => 'close',
-      :data => { :dismiss => 'modal' },
-      'aria_hidden' => true,
-      :type => 'button'
+                :class => 'close',
+                :data => { :dismiss => 'modal' },
+                'aria_hidden' => true,
+                :type => 'button'
   end
 
   def modal_cancel_button(options = {})
     if request.xhr?
       content_tag :button,
-        options[:text] || 'Cancel',
-        :data => { :dismiss => 'modal' },
-        :class => 'btn',
-        :type => 'button'
+                  options[:text] || 'Cancel',
+                  :data => { :dismiss => 'modal' },
+                  :class => 'btn',
+                  :type => 'button'
     end
   end
 

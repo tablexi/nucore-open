@@ -6,8 +6,8 @@ RSpec.describe PriceGroupProduct do
     @facility=FactoryGirl.create(:facility)
     @facility_account=@facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
-                                       :facility => @facility,
-                                       :facility_account_id => @facility_account.id)
+                                     :facility => @facility,
+                                     :facility_account_id => @facility_account.id)
     @price_group=FactoryGirl.create(:price_group, :facility => @facility)
   end
 

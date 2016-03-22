@@ -46,9 +46,9 @@ RSpec.describe JournalRowBuilder, type: :service do
 
     let(:journal) do
       build(:journal,
-        facility: facility,
-        created_by: 1,
-        journal_date: journal_date,
+            facility: facility,
+            created_by: 1,
+            journal_date: journal_date,
       )
     end
 

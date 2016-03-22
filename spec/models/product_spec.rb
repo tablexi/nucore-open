@@ -57,9 +57,9 @@ RSpec.describe Product do
       let!(:current_price_policies) do
         3.times.map do
           create(:instrument_price_policy,
-            product: instrument,
-            start_date: 3.days.ago,
-            expire_date: 3.days.from_now,
+                 product: instrument,
+                 start_date: 3.days.ago,
+                 expire_date: 3.days.from_now,
           )
         end
       end
@@ -67,9 +67,9 @@ RSpec.describe Product do
       let!(:past_price_policies) do
         [4,1,5,3,2].map do |n|
           create(:instrument_price_policy,
-            product: instrument,
-            start_date: n.months.ago,
-            expire_date: n.months.ago + 2.weeks,
+                 product: instrument,
+                 start_date: n.months.ago,
+                 expire_date: n.months.ago + 2.weeks,
           )
         end
       end
@@ -77,9 +77,9 @@ RSpec.describe Product do
       let!(:upcoming_price_policies) do
         [4,1,5,3,2].map do |n|
           create(:instrument_price_policy,
-            product: instrument,
-            start_date: n.months.from_now,
-            expire_date: n.months.from_now + 2.weeks,
+                 product: instrument,
+                 start_date: n.months.from_now,
+                 expire_date: n.months.from_now + 2.weeks,
           )
         end
       end

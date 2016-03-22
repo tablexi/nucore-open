@@ -11,9 +11,9 @@ RSpec.describe ProductUsersController do
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @instrument       = FactoryGirl.create(:instrument,
-                                      :facility => @authable,
-                                      :facility_account => @facility_account,
-                                      :requires_approval => true)
+                                           :facility => @authable,
+                                           :facility_account => @facility_account,
+                                           :requires_approval => true)
     @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
     expect(@price_policy).to be_valid
     @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }

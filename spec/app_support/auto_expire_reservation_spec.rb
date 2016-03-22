@@ -67,10 +67,10 @@ RSpec.describe AutoExpireReservation, :timecop_freeze do
         end_at = 1.minute.from_now
 
         create(:purchased_reservation,
-            product: instrument,
-            actual_start_at: 30.minutes.ago,
-            reserve_start_at: start_at,
-            reserve_end_at: end_at)
+               product: instrument,
+               actual_start_at: 30.minutes.ago,
+               reserve_start_at: start_at,
+               reserve_end_at: end_at)
       end
 
       before do
@@ -97,7 +97,7 @@ RSpec.describe AutoExpireReservation, :timecop_freeze do
     context 'a reservation only reservation' do
       let!(:reservation) do
         create(:purchased_reservation, :yesterday,
-          product: create(:setup_instrument, min_reserve_mins: 1))
+               product: create(:setup_instrument, min_reserve_mins: 1))
       end
 
       before do

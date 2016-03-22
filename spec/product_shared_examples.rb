@@ -16,8 +16,8 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
 
     @product = FactoryGirl.create(product_type,
-                                    :facility => @facility,
-                                    :facility_account => @facility_account)
+                                  :facility => @facility,
+                                  :facility_account => @facility_account)
     @order = create(:order, account: account, created_by_user: @user, user: @user)
     @order_detail = @order.order_details.create(attributes_for(:order_detail, account: account, product: @product, quantity: 1))
 
@@ -136,8 +136,8 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
     FactoryGirl.create(:user_price_group_member, :user => @user, :price_group => @price_group2)
 
     @product = FactoryGirl.create(@product_type,
-                                    :facility => @facility,
-                                    :facility_account => @facility_account)
+                                  :facility => @facility,
+                                  :facility_account => @facility_account)
     @product.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule))
 
     @order = create(:order, account: account, created_by_user: @user, user: @user)
@@ -147,10 +147,10 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
     create(:account_price_group_member, account: account, price_group: @price_group2)
 
     @reservation = FactoryGirl.create(:reservation,
-                                  :product => @product,
-                                  :reserve_start_at => 1.hour.from_now,
-                                  :reserve_end_at => 2.hours.from_now,
-                                  :order_detail => @order_detail)
+                                      :product => @product,
+                                      :reserve_start_at => 1.hour.from_now,
+                                      :reserve_end_at => 2.hours.from_now,
+                                      :order_detail => @order_detail)
     @order_detail.reload
   end
   context '#cheapest_price_policy' do

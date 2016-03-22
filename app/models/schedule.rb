@@ -21,7 +21,7 @@ class Schedule < ActiveRecord::Base
        where is_archived = :archived
        and schedule_id is not null
        group by schedule_id)",
-    :archived => false)
+          :archived => false)
   end
 
   def self.ordered

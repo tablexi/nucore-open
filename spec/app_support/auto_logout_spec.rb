@@ -57,10 +57,10 @@ RSpec.describe AutoLogout, :timecop_freeze do
       # Auto-logout is at 9:40
 
       create(:purchased_reservation,
-          product: create(:setup_instrument, min_reserve_mins: 1),
-          actual_start_at: 30.minutes.ago,
-          reserve_start_at: start_at,
-          reserve_end_at: end_at)
+             product: create(:setup_instrument, min_reserve_mins: 1),
+             actual_start_at: 30.minutes.ago,
+             reserve_start_at: start_at,
+             reserve_end_at: end_at)
     end
 
     include_context "all instruments return a relay"

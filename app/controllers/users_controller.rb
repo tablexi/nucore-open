@@ -153,12 +153,12 @@ class UsersController < ApplicationController
   def update_access_list_approvals
     if update_approvals.grants_changed?
       flash[:notice] = I18n.t 'controllers.users.access_list.approval_update.notice',
-        granted: update_approvals.granted, revoked: update_approvals.revoked
+                              granted: update_approvals.granted, revoked: update_approvals.revoked
     end
     if update_approvals.access_groups_changed?
       add_flash(:notice,
-        I18n.t('controllers.users.access_list.scheduling_group_update.notice',
-          update_count: update_approvals.access_groups_changed))
+                I18n.t('controllers.users.access_list.scheduling_group_update.notice',
+                       update_count: update_approvals.access_groups_changed))
     end
   end
 

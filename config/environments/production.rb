@@ -74,10 +74,10 @@ Nucore::Application.configure do
   # config.force_ssl = true
 
   config.middleware.use ExceptionNotification::Rack,
-    :email => {
-      :sender_address       => Settings.email.exceptions.sender,
-      :exception_recipients => Settings.email.exceptions.recipients
-    }
+                        :email => {
+                          :sender_address       => Settings.email.exceptions.sender,
+                          :exception_recipients => Settings.email.exceptions.recipients
+                        }
 end
 
 # What's this for?

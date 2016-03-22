@@ -48,10 +48,10 @@ RSpec.describe InstrumentPricePolicyCalculations do
           on_sun: false
         )
         policy.product.schedule_rules << create(:weekend_schedule_rule,
-          instrument: policy.product,
-          discount_percent: 25,
-          start_hour: 0,
-          end_hour: 24
+                                                instrument: policy.product,
+                                                discount_percent: 25,
+                                                start_hour: 0,
+                                                end_hour: 24
         )
       end
 
@@ -74,10 +74,10 @@ RSpec.describe InstrumentPricePolicyCalculations do
         policy.minimum_cost = 100.00
         policy.usage_rate = 60.00
         policy.product.schedule_rules << create(:schedule_rule,
-          instrument: policy.product,
-          discount_percent: 20,
-          start_hour: 17,
-          end_hour: 24
+                                                instrument: policy.product,
+                                                discount_percent: 20,
+                                                start_hour: 17,
+                                                end_hour: 24
         )
         @reservation_start = 1.day.from_now.change hour: 16, min: 15, sec: 0
         @reservation_end = @reservation_start + 1.hour + 30.minutes

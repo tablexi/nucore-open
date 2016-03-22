@@ -3,7 +3,7 @@ module Reports
   class Querier
 
     attr_reader :order_status_id, :current_facility, :date_range_field,
-      :date_range_start, :date_range_end, :extra_includes
+                :date_range_start, :date_range_end, :extra_includes
 
     def initialize(options = {})
       @order_status_id = options[:order_status_id]
