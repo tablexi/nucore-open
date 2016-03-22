@@ -18,7 +18,7 @@ class OrderPurchaser
       validate_and_purchase!
       order_in_the_past! if order_in_past?
 
-      Notifier.delay.order_receipt(user: order.user, order: order) if should_send_notification?
+      Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
     end
   end
 
@@ -62,7 +62,7 @@ class OrderPurchaser
     order.order_details.order("order_details.id").pluck(:quantity)
   end
 
-  def should_send_notification?
+  def send_receipt?
     !acting_as? || params[:send_notification] == "1"
   end
 

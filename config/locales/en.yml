@@ -952,6 +952,8 @@ en:
       subject: "Welcome to NUcore"
     new_account:
       subject: "NUcore New Payment Method"
+    order_notification:
+      subject: "NUcore Order Notification"
     order_receipt:
       subject: "NUcore Order Receipt"
       intro: "Thank you for your order on the NUcore website."

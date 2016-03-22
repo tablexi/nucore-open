@@ -1,0 +1,17 @@
+%h1= @order.facility
+
+%p The following order has been placed.
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th= Order.model_name.human
+      %th= Product.model_name.human
+  %tbody
+    - @order.order_details.each do |order_detail|
+      %tr
+        %td="##{order_detail}"
+        %td= order_detail.product
+
+  Ordered By: TK
+  - @order.order_details.each do |order_detail|
+    = order_detail.id

@@ -1,12 +1,35 @@
 require "rails_helper"
 
 RSpec.describe Notifier do
+  let(:email) { ActionMailer::Base.deliveries.last }
+  let(:facility) { create(:setup_facility) }
+  let(:order) { create(:purchased_order, product: product) }
+  let(:product) { create(:setup_instrument, facility: facility) }
+  let(:user) { order.user }
+
+  describe ".order_notification" do
+    context "when the order's facility has an order notification recipient set" do
+      let(:facility) { create(:setup_facility, :with_order_notification) }
+
+      before { Notifier.order_notification(order).deliver }
+
+      it "generates an order notification" do
+        expect(email.to).to include(facility.order_notification_recipient)
+        expect(email.subject).to include("Order Notification")
+        expect(email.html_part.to_s).to include("Ordered By: #{user.full_name}")
+      end
+    end
+
+    context "when the order's facility does not have an order notification receipient set" do
+      it "does not send a notification" do
+        expect { Notifier.order_notification(order).deliver }
+          .not_to change(ActionMailer::Base.deliveries, :count)
+      end
+    end
+  end
+
   describe ".order_receipt" do
-    let(:email) { ActionMailer::Base.deliveries.last }
     let(:note) { nil }
-    let(:order) { create(:purchased_order, product: product) }
-    let(:product) { create(:setup_instrument) }
-    let(:user) { order.user }
 
     before(:each) do
       order.order_details.first.update_attribute(:note, note) if note.present?
