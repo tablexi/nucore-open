@@ -60,10 +60,10 @@ class Reports::InstrumentUtilizationReport
     def row_with_percents(totals)
       percent = self / totals
       [quantity,
-        to_hours(reserved_mins, 1),
-        format_percent(percent.reserved_mins),
-        to_hours(actual_mins, 1),
-        format_percent(percent.actual_mins)]
+       to_hours(reserved_mins, 1),
+       format_percent(percent.reserved_mins),
+       to_hours(actual_mins, 1),
+       format_percent(percent.actual_mins)]
     end
   end
 
