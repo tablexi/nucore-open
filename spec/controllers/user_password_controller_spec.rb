@@ -1,13 +1,13 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-  def it_should_deny_if_signed_in
-    it "should not allow if you're signed in" do
-      sign_in(@user)
-      do_request
-      expect(response).to redirect_to(edit_current_password_path)
-    end
+def it_should_deny_if_signed_in
+  it "should not allow if you're signed in" do
+    sign_in(@user)
+    do_request
+    expect(response).to redirect_to(edit_current_password_path)
   end
+end
 
 RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_update) do
   render_views

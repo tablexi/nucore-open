@@ -27,17 +27,17 @@ class OrderDetailObserver < ActiveRecord::Observer
       hooks_to_run.each { |hook| hook.on_status_change(order_detail, old_status, new_status) } if hooks_to_run
     end
 
-    changes=order_detail.changes
+   changes=order_detail.changes
     # check to see if #before_save switch order ids on us
-    if changes.key?('order_id') && changes['order_id'][0].present?
-      merge_order=Order.find changes['order_id'][0].to_i
+   if changes.key?('order_id') && changes['order_id'][0].present?
+     merge_order=Order.find changes['order_id'][0].to_i
 
-      # clean up merge notifications
-      MergeNotification.about(order_detail).first.try(:destroy)
+     # clean up merge notifications
+     MergeNotification.about(order_detail).first.try(:destroy)
 
-      # clean up detail-less merge orders
-      merge_order.destroy if merge_order.to_be_merged? && merge_order.order_details.blank?
-    end
+     # clean up detail-less merge orders
+     merge_order.destroy if merge_order.to_be_merged? && merge_order.order_details.blank?
+   end
   end
 
   def self.status_change_hooks
