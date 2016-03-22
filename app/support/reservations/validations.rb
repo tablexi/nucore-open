@@ -137,7 +137,7 @@ module Reservations::Validations
   end
 
   def save_extended_validations!
-    raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations()
+    raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations
   end
 
   def in_the_future?
