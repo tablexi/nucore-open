@@ -13,7 +13,7 @@ module FacilityOrdersHelper
     warnings << 'missing_actuals' if order_detail.complete? && order_detail.reservation.try(:requires_but_missing_actuals?)
     warnings << 'missing_price_policy' if order_detail.missing_price_policy? && !order_detail.reservation.try(:requires_but_missing_actuals?)
 
-    { :warnings => warnings, :notices => notices }
+    { warnings: warnings, notices: notices }
   end
 
   def order_detail_badges(order_detail)
@@ -37,7 +37,7 @@ module FacilityOrdersHelper
     if value = object.send(:try, field)
       value = yield(value) if block_given?
 
-      content_tag :dl, :class => 'span2' do
+      content_tag :dl, class: 'span2' do
         content_tag(:dt, object.class.human_attribute_name(field)) +
         content_tag(:dd, value)
       end
@@ -48,7 +48,7 @@ module FacilityOrdersHelper
 
   def build_badges(notices, label_class)
     notices.map do |notice|
-      content_tag(:span, t("order_details.notices.#{notice}.badge"), :class => ['label', label_class])
+      content_tag(:span, t("order_details.notices.#{notice}.badge"), class: ['label', label_class])
     end
   end
 

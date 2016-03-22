@@ -1,15 +1,15 @@
 class Product < ActiveRecord::Base
 
   belongs_to :facility
-  belongs_to :initial_order_status, :class_name => 'OrderStatus'
+  belongs_to :initial_order_status, class_name: 'OrderStatus'
   belongs_to :facility_account
   has_many   :product_users
   has_many   :order_details
   has_many   :stored_files
-  has_many   :price_groups, :through => :price_group_products
+  has_many   :price_groups, through: :price_group_products
   has_many   :price_group_products
   has_many   :product_accessories, conditions: { deleted_at: nil }, dependent: :destroy
-  has_many   :accessories, :through => :product_accessories, :class_name => 'Product'
+  has_many   :accessories, through: :product_accessories, class_name: 'Product'
   has_many   :price_policies
   has_many   :training_requests, dependent: :destroy
 
@@ -17,14 +17,14 @@ class Product < ActiveRecord::Base
   validate_url_name :url_name, :facility_id
   validates_numericality_of(
     :account,
-      :only_integer => true,
-      :greater_than_or_equal_to => 0,
-      :less_than_or_equal_to => 99999,
-      :if => :account_required
+      only_integer: true,
+      greater_than_or_equal_to: 0,
+      less_than_or_equal_to: 99999,
+      if: :account_required
   ) if SettingsHelper.feature_on? :expense_accounts
 
   # Use lambda so we can dynamically enable/disable in specs
-  validate :if => lambda {SettingsHelper.feature_on?(:product_specific_contacts)} do
+  validate if: lambda {SettingsHelper.feature_on?(:product_specific_contacts)} do
     errors.add(:contact_email, :required) unless email.present?
   end
 
@@ -36,10 +36,10 @@ class Product < ActiveRecord::Base
     end
   end
 
-  scope :active,             :conditions => { :is_archived => false, :is_hidden => false }
-  scope :active_plus_hidden, :conditions => { :is_archived => false}
-  scope :archived,           :conditions => { :is_archived => true }
-  scope :not_archived,       :conditions => { :is_archived => false }
+  scope :active,             conditions: { is_archived: false, is_hidden: false }
+  scope :active_plus_hidden, conditions: { is_archived: false}
+  scope :archived,           conditions: { is_archived: true }
+  scope :not_archived,       conditions: { is_archived: false }
 
   def self.non_instruments
     where("products.type <> 'Instrument'")
@@ -141,7 +141,7 @@ class Product < ActiveRecord::Base
 
   def set_default_pricing
     PriceGroup.globals.all.each do |pg|
-      PriceGroupProduct.create!(:product => self, :price_group => pg)
+      PriceGroupProduct.create!(product: self, price_group: pg)
     end
   end
 
@@ -160,7 +160,7 @@ class Product < ActiveRecord::Base
 
     # if there are current rules, but the user is not part of them
     if price_policies.current.any?
-      return price_policies.current.for_price_groups(group_ids).where(:can_purchase => true).any?
+      return price_policies.current.for_price_groups(group_ids).where(can_purchase: true).any?
     end
 
     # if there are no current price policies, find the most recent price policy for each group.
@@ -193,7 +193,7 @@ class Product < ActiveRecord::Base
 
     price_policies.min_by do |pp|
       # default to very large number if the estimate returns a nil
-      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {:cost => 999999999, :subsidy => 0}
+      costs = pp.estimate_cost_and_subsidy_from_order_detail(order_detail) || {cost: 999999999, subsidy: 0}
       costs[:cost] - costs[:subsidy]
     end
   end

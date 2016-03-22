@@ -8,19 +8,19 @@ RSpec.describe BulkEmailController do
 
   before :each do
     @authable = FactoryGirl.create(:facility)
-    @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
-    @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @service = @authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
-    @instrument = FactoryGirl.create(:instrument, :facility => @authable, :facility_account_id => @facility_account.id)
-    @restricted_item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :requires_approval => true))
-    @params={ :facility_id => @authable.url_name }
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
+    @item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+    @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+    @instrument = FactoryGirl.create(:instrument, facility: @authable, facility_account_id: @facility_account.id)
+    @restricted_item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id, requires_approval: true))
+    @params={ facility_id: @authable.url_name }
   end
 
   context "search" do
     before :each do
       @action = 'search'
       @method = :post
-      @params.merge!(:search_type => :customers)
+      @params.merge!(search_type: :customers)
     end
     it_should_require_login
     it_should_allow_managers_only {}
@@ -67,13 +67,13 @@ RSpec.describe BulkEmailController do
       end
       context 'product loading' do
         it 'should include hidden products' do
-          @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :is_hidden => true))
+          @item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id, is_hidden: true))
           do_request
           expect(response).to be_success
           expect(assigns[:products]).to be_include @item
         end
         it 'should not include archived products' do
-          @item = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id, :is_archived => true))
+          @item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id, is_archived: true))
           do_request
           expect(response).to be_success
           expect(assigns[:products]).not_to be_include @item
@@ -94,7 +94,7 @@ RSpec.describe BulkEmailController do
 
       context "csv" do
         before :each do
-          @params.merge!(:format => 'csv')
+          @params.merge!(format: 'csv')
         end
         it "should not paginate" do
           do_request

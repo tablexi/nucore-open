@@ -3,11 +3,11 @@ class AddOrderDetailFields < ActiveRecord::Migration
   def self.up
     change_table :order_details do |t|
       t.integer   :account_id
-      t.string    :status, :limit => 50
+      t.string    :status, limit: 50
       t.datetime  :dispute_at
-      t.string    :dispute_reason, :limit => 200
+      t.string    :dispute_reason, limit: 200
       t.datetime  :dispute_resolved_at
-      t.string    :dispute_resolved_reason, :limit => 200
+      t.string    :dispute_resolved_reason, limit: 200
       t.timestamps
     end
   end

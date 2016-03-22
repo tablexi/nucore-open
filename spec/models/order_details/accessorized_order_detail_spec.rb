@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe OrderDetail do
   let(:instrument) { FactoryGirl.create(:instrument_with_accessory) }
   let(:accessory) { instrument.accessories.first }
-  let(:reservation) { FactoryGirl.create(:completed_reservation, :product => instrument) }
+  let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
   let(:order_detail) { reservation.order_detail }
   let(:accessorizer) { Accessories::Accessorizer.new(order_detail) }
 
@@ -38,8 +38,8 @@ RSpec.describe OrderDetail do
     end
 
     it "changes the child's account when changing the parent's account" do
-      new_account = FactoryGirl.create(:setup_account, :owner => order_detail.user)
-      order_detail.update_attributes(:account => new_account)
+      new_account = FactoryGirl.create(:setup_account, owner: order_detail.user)
+      order_detail.update_attributes(account: new_account)
       expect(accessory_order_detail.reload.account).to eq new_account
     end
   end
@@ -50,8 +50,8 @@ RSpec.describe OrderDetail do
 
     context 'where the reservation time changes' do
       before :each do
-        accessory_order_detail.update_attributes(:quantity => 1)
-        reservation.update_attributes(:reserve_end_at => reservation.reserve_end_at + 30.minutes)
+        accessory_order_detail.update_attributes(quantity: 1)
+        reservation.update_attributes(reserve_end_at: reservation.reserve_end_at + 30.minutes)
       end
 
       it 'does not update the quantity' do
@@ -63,7 +63,7 @@ RSpec.describe OrderDetail do
   context 'manual scaled accessory' do
     let(:accessory_order_detail) { accessorizer.add_accessory(accessory) }
     before :each do
-      accessorizer.send(:product_accessory, accessory).update_attributes!(:scaling_type => 'manual')
+      accessorizer.send(:product_accessory, accessory).update_attributes!(scaling_type: 'manual')
       accessory_order_detail # load
     end
 
@@ -74,15 +74,15 @@ RSpec.describe OrderDetail do
     end
 
     skip 'defaults to 1 if less than a minute' do
-      reservation.update_attributes(:actual_end_at => reservation.actual_start_at + 30.seconds)
+      reservation.update_attributes(actual_end_at: reservation.actual_start_at + 30.seconds)
       expect(reservation.actual_duration_mins).to eq(0)
       expect(accessory_order_detail.reload.quantity).to eq(1)
     end
 
     context 'where the reservation time changes' do
       before :each do
-        accessory_order_detail.update_attributes(:quantity => 1)
-        reservation.update_attributes(:reserve_end_at => reservation.reserve_end_at + 30.minutes)
+        accessory_order_detail.update_attributes(quantity: 1)
+        reservation.update_attributes(reserve_end_at: reservation.reserve_end_at + 30.minutes)
       end
 
       it 'does not update the quantity' do
@@ -92,8 +92,8 @@ RSpec.describe OrderDetail do
 
     context 'where the actual time changes' do
       before :each do
-        accessory_order_detail.update_attributes(:quantity => 1)
-        reservation.update_attributes(:actual_end_at => reservation.actual_end_at + 30.minutes)
+        accessory_order_detail.update_attributes(quantity: 1)
+        reservation.update_attributes(actual_end_at: reservation.actual_end_at + 30.minutes)
       end
 
       it 'does not update the quantity' do
@@ -105,7 +105,7 @@ RSpec.describe OrderDetail do
   context 'auto scaled accessory' do
     let(:accessory_order_detail) { accessorizer.add_accessory(accessory) }
     before :each do
-      accessorizer.send(:product_accessory, accessory).update_attributes(:scaling_type => 'auto')
+      accessorizer.send(:product_accessory, accessory).update_attributes(scaling_type: 'auto')
       accessory_order_detail #load
     end
 
@@ -116,14 +116,14 @@ RSpec.describe OrderDetail do
     end
 
     skip 'defaults to 1 if less than a minute' do
-      reservation.update_attributes(:actual_end_at => reservation.actual_start_at + 30.seconds)
+      reservation.update_attributes(actual_end_at: reservation.actual_start_at + 30.seconds)
       expect(reservation.actual_duration_mins).to eq(0)
       expect(accessory_order_detail.reload.quantity).to eq(1)
     end
 
     context 'where the reservation time changes' do
       before :each do
-        reservation.update_attributes(:reserve_end_at => reservation.reserve_end_at + 30.minutes)
+        reservation.update_attributes(reserve_end_at: reservation.reserve_end_at + 30.minutes)
       end
 
       it 'does not update the quantity' do
@@ -137,7 +137,7 @@ RSpec.describe OrderDetail do
 
     context 'where the actual time changes' do
       before :each do
-        reservation.update_attributes(:actual_end_at => reservation.actual_end_at + 30.minutes)
+        reservation.update_attributes(actual_end_at: reservation.actual_end_at + 30.minutes)
       end
 
       it 'updates the quantity' do

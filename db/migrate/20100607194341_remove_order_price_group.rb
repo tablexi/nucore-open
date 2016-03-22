@@ -5,7 +5,7 @@ class RemoveOrderPriceGroup < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :orders, :price_group_id, :integer, :null => true
+    add_column :orders, :price_group_id, :integer, null: true
   end
 
 end

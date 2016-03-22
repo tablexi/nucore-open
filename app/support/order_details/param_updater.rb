@@ -60,8 +60,8 @@ class OrderDetails::ParamUpdater
     begin
       @order_detail.update_order_status! @editing_user,
                                          OrderStatus.find(order_status_id),
-                                         :admin => true,
-                                         :apply_cancel_fee => apply_cancel_fee
+                                         admin: true,
+                                         apply_cancel_fee: apply_cancel_fee
       true
     rescue StandardError => e
       @order_detail.errors.add(:base, :changing_status)

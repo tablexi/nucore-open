@@ -1,8 +1,8 @@
 class Service < Product
 
-  has_many :service_price_policies, :foreign_key => :product_id
-  has_many :external_service_passers, :as => :passer
-  has_many :external_services, :through => :external_service_passers
+  has_many :service_price_policies, foreign_key: :product_id
+  has_many :external_service_passers, as: :passer
+  has_many :external_services, through: :external_service_passers
 
   validates_presence_of :initial_order_status_id
   validates_presence_of :facility_account_id if SettingsHelper.feature_on? :recharge_accounts

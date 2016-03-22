@@ -8,7 +8,7 @@ class FacilityJournalsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :check_billing_access
-  before_filter :init_journals, :except => :create_with_search
+  before_filter :init_journals, except: :create_with_search
   helper_method :has_pending_journals?
 
   include TransactionSearch
@@ -52,7 +52,7 @@ class FacilityJournalsController < ApplicationController
       end
 
       @earliest_journal_date = params[:journal_date] || @earliest_journal_date
-      render :action => :index
+      render action: :index
     end
   end
 
@@ -90,7 +90,7 @@ class FacilityJournalsController < ApplicationController
       end
 
       format.csv do
-        @show_uid = @journal_rows.joins(:order_detail => {:order => :user}).where('users.uid IS NOT NULL').any?
+        @show_uid = @journal_rows.joins(order_detail: {order: :user}).where('users.uid IS NOT NULL').any?
         set_csv_headers("#{@filename}.csv")
       end
 
@@ -106,7 +106,7 @@ class FacilityJournalsController < ApplicationController
       redirect_to(facility_journal_path(current_facility, @journal)) && (return)
     end
     rec_status = OrderStatus.reconciled.first
-    order_details = OrderDetail.for_facility(current_facility).where(:id => params[:order_detail_ids]).readonly(false)
+    order_details = OrderDetail.for_facility(current_facility).where(id: params[:order_detail_ids]).readonly(false)
     order_details.each do |od|
       if od.journal_id != @journal.id
         flash[:error] = "Order detail #{od} does not belong to this journal! Please reconcile without it."
@@ -142,7 +142,7 @@ class FacilityJournalsController < ApplicationController
   end
 
   def set_pending_journals
-    @pending_journals = @journals.where(:is_successful => nil)
+    @pending_journals = @journals.where(is_successful: nil)
   end
 
   def set_earliest_journal_date
@@ -169,7 +169,7 @@ class FacilityJournalsController < ApplicationController
     @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1).includes(:journal_rows).order("journals.created_at DESC")
     jid=params[:id] || params[:journal_id]
     @journal = @journals.find(jid) if jid
-    @journals = @journals.paginate(:page => params[:page], :per_page => 10)
+    @journals = @journals.paginate(page: params[:page], per_page: 10)
   end
 
   def has_pending_journals?

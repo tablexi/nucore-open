@@ -9,9 +9,9 @@ RSpec.describe PriceGroupProductsController do
   before(:each) do
     @authable=FactoryGirl.create(:facility)
     @facility_account=@authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @product = FactoryGirl.create(:instrument, :facility_account_id => @facility_account.id, :facility => @authable)
+    @product = FactoryGirl.create(:instrument, facility_account_id: @facility_account.id, facility: @authable)
     create_price_group_products
-    @params={ :facility_id => @authable.url_name, :id => @product.url_name }
+    @params={ facility_id: @authable.url_name, id: @product.url_name }
   end
 
   context 'edit' do
@@ -37,7 +37,7 @@ RSpec.describe PriceGroupProductsController do
       @action=:update
 
       PriceGroup.all.each do |pg|
-        @params.merge!( pg_key(pg) => { :reservation_window => 5, :purchase => '1' })
+        @params.merge!( pg_key(pg) => { reservation_window: 5, purchase: '1' })
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe PriceGroupProductsController do
     end
 
     it 'should not error if no reservation window given on non-instrument' do
-      @product=@authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @product=@authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
       create_price_group_products
       pg=@price_group_products.first.price_group
       @params[pg_key(pg)][:reservation_window]=''

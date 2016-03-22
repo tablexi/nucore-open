@@ -4,9 +4,9 @@ class FacilityOrderDetailsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-  before_filter :init_order_detail, :except => :remove_from_journal
+  before_filter :init_order_detail, except: :remove_from_journal
 
-  load_and_authorize_resource :class => OrderDetail
+  load_and_authorize_resource class: OrderDetail
 
   include FacilityOrderStatusHelper
   helper_method :new_or_in_process_orders, :disputed_orders

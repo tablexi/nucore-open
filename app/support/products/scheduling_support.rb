@@ -3,14 +3,14 @@ module Products::SchedulingSupport
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :schedule, :inverse_of => :products
+    belongs_to :schedule, inverse_of: :products
     has_many :schedule_rules
-    has_many :reservations, :foreign_key => 'product_id'
+    has_many :reservations, foreign_key: 'product_id'
 
-    delegate :reservations, :to => :schedule, :prefix => true
+    delegate :reservations, to: :schedule, prefix: true
 
-    before_save :create_default_schedule, :unless => :schedule
-    before_save :update_schedule_name, :if => :name_changed?
+    before_save :create_default_schedule, unless: :schedule
+    before_save :update_schedule_name, if: :name_changed?
   end
 
   def active_reservations
@@ -18,7 +18,7 @@ module Products::SchedulingSupport
   end
 
   def purchased_reservations
-    self.reservations.joins(:order_detail => :order).merge(Order.purchased)
+    self.reservations.joins(order_detail: :order).merge(Order.purchased)
   end
 
   def admin_reservations
@@ -73,10 +73,10 @@ module Products::SchedulingSupport
     # zero and nil should default to 1 minute
     reservation_length = [ min_reserve_mins.to_i, reserve_interval.to_i ].max
     reservation = Reservation.new(
-      :product => self,
-      :reserve_start_at => time,
-      :reserve_end_at   => time + reservation_length.minutes,
-      :blackout => true # so it's not considered an admin and allowed to overlap
+      product: self,
+      reserve_start_at: time,
+      reserve_end_at: time + reservation_length.minutes,
+      blackout: true # so it's not considered an admin and allowed to overlap
     )
     reservation.valid?
   end
@@ -129,12 +129,12 @@ module Products::SchedulingSupport
   end
 
   def create_default_schedule
-    self.schedule = Schedule.create(:name => "#{self.name} Schedule", :facility => self.facility)
+    self.schedule = Schedule.create(name: "#{self.name} Schedule", facility: self.facility)
   end
 
   def update_schedule_name
     if self.schedule.name == "#{self.name_was} Schedule"
-      self.schedule.update_attributes(:name => "#{self.name} Schedule")
+      self.schedule.update_attributes(name: "#{self.name} Schedule")
     end
   end
 
@@ -164,9 +164,9 @@ module Products::SchedulingSupport
       start_time = time
 
       while start_time < day_end
-        reservation = reserver.reservations.new(:reserve_start_at => start_time, :reserve_end_at => start_time + duration)
+        reservation = reserver.reservations.new(reserve_start_at: start_time, reserve_end_at: start_time + duration)
 
-        conflict = reservation.conflicting_reservation(:exclude => options[:exclude])
+        conflict = reservation.conflicting_reservation(exclude: options[:exclude])
         return reservation if conflict.nil?
 
         start_time = conflict.reserve_end_at

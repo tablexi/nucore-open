@@ -5,7 +5,7 @@ class FacilityFacilityAccountsController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
 
-  load_and_authorize_resource :class => FacilityAccount
+  load_and_authorize_resource class: FacilityAccount
 
   layout 'two_column'
 
@@ -21,7 +21,7 @@ class FacilityFacilityAccountsController < ApplicationController
 
   # GET /facilities/:facility_id/facility_accounts/new(.:format)
   def new
-    @facility_account = current_facility.facility_accounts.new(:is_active => true, :revenue_account => '50617')
+    @facility_account = current_facility.facility_accounts.new(is_active: true, revenue_account: '50617')
   end
 
   # POST /facilities/:facility_id/facility_accounts(.:format)
@@ -33,7 +33,7 @@ class FacilityFacilityAccountsController < ApplicationController
       flash[:notice] = 'Facility account was successfully created.'
       redirect_to facility_facility_accounts_path
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -50,7 +50,7 @@ class FacilityFacilityAccountsController < ApplicationController
       flash[:notice] = 'Facility account was successfully updated.'
       redirect_to facility_facility_accounts_path
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 

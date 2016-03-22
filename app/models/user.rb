@@ -17,21 +17,21 @@ class User < ActiveRecord::Base
   # ldap_authenticatable is included via a to_prepare hook if ldap is enabled
   devise :database_authenticatable, :encryptable, :trackable, :recoverable
 
-  has_many :accounts, :through => :account_users
-  has_many :account_users, :conditions => {:deleted_at => nil}
+  has_many :accounts, through: :account_users
+  has_many :account_users, conditions: {deleted_at: nil}
   has_many :orders
-  has_many :order_details, :through => :orders
+  has_many :order_details, through: :orders
   has_many :price_group_members
   has_many :product_users
   has_many :notifications
-  has_many :products, :through => :product_users
-  has_many :assigned_order_details, :class_name => 'OrderDetail', :foreign_key => 'assigned_user_id'
-  has_many :user_roles, :dependent => :destroy
-  has_many :facilities, :through => :user_roles
+  has_many :products, through: :product_users
+  has_many :assigned_order_details, class_name: 'OrderDetail', foreign_key: 'assigned_user_id'
+  has_many :user_roles, dependent: :destroy
+  has_many :facilities, through: :user_roles
   has_many :training_requests, dependent: :destroy
 
   validates_presence_of :username, :first_name, :last_name
-  validates_format_of :email, :with => /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,6}$/i
+  validates_format_of :email, with: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,6}$/i
   validates_uniqueness_of :username, :email
 
   #

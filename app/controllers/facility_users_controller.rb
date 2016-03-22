@@ -5,7 +5,7 @@ class FacilityUsersController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
 
-  load_and_authorize_resource :class => User
+  load_and_authorize_resource class: User
 
   layout 'two_column'
 
@@ -39,7 +39,7 @@ class FacilityUsersController < ApplicationController
         @user_role=UserRole.grant(@user, params[:user_role][:role], current_facility)
         redirect_to facility_facility_users_url
       rescue ActiveRecord::RecordInvalid
-        render :action => "map_user"
+        render action: "map_user"
       end
     end
   end 

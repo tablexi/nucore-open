@@ -40,7 +40,7 @@ Nucore::Application.configure do
   # Raise exception on mass assignment protection for Active Record models
   # config.active_record.mass_assignment_sanitizer = :strict
 
-  config.action_mailer.default_url_options = { :host => "localhost", :port => 3000 }
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
   Delayed::Worker.delay_jobs = false
 end

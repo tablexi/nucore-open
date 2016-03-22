@@ -32,7 +32,7 @@ class FacilityNotificationsController < ApplicationController
   def send_notifications
     if params[:order_detail_ids].nil? || params[:order_detail_ids].empty?
       flash[:error] = I18n.t 'controllers.facility_notifications.no_selection'
-      redirect_to :action => :index
+      redirect_to action: :index
       return
     end
 
@@ -41,12 +41,12 @@ class FacilityNotificationsController < ApplicationController
     if sender.perform
       flash[:notice] = send_notification_success_message(sender)
     else
-      flash[:error] = I18n.t('controllers.facility_notifications.errors_html', :errors => sender.errors.join('<br/>')).html_safe
+      flash[:error] = I18n.t('controllers.facility_notifications.errors_html', errors: sender.errors.join('<br/>')).html_safe
     end
     @accounts_to_notify = sender.account_ids_to_notify
     @errors = sender.errors
 
-    redirect_to :action => :index
+    redirect_to action: :index
   end
 
   # GET /facilities/notifications/in_review
@@ -67,7 +67,7 @@ class FacilityNotificationsController < ApplicationController
       @order_details_updated = []
       params[:order_detail_ids].each do |order_detail_id|
         begin
-          od = OrderDetail.for_facility(current_facility).find(order_detail_id, :readonly => false)
+          od = OrderDetail.for_facility(current_facility).find(order_detail_id, readonly: false)
           od.reviewed_at = Time.zone.now
           od.save!
           @order_details_updated << od
@@ -77,18 +77,18 @@ class FacilityNotificationsController < ApplicationController
         end
       end
       flash[:notice] = I18n.t('controllers.facility_notifications.mark_as_reviewed.success') if @order_details_updated.any?
-      flash[:error] = I18n.t('controllers.facility_notifications.mark_as_reviewed.errors', :errors =>  @errors.join(', ')) if @errors.any?
+      flash[:error] = I18n.t('controllers.facility_notifications.mark_as_reviewed.errors', errors: @errors.join(', ')) if @errors.any?
     end
-    redirect_to :action => :in_review
+    redirect_to action: :in_review
   end
 
   private
 
   def send_notification_success_message(sender)
     if sender.accounts_notified_size > 10
-      I18n.t('controllers.facility_notifications.send_notifications.success_count', :accounts => sender.accounts_notified_size)
+      I18n.t('controllers.facility_notifications.send_notifications.success_count', accounts: sender.accounts_notified_size)
     else
-      I18n.t('controllers.facility_notifications.send_notifications.success_html', :accounts => sender.accounts_notified.map(&:account_list_item).join('<br/>')).html_safe
+      I18n.t('controllers.facility_notifications.send_notifications.success_html', accounts: sender.accounts_notified.map(&:account_list_item).join('<br/>')).html_safe
     end
   end
 

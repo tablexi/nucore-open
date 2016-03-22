@@ -4,8 +4,8 @@ require 'controller_spec_helper'
 RSpec.describe OrderManagement::OrderDetailsController do
   before(:all) { create_users }
   let(:facility) { FactoryGirl.create(:setup_facility) }
-  let(:item) { FactoryGirl.create(:setup_item, :facility => facility) }
-  let(:instrument) { FactoryGirl.create(:setup_instrument, :facility => facility, :control_mechanism => 'timer') }
+  let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
+  let(:instrument) { FactoryGirl.create(:setup_instrument, facility: facility, control_mechanism: 'timer') }
   let(:new_account) { create(:setup_account, owner: order_detail.user) }
   let(:order_detail) { reservation.order_detail }
   let(:original_account) { create(:setup_account, owner: order_detail.user) }
@@ -19,7 +19,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
   end
 
   describe 'edit' do
-    let(:item_order) { FactoryGirl.create(:purchased_order, :product => item) }
+    let(:item_order) { FactoryGirl.create(:purchased_order, product: item) }
     let(:item_order_detail) { item_order.order_details.first }
 
     before :each do
@@ -29,7 +29,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
     context 'authentication' do
       before :each do
-        @params = { :facility_id => facility.url_name, :order_id => item_order.id, :id => item_order_detail.id }
+        @params = { facility_id: facility.url_name, order_id: item_order.id, id: item_order_detail.id }
       end
       it_should_allow_operators_only {}
     end
@@ -41,7 +41,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
       before :each do
         sign_in @admin
-        @params = { :facility_id => facility.url_name, :order_id => item_order.id, :id => item_order_detail.id }
+        @params = { facility_id: facility.url_name, order_id: item_order.id, id: item_order_detail.id }
       end
 
       context 'new order' do
@@ -83,7 +83,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         context 'with a price policy' do
           context 'with a subsidy' do
             before :each do
-              item_order_detail.price_policy.update_attributes(:unit_subsidy => 1)
+              item_order_detail.price_policy.update_attributes(unit_subsidy: 1)
               item_order_detail.assign_price_policy
               item_order_detail.save!
               do_request
@@ -105,7 +105,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
           context 'without a subsidy' do
             before :each do
-              item_order_detail.price_policy.update_attributes(:unit_subsidy => 0)
+              item_order_detail.price_policy.update_attributes(unit_subsidy: 0)
               item_order_detail.assign_price_policy
               item_order_detail.save!
               do_request
@@ -141,10 +141,10 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
 
       context 'order in open journal' do
-        let(:journal) { FactoryGirl.create(:journal, :facility => facility) }
+        let(:journal) { FactoryGirl.create(:journal, facility: facility) }
         before :each do
           item_order_detail.change_status!(OrderStatus.complete.first)
-          item_order_detail.update_attributes(:reviewed_at => 1.day.ago)
+          item_order_detail.update_attributes(reviewed_at: 1.day.ago)
           journal.create_journal_rows! [item_order_detail]
           item_order_detail.reload
           expect(item_order_detail.journal).to be_present
@@ -176,7 +176,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
     before :each do
       @action = :update
       @method = :post
-      @params = { :facility_id => facility.url_name, :order_id => order_detail.order_id, :id => order_detail.id }
+      @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
     end
 
     context 'authentication' do
@@ -191,20 +191,20 @@ RSpec.describe OrderManagement::OrderDetailsController do
       describe 'updating reservation times' do
         before :each do
           instrument.price_policies.first.update_attributes(
-            :usage_rate => 120,
-            :usage_subsidy => 60,
-            :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage]
+            usage_rate: 120,
+            usage_subsidy: 60,
+            charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
           )
         end
 
         context 'reserve times on incomplete order' do
           before :each do
-            instrument.update_attributes(:min_reserve_mins => 1)
+            instrument.update_attributes(min_reserve_mins: 1)
             @new_reserve_start = reservation.reserve_start_at + 1.hour
             @params[:order_detail] = {
-              :reservation => {
-                :reserve_start_at => @new_reserve_start,
-                :duration_mins => 30
+              reservation: {
+                reserve_start_at: @new_reserve_start,
+                duration_mins: 30
               }
             }
           end
@@ -228,9 +228,9 @@ RSpec.describe OrderManagement::OrderDetailsController do
           context 'it conflicts with another reservation' do
             before :each do
               @other_reservation = FactoryGirl.create(:purchased_reservation,
-                                                      :reserve_start_at => @new_reserve_start,
-                                                      :reserve_end_at => @new_reserve_start + 1.hour,
-                                                      :product => instrument)
+                                                      reserve_start_at: @new_reserve_start,
+                                                      reserve_end_at: @new_reserve_start + 1.hour,
+                                                      product: instrument)
               @old_start_time = reservation.reserve_start_at
               do_request
             end
@@ -252,11 +252,11 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         context 'and it is a restricted instrument' do
           before :each do
-            instrument.update_attributes(:requires_approval => true, :min_reserve_mins => 10)
+            instrument.update_attributes(requires_approval: true, min_reserve_mins: 10)
             @params[:order_detail] = {
-              :reservation => {
-                :reserve_start_at => reservation.reserve_start_at,
-                :duration_mins => 30
+              reservation: {
+                reserve_start_at: reservation.reserve_start_at,
+                duration_mins: 30
               }
             }
           end
@@ -273,14 +273,14 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
       describe 'canceling an order' do
         before :each do
-          instrument.update_attributes!(:min_cancel_hours => 72)
+          instrument.update_attributes!(min_cancel_hours: 72)
           instrument.price_policies.first.update_attributes(
             cancellation_cost: 100,
             charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
           )
 
           @params[:order_detail] = {
-            :order_status_id => OrderStatus.canceled.first.id.to_s
+            order_status_id: OrderStatus.canceled.first.id.to_s
           }
         end
 
@@ -302,10 +302,10 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         context 'with a cancellation fee and was completed' do
           before :each do
-            reservation.update_attributes(:reserve_start_at => 24.hours.ago,
-                                          :reserve_end_at => 23.hours.ago,
-                                          :actual_start_at => nil,
-                                          :actual_end_at => nil)
+            reservation.update_attributes(reserve_start_at: 24.hours.ago,
+                                          reserve_end_at: 23.hours.ago,
+                                          actual_start_at: nil,
+                                          actual_end_at: nil)
             Timecop.travel(7.days.from_now) do
               order_detail.change_status!(OrderStatus.find_by_name!('Complete'))
             end
@@ -344,17 +344,17 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
 
       context 'across fiscal year/price policy expiration lines' do
-        let(:reservation) { FactoryGirl.create(:completed_reservation, :product => instrument) }
+        let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
         let(:order_detail) { reservation.order_detail }
 
         before :each do
           @action = :update
           @method = :post
-          @params = { :facility_id => facility.url_name, :order_id => order_detail.order_id, :id => order_detail.id }
+          @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
         end
 
         before :each do
-          order_detail.product.price_policies.first.update_attributes!(:start_date => order_detail.fulfilled_at - 1.hour, :expire_date => 1.hour.ago)
+          order_detail.product.price_policies.first.update_attributes!(start_date: order_detail.fulfilled_at - 1.hour, expire_date: 1.hour.ago)
         end
 
         context 'changing account' do
@@ -459,14 +459,14 @@ RSpec.describe OrderManagement::OrderDetailsController do
   end
 
   describe 'updating item' do
-    let(:order) { FactoryGirl.create(:purchased_order, :product => item) }
+    let(:order) { FactoryGirl.create(:purchased_order, product: item) }
     let(:order_detail) { order.order_details.first }
 
     before :each do
       sign_in @admin
       @action = :update
       @method = :post
-      @params = { :facility_id => facility.url_name, :order_id => order_detail.order_id, :id => order_detail.id }
+      @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
     end
 
     describe 'updating pricing' do
@@ -476,8 +476,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
       it 'updates the price manually' do
         @params[:order_detail] = {
-          :actual_cost    => "20.00",
-          :actual_subsidy => "4.00"
+          actual_cost: "20.00",
+          actual_subsidy: "4.00"
         }
         do_request
         expect(order_detail.reload.actual_total).to eq(16.00)
@@ -485,8 +485,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
       it 'returns an error when trying to set subsidy more than quantity' do
         @params[:order_detail] = {
-            :actual_cost    => "10.00",
-            :actual_subsidy => "11.00"
+            actual_cost: "10.00",
+            actual_subsidy: "11.00"
         }
         do_request
         expect(assigns(:order_detail).errors).to include(:actual_total)
@@ -496,7 +496,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
     describe 'resolving dispute' do
       before :each do
         order_detail.change_status!(OrderStatus.complete.first)
-        order_detail.update_attributes(:reviewed_at => Time.zone.now, :dispute_at => Time.zone.now, :dispute_reason => 'silly reason')
+        order_detail.update_attributes(reviewed_at: Time.zone.now, dispute_at: Time.zone.now, dispute_reason: 'silly reason')
         @params[:order_detail] = {}
       end
 
@@ -532,14 +532,14 @@ RSpec.describe OrderManagement::OrderDetailsController do
   end
 
   describe 'pricing' do
-    let(:reservation) { FactoryGirl.create(:purchased_reservation, :product => instrument) }
+    let(:reservation) { FactoryGirl.create(:purchased_reservation, product: instrument) }
     let(:order_detail) { reservation.order_detail }
     let(:price_policy) { instrument.price_policies.first }
 
     before :each do
       @action = :pricing
       @method = :get
-      @params = { :facility_id => facility.url_name, :order_id => order_detail.order.id, :id => order_detail.id }
+      @params = { facility_id: facility.url_name, order_id: order_detail.order.id, id: order_detail.id }
     end
 
     context 'authorization' do
@@ -551,9 +551,9 @@ RSpec.describe OrderManagement::OrderDetailsController do
         sign_in @admin
         expect(instrument.price_policies).to be_one
         price_policy.update_attributes(
-          :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage],
-          :usage_rate => 120,
-          :usage_subsidy => 60
+          charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
+          usage_rate: 120,
+          usage_subsidy: 60
         )
 
         order_detail.assign_estimated_price
@@ -569,9 +569,9 @@ RSpec.describe OrderManagement::OrderDetailsController do
         let(:json_response) { JSON.parse(response.body) }
         before :each do
           @params[:order_detail] = {
-              :reservation => {
-                :reserve_start_at => reservation.reserve_start_at,
-                :duration_mins => new_duration
+              reservation: {
+                reserve_start_at: reservation.reserve_start_at,
+                duration_mins: new_duration
               }
             }
           do_request
@@ -603,14 +603,14 @@ RSpec.describe OrderManagement::OrderDetailsController do
         let(:new_duration) { 73 }
         let(:json_response) { JSON.parse(response.body) }
         before :each do
-          reservation.update_attributes(:reserve_start_at => reservation.reserve_start_at - 2.days, :reserve_end_at => reservation.reserve_end_at - 2.days)
+          reservation.update_attributes(reserve_start_at: reservation.reserve_start_at - 2.days, reserve_end_at: reservation.reserve_end_at - 2.days)
           order_detail.update_order_status! @admin, OrderStatus.complete.first
           @params[:order_detail] = {
-              :reservation => {
-                :reserve_start_at => reservation.reserve_start_at,
-                :duration_mins => reservation.duration_mins,
-                :actual_start_at => reservation.reserve_start_at,
-                :actual_duration_mins => new_duration
+              reservation: {
+                reserve_start_at: reservation.reserve_start_at,
+                duration_mins: reservation.duration_mins,
+                actual_start_at: reservation.reserve_start_at,
+                actual_duration_mins: new_duration
               }
             }
           expect(order_detail).to be_complete
@@ -639,8 +639,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         context 'with a price policy that expired, but was in effect when the order was fulfilled' do
           before :each do
-            instrument.price_policies.update_all(:start_date => 3.days.ago, :expire_date => 1.day.ago)
-            order_detail.update_attributes(:fulfilled_at => 2.days.ago)
+            instrument.price_policies.update_all(start_date: 3.days.ago, expire_date: 1.day.ago)
+            order_detail.update_attributes(fulfilled_at: 2.days.ago)
             order_detail.assign_price_policy
             order_detail.save!
             expect(order_detail.price_policy).to be_blank

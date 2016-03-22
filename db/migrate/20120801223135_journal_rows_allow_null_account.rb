@@ -4,7 +4,7 @@ class JournalRowsAllowNullAccount < ActiveRecord::Migration
     if NUCore::Database.oracle?
       execute 'alter table journal_rows modify (account null)'
     else
-      change_column :journal_rows, :account, :string, :limit => 5, :null => true
+      change_column :journal_rows, :account, :string, limit: 5, null: true
     end
   end
 
@@ -12,7 +12,7 @@ class JournalRowsAllowNullAccount < ActiveRecord::Migration
     if NUCore::Database.oracle?
       execute 'alter table journal_rows modify (account not null)'
     else
-      change_column :journal_rows, :account, :string, :limit => 5, :null => false
+      change_column :journal_rows, :account, :string, limit: 5, null: false
     end
   end
 

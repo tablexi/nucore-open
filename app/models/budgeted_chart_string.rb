@@ -3,11 +3,11 @@ class BudgetedChartString < ActiveRecord::Base
   include NUCore::Database::DateHelper
 
   validates_presence_of :fund, :dept, :starts_at, :expires_at
-  validates_length_of   :fund, :is => 3
-  validates_length_of   :dept, :is => 7
-  validates_length_of   :project, :is => 8, :allow_blank => true
-  validates_length_of   :activity, :is => 2, :allow_blank => true
-  validates_length_of   :account, :is => 5, :allow_blank => true
+  validates_length_of   :fund, is: 3
+  validates_length_of   :dept, is: 7
+  validates_length_of   :project, is: 8, allow_blank: true
+  validates_length_of   :activity, is: 2, allow_blank: true
+  validates_length_of   :account, is: 5, allow_blank: true
 
   def self.import(filename)
     file = File.open(filename, 'r') rescue nil
@@ -28,14 +28,14 @@ class BudgetedChartString < ActiveRecord::Base
       # import records
       begin
         # add testing/place holder records
-        BudgetedChartString.create(:fund => '123', :dept => '1234567', :project => '12345678', :account => '75340',
-                                   :starts_at => Time.zone.now-1.week, :expires_at => Time.zone.now+1.year)
-        BudgetedChartString.create(:fund => '123', :dept => '1234567', :project => '12345678', :account => '50617',
-                                   :starts_at => Time.zone.now-1.week, :expires_at => Time.zone.now+1.year)
-        BudgetedChartString.create(:fund => '111', :dept => '2222222', :project => '33333333', :account => '75340',
-                                   :starts_at => Time.zone.now-1.week, :expires_at => Time.zone.now+1.year)
-        BudgetedChartString.create(:fund => '111', :dept => '2222222', :project => '33333333', :account => '50617',
-                                   :starts_at => Time.zone.now-1.week, :expires_at => Time.zone.now+1.year)
+        BudgetedChartString.create(fund: '123', dept: '1234567', project: '12345678', account: '75340',
+                                   starts_at: Time.zone.now-1.week, expires_at: Time.zone.now+1.year)
+        BudgetedChartString.create(fund: '123', dept: '1234567', project: '12345678', account: '50617',
+                                   starts_at: Time.zone.now-1.week, expires_at: Time.zone.now+1.year)
+        BudgetedChartString.create(fund: '111', dept: '2222222', project: '33333333', account: '75340',
+                                   starts_at: Time.zone.now-1.week, expires_at: Time.zone.now+1.year)
+        BudgetedChartString.create(fund: '111', dept: '2222222', project: '33333333', account: '50617',
+                                   starts_at: Time.zone.now-1.week, expires_at: Time.zone.now+1.year)
         while line = file.readline.strip
           # parse, import line
           case
@@ -59,8 +59,8 @@ class BudgetedChartString < ActiveRecord::Base
             puts "error: skipping - #{line}"
             skipped += 1
           end
-          bcs = BudgetedChartString.create(:fund => fund, :dept => dept, :project => project, :activity => activity, :account => account,
-                                           :starts_at => starts_at, :expires_at => expires_at)
+          bcs = BudgetedChartString.create(fund: fund, dept: dept, project: project, activity: activity, account: account,
+                                           starts_at: starts_at, expires_at: expires_at)
           if !bcs.valid?
             puts "error: invalid account - #{line}"
             invalid += 1

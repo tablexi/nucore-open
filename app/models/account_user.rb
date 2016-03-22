@@ -1,9 +1,9 @@
 class AccountUser < ActiveRecord::Base
 
   belongs_to :user
-  belongs_to :account, :inverse_of => :account_users
+  belongs_to :account, inverse_of: :account_users
 
-  scope :active, :conditions => {:deleted_at => nil}
+  scope :active, conditions: {deleted_at: nil}
 
   ACCOUNT_PURCHASER='Purchaser'
   ACCOUNT_OWNER='Owner'
@@ -22,19 +22,19 @@ class AccountUser < ActiveRecord::Base
   end
 
   def self.owners
-    where(:user_role => ACCOUNT_OWNER)
+    where(user_role: ACCOUNT_OWNER)
   end
 
   def self.business_administrators
-    where(:user_role => ACCOUNT_ADMINISTRATOR)
+    where(user_role: ACCOUNT_ADMINISTRATOR)
   end
 
   def self.purchasers
-    where(:user_role => ACCOUNT_PURCHASER)
+    where(user_role: ACCOUNT_PURCHASER)
   end
 
   def self.active
-    where(:deleted_at => nil)
+    where(deleted_at: nil)
   end
 
   #
@@ -69,7 +69,7 @@ class AccountUser < ActiveRecord::Base
   # [_granting_user_]
   #   the user who is granting the privilege
   def self.grant(user, role, account, granting_user)
-    create!(:user => user, :user_role => role, :account => account, :created_by => granting_user.id)
+    create!(user: user, user_role: role, account: account, created_by: granting_user.id)
   end
 
   def can_administer?
@@ -77,8 +77,8 @@ class AccountUser < ActiveRecord::Base
   end
 
   validates_presence_of :created_by
-  validates_inclusion_of :user_role, :in => user_roles, :message => 'is invalid'
-  validates_uniqueness_of :user_id, :scope => [:account_id, :deleted_at]
-  validates_uniqueness_of :user_role, :scope => [:account_id, :deleted_at], :if => lambda {|o| o.user_role == ACCOUNT_OWNER }
+  validates_inclusion_of :user_role, in: user_roles, message: 'is invalid'
+  validates_uniqueness_of :user_id, scope: [:account_id, :deleted_at]
+  validates_uniqueness_of :user_role, scope: [:account_id, :deleted_at], if: lambda {|o| o.user_role == ACCOUNT_OWNER }
 
 end

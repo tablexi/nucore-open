@@ -2,13 +2,13 @@ class BundleProductsController < ApplicationController
 
   customer_tab  :show
   admin_tab     :create, :destroy, :new, :edit, :index, :update, :manage
-  before_filter :authenticate_user!, :except => :show
+  before_filter :authenticate_user!, except: :show
   before_filter :check_acting_as
   before_filter :init_current_facility
   before_filter :init_bundle
-  before_filter :init_bundle_product, :except => [:new, :create, :index]
+  before_filter :init_bundle_product, except: [:new, :create, :index]
 
-  load_and_authorize_resource :except => :show
+  load_and_authorize_resource except: :show
 
   layout 'two_column'
 
@@ -31,13 +31,13 @@ class BundleProductsController < ApplicationController
       flash[:notice] = 'The product was successfully added to the bundle.'
       redirect_to facility_bundle_bundle_products_path(current_facility, @bundle)
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
   # GET /facilities/:facility_id/bundles/:bundle_id/bundle_products/new
   def new
-    @bundle_product = @bundle.bundle_products.new(:quantity => 1)
+    @bundle_product = @bundle.bundle_products.new(quantity: 1)
   end
 
   # GET /facilities/:facility_id/bundles/:bundle_id/bundle_products/:id/edit
@@ -50,7 +50,7 @@ class BundleProductsController < ApplicationController
       flash[:notice] = 'The bundle product was successfully updated.'
       redirect_to facility_bundle_bundle_products_path(current_facility, @bundle)
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
   

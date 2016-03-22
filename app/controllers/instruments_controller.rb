@@ -7,10 +7,10 @@ class InstrumentsController < ProductsCommonController
   before_filter :set_default_lock_window, only: [:create, :update]
 
   # public_schedule does not require login
-  skip_before_filter :authenticate_user!, :only => [:public_schedule]
-  skip_authorize_resource :only => [:public_schedule]
+  skip_before_filter :authenticate_user!, only: [:public_schedule]
+  skip_authorize_resource only: [:public_schedule]
 
-  skip_before_filter :init_product, :only => [:instrument_statuses]
+  skip_before_filter :init_product, only: [:instrument_statuses]
 
   # GET /facilities/:facility_id/instruments
   def index
@@ -105,7 +105,7 @@ class InstrumentsController < ProductsCommonController
       return redirect_to(manage_facility_instrument_path(current_facility, @instrument))
     end
 
-    render :action => "edit"
+    render action: "edit"
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/schedule
@@ -114,7 +114,7 @@ class InstrumentsController < ProductsCommonController
   end
 
   def public_schedule
-    render :layout => 'application'
+    render layout: 'application'
   end
 
   def set_default_lock_window
@@ -128,14 +128,14 @@ class InstrumentsController < ProductsCommonController
     begin
       @relay = @instrument.relay
       status = Rails.env.test? ? true : @relay.get_status
-      @status = @instrument.instrument_statuses.create!(:is_on => status)
+      @status = @instrument.instrument_statuses.create!(is_on: status)
     rescue => e
       logger.error e
       raise ActiveRecord::RecordNotFound
     end
     respond_to do |format|
-      format.html  { render :layout => false }
-      format.json  { render :json => @status }
+      format.html  { render layout: false }
+      format.json  { render json: @status }
     end
   end
 
@@ -156,14 +156,14 @@ class InstrumentsController < ProductsCommonController
           @instrument_statuses << instrument_status
         else
           # || false will ensure that the value of is_on is not nil (causes a DB error)
-          @instrument_statuses << instrument.instrument_statuses.create!(:is_on => status || NUCore::Database.boolean(false))
+          @instrument_statuses << instrument.instrument_statuses.create!(is_on: status || NUCore::Database.boolean(false))
         end
       rescue => e
         logger.error e.message
-        @instrument_statuses << InstrumentStatus.new(:instrument => instrument, :error_message => e.message)
+        @instrument_statuses << InstrumentStatus.new(instrument: instrument, error_message: e.message)
       end
     end
-    render :json => @instrument_statuses
+    render json: @instrument_statuses
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/switch
@@ -178,15 +178,15 @@ class InstrumentsController < ProductsCommonController
         status = (params[:switch] == 'on' ? relay.activate : relay.deactivate)
       end
 
-      @status = @instrument.instrument_statuses.create!(:is_on => status)
+      @status = @instrument.instrument_statuses.create!(is_on: status)
     rescue => e
       logger.error "ERROR: #{e.message}"
-      @status = InstrumentStatus.new(:instrument => @instrument, :error_message => e.message)
+      @status = InstrumentStatus.new(instrument: @instrument, error_message: e.message)
       #raise ActiveRecord::RecordNotFound
     end
     respond_to do |format|
-      format.html { render :action => :instrument_status, :layout => false }
-      format.json { render :json => @status }
+      format.html { render action: :instrument_status, layout: false }
+      format.json { render json: @status }
     end
   end
 

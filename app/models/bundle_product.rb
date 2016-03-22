@@ -1,11 +1,11 @@
 class BundleProduct < ActiveRecord::Base
 
-  belongs_to :bundle, :foreign_key => :bundle_product_id
+  belongs_to :bundle, foreign_key: :bundle_product_id
   belongs_to :product
   
   validates_presence_of     :bundle_product_id, :product_id
-  validates_numericality_of :quantity, :only_integer => true, :greater_than => 0
-  validates_uniqueness_of   :product_id, :scope => [:bundle_product_id]
+  validates_numericality_of :quantity, only_integer: true, greater_than: 0
+  validates_uniqueness_of   :product_id, scope: [:bundle_product_id]
   validate                  :instrument_quantity
   
   def instrument_quantity

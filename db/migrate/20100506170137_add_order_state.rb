@@ -2,7 +2,7 @@ class AddOrderState < ActiveRecord::Migration
 
   def self.up
     change_table :orders do |t|
-      t.string :state, :limit => 50
+      t.string :state, limit: 50
     end
   end
 

@@ -2,11 +2,11 @@ class CreateOrderImports < ActiveRecord::Migration
 
   def self.up
     create_table :order_imports do |t|
-      t.column :upload_file_id, :integer, :null => false
+      t.column :upload_file_id, :integer, null: false
       t.column :error_file_id, :integer
-      t.column :fail_on_error, :boolean, :default => false
-      t.column :send_receipts, :boolean, :default => false
-      t.column :created_by, :integer, :null => false
+      t.column :fail_on_error, :boolean, default: false
+      t.column :send_receipts, :boolean, default: false
+      t.column :created_by, :integer, null: false
       t.timestamps
     end
 

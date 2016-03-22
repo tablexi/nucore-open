@@ -3,20 +3,20 @@ class ScheduleRule < ActiveRecord::Base
   belongs_to :instrument
 
   # oracle has a maximum table name length of 30, so we have to abbreviate it down
-  has_and_belongs_to_many :product_access_groups, :join_table => 'product_access_schedule_rules'
+  has_and_belongs_to_many :product_access_groups, join_table: 'product_access_schedule_rules'
 
   attr_accessor :unavailable # virtual attribute
 
   validates_presence_of :instrument_id
-  validates_numericality_of :discount_percent, :greater_than_or_equal_to => 0, :less_than => 100
-  validates_numericality_of :start_hour, :end_hour, :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 24
-  validates_numericality_of :start_min,  :end_min, :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 60
+  validates_numericality_of :discount_percent, greater_than_or_equal_to: 0, less_than: 100
+  validates_numericality_of :start_hour, :end_hour, only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 24
+  validates_numericality_of :start_min,  :end_min, only_integer: true, greater_than_or_equal_to: 0, less_than: 60
 
   validate :at_least_one_day_selected, :end_time_is_after_start_time, :end_time_is_valid, :no_overlap_with_existing_rules, :no_conflict_with_existing_reservation
 
   def self.available_to_user(user)
-    where(:product_users => {:user_id => user.id})
-    .joins(:instrument => :product_users).
+    where(product_users: {user_id: user.id})
+    .joins(instrument: :product_users).
     # instrument doesn't have any restrictions at all, or has one that matches the product_user
     where("(not EXISTS (SELECT * FROM product_access_schedule_rules WHERE product_access_schedule_rules.schedule_rule_id = schedule_rules.id)
      OR (exists (select * from product_access_schedule_rules

@@ -10,13 +10,13 @@ RSpec.describe FacilityAccountsController do
 
   before(:each) do
     @authable = FactoryGirl.create(:facility)
-    @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
-    @item = FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
+    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
+    @item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
     @account = create_nufs_account_with_owner
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
-    @order = FactoryGirl.create(:order, :user => @purchaser, :created_by => @purchaser.id, :facility => @authable)
-    @order_detail = FactoryGirl.create(:order_detail, :product => @item, :order => @order, :account => @account)
+    @order = FactoryGirl.create(:order, user: @purchaser, created_by: @purchaser.id, facility: @authable)
+    @order_detail = FactoryGirl.create(:order_detail, product: @item, order: @order, account: @account)
   end
 
   context 'index' do
@@ -24,7 +24,7 @@ RSpec.describe FacilityAccountsController do
     before(:each) do
       @method = :get
       @action = :index
-      @params = { :facility_id => @authable.url_name }
+      @params = { facility_id: @authable.url_name }
     end
 
     it_should_require_login
@@ -45,7 +45,7 @@ RSpec.describe FacilityAccountsController do
     before(:each) do
       @method = :get
       @action = :show
-      @params = { :facility_id => @authable.url_name, :id => @account.id }
+      @params = { facility_id: @authable.url_name, id: @account.id }
     end
 
     it_should_require_login
@@ -59,13 +59,13 @@ RSpec.describe FacilityAccountsController do
 
   end
 
-  context 'edit accounts', :if => SettingsHelper.feature_on?(:edit_accounts) do
+  context 'edit accounts', if: SettingsHelper.feature_on?(:edit_accounts) do
     context 'new' do
 
       before(:each) do
         @method = :get
         @action = :new
-        @params = { :facility_id => @authable.url_name, :owner_user_id => @owner.id }
+        @params = { facility_id: @authable.url_name, owner_user_id: @owner.id }
       end
 
       it_should_require_login
@@ -85,7 +85,7 @@ RSpec.describe FacilityAccountsController do
       before(:each) do
         @method = :get
         @action = :edit
-        @params = { :facility_id => @authable.url_name, :id => @account.id }
+        @params = { facility_id: @authable.url_name, id: @account.id }
       end
 
       it_should_require_login
@@ -105,9 +105,9 @@ RSpec.describe FacilityAccountsController do
         @method = :put
         @action = :update
         @params = {
-          :facility_id => @authable.url_name,
-          :id => @account.id,
-          :nufs_account => FactoryGirl.attributes_for(:nufs_account)
+          facility_id: @authable.url_name,
+          id: @account.id,
+          nufs_account: FactoryGirl.attributes_for(:nufs_account)
         }
       end
 
@@ -132,10 +132,10 @@ RSpec.describe FacilityAccountsController do
         @action = :create
         @acct_attrs = FactoryGirl.attributes_for(:nufs_account)
         @params = {
-          :facility_id => @authable.url_name,
-          :owner_user_id => @owner.id,
-          :nufs_account => @acct_attrs,
-          :account_type => 'NufsAccount'
+          facility_id: @authable.url_name,
+          owner_user_id: @owner.id,
+          nufs_account: @acct_attrs,
+          account_type: 'NufsAccount'
         }
         allow(@controller).to receive(:current_facility).and_return(@authable)
       end
@@ -163,7 +163,7 @@ RSpec.describe FacilityAccountsController do
       before :each do
         @method = :get
         @action = :new_account_user_search
-        @params = { :facility_id => @authable.url_name }
+        @params = { facility_id: @authable.url_name }
       end
 
       it_should_require_login
@@ -181,7 +181,7 @@ RSpec.describe FacilityAccountsController do
       before :each do
         @method = :get
         @action = :user_search
-        @params = { :facility_id => @authable.url_name }
+        @params = { facility_id: @authable.url_name }
       end
 
       it_should_require_login
@@ -200,7 +200,7 @@ RSpec.describe FacilityAccountsController do
     before :each do
       @method = :get
       @action = :accounts_receivable
-      @params = {:facility_id => @authable.url_name}
+      @params = {facility_id: @authable.url_name}
     end
 
     it_should_allow_managers_only
@@ -212,7 +212,7 @@ RSpec.describe FacilityAccountsController do
     before :each do
       @method = :get
       @action = :search
-      @params = { :facility_id => @authable.url_name }
+      @params = { facility_id: @authable.url_name }
     end
 
     it_should_require_login
@@ -233,7 +233,7 @@ RSpec.describe FacilityAccountsController do
     before :each do
       @method = :get
       @action = :search_results
-      @params = { :facility_id => @authable.url_name, :search_term => @owner.username }
+      @params = { facility_id: @authable.url_name, search_term: @owner.username }
     end
 
     it_should_require_login
@@ -263,7 +263,7 @@ RSpec.describe FacilityAccountsController do
     before :each do
       @method = :get
       @action = :user_accounts
-      @params = { :facility_id => @authable.url_name, :user_id => @guest.id }
+      @params = { facility_id: @authable.url_name, user_id: @guest.id }
     end
 
     it_should_require_login
@@ -282,7 +282,7 @@ RSpec.describe FacilityAccountsController do
     before :each do
       @method = :get
       @action = :members
-      @params = { :facility_id => @authable.url_name, :account_id => @account.id }
+      @params = { facility_id: @authable.url_name, account_id: @account.id }
     end
 
     it_should_require_login
@@ -296,14 +296,14 @@ RSpec.describe FacilityAccountsController do
 
   end
 
-  context 'show_statement', :timecop_freeze, :if => Account.config.statements_enabled? do
+  context 'show_statement', :timecop_freeze, if: Account.config.statements_enabled? do
 
     before :each do
       @method = :get
       @action = :show_statement
 
       2.times do
-        @statement = FactoryGirl.create(:statement, :facility_id => @authable.id, :created_by => @admin.id, :account => @account)
+        @statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: @account)
         Timecop.travel(1.second.from_now) # need different timestamp on statement
       end
 
@@ -340,13 +340,13 @@ RSpec.describe FacilityAccountsController do
 
   end
 
-  context 'suspension', :if => SettingsHelper.feature_on?(:suspend_accounts) do
+  context 'suspension', if: SettingsHelper.feature_on?(:suspend_accounts) do
     context 'suspend' do
 
       before :each do
         @method = :get
         @action = :suspend
-        @params = { :facility_id => @authable.url_name, :account_id => @account.id }
+        @params = { facility_id: @authable.url_name, account_id: @account.id }
       end
 
       it_should_require_login
@@ -367,7 +367,7 @@ RSpec.describe FacilityAccountsController do
       before :each do
         @method = :get
         @action = :unsuspend
-        @params = { :facility_id => @authable.url_name, :account_id => @account.id }
+        @params = { facility_id: @authable.url_name, account_id: @account.id }
       end
 
       it_should_require_login

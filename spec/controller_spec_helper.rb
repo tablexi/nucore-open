@@ -78,7 +78,7 @@ end
 #
 # Asserts that the request is redirected to the login page
 def it_should_require_login
-  it 'should require login', :auth => true do
+  it 'should require login', auth: true do
     do_request
     is_expected.to redirect_to(new_user_session_url)
   end
@@ -91,7 +91,7 @@ end
 # [_spec_desc_]
 #   If present is passed to the spec as its description
 def it_should_deny(user_sym, spec_desc='')
-  it "should deny #{user_sym} " + spec_desc, :auth => true do
+  it "should deny #{user_sym} " + spec_desc, auth: true do
     maybe_grant_always_sign_in(user_sym)
     do_request
     is_expected.to render_template('403')
@@ -109,7 +109,7 @@ end
 #   block of tests to be evaluated after roles are
 #   granted and the user is signed in
 def it_should_allow(user_sym, spec_desc='', &eval)
-  it "should allow #{user_sym} " + spec_desc, :auth => true do
+  it "should allow #{user_sym} " + spec_desc, auth: true do
     maybe_grant_always_sign_in(user_sym)
     do_request
     instance_eval &eval
@@ -130,7 +130,7 @@ end
 
 def it_should_allow_all(user_syms, spec_desc='', &eval)
   user_syms.each do |user_sym|
-    it "should allow #{user_sym} " + spec_desc, :auth => true do
+    it "should allow #{user_sym} " + spec_desc, auth: true do
       user=maybe_grant_always_sign_in(user_sym)
       do_request
       instance_exec(user, &eval)

@@ -7,9 +7,9 @@ class PricePolicy < ActiveRecord::Base
   has_many :order_details
 
   validates_presence_of :start_date, :price_group_id, :type
-  validate :start_date_is_unique, :unless => lambda { |o| o.start_date.nil? }
+  validate :start_date_is_unique, unless: lambda { |o| o.start_date.nil? }
 
-  validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost, :numericality => { :greater_than_or_equal_to => 0 }, :allow_nil => true
+  validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   validates_each :expire_date do |record,_attr,value|
     unless value.blank?
@@ -33,32 +33,32 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.current_for_date(date)
-    where("start_date <= :now AND expire_date > :now", :now => date)
+    where("start_date <= :now AND expire_date > :now", now: date)
   end
 
   def self.purchaseable
-    where(:can_purchase => true)
+    where(can_purchase: true)
   end
 
   def self.upcoming
-    where("start_date > :now", :now => Time.zone.now)
+    where("start_date > :now", now: Time.zone.now)
   end
 
   def self.past
-    where("expire_date < :now", :now => Time.zone.now)
+    where("expire_date < :now", now: Time.zone.now)
   end
 
   def self.for_price_groups(price_groups)
-    where(:price_group_id => price_groups)
+    where(price_group_id: price_groups)
   end
 
   def self.current_date(product)
-    ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], :order => 'start_date DESC')
+    ipp = product.price_policies.find(:first, conditions: [dateize('start_date', ' <= ? AND ') + dateize('expire_date', ' > ?'), Time.zone.now, Time.zone.now], order: 'start_date DESC')
     ipp ? ipp.start_date.to_date : nil
   end
 
   def self.next_date(product)
-    ipp = product.price_policies.find(:first, :conditions => [dateize('start_date', ' > ?'), Time.zone.now], :order => 'start_date')
+    ipp = product.price_policies.find(:first, conditions: [dateize('start_date', ' > ?'), Time.zone.now], order: 'start_date')
     ipp ? ipp.start_date.to_date : nil
   end
 
@@ -73,9 +73,9 @@ class PricePolicy < ActiveRecord::Base
 
   def truncate_existing_policies
     logger.debug("Truncating existing policies")
-    existing_policies = PricePolicy.current.where(:type => self.class.name,
-                                                  :price_group_id => price_group_id,
-                                                  :product_id => product_id)
+    existing_policies = PricePolicy.current.where(type: self.class.name,
+                                                  price_group_id: price_group_id,
+                                                  product_id: product_id)
 
     existing_policies = existing_policies.where("id != ?", id) unless id.nil?
 
@@ -148,9 +148,9 @@ class PricePolicy < ActiveRecord::Base
     price_group   = self.price_group
     unless (product.nil? || price_group.nil?)
       if id.nil?
-        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND product_id = ? AND start_date = ?", price_group.id, product.id, start_date])
+        pp = PricePolicy.find(:first, conditions: ["price_group_id = ? AND product_id = ? AND start_date = ?", price_group.id, product.id, start_date])
       else
-        pp = PricePolicy.find(:first, :conditions => ["price_group_id = ? AND product_id = ? AND start_date = ? AND id <> ?", price_group.id, product.id, start_date, id])
+        pp = PricePolicy.find(:first, conditions: ["price_group_id = ? AND product_id = ? AND start_date = ? AND id <> ?", price_group.id, product.id, start_date, id])
       end
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
     end

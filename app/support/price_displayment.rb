@@ -30,15 +30,15 @@ module PriceDisplayment
   end
 
   def wrapped_cost
-    content_tag :span, display_cost, :class => "#{display_cost_class}_cost"
+    content_tag :span, display_cost, class: "#{display_cost_class}_cost"
   end
 
   def wrapped_subsidy
-    content_tag :span, display_subsidy, :class => "#{display_cost_class}_cost"
+    content_tag :span, display_subsidy, class: "#{display_cost_class}_cost"
   end
 
   def wrapped_total
-    content_tag :span, display_total, :class => "#{display_cost_class}_cost"
+    content_tag :span, display_total, class: "#{display_cost_class}_cost"
   end
 
   def display_cost_class
@@ -77,7 +77,7 @@ module PriceDisplayment
     end
 
     def html
-      content_tag :span, value, :class => 'timeinput'
+      content_tag :span, value, class: 'timeinput'
     end
 
   end

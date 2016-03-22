@@ -9,7 +9,7 @@ namespace :db do
   end
 
   desc "Drop database for current RAILS_ENV"
-  task :oracle_drop => :environment do
+  task oracle_drop: :environment do
     next unless db_allow_task?
     config = Rails.configuration.database_configuration[Rails.env]
     connect_string = "#{config["username"]}/#{config["password"]}@#{config["database"]}"
@@ -19,7 +19,7 @@ namespace :db do
   end
 
   desc "DANGER! Drops all user tables and sequences"
-  task :oracle_drop_severe => :environment do
+  task oracle_drop_severe: :environment do
     next unless db_allow_task?
 
     def purge(select)

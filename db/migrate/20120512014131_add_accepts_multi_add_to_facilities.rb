@@ -2,7 +2,7 @@ class AddAcceptsMultiAddToFacilities < ActiveRecord::Migration
 
   def self.up
     change_table :facilities do |t|
-      t.boolean :accepts_multi_add, :default => false, :null => false, :after => :accepts_po
+      t.boolean :accepts_multi_add, default: false, null: false, after: :accepts_po
     end
   end
 

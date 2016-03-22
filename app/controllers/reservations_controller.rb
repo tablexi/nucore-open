@@ -3,10 +3,10 @@ class ReservationsController < ApplicationController
   include Timelineable
 
   customer_tab  :all
-  before_filter :authenticate_user!, :except => [ :index ]
-  before_filter :check_acting_as, :only => [ :switch_instrument, :show, :list ]
-  before_filter :load_basic_resources, :only => [:new, :create, :edit, :update]
-  before_filter :load_and_check_resources, :only => [ :move, :switch_instrument ]
+  before_filter :authenticate_user!, except: [ :index ]
+  before_filter :check_acting_as, only: [ :switch_instrument, :show, :list ]
+  before_filter :load_basic_resources, only: [:new, :create, :edit, :update]
+  before_filter :load_and_check_resources, only: [ :move, :switch_instrument ]
 
   include TranslationHelper
   include FacilityReservationsHelper
@@ -35,7 +35,7 @@ class ReservationsController < ApplicationController
                                   .reservations
                                   .active
                                   .in_range(@start_at, @end_at)
-                                  .includes(:order_detail => { :order => :user })
+                                  .includes(order_detail: { order: :user })
 
     @rules        = @instrument.schedule_rules
 
@@ -54,8 +54,8 @@ class ReservationsController < ApplicationController
                    end
 
     respond_to do |format|
-      as_calendar_object_options = {:start_date => @start_date, :with_details => params[:with_details]}
-      format.js do render :json => @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten +
+      as_calendar_object_options = {start_date: @start_date, with_details: params[:with_details]}
+      format.js do render json: @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten +
                                   @unavailable.map{ |r| r.as_calendar_object(as_calendar_object_options)}.flatten 
       end
     end
@@ -77,10 +77,10 @@ class ReservationsController < ApplicationController
       @status=@available_statuses.first
       @order_details = in_progress + relation.upcoming_reservations.all
     else
-      return redirect_to reservations_status_path(:status => "upcoming")
+      return redirect_to reservations_status_path(status: "upcoming")
     end
 
-    @order_details = @order_details.paginate(:page => params[:page])
+    @order_details = @order_details.paginate(page: params[:page])
 
     notices = @order_details.collect do |od|
       notice_for_reservation od.reservation
@@ -109,7 +109,7 @@ class ReservationsController < ApplicationController
           account=Account.find(params[:order_account].to_i)
           if account != @order.account
             @order.invalidate
-            @order.update_attributes!(:account => account)
+            @order.update_attributes!(account: account)
           end
         end
 
@@ -147,7 +147,7 @@ class ReservationsController < ApplicationController
       end
     end
     set_windows
-    render :action => "new"
+    render action: "new"
   end
 
   # GET /orders/1/order_details/1/reservations/new
@@ -219,7 +219,7 @@ class ReservationsController < ApplicationController
       flash[:error] = @reservation.errors.full_messages.join("<br/>")
     end
 
-    redirect_to reservations_status_path(:status => 'upcoming')
+    redirect_to reservations_status_path(status: 'upcoming')
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:reservation_id/move
@@ -229,14 +229,14 @@ class ReservationsController < ApplicationController
 
     if @earliest_possible
       @formatted_dates = {
-        :start_date => human_date(@earliest_possible.reserve_start_at),
-        :start_time => human_time(@earliest_possible.reserve_start_at),
-        :end_date   => human_date(@earliest_possible.reserve_end_at),
-        :end_time   => human_time(@earliest_possible.reserve_end_at),
+        start_date: human_date(@earliest_possible.reserve_start_at),
+        start_time: human_time(@earliest_possible.reserve_start_at),
+        end_date: human_date(@earliest_possible.reserve_end_at),
+        end_time: human_time(@earliest_possible.reserve_end_at),
       }
     end
 
-    render :layout => false
+    render layout: false
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/switch_instrument
@@ -363,14 +363,14 @@ class ReservationsController < ApplicationController
     return unless reservation
 
     if reservation.can_switch_instrument_off? # do you need to click stop
-      I18n.t('reservations.notices.can_switch_off', :reservation => reservation)
+      I18n.t('reservations.notices.can_switch_off', reservation: reservation)
     elsif reservation.can_switch_instrument_on? # do you need to begin your reservation
-      I18n.t('reservations.notices.can_switch_on', :reservation => reservation)
+      I18n.t('reservations.notices.can_switch_on', reservation: reservation)
     elsif reservation.canceled?
     # no message
     # do you have a reservation for today that hasn't ended
     elsif upcoming_today? reservation
-      I18n.t('reservations.notices.upcoming', :reservation => reservation)
+      I18n.t('reservations.notices.upcoming', reservation: reservation)
     end
   end
 
@@ -390,9 +390,9 @@ class ReservationsController < ApplicationController
   end
 
   def default_reservation
-    Reservation.new(:product => @instrument,
-                    :reserve_start_at => Time.zone.now,
-                    :reserve_end_at => default_reservation_mins.minutes.from_now)
+    Reservation.new(product: @instrument,
+                    reserve_start_at: Time.zone.now,
+                    reserve_end_at: default_reservation_mins.minutes.from_now)
   end
 
   def month_view?
@@ -403,7 +403,7 @@ class ReservationsController < ApplicationController
 
   def render_edit
     set_windows
-    render :action => "edit"
+    render action: "edit"
   end
 
   def duration_change_valid?

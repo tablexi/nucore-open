@@ -11,13 +11,13 @@ RSpec.describe BundlesController do
 
   before(:each) do
     @authable=FactoryGirl.create(:facility)
-    @facility_account=FactoryGirl.create(:facility_account, :facility => @authable)
-    @bundle=FactoryGirl.create(:bundle, :facility_account => @facility_account, :facility => @authable)
+    @facility_account=FactoryGirl.create(:facility_account, facility: @authable)
+    @bundle=FactoryGirl.create(:bundle, facility_account: @facility_account, facility: @authable)
 
     # Create at least one item in the bundle, otherwise bundle.can_purchase? will return false
-    item = FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
-    price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @nupg))
-    bundle_product = BundleProduct.new(:bundle => @bundle, :product => item, :quantity => 1)
+    item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+    price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @nupg))
+    bundle_product = BundleProduct.new(bundle: @bundle, product: item, quantity: 1)
     bundle_product.save!
   end
 
@@ -25,7 +25,7 @@ RSpec.describe BundlesController do
     before(:each) do
       @method=:get
       @action=:index
-      @params={ :facility_id => @authable.url_name }
+      @params={ facility_id: @authable.url_name }
     end
 
     it_should_require_login
@@ -53,7 +53,7 @@ RSpec.describe BundlesController do
     before(:each) do
       @method=:get
       @action=:show
-      @params={ :facility_id => @authable.url_name, :id => @bundle.url_name }
+      @params={ facility_id: @authable.url_name, id: @bundle.url_name }
     end
 
     it 'should flash and falsify @add_to_cart if bundle cannot be purchased' do
@@ -140,7 +140,7 @@ RSpec.describe BundlesController do
 
     context "restricted bundle" do
       before :each do
-        @bundle.update_attributes(:requires_approval => true)
+        @bundle.update_attributes(requires_approval: true)
         allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(true)
       end
       it "should show a notice if you're not approved" do
@@ -151,7 +151,7 @@ RSpec.describe BundlesController do
       end
 
       it "should not show a notice and show an add to cart" do
-        @product_user = ProductUser.create(:product => @bundle, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        @product_user = ProductUser.create(product: @bundle, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
         add_account_for_user(:guest, @bundle.products.first, @nupg)
         sign_in @guest
         do_request
@@ -177,7 +177,7 @@ RSpec.describe BundlesController do
     before(:each) do
       @method=:get
       @action=:new
-      @params={ :facility_id => @authable.url_name }
+      @params={ facility_id: @authable.url_name }
     end
 
     it_should_require_login
@@ -193,7 +193,7 @@ RSpec.describe BundlesController do
     before(:each) do
       @method=:get
       @action=:edit
-      @params={ :facility_id => @authable.url_name, :id => @bundle.url_name }
+      @params={ facility_id: @authable.url_name, id: @bundle.url_name }
     end
 
     it_should_require_login
@@ -208,7 +208,7 @@ RSpec.describe BundlesController do
     before(:each) do
       @method = :post
       @action = :create
-      @params = { :facility_id => @authable.url_name, :bundle => FactoryGirl.attributes_for(:bundle) }
+      @params = { facility_id: @authable.url_name, bundle: FactoryGirl.attributes_for(:bundle) }
     end
 
     it_should_require_login
@@ -228,9 +228,9 @@ RSpec.describe BundlesController do
       @method=:put
       @action=:update
       @params={
-        :facility_id => @authable.url_name,
-        :id => @bundle.url_name,
-        :bundle => FactoryGirl.attributes_for(:bundle, :url_name => @bundle.url_name)
+        facility_id: @authable.url_name,
+        id: @bundle.url_name,
+        bundle: FactoryGirl.attributes_for(:bundle, url_name: @bundle.url_name)
       }
     end
 

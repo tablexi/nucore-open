@@ -288,12 +288,12 @@ RSpec.describe OrderDetail do
         @price_group = create(:price_group, facility: @facility)
         create(:price_group_product, product: @instrument, price_group: @price_group)
         create(:account_price_group_member, account: account, price_group: @price_group)
-        @pp=create(:instrument_price_policy, :product=> @instrument, price_group: @price_group)
+        @pp=create(:instrument_price_policy, product: @instrument, price_group: @price_group)
         @rule = @instrument.schedule_rules.create(attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
         @order_detail.reservation = create(:reservation,
                                            reserve_start_at: Time.now,
                                            reserve_end_at: Time.now+1.hour,
-                                           :product=> @instrument
+                                           product: @instrument
                                           )
         @order_detail.product = @instrument
         @order_detail.save

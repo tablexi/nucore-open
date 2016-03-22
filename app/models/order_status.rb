@@ -6,7 +6,7 @@ class OrderStatus < ActiveRecord::Base
   belongs_to :facility
 
   validates_presence_of :name
-  validates_uniqueness_of :name, :scope => [:parent_id, :facility_id]
+  validates_uniqueness_of :name, scope: [:parent_id, :facility_id]
   validates_each :parent_id do |model, attr, value|
     begin
       model.errors.add(attr, 'must be a root') unless (value.nil? || OrderStatus.find(value).root?)

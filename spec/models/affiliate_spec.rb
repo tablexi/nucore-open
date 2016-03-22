@@ -7,7 +7,7 @@ RSpec.describe Affiliate do
   it { is_expected.to validate_presence_of(:name) }
 
   it 'should maintain other as a constant' do
-    expect(Affiliate.OTHER).to eq(Affiliate.where(:name => 'Other').first)
+    expect(Affiliate.OTHER).to eq(Affiliate.where(name: 'Other').first)
   end
 
   it 'should not allow OTHER to be destroyed' do
@@ -16,7 +16,7 @@ RSpec.describe Affiliate do
   end
 
   it 'should allow non-OTHER affiliates to be destroyed' do
-    affiliate=Affiliate.create!(:name => 'aff1')
+    affiliate=Affiliate.create!(name: 'aff1')
     affiliate.destroy
     expect(affiliate).to be_destroyed
   end

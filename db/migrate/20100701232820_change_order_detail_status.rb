@@ -1,7 +1,7 @@
 class ChangeOrderDetailStatus < ActiveRecord::Migration
 
   def self.up
-    add_column :order_details, :order_status_id, :integer, :null => true
+    add_column :order_details, :order_status_id, :integer, null: true
   
     begin
       execute "ALTER TABLE order_details add CONSTRAINT fk_order_statuses FOREIGN KEY (order_status_id) REFERENCES order_statuses (id)"
@@ -13,11 +13,11 @@ class ChangeOrderDetailStatus < ActiveRecord::Migration
     
     ## so instead we do this
     OrderDetail.find(:all).each do |od|
-      ods = OrderDetailStatus.find(:first, :conditions => { :order_detail_id => od.id }, :order => 'created_at DESC')
+      ods = OrderDetailStatus.find(:first, conditions: { order_detail_id: od.id }, order: 'created_at DESC')
       execute "UPDATE order_details SET order_status_id = #{ods.order_status_id}"
     end
 
-    change_column :order_details, :order_status_id, :integer, :null => false
+    change_column :order_details, :order_status_id, :integer, null: false
     drop_table :order_detail_statuses
     remove_column :order_details, :status
   end

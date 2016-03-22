@@ -4,12 +4,12 @@ class FacilityAccount < ActiveRecord::Base
 
   belongs_to :facility
 
-  validates_numericality_of :revenue_account, :only_integer => true, :greater_than_or_equal_to => 10000, :less_than_or_equal_to => 99999
-  validates_uniqueness_of   :account_number, :scope => [:revenue_account, :facility_id]
+  validates_numericality_of :revenue_account, only_integer: true, greater_than_or_equal_to: 10000, less_than_or_equal_to: 99999
+  validates_uniqueness_of   :account_number, scope: [:revenue_account, :facility_id]
   validate :validate_chartstring
 
-  scope :active,   :conditions => { :is_active => true }
-  scope :inactive, :conditions => { :is_active => false }
+  scope :active,   conditions: { is_active: true }
+  scope :inactive, conditions: { is_active: false }
 
   def to_s
     "#{account_number} (#{revenue_account})"

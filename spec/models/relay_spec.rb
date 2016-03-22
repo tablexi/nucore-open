@@ -12,11 +12,11 @@ RSpec.describe Relay do
       @facility         = create(:facility)
       @facility_account = @facility.facility_accounts.create(attributes_for(:facility_account))
       @instrument       = create(:instrument,
-                                 :facility => @facility,
-                                 :facility_account => @facility_account,
-                                 :no_relay => true)
+                                 facility: @facility,
+                                 facility_account: @facility_account,
+                                 no_relay: true)
 
-      @relay            = create(:relay_syna, :instrument => @instrument)
+      @relay            = create(:relay_syna, instrument: @instrument)
     end
 
     describe 'validating uniqueness' do
@@ -50,7 +50,7 @@ RSpec.describe Relay do
       before :each do
         @relay.destroy
         expect(@relay).to be_destroyed
-        @relay=RelayDummy.create!(:instrument_id => @instrument.id)
+        @relay=RelayDummy.create!(instrument_id: @instrument.id)
       end
 
       it 'should turn on the relay' do

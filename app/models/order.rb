@@ -1,25 +1,25 @@
 class Order < ActiveRecord::Base
 
   belongs_to :user
-  belongs_to :created_by_user, :class_name => 'User', :foreign_key => :created_by
-  belongs_to :merge_order, :class_name => 'Order', :foreign_key => :merge_with_order_id
+  belongs_to :created_by_user, class_name: 'User', foreign_key: :created_by
+  belongs_to :merge_order, class_name: 'Order', foreign_key: :merge_with_order_id
   belongs_to :account
   belongs_to :facility
   belongs_to :order_import
-  has_many   :order_details, :dependent => :destroy
+  has_many   :order_details, dependent: :destroy
 
   validates_presence_of :user_id, :created_by
 
-  after_save :update_order_detail_accounts, :if => :account_id_changed?
+  after_save :update_order_detail_accounts, if: :account_id_changed?
 
-  scope :for_user, lambda { |user| { :conditions => ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
+  scope :for_user, lambda { |user| { conditions: ['user_id = ? AND ordered_at IS NOT NULL AND state = ?', user.id, 'purchased'] } }
 
   def self.created_by_user(user)
-    where(:created_by => user.id)
+    where(created_by: user.id)
   end
 
   def self.carts
-    where(:ordered_at => nil)
+    where(ordered_at: nil)
   end
 
   def self.for_facility(facility)
@@ -42,19 +42,19 @@ class Order < ActiveRecord::Base
   aasm_state            :purchased
 
   aasm_event :invalidate do
-    transitions :to => :new, :from => [:new, :validated]
+    transitions to: :new, from: [:new, :validated]
   end
 
   aasm_event :validate_order do
-    transitions :to => :validated, :from => [:new, :validated], :guard => :cart_valid?
+    transitions to: :validated, from: [:new, :validated], guard: :cart_valid?
   end
 
-  aasm_event :purchase, :success => :move_order_details_to_default_status do
-    transitions :to => :purchased, :from => :validated, :guard => :place_order?
+  aasm_event :purchase, success: :move_order_details_to_default_status do
+    transitions to: :purchased, from: :validated, guard: :place_order?
   end
 
   aasm_event :clear do
-    transitions :to => :new, :from => [:new, :validated], :guard => :clear_cart?
+    transitions to: :new, from: [:new, :validated], guard: :clear_cart?
   end
 
   [ :total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy ].each do |method_name|
@@ -106,15 +106,15 @@ class Order < ActiveRecord::Base
   # END acts_as_state_machine
 
   def instrument_order_details
-    self.order_details.find(:all, :joins => 'LEFT JOIN products p ON p.id = order_details.product_id', :conditions => { 'p.type' => 'Instrument' })
+    self.order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Instrument' })
   end
 
   def service_order_details
-    self.order_details.find(:all, :joins => 'LEFT JOIN products p ON p.id = order_details.product_id', :conditions => { 'p.type' => 'Service' })
+    self.order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Service' })
   end
 
   def item_order_details
-    self.order_details.find(:all, :joins => 'LEFT JOIN products p ON p.id = order_details.product_id', :conditions => { 'p.type' => 'Item' })
+    self.order_details.find(:all, joins: 'LEFT JOIN products p ON p.id = order_details.product_id', conditions: { 'p.type' => 'Item' })
   end
 
   def add(product, quantity=1, attributes={})
@@ -167,7 +167,7 @@ class Order < ActiveRecord::Base
       if order_status.root == OrderStatus.complete.first
         od.backdate_to_complete!(ordered_at)
       else
-        od.update_order_status!(update_by, order_status, :admin => true)
+        od.update_order_status!(update_by, order_status, admin: true)
       end
     end
   end

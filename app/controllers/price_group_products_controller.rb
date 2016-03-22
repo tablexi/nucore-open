@@ -33,7 +33,7 @@ class PriceGroupProductsController < ApplicationController
         if @is_instrument && res_win.blank?
           window_errors << pg.name
         else
-          pgp=PriceGroupProduct.new(:price_group => pg, :product => @product) unless pgp
+          pgp=PriceGroupProduct.new(price_group: pg, product: @product) unless pgp
           pgp.reservation_window=res_win.to_i if @is_instrument
           pgp.save!
         end
@@ -64,7 +64,7 @@ class PriceGroupProductsController < ApplicationController
 
     @price_group_products = []
     current_facility.price_groups.each do |pg|
-      @price_group_products << (groups_with_pgp[pg] || PriceGroupProduct.new(:price_group => pg, :product => @product, :reservation_window => @is_instrument ? PriceGroupProduct::DEFAULT_RESERVATION_WINDOW : nil))
+      @price_group_products << (groups_with_pgp[pg] || PriceGroupProduct.new(price_group: pg, product: @product, reservation_window: @is_instrument ? PriceGroupProduct::DEFAULT_RESERVATION_WINDOW : nil))
     end
     @price_group_product=@price_group_products.empty? ? PriceGroupProduct.new : @price_group_products.first # for CanCan authorization
   end

@@ -12,7 +12,7 @@ module ProductsHelper
       # a price policy and we don't want to scare people
       #error_msg = t('price_policies.errors.fewer_than_price_groups')
     end
-    content_tag :span, error_msg, :class => ['label', 'label-important', 'pull-right'] if error_msg
+    content_tag :span, error_msg, class: ['label', 'label-important', 'pull-right'] if error_msg
   end
 
   def options_for_control_mechanism
@@ -44,18 +44,18 @@ module ProductsHelper
     if current_facility.show_instrument_availability?
       public_calendar_availability_options(product)
     else
-      { :class => ['icon-calendar'],
-        :title => t('instruments.public_schedule.icon') }
+      { class: ['icon-calendar'],
+        title: t('instruments.public_schedule.icon') }
     end
   end
 
   def public_calendar_availability_options(product)
     if product.available?
-      { :class => ['icon-calendar', 'available'],
-        :title => t('instruments.public_schedule.available') }
+      { class: ['icon-calendar', 'available'],
+        title: t('instruments.public_schedule.available') }
     else
-      { :class => ['icon-calendar', 'in-use'],
-        :title => t('instruments.public_schedule.in-use') }
+      { class: ['icon-calendar', 'in-use'],
+        title: t('instruments.public_schedule.in-use') }
     end
   end
 

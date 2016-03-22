@@ -8,8 +8,8 @@ RSpec.describe InstrumentsController do
   render_views
 
   it "should route" do
-    expect(:get => "/facilities/alpha/instruments").to route_to(:controller => 'instruments', :action => 'index', :facility_id => 'alpha')
-    expect(:get => "/facilities/alpha/instruments/1/manage").to route_to(:controller => 'instruments', :action => 'manage', :id => '1', :facility_id => 'alpha')
+    expect(get: "/facilities/alpha/instruments").to route_to(controller: 'instruments', action: 'index', facility_id: 'alpha')
+    expect(get: "/facilities/alpha/instruments/1/manage").to route_to(controller: 'instruments', action: 'manage', id: '1', facility_id: 'alpha')
   end
 
   before(:all) { create_users }
@@ -18,10 +18,10 @@ RSpec.describe InstrumentsController do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument       = FactoryGirl.create(:instrument,
-                                           :facility => @authable,
-                                           :facility_account => @facility_account,
-                                           :no_relay => true)
-    @params={ :id => @instrument.url_name, :facility_id => @authable.url_name }
+                                           facility: @authable,
+                                           facility_account: @facility_account,
+                                           no_relay: true)
+    @params={ id: @instrument.url_name, facility_id: @authable.url_name }
     @instrument_pp = create :instrument_price_policy, product: @instrument, price_group: @nupg
   end
 
@@ -258,9 +258,9 @@ RSpec.describe InstrumentsController do
       @method=:post
       @action=:create
       @params.merge!(
-        :instrument => FactoryGirl.attributes_for(:instrument,
-                                                  :facility_account_id => @facility_account.id,
-                                                  :control_mechanism => 'manual'
+        instrument: FactoryGirl.attributes_for(:instrument,
+                                                  facility_account_id: @facility_account.id,
+                                                  control_mechanism: 'manual'
                                                  )
       )
     end
@@ -272,14 +272,14 @@ RSpec.describe InstrumentsController do
     context 'with relay' do
 
       before :each do
-        @params[:instrument].merge!( :control_mechanism => 'relay',
-          :relay_attributes => {
-            :ip => '192.168.1.2',
-            :port => 1234,
-            :username => 'username',
-            :password => 'password',
-            :type => RelaySynaccessRevA.name,
-            :instrument_id => -1 # nested attributes want something
+        @params[:instrument].merge!( control_mechanism: 'relay',
+          relay_attributes: {
+            ip: '192.168.1.2',
+            port: 1234,
+            username: 'username',
+            password: 'password',
+            type: RelaySynaccessRevA.name,
+            instrument_id: -1 # nested attributes want something
           })
       end
 
@@ -297,7 +297,7 @@ RSpec.describe InstrumentsController do
 
       describe 'relay validations' do
         let!(:instrument2) { create(:instrument, facility: @authable, facility_account: @facility_account, no_relay: true) }
-        let!(:old_relay) { create(:relay_syna, :instrument => instrument2) }
+        let!(:old_relay) { create(:relay_syna, instrument: instrument2) }
 
         before :each do
           sign_in @admin
@@ -329,7 +329,7 @@ RSpec.describe InstrumentsController do
 
       before :each do
         # relay attributes
-        @params[:instrument].merge!(:control_mechanism =>'timer')
+        @params[:instrument].merge!(control_mechanism: 'timer')
       end
 
       it_should_allow :director, 'to create a timer' do
@@ -343,7 +343,7 @@ RSpec.describe InstrumentsController do
 
     describe 'shared schedule' do
       before :each do
-        @schedule = FactoryGirl.create(:schedule, :facility => @authable)
+        @schedule = FactoryGirl.create(:schedule, facility: @authable)
         sign_in @admin
       end
 
@@ -401,18 +401,18 @@ RSpec.describe InstrumentsController do
     before :each do
       @method=:put
       @action=:update
-      @params.merge!(:instrument => @instrument.attributes.merge!(:control_mechanism =>'manual'))
+      @params.merge!(instrument: @instrument.attributes.merge!(control_mechanism: 'manual'))
     end
 
     context 'no relay' do
       before :each do
         RelaySynaccessRevA.create!(
-          :ip => '192.168.1.2',
-          :port => 1234,
-          :username => 'username',
-          :password => 'password',
-          :type => RelaySynaccessRevA.name,
-          :instrument_id => @instrument.id
+          ip: '192.168.1.2',
+          port: 1234,
+          username: 'username',
+          password: 'password',
+          type: RelaySynaccessRevA.name,
+          instrument_id: @instrument.id
         )
       end
 
@@ -424,14 +424,14 @@ RSpec.describe InstrumentsController do
     context 'with relay' do
 
       before :each do
-        @params[:instrument].merge!( :control_mechanism => 'relay',
-          :relay_attributes => {
-            :ip => '192.168.1.2',
-            :port => 1234,
-            :username => 'username',
-            :password => 'password',
-            :type => RelaySynaccessRevA.name,
-            :instrument_id => @instrument.id
+        @params[:instrument].merge!( control_mechanism: 'relay',
+          relay_attributes: {
+            ip: '192.168.1.2',
+            port: 1234,
+            username: 'username',
+            password: 'password',
+            type: RelaySynaccessRevA.name,
+            instrument_id: @instrument.id
           })
       end
 
@@ -452,7 +452,7 @@ RSpec.describe InstrumentsController do
     context 'dummy relay' do
 
       before :each do
-        @params[:instrument].merge!(:control_mechanism => 'timer')
+        @params[:instrument].merge!(control_mechanism: 'timer')
       end
 
       it_should_allow :director, 'to create a timer' do
@@ -562,24 +562,24 @@ RSpec.describe InstrumentsController do
         @method=:get
         @action=:instrument_statuses
         @instrument_with_relay = FactoryGirl.create(:instrument,
-                                                    :facility => @authable,
-                                                    :facility_account => @facility_account,
-                                                    :no_relay => true)
-        @instrument_with_relay.update_attributes(:relay => FactoryGirl.create(:relay_syna, :instrument => @instrument_with_relay))
+                                                    facility: @authable,
+                                                    facility_account: @facility_account,
+                                                    no_relay: true)
+        @instrument_with_relay.update_attributes(relay: FactoryGirl.create(:relay_syna, instrument: @instrument_with_relay))
 
         @instrument_with_dummy_relay = FactoryGirl.create(:instrument,
-                                                          :facility => @authable,
-                                                          :facility_account => @facility_account,
-                                                          :no_relay => true)
-        @instrument_with_dummy_relay.update_attributes(:relay => FactoryGirl.create(:relay_dummy, :instrument => @instrument_with_dummy_relay))
+                                                          facility: @authable,
+                                                          facility_account: @facility_account,
+                                                          no_relay: true)
+        @instrument_with_dummy_relay.update_attributes(relay: FactoryGirl.create(:relay_dummy, instrument: @instrument_with_dummy_relay))
 
-        @instrument_with_dummy_relay.instrument_statuses.create(:is_on => true)
+        @instrument_with_dummy_relay.instrument_statuses.create(is_on: true)
         @instrument_with_bad_relay = FactoryGirl.create(:instrument,
-                                                        :facility => @authable,
-                                                        :facility_account => @facility_account,
-                                                        :no_relay => true)
+                                                        facility: @authable,
+                                                        facility_account: @facility_account,
+                                                        no_relay: true)
 
-        @instrument_with_bad_relay.update_attributes(:relay => FactoryGirl.create(:relay_synb, :instrument => @instrument_with_bad_relay))
+        @instrument_with_bad_relay.update_attributes(relay: FactoryGirl.create(:relay_synb, instrument: @instrument_with_bad_relay))
         allow_any_instance_of(RelaySynaccessRevB).to receive(:query_status).and_raise(StandardError.new('Error!'))
         @instrument_with_bad_relay.relay.update_attribute(:ip, '')
       end
@@ -590,7 +590,7 @@ RSpec.describe InstrumentsController do
         before :each do
           maybe_grant_always_sign_in :director
           do_request
-          @json_output = JSON.parse(response.body, :symbolize_names => true)
+          @json_output = JSON.parse(response.body, symbolize_names: true)
           @instrument_ids = @json_output.map { |hash| hash[:instrument_status][:instrument_id] }
         end
 
@@ -640,7 +640,7 @@ RSpec.describe InstrumentsController do
       before :each do
         @method=:get
         @action=:switch
-        @params.merge!(:switch => 'on')
+        @params.merge!(switch: 'on')
       end
 
       it_should_allow_operators_only

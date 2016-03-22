@@ -109,7 +109,7 @@ RSpec.describe Account do
 
   it "should not create using factory" do
     @user    = FactoryGirl.create(:user)
-    hash     = Hash[:user => @user, :created_by => @user.id, :user_role => 'Owner']
+    hash     = Hash[user: @user, created_by: @user.id, user_role: 'Owner']
     @account = create_nufs_account_with_owner :user
 
     expect(@account.errors[:type]).not_to be_nil
@@ -130,7 +130,7 @@ RSpec.describe Account do
 
   it 'should be expired' do
     owner   = FactoryGirl.create(:user)
-    account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => owner))
+    account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: owner))
     account.expires_at=Time.zone.now
     assert account.save
     expect(account).to be_expired
@@ -138,7 +138,7 @@ RSpec.describe Account do
 
   it "should validate description <= 50 chars" do
     @user    = FactoryGirl.create(:user)
-    account = Account.new(FactoryGirl.attributes_for(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user)))
+    account = Account.new(FactoryGirl.attributes_for(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user)))
     account.description = random_string = SecureRandom.hex(51)
     expect(account).not_to be_valid
     expect(account.error_on(:description).size).to eq(1)
@@ -146,7 +146,7 @@ RSpec.describe Account do
 
   it "should set suspend_at on suspend and unsuspend" do
     @owner   = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
+    @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @owner))
     assert_nothing_raised { @account.suspend! }
     expect(@account.suspended_at).not_to eq(nil)
     assert_nothing_raised { @account.unsuspend! }
@@ -156,7 +156,7 @@ RSpec.describe Account do
   context "account users" do
     it "should find all the accounts a user has access to, default suspended? to false" do
       @user    = FactoryGirl.create(:user)
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+      @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       expect(@account.owner_user).to eq(@user)
       expect(@account.suspended?).to eq(false)
     end
@@ -169,23 +169,23 @@ RSpec.describe Account do
     it "should find the non-deleted account owner" do
       @user1   = FactoryGirl.create(:user)
       @user2   = FactoryGirl.create(:user)
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user1))
+      @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user1))
 
       expect(@account.owner_user).to eq(@user1)
-      @account.owner.update_attributes(:deleted_at => Time.zone.now, :deleted_by => @user1.id)
-      @account_user2 = @account.account_users.create(:user_id => @user2.id, :user_role => 'Owner', :created_by => @user2.id)
+      @account.owner.update_attributes(deleted_at: Time.zone.now, deleted_by: @user1.id)
+      @account_user2 = @account.account_users.create(user_id: @user2.id, user_role: 'Owner', created_by: @user2.id)
       @account.reload #load fresh account users with update attributes
       expect(@account.owner_user).to eq(@user2)
     end
 
     it "should find all non-suspended account business admins" do
       @owner   = FactoryGirl.create(:user)
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
+      @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @owner))
 
       @user1   = FactoryGirl.create(:user)
       @user2   = FactoryGirl.create(:user)
-      @account.account_users.create(:user_id => @user1.id, :user_role => 'Business Administrator', :created_by => @owner.id)
-      @account.account_users.create(:user_id => @user2.id, :user_role => 'Business Administrator', :created_by => @owner.id, :deleted_at => Time.zone.now, :deleted_by => @owner.id)
+      @account.account_users.create(user_id: @user1.id, user_role: 'Business Administrator', created_by: @owner.id)
+      @account.account_users.create(user_id: @user2.id, user_role: 'Business Administrator', created_by: @owner.id, deleted_at: Time.zone.now, deleted_by: @owner.id)
 
       expect(@account.business_admin_users).to include @user1
       expect(@account.business_admin_users).not_to include @user2
@@ -193,12 +193,12 @@ RSpec.describe Account do
 
     it "should find all non-suspended business admins and the owner as notify users" do
       @owner   = FactoryGirl.create(:user)
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
+      @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @owner))
 
       @user1   = FactoryGirl.create(:user)
       @user2   = FactoryGirl.create(:user)
-      @account.account_users.create(:user_id => @user1.id, :user_role => 'Business Administrator', :created_by => @owner.id)
-      @account.account_users.create(:user_id => @user2.id, :user_role => 'Business Administrator', :created_by => @owner.id, :deleted_at => Time.zone.now, :deleted_by => @owner.id)
+      @account.account_users.create(user_id: @user1.id, user_role: 'Business Administrator', created_by: @owner.id)
+      @account.account_users.create(user_id: @user2.id, user_role: 'Business Administrator', created_by: @owner.id, deleted_at: Time.zone.now, deleted_by: @owner.id)
 
       expect(@account.notify_users).to include @owner
       expect(@account.notify_users).to include @user1
@@ -207,18 +207,18 @@ RSpec.describe Account do
 
     it "should verify if a user can purchase using the account" do
       @owner   = FactoryGirl.create(:user)
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
+      @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @owner))
 
       @admin   = FactoryGirl.create(:user)
       @user    = FactoryGirl.create(:user)
-      @account.account_users.create(:user_id => @admin.id, :user_role => 'Business Administrator', :created_by => @owner.id)
-      @user_au = @account.account_users.create(:user_id => @user.id, :user_role => 'Purchaser', :created_by => @owner.id)
+      @account.account_users.create(user_id: @admin.id, user_role: 'Business Administrator', created_by: @owner.id)
+      @user_au = @account.account_users.create(user_id: @user.id, user_role: 'Purchaser', created_by: @owner.id)
 
       expect(@account.can_be_used_by?(@owner)).to eq(true)
       expect(@account.can_be_used_by?(@admin)).to eq(true)
       expect(@account.can_be_used_by?(@user)).to eq(true)
 
-      @user_au.update_attributes(:deleted_at => Time.zone.now, :deleted_by => @owner.id)
+      @user_au.update_attributes(deleted_at: Time.zone.now, deleted_by: @owner.id)
       expect(@account.can_be_used_by?(@user)).to eq(false)
     end
   end
@@ -229,12 +229,12 @@ RSpec.describe Account do
     before(:each) do
       @facility          = FactoryGirl.create(:facility)
       @user              = FactoryGirl.create(:user)
-      @nufs_account      = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+      @nufs_account      = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       @facility_account  = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @item              = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @price_group       = FactoryGirl.create(:price_group, :facility => @facility)
-      @price_group_product=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
-      @price_policy = FactoryGirl.create(:item_price_policy, :product => @item, :price_group => @price_group)
+      @item              = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+      @price_group       = FactoryGirl.create(:price_group, facility: @facility)
+      @price_group_product=FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+      @price_policy = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
       @price_group_member = create(:account_price_group_member, account: @nufs_account, price_group: @price_group)
     end
 
@@ -258,11 +258,11 @@ RSpec.describe Account do
 
       context 'bundles' do
         before :each do
-          @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, :account => 78960, :facility_account_id => @facility_account.id))
-          @bundle = @facility.bundles.create(FactoryGirl.attributes_for(:bundle, :facility_account_id => @facility_account.id))
+          @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, account: 78960, facility_account_id: @facility_account.id))
+          @bundle = @facility.bundles.create(FactoryGirl.attributes_for(:bundle, facility_account_id: @facility_account.id))
           [ @item, @item2 ].each do |item|
-            price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @price_group))
-            BundleProduct.create!(:quantity => 1, :product => item, :bundle => @bundle)
+            price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @price_group))
+            BundleProduct.create!(quantity: 1, product: item, bundle: @bundle)
           end
         end
 
@@ -279,8 +279,8 @@ RSpec.describe Account do
         @user.reload
         @nufs_account.reload
         expect(@nufs_account.validate_against_product(@item, @user)).not_to eq(nil)
-        FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
-        @pg_account_member = FactoryGirl.create(:account_price_group_member, :account => @nufs_account, :price_group => @price_group)
+        FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+        @pg_account_member = FactoryGirl.create(:account_price_group_member, account: @nufs_account, price_group: @price_group)
         @nufs_account.reload #load fresh account with updated relationships
         expect(@nufs_account.validate_against_product(@item, @user)).to eq(nil)
       end
@@ -291,11 +291,11 @@ RSpec.describe Account do
     facility = FactoryGirl.create(:facility)
     facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     user     = FactoryGirl.create(:user)
-    item     = facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => facility_account.id))
-    account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => user))
-    order    = user.orders.create(FactoryGirl.attributes_for(:order, :created_by => user.id, :facility => facility))
-    order_detail = order.order_details.create!(FactoryGirl.attributes_for(:order_detail, :reviewed_at => (Time.zone.now-1.day)).update(:product_id => item.id, :account_id => account.id))
-    statement = Statement.create(:facility => facility, :created_by => 1, :account => account)
+    item     = facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: facility_account.id))
+    account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
+    order    = user.orders.create(FactoryGirl.attributes_for(:order, created_by: user.id, facility: facility))
+    order_detail = order.order_details.create!(FactoryGirl.attributes_for(:order_detail, reviewed_at: (Time.zone.now-1.day)).update(product_id: item.id, account_id: account.id))
+    statement = Statement.create(facility: facility, created_by: 1, account: account)
     account.update_order_details_with_statement(statement)
     expect(order_detail.reload.statement).to eq(statement)
   end
@@ -306,13 +306,13 @@ RSpec.describe Account do
         @user             = FactoryGirl.create(:user)
         @facility1        = FactoryGirl.create(:facility)
         @facility2        = FactoryGirl.create(:facility)
-        @nufs_account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+        @nufs_account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
         @facility1_accounts, @facility2_accounts=[ @nufs_account ], [ @nufs_account ]
 
         Account.config.facility_account_types.each do |class_name|
           class_sym = class_name.underscore.to_sym
-          @facility1_accounts << FactoryGirl.create(class_sym, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility => @facility1)
-          @facility2_accounts << FactoryGirl.create(class_sym, :account_users_attributes => account_users_attributes_hash(:user => @user), :facility => @facility2)
+          @facility1_accounts << FactoryGirl.create(class_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility: @facility1)
+          @facility2_accounts << FactoryGirl.create(class_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility: @facility2)
         end
       end
 

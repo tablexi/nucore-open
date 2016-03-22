@@ -1,7 +1,7 @@
 class MoveCanPurchaseIntoPricePolicy < ActiveRecord::Migration
 
   def self.up
-    add_column :price_policies, :can_purchase, :boolean, :after => :price_group_id, :default => false, :null => false
+    add_column :price_policies, :can_purchase, :boolean, after: :price_group_id, default: false, null: false
     
     PricePolicy.reset_column_information
     InstrumentPricePolicy.reset_column_information

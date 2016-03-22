@@ -1,9 +1,9 @@
 class AddSubsidies < ActiveRecord::Migration
 
   def self.up
-    add_column :price_policies, :usage_subsidy, :decimal, :precision => 9, :scale => 2
-    add_column :price_policies, :reservation_subsidy, :decimal, :precision => 9, :scale => 2
-    add_column :price_policies, :overage_subsidy, :decimal, :precision => 9, :scale => 2
+    add_column :price_policies, :usage_subsidy, :decimal, precision: 9, scale: 2
+    add_column :price_policies, :reservation_subsidy, :decimal, precision: 9, scale: 2
+    add_column :price_policies, :overage_subsidy, :decimal, precision: 9, scale: 2
   end
 
   def self.down

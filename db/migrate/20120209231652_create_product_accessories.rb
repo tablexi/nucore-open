@@ -2,8 +2,8 @@ class CreateProductAccessories < ActiveRecord::Migration
 
   def self.up
     create_table :product_accessories do |t|
-      t.references  :product,       :null => false
-      t.integer     :accessory_id,  :null => false
+      t.references  :product,       null: false
+      t.integer     :accessory_id,  null: false
     end
   end
 

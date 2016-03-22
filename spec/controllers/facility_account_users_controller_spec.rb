@@ -1,7 +1,7 @@
 require "rails_helper"
 require 'controller_spec_helper'
 
-RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?(:edit_accounts) do
+RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:edit_accounts) do
   render_views
 
   before(:all) { create_users }
@@ -16,7 +16,7 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
     before(:each) do
       @method=:get
       @action=:user_search
-      @params={ :facility_id => @authable.url_name, :account_id => @account.id }
+      @params={ facility_id: @authable.url_name, account_id: @account.id }
     end
 
     it_should_require_login
@@ -35,7 +35,7 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
     before(:each) do
       @method=:get
       @action=:new
-      @params={ :facility_id => @authable.url_name, :account_id => @account.id, :user_id => @guest.id }
+      @params={ facility_id: @authable.url_name, account_id: @account.id, user_id: @guest.id }
     end
 
     it_should_require_login
@@ -58,10 +58,10 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
       @method=:post
       @action=:create
       @params={
-        :facility_id => @authable.url_name,
-        :account_id => @account.id,
-        :user_id => @purchaser.id,
-        :account_user => { :user_role => AccountUser::ACCOUNT_PURCHASER }
+        facility_id: @authable.url_name,
+        account_id: @account.id,
+        user_id: @purchaser.id,
+        account_user: { user_role: AccountUser::ACCOUNT_PURCHASER }
       }
     end
 
@@ -131,11 +131,11 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
         context 'from business admin to purchaser' do
           before :each do
             @business_admin = FactoryGirl.create(:user)
-            FactoryGirl.create(:account_user, :account => @account, :user => @business_admin, :user_role => AccountUser::ACCOUNT_ADMINISTRATOR)
+            FactoryGirl.create(:account_user, account: @account, user: @business_admin, user_role: AccountUser::ACCOUNT_ADMINISTRATOR)
             @params.merge!(
-              :account_id   => @account.id,
-              :user_id      => @business_admin.id,
-              :account_user => { :user_role => AccountUser::ACCOUNT_PURCHASER }
+              account_id: @account.id,
+              user_id: @business_admin.id,
+              account_user: { user_role: AccountUser::ACCOUNT_PURCHASER }
             )
             expect(@account.account_users.purchasers).not_to be_any
             expect(@account.account_users.business_administrators).to be_one
@@ -185,11 +185,11 @@ RSpec.describe FacilityAccountUsersController, :if => SettingsHelper.feature_on?
     before(:each) do
       @method=:delete
       @action=:destroy
-      @account_user=FactoryGirl.create(:account_user, :user => @purchaser,
-        :account => @account,
-        :user_role => AccountUser::ACCOUNT_PURCHASER,
-        :created_by => @admin.id)
-      @params={ :facility_id => @authable.url_name, :account_id => @account.id, :id => @account_user.id }
+      @account_user=FactoryGirl.create(:account_user, user: @purchaser,
+        account: @account,
+        user_role: AccountUser::ACCOUNT_PURCHASER,
+        created_by: @admin.id)
+      @params={ facility_id: @authable.url_name, account_id: @account.id, id: @account_user.id }
     end
 
     it_should_require_login

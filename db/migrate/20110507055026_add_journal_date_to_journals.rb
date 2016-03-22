@@ -1,9 +1,9 @@
 class AddJournalDateToJournals < ActiveRecord::Migration
 
   def self.up
-    add_column :journals, :journal_date, :datetime, :null => true
+    add_column :journals, :journal_date, :datetime, null: true
     execute 'UPDATE journals SET journal_date = created_at'
-    change_column :journals, :journal_date, :datetime, :null => false
+    change_column :journals, :journal_date, :datetime, null: false
   end
 
   def self.down

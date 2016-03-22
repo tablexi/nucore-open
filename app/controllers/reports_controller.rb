@@ -9,7 +9,7 @@ class ReportsController < ApplicationController
   before_filter :init_current_facility
   before_filter :init_report_params
 
-  load_and_authorize_resource :class => ReportsController
+  load_and_authorize_resource class: ReportsController
 
   def initialize
     @active_tab = 'admin_reports'
@@ -59,7 +59,7 @@ class ReportsController < ApplicationController
     @rows = if params[:export_id].present?
       rows
             else
-      rows.paginate(:page => params[:page], :per_page => 25)
+      rows.paginate(page: params[:page], per_page: 25)
             end
   end
 
@@ -71,9 +71,9 @@ class ReportsController < ApplicationController
       format.html do
         if request.xhr?
           init_report(report_on_label, &report_on)
-          render :template => 'reports/report_table', :layout => false
+          render template: 'reports/report_table', layout: false
         else
-          render :template => 'reports/report'
+          render template: 'reports/report'
         end
       end
 
@@ -115,7 +115,7 @@ class ReportsController < ApplicationController
 
     set_csv_headers(filename)
 
-    render :template => "reports/#{action ? action : action_name}", :layout => false
+    render template: "reports/#{action ? action : action_name}", layout: false
   end
 
   def report_data_request?

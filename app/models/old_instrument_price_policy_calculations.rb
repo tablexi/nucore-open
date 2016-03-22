@@ -46,7 +46,7 @@ module OldInstrumentPricePolicyCalculations
       if product.min_cancel_hours && (res_start_at - strip_seconds(reservation.canceled_at))/3600 <= product.min_cancel_hours
         actual_cost = cancellation_cost
         actual_subsidy = 0
-        return {:cost => actual_cost, :subsidy => actual_subsidy}
+        return {cost: actual_cost, subsidy: actual_subsidy}
       else
         ## TODO how to calculate this
         return nil
@@ -70,7 +70,7 @@ module OldInstrumentPricePolicyCalculations
         actual_cost    = minimum_cost
         actual_subsidy = 0
       end
-      return {:cost => actual_cost, :subsidy => actual_subsidy}
+      return {cost: actual_cost, subsidy: actual_subsidy}
     end
 
     ## make sure actuals are entered
@@ -80,7 +80,7 @@ module OldInstrumentPricePolicyCalculations
     if free?
       actual_cost = minimum_cost || 0
       actual_subsidy = 0
-      return {:cost => actual_cost, :subsidy => actual_subsidy}
+      return {cost: actual_cost, subsidy: actual_subsidy}
     end
 
     act_end_at=strip_seconds reservation.actual_end_at
@@ -144,7 +144,7 @@ module OldInstrumentPricePolicyCalculations
       actual_cost    = minimum_cost
       actual_subsidy = 0
     end
-    return {:cost => actual_cost, :subsidy => actual_subsidy}
+    return {cost: actual_cost, subsidy: actual_subsidy}
   end
 
   private

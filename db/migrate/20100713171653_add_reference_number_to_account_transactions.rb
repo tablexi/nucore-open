@@ -1,7 +1,7 @@
 class AddReferenceNumberToAccountTransactions < ActiveRecord::Migration
 
   def self.up
-    add_column :account_transactions, :reference, :string, :limit => 50, :null => true
+    add_column :account_transactions, :reference, :string, limit: 50, null: true
   end
 
   def self.down

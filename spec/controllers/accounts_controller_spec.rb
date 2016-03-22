@@ -6,9 +6,9 @@ RSpec.describe AccountsController do
   render_views
 
   it "should route" do
-    expect(:get => "/accounts").to route_to(:controller => 'accounts', :action => 'index')
-    expect(:get => "/accounts/1").to route_to(:controller => 'accounts', :action => 'show', :id => '1')
-    expect(:get => "/accounts/1/user_search").to route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
+    expect(get: "/accounts").to route_to(controller: 'accounts', action: 'index')
+    expect(get: "/accounts/1").to route_to(controller: 'accounts', action: 'show', id: '1')
+    expect(get: "/accounts/1/user_search").to route_to(controller: 'accounts', action: 'user_search', id: '1')
   end
 
   before(:all) { create_users }
@@ -51,7 +51,7 @@ RSpec.describe AccountsController do
     before :each do
       @method=:get
       @action=:show
-      @params={ :id => @authable.id }
+      @params={ id: @authable.id }
     end
 
     it_should_require_login
@@ -69,7 +69,7 @@ RSpec.describe AccountsController do
     before :each do
       @method=:get
       @action=:user_search
-      @params={ :id => @authable.id }
+      @params={ id: @authable.id }
     end
 
     it_should_require_login
@@ -87,7 +87,7 @@ RSpec.describe AccountsController do
     before :each do
       @method = :get
       @action = :transactions
-      @params = { :id => @authable.id }
+      @params = { id: @authable.id }
       @user = @authable.owner.user
     end
     it_should_require_login
@@ -107,7 +107,7 @@ RSpec.describe AccountsController do
     before :each do
       @method = :get
       @action = :transactions_in_review
-      @params = { :id => @authable.id }
+      @params = { id: @authable.id }
       @user = @authable.owner.user
     end
     it_should_support_searching
@@ -143,7 +143,7 @@ RSpec.describe AccountsController do
 
   end
 
-  context 'suspension', :if => SettingsHelper.feature_on?(:suspend_accounts) do
+  context 'suspension', if: SettingsHelper.feature_on?(:suspend_accounts) do
     before :each do
       @account = @authable
     end
@@ -152,7 +152,7 @@ RSpec.describe AccountsController do
       before :each do
         @method = :get
         @action = :suspend
-        @params = { :account_id => @account.id }
+        @params = { account_id: @account.id }
       end
 
       it_should_require_login
@@ -171,7 +171,7 @@ RSpec.describe AccountsController do
       before :each do
         @method = :get
         @action = :unsuspend
-        @params = { :account_id => @account.id }
+        @params = { account_id: @account.id }
       end
 
       it_should_require_login

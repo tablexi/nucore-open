@@ -33,15 +33,15 @@ RSpec.describe TransactionSearch do
     @authable = create(:facility)
     ignore_order_detail_account_validations
     @user = FactoryGirl.create(:user)
-    @staff = FactoryGirl.create(:user, :username => "staff")
-    @staff2 = FactoryGirl.create(:user, :username => "staff2")
+    @staff = FactoryGirl.create(:user, username: "staff")
+    @staff2 = FactoryGirl.create(:user, username: "staff2")
     UserRole.create!(user: @staff, role: UserRole::FACILITY_DIRECTOR, facility: facility)
     @controller = TransactionSearcher.new
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
-    @order            = @staff.orders.create(FactoryGirl.attributes_for(:order, :created_by => @staff.id, :account => @account, :ordered_at => Time.now))
-    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+    @account          = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
+    @order            = @staff.orders.create(FactoryGirl.attributes_for(:order, created_by: @staff.id, account: @account, ordered_at: Time.now))
+    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     @order_detail_complete = place_and_complete_item_order(@user, @authable, @account)
     @order_detail_new = place_product_order(@staff, @authable, @item)
 
@@ -60,7 +60,7 @@ RSpec.describe TransactionSearch do
   context "field populating" do
     context "with facility" do
       before :each do
-        @controller.params = { :facility_id => @authable.url_name }
+        @controller.params = { facility_id: @authable.url_name }
         @controller.init_current_facility
       end
 
@@ -77,18 +77,18 @@ RSpec.describe TransactionSearch do
       end
 
       it "populates accounts based off order_details, not orders" do
-        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
-        Order.all.each { |o| o.update_attributes!(:account => @account) }
-        OrderDetail.all.each { |od| od.update_attributes!(:account => @account2)}
+        @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
+        Order.all.each { |o| o.update_attributes!(account: @account) }
+        OrderDetail.all.each { |od| od.update_attributes!(account: @account2)}
         expect(@order.reload.account).to eq(@account)
         @controller.all_order_details
         expect(@controller.accounts).to eq([@account2])
       end
 
       it "populates owners based off of order_details, not orders" do
-        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff2))
-        Order.all.each { |o| o.update_attributes!(:account => @account) }
-        OrderDetail.all.each { |od| od.update_attributes!(:account => @account2) }
+        @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff2))
+        Order.all.each { |o| o.update_attributes!(account: @account) }
+        OrderDetail.all.each { |od| od.update_attributes!(account: @account2) }
         expect(@order.reload.account.owner.user).to eq(@staff)
         @controller.all_order_details
         expect(@controller.account_owners).to eq([@staff2])
@@ -96,7 +96,7 @@ RSpec.describe TransactionSearch do
 
       it "should not populate an account for another facility" do
         @facility2 = FactoryGirl.create(:facility)
-        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @staff))
+        @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
 
         @controller.all_order_details
         expect(@controller.current_facility).to eq(@authable)
@@ -112,16 +112,16 @@ RSpec.describe TransactionSearch do
     context "with account" do
       before :each do
         @facility2 = FactoryGirl.create(:facility)
-        @credit_account = FactoryGirl.create(:nufs_account, :facility_id => @facility2.id, :account_users_attributes => account_users_attributes_hash(:user => @staff))
+        @credit_account = FactoryGirl.create(:nufs_account, facility_id: @facility2.id, account_users_attributes: account_users_attributes_hash(user: @staff))
         @facility_account2 = @facility2.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-        @item2             = @facility2.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account2.id))
+        @item2             = @facility2.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account2.id))
         @order_detail2 = place_and_complete_item_order(@user, @facility2, @credit_account)
       end
 
       it "should pull all facilities for nufs account that have transactions" do
         # @account needs to have an order detail for it to show up
         @order_detail3 = place_and_complete_item_order(@user, @facility2, @account)
-        @controller.params = { :account_id => @account.id }
+        @controller.params = { account_id: @account.id }
         @controller.init_current_account
         @controller.all_order_details
         expect(@controller.current_facility).to be_nil
@@ -129,7 +129,7 @@ RSpec.describe TransactionSearch do
         expect(@controller.facilities).to contain_all [@authable, @facility2]
       end
       it "should only have a single facility for credit card" do
-        @controller.params = { :account_id => @credit_account.id }
+        @controller.params = { account_id: @credit_account.id }
         @controller.init_current_account
         @controller.all_order_details
         expect(@controller.current_facility).to be_nil
@@ -141,12 +141,12 @@ RSpec.describe TransactionSearch do
       before :each do
         @user2 = FactoryGirl.create(:user)
         @user3 = FactoryGirl.create(:user)
-        @account2 = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user2))
+        @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user2))
         # account 2 needs to have an order detail for it to show up
         place_and_complete_item_order(@user2, @authable, @account2)
       end
       it "should populate account owners" do
-        @controller.params = { :facility_id => @authable.url_name }
+        @controller.params = { facility_id: @authable.url_name }
         @controller.init_current_facility
         @controller.all_order_details
         expect(@controller.account_owners).to contain_all [@staff, @user2]
@@ -157,16 +157,16 @@ RSpec.describe TransactionSearch do
       before :each do
         @facility2 = FactoryGirl.create(:facility)
         @instrument = FactoryGirl.create(:instrument,
-                                         :facility => @authable,
-                                         :facility_account => @facility_account)
-        @service = @authable.services.create(FactoryGirl.attributes_for(:service, :facility_account_id => @facility_account.id))
+                                         facility: @authable,
+                                         facility_account: @facility_account)
+        @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
         @other_item = @facility2.instruments.create(FactoryGirl.attributes_for(:item))
         # each product needs to have an order detail for it to show up
         [@item, @instrument, @service].each do |product|
           place_product_order(@staff, @authable, product, @account)
         end
 
-        @controller.params = { :facility_id => @authable.url_name }
+        @controller.params = { facility_id: @authable.url_name }
         @controller.init_current_facility
         @controller.all_order_details
       end

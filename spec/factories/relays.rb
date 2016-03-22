@@ -6,15 +6,15 @@ FactoryGirl.define do
     sequence(:username) {|n| "username#{n}" }
     sequence(:password) {|n| "password#{n}" }
 
-    factory :relay_syna, :class => RelaySynaccessRevA do
+    factory :relay_syna, class: RelaySynaccessRevA do
     end
 
-    factory :relay_synb, :class => RelaySynaccessRevB do
+    factory :relay_synb, class: RelaySynaccessRevB do
       type 'RelaySynaccessRevB'
     end
   end
 
-  factory :relay_dummy, :class => RelayDummy do
+  factory :relay_dummy, class: RelayDummy do
     type 'RelayDummy'
   end
 end

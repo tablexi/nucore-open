@@ -5,7 +5,7 @@ class RemoveProductIdFromPricePolicies < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :price_policies, :product_id, :integer, :precision => 38, :scale => 0, :default => nil, :null => true
+    add_column :price_policies, :product_id, :integer, precision: 38, scale: 0, default: nil, null: true
   end
 
 end

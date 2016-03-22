@@ -1,7 +1,7 @@
 class AddReconciledOrderStatus < ActiveRecord::Migration
 
   def self.up
-    OrderStatus.create!(:name => 'Reconciled')
+    OrderStatus.create!(name: 'Reconciled')
   end
 
   def self.down

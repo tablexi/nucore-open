@@ -6,15 +6,15 @@ RSpec.describe Facility do
       @facility=FactoryGirl.create(:facility)
       owner=FactoryGirl.create(:user)
       @owner_attrs=[{
-        :user => owner,
-        :created_by => owner.id,
-        :user_role => 'Owner'
+        user: owner,
+        created_by: owner.id,
+        user_role: 'Owner'
       }]
     end
 
     context 'purchase orders' do
       before :each do
-        @account=FactoryGirl.create(:purchase_order_account, :account_users_attributes => @owner_attrs)
+        @account=FactoryGirl.create(:purchase_order_account, account_users_attributes: @owner_attrs)
       end
 
       it 'should return false if facility does not accept po and account is po' do
@@ -30,7 +30,7 @@ RSpec.describe Facility do
 
     context 'credit cards' do
       before :each do
-        @account=FactoryGirl.create(:credit_card_account, :account_users_attributes => @owner_attrs)
+        @account=FactoryGirl.create(:credit_card_account, account_users_attributes: @owner_attrs)
       end
 
       it 'should return false if facility does not accept cc and account is cc' do
