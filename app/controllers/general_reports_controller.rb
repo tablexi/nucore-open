@@ -97,7 +97,7 @@ class GeneralReportsController < ReportsController
 
       key = "Undefined" if key.blank?
 
-      sums[key]=[0,0] unless sums.key?(key)
+      sums[key]=[0, 0] unless sums.key?(key)
       sums[key][0] += od.quantity
       @total_quantity += od.quantity
 
@@ -111,12 +111,12 @@ class GeneralReportsController < ReportsController
       end
     end
 
-    sums.each do |k,v|
+    sums.each do |k, v|
       percent_cost=to_percent(@total_cost > 0 ? v[1] / @total_cost : 1)
       rows << v.push(percent_cost).unshift(k)
     end
 
-    rows.sort! {|a,b| a.first <=> b.first}
+    rows.sort! {|a, b| a.first <=> b.first}
 
     page_report(rows)
   end

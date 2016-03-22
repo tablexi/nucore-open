@@ -8,7 +8,7 @@ class OrderSearcher
 
   def search(query)
     return [] unless query
-    query.gsub!(/\s/,"")
+    query.gsub!(/\s/, "")
 
     relation = nil
     if query =~ /\A\d+-\d+\z/
