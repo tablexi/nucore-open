@@ -180,25 +180,25 @@ RSpec.describe PricePolicy do
     end
 
     context "should define abstract methods" do
-  
+
       before :each do
         @sp = PricePolicy.new
       end
-  
+
       it 'should abstract #calculate_cost_and_subsidy' do
         expect(@sp).to be_respond_to(:calculate_cost_and_subsidy)
         assert_raise(RuntimeError) { @sp.calculate_cost_and_subsidy }
       end
-  
+
       it 'should abstract #estimate_cost_and_subsidy' do
         expect(@sp).to be_respond_to(:estimate_cost_and_subsidy)
         assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
       end
-  
+
     end
 
     context "order assignment" do
-  
+
       before :each do
         @user     = FactoryGirl.create(:user)
         @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
@@ -209,18 +209,18 @@ RSpec.describe PricePolicy do
         FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
         @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
       end
-  
+
       it "should not be assigned" do
         expect(@pp).not_to be_assigned_to_order
       end
-  
+
       it "should be assigned" do
         @order_detail.reload
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         expect(@pp).to be_assigned_to_order
       end
-  
+
     end
 
   end

@@ -1,6 +1,6 @@
 module BulkEmailHelper
 
-  
+
   DEFAULT_SORT = [:last_name, :first_name].freeze
   SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users].freeze
 
@@ -34,7 +34,7 @@ module BulkEmailHelper
     product_ids = search_fields[:products].presence || Facility.find(search_fields[:facility_id]).products.map(&:id)
     result.where(product_users: { product_id: product_ids }).reorder(*BulkEmailHelper::DEFAULT_SORT)
   end
-  
+
   def self.search_types
     SEARCH_TYPES
   end
@@ -53,7 +53,7 @@ module BulkEmailHelper
     start_date = parse_usa_date(search_fields[:start_date].to_s.to_s.tr("-", "/")) if search_fields[:start_date]
     end_date = parse_usa_date(search_fields[:end_date].to_s.to_s.tr("-", "/")) if search_fields[:end_date]
     order_details = order_details.ordered_or_reserved_in_range(start_date, end_date)
-    
+
     @order_details = order_details
     order_details
   end

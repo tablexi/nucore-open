@@ -101,7 +101,7 @@ class OrderDetail < ActiveRecord::Base
       order: "order_details.created_at DESC" }
   }
 
-  scope :finalized, lambda {|facility| 
+  scope :finalized, lambda {|facility|
                       { joins: :order,
                                          conditions: ["orders.facility_id = ? AND order_details.reviewed_at < ?", facility.id, Time.zone.now],
                                          order: "order_details.created_at DESC" }
@@ -145,7 +145,7 @@ class OrderDetail < ActiveRecord::Base
           .merge(Reservation.not_canceled)
   end
 
-  scope :for_facility_with_price_policy, lambda { |facility| 
+  scope :for_facility_with_price_policy, lambda { |facility|
                                            {
     joins: :order,
     conditions: ["orders.facility_id = ? AND price_policy_id IS NOT NULL", facility.id], order: "order_details.fulfilled_at DESC" }
@@ -246,7 +246,7 @@ class OrderDetail < ActiveRecord::Base
     order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? { |au| au.user_id == user.id }
   end
 
-  scope :need_statement, lambda { |facility| 
+  scope :need_statement, lambda { |facility|
                            {
     joins: [:product, :account],
     conditions: [
@@ -266,7 +266,7 @@ class OrderDetail < ActiveRecord::Base
     ],
   }}
 
-  scope :need_journal, lambda { 
+  scope :need_journal, lambda {
                          {
     joins: [:product, :account],
     conditions: [
@@ -284,7 +284,7 @@ class OrderDetail < ActiveRecord::Base
     ],
   } }
 
-  scope :statemented, lambda {|facility| 
+  scope :statemented, lambda {|facility|
                         {
     joins: :order,
       order: "order_details.created_at DESC",
@@ -307,7 +307,7 @@ class OrderDetail < ActiveRecord::Base
     .includes(:reservation)
     .ordered
 
-  scope :upcoming_reservations, lambda { 
+  scope :upcoming_reservations, lambda {
                                   confirmed_reservations
                                     .where("reservations.reserve_end_at > ? AND reservations.actual_start_at IS NULL", Time.zone.now)
                                     .order("reservations.reserve_start_at ASC")
@@ -323,10 +323,10 @@ class OrderDetail < ActiveRecord::Base
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
   scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
-  scope :for_owners, lambda { |owners| 
+  scope :for_owners, lambda { |owners|
                        joins(:account)
                          .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
-                         .where("account_users.user_id in (?)", owners) unless owners.blank? 
+                         .where("account_users.user_id in (?)", owners) unless owners.blank?
   }
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 

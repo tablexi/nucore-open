@@ -6,7 +6,7 @@ class AlterProductsRemoveRelays < ActiveRecord::Migration
     remove_column(:products, :relay_username)
     remove_column(:products, :relay_password)
     remove_column(:products, :relay_type)
-    remove_column(:products, :auto_logout)       
+    remove_column(:products, :auto_logout)
   end
 
   def self.down

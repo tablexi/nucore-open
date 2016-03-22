@@ -5,7 +5,7 @@ class AddAttachmentsFileToFileUpload < ActiveRecord::Migration
     add_column :file_uploads, :file_content_type, :string
     add_column :file_uploads, :file_file_size, :integer
     add_column :file_uploads, :file_updated_at, :datetime
-    
+
     remove_column :file_uploads, :content_type # unused column
   end
 
@@ -14,7 +14,7 @@ class AddAttachmentsFileToFileUpload < ActiveRecord::Migration
     remove_column :file_uploads, :file_content_type
     remove_column :file_uploads, :file_file_size
     remove_column :file_uploads, :file_updated_at
-    
+
     add_column :file_uploads, :content_type, :string # old column
   end
 

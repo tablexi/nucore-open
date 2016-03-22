@@ -119,7 +119,7 @@ RSpec.describe OrderImport, :timecop_freeze do
 
   def generate_import_file(*args)
     args = [{}] if args.length == 0 # default to at least one valid row
-  
+
     whole_csv = CSVHelper::CSV.generate headers: true do |csv|
       csv << CSV_HEADERS
       args.each do |opts|
@@ -135,7 +135,7 @@ RSpec.describe OrderImport, :timecop_freeze do
         csv << row
       end
     end
-  
+
     StringIO.new whole_csv
   end
 

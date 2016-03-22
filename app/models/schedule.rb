@@ -1,6 +1,6 @@
 class Schedule < ActiveRecord::Base
 
-  
+
   # Associations
   # --------
   belongs_to :facility
@@ -31,7 +31,7 @@ class Schedule < ActiveRecord::Base
 
   # Instance methods
   # --------
-  
+
   def shared?
     products.count > 1
   end
@@ -40,6 +40,6 @@ class Schedule < ActiveRecord::Base
     key = "instruments.instrument_fields.schedule.#{shared? ? 'shared' : 'unshared'}"
     "#{I18n.t(key)}: #{name}"
   end
-  
+
 
 end
