@@ -129,10 +129,10 @@ class Facility < ActiveRecord::Base
 
   def set_journal_mask
     f = Facility.find(:all, :limit => 1, :order => 'journal_mask DESC').first
-    if f && f.journal_mask.match(/^C(\d{2})$/)
-      self.journal_mask = sprintf("C%02d", $1.to_i + 1)
+    self.journal_mask = if f && f.journal_mask.match(/^C(\d{2})$/)
+      sprintf("C%02d", $1.to_i + 1)
     else
-      self.journal_mask = 'C01'
-    end
+      'C01'
+                        end
   end
 end

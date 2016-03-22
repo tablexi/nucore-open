@@ -45,12 +45,12 @@ class ReservationsController < ApplicationController
     end
 
     # We're not using unavailable rules for month view
-    if month_view?
-      @unavailable = []
+    @unavailable = if month_view?
+      []
     else
       # build unavailable schedule
-      @unavailable = ScheduleRule.unavailable(@rules)
-    end
+      ScheduleRule.unavailable(@rules)
+                   end
 
     respond_to do |format|
       as_calendar_object_options = {:start_date => @start_date, :with_details => params[:with_details]}

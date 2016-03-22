@@ -23,11 +23,11 @@ class ProductsCommonController < ApplicationController
 
     @archived_product_count     = current_facility_products.archived.length
     @not_archived_product_count = current_facility_products.not_archived.length
-    if params[:archived].nil? || params[:archived] != 'true'
-      @products = current_facility_products.not_archived
+    @products = if params[:archived].nil? || params[:archived] != 'true'
+      current_facility_products.not_archived
     else
-      @products = current_facility_products.archived
-    end
+      current_facility_products.archived
+                end
 
     # not sure this actually does anything since @products is a Relation, not an Array, but it was
     # in ServicesController, ItemsController, and InstrumentsController before I pulled #index up

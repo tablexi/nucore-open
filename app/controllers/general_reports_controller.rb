@@ -64,16 +64,16 @@ class GeneralReportsController < ReportsController
   def init_report_params
     status_ids = Array(params[:status_filter])
 
-    if params[:date_start].blank? && params[:date_end].blank?
+    stati = if params[:date_start].blank? && params[:date_end].blank?
       # page load -- default to most interesting/common statuses
-      stati=[ OrderStatus.complete.first, OrderStatus.reconciled.first ]
+      [ OrderStatus.complete.first, OrderStatus.reconciled.first ]
     elsif status_ids.blank?
       # user removed all status filters. They will get nothing back but that's what they want!
-      stati=[]
+      []
     else
       # user filters
-      stati=status_ids.reject(&:blank?).collect{|si| OrderStatus.find(si.to_i) }
-    end
+      status_ids.reject(&:blank?).collect{|si| OrderStatus.find(si.to_i) }
+            end
 
     @status_ids=[]
 

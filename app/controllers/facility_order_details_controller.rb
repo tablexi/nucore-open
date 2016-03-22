@@ -48,11 +48,11 @@ class FacilityOrderDetailsController < ApplicationController
   end
 
   def set_active_tab
-    if @order_detail.reservation
-      @active_tab = "admin_reservations"
+    @active_tab = if @order_detail.reservation
+      "admin_reservations"
     else
-      @active_tab = "admin_orders"
-    end
+      "admin_orders"
+                  end
   end
 
   def init_order_detail

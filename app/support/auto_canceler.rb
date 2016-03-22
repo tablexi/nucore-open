@@ -31,15 +31,15 @@ class AutoCanceler
 
   private
   def build_sql
-    if NUCore::Database.oracle?
-      time_condition = <<-CONDITION
+    time_condition = if NUCore::Database.oracle?
+      <<-CONDITION
         (EXTRACT(MINUTE FROM (:now - reserve_start_at)) +
          EXTRACT(HOUR FROM (:now - reserve_start_at))*60 +
          EXTRACT(DAY FROM (:now - reserve_start_at))*24*60) >= auto_cancel_mins
       CONDITION
     else
-      time_condition = " TIMESTAMPDIFF(MINUTE, reserve_start_at, :now) >= auto_cancel_mins"
-    end
+      " TIMESTAMPDIFF(MINUTE, reserve_start_at, :now) >= auto_cancel_mins"
+                     end
 
     where = <<-SQL
         actual_start_at IS NULL
