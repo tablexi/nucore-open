@@ -20,13 +20,13 @@ module ReportsHelper
 
   def report_attributes(*records)
     combine_attributes(*records) do |ar|
-      order_and_filter_attributes(ar).collect {|attr| ActiveSupport::Inflector.humanize(attr[0])}
+      order_and_filter_attributes(ar).collect { |attr| ActiveSupport::Inflector.humanize(attr[0]) }
     end
   end
 
   def report_attribute_values(*records)
     combine_attributes(*records) do |ar|
-      order_and_filter_attributes(ar).collect {|attr| attr[1]}
+      order_and_filter_attributes(ar).collect { |attr| attr[1] }
     end
   end
 
@@ -34,14 +34,14 @@ module ReportsHelper
 
   def combine_attributes(*records)
     attrs = []
-    records.each {|ar| attrs += yield(ar) }
+    records.each { |ar| attrs += yield(ar) }
     attrs
   end
 
   def order_and_filter_attributes(ar)
     attrs = ar.attributes.to_a
-    attrs.delete_if {|ray| ray[0] =~ /._id$|^id$|^updated_at$|^created_at$|._by$/}
-    attrs.sort {|a1, a2| a1[0] <=> a2[0]}
+    attrs.delete_if { |ray| ray[0] =~ /._id$|^id$|^updated_at$|^created_at$|._by$/ }
+    attrs.sort { |a1, a2| a1[0] <=> a2[0] }
   end
 
 end

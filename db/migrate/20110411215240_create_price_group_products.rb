@@ -32,7 +32,7 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
     end
 
     price_policies = PricePolicy.find(:all, conditions: 'restrict_purchase = 1')
-    price_policies.each {|pp| pp.destroy }
+    price_policies.each { |pp| pp.destroy }
   end
 
   

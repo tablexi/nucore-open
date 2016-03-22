@@ -23,7 +23,7 @@ class FacilityUsersController < ApplicationController
   # remove the user's facility-role mapping
   def destroy
     @user = User.find(params[:id])
-    @user.facility_user_roles(current_facility).each {|r| r.destroy }
+    @user.facility_user_roles(current_facility).each { |r| r.destroy }
     redirect_to facility_facility_users_url
   end
 

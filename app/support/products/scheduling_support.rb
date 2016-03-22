@@ -124,7 +124,7 @@ module Products::SchedulingSupport
   #
   # find rules for day of week, sort by start hour
   def rules_for_day(day_of_week, user)
-    rules = available_schedule_rules(user).select {|r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }
+    rules = available_schedule_rules(user).select { |r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }
     rules.sort_by { |r| r.start_hour }
   end
 

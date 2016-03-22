@@ -27,7 +27,7 @@ class Account < ActiveRecord::Base
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
-  scope :active, -> {{ conditions: ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] }}
+  scope :active, -> { { conditions: ['expires_at > ? AND suspended_at IS NULL', Time.zone.now] } }
   scope :global_account_types, -> { where(accounts: { type: config.global_account_types }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
@@ -131,7 +131,7 @@ class Account < ActiveRecord::Base
   end
 
   def business_admin_users
-    business_admins.collect {|au| au.user}
+    business_admins.collect { |au| au.user }
   end
 
   def notify_users
@@ -185,12 +185,12 @@ class Account < ActiveRecord::Base
     return "#{product.facility.name} does not accept #{type_string} payment" unless product.facility.can_pay_with_account?(self)
 
     # does the product have a price policy for the user or account groups?
-    return "The #{type_string} has insufficient price groups" unless product.can_purchase?((price_groups + user.price_groups).flatten.uniq.collect {|pg| pg.id})
+    return "The #{type_string} has insufficient price groups" unless product.can_purchase?((price_groups + user.price_groups).flatten.uniq.collect { |pg| pg.id })
 
     # check chart string account number
     if is_a?(NufsAccount)
       accts = product.is_a?(Bundle) ? product.products.collect(&:account) : [ product.account ]
-      accts.uniq.each {|acct| return "The #{type_string} is not open for the required account" unless account_open?(acct) }
+      accts.uniq.each { |acct| return "The #{type_string} is not open for the required account" unless account_open?(acct) }
     end
 
     nil
@@ -214,7 +214,7 @@ class Account < ActiveRecord::Base
 
   def facility_balance(facility, date = Time.zone.now)
     details = OrderDetail.for_facility(facility).complete.where('order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?', date, id)
-    details.collect {|od| od.total}.sum.to_f
+    details.collect { |od| od.total }.sum.to_f
   end
 
   def unreconciled_order_details(facility)
@@ -239,7 +239,7 @@ class Account < ActiveRecord::Base
                          .readonly(false)
                          .all
 
-    details.each {|od| od.update_attributes(reviewed_at: Time.zone.now + Settings.billing.review_period, statement: statement) }
+    details.each { |od| od.update_attributes(reviewed_at: Time.zone.now + Settings.billing.review_period, statement: statement) }
   end
 
   def can_be_used_by?(user)

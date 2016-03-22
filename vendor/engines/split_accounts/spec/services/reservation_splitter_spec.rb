@@ -40,6 +40,6 @@ RSpec.describe SplitAccounts::ReservationSplitter do
   end
 
   it "splits to order details costs" do
-    expect(results.map { |res| res.order_detail.actual_cost}).to eq([5, 4.99])
+    expect(results.map { |res| res.order_detail.actual_cost }).to eq([5, 4.99])
   end
 end

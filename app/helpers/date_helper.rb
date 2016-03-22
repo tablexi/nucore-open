@@ -103,7 +103,7 @@ module DateHelper
   end
 
   def hour_options
-    (1..12).map {|x| [x, x]}
+    (1..12).map { |x| [x, x] }
   end
 
   def parse_mmddyyyy_in_current_zone!(date_string)

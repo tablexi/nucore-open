@@ -79,7 +79,7 @@ RSpec.describe TransactionSearch do
       it "populates accounts based off order_details, not orders" do
         @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
         Order.all.each { |o| o.update_attributes!(account: @account) }
-        OrderDetail.all.each { |od| od.update_attributes!(account: @account2)}
+        OrderDetail.all.each { |od| od.update_attributes!(account: @account2) }
         expect(@order.reload.account).to eq(@account)
         @controller.all_order_details
         expect(@controller.accounts).to eq([@account2])

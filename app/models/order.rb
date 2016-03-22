@@ -70,12 +70,12 @@ class Order < ActiveRecord::Base
   end
 
   def cart_valid?
-    has_details? && has_valid_payment? && order_details.all? {|od| od.being_purchased_by_admin = @being_purchased_by_admin; od.valid_for_purchase?}
+    has_details? && has_valid_payment? && order_details.all? { |od| od.being_purchased_by_admin = @being_purchased_by_admin; od.valid_for_purchase? }
   end
 
   def has_valid_payment?
     account.present? &&                                 # order has account
-      order_details.all? {|od| od.account_id == account_id} && # order detail accounts match order account
+      order_details.all? { |od| od.account_id == account_id } && # order detail accounts match order account
       facility.can_pay_with_account?(account) &&               # payment is accepted by facility
       account.can_be_used_by?(user) &&                         # user can pay with account
       account.is_active?                                       # account is active/valid
@@ -173,7 +173,7 @@ class Order < ActiveRecord::Base
   end
 
   def complete_past_reservations!
-    order_details.select {|od| od.reservation && od.reservation.reserve_end_at < Time.zone.now }.each do |od|
+    order_details.select { |od| od.reservation && od.reservation.reserve_end_at < Time.zone.now }.each do |od|
       od.backdate_to_complete! od.reservation.reserve_end_at
     end
   end
@@ -183,7 +183,7 @@ class Order < ActiveRecord::Base
   end
 
   def has_subsidies?
-    order_details.any? {|od| od.has_subsidies?}
+    order_details.any? { |od| od.has_subsidies? }
   end
 
   def only_reservation

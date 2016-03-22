@@ -17,7 +17,7 @@ class InstrumentsController < ProductsCommonController
     super
     # find current and next upcoming reservations for each instrument
     @reservations = {}
-    @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming[0..2]}
+    @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming[0..2] }
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id

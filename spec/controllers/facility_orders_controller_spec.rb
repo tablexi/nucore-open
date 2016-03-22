@@ -187,7 +187,7 @@ RSpec.describe FacilityOrdersController do
     context 'with quantity' do
       before :each do
         @params[:product_add_quantity] = 1
-        @order.order_details.each {|od| od.destroy }
+        @order.order_details.each { |od| od.destroy }
       end
 
       it_should_allow :director, 'to add an item to existing order directly' do

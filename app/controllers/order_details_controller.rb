@@ -95,7 +95,7 @@ class OrderDetailsController < ApplicationController
 
   # GET /orders/:order_id/order_details/:order_detail_id/remove_order_file
   def remove_order_file
-    if @order_detail.stored_files.template_result.all? {|file| file.destroy}
+    if @order_detail.stored_files.template_result.all? { |file| file.destroy }
       flash[:notice] = 'The uploaded Order File has been deleted successfully'
     else
       flash[:error] = 'An error was encountered while deleting the uploaded Order File'

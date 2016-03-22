@@ -10,7 +10,7 @@ class IppMigrationReporter
     policies = InstrumentPricePolicy.includes(product: :facility).where id: pp_ids
 
     create_csv 'price_policies', headers do |csv|
-      policies.each {|pp| csv << price_policy_row(pp) }
+      policies.each { |pp| csv << price_policy_row(pp) }
     end
   end
 
@@ -19,7 +19,7 @@ class IppMigrationReporter
     details = OrderDetail.includes(product: :facility).includes(:price_policy, :reservation).where id: od_ids
 
     create_csv 'order_details', headers do |csv|
-      details.each {|od| csv << order_detail_row(od) }
+      details.each { |od| csv << order_detail_row(od) }
     end
   end
 
@@ -69,7 +69,7 @@ class IppMigrationReporter
     details = OrderDetail.find oids_to_attrs.keys
 
     create_csv csv_name, headers do |csv|
-      details.each {|od| csv << send(row_method, od, oids_to_attrs[od.id]) }
+      details.each { |od| csv << send(row_method, od, oids_to_attrs[od.id]) }
     end
   end
 

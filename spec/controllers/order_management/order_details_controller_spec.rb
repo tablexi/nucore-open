@@ -161,13 +161,13 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
   shared_examples_for 'it was removed from its statement' do
     it 'should no longer be statemented' do
-      expect { do_request }.to change {order_detail.reload.statement}
+      expect { do_request }.to change { order_detail.reload.statement }
         .from(statement).to(nil)
     end
 
     it 'should no longer have a statement date' do
       original_statement_date = order_detail.statement_date
-      expect { do_request }.to change {order_detail.reload.statement_date}
+      expect { do_request }.to change { order_detail.reload.statement_date }
         .from(original_statement_date).to(nil)
     end
   end
@@ -376,13 +376,13 @@ RSpec.describe OrderManagement::OrderDetailsController do
           end
 
           it 'updates the account' do
-            expect { do_request }.to change {order_detail.reload.account}
+            expect { do_request }.to change { order_detail.reload.account }
               .from(original_account).to(new_account)
           end
 
           it 'should still have a price policy' do
             expect { do_request }
-              .to_not change {order_detail.reload.price_policy.present?}
+              .to_not change { order_detail.reload.price_policy.present? }
           end
 
           it_behaves_like 'it was removed from its statement'
@@ -418,18 +418,18 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
             it 'should still have a price policy' do
               expect { do_request }
-                .to_not change {order_detail.reload.price_policy.present?}
+                .to_not change { order_detail.reload.price_policy.present? }
             end
 
             it 'should be priced at the price policy' do
               original_actual_total = order_detail.actual_total
               expect { do_request }
-                .to change {order_detail.reload.actual_total}
+                .to change { order_detail.reload.actual_total }
                 .from(original_actual_total).to(100)
             end
 
             it 'should remain on its statement' do
-              expect { do_request }.to_not change {order_detail.reload.statement}
+              expect { do_request }.to_not change { order_detail.reload.statement }
             end
           end
 
@@ -442,7 +442,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
             it 'should no longer have a price policy' do
               original_price_policy = order_detail.price_policy
               expect { do_request }
-                .to change {order_detail.reload.price_policy}
+                .to change { order_detail.reload.price_policy }
                 .from(original_price_policy).to(nil)
             end
 

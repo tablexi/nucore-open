@@ -91,7 +91,7 @@ class IppHtmlBuilder
   end
 
   def append_to_article
-    Nokogiri::HTML::Builder.with(html.at('article')) {|doc| yield doc }
+    Nokogiri::HTML::Builder.with(html.at('article')) { |doc| yield doc }
   end
 
 end

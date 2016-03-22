@@ -570,7 +570,7 @@ RSpec.describe Instrument do
     end
 
     it "should have last_reserve_date == tomorrow, last_reserve_days_from_now == 1 when window is 1" do
-      @instrument.price_group_products.each {|pgp| pgp.update_attributes(reservation_window: 1) }
+      @instrument.price_group_products.each { |pgp| pgp.update_attributes(reservation_window: 1) }
       assert_equal Time.zone.now.to_date + 1.day, @instrument.reload.last_reserve_date
       assert_equal 1, @instrument.max_reservation_window
     end

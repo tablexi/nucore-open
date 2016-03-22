@@ -5,7 +5,7 @@ class PriceGroupProduct < ActiveRecord::Base
   belongs_to :price_group
   belongs_to :product
   validates_presence_of :price_group_id, :product_id
-  validates_presence_of :reservation_window, if: proc {|pgp| pgp.product.is_a? Instrument }
+  validates_presence_of :reservation_window, if: proc { |pgp| pgp.product.is_a? Instrument }
 
   def self.for_product(product)
   	 where(product: product)

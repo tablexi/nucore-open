@@ -3,11 +3,11 @@ class InstrumentReportsController < ReportsController
   include InstrumentReporter
 
   def instrument
-    render_report(0, nil) {|r| [ r.product.name ] }
+    render_report(0, nil) { |r| [ r.product.name ] }
   end
 
   def account
-    render_report(1, 'Description') {|r| [ r.product.name, r.order_detail.account.to_s ]}
+    render_report(1, 'Description') { |r| [ r.product.name, r.order_detail.account.to_s ] }
   end
 
   def account_owner
