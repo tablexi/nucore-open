@@ -13,15 +13,13 @@ module DateHelper
     end
   end
 
-  def parse_usa_date(date, extra_date_info=nil)
-    begin
-      date_string=(date =~ /\d{1,2}\/\d{1,2}\/\d{4}/ ? Date.strptime($&, '%m/%d/%Y') : date).to_s
-      date_string += " #{extra_date_info}" if extra_date_info
+  def parse_usa_date(date, extra_date_info = nil)
+    date_string = (date =~ /\d{1,2}\/\d{1,2}\/\d{4}/ ? Date.strptime($&, "%m/%d/%Y") : date).to_s
+    date_string += " #{extra_date_info}" if extra_date_info
 
-      Time.zone.parse(date_string)
-     rescue
-       nil
-     end
+    Time.zone.parse(date_string)
+  rescue
+    nil
   end
 
   def format_usa_date(datetime)
@@ -29,7 +27,7 @@ module DateHelper
   end
 
   def format_usa_datetime(datetime)
-    datetime.present? ? I18n.l(datetime, format: :usa) : ''
+    datetime.present? ? I18n.l(datetime, format: :usa) : ""
   end
 
   def human_date(date)
@@ -45,7 +43,7 @@ module DateHelper
         format_usa_datetime(datetime)
       end
     rescue
-      ''
+      ""
     end
   end
 
@@ -54,25 +52,25 @@ module DateHelper
     begin
       dt.strftime("%l:%M %p").strip
     rescue
-      ''
+      ""
     end
   end
 
   def time_ceil(time, precision = 5.minutes)
-    time = time.dup.change(:sec => 0)
+    time = time.dup.change(sec: 0)
     Time.zone.at((time.to_f / precision).ceil * precision)
   end
 
   def time_floor(time, precision = 5.minutes)
-    time = time.dup.change(:sec => 0)
+    time = time.dup.change(sec: 0)
     Time.zone.at((time.to_f / precision).floor * precision)
   end
 
   def time_select_tag(field, default_time = Time.zone.now)
     output = ""
-    output << select_tag("#{field}[hour]", options_for_select(hour_options, default_time.strftime('%I').to_i))
+    output << select_tag("#{field}[hour]", options_for_select(hour_options, default_time.strftime("%I").to_i))
     output << select_tag("#{field}[minute]", options_for_select(minute_options, default_time.min))
-    output << select_tag("#{field}[ampm]", options_for_select(['AM', 'PM'], default_time.strftime('%p')))
+    output << select_tag("#{field}[ampm]", options_for_select(%w(AM PM), default_time.strftime("%p")))
     output.html_safe
   end
 
@@ -80,15 +78,15 @@ module DateHelper
   def time_select(f, field, options_tag = {}, html_options = {})
     output =  f.select(:"#{field}_hour", (1..12).to_a, {}, html_options)
     output << f.select(:"#{field}_min", minute_options(options_tag[:minute_step]), {}, html_options)
-    output << f.select(:"#{field}_meridian", ['AM', 'PM'], {}, html_options)
-    content_tag :div, output.html_safe, :class => 'time-select'
+    output << f.select(:"#{field}_meridian", %w(AM PM), {}, html_options)
+    content_tag :div, output.html_safe, class: "time-select"
   end
 
   def time_select24(f, field, options = {})
-    options.reverse_merge! :hours => (0..23)
+    options.reverse_merge! hours: (0..23)
     output =  f.select(:"#{field}_hour", options[:hours].to_a)
-    output << f.select(:"#{field}_min",minute_options(options[:minute_step]))
-    content_tag :div, output, :class => 'time-select'
+    output << f.select(:"#{field}_min", minute_options(options[:minute_step]))
+    content_tag :div, output, class: "time-select"
   end
 
   def join_time_select_values(values)
@@ -99,14 +97,15 @@ module DateHelper
 
   def minute_options(step = nil)
     step ||= 5
-    (0..59).step(step).map { |d| ['%02d' % d, d] }
+    (0..59).step(step).map { |d| ["%02d" % d, d] }
   end
 
   def hour_options
-    (1..12).map {|x| [x,x]}
+    (1..12).map { |x| [x, x] }
   end
 
   def parse_mmddyyyy_in_current_zone!(date_string)
-    DateTime.strptime(date_string, '%m/%d/%Y').to_time_in_current_zone
+    DateTime.strptime(date_string, "%m/%d/%Y").to_time_in_current_zone
   end
+
 end

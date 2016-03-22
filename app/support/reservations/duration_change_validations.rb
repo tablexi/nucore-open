@@ -3,6 +3,7 @@
 # the UI but not in specs
 ####################################################################
 class Reservations::DurationChangeValidations
+
   include ActiveModel::Validations
   include ActiveModel::Validations::Callbacks
 
@@ -28,7 +29,7 @@ class Reservations::DurationChangeValidations
       previous_time = reservation.reserve_start_at_was.change(sec: 0)
       updated_time = reservation.reserve_start_at.change(sec: 0)
       if previous_time != updated_time
-        errors.add(:reserve_start_at, I18n.t('activerecord.errors.models.reservation.change_reserve_start_at'))
+        errors.add(:reserve_start_at, I18n.t("activerecord.errors.models.reservation.change_reserve_start_at"))
       end
     end
   end
@@ -37,7 +38,7 @@ class Reservations::DurationChangeValidations
     reservation_started = reservation.actual_start_at || reservation.reserve_start_at < Time.zone.now
     reservation_shortened = reservation.reserve_end_at_changed? && reservation.reserve_end_at < reservation.reserve_end_at_was
     if reservation_started && reservation_shortened
-      errors.add(:reserve_end_at, I18n.t('activerecord.errors.models.reservation.shorten_reserve_end_at'))
+      errors.add(:reserve_end_at, I18n.t("activerecord.errors.models.reservation.shorten_reserve_end_at"))
     end
   end
 
@@ -46,4 +47,5 @@ class Reservations::DurationChangeValidations
   def was_reserve_start_at_editable?(reservation)
     Reservation.find(reservation).reserve_start_at_editable?
   end
+
 end

@@ -8,8 +8,8 @@ RSpec.describe ItemsController do
   render_views
 
   it "should route" do
-    expect({ :get => "/facilities/url_name/items" }).to route_to(:controller => 'items', :action => 'index', :facility_id => 'url_name')
-    expect({ :get => "/facilities/url_name/items/1" }).to route_to(:controller => 'items', :action => 'show', :facility_id => 'url_name', :id => "1")
+    expect(get: "/facilities/url_name/items").to route_to(controller: "items", action: "index", facility_id: "url_name")
+    expect(get: "/facilities/url_name/items/1").to route_to(controller: "items", action: "show", facility_id: "url_name", id: "1")
   end
 
   before(:all) { create_users }
@@ -17,46 +17,46 @@ RSpec.describe ItemsController do
   before(:each) do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-    @item_pp          = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group => @nupg))
-    @params={ :facility_id => @authable.url_name, :id => @item.url_name }
+    @item             = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+    @item_pp          = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @nupg))
+    @params = { facility_id: @authable.url_name, id: @item.url_name }
   end
 
   context "index" do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
       @params.delete(:id)
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(assigns[:items]).to eq([@item])
       expect(response).to be_success
-      expect(response).to render_template('items/index')
+      expect(response).to render_template("items/index")
     end
   end
 
   context "manage" do
     before :each do
-      @method=:get
-      @action=:manage
+      @method = :get
+      @action = :manage
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(assigns[:item]).to eq(@item)
       expect(response).to be_success
-      expect(response).to render_template('items/manage')
+      expect(response).to render_template("items/manage")
     end
   end
 
   context "show" do
     before :each do
-      @method=:get
-      @action=:show
-      @block=Proc.new do
+      @method = :get
+      @action = :show
+      @block = proc do
         expect(assigns[:item]).to eq(@item)
         expect(response).to be_success
-        expect(response).to render_template('items/show')
+        expect(response).to render_template("items/show")
       end
     end
 
@@ -74,7 +74,7 @@ RSpec.describe ItemsController do
       do_request
       expect(flash).not_to be_empty
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('no_accounts')
+      expect(assigns[:error]).to eq("no_accounts")
     end
 
     context "when the item requires approval" do
@@ -105,7 +105,7 @@ RSpec.describe ItemsController do
       end
 
       it "should not show a notice and show an add to cart" do
-        @product_user = ProductUser.create(:product => @item, :user => @guest, :approved_by => @admin.id, :approved_at => Time.zone.now)
+        @product_user = ProductUser.create(product: @item, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
         add_account_for_user(:guest, @item)
         sign_in @guest
         do_request
@@ -128,7 +128,7 @@ RSpec.describe ItemsController do
 
     context "hidden item" do
       before :each do
-        @item.update_attributes(:is_hidden => true)
+        @item.update_attributes(is_hidden: true)
       end
       it_should_allow_operators_only do
         expect(response).to be_success
@@ -146,32 +146,32 @@ RSpec.describe ItemsController do
 
   context "new" do
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_only do
       expect(assigns(:item)).to be_kind_of Item
-      is_expected.to render_template 'new'
+      is_expected.to render_template "new"
     end
   end
 
   context "edit" do
     before :each do
-      @method=:get
-      @action=:edit
+      @method = :get
+      @action = :edit
     end
 
     it_should_allow_managers_only do
-      is_expected.to render_template 'edit'
+      is_expected.to render_template "edit"
     end
   end
 
   context "create" do
     before :each do
-      @method=:post
-      @action=:create
-      @params.merge!(:item => FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @method = :post
+      @action = :create
+      @params.merge!(item: FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -183,9 +183,9 @@ RSpec.describe ItemsController do
 
   context "update" do
     before :each do
-      @method=:put
-      @action=:update
-      @params.merge!(:item => FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @method = :put
+      @action = :update
+      @params.merge!(item: FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -198,8 +198,8 @@ RSpec.describe ItemsController do
 
   context "destroy" do
     before :each do
-      @method=:delete
-      @action=:destroy
+      @method = :delete
+      @action = :destroy
     end
 
     it_should_allow_managers_only :redirect do

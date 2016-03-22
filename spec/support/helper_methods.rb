@@ -23,12 +23,12 @@ end
 # Asserts that the model +var+
 # no longer exists in the DB
 def should_be_destroyed(var)
-  dead=false
+  dead = false
 
   begin
     var.class.find var.id
   rescue
-    dead=true
+    dead = true
   end
 
   assert dead
@@ -45,11 +45,11 @@ end
 
 #
 # Factory wrapper for creating an account with owner
-def create_nufs_account_with_owner(owner=:owner)
-  owner = instance_variable_get("@#{owner.to_s}")
+def create_nufs_account_with_owner(owner = :owner)
+  owner = instance_variable_get("@#{owner}")
   FactoryGirl.create(:nufs_account,
-    account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]
-  )
+                     account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)],
+                    )
 end
 
 # Simulates placing an order for a product
@@ -61,20 +61,20 @@ end
 #   The product being ordered
 # [_account_]
 #   The account under which the order is placed
-def place_product_order(ordered_by, facility, product, account=nil, purchased=true)
-  @price_group=FactoryGirl.create(:price_group, :facility => facility)
+def place_product_order(ordered_by, facility, product, account = nil, purchased = true)
+  @price_group = FactoryGirl.create(:price_group, facility: facility)
 
-  o_attrs={ :created_by => ordered_by.id, :facility => facility, :ordered_at => Time.zone.now }
-  o_attrs.merge!(:account_id => account.id) if account
-  o_attrs.merge!(:state => 'purchased') if purchased
-  @order=ordered_by.orders.create(FactoryGirl.attributes_for(:order, o_attrs))
+  o_attrs = { created_by: ordered_by.id, facility: facility, ordered_at: Time.zone.now }
+  o_attrs[:account_id] = account.id if account
+  o_attrs[:state] = "purchased" if purchased
+  @order = ordered_by.orders.create(FactoryGirl.attributes_for(:order, o_attrs))
 
-  FactoryGirl.create(:user_price_group_member, :user => ordered_by, :price_group => @price_group)
+  FactoryGirl.create(:user_price_group_member, user: ordered_by, price_group: @price_group)
   create(:account_price_group_member, account: account, price_group: @price_group) if account.present?
-  @item_pp=product.send(:"#{product.class.name.downcase}_price_policies").create(FactoryGirl.attributes_for(:"#{product.class.name.downcase}_price_policy", :price_group_id => @price_group.id))
-  @item_pp.reload.restrict_purchase=false
-  od_attrs={ :product_id => product.id }
-  od_attrs.merge!(:account_id => account.id) if account
+  @item_pp = product.send(:"#{product.class.name.downcase}_price_policies").create(FactoryGirl.attributes_for(:"#{product.class.name.downcase}_price_policy", price_group_id: @price_group.id))
+  @item_pp.reload.restrict_purchase = false
+  od_attrs = { product_id: product.id }
+  od_attrs[:account_id] = account.id if account
   @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(od_attrs))
 
   @order_detail.set_default_status! if purchased
@@ -92,28 +92,28 @@ end
 #   The account under which the order is placed
 # [_reviewed_]
 #   true if the completed order should also be marked as reviewed, false by default
-def place_and_complete_item_order(ordered_by, facility, account=nil, reviewed=false)
-  @facility_account=facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-  @item=facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+def place_and_complete_item_order(ordered_by, facility, account = nil, reviewed = false)
+  @facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+  @item = facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
   place_product_order(ordered_by, facility, @item, account)
 
   # act like the parent order is valid
-  @order.state = 'validated'
+  @order.state = "validated"
 
   # purchase it
   @order.purchase!
 
   @order_detail.change_status!(OrderStatus.complete.first)
 
-  od_attrs={
-    :actual_cost => 20,
-    :actual_subsidy => 10,
-    :price_policy_id => @item_pp.id
+  od_attrs = {
+    actual_cost: 20,
+    actual_subsidy: 10,
+    price_policy_id: @item_pp.id,
   }
 
-  od_attrs.merge!(:reviewed_at => Time.zone.now-1.day) if reviewed
+  od_attrs[:reviewed_at] = Time.zone.now - 1.day if reviewed
   @order_detail.update_attributes(od_attrs)
-  return @order_detail
+  @order_detail
 end
 
 #
@@ -130,15 +130,15 @@ end
 #   Other parameters for the reservation; will override the defaults defined below
 #
 # and_return the reservation
-def place_reservation_for_instrument(ordered_by, instrument, account, reserve_start, extra_reservation_attrs=nil)
+def place_reservation_for_instrument(ordered_by, instrument, account, reserve_start, extra_reservation_attrs = nil)
   order_detail = place_product_order(ordered_by, instrument.facility, instrument, account, false)
 
   instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule)) if instrument.schedule_rules.empty?
-  res_attrs={
-    :reserve_start_at => reserve_start,
-    :order_detail => order_detail,
-    :duration_value => 60,
-    :duration_unit => 'minutes'
+  res_attrs = {
+    reserve_start_at: reserve_start,
+    order_detail: order_detail,
+    duration_value: 60,
+    duration_unit: "minutes",
   }
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
@@ -159,37 +159,35 @@ end
 #   +Reservation+ should begin
 # [_extra_reservation_attrs_]
 #   Custom attributes for the +Reservation+, if any
-def place_reservation(facility, order_detail, reserve_start, extra_reservation_attrs=nil)
+def place_reservation(facility, order_detail, reserve_start, extra_reservation_attrs = nil)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
   @instrument ||= FactoryGirl.create(
-        :instrument,
-        :facility => facility,
-        :facility_account => facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)),
-        :min_reserve_mins => 60,
-        :max_reserve_mins => 60)
-
+    :instrument,
+    facility: facility,
+    facility_account: facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)),
+    min_reserve_mins: 60,
+    max_reserve_mins: 60)
 
   assert @instrument.valid?
-  @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24)) if @instrument.schedule_rules.empty?
+  @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24)) if @instrument.schedule_rules.empty?
 
-  res_attrs={
-    :reserve_start_at => reserve_start,
-    :order_detail => order_detail,
-    :duration_value => 60,
-    :duration_unit => 'minutes'
+  res_attrs = {
+    reserve_start_at: reserve_start,
+    order_detail: order_detail,
+    duration_value: 60,
+    duration_unit: "minutes",
   }
-  order_detail.update_attributes!(:product => @instrument)
-  order_detail.order.update_attributes!(:state => 'purchased')
+  order_detail.update_attributes!(product: @instrument)
+  order_detail.order.update_attributes!(state: "purchased")
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
-  @reservation=@instrument.reservations.build(res_attrs)
+  @reservation = @instrument.reservations.build(res_attrs)
   # force validation to run to set reserve_end_at, but ignore the errors
   # we don't need to be worried about all the validations when running this method
   @reservation.valid?
-  @reservation.save(:validate => false)
+  @reservation.save(validate: false)
   @reservation
 end
-
 
 #
 # Sets up an environment for testing reservations by creating records for
@@ -209,22 +207,22 @@ end
 #   The +User+ that creates the @order
 def setup_reservation(facility, facility_account, account, user)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
-  @instrument       = FactoryGirl.create(:instrument,
-                                           :facility => facility,
-                                           :facility_account => facility_account,
-                                           :min_reserve_mins => 60,
-                                           :max_reserve_mins => 60)
+  @instrument = FactoryGirl.create(:instrument,
+                                   facility: facility,
+                                   facility_account: facility_account,
+                                   min_reserve_mins: 60,
+                                   max_reserve_mins: 60)
   assert @instrument.valid?
-  @price_group      = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-  FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
+  @price_group = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+  FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)
   # add rule, available every day from 9 to 5, 60 minutes duration
-  @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :end_hour => 23))
+  @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, end_hour: 23))
   # create price policy with default window of 1 day
-  @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
+  @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
   # create order, order detail
-  @order            = user.orders.create(FactoryGirl.attributes_for(:order, :created_by => user.id, :account => account, :ordered_at => Time.zone.now))
+  @order = user.orders.create(FactoryGirl.attributes_for(:order, created_by: user.id, account: account, ordered_at: Time.zone.now))
   @order.add(@instrument, 1)
-  @order_detail     = @order.order_details.first
+  @order_detail = @order.order_details.first
 end
 
 #
@@ -252,7 +250,7 @@ def account_users_attributes_hash(options = {})
   options[:user] ||= @user
   options[:created_by] ||= options[:user].id
   # force created_by to a fixnum id
-  options[:created_by] = options[:created_by].kind_of?(Fixnum) ? options[:created_by] : options[:created_by].id
+  options[:created_by] = options[:created_by].is_a?(Fixnum) ? options[:created_by] : options[:created_by].id
 
   options[:user_role] ||= AccountUser::ACCOUNT_OWNER
   [Hash[options]]
@@ -264,11 +262,10 @@ end
 # - @account
 # - @pg_member
 def setup_user_for_purchase(user, price_group)
-  @account          = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => user))
-  @pg_member        = FactoryGirl.create(:user_price_group_member, :user => user, :price_group => price_group)
+  @account          = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
+  @pg_member        = FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group)
   create(:account_price_group_member, account: @account, price_group: PriceGroup.base.first)
 end
-
 
 # If you changed Settings anywhere in your spec, include this as
 # in after :all to reset to the normal settings.
@@ -276,20 +273,20 @@ def reset_settings
   Settings.reload_from_files(
     Rails.root.join("config", "settings.yml").to_s,
     Rails.root.join("config", "settings", "#{Rails.env}.yml").to_s,
-    Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s
+    Rails.root.join("config", "environments", "#{Rails.env}.yml").to_s,
   )
 end
 
 def setup_account(factory, facility, user)
   FactoryGirl.create(factory,
-    facility: facility,
-    account_users_attributes: account_users_attributes_hash(user: user)
-  )
+                     facility: facility,
+                     account_users_attributes: account_users_attributes_hash(user: user),
+                    )
 end
 
 def setup_item_from_facility_account(facility_account)
   facility_account.facility.items.create(
-    FactoryGirl.attributes_for(:item, facility_account_id: facility_account.id)
+    FactoryGirl.attributes_for(:item, facility_account_id: facility_account.id),
   )
 end
 
@@ -298,8 +295,8 @@ def setup_order_detail(order, product, statement = nil)
     FactoryGirl.attributes_for(:order_detail).update(
       product_id: product.id,
       account_id: order.account.id,
-      statement_id: statement.try(:id)
-    )
+      statement_id: statement.try(:id),
+    ),
   )
 end
 

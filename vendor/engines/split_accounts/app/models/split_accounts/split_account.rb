@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class SplitAccount < Account
 
     has_many :splits, class_name: "SplitAccounts::Split", foreign_key: :parent_split_account_id, inverse_of: :parent_split_account
@@ -15,9 +16,7 @@ module SplitAccounts
     before_save :set_suspended_at_from_subaccounts
 
     def valid_percent_total
-      if percent_total != 100
-        errors.add(:splits, :percent_total)
-      end
+      errors.add(:splits, :percent_total) if percent_total != 100
     end
 
     def percent_total
@@ -27,15 +26,11 @@ module SplitAccounts
     end
 
     def one_split_has_extra_penny
-      if extra_penny_count != 1
-        errors.add(:splits, :only_one_extra_penny)
-      end
+      errors.add(:splits, :only_one_extra_penny) if extra_penny_count != 1
     end
 
     def unique_split_subaccounts
-      if duplicate_subaccounts?
-        errors.add(:splits, :duplicate_subaccounts)
-      end
+      errors.add(:splits, :duplicate_subaccounts) if duplicate_subaccounts?
     end
 
     def extra_penny_count
@@ -44,15 +39,13 @@ module SplitAccounts
 
     def duplicate_subaccounts?
       splits.map(&:subaccount_id)
-        .group_by { |subaccount_id| subaccount_id }
-        .reject { |key, value| key.blank? }
-        .any? { |key, value| value.size > 1 }
+            .group_by { |subaccount_id| subaccount_id }
+            .reject { |key, _value| key.blank? }
+            .any? { |_key, value| value.size > 1 }
     end
 
     def more_than_one_split
-      if splits.size <= 1
-        errors.add(:splits, :more_than_one_split)
-      end
+      errors.add(:splits, :more_than_one_split) if splits.size <= 1
     end
 
     # Stopped using SQL because that didn't work until the built splits
@@ -88,4 +81,5 @@ module SplitAccounts
     end
 
   end
+
 end

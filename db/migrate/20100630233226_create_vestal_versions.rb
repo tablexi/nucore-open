@@ -1,8 +1,9 @@
 class CreateVestalVersions < ActiveRecord::Migration
+
   def self.up
     create_table :versions do |t|
-      t.belongs_to :versioned, :polymorphic => true
-      t.belongs_to :user, :polymorphic => true
+      t.belongs_to :versioned, polymorphic: true
+      t.belongs_to :user, polymorphic: true
       t.string :user_name
       t.text :data_changes
       t.integer :number
@@ -24,4 +25,5 @@ class CreateVestalVersions < ActiveRecord::Migration
   def self.down
     drop_table :versions
   end
+
 end

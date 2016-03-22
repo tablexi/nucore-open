@@ -1,4 +1,5 @@
 class Reports::OrderImport
+
   def initialize(order_import)
     @order_import = order_import
   end
@@ -44,4 +45,5 @@ class Reports::OrderImport
       "reports.order_import.fail_continue_on_error"
     end
   end
+
 end

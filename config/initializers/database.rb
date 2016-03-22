@@ -1,5 +1,5 @@
 # Be sure to restart your server when you modify this file.
-require 'nucore'
+require "nucore"
 
 if NUCore::Database.oracle?
   ActiveRecord::ConnectionAdapters::OracleEnhancedAdapter.class_eval do
@@ -9,5 +9,5 @@ if NUCore::Database.oracle?
 
   # OCI8 does not realize that SafeBuffer is a type of string, so we need to
   # tell it what to do.
-  OCI8::BindType::Mapping['ActiveSupport::SafeBuffer'] = OCI8::BindType::String
+  OCI8::BindType::Mapping["ActiveSupport::SafeBuffer"] = OCI8::BindType::String
 end

@@ -1,9 +1,10 @@
 class Bundle < Product
-  has_many :products, :through => :bundle_products
-  has_many :bundle_products, :foreign_key => :bundle_product_id
+
+  has_many :products, through: :bundle_products
+  has_many :bundle_products, foreign_key: :bundle_product_id
 
   def products_for_group_select
-    products = facility.products.find(:all, :conditions => ["type <> 'Bundle'"], :order => 'products.type, products.name')
+    products = facility.products.find(:all, conditions: ["type <> 'Bundle'"], order: "products.type, products.name")
     current_group = []
     current_opts  = []
     groups = []
@@ -24,13 +25,13 @@ class Bundle < Product
   end
 
   def products_active?
-    return true if products.empty? && !self.is_archived?
-    return false if products.empty? || products.any?{|p| p.is_archived?}
+    return true if products.empty? && !is_archived?
+    return false if products.empty? || products.any?(&:is_archived?)
     true
   end
 
-  def can_purchase? (group_ids = nil)
-    return false if  !available_for_purchase?
+  def can_purchase?(group_ids = nil)
+    return false unless available_for_purchase?
     # before if products.empty?, this would return and empty set [], which evaluates to true
     return false if products.empty?
     products.each do |p|
@@ -38,10 +39,10 @@ class Bundle < Product
     end
   end
 
-
   private
 
   def account_required
     false
   end
+
 end

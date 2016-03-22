@@ -1,12 +1,11 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'notifications_helper'
+require "controller_spec_helper"
+require "notifications_helper"
 
-
-RSpec.shared_examples 'user without notifications' do
-  context 'director without notices' do
+RSpec.shared_examples "user without notifications" do
+  context "director without notices" do
     before :each do
-      @director.notifications.all.each{|n| n.destroy}
+      @director.notifications.all.each(&:destroy)
     end
 
     it_should_allow :director, "no access to notifications if there aren't any" do
@@ -16,13 +15,12 @@ RSpec.shared_examples 'user without notifications' do
   end
 end
 
-
 RSpec.describe NotificationsController do
   include NotificationsHelper
 
   before :each do
     create_users
-    request.env["HTTP_REFERER"]=root_path
+    request.env["HTTP_REFERER"] = root_path
 
     facility_users.each do |usr|
       create_merge_notification_subject
@@ -30,26 +28,24 @@ RSpec.describe NotificationsController do
     end
   end
 
-
-  context 'index' do
+  context "index" do
     before :each do
       @authable = create(:facility)
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
     it_should_require_login
 
-    it_should_behave_like 'user without notifications'
+    it_should_behave_like "user without notifications"
 
     it_should_allow_all facility_users do |user|
       expect(assigns(:notices).size).to eq(user.notifications.active.count)
-      is_expected.to render_template 'index'
+      is_expected.to render_template "index"
     end
   end
 
-
-  #context 'update' do
+  # context 'update' do
   #  before :each do
   #    @method=:put
   #    @action=:update
@@ -75,6 +71,6 @@ RSpec.describe NotificationsController do
   #      end
   #    end
   #  end
-  #end
+  # end
 
 end

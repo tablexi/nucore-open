@@ -49,8 +49,8 @@ end
 # and the request described by the variables will be made.
 # [_params_]
 #   Overrides the @params variable
-def do_request(params=nil)
-  params=@params unless params
+def do_request(params = nil)
+  params = @params unless params
   if @method == :xhr
     xhr :get, @action, params
   else
@@ -65,7 +65,6 @@ def switch_to(user)
   session[:acting_user_id] = user.id
 end
 
-
 #
 # The helpers below are useful for testing the authentication
 # and authorization frameworks. They rely on the existence
@@ -79,12 +78,11 @@ end
 #
 # Asserts that the request is redirected to the login page
 def it_should_require_login
-  it 'should require login', :auth => true do
+  it "should require login", auth: true do
     do_request
     is_expected.to redirect_to(new_user_session_url)
   end
 end
-
 
 #
 # Asserts that the user is denied authorization
@@ -92,14 +90,13 @@ end
 #   The +Symbol+ic username of the #create_users user to test
 # [_spec_desc_]
 #   If present is passed to the spec as its description
-def it_should_deny(user_sym, spec_desc='')
-  it "should deny #{user_sym.to_s} " + spec_desc, :auth => true do
+def it_should_deny(user_sym, spec_desc = "")
+  it "should deny #{user_sym} " + spec_desc, auth: true do
     maybe_grant_always_sign_in(user_sym)
     do_request
-    is_expected.to render_template('403')
+    is_expected.to render_template("403")
   end
 end
-
 
 #
 # Grants a user a role based on their username and signs them in
@@ -111,8 +108,8 @@ end
 # [_eval_]
 #   block of tests to be evaluated after roles are
 #   granted and the user is signed in
-def it_should_allow(user_sym, spec_desc='', &eval)
-  it "should allow #{user_sym.to_s} " + spec_desc, :auth => true do
+def it_should_allow(user_sym, spec_desc = "", &eval)
+  it "should allow #{user_sym} " + spec_desc, auth: true do
     maybe_grant_always_sign_in(user_sym)
     do_request
     instance_eval &eval
@@ -127,40 +124,35 @@ end
 #   An Array of the +Symbol+ic usernames of #create_users users to test
 #
 
-def it_should_deny_all(user_syms, spec_desc='')
+def it_should_deny_all(user_syms, spec_desc = "")
   user_syms.each { |user_sym| it_should_deny user_sym, spec_desc }
 end
 
-
-def it_should_allow_all(user_syms, spec_desc='', &eval)
+def it_should_allow_all(user_syms, spec_desc = "", &eval)
   user_syms.each do |user_sym|
-    it "should allow #{user_sym.to_s} " + spec_desc, :auth => true do
-      user=maybe_grant_always_sign_in(user_sym)
+    it "should allow #{user_sym} " + spec_desc, auth: true do
+      user = maybe_grant_always_sign_in(user_sym)
       do_request
       instance_exec(user, &eval)
     end
   end
 end
 
-
 #
 # Convenient params for *_all helpers
 #
 
 def facility_managers
-  [ :admin, :director ]
+  [:admin, :director]
 end
-
 
 def facility_operators
-  facility_managers + [ :staff, :senior_staff ]
+  facility_managers + [:staff, :senior_staff]
 end
-
 
 def facility_users
-  facility_operators + [ :guest ]
+  facility_operators + [:guest]
 end
-
 
 #
 # Bundles the common test suite of ensuring an action requires
@@ -174,7 +166,7 @@ end
 # [_eval_]
 #   A block holding successful auth tests. If given will be passed the
 #   user whose auth is currently being tested. Not required.
-def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
+def it_should_allow_managers_only(response = :success, spec_desc = "", &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -187,10 +179,9 @@ def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
     is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
-
 end
 
-def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc='', &eval)
+def it_should_allow_managers_and_senior_staff_only(response = :success, spec_desc = "", &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -201,13 +192,11 @@ def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc=
     is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
-
 end
-
 
 #
 # Similar to #it_should_allow_managers_only, but for operators
-def it_should_allow_operators_only(response=:success, spec_desc='', &eval)
+def it_should_allow_operators_only(response = :success, spec_desc = "", &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -216,13 +205,11 @@ def it_should_allow_operators_only(response=:success, spec_desc='', &eval)
     is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
-
 end
-
 
 #
 # Similar to #it_should_allow_managers_only, but tests admin access
-def it_should_allow_admin_only(response=:success, spec_desc='', &eval)
+def it_should_allow_admin_only(response = :success, spec_desc = "", &eval)
   it_should_require_login
 
   it_should_deny(:guest, spec_desc)
@@ -235,56 +222,54 @@ def it_should_allow_admin_only(response=:success, spec_desc='', &eval)
     is_expected.to respond_with response
     instance_eval &eval if eval
   end
-
 end
-
 
 #
 # Helpers for the above API. Stand-alone use is discouraged.
 #
 
-def grant_role(user, authable=nil)
+def grant_role(user, authable = nil)
   if authable.nil?
     authable = @authable
     authable = send(:authable) if authable.nil? && respond_to?(:authable)
   end
 
   case user.username
-    when 'facility_admin'
-      UserRole.grant(user, UserRole::FACILITY_ADMINISTRATOR, authable)
-      expect(user.reload).to be_facility_administrator_of(authable)
-    when 'director'
-      UserRole.grant(user, UserRole::FACILITY_DIRECTOR, authable)
-      expect(user.reload).to be_facility_director_of(authable)
-    when 'staff'
-      UserRole.create!(user: user, role: UserRole::FACILITY_STAFF, facility: authable) unless user.facility_staff_of?(authable)
-      expect(user.reload).to be_facility_staff_of(authable)
-    when 'owner'
-      # Creating a NufsAccount requires an owner to be present, and some pre-Rails3 tests try to add the same user
-      # to the same account with the same role of owner. That's a uniqueness error on AccountUser. Avoid it.
-      existing=AccountUser.find_by_user_id_and_account_id_and_user_role(user.id, authable.id, AccountUser::ACCOUNT_OWNER)
-      AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin) unless existing
-      expect(user.reload).to be_owner_of(authable)
-    when 'purchaser'
-      AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
-      expect(user.reload).to be_purchaser_of(authable)
-    when 'business_admin'
-      AccountUser.grant(user, AccountUser::ACCOUNT_ADMINISTRATOR, authable, @admin)
-      expect(user.reload).to be_business_administrator_of(authable)
-    when 'senior_staff'
-      UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, authable)
-      expect(user.reload).to be_facility_senior_staff_of(authable)
+  when "facility_admin"
+    UserRole.grant(user, UserRole::FACILITY_ADMINISTRATOR, authable)
+    expect(user.reload).to be_facility_administrator_of(authable)
+  when "director"
+    UserRole.grant(user, UserRole::FACILITY_DIRECTOR, authable)
+    expect(user.reload).to be_facility_director_of(authable)
+  when "staff"
+    UserRole.create!(user: user, role: UserRole::FACILITY_STAFF, facility: authable) unless user.facility_staff_of?(authable)
+    expect(user.reload).to be_facility_staff_of(authable)
+  when "owner"
+    # Creating a NufsAccount requires an owner to be present, and some pre-Rails3 tests try to add the same user
+    # to the same account with the same role of owner. That's a uniqueness error on AccountUser. Avoid it.
+    existing = AccountUser.find_by_user_id_and_account_id_and_user_role(user.id, authable.id, AccountUser::ACCOUNT_OWNER)
+    AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin) unless existing
+    expect(user.reload).to be_owner_of(authable)
+  when "purchaser"
+    AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
+    expect(user.reload).to be_purchaser_of(authable)
+  when "business_admin"
+    AccountUser.grant(user, AccountUser::ACCOUNT_ADMINISTRATOR, authable, @admin)
+    expect(user.reload).to be_business_administrator_of(authable)
+  when "senior_staff"
+    UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, authable)
+    expect(user.reload).to be_facility_senior_staff_of(authable)
   end
 end
 
 def grant_and_sign_in(user)
   grant_role(user) unless user == @guest || user == @admin
   sign_in user
-  return user
+  user
 end
 
 def maybe_grant_always_sign_in(user_sym)
-  user=instance_variable_get("@#{user_sym.to_s}")
+  user = instance_variable_get("@#{user_sym}")
   grant_and_sign_in(user)
 end
 
@@ -293,10 +278,9 @@ def split_date_to_params(key, date)
     :"#{key}_date" => format_usa_date(date),
     :"#{key}_hour" => date.strftime("%I"),
     :"#{key}_min" => date.min.to_s,
-    :"#{key}_meridian" => date.strftime('%p')
+    :"#{key}_meridian" => date.strftime("%p"),
   }
 end
-
 
 # Takes a parameter set and replaces _start_at and _end_at DateTime parameters split up into their other fields
 # like reserve_start_date, reserve_start_hour, and duration_unit
@@ -306,7 +290,8 @@ def parametrize_dates(params, key)
   end_time = params[:"#{key}_end_at"]
 
   params.merge!(split_date_to_params("#{key}_start", start_time))
-  params.merge!(:duration_value => ((end_time - start_time) / 60).ceil.to_s, :duration_unit => 'minutes')
+  params[:duration_value] = ((end_time - start_time) / 60).ceil.to_s
+  params[:duration_unit] = "minutes"
 
   params.delete :"#{key}_start_at"
   params.delete :"#{key}_end_at"

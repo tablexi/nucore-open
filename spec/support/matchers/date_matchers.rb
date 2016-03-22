@@ -8,6 +8,6 @@ end
 
 RSpec::Matchers.define :include_date do |expected|
   match do |actual|
-  	actual.any? { |a| (a - expected).abs <= 2.0 }
+    actual.any? { |a| (a - expected).abs <= 2.0 }
   end
 end

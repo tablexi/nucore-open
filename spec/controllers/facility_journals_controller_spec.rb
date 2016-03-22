@@ -99,7 +99,7 @@ RSpec.describe FacilityJournalsController do
 
       context "successful journal" do
         before :each do
-          @params.merge!(journal_status: "succeeded")
+          @params[:journal_status] = "succeeded"
           do_request
         end
 
@@ -127,7 +127,7 @@ RSpec.describe FacilityJournalsController do
 
       context "successful with errors" do
         before :each do
-          @params.merge!(journal_status: "succeeded_errors")
+          @params[:journal_status] = "succeeded_errors"
           do_request
         end
 
@@ -155,7 +155,7 @@ RSpec.describe FacilityJournalsController do
 
       context "failed journal" do
         before :each do
-          @params.merge!(journal_status: "failed")
+          @params[:journal_status] = "failed"
           do_request
         end
 

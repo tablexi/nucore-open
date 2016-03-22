@@ -1,4 +1,5 @@
 class AlterJournalRowsRemoveNu < ActiveRecord::Migration
+
   def self.up
     if NUCore::Database.oracle?
       puts <<-WARN
@@ -15,11 +16,12 @@ class AlterJournalRowsRemoveNu < ActiveRecord::Migration
 
   def self.down
     change_table :journal_rows do |t|
-      t.column :fund, :string, :limit => 3, :null => false
-      t.column :dept, :string, :limit => 7, :null => false
-      t.column :project, :string, :limit => 8
-      t.column :activity, :string, :limit => 2
-      t.column :program, :string, :limit => 4
+      t.column :fund, :string, limit: 3, null: false
+      t.column :dept, :string, limit: 7, null: false
+      t.column :project, :string, limit: 8
+      t.column :activity, :string, limit: 2
+      t.column :program, :string, limit: 4
     end
   end
+
 end

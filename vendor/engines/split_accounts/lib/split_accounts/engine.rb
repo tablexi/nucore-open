@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class Engine < Rails::Engine
 
     def self.enable!
@@ -45,9 +46,10 @@ module SplitAccounts
     # Include factories in main rails app
     initializer "model_core.factories", after: "factory_girl.set_factory_paths" do
       if defined?(FactoryGirl)
-        FactoryGirl.definition_file_paths << File.expand_path('../../../spec/factories', __FILE__)
+        FactoryGirl.definition_file_paths << File.expand_path("../../../spec/factories", __FILE__)
       end
     end
 
   end
+
 end

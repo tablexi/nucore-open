@@ -1,4 +1,5 @@
 class AddProcessedAtToOrderImport < ActiveRecord::Migration
+
   def up
     add_column :order_imports, :processed_at, :timestamp, after: :created_by
 
@@ -10,4 +11,5 @@ class AddProcessedAtToOrderImport < ActiveRecord::Migration
   def down
     remove_column :order_imports, :processed_at
   end
+
 end

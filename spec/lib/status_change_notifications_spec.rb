@@ -4,24 +4,24 @@ RSpec.describe StatusChangeNotifications do
     @order_status = FactoryGirl.create(:order_status)
     Settings.order_details ||= {}
     Settings.order_details.status_change_hooks = {
-      :"#{@order_status.downcase_name}" => "StatusChangeNotifications::#{self.class.description}"
-     }
+      :"#{@order_status.downcase_name}" => "StatusChangeNotifications::#{self.class.description}",
+    }
     SettingsHelper.enable_feature(:product_specific_contacts)
     @user = FactoryGirl.create(:user)
-    @facility = FactoryGirl.create(:facility, :email => 'notify-facility@example.org')
+    @facility = FactoryGirl.create(:facility, email: "notify-facility@example.org")
     @order_detail = place_and_complete_item_order(@user, @facility)
-    @order_detail.product.update_attributes!(:contact_email => 'notify-product@example.org')
+    @order_detail.product.update_attributes!(contact_email: "notify-product@example.org")
     @initial_order_status = @order_detail.order_status
   end
 
-  context 'NotifyFacilityHook' do
+  context "NotifyFacilityHook" do
     it "should notify the product's email address" do
-      notifier_should_receive_email 'notify-product@example.org'
+      notifier_should_receive_email "notify-product@example.org"
     end
   end
 
-  context 'NotifyPurchaserHook' do
-    it 'should notify the purchaser' do
+  context "NotifyPurchaserHook" do
+    it "should notify the purchaser" do
       notifier_should_receive_email @user.email
     end
   end

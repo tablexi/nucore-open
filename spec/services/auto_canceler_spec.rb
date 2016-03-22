@@ -3,32 +3,36 @@ require "rails_helper"
 RSpec.describe AutoCanceler do
   before :each do
     # Need to travel later in the day so that previous reservations can be made in the day
-    Timecop.travel(Time.zone.parse("#{Date.today.to_s} 12:30:00"))
+    Timecop.travel(Time.zone.parse("#{Date.today} 12:30:00"))
   end
 
   after :each do
     Timecop.return
   end
 
-  let(:base_date) { Time.zone.parse("#{Date.today.to_s} 12:30:00") }
+  let(:base_date) { Time.zone.parse("#{Date.today} 12:30:00") }
   let(:instrument) { FactoryGirl.create :setup_instrument }
-  let!(:future_reservation) { FactoryGirl.create :purchased_reservation,
-    :product => instrument,
-    :reserve_start_at => base_date + 1.day,
-    :reserve_end_at => base_date + 1.day + 1.hour }
+  let!(:future_reservation) do
+    FactoryGirl.create :purchased_reservation,
+                       product: instrument,
+                       reserve_start_at: base_date + 1.day,
+                       reserve_end_at: base_date + 1.day + 1.hour
+  end
 
-  let!(:past_reservation) { FactoryGirl.create :purchased_reservation,
-    :product => instrument,
-    :reserve_start_at => base_date - 2.hours,
-    :reserve_end_at => base_date - 1.hour,
-    :reserved_by_admin => true}
+  let!(:past_reservation) do
+    FactoryGirl.create :purchased_reservation,
+                       product: instrument,
+                       reserve_start_at: base_date - 2.hours,
+                       reserve_end_at: base_date - 1.hour,
+                       reserved_by_admin: true
+  end
 
   let!(:completed_reservation) do
     res = FactoryGirl.create :purchased_reservation,
-      :product => instrument,
-      :reserve_start_at => base_date - 3.hours,
-      :reserve_end_at => base_date - 2.hour,
-      :reserved_by_admin => true
+                             product: instrument,
+                             reserve_start_at: base_date - 3.hours,
+                             reserve_end_at: base_date - 2.hours,
+                             reserved_by_admin: true
     res.order_detail.to_complete!
     res
   end
@@ -37,47 +41,47 @@ RSpec.describe AutoCanceler do
 
   let(:canceler) { AutoCanceler.new }
 
-  context 'with auto-cancel minutes' do
+  context "with auto-cancel minutes" do
     before :each do
-      instrument.update_attributes(:auto_cancel_mins => 10, :min_cancel_hours => 1)
+      instrument.update_attributes(auto_cancel_mins: 10, min_cancel_hours: 1)
     end
 
-    it 'should find the past reservation in cancelable' do
+    it "should find the past reservation in cancelable" do
       expect(canceler.cancelable_reservations.to_a).to eq([past_reservation])
     end
 
-    it 'should not cancel the future reservation' do
+    it "should not cancel the future reservation" do
       canceler.cancel_reservations
       expect(future_reservation.order_detail.reload.order_status).not_to eq(canceled_status)
     end
 
-    it 'should cancel the past reservation' do
+    it "should cancel the past reservation" do
       canceler.cancel_reservations
       expect(past_reservation.order_detail.reload.order_status).to eq(canceled_status)
     end
 
-    it 'should not cancel the completed reservation' do
+    it "should not cancel the completed reservation" do
       canceler.cancel_reservations
       expect(completed_reservation.order_detail.reload.order_status).not_to eq(canceled_status)
     end
 
-    it 'should not cancel a past reservation in the cart' do
+    it "should not cancel a past reservation in the cart" do
       cart_reservation = FactoryGirl.create(:setup_reservation,
-        :product => instrument,
-        :reserve_start_at => base_date - 1.day,
-        :reserve_end_at => base_date - 1.day + 1.hour,
-        :reserved_by_admin => true)
+                                            product: instrument,
+                                            reserve_start_at: base_date - 1.day,
+                                            reserve_end_at: base_date - 1.day + 1.hour,
+                                            reserved_by_admin: true)
 
       canceler.cancel_reservations
       expect(cart_reservation.order_detail.reload.order_status).not_to eq(canceled_status)
     end
 
-    context 'with cancellation fee' do
+    context "with cancellation fee" do
       before :each do
         instrument.price_policies.first.update_attributes(cancellation_cost: 10)
       end
 
-      it 'should charge the fee' do
+      it "should charge the fee" do
         canceler.cancel_reservations
         expect(past_reservation.order_detail.reload.actual_cost.to_f).to eq(10)
       end
@@ -85,12 +89,12 @@ RSpec.describe AutoCanceler do
 
   end
 
-  context 'without auto-cancel minutes' do
+  context "without auto-cancel minutes" do
     before :each do
-      instrument.update_attributes(:auto_cancel_mins => 0)
+      instrument.update_attributes(auto_cancel_mins: 0)
     end
 
-    it 'should not cancel reservations' do
+    it "should not cancel reservations" do
       canceler.cancel_reservations
       expect(past_reservation.order_detail.order_status).not_to eq canceled_status
     end

@@ -1,10 +1,11 @@
-require 'fast-aes'
-require 'active_support/secure_random'
-require 'base64'
+require "fast-aes"
+require "active_support/secure_random"
+require "base64"
 
 module Encryption
-  #Basic AES symmetric encryption functions
-  #based on http://snippets.dzone.com/posts/show/4975
+
+  # Basic AES symmetric encryption functions
+  # based on http://snippets.dzone.com/posts/show/4975
 
   def self.encrypt(text)
     aes  = FastAES.new(Settings.aes_crypt_key)
@@ -13,8 +14,9 @@ module Encryption
   end
 
   def self.decrypt(data)
-    aes  = FastAES.new(Settings.aes_crypt_key)
+    aes = FastAES.new(Settings.aes_crypt_key)
     output = aes.decrypt(Base64.decode64(data))
     text = output[24..-1]
   end
+
 end

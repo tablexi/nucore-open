@@ -13,9 +13,8 @@ class ValidatorDefault
   # Returns the payment source format that is
   # considered valid. Example: '123-456-7890'
   def self.pattern_format
-    '++ any characters ++'
+    "++ any characters ++"
   end
-
 
   #
   # Returns the regexp that validates +#pattern_format+
@@ -23,12 +22,10 @@ class ValidatorDefault
     /.+/
   end
 
-
   #
   # This class will not use anything you pass in.
   def initialize(*args)
   end
-
 
   #
   # Validates a payment source. Returns nil and raises
@@ -37,7 +34,6 @@ class ValidatorDefault
   def account_is_open!(fulfilled_at = nil)
   end
 
-
   #
   # [_return_]
   #   the latest expiration date for a payment source
@@ -45,14 +41,12 @@ class ValidatorDefault
     (Time.zone.now + 50.years).end_of_day
   end
 
-
   #
   # [_return_]
   #   A +Hash+ of :component_name => component_value pairs
   def components
     {}
   end
-
 
   #
   # [_return_]

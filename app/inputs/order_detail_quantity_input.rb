@@ -1,7 +1,7 @@
 class OrderDetailQuantityInput < SimpleForm::Inputs::FileInput
 
   def input
-    input_html_options[:class] << 'timeinput' if object.quantity_as_time?
+    input_html_options[:class] << "timeinput" if object.quantity_as_time?
     @builder.text_field(attribute_name, input_html_options).html_safe
   end
 
@@ -16,4 +16,5 @@ class OrderDetailQuantityInput < SimpleForm::Inputs::FileInput
   def has_disabled?
     !object.quantity_editable?
   end
+
 end

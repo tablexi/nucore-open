@@ -1,7 +1,8 @@
 module ProblemOrderDetailsHelper
+
   def problem_order_date_header(show_reservation_start_at)
     if show_reservation_start_at
-      t('.th.actual_start')
+      t(".th.actual_start")
     else
       Order.human_attribute_name(:ordered_at)
     end
@@ -17,4 +18,5 @@ module ProblemOrderDetailsHelper
 
     human_datetime(date)
   end
+
 end

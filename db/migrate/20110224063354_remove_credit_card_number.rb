@@ -1,4 +1,5 @@
 class RemoveCreditCardNumber < ActiveRecord::Migration
+
   def self.up
     remove_column :accounts, :credit_card_number_encrypted
   end
@@ -6,4 +7,5 @@ class RemoveCreditCardNumber < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

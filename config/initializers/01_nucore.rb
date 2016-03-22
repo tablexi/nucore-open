@@ -1,5 +1,5 @@
-require 'nucore'
-require 'devise_ldap_authenticatable/strategy'
+require "nucore"
+require "devise_ldap_authenticatable/strategy"
 
 ActiveRecord::Base.class_eval do
   def self.validate_url_name(attr_name, scope = nil)
@@ -17,6 +17,6 @@ end
 # Log info about how each user is authenticated.
 # In the future we may want to record in the DB the means
 # by which auth happened.
-Warden::Manager.after_authentication do |user,auth,opts|
-  Rails.logger.info "User #{user.username} authenticated via #{auth.winning_strategy.class.to_s} at #{user.current_sign_in_at}"
+Warden::Manager.after_authentication do |user, auth, _opts|
+  Rails.logger.info "User #{user.username} authenticated via #{auth.winning_strategy.class} at #{user.current_sign_in_at}"
 end

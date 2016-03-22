@@ -1,4 +1,5 @@
-class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
+class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
+
   disable :required
 
   def input
@@ -12,8 +13,8 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
 
     search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)] if collection_size == 1
 
-    select_options = {:multiple => true, :"data-placeholder" => placeholder_label }
-    select_options.merge!({:disabled => :disabled}) unless collection_size > 1
+    select_options = { :multiple => true, :"data-placeholder" => placeholder_label }
+    select_options[:disabled] = :disabled unless collection_size > 1
 
     template.select_tag(attribute_name, option_data, select_options).html_safe
   end
@@ -30,7 +31,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
   end
 
   def model_label
-    attribute_class.model_name.human(:count => 2)
+    attribute_class.model_name.human(count: 2)
   end
 
   def search_fields
@@ -52,4 +53,5 @@ class TransactionChosenInput < SimpleForm::Inputs::Base #CollectionSelectInput
       template.options_from_collection_for_select(collection_items, options[:value_method], options[:label_method], search_fields[attribute_name])
     end
   end
+
 end

@@ -1,12 +1,13 @@
 class PricePolicyUpdater
+
   def self.update_all!(price_policies, start_date, expire_date, params)
-    self.new(price_policies, start_date, expire_date, params).update_all!
+    new(price_policies, start_date, expire_date, params).update_all!
   end
 
   def self.destroy_all_for_product!(product, start_date)
     price_policies = product.price_policies.for_date(start_date)
     raise ActiveRecord::RecordNotFound if price_policies.none?
-    self.new(price_policies, start_date).destroy_all!
+    new(price_policies, start_date).destroy_all!
   end
 
   def initialize(price_policies, start_date, expire_date = nil, params = nil)
@@ -51,4 +52,5 @@ class PricePolicyUpdater
   def initial_price_group_attributes(price_group)
     @params["price_policy_#{price_group.id}"] || { can_purchase: false }
   end
+
 end

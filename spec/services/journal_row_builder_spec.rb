@@ -28,13 +28,13 @@ RSpec.describe JournalRowBuilder, type: :service do
       expect(builder.product_recharges).to eq({})
     end
 
-    context "when recharge_accounts enabled", feature_setting: {recharge_accounts: true} do
+    context "when recharge_accounts enabled", feature_setting: { recharge_accounts: true } do
       it "assigns recharge_enabled" do
         expect(builder.recharge_enabled).to eq(true)
       end
     end
 
-    context "when recharge_accounts disabled", feature_setting: {recharge_accounts: false} do
+    context "when recharge_accounts disabled", feature_setting: { recharge_accounts: false } do
       it "assigns recharge_enabled" do
         expect(builder.recharge_enabled).to eq(false)
       end
@@ -46,10 +46,10 @@ RSpec.describe JournalRowBuilder, type: :service do
 
     let(:journal) do
       build(:journal,
-        facility: facility,
-        created_by: 1,
-        journal_date: journal_date,
-      )
+            facility: facility,
+            created_by: 1,
+            journal_date: journal_date,
+           )
     end
 
     let(:facility) { create(:facility) }
@@ -63,10 +63,10 @@ RSpec.describe JournalRowBuilder, type: :service do
       order_details.each(&:to_complete!)
     end
 
-    context "when recharge_accounts enabled", feature_setting: {recharge_accounts: true} do
+    context "when recharge_accounts enabled", feature_setting: { recharge_accounts: true } do
 
       it "builds two journal_rows for each order_detail" do
-        expect(builder.build.journal_rows.size).to eq(order_details.size*2)
+        expect(builder.build.journal_rows.size).to eq(order_details.size * 2)
       end
 
       it "builds a product_recharge for each order_detail" do
@@ -75,7 +75,7 @@ RSpec.describe JournalRowBuilder, type: :service do
 
     end
 
-    context "when recharge_accounts disabled", feature_setting: {recharge_accounts: false} do
+    context "when recharge_accounts disabled", feature_setting: { recharge_accounts: false } do
 
       it "builds a journal_row for each order_detail" do
         expect(builder.build.journal_rows.size).to eq(order_details.size)

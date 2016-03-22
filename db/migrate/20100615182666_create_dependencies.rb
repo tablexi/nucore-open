@@ -1,10 +1,11 @@
 class CreateDependencies < ActiveRecord::Migration
+
   def self.up
     create_table :dependencies do |t|
       # Context
       t.integer :question_id # the dependent question
       t.integer :question_group_id
-      
+
       # Conditional
       t.string :rule
 
@@ -19,4 +20,5 @@ class CreateDependencies < ActiveRecord::Migration
   def self.down
     drop_table :dependencies
   end
+
 end

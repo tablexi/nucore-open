@@ -1,4 +1,5 @@
 class ChartStringReassignmentForm
+
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
@@ -24,4 +25,5 @@ class ChartStringReassignmentForm
   def facility
     @facility ||= @order_details.first.facility
   end
+
 end

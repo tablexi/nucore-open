@@ -75,26 +75,26 @@ RSpec.describe Facility do
 
   context "url_name" do
     it "is only valid with alphanumeric and -_ characters" do
-      is_expected.not_to allow_value('abc 123').for(:url_name)
-      is_expected.to allow_value('abc-123').for(:url_name)
-      is_expected.to allow_value('abc123').for(:url_name)
+      is_expected.not_to allow_value("abc 123").for(:url_name)
+      is_expected.to allow_value("abc-123").for(:url_name)
+      is_expected.to allow_value("abc123").for(:url_name)
     end
 
     it "is not valid with less than 3 or longer than 50 characters" do
-      is_expected.not_to allow_value('123456789012345678901234567890123456789012345678901').for(:url_name) # 51 chars
-      is_expected.not_to allow_value('12').for(:url_name)
-      is_expected.not_to allow_value('').for(:url_name)
+      is_expected.not_to allow_value("123456789012345678901234567890123456789012345678901").for(:url_name) # 51 chars
+      is_expected.not_to allow_value("12").for(:url_name)
+      is_expected.not_to allow_value("").for(:url_name)
       is_expected.not_to allow_value(nil).for(:url_name)
-     end
+    end
 
     it "is valid between 3 and 50 characters" do
-      is_expected.to allow_value('123').for(:url_name)
-      is_expected.to allow_value('12345678901234567890123456789012345678901234567890').for(:url_name) # 50 chars
+      is_expected.to allow_value("123").for(:url_name)
+      is_expected.to allow_value("12345678901234567890123456789012345678901234567890").for(:url_name) # 50 chars
     end
 
     it "is unique" do
       @factory1 = FactoryGirl.create(:facility)
-      @factory2 = FactoryGirl.build(:facility, :url_name => @factory1.url_name)
+      @factory2 = FactoryGirl.build(:facility, url_name: @factory1.url_name)
       expect(@factory2).not_to be_valid
     end
   end

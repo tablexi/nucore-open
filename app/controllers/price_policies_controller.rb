@@ -1,4 +1,5 @@
 class PricePoliciesController < ApplicationController
+
   include DateHelper
 
   admin_tab     :all
@@ -102,14 +103,14 @@ class PricePoliciesController < ApplicationController
       instance_variable_get("@#{product_var}")
         .price_policies
         .for_date(@start_date)
-        .first
+        .first,
     )
   end
 
   def init_product
     @product = current_facility.method(product_var.pluralize)
-      .call
-      .find_by_url_name!(params["#{product_var}_id".to_sym])
+                               .call
+                               .find_by_url_name!(params["#{product_var}_id".to_sym])
     instance_variable_set("@#{product_var}", @product)
   end
 
@@ -154,4 +155,5 @@ class PricePoliciesController < ApplicationController
       params,
     )
   end
+
 end

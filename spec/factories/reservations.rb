@@ -41,19 +41,19 @@ FactoryGirl.define do
     end
   end
 
-  factory :setup_reservation, :class => Reservation, :parent => :reservation do
-    product :factory => :setup_instrument
+  factory :setup_reservation, class: Reservation, parent: :reservation do
+    product factory: :setup_instrument
 
-    order_detail { FactoryGirl.create(:setup_order, :product => product).order_details.first }
+    order_detail { FactoryGirl.create(:setup_order, product: product).order_details.first }
   end
 
-  factory :validated_reservation, :parent => :setup_reservation do
+  factory :validated_reservation, parent: :setup_reservation do
     after(:create) do |reservation|
       reservation.order.validate_order!
     end
   end
 
-  factory :purchased_reservation, :parent => :validated_reservation do
+  factory :purchased_reservation, parent: :validated_reservation do
     after(:create) do |reservation|
       reservation.order.purchase!
     end

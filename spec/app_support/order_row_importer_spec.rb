@@ -6,8 +6,8 @@ RSpec.describe OrderRowImporter do
   subject { OrderRowImporter.new(row, order_import) }
   let(:account) do
     create(:nufs_account,
-      account_users_attributes: [ attributes_for(:account_user, user: user) ],
-    )
+           account_users_attributes: [attributes_for(:account_user, user: user)],
+          )
   end
   let(:facility) { create(:facility) }
   let(:facility_account) do
@@ -16,9 +16,9 @@ RSpec.describe OrderRowImporter do
   let(:order_import) { build(:order_import, creator: user, facility: facility) }
   let(:service) do
     create(:setup_service,
-      facility: facility,
-      facility_account: facility_account,
-    )
+           facility: facility,
+           facility_account: facility_account,
+          )
   end
   let(:user) { create(:user) }
 
@@ -224,7 +224,7 @@ RSpec.describe OrderRowImporter do
       before(:each) do
         create(:user_price_group_member, user: user, price_group: price_group)
         product.service_price_policies.create(
-          attributes_for(:service_price_policy, price_group: price_group)
+          attributes_for(:service_price_policy, price_group: price_group),
         )
       end
 
@@ -389,7 +389,7 @@ RSpec.describe OrderRowImporter do
 
   describe "#row_with_errors" do
     let(:errors) { %w(one two three) }
-    let(:row) {{ "Errors" => "" }}
+    let(:row) { { "Errors" => "" } }
 
     context "when the import has no errors" do
       it "does not add errors to the error column" do

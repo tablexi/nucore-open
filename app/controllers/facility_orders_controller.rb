@@ -1,4 +1,5 @@
 class FacilityOrdersController < ApplicationController
+
   include ProblemOrderDetailsController
   include TabCountHelper
 
@@ -7,27 +8,26 @@ class FacilityOrdersController < ApplicationController
   before_filter :check_acting_as
   before_filter :init_current_facility
 
-  load_and_authorize_resource :class => Order
+  load_and_authorize_resource class: Order
 
-  before_filter :load_order, :only => [:edit, :show, :update, :send_receipt]
-  before_filter :load_merge_orders, :only => [:edit, :show]
+  before_filter :load_order, only: [:edit, :show, :update, :send_receipt]
+  before_filter :load_merge_orders, only: [:edit, :show]
 
   include FacilityOrderStatusHelper
 
-
   def initialize
-    @active_tab = 'admin_orders'
+    @active_tab = "admin_orders"
     super
   end
 
   # GET /facility/1/orders
   def index
-    @order_details = new_or_in_process_orders.paginate(:page => params[:page])
+    @order_details = new_or_in_process_orders.paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/orders/disputed
   def disputed
-    @order_details = disputed_orders.paginate(:page => params[:page])
+    @order_details = disputed_orders.paginate(page: params[:page])
   end
 
   def show
@@ -42,9 +42,7 @@ class FacilityOrdersController < ApplicationController
     msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params)
 
     # add flash messages if necessary
-    if msg_hash
-      flash.merge!(msg_hash)
-    end
+    flash.merge!(msg_hash) if msg_hash
   end
 
   def send_receipt
@@ -62,14 +60,13 @@ class FacilityOrdersController < ApplicationController
     end
   end
 
-
   def update
     product = Product.find(params[:product_add].to_i)
     original_order = @order
     quantity = params[:product_add_quantity].to_i
 
     if quantity <= 0
-      flash[:notice] = I18n.t 'controllers.facility_orders.update.zero_quantity'
+      flash[:notice] = I18n.t "controllers.facility_orders.update.zero_quantity"
     else
       add_to_order(product, quantity, original_order)
     end
@@ -90,7 +87,7 @@ class FacilityOrdersController < ApplicationController
   private
 
   def merge?(product)
-    products=product.is_a?(Bundle) ? product.products : [ product ]
+    products = product.is_a?(Bundle) ? product.products : [product]
 
     products.any? do |p|
       p.is_a?(Instrument) || (p.is_a?(Service) && (p.active_survey? || p.active_template?))
@@ -112,25 +109,25 @@ class FacilityOrdersController < ApplicationController
       end
 
       if notifications
-        flash[:error] = I18n.t 'controllers.facility_orders.update.notices', :product => product.name
+        flash[:error] = I18n.t "controllers.facility_orders.update.notices", product: product.name
       else
-        flash[:notice] = I18n.t 'controllers.facility_orders.update.success', :product => product.name
+        flash[:notice] = I18n.t "controllers.facility_orders.update.success", product: product.name
       end
     rescue => e
       Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
       @order.destroy if @order != original_order
-      flash[:error] = I18n.t 'controllers.facility_orders.update.error', :product => product.name
+      flash[:error] = I18n.t "controllers.facility_orders.update.error", product: product.name
     end
   end
 
   def build_merge_order
     Order.create!(
-      :merge_with_order_id => @order.id,
-      :facility_id => @order.facility_id,
-      :account_id => @order.account_id,
-      :user_id => @order.user_id,
-      :created_by => current_user.id,
-      :ordered_at => Time.zone.now
+      merge_with_order_id: @order.id,
+      facility_id: @order.facility_id,
+      account_id: @order.account_id,
+      user_id: @order.user_id,
+      created_by: current_user.id,
+      ordered_at: Time.zone.now,
     )
   end
 
@@ -139,6 +136,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def load_merge_orders
-    @merge_orders = Order.where(:merge_with_order_id => @order.id, :created_by => current_user.id).all
+    @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id).all
   end
+
 end

@@ -1,24 +1,24 @@
-namespace :order_details  do
+namespace :order_details do
   desc "mark order_details with past reservations as complete"
-  task :expire_reservations => :environment do
+  task expire_reservations: :environment do
     AutoExpireReservation.new.perform
     EndReservationOnly.new.perform
   end
 
   desc "automatically switch off auto_logout instrument"
-  task :auto_logout => :environment do
+  task auto_logout: :environment do
     AutoLogout.new.perform
   end
 
   desc "task to remove merge orders that have been abandoned. See Task #48377"
-  task :remove_merge_orders => :environment do
-    stale_merge_orders=Order.where("merge_with_order_id IS NOT NULL AND created_at <= ?", Time.zone.now - 4.weeks).all
-    stale_merge_orders.each{|order| order.destroy }
+  task remove_merge_orders: :environment do
+    stale_merge_orders = Order.where("merge_with_order_id IS NOT NULL AND created_at <= ?", Time.zone.now - 4.weeks).all
+    stale_merge_orders.each(&:destroy)
   end
 
   desc "Retouch all complete order details and recalculate pricing"
-  task :recalculate_prices, [:facility_slug] => :environment do |t, args|
-    Facility.find_by_url_name('path').order_details.where(:state => 'complete').each do |od|
+  task :recalculate_prices, [:facility_slug] => :environment do |_t, _args|
+    Facility.find_by_url_name("path").order_details.where(state: "complete").each do |od|
       old_cost = od.actual_cost
       old_subsidy = od.actual_subsidy
       old_total = od.actual_total
@@ -30,7 +30,7 @@ namespace :order_details  do
   end
 
   desc "Uncancels a list of order details. The file should contain just the OD ID, one per line"
-  task :uncancel, [:filename] => :environment do |t, args|
+  task :uncancel, [:filename] => :environment do |_t, args|
     Rails.logger = Logger.new(STDOUT)
     uncanceler = OrderUncanceler.new
     File.open(args[:filename]).each_line do |line|

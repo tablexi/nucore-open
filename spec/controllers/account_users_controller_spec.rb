@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe AccountUsersController do
   render_views
@@ -7,16 +7,15 @@ RSpec.describe AccountUsersController do
   before(:all) { create_users }
 
   before :each do
-    @authable=create_nufs_account_with_owner
+    @authable = create_nufs_account_with_owner
   end
 
-
-  context 'user_search' do
+  context "user_search" do
 
     before :each do
-      @method=:get
-      @action=:user_search
-      @params={ :account_id => @authable.id }
+      @method = :get
+      @action = :user_search
+      @params = { account_id: @authable.id }
     end
 
     it_should_require_login
@@ -24,18 +23,17 @@ RSpec.describe AccountUsersController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      is_expected.to render_template('user_search')
+      is_expected.to render_template("user_search")
     end
 
   end
 
-
-  context 'new' do
+  context "new" do
 
     before :each do
-      @method=:get
-      @action=:new
-      @params={ :account_id => @authable.id, :user_id => @purchaser }
+      @method = :get
+      @action = :new
+      @params = { account_id: @authable.id, user_id: @purchaser }
     end
 
     it_should_require_login
@@ -46,21 +44,20 @@ RSpec.describe AccountUsersController do
       expect(assigns(:user)).to eq(@purchaser)
       expect(assigns(:account_user)).to be_kind_of AccountUser
       expect(assigns(:account_user)).to be_new_record
-      is_expected.to render_template('new')
+      is_expected.to render_template("new")
     end
 
   end
 
-
-  context 'create' do
+  context "create" do
 
     before :each do
-      @method=:post
-      @action=:create
-      @params={
-        :account_id => @authable.id,
-        :user_id => @purchaser.id,
-        :account_user => { :user_role => AccountUser::ACCOUNT_PURCHASER }
+      @method = :post
+      @action = :create
+      @params = {
+        account_id: @authable.id,
+        user_id: @purchaser.id,
+        account_user: { user_role: AccountUser::ACCOUNT_PURCHASER },
       }
     end
 
@@ -80,19 +77,16 @@ RSpec.describe AccountUsersController do
 
   end
 
-
-  context 'destroy' do
+  context "destroy" do
 
     before :each do
-      @method=:delete
-      @action=:destroy
-      @account_user=FactoryGirl.create(:account_user, {
-        :user_role => AccountUser::ACCOUNT_ADMINISTRATOR,
-        :account_id => @authable.id,
-        :user_id => @staff.id,
-        :created_by => @admin.id
-      })
-      @params={ :account_id => @authable.id, :id => @account_user.id }
+      @method = :delete
+      @action = :destroy
+      @account_user = FactoryGirl.create(:account_user, user_role: AccountUser::ACCOUNT_ADMINISTRATOR,
+                                                        account_id: @authable.id,
+                                                        user_id: @staff.id,
+                                                        created_by: @admin.id)
+      @params = { account_id: @authable.id, id: @account_user.id }
     end
 
     it_should_require_login

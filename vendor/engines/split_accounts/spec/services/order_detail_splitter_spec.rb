@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
-
   let(:subaccount_1) { build_stubbed(:nufs_account) }
   let(:subaccount_2) { build_stubbed(:nufs_account) }
 
@@ -75,5 +74,4 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
       expect(results.map(&:estimated_subsidy)).to contain_exactly(20.0, 19.99)
     end
   end
-
 end

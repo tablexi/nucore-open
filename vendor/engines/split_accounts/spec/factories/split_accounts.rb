@@ -12,7 +12,7 @@ FactoryGirl.define do
     created_by 0
 
     trait :with_three_splits do
-      callback(:after_build, :before_create) do |split_account, evalutor|
+      callback(:after_build, :before_create) do |split_account, _evalutor|
         split_account.splits << build(:split, percent: 33.33, extra_penny: true, parent_split_account: split_account)
         split_account.splits << build(:split, percent: 33.33, extra_penny: false, parent_split_account: split_account)
         split_account.splits << build(:split, percent: 33.34, extra_penny: false, parent_split_account: split_account)
@@ -27,6 +27,5 @@ FactoryGirl.define do
         split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account)
       end
     end
-
   end
 end

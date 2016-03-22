@@ -1,4 +1,5 @@
 class NufsAccount < Account
+
   validates_uniqueness_of :account_number, message: "already exists"
   validates_presence_of :expires_at
 
@@ -23,7 +24,7 @@ class NufsAccount < Account
       return false
     end
 
-    return true
+    true
   end
 
   def can_reconcile?(order_detail)
@@ -41,7 +42,7 @@ class NufsAccount < Account
     validator = ValidatorFactory.instance(account_number, NUCore::COMMON_ACCOUNT)
     @components = validator.components
 
-    @components.each do |k,v|
+    @components.each do |k, v|
       self.class.class_eval "attr_accessor :#{k}" unless respond_to? k
       send("#{k}=", v)
     end
@@ -63,16 +64,17 @@ class NufsAccount < Account
       e.apply_to_model(self)
       return
     rescue ValidatorError => e
-      self.errors.add(:account_number, e.message)
+      errors.add(:account_number, e.message)
       return
     end
 
     begin
       validator.account_is_open!
     rescue ValidatorError => e
-      msg=e.message
-      msg="not found, is inactive, or is invalid" if msg.blank?
-      self.errors.add(:account_number, msg)
+      msg = e.message
+      msg = "not found, is inactive, or is invalid" if msg.blank?
+      errors.add(:account_number, msg)
     end
   end
+
 end

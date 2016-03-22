@@ -1,4 +1,5 @@
 class AutoLogout
+
   def perform
     order_details.each do |od|
       next unless should_auto_logout?(od)
@@ -13,11 +14,11 @@ class AutoLogout
 
   def order_details
     OrderDetail.purchased_active_reservations
-      .merge(Reservation.relay_in_progress)
-      .where('reserve_end_at < ?', Time.zone.now)
-      .includes(:product)
-      .readonly(false)
-      .all
+               .merge(Reservation.relay_in_progress)
+               .where("reserve_end_at < ?", Time.zone.now)
+               .includes(:product)
+               .readonly(false)
+               .all
   end
 
   def should_auto_logout?(order_detail)
@@ -28,15 +29,14 @@ class AutoLogout
     configured = [
       reserve_end_at,
       auto_logout_minutes,
-      relay.try(:auto_logout)
+      relay.try(:auto_logout),
     ].all?
-
 
     configured && (reserve_end_at < auto_logout_minutes.minutes.ago)
   end
 
   def complete_status
-    @complete_status ||= OrderStatus.find_by_name!('Complete')
+    @complete_status ||= OrderStatus.find_by_name!("Complete")
   end
 
   def complete_reservation(od)
@@ -47,4 +47,5 @@ class AutoLogout
     STDERR.puts "Error on Order # #{od} - #{e}"
     raise ActiveRecord::Rollback
   end
+
 end

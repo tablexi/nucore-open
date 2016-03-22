@@ -1,4 +1,5 @@
 module Converters
+
   class ConverterFactory
 
     def self.for(converter_type)
@@ -10,4 +11,5 @@ module Converters
     end
 
   end
+
 end

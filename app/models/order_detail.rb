@@ -1,4 +1,5 @@
 class OrderDetail < ActiveRecord::Base
+
   include NUCore::Database::SortHelper
   include TranslationHelper
   include NotificationSubject
@@ -16,11 +17,11 @@ class OrderDetail < ActiveRecord::Base
 
   # Used to mark a dispute as resolved
   attr_accessor :resolve_dispute
-  before_validation :mark_dispute_resolved, :if => :resolve_dispute
+  before_validation :mark_dispute_resolved, if: :resolve_dispute
   after_validation :reset_dispute
 
   before_save :clear_statement, if: :account_id_changed?
-  before_save :reassign_price, if: lambda { |o| o.account_id_changed? || o.quantity_changed? }
+  before_save :reassign_price, if: ->(o) { o.account_id_changed? || o.quantity_changed? }
   before_save :update_journal_row_amounts, if: :actual_cost_changed?
 
   before_save :set_problem_order
@@ -32,27 +33,27 @@ class OrderDetail < ActiveRecord::Base
 
   belongs_to :product
   belongs_to :price_policy
-  belongs_to :statement, :inverse_of => :order_details
+  belongs_to :statement, inverse_of: :order_details
   belongs_to :journal
   belongs_to :order
-  belongs_to :assigned_user, :class_name => 'User', :foreign_key => 'assigned_user_id'
-  belongs_to :created_by_user, :class_name => 'User', :foreign_key => :created_by
-  belongs_to :dispute_by, class_name: 'User'
+  belongs_to :assigned_user, class_name: "User", foreign_key: "assigned_user_id"
+  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
+  belongs_to :dispute_by, class_name: "User"
   belongs_to :order_status
   belongs_to :account
-  belongs_to :bundle, :foreign_key => 'bundle_product_id'
-  has_one    :reservation, :dependent => :destroy, :inverse_of => :order_detail
-  has_one    :external_service_receiver, :as => :receiver, :dependent => :destroy
+  belongs_to :bundle, foreign_key: "bundle_product_id"
+  has_one    :reservation, dependent: :destroy, inverse_of: :order_detail
+  has_one    :external_service_receiver, as: :receiver, dependent: :destroy
   has_many   :journal_rows, inverse_of: :order_detail
-  has_many   :notifications, :as => :subject, :dependent => :destroy
-  has_many   :stored_files, :dependent => :destroy
+  has_many   :notifications, as: :subject, dependent: :destroy
+  has_many   :stored_files, dependent: :destroy
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
   delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
   delegate :in_cart?, :facility, :ordered_at, :user, to: :order
-  delegate :price_group, :to => :price_policy, :allow_nil => true
+  delegate :price_group, to: :price_policy, allow_nil: true
   def estimated_price_group
     estimated_price_policy.try(:price_group)
   end
@@ -63,46 +64,48 @@ class OrderDetail < ActiveRecord::Base
     journal_rows.where(journal_id: journal_id)
   end
 
-  delegate :journal_date, :to => :journal, :allow_nil => true
+  delegate :journal_date, to: :journal, allow_nil: true
   def statement_date
     statement.try(:created_at)
   end
+
   def journal_or_statement_date
     journal_date || statement_date
   end
 
-
-
-  alias_method :merge!, :save!
+  alias merge! save!
 
   validates_presence_of :product_id, :order_id, :created_by
-  validates_numericality_of :quantity, :only_integer => true, :greater_than_or_equal_to => 1
-  validates_numericality_of :actual_cost, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
-  validates_numericality_of :actual_subsidy, :greater_than_or_equal_to => 0, :if => lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
-  validates_numericality_of :actual_total, :greater_than_or_equal_to => 0, :allow_nil => true
-  validates_presence_of :dispute_reason, :if => :dispute_at
-  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, :if => Proc.new { dispute_resolved_reason.present? || dispute_resolved_at.present? }
+  validates_numericality_of :quantity, only_integer: true, greater_than_or_equal_to: 1
+  validates_numericality_of :actual_cost, greater_than_or_equal_to: 0, if: ->(o) { o.actual_cost_changed? && !o.actual_cost.nil? }
+  validates_numericality_of :actual_subsidy, greater_than_or_equal_to: 0, if: ->(o) { o.actual_subsidy_changed? && !o.actual_cost.nil? }
+  validates_numericality_of :actual_total, greater_than_or_equal_to: 0, allow_nil: true
+  validates_presence_of :dispute_reason, if: :dispute_at
+  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, if: proc { dispute_resolved_reason.present? || dispute_resolved_at.present? }
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
   # were being triggered on orders where the orderer had been removed from the account.
-  validate :account_usable_by_order_owner?, if: lambda { |o| o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
-  validates_length_of :note, :maximum => 100, :allow_blank => true, :allow_nil => true
+  validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
+  validates_length_of :note, maximum: 100, allow_blank: true, allow_nil: true
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility
   ## TODO validate which fields can be edited for which states
 
-  scope :with_product_type, lambda { |s| {:joins => :product, :conditions => ["products.type = ?", s.to_s.capitalize]} }
+  scope :with_product_type, ->(s) { { joins: :product, conditions: ["products.type = ?", s.to_s.capitalize] } }
 
-  scope :new_or_inprocess, :conditions => ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], :include => :order
+  scope :new_or_inprocess, conditions: ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], include: :order
 
   scope :facility_recent, lambda { |facility|
-                                  { :conditions => ['(order_details.statement_id IS NULL OR order_details.reviewed_at > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
-                                    :joins => 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
-                                    :order => 'order_details.created_at DESC' }}
+    { conditions: ["(order_details.statement_id IS NULL OR order_details.reviewed_at > ?) AND orders.facility_id = ?", Time.zone.now, facility.id],
+      joins: "LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id",
+      order: "order_details.created_at DESC" }
+  }
 
-  scope :finalized, lambda {|facility| { :joins => :order,
-                                               :conditions => ['orders.facility_id = ? AND order_details.reviewed_at < ?', facility.id, Time.zone.now],
-                                               :order => 'order_details.created_at DESC' }}
+  scope :finalized, lambda {|facility|
+    { joins: :order,
+      conditions: ["orders.facility_id = ? AND order_details.reviewed_at < ?", facility.id, Time.zone.now],
+      order: "order_details.created_at DESC" }
+  }
 
   def self.for_facility(facility)
     for_facility_id(facility.id)
@@ -112,7 +115,7 @@ class OrderDetail < ActiveRecord::Base
     details = scoped
 
     if facility_id.present?
-      details = details.joins(:order).where(orders: { :facility_id => facility_id })
+      details = details.joins(:order).where(orders: { facility_id: facility_id })
     end
 
     details
@@ -122,8 +125,8 @@ class OrderDetail < ActiveRecord::Base
     details = scoped.joins(:order)
 
     unless facility_url.nil?
-      details = details.joins(:order => :facility)
-      details = details.where(:facilities => {:url_name => facility_url})
+      details = details.joins(order: :facility)
+      details = details.where(facilities: { url_name: facility_url })
     end
 
     details
@@ -138,63 +141,65 @@ class OrderDetail < ActiveRecord::Base
 
   def self.purchased_active_reservations
     scoped.pending
-      .joins(:reservation)
-      .merge(Reservation.not_canceled)
+          .joins(:reservation)
+          .merge(Reservation.not_canceled)
   end
 
-  scope :for_facility_with_price_policy, lambda { |facility| {
-    :joins => :order,
-    :conditions => [ 'orders.facility_id = ? AND price_policy_id IS NOT NULL', facility.id ], :order => 'order_details.fulfilled_at DESC' }
+  scope :for_facility_with_price_policy, lambda { |facility|
+    {
+      joins: :order,
+      conditions: ["orders.facility_id = ? AND price_policy_id IS NOT NULL", facility.id], order: "order_details.fulfilled_at DESC" }
   }
 
-  scope :need_notification, lambda {{
-    :joins => :product,
-    :conditions => ['order_details.state = ?
+  scope :need_notification, lambda {
+                              {
+                                joins: :product,
+                                conditions: ['order_details.state = ?
                      AND order_details.reviewed_at IS NULL
                      AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', 'complete']
-  }}
+                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', "complete"],
+                              }}
 
   def self.all_need_notification
-    where(:state => 'complete').
-    where(:reviewed_at => nil).
-    where("price_policy_id IS NOT NULL").
-    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+    where(state: "complete")
+      .where(reviewed_at: nil)
+      .where("price_policy_id IS NOT NULL")
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
 
   def self.all_movable
     where(journal_id: nil)
-    .where("order_details.state NOT IN('canceled', 'reconciled')")
+      .where("order_details.state NOT IN('canceled', 'reconciled')")
   end
 
   def self.unreconciled_accounts(facility, account_type)
     joins(:order, :account)
-    .select('DISTINCT(order_details.account_id) AS account_id')
-    .where('orders.facility_id' => facility.id)
-    .where('accounts.type' => account_type)
-    .where('order_details.state' => 'complete')
-    .where('statement_id IS NOT NULL')
+      .select("DISTINCT(order_details.account_id) AS account_id")
+      .where("orders.facility_id" => facility.id)
+      .where("accounts.type" => account_type)
+      .where("order_details.state" => "complete")
+      .where("statement_id IS NOT NULL")
   end
 
   scope :in_review, lambda { |facility|
-    scoped.joins(:product).
-    where(:products => {:facility_id => facility.id}).
-    where(:state => 'complete').
-    where("order_details.reviewed_at > ?", Time.zone.now).
-    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+    scoped.joins(:product)
+          .where(products: { facility_id: facility.id })
+          .where(state: "complete")
+          .where("order_details.reviewed_at > ?", Time.zone.now)
+          .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   }
 
   def self.all_in_review
-    where(:state => 'complete').
-    where("order_details.reviewed_at > ?", Time.zone.now).
-    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+    where(state: "complete")
+      .where("order_details.reviewed_at > ?", Time.zone.now)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   end
 
   def self.recently_reviewed
-    where(:state => ['complete', 'reconciled']).
-    where("order_details.reviewed_at < ?", Time.zone.now).
-    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL").
-    order(:reviewed_at).reverse_order
+    where(state: %w(complete reconciled))
+      .where("order_details.reviewed_at < ?", Time.zone.now)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .order(:reviewed_at).reverse_order
   end
 
   def self.reassign_account!(account, order_details)
@@ -228,7 +233,7 @@ class OrderDetail < ActiveRecord::Base
 
   def in_review?
     # check in the database if self.id is in the scope
-    self.class.all_in_review.find_by_id(self.id) ? true :false
+    self.class.all_in_review.find_by_id(id) ? true : false
     # this would work without hitting the database again, but duplicates the functionality of the scope
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
   end
@@ -238,49 +243,52 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def can_be_viewed_by?(user)
-    self.order.user_id == user.id || self.account.owner_user.id == user.id || self.account.business_admins.any?{|au| au.user_id == user.id}
+    order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? { |au| au.user_id == user.id }
   end
 
-  scope :need_statement, lambda { |facility| {
-    joins: [:product, :account],
-    conditions: [
-      "products.facility_id = :facility_id
-        AND order_details.state = :state
-        AND problem = :problem
-        AND reviewed_at <= :reviewed_at
-        AND order_details.statement_id IS NULL
-        AND order_details.price_policy_id IS NOT NULL
-        AND accounts.type IN (:account_types)
-        AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
-      facility_id: facility.id,
-      state: 'complete',
-      problem: false,
-      reviewed_at: Time.zone.now,
-      account_types: Account.config.statement_account_types,
-    ]
-  }}
+  scope :need_statement, lambda { |facility|
+                           {
+                             joins: [:product, :account],
+                             conditions: [
+                               "products.facility_id = :facility_id
+                                 AND order_details.state = :state
+                                 AND problem = :problem
+                                 AND reviewed_at <= :reviewed_at
+                                 AND order_details.statement_id IS NULL
+                                 AND order_details.price_policy_id IS NOT NULL
+                                 AND accounts.type IN (:account_types)
+                                 AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
+                               facility_id: facility.id,
+                               state: "complete",
+                               problem: false,
+                               reviewed_at: Time.zone.now,
+                               account_types: Account.config.statement_account_types,
+                             ],
+                           }}
 
-  scope :need_journal, lambda { {
-    joins: [:product, :account],
-    conditions: [
-      "order_details.state = :state
-        AND problem = :problem
-        AND reviewed_at <= :reviewed_at
-        AND accounts.type IN (:account_types)
-        AND journal_id IS NULL
-        AND order_details.price_policy_id IS NOT NULL
-        AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
-      state: "complete",
-      problem: false,
-      reviewed_at: Time.zone.now,
-      account_types: Account.config.journal_account_types,
-    ]
-  } }
+  scope :need_journal, lambda {
+                         {
+                           joins: [:product, :account],
+                           conditions: [
+                             "order_details.state = :state
+                               AND problem = :problem
+                               AND reviewed_at <= :reviewed_at
+                               AND accounts.type IN (:account_types)
+                               AND journal_id IS NULL
+                               AND order_details.price_policy_id IS NOT NULL
+                               AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
+                             state: "complete",
+                             problem: false,
+                             reviewed_at: Time.zone.now,
+                             account_types: Account.config.journal_account_types,
+                           ],
+                         } }
 
-  scope :statemented, lambda {|facility| {
-      :joins => :order,
-      :order => 'order_details.created_at DESC',
-      :conditions => [ 'orders.facility_id = ? AND order_details.statement_id IS NOT NULL', facility.id ] }
+  scope :statemented, lambda {|facility|
+    {
+      joins: :order,
+      order: "order_details.created_at DESC",
+      conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id] }
   }
 
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
@@ -288,41 +296,46 @@ class OrderDetail < ActiveRecord::Base
 
   scope :purchased, joins(:order).merge(Order.purchased)
   class << self
-    alias_method :ordered, :purchased # TODO: deprecate .ordered in favor of .purchased
+
+    alias ordered purchased # TODO: deprecate .ordered in favor of .purchased
+
   end
 
-  scope :pending, joins(:order).where(:state => ['new', 'inprocess']).ordered
-  scope :confirmed_reservations,  reservations.
-                                 joins(:order).
-                                 includes(:reservation).
-                                 ordered
+  scope :pending, joins(:order).where(state: %w(new inprocess)).ordered
+  scope :confirmed_reservations, reservations
+    .joins(:order)
+    .includes(:reservation)
+    .ordered
 
-  scope :upcoming_reservations, lambda { confirmed_reservations.
-                                        where("reservations.reserve_end_at > ? AND reservations.actual_start_at IS NULL", Time.zone.now).
-                                        order('reservations.reserve_start_at ASC')
-                                      }
+  scope :upcoming_reservations, lambda {
+                                  confirmed_reservations
+                                    .where("reservations.reserve_end_at > ? AND reservations.actual_start_at IS NULL", Time.zone.now)
+                                    .order("reservations.reserve_start_at ASC")
+                                }
 
   scope :in_progress_reservations, confirmed_reservations
     .merge(Reservation.relay_in_progress)
-    .order('reservations.reserve_start_at ASC')
+    .order("reservations.reserve_start_at ASC")
 
-  scope :all_reservations, confirmed_reservations.
-                           order('reservations.reserve_start_at DESC')
+  scope :all_reservations, confirmed_reservations
+    .order("reservations.reserve_start_at DESC")
 
-  scope :for_accounts, lambda {|accounts| where("order_details.account_id in (?)", accounts) unless accounts.nil? or accounts.empty? }
-  scope :for_facilities, lambda {|facilities| joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? or facilities.empty? }
-  scope :for_products, lambda { |products| where("order_details.product_id in (?)", products) unless products.blank? }
-  scope :for_owners, lambda { |owners| joins(:account).
-                                       joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'").
-                                       where("account_users.user_id in (?)", owners) unless owners.blank? }
-  scope :for_order_statuses, lambda {|statuses| where("order_details.order_status_id in (?)", statuses) unless statuses.nil? or statuses.empty? }
+  scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
+  scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
+  scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
+  scope :for_owners, lambda { |owners|
+    joins(:account)
+      .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
+      .where("account_users.user_id in (?)", owners) unless owners.blank?
+  }
+  scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
   scope :in_date_range, lambda { |start_date, end_date|
     search = scoped
-    if (start_date)
+    if start_date
       search = search.where("orders.ordered_at > ?", start_date.beginning_of_day)
     end
-    if (end_date)
+    if end_date
       search = search.where("orders.ordered_at < ?", end_date.end_of_day)
     end
     search
@@ -342,20 +355,18 @@ class OrderDetail < ActiveRecord::Base
     search = search.joins(:journal) if action.to_sym == :journal_date
 
     # If we're searching on fulfilled_at, ignore any order details that don't have a fulfilled date
-    search = search.where('fulfilled_at IS NOT NULL') if action.to_sym == :fulfilled_at
+    search = search.where("fulfilled_at IS NOT NULL") if action.to_sym == :fulfilled_at
 
     if start_date
       search = search.where("#{action} >= ?", start_date.beginning_of_day)
     end
-    if end_date
-      search = search.where("#{action} <= ?", end_date.end_of_day)
-    end
+    search = search.where("#{action} <= ?", end_date.end_of_day) if end_date
     search
   }
 
   def self.journaled_or_statemented_in_date_range(start_date, end_date)
     search = joins("LEFT JOIN journals ON journals.id = order_details.journal_id")
-      .joins("LEFT JOIN statements in_range_statements ON in_range_statements.id = order_details.statement_id")
+             .joins("LEFT JOIN statements in_range_statements ON in_range_statements.id = order_details.statement_id")
 
     journal_query = ["journal_id IS NOT NULL"]
     journal_query << "journal_date > :start_date" if start_date
@@ -367,18 +378,16 @@ class OrderDetail < ActiveRecord::Base
 
     search.where(
       "(#{journal_query.join(' AND ')}) OR (#{statement_query.join(' AND ')})",
-        start_date: start_date,
-        end_date: end_date
+      start_date: start_date,
+      end_date: end_date,
     )
   end
-
-
 
   def self.ordered_or_reserved_in_range(start_date, end_date)
     start_date = start_date.beginning_of_day if start_date
     end_date = end_date.end_of_day if end_date
 
-    query = joins(:order).joins('LEFT JOIN reservations ON reservations.order_detail_id = order_details.id')
+    query = joins(:order).joins("LEFT JOIN reservations ON reservations.order_detail_id = order_details.id")
     # If there is a reservation, query on the reservation time, if there's not a reservation (i.e. the left join ends up with a null reservation)
     # use the ordered at time
     if start_date && end_date
@@ -389,7 +398,7 @@ class OrderDetail < ActiveRecord::Base
       sql = "(reservations.id IS NULL AND orders.ordered_at < :end) OR (reservations.id IS NOT NULL AND reservations.reserve_start_at < :end)"
     end
 
-    query.where(sql, {:start => start_date, :end => end_date})
+    query.where(sql, start: start_date, end: end_date)
   end
   # BEGIN acts_as_state_machine
   include AASM
@@ -398,35 +407,35 @@ class OrderDetail < ActiveRecord::Base
   aasm_initial_state    :new
   aasm_state            :new
   aasm_state            :inprocess
-  aasm_state            :complete, :enter => :make_complete
+  aasm_state            :complete, enter: :make_complete
   aasm_state            :reconciled
-  aasm_state            :canceled, :enter => :clear_costs
+  aasm_state            :canceled, enter: :clear_costs
 
   aasm_event :to_new do
-    transitions :to => :new, :from => :inprocess
+    transitions to: :new, from: :inprocess
   end
 
   aasm_event :to_inprocess do
-    transitions :to => :inprocess, :from => :new
+    transitions to: :inprocess, from: :new
   end
 
   aasm_event :to_complete do
-    transitions :to => :complete, :from => [:new, :inprocess], :guard => :has_completed_reservation?
+    transitions to: :complete, from: [:new, :inprocess], guard: :has_completed_reservation?
   end
 
   aasm_event :to_reconciled do
-    transitions :to => :reconciled, :from => :complete, :guard => :actual_total
+    transitions to: :reconciled, from: :complete, guard: :actual_total
   end
 
-  CANCELABLE_STATES = [:new, :inprocess, :complete]
+  CANCELABLE_STATES = [:new, :inprocess, :complete].freeze
   aasm_event :to_canceled do
-    transitions :to => :canceled, :from => CANCELABLE_STATES, :guard => :cancelable?
+    transitions to: :canceled, from: CANCELABLE_STATES, guard: :cancelable?
   end
 
   # END acts_as_state_machine
 
   # block will be called after the transition, but before the save
-  def change_status! (new_status, &block)
+  def change_status!(new_status, &block)
     new_state = new_status.state_name
     # don't try to change state if it's not a valid state or it's the same as it was before
     if OrderDetail.aasm_states.map(&:name).include?(new_state) && new_state != state.to_sym
@@ -435,16 +444,16 @@ class OrderDetail < ActiveRecord::Base
     # don't try to change status if it's the same as before
     unless new_status == order_status
       self.order_status = new_status
-      block.call(self) if block
-      self.save!
+      yield(self) if block
+      save!
     end
-    return true
+    true
   end
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
   def update_order_status!(updated_by, order_status, options_args = {}, &block)
     @order_status_updated_by = updated_by
-    options = { :admin => false, :apply_cancel_fee => false }.merge(options_args)
+    options = { admin: false, apply_cancel_fee: false }.merge(options_args)
 
     if reservation && order_status.root_canceled?
       cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee])
@@ -463,7 +472,7 @@ class OrderDetail < ActiveRecord::Base
   def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation
-      raise NUCore::PurchaseException.new(t_model_error(Reservation, 'cannot_be_completed_in_future')) if reservation.reserve_end_at > event_time
+      raise NUCore::PurchaseException.new(t_model_error(Reservation, "cannot_be_completed_in_future")) if reservation.reserve_end_at > event_time
       reservation.assign_actuals_off_reserve
       reservation.save!
     end
@@ -499,7 +508,7 @@ class OrderDetail < ActiveRecord::Base
     state_is_cancelable? && journal.nil? && !has_uncanceled_reservation?
   end
 
-  delegate :ordered_on_behalf_of?, :to => :order
+  delegate :ordered_on_behalf_of?, to: :order
 
   def cost
     actual_cost || estimated_cost
@@ -510,27 +519,15 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def actual_total
-    if actual_cost && actual_subsidy
-      actual_cost - actual_subsidy
-    else
-      nil
-    end
+    actual_cost - actual_subsidy if actual_cost && actual_subsidy
   end
 
   def estimated_total
-    if estimated_cost && estimated_subsidy
-      estimated_cost - estimated_subsidy
-    else
-      nil
-    end
+    estimated_cost - estimated_subsidy if estimated_cost && estimated_subsidy
   end
 
   def total
-    unless cost.nil? || subsidy.nil?
-      cost - subsidy
-    else
-      nil
-    end
+    cost - subsidy unless cost.nil? || subsidy.nil?
   end
 
   def price_groups
@@ -542,7 +539,7 @@ class OrderDetail < ActiveRecord::Base
   # set the object's response_set
   def response_set!(response_set)
     self.response_set = response_set
-    self.save
+    save
   end
 
   # returns true if the associated survey response set has been completed
@@ -552,7 +549,7 @@ class OrderDetail < ActiveRecord::Base
 
   def account_usable_by_order_owner?
     return unless order && account_id
-    errors.add("account_id", "is not valid for the orderer") unless AccountUser.find(:first, :conditions => ['user_id = ? AND account_id = ? AND deleted_at IS NULL', order.user_id, account_id])
+    errors.add("account_id", "is not valid for the orderer") unless AccountUser.find(:first, conditions: ["user_id = ? AND account_id = ? AND deleted_at IS NULL", order.user_id, account_id])
   end
 
   def can_dispute?
@@ -569,7 +566,7 @@ class OrderDetail < ActiveRecord::Base
     # payment method is not expired
     return "The account is expired and cannot be used" if account.expires_at < Time.zone.now || account.suspended_at
 
-    # TODO if chart string, is chart string + account valid
+    # TODO: if chart string, is chart string + account valid
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
 
     # is the user approved for the product
@@ -585,7 +582,7 @@ class OrderDetail < ActiveRecord::Base
 
     return nil if product.can_purchase_order_detail? self
 
-    return 'No assigned price groups allow purchase of this product'
+    "No assigned price groups allow purchase of this product"
   end
 
   def valid_for_purchase?
@@ -631,12 +628,8 @@ class OrderDetail < ActiveRecord::Base
       nil # no file templates
     else
       # check for a template result
-      results = self.stored_files.template_result
-      if results.empty?
-        "Please upload an order form"
-      else
-        nil
-      end
+      results = stored_files.template_result
+      "Please upload an order form" if results.empty?
     end
   end
 
@@ -644,7 +637,7 @@ class OrderDetail < ActiveRecord::Base
     case
     when !product.active_survey?
       nil # no active survey
-    when (product.active_survey? and survey_completed?)
+    when (product.active_survey? && survey_completed?)
       nil # active survey with a completed response set
     else
       # active survey but no response
@@ -664,22 +657,21 @@ class OrderDetail < ActiveRecord::Base
     JournalRowUpdater.new(self).update
   end
 
-  def assign_estimated_price(second_account=nil, date = Time.zone.now)
+  def assign_estimated_price(second_account = nil, date = Time.zone.now)
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
-    second_account=account unless second_account
+    second_account = account unless second_account
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
-
 
     @estimated_price_policy = product.cheapest_price_policy(self, date)
     assign_estimated_price_from_policy @estimated_price_policy
   end
 
-  def assign_estimated_price!(second_account=nil, date = Time.zone.now)
+  def assign_estimated_price!(second_account = nil, date = Time.zone.now)
     assign_estimated_price(second_account, date)
-    self.save!
+    save!
   end
 
   def assign_estimated_price_from_policy(price_policy)
@@ -720,7 +712,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def description
-    "Order # #{to_s}"
+    "Order # #{self}"
   end
 
   def long_description
@@ -740,8 +732,8 @@ class OrderDetail < ActiveRecord::Base
     dispute_at.present? && !canceled?
   end
 
-  def cancel_reservation(canceled_by, order_status = OrderStatus.canceled.first, admin_cancellation = false, admin_with_cancel_fee=false)
-    res = self.reservation
+  def cancel_reservation(canceled_by, order_status = OrderStatus.canceled.first, admin_cancellation = false, admin_with_cancel_fee = false)
+    res = reservation
     res.canceled_by = canceled_by.id
 
     if admin_cancellation
@@ -765,7 +757,6 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cancellation_fee
-
     assign_price_policy unless price_policy
 
     return 0 unless reservation && price_policy && product.min_cancel_hours.to_i > 0
@@ -790,7 +781,7 @@ class OrderDetail < ActiveRecord::Base
   #   B) Has a reservation with missing usage information
   # the method will return true, otherwise false
   def problem_order?
-    self.problem
+    problem
   end
 
   def missing_price_policy?
@@ -798,11 +789,11 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def in_open_journal?
-    self.journal && self.journal.open?
+    journal && journal.open?
   end
 
   def in_closed_journal?
-    self.journal && !self.journal.open?
+    journal && !journal.open?
   end
 
   def can_reconcile?
@@ -816,18 +807,18 @@ class OrderDetail < ActiveRecord::Base
   def self.account_unreconciled(facility, account)
     if account.class.using_journal?
       joins(:journal)
-      .complete_for_facility_and_account(facility, account)
-      .where('journals.is_successful' => true)
+        .complete_for_facility_and_account(facility, account)
+        .where("journals.is_successful" => true)
     else
       complete_for_facility_and_account(facility, account)
-      .where('order_details.statement_id IS NOT NULL')
+        .where("order_details.statement_id IS NOT NULL")
     end
   end
 
   def self.complete_for_facility_and_account(facility, account)
     for_facility(facility)
-    .where('order_details.account_id' => account.id)
-    .where('order_details.state' => 'complete')
+      .where("order_details.account_id" => account.id)
+      .where("order_details.state" => "complete")
   end
 
   #
@@ -836,20 +827,20 @@ class OrderDetail < ActiveRecord::Base
     !bundle.nil?
   end
 
-  def to_notice(notification_class, *args)
+  def to_notice(notification_class, *_args)
     case notification_class.name
-      when MergeNotification.name
-        notice="<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
+    when MergeNotification.name
+      notice = "<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
 
-        notice += case product
-          when Instrument then 'has an incomplete reservation.'
-          when Service then 'has an incomplete order form.'
-          else; 'is incomplete.'
-        end
+      notice += case product
+                when Instrument then "has an incomplete reservation."
+                when Service then "has an incomplete order form."
+                else; "is incomplete."
+      end
 
-        notice.html_safe
-      else
-        ''
+      notice.html_safe
+    else
+      ""
     end
   end
 
@@ -888,7 +879,7 @@ class OrderDetail < ActiveRecord::Base
   #                   (since this class method is also used to update
   #                   order_details associated with reservations)
   #                   defaults to 'orders'
-  def self.batch_update(order_detail_ids, current_facility, session_user, update_params, msg_type='orders')
+  def self.batch_update(order_detail_ids, current_facility, session_user, update_params, msg_type = "orders")
     msg_hash = {}
 
     unless order_detail_ids.present?
@@ -897,7 +888,7 @@ class OrderDetail < ActiveRecord::Base
     end
     order_details = OrderDetail.find(order_detail_ids)
 
-    if order_details.any? { |od| od.product.facility_id != current_facility.id || !(od.state.include?('inprocess') || od.state.include?('new'))}
+    if order_details.any? { |od| od.product.facility_id != current_facility.id || !(od.state.include?("inprocess") || od.state.include?("new")) }
       msg_hash[:error] = "There was an error updating the selected #{msg_type}"
       return msg_hash
     end
@@ -905,7 +896,7 @@ class OrderDetail < ActiveRecord::Base
     changes = false
     if update_params[:assigned_user_id] && update_params[:assigned_user_id].length > 0
       changes = true
-      order_details.each {|od| od.assigned_user_id = (update_params[:assigned_user_id] == "unassign" ? nil : update_params[:assigned_user_id])}
+      order_details.each { |od| od.assigned_user_id = (update_params[:assigned_user_id] == "unassign" ? nil : update_params[:assigned_user_id]) }
     end
 
     OrderDetail.transaction do
@@ -932,7 +923,7 @@ class OrderDetail < ActiveRecord::Base
         return msg_hash
       end
       begin
-        order_details.all? { |od| od.save! }
+        order_details.all?(&:save!)
         msg_hash[:notice] = "The #{msg_type} were successfully updated"
       rescue
         msg_hash[:error] = "There was an error updating the selected #{msg_type}"
@@ -940,7 +931,7 @@ class OrderDetail < ActiveRecord::Base
       end
     end
 
-    return msg_hash
+    msg_hash
   end
 
   def can_be_assigned_to_account?(account)
@@ -959,25 +950,25 @@ class OrderDetail < ActiveRecord::Base
 
   def make_complete
     assign_price_policy
-    self.fulfilled_at=Time.zone.now
-    self.reviewed_at = Time.zone.now unless SettingsHelper::has_review_period?
+    self.fulfilled_at = Time.zone.now
+    self.reviewed_at = Time.zone.now unless SettingsHelper.has_review_period?
   end
 
   def cancel_with_fee(order_status)
-    fee = self.cancellation_fee
+    fee = cancellation_fee
     self.actual_cost = fee
     self.actual_subsidy = 0
-    self.change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
-    self.save! if self.changed? # If the cancel goes from complete => complete, change status doesn't save
+    change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
+    save! if changed? # If the cancel goes from complete => complete, change status doesn't save
     true
   end
 
   def mark_dispute_resolved
-    if resolve_dispute == true || resolve_dispute == '1'
+    if resolve_dispute == true || resolve_dispute == "1"
       self.dispute_resolved_at = Time.zone.now
       self.reviewed_at         = Time.zone.now
     else
-      resolve_dispute = '0'
+      resolve_dispute = "0"
     end
   end
 
@@ -1008,4 +999,5 @@ class OrderDetail < ActiveRecord::Base
       self.fulfilled_at = reservation.reserve_end_at
     end
   end
+
 end

@@ -16,50 +16,44 @@ RSpec.describe InstrumentPricePolicy do
 
   it { is_expected.to validate_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
 
-
-  it 'converts the given hourly usage_rate to a per minute rate' do
+  it "converts the given hourly usage_rate to a per minute rate" do
     policy.usage_rate = 10
     expect(policy.usage_rate.round(4)).to eq (10 / 60.0).round(4)
   end
 
-
-  it 'converts the given hourly usage_subsidy to a per minute rate' do
+  it "converts the given hourly usage_subsidy to a per minute rate" do
     policy.usage_subsidy = 10
     expect(policy.usage_subsidy.round(4)).to eq (10 / 60.0).round(4)
   end
 
-
   it { is_expected.to allow_value(nil).for :usage_subsidy }
 
-
-  it 'ensures that usage subsidy is greater than 0' do
+  it "ensures that usage subsidy is greater than 0" do
     policy.usage_subsidy = -1
     expect(policy).to_not be_valid
     expect(policy.errors[:usage_subsidy]).to be_present
   end
 
-
-  describe 'usage rate validations' do
-    it 'ensures that usage rate is greater than 0' do
+  describe "usage rate validations" do
+    it "ensures that usage rate is greater than 0" do
       policy.usage_rate = -1
       expect(policy).to_not be_valid
       expect(policy.errors[:usage_rate]).to be_present
     end
 
-    it 'validates presence of usage rate if purchase is not restricted' do
+    it "validates presence of usage rate if purchase is not restricted" do
       allow(policy).to receive(:restrict_purchase?).and_return false
       is_expected.to validate_presence_of :usage_rate
     end
 
-    it 'does not validate presence of usage rate if purchase is restricted' do
+    it "does not validate presence of usage rate if purchase is restricted" do
       allow(policy).to receive(:restrict_purchase?).and_return true
       is_expected.not_to validate_presence_of :usage_rate
     end
   end
 
-
   describe 'validation using #subsidy_less_than_rate?' do
-    it 'gives an error if usage_subsidy > usage_rate' do
+    it "gives an error if usage_subsidy > usage_rate" do
       expect(policy).to be_valid
       policy.usage_subsidy = 15
       policy.usage_rate = 5
@@ -67,7 +61,7 @@ RSpec.describe InstrumentPricePolicy do
       expect(policy.errors[:usage_subsidy]).to be_present
     end
 
-    it 'does not give an error if usage_subsidy < usage_rate' do
+    it "does not give an error if usage_subsidy < usage_rate" do
       expect(policy).to be_valid
       policy.usage_subsidy = 15
       policy.usage_rate = 25
@@ -75,23 +69,22 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-
-  describe 'before save' do
-    it 'sets the usage subsidy to 0 before save if there is a usage_rate' do
+  describe "before save" do
+    it "sets the usage subsidy to 0 before save if there is a usage_rate" do
       expect(policy.usage_rate).to be_present
       policy.usage_subsidy = nil
       expect(policy.save).to be true
       expect(policy.reload.usage_subsidy).to eq 0
     end
 
-    it 'does not set the usage subsidy before save if there is a usage_rate and it is already set' do
+    it "does not set the usage subsidy before save if there is a usage_rate and it is already set" do
       policy.usage_rate = 50
       policy.usage_subsidy = 5
       expect(policy.save).to be true
       expect(policy.reload.usage_subsidy).to eq (5 / 60.0).round(4)
     end
 
-    it 'does not set the usage subsidy before save if there is no usage_rate' do
+    it "does not set the usage subsidy before save if there is no usage_rate" do
       allow(policy).to receive(:restrict_purchase?).and_return true
       policy.usage_rate = nil
       policy.usage_subsidy = nil
@@ -100,9 +93,8 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-
-  describe 'after create' do
-    it 'creates a PriceGroupProduct with default reservation window if one does not exist' do
+  describe "after create" do
+    it "creates a PriceGroupProduct with default reservation window if one does not exist" do
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
       expect(pgp).to be_nil
       expect(policy.save).to be true
@@ -110,11 +102,11 @@ RSpec.describe InstrumentPricePolicy do
       expect(pgp.reservation_window).to eq PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     end
 
-    it 'does not create a PriceGroupProduct with default reservation window if one exists' do
+    it "does not create a PriceGroupProduct with default reservation window if one exists" do
       PriceGroupProduct.create(
         price_group: policy.price_group,
         product: policy.product,
-        reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
+        reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW,
       )
 
       expect(PriceGroupProduct).to_not receive :create
@@ -122,8 +114,7 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-
-  it 'returns the date for upcoming policies' do
+  it "returns the date for upcoming policies" do
     instrument = policy.product
     price_group = policy.price_group
     create :instrument_price_policy, start_date: Date.today, price_group: price_group, product: instrument
@@ -137,66 +128,62 @@ RSpec.describe InstrumentPricePolicy do
     expect(next_dates).to include ipp3.start_date.to_date
   end
 
-
   describe '#reservation_window' do
-    it 'returns 0 if there is no PriceGroupProduct' do
+    it "returns 0 if there is no PriceGroupProduct" do
       expect(policy.reservation_window).to eq 0
     end
 
-    it 'returns the reservation window from the after created PriceGroupProduct' do
+    it "returns the reservation window from the after created PriceGroupProduct" do
       expect(policy.save).to be true
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
       expect(policy.reservation_window).to eq pgp.reservation_window
     end
   end
 
-
   describe '#has_subsidy?' do
-    it 'has a subsidy if the attribute is greater than 0' do
+    it "has a subsidy if the attribute is greater than 0" do
       policy.usage_subsidy = 9.0
       expect(policy).to have_subsidy
     end
 
-    it 'does not have a subsidy if the attribute is 0' do
+    it "does not have a subsidy if the attribute is 0" do
       policy.usage_subsidy = 0
       expect(policy).to_not have_subsidy
     end
 
-    it 'does not have a subsidy if the attribute does not exist' do
+    it "does not have a subsidy if the attribute does not exist" do
       policy.usage_subsidy = nil
       expect(policy).to_not have_subsidy
     end
   end
 
-
   describe '#free?' do
-    it 'is free if the usage rate is 0' do
+    it "is free if the usage rate is 0" do
       policy.usage_rate = 0
       expect(policy).to be_free
     end
 
-    it 'is not free if the usage rate is greater than 0' do
+    it "is not free if the usage rate is greater than 0" do
       policy.usage_rate = 5.0
       expect(policy).to_not be_free
     end
   end
 
-
-  describe 'hourly rates' do
-    it 'gives the hourly version of the usage rate' do
+  describe "hourly rates" do
+    it "gives the hourly version of the usage rate" do
       expect(policy.hourly_usage_rate).to eq policy.usage_rate * 60
     end
 
-    it 'gives the hourly version of the usage subsidy' do
+    it "gives the hourly version of the usage subsidy" do
       expect(policy.hourly_usage_subsidy).to eq policy.usage_subsidy * 60
     end
 
-    it 'returns nil if usage rate is nil' do
+    it "returns nil if usage rate is nil" do
       policy.usage_rate = nil
       expect(policy.hourly_usage_rate).to be_nil
     end
 
-    it 'returns nil if usage subsidy is nil' do
+    it "returns nil if usage subsidy is nil" do
       policy.usage_subsidy = nil
       expect(policy.hourly_usage_subsidy).to be_nil
     end

@@ -2,6 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+
   include DateHelper
 
   helper :all # include all helpers, all the time
@@ -33,7 +34,7 @@ class ApplicationController < ActionController::Base
       end
   end
 
-  def cross_facility?  # TODO: try to use current_facility.cross_facility? but note current_facility may be nil
+  def cross_facility? # TODO: try to use current_facility.cross_facility? but note current_facility may be nil
     current_facility == Facility.cross_facility
   end
 
@@ -41,7 +42,7 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound unless current_facility
   end
 
-  #TODO: refactor existing calls of this definition to use this helper
+  # TODO: refactor existing calls of this definition to use this helper
   def current_cart
     acting_user.cart(session_user)
   end
@@ -65,7 +66,6 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound unless current_facility
 
     authorize! :manage_billing, current_facility
-
   end
 
   # helper for actions in the 'Billing' manager tab
@@ -100,11 +100,9 @@ class ApplicationController < ActionController::Base
 
   # BCSEC legacy method. Kept to give us ability to override devises #current_user.
   def session_user
-    begin
-      @session_user ||= current_user
-    rescue
-      nil
-    end
+    @session_user ||= current_user
+  rescue
+    nil
   end
 
   def acting_user
@@ -131,17 +129,17 @@ class ApplicationController < ActionController::Base
     render app_template_file: "/404", status: 404, layout: "application"
   end
 
-  rescue_from NUCore::PermissionDenied, CanCan::AccessDenied, :with => :render_403
-  def render_403(exception)
+  rescue_from NUCore::PermissionDenied, CanCan::AccessDenied, with: :render_403
+  def render_403(_exception)
     # if current_user is nil, the user should be redirected to login
     if current_user
-      render :app_template_file => "/403", status: 403, layout: "application"
+      render app_template_file: "/403", status: 403, layout: "application"
     else
       redirect_to new_user_session_path
     end
   end
 
-  rescue_from NUCore::NotPermittedWhileActingAs, :with => :render_acting_error
+  rescue_from NUCore::NotPermittedWhileActingAs, with: :render_acting_error
   def render_acting_error
     render app_template_file: "/acting_error", status: 403, layout: "application"
   end
@@ -168,9 +166,9 @@ class ApplicationController < ActionController::Base
   # to facility_account_path(current_facility, @account), while if you are not, it will
   # just go to account_path(@account).
   def open_or_facility_path(path, *options)
-    path << '_path'
+    path << "_path"
     if current_facility
-      path = 'facility_' + path
+      path = "facility_" + path
       send(path, current_facility, *options)
     else
       send(path, *options)
@@ -193,20 +191,22 @@ class ApplicationController < ActionController::Base
   # is returned by this method. By default it is #current_facility.
   # Override here to easily change the resource.
   def ability_resource
-    return current_facility
+    current_facility
   end
 
   def remove_ugly_params_and_redirect
-    if (params[:commit] && request.get?)
+    if params[:commit] && request.get?
       remove_ugly_params
       # redirect to self
       redirect_to params
       return false
     end
   end
+
   def remove_ugly_params
     [:commit, :utf8, :authenticity_token].each do |p|
       params.delete(p)
     end
   end
+
 end

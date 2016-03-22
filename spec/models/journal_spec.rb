@@ -4,10 +4,10 @@ require "journal"
 RSpec.describe Journal do
   subject(:journal) do
     build(:journal,
-      facility: facility,
-      created_by: 1,
-      journal_date: journal_date,
-    )
+          facility: facility,
+          created_by: 1,
+          journal_date: journal_date,
+         )
   end
 
   let(:facility) { create(:facility) }
@@ -174,11 +174,11 @@ RSpec.describe Journal do
   context "journal creation" do
     before :each do
       @admin = FactoryGirl.create(:user)
-      @facilitya = FactoryGirl.create(:facility, :abbreviation => "A")
-      @facilityb = FactoryGirl.create(:facility, :abbreviation => "B")
-      @facilityc = FactoryGirl.create(:facility, :abbreviation => "C")
-      @facilityd = FactoryGirl.create(:facility, :abbreviation => "D")
-      @account = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @admin), :facility_id => @facilitya.id)
+      @facilitya = FactoryGirl.create(:facility, abbreviation: "A")
+      @facilityb = FactoryGirl.create(:facility, abbreviation: "B")
+      @facilityc = FactoryGirl.create(:facility, abbreviation: "C")
+      @facilityd = FactoryGirl.create(:facility, abbreviation: "D")
+      @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @admin), facility_id: @facilitya.id)
 
       # little helper to create the calls which the controller performs
       def create_pending_journal_for(*facilities_list)
@@ -192,9 +192,9 @@ RSpec.describe Journal do
         end
 
         journal = Journal.create!(
-          :facility_id => (facilities_list.size == 1 ? facilities_list.first.id : nil),
-          :created_by => @admin.id,
-          :journal_date => Time.zone.now
+          facility_id: (facilities_list.size == 1 ? facilities_list.first.id : nil),
+          created_by: @admin.id,
+          journal_date: Time.zone.now,
         )
 
         journal.create_journal_rows!(@ods)
@@ -209,33 +209,33 @@ RSpec.describe Journal do
       end
 
       it "should not allow creation of a journal for A" do
-        expect { create_pending_journal_for( @facilitya) }.to raise_error(Journal::CreationError)
+        expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
       end
     end
 
     context "(with: pending journal for A & B)" do
       before :each do
-        create_pending_journal_for( @facilitya, @facilityb )
+        create_pending_journal_for(@facilitya, @facilityb)
       end
 
       it "should not allow creation of a journal for B & C (journal pending on B)" do
-        expect { create_pending_journal_for( @facilityb, @facilityc ) }.to raise_error(Journal::CreationError)
+        expect { create_pending_journal_for(@facilityb, @facilityc) }.to raise_error(Journal::CreationError)
       end
 
       it "should not allow creation of a journal for A (journal pending on A)" do
-        expect { create_pending_journal_for( @facilitya ) }.to raise_error(Journal::CreationError)
+        expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
       end
 
       it "should not allow creation of a journal for B (journal pending on B)" do
-        expect { create_pending_journal_for( @facilityb ) }.to raise_error(Journal::CreationError)
+        expect { create_pending_journal_for(@facilityb) }.to raise_error(Journal::CreationError)
       end
 
       it "should allow creation of a journal for C" do
-        expect { create_pending_journal_for( @facilityc ) }.to_not raise_error
+        expect { create_pending_journal_for(@facilityc) }.to_not raise_error
       end
 
       it "should allow creation of a journal for C & D (no journals on either C or D)" do
-        expect { create_pending_journal_for( @facilityc, @facilityd ) }.to_not raise_error
+        expect { create_pending_journal_for(@facilityc, @facilityd) }.to_not raise_error
       end
     end
   end
@@ -245,7 +245,7 @@ RSpec.describe Journal do
     assert !journal.save
     expect(journal.errors[:reference]).not_to be_nil
 
-    journal.reference = '12345'
+    journal.reference = "12345"
     journal.valid?
     expect(journal.errors[:reference]).to be_empty
   end
@@ -255,7 +255,7 @@ RSpec.describe Journal do
     assert !journal.save
     expect(journal.errors[:updated_by]).not_to be_nil
 
-    journal.updated_by = '1'
+    journal.updated_by = "1"
     journal.valid?
     expect(journal.errors[:updated_by]).to be_empty
   end
@@ -278,41 +278,41 @@ RSpec.describe Journal do
     journal.valid?
     # create nufs account
     @owner    = FactoryGirl.create(:user)
-    @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @owner))
+    @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @owner))
     journal.create_spreadsheet
     expect(journal.file.url).to match(/^\/files/)
   end
 
-  it 'should be open' do
+  it "should be open" do
     journal.is_successful = nil
     expect(journal).to be_open
   end
 
-  it 'should not be open' do
+  it "should not be open" do
     journal.is_successful = true
     expect(journal).not_to be_open
   end
 
-  context 'order_details_span_fiscal_years?' do
+  context "order_details_span_fiscal_years?" do
     before :each do
-      Settings.financial.fiscal_year_begins = '06-01'
+      Settings.financial.fiscal_year_begins = "06-01"
       @owner    = FactoryGirl.create(:user)
-      @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner) ])
+      @account  = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner)])
       @facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @item = facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
-      @price_group = FactoryGirl.create(:price_group, :facility => facility)
-      FactoryGirl.create(:user_price_group_member, :user => @owner, :price_group => @price_group)
-      @pp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, :price_group_id => @price_group.id))
+      @item = facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+      @price_group = FactoryGirl.create(:price_group, facility: facility)
+      FactoryGirl.create(:user_price_group_member, user: @owner, price_group: @price_group)
+      @pp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id))
 
       # Create one order detail fulfulled in each month for a two year range
-      d1 = Time.zone.parse('2020-01-01')
+      d1 = Time.zone.parse("2020-01-01")
       @order_details = []
       (0..23).each do |i|
-        order=@owner.orders.create(FactoryGirl.attributes_for(:order, :created_by => @owner.id))
-        od = order.order_details.create(FactoryGirl.attributes_for(:order_detail, :product => @item))
-        od.update_attributes(:actual_cost => 20, :actual_subsidy => 0)
+        order = @owner.orders.create(FactoryGirl.attributes_for(:order, created_by: @owner.id))
+        od = order.order_details.create(FactoryGirl.attributes_for(:order_detail, product: @item))
+        od.update_attributes(actual_cost: 20, actual_subsidy: 0)
         od.to_complete!
-        od.update_attributes(:fulfilled_at => d1 + i.months)
+        od.update_attributes(fulfilled_at: d1 + i.months)
         @order_details << od
       end
       expect(@order_details.size).to eq(24)
@@ -322,19 +322,19 @@ RSpec.describe Journal do
       # end
     end
 
-    it 'should not span fiscal years with everything in the same year' do
+    it "should not span fiscal years with everything in the same year" do
       expect(journal.order_details_span_fiscal_years?(@order_details[5..16])).to be false
     end
 
-    it 'should span fiscal years when it goes over the beginning' do
+    it "should span fiscal years when it goes over the beginning" do
       expect(journal.order_details_span_fiscal_years?([@order_details[6], @order_details[5], @order_details[4]])).to be true
     end
 
-    it 'should span fiscal years when it goes over the end' do
+    it "should span fiscal years when it goes over the end" do
       expect(journal.order_details_span_fiscal_years?(@order_details[16..17])).to be true
     end
 
-    it 'should return false with just one order detail' do
+    it "should return false with just one order detail" do
       journal.order_details_span_fiscal_years?([@order_details[3]])
     end
   end

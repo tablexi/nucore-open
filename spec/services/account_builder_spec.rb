@@ -13,7 +13,7 @@ RSpec.describe AccountBuilder, type: :service do
         current_user: build_stubbed(:user),
         facility: build_stubbed(:facility),
         owner_user: build_stubbed(:user),
-        params: ActionController::Parameters.new({foo: "bar"}),
+        params: ActionController::Parameters.new(foo: "bar"),
       }
     end
 
@@ -97,12 +97,10 @@ RSpec.describe AccountBuilder, type: :service do
 
     context "with params" do
       let(:params) do
-        ActionController::Parameters.new({
-          nufs_account: {
-            account_number: "1234",
-            description: "my description",
-          }
-        })
+        ActionController::Parameters.new(nufs_account: {
+                                           account_number: "1234",
+                                           description: "my description",
+                                         })
       end
 
       it "sets account_number" do
@@ -149,11 +147,9 @@ RSpec.describe AccountBuilder, type: :service do
 
       context "and affiliate param present" do
         let(:params) do
-          ActionController::Parameters.new({
-            nufs_account: {
-              affiliate_id: affiliate.id,
-            }
-          })
+          ActionController::Parameters.new(nufs_account: {
+                                             affiliate_id: affiliate.id,
+                                           })
         end
 
         it "sets affiliate" do
@@ -177,11 +173,9 @@ RSpec.describe AccountBuilder, type: :service do
 
       context "and affiliate param present" do
         let(:params) do
-          ActionController::Parameters.new({
-            nufs_account: {
-              affiliate_id: affiliate.id,
-            }
-          })
+          ActionController::Parameters.new(nufs_account: {
+                                             affiliate_id: affiliate.id,
+                                           })
         end
 
         it "sets affiliate" do
@@ -203,18 +197,16 @@ RSpec.describe AccountBuilder, type: :service do
 
     let(:account) do
       build_stubbed(:nufs_account,
-        account_number: "1234",
-        description: "foobar"
-      )
+                    account_number: "1234",
+                    description: "foobar",
+                   )
     end
 
     let(:params) do
-      ActionController::Parameters.new({
-        nufs_account: {
-          account_number: "9999",
-          description: "changed description",
-        }
-      })
+      ActionController::Parameters.new(nufs_account: {
+                                         account_number: "9999",
+                                         description: "changed description",
+                                       })
     end
 
     it "returns an account" do

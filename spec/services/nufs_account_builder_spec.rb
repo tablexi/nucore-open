@@ -36,7 +36,7 @@ RSpec.describe NufsAccountBuilder, type: :service do
           nufs_account: {
             account_number: "1234",
             description: "foobar",
-          }
+          },
         )
       end
 

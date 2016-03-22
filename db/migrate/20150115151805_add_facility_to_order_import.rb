@@ -1,4 +1,5 @@
 class AddFacilityToOrderImport < ActiveRecord::Migration
+
   def up
     add_column :order_imports, :facility_id, :integer, after: :id
     add_foreign_key :order_imports, :facilities, name: "fk_order_imports_facilities"
@@ -27,4 +28,5 @@ class AddFacilityToOrderImport < ActiveRecord::Migration
         order_import_id IS NOT NULL
     ")
   end
+
 end

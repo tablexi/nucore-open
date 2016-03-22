@@ -6,5 +6,5 @@ VestalVersions.configure do |config|
   #
   # Any options passed to the "versioned" method in the model itself will override this global
   # configuration.
-  config.number_column_name='version_number'
+  config.number_column_name = "version_number"
 end

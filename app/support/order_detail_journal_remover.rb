@@ -1,4 +1,5 @@
 class OrderDetailJournalRemover
+
   def self.remove_from_journal(order_detail)
     OrderDetail.transaction do
       order_detail.current_journal_rows.each do |journal_row|
@@ -7,4 +8,5 @@ class OrderDetailJournalRemover
       end
     end
   end
+
 end

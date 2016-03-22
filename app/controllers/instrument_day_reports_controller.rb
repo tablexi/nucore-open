@@ -1,4 +1,5 @@
 class InstrumentDayReportsController < ReportsController
+
   include InstrumentReporter
   helper_method :report_data_row
 
@@ -20,11 +21,11 @@ class InstrumentDayReportsController < ReportsController
 
   private
 
-  def init_report_headers(report_on_label)
-    @headers ||= [ 'Instrument', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
+  def init_report_headers(_report_on_label)
+    @headers ||= %w(Instrument Sunday Monday Tuesday Wednesday Thursday Friday Saturday)
   end
 
-  def init_report(report_on_label, &report_on)
+  def init_report(_report_on_label, &report_on)
     report = Reports::InstrumentDayReport.new(report_data)
     report.build_report &report_on
     @totals = report.totals
@@ -33,7 +34,7 @@ class InstrumentDayReportsController < ReportsController
     page_report rows
   end
 
-  def init_report_data(report_on_label, &report_on)
+  def init_report_data(_report_on_label)
     @report_data = report_data
     reservation = @report_data.first
     @headers += report_attributes(reservation, reservation.product)

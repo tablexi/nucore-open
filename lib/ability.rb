@@ -1,4 +1,5 @@
 class Ability
+
   include CanCan::Ability
 
   #
@@ -39,7 +40,7 @@ class Ability
       end
     end
 
-    can :list, Facility if user.facilities.size > 0 and controller.is_a?(FacilitiesController)
+    can :list, Facility if user.facilities.size > 0 && controller.is_a?(FacilitiesController)
     can :read, Notification if user.notifications.active.any?
 
     if user.account_manager?
@@ -57,16 +58,12 @@ class Ability
       can :manage, [Account, Journal, Order, OrderDetail, Reservation]
       cannot :administer, [Order, OrderDetail, Reservation]
       can :manage_billing, Facility.cross_facility
-      can [:disputed_orders, :movable_transactions, :transactions], Facility do |facility|
-        facility.cross_facility?
-      end
+      can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
     end
 
     return unless resource
 
-    if resource.is_a?(OrderDetail)
-      order_details_ability(user, resource)
-    end
+    order_details_ability(user, resource) if resource.is_a?(OrderDetail)
 
     if resource.is_a?(Facility)
       can :complete, ExternalService
@@ -98,7 +95,7 @@ class Ability
           :update_admin,
         ], Reservation
 
-        can(:destroy, Reservation) { |r| r.admin? }
+        can(:destroy, Reservation, &:admin?)
 
         can [
           :administer,
@@ -116,16 +113,16 @@ class Ability
         can [:administer, :index, :view_details, :schedule, :show], Product
 
         can [:upload, :uploader_create, :destroy], StoredFile do |fileupload|
-          fileupload.file_type == 'sample_result'
+          fileupload.file_type == "sample_result"
         end
 
         can [:administer, :switch_to], User
         can :manage, User if controller.is_a?(UsersController)
 
-        can [ :list, :show ], Facility
+        can [:list, :show], Facility
         can :act_as, Facility
 
-        can :index, [ BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup ]
+        can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
         can [:instrument_status, :instrument_statuses, :switch], Instrument
         can :edit, [PriceGroupProduct]
       end
@@ -169,9 +166,9 @@ class Ability
       end
 
     elsif resource.is_a?(Reservation)
-      # TODO Add :accessory hash back in to hide hidden accessories from non-admin users
+      # TODO: Add :accessory hash back in to hide hidden accessories from non-admin users
       # See task #55479
-      can :read, ProductAccessory #, :accessory => { :is_hidden => false }
+      can :read, ProductAccessory # , :accessory => { :is_hidden => false }
       if user.operator_of?(resource.product.facility)
         can :read, ProductAccessory
         can :manage, Reservation
@@ -182,7 +179,7 @@ class Ability
       can :create, TrainingRequest
 
       if user.facility_director_of?(resource.product.facility) ||
-          in_role?(user, resource.product.facility, UserRole::FACILITY_SENIOR_STAFF)
+         in_role?(user, resource.product.facility, UserRole::FACILITY_SENIOR_STAFF)
         can :manage, TrainingRequest
       end
     end
@@ -195,12 +192,12 @@ class Ability
     (facility_roles & roles).any?
   end
 
-private
+  private
 
   def order_details_ability(user, resource)
     can %i(add_accessories sample_results show template_results), OrderDetail, order: { user_id: user.id }
-    can :manage, OrderDetail, :order => { :facility_id => resource.order.facility_id } if user.operator_of?(resource.facility)
-    can :show, OrderDetail, :account => { :id => resource.account_id } if user.account_administrator_of?(resource.account)
+    can :manage, OrderDetail, order: { facility_id: resource.order.facility_id } if user.operator_of?(resource.facility)
+    can :show, OrderDetail, account: { id: resource.account_id } if user.account_administrator_of?(resource.account)
   end
 
   def user_has_facility_role?(user)
@@ -210,4 +207,5 @@ private
   def editable_global_group?(resource)
     resource.global? && resource.admin_editable?
   end
+
 end

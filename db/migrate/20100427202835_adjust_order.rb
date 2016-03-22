@@ -1,8 +1,9 @@
 class AdjustOrder < ActiveRecord::Migration
+
   def self.up
     change_table :orders do |t|
-      t.change :account_id, :integer, :null => true
-      t.change :ordered_at, :datetime, :null => true
+      t.change :account_id, :integer, null: true
+      t.change :ordered_at, :datetime, null: true
     end
   end
 
@@ -10,8 +11,9 @@ class AdjustOrder < ActiveRecord::Migration
     say "destroying all existing orders"
     Order.destroy_all
     change_table :orders do |t|
-      t.change :account_id, :integer, :null => false
-      t.change :ordered_at, :datetime, :null => false
+      t.change :account_id, :integer, null: false
+      t.change :ordered_at, :datetime, null: false
     end
   end
+
 end

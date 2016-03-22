@@ -1,17 +1,18 @@
 class FacilityOrderDetailsController < ApplicationController
+
   admin_tab     :all
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility
-  before_filter :init_order_detail, :except => :remove_from_journal
+  before_filter :init_order_detail, except: :remove_from_journal
 
-  load_and_authorize_resource :class => OrderDetail
+  load_and_authorize_resource class: OrderDetail
 
   include FacilityOrderStatusHelper
   helper_method :new_or_in_process_orders, :disputed_orders
 
   def initialize
-    @active_tab = 'admin_orders'
+    @active_tab = "admin_orders"
     super
   end
 
@@ -25,13 +26,13 @@ class FacilityOrderDetailsController < ApplicationController
     if @order.to_be_merged?
       begin
         @order_detail.destroy
-        flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.success'
+        flash[:notice] = I18n.t "controllers.facility_order_details.destroy.success"
       rescue => e
         Rails.logger.error "#{e.message}:#{e.backtrace.join("\n")}"
-        flash[:error]=I18n.t 'controllers.facility_order_details.destroy.error', @order_detail.to_s
+        flash[:error] = I18n.t "controllers.facility_order_details.destroy.error", @order_detail.to_s
       end
     else
-      flash[:notice]=I18n.t 'controllers.facility_order_details.destroy.notice'
+      flash[:notice] = I18n.t "controllers.facility_order_details.destroy.notice"
       return redirect_to facility_order_path(current_facility, @order)
     end
 
@@ -42,17 +43,17 @@ class FacilityOrderDetailsController < ApplicationController
 
   def process_account_change
     return if params[:order_detail][:account_id].to_i == @order_detail.account_id
-    @order_detail.account=Account.find(params[:order_detail][:account_id])
-    @order_detail.statement=nil
+    @order_detail.account = Account.find(params[:order_detail][:account_id])
+    @order_detail.statement = nil
     @order_detail.save!
   end
 
   def set_active_tab
-    if @order_detail.reservation
-      @active_tab = "admin_reservations"
-    else
-      @active_tab = "admin_orders"
-    end
+    @active_tab = if @order_detail.reservation
+                    "admin_reservations"
+                  else
+                    "admin_orders"
+                  end
   end
 
   def init_order_detail
@@ -60,4 +61,5 @@ class FacilityOrderDetailsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @order
     @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
   end
+
 end

@@ -1,13 +1,14 @@
 class OrdersController < ApplicationController
+
   customer_tab  :all
 
   before_filter :authenticate_user!
-  before_filter :check_acting_as,          :except => [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
-  before_filter :init_order,               :except => [:cart, :index, :receipt]
-  before_filter :protect_purchased_orders, :except => [:cart, :receipt, :confirmed, :index]
+  before_filter :check_acting_as,          except: [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
+  before_filter :init_order,               except: [:cart, :index, :receipt]
+  before_filter :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
 
   def initialize
-    @active_tab = 'orders'
+    @active_tab = "orders"
     super
   end
 
@@ -16,15 +17,15 @@ class OrdersController < ApplicationController
   end
 
   def protect_purchased_orders
-    if @order.state == 'purchased'
-      redirect_to receipt_order_path(@order) and return
+    if @order.state == "purchased"
+      redirect_to(receipt_order_path(@order)) && return
     end
   end
 
   # GET /orders/cart
   def cart
     @order = acting_user.cart(session_user)
-    redirect_to order_path(@order) and return
+    redirect_to(order_path(@order)) && return
   end
 
   # GET /orders/:id
@@ -38,21 +39,20 @@ class OrdersController < ApplicationController
   # PUT /orders/:id/clear
   def clear
     @order.clear!
-    redirect_to order_path(@order) and return
+    redirect_to(order_path(@order)) && return
   end
 
   # GET /orders/2/add/
   # PUT /orders/2/add/
   def add
     ## get items to add from the form post or from the session
-    ods_from_params = (params[:order].presence and params[:order][:order_details].presence) || []
-    items =  ods_from_params.presence || session[:add_to_cart].presence || []
+    ods_from_params = (params[:order].presence && params[:order][:order_details].presence) || []
+    items = ods_from_params.presence || session[:add_to_cart].presence || []
     session[:add_to_cart] = nil
 
-
     # ignore ods w/ empty or 0 quantities
-    items = items.select { |od| od.is_a?(Hash) and od[:quantity].present? and (od[:quantity] = od[:quantity].to_i) > 0 }
-    return redirect_to(:back, :notice => "Please add at least one quantity to order something") unless items.size > 0
+    items = items.select { |od| od.is_a?(Hash) && od[:quantity].present? && (od[:quantity] = od[:quantity].to_i) > 0 }
+    return redirect_to(:back, notice: "Please add at least one quantity to order something") unless items.size > 0
 
     first_product = Product.find(items.first[:product_id])
     facility_ability = Ability.new(session_user, first_product.facility, self)
@@ -60,14 +60,12 @@ class OrdersController < ApplicationController
     # if acting_as, make sure the session user can place orders for the facility
     if acting_as? && facility_ability.cannot?(:act_as, first_product.facility)
       flash[:error] = "You are not authorized to place an order on behalf of another user for the facility #{current_facility.try(:name)}."
-      redirect_to order_path(@order) and return
+      redirect_to(order_path(@order)) && return
     end
 
-
-
     ## handle a single instrument reservation
-    if items.size == 1 and (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
-      if first_product.respond_to?(:reservations)                              # and product is reservable
+    if items.size == 1 && (quantity = items.first[:quantity].to_i) == 1 # only one od w/ quantity of 1
+      if first_product.respond_to?(:reservations) # and product is reservable
 
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
         @order = acting_user.cart(session_user, @order.order_details.empty?)
@@ -89,7 +87,7 @@ class OrdersController < ApplicationController
 
       ## save the state to the session and redirect
       session[:add_to_cart] = items
-      redirect_to choose_account_order_path(@order) and return
+      redirect_to(choose_account_order_path(@order)) && return
     end
 
     ## process each item
@@ -123,9 +121,9 @@ class OrdersController < ApplicationController
 
     # remove bundles
     if order_detail.group_id
-      order_details = @order.order_details.find(:all, :conditions => {:group_id => order_detail.group_id})
+      order_details = @order.order_details.find(:all, conditions: { group_id: order_detail.group_id })
       OrderDetail.transaction do
-        if order_details.all?{|od| od.destroy}
+        if order_details.all?(&:destroy)
           flash[:notice] = "The bundle has been removed."
         else
           flash[:error] = "An error was encountered while removing the bundle."
@@ -143,7 +141,7 @@ class OrdersController < ApplicationController
     redirect_to params[:redirect_to].presence || order_path(@order)
 
     # clear out account on the order if its now empty
-    if  @order.order_details.empty?
+    if @order.order_details.empty?
       @order.account_id = nil
       @order.save!
     end
@@ -175,15 +173,15 @@ class OrdersController < ApplicationController
         end
         return
       else
-        flash.now[:error] = account.nil? ? 'Please select a payment method.' : 'An error was encountered while selecting a payment method.'
+        flash.now[:error] = account.nil? ? "Please select a payment method." : "An error was encountered while selecting a payment method."
       end
     end
 
-    if session[:add_to_cart].blank?
-      @product = @order.order_details[0].try(:product)
-    else
-      @product = Product.find(session[:add_to_cart].first[:product_id])
-    end
+    @product = if session[:add_to_cart].blank?
+                 @order.order_details[0].try(:product)
+               else
+                 Product.find(session[:add_to_cart].first[:product_id])
+               end
 
     redirect_to(cart_path) && return unless @product
 
@@ -191,17 +189,16 @@ class OrdersController < ApplicationController
     @errors   = {}
     details   = @order.order_details
     @accounts.each do |account|
-      if session[:add_to_cart] and
-         ods = session[:add_to_cart].presence and
-         product_id = ods.first[:product_id]
+      if session[:add_to_cart] &&
+         (ods = session[:add_to_cart].presence) &&
+         (product_id = ods.first[:product_id])
         error = account.validate_against_product(Product.find(product_id), acting_user)
         @errors[account.id] = error if error
       end
-      unless @errors[account.id]
-        details.each do |od|
-          error = account.validate_against_product(od.product, acting_user)
-          @errors[account.id] = error if error
-        end
+      next if @errors[account.id]
+      details.each do |od|
+        error = account.validate_against_product(od.product, acting_user)
+        @errors[account.id] = error if error
       end
     end
   end
@@ -210,12 +207,11 @@ class OrdersController < ApplicationController
     flash.now[:notice] = "This page is still in development; please add an account administratively"
   end
 
-
   # PUT /orders/:id/update (submission from a cart)
   def update_or_purchase
     # When returning from an external service, we may be called with a get; in that
     # case, we should just redirect to the show path
-    redirect_to action: :show and return if request.get?
+    redirect_to(action: :show) && return if request.get?
 
     # if update button was clicked
     if params[:commit] == "Update"
@@ -245,7 +241,7 @@ class OrdersController < ApplicationController
   # PUT /orders/1/purchase
   def purchase
     facility_ability = Ability.new(session_user, @order.facility, self)
-    #revalidate the cart, but only if the user is not an admin
+    # revalidate the cart, but only if the user is not an admin
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
 
     @order.ordered_at = build_order_date if params[:order_date].present? && params[:order_time].present? && acting_as?
@@ -271,7 +267,7 @@ class OrdersController < ApplicationController
         raise NUCore::PurchaseException.new("") unless @order.validate_order! && @order.purchase!
 
         if facility_ability.can? :order_in_past, @order
-          raise NUCore::PurchaseException.new(I18n.t('controllers.orders.purchase.future_dating_error')) unless @order.can_backdate_order_details?
+          raise NUCore::PurchaseException.new(I18n.t("controllers.orders.purchase.future_dating_error")) unless @order.can_backdate_order_details?
 
           # update order detail statuses if you've changed it while acting as
           if acting_as? && params[:order_status_id].present?
@@ -285,15 +281,15 @@ class OrdersController < ApplicationController
 
         # If we're only making a single reservation, we'll redirect
         if @order.order_details.size == 1 && @order.order_details[0].product.is_a?(Instrument) && !@order.order_details[0].bundled? && !acting_as?
-          od=@order.order_details[0]
+          od = @order.order_details[0]
 
           if od.reservation.can_switch_instrument_on?
-            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, :switch => 'on', :redirect_to => reservations_path)
+            redirect_to order_order_detail_reservation_switch_instrument_path(@order, od, od.reservation, switch: "on", redirect_to: reservations_path)
           else
             redirect_to reservations_path
           end
 
-          flash[:notice]='Reservation completed successfully'
+          flash[:notice] = "Reservation completed successfully"
         else
           redirect_to receipt_order_path(@order)
         end
@@ -301,11 +297,11 @@ class OrdersController < ApplicationController
         return
       end
     rescue => e
-      flash[:error] = I18n.t('orders.purchase.error')
+      flash[:error] = I18n.t("orders.purchase.error")
       flash[:error] += " #{e.message}" if e.message
       puts e.message
       @order.reload.invalidate!
-      redirect_to order_path(@order) and return
+      redirect_to(order_path(@order)) && return
     end
   end
 
@@ -314,7 +310,7 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @order.purchased?
 
-    @order_details = @order.order_details.select{|od| od.can_be_viewed_by?(acting_user) }
+    @order_details = @order.order_details.select { |od| od.can_be_viewed_by?(acting_user) }
     raise ActiveRecord::RecordNotFound if @order_details.empty?
 
     @accounts = @order_details.collect(&:account).uniq
@@ -325,17 +321,17 @@ class OrdersController < ApplicationController
   def index
     # new or in process
     @order_details = session_user.order_details.non_reservations
-    @available_statuses = ['pending', 'all']
+    @available_statuses = %w(pending all)
     case params[:status]
     when "pending"
       @order_details = @order_details.pending
     when "all"
       @order_details = @order_details.ordered
     else
-      redirect_to orders_status_path(:status => "pending")
+      redirect_to orders_status_path(status: "pending")
       return
     end
-    @order_details = @order_details. order('order_details.created_at DESC').paginate(:page => params[:page])
+    @order_details = @order_details. order("order_details.created_at DESC").paginate(page: params[:page])
   end
 
   private
@@ -346,16 +342,16 @@ class OrdersController < ApplicationController
     order_detail_updates = {}
     params.each do |key, value|
       if /\A(quantity)(\d+)\z/ =~ key && value.present?
-        order_detail_updates[$2.to_i] ||= Hash.new
-        order_detail_updates[$2.to_i][$1.to_sym] = value
+        order_detail_updates[Regexp.last_match(2).to_i] ||= {}
+        order_detail_updates[Regexp.last_match(2).to_i][Regexp.last_match(1).to_sym] = value
       end
       if /\A(note)(\d+)\z/ =~ key
-        order_detail_updates[$2.to_i] ||= Hash.new
-        order_detail_updates[$2.to_i][$1.to_sym] = value
+        order_detail_updates[Regexp.last_match(2).to_i] ||= {}
+        order_detail_updates[Regexp.last_match(2).to_i][Regexp.last_match(1).to_sym] = value
       end
     end
 
-    return @order.update_details(order_detail_updates)
+    @order.update_details(order_detail_updates)
   end
 
   def build_order_date
@@ -369,6 +365,7 @@ class OrdersController < ApplicationController
   end
 
   def should_send_notification?
-    !acting_as? || params[:send_notification] == '1'
+    !acting_as? || params[:send_notification] == "1"
   end
+
 end

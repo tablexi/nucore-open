@@ -1,4 +1,5 @@
 class CreateQuestions < ActiveRecord::Migration
+
   def self.up
     create_table :questions do |t|
       # Context
@@ -16,16 +17,16 @@ class CreateQuestions < ActiveRecord::Migration
       t.string :data_export_identifier # data export
       t.string :common_namespace # maping to a common vocab
       t.string :common_identifier # maping to a common vocab
-      
+
       # Display
       t.integer :display_order
       t.string :display_type
       t.boolean :is_mandatory
       t.integer :display_width # used only for slider component (if needed)
-      
+
       t.string :custom_class
       t.string :custom_renderer
-      
+
       t.timestamps
     end
   end
@@ -33,4 +34,5 @@ class CreateQuestions < ActiveRecord::Migration
   def self.down
     drop_table :questions
   end
+
 end

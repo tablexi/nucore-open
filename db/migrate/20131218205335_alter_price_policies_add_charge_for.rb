@@ -1,4 +1,5 @@
 class AlterPricePoliciesAddChargeFor < ActiveRecord::Migration
+
   def up
     add_column :price_policies, :charge_for, :string
   end
@@ -6,4 +7,5 @@ class AlterPricePoliciesAddChargeFor < ActiveRecord::Migration
   def down
     remove_column :price_policies, :charge_for
   end
+
 end

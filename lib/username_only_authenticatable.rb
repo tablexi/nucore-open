@@ -1,4 +1,4 @@
-require 'devise/strategies/database_authenticatable'
+require "devise/strategies/database_authenticatable"
 
 # This is for use in the development environment where you may have
 # users in the database that were created by other strategies (e.g. LDAP)
@@ -6,18 +6,26 @@ require 'devise/strategies/database_authenticatable'
 # This will allow you to log in as any user.
 
 module Devise
+
   module Models
+
     module UsernameOnlyAuthenticatable
-      def valid_password?(password)
+
+      def valid_password?(_password)
         true
       end
+
     end
+
   end
 
   module Strategies
+
     class UsernameOnlyAuthenticatable < DatabaseAuthenticatable
     end
+
   end
+
 end
 
 Warden::Strategies.add(:username_only_authenticatable, Devise::Strategies::UsernameOnlyAuthenticatable)

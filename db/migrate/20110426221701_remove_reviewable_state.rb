@@ -1,7 +1,7 @@
 class RemoveReviewableState < ActiveRecord::Migration
 
   def self.up
-    reviewable = OrderStatus.find_by_name('Reviewable')
+    reviewable = OrderStatus.find_by_name("Reviewable")
     inprocess = OrderStatus.inprocess.first
     if inprocess
       execute("UPDATE order_details SET order_status_id=#{inprocess.id},state='inprocess' WHERE order_status_id=#{reviewable.id} AND state='reviewable'")
@@ -10,7 +10,7 @@ class RemoveReviewableState < ActiveRecord::Migration
     if reviewable
       right reviewable.right
       left = reviewable.left
-      diff = right-left
+      diff = right - left
 
       # awesome_nested_set barfs trying to fix descendants on Oracle, so skip its shoddy work and rebuild tree manually
       reviewable.skip_before_destroy = true
@@ -21,7 +21,7 @@ class RemoveReviewableState < ActiveRecord::Migration
   end
 
   def self.down
-    OrderStatus.create!(:name => 'Reviewable')
+    OrderStatus.create!(name: "Reviewable")
   end
 
 end

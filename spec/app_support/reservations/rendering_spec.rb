@@ -62,13 +62,15 @@ RSpec.describe Reservations::Rendering do
     let(:actual_end_at) { DateTime.new(2015, 8, 1, 15, 16, 17) }
     let(:title) { "Admin\nReservation" }
 
-    let(:hash_without_details) {{
-      "allDay" => false,
-      "end" => "Sat, 01 Aug 2015 10:16:17",
-      "product" => "Generic",
-      "start" => "Sat, 01 Aug 2015 09:15:16",
-      "title" => title,
-    }}
+    let(:hash_without_details) do
+      {
+        "allDay" => false,
+        "end" => "Sat, 01 Aug 2015 10:16:17",
+        "product" => "Generic",
+        "start" => "Sat, 01 Aug 2015 09:15:16",
+        "title" => title,
+      }
+    end
 
     before { reservation.product = build_stubbed(:product, name: "Generic") }
 

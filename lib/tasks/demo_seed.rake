@@ -262,7 +262,6 @@ namespace :demo do
 
     UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
 
-
     UserPriceGroupMember.find_or_create_by_user_id_and_price_group_id(user_id: user_pi.id,
                                                                       price_group_id: pgnu.id)
     UserPriceGroupMember.find_or_create_by_user_id_and_price_group_id(user_id: user_student.id,
@@ -293,13 +292,13 @@ namespace :demo do
 
     unless nufsaccount2
       nufsaccount2 = NufsAccount.create!(account_number: "111-2222222-44444444-01",
-                                        description: "Paul PI's Other Chart String",
-                                        expires_at: Time.zone.now + 1.year,
-                                        created_by: user_director.id,
-                                        account_users_attributes: [
-                                          { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                          { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                        ])
+                                         description: "Paul PI's Other Chart String",
+                                         expires_at: Time.zone.now + 1.year,
+                                         created_by: user_director.id,
+                                         account_users_attributes: [
+                                           { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
+                                           { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
+                                         ])
       nufsaccount2.set_expires_at!
     end
 
@@ -323,29 +322,24 @@ namespace :demo do
                 percent: 50,
                 extra_penny: false,
               },
-            ]
-          }
+            ],
+          },
         }
 
         builder = AccountBuilder.for("SplitAccounts::SplitAccount")
 
-        split_account = builder.new({
-          account_type: "SplitAccounts::SplitAccount",
-          current_user: user_director,
-          owner_user: user_pi,
-          params: params,
-        }).build
+        split_account = builder.new(account_type: "SplitAccounts::SplitAccount",
+                                    current_user: user_director,
+                                    owner_user: user_pi,
+                                    params: params).build
 
-        split_account.account_users.build({
-          user_id: user_student.id,
-          user_role: "Purchaser",
-          created_by: user_director.id
-        })
+        split_account.account_users.build(user_id: user_student.id,
+                                          user_role: "Purchaser",
+                                          created_by: user_director.id)
 
         split_account.save
       end
     end
-
 
     other_affiliate = Affiliate.find_or_create_by_name("Other")
 

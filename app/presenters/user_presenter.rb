@@ -1,4 +1,5 @@
 class UserPresenter < SimpleDelegator
+
   include ActionView::Helpers::FormOptionsHelper
 
   delegate :global, to: :user_roles, prefix: true

@@ -1,5 +1,17 @@
+AllCops:
+  TargetRubyVersion: 2.1
+
 inherit_from:
   - .rubocop-txi.yml
+  - .rubocop_todo.yml
+
+# TODO: Enable once we switch to Rails 4
+Rails/ActionFilter:
+  Enabled: false
+
+# TODO: Enable once we switch to Rails 4
+Rails/FindBy:
+  Enabled: false
 
 # Overrides can go here, but try to conform to TXI standards as specified in
 # .rubocop-txi.yml when possible.

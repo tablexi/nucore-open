@@ -1,6 +1,7 @@
 # For having more conveniently named route helpers so you don't always
 # have to include current_facility, etc.
 module RoutesHelper
+
   def manage_order_detail_path(order_detail)
     manage_facility_order_order_detail_path(order_detail.facility, order_detail.order, order_detail)
   end
@@ -18,7 +19,7 @@ module RoutesHelper
   end
 
   def statement_path(statement)
-    facility_account_statement_path(current_facility, statement.account_id, statement, :format => :pdf)
+    facility_account_statement_path(current_facility, statement.account_id, statement, format: :pdf)
   end
 
   def product_file_path(product_info_file)
@@ -56,4 +57,5 @@ module RoutesHelper
       order_detail.stored_files.template_result.first,
     )
   end
+
 end

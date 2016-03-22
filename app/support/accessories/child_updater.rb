@@ -1,4 +1,5 @@
 class Accessories::ChildUpdater
+
   def initialize(order_detail)
     @order_detail = order_detail
   end
@@ -40,4 +41,5 @@ class Accessories::ChildUpdater
     decorated_od.update_quantity
     od.assign_actual_price
   end
+
 end

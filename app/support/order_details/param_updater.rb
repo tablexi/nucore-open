@@ -1,4 +1,5 @@
 class OrderDetails::ParamUpdater
+
   def initialize(order_detail, options = {})
     @order_detail = order_detail
     @editing_user = options[:user]
@@ -7,7 +8,7 @@ class OrderDetails::ParamUpdater
 
   def assign_attributes(params)
     params = params.try(:dup) || {}
-    params.delete(:quantity) unless params[:quantity].to_s.match(/\A\d+\z/)
+    params.delete(:quantity) unless params[:quantity].to_s =~ /\A\d+\z/
 
     cost_params = [:actual_cost, :actual_subsidy]
     assign_self_and_reservation_attributes(params.except(*cost_params))
@@ -56,25 +57,24 @@ class OrderDetails::ParamUpdater
   end
 
   def change_order_status(order_status_id, apply_cancel_fee)
-    begin
-      @order_detail.update_order_status! @editing_user,
-            OrderStatus.find(order_status_id),
-            :admin => true,
-            :apply_cancel_fee => apply_cancel_fee
-      true
-    rescue StandardError => e
-      @order_detail.errors.add(:base, :changing_status)
-      # returns nil
-    end
+    @order_detail.update_order_status! @editing_user,
+                                       OrderStatus.find(order_status_id),
+                                       admin: true,
+                                       apply_cancel_fee: apply_cancel_fee
+    true
+  rescue StandardError => e
+    @order_detail.errors.add(:base, :changing_status)
+    # returns nil
   end
 
   def merge_reservation_errors
-    @order_detail.reservation.errors.each do |error, message|
-      @order_detail.errors.add('reservation.base', message)
+    @order_detail.reservation.errors.each do |_error, message|
+      @order_detail.errors.add("reservation.base", message)
     end
   end
 
   def is_order_detail_clean
     @order_detail.errors.none? && (@order_detail.reservation.nil? || @order_detail.reservation.errors.none?)
   end
+
 end

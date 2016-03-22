@@ -3,6 +3,7 @@ require "set"
 # Ported from Journal model.
 # We should improve upon this logic.
 class JournalRowBuilder
+
   include NUCore::Database::ArrayHelper
 
   attr_reader :order_details, :journal, :journal_rows, :errors, :options,
@@ -65,7 +66,7 @@ class JournalRowBuilder
   def create
     build
     if valid? && journal_rows.present?
-      journal_rows.each { |journal_row| journal_row.save! }
+      journal_rows.each(&:save!)
       set_journal_for_order_details(journal, order_details.map(&:id))
     end
     self
@@ -106,9 +107,9 @@ class JournalRowBuilder
     unless journaled_facility_ids.member?(facility_id)
       if pending_facility_ids.member?(facility_id)
         raise ::Journal::CreationError.new(I18n.t(
-          "activerecord.errors.models.journal.pending_overlap",
-          label: order_detail.to_s,
-          facility: Facility.find(facility_id)
+                                             "activerecord.errors.models.journal.pending_overlap",
+                                             label: order_detail.to_s,
+                                             facility: Facility.find(facility_id),
         ))
       else
         journaled_facility_ids.add(facility_id)
@@ -130,7 +131,7 @@ class JournalRowBuilder
       @errors << I18n.t(
         "activerecord.errors.models.journal.invalid_account",
         account_number: account.account_number_to_s,
-        validation_error: e.message
+        validation_error: e.message,
       )
     end
   end

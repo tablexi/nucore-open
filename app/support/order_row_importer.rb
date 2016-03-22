@@ -1,6 +1,7 @@
 require "date_helper" # parse_usa_import_date
 
 class OrderRowImporter
+
   include DateHelper
 
   HEADERS = {
@@ -12,7 +13,7 @@ class OrderRowImporter
     fulfillment_date: "Fulfillment Date",
     notes: "Note",
     errors: "Errors",
-  }
+  }.freeze
 
   REQUIRED_HEADERS = [
     :user,
@@ -20,11 +21,11 @@ class OrderRowImporter
     :product_name,
     :quantity,
     :order_date,
-    :fulfillment_date
-    ].map{ |k| HEADERS[k] }
+    :fulfillment_date,
+  ].map { |k| HEADERS[k] }
 
   def self.order_key_for_row(row)
-    self.new(row, nil).order_key
+    new(row, nil).order_key
   end
 
   def self.headers_to_s
@@ -40,9 +41,9 @@ class OrderRowImporter
   def account
     @account ||=
       user
-        .accounts
-        .for_facility(product.facility)
-        .active.find_by_account_number(account_number)
+      .accounts
+      .for_facility(product.facility)
+      .active.find_by_account_number(account_number)
   end
 
   def errors?
@@ -61,15 +62,13 @@ class OrderRowImporter
     @order_date ||= parse_usa_import_date(order_date_field)
   end
 
-  def order_id
-    order.id
-  end
+  delegate :id, to: :order, prefix: true
 
   def order_key
     @order_key ||= [user_field, chart_string_field, order_date_field]
   end
 
-  def row_with_errors # TODO refactor
+  def row_with_errors # TODO: refactor
     new_row = @row.dup
     new_row[HEADERS[:errors]] = errors.join(", ")
     new_row
@@ -79,7 +78,6 @@ class OrderRowImporter
     @user ||=
       User.find_by_username(user_field) || User.find_by_email(user_field)
   end
-
 
   def add_error(message)
     @errors.add(message) if message.present?
@@ -147,10 +145,10 @@ class OrderRowImporter
   def product
     @product ||=
       @order_import
-        .facility
-        .products
-        .active_plus_hidden
-        .find_by_name(product_field)
+      .facility
+      .products
+      .active_plus_hidden
+      .find_by_name(product_field)
   end
 
   def product_field
@@ -230,4 +228,5 @@ class OrderRowImporter
   def validate_user
     add_error("Invalid username or email") if user.blank?
   end
+
 end

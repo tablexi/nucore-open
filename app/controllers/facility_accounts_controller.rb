@@ -101,7 +101,7 @@ class FacilityAccountsController < ApplicationController
   # GET/POST /facilities/:facility_id/accounts/search_results
   # TODO: use a service object here
   def search_results
-    owner_where_clause =<<-end_of_where
+    owner_where_clause = <<-end_of_where
       (
         LOWER(users.first_name) LIKE :term
         OR LOWER(users.last_name) LIKE :term
@@ -119,17 +119,17 @@ class FacilityAccountsController < ApplicationController
       @accounts = Account.joins(account_users: :user).for_facility(current_facility).where(
         owner_where_clause,
         term: term,
-        acceptable_role: "Owner"
+        acceptable_role: "Owner",
       ).order("users.last_name, users.first_name")
 
       # retrieve accounts matched on account_number for this facility
       @accounts += Account.for_facility(current_facility).where(
-        "LOWER(account_number) LIKE ?", term).
-        order("type, account_number"
-      )
+        "LOWER(account_number) LIKE ?", term)
+                          .order("type, account_number",
+                                )
 
       # only show an account once.
-      @accounts = @accounts.uniq.paginate(page: params[:page]) #hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
+      @accounts = @accounts.uniq.paginate(page: params[:page]) # hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
     else
       flash.now[:errors] = "Search terms must be 3 or more characters."
     end
@@ -141,7 +141,6 @@ class FacilityAccountsController < ApplicationController
   def user_accounts
     @user = User.find(params[:user_id])
   end
-
 
   # GET /facilities/:facility_id/accounts/:account_id/members
   def members
@@ -202,9 +201,9 @@ class FacilityAccountsController < ApplicationController
   end
 
   def init_account
-    if params.has_key? :id
+    if params.key? :id
       @account = Account.find params[:id].to_i
-    elsif params.has_key? :account_id
+    elsif params.key? :account_id
       @account = Account.find params[:account_id].to_i
     end
   end
@@ -222,6 +221,5 @@ class FacilityAccountsController < ApplicationController
       params: params,
     ).build
   end
-
 
 end

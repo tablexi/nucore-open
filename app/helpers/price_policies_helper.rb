@@ -1,7 +1,7 @@
 module PricePoliciesHelper
 
   def format_date(date)
-    return date.is_a?(String) ? date : date.strftime("%m/%d/%Y")
+    date.is_a?(String) ? date : date.strftime("%m/%d/%Y")
   end
 
   def new_price_policy_path(product)
@@ -24,9 +24,9 @@ module PricePoliciesHelper
 
   def charge_for_options(instrument)
     if instrument.reservation_only?
-      [ [ 'Reservation', InstrumentPricePolicy::CHARGE_FOR[:reservation] ] ]
+      [["Reservation", InstrumentPricePolicy::CHARGE_FOR[:reservation]]]
     else
-      InstrumentPricePolicy::CHARGE_FOR.map{|k, v| [ k.to_s.titleize, v ] }
+      InstrumentPricePolicy::CHARGE_FOR.map { |k, v| [k.to_s.titleize, v] }
     end
   end
 
@@ -37,7 +37,7 @@ module PricePoliciesHelper
 
   def display_usage_subsidy(price_group, price_policy)
     param_for_price_group(price_group, :usage_subsidy) ||
-    number_to_currency(price_policy.hourly_usage_subsidy, unit: "", delimiter: "")
+      number_to_currency(price_policy.hourly_usage_subsidy, unit: "", delimiter: "")
   end
 
   private
@@ -46,4 +46,5 @@ module PricePoliciesHelper
     price_group_key = "price_policy_#{price_group.id}"
     params[price_group_key].present? && params[price_group_key][key]
   end
+
 end

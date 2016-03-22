@@ -41,7 +41,7 @@ RSpec.describe OrderImportsController do
           upload_file: upload_file,
           fail_on_error: fail_on_error,
           send_receipts: send_receipts,
-        }
+        },
       )
     end
 

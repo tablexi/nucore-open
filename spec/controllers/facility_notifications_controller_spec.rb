@@ -1,6 +1,6 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'transaction_search_spec_helper'
+require "controller_spec_helper"
+require "transaction_search_spec_helper"
 
 RSpec.describe FacilityNotificationsController do
 
@@ -9,16 +9,16 @@ RSpec.describe FacilityNotificationsController do
 
   before :each do
     Settings.billing.review_period = 7.days
-    @authable=FactoryGirl.create(:facility)
-    @user=FactoryGirl.create(:user)
-    @account=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+    @authable = FactoryGirl.create(:facility)
+    @user = FactoryGirl.create(:user)
+    @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
     @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @params={ :facility_id => @authable.url_name }
+    @params = { facility_id: @authable.url_name }
 
     @order_detail1 = place_and_complete_item_order(@user, @authable, @account)
     @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
 
-    @account2=FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
+    @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
     @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
   end
@@ -26,7 +26,7 @@ RSpec.describe FacilityNotificationsController do
     Settings.reload!
   end
   def self.it_should_404_for_zero_day_review
-    it 'should 404 for zero day review' do
+    it "should 404 for zero day review" do
       Settings.billing.review_period = 0.days
       sign_in @admin
       do_request
@@ -34,11 +34,10 @@ RSpec.describe FacilityNotificationsController do
     end
   end
 
-
   context "index" do
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
     it_should_deny_all [:staff, :senior_staff]
     it_should_404_for_zero_day_review
@@ -89,17 +88,17 @@ RSpec.describe FacilityNotificationsController do
         expect(assigns(:accounts_to_notify).to_a).to eq([[@account.id, @authable.id], [@account2.id, @authable.id]])
       end
 
-      context 'while signed in' do
+      context "while signed in" do
         before :each do
           maybe_grant_always_sign_in(:admin)
         end
 
-        it 'sends emails to the two accounts' do
+        it "sends emails to the two accounts" do
           expect { do_request }.to change { Notifier.deliveries.count }.by(2)
         end
 
-        it 'should display the account list if less than 10 accounts' do
-          @accounts = FactoryGirl.create_list(:nufs_account, 3, :account_users_attributes => account_users_attributes_hash(:user => @user))
+        it "should display the account list if less than 10 accounts" do
+          @accounts = FactoryGirl.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
           @params = { facility_id: @authable.url_name }
 
@@ -107,14 +106,14 @@ RSpec.describe FacilityNotificationsController do
             place_and_complete_item_order(@user, @authable, account)
           end
 
-          @params.merge!(order_detail_ids: @order_details.map(&:id))
+          @params[:order_detail_ids] = @order_details.map(&:id)
           do_request
           is_expected.to set_flash
           expect(@accounts).to be_all { |account| flash[:notice].include? account.account_number }
         end
 
-        it 'should display a count if more than 10 accounts notified' do
-          @accounts = FactoryGirl.create_list(:nufs_account, 11, :account_users_attributes => account_users_attributes_hash(user: @user))
+        it "should display a count if more than 10 accounts notified" do
+          @accounts = FactoryGirl.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
           @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
           @params = { facility_id: @authable.url_name }
 
@@ -122,7 +121,7 @@ RSpec.describe FacilityNotificationsController do
             place_and_complete_item_order(@user, @authable, account)
           end
 
-          @params.merge!(order_detail_ids: @order_details.map(&:id))
+          @params[:order_detail_ids] = @order_details.map(&:id)
 
           do_request
 
@@ -152,8 +151,8 @@ RSpec.describe FacilityNotificationsController do
 
   context "in review" do
     before :each do
-      @method=:get
-      @action=:in_review
+      @method = :get
+      @action = :in_review
       @order_detail1.reviewed_at = 7.days.from_now
       @order_detail1.save!
       @order_detail3.reviewed_at = 7.days.from_now
@@ -189,7 +188,7 @@ RSpec.describe FacilityNotificationsController do
 
     it "should update" do
       Timecop.freeze do
-        @params.merge!({:order_detail_ids => [@order_detail1.id, @order_detail3.id]})
+        @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
         do_request
         expect(flash[:error]).to be_nil
         expect(assigns(:order_details_updated)).to eq([@order_detail1, @order_detail3])

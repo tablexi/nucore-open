@@ -1,4 +1,5 @@
 class RemoveStatementIdFromOrderDetails < ActiveRecord::Migration
+
   def self.up
     # Oracle will drop the foreign key as part of the remove_column
     remove_foreign_key :order_details, :statements if NUCore::Database.mysql?
@@ -8,4 +9,5 @@ class RemoveStatementIdFromOrderDetails < ActiveRecord::Migration
   def self.down
     raise ActiveRecord::IrreversibleMigration
   end
+
 end

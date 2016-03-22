@@ -1,4 +1,5 @@
 class TrainingRequest < ActiveRecord::Base
+
   belongs_to :user
   belongs_to :product
 
@@ -14,4 +15,5 @@ class TrainingRequest < ActiveRecord::Base
   def self.from_product_user(product_user)
     where(user_id: product_user.user_id, product_id: product_user.product_id)
   end
+
 end

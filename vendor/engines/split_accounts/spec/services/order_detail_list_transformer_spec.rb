@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe SplitAccounts::OrderDetailListTransformer, type: :service do
-
   let(:subaccount_1) { build_stubbed(:nufs_account) }
   let(:subaccount_2) { build_stubbed(:nufs_account) }
 
@@ -39,5 +38,4 @@ RSpec.describe SplitAccounts::OrderDetailListTransformer, type: :service do
       expect(results.map(&:account)).to contain_exactly(other_account, subaccount_1, subaccount_2)
     end
   end
-
 end

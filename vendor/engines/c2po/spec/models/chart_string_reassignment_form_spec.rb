@@ -8,7 +8,7 @@ RSpec.describe ChartStringReassignmentForm do
       let(:current_facility_account) { setup_account(:purchase_order_account, current_facility, user) }
       let(:current_facility) { create(:facility) }
       let(:order) { create(:purchased_order, product: product) }
-      let(:order_details) { [ create(:order_detail, order: order, product: product) ] }
+      let(:order_details) { [create(:order_detail, order: order, product: product)] }
       let(:other_facility) { create(:facility) }
       let(:product) { create(:setup_item) }
       let(:user) { create(:user) }
@@ -24,7 +24,7 @@ RSpec.describe ChartStringReassignmentForm do
       end
 
       it "limits accounts to those available in the current facility" do
-        expect(form.available_accounts).to eq [ current_facility_account ]
+        expect(form.available_accounts).to eq [current_facility_account]
       end
     end
   end

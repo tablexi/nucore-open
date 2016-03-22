@@ -1,4 +1,5 @@
 class ReportsController < ApplicationController
+
   include ReportsHelper
   include CSVHelper
 
@@ -8,79 +9,71 @@ class ReportsController < ApplicationController
   before_filter :init_current_facility
   before_filter :init_report_params
 
-  load_and_authorize_resource :class => ReportsController
-
+  load_and_authorize_resource class: ReportsController
 
   def initialize
-    @active_tab = 'admin_reports'
+    @active_tab = "admin_reports"
     super
   end
-
 
   private
 
   def format_username(user)
-    name=''
-    name += (user.last_name || '')
+    name = ""
+    name += (user.last_name || "")
     name += ", " unless name.blank?
-    name += (user.first_name || '')
+    name += (user.first_name || "")
     "#{name} (#{user.username})"
   end
 
-
   def init_report_params
     @date_start = parse_usa_date(params[:date_start])
-    if @date_start.blank?
-      @date_start = (Time.zone.now - 1.month).beginning_of_month
-    else
-      @date_start = @date_start.beginning_of_day
-    end
+    @date_start = if @date_start.blank?
+                    (Time.zone.now - 1.month).beginning_of_month
+                  else
+                    @date_start.beginning_of_day
+                  end
 
     @date_end = parse_usa_date(params[:date_end])
-    if @date_end.blank?
-      @date_end = @date_start.end_of_month
-    else
-      @date_end = @date_end.end_of_day
-    end
+    @date_end = if @date_end.blank?
+                  @date_start.end_of_month
+                else
+                  @date_end.end_of_day
+                end
   end
 
-
-  def init_report(report_on_label, &report_on)
-    raise 'Subclass must implement!'
+  def init_report(_report_on_label)
+    raise "Subclass must implement!"
   end
 
-
-  def init_report_data(report_on_label, &report_on)
-    raise 'Subclass must implement!'
+  def init_report_data(_report_on_label)
+    raise "Subclass must implement!"
   end
 
-
-  def init_report_headers(report_on_label)
-    raise 'Subclass must implement!'
+  def init_report_headers(_report_on_label)
+    raise "Subclass must implement!"
   end
-
 
   def page_report(rows)
     # Don't paginate reports if we're exporting
-    if params[:export_id].present?
-      @rows = rows
-    else
-      @rows = rows.paginate(:page => params[:page], :per_page => 25)
-    end
+    @rows = if params[:export_id].present?
+              rows
+            else
+              rows.paginate(page: params[:page], per_page: 25)
+            end
   end
 
-
   def render_report(tab_index, report_on_label, &report_on)
-    @selected_index=tab_index
+    @selected_index = tab_index
     init_report_headers report_on_label
 
     respond_to do |format|
       format.html do
         if request.xhr?
           init_report(report_on_label, &report_on)
-          render :template => 'reports/report_table', :layout => false
+          render template: "reports/report_table", layout: false
         else
-          render :template => 'reports/report'
+          render template: "reports/report"
         end
       end
 
@@ -88,15 +81,15 @@ class ReportsController < ApplicationController
         @export_type = params[:export_id]
 
         case @export_type
-          when nil, ''
-            raise 'Export type not found'
-          when 'report' # AKA "Export"
-            init_report(report_on_label, &report_on)
-            render_csv("#{action_name}_#{@export_type}", @export_type)
-          when 'report_data' # AKA "Export Raw"
-            @report_on = report_on
-            @report_on_label = report_on_label
-            generate_report_data_csv
+        when nil, ""
+          raise "Export type not found"
+        when "report" # AKA "Export"
+          init_report(report_on_label, &report_on)
+          render_csv("#{action_name}_#{@export_type}", @export_type)
+        when "report_data" # AKA "Export Raw"
+          @report_on = report_on
+          @report_on_label = report_on_label
+          generate_report_data_csv
         end
       end
     end
@@ -116,19 +109,17 @@ class ReportsController < ApplicationController
     end
   end
 
-
-  def render_csv(filename = nil, action=nil)
+  def render_csv(filename = nil, action = nil)
     filename ||= params[:action]
-    filename += "_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}.csv"
+    filename += "_#{@date_start.strftime('%Y%m%d')}-#{@date_end.strftime('%Y%m%d')}.csv"
 
     set_csv_headers(filename)
 
-    render :template => "reports/#{action ? action : action_name}", :layout => false
+    render template: "reports/#{action ? action : action_name}", layout: false
   end
 
-
   def report_data_request?
-    params[:export_id] && params[:export_id] == 'report_data'
+    params[:export_id] && params[:export_id] == "report_data"
   end
 
 end

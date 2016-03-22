@@ -1,19 +1,20 @@
 module Reservations::Validations
+
   extend ActiveSupport::Concern
 
   included do
-    validates_uniqueness_of :order_detail_id, :allow_nil => true
+    validates_uniqueness_of :order_detail_id, allow_nil: true
     validates_presence_of :product_id, :reserve_start_at, :reserve_end_at
     validate :does_not_conflict_with_other_reservation,
              :instrument_is_available_to_reserve,
              :satisfies_minimum_length,
              :satisfies_maximum_length,
-             :if => :reserve_start_at && :reserve_end_at && :reservation_changed?,
-             :unless => :admin?
+             if: :reserve_start_at && :reserve_end_at && :reservation_changed?,
+             unless: :admin?
 
-    validates_each [ :actual_start_at, :actual_end_at ] do |record,attr,value|
+    validates_each [:actual_start_at, :actual_end_at] do |record, attr, value|
       if value
-        record.errors.add(attr.to_s,'cannot be in the future') if Time.zone.now < value
+        record.errors.add(attr.to_s, "cannot be in the future") if Time.zone.now < value
       end
     end
 
@@ -25,10 +26,10 @@ module Reservations::Validations
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at
-      errors.add('reserve_end_date','must be after the reservation start time') if reserve_end_at <= reserve_start_at
+      errors.add("reserve_end_date", "must be after the reservation start time") if reserve_end_at <= reserve_start_at
     end
     if actual_start_at && actual_end_at
-      errors.add('actual_end_date','must be after the actual start time') if actual_end_at <= actual_start_at
+      errors.add("actual_end_date", "must be after the actual start time") if actual_end_at <= actual_start_at
     end
   end
 
@@ -43,7 +44,7 @@ module Reservations::Validations
   end
 
   def does_not_conflict_with_other_reservation
-    res=conflicting_reservation
+    res = conflicting_reservation
 
     if res
       msg = res.order.try(:==, order) ? :conflict_in_cart : :conflict
@@ -59,21 +60,21 @@ module Reservations::Validations
     order_id = order_detail.try(:order_id) || 0
 
     conflicting_reservations =
-      Reservation.
-        joins_order.
-        where(:product_id => product.schedule.product_ids).
-        not_this_reservation(options[:exclude] || self).
-        not_canceled.
-        not_ended.
-        where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id).
-        overlapping(reserve_start_at, reserve_end_at)
+      Reservation
+      .joins_order
+      .where(product_id: product.schedule.product_ids)
+      .not_this_reservation(options[:exclude] || self)
+      .not_canceled
+      .not_ended
+      .where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id)
+      .overlapping(reserve_start_at, reserve_end_at)
 
     conflicting_reservations.first
   end
 
   def satisfies_minimum_length?
     diff = reserve_end_at - reserve_start_at # in seconds
-    return false unless product.min_reserve_mins.nil? || product.min_reserve_mins == 0 || diff/60 >= product.min_reserve_mins
+    return false unless product.min_reserve_mins.nil? || product.min_reserve_mins == 0 || diff / 60 >= product.min_reserve_mins
     true
   end
 
@@ -101,44 +102,42 @@ module Reservations::Validations
     errors.add(:base, "The reservation spans time that the instrument is unavailable for reservation") unless instrument_is_available_to_reserve?
   end
 
-  def instrument_is_available_to_reserve? (start_at = self.reserve_start_at, end_at = self.reserve_end_at)
+  def instrument_is_available_to_reserve?(start_at = reserve_start_at, end_at = reserve_end_at)
     # check for order_detail and order because some old specs don't set an order detail
     # if we're saving as an administrator, or doing a starting in the grace period,
     # we want access to all schedule rules
-    if order_detail.try(:order).nil? || reserved_by_admin || in_grace_period?
-      rules = product.schedule_rules
-    else
-      rules = product.available_schedule_rules(order_detail.order.user)
-    end
+    rules = if order_detail.try(:order).nil? || reserved_by_admin || in_grace_period?
+              product.schedule_rules
+            else
+              product.available_schedule_rules(order_detail.order.user)
+            end
 
-    mins  = (end_at - start_at)/60
-    (0..mins).each { |n|
-      dt    = start_at.advance(:minutes => n)
+    mins  = (end_at - start_at) / 60
+    (0..mins).each do |n|
+      dt    = start_at.advance(minutes: n)
       found = false
-      rules.each { |s|
+      rules.each do |s|
         if s.includes_datetime(dt)
           found = true
           break
         end
-      }
-      unless found
-        return false
       end
-    }
+      return false unless found
+    end
     true
   end
 
   # Extended validation methods
-  def save_extended_validations(options ={})
+  def save_extended_validations(options = {})
     perform_validations(options)
     in_window
     in_the_future
-    return false if self.errors.any?
-    self.save
+    return false if errors.any?
+    save
   end
 
   def save_extended_validations!
-    raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations()
+    raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations
   end
 
   def in_the_future?
@@ -166,8 +165,8 @@ module Reservations::Validations
   # return the longest available reservation window for the groups
   def longest_reservation_window(groups = [])
     return default_reservation_window if groups.empty?
-    pgps     = product.price_group_products.find(:all, :conditions => {:price_group_id => groups.collect{|pg| pg.id}})
-    pgps.collect{|pgp| pgp.reservation_window}.max
+    pgps = product.price_group_products.find(:all, conditions: { price_group_id: groups.collect(&:id) })
+    pgps.collect(&:reservation_window).max
   end
 
   private
@@ -175,6 +174,5 @@ module Reservations::Validations
   def default_reservation_window
     product.price_group_products.map(&:reservation_window).min
   end
-
 
 end

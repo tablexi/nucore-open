@@ -2,7 +2,6 @@ require "rails_helper"
 require_relative "../../split_accounts_spec_helper"
 
 RSpec.describe Reports::ExportRaw, :enable_split_accounts do
-
   let(:account) do
     FactoryGirl.build(:split_account, without_splits: true, account_users_attributes: account_users_attributes_hash(user: user)).tap do |account|
       account.splits << build(:split, percent: 50, extra_penny: true, subaccount: subaccounts[0], parent_split_account: account)
@@ -38,13 +37,13 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
       order_status_ids: [order_detail.order_status_id],
       date_end: 1.day.from_now,
       date_start: 1.day.ago,
-      date_range_field: "ordered_at"
+      date_range_field: "ordered_at",
     }
   end
 
   let(:headers) { report.column_headers }
   let(:lines) { report.to_csv.split("\n") }
-  let(:cells) { lines.map{ |line| line.split(",") } }
+  let(:cells) { lines.map { |line| line.split(",") } }
   let(:cells_without_headers) { cells[1..-1] }
   let(:column_values) { cells_without_headers.map { |line| line[column_index] } }
 
@@ -166,7 +165,5 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
         expect(column_values).to contain_exactly("$19.99")
       end
     end
-
   end
-
 end

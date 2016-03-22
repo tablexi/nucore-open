@@ -1,5 +1,5 @@
-require 'rubygems'
-require 'daemons'
+require "rubygems"
+require "daemons"
 
 #
 # This class provides a base for running daemons
@@ -7,6 +7,7 @@ require 'daemons'
 # so that you don't have to think about it.
 # http://daemons.rubyforge.org/
 class Daemons::Base
+
   include Daemons
 
   #
@@ -16,24 +17,22 @@ class Daemons::Base
   #   the actual process in `ps` output
 
   def initialize(name)
-    @rails_root = File.expand_path(File.join('..', '..'), File.dirname(__FILE__))
+    @rails_root = File.expand_path(File.join("..", ".."), File.dirname(__FILE__))
     self.name = name
     self.daemon_opts = {
-      :dir_mode => :normal,
-      :dir => File.join(@rails_root, 'tmp/pids'),
-      :backtrace => true,
-      :monitor => monitor?,
-      :log_output => true,
-      :log_dir => File.join(@rails_root, 'log')
+      dir_mode: :normal,
+      dir: File.join(@rails_root, "tmp/pids"),
+      backtrace: true,
+      monitor: monitor?,
+      log_output: true,
+      log_dir: File.join(@rails_root, "log"),
     }
   end
-
 
   #
   # Same as that given to #initialize. Use this accessor
   # if you want to change the name before calling #start
   attr_accessor :name
-
 
   #
   # The set of options passed to +Daemons#run_proc+ by #start.
@@ -42,17 +41,16 @@ class Daemons::Base
   # before calling #start
   attr_accessor :daemon_opts
 
-
   #
   # Fires up the daemon. Wraps +Daemons#run_proc+.
   # [_work_]
   #   The work that the daemon should do. You do not
   #   have to wrap the work in an infinite loop because
   #   this method will do so for you.
-  def start(&work)
+  def start
     run_proc(name, daemon_opts) do
-      require File.join(@rails_root, 'config', 'environment')
-      loop { work.call }
+      require File.join(@rails_root, "config", "environment")
+      loop { yield }
     end
   end
 
@@ -60,6 +58,7 @@ class Daemons::Base
 
   # See usage notes in doc/HOWTO_daemons.txt
   def monitor?
-    !ARGV.include?('--no-monitor')
+    !ARGV.include?("--no-monitor")
   end
+
 end

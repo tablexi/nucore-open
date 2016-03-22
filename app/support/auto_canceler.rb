@@ -1,4 +1,5 @@
 class AutoCanceler
+
   AdminStruct = Struct.new(:id)
 
   def initialize
@@ -13,33 +14,32 @@ class AutoCanceler
   end
 
   def cancelable_reservations
-    @cancelable_reservations ||= Reservation.
-      joins(:product, :order_detail => :order).
-      where(build_sql, :now => Time.zone.now).
-      merge(Order.purchased).
-      readonly(false)
+    @cancelable_reservations ||= Reservation
+                                 .joins(:product, order_detail: :order)
+                                 .where(build_sql, now: Time.zone.now)
+                                 .merge(Order.purchased)
+                                 .readonly(false)
   end
 
   def cancel_reservation(res)
-    begin
-      res.order_detail.cancel_reservation admin, OrderStatus.canceled.first, true, true
-      res.update_attribute :canceled_reason, 'auto canceled by system'
-    rescue => e
-      puts "Could not auto cancel reservation #{res.id}! #{e.message}\n#{e.backtrace.join("\n")}"
-    end
+    res.order_detail.cancel_reservation admin, OrderStatus.canceled.first, true, true
+    res.update_attribute :canceled_reason, "auto canceled by system"
+  rescue => e
+    puts "Could not auto cancel reservation #{res.id}! #{e.message}\n#{e.backtrace.join("\n")}"
   end
 
-private
+  private
+
   def build_sql
-    if NUCore::Database.oracle?
-      time_condition = <<-CONDITION
+    time_condition = if NUCore::Database.oracle?
+                       <<-CONDITION
         (EXTRACT(MINUTE FROM (:now - reserve_start_at)) +
          EXTRACT(HOUR FROM (:now - reserve_start_at))*60 +
          EXTRACT(DAY FROM (:now - reserve_start_at))*24*60) >= auto_cancel_mins
       CONDITION
-    else
-      time_condition = " TIMESTAMPDIFF(MINUTE, reserve_start_at, :now) >= auto_cancel_mins"
-    end
+                     else
+                       " TIMESTAMPDIFF(MINUTE, reserve_start_at, :now) >= auto_cancel_mins"
+                     end
 
     where = <<-SQL
         actual_start_at IS NULL
@@ -64,4 +64,5 @@ private
     admin.id = 0
     admin
   end
+
 end

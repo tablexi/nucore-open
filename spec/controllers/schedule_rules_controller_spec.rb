@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe ScheduleRulesController do
   render_views
@@ -10,52 +10,49 @@ RSpec.describe ScheduleRulesController do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @instrument       = FactoryGirl.create(:instrument, :facility => @authable, :facility_account_id => @facility_account.id)
-    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
+    @instrument       = FactoryGirl.create(:instrument, facility: @authable, facility_account_id: @facility_account.id)
+    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
     expect(@price_policy).to be_valid
-    @params={ :facility_id => @authable.url_name, :instrument_id => @instrument.url_name }
+    @params = { facility_id: @authable.url_name, instrument_id: @instrument.url_name }
   end
-
 
   context "index" do
 
     before :each do
-      @method=:get
-      @action=:index
+      @method = :get
+      @action = :index
     end
 
-    it_should_allow_operators_only do |user|
+    it_should_allow_operators_only do |_user|
       expect(assigns[:instrument]).to eq(@instrument)
       expect(response).to be_success
-      expect(response).to render_template('schedule_rules/index')
+      expect(response).to render_template("schedule_rules/index")
     end
 
   end
 
-
   context "new" do
 
     before :each do
-      @method=:get
-      @action=:new
+      @method = :get
+      @action = :new
     end
 
     it_should_allow_managers_and_senior_staff_only do
       expect(assigns[:instrument]).to eq(@instrument)
       expect(response).to be_success
-      expect(response).to render_template('schedule_rules/new')
+      expect(response).to render_template("schedule_rules/new")
     end
 
   end
 
-
-  context 'create' do
+  context "create" do
 
     before :each do
-      @method=:post
-      @action=:create
+      @method = :post
+      @action = :create
       @params.merge!(
-        :schedule_rule => FactoryGirl.attributes_for(:schedule_rule, :instrument_id => @instrument.id)
+        schedule_rule: FactoryGirl.attributes_for(:schedule_rule, instrument_id: @instrument.id),
       )
     end
 
@@ -65,11 +62,11 @@ RSpec.describe ScheduleRulesController do
       assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
     end
 
-    context 'with restriction levels' do
+    context "with restriction levels" do
       before :each do
         @restriction_levels = []
         3.times do
-          @restriction_levels << FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
+          @restriction_levels << FactoryGirl.create(:product_access_group, product_id: @instrument.id)
         end
         sign_in(@admin)
       end
@@ -80,7 +77,7 @@ RSpec.describe ScheduleRulesController do
       end
 
       it "should store restriction_rules" do
-        @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+        @params.deep_merge!(schedule_rule: { product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id] })
         do_request
         expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
         expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)
@@ -90,37 +87,34 @@ RSpec.describe ScheduleRulesController do
 
   end
 
-
-  context 'needs schedule rule' do
+  context "needs schedule rule" do
 
     before :each do
-      @rule=@instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-      @params.merge!(:id => @rule.id)
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @params.merge!(id: @rule.id)
     end
-
 
     context "edit" do
 
       before :each do
-        @method=:get
-        @action=:edit
+        @method = :get
+        @action = :edit
       end
 
       it_should_allow_managers_and_senior_staff_only do
         expect(assigns(:schedule_rule)).to eq(@rule)
-        is_expected.to render_template 'edit'
+        is_expected.to render_template "edit"
       end
 
     end
 
-
-    context 'update' do
+    context "update" do
 
       before :each do
-        @method=:put
-        @action=:update
+        @method = :put
+        @action = :update
         @params.merge!(
-          :schedule_rule => FactoryGirl.attributes_for(:schedule_rule)
+          schedule_rule: FactoryGirl.attributes_for(:schedule_rule),
         )
       end
 
@@ -130,11 +124,11 @@ RSpec.describe ScheduleRulesController do
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
       end
 
-      context 'restriction levels' do
+      context "restriction levels" do
         before :each do
           @restriction_levels = []
           3.times do
-            @restriction_levels << FactoryGirl.create(:product_access_group, :product_id => @instrument.id)
+            @restriction_levels << FactoryGirl.create(:product_access_group, product_id: @instrument.id)
           end
           sign_in(@admin)
         end
@@ -152,7 +146,7 @@ RSpec.describe ScheduleRulesController do
         end
 
         it "should store restriction_rules" do
-          @params.deep_merge!(:schedule_rule => {:product_access_group_ids => [@restriction_levels[0].id, @restriction_levels[2].id]})
+          @params.deep_merge!(schedule_rule: { product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id] })
           do_request
           expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
           expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)
@@ -162,12 +156,11 @@ RSpec.describe ScheduleRulesController do
 
     end
 
-
-    context 'destroy' do
+    context "destroy" do
 
       before :each do
-        @method=:delete
-        @action=:destroy
+        @method = :delete
+        @action = :destroy
       end
 
       it_should_allow_managers_and_senior_staff_only :redirect do

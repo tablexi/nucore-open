@@ -1,27 +1,29 @@
 class Orders::ItemAdder
+
   def initialize(order)
     @order = order
   end
 
-  def add(product, quantity = 1, attributes={})
+  def add(product, quantity = 1, attributes = {})
     check_for_mixed_facility! product
     @quantity = quantity.to_i
     return [] if quantity <= 0
 
-    if product.is_a? Bundle
-      ods = add_bundles(product, @quantity, attributes)
-    elsif product.is_a? Service
-      ods = add_services(product, @quantity, attributes)
-    # products which have reservations (instruments) should each get their own order_detail
-    elsif (product.respond_to?(:reservations) and quantity > 1) then
-      ods = add_instruments(product, @quantity, attributes)
-    else
-      ods = [create_order_detail({product_id: product.id, quantity: @quantity}.merge(attributes))]
-    end
+    ods = if product.is_a? Bundle
+            add_bundles(product, @quantity, attributes)
+          elsif product.is_a? Service
+            add_services(product, @quantity, attributes)
+          # products which have reservations (instruments) should each get their own order_detail
+          elsif product.respond_to?(:reservations) && quantity > 1
+            add_instruments(product, @quantity, attributes)
+          else
+            [create_order_detail({ product_id: product.id, quantity: @quantity }.merge(attributes))]
+          end
     ods || []
   end
 
-private
+  private
+
   def check_for_mixed_facility!(product)
     if product.facility != @order.facility
       if @order.order_details.length > 0
@@ -34,7 +36,7 @@ private
 
   def add_instruments(product, quantity, attributes)
     quantity.times.collect do
-      create_order_detail({product_id: product.id, quantity: 1}.merge(attributes))
+      create_order_detail({ product_id: product.id, quantity: 1 }.merge(attributes))
     end
   end
 
@@ -47,23 +49,23 @@ private
     individual_quantity = separate ? 1 : quantity
 
     repeat.times.collect do
-      create_order_detail({product_id: product.id, quantity: individual_quantity}.merge(attributes))
+      create_order_detail({ product_id: product.id, quantity: individual_quantity }.merge(attributes))
     end
   end
 
-  def add_bundles(product, quantity, attributes={})
-    quantity.times.inject([]) { |ods, i| ods.concat create_bundle_order_detail(product, attributes) }
+  def add_bundles(product, quantity, attributes = {})
+    quantity.times.inject([]) { |ods, _i| ods.concat create_bundle_order_detail(product, attributes) }
   end
 
-  def create_bundle_order_detail(product, attributes={})
+  def create_bundle_order_detail(product, attributes = {})
     group_id = @order.max_group_id + 1
     product.bundle_products.collect do |bp|
       create_order_detail({
         product_id: bp.product.id,
         quantity: bp.quantity,
         bundle_product_id: product.id,
-        group_id: group_id}.merge(
-        attributes))
+        group_id: group_id }.merge(
+          attributes))
     end
   end
 
@@ -71,8 +73,8 @@ private
     options.reverse_merge!(
       quantity: 1,
       account: @order.account,
-      created_by: @order.created_by
-      )
+      created_by: @order.created_by,
+    )
     @order.order_details.create!(options)
   end
 

@@ -1,15 +1,16 @@
 class OrderManagement::OrderDetailsController < ApplicationController
+
   include OrderDetailFileDownload
 
-  load_resource :facility, :find_by => :url_name
-  load_resource :order, :through => :facility
-  load_resource :order_detail, :through => :order
+  load_resource :facility, find_by: :url_name
+  load_resource :order, through: :facility
+  load_resource :order_detail, through: :order
 
   helper_method :edit_disabled?
 
   before_filter :authorize_order_detail, except: %i(sample_results template_results)
-  before_filter :load_accounts, :only => [:edit, :update]
-  before_filter :load_order_statuses, :only => [:edit, :update]
+  before_filter :load_accounts, only: [:edit, :update]
+  before_filter :load_order_statuses, only: [:edit, :update]
 
   admin_tab :all
 
@@ -23,10 +24,10 @@ class OrderManagement::OrderDetailsController < ApplicationController
   def update
     @active_tab = "admin_orders"
 
-    updater = OrderDetails::ParamUpdater.new(@order_detail, :user => session_user, :cancel_fee => params[:with_cancel_fee] == '1')
+    updater = OrderDetails::ParamUpdater.new(@order_detail, user: session_user, cancel_fee: params[:with_cancel_fee] == "1")
 
     if updater.update_attributes(params[:order_detail])
-      flash[:notice] = 'The order was successfully updated.'
+      flash[:notice] = "The order was successfully updated."
       if @order_detail.updated_children.any?
         flash[:notice] << " Auto-scaled accessories have been updated as well."
         flash[:updated_order_details] = @order_detail.updated_children.map &:id
@@ -37,7 +38,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
         redirect_to [current_facility, @order]
       end
     else
-      flash.now[:error] = 'Error while updating order'
+      flash.now[:error] = "Error while updating order"
       render :edit, layout: !modal?, status: 406
     end
   end
@@ -47,13 +48,13 @@ class OrderManagement::OrderDetailsController < ApplicationController
     checker = OrderDetails::PriceChecker.new(@order_detail)
     @prices = checker.prices_from_params(params[:order_detail])
 
-    render :json => @prices.to_json
+    render json: @prices.to_json
   end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/files
   def files
     @files = @order_detail.stored_files.sample_result.order(:created_at)
-    render :layout => false if modal?
+    render layout: false if modal?
   end
 
   # POST /facilities/:facility_id/orders/:order_id/order_details/:id/remove_from_journal
@@ -61,7 +62,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
     OrderDetailJournalRemover.remove_from_journal(@order_detail)
 
     flash[:notice] =
-      I18n.t 'controllers.order_management.order_details.remove_from_journal.notice'
+      I18n.t "controllers.order_management.order_details.remove_from_journal.notice"
 
     if modal?
       render nothing: true
@@ -94,7 +95,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
     return if @order_detail.reconciled?
 
     if @order_detail.complete?
-      @order_statuses = [ OrderStatus.complete.first, OrderStatus.canceled.first ]
+      @order_statuses = [OrderStatus.complete.first, OrderStatus.canceled.first]
       @order_statuses << OrderStatus.reconciled.first if @order_detail.can_reconcile?
     elsif @order_detail.order_status.root == OrderStatus.canceled.first
       @order_statuses = OrderStatus.canceled.first.self_and_descendants
@@ -106,4 +107,5 @@ class OrderManagement::OrderDetailsController < ApplicationController
   def edit_disabled?
     @order_detail.in_open_journal? || @order_detail.reconciled?
   end
+
 end

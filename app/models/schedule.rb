@@ -1,11 +1,11 @@
 class Schedule < ActiveRecord::Base
-  
+
   # Associations
   # --------
   belongs_to :facility
 
-  has_many :products, :class_name => 'Instrument'
-  has_many :reservations, :through => :products
+  has_many :products, class_name: "Instrument"
+  has_many :reservations, through: :products
 
   # Validations
   # --------
@@ -21,7 +21,7 @@ class Schedule < ActiveRecord::Base
        where is_archived = :archived
        and schedule_id is not null
        group by schedule_id)",
-    :archived => false)
+          archived: false)
   end
 
   def self.ordered
@@ -30,7 +30,7 @@ class Schedule < ActiveRecord::Base
 
   # Instance methods
   # --------
-  
+
   def shared?
     products.count > 1
   end
@@ -39,5 +39,5 @@ class Schedule < ActiveRecord::Base
     key = "instruments.instrument_fields.schedule.#{shared? ? 'shared' : 'unshared'}"
     "#{I18n.t(key)}: #{name}"
   end
-  
+
 end

@@ -12,7 +12,7 @@ CSV_HEADERS = [
   "Order Date",
   "Fulfillment Date",
   "Note",
-]
+].freeze
 
 def nucore_format_date(date)
   date.strftime("%m/%d/%Y")
@@ -31,19 +31,19 @@ RSpec.describe OrderImport, :timecop_freeze do
 
   let(:account) do
     create(:nufs_account,
-      description: "dummy account",
-      account_number: '111-2222222-33333333-01',
-      account_users_attributes: account_users_attributes,
-    )
+           description: "dummy account",
+           account_number: "111-2222222-33333333-01",
+           account_users_attributes: account_users_attributes,
+          )
   end
 
   let(:account_users_attributes) do
     account_users_attributes_hash(user: guest) +
-    account_users_attributes_hash(
-      user: guest2,
-      created_by: guest,
-      user_role: AccountUser::ACCOUNT_PURCHASER,
-    )
+      account_users_attributes_hash(
+        user: guest2,
+        created_by: guest,
+        user_role: AccountUser::ACCOUNT_PURCHASER,
+      )
   end
   let(:default_order_date) { 4.days.ago.to_date }
   let(:default_fulfilled_date) { 3.days.ago.to_date }
@@ -60,21 +60,21 @@ RSpec.describe OrderImport, :timecop_freeze do
   let(:facility_account) do
     facility.facility_accounts.create!(attributes_for(:facility_account))
   end
-  let(:fiscal_year_beginning) { SettingsHelper::fiscal_year_beginning }
+  let(:fiscal_year_beginning) { SettingsHelper.fiscal_year_beginning }
   let(:guest) { @guest }
   let(:guest2) { create(:user, username: "guest2") }
   let(:import_file_row_count) { import_file.read.split("\n").count }
   let(:item) do
     facility.items.create!(attributes_for(:item,
-      facility_account_id: facility_account.id,
-      name: "Example Item",
-    ))
+                                          facility_account_id: facility_account.id,
+                                          name: "Example Item",
+                                         ))
   end
   let(:service) do
     facility.services.create!(attributes_for(:service,
-      facility_account_id: facility_account.id,
-      name: "Example Service",
-    ))
+                                             facility_account_id: facility_account.id,
+                                             name: "Example Service",
+                                            ))
   end
   let(:stored_file) do
     StoredFile.create!(
@@ -93,13 +93,13 @@ RSpec.describe OrderImport, :timecop_freeze do
     price_group = facility.price_groups.create!(attributes_for(:price_group))
     create(:account_price_group_member, account: account, price_group: price_group)
     item.item_price_policies.create!(attributes_for(:item_price_policy,
-      price_group_id: price_group.id,
-      start_date: fiscal_year_beginning,
-    ))
+                                                    price_group_id: price_group.id,
+                                                    start_date: fiscal_year_beginning,
+                                                   ))
     service.service_price_policies.create!(attributes_for(:service_price_policy,
-      price_group_id: price_group.id,
-      start_date: fiscal_year_beginning,
-    ))
+                                                          price_group_id: price_group.id,
+                                                          start_date: fiscal_year_beginning,
+                                                         ))
   end
 
   shared_examples_for "it does not send notifications" do
@@ -117,27 +117,27 @@ RSpec.describe OrderImport, :timecop_freeze do
     it { is_expected.to validate_presence_of :created_by }
   end
 
-def generate_import_file(*args)
-  args = [{}] if args.length == 0 # default to at least one valid row
+  def generate_import_file(*args)
+    args = [{}] if args.length == 0 # default to at least one valid row
 
-  whole_csv = CSVHelper::CSV.generate headers: true do |csv|
-    csv << CSV_HEADERS
-    args.each do |opts|
-      row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
-        opts[:username]           || 'guest',
-        opts[:account_number]     || "111-2222222-33333333-01",
-        opts[:product_name]       || "Example Item",
-        opts[:quantity]           || 1,
-        opts[:order_date]         || nucore_format_date(default_order_date),
-        opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date),
-        opts[:note]               || "Test Note"
-      ])
-      csv << row
+    whole_csv = CSVHelper::CSV.generate headers: true do |csv|
+      csv << CSV_HEADERS
+      args.each do |opts|
+        row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
+                                        opts[:username] || "guest",
+                                        opts[:account_number]     || "111-2222222-33333333-01",
+                                        opts[:product_name]       || "Example Item",
+                                        opts[:quantity]           || 1,
+                                        opts[:order_date]         || nucore_format_date(default_order_date),
+                                        opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date),
+                                        opts[:note]               || "Test Note",
+                                      ])
+        csv << row
+      end
     end
-  end
 
-  return StringIO.new whole_csv
-end
+    StringIO.new whole_csv
+  end
 
   context "when in save-clean-orders mode" do
     let(:import_file) do
@@ -146,10 +146,8 @@ end
         { order_date: nucore_format_date(default_order_date) },
         { order_date: nucore_format_date(default_order_date) },
         # Second order (a different order_date):
-        {
-          order_date: nucore_format_date(default_order_date + 1.day),
-          product_name: "Invalid Item"
-        }
+        order_date: nucore_format_date(default_order_date + 1.day),
+        product_name: "Invalid Item",
       )
     end
 
@@ -185,7 +183,7 @@ end
 
       context "with errors" do
         let(:import_file) do
-          generate_import_file({}, { product_name: "Invalid Item" })
+          generate_import_file({}, product_name: "Invalid Item")
         end
 
         it_behaves_like "it does not send notifications"
@@ -221,7 +219,7 @@ end
           { product_name: "Invalid Item" },
           {},
           # Second order (a different user):
-          { username: guest2.username },
+          username: guest2.username,
         )
       end
 
@@ -286,7 +284,7 @@ end
   context "when importing multiple orders" do
     context "and the second order's order_detail has an error" do
       let(:import_file) do
-        generate_import_file({}, { product_name: "Invalid Item" })
+        generate_import_file({}, product_name: "Invalid Item")
       end
 
       before :each do
@@ -348,7 +346,7 @@ end
       end
 
       it "sends an exception notification" do
-        expect(ActiveSupport::Notifications).to receive(:instrument).with('background_error', anything)
+        expect(ActiveSupport::Notifications).to receive(:instrument).with("background_error", anything)
         import.process_upload!
       end
     end

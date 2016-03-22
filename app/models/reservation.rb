@@ -1,6 +1,7 @@
 require "date"
 
 class Reservation < ActiveRecord::Base
+
   include DateHelper
   include Reservations::DateSupport
   include Reservations::Validations
@@ -11,9 +12,9 @@ class Reservation < ActiveRecord::Base
   # Associations
   #####
   belongs_to :product
-  belongs_to :order_detail, :inverse_of => :reservation
+  belongs_to :order_detail, inverse_of: :reservation
   has_one :order, through: :order_detail
-  belongs_to :canceled_by_user, :foreign_key => :canceled_by, :class_name => 'User'
+  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
 
   ## Virtual attributes
   #####
@@ -29,51 +30,50 @@ class Reservation < ActiveRecord::Base
   # Delegations
   #####
   delegate :note, :ordered_on_behalf_of?, :complete?, :account, :order,
-      :problem?, :complete!, :to => :order_detail, :allow_nil => true
+           :problem?, :complete!, to: :order_detail, allow_nil: true
 
   delegate :account, :in_cart?, :user, to: :order, allow_nil: true
-  delegate :facility, :to => :product, :allow_nil => true
+  delegate :facility, to: :product, allow_nil: true
   delegate :lock_window, to: :product, prefix: true
-  delegate :owner, :to => :account, :allow_nil => true
-
+  delegate :owner, to: :account, allow_nil: true
 
   ## AR Hooks
   after_save :save_note
-  after_update :auto_save_order_detail, :if => :order_detail
+  after_update :auto_save_order_detail, if: :order_detail
 
   # Scopes
   #####
 
   def self.active
     not_canceled
-      .where({orders: { state: ['purchased', nil] }})
+      .where(orders: { state: ["purchased", nil] })
       .joins_order
   end
 
   def self.joins_order
-    joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id').
-    joins('LEFT JOIN orders ON orders.id = order_details.order_id')
+    joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
+      .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
   end
 
   def self.admin
-    where(:order_detail_id => nil)
+    where(order_detail_id: nil)
   end
 
   def self.not_canceled
-    where(:canceled_at => nil)
+    where(canceled_at: nil)
   end
 
   def self.not_started
-    where(:actual_start_at => nil)
+    where(actual_start_at: nil)
   end
 
   def self.not_ended
-    where(:actual_end_at => nil)
+    where(actual_end_at: nil)
   end
 
   def self.not_this_reservation(reservation)
     if reservation.id
-      where('reservations.id <> ?', reservation.id)
+      where("reservations.id <> ?", reservation.id)
     else
       scoped
     end
@@ -88,15 +88,15 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.in_range(start_time, end_time)
-    where('reserve_end_at >= ?', start_time).
-    where('reserve_start_at < ?', end_time)
+    where("reserve_end_at >= ?", start_time)
+      .where("reserve_start_at < ?", end_time)
   end
 
-  def self.upcoming(t=Time.zone.now)
+  def self.upcoming(t = Time.zone.now)
     # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
     # Eliminate by letting Rails filter by #reserve_end_at
-    reservations=find(:all, :conditions => "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", :order => 'reserve_end_at asc', :joins => ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
-    reservations.delete_if{|r| r.reserve_end_at < t}
+    reservations = find(:all, conditions: "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", order: "reserve_end_at asc", joins: ["LEFT JOIN order_details ON order_details.id = reservations.order_detail_id", "LEFT JOIN orders ON orders.id = order_details.order_id"])
+    reservations.delete_if { |r| r.reserve_end_at < t }
     reservations
   end
 
@@ -110,7 +110,7 @@ class Reservation < ActiveRecord::Base
           (reserve_start_at <= :start AND reserve_end_at > :start) OR
           (reserve_start_at < :end AND reserve_end_at >= :end) OR
           (reserve_start_at = :start AND reserve_end_at = :end))",
-          :start => tstart_at, :end => tend_at)
+          start: tstart_at, end: tend_at)
   end
 
   def self.relay_in_progress
@@ -134,26 +134,25 @@ class Reservation < ActiveRecord::Base
     order_detail.complete!
   end
 
-
   def round_reservation_times
     interval = product.reserve_interval.minutes # Round to the nearest reservation interval
-    self.reserve_start_at = time_ceil(self.reserve_start_at, interval) if self.reserve_start_at
-    self.reserve_end_at   = time_ceil(self.reserve_end_at, interval) if self.reserve_end_at
+    self.reserve_start_at = time_ceil(reserve_start_at, interval) if reserve_start_at
+    self.reserve_end_at   = time_ceil(reserve_end_at, interval) if reserve_end_at
     self
   end
 
   def assign_actuals_off_reserve
-    self.actual_start_at ||= self.reserve_start_at
-    self.actual_end_at   ||= self.reserve_end_at
+    self.actual_start_at ||= reserve_start_at
+    self.actual_end_at   ||= reserve_end_at
   end
 
   def save_as_user(user)
-    if (user.operator_of?(product.facility))
+    if user.operator_of?(product.facility)
       @reserved_by_admin = true
-      self.save
+      save
     else
       @reserved_by_admin = false
-      self.save_extended_validations
+      save_extended_validations
     end
   end
 
@@ -227,7 +226,7 @@ class Reservation < ActiveRecord::Base
     new_record? || !canceled?
   end
 
-  # TODO does this need to be more robust?
+  # TODO: does this need to be more robust?
   def can_edit_actuals?
     return false if order_detail.nil?
     complete?
@@ -239,9 +238,9 @@ class Reservation < ActiveRecord::Base
 
   def valid_before_purchase?
     satisfies_minimum_length? &&
-    satisfies_maximum_length? &&
-    instrument_is_available_to_reserve? &&
-    does_not_conflict_with_other_reservation?
+      satisfies_maximum_length? &&
+      instrument_is_available_to_reserve? &&
+      does_not_conflict_with_other_reservation?
   end
 
   def has_actuals?
@@ -257,7 +256,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def requires_but_missing_actuals?
-    !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO refactor?
+    !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO: refactor?
   end
 
   def locked?
@@ -272,13 +271,13 @@ class Reservation < ActiveRecord::Base
   protected
 
   def has_order_detail?
-    !self.order_detail.nil?
+    !order_detail.nil?
   end
 
   private
 
   def auto_save_order_detail
-    if (['actual_start_at', 'actual_end_at', 'reserve_start_at', 'reserve_end_at'] & changes.keys).any?
+    if (%w(actual_start_at actual_end_at reserve_start_at reserve_end_at) & changes.keys).any?
       order_detail.save
     end
   end
@@ -301,6 +300,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def grace_period_duration
-    SettingsHelper.setting('reservations.grace_period') || 5.minutes
+    SettingsHelper.setting("reservations.grace_period") || 5.minutes
   end
+
 end

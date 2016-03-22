@@ -1,10 +1,11 @@
 class Reports::InstrumentUtilizationReport
+
   attr_accessor :key_length
   def initialize(reservations)
     @reservations = reservations
   end
 
-  def build_report(&report_block)
+  def build_report
     @data = {}
     @totals = DataRow.new(0, 0, 0)
     @reservations.each do |reservation|
@@ -32,6 +33,7 @@ class Reports::InstrumentUtilizationReport
   end
 
   class DataRow
+
     include ReportsHelper
     attr_accessor :quantity, :reserved_mins, :actual_mins
     def initialize(quantity, reserved_mins, actual_mins)
@@ -41,15 +43,15 @@ class Reports::InstrumentUtilizationReport
     end
 
     def +(other)
-      DataRow.new(self.quantity + other.quantity,
-                  self.reserved_mins + other.reserved_mins,
-                  self.actual_mins + other.actual_mins)
+      DataRow.new(quantity + other.quantity,
+                  reserved_mins + other.reserved_mins,
+                  actual_mins + other.actual_mins)
     end
 
     def /(other)
-      DataRow.new(to_percent(safe_divide(self.quantity, other.quantity)),
-                  to_percent(safe_divide(self.reserved_mins, other.reserved_mins)),
-                  to_percent(safe_divide(self.actual_mins, other.actual_mins.to_f)))
+      DataRow.new(to_percent(safe_divide(quantity, other.quantity)),
+                  to_percent(safe_divide(reserved_mins, other.reserved_mins)),
+                  to_percent(safe_divide(actual_mins, other.actual_mins.to_f)))
     end
 
     def safe_divide(a, b)
@@ -60,11 +62,12 @@ class Reports::InstrumentUtilizationReport
     def row_with_percents(totals)
       percent = self / totals
       [quantity,
-        to_hours(reserved_mins, 1),
-        format_percent(percent.reserved_mins),
-        to_hours(actual_mins, 1),
-        format_percent(percent.actual_mins)]
+       to_hours(reserved_mins, 1),
+       format_percent(percent.reserved_mins),
+       to_hours(actual_mins, 1),
+       format_percent(percent.actual_mins)]
     end
+
   end
 
   private
@@ -72,4 +75,5 @@ class Reports::InstrumentUtilizationReport
   def sorted_data
     @data.sort { |(a, _), (b, _)| a.compact <=> b.compact }
   end
+
 end

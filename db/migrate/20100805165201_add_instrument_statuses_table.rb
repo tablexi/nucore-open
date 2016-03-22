@@ -1,9 +1,10 @@
 class AddInstrumentStatusesTable < ActiveRecord::Migration
+
   def self.up
     create_table :instrument_statuses do |t|
-      t.references :instrument,      :null => false
-      t.boolean    :is_on,           :null => false
-      t.datetime   :created_at,      :null => false
+      t.references :instrument,      null: false
+      t.boolean    :is_on,           null: false
+      t.datetime   :created_at,      null: false
     end
     execute "ALTER TABLE instrument_statuses ADD CONSTRAINT fk_int_stats_product FOREIGN KEY (instrument_id) REFERENCES products (id)"
   end
@@ -11,4 +12,5 @@ class AddInstrumentStatusesTable < ActiveRecord::Migration
   def self.down
     drop_table :instrument_statuses
   end
+
 end

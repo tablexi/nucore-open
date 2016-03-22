@@ -1,42 +1,38 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'report_spec_helper'
+require "controller_spec_helper"
+require "report_spec_helper"
 
 RSpec.describe InstrumentReportsController do
   include ReportSpecHelper
 
-
   run_report_tests([
-    { :action => :instrument, :index => 0, :report_on_label => nil, :report_on => Proc.new{|res| [ res.product.url_name ]} },
-    { :action => :account, :index => 1, :report_on_label => 'Description', :report_on => Proc.new{|res| [ res.product.url_name, res.order_detail.account.to_s ] } },
-    { :action => :account_owner, :index => 2, :report_on_label => 'Name', :report_on => Proc.new{|res| owner=res.order_detail.account.owner.user; [ res.product.url_name, "#{owner.full_name} (#{owner.username})" ] } },
-    { :action => :purchaser, :index => 3, :report_on_label => 'Name', :report_on => Proc.new{|res| usr=res.order_detail.order.user; [ res.product.url_name, "#{usr.full_name} (#{usr.username})" ] } }
-  ])
-
+                     { action: :instrument, index: 0, report_on_label: nil, report_on: proc { |res| [res.product.url_name] } },
+                     { action: :account, index: 1, report_on_label: "Description", report_on: proc { |res| [res.product.url_name, res.order_detail.account.to_s] } },
+                     { action: :account_owner, index: 2, report_on_label: "Name", report_on: proc { |res| owner = res.order_detail.account.owner.user; [res.product.url_name, "#{owner.full_name} (#{owner.username})"] } },
+                     { action: :purchaser, index: 3, report_on_label: "Name", report_on: proc { |res| usr = res.order_detail.order.user; [res.product.url_name, "#{usr.full_name} (#{usr.username})"] } },
+                   ])
 
   private
 
-  def setup_extra_test_data(user)
-    start_at = parse_usa_date(@params[:date_start], '10:00 AM') + 10.days
+  def setup_extra_test_data(_user)
+    start_at = parse_usa_date(@params[:date_start], "10:00 AM") + 10.days
     place_reservation(@authable, @order_detail, start_at)
     @reservation.actual_start_at = start_at
     @reservation.actual_end_at = start_at + 1.hour
     @order_detail.update_attribute(:fulfilled_at, start_at + 1.hour)
-    assert @reservation.save(:validate => false)
+    assert @reservation.save(validate: false)
   end
 
-
   def report_headers(label)
-    headers=[ 'Instrument', 'Quantity', 'Reserved Time (h)', 'Percent of Reserved', 'Actual Time (h)', 'Percent of Actual Time' ]
+    headers = ["Instrument", "Quantity", "Reserved Time (h)", "Percent of Reserved", "Actual Time (h)", "Percent of Actual Time"]
     headers.insert(1, label) if label
     headers += report_attributes(@reservation, @instrument) if export_all_request?
     headers
   end
 
-
-  def assert_report_init(label, &report_on)
+  def assert_report_init(_label)
     expect(assigns(:totals).size).to eq(5)
-    reservations=Reservation.all
+    reservations = Reservation.all
     expect(assigns(:totals)[0]).to eq(reservations.size)
 
     reserved_mins = reservations.map(&:duration_mins).inject(0, &:+)
@@ -50,13 +46,13 @@ RSpec.describe InstrumentReportsController do
     # further testing in spec/models/reports/instrument_utilization_report_spec.rb
   end
 
-
-  def assert_report_data_init(label)
-    reservations=Reservation.all
+  def assert_report_data_init(_label)
+    reservations = Reservation.all
     expect(assigns(:report_data)).to eq(reservations)
     expect(assigns(:totals)).to be_is_a Array
 
-    reserved_hours,actual_hours=0,0
+    reserved_hours = 0
+    actual_hours = 0
     reservations.each do |res|
       reserved_hours += to_hours(res.duration_mins)
       actual_hours += to_hours(res.actual_duration_mins)

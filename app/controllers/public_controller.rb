@@ -1,8 +1,8 @@
 class PublicController < ApplicationController
 
   def index
-     flash.keep
-     redirect_to({:controller=>"facilities", :action=>"index"})
+    flash.keep
+    redirect_to(controller: "facilities", action: "index")
   end
 
   def switch_back
@@ -11,4 +11,5 @@ class PublicController < ApplicationController
     session[:acting_ref_url] = nil
     redirect_to ref_url
   end
+
 end

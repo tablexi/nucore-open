@@ -1,5 +1,7 @@
 module SplitAccounts
+
   class AttributeSplitter
+
     attr_reader :splittable_attributes
 
     def initialize(*splittable_attributes)
@@ -19,5 +21,7 @@ module SplitAccounts
       amount = BigDecimal(value) * BigDecimal(percent) / 100
       amount.floor(2)
     end
+
   end
+
 end
