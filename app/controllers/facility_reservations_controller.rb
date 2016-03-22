@@ -167,9 +167,7 @@ class FacilityReservationsController < ApplicationController
     msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params, 'reservations')
 
     # add flash messages if necessary
-    if msg_hash
-      flash.merge!(msg_hash)
-    end
+    flash.merge!(msg_hash) if msg_hash
   end
 
   # GET /facilities/:facility_id/reservations/disputed

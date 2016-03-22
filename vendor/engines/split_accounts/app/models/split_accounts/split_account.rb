@@ -16,9 +16,7 @@ module SplitAccounts
     before_save :set_suspended_at_from_subaccounts
 
     def valid_percent_total
-      if percent_total != 100
-        errors.add(:splits, :percent_total)
-      end
+      errors.add(:splits, :percent_total) if percent_total != 100
     end
 
     def percent_total
@@ -28,15 +26,11 @@ module SplitAccounts
     end
 
     def one_split_has_extra_penny
-      if extra_penny_count != 1
-        errors.add(:splits, :only_one_extra_penny)
-      end
+      errors.add(:splits, :only_one_extra_penny) if extra_penny_count != 1
     end
 
     def unique_split_subaccounts
-      if duplicate_subaccounts?
-        errors.add(:splits, :duplicate_subaccounts)
-      end
+      errors.add(:splits, :duplicate_subaccounts) if duplicate_subaccounts?
     end
 
     def extra_penny_count
@@ -51,9 +45,7 @@ module SplitAccounts
     end
 
     def more_than_one_split
-      if splits.size <= 1
-        errors.add(:splits, :more_than_one_split)
-      end
+      errors.add(:splits, :more_than_one_split) if splits.size <= 1
     end
 
     # Stopped using SQL because that didn't work until the built splits

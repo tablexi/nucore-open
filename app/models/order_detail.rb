@@ -352,9 +352,7 @@ class OrderDetail < ActiveRecord::Base
     if start_date
       search = search.where("#{action} >= ?", start_date.beginning_of_day)
     end
-    if end_date
-      search = search.where("#{action} <= ?", end_date.end_of_day)
-    end
+    search = search.where("#{action} <= ?", end_date.end_of_day) if end_date
     search
   }
 
@@ -513,21 +511,15 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def actual_total
-    if actual_cost && actual_subsidy
-      actual_cost - actual_subsidy
-    end
+    actual_cost - actual_subsidy if actual_cost && actual_subsidy
   end
 
   def estimated_total
-    if estimated_cost && estimated_subsidy
-      estimated_cost - estimated_subsidy
-    end
+    estimated_cost - estimated_subsidy if estimated_cost && estimated_subsidy
   end
 
   def total
-    unless cost.nil? || subsidy.nil?
-      cost - subsidy
-    end
+    cost - subsidy unless cost.nil? || subsidy.nil?
   end
 
   def price_groups
@@ -629,9 +621,7 @@ class OrderDetail < ActiveRecord::Base
     else
       # check for a template result
       results = self.stored_files.template_result
-      if results.empty?
-        "Please upload an order form"
-      end
+      "Please upload an order form" if results.empty?
     end
   end
 

@@ -250,9 +250,7 @@ class OrderImport < ActiveRecord::Base
     end
 
     def [](order_key)
-      if @orders[order_key].present?
-        Order.find(@orders[order_key])
-      end
+      Order.find(@orders[order_key]) if @orders[order_key].present?
     end
 
     def fetch_all_orders
