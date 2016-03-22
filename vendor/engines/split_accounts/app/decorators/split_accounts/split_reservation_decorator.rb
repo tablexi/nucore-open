@@ -13,7 +13,7 @@ module SplitAccounts
     end
 
     # Let it pretend to be a real Reservation
-    def is_a? klass
+    def is_a?(klass)
       __getobj__.class.object_id == klass.object_id
     end
 
