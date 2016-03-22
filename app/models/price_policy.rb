@@ -127,7 +127,7 @@ class PricePolicy < ActiveRecord::Base
         self.can_purchase = true
     when true, 1
         self.can_purchase = false
-      else
+    else
         raise ArgumentError.new('state must be true, false, 0, or 1')
     end
   end

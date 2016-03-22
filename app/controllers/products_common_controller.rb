@@ -25,7 +25,7 @@ class ProductsCommonController < ApplicationController
     @not_archived_product_count = current_facility_products.not_archived.length
     @products = if params[:archived].nil? || params[:archived] != 'true'
       current_facility_products.not_archived
-    else
+                else
       current_facility_products.archived
                 end
 

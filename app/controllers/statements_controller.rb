@@ -56,7 +56,7 @@ class StatementsController < ApplicationController
 
     @statement = if params[:id] =~ /\w+/i
       @statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
-    else
+                 else
       @account.statements.find(params[:id])
                  end
     @statement = Statement.new if @statement.nil?

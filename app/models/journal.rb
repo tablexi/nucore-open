@@ -174,7 +174,7 @@ class Journal < ActiveRecord::Base
     # detect if this should be a multi-facility journal, set facility_id appropriately
     self.facility_id = if @order_details_for_creation.collect{|od|od.order.facility_id}.uniq.size > 1
       nil
-    else
+                       else
       @order_details_for_creation.first.order.facility_id
                        end
   end

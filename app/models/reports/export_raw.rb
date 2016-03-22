@@ -135,7 +135,7 @@ class Reports::ExportRaw
       report_hash.values.map do |callable|
         result = if callable.is_a?(Symbol)
           order_detail.public_send(callable)
-        else
+                 else
           callable.call(order_detail)
         end
 

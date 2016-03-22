@@ -29,7 +29,7 @@ module FacilityOrderStatusHelper
         #                              'INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id '],
         #                   :conditions => ['(order_details.state = ? OR order_details.state = ?) AND orders.state = ?', 'new', 'inprocess', 'purchased'],
         #                   :order => "order_statuses.name #{sort_direction}, orders.ordered_at")
-      else
+    else
         facility_ods.new_or_inprocess
     end
   end
