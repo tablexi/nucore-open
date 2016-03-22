@@ -26,7 +26,7 @@ class OrderDetailsController < ApplicationController
           raise ActiveRecord::Rollback
         end
       end
-      redirect_to(reservations_path) && (return)
+      redirect_to(reservations_path) && return
     end
     raise ActiveRecord::RecordNotFound
   end
