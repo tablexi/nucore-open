@@ -202,9 +202,9 @@ class FacilityAccountsController < ApplicationController
   end
 
   def init_account
-    if params.has_key? :id
+    if params.key? :id
       @account = Account.find params[:id].to_i
-    elsif params.has_key? :account_id
+    elsif params.key? :account_id
       @account = Account.find params[:account_id].to_i
     end
   end

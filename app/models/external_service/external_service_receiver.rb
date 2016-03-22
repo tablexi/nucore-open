@@ -10,7 +10,7 @@ class ExternalServiceReceiver < ActiveRecord::Base
 
 
   def respond_to?(symbol, include_private=false)
-    super || parsed_response_data.has_key?(symbol)
+    super || parsed_response_data.key?(symbol)
   end
 
 
@@ -18,7 +18,7 @@ class ExternalServiceReceiver < ActiveRecord::Base
 
   def method_missing(symbol, *args)
     parsed = parsed_response_data
-    return parsed[symbol] if parsed.has_key? symbol
+    return parsed[symbol] if parsed.key? symbol
     super
   end
 

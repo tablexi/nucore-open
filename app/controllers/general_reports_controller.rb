@@ -102,7 +102,7 @@ class GeneralReportsController < ReportsController
 
       key = "Undefined" if key.blank?
 
-      sums[key]=[0,0] unless sums.has_key?(key)
+      sums[key]=[0,0] unless sums.key?(key)
       sums[key][0] += od.quantity
       @total_quantity += od.quantity
 
