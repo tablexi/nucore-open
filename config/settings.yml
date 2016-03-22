@@ -98,7 +98,7 @@ feature:
   product_specific_contacts_on: true
   training_requests_on: true
   daily_view_on: true
-  split_accounts_on: false
+  split_accounts_on: true
   print_order_detail_on: false
   user_based_price_groups_on: true
 
