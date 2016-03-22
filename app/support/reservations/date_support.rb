@@ -59,7 +59,7 @@ module Reservations::DateSupport
   def duration_value
     return nil unless reserve_end_at && reserve_start_at
 
-    if !@duration_value
+    unless @duration_value
       # default to minutes
       @duration_value = (reserve_end_at - reserve_start_at) / 60
       @duration_unit  = 'minutes'
