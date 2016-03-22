@@ -293,7 +293,7 @@ RSpec.describe OrderDetail do
         @order_detail.reservation = create(:reservation,
                                            reserve_start_at: Time.now,
                                            reserve_end_at: Time.now + 1.hour,
-                                           product: @instrument
+                                           product: @instrument,
                                           )
         @order_detail.product = @instrument
         @order_detail.save

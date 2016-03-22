@@ -198,7 +198,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       facility.price_groups.map(&:id).each do |id|
         @params.merge!(
           :"price_policy_#{id}" =>
-            attributes_for(:"#{@product_type}_price_policy")
+            attributes_for(:"#{@product_type}_price_policy"),
         )
       end
     end

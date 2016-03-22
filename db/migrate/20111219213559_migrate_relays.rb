@@ -18,7 +18,7 @@ class MigrateRelays < ActiveRecord::Migration
           password: inst[:relay_password],
           auto_logout: inst[:auto_logout],
           created_at: inst[:created_at],
-          updated_at: inst[:updated_at]
+          updated_at: inst[:updated_at],
         )
       rescue => e
         puts "Could not migrate Instrument with id #{inst.id}. #{e.message}"
@@ -34,7 +34,7 @@ class MigrateRelays < ActiveRecord::Migration
         relay_username: relay.username,
         relay_password: relay.password,
         relay_type: relay.type,
-        auto_logout: relay.auto_logout
+        auto_logout: relay.auto_logout,
       )
 
       relay.destroy

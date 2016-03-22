@@ -40,7 +40,7 @@ RSpec.describe StoredFile do
     end
     let(:item) do
       facility.items.create(
-        attributes_for(:item, facility_account_id: facility_account.id)
+        attributes_for(:item, facility_account_id: facility_account.id),
       )
     end
     let(:file1) { "#{Rails.root}/spec/files/template1.txt" }

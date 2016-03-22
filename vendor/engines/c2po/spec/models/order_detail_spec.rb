@@ -90,7 +90,7 @@ RSpec.describe OrderDetail do
             order_detail.update_attributes(
               statement_id: original_statement.id,
               estimated_cost: 10,
-              estimated_subsidy: 0
+              estimated_subsidy: 0,
             )
             move_to_new_account
           end
@@ -106,7 +106,7 @@ RSpec.describe OrderDetail do
             order_detail.update_attributes(
               statement_id: original_statement.id,
               estimated_cost: 10,
-              estimated_subsidy: 0
+              estimated_subsidy: 0,
             )
             move_to_new_account
           end

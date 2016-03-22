@@ -18,7 +18,7 @@ RSpec.describe FacilityReservationsController do
     @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
     @product = FactoryGirl.create(:instrument,
                                 facility_account: @facility_account,
-                                facility: @authable
+                                facility: @authable,
                                )
     @schedule_rule = FactoryGirl.create(:schedule_rule, instrument: @product)
     @product.reload
@@ -29,7 +29,7 @@ RSpec.describe FacilityReservationsController do
                               created_by: @director.id,
                               account: @account,
                               ordered_at: Time.zone.now,
-                              state: "purchased"
+                              state: "purchased",
                              )
 
     @reservation = FactoryGirl.create(:reservation, product: @product)
@@ -279,7 +279,7 @@ RSpec.describe FacilityReservationsController do
                                    created_by: @director.id,
                                    account: @account,
                                    ordered_at: nil,
-                                   state: "new"
+                                   state: "new",
                                   )
         # make sure the reservations are happening today
         @reservation.update_attributes!(reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
@@ -352,7 +352,7 @@ RSpec.describe FacilityReservationsController do
         @params.merge!(reservation: {
                          reserve_start_at: @reservation.reserve_start_at,
                 reserve_end_at: @reservation.reserve_end_at - 15.minutes
-                       }
+                       },
                       )
       end
 
@@ -386,7 +386,7 @@ RSpec.describe FacilityReservationsController do
           @reservation_attrs = FactoryGirl.attributes_for(
             :reservation,
               actual_start_at: @now - 2.hours,
-              actual_end_at: @now - 1.hour
+              actual_end_at: @now - 1.hour,
           )
           @params.merge!(reservation: @reservation_attrs)
         end
@@ -417,7 +417,7 @@ RSpec.describe FacilityReservationsController do
               reserve_start_at: @now - 3.hours,
               reserve_end_at: @now - 1.hour,
               actual_start_at: @reservation.reserve_start_at,
-              actual_end_at: @reservation.reserve_end_at
+              actual_end_at: @reservation.reserve_end_at,
           )
           @params[:reservation] = @reservation_attrs
         end

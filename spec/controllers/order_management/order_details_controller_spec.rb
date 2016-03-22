@@ -193,7 +193,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           instrument.price_policies.first.update_attributes(
             usage_rate: 120,
             usage_subsidy: 60,
-            charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
+            charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
           )
         end
 
@@ -276,7 +276,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           instrument.update_attributes!(min_cancel_hours: 72)
           instrument.price_policies.first.update_attributes(
             cancellation_cost: 100,
-            charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
+            charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
           )
 
           @params[:order_detail] = {
@@ -407,7 +407,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
               instrument.update_attributes!(min_cancel_hours: 72)
               instrument.price_policies.first.update_attributes(
                 cancellation_cost: 100,
-                charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage]
+                charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
               )
             end
 
@@ -553,7 +553,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         price_policy.update_attributes(
           charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
           usage_rate: 120,
-          usage_subsidy: 60
+          usage_subsidy: 60,
         )
 
         order_detail.assign_estimated_price

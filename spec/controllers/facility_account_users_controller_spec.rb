@@ -135,7 +135,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
             @params.merge!(
               account_id: @account.id,
               user_id: @business_admin.id,
-              account_user: { user_role: AccountUser::ACCOUNT_PURCHASER }
+              account_user: { user_role: AccountUser::ACCOUNT_PURCHASER },
             )
             expect(@account.account_users.purchasers).not_to be_any
             expect(@account.account_users.business_administrators).to be_one

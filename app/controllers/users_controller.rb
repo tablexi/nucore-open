@@ -169,7 +169,7 @@ class UsersController < ApplicationController
     @update_approvals ||= ProductApprover.new(
       current_facility.products_requiring_approval,
       @user,
-      session_user
+      session_user,
     ).update_approvals(approved_products_from_params, params[:product_access_group])
   end
 

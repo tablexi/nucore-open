@@ -106,7 +106,7 @@ RSpec.describe InstrumentPricePolicy do
       PriceGroupProduct.create(
         price_group: policy.price_group,
         product: policy.product,
-        reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
+        reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW,
       )
 
       expect(PriceGroupProduct).to_not receive :create

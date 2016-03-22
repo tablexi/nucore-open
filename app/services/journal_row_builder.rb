@@ -109,7 +109,7 @@ class JournalRowBuilder
         raise ::Journal::CreationError.new(I18n.t(
                                              "activerecord.errors.models.journal.pending_overlap",
           label: order_detail.to_s,
-          facility: Facility.find(facility_id)
+          facility: Facility.find(facility_id),
         ))
       else
         journaled_facility_ids.add(facility_id)
@@ -131,7 +131,7 @@ class JournalRowBuilder
       @errors << I18n.t(
         "activerecord.errors.models.journal.invalid_account",
         account_number: account.account_number_to_s,
-        validation_error: e.message
+        validation_error: e.message,
       )
     end
   end

@@ -16,7 +16,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
       "reservation_mins" => 1,
       "overage_mins" => 1,
       "reservation_rate" => policy.usage_rate,
-      "overage_rate" => policy.usage_rate
+      "overage_rate" => policy.usage_rate,
     )
   end
 
@@ -43,13 +43,13 @@ RSpec.describe InstrumentPricePolicyCalculations do
           start_hour: 0,
           end_hour: 24,
           on_sat: false,
-          on_sun: false
+          on_sun: false,
         )
         policy.product.schedule_rules << create(:weekend_schedule_rule,
                                                 instrument: policy.product,
                                                 discount_percent: 25,
                                                 start_hour: 0,
-                                                end_hour: 24
+                                                end_hour: 24,
                                                )
       end
 
@@ -75,7 +75,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
                                                 instrument: policy.product,
                                                 discount_percent: 20,
                                                 start_hour: 17,
-                                                end_hour: 24
+                                                end_hour: 24,
                                                )
         @reservation_start = 1.day.from_now.change hour: 16, min: 15, sec: 0
         @reservation_end = @reservation_start + 1.hour + 30.minutes

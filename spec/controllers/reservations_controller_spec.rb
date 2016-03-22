@@ -311,7 +311,7 @@ RSpec.describe ReservationsController do
             reserve_start_meridian: "am",
             duration_value: "60",
             duration_unit: "minutes"
-        }
+        },
       )
     end
 
@@ -785,7 +785,7 @@ RSpec.describe ReservationsController do
             reserve_start_meridian: "am",
             duration_value: "60",
             duration_unit: "minutes"
-          }
+          },
         )
       end
 
@@ -895,7 +895,7 @@ RSpec.describe ReservationsController do
           reserve_start_at: Time.zone.now + 1.day,
           order_detail: @order_detail,
           duration_value: 60,
-          duration_unit: "minutes"
+          duration_unit: "minutes",
         )
 
         @params[:reservation_id] = @reservation.id
@@ -921,7 +921,7 @@ RSpec.describe ReservationsController do
           reserve_start_at: Time.zone.now + 1.day,
           order_detail: @order_detail,
           duration_value: 24,
-          duration_unit: "hours"
+          duration_unit: "hours",
         )
 
         @params[:reservation_id] = @reservation.id
@@ -1190,7 +1190,7 @@ RSpec.describe ReservationsController do
         :instrument,
         facility_account: @facility_account,
         facility: @authable,
-        is_hidden: true
+        is_hidden: true,
       )
     end
 

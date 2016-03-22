@@ -198,7 +198,7 @@ RSpec.describe AccountBuilder, type: :service do
     let(:account) do
       build_stubbed(:nufs_account,
                     account_number: "1234",
-                    description: "foobar"
+                    description: "foobar",
                    )
     end
 

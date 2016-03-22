@@ -96,7 +96,7 @@ class InstrumentPricePolicy < PricePolicy
     PriceGroupProduct.create(
       price_group: price_group,
       product: product,
-      reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
+      reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW,
     ) unless pgp
   end
 

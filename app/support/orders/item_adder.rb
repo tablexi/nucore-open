@@ -73,7 +73,7 @@ class Orders::ItemAdder
     options.reverse_merge!(
       quantity: 1,
       account: @order.account,
-      created_by: @order.created_by
+      created_by: @order.created_by,
     )
     @order.order_details.create!(options)
   end

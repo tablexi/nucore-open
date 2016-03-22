@@ -272,7 +272,7 @@ class ReservationsController < ApplicationController
       :actual_start_date,
       :actual_start_hour,
       :actual_start_min,
-      :actual_start_meridian
+      :actual_start_meridian,
     )
 
     reservation_params.merge!(reservation_start_as_params) if fixed_start_time?

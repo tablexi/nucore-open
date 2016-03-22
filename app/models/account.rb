@@ -82,7 +82,7 @@ class Account < ActiveRecord::Base
         "accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
         allow_all: config.global_account_types,
         limit_one: config.facility_account_types,
-        facility: facility
+        facility: facility,
       )
     end
 
@@ -294,7 +294,7 @@ class Account < ActiveRecord::Base
       @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
         id,
         user.id,
-        nil
+        nil,
       )
       # set (new?) role
       @account_user.user_role = new_role
