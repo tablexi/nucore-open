@@ -21,7 +21,7 @@ module TabCountHelper
       title << " (#{@order_details.try(:total_entries) || @order_details.count})"
     end
     content_tag(:li, :class => active ? 'active' : nil) do
-      link_to title, link, { :id => ACTIONS_TO_COUNT_TYPE[args[:action]], :class => 'js-tab-counts' }
+      link_to title, link, :id => ACTIONS_TO_COUNT_TYPE[args[:action]], :class => 'js-tab-counts'
     end
   end
 

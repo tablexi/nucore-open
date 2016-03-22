@@ -195,14 +195,14 @@ RSpec.describe UserPasswordController, :if => SettingsHelper.feature_on?(:passwo
     end
 
     it "should fail if passwords don't match" do
-      @params.deep_merge!({:user => {:password => "newpassword", :password_confirmation => "anotherpassword"}})
+      @params.deep_merge!(:user => {:password => "newpassword", :password_confirmation => "anotherpassword"})
       do_request
       expect(response).to render_template("user_password/edit")
       expect(assigns[:user].errors).not_to be_empty
     end
 
     it "should succeed" do
-      @params.deep_merge!({:user => {:password => "newpassword", :password_confirmation => "newpassword"}})
+      @params.deep_merge!(:user => {:password => "newpassword", :password_confirmation => "newpassword"})
       do_request
       expect(response).to redirect_to(:root)
       expect(assigns[:user]).to eq(@user)

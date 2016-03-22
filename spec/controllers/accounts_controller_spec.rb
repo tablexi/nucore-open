@@ -6,9 +6,9 @@ RSpec.describe AccountsController do
   render_views
 
   it "should route" do
-    expect({ :get => "/accounts" }).to route_to(:controller => 'accounts', :action => 'index')
-    expect({ :get => "/accounts/1" }).to route_to(:controller => 'accounts', :action => 'show', :id => '1')
-    expect({ :get => "/accounts/1/user_search" }).to route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
+    expect(:get => "/accounts").to route_to(:controller => 'accounts', :action => 'index')
+    expect(:get => "/accounts/1").to route_to(:controller => 'accounts', :action => 'show', :id => '1')
+    expect(:get => "/accounts/1/user_search").to route_to(:controller => 'accounts', :action => 'user_search', :id => '1')
   end
 
   before(:all) { create_users }
@@ -97,7 +97,7 @@ RSpec.describe AccountsController do
     it_should_deny :purchaser
     it_should_allow :owner do
       expect(assigns(:account)).to eq(@authable)
-      expect(assigns[:order_details].where_values_hash).to eq({ 'account_id' => @authable.id })
+      expect(assigns[:order_details].where_values_hash).to eq('account_id' => @authable.id)
       # @authable is an nufs account, so it doesn't have a facility
       expect(assigns[:facility]).to be_nil
     end

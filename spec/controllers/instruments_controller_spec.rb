@@ -8,8 +8,8 @@ RSpec.describe InstrumentsController do
   render_views
 
   it "should route" do
-    expect({ :get => "/facilities/alpha/instruments" }).to route_to(:controller => 'instruments', :action => 'index', :facility_id => 'alpha')
-    expect({ :get => "/facilities/alpha/instruments/1/manage" }).to route_to(:controller => 'instruments', :action => 'manage', :id => '1', :facility_id => 'alpha')
+    expect(:get => "/facilities/alpha/instruments").to route_to(:controller => 'instruments', :action => 'index', :facility_id => 'alpha')
+    expect(:get => "/facilities/alpha/instruments/1/manage").to route_to(:controller => 'instruments', :action => 'manage', :id => '1', :facility_id => 'alpha')
   end
 
   before(:all) { create_users }
@@ -272,8 +272,7 @@ RSpec.describe InstrumentsController do
     context 'with relay' do
 
       before :each do
-        @params[:instrument].merge!({
-          :control_mechanism => 'relay',
+        @params[:instrument].merge!(          :control_mechanism => 'relay',
           :relay_attributes => {
             :ip => '192.168.1.2',
             :port => 1234,
@@ -281,8 +280,7 @@ RSpec.describe InstrumentsController do
             :password => 'password',
             :type => RelaySynaccessRevA.name,
             :instrument_id => -1 # nested attributes want something
-          }
-        })
+          })
       end
 
       it_should_allow :director, 'to create a relay' do
@@ -427,8 +425,7 @@ RSpec.describe InstrumentsController do
     context 'with relay' do
 
       before :each do
-        @params[:instrument].merge!({
-          :control_mechanism => 'relay',
+        @params[:instrument].merge!(          :control_mechanism => 'relay',
           :relay_attributes => {
             :ip => '192.168.1.2',
             :port => 1234,
@@ -436,8 +433,7 @@ RSpec.describe InstrumentsController do
             :password => 'password',
             :type => RelaySynaccessRevA.name,
             :instrument_id => @instrument.id
-          }
-        })
+          })
       end
 
       it_should_allow :director, 'to create a relay' do
@@ -597,7 +593,7 @@ RSpec.describe InstrumentsController do
         before :each do
           maybe_grant_always_sign_in :director
           do_request
-          @json_output = JSON.parse(response.body, {:symbolize_names => true})
+          @json_output = JSON.parse(response.body, :symbolize_names => true)
           @instrument_ids = @json_output.map { |hash| hash[:instrument_status][:instrument_id] }
         end
 

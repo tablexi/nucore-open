@@ -20,7 +20,7 @@ RSpec.describe BulkEmailController do
     before :each do
       @action = 'search'
       @method = :post
-      @params.merge!({ :search_type => :customers })
+      @params.merge!(:search_type => :customers)
     end
     it_should_require_login
     it_should_allow_managers_only {}
@@ -94,7 +94,7 @@ RSpec.describe BulkEmailController do
 
       context "csv" do
         before :each do
-          @params.merge!({:format => 'csv'})
+          @params.merge!(:format => 'csv')
         end
         it "should not paginate" do
           do_request

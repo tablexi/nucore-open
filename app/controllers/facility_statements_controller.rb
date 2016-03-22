@@ -51,7 +51,7 @@ class FacilityStatementsController < ApplicationController
 
       @account_statements = {}
       to_statement.each do |account, order_details|
-        statement = Statement.create!({:facility => current_facility, :account_id => account.id, :created_by => session_user.id})
+        statement = Statement.create!(:facility => current_facility, :account_id => account.id, :created_by => session_user.id)
         order_details.each do |od|
           StatementRow.create!(statement_id: statement.id, order_detail_id: od.id)
           od.statement_id = statement.id

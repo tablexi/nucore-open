@@ -32,7 +32,7 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.current_for_date(date)
-    where("start_date <= :now AND expire_date > :now", {:now => date})
+    where("start_date <= :now AND expire_date > :now", :now => date)
   end
 
   def self.purchaseable
@@ -40,11 +40,11 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.upcoming
-    where("start_date > :now", {:now => Time.zone.now})
+    where("start_date > :now", :now => Time.zone.now)
   end
 
   def self.past
-    where("expire_date < :now", {:now => Time.zone.now})
+    where("expire_date < :now", :now => Time.zone.now)
   end
 
   def self.for_price_groups(price_groups)

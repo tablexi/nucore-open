@@ -146,10 +146,8 @@ end
         { order_date: nucore_format_date(default_order_date) },
         { order_date: nucore_format_date(default_order_date) },
         # Second order (a different order_date):
-        {
-          order_date: nucore_format_date(default_order_date + 1.day),
+                  order_date: nucore_format_date(default_order_date + 1.day),
           product_name: "Invalid Item"
-        }
       )
     end
 
@@ -185,7 +183,7 @@ end
 
       context "with errors" do
         let(:import_file) do
-          generate_import_file({}, { product_name: "Invalid Item" })
+          generate_import_file({}, product_name: "Invalid Item")
         end
 
         it_behaves_like "it does not send notifications"
@@ -221,7 +219,7 @@ end
           { product_name: "Invalid Item" },
           {},
           # Second order (a different user):
-          { username: guest2.username },
+          username: guest2.username,
         )
       end
 
@@ -286,7 +284,7 @@ end
   context "when importing multiple orders" do
     context "and the second order's order_detail has an error" do
       let(:import_file) do
-        generate_import_file({}, { product_name: "Invalid Item" })
+        generate_import_file({}, product_name: "Invalid Item")
       end
 
       before :each do

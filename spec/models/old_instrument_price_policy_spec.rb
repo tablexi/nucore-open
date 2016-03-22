@@ -181,11 +181,9 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with reservation cost" do
-      options = ipp_attributes({
-        :product             => @instrument,
+      options = ipp_attributes(        :product             => @instrument,
         :usage_rate          => 0,
-        :reservation_rate    => 10.75
-      })
+        :reservation_rate    => 10.75)
 
       pp = create :old_instrument_price_policy, options
 
@@ -212,12 +210,10 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with reservation cost and subsidy" do
-      options = ipp_attributes({
-        :product             => @instrument,
+      options = ipp_attributes(        :product             => @instrument,
         :usage_rate          => 0,
         :reservation_rate    => 10.75,
-        :reservation_subsidy => 1.75
-      })
+        :reservation_subsidy => 1.75)
 
       pp = create :old_instrument_price_policy, options
 
@@ -244,11 +240,9 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage and reservation cost" do
-      options = ipp_attributes({
-        :product             => @instrument,
+      options = ipp_attributes(        :product             => @instrument,
         :usage_rate          => 5,
-        :reservation_rate    => 5.75
-      })
+        :reservation_rate    => 5.75)
 
       pp = create :old_instrument_price_policy, options
 
@@ -275,13 +269,11 @@ RSpec.describe OldInstrumentPricePolicy do
     end
 
     it "should correctly estimate cost with usage and reservation cost and subsidy" do
-      options = ipp_attributes({
-        :product             => @instrument,
+      options = ipp_attributes(        :product             => @instrument,
         :usage_rate          => 5,
         :usage_subsidy       => 0.5,
         :reservation_rate    => 5.75,
-        :reservation_subsidy => 0.75
-      })
+        :reservation_subsidy => 0.75)
 
       pp = create :old_instrument_price_policy, options
 
@@ -471,13 +463,13 @@ RSpec.describe OldInstrumentPricePolicy do
 
       it 'should return zero for zero priced policy' do
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-        expect(@costs).to eq({:cost => 0, :subsidy => 0})
+        expect(@costs).to eq(:cost => 0, :subsidy => 0)
       end
 
       it 'should return minimum cost for a zero priced policy' do
         @ipp.update_attribute :minimum_cost, 20
         @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-        expect(@costs).to eq({:cost => 20, :subsidy => 0})
+        expect(@costs).to eq(:cost => 20, :subsidy => 0)
       end
     end
 
@@ -491,7 +483,7 @@ RSpec.describe OldInstrumentPricePolicy do
       @reservation.actual_start_at = @reservation.reserve_start_at
       @reservation.actual_end_at = @reservation.reserve_end_at
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
-      expect(@costs).to eq({:cost => 100, :subsidy => 99})
+      expect(@costs).to eq(:cost => 100, :subsidy => 99)
     end
 
     it "should correctly calculate cost with usage rate and subsidy and overage using usage rate for overage rate and usage subsidy for overage subsidy" do

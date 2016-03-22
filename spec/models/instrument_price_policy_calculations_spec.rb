@@ -261,13 +261,13 @@ RSpec.describe InstrumentPricePolicyCalculations do
       allow(policy).to receive(:free?).and_return true
       min_cost = 10
       allow(policy).to receive(:minimum_cost).and_return min_cost
-      expect(policy.calculate_cost_and_subsidy reservation).to eq({ cost: min_cost, subsidy: 0 })
+      expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: min_cost, subsidy: 0)
     end
 
     it 'returns 0 if instrument is #free? and there is no minimum_cost' do
       allow(policy).to receive(:free?).and_return true
       allow(policy).to receive(:minimum_cost).and_return nil
-      expect(policy.calculate_cost_and_subsidy reservation).to eq({ cost: 0, subsidy: 0 })
+      expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: 0, subsidy: 0)
     end
 
     it 'calculates reservation costs same as the old policy' do
@@ -394,7 +394,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     it 'returns the cancellation cost if penalty applies' do
       allow(policy).to receive(:cancellation_penalty?).and_return true
       allow(policy).to receive(:cancellation_cost).and_return 5.0
-      expect(policy.calculate_cancellation_costs(reservation)).to eq({ cost: policy.cancellation_cost, subsidy: 0})
+      expect(policy.calculate_cancellation_costs(reservation)).to eq(cost: policy.cancellation_cost, subsidy: 0)
     end
 
     it 'returns nil if penalty applies' do

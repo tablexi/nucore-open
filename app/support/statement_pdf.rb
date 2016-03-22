@@ -65,7 +65,7 @@ class StatementPdf
   end
 
   def generate_document_footer(pdf)
-    pdf.number_pages 'Page <page> of <total>', { at: [0, -15] }
+    pdf.number_pages 'Page <page> of <total>', at: [0, -15]
   end
 
   def generate_document_header(pdf)

@@ -46,7 +46,7 @@ class Reservation < ActiveRecord::Base
 
   def self.active
     not_canceled
-      .where({orders: { state: ['purchased', nil] }})
+      .where(orders: { state: ['purchased', nil] })
       .joins_order
   end
 

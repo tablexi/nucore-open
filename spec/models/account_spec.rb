@@ -295,7 +295,7 @@ RSpec.describe Account do
     account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => user))
     order    = user.orders.create(FactoryGirl.attributes_for(:order, :created_by => user.id, :facility => facility))
     order_detail = order.order_details.create!(FactoryGirl.attributes_for(:order_detail, :reviewed_at => (Time.zone.now-1.day)).update(:product_id => item.id, :account_id => account.id))
-    statement = Statement.create({:facility => facility, :created_by => 1, :account => account})
+    statement = Statement.create(:facility => facility, :created_by => 1, :account => account)
     account.update_order_details_with_statement(statement)
     expect(order_detail.reload.statement).to eq(statement)
   end
