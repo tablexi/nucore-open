@@ -435,7 +435,7 @@ class OrderDetail < ActiveRecord::Base
     # don't try to change status if it's the same as before
     unless new_status == order_status
       self.order_status = new_status
-      block.call(self) if block
+      yield(self) if block
       self.save!
     end
     return true

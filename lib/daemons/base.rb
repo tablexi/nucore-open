@@ -52,7 +52,7 @@ class Daemons::Base
   def start(&work)
     run_proc(name, daemon_opts) do
       require File.join(@rails_root, 'config', 'environment')
-      loop { work.call }
+      loop { yield }
     end
   end
 
