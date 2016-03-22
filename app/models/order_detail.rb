@@ -81,7 +81,7 @@ class OrderDetail < ActiveRecord::Base
   validates_numericality_of :actual_subsidy, greater_than_or_equal_to: 0, if: ->(o) { o.actual_subsidy_changed? && !o.actual_cost.nil?}
   validates_numericality_of :actual_total, greater_than_or_equal_to: 0, allow_nil: true
   validates_presence_of :dispute_reason, if: :dispute_at
-  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, if: Proc.new { dispute_resolved_reason.present? || dispute_resolved_at.present? }
+  validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, if: proc { dispute_resolved_reason.present? || dispute_resolved_at.present? }
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
   # were being triggered on orders where the orderer had been removed from the account.
   validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }

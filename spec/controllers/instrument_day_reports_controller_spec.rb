@@ -6,10 +6,10 @@ RSpec.describe InstrumentDayReportsController do
   include ReportSpecHelper
 
   run_report_tests([
-                     { action: :reserved_quantity, index: 4, report_on_label: nil, report_on: Proc.new{|res| Reports::InstrumentDayReport::ReservedQuantity.new(res) } },
-    { action: :reserved_hours, index: 5, report_on_label: nil, report_on: Proc.new{|res| Reports::InstrumentDayReport::ReservedHours.new(res) } },
-    { action: :actual_quantity, index: 6, report_on_label: nil, report_on: Proc.new{|res| Reports::InstrumentDayReport::ActualQuantity.new(res) } },
-    { action: :actual_hours, index: 7, report_on_label: nil, report_on: Proc.new{|res| Reports::InstrumentDayReport::ActualHours.new(res) } }
+                     { action: :reserved_quantity, index: 4, report_on_label: nil, report_on: proc{|res| Reports::InstrumentDayReport::ReservedQuantity.new(res) } },
+    { action: :reserved_hours, index: 5, report_on_label: nil, report_on: proc{|res| Reports::InstrumentDayReport::ReservedHours.new(res) } },
+    { action: :actual_quantity, index: 6, report_on_label: nil, report_on: proc{|res| Reports::InstrumentDayReport::ActualQuantity.new(res) } },
+    { action: :actual_hours, index: 7, report_on_label: nil, report_on: proc{|res| Reports::InstrumentDayReport::ActualHours.new(res) } }
                    ])
 
   private
