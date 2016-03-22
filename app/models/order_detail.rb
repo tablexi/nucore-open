@@ -21,7 +21,7 @@ class OrderDetail < ActiveRecord::Base
   after_validation :reset_dispute
 
   before_save :clear_statement, if: :account_id_changed?
-  before_save :reassign_price, if: lambda { |o| o.account_id_changed? || o.quantity_changed? }
+  before_save :reassign_price, if: ->(o) { o.account_id_changed? || o.quantity_changed? }
   before_save :update_journal_row_amounts, if: :actual_cost_changed?
 
   before_save :set_problem_order
@@ -77,21 +77,21 @@ class OrderDetail < ActiveRecord::Base
 
   validates_presence_of :product_id, :order_id, :created_by
   validates_numericality_of :quantity, only_integer: true, greater_than_or_equal_to: 1
-  validates_numericality_of :actual_cost, greater_than_or_equal_to: 0, if: lambda { |o| o.actual_cost_changed? && !o.actual_cost.nil?}
-  validates_numericality_of :actual_subsidy, greater_than_or_equal_to: 0, if: lambda { |o| o.actual_subsidy_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_cost, greater_than_or_equal_to: 0, if: ->(o) { o.actual_cost_changed? && !o.actual_cost.nil?}
+  validates_numericality_of :actual_subsidy, greater_than_or_equal_to: 0, if: ->(o) { o.actual_subsidy_changed? && !o.actual_cost.nil?}
   validates_numericality_of :actual_total, greater_than_or_equal_to: 0, allow_nil: true
   validates_presence_of :dispute_reason, if: :dispute_at
   validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, if: Proc.new { dispute_resolved_reason.present? || dispute_resolved_at.present? }
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
   # were being triggered on orders where the orderer had been removed from the account.
-  validate :account_usable_by_order_owner?, if: lambda { |o| o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
+  validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
   validates_length_of :note, maximum: 100, allow_blank: true, allow_nil: true
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility
   ## TODO validate which fields can be edited for which states
 
-  scope :with_product_type, lambda { |s| {joins: :product, conditions: ["products.type = ?", s.to_s.capitalize]} }
+  scope :with_product_type, ->(s) { {joins: :product, conditions: ["products.type = ?", s.to_s.capitalize]} }
 
   scope :new_or_inprocess, conditions: ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], include: :order
 
@@ -313,14 +313,14 @@ class OrderDetail < ActiveRecord::Base
   scope :all_reservations, confirmed_reservations
                            .order('reservations.reserve_start_at DESC')
 
-  scope :for_accounts, lambda {|accounts| where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
-  scope :for_facilities, lambda {|facilities| joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
-  scope :for_products, lambda { |products| where("order_details.product_id in (?)", products) unless products.blank? }
+  scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
+  scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
+  scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
   scope :for_owners, lambda { |owners| joins(:account)
                                        .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
                                        .where("account_users.user_id in (?)", owners) unless owners.blank? 
   }
-  scope :for_order_statuses, lambda {|statuses| where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
+  scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
   scope :in_date_range, lambda { |start_date, end_date|
     search = scoped
