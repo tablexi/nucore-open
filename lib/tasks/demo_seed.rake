@@ -296,9 +296,9 @@ namespace :demo do
                                          expires_at: Time.zone.now + 1.year,
                                          created_by: user_director.id,
                                          account_users_attributes: [
-                                          { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
+                                           { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
                                           { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                        ])
+                                         ])
       nufsaccount2.set_expires_at!
     end
 
