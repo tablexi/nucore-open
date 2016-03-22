@@ -117,13 +117,13 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           do_request
           expect(assigns[:price_policies].size).to eq 3
 
-          price_policy = assigns[:price_policies].select{|pp| pp.price_group_id == @price_policy.price_group_id}.first
+          price_policy = assigns[:price_policies].find{|pp| pp.price_group_id == @price_policy.price_group_id}
           expect(price_policy).to be_can_purchase
 
-          price_group2_policy = assigns[:price_policies].select{|pp| pp.price_group_id == @price_group2_policy.price_group_id}.first
+          price_group2_policy = assigns[:price_policies].find{|pp| pp.price_group_id == @price_group2_policy.price_group_id}
           expect(price_group2_policy).to_not be_can_purchase
 
-          price_group3_policy = assigns[:price_policies].select{|pp| pp.price_group_id == @price_group3.id}.first
+          price_group3_policy = assigns[:price_policies].find{|pp| pp.price_group_id == @price_group3.id}
           expect(price_group3_policy).to_not be_can_purchase
         end
         it 'should use the policy with the furthest out expiration date' do
