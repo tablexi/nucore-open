@@ -20,7 +20,7 @@ class OrderDetailObserver < ActiveRecord::Observer
   end
 
   def after_save(order_detail)
-  	 if order_detail.order_status_id_changed?
+     if order_detail.order_status_id_changed?
       old_status = order_detail.order_status_id_was ? OrderStatus.find(order_detail.order_status_id_was) : nil
        new_status = order_detail.order_status
        hooks_to_run = self.class.status_change_hooks[new_status.downcase_name.to_sym]

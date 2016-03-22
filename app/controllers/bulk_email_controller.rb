@@ -1,6 +1,6 @@
 class BulkEmailController < ApplicationController
 
-	 include BulkEmailHelper
+   include BulkEmailHelper
  include CSVHelper
   
  admin_tab :all
@@ -9,13 +9,13 @@ class BulkEmailController < ApplicationController
  before_filter { @active_tab = "admin_users" }
  before_filter :remove_ugly_params_and_redirect
  before_filter :authenticate_user!
-	before_filter :check_acting_as
-	before_filter :init_current_facility
+  before_filter :check_acting_as
+  before_filter :init_current_facility
  before_filter { authorize! :send_bulk_emails, current_facility }
   
  before_filter :init_search_options
 
-	def search
+  def search
    @users = do_search(@search_fields) if params[:search_type]
 
     respond_to do |format|
@@ -25,7 +25,7 @@ class BulkEmailController < ApplicationController
         set_csv_headers(filename)
       end
     end
-	end
+  end
 
   private
  
