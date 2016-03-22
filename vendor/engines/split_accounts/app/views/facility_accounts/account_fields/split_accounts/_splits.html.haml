@@ -3,9 +3,11 @@
 %h4 Subaccounts
 
 %div{data: {subaccounts: true}}
+  - # Load this outside the nested_fields_for so it's only loaded once
+  - available_subaccounts = SplitAccounts::Split.available_subaccounts.map { |s| [s.to_s, s.id] }
   = f.nested_fields_for :splits, class_name: "SplitAccounts::Split" do |ff|
     .well
-      = ff.input :subaccount_id, collection: SplitAccounts::Split.available_subaccounts, wrapper_html: {class: "input-inline"}, input_html: {class: "js--chosen"}
+      = ff.input :subaccount_id, collection: available_subaccounts, wrapper_html: {class: "input-inline"}, input_html: {class: "js--chosen"}
       = ff.input :percent, input_html: {min: 0, max: 100, data: {percent: true}}, wrapper_html: {class: "input-inline"}
       = ff.input :extra_penny, wrapper_html: {class: "input-inline"}
       = ff.remove_nested_fields_link "Remove", class: "btn", wrapper_html: {class: "input-inline"}
