@@ -121,7 +121,7 @@ RSpec.describe AffiliatesController do
   end
 
   def bad_id_test
-    @params[:id]=98765423456
+    @params[:id]=98_765_423_456
     maybe_grant_always_sign_in :admin
     do_request
     is_expected.to set_flash

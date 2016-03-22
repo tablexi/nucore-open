@@ -7,9 +7,9 @@ RSpec.describe JournalRowBuilder, :enable_split_accounts, type: :service do
   end
 
   let(:facility) { create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account, revenue_account: 51234)) }
+  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account, revenue_account: 51_234)) }
   let(:product) { create(:setup_item, facility: facility, facility_account: facility_account) }
-  let(:facility_account2) { facility.facility_accounts.create(attributes_for(:facility_account, revenue_account: 51235)) }
+  let(:facility_account2) { facility.facility_accounts.create(attributes_for(:facility_account, revenue_account: 51_235)) }
   let(:product2) { create(:setup_item, facility: facility, facility_account: facility_account2) }
 
   let(:journal) { build_stubbed(:journal, facility: facility) }

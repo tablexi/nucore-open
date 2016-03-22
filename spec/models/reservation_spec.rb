@@ -1047,8 +1047,8 @@ RSpec.describe Reservation do
   end
 
   describe 'finding reservations in a given range' do
-    let(:this_sunday) { Time.zone.at 1361685600 } # Sun, 24 Feb 2013 00:00:00
-    let(:next_sunday) { Time.zone.at 1362290400 } # Sun, 03 Mar 2013 00:00:00
+    let(:this_sunday) { Time.zone.at 1_361_685_600 } # Sun, 24 Feb 2013 00:00:00
+    let(:next_sunday) { Time.zone.at 1_362_290_400 } # Sun, 03 Mar 2013 00:00:00
 
     let! :instrument do
       @instrument.update_attributes max_reserve_mins: nil, reserve_interval: 15
