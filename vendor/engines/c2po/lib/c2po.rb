@@ -1,6 +1,6 @@
 module C2po
 
-  C2PO_ACCOUNT_TYPES = ["CreditCardAccount", "PurchaseOrderAccount"].freeze
+  C2PO_ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount).freeze
 
   class Engine < Rails::Engine
 

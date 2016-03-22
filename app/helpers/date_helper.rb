@@ -72,7 +72,7 @@ module DateHelper
     output = ""
     output << select_tag("#{field}[hour]", options_for_select(hour_options, default_time.strftime("%I").to_i))
     output << select_tag("#{field}[minute]", options_for_select(minute_options, default_time.min))
-    output << select_tag("#{field}[ampm]", options_for_select(["AM", "PM"], default_time.strftime("%p")))
+    output << select_tag("#{field}[ampm]", options_for_select(%w(AM PM), default_time.strftime("%p")))
     output.html_safe
   end
 
@@ -80,7 +80,7 @@ module DateHelper
   def time_select(f, field, options_tag = {}, html_options = {})
     output =  f.select(:"#{field}_hour", (1..12).to_a, {}, html_options)
     output << f.select(:"#{field}_min", minute_options(options_tag[:minute_step]), {}, html_options)
-    output << f.select(:"#{field}_meridian", ["AM", "PM"], {}, html_options)
+    output << f.select(:"#{field}_meridian", %w(AM PM), {}, html_options)
     content_tag :div, output.html_safe, class: "time-select"
   end
 

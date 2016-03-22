@@ -5,7 +5,7 @@ module InstrumentReporter
                               .where("fulfilled_at >= ?", @date_start)
                               .where("fulfilled_at <= ?", @date_end)
                               .where(canceled_at: nil)
-                              .where(order_details: { state: ["complete", "reconciled"] })
+                              .where(order_details: { state: %w(complete reconciled) })
                               .joins(:order_detail)
                               .joins(order_detail: :order)
                               .includes(:product)

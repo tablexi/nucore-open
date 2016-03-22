@@ -10,7 +10,7 @@ RSpec.describe ViewHook do
     end
 
     it "returns the correct partials" do
-      expect(view_hook.find("view1", "placement1")).to eq(["partial", "partial2"])
+      expect(view_hook.find("view1", "placement1")).to eq(%w(partial partial2))
     end
 
     it "returns an empty array if the view is not found" do
@@ -22,7 +22,7 @@ RSpec.describe ViewHook do
     end
 
     it "finds using symbols" do
-      expect(view_hook.find(:view1, :placement1)).to eq(["partial", "partial2"])
+      expect(view_hook.find(:view1, :placement1)).to eq(%w(partial partial2))
     end
   end
 

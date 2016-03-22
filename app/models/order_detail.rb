@@ -196,7 +196,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.recently_reviewed
-    where(state: ["complete", "reconciled"])
+    where(state: %w(complete reconciled))
       .where("order_details.reviewed_at < ?", Time.zone.now)
       .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
       .order(:reviewed_at).reverse_order
@@ -301,7 +301,7 @@ class OrderDetail < ActiveRecord::Base
 
   end
 
-  scope :pending, joins(:order).where(state: ["new", "inprocess"]).ordered
+  scope :pending, joins(:order).where(state: %w(new inprocess)).ordered
   scope :confirmed_reservations, reservations
     .joins(:order)
     .includes(:reservation)

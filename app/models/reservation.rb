@@ -277,7 +277,7 @@ class Reservation < ActiveRecord::Base
   private
 
   def auto_save_order_detail
-    if (["actual_start_at", "actual_end_at", "reserve_start_at", "reserve_end_at"] & changes.keys).any?
+    if (%w(actual_start_at actual_end_at reserve_start_at reserve_end_at) & changes.keys).any?
       order_detail.save
     end
   end
