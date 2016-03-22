@@ -1,4 +1,5 @@
 module Ldap
+
   class UserConverter
 
     def initialize(ldap_user)
@@ -13,4 +14,5 @@ module Ldap
     end
 
   end
+
 end

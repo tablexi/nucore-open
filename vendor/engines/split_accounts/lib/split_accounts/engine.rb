@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class Engine < Rails::Engine
 
     def self.enable!
@@ -50,4 +51,5 @@ module SplitAccounts
     end
 
   end
+
 end

@@ -1,4 +1,5 @@
 module Reservations::Validations
+
   extend ActiveSupport::Concern
 
   included do

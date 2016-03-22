@@ -1,9 +1,11 @@
 class Account < ActiveRecord::Base
 
   module Overridable
+
     def price_groups
       (price_group_members.collect{ |pgm| pgm.price_group } + (owner_user ? owner_user.price_groups : [])).flatten.uniq
     end
+
   end
 
   include Overridable

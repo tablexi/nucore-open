@@ -1,4 +1,5 @@
 module FacilityOrdersHelper
+
   def order_detail_notices(order_detail)
     notices = []
 
@@ -50,4 +51,5 @@ module FacilityOrdersHelper
       content_tag(:span, t("order_details.notices.#{notice}.badge"), :class => ['label', label_class])
     end
   end
+
 end

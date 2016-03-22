@@ -1,4 +1,5 @@
 module TimelineHelper
+
   def reservation_classes(reservation, product=nil)
     classes = ['unit']
     if reservation.product == product
@@ -65,4 +66,5 @@ module TimelineHelper
   def public_timeline?
     @public_timeline ||= false
   end
+
 end

@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class ReservationSplitter
 
     attr_reader :reservation
@@ -13,4 +14,5 @@ module SplitAccounts
     end
 
   end
+
 end

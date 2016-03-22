@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class Split < ActiveRecord::Base
 
     belongs_to :parent_split_account, class_name: "SplitAccounts::SplitAccount", foreign_key: :parent_split_account_id, inverse_of: :splits
@@ -30,4 +31,5 @@ module SplitAccounts
     end
 
   end
+
 end

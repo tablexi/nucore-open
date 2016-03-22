@@ -1,4 +1,5 @@
 module Dataprobe
+
   class Ipio
 
     attr_reader :ip, :port
@@ -59,4 +60,5 @@ module Dataprobe
     end
 
   end
+
 end

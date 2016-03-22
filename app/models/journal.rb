@@ -5,6 +5,7 @@ class Journal < ActiveRecord::Base
   class CreationError < StandardError; end
 
   module Overridable
+
     def create_spreadsheet
       rows = journal_rows
       return false if rows.empty?
@@ -19,6 +20,7 @@ class Journal < ActiveRecord::Base
       File.unlink(temp_file.path) rescue nil
       status
     end
+
   end
 
   include DownloadableFile

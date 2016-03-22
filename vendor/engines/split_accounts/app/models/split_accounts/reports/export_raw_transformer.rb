@@ -1,6 +1,8 @@
 require "hash_helper"
 module SplitAccounts
+
   module Reports
+
     class ExportRawTransformer
 
       include HashHelper
@@ -19,5 +21,7 @@ module SplitAccounts
       end
 
     end
+
   end
+
 end

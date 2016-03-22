@@ -1,4 +1,5 @@
 module FacilitiesHelper
+
   def facility_default_admin_path(facility)
     if facility.instruments.active.any?
       timeline_facility_reservations_path(facility)
@@ -18,4 +19,5 @@ module FacilitiesHelper
     title += " (#{extra})" if extra
     title.html_safe
   end
+
 end

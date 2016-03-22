@@ -1,4 +1,5 @@
 module Converters
+
   class OrderDetailToJournalRowAttributes
 
     attr_accessor :journal, :order_detail, :total
@@ -21,4 +22,5 @@ module Converters
     end
 
   end
+
 end

@@ -1,4 +1,5 @@
 module CSVHelper
+
   CSV = case RUBY_VERSION
         when "1.8.7"
       unless defined?(FasterCSV)
@@ -26,4 +27,5 @@ module CSVHelper
       headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
     end
   end
+
 end

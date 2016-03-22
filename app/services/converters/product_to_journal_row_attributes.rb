@@ -1,4 +1,5 @@
 module Converters
+
   class ProductToJournalRowAttributes
 
     attr_accessor :journal, :product, :total
@@ -19,4 +20,5 @@ module Converters
     end
 
   end
+
 end

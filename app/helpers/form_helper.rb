@@ -1,4 +1,5 @@
 module FormHelper
+
   def readonly_form_for(record_name, record = nil, options = {}, &block)
     options, record = record, nil if record.is_a?(Hash) && record.extractable_options?
     record ||= instance_variable_get("@#{record_name}")
@@ -20,4 +21,5 @@ module FormHelper
   def scheduling_group_options(access_groups, selected_access_group)
     options_from_collection_for_select(access_groups, :id, :name, selected_access_group.try(:id))
   end
+
 end

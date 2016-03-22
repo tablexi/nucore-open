@@ -3,9 +3,11 @@ class Facility < ActiveRecord::Base
   include ActiveModel::ForbiddenAttributesProtection
 
   module Overridable
+
     def can_pay_with_account?(_account)
       true
     end
+
   end
 
   include Overridable

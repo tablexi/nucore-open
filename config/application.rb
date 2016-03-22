@@ -12,6 +12,7 @@ if defined?(Bundler)
 end
 
 module Nucore
+
   class Application < Rails::Application
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -65,4 +66,5 @@ module Nucore
     end
 
   end
+
 end

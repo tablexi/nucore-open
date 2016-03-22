@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class SplitAccountAbility < Ability
 
     def initialize(user, resource, controller)
@@ -9,4 +10,5 @@ module SplitAccounts
     end
 
   end
+
 end

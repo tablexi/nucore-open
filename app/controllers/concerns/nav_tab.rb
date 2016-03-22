@@ -13,6 +13,7 @@ module NavTab
   end
 
   module ClassMethods
+
     # Specifies that the named actions should show the customer tabs (which is enforced by set_tab).
     def customer_tab(*actions)
       self.customer_actions = actions
@@ -22,6 +23,7 @@ module NavTab
     def admin_tab(*actions)
       self.admin_actions = actions
     end
+
   end
 
   # Returns true if the current action is an admin tab action

@@ -1,4 +1,5 @@
 module FacilityOrderStatusHelper
+
   def new_or_in_process_orders
     # will never include instrument order details
     facility_ods = current_facility.order_details.non_reservations
@@ -47,4 +48,5 @@ module FacilityOrderStatusHelper
   def sort_direction
     (params[:dir] || '') == 'desc' ? 'desc' : 'asc'
   end
+
 end

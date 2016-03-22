@@ -1,4 +1,5 @@
 module ReportsHelper
+
   include DateHelper
 
   def to_hours(minutes, precision = 2)

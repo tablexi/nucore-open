@@ -1,4 +1,5 @@
 module TranslationHelper
+
   def t_manage_models(clazz)
     I18n.t('pages.manage', :model => clazz.model_name.human.pluralize)
   end
@@ -22,4 +23,5 @@ module TranslationHelper
   def t_boolean(value)
     I18n.t(value.to_s, scope: "boolean")
   end
+
 end

@@ -1,4 +1,5 @@
 module AccountsHelper
+
   def account_input(form)
     hint = t('facility_order_details.edit.label.account_owner_html', :owner => @order_detail.account.owner_user)
     form.input :account, :hint => hint do
@@ -29,4 +30,5 @@ module AccountsHelper
   def available_accounts_options
     options_for_select(available_accounts_array, @order_detail.account_id)
   end
+
 end

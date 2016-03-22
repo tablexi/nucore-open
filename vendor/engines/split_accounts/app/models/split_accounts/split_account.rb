@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class SplitAccount < Account
 
     has_many :splits, class_name: "SplitAccounts::Split", foreign_key: :parent_split_account_id, inverse_of: :parent_split_account
@@ -88,4 +89,5 @@ module SplitAccounts
     end
 
   end
+
 end

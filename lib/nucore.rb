@@ -38,6 +38,7 @@ module NUCore
     end
 
     module ArrayHelper
+
       def array_slice(array, slice_size=999, &block)
         if NUCore::Database.oracle?
           array.each_slice(slice_size, &block)
@@ -45,9 +46,11 @@ module NUCore
           array.each(&block)
         end
       end
+
     end
 
     module DateHelper
+
       def self.included(base)
         base.extend ClassMethods
       end
@@ -56,6 +59,7 @@ module NUCore
       Y2K_CUTOFF = 86
 
       module ClassMethods
+
         #
         # This method should be used anytime you need to reference a date column in a
         # SQL query and the column values should be treated as a date, not a datetime.
@@ -75,10 +79,13 @@ module NUCore
           year = year.to_i >= Y2K_CUTOFF ? "19#{year}" : "20#{year}"
           Time.zone.parse("#{day} #{month} #{year}")
         end
+
       end
+
     end
 
     module RelationHelper
+
       #
       # If ActiveRecord might produce a query with a large IN clause (>= 1000)
       # then use this method. It prevents Oracle from barfing up this error:
@@ -123,23 +130,30 @@ module NUCore
 
         results
       end
+
     end
 
     module SortHelper
+
       def self.included(base)
         base.extend ClassMethods
       end
       module ClassMethods
+
         def order_by_desc_nulls_first(field)
           NUCore::Database.oracle? ? order("#{field} desc nulls first") : order("-#{field}")
         end
+
       end
+
     end
 
     module CaseSensitivityHelper
+
       def insensitive_where(relation, column, value)
         relation.where("UPPER(#{column}) = UPPER(?)", value)
       end
+
     end
 
   end

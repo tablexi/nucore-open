@@ -113,4 +113,5 @@ module Role
   def name
     to_s
   end
+
 end

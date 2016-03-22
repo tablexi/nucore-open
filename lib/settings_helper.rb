@@ -57,4 +57,5 @@ module SettingsHelper
     end
     current
   end
+
 end

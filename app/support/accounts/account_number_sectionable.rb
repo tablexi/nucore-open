@@ -1,10 +1,13 @@
 module Accounts::AccountNumberSectionable
+
   extend ActiveSupport::Concern
 
   module ClassMethods
+
     def account_number_field_names
       new.account_number_fields.keys
     end
+
   end
 
   def account_number_fields
@@ -27,4 +30,5 @@ module Accounts::AccountNumberSectionable
     @account_number_parts = OpenStruct.new(fields)
     self.account_number = account_number_to_storage_format
   end
+
 end

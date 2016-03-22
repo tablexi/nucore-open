@@ -1,4 +1,5 @@
 module ReportSpecHelper
+
   include DateHelper
   include ReportsHelper
   extend ActiveSupport::Concern
@@ -22,6 +23,7 @@ module ReportSpecHelper
   end
 
   module ClassMethods
+
     def run_report_tests(tests)
       tests.each do |test|
         context test[:action].to_s do
@@ -73,6 +75,7 @@ module ReportSpecHelper
         end
       end
     end
+
   end
 
   private
@@ -160,4 +163,5 @@ module ReportSpecHelper
 
     assert_report_download_rendered "#{@action}_#{export_type}"
   end
+
 end

@@ -1,4 +1,5 @@
 module BulkEmailHelper
+
   
   DEFAULT_SORT = [:last_name, :first_name]
   SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users]

@@ -1,4 +1,5 @@
 module SplitAccounts
+
   class AttributeSplitter
 
     attr_reader :splittable_attributes
@@ -22,4 +23,5 @@ module SplitAccounts
     end
 
   end
+
 end
