@@ -83,10 +83,10 @@ class Journal < ActiveRecord::Base
     if facility_id?
       [facility_id]
     else
-        order_details.joins(:order)
-        .select('orders.facility_id')
-        .collect(&:facility_id)
-        .uniq
+      order_details.joins(:order)
+      .select('orders.facility_id')
+      .collect(&:facility_id)
+      .uniq
     end
   end
 
@@ -176,9 +176,9 @@ class Journal < ActiveRecord::Base
   def set_facility_id
     # detect if this should be a multi-facility journal, set facility_id appropriately
     self.facility_id = if @order_details_for_creation.collect{|od|od.order.facility_id}.uniq.size > 1
-      nil
+                         nil
                        else
-      @order_details_for_creation.first.order.facility_id
+                         @order_details_for_creation.first.order.facility_id
                        end
   end
 

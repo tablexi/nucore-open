@@ -362,16 +362,16 @@ RSpec.describe OrderDetail do
   end
 
   context "service purchase validation" do
-     before(:each) do
+    before(:each) do
       @account        = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-      @price_group    = create(:price_group, facility: @facility)
-      create(:account_price_group_member, account: account, price_group: @price_group)
-      @order          = @user.orders.create(attributes_for(:order, facility_id: @facility.id, account_id: @account.id, created_by: @user.id))
-      @service        = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
-      @service_pp     = @service.service_price_policies.create(attributes_for(:service_price_policy, price_group_id: @price_group.id))
-      @order_detail   = @order.order_details.create(attributes_for(:order_detail).update(product_id: @service.id, account_id: @account.id))
-      @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10, price_policy_id: @service_pp.id)
-     end
+     @price_group    = create(:price_group, facility: @facility)
+     create(:account_price_group_member, account: account, price_group: @price_group)
+     @order          = @user.orders.create(attributes_for(:order, facility_id: @facility.id, account_id: @account.id, created_by: @user.id))
+     @service        = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
+     @service_pp     = @service.service_price_policies.create(attributes_for(:service_price_policy, price_group_id: @price_group.id))
+     @order_detail   = @order.order_details.create(attributes_for(:order_detail).update(product_id: @service.id, account_id: @account.id))
+     @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10, price_policy_id: @service_pp.id)
+    end
 
     ## TODO will need to re-write to check for file uploads
      it 'should validate for a service with no file template upload' do

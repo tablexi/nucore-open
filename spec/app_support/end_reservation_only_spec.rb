@@ -11,7 +11,7 @@ RSpec.describe EndReservationOnly, :timecop_freeze do
       let!(:reservation) { create(:setup_reservation, :yesterday) }
 
       before do
-       action.perform
+        action.perform
        order_detail.reload
        reservation.reload
       end

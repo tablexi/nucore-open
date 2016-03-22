@@ -121,11 +121,11 @@ class PricePolicy < ActiveRecord::Base
   def restrict_purchase=(state)
     case state
     when false, 0
-        self.can_purchase = true
+      self.can_purchase = true
     when true, 1
-        self.can_purchase = false
+      self.can_purchase = false
     else
-        raise ArgumentError.new('state must be true, false, 0, or 1')
+      raise ArgumentError.new('state must be true, false, 0, or 1')
     end
   end
 

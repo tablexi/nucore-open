@@ -61,7 +61,7 @@ module Nucore
 
     # Configure our frameworks of choice
     config.generators do |g|
-     g.template_engine :haml
+      g.template_engine :haml
      g.test_framework :rspec
     end
 

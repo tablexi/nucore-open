@@ -71,9 +71,9 @@ module Products::RelaySupport
 
     case control_mechanism
     when Relay::CONTROL_MECHANISMS[:timer]
-        self.relay = RelayDummy.new
+      self.relay = RelayDummy.new
     when Relay::CONTROL_MECHANISMS[:relay]
-        self.build_relay attrs
+      self.build_relay attrs
     end
   end
 

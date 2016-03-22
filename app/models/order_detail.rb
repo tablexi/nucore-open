@@ -96,9 +96,9 @@ class OrderDetail < ActiveRecord::Base
   scope :new_or_inprocess, conditions: ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], include: :order
 
   scope :facility_recent, lambda { |facility|
-                                  { conditions: ['(order_details.statement_id IS NULL OR order_details.reviewed_at > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
-                                    joins: 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
-                                    order: 'order_details.created_at DESC' }
+    { conditions: ['(order_details.statement_id IS NULL OR order_details.reviewed_at > ?) AND orders.facility_id = ?', Time.zone.now, facility.id],
+      joins: 'LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id',
+      order: 'order_details.created_at DESC' }
   }
 
   scope :finalized, lambda {|facility| { joins: :order,
@@ -822,7 +822,7 @@ class OrderDetail < ActiveRecord::Base
   def to_notice(notification_class, *_args)
     case notification_class.name
     when MergeNotification.name
-        notice="<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
+      notice="<a href=\"#{facility_order_path(order.facility, order.merge_order)}\">Order ##{order.merge_order.id}</a> needs your attention. A line item was added after purchase and "
 
         notice += case product
                   when Instrument then 'has an incomplete reservation.'
@@ -832,7 +832,7 @@ class OrderDetail < ActiveRecord::Base
 
         notice.html_safe
     else
-        ''
+      ''
     end
   end
 

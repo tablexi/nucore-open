@@ -11,7 +11,7 @@ def it_should_support_searching(date_range_field=:fulfilled_at)
     end
 
     it "should take start date" do
-       @params[:start_date] = @date_string
+      @params[:start_date] = @date_string
        do_request
        expect(assigns[:order_details]).to contain_beginning_of_day(date_range_field, @datetime)
     end

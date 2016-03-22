@@ -29,16 +29,16 @@ class ReportsController < ApplicationController
   def init_report_params
     @date_start = parse_usa_date(params[:date_start])
     @date_start = if @date_start.blank?
-      (Time.zone.now - 1.month).beginning_of_month
+                    (Time.zone.now - 1.month).beginning_of_month
                   else
-      @date_start.beginning_of_day
+                    @date_start.beginning_of_day
                   end
 
     @date_end = parse_usa_date(params[:date_end])
     @date_end = if @date_end.blank?
-      @date_start.end_of_month
+                  @date_start.end_of_month
                 else
-      @date_end.end_of_day
+                  @date_end.end_of_day
                 end
   end
 
@@ -57,9 +57,9 @@ class ReportsController < ApplicationController
   def page_report(rows)
     # Don't paginate reports if we're exporting
     @rows = if params[:export_id].present?
-      rows
+              rows
             else
-      rows.paginate(page: params[:page], per_page: 25)
+              rows.paginate(page: params[:page], per_page: 25)
             end
   end
 
@@ -82,12 +82,12 @@ class ReportsController < ApplicationController
 
         case @export_type
         when nil, ''
-            raise 'Export type not found'
+          raise 'Export type not found'
         when 'report' # AKA "Export"
-            init_report(report_on_label, &report_on)
+          init_report(report_on_label, &report_on)
             render_csv("#{action_name}_#{@export_type}", @export_type)
         when 'report_data' # AKA "Export Raw"
-            @report_on = report_on
+          @report_on = report_on
             @report_on_label = report_on_label
             generate_report_data_csv
         end

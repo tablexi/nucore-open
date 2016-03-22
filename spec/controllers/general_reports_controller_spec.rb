@@ -212,11 +212,11 @@ RSpec.describe GeneralReportsController do
     expect(assigns(:status_ids)).to be_instance_of Array
 
     stati = if @params[:date_start].blank? && @params[:date_end].blank?
-      [ OrderStatus.complete.first, OrderStatus.reconciled.first ]
+              [ OrderStatus.complete.first, OrderStatus.reconciled.first ]
             elsif @params[:status_filter].blank?
-      []
+              []
             else
-      @params[:status_filter].collect{|si| OrderStatus.find(si.to_i) }
+              @params[:status_filter].collect{|si| OrderStatus.find(si.to_i) }
             end
 
     status_ids=[]

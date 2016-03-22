@@ -47,10 +47,10 @@ class ReservationsController < ApplicationController
 
     # We're not using unavailable rules for month view
     @unavailable = if month_view?
-      []
+                     []
                    else
       # build unavailable schedule
-      ScheduleRule.unavailable(@rules)
+                     ScheduleRule.unavailable(@rules)
                    end
 
     respond_to do |format|
