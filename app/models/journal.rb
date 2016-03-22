@@ -12,7 +12,7 @@ class Journal < ActiveRecord::Base
 
       # write journal spreadsheet to tmp directory
       # temp_file   = Tempfile.new("journalspreadsheet")
-      temp_file   = File.new("#{Dir.tmpdir}/journal.spreadsheet.#{Time.zone.now.strftime("%Y%m%dT%H%M%S")}.xls", "w")
+      temp_file   = File.new("#{Dir.tmpdir}/journal.spreadsheet.#{Time.zone.now.strftime('%Y%m%dT%H%M%S')}.xls", "w")
       output_file = JournalSpreadsheet.write_journal_entry(rows, output_file: temp_file.path)
       # add/import journal spreadsheet
       status      = add_spreadsheet(output_file)

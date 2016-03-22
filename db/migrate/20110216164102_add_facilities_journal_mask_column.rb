@@ -5,7 +5,7 @@ class AddFacilitiesJournalMaskColumn < ActiveRecord::Migration
     i = 0
     Facility.all.each do |facility|
       i += 1
-      execute "UPDATE facilities SET journal_mask = '#{sprintf("C%02d", i)}' WHERE id = #{facility.id}"
+      execute "UPDATE facilities SET journal_mask = '#{sprintf('C%02d', i)}' WHERE id = #{facility.id}"
     end
     change_column :facilities, :journal_mask, :string, limit: 50, null: false
   end

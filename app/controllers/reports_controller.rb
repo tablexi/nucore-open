@@ -111,7 +111,7 @@ class ReportsController < ApplicationController
 
   def render_csv(filename = nil, action = nil)
     filename ||= params[:action]
-    filename += "_#{@date_start.strftime("%Y%m%d")}-#{@date_end.strftime("%Y%m%d")}.csv"
+    filename += "_#{@date_start.strftime('%Y%m%d')}-#{@date_end.strftime('%Y%m%d')}.csv"
 
     set_csv_headers(filename)
 

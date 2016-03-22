@@ -12,7 +12,7 @@ namespace :db do
   task oracle_drop: :environment do
     next unless db_allow_task?
     config = Rails.configuration.database_configuration[Rails.env]
-    connect_string = "#{config["username"]}/#{config["password"]}@#{config["database"]}"
+    connect_string = "#{config['username']}/#{config['password']}@#{config['database']}"
     Dir.chdir(Rails.root.join("db")) do
       system "./generate_drops.sh | sqlplus #{Shellwords.shellescape(connect_string)}"
     end
