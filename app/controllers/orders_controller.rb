@@ -342,12 +342,12 @@ class OrdersController < ApplicationController
     order_detail_updates = {}
     params.each do |key, value|
       if /\A(quantity)(\d+)\z/ =~ key && value.present?
-        order_detail_updates[$2.to_i] ||= {}
-        order_detail_updates[$2.to_i][$1.to_sym] = value
+        order_detail_updates[Regexp.last_match(2).to_i] ||= {}
+        order_detail_updates[Regexp.last_match(2).to_i][Regexp.last_match(1).to_sym] = value
       end
       if /\A(note)(\d+)\z/ =~ key
-        order_detail_updates[$2.to_i] ||= {}
-        order_detail_updates[$2.to_i][$1.to_sym] = value
+        order_detail_updates[Regexp.last_match(2).to_i] ||= {}
+        order_detail_updates[Regexp.last_match(2).to_i][Regexp.last_match(1).to_sym] = value
       end
     end
 
