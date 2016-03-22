@@ -29,7 +29,7 @@ class AutoCanceler
     end
   end
 
-private
+  private
   def build_sql
     if NUCore::Database.oracle?
       time_condition = <<-CONDITION
