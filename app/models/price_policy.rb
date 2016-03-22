@@ -179,13 +179,13 @@ class PricePolicy < ActiveRecord::Base
     !expired? && !assigned_to_order?
   end
 
-#  def self.active(product)
-#    policies = product.send("#{product.class.name.downcase}_price_policies")
-#    max      = nil
-#    policies.each { |p|
-#      max = p if p.start_date <= Time.zone.now && (max.nil? || p.start_date > max.start_date)
-#    }
-#    max
-#  end?
+  #  def self.active(product)
+  #    policies = product.send("#{product.class.name.downcase}_price_policies")
+  #    max      = nil
+  #    policies.each { |p|
+  #      max = p if p.start_date <= Time.zone.now && (max.nil? || p.start_date > max.start_date)
+  #    }
+  #    max
+  #  end?
 
 end
