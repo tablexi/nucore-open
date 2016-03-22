@@ -84,9 +84,9 @@ class Journal < ActiveRecord::Base
       [facility_id]
     else
       order_details.joins(:order)
-      .select('orders.facility_id')
-      .collect(&:facility_id)
-      .uniq
+                   .select('orders.facility_id')
+                   .collect(&:facility_id)
+                   .uniq
     end
   end
 

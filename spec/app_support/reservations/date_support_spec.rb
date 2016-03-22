@@ -75,7 +75,7 @@ RSpec.describe Reservations::DateSupport do
           ["2015-01-01T01:00:00", 60],
           ["2015-01-01T01:00:59", 60],
         ]
-        .each do |timestring, expected_minutes|
+          .each do |timestring, expected_minutes|
           context "and the actual_end_at is #{timestring}" do
             let(:actual_end_at) { Time.zone.parse(timestring) }
 
@@ -94,7 +94,7 @@ RSpec.describe Reservations::DateSupport do
             ["2015-01-01T01:00:00", 60],
             ["2015-01-01T01:00:59", 60],
           ]
-          .each do |timestring, expected_minutes|
+            .each do |timestring, expected_minutes|
             context "and the base_time is #{timestring}" do
               it "returns #{expected_minutes}" do
                 expect(reservation.actual_duration_mins(Time.zone.parse(timestring)))
@@ -209,7 +209,7 @@ RSpec.describe Reservations::DateSupport do
           ["2015-01-01T01:00:00", 60],
           ["2015-01-01T01:00:59", 60],
         ]
-        .each do |timestring, expected_minutes|
+          .each do |timestring, expected_minutes|
           context "and reserve_end_at is #{timestring}" do
             let(:reserve_end_at) { Time.zone.parse(timestring) }
 

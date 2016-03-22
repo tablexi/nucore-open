@@ -72,9 +72,9 @@ class NotificationSender
 
     @order_detail_groups = enumerator.map do |od_slice|
       OrderDetail.for_facility(current_facility)
-        .need_notification
-        .where(id: od_slice)
-        .includes(:product, :order, :price_policy, :reservation)
+                 .need_notification
+                 .where(id: od_slice)
+                 .includes(:product, :order, :price_policy, :reservation)
     end
   end
 

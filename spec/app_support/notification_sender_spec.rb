@@ -11,8 +11,8 @@ RSpec.describe NotificationSender, :aggregate_failures do
 
   let(:item) do
     facility
-    .items
-    .create(attributes_for(:item, facility_account_id: facility_account.id))
+      .items
+      .create(attributes_for(:item, facility_account_id: facility_account.id))
   end
 
   let(:account) { create(:setup_account, owner: user, facility_id: facility.id) }

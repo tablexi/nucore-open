@@ -14,8 +14,8 @@ module FacilityOrderStatusHelper
       facility_ods.order("products.name #{sort_direction}, order_details.state, orders.ordered_at")
     when 'assigned_to'
       facility_ods.joins(:order_status)
-                   .joins("LEFT JOIN #{User.table_name} ON order_details.assigned_user_id = #{User.table_name}.id")
-                   .order("#{User.table_name}.last_name #{sort_direction}, #{User.table_name}.first_name #{sort_direction}, order_statuses.name, orders.ordered_at")
+                  .joins("LEFT JOIN #{User.table_name} ON order_details.assigned_user_id = #{User.table_name}.id")
+                  .order("#{User.table_name}.last_name #{sort_direction}, #{User.table_name}.first_name #{sort_direction}, order_statuses.name, orders.ordered_at")
     # facility_ods.find(:all,
     #                   :joins => ['INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id ',
     #                              'INNER JOIN orders ON orders.id = order_details.order_id ',
@@ -24,7 +24,7 @@ module FacilityOrderStatusHelper
     #                   :order => "#{User.table_name}.last_name #{sort_direction}, #{User.table_name}.first_name #{sort_direction}, order_statuses.name, orders.ordered_at")
     when 'status'
       facility_ods.joins(:order_status)
-                   .order("order_statuses.name #{sort_direction}, orders.ordered_at")
+                  .order("order_statuses.name #{sort_direction}, orders.ordered_at")
         # facility_ods.find(:all,
         #                   :joins => ['INNER JOIN orders ON orders.id = order_details.order_id ',
         #                              'INNER JOIN order_statuses ON order_details.order_status_id = order_statuses.id '],
@@ -37,8 +37,8 @@ module FacilityOrderStatusHelper
 
   def disputed_orders
     current_facility.order_details
-      .non_reservations
-      .in_dispute
+                    .non_reservations
+                    .in_dispute
   end
 
   def sort_column

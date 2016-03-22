@@ -34,9 +34,9 @@ class PriceGroupsController < ApplicationController
     end
 
     @user_members = @price_group.user_price_group_members
-      .includes(:user)
-      .joins(:user)
-      .order(:last_name, :first_name)
+                                .includes(:user)
+                                .joins(:user)
+                                .order(:last_name, :first_name)
     @user_members = paginate(@user_members)
     @tab = :users
 
@@ -46,9 +46,9 @@ class PriceGroupsController < ApplicationController
   # GET /facilities/:facility_id/price_groups/:id/accounts
   def accounts
     @account_members = @price_group.account_price_group_members
-      .includes(:account)
-      .joins(:account)
-      .order(:account_number)
+                                   .includes(:account)
+                                   .joins(:account)
+                                   .order(:account_number)
     @account_members = paginate(@account_members)
     @tab = :accounts
 

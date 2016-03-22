@@ -109,8 +109,8 @@ class PricePoliciesController < ApplicationController
 
   def init_product
     @product = current_facility.method(product_var.pluralize)
-      .call
-      .find_by_url_name!(params["#{product_var}_id".to_sym])
+                               .call
+                               .find_by_url_name!(params["#{product_var}_id".to_sym])
     instance_variable_set("@#{product_var}", @product)
   end
 

@@ -39,9 +39,9 @@ module SplitAccounts
 
     def duplicate_subaccounts?
       splits.map(&:subaccount_id)
-        .group_by { |subaccount_id| subaccount_id }
-        .reject { |key, _value| key.blank? }
-        .any? { |_key, value| value.size > 1 }
+            .group_by { |subaccount_id| subaccount_id }
+            .reject { |key, _value| key.blank? }
+            .any? { |_key, value| value.size > 1 }
     end
 
     def more_than_one_split

@@ -41,9 +41,9 @@ class OrderRowImporter
   def account
     @account ||=
       user
-        .accounts
-        .for_facility(product.facility)
-        .active.find_by_account_number(account_number)
+      .accounts
+      .for_facility(product.facility)
+      .active.find_by_account_number(account_number)
   end
 
   def errors?
@@ -145,10 +145,10 @@ class OrderRowImporter
   def product
     @product ||=
       @order_import
-        .facility
-        .products
-        .active_plus_hidden
-        .find_by_name(product_field)
+      .facility
+      .products
+      .active_plus_hidden
+      .find_by_name(product_field)
   end
 
   def product_field

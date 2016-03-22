@@ -79,14 +79,14 @@ module TransactionSearch
                                                       .reorder("facilities.name").to_sql)
 
     @accounts = Account.select("accounts.id, accounts.account_number, accounts.description, accounts.type")
-                        .where(id: @order_details.select("distinct order_details.account_id"))
-                        .order(:account_number, :description)
+                       .where(id: @order_details.select("distinct order_details.account_id"))
+                       .order(:account_number, :description)
 
     @products = Product.where(id: @order_details.select("distinct product_id")).order(:name)
 
     @account_owners = User.select("users.id, users.first_name, users.last_name")
-               .where(id: @order_details.select("distinct account_users.user_id").joins(account: :owner_user))
-               .order(:last_name, :first_name)
+                          .where(id: @order_details.select("distinct account_users.user_id").joins(account: :owner_user))
+                          .order(:last_name, :first_name)
 
     # Unlike the other lookups, this query is much faster this way than using a subquery
     @order_statuses = OrderStatus.find_by_sql(@order_details.joins(:order_status)
@@ -127,15 +127,15 @@ module TransactionSearch
   def add_optimizations
     # cut down on some n+1s
     @order_details = @order_details
-        .includes(order: :facility)
-        .includes(:account)
-        .preload(:product)
-        .preload(:order_status)
-        .includes(:reservation)
-        .includes(order: :user)
-        .includes(:price_policy)
-        .preload(:bundle)
-        .preload(account: :owner_user)
+                     .includes(order: :facility)
+                     .includes(:account)
+                     .preload(:product)
+                     .preload(:order_status)
+                     .includes(:reservation)
+                     .includes(order: :user)
+                     .includes(:price_policy)
+                     .preload(:bundle)
+                     .preload(account: :owner_user)
   end
 
   def sort_and_paginate
