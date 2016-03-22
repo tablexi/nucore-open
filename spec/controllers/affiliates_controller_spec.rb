@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe AffiliatesController do
   render_views
@@ -7,7 +7,7 @@ RSpec.describe AffiliatesController do
   before(:all) { create_users }
   before(:each) { @authable = create(:facility) }
 
-  context 'index' do
+  context "index" do
 
     before :each do
       @method = :get
@@ -19,7 +19,7 @@ RSpec.describe AffiliatesController do
     end
   end
 
-  context 'new' do
+  context "new" do
 
     before :each do
       @method = :get
@@ -33,12 +33,12 @@ RSpec.describe AffiliatesController do
     end
   end
 
-  context 'create' do
+  context "create" do
 
     before :each do
       @method = :post
       @action = :create
-      @params = { affiliate: { name: 'Chik-Fil-A' } }
+      @params = { affiliate: { name: "Chik-Fil-A" } }
     end
 
     it_should_allow_admin_only :redirect do
@@ -48,23 +48,23 @@ RSpec.describe AffiliatesController do
       assert_redirected_to affiliates_path
     end
 
-    it 'should fail gracefully if no attributes posted' do
+    it "should fail gracefully if no attributes posted" do
       no_attrs_test { assert_redirected_to new_affiliate_path }
     end
 
-    it('should fail gracefully if bad attributes posted') do
+    it("should fail gracefully if bad attributes posted") do
       bad_attrs_test(:new) { expect(assigns(:affiliate)).to be_new_record }
     end
   end
 
-  context 'with id param' do
+  context "with id param" do
 
     before :each do
-      @affiliate = Affiliate.find_or_create_by_name('CTA')
+      @affiliate = Affiliate.find_or_create_by_name("CTA")
       @params = { id: @affiliate.id }
     end
 
-    context 'edit' do
+    context "edit" do
 
       before :each do
         @method = :get
@@ -76,15 +76,15 @@ RSpec.describe AffiliatesController do
         is_expected.to render_template :edit
       end
 
-      it('should fail gracefully if bad id given') { bad_id_test }
+      it("should fail gracefully if bad id given") { bad_id_test }
     end
 
-    context 'update' do
+    context "update" do
 
       before :each do
         @method = :put
         @action = :update
-        @params.merge!(affiliate: { name: 'fugly.com' })
+        @params.merge!(affiliate: { name: "fugly.com" })
       end
 
       it_should_allow_admin_only :redirect do
@@ -93,16 +93,16 @@ RSpec.describe AffiliatesController do
         assert_redirected_to affiliates_path
       end
 
-      it('should fail gracefully if bad id given') { bad_id_test }
+      it("should fail gracefully if bad id given") { bad_id_test }
 
-      it('should fail gracefully if bad attributes posted') { bad_attrs_test :edit }
+      it("should fail gracefully if bad attributes posted") { bad_attrs_test :edit }
 
-      it 'should fail gracefully if no attributes posted' do
+      it "should fail gracefully if no attributes posted" do
         no_attrs_test { is_expected.to render_template :edit }
       end
     end
 
-    context 'destroy' do
+    context "destroy" do
 
       before :each do
         @method = :delete
@@ -115,7 +115,7 @@ RSpec.describe AffiliatesController do
         assert_redirected_to affiliates_path
       end
 
-      it('should fail gracefully if bad id given') { bad_id_test }
+      it("should fail gracefully if bad id given") { bad_id_test }
     end
 
   end

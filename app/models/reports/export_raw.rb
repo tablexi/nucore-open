@@ -1,4 +1,4 @@
-require 'csv'
+require "csv"
 class Reports::ExportRaw
 
   include DateHelper
@@ -17,7 +17,7 @@ class Reports::ExportRaw
         raise ArgumentError, "Required argument '#{property}' is missing"
       end
     end
-    @date_range_field = arguments[:date_range_field] || 'journal_or_statement_date'
+    @date_range_field = arguments[:date_range_field] || "journal_or_statement_date"
   end
 
   def date_start
@@ -90,7 +90,7 @@ class Reports::ExportRaw
       product_type: -> (od) { od.product.type.underscore.humanize },
       product: -> (od) { od.product.name },
       quantity: :quantity,
-      bundled_products: -> (od) { od.product.is_a?(Bundle) ? od.product.products.collect(&:name).join(' & ') : nil },
+      bundled_products: -> (od) { od.product.is_a?(Bundle) ? od.product.products.collect(&:name).join(" & ") : nil },
       account_type: -> (od) { od.account.type.underscore.humanize },
       affiliate: -> (od) { od.account.affiliate_to_s },
       account: -> (od) { od.account.account_number },
@@ -174,13 +174,13 @@ class Reports::ExportRaw
     if number.present?
       ActionController::Base.helpers.number_to_currency(number)
     else
-      ''
+      ""
     end
   end
 
   def canceled_by_name(reservation)
     if reservation.canceled_by == 0
-      I18n.t('reports.fields.auto_cancel_name')
+      I18n.t("reports.fields.auto_cancel_name")
     else
       reservation.canceled_by_user.try(:full_name)
     end

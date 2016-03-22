@@ -12,17 +12,17 @@ class ReportsController < ApplicationController
   load_and_authorize_resource class: ReportsController
 
   def initialize
-    @active_tab = 'admin_reports'
+    @active_tab = "admin_reports"
     super
   end
 
   private
 
   def format_username(user)
-    name = ''
-    name += (user.last_name || '')
+    name = ""
+    name += (user.last_name || "")
     name += ", " unless name.blank?
-    name += (user.first_name || '')
+    name += (user.first_name || "")
     "#{name} (#{user.username})"
   end
 
@@ -43,15 +43,15 @@ class ReportsController < ApplicationController
   end
 
   def init_report(_report_on_label)
-    raise 'Subclass must implement!'
+    raise "Subclass must implement!"
   end
 
   def init_report_data(_report_on_label)
-    raise 'Subclass must implement!'
+    raise "Subclass must implement!"
   end
 
   def init_report_headers(_report_on_label)
-    raise 'Subclass must implement!'
+    raise "Subclass must implement!"
   end
 
   def page_report(rows)
@@ -71,9 +71,9 @@ class ReportsController < ApplicationController
       format.html do
         if request.xhr?
           init_report(report_on_label, &report_on)
-          render template: 'reports/report_table', layout: false
+          render template: "reports/report_table", layout: false
         else
-          render template: 'reports/report'
+          render template: "reports/report"
         end
       end
 
@@ -81,12 +81,12 @@ class ReportsController < ApplicationController
         @export_type = params[:export_id]
 
         case @export_type
-        when nil, ''
-          raise 'Export type not found'
-        when 'report' # AKA "Export"
+        when nil, ""
+          raise "Export type not found"
+        when "report" # AKA "Export"
           init_report(report_on_label, &report_on)
             render_csv("#{action_name}_#{@export_type}", @export_type)
-        when 'report_data' # AKA "Export Raw"
+        when "report_data" # AKA "Export Raw"
           @report_on = report_on
             @report_on_label = report_on_label
             generate_report_data_csv
@@ -119,7 +119,7 @@ class ReportsController < ApplicationController
   end
 
   def report_data_request?
-    params[:export_id] && params[:export_id] == 'report_data'
+    params[:export_id] && params[:export_id] == "report_data"
   end
 
 end

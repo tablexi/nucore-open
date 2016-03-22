@@ -5,9 +5,9 @@ module ReassignChartStringsHelper
                as: :select,
                collection: accounts,
                input_html: {
-                 class: 'account_selection',
+                 class: "account_selection",
                  data: {
-                   placeholder: I18n.t('facilities.reassign_chart_strings.account_select.placeholder')
+                   placeholder: I18n.t("facilities.reassign_chart_strings.account_select.placeholder")
                  }
                }
   end

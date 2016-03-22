@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 def it_should_deny_if_signed_in
   it "should not allow if you're signed in" do
@@ -16,7 +16,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     before :each do
       @method = :get
       @action = :edit_current
-      @user = FactoryGirl.create(:user, username: 'email@example.org', email: 'email@example.org')
+      @user = FactoryGirl.create(:user, username: "email@example.org", email: "email@example.org")
     end
     it_should_require_login
 
@@ -30,42 +30,42 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     it "should throw errors if blank" do
       sign_in(@user)
       @method = :post
-      @params = { user: { password: "", password_confirmation: "", current_password: 'password' } }
+      @params = { user: { password: "", password_confirmation: "", current_password: "password" } }
       do_request
       expect(response).to render_template("user_password/edit_current")
       expect(assigns[:user].errors).not_to be_empty
-      expect(@user.reload).to be_valid_password('password')
+      expect(@user.reload).to be_valid_password("password")
     end
 
     it "should throw errors if passwords don't match" do
       sign_in(@user)
       @method = :post
-      @params = { user: { password: 'password1', password_confirmation: 'password2', current_password: 'password' } }
+      @params = { user: { password: "password1", password_confirmation: "password2", current_password: "password" } }
       do_request
       expect(response).to render_template("user_password/edit_current")
       expect(assigns[:user].errors).not_to be_empty
-      expect(@user.reload).to be_valid_password('password')
+      expect(@user.reload).to be_valid_password("password")
     end
 
     it "should display errors if the current password is incorrect" do
       sign_in(@user)
       @method = :post
-      @params = { user: { password: 'password1', password_confirmation: 'password1', current_password: 'incorrectpassword' } }
+      @params = { user: { password: "password1", password_confirmation: "password1", current_password: "incorrectpassword" } }
       do_request
       expect(response).to render_template("user_password/edit_current")
       expect(assigns[:user].errors).not_to be_empty
-      expect(@user.reload).to be_valid_password('password')
+      expect(@user.reload).to be_valid_password("password")
     end
 
     it "should update password" do
       sign_in(@user)
       @method = :post
-      @params = { user: { password: 'newpassword', password_confirmation: 'newpassword', current_password: 'password' } }
+      @params = { user: { password: "newpassword", password_confirmation: "newpassword", current_password: "password" } }
       do_request
       expect(response).to render_template("user_password/edit_current")
       expect(assigns[:user].errors).to be_empty
       expect(flash[:notice]).not_to be_nil
-      expect(@user.reload).to be_valid_password('newpassword')
+      expect(@user.reload).to be_valid_password("newpassword")
     end
 
   end
@@ -77,7 +77,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     end
 
     it "should show for 'external' users" do
-      @user = FactoryGirl.create(:user, username: 'email@example.org', email: 'email@example.org')
+      @user = FactoryGirl.create(:user, username: "email@example.org", email: "email@example.org")
       expect(@user).to be_external
       sign_in @user
       do_request
@@ -98,7 +98,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     before :each do
       @method = :post
       @action = :reset
-      @user = @db_user = FactoryGirl.create(:user, username: 'email@example.org', email: 'email@example.org')
+      @user = @db_user = FactoryGirl.create(:user, username: "email@example.org", email: "email@example.org")
       @remote_authenticated_user = FactoryGirl.create(:user)
     end
     it "should display the page on get" do
@@ -113,7 +113,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     it_should_deny_if_signed_in
 
     it "should not find someone" do
-      @params = { user: { email: 'xxxxx' } }
+      @params = { user: { email: "xxxxx" } }
       do_request
       expect(response).to render_template "user_password/reset"
       expect(response).to render_template "layouts/application"
@@ -148,7 +148,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     before :each do
       @method = :get
       @action = :edit
-      @user = FactoryGirl.create(:user, username: 'email@example.org', email: 'email@example.org')
+      @user = FactoryGirl.create(:user, username: "email@example.org", email: "email@example.org")
       @user.send(:set_reset_password_token)
       @params = { reset_password_token: @user.reset_password_token }
     end
@@ -179,7 +179,7 @@ RSpec.describe UserPasswordController, if: SettingsHelper.feature_on?(:password_
     before :each do
       @method = :put
       @action = :update
-      @user = FactoryGirl.create(:user, username: 'email@example.org', email: 'email@example.org')
+      @user = FactoryGirl.create(:user, username: "email@example.org", email: "email@example.org")
       @user.send(:set_reset_password_token)
       @params = { user: { reset_password_token: @user.reset_password_token } }
     end

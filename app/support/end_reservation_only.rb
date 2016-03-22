@@ -31,7 +31,7 @@ class EndReservationOnly
     od.fulfilled_at = od.reservation.reserve_end_at
     od.save!
   rescue => e
-    ActiveSupport::Notifications.instrument('background_error',
+    ActiveSupport::Notifications.instrument("background_error",
                                             exception: e, information: "Failed expire reservation order detail with id: #{od.id}")
     raise ActiveRecord::Rollback
   end

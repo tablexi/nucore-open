@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe PriceGroupProductsController do
   render_views
@@ -14,7 +14,7 @@ RSpec.describe PriceGroupProductsController do
     @params = { facility_id: @authable.url_name, id: @product.url_name }
   end
 
-  context 'edit' do
+  context "edit" do
 
     before :each do
       @method = :get
@@ -25,30 +25,30 @@ RSpec.describe PriceGroupProductsController do
     # only the managers can submit
     it_should_allow_operators_only do
       assert_init_price_group_products
-      is_expected.to render_template 'edit'
+      is_expected.to render_template "edit"
     end
 
   end
 
-  context 'update' do
+  context "update" do
 
     before :each do
       @method = :put
       @action = :update
 
       PriceGroup.all.each do |pg|
-        @params.merge!(pg_key(pg) => { reservation_window: 5, purchase: '1' })
+        @params.merge!(pg_key(pg) => { reservation_window: 5, purchase: "1" })
       end
     end
 
-    it_should_allow_managers_only :redirect, 'to update existing PriceGroupProducts' do
+    it_should_allow_managers_only :redirect, "to update existing PriceGroupProducts" do
       assert_init_price_group_products
       expect(PriceGroupProduct.count).to eq(PriceGroup.count)
       @price_group_products.each { |pgp| expect(pgp.reload.reservation_window).to eq(5) }
       assert_successful_update
     end
 
-    it 'should remove PriceGroupProduct when a PriceGroup cannot purchase' do
+    it "should remove PriceGroupProduct when a PriceGroup cannot purchase" do
       pg = PriceGroup.first
       @params[pg_key(pg)] = nil
       expect(PriceGroupProduct.count).to eq(PriceGroup.count)
@@ -58,7 +58,7 @@ RSpec.describe PriceGroupProductsController do
       assert_successful_update
     end
 
-    it 'should create PriceGroupProducts when a PriceGroup can purchase' do
+    it "should create PriceGroupProducts when a PriceGroup can purchase" do
       pgp = @price_group_products.first
       pgp.destroy
       expect(PriceGroupProduct.count).to eq(PriceGroup.count - 1)
@@ -68,9 +68,9 @@ RSpec.describe PriceGroupProductsController do
       assert_successful_update
     end
 
-    it 'should error if no reservation window given on instrument' do
+    it "should error if no reservation window given on instrument" do
       pg = PriceGroup.first
-      @params[pg_key(pg)][:reservation_window] = ''
+      @params[pg_key(pg)][:reservation_window] = ""
       maybe_grant_always_sign_in :director
       do_request
       expect(flash[:notice]).to be_nil
@@ -78,11 +78,11 @@ RSpec.describe PriceGroupProductsController do
       assert_update_redirect
     end
 
-    it 'should not error if no reservation window given on non-instrument' do
+    it "should not error if no reservation window given on non-instrument" do
       @product = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
       create_price_group_products
       pg = @price_group_products.first.price_group
-      @params[pg_key(pg)][:reservation_window] = ''
+      @params[pg_key(pg)][:reservation_window] = ""
       @params[:id] = @product.url_name
       maybe_grant_always_sign_in :director
       do_request

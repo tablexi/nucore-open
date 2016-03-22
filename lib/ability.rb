@@ -115,7 +115,7 @@ class Ability
         can [:administer, :index, :view_details, :schedule, :show], Product
 
         can [:upload, :uploader_create, :destroy], StoredFile do |fileupload|
-          fileupload.file_type == 'sample_result'
+          fileupload.file_type == "sample_result"
         end
 
         can [:administer, :switch_to], User

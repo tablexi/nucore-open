@@ -13,7 +13,7 @@ class ChangeOrderDetailStatus < ActiveRecord::Migration
     
     ## so instead we do this
     OrderDetail.find(:all).each do |od|
-      ods = OrderDetailStatus.find(:first, conditions: { order_detail_id: od.id }, order: 'created_at DESC')
+      ods = OrderDetailStatus.find(:first, conditions: { order_detail_id: od.id }, order: "created_at DESC")
       execute "UPDATE order_details SET order_status_id = #{ods.order_status_id}"
     end
 

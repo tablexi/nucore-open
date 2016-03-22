@@ -14,7 +14,7 @@ class Reservation < ActiveRecord::Base
   belongs_to :product
   belongs_to :order_detail, inverse_of: :reservation
   has_one :order, through: :order_detail
-  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: 'User'
+  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
 
   ## Virtual attributes
   #####
@@ -46,13 +46,13 @@ class Reservation < ActiveRecord::Base
 
   def self.active
     not_canceled
-      .where(orders: { state: ['purchased', nil] })
+      .where(orders: { state: ["purchased", nil] })
       .joins_order
   end
 
   def self.joins_order
-    joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id')
-      .joins('LEFT JOIN orders ON orders.id = order_details.order_id')
+    joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
+      .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
   end
 
   def self.admin
@@ -73,7 +73,7 @@ class Reservation < ActiveRecord::Base
 
   def self.not_this_reservation(reservation)
     if reservation.id
-      where('reservations.id <> ?', reservation.id)
+      where("reservations.id <> ?", reservation.id)
     else
       scoped
     end
@@ -88,14 +88,14 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.in_range(start_time, end_time)
-    where('reserve_end_at >= ?', start_time)
-      .where('reserve_start_at < ?', end_time)
+    where("reserve_end_at >= ?", start_time)
+      .where("reserve_start_at < ?", end_time)
   end
 
   def self.upcoming(t = Time.zone.now)
     # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
     # Eliminate by letting Rails filter by #reserve_end_at
-    reservations = find(:all, conditions: "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", order: 'reserve_end_at asc', joins: ['LEFT JOIN order_details ON order_details.id = reservations.order_detail_id', 'LEFT JOIN orders ON orders.id = order_details.order_id'])
+    reservations = find(:all, conditions: "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", order: "reserve_end_at asc", joins: ["LEFT JOIN order_details ON order_details.id = reservations.order_detail_id", "LEFT JOIN orders ON orders.id = order_details.order_id"])
     reservations.delete_if { |r| r.reserve_end_at < t }
     reservations
   end
@@ -277,7 +277,7 @@ class Reservation < ActiveRecord::Base
   private
 
   def auto_save_order_detail
-    if (['actual_start_at', 'actual_end_at', 'reserve_start_at', 'reserve_end_at'] & changes.keys).any?
+    if (["actual_start_at", "actual_end_at", "reserve_start_at", "reserve_end_at"] & changes.keys).any?
       order_detail.save
     end
   end
@@ -300,7 +300,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def grace_period_duration
-    SettingsHelper.setting('reservations.grace_period') || 5.minutes
+    SettingsHelper.setting("reservations.grace_period") || 5.minutes
   end
 
 end

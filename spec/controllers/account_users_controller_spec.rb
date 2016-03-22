@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe AccountUsersController do
   render_views
@@ -10,7 +10,7 @@ RSpec.describe AccountUsersController do
     @authable = create_nufs_account_with_owner
   end
 
-  context 'user_search' do
+  context "user_search" do
 
     before :each do
       @method = :get
@@ -23,12 +23,12 @@ RSpec.describe AccountUsersController do
     it_should_deny :purchaser
 
     it_should_allow :owner do
-      is_expected.to render_template('user_search')
+      is_expected.to render_template("user_search")
     end
 
   end
 
-  context 'new' do
+  context "new" do
 
     before :each do
       @method = :get
@@ -44,12 +44,12 @@ RSpec.describe AccountUsersController do
       expect(assigns(:user)).to eq(@purchaser)
       expect(assigns(:account_user)).to be_kind_of AccountUser
       expect(assigns(:account_user)).to be_new_record
-      is_expected.to render_template('new')
+      is_expected.to render_template("new")
     end
 
   end
 
-  context 'create' do
+  context "create" do
 
     before :each do
       @method = :post
@@ -77,7 +77,7 @@ RSpec.describe AccountUsersController do
 
   end
 
-  context 'destroy' do
+  context "destroy" do
 
     before :each do
       @method = :delete

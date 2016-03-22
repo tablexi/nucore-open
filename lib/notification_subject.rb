@@ -10,7 +10,7 @@ module NotificationSubject
   # Generates a message to be saved as a +Notification+ notice.
   # Implementation is left up to including class.
   def to_notice(_notification_class, *_args)
-    raise 'to be implemented by including class!'
+    raise "to be implemented by including class!"
   end
 
   private

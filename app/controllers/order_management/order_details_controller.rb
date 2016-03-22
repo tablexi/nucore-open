@@ -24,10 +24,10 @@ class OrderManagement::OrderDetailsController < ApplicationController
   def update
     @active_tab = "admin_orders"
 
-    updater = OrderDetails::ParamUpdater.new(@order_detail, user: session_user, cancel_fee: params[:with_cancel_fee] == '1')
+    updater = OrderDetails::ParamUpdater.new(@order_detail, user: session_user, cancel_fee: params[:with_cancel_fee] == "1")
 
     if updater.update_attributes(params[:order_detail])
-      flash[:notice] = 'The order was successfully updated.'
+      flash[:notice] = "The order was successfully updated."
       if @order_detail.updated_children.any?
         flash[:notice] << " Auto-scaled accessories have been updated as well."
         flash[:updated_order_details] = @order_detail.updated_children.map &:id
@@ -38,7 +38,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
         redirect_to [current_facility, @order]
       end
     else
-      flash.now[:error] = 'Error while updating order'
+      flash.now[:error] = "Error while updating order"
       render :edit, layout: !modal?, status: 406
     end
   end
@@ -62,7 +62,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
     OrderDetailJournalRemover.remove_from_journal(@order_detail)
 
     flash[:notice] =
-      I18n.t 'controllers.order_management.order_details.remove_from_journal.notice'
+      I18n.t "controllers.order_management.order_details.remove_from_journal.notice"
 
     if modal?
       render nothing: true

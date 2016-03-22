@@ -8,8 +8,8 @@ RSpec.describe ItemsController do
   render_views
 
   it "should route" do
-    expect(get: "/facilities/url_name/items").to route_to(controller: 'items', action: 'index', facility_id: 'url_name')
-    expect(get: "/facilities/url_name/items/1").to route_to(controller: 'items', action: 'show', facility_id: 'url_name', id: "1")
+    expect(get: "/facilities/url_name/items").to route_to(controller: "items", action: "index", facility_id: "url_name")
+    expect(get: "/facilities/url_name/items/1").to route_to(controller: "items", action: "show", facility_id: "url_name", id: "1")
   end
 
   before(:all) { create_users }
@@ -32,7 +32,7 @@ RSpec.describe ItemsController do
     it_should_allow_operators_only do |_user|
       expect(assigns[:items]).to eq([@item])
       expect(response).to be_success
-      expect(response).to render_template('items/index')
+      expect(response).to render_template("items/index")
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe ItemsController do
     it_should_allow_operators_only do |_user|
       expect(assigns[:item]).to eq(@item)
       expect(response).to be_success
-      expect(response).to render_template('items/manage')
+      expect(response).to render_template("items/manage")
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe ItemsController do
       @block = proc do
         expect(assigns[:item]).to eq(@item)
         expect(response).to be_success
-        expect(response).to render_template('items/show')
+        expect(response).to render_template("items/show")
       end
     end
 
@@ -74,7 +74,7 @@ RSpec.describe ItemsController do
       do_request
       expect(flash).not_to be_empty
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('no_accounts')
+      expect(assigns[:error]).to eq("no_accounts")
     end
 
     context "when the item requires approval" do
@@ -152,7 +152,7 @@ RSpec.describe ItemsController do
 
     it_should_allow_managers_only do
       expect(assigns(:item)).to be_kind_of Item
-      is_expected.to render_template 'new'
+      is_expected.to render_template "new"
     end
   end
 
@@ -163,7 +163,7 @@ RSpec.describe ItemsController do
     end
 
     it_should_allow_managers_only do
-      is_expected.to render_template 'edit'
+      is_expected.to render_template "edit"
     end
   end
 

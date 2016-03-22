@@ -18,7 +18,7 @@ namespace :order_details do
 
   desc "Retouch all complete order details and recalculate pricing"
   task :recalculate_prices, [:facility_slug] => :environment do |_t, _args|
-    Facility.find_by_url_name('path').order_details.where(state: 'complete').each do |od|
+    Facility.find_by_url_name("path").order_details.where(state: "complete").each do |od|
       old_cost = od.actual_cost
       old_subsidy = od.actual_subsidy
       old_total = od.actual_total

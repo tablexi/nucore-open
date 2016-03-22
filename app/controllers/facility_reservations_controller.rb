@@ -14,24 +14,24 @@ class FacilityReservationsController < ApplicationController
   helper_method :sort_column, :sort_direction
 
   ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
-    'date' => 'reservations.reserve_start_at',
-      'reserve_range' => 'CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)',
-      'product_name'  => 'products.name',
-      'status'        => 'order_statuses.name',
-      'assigned_to'   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
-      'reserved_by'   => "#{User.table_name}.first_name, #{User.table_name}.last_name"
+    "date" => "reservations.reserve_start_at",
+      "reserve_range" => "CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)",
+      "product_name"  => "products.name",
+      "status"        => "order_statuses.name",
+      "assigned_to"   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
+      "reserved_by"   => "#{User.table_name}.first_name, #{User.table_name}.last_name"
   }.freeze
 
   def initialize
     super
-    @active_tab = 'admin_reservations'
+    @active_tab = "admin_reservations"
   end
 
   # GET /facilities/:facility_id/reservations
   def index
     real_sort_clause = ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN[sort_column] || sort_column
 
-    order_by_clause = [real_sort_clause, sort_direction].join(' ')
+    order_by_clause = [real_sort_clause, sort_direction].join(" ")
     @order_details = new_or_in_process_orders(order_by_clause)
 
     @order_details = @order_details.paginate(page: params[:page])
@@ -64,19 +64,19 @@ class FacilityReservationsController < ApplicationController
 
     @reservation.assign_times_from_params(params[:reservation])
 
-    additional_notice = ''
+    additional_notice = ""
 
     if @order_detail.price_policy
       update_prices
 
       if @order_detail.actual_cost_changed? || @order_detail.actual_subsidy_changed?
-        additional_notice = '  Order detail actual cost has been updated as well.'
+        additional_notice = "  Order detail actual cost has been updated as well."
       end
     else
       # We're updating a reservation before it's been completed
       if reserve_changed?
         @order_detail.assign_estimated_price
-        additional_notice = ' Estimated cost has been updated as well.'
+        additional_notice = " Estimated cost has been updated as well."
       end
     end
 
@@ -88,7 +88,7 @@ class FacilityReservationsController < ApplicationController
           old_pp = @order_detail.price_policy
 
           @order_detail.assign_price_policy
-          additional_notice = '  Order detail price policy and actual cost have been updated as well.' unless old_pp == @order_detail.price_policy
+          additional_notice = "  Order detail price policy and actual cost have been updated as well." unless old_pp == @order_detail.price_policy
         end
         @order_detail.save!
         flash.now[:notice] = "The reservation has been updated successfully.#{additional_notice}"
@@ -112,11 +112,11 @@ class FacilityReservationsController < ApplicationController
   # GET /facilities/:facility_id/instruments/:instrument_id/reservations/new
   def new
     @instrument   = current_facility.instruments.find_by_url_name!(params[:instrument_id])
-    @reservation  = @instrument.next_available_reservation || @instrument.reservations.build(duration_value: @instrument.min_reserve_mins, duration_unit: 'minutes')
+    @reservation  = @instrument.next_available_reservation || @instrument.reservations.build(duration_value: @instrument.min_reserve_mins, duration_unit: "minutes")
     @reservation.round_reservation_times
     set_windows
 
-    render layout: 'two_column'
+    render layout: "two_column"
   end
 
   # POST /facilities/:facility_id/instruments/:instrument_id/reservations
@@ -125,11 +125,11 @@ class FacilityReservationsController < ApplicationController
     @reservation  = @instrument.reservations.new(params[:reservation])
 
     if @reservation.save
-      flash[:notice] = 'The reservation has been created successfully.'
+      flash[:notice] = "The reservation has been created successfully."
       redirect_to facility_instrument_schedule_url
     else
       set_windows
-      render action: "new", layout: 'two_column'
+      render action: "new", layout: "two_column"
     end
   end
 
@@ -139,7 +139,7 @@ class FacilityReservationsController < ApplicationController
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
     set_windows
-    render layout: 'two_column'
+    render layout: "two_column"
   end
 
   # PUT /facilities/:facility_id/instruments/:instrument_id/reservations/:id
@@ -153,10 +153,10 @@ class FacilityReservationsController < ApplicationController
     @reservation.admin_note = params[:reservation][:admin_note]
 
     if @reservation.save
-      flash[:notice] = 'The reservation has been updated successfully.'
+      flash[:notice] = "The reservation has been updated successfully."
       redirect_to facility_instrument_schedule_url
     else
-      render action: "edit_admin", layout: 'two_column'
+      render action: "edit_admin", layout: "two_column"
     end
   end
 
@@ -164,7 +164,7 @@ class FacilityReservationsController < ApplicationController
   def batch_update
     redirect_to facility_reservations_path
 
-    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params, 'reservations')
+    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params, "reservations")
 
     # add flash messages if necessary
     flash.merge!(msg_hash) if msg_hash
@@ -183,7 +183,7 @@ class FacilityReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
 
     @reservation.destroy
-    flash[:notice] = 'The reservation has been removed successfully'
+    flash[:notice] = "The reservation has been removed successfully"
     redirect_to facility_instrument_schedule_url
   end
 
@@ -216,7 +216,7 @@ class FacilityReservationsController < ApplicationController
     end
   end
 
-  def new_or_in_process_orders(order_by_clause = 'reservations.reserve_start_at')
+  def new_or_in_process_orders(order_by_clause = "reservations.reserve_start_at")
     current_facility.order_details.new_or_inprocess.reservations
                     .includes(
         { order: :user },
@@ -243,11 +243,11 @@ class FacilityReservationsController < ApplicationController
 
   def sort_column
     # TK: check against a whitelist
-    params[:sort] || 'date'
+    params[:sort] || "date"
   end
 
   def sort_direction
-    (params[:dir] || '') =~ /asc/i ? 'asc' : 'desc'
+    (params[:dir] || "") =~ /asc/i ? "asc" : "desc"
   end
 
   def set_windows

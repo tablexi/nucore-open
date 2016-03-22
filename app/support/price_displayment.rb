@@ -43,11 +43,11 @@ module PriceDisplayment
 
   def display_cost_class
     if actual_cost
-      'actual'
+      "actual"
     elsif estimated_cost
-      'estimated'
+      "estimated"
     else
-      'unassigned'
+      "unassigned"
     end
   end
 
@@ -77,7 +77,7 @@ module PriceDisplayment
     end
 
     def html
-      content_tag :span, value, class: 'timeinput'
+      content_tag :span, value, class: "timeinput"
     end
 
   end
@@ -109,7 +109,7 @@ module PriceDisplayment
   private
 
   def empty_display
-    'Unassigned'
+    "Unassigned"
   end
 
   def format(number)

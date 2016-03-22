@@ -1,20 +1,20 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'report_spec_helper'
+require "controller_spec_helper"
+require "report_spec_helper"
 
 RSpec.describe GeneralReportsController do
   include ReportSpecHelper
 
   run_report_tests([
-                     { action: :product, index: 0, report_on_label: 'Name', report_on: proc { |od| od.product.name } },
-    { action: :account, index: 1, report_on_label: 'Description', report_on: proc { |od| od.account } },
-    { action: :account_owner, index: 2, report_on_label: 'Name', report_on: proc { |od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})" } },
-    { action: :purchaser, index: 3, report_on_label: 'Name', report_on: proc { |od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})" } },
-    { action: :price_group, index: 4, report_on_label: 'Name', report_on: proc { |od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned' } }
+                     { action: :product, index: 0, report_on_label: "Name", report_on: proc { |od| od.product.name } },
+    { action: :account, index: 1, report_on_label: "Description", report_on: proc { |od| od.account } },
+    { action: :account_owner, index: 2, report_on_label: "Name", report_on: proc { |od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})" } },
+    { action: :purchaser, index: 3, report_on_label: "Name", report_on: proc { |od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})" } },
+    { action: :price_group, index: 4, report_on_label: "Name", report_on: proc { |od| od.price_policy ? od.price_policy.price_group.name : "Unassigned" } }
                    ])
 
-  describe 'time parameters', :timecop_freeze do
-    let(:now) { Time.zone.parse('2014-03-06 12:00') }
+  describe "time parameters", :timecop_freeze do
+    let(:now) { Time.zone.parse("2014-03-06 12:00") }
 
     before do
       allow(controller).to receive(:authenticate_user!).and_return true
@@ -22,32 +22,32 @@ RSpec.describe GeneralReportsController do
       allow(controller).to receive(:current_facility).and_return build_stubbed(:facility)
     end
 
-    context 'defaults' do
+    context "defaults" do
       before { get :product }
 
-      it 'assigns the proper start date' do
+      it "assigns the proper start date" do
         expect(assigns(:date_start)).to eq(Time.zone.local(2014, 2, 1))
       end
 
-      it 'assigns the proper end date' do
+      it "assigns the proper end date" do
         expect(assigns(:date_end).to_i).to eq(Time.zone.local(2014, 2, 28, 23, 59, 59).to_i)
       end
     end
 
-    context 'with date parameters' do
-      before { get :product, date_start: '01/01/2014', date_end: '01/31/2014' }
+    context "with date parameters" do
+      before { get :product, date_start: "01/01/2014", date_end: "01/31/2014" }
 
-      it 'assigns the start date to the beginning of the day' do
+      it "assigns the start date to the beginning of the day" do
         expect(assigns(:date_start)).to eq(Time.zone.local(2014, 1, 1))
       end
 
-      it 'assigns the end date to the end of the day' do
+      it "assigns the end date to the end of the day" do
         expect(assigns(:date_end).to_i).to eq(Time.zone.local(2014, 1, 31, 23, 59, 59).to_i)
       end
     end
   end
 
-  context 'report searching' do
+  context "report searching" do
     before :each do
       @complete_status = OrderStatus.complete.first
 
@@ -90,107 +90,107 @@ RSpec.describe GeneralReportsController do
       @action = :product
       @params = {
         facility_id: @authable.url_name,
-        date_start: Time.zone.now.strftime('%m/%d/%Y'),
-        date_end: 1.day.from_now.strftime('%m/%d/%Y'),
+        date_start: Time.zone.now.strftime("%m/%d/%Y"),
+        date_end: 1.day.from_now.strftime("%m/%d/%Y"),
       }
 
       sign_in @admin
     end
 
-    context 'ordered_at search' do
+    context "ordered_at search" do
       before :each do
         @params.merge!(date_range_field: :ordered_at)
       end
 
-      it 'should search' do
+      it "should search" do
         do_request
         expect(response).to be_success
       end
 
-      it 'should search search unfulfilled' do
+      it "should search search unfulfilled" do
         @params[:status_filter] = [OrderStatus.new_os.first.id]
         do_request
         expect(assigns[:report_data]).to contain_all [@order_detail_ordered_today_unfulfilled]
       end
 
-      it 'should search fulfilled' do
+      it "should search fulfilled" do
         @params[:status_filter] = [@complete_status.id]
         do_request
         expect(assigns[:report_data]).to contain_all [@order_detail_ordered_today_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_next_month_unreconciled]
       end
 
-      it 'should search reconciled' do
+      it "should search reconciled" do
         @params[:status_filter] = [OrderStatus.reconciled.first.id]
         do_request
         expect(assigns[:report_data]).to be_empty
       end
 
-      it 'should find reconciled that started yesterday' do
+      it "should find reconciled that started yesterday" do
         @params[:status_filter] = [OrderStatus.reconciled.first.id]
-        @params[:date_start] = 1.day.ago.strftime('%m/%d/%Y')
+        @params[:date_start] = 1.day.ago.strftime("%m/%d/%Y")
         do_request
         expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
       end
     end
 
-    context 'fulfilled_at search' do
+    context "fulfilled_at search" do
       before :each do
         @params.merge!(date_range_field: :fulfilled_at)
       end
 
-      it 'should have a problem if it searches unfulfilled' do
+      it "should have a problem if it searches unfulfilled" do
         @params[:status_filter] = [OrderStatus.new_os.first.id]
         do_request
         expect(assigns[:report_data]).to be_empty
       end
 
-      it 'should search fulfilled' do
+      it "should search fulfilled" do
         @params[:status_filter] = [@complete_status.id]
         do_request
         expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_today_unreconciled]
       end
 
-      it 'should search reconciled' do
+      it "should search reconciled" do
         @params[:status_filter] = [OrderStatus.reconciled.first.id]
         do_request
         expect(assigns[:report_data]).to be_empty
       end
 
-      it 'should find reconciled that started yesterday' do
+      it "should find reconciled that started yesterday" do
         @params[:status_filter] = [OrderStatus.reconciled.first.id]
-        @params[:date_start] = 1.day.ago.strftime('%m/%d/%Y')
+        @params[:date_start] = 1.day.ago.strftime("%m/%d/%Y")
         do_request
         expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
       end
     end
 
-    context 'journaled_at search' do
+    context "journaled_at search" do
       before :each do
         # change start date so we get an order detail
         @params.merge!(date_range_field: :journal_date)
       end
 
-      it 'should have a problem if it searches unfulfilled' do
+      it "should have a problem if it searches unfulfilled" do
         @params[:status_filter] = [OrderStatus.new_os.first.id]
         do_request
         expect(assigns[:report_data]).to be_empty
       end
 
-      it 'should have a problem if it searches unjournaled' do
+      it "should have a problem if it searches unjournaled" do
         @params[:status_filter] = [@complete_status.id]
         do_request
         expect(assigns[:report_data]).to be_empty
       end
 
-      it 'should search reconciled' do
+      it "should search reconciled" do
         @params[:status_filter] = [OrderStatus.reconciled.first.id]
         do_request
         expect(assigns[:report_data]).to eq([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today])
       end
 
-      it 'should find reconciled that started yesterday' do
+      it "should find reconciled that started yesterday" do
         @params[:status_filter] = [OrderStatus.reconciled.first.id]
-        @params[:date_start] = 1.day.ago.strftime('%m/%d/%Y')
+        @params[:date_start] = 1.day.ago.strftime("%m/%d/%Y")
         do_request
         expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday]
       end
@@ -200,11 +200,11 @@ RSpec.describe GeneralReportsController do
   private
 
   def setup_extra_params(params)
-    params.merge!(status_filter: [OrderStatus.complete.first.id], date_range_field: 'fulfilled_at')
+    params.merge!(status_filter: [OrderStatus.complete.first.id], date_range_field: "fulfilled_at")
   end
 
   def report_headers(label)
-    [label, 'Quantity', 'Total Cost', 'Percent of Cost']
+    [label, "Quantity", "Total Cost", "Percent of Cost"]
   end
 
   def assert_report_params_init
@@ -256,10 +256,10 @@ RSpec.describe GeneralReportsController do
     export_type = @params[:export_id]
 
     case export_type
-    when 'report'
+    when "report"
       assert_report_init label, &report_on
       assert_report_download_rendered "#{@action}_report"
-    when 'report_data'
+    when "report_data"
       assert_report_data_init label
     end
   end

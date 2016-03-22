@@ -26,7 +26,7 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   end
 
   context '#cheapest_price_policy' do
-    context 'current policies' do
+    context "current policies" do
       before :each do
         @price_group3 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
         @price_group4 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
@@ -36,18 +36,18 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
         @pp_g3 = make_price_policy(unit_cost: 5, price_group: @price_group3)
         @pp_g4 = make_price_policy(unit_cost: 4, price_group: @price_group4)
       end
-      it 'should find the cheapest price policy of the policies user is a member of' do
+      it "should find the cheapest price policy of the policies user is a member of" do
         expect(@order_detail.price_groups).to eq([@price_group, @price_group2])
         expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g1)
       end
-      it 'should find the cheapest price policy if the user is in all groups' do
+      it "should find the cheapest price policy if the user is in all groups" do
         FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group3)
         FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group4)
         expect(@order_detail.price_groups).to match_array([@price_group, @price_group2, @price_group3, @price_group4])
         expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g4)
       end
 
-      it 'should use the base rate when that is the cheapest and others have equal unit_cost' do
+      it "should use the base rate when that is the cheapest and others have equal unit_cost" do
         base_pg = PriceGroup.new(FactoryGirl.attributes_for(:price_group, name: Settings.price_group.name.base, is_internal: true, display_order: 1))
         base_pg.save(validate: false)
         base_pp = make_price_policy(unit_cost: 1, price_group: base_pg)
@@ -62,7 +62,7 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
         end
       end
 
-      it 'should find the cheapest price policy if the user is in one group, but the account is in another' do
+      it "should find the cheapest price policy if the user is in one group, but the account is in another" do
         @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
         AccountPriceGroupMember.create!(price_group: @price_group3, account: @account)
         @order_detail.update_attributes(account: @account)
@@ -70,40 +70,40 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
         expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g3)
       end
 
-      context 'with an expired price policy' do
+      context "with an expired price policy" do
         before :each do
           @pp_g1_expired = make_price_policy(unit_cost: 1, price_group: @price_group, start_date: 7.days.ago, expire_date: 1.day.ago)
         end
-        it 'should ignore the expired price policy, even if it is cheaper' do
+        it "should ignore the expired price policy, even if it is cheaper" do
           expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g1)
         end
       end
-      context 'with a restricted price_policy' do
+      context "with a restricted price_policy" do
         before :each do
           @price_group5 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
           FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group5)
           @pp_g3_restricted = make_price_policy(unit_cost: 1, price_group: @price_group5, can_purchase: false)
         end
-        it 'should ignore the restricted price policy even if it is cheaper' do
+        it "should ignore the restricted price policy even if it is cheaper" do
           expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g1)
         end
       end
     end
 
-    context 'past policies' do
+    context "past policies" do
       before :each do
         @pp_past_group1 = make_price_policy(unit_cost: 7, price_group: @price_group2, start_date: 3.days.ago, expire_date: 1.day.ago)
         @pp_past_group2 = make_price_policy(unit_cost: 8, price_group: @price_group, start_date: 3.days.ago, expire_date: 1.day.ago)
       end
-      it 'should find the cheapest policy of two past policies' do
+      it "should find the cheapest policy of two past policies" do
         expect(@product.cheapest_price_policy(@order_detail, 2.days.ago)).to eq(@pp_past_group1)
       end
-      it 'should ignore the current price policies' do
+      it "should ignore the current price policies" do
         @pp_current_group1 = make_price_policy(unit_cost: 2, price_group: @price_group, start_date: 1.day.ago, expire_date: 1.day.from_now)
         @pp_current_group2 = make_price_policy(unit_cost: 5, price_group: @price_group2, start_date: 1.day.ago, expire_date: 1.day.from_now)
         expect(@product.cheapest_price_policy(@order_detail, 2.days.ago)).to eq(@pp_past_group1)
       end
-      it 'should still find the cheapest current if no date' do
+      it "should still find the cheapest current if no date" do
         @pp_current_group1 = make_price_policy(unit_cost: 2, price_group: @price_group, start_date: 1.day.ago, expire_date: 1.day.from_now)
         @pp_current_group2 = make_price_policy(unit_cost: 5, price_group: @price_group2, start_date: 1.day.ago, expire_date: 1.day.from_now)
         expect(@product.cheapest_price_policy(@order_detail, Time.zone.now)).to eq(@pp_current_group1)
@@ -155,7 +155,7 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
     @order_detail.reload
   end
   context '#cheapest_price_policy' do
-    context 'current policies' do
+    context "current policies" do
       before :each do
         @price_group3 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
         @price_group4 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
@@ -165,18 +165,18 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
         @pp_g3 = make_price_policy(usage_rate: 5, price_group: @price_group3)
         @pp_g4 = make_price_policy(usage_rate: 4, price_group: @price_group4)
       end
-      it 'should find the cheapest price policy of the policies user is a member of' do
+      it "should find the cheapest price policy of the policies user is a member of" do
         expect(@order_detail.price_groups).to eq([@price_group, @price_group2])
         expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g1)
       end
-      it 'should find the cheapest price policy if the user is in all groups' do
+      it "should find the cheapest price policy if the user is in all groups" do
         FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group3)
         FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group4)
         expect(@order_detail.price_groups).to match_array([@price_group, @price_group2, @price_group3, @price_group4])
         expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g4)
       end
 
-      it 'should find the cheapest price policy if the user is in one group, but the account is in another' do
+      it "should find the cheapest price policy if the user is in one group, but the account is in another" do
         @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
         AccountPriceGroupMember.create!(price_group: @price_group3, account: @account)
         @order_detail.update_attributes(account: @account)
@@ -184,40 +184,40 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
         expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g3)
       end
 
-      context 'with an expired price policy' do
+      context "with an expired price policy" do
         before :each do
           @pp_g1_expired = make_price_policy(usage_rate: 1, price_group: @price_group, start_date: 7.days.ago, expire_date: 1.day.ago)
         end
-        it 'should ignore the expired price policy, even if it is cheaper' do
+        it "should ignore the expired price policy, even if it is cheaper" do
           expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g1)
         end
       end
-      context 'with a restricted price_policy' do
+      context "with a restricted price_policy" do
         before :each do
           @price_group5 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
           FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group5)
           @pp_g3_restricted = make_price_policy(usage_rate: 1, price_group: @price_group5, can_purchase: false)
         end
-        it 'should ignore the restricted price policy even if it is cheaper' do
+        it "should ignore the restricted price policy even if it is cheaper" do
           expect(@product.cheapest_price_policy(@order_detail)).to eq(@pp_g1)
         end
       end
     end
-    context 'past policies' do
+    context "past policies" do
       before :each do
         @pp_past_group1 = make_price_policy(usage_rate: 7, price_group: @price_group2, start_date: 3.days.ago, expire_date: 1.day.ago)
         @pp_past_group2 = make_price_policy(usage_rate: 8, price_group: @price_group, start_date: 3.days.ago, expire_date: 1.day.ago)
         expect(@product.price_policies.current_for_date(2.days.ago)).to eq([@pp_past_group1, @pp_past_group2])
       end
-      it 'should find the cheapest policy of two past policies' do
+      it "should find the cheapest policy of two past policies" do
         expect(@product.cheapest_price_policy(@order_detail, 2.days.ago)).to eq(@pp_past_group1)
       end
-      it 'should ignore the current price policies' do
+      it "should ignore the current price policies" do
         @pp_current_group1 = make_price_policy(usage_rate: 2, price_group: @price_group, start_date: 1.day.ago, expire_date: 1.day.from_now)
         @pp_current_group2 = make_price_policy(usage_rate: 5, price_group: @price_group2, start_date: 1.day.ago, expire_date: 1.day.from_now)
         expect(@product.cheapest_price_policy(@order_detail, 2.days.ago)).to eq(@pp_past_group1)
       end
-      it 'should still find the cheapest current if no date' do
+      it "should still find the cheapest current if no date" do
         @pp_current_group1 = make_price_policy(usage_rate: 2, price_group: @price_group, start_date: 1.day.ago, expire_date: 1.day.from_now)
         @pp_current_group2 = make_price_policy(usage_rate: 5, price_group: @price_group2, start_date: 1.day.ago, expire_date: 1.day.from_now)
         expect(@product.cheapest_price_policy(@order_detail, Time.zone.now)).to eq(@pp_current_group1)

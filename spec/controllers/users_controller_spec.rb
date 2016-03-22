@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe UsersController do
   render_views
@@ -11,61 +11,61 @@ RSpec.describe UsersController do
     @params = { facility_id: @authable.url_name }
   end
 
-  context 'index' do
+  context "index" do
 
     before :each do
       @method = :get
       @action = :index
-      @inactive_user = FactoryGirl.create(:user, first_name: 'Inactive')
+      @inactive_user = FactoryGirl.create(:user, first_name: "Inactive")
 
-      @active_user = FactoryGirl.create(:user, first_name: 'Active')
+      @active_user = FactoryGirl.create(:user, first_name: "Active")
       place_and_complete_item_order(@active_user, @authable)
       # place two orders to make sure it only and_return the user once
       place_and_complete_item_order(@active_user, @authable)
 
-      @lapsed_user = FactoryGirl.create(:user, first_name: 'Lapsed')
+      @lapsed_user = FactoryGirl.create(:user, first_name: "Lapsed")
       @old_order_detail = place_and_complete_item_order(@lapsed_user, @authable)
       @old_order_detail.order.update_attributes(ordered_at: 400.days.ago)
     end
 
-    it_should_allow_operators_only :success, 'include the right users' do
+    it_should_allow_operators_only :success, "include the right users" do
       expect(assigns[:users].size).to eq(1)
       expect(assigns[:users]).to include @active_user
     end
 
-    context 'with newly created user' do
+    context "with newly created user" do
       before :each do
         @user = FactoryGirl.create(:user)
         @params.merge!(user: @user.id)
       end
-      it_should_allow_operators_only :success, 'set the user' do
+      it_should_allow_operators_only :success, "set the user" do
         expect(assigns[:new_user]).to eq(@user)
       end
     end
 
   end
 
-  context 'creating users' do
-    context 'enabled' do
+  context "creating users" do
+    context "enabled" do
       include_context "feature enabled", :create_users
 
       it "routes" do
-        expect(get: "/facilities/url_name/users/new").to route_to(controller: 'users', action: 'new', facility_id: 'url_name')
-        expect(post: "/facilities/url_name/users").to route_to(controller: 'users', action: 'create', facility_id: 'url_name')
-        expect(get: "/facilities/url_name/users/new_external").to route_to(controller: 'users', action: 'new_external', facility_id: 'url_name')
-        expect(post: "/facilities/url_name/users/search").to route_to(controller: 'users', action: 'search', facility_id: 'url_name')
+        expect(get: "/facilities/url_name/users/new").to route_to(controller: "users", action: "new", facility_id: "url_name")
+        expect(post: "/facilities/url_name/users").to route_to(controller: "users", action: "create", facility_id: "url_name")
+        expect(get: "/facilities/url_name/users/new_external").to route_to(controller: "users", action: "new_external", facility_id: "url_name")
+        expect(post: "/facilities/url_name/users/search").to route_to(controller: "users", action: "search", facility_id: "url_name")
       end
 
-      context 'search' do
+      context "search" do
         before :each do
           @user = FactoryGirl.create(:user)
           @method = :post
           @action = :search
         end
 
-        context 'blank post' do
+        context "blank post" do
           before :each do
-            @params.merge!(username_lookup: '')
+            @params.merge!(username_lookup: "")
           end
 
           it_should_allow_operators_only do
@@ -74,7 +74,7 @@ RSpec.describe UsersController do
           end
         end
 
-        context 'user already exists in database' do
+        context "user already exists in database" do
           before :each do
             @params.merge!(username_lookup: @user.username)
           end
@@ -85,7 +85,7 @@ RSpec.describe UsersController do
           end
         end
 
-        context 'user does not exist in database' do
+        context "user does not exist in database" do
           before :each do
             @user2 = FactoryGirl.build(:user)
             allow(controller).to receive(:service_username_lookup).with(@user2.username).and_return(@user2)
@@ -99,7 +99,7 @@ RSpec.describe UsersController do
         end
       end
 
-      context 'new_external' do
+      context "new_external" do
         before :each do
           @method = :get
           @action = :new_external
@@ -118,8 +118,8 @@ RSpec.describe UsersController do
 
         end
 
-        context 'external user' do
-          context 'with successful parameters' do
+        context "external user" do
+          context "with successful parameters" do
             before :each do
               @params.merge!(group_name: UserRole::FACILITY_DIRECTOR, user: FactoryGirl.attributes_for(:user))
             end
@@ -131,37 +131,37 @@ RSpec.describe UsersController do
             end
           end
 
-          context 'with missing parameters' do
+          context "with missing parameters" do
             before :each do
               @params.merge!(user: {})
             end
 
             it_should_allow_operators_only do
               expect(assigns(:user)).to be_new_record
-              expect(response).to render_template 'new_external'
+              expect(response).to render_template "new_external"
             end
           end
         end
 
-        context 'internal user' do
+        context "internal user" do
           before :each do
             sign_in @admin
           end
 
-          context 'user already exists' do
+          context "user already exists" do
             before :each do
               @user = FactoryGirl.create(:user)
               @params[:username] = @user.username
               do_request
             end
 
-            it 'flashes an error' do
+            it "flashes an error" do
               is_expected.to set_flash
               expect(response).to redirect_to facility_users_path
             end
           end
 
-          context 'user added' do
+          context "user added" do
             before :each do
               @ldap_user = FactoryGirl.build(:user)
               allow(controller).to receive(:service_username_lookup).with(@ldap_user.username).and_return(@ldap_user)
@@ -169,15 +169,15 @@ RSpec.describe UsersController do
               do_request
             end
 
-            it 'should save the user' do
+            it "should save the user" do
               expect(assigns(:user)).to be_persisted
             end
 
-            it 'should set the flash' do
+            it "should set the flash" do
               expect(flash[:notice]).not_to be_empty
             end
 
-            it 'should redirect' do
+            it "should redirect" do
               expect(response).to redirect_to facility_users_path(user: assigns(:user).id)
             end
           end
@@ -185,7 +185,7 @@ RSpec.describe UsersController do
       end
     end
 
-    context 'disabled' do
+    context "disabled" do
       include_context "feature disabled", :create_users
       it "doesn't route route" do
         expect(get: "/facilities/url_name/users/new").not_to be_routable
@@ -196,7 +196,7 @@ RSpec.describe UsersController do
     end
   end
 
-  context 'switch_to' do
+  context "switch_to" do
 
     before :each do
       @method = :get

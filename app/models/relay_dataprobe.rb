@@ -5,7 +5,7 @@ class RelayDataprobe < Relay
   private
 
   def self.to_s
-    'Dataprobe iPIO'
+    "Dataprobe iPIO"
   end
 
   def relay_connection

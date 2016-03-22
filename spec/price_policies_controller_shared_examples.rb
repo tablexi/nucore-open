@@ -32,11 +32,11 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       expect(assigns[:product]).to eq(@product)
       expect(assigns[:current_price_policies]).to eq([@price_policy])
       expect(assigns[:next_price_policies_by_date].keys).to include_date @price_policy_future.start_date
-      is_expected.to render_template('price_policies/index')
+      is_expected.to render_template("price_policies/index")
     end
   end
 
-  context 'new' do
+  context "new" do
     before :each do
       @method = :get
       @action = :new
@@ -44,17 +44,17 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
     it_should_allow_managers_only {}
 
-    context 'signed in' do
+    context "signed in" do
       before :each do
         maybe_grant_always_sign_in :director
       end
 
-      it 'should assign the product' do
+      it "should assign the product" do
         do_request
         expect(assigns[:product]).to eq(@product)
       end
 
-      it 'should set the date to today if there are no active policies' do
+      it "should set the date to today if there are no active policies" do
         expect(@price_policy.destroy).to eq(@price_policy)
         do_request
         expect(response.code).to eq("200")
@@ -62,50 +62,50 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         expect(assigns[:start_date]).not_to be_nil
         expect(assigns[:start_date]).to match_date Date.today
       end
-      it 'should set the date to tomorrow if there are active policies' do
+      it "should set the date to tomorrow if there are active policies" do
         do_request
         expect(response).to be_success
         expect(assigns[:start_date]).not_to be_nil
         expect(assigns[:start_date]).to match_date(Date.today + 1.day)
       end
-      it 'should set the expiration date to when the fiscal year ends' do
+      it "should set the expiration date to when the fiscal year ends" do
         do_request
         expect(assigns[:expire_date]).to eq(PricePolicy.generate_expire_date(Date.today))
       end
-      it 'should have a new price policy for each group' do
+      it "should have a new price policy for each group" do
         do_request
         expect(assigns[:price_policies]).to be_is_a Array
         price_groups = assigns[:price_policies].map(&:price_group)
         expect(price_groups).to contain_all PriceGroup.all
       end
-      it 'should set the policies in the correct order' do
+      it "should set the policies in the correct order" do
         @price_group.update_attributes(display_order: 2)
         @price_group2.update_attributes(display_order: 1)
         do_request
         expect(assigns[:price_policies].map(&:price_group)).to eq([@price_group2, @price_group])
       end
-      it 'should set each price policy to true' do
+      it "should set each price policy to true" do
         make_price_policy(@price_group2)
         do_request
         expect(assigns[:price_policies].size).to eq(2)
         expect(assigns[:price_policies].all? { |pp| pp.can_purchase? }).to be true
       end
-      it 'should render the new template' do
+      it "should render the new template" do
         do_request
-        expect(response).to render_template('price_policies/new')
+        expect(response).to render_template("price_policies/new")
       end
-      context 'old policies exist' do
+      context "old policies exist" do
         before :each do
           @price_group2_policy = make_price_policy(@price_group2, can_purchase: false, unit_cost: 13)
         end
 
-        it 'should set can_purchase based off old policy' do
+        it "should set can_purchase based off old policy" do
           do_request
           expect(assigns[:price_policies].map(&:price_group)).to eq([@price_policy.price_group, @price_group2_policy.price_group])
           expect(assigns[:price_policies][0]).to be_can_purchase
           expect(assigns[:price_policies][1]).not_to be_can_purchase
         end
-        it 'should set fields based off the old policy' do
+        it "should set fields based off the old policy" do
           do_request
           expect(assigns[:price_policies].map(&:price_group)).to eq([@price_policy.price_group, @price_group2_policy.price_group])
           expect(assigns[:price_policies][0].unit_cost).to eq(@price_policy.unit_cost)
@@ -126,7 +126,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           price_group3_policy = assigns[:price_policies].find { |pp| pp.price_group_id == @price_group3.id }
           expect(price_group3_policy).to_not be_can_purchase
         end
-        it 'should use the policy with the furthest out expiration date' do
+        it "should use the policy with the furthest out expiration date" do
           @price_policy.update_attributes(unit_cost: 16.0)
           @price_policy2 = make_price_policy(@price_group, start_date: 1.year.from_now, expire_date: SettingsHelper.fiscal_year_end(1.year.from_now), unit_cost: 17.0)
           @price_policy3 = make_price_policy(@price_group, start_date: 1.year.ago, expire_date: SettingsHelper.fiscal_year_end(1.year.ago), unit_cost: 18.0)
@@ -152,20 +152,20 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
     it_should_allow_managers_only {}
 
-    context 'signed in' do
+    context "signed in" do
       before :each do
         maybe_grant_always_sign_in :director
         do_request
       end
-      it 'should assign start date' do
+      it "should assign start date" do
         expect(assigns[:start_date]).to eq(@price_policy.start_date.to_date)
       end
-      it 'should return the existing policies' do
+      it "should return the existing policies" do
         expect(assigns[:price_policies]).to be_include @price_policy
         expect(@price_policy).not_to be_new_record
       end
 
-      it 'should return a new policy for other groups' do
+      it "should return a new policy for other groups" do
         new_price_policies = assigns[:price_policies].reject { |pp| pp.price_group == @price_group }
         expect(new_price_policies.map(&:price_group)).to contain_all(PriceGroup.all - [@price_group])
         new_price_policies.each do |pp|
@@ -173,12 +173,12 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         end
       end
 
-      it 'should render the edit template' do
-        is_expected.to render_template('price_policies/edit')
+      it "should render the edit template" do
+        is_expected.to render_template("price_policies/edit")
       end
     end
 
-    it 'should not allow edit of assigned effective price policy' do
+    it "should not allow edit of assigned effective price policy" do
       @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @director))
       @order    = @director.orders.create(FactoryGirl.attributes_for(:order, created_by: @director.id))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @product.id, account_id: @account.id, price_policy: @price_policy))
@@ -187,7 +187,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       do_request
       expect(assigns[:start_date]).to eq(Date.strptime(@params[:id], "%Y-%m-%d"))
       expect(assigns[:price_policies]).to be_empty
-      is_expected.to render_template '404'
+      is_expected.to render_template "404"
     end
   end
 
@@ -217,24 +217,24 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
       it_should_allow_managers_only(:redirect) {}
 
-      context 'signed in' do
+      context "signed in" do
         before :each do
           maybe_grant_always_sign_in :director
         end
 
-        it 'should create the new price_groups' do
+        it "should create the new price_groups" do
           do_request
           expect(assigns[:price_policies].map(&:price_group)).to contain_all PriceGroup.all
           assigns[:price_policies].each do |pp|
             expect(pp).not_to be_new_record
           end
         end
-        it 'should redirect to show on success' do
+        it "should redirect to show on success" do
           do_request
           is_expected.to redirect_to price_policy_index_path
         end
 
-        it 'should create a new price policy for a group that has no fields, but cant purchase' do
+        it "should create a new price policy for a group that has no fields, but cant purchase" do
           last_price_group = @authable.price_groups.last
           @params.delete :"price_policy_#{last_price_group.id}"
           do_request
@@ -244,22 +244,22 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           expect(price_policies_for_empty_group.first).not_to be_can_purchase
         end
 
-        it 'should reject everything if expire date is before start date' do
+        it "should reject everything if expire date is before start date" do
           @params[:expire_date] = (@start_date - 2.days).to_s
           do_request
           expect(flash[:error]).not_to be_nil
-          expect(response).to render_template 'price_policies/new'
+          expect(response).to render_template "price_policies/new"
           assigns[:price_policies].each do |pp|
             expect(pp).to be_new_record
           end
         end
 
-        it 'should reject everything if the expiration date spans into the next fiscal year' do
+        it "should reject everything if the expiration date spans into the next fiscal year" do
           @params[:expire_date] = (PricePolicy.generate_expire_date(@start_date) + 1.day).to_s
           do_request
           expect(response).to be
           expect(flash[:error]).not_to be_nil
-          expect(response).to render_template 'price_policies/new'
+          expect(response).to render_template "price_policies/new"
           assigns[:price_policies].each do |pp|
             expect(pp).to be_new_record
           end

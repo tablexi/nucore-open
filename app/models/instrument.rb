@@ -8,8 +8,8 @@ class Instrument < Product
   # Associations
   # -------
 
-  has_many :instrument_price_policies, foreign_key: 'product_id'
-  has_many :product_access_groups, foreign_key: 'product_id'
+  has_many :instrument_price_policies, foreign_key: "product_id"
+  has_many :product_access_groups, foreign_key: "product_id"
 
   # Validations
   # --------
@@ -34,8 +34,8 @@ class Instrument < Product
   # Scopes
   # --------
   def self.reservation_only
-    joins('LEFT OUTER JOIN relays ON relays.instrument_id = products.id')
-      .where('relays.instrument_id IS NULL')
+    joins("LEFT OUTER JOIN relays ON relays.instrument_id = products.id")
+      .where("relays.instrument_id IS NULL")
   end
 
   # Instance methods

@@ -1,4 +1,4 @@
-require 'devise/strategies/database_authenticatable'
+require "devise/strategies/database_authenticatable"
 
 # This is for use in the development environment where you may have
 # users in the database that were created by other strategies (e.g. LDAP)

@@ -15,7 +15,7 @@ RSpec.describe DateHelper do
       %w(1/1/2014 3/31/2014 10/2/2014 12/31/2014).each do |date_string|
         it "considers '#{date_string}' a valid date" do
           expect(parse_usa_import_date(date_string))
-            .to eq DateTime.strptime(date_string, '%m/%d/%Y').to_time_in_current_zone
+            .to eq DateTime.strptime(date_string, "%m/%d/%Y").to_time_in_current_zone
         end
       end
 
@@ -29,7 +29,7 @@ RSpec.describe DateHelper do
   describe "#parse_usa_date" do
 
     context "passed bad dates" do
-      ["05012012", "somegarbage", "11/31/2012", nil, '9/'].each do |bad_date_string|
+      ["05012012", "somegarbage", "11/31/2012", nil, "9/"].each do |bad_date_string|
         it "should not raise error for: #{bad_date_string}" do
           expect { parse_usa_date(bad_date_string) }.not_to raise_error
         end
@@ -46,11 +46,11 @@ RSpec.describe DateHelper do
       end
 
       it "parses a usa formatted date with single digits properly" do
-        expect(parse_usa_date("5/1/2012")).to eq(Time.zone.parse('2012-05-01'))
+        expect(parse_usa_date("5/1/2012")).to eq(Time.zone.parse("2012-05-01"))
       end
 
-      it 'should truncate a date with more than four digits in year' do
-        expect(parse_usa_date('5/1/20114')).to eq(Time.zone.parse('2011-05-01'))
+      it "should truncate a date with more than four digits in year" do
+        expect(parse_usa_date("5/1/20114")).to eq(Time.zone.parse("2011-05-01"))
       end
 
     end
@@ -92,25 +92,25 @@ RSpec.describe DateHelper do
   describe "#human_date"
   describe "#human_time"
 
-  describe 'time_ceil' do
-    it 'rounds up to the nearest 5 minute' do
-      expect(time_ceil(Time.zone.parse('2013-08-15 12:03'))).to eq(Time.zone.parse('2013-08-15 12:05'))
+  describe "time_ceil" do
+    it "rounds up to the nearest 5 minute" do
+      expect(time_ceil(Time.zone.parse("2013-08-15 12:03"))).to eq(Time.zone.parse("2013-08-15 12:05"))
     end
 
-    it 'drops the seconds before rounding' do
-      expect(time_ceil(Time.zone.parse('2013-08-15 12:05:30'))).to eq(Time.zone.parse('2013-08-15 12:05'))
+    it "drops the seconds before rounding" do
+      expect(time_ceil(Time.zone.parse("2013-08-15 12:05:30"))).to eq(Time.zone.parse("2013-08-15 12:05"))
     end
 
-    it 'does not round up if already at 5 minutes' do
-      expect(time_ceil(Time.zone.parse('2013-08-15 12:05'))).to eq(Time.zone.parse('2013-08-15 12:05'))
+    it "does not round up if already at 5 minutes" do
+      expect(time_ceil(Time.zone.parse("2013-08-15 12:05"))).to eq(Time.zone.parse("2013-08-15 12:05"))
     end
 
-    it 'rounds up to 15 minute' do
-      expect(time_ceil(Time.zone.parse('2013-08-15 12:05'), 15.minutes)).to eq(Time.zone.parse('2013-08-15 12:15'))
+    it "rounds up to 15 minute" do
+      expect(time_ceil(Time.zone.parse("2013-08-15 12:05"), 15.minutes)).to eq(Time.zone.parse("2013-08-15 12:15"))
     end
 
-    it 'rounds up to an hour' do
-      expect(time_ceil(Time.zone.parse('2013-08-15 12:05'), 1.hour)).to eq(Time.zone.parse('2013-08-15 13:00'))
+    it "rounds up to an hour" do
+      expect(time_ceil(Time.zone.parse("2013-08-15 12:05"), 1.hour)).to eq(Time.zone.parse("2013-08-15 13:00"))
     end
   end
 

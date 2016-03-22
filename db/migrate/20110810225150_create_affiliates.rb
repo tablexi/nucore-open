@@ -6,7 +6,7 @@ class CreateAffiliates < ActiveRecord::Migration
       t.timestamps
     end
 
-    Affiliate.create!(name: 'Other')
+    Affiliate.create!(name: "Other")
   end
 
   def self.down

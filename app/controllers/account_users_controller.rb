@@ -8,7 +8,7 @@ class AccountUsersController < ApplicationController
   load_and_authorize_resource
 
   def initialize
-    @active_tab = 'accounts'
+    @active_tab = "accounts"
     super
   end
   

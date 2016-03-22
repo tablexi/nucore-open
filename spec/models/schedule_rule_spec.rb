@@ -238,8 +238,8 @@ RSpec.describe ScheduleRule do
 
       # days should start with this past sunday and end next saturday
       @calendar.each_with_index do |hash, i|
-        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days} 9:00"))
-        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + i.days} 17:00"))
+        expect(Time.zone.parse(hash["start"])).to eq(Time.zone.parse("#{@sunday + i.days} 9:00"))
+        expect(Time.zone.parse(hash["end"])).to eq(Time.zone.parse("#{@sunday + i.days} 17:00"))
       end
 
       # build unavailable rules from the available rules collection
@@ -256,18 +256,18 @@ RSpec.describe ScheduleRule do
       odd  = (0..@not_available.size).select { |i| i.odd? }
 
       even.collect { |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
-        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days}"))
-        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + i.days} 9:00"))
+        expect(Time.zone.parse(hash["start"])).to eq(Time.zone.parse("#{@sunday + i.days}"))
+        expect(Time.zone.parse(hash["end"])).to eq(Time.zone.parse("#{@sunday + i.days} 9:00"))
       end
 
       odd.collect { |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
-        expect(Time.zone.parse(hash['start'])).to eq(Time.zone.parse("#{@sunday + i.days} 17:00"))
-        expect(Time.zone.parse(hash['end'])).to eq(Time.zone.parse("#{@sunday + (i + 1).days}"))
+        expect(Time.zone.parse(hash["start"])).to eq(Time.zone.parse("#{@sunday + i.days} 17:00"))
+        expect(Time.zone.parse(hash["end"])).to eq(Time.zone.parse("#{@sunday + (i + 1).days}"))
       end
 
       # should set calendar objects title to ''
       @not_calendar.each do |hash|
-        expect(hash['title']).to eq('')
+        expect(hash["title"]).to eq("")
       end
     end
 
@@ -302,15 +302,15 @@ RSpec.describe ScheduleRule do
       # times should be tue 1 am - 3 am
       @calendar1  = @rule1.as_calendar_object
       @calendar1.each_with_index do |hash, _i|
-        expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 1.hour)
-        expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 3.hours)
+        expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 1.hour)
+        expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 3.hours)
       end
 
       # times should be tue 7 am - 9 am
       @calendar2 = @rule2.as_calendar_object
       @calendar2.each_with_index do |hash, _i|
-        expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 7.hours)
-        expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 9.hours)
+        expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 7.hours)
+        expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 9.hours)
       end
 
       # build not available rules from the available rules collection, 3 for tue and 1 each for rest of days
@@ -319,15 +319,15 @@ RSpec.describe ScheduleRule do
       @not_calendar  = @not_available.collect { |na| na.as_calendar_object }.flatten
 
       # rules for tuesday should be 12am-1am, 3am-7am, 9pm-12pm
-      @tuesday_times = @not_calendar.select { |hash| Time.zone.parse(hash['start']).to_date == @tuesday }.collect do |hash|
-        [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
+      @tuesday_times = @not_calendar.select { |hash| Time.zone.parse(hash["start"]).to_date == @tuesday }.collect do |hash|
+        [Time.zone.parse(hash["start"]).hour, Time.zone.parse(hash["end"]).hour]
       end
 
       expect(@tuesday_times).to eq([[0, 1], [3, 7], [9, 0]])
 
       # rules for other days should be 12am-12pm
-      @other_times = @not_calendar.select { |hash| Time.zone.parse(hash['start']).to_date != @tuesday }.collect do |hash|
-        [Time.zone.parse(hash['start']).hour, Time.zone.parse(hash['end']).hour]
+      @other_times = @not_calendar.select { |hash| Time.zone.parse(hash["start"]).to_date != @tuesday }.collect do |hash|
+        [Time.zone.parse(hash["start"]).hour, Time.zone.parse(hash["end"]).hour]
       end
       expect(@other_times).to eq([[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]])
     end
@@ -363,15 +363,15 @@ RSpec.describe ScheduleRule do
       # times should be tue 9 pm - 12 am
       @calendar1  = @rule1.as_calendar_object
       @calendar1.each_with_index do |hash, _i|
-        expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 21.hours)
-        expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 24.hours)
+        expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 21.hours)
+        expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 24.hours)
       end
 
       # times should be tue 12 am - 9 am
       @calendar2 = @rule2.as_calendar_object
       @calendar2.each_with_index do |hash, _i|
-        expect(Time.zone.parse(hash['start'])).to eq(@wednesday + 0.hours)
-        expect(Time.zone.parse(hash['end'])).to eq(@wednesday + 9.hours)
+        expect(Time.zone.parse(hash["start"])).to eq(@wednesday + 0.hours)
+        expect(Time.zone.parse(hash["end"])).to eq(@wednesday + 9.hours)
       end
     end
 
@@ -391,11 +391,11 @@ RSpec.describe ScheduleRule do
 
       # should start on wednesday
       expect(@calendar.size).to eq(7)
-      expect(Time.zone.parse(@calendar[0]['start']).to_date).to eq(@wednesday)
+      expect(Time.zone.parse(@calendar[0]["start"]).to_date).to eq(@wednesday)
     end
   end
 
-  context 'available_to_user' do
+  context "available_to_user" do
     before :each do
       @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
@@ -407,18 +407,18 @@ RSpec.describe ScheduleRule do
       @user = FactoryGirl.create(:user)
     end
 
-    context 'if instrument has no levels' do
-      it 'should not return a rule if the user is not added' do
+    context "if instrument has no levels" do
+      it "should not return a rule if the user is not added" do
         expect(@instrument.schedule_rules.available_to_user(@user)).to be_empty
       end
 
-      it 'should return a rule' do
+      it "should return a rule" do
         @product_user = ProductUser.create(product: @instrument, user: @user, approved_by: @user.id)
         expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([@rule])
       end
     end
 
-    context 'if instrument has levels' do
+    context "if instrument has levels" do
       before :each do
         @restriction_levels = []
         3.times do
@@ -426,35 +426,35 @@ RSpec.describe ScheduleRule do
         end
       end
 
-      context 'the scheduling rule does not have levels' do
-        it 'should return a rule if the user is in the group' do
+      context "the scheduling rule does not have levels" do
+        it "should return a rule if the user is in the group" do
           @product_user = ProductUser.create(product: @instrument, user: @user, approved_by: @user.id)
           expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([@rule])
         end
       end
 
-      context 'the scheduling rule has levels' do
+      context "the scheduling rule has levels" do
         before :each do
           @rule.product_access_groups = [@restriction_levels[0], @restriction_levels[2]]
           @rule.save!
         end
 
-        it 'should return the rule if the user is in the group' do
+        it "should return the rule if the user is in the group" do
           @product_user = ProductUser.create(product: @instrument, user: @user, approved_by: @user.id, product_access_group_id: @restriction_levels[0])
           expect(@instrument.schedule_rules.available_to_user(@user).to_a).to eq([])
         end
 
-        it 'should not return the rule if the user is not in the group' do
+        it "should not return the rule if the user is not in the group" do
           @product_user = ProductUser.create(product: @instrument, user: @user, approved_by: @user.id, product_access_group_id: @restriction_levels[1])
           expect(@instrument.schedule_rules.available_to_user(@user)).to be_empty
         end
 
-        it 'should not return the rule if the user has no group' do
+        it "should not return the rule if the user has no group" do
           @product_user = ProductUser.create(product: @instrument, user: @user, approved_by: @user.id)
           expect(@instrument.schedule_rules.available_to_user(@user)).to be_empty
         end
 
-        it 'should return the rule if requires_approval has been set to false' do
+        it "should return the rule if requires_approval has been set to false" do
           @instrument.update_attributes(requires_approval: false)
           expect(@instrument.available_schedule_rules(@user)).to eq([@rule])
         end

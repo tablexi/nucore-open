@@ -3,7 +3,7 @@ class ScheduleRule < ActiveRecord::Base
   belongs_to :instrument
 
   # oracle has a maximum table name length of 30, so we have to abbreviate it down
-  has_and_belongs_to_many :product_access_groups, join_table: 'product_access_schedule_rules'
+  has_and_belongs_to_many :product_access_groups, join_table: "product_access_schedule_rules"
 
   attr_accessor :unavailable # virtual attribute
 
@@ -83,7 +83,7 @@ class ScheduleRule < ActiveRecord::Base
     Date::ABBR_DAYNAMES.each do |day|
       days << day if send("on_#{day.downcase}?")
     end
-    days.join ', '
+    days.join ", "
   end
 
   def start_time_int
@@ -123,7 +123,7 @@ class ScheduleRule < ActiveRecord::Base
   def as_calendar_object(options = {})
     start_date = options[:start_date].presence || self.class.sunday_last
     num_days = options[:num_days] ? options[:num_days].to_i : 7
-    title = ''
+    title = ""
 
     if instrument && !unavailable
       duration_mins = instrument.reserve_interval
@@ -138,7 +138,7 @@ class ScheduleRule < ActiveRecord::Base
       # check if rule occurs on this day
       if send("on_#{Date::ABBR_DAYNAMES[date.wday].downcase}?")
         array << {
-          "className" => unavailable ? 'unavailable' : 'default',
+          "className" => unavailable ? "unavailable" : "default",
           "title"  => title,
           "start"  => I18n.l(start_at, format: :calendar),
           "end"    => I18n.l(end_at, format: :calendar),

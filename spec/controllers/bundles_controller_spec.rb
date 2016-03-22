@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe BundlesController do
   let(:bundle) { @bundle }
@@ -21,7 +21,7 @@ RSpec.describe BundlesController do
     bundle_product.save!
   end
 
-  context 'index' do
+  context "index" do
     before(:each) do
       @method = :get
       @action = :index
@@ -38,30 +38,30 @@ RSpec.describe BundlesController do
       expect(assigns(:bundles)).to eq(@authable.bundles.not_archived)
     end
 
-    it 'should show archived facilities' do
+    it "should show archived facilities" do
       @bundle.is_archived = true
       assert @bundle.save
       maybe_grant_always_sign_in(:director)
-      @params[:archived] = 'true'
+      @params[:archived] = "true"
       do_request
       expect(assigns(:bundles).size).to eq(1)
       expect(assigns(:bundles)).to eq(@authable.bundles.archived)
     end
   end
 
-  context 'show' do
+  context "show" do
     before(:each) do
       @method = :get
       @action = :show
       @params = { facility_id: @authable.url_name, id: @bundle.url_name }
     end
 
-    it 'should flash and falsify @add_to_cart if bundle cannot be purchased' do
+    it "should flash and falsify @add_to_cart if bundle cannot be purchased" do
       sign_in @guest
       allow_any_instance_of(Bundle).to receive(:available_for_purchase?).and_return(false)
       do_request
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('not_available')
+      expect(assigns[:error]).to eq("not_available")
       expect(flash[:notice]).not_to be_nil
 
     end
@@ -71,7 +71,7 @@ RSpec.describe BundlesController do
       do_request
       expect(flash).not_to be_empty
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('no_accounts')
+      expect(assigns[:error]).to eq("no_accounts")
     end
 
     it 'should falsify @add_to_cart if #acting_user is nil' do
@@ -110,32 +110,32 @@ RSpec.describe BundlesController do
       end
     end
 
-    it 'should flash and falsify @add_to_cart if there is no price group for user to purchase through' do
+    it "should flash and falsify @add_to_cart if there is no price group for user to purchase through" do
       add_account_for_user(:guest, @bundle.products.first, @nupg)
       sign_in @guest
       allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(false)
       do_request
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('not_in_price_group')
+      expect(assigns[:error]).to eq("not_in_price_group")
       expect(flash[:notice]).not_to be_nil
     end
 
-    it 'should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user' do
+    it "should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user" do
       sign_in @guest
       switch_to @staff
 
       do_request
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('not_authorized_acting_as')
+      expect(assigns[:error]).to eq("not_authorized_acting_as")
     end
 
-    it 'should not require login' do
+    it "should not require login" do
       do_request
       assert_init_bundle
       expect(assigns(:add_to_cart)).to_not be_nil
       expect(assigns(:login_required)).to_not be_nil
       is_expected.not_to set_flash
-      is_expected.to render_template('show')
+      is_expected.to render_template("show")
     end
 
     context "restricted bundle" do
@@ -173,7 +173,7 @@ RSpec.describe BundlesController do
     end
   end
 
-  context 'new' do
+  context "new" do
     before(:each) do
       @method = :get
       @action = :new
@@ -185,11 +185,11 @@ RSpec.describe BundlesController do
     it_should_allow_managers_only do
       expect(assigns(:bundle)).to be_kind_of Bundle
       expect(assigns(:bundle)).to be_new_record
-      is_expected.to render_template('new')
+      is_expected.to render_template("new")
     end
   end
 
-  context 'edit' do
+  context "edit" do
     before(:each) do
       @method = :get
       @action = :edit
@@ -200,11 +200,11 @@ RSpec.describe BundlesController do
 
     it_should_allow_managers_only do
       assert_init_bundle
-      is_expected.to render_template('edit')
+      is_expected.to render_template("edit")
     end
   end
 
-  context 'create' do
+  context "create" do
     before(:each) do
       @method = :post
       @action = :create
@@ -223,7 +223,7 @@ RSpec.describe BundlesController do
     end
   end
 
-  context 'update' do
+  context "update" do
     before(:each) do
       @method = :put
       @action = :update

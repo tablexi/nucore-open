@@ -1,6 +1,6 @@
-require_relative 'ipp_converter'
-require_relative 'ipp_csv_builder'
-require_relative 'ipp_html_builder'
+require_relative "ipp_converter"
+require_relative "ipp_csv_builder"
+require_relative "ipp_html_builder"
 
 #
 # This class and it's usages can be removed after

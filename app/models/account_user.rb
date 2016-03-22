@@ -5,9 +5,9 @@ class AccountUser < ActiveRecord::Base
 
   scope :active, conditions: { deleted_at: nil }
 
-  ACCOUNT_PURCHASER = 'Purchaser'.freeze
-  ACCOUNT_OWNER = 'Owner'.freeze
-  ACCOUNT_ADMINISTRATOR = 'Business Administrator'.freeze
+  ACCOUNT_PURCHASER = "Purchaser".freeze
+  ACCOUNT_OWNER = "Owner".freeze
+  ACCOUNT_ADMINISTRATOR = "Business Administrator".freeze
 
   def self.read_only_user_roles
     [ACCOUNT_PURCHASER]
@@ -77,7 +77,7 @@ class AccountUser < ActiveRecord::Base
   end
 
   validates_presence_of :created_by
-  validates_inclusion_of :user_role, in: user_roles, message: 'is invalid'
+  validates_inclusion_of :user_role, in: user_roles, message: "is invalid"
   validates_uniqueness_of :user_id, scope: [:account_id, :deleted_at]
   validates_uniqueness_of :user_role, scope: [:account_id, :deleted_at], if: ->(o) { o.user_role == ACCOUNT_OWNER }
 

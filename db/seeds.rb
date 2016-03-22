@@ -6,13 +6,13 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Major.create(:name => 'Daley', :city => cities.first)
 
-OrderStatus.create(name: 'New')
-OrderStatus.create(name: 'In Process')
-OrderStatus.create(name: 'Canceled')
-OrderStatus.create(name: 'Complete')
-OrderStatus.create(name: 'Reconciled')
+OrderStatus.create(name: "New")
+OrderStatus.create(name: "In Process")
+OrderStatus.create(name: "Canceled")
+OrderStatus.create(name: "Complete")
+OrderStatus.create(name: "Reconciled")
 
-Affiliate.find_or_create_by_name('Other')
+Affiliate.find_or_create_by_name("Other")
 
 [
   PriceGroup.new(name: Settings.price_group.name.base, is_internal: true, admin_editable: false),

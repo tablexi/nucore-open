@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe SurveysController do
   render_views
@@ -10,13 +10,13 @@ RSpec.describe SurveysController do
   let(:facility_account) { authable.facility_accounts.create attributes_for(:facility_account) }
   let(:order_status) { create :order_status }
   let(:service) { authable.services.create attributes_for(:service, initial_order_status_id: order_status.id, facility_account_id: facility_account.id) }
-  let(:external_service) { UrlService.create! location: 'http://ext.service.com' }
+  let(:external_service) { UrlService.create! location: "http://ext.service.com" }
   let(:external_service_passer) { ExternalServicePasser.create! passer: service, external_service: external_service }
-  let(:external_service2) { UrlService.create! location: 'http://ext.service2.com' }
+  let(:external_service2) { UrlService.create! location: "http://ext.service2.com" }
   let(:external_service_passer2) { ExternalServicePasser.create! passer: service, external_service: external_service2 }
 
   before(:each) do
-    @request.env['HTTP_REFERER'] = "http://nucore.com/facilities/#{authable.url_name}/services/#{service.url_name}"
+    @request.env["HTTP_REFERER"] = "http://nucore.com/facilities/#{authable.url_name}/services/#{service.url_name}"
     @params = {
       facility_id: authable.url_name,
       service_id: service.url_name,
@@ -24,7 +24,7 @@ RSpec.describe SurveysController do
     }
   end
 
-  context 'deactivate' do
+  context "deactivate" do
 
     before(:each) do
       @method = :put
@@ -51,7 +51,7 @@ RSpec.describe SurveysController do
   end
 
   context "complete" do
-    let(:survey_url) { 'http://this.survey.url' }
+    let(:survey_url) { "http://this.survey.url" }
 
     before(:each) do
       @method = :get
@@ -61,7 +61,7 @@ RSpec.describe SurveysController do
       @params[:external_service_id] = external_service.id
       @params[:receiver_id] = @order_detail.id
       @params[:survey_url] = survey_url
-      @params[:referer] = 'http://some.web.address'
+      @params[:referer] = "http://some.web.address"
       expect(ExternalServiceReceiver.count).to eq 0
     end
 
@@ -76,7 +76,7 @@ RSpec.describe SurveysController do
       is_expected.to redirect_to @params[:referer]
     end
 
-    it 'allows acting-as' do
+    it "allows acting-as" do
       maybe_grant_always_sign_in :admin
       switch_to @guest
       expect { do_request }.to change { ExternalServiceReceiver.count }.by(1)
@@ -87,7 +87,7 @@ RSpec.describe SurveysController do
       is_expected.to redirect_to @params[:referer]
     end
 
-    context 'merge orders' do
+    context "merge orders" do
       before :each do
         @clone = @order.dup
         assert @clone.save
@@ -95,7 +95,7 @@ RSpec.describe SurveysController do
         expect(@order).to be_to_be_merged
       end
 
-      it_should_allow :director, 'to complete survey on merge order' do
+      it_should_allow :director, "to complete survey on merge order" do
         expect(@order_detail.reload.order).to eq @clone
         assert_raises(ActiveRecord::RecordNotFound) { @order.reload }
       end
@@ -110,7 +110,7 @@ RSpec.describe SurveysController do
     expect(external_service_passer.reload.active).to eq active
     expect(external_service_passer2.reload.active).to be false
     is_expected.to set_flash
-    is_expected.to redirect_to @request.env['HTTP_REFERER']
+    is_expected.to redirect_to @request.env["HTTP_REFERER"]
 
     @params[:external_service_passer_id] = external_service_passer2.id
     do_request

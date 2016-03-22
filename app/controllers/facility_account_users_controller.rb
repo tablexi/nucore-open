@@ -7,12 +7,12 @@ class FacilityAccountUsersController < ApplicationController
 
   load_and_authorize_resource class: AccountUser
 
-  layout 'two_column'
+  layout "two_column"
 
   helper_method :current_owner?
 
   def initialize
-    @active_tab = 'admin_billing'
+    @active_tab = "admin_billing"
     super
   end
 
@@ -41,7 +41,7 @@ class FacilityAccountUsersController < ApplicationController
 
     if @account.errors.any?
       flash.now[:error] = "An error was encountered while trying to add #{@user.full_name} to the #{@account.type_string} Account"
-      render(action: 'new')
+      render(action: "new")
     else
       flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
       Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver

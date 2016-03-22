@@ -5,7 +5,7 @@ module Products::SchedulingSupport
   included do
     belongs_to :schedule, inverse_of: :products
     has_many :schedule_rules
-    has_many :reservations, foreign_key: 'product_id'
+    has_many :reservations, foreign_key: "product_id"
 
     delegate :reservations, to: :schedule, prefix: true
 

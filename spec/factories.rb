@@ -1,4 +1,4 @@
-require File.expand_path('factories_env', File.dirname(__FILE__))
+require File.expand_path("factories_env", File.dirname(__FILE__))
 
 FactoryGirl.define do
   factory :instrument_status do
@@ -10,10 +10,10 @@ FactoryGirl.define do
   end
 
   factory :payment_account_transaction do
-    description 'fake trans'
+    description "fake trans"
     transaction_amount -12.34
     finalized_at { Time.zone.now }
-    reference 'abc123xyz'
+    reference "abc123xyz"
     is_in_dispute false
   end
 

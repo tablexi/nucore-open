@@ -1,7 +1,7 @@
 begin
-  require File.join(File.dirname(__FILE__), 'lib', 'haml') # From here
+  require File.join(File.dirname(__FILE__), "lib", "haml") # From here
 rescue LoadError
-  require 'haml' # From gem
+  require "haml" # From gem
 end
 
 # Load Haml and Sass

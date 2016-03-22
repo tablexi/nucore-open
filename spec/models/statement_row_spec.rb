@@ -11,7 +11,7 @@ RSpec.describe StatementRow do
   let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
   let(:user) { create(:user) }
 
-  it 'should create without error' do
+  it "should create without error" do
     expect { StatementRow.create!(statement: statement, order_detail: order_detail) }
       .to_not raise_error
   end

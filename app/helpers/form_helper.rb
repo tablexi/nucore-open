@@ -12,7 +12,7 @@ module FormHelper
 
   def modelless_form_for(options = {}, &block)
     options[:builder] = ModelLessFormBuilder
-    simple_form_for(options[:object] || '', options, &block)
+    simple_form_for(options[:object] || "", options, &block)
   end
 
   def scheduling_group_select(product, user)

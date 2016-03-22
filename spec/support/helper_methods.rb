@@ -66,7 +66,7 @@ def place_product_order(ordered_by, facility, product, account = nil, purchased 
 
   o_attrs = { created_by: ordered_by.id, facility: facility, ordered_at: Time.zone.now }
   o_attrs[:account_id] = account.id if account
-  o_attrs[:state] = 'purchased' if purchased
+  o_attrs[:state] = "purchased" if purchased
   @order = ordered_by.orders.create(FactoryGirl.attributes_for(:order, o_attrs))
 
   FactoryGirl.create(:user_price_group_member, user: ordered_by, price_group: @price_group)
@@ -98,7 +98,7 @@ def place_and_complete_item_order(ordered_by, facility, account = nil, reviewed 
   place_product_order(ordered_by, facility, @item, account)
 
   # act like the parent order is valid
-  @order.state = 'validated'
+  @order.state = "validated"
 
   # purchase it
   @order.purchase!
@@ -138,7 +138,7 @@ def place_reservation_for_instrument(ordered_by, instrument, account, reserve_st
     reserve_start_at: reserve_start,
     order_detail: order_detail,
     duration_value: 60,
-    duration_unit: 'minutes'
+    duration_unit: "minutes"
   }
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
@@ -175,10 +175,10 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
     reserve_start_at: reserve_start,
     order_detail: order_detail,
     duration_value: 60,
-    duration_unit: 'minutes'
+    duration_unit: "minutes"
   }
   order_detail.update_attributes!(product: @instrument)
-  order_detail.order.update_attributes!(state: 'purchased')
+  order_detail.order.update_attributes!(state: "purchased")
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
   @reservation = @instrument.reservations.build(res_attrs)

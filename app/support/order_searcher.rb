@@ -24,12 +24,12 @@ class OrderSearcher
   end
 
   def search_full(query)
-    order_id, order_detail_id = query.split('-')
+    order_id, order_detail_id = query.split("-")
     OrderDetail.where(id: order_detail_id, order_id: order_id)
   end
 
   def search_external(query)
-    insensitive_where OrderDetail.joins(:external_service_receiver), 'external_service_receivers.external_id', query
+    insensitive_where OrderDetail.joins(:external_service_receiver), "external_service_receivers.external_id", query
   end
 
   def restrict_to_user(order_details)

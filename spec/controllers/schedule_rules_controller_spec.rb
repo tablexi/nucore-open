@@ -1,5 +1,5 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe ScheduleRulesController do
   render_views
@@ -26,7 +26,7 @@ RSpec.describe ScheduleRulesController do
     it_should_allow_operators_only do |_user|
       expect(assigns[:instrument]).to eq(@instrument)
       expect(response).to be_success
-      expect(response).to render_template('schedule_rules/index')
+      expect(response).to render_template("schedule_rules/index")
     end
 
   end
@@ -41,12 +41,12 @@ RSpec.describe ScheduleRulesController do
     it_should_allow_managers_and_senior_staff_only do
       expect(assigns[:instrument]).to eq(@instrument)
       expect(response).to be_success
-      expect(response).to render_template('schedule_rules/new')
+      expect(response).to render_template("schedule_rules/new")
     end
 
   end
 
-  context 'create' do
+  context "create" do
 
     before :each do
       @method = :post
@@ -62,7 +62,7 @@ RSpec.describe ScheduleRulesController do
       assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
     end
 
-    context 'with restriction levels' do
+    context "with restriction levels" do
       before :each do
         @restriction_levels = []
         3.times do
@@ -87,7 +87,7 @@ RSpec.describe ScheduleRulesController do
 
   end
 
-  context 'needs schedule rule' do
+  context "needs schedule rule" do
 
     before :each do
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
@@ -103,12 +103,12 @@ RSpec.describe ScheduleRulesController do
 
       it_should_allow_managers_and_senior_staff_only do
         expect(assigns(:schedule_rule)).to eq(@rule)
-        is_expected.to render_template 'edit'
+        is_expected.to render_template "edit"
       end
 
     end
 
-    context 'update' do
+    context "update" do
 
       before :each do
         @method = :put
@@ -124,7 +124,7 @@ RSpec.describe ScheduleRulesController do
         assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
       end
 
-      context 'restriction levels' do
+      context "restriction levels" do
         before :each do
           @restriction_levels = []
           3.times do
@@ -156,7 +156,7 @@ RSpec.describe ScheduleRulesController do
 
     end
 
-    context 'destroy' do
+    context "destroy" do
 
       before :each do
         @method = :delete

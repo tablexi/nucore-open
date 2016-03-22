@@ -13,7 +13,7 @@ module Role
     # Creates methods #administrator?, #facility_staff?, etc.
     # Each returns true if #user_roles has the role for any facility.
     if role != UserRole::BILLING_ADMINISTRATOR
-      define_method(role.gsub(/\s/, '_').downcase + '?') do
+      define_method(role.gsub(/\s/, "_").downcase + "?") do
         roles = user_roles.collect(&:role)
         roles.include?(role)
       end
@@ -23,7 +23,7 @@ module Role
     # Creates methods #administrator_of?, #facility_staff_of?, etc.
     # Each takes a +Facility+ as an argument.
     # Each returns true if #user_roles has the role for the given facility.
-    define_method(role.gsub(/\s/, '_').downcase + '_of?') do |facility|
+    define_method(role.gsub(/\s/, "_").downcase + "_of?") do |facility|
       is = false
       user_roles.each { |ur| (is = true) && break if ur.facility == facility && ur.role == role }
       is
@@ -85,7 +85,7 @@ module Role
     #
     # Creates methods #purchaser?, #owner?, etc.
     # Each returns true if #account_users has the user_role for any account.
-    define_method(role.gsub(/\s/, '_').downcase + '?') do
+    define_method(role.gsub(/\s/, "_").downcase + "?") do
       roles = account_users.collect(&:user_role)
       roles.include?(role)
     end
@@ -94,7 +94,7 @@ module Role
     # Creates methods #purchaser_of?, #owner_of?, etc.
     # Each takes an +Account+ as an argument.
     # Each returns true if #account_users has the user_role for the given account.
-    define_method(role.gsub(/\s/, '_').downcase + '_of?') do |account|
+    define_method(role.gsub(/\s/, "_").downcase + "_of?") do |account|
       is = false
       account_users.each { |au| (is = true) && break if au.account == account && au.user_role == role }
       is

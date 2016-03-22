@@ -1,5 +1,5 @@
-require 'nucore'
-require 'devise_ldap_authenticatable/strategy'
+require "nucore"
+require "devise_ldap_authenticatable/strategy"
 
 ActiveRecord::Base.class_eval do
   def self.validate_url_name(attr_name, scope = nil)

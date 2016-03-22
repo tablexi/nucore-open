@@ -1,8 +1,8 @@
 # run coverage when on CI
-if ENV['CI']
-  require 'simplecov'
-  SimpleCov.start 'rails' do
-    add_filter '/spec/'
+if ENV["CI"]
+  require "simplecov"
+  SimpleCov.start "rails" do
+    add_filter "/spec/"
   end
 end
 
@@ -78,7 +78,7 @@ RSpec.configure do |config|
     # Use the documentation formatter for detailed output,
     # unless a formatter has already been configured
     # (e.g. via a command-line flag).
-    config.default_formatter = 'doc'
+    config.default_formatter = "doc"
   end
 
   # Print the 10 slowest examples and example groups at the

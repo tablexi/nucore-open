@@ -11,7 +11,7 @@ class BudgetedChartString < ActiveRecord::Base
 
   def self.import(filename)
     file = begin
-             File.open(filename, 'r')
+             File.open(filename, "r")
            rescue
              nil
            end
@@ -32,20 +32,20 @@ class BudgetedChartString < ActiveRecord::Base
       # import records
       begin
         # add testing/place holder records
-        BudgetedChartString.create(fund: '123', dept: '1234567', project: '12345678', account: '75340',
+        BudgetedChartString.create(fund: "123", dept: "1234567", project: "12345678", account: "75340",
                                    starts_at: Time.zone.now - 1.week, expires_at: Time.zone.now + 1.year)
-        BudgetedChartString.create(fund: '123', dept: '1234567', project: '12345678', account: '50617',
+        BudgetedChartString.create(fund: "123", dept: "1234567", project: "12345678", account: "50617",
                                    starts_at: Time.zone.now - 1.week, expires_at: Time.zone.now + 1.year)
-        BudgetedChartString.create(fund: '111', dept: '2222222', project: '33333333', account: '75340',
+        BudgetedChartString.create(fund: "111", dept: "2222222", project: "33333333", account: "75340",
                                    starts_at: Time.zone.now - 1.week, expires_at: Time.zone.now + 1.year)
-        BudgetedChartString.create(fund: '111', dept: '2222222', project: '33333333', account: '50617',
+        BudgetedChartString.create(fund: "111", dept: "2222222", project: "33333333", account: "50617",
                                    starts_at: Time.zone.now - 1.week, expires_at: Time.zone.now + 1.year)
         while line = file.readline.strip
           # parse, import line
           case
           when line =~ /^\d{4,4}\|/
             # chart string with fiscal year
-            tokens = line.split('|').map { |s| s.delete('-') }
+            tokens = line.split("|").map { |s| s.delete("-") }
             # build start_at, expires_at from fiscal year
             fiscal_year = tokens[0]
             starts_at   = SettingsHelper.fiscal_year(fiscal_year.to_i) # Time.zone.parse("#{fiscal_year}0901")
@@ -58,7 +58,7 @@ class BudgetedChartString < ActiveRecord::Base
             account = tokens[5]
           when line =~ /\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/
             # chart string with start and expire dates
-            tokens = line.split('|').map { |s| s.delete('-') }
+            tokens = line.split("|").map { |s| s.delete("-") }
             # parse fields
             fund = tokens[1]
             dept = tokens[2]

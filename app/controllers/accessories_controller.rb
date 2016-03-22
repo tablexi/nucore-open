@@ -19,7 +19,7 @@ class AccessoriesController < ApplicationController
     @order_details = update_data.order_details
 
     if update_data.valid?
-      flash[:notice] = t("controllers.accessories.create.success", accessories: helpers.pluralize(update_data.persisted_count, 'accessory'))
+      flash[:notice] = t("controllers.accessories.create.success", accessories: helpers.pluralize(update_data.persisted_count, "accessory"))
       respond_success
     else
       render :new, status: 406, layout: !request.xhr?

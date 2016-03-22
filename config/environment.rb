@@ -1,5 +1,5 @@
 # Load the rails application
-require File.expand_path('../application', __FILE__)
+require File.expand_path("../application", __FILE__)
 
 # Initialize the rails application
 Nucore::Application.initialize!
@@ -12,7 +12,7 @@ Nucore::Application.initialize!
 # https://github.com/rails/rails/pull/13247#issuecomment-32425844
 if Rails.version < "4"
   if defined?(ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter)
-    require File.expand_path('../../lib/patches/abstract_mysql_adapter', __FILE__)
+    require File.expand_path("../../lib/patches/abstract_mysql_adapter", __FILE__)
   end
 else
   raise "Remove the reference to the abstract_mysql_adapter patch in #{__FILE__} for Rails 4+"

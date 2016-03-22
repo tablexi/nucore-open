@@ -1,6 +1,6 @@
-require 'fast-aes'
-require 'active_support/secure_random'
-require 'base64'
+require "fast-aes"
+require "active_support/secure_random"
+require "base64"
 
 module Encryption
 

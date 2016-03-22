@@ -1,12 +1,12 @@
 require "rails_helper"
-require 'controller_spec_helper'
+require "controller_spec_helper"
 
 RSpec.describe FileUploadsController do
   render_views
 
   it "should route" do
-    expect(get: "/facilities/alpha/services/1/files/upload").to route_to(controller: 'file_uploads', action: 'upload', facility_id: 'alpha', product: 'services', product_id: '1')
-    expect(post: "/facilities/alpha/services/1/files").to route_to(controller: 'file_uploads', action: 'create', facility_id: 'alpha', product: 'services', product_id: '1')
+    expect(get: "/facilities/alpha/services/1/files/upload").to route_to(controller: "file_uploads", action: "upload", facility_id: "alpha", product: "services", product_id: "1")
+    expect(post: "/facilities/alpha/services/1/files").to route_to(controller: "file_uploads", action: "create", facility_id: "alpha", product: "services", product_id: "1")
     # params_from(:post, "/facilities/alpha/services/1/yui_files").should ==
     #   {:controller => 'file_uploads', :action => 'yui_create', :facility_id => 'alpha', :product => 'services', :product_id => '1'}
   end
@@ -20,16 +20,16 @@ RSpec.describe FileUploadsController do
     assert @service.valid?
   end
 
-  context 'upload info' do
+  context "upload info" do
 
     before :each do
       @method = :get
       @action = :upload
       @params = {
         facility_id: @authable.url_name,
-        product: 'services',
+        product: "services",
         product_id: @service.url_name,
-        file_type: 'info'
+        file_type: "info"
       }
     end
 
@@ -46,11 +46,11 @@ RSpec.describe FileUploadsController do
       @action = :create
       @params = {
         facility_id: @authable.url_name,
-        product: 'services',
+        product: "services",
         product_id: @service.url_name,
         stored_file: {
           name: "File 1",
-          file_type: 'info',
+          file_type: "info",
           file: fixture_file_upload("#{Rails.root}/spec/files/template1.txt")
         }
       }
@@ -58,21 +58,21 @@ RSpec.describe FileUploadsController do
 
     it_should_allow_managers_and_senior_staff_only :redirect do
       expect(assigns[:product]).to eq(@service)
-      expect(response).to redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, file_type: 'info'))
+      expect(response).to redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, file_type: "info"))
       expect(@service.reload.stored_files.size).to eq(1)
-      expect(@service.reload.stored_files.collect(&:name)).to eq(['File 1'])
+      expect(@service.reload.stored_files.collect(&:name)).to eq(["File 1"])
     end
 
     it "should render upload template when no file specified" do
-      @params[:stored_file][:file] = ''
+      @params[:stored_file][:file] = ""
       sign_in @admin
       do_request
-      is_expected.to render_template('upload')
+      is_expected.to render_template("upload")
     end
 
   end
 
-  context 'uploader_create' do
+  context "uploader_create" do
 
     before :each do
       @method = :post
@@ -80,11 +80,11 @@ RSpec.describe FileUploadsController do
       create_order_detail
       @params = {
         facility_id: @authable.url_name,
-        product: 'services',
+        product: "services",
         product_id: @service.url_name,
-        fileData: ActionDispatch::TestProcess.fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", 'application/x-shockwave-flash'),
+        fileData: ActionDispatch::TestProcess.fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", "application/x-shockwave-flash"),
         Filename: "#{Rails.root}/spec/files/flash_file.swf",
-        file_type: 'info',
+        file_type: "info",
         order_detail_id: @order_detail.id
       }
     end
@@ -95,7 +95,7 @@ RSpec.describe FileUploadsController do
 
     context "sample_result" do
       before :each do
-        @params.merge!(file_type: 'sample_result')
+        @params.merge!(file_type: "sample_result")
       end
 
       it_should_allow_all(facility_operators) do
@@ -105,7 +105,7 @@ RSpec.describe FileUploadsController do
 
   end
 
-  context 'product_survey' do
+  context "product_survey" do
 
     before :each do
       @method = :get
@@ -123,13 +123,13 @@ RSpec.describe FileUploadsController do
 
   end
 
-  context 'create_product_survey' do
+  context "create_product_survey" do
 
     before :each do
       @method = :post
       @action = :create_product_survey
       @survey_param = ExternalServiceManager.survey_service.name.underscore.to_sym
-      @ext_service_location = 'http://remote.surveysystem.com/surveys'
+      @ext_service_location = "http://remote.surveysystem.com/surveys"
       @params = {
         :facility_id => @authable.url_name,
         :product => @service.id,
@@ -140,7 +140,7 @@ RSpec.describe FileUploadsController do
       }
     end
 
-    it 'should do nothing if location not given' do
+    it "should do nothing if location not given" do
       @params[@survey_param] = nil
       maybe_grant_always_sign_in :director
       do_request
@@ -160,7 +160,7 @@ RSpec.describe FileUploadsController do
 
   end
 
-  context 'destroy' do
+  context "destroy" do
 
     before :each do
       @method = :delete
@@ -175,23 +175,23 @@ RSpec.describe FileUploadsController do
 
       @params = {
         facility_id: @authable.url_name,
-        product: 'services',
+        product: "services",
         product_id: @service.url_name,
         id: @file_upload.id
       }
     end
 
-    context 'info' do
+    context "info" do
       it_should_allow_managers_and_senior_staff_only :redirect
     end
 
-    context 'sample_result' do
+    context "sample_result" do
       before :each do
         @sample_result = FactoryGirl.create(:stored_file,
                                           order_detail_id: @order_detail.id,
                                           created_by: @staff.id,
                                           product: @service,
-                                          file_type: 'sample_result'
+                                          file_type: "sample_result"
                                          )
         @params.merge!(id: @sample_result.id)
       end

@@ -1,30 +1,30 @@
 class GeneralReportsController < ReportsController
 
   def product
-    render_report(0, 'Name') { |od| od.product.name }
+    render_report(0, "Name") { |od| od.product.name }
   end
 
   def account
-    render_report(1, 'Description') { |od| od.account }
+    render_report(1, "Description") { |od| od.account }
   end
 
   def account_owner
-    render_report(2, 'Name') do |od|
+    render_report(2, "Name") do |od|
       # Space at beginning is intentional to bubble it to the top of the list
       od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
     end
   end
 
   def purchaser
-    render_report(3, 'Name') { |od| format_username od.order.user }
+    render_report(3, "Name") { |od| format_username od.order.user }
   end
 
   def price_group
-    render_report(4, 'Name') { |od| od.price_policy ? od.price_policy.price_group.name : 'Unassigned' }
+    render_report(4, "Name") { |od| od.price_policy ? od.price_policy.price_group.name : "Unassigned" }
   end
 
   def assigned_to
-    render_report(5, 'Name') { |od| od.assigned_user.presence ? format_username(od.assigned_user) : 'Unassigned' }
+    render_report(5, "Name") { |od| od.assigned_user.presence ? format_username(od.assigned_user) : "Unassigned" }
   end
 
   private
@@ -38,7 +38,7 @@ class GeneralReportsController < ReportsController
     if request.xhr?
       render nothing: true
     else
-      flash[:notice] = I18n.t('controllers.reports.mail_queued', email: email_to_address)
+      flash[:notice] = I18n.t("controllers.reports.mail_queued", email: email_to_address)
       redirect_to send("#{action_name}_facility_general_reports_path", current_facility)
     end
   end
@@ -75,12 +75,12 @@ class GeneralReportsController < ReportsController
       @status_ids += stat.children.collect(&:id) if stat.root?
     end
 
-    @date_range_field = params[:date_range_field] || 'journal_or_statement_date'
+    @date_range_field = params[:date_range_field] || "journal_or_statement_date"
     super
   end
 
   def init_report_headers(report_on_label = nil)
-    @headers = [report_on_label, 'Quantity', 'Total Cost', 'Percent of Cost']
+    @headers = [report_on_label, "Quantity", "Total Cost", "Percent of Cost"]
   end
 
   def init_report_data(_report_on_label)

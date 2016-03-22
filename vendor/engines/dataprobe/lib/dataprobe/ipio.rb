@@ -8,8 +8,8 @@ module Dataprobe
     def initialize(host, options = {})
       @ip = host
       @port = options[:port] || 9100
-      @username = (options[:username].presence || 'user').ljust(21, "\x00")
-      @password = (options[:password].presence || 'user').ljust(21, "\x00")
+      @username = (options[:username].presence || "user").ljust(21, "\x00")
+      @password = (options[:password].presence || "user").ljust(21, "\x00")
     end
 
     def toggle(outlet, status)
@@ -26,14 +26,14 @@ module Dataprobe
       socket = hello_socket
       write_status_cmd socket
       reply = socket.recv 100
-      stats = reply.unpack 'C*'
+      stats = reply.unpack "C*"
       stats[outlet - 1] == 1
     ensure
       socket.close
     end
 
     def hex_s(int)
-      [int].pack 'C'
+      [int].pack "C"
     end
 
     private
@@ -46,9 +46,9 @@ module Dataprobe
 
     def update_sequence(socket)
       reply = socket.recv 2
-      seq = reply.unpack 's<'         #  Turn the two bytes received into an integer
+      seq = reply.unpack "s<"         #  Turn the two bytes received into an integer
       seq[0] += 1                     #  add 1 to it and turn it back to two bytes
-      seq.pack 's<'
+      seq.pack "s<"
     end
 
     def write_control_cmd(socket, mode, outlet)

@@ -13,7 +13,7 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
 
     PriceGroupProduct.reset_column_information
 
-    price_policies = PricePolicy.find(:all, conditions: ['start_date <= ? AND restrict_purchase != 1', Time.zone.now])
+    price_policies = PricePolicy.find(:all, conditions: ["start_date <= ? AND restrict_purchase != 1", Time.zone.now])
 
     price_policies.each do |pp|
       pgp = PriceGroupProduct.new(price_group: pp.price_group)
@@ -31,7 +31,7 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
       pgp.save!
     end
 
-    price_policies = PricePolicy.find(:all, conditions: 'restrict_purchase = 1')
+    price_policies = PricePolicy.find(:all, conditions: "restrict_purchase = 1")
     price_policies.each { |pp| pp.destroy }
   end
 

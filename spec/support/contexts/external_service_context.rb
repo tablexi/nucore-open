@@ -1,4 +1,4 @@
-RSpec.shared_context 'external service' do
+RSpec.shared_context "external service" do
 
   let(:external_service_passer) { create :external_service_passer, active: true }
   let(:external_service) { external_service_passer.external_service }
@@ -10,9 +10,9 @@ RSpec.shared_context 'external service' do
     external_service_id: external_service.id,
     external_service_passer_id: external_service_passer.id,
     quantity: external_service_receiver.receiver.quantity,
-    survey_id: 'CX-12345',
-    survey_url: 'http://survey.local/show',
-    survey_edit_url: 'http://survey.local/edit'
+    survey_id: "CX-12345",
+    survey_url: "http://survey.local/show",
+    survey_edit_url: "http://survey.local/edit"
   } 
   end
 

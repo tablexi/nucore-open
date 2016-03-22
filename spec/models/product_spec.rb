@@ -28,7 +28,7 @@ RSpec.describe Product do
       expect(@product.errors[:type]).not_to be_nil
     end
 
-    context 'with item' do
+    context "with item" do
       before :each do
         @item = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
       end
@@ -40,13 +40,13 @@ RSpec.describe Product do
         expect(PriceGroupProduct.find_by_product_id_and_price_group_id(@item.id, PriceGroup.external.first.id)).not_to be_nil
       end
 
-      it 'should give correct initial order status' do
+      it "should give correct initial order status" do
         os = OrderStatus.inprocess.first
         @item.update_attribute(:initial_order_status_id, os.id)
         expect(@item.initial_order_status).to eq(os)
       end
 
-      it 'should give default order status if status not set' do
+      it "should give default order status if status not set" do
         expect(Item.new.initial_order_status).to eq(OrderStatus.default_order_status)
       end
     end
@@ -121,10 +121,10 @@ RSpec.describe Product do
       end
     end
 
-    context 'email' do
+    context "email" do
       before :each do
-        @facility = FactoryGirl.create(:facility, email: 'facility@example.com')
-        @product = TestProduct.create!(contact_email: 'product@example.com', facility: @facility, name: 'Test Product', url_name: 'test')
+        @facility = FactoryGirl.create(:facility, email: "facility@example.com")
+        @product = TestProduct.create!(contact_email: "product@example.com", facility: @facility, name: "Test Product", url_name: "test")
       end
 
       before :all do
@@ -135,7 +135,7 @@ RSpec.describe Product do
         reset_settings
       end
 
-      context 'product specific enabled' do
+      context "product specific enabled" do
         before :all do
           @original_setting = SettingsHelper.feature_on? :product_specific_contacts
           SettingsHelper.enable_feature(:product_specific_contacts)
@@ -145,27 +145,27 @@ RSpec.describe Product do
         end
 
         it "should return the product's email if it has it" do
-          expect(@product.email).to eq('product@example.com')
+          expect(@product.email).to eq("product@example.com")
         end
         it "should return the facility's email if no product email" do
-          @product.contact_email = ''
-          expect(@product.email).to eq('facility@example.com')
+          @product.contact_email = ""
+          expect(@product.email).to eq("facility@example.com")
         end
-        it 'should validate with the product email set' do
+        it "should validate with the product email set" do
           expect(@product).to be_valid
         end
         it "should validate with the facility's email set" do
-          @product.contact_email = ''
+          @product.contact_email = ""
           expect(@product).to be_valid
         end
-        it 'should not validate without an email on either product or facility' do
-          @facility.update_attributes!(email: '')
-          @product.contact_email = ''
+        it "should not validate without an email on either product or facility" do
+          @facility.update_attributes!(email: "")
+          @product.contact_email = ""
           expect(@product).not_to be_valid
           expect(@product.errors.full_messages).to include "Contact email must be set on either the product or the facility"
         end
       end
-      context 'product specific disabled' do
+      context "product specific disabled" do
         before :all do
           @original_setting = SettingsHelper.feature_on? :product_specific_contacts
           SettingsHelper.enable_feature(:product_specific_contacts, false)
@@ -174,28 +174,28 @@ RSpec.describe Product do
           SettingsHelper.enable_feature(:product_specific_contacts, @original_setting)
         end
         it "should return the facility's email address even if the product has an email" do
-          expect(@product.email).to eq('facility@example.com')
+          expect(@product.email).to eq("facility@example.com")
         end
         it "should validate if the product email is set" do
           expect(@product).to be_valid
         end
         it "should validate if the product email is not set, but the the facility is" do
-          @product.contact_email = ''
+          @product.contact_email = ""
           expect(@product).to be_valid
         end
         it "should validate even if the facility's email is blank" do
-          @facility.update_attributes!(email: '')
-          @product.contact_email = ''
+          @facility.update_attributes!(email: "")
+          @product.contact_email = ""
           expect(@product).to be_valid
         end
       end
     end
 
-    context 'can_purchase?' do
+    context "can_purchase?" do
       class TestPricePolicy < PricePolicy
       end
       before :each do
-        @product = TestProduct.create!(facility: @facility, name: 'Test Product', url_name: 'test')
+        @product = TestProduct.create!(facility: @facility, name: "Test Product", url_name: "test")
         @price_group = FactoryGirl.create(:price_group, facility: @facility)
         @price_group2 = FactoryGirl.create(:price_group, facility: @facility)
         @user = FactoryGirl.create(:user)
@@ -204,17 +204,17 @@ RSpec.describe Product do
 
         @user_price_group_ids = @user.price_groups.map(&:id)
       end
-      it 'should not be purchasable if it is archived' do
+      it "should not be purchasable if it is archived" do
         @product.update_attributes is_archived: true
         expect(@product).not_to be_available_for_purchase
       end
 
-      it 'should not be purchasable if the facility is inactive' do
+      it "should not be purchasable if the facility is inactive" do
         @product.facility.update_attributes is_active: false
         expect(@product).not_to be_available_for_purchase
       end
 
-      it 'should not be purchasable if you pass it empty groups' do
+      it "should not be purchasable if you pass it empty groups" do
         expect(@product).not_to be_can_purchase([])
       end
 
@@ -258,7 +258,7 @@ RSpec.describe Product do
         expect(@product).not_to be_can_purchase(@user_price_group_ids)
       end
 
-      it 'should not be purchasable if the most recent expired policy is marked can_purchase = false' do
+      it "should not be purchasable if the most recent expired policy is marked can_purchase = false" do
         @price_policy = TestPricePolicy.create!(price_group: @price_group,
                                                 product: @product,
                                                 start_date: Time.zone.now - 7.days,
@@ -272,7 +272,7 @@ RSpec.describe Product do
         expect(@product).not_to be_can_purchase(@user_price_group_ids)
       end
 
-      it 'should be purchasable if the most recent expired policy is can_purchase, but old ones arent' do
+      it "should be purchasable if the most recent expired policy is can_purchase, but old ones arent" do
         @price_policy = TestPricePolicy.create!(price_group: @price_group,
                                                 product: @product,
                                                 start_date: Time.zone.now - 7.days,
@@ -286,7 +286,7 @@ RSpec.describe Product do
         expect(@product).to be_can_purchase(@user_price_group_ids)
       end
 
-      it 'should be purchasable if there is a current policy with can_purchase, but a future one that cant' do
+      it "should be purchasable if there is a current policy with can_purchase, but a future one that cant" do
         @current_price_policy = TestPricePolicy.create!(price_group: @price_group,
                                                         product: @product,
                                                         start_date: Time.zone.now - 7.days,
@@ -301,7 +301,7 @@ RSpec.describe Product do
         expect(@product).to be_can_purchase(@user_price_group_ids)
       end
 
-      it 'should not be purchasable if there is a current policy without can_purchase, but a future one that can' do
+      it "should not be purchasable if there is a current policy without can_purchase, but a future one that can" do
         @current_price_policy = TestPricePolicy.create!(price_group: @price_group,
                                                         product: @product,
                                                         start_date: Time.zone.now - 7.days,
@@ -314,7 +314,7 @@ RSpec.describe Product do
                                                         can_purchase: true)
         expect(@product).not_to be_can_purchase(@user_price_group_ids)
       end
-      it 'should be purchasable if there are no current policies, but two future policies, one of which is purchasable and one is not' do
+      it "should be purchasable if there are no current policies, but two future policies, one of which is purchasable and one is not" do
         expect(@product.current_price_policies).to be_empty
         @price_policy_pg1 = TestPricePolicy.create!(price_group: @price_group,
                                                     product: @product,
@@ -331,7 +331,7 @@ RSpec.describe Product do
         expect(@product).to be_can_purchase(@user_price_group_ids)
       end
 
-      it 'should not be purchasable if there are no current policies, and most recent for each group cannot can_purchase' do
+      it "should not be purchasable if there are no current policies, and most recent for each group cannot can_purchase" do
         @price_policy_pg1_1 = TestPricePolicy.create!(price_group: @price_group,
                                                       product: @product,
                                                       start_date: Time.zone.now - 7.days,
@@ -360,7 +360,7 @@ RSpec.describe Product do
       end
     end
 
-    describe 'accessories' do
+    describe "accessories" do
       before :each do
         create :accessory
         dup = ProductAccessory.first.dup
@@ -370,40 +370,40 @@ RSpec.describe Product do
 
       let(:product_accessory) { ProductAccessory.first.product }
 
-      it 'has 1 active accessory' do
+      it "has 1 active accessory" do
         expect(product_accessory.accessories.size).to eq 1
       end
 
-      it 'has 1 active product accessory' do
+      it "has 1 active product accessory" do
         expect(product_accessory.product_accessories.size).to eq 1
       end
     end
 
     context '#access_group_for_user' do
-      context 'with an access group' do
+      context "with an access group" do
         before :each do
           schedule_rule.product_access_groups = [access_group]
         end
 
-        context 'with a user in the access group' do
+        context "with a user in the access group" do
           before :each do
             product_user.product_access_group = access_group
             product_user.save
           end
 
-          it 'returns the access group' do
+          it "returns the access group" do
             expect(product.access_group_for_user(user)).to eq access_group
           end
         end
 
-        context 'with a user not in the access group' do
-          it 'returns no access group' do
+        context "with a user not in the access group" do
+          it "returns no access group" do
             expect(product.access_group_for_user(user)).to be_nil
           end
         end
       end
 
-      it 'without an access group' do
+      it "without an access group" do
         expect(product.access_group_for_user(user)).to be_nil
       end
     end
@@ -442,44 +442,44 @@ RSpec.describe Product do
     end
 
     context '#find_product_user' do
-      context 'when a user is a product user' do
-        it 'finds the product_user' do
+      context "when a user is a product user" do
+        it "finds the product_user" do
           expect(product.find_product_user(user)).to eq product_user
         end
       end
 
-      context 'when a user is not a product user' do
+      context "when a user is not a product user" do
         let(:other_user) { create(:user) }
 
-        it 'does not find a product_user' do
+        it "does not find a product_user" do
           expect(product.find_product_user(other_user)).to be_nil
         end
       end
     end
 
     context '#has_access_list?' do
-      context 'when its type supports access groups' do
-        context 'when it has an access group' do
+      context "when its type supports access groups" do
+        context "when it has an access group" do
           before :each do
             product.product_access_groups = [access_group]
           end
 
-          it 'has an access list' do
+          it "has an access list" do
             expect(product.has_access_list?).to be true
           end
         end
 
-        context 'when it has no access groups' do
-          it 'does not have an access list' do
+        context "when it has no access groups" do
+          it "does not have an access list" do
             expect(product.has_access_list?).to be false
           end
         end
       end
 
-      context 'when its type does not support access groups' do
+      context "when its type does not support access groups" do
         let(:generic_item) { build(:setup_item) }
 
-        it 'does not have an access list' do
+        it "does not have an access list" do
           expect(generic_item.has_access_list?).to be false
         end
       end

@@ -1,16 +1,16 @@
-require 'spec_helper'
+require "spec_helper"
 
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
-ENV["RAILS_ENV"] ||= 'test'
+ENV["RAILS_ENV"] ||= "test"
 require File.expand_path("../../config/environment", __FILE__)
-require 'rspec/rails'
-require 'shoulda/matchers'
+require "rspec/rails"
+require "shoulda/matchers"
 #
 # Check for engine factories. If they exist and the engine is in use load it up
-Dir[File.expand_path('vendor/engines/*', Rails.root)].each do |engine|
+Dir[File.expand_path("vendor/engines/*", Rails.root)].each do |engine|
   engine_name = File.basename engine
-  factory_file = File.join(engine, 'spec/factories.rb')
+  factory_file = File.join(engine, "spec/factories.rb")
   require factory_file if File.exist?(factory_file) && EngineManager.engine_loaded?(engine_name)
 end
 
@@ -47,14 +47,14 @@ RSpec.configure do |config|
     User.delete_all
 
     # initialize order status constants
-    @os_new        = OrderStatus.find_or_create_by_name('New')
-    @os_in_process = OrderStatus.find_or_create_by_name('In Process')
-    @os_complete   = OrderStatus.find_or_create_by_name('Complete')
-    @os_canceled   = OrderStatus.find_or_create_by_name('Canceled')
-    @os_reconciled = OrderStatus.find_or_create_by_name('Reconciled')
+    @os_new        = OrderStatus.find_or_create_by_name("New")
+    @os_in_process = OrderStatus.find_or_create_by_name("In Process")
+    @os_complete   = OrderStatus.find_or_create_by_name("Complete")
+    @os_canceled   = OrderStatus.find_or_create_by_name("Canceled")
+    @os_reconciled = OrderStatus.find_or_create_by_name("Reconciled")
 
     # initialize affiliates
-    Affiliate.find_or_create_by_name('Other')
+    Affiliate.find_or_create_by_name("Other")
 
     # initialize price groups
     @nupg = PriceGroup.find_or_create_by_name(name: Settings.price_group.name.base, is_internal: true, display_order: 1)

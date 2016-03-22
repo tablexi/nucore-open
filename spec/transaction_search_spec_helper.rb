@@ -2,8 +2,8 @@ def it_should_support_searching(date_range_field = :fulfilled_at)
   context "searching" do
     before :each do
       sign_in @user
-      @sql_datetime_format = '%Y-%m-%d %H:%M:%S'
-      @date_string = '2001-01-01'
+      @sql_datetime_format = "%Y-%m-%d %H:%M:%S"
+      @date_string = "2001-01-01"
       @datetime = Time.zone.parse(@date_string)
     end
     it "should support the inner method" do

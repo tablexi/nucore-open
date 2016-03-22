@@ -154,7 +154,7 @@ class AccountBuilder
   def build_account_users
     account.account_users.build(
       user_id: owner_user.id,
-      user_role: 'Owner',
+      user_role: "Owner",
       created_by: current_user.id,
     )
     account

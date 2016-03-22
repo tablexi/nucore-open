@@ -62,14 +62,14 @@ module Reservations::DateSupport
     unless @duration_value
       # default to minutes
       @duration_value = (reserve_end_at - reserve_start_at) / 60
-      @duration_unit  = 'minutes'
+      @duration_unit  = "minutes"
     end
     @duration_value.to_i
   end
 
   def duration_unit
     # default to minutes
-    @duration_unit ||= 'minutes'
+    @duration_unit ||= "minutes"
   end
 
   def duration_mins
@@ -207,9 +207,9 @@ module Reservations::DateSupport
     return if reserve_end_at.present? || reserve_start_at.blank?
     unless @duration_mins
       case @duration_unit
-      when 'minutes', 'minute'
+      when "minutes", "minute"
         @duration_mins = @duration_value.to_i
-      when 'hours', 'hour'
+      when "hours", "hour"
         @duration_mins = @duration_value.to_i * 60
       else
         @duration_mins = 0

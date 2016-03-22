@@ -3,7 +3,7 @@ class RemoveInvoiceDateFromStatements < ActiveRecord::Migration
   def self.up
     statements = Statement.all
     statements.each do |s|
-      details = OrderDetail.find(:all, conditions: ['statement_id = ? AND reviewed_at IS NULL', s.id])
+      details = OrderDetail.find(:all, conditions: ["statement_id = ? AND reviewed_at IS NULL", s.id])
       details.each do |od|
         od.reviewed_at = s.invoice_date
         od.save!

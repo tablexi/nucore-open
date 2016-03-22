@@ -1,4 +1,4 @@
-require 'set'
+require "set"
 
 class Journal < ActiveRecord::Base
 
@@ -36,7 +36,7 @@ class Journal < ActiveRecord::Base
   has_many                :journal_rows
   belongs_to              :facility
   has_many                :order_details, through: :journal_rows, uniq: true
-  belongs_to              :created_by_user, class_name: 'User', foreign_key: :created_by
+  belongs_to              :created_by_user, class_name: "User", foreign_key: :created_by
 
   validates_presence_of   :reference, :updated_by, on: :update
   validates_presence_of   :created_by
@@ -62,7 +62,7 @@ class Journal < ActiveRecord::Base
     allowed_ids = facilities.collect(&:id)
 
     if include_multi
-      Journal.includes(journal_rows: { order_detail: :order }).where('orders.facility_id IN (?)', allowed_ids).select('journals.*')
+      Journal.includes(journal_rows: { order_detail: :order }).where("orders.facility_id IN (?)", allowed_ids).select("journals.*")
     else
       Journal.where(facility_id: allowed_ids)
     end
@@ -88,7 +88,7 @@ class Journal < ActiveRecord::Base
       [facility_id]
     else
       order_details.joins(:order)
-                   .select('orders.facility_id')
+                   .select("orders.facility_id")
                    .collect(&:facility_id)
                    .uniq
     end
@@ -114,9 +114,9 @@ class Journal < ActiveRecord::Base
 
   def status_string
     if is_successful.nil?
-      'Pending'
+      "Pending"
     elsif is_successful? == false
-      'Failed'
+      "Failed"
     else
       reconciled? ? "Successful, reconciled" : "Successful, not reconciled"
     end
@@ -128,7 +128,7 @@ class Journal < ActiveRecord::Base
     elsif !successful?
       true
     else
-      details = OrderDetail.find(:all, conditions: ['journal_id = ? AND state <> ?', id, 'reconciled'])
+      details = OrderDetail.find(:all, conditions: ["journal_id = ? AND state <> ?", id, "reconciled"])
       details.empty? ? true : false
     end
   end

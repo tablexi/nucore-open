@@ -8,8 +8,8 @@ RSpec.describe ServicesController do
   render_views
 
   it "should route" do
-    expect(get: "/facilities/alpha/services").to route_to(controller: 'services', action: 'index', facility_id: 'alpha')
-    expect(get: "/facilities/alpha/services/1/manage").to route_to(controller: 'services', action: 'manage', id: '1', facility_id: 'alpha')
+    expect(get: "/facilities/alpha/services").to route_to(controller: "services", action: "index", facility_id: "alpha")
+    expect(get: "/facilities/alpha/services/1/manage").to route_to(controller: "services", action: "manage", id: "1", facility_id: "alpha")
   end
 
   before(:all) { create_users }
@@ -31,7 +31,7 @@ RSpec.describe ServicesController do
     it_should_allow_operators_only do
       expect(assigns[:services]).to eq([@service])
       expect(response).to be_success
-      expect(response).to render_template('services/index')
+      expect(response).to render_template("services/index")
     end
   end
 
@@ -46,13 +46,13 @@ RSpec.describe ServicesController do
       do_request
       expect(assigns[:service]).to eq(@service)
       expect(response).to be_success
-      expect(response).to render_template('services/show')
+      expect(response).to render_template("services/show")
     end
 
     it_should_allow_all facility_users do
       expect(assigns[:service]).to eq(@service)
       expect(response).to be_success
-      expect(response).to render_template('services/show')
+      expect(response).to render_template("services/show")
     end
 
     it "should fail without a valid account" do
@@ -60,7 +60,7 @@ RSpec.describe ServicesController do
       do_request
       expect(flash).not_to be_empty
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq('no_accounts')
+      expect(assigns[:error]).to eq("no_accounts")
     end
 
     context "when the service requires approval" do
@@ -132,7 +132,7 @@ RSpec.describe ServicesController do
     end
   end
 
-  context 'new' do
+  context "new" do
     before :each do
       @method = :get
       @action = :new
@@ -144,7 +144,7 @@ RSpec.describe ServicesController do
     end
   end
 
-  context 'edit' do
+  context "edit" do
     before :each do
       @method = :get
       @action = :edit
@@ -152,11 +152,11 @@ RSpec.describe ServicesController do
     end
 
     it_should_allow_managers_only do
-      is_expected.to render_template 'edit'
+      is_expected.to render_template "edit"
     end
   end
 
-  context 'create' do
+  context "create" do
     before :each do
       @method = :post
       @action = :create
@@ -171,7 +171,7 @@ RSpec.describe ServicesController do
     end
   end
 
-  context 'update' do
+  context "update" do
     before :each do
       @method = :put
       @action = :update
@@ -185,7 +185,7 @@ RSpec.describe ServicesController do
     end
   end
 
-  context 'destroy' do
+  context "destroy" do
     before :each do
       @method = :delete
       @action = :destroy
@@ -208,7 +208,7 @@ RSpec.describe ServicesController do
 
     it_should_allow_operators_only do
       expect(response).to be_success
-      expect(response).to render_template('services/manage')
+      expect(response).to render_template("services/manage")
     end
   end
 end

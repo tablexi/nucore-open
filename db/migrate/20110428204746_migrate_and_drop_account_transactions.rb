@@ -18,7 +18,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
         od.journal = journal
 
         if journal.is_successful? == true
-          od.state = 'reconciled'
+          od.state = "reconciled"
           od.order_status = OrderStatus.reconciled.first
         end
       end
@@ -29,7 +29,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
       od.save!
     end
 
-    OrderDetail.where(state: ['inprocess', 'new']).each do |od|
+    OrderDetail.where(state: ["inprocess", "new"]).each do |od|
       od.estimated_cost = od.actual_cost
       od.estimated_subsidy = od.actual_subsidy
       od.actual_cost = nil

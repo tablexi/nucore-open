@@ -8,10 +8,10 @@ class ProductAccessGroupsController < ApplicationController
   load_and_authorize_resource :instrument, through: :facility, find_by: :url_name
   load_and_authorize_resource :product_access_group, through: :instrument
 
-  layout 'two_column'
+  layout "two_column"
   
   def initialize
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
     super
   end
   

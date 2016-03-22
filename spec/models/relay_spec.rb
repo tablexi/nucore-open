@@ -6,7 +6,7 @@ RSpec.describe Relay do
   it { is_expected.to allow_mass_assignment_of :instrument_id }
   it { is_expected.to allow_mass_assignment_of :type }
 
-  context 'with relay' do
+  context "with relay" do
 
     before :each do
       @facility         = create(:facility)
@@ -19,8 +19,8 @@ RSpec.describe Relay do
       @relay            = create(:relay_syna, instrument: @instrument)
     end
 
-    describe 'validating uniqueness' do
-      it 'does not allow two different instruments to have the same IP/port' do
+    describe "validating uniqueness" do
+      it "does not allow two different instruments to have the same IP/port" do
         instrument2 = create :instrument,
                              facility: @facility,
                              facility_account: @facility_account,
@@ -29,7 +29,7 @@ RSpec.describe Relay do
         expect(relay2).to_not be_valid
       end
 
-      it 'allows two shared schedule instruments to include the same IP/port' do
+      it "allows two shared schedule instruments to include the same IP/port" do
         instrument2 = create :instrument,
                              facility: @facility,
                              facility_account: @facility_account,
@@ -41,11 +41,11 @@ RSpec.describe Relay do
 
     end
 
-    it 'should alias host to ip' do
+    it "should alias host to ip" do
       expect(@relay.host).to eq(@relay.ip)
     end
 
-    context 'dummy relay' do
+    context "dummy relay" do
 
       before :each do
         @relay.destroy
@@ -53,12 +53,12 @@ RSpec.describe Relay do
         @relay = RelayDummy.create!(instrument_id: @instrument.id)
       end
 
-      it 'should turn on the relay' do
+      it "should turn on the relay" do
         @relay.activate
         expect(@relay.get_status).to eq(true)
       end
 
-      it 'should turn off the relay' do
+      it "should turn off the relay" do
         @relay.deactivate
         expect(@relay.get_status).to eq(false)
       end

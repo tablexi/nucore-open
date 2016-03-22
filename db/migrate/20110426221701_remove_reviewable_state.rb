@@ -1,7 +1,7 @@
 class RemoveReviewableState < ActiveRecord::Migration
 
   def self.up
-    reviewable = OrderStatus.find_by_name('Reviewable')
+    reviewable = OrderStatus.find_by_name("Reviewable")
     inprocess = OrderStatus.inprocess.first
     if inprocess
       execute("UPDATE order_details SET order_status_id=#{inprocess.id},state='inprocess' WHERE order_status_id=#{reviewable.id} AND state='reviewable'")
@@ -21,7 +21,7 @@ class RemoveReviewableState < ActiveRecord::Migration
   end
 
   def self.down
-    OrderStatus.create!(name: 'Reviewable')
+    OrderStatus.create!(name: "Reviewable")
   end
 
 end

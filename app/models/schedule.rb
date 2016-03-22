@@ -5,7 +5,7 @@ class Schedule < ActiveRecord::Base
   # --------
   belongs_to :facility
 
-  has_many :products, class_name: 'Instrument'
+  has_many :products, class_name: "Instrument"
   has_many :reservations, through: :products
 
   # Validations

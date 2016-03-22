@@ -8,7 +8,7 @@ class ChangeJournalRowsValuesToStrings < ActiveRecord::Migration
     add_column :journal_rows, :program_string,  :string, limit: 4, null: true,  after: :program
     add_column :journal_rows, :account_string,  :string, limit: 5, null: true, after: :account
 
-    execute 'UPDATE journal_rows SET fund_string = fund, dept_string = dept, project_string = project, activity_string = activity, program_string = program, account_string = account'
+    execute "UPDATE journal_rows SET fund_string = fund, dept_string = dept, project_string = project, activity_string = activity, program_string = program, account_string = account"
 
     remove_column :journal_rows, :fund
     remove_column :journal_rows, :dept

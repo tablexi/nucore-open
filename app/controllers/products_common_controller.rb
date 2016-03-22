@@ -11,20 +11,20 @@ class ProductsCommonController < ApplicationController
   include TranslationHelper
   load_and_authorize_resource except: [:show, :manage]
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
     super
   end
 
   # GET /services
   def index
-    @product_name = self.class.name.gsub(/Controller$/, '')
+    @product_name = self.class.name.gsub(/Controller$/, "")
 
     @archived_product_count     = current_facility_products.archived.length
     @not_archived_product_count = current_facility_products.not_archived.length
-    @products = if params[:archived].nil? || params[:archived] != 'true'
+    @products = if params[:archived].nil? || params[:archived] != "true"
                   current_facility_products.not_archived
                 else
                   current_facility_products.archived
@@ -147,7 +147,7 @@ class ProductsCommonController < ApplicationController
 
   def manage
     authorize! :view_details, @product
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
   end
 
   private

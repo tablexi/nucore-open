@@ -7,10 +7,10 @@ class SurveysController < ApplicationController
   before_filter :init_service
   before_filter :init_survey, only: [:activate, :deactivate]
 
-  load_and_authorize_resource class: 'ExternalService'
+  load_and_authorize_resource class: "ExternalService"
 
   def initialize
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
     super
   end
 

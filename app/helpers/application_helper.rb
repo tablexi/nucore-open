@@ -38,8 +38,8 @@ module ApplicationHelper
 
   def sortable(column, title = nil)
     title ||= column.titleize
-    direction = column == sort_column && sort_direction == 'asc' ? 'desc' : 'asc'
-    link_to title, { sort: column, dir: direction }, class: (column == sort_column ? sort_direction : 'sortable')
+    direction = column == sort_column && sort_direction == "asc" ? "desc" : "asc"
+    link_to title, { sort: column, dir: direction }, class: (column == sort_column ? sort_direction : "sortable")
   end
 
   #
@@ -58,7 +58,7 @@ module ApplicationHelper
 
   def show_currency(order_detail, method)
     val = order_detail.method(method).call
-    val ? h(number_to_currency(val)) : ''
+    val ? h(number_to_currency(val)) : ""
   end
 
   def menu_facilities

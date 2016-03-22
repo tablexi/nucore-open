@@ -26,16 +26,16 @@ module Reservations::RelaySupport
 
   def can_kill_power?
     return false if actual_start_at.nil?
-    return false unless Reservation.find(:first, conditions: ['actual_start_at > ? AND product_id = ? AND id <> ? AND actual_end_at IS NULL', actual_start_at, product_id, id]).nil?
+    return false unless Reservation.find(:first, conditions: ["actual_start_at > ? AND product_id = ? AND id <> ? AND actual_end_at IS NULL", actual_start_at, product_id, id]).nil?
     true
   end
-  deprecate can_kill_power?: 'Most likely not used anywhere'
+  deprecate can_kill_power?: "Most likely not used anywhere"
 
   def other_reservations_using_relay
     order_detail.reservation.product.schedule.reservations
                 .active
                 .relay_in_progress
-                .where(order_details: { state: ['new', 'inprocess', nil] })
+                .where(order_details: { state: ["new", "inprocess", nil] })
                 .not_this_reservation(self)
   end
 

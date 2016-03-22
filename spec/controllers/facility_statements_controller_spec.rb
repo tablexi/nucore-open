@@ -1,6 +1,6 @@
 require "rails_helper"
-require 'controller_spec_helper'
-require 'transaction_search_spec_helper'
+require "controller_spec_helper"
+require "transaction_search_spec_helper"
 
 if Account.config.statements_enabled?
 
@@ -37,7 +37,7 @@ if Account.config.statements_enabled?
       @params = { facility_id: @authable.url_name }
     end
 
-    context 'index' do
+    context "index" do
 
       before :each do
         @method = :get
@@ -120,7 +120,7 @@ if Account.config.statements_enabled?
       end
     end
 
-    context 'show' do
+    context "show" do
 
       before :each do
         @method = :get

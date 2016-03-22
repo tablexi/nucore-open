@@ -12,7 +12,7 @@ class FacilityOrderDetailsController < ApplicationController
   helper_method :new_or_in_process_orders, :disputed_orders
 
   def initialize
-    @active_tab = 'admin_orders'
+    @active_tab = "admin_orders"
     super
   end
 
@@ -26,13 +26,13 @@ class FacilityOrderDetailsController < ApplicationController
     if @order.to_be_merged?
       begin
         @order_detail.destroy
-        flash[:notice] = I18n.t 'controllers.facility_order_details.destroy.success'
+        flash[:notice] = I18n.t "controllers.facility_order_details.destroy.success"
       rescue => e
         Rails.logger.error "#{e.message}:#{e.backtrace.join("\n")}"
-        flash[:error] = I18n.t 'controllers.facility_order_details.destroy.error', @order_detail.to_s
+        flash[:error] = I18n.t "controllers.facility_order_details.destroy.error", @order_detail.to_s
       end
     else
-      flash[:notice] = I18n.t 'controllers.facility_order_details.destroy.notice'
+      flash[:notice] = I18n.t "controllers.facility_order_details.destroy.notice"
       return redirect_to facility_order_path(current_facility, @order)
     end
 

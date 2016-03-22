@@ -3,8 +3,8 @@ FactoryGirl.define do
     sequence(:name, "AAAAAAAA") { |n| "Facility#{n}" }
     sequence(:email) { |n| "facility-#{n}@example.com" }
     sequence(:abbreviation) { |n| "FA#{n}" }
-    short_description 'Short Description'
-    description 'Facility Description'
+    short_description "Short Description"
+    description "Facility Description"
     is_active true
     sequence(:url_name) { |n| "facility#{n}" }
   end

@@ -16,7 +16,7 @@ class FacilityOrdersController < ApplicationController
   include FacilityOrderStatusHelper
 
   def initialize
-    @active_tab = 'admin_orders'
+    @active_tab = "admin_orders"
     super
   end
 
@@ -66,7 +66,7 @@ class FacilityOrdersController < ApplicationController
     quantity = params[:product_add_quantity].to_i
 
     if quantity <= 0
-      flash[:notice] = I18n.t 'controllers.facility_orders.update.zero_quantity'
+      flash[:notice] = I18n.t "controllers.facility_orders.update.zero_quantity"
     else
       add_to_order(product, quantity, original_order)
     end
@@ -109,14 +109,14 @@ class FacilityOrdersController < ApplicationController
       end
 
       if notifications
-        flash[:error] = I18n.t 'controllers.facility_orders.update.notices', product: product.name
+        flash[:error] = I18n.t "controllers.facility_orders.update.notices", product: product.name
       else
-        flash[:notice] = I18n.t 'controllers.facility_orders.update.success', product: product.name
+        flash[:notice] = I18n.t "controllers.facility_orders.update.success", product: product.name
       end
     rescue => e
       Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
       @order.destroy if @order != original_order
-      flash[:error] = I18n.t 'controllers.facility_orders.update.error', product: product.name
+      flash[:error] = I18n.t "controllers.facility_orders.update.error", product: product.name
     end
   end
 

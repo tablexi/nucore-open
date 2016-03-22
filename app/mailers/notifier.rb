@@ -6,14 +6,14 @@ class Notifier < ActionMailer::Base
   add_template_helper OrdersHelper
   add_template_helper ViewHookHelper
 
-  default from: Settings.email.from, content_type: 'multipart/alternative'
+  default from: Settings.email.from, content_type: "multipart/alternative"
 
   # Welcome user, login credentials.  CC to PI and Department Admin.
   # Who created the account.  How to update.
   def new_user(args)
     @user = args[:user]
     @password = args[:password]
-    send_nucore_mail args[:user].email, t('notifier.new_user.subject')
+    send_nucore_mail args[:user].email, t("notifier.new_user.subject")
   end
 
   # When a new chart string/PO/CC is added to CoreFac, an email is sent
@@ -22,7 +22,7 @@ class Notifier < ActionMailer::Base
   def new_account(args)
     @user = args[:user]
     @account = args[:account]
-    send_nucore_mail args[:user].email, t('notifier.new_account.subject')
+    send_nucore_mail args[:user].email, t("notifier.new_account.subject")
   end
 
   # Changes to the user affecting the PI or department will alert their
@@ -31,7 +31,7 @@ class Notifier < ActionMailer::Base
     @user = args[:user]
     @account = args[:account]
     @created_by = args[:created_by]
-    send_nucore_mail @account.owner.user.email, t('notifier.user_update.subject')
+    send_nucore_mail @account.owner.user.email, t("notifier.user_update.subject")
   end
 
   # Any changes to the financial accounts will alert the PI(s), admin(s)
@@ -40,7 +40,7 @@ class Notifier < ActionMailer::Base
   def account_update(args)
     @user = args[:user]
     @account = args[:account]
-    send_nucore_mail args[:user].email, t('notifier.account_update.subject')
+    send_nucore_mail args[:user].email, t("notifier.account_update.subject")
   end
 
   # Custom order forms send out a confirmation email when filled out by a
@@ -48,14 +48,14 @@ class Notifier < ActionMailer::Base
   def order_receipt(args)
     @user = args[:user]
     @order = args[:order]
-    send_nucore_mail args[:user].email, t('notifier.order_receipt.subject')
+    send_nucore_mail args[:user].email, t("notifier.order_receipt.subject")
   end
 
   def review_orders(args)
     @user = User.find(args[:user_id])
     @facility = Facility.find(args[:facility_id])
     @account = Account.find(args[:account_id])
-    send_nucore_mail @user.email, t('notifier.review_orders.subject')
+    send_nucore_mail @user.email, t("notifier.review_orders.subject")
   end
 
   # Billing sends out the statement for the month. Appropriate users get
@@ -67,7 +67,7 @@ class Notifier < ActionMailer::Base
     @account = args[:account]
     @statement = args[:statement]
     attach_statement_pdf
-    send_nucore_mail args[:user].email, t('notifier.statement.subject')
+    send_nucore_mail args[:user].email, t("notifier.statement.subject")
   end
 
   def order_detail_status_change(order_detail, old_status, new_status, to)
@@ -82,7 +82,7 @@ class Notifier < ActionMailer::Base
 
   def attach_statement_pdf
     attachments[statement_pdf.filename] = {
-      mime_type: 'application/pdf',
+      mime_type: "application/pdf",
       content: statement_pdf.render,
     }
   end

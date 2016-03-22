@@ -9,21 +9,21 @@ class StatementsController < ApplicationController
   load_and_authorize_resource
 
   def initialize
-    @active_tab = 'accounts'
+    @active_tab = "accounts"
     super
   end
 
   # GET /accounts/:account_id/facilities/:facility_id/statements/:id
   def show
-    action = 'show'
-    @active_tab = 'accounts'
+    action = "show"
+    @active_tab = "accounts"
 
     case params[:id]
-    when 'recent'
+    when "recent"
       @order_details = @account.order_details.for_facility_with_price_policy(@facility)
         @order_details = @order_details.paginate(page: params[:page])
-    when 'list'
-      action = 'list'
+    when "list"
+      action = "list"
         @statements = @statements.paginate(page: params[:page])
     end
 
@@ -31,7 +31,7 @@ class StatementsController < ApplicationController
       format.html { render action: action }
       format.pdf do
         @statement_pdf = StatementPdfFactory.instance(@statement, params[:show].blank?)
-        render action: 'show'
+        render action: "show"
       end
     end
   end

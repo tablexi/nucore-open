@@ -8,10 +8,10 @@ class ScheduleRulesController < ApplicationController
 
   load_and_authorize_resource
 
-  layout 'two_column'
+  layout "two_column"
 
   def initialize
-    @active_tab = 'admin_products'
+    @active_tab = "admin_products"
     super
   end
 
@@ -47,7 +47,7 @@ class ScheduleRulesController < ApplicationController
 
     respond_to do |format|
       if @schedule_rule.save
-        flash[:notice] = 'Schedule Rule was successfully created.'
+        flash[:notice] = "Schedule Rule was successfully created."
         format.html { redirect_to(facility_instrument_schedule_rules_path(current_facility, @instrument)) }
       else
         format.html { render action: "new" }
@@ -64,7 +64,7 @@ class ScheduleRulesController < ApplicationController
     params[:schedule_rule][:product_access_group_ids] ||= []
     respond_to do |format|
       if @schedule_rule.update_attributes(params[:schedule_rule])
-        flash[:notice] = 'Schedule Rule was successfully updated.'
+        flash[:notice] = "Schedule Rule was successfully updated."
         format.html { redirect_to(facility_instrument_schedule_rules_path(current_facility, @instrument)) }
       else
         format.html { render action: "edit" }

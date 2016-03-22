@@ -3,8 +3,8 @@ class PriceGroup < ActiveRecord::Base
   belongs_to :facility
   has_many   :order_details, through: :price_policies, dependent: :restrict
   has_many   :price_group_members, dependent: :destroy
-  has_many   :user_price_group_members, class_name: 'UserPriceGroupMember'
-  has_many   :account_price_group_members, class_name: 'AccountPriceGroupMember'
+  has_many   :user_price_group_members, class_name: "UserPriceGroupMember"
+  has_many   :account_price_group_members, class_name: "AccountPriceGroupMember"
 
   has_many   :price_policies, dependent: :destroy
 
@@ -12,7 +12,7 @@ class PriceGroup < ActiveRecord::Base
   validates_presence_of   :name
   validates_uniqueness_of :name, scope: :facility_id
 
-  default_scope order: 'is_internal DESC, display_order ASC, name ASC'
+  default_scope order: "is_internal DESC, display_order ASC, name ASC"
 
   before_destroy :is_not_global
   before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil? }
@@ -44,7 +44,7 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def type_string
-    is_internal? ? 'Internal' : 'External'
+    is_internal? ? "Internal" : "External"
   end
 
   def master_internal?

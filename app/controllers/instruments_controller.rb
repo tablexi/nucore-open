@@ -101,7 +101,7 @@ class InstrumentsController < ProductsCommonController
     @header_prefix = "Edit"
 
     if @instrument.update_attributes(params[:instrument])
-      flash[:notice] = 'Instrument was successfully updated.'
+      flash[:notice] = "Instrument was successfully updated."
       return redirect_to(manage_facility_instrument_path(current_facility, @instrument))
     end
 
@@ -110,11 +110,11 @@ class InstrumentsController < ProductsCommonController
 
   # GET /facilities/:facility_id/instruments/:instrument_id/schedule
   def schedule
-    @admin_reservations = @instrument.schedule.reservations.where('reserve_end_at > ? AND order_detail_id IS NULL', Time.zone.now).order("reserve_start_at ASC")
+    @admin_reservations = @instrument.schedule.reservations.where("reserve_end_at > ? AND order_detail_id IS NULL", Time.zone.now).order("reserve_start_at ASC")
   end
 
   def public_schedule
-    render layout: 'application'
+    render layout: "application"
   end
 
   def set_default_lock_window
@@ -168,14 +168,14 @@ class InstrumentsController < ProductsCommonController
 
   # GET /facilities/:facility_id/instruments/:instrument_id/switch
   def switch
-    raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == 'on' || params[:switch] == 'off')
+    raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == "on" || params[:switch] == "off")
 
     begin
       relay = @instrument.relay
       status = true
 
       if SettingsHelper.relays_enabled_for_admin?
-        status = (params[:switch] == 'on' ? relay.activate : relay.deactivate)
+        status = (params[:switch] == "on" ? relay.activate : relay.deactivate)
       end
 
       @status = @instrument.instrument_statuses.create!(is_on: status)
