@@ -4,7 +4,7 @@ class AddJournalsTable < ActiveRecord::Migration
     create_table :journals do |t|
       t.references :facility,       :null => false
       t.string     :reference,      :null => true, :limit => 50
-      t.string     :description,    :null => true,  :limit => 200
+      t.string     :description,    :null => true, :limit => 200
       t.boolean    :is_successful,  :null => true
       t.integer    :created_by,     :null => false
       t.datetime   :created_at,     :null => false

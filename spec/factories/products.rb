@@ -13,7 +13,7 @@ FactoryGirl.define do
       end
 
       sequence(:name) { |n| "Instrument #{n}" }
-      sequence(:url_name) { |n| "instrument#{n}"  }
+      sequence(:url_name) { |n| "instrument#{n}" }
       min_reserve_mins 60
       max_reserve_mins 120
       reserve_interval 1

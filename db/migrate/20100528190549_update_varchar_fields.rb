@@ -29,9 +29,9 @@ class UpdateVarcharFields < ActiveRecord::Migration
   end
 
   def self.down
-    change_column :facilities, :account,       :string, :limit => 100,  :null => false
+    change_column :facilities, :account,       :string, :limit => 100, :null => false
 
-    add_column    :facilities, :description_v, :varchar, :limit => 4000,   :null => true
+    add_column    :facilities, :description_v, :varchar, :limit => 4000, :null => true
     execute "UPDATE facilities SET description_v = description"
     remove_column :facilities, :description
     rename_column :facilities, :description_v, :description

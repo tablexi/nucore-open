@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
-gem 'rails',            '3.2.22.2'
+gem 'rails', '3.2.22.2'
 gem "strong_parameters"
 gem 'rails_config',     '0.3.3'
 
@@ -49,7 +49,7 @@ gem 'spreadsheet',      '~> 0.6.5.5'
 gem 'fast-aes',         '0.1.1'
 gem 'pdf-reader',       '1.3.3'
 gem 'exception_notification', '~> 4.0.1'
-gem 'daemons',          '1.1.9'
+gem 'daemons', '1.1.9'
 gem 'lograge'
 gem 'logstash-event'
 
@@ -82,7 +82,7 @@ end
 gem 'test-unit', '~> 3.0'
 
 group :development, :test do
-  gem 'awesome_print',     '1.1.0'
+  gem 'awesome_print', '1.1.0'
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'guard-rspec', require: false
   gem 'guard-teaspoon', require: false
@@ -92,12 +92,12 @@ group :development, :test do
   gem 'rspec-rails',       '~> 3.3.0'
   gem 'shoulda-matchers',  '~> 2.8.0', require: false
   gem 'rspec-collection_matchers'
-  gem 'single_test',       '0.4.0'
+  gem 'single_test', '0.4.0'
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'teaspoon-jasmine'
   gem 'thin'
-  gem 'timecop',           '~> 0.6.3'
+  gem 'timecop', '~> 0.6.3'
 end
 
 group :test do
@@ -115,6 +115,6 @@ group :assets do
 end
 
 group :oracle do
-  gem 'ruby-oci8',        '~> 2.2.0'
+  gem 'ruby-oci8', '~> 2.2.0'
   gem 'activerecord-oracle_enhanced-adapter', '1.4.3'
 end

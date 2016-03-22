@@ -7,7 +7,7 @@ def define_purchasable_instrument
   @instrument_pp = FactoryGirl.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
   FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)
   # default rule, 9am - 5pm all days
-  @rule          = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+  @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
   define_open_account(@instrument.account, @account.account_number)
 end
 
@@ -128,7 +128,7 @@ RSpec.describe Order do
 
   context "validate_order state transition" do
     before(:each) do
-      @facility     = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group  = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
       @order_status = FactoryGirl.create(:order_status)
@@ -137,7 +137,7 @@ RSpec.describe Order do
       @user         = FactoryGirl.create(:user)
       @account      = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       create(:account_price_group_member, account: @account, price_group: @price_group)
-      @order        = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
+      @order = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
     end
 
     it "should not validate_order if there are no order_details" do
@@ -148,7 +148,7 @@ RSpec.describe Order do
 
   context "purchase state transition" do
     before(:each) do
-      @facility     = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group  = FactoryGirl.create(:price_group, facility: @facility)
       @order_status = FactoryGirl.create(:order_status)
@@ -158,7 +158,7 @@ RSpec.describe Order do
       @user         = FactoryGirl.create(:user)
       @account      = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       create(:account_price_group_member, account: @account, price_group: @price_group)
-      @order        = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
+      @order = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
     end
 
     it "should not allow purchase if the state is not :validated" do
@@ -226,14 +226,14 @@ RSpec.describe Order do
       @instrument_pp = FactoryGirl.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
       FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)
       # default rule, 9am - 5pm all days
-      @rule          = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       define_open_account(@instrument.account, @account.account_number)
-      @order_detail  = @order.order_details.create(product_id: @instrument.id,    quantity: 1,
+      @order_detail  = @order.order_details.create(product_id: @instrument.id, quantity: 1,
                                                    price_policy_id: @instrument_pp.id, account_id: @account.id,
                                                    estimated_cost: 10, estimated_subsidy: 5, created_by: 0)
       @reservation   = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 9,
-                                                       reserve_start_min: 00,               reserve_start_meridian: "am",
-                                                       duration_value: 60,               duration_unit: "minutes",
+                                                       reserve_start_min: 00, reserve_start_meridian: "am",
+                                                       duration_value: 60, duration_unit: "minutes",
                                                        order_detail: @order_detail)
       expect(@order.validate_order!).to be true
 
@@ -266,9 +266,9 @@ RSpec.describe Order do
       @user            = FactoryGirl.create(:user)
       @account         = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       create(:account_price_group_member, account: @account, price_group: @price_group)
-      @cart            = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account))
+      @cart = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account))
 
-      @item           = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+      @item = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     end
 
     context "#add" do

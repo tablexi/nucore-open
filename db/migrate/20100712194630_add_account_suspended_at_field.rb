@@ -2,7 +2,7 @@ class AddAccountSuspendedAtField < ActiveRecord::Migration
 
   def self.up
     change_table :accounts do |t|
-      t.datetime  :suspended_at
+      t.datetime :suspended_at
     end
   end
 

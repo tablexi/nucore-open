@@ -29,7 +29,7 @@ class ScheduleRulesController < ApplicationController
 
   # GET /schedule_rules/new
   def new
-    @schedule_rule  = ScheduleRule.new
+    @schedule_rule = ScheduleRule.new
     @schedule_rule.start_hour    = 9
     @schedule_rule.start_min     = 0
     @schedule_rule.end_hour      = 17
@@ -57,7 +57,7 @@ class ScheduleRulesController < ApplicationController
 
   # PUT /schedule_rules/1
   def update
-    @schedule_rule  = ScheduleRule.find(params[:id])
+    @schedule_rule = ScheduleRule.find(params[:id])
     # TODO: 404 protection for non inst, facil rules
 
     # if there are no boxes checked, remove them all
@@ -74,7 +74,7 @@ class ScheduleRulesController < ApplicationController
 
   # DELETE /schedule_rules/1
   def destroy
-    @schedule_rule  = ScheduleRule.find(params[:id])
+    @schedule_rule = ScheduleRule.find(params[:id])
     # TODO: 404 on inappropriate schedule rules
     @schedule_rule.destroy
 
@@ -84,7 +84,7 @@ class ScheduleRulesController < ApplicationController
   end
 
   def init_instrument
-    @instrument     = current_facility.instruments.find_by_url_name!(params[:instrument_id])
+    @instrument = current_facility.instruments.find_by_url_name!(params[:instrument_id])
   end
 
 end

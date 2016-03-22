@@ -7,8 +7,8 @@ class AddBudgetedChartString < ActiveRecord::Migration
       t.string    :project,     :limit => 20
       t.string    :activity,    :limit => 20
       t.string    :account,     :limit => 20
-      t.datetime  :starts_at,    :null => false
-      t.datetime  :expires_at,  :null => false
+      t.datetime  :starts_at, :null => false
+      t.datetime  :expires_at, :null => false
     end
   end
 

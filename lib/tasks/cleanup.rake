@@ -1,4 +1,4 @@
-namespace :cleanup  do
+namespace :cleanup do
   namespace :accounts do
     desc "clean up accounts.expires_at column"
     task :expires_at => :environment do

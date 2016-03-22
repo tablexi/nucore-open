@@ -47,7 +47,7 @@ class OrdersController < ApplicationController
   def add
     ## get items to add from the form post or from the session
     ods_from_params = (params[:order].presence && params[:order][:order_details].presence) || []
-    items =  ods_from_params.presence || session[:add_to_cart].presence || []
+    items = ods_from_params.presence || session[:add_to_cart].presence || []
     session[:add_to_cart] = nil
 
     # ignore ods w/ empty or 0 quantities
@@ -65,7 +65,7 @@ class OrdersController < ApplicationController
 
     ## handle a single instrument reservation
     if items.size == 1 && (quantity = items.first[:quantity].to_i) == 1 #only one od w/ quantity of 1
-      if first_product.respond_to?(:reservations)                              # and product is reservable
+      if first_product.respond_to?(:reservations) # and product is reservable
 
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
         @order = acting_user.cart(session_user, @order.order_details.empty?)
@@ -141,7 +141,7 @@ class OrdersController < ApplicationController
     redirect_to params[:redirect_to].presence || order_path(@order)
 
     # clear out account on the order if its now empty
-    if  @order.order_details.empty?
+    if @order.order_details.empty?
       @order.account_id = nil
       @order.save!
     end

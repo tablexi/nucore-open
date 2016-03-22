@@ -62,7 +62,7 @@ class UsersController < ApplicationController
   end
 
   def create_external
-    @user   = User.new(params[:user])
+    @user = User.new(params[:user])
     @user.password = generate_new_password
 
     if @user.save
@@ -195,7 +195,7 @@ class UsersController < ApplicationController
   end
 
   def generate_new_password
-    chars   = ("a".."z").to_a + ("1".."9").to_a + ("A".."Z").to_a
+    chars = ("a".."z").to_a + ("1".."9").to_a + ("A".."Z").to_a
     chars.sample(8).join
   end
 

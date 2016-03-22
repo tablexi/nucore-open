@@ -14,7 +14,7 @@ class MoveCanPurchaseIntoPricePolicy < ActiveRecord::Migration
         price_policies.each do |pp|
           Rails.logger.debug "updating can_purchase #{pp.id}"
           # don't do validation
-          pp.update_attribute(:can_purchase,  1)
+          pp.update_attribute(:can_purchase, 1)
         end
       else
         next if pgp.product.type == "Bundle" # skip bundles since they don't have their own price policies

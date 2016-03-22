@@ -4,7 +4,7 @@ class AddFieldsToAccounts < ActiveRecord::Migration
   end
 
   def self.up
-    add_column    :accounts, :expires_at,         :datetime,              :null => true
+    add_column :accounts, :expires_at, :datetime, :null => true
     Account.update_all(expires_at: DateTime.civil(2012, 1, 1))
 
     change_column :accounts, :expires_at,         :datetime,              :null => false

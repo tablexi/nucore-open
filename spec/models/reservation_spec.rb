@@ -23,7 +23,7 @@ RSpec.describe Reservation do
   before(:each) do
     @instrument = create(:instrument, facility_account_id: facility_account.id, facility: facility, reserve_interval: 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
-    @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
+    @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 0, :end_hour => 17))
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
@@ -116,7 +116,7 @@ RSpec.describe Reservation do
   it 'allows starting of a reservation, whose duration is equal to the max duration, within the grace period' do
     reservation.product.update_attribute :max_reserve_mins, reservation.duration_mins
 
-    Timecop.freeze(reservation.reserve_start_at - 2.minutes) do  # in grace period
+    Timecop.freeze(reservation.reserve_start_at - 2.minutes) do # in grace period
       expect{ reservation.start_reservation! }.to_not raise_error
       expect(reservation.errors).to be_empty
     end
@@ -183,7 +183,7 @@ RSpec.describe Reservation do
       @instrument.min_reserve_mins = 15
       @instrument.save
 
-      @reservation1  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+      @reservation1 = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail1)
     end
@@ -310,7 +310,7 @@ RSpec.describe Reservation do
         order_attrs   = attributes_for(:order_detail, :product_id => @instrument.id, :quantity => 1, :account => @account)
         detail1       = order.order_details.create(order_attrs)
         res = @instrument.reservations.create(reserve_start_at: Time.zone.now, reserve_end_at: @reservation1.reserve_start_at, order_detail: detail1)
-        detail2       = order.order_details.create(order_attrs)
+        detail2 = order.order_details.create(order_attrs)
         res2 = @instrument.reservations.create(reserve_start_at: @reservation1.reserve_end_at, reserve_end_at: @reservation1.reserve_end_at + 1.day, order_detail: detail2)
         res.order.validate_order!
         res.order.purchase!
@@ -347,19 +347,19 @@ RSpec.describe Reservation do
     it "should not allow reservations to conflict with an existing reservation in the same order" do
       expect(@reservation1).to be_valid
 
-      @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+      @reservation2 = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
       expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
-      @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+      @reservation2 = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 15, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
       expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
-      @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 9,
+      @reservation2 = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 9,
                                                        :reserve_start_min => 45, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
       expect(@reservation2).not_to be_valid
@@ -369,7 +369,7 @@ RSpec.describe Reservation do
     it "should allow reservations with the same time and date on different instruments" do
       expect(@reservation1).to be_valid
 
-      @reservation2  = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
+      @reservation2 = @instrument.reservations.create(:reserve_start_date => Date.today+1.day, :reserve_start_hour => 10,
                                                        :reserve_start_min => 0, :reserve_start_meridian => 'am',
                                                        :duration_value => 30, :duration_unit => 'minutes', :order_detail => @detail2)
 
@@ -732,15 +732,15 @@ RSpec.describe Reservation do
                                                     :duration_value => 4, :duration_unit => 'hours')
     assert @reservation.invalid?
     # create rule2 that is adjacent to rule (10 pm to 12 am), allowing multi-day reservations
-    @rule2        = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 22, :end_hour => 24))
+    @rule2 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(:start_hour => 22, :end_hour => 24))
     assert @rule2.valid?
-    @reservation  = @instrument.reservations.create(:reserve_start_date => @tomorrow, :reserve_start_hour => 10,
+    @reservation = @instrument.reservations.create(:reserve_start_date => @tomorrow, :reserve_start_hour => 10,
                                                     :reserve_start_min => 0, :reserve_start_meridian => 'pm',
                                                     :duration_value => 4, :duration_unit => 'hours')
     assert @reservation.valid?
   end
 
-  it 'allows starting of an instrument even though another reservation is running but over end time', :timecop_freeze  do
+  it 'allows starting of an instrument even though another reservation is running but over end time', :timecop_freeze do
     now = Time.zone.now
     next_hour = now + 1.hour
     hour_ago = now - 1.hour
@@ -958,7 +958,7 @@ RSpec.describe Reservation do
       @pp_short = InstrumentPricePolicy.create(FactoryGirl.attributes_for(:instrument_price_policy, :product_id => @instrument.id))
       @pg1_pgp.reservation_window=30
       assert @pg1_pgp.save
-      @pp_long  = InstrumentPricePolicy.create(FactoryGirl.attributes_for(:instrument_price_policy, :product_id => @instrument.id))
+      @pp_long = InstrumentPricePolicy.create(FactoryGirl.attributes_for(:instrument_price_policy, :product_id => @instrument.id))
       @nupg_pgp.reservation_window=60
       assert @nupg_pgp.save
       @price_group1.price_policies << @pp_short

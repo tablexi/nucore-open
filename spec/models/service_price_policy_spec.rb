@@ -30,7 +30,7 @@ RSpec.describe ServicePricePolicy do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-      @service             = @facility.services.create(FactoryGirl.attributes_for(:service, :facility_account => @facility_account))
+      @service = @facility.services.create(FactoryGirl.attributes_for(:service, :facility_account => @facility_account))
       @price_group_product=FactoryGirl.create(:price_group_product, :product => @service, :price_group => @price_group, :reservation_window => nil)
     end
 
@@ -47,7 +47,7 @@ RSpec.describe ServicePricePolicy do
 
     it "should create a price policy for today if no active price policy already exists" do
       is_expected.to allow_value(Date.today).for(:start_date)
-      ipp     = @service.service_price_policies.create(:unit_cost => 1, :unit_subsidy => 0, :start_date => Date.today - 7,
+      ipp = @service.service_price_policies.create(:unit_cost => 1, :unit_subsidy => 0, :start_date => Date.today - 7,
                                                        :price_group => @price_group)
       ipp.save(:validate => false)
       ipp_new = @service.service_price_policies.create(:unit_cost => 1, :unit_subsidy => 0, :start_date => Date.today,
@@ -76,7 +76,7 @@ RSpec.describe ServicePricePolicy do
     end
 
     it 'should estimate the same as calculate' do
-      ipp   = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
+      ipp = @service.service_price_policies.create(:unit_cost => 10.75, :unit_subsidy => 0.75, :start_date => Date.today, :price_group_id => @price_group.id)
       expect(ipp.estimate_cost_and_subsidy(2)).to eq(ipp.calculate_cost_and_subsidy(2))
     end
 

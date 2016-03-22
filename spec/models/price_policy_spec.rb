@@ -142,7 +142,7 @@ RSpec.describe PricePolicy do
       @user     = FactoryGirl.create(:user)
       @account  = FactoryGirl.create(:nufs_account, :account_users_attributes => account_users_attributes_hash(:user => @user))
       @price_group = FactoryGirl.create(:price_group, :facility => @facility)
-      @item2    = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
+      @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, :facility_account_id => @facility_account.id))
     end
     it "should truncate the old policy" do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)

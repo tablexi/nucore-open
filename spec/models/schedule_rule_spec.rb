@@ -6,7 +6,7 @@ RSpec.describe ScheduleRule do
   let(:instrument) { create(:instrument, facility: facility, facility_account: facility_account) }
 
   it "should create using factory" do
-    @facility   = FactoryGirl.create(:facility)
+    @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
                                      :facility => @facility,
@@ -66,7 +66,7 @@ RSpec.describe ScheduleRule do
     end
 
     it "should allow all day rule" do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,
@@ -77,7 +77,7 @@ RSpec.describe ScheduleRule do
     end
 
     it "should not allow end_hour == 24 and end_min != 0" do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,
@@ -89,7 +89,7 @@ RSpec.describe ScheduleRule do
     end
 
     it "should recognize inclusive datetimes" do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,
@@ -99,7 +99,7 @@ RSpec.describe ScheduleRule do
     end
 
     it "should not recognize non-inclusive datetimes" do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,
@@ -110,7 +110,7 @@ RSpec.describe ScheduleRule do
   end
 
   it "should not allow rule conflicts" do
-    @facility   = FactoryGirl.create(:facility)
+    @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
                                      :facility => @facility,
@@ -156,7 +156,7 @@ RSpec.describe ScheduleRule do
   end
 
   it "should allow adjacent rules" do
-    @facility   = FactoryGirl.create(:facility)
+    @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
                                      :facility => @facility,
@@ -195,7 +195,7 @@ RSpec.describe ScheduleRule do
   # end
 
   it "should not be valid with an end time after the start time" do
-    @facility   = FactoryGirl.create(:facility)
+    @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @instrument = FactoryGirl.create(:instrument,
                                      :facility => @facility,
@@ -217,7 +217,7 @@ RSpec.describe ScheduleRule do
 
   context "calendar object" do
     it "should build calendar object for 9-5 rule every day" do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,
@@ -247,7 +247,7 @@ RSpec.describe ScheduleRule do
       expect(@not_available.size).to eq(14)
       # should mark each rule as unavailable
       assert_equal true, @not_available.first.unavailable
-      @not_calendar  = @not_available.collect{ |na| na.as_calendar_object }.flatten
+      @not_calendar = @not_available.collect{ |na| na.as_calendar_object }.flatten
 
       # days should be same as above
       # even times should be 12 am to 9 am
@@ -272,7 +272,7 @@ RSpec.describe ScheduleRule do
     end
 
     it "should build calendar object using multiple rules on the same day" do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,
@@ -284,7 +284,7 @@ RSpec.describe ScheduleRule do
         :start_hour => 1, :start_min => 0, :end_hour => 3, :end_min => 0, :discount_percent => 0
       }
 
-      @rule1      = @instrument.schedule_rules.create(@options)
+      @rule1 = @instrument.schedule_rules.create(@options)
       assert @rule1.valid?
 
       # create rule tue 7 am - 9 am
@@ -293,7 +293,7 @@ RSpec.describe ScheduleRule do
         :start_hour => 7, :start_min => 0, :end_hour => 9, :end_min => 0, :discount_percent => 0
       }
 
-      @rule2      = @instrument.schedule_rules.create(@options)
+      @rule2 = @instrument.schedule_rules.create(@options)
       assert @rule2.valid?
 
       # find past tuesday, and build calendar objects
@@ -307,7 +307,7 @@ RSpec.describe ScheduleRule do
       end
 
       # times should be tue 7 am - 9 am
-      @calendar2  = @rule2.as_calendar_object
+      @calendar2 = @rule2.as_calendar_object
       @calendar2.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash['start'])).to eq(@tuesday + 7.hours)
         expect(Time.zone.parse(hash['end'])).to eq(@tuesday + 9.hours)
@@ -333,7 +333,7 @@ RSpec.describe ScheduleRule do
     end
 
     it "should build calendar object using adjacent rules across days" do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,
@@ -345,7 +345,7 @@ RSpec.describe ScheduleRule do
         :start_hour => 21, :start_min => 0, :end_hour => 24, :end_min => 0, :discount_percent => 0
       }
 
-      @rule1      = @instrument.schedule_rules.create(@options)
+      @rule1 = @instrument.schedule_rules.create(@options)
       assert @rule1.valid?
       # create rule wed 12 am - 9 am
       @options = {
@@ -353,7 +353,7 @@ RSpec.describe ScheduleRule do
         :start_hour => 0, :start_min => 0, :end_hour => 9, :end_min => 0, :discount_percent => 0
       }
 
-      @rule2      = @instrument.schedule_rules.create(@options)
+      @rule2 = @instrument.schedule_rules.create(@options)
       assert @rule2.valid?
 
       # find past tuesday, and build calendar objects
@@ -368,7 +368,7 @@ RSpec.describe ScheduleRule do
       end
 
       # times should be tue 12 am - 9 am
-      @calendar2  = @rule2.as_calendar_object
+      @calendar2 = @rule2.as_calendar_object
       @calendar2.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash['start'])).to eq(@wednesday + 0.hours)
         expect(Time.zone.parse(hash['end'])).to eq(@wednesday + 9.hours)
@@ -376,7 +376,7 @@ RSpec.describe ScheduleRule do
     end
 
     it "should build calendar object using start date" do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,
@@ -397,7 +397,7 @@ RSpec.describe ScheduleRule do
 
   context 'available_to_user' do
     before :each do
-      @facility   = FactoryGirl.create(:facility)
+      @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @instrument = FactoryGirl.create(:instrument,
                                        :facility => @facility,

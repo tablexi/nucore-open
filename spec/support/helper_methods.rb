@@ -207,22 +207,22 @@ end
 #   The +User+ that creates the @order
 def setup_reservation(facility, facility_account, account, user)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
-  @instrument       = FactoryGirl.create(:instrument,
+  @instrument = FactoryGirl.create(:instrument,
                                          :facility => facility,
                                          :facility_account => facility_account,
                                          :min_reserve_mins => 60,
                                          :max_reserve_mins => 60)
   assert @instrument.valid?
-  @price_group      = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+  @price_group = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
   FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => @price_group)
   # add rule, available every day from 9 to 5, 60 minutes duration
   @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, :end_hour => 23))
   # create price policy with default window of 1 day
   @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(:price_group_id => @price_group.id))
   # create order, order detail
-  @order            = user.orders.create(FactoryGirl.attributes_for(:order, :created_by => user.id, :account => account, :ordered_at => Time.zone.now))
+  @order = user.orders.create(FactoryGirl.attributes_for(:order, :created_by => user.id, :account => account, :ordered_at => Time.zone.now))
   @order.add(@instrument, 1)
-  @order_detail     = @order.order_details.first
+  @order_detail = @order.order_details.first
 end
 
 #

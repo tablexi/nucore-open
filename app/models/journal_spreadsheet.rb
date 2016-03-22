@@ -20,7 +20,7 @@ class JournalSpreadsheet
     # sheet1.row(4)[1] = Time.zone.now.strftime("%m/%d/%Y")
 
     rows.each do |row|
-      line  = sheet1.row(srow)
+      line = sheet1.row(srow)
 
       if block_given?
         yield line, row

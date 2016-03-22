@@ -17,9 +17,9 @@ RSpec.describe ReservationsController do
     setup_instrument
     setup_user_for_purchase(@guest, @price_group)
 
-    @order            = @guest.orders.create(FactoryGirl.attributes_for(:order, :created_by => @guest.id, :account => @account))
+    @order = @guest.orders.create(FactoryGirl.attributes_for(:order, :created_by => @guest.id, :account => @account))
     @order.add(@instrument, 1)
-    @order_detail     = @order.order_details.first
+    @order_detail = @order.order_details.first
     assert @order_detail.persisted?
 
     @params={ :order_id => @order.id, :order_detail_id => @order_detail.id }
@@ -249,9 +249,9 @@ RSpec.describe ReservationsController do
     before :each do
       @method=:post
       @action=:create
-      @order            = @guest.orders.create(FactoryGirl.attributes_for(:order, :created_by => @admin.id, :account => @account))
+      @order = @guest.orders.create(FactoryGirl.attributes_for(:order, :created_by => @admin.id, :account => @account))
       @order.add(@instrument, 1)
-      @order_detail     = @order.order_details.first
+      @order_detail = @order.order_details.first
       @price_policy_past = create(:instrument_price_policy, :product => @instrument, :price_group_id => @price_group.id, :start_date => 7.days.ago, :expire_date => 1.day.ago, :usage_rate => 120, :charge_for => InstrumentPricePolicy::CHARGE_FOR[:usage])
       @params={
         :order_id => @order.id,
@@ -655,7 +655,7 @@ RSpec.describe ReservationsController do
         @order_detail.update_attributes(:account => nil)
         # Only worry about one price group product
         @instrument.price_group_products.destroy_all
-        pgp  = FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => FactoryGirl.create(:price_group, :facility => @authable), :reservation_window => 14)
+        pgp = FactoryGirl.create(:price_group_product, :product => @instrument, :price_group => FactoryGirl.create(:price_group, :facility => @authable), :reservation_window => 14)
       end
 
       it "does not have an account on the order detail" do

@@ -13,7 +13,7 @@ Nucore::Application.routes.draw do
   root :to => 'public#index'
 
   # authentication
-  match 'switch_back',   :to => 'public#switch_back'
+  match 'switch_back', :to => 'public#switch_back'
 
   # shared searches
   post  '/user_search_results', :to => 'search#user_search_results'
@@ -223,7 +223,7 @@ Nucore::Application.routes.draw do
         get 'search'
         match 'search_results', :via => [:get, :post]
       end
-      get '/members',                          :to => 'facility_accounts#members',        :as => 'members'
+      get '/members', :to => 'facility_accounts#members', :as => 'members'
       get '/statements/:statement_id(.:format)', :to => 'facility_accounts#show_statement', :as => 'statement', :defaults => { :format => 'html' } if Account.config.statements_enabled?
 
       if SettingsHelper.feature_on?(:suspend_accounts)

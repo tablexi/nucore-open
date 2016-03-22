@@ -2,7 +2,7 @@ class ChangePricePolicies < ActiveRecord::Migration
 
   def self.up
     change_table :price_policies do |t|
-      t.references  :product
+      t.references :product
     end
   end
 

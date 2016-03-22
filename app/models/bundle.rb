@@ -31,7 +31,7 @@ class Bundle < Product
   end
 
   def can_purchase? (group_ids = nil)
-    return false if  !available_for_purchase?
+    return false if !available_for_purchase?
     # before if products.empty?, this would return and empty set [], which evaluates to true
     return false if products.empty?
     products.each do |p|

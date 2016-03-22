@@ -102,7 +102,7 @@ RSpec.describe OldInstrumentPricePolicy do
                                              :facility_account => @facility_account)
       @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
       # create rule every day from 9 am to 5 pm, no discount, duration= 30 minutes
-      @rule             = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     end
 
     it "should correctly estimate cost with usage cost" do
@@ -377,7 +377,7 @@ RSpec.describe OldInstrumentPricePolicy do
                                              :reserve_interval => 30,
                                              :facility_account => @facility_account)
       @price_group_product=FactoryGirl.create(:price_group_product, :price_group => @price_group, :product => @instrument)
-      @rule             = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
+      @rule = @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, :start_hour => 0, :end_hour => 24))
       @pp = create :old_instrument_price_policy, ipp_attributes
     end
 
@@ -487,7 +487,7 @@ RSpec.describe OldInstrumentPricePolicy do
     it "should correctly calculate cost with usage rate and subsidy and overage using usage rate for overage rate and usage subsidy for overage subsidy" do
       # actual usage == twice as long as the reservation window
       @reservation.actual_start_at = @reservation.reserve_start_at
-      @reservation.actual_end_at =  @reservation.actual_start_at + (@ipp.usage_mins*2).minutes
+      @reservation.actual_end_at = @reservation.actual_start_at + (@ipp.usage_mins*2).minutes
 
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
 
@@ -496,7 +496,7 @@ RSpec.describe OldInstrumentPricePolicy do
 
     it 'should have at least one block even if the actual times are within a minute of each other' do
       @reservation.actual_start_at = @reservation.reserve_start_at
-      @reservation.actual_end_at =  @reservation.actual_start_at + 10.seconds
+      @reservation.actual_end_at = @reservation.actual_start_at + 10.seconds
 
       @costs = @ipp.calculate_cost_and_subsidy(@reservation)
       expect(@costs[:cost]).to eq(100)
