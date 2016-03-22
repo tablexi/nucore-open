@@ -52,6 +52,7 @@ module ApplicationHelper
     method = "facility_#{product.class.model_name.underscore}_path"
     send(method, facility, product)
   end
+
   private
 
   def show_currency(order_detail, method)

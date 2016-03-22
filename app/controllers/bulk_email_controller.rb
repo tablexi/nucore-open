@@ -26,7 +26,8 @@ class BulkEmailController < ApplicationController
     end
 	end
 
-  private 
+  private
+ 
   def init_search_options
     @search_fields = params.merge(:facility_id => current_facility.id)
     @products = current_facility.products.active_plus_hidden.order("products.name").includes(:facility)

@@ -59,6 +59,7 @@ class UserPasswordController < ApplicationController
   end
   
   private
+
   def no_user_allowed
     if current_user
       redirect_to :action => :edit_current

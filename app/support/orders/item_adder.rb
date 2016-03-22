@@ -22,6 +22,7 @@ class Orders::ItemAdder
   end
 
   private
+
   def check_for_mixed_facility!(product)
     if product.facility != @order.facility
       if @order.order_details.length > 0
