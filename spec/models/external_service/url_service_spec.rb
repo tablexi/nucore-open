@@ -8,14 +8,16 @@ RSpec.describe UrlService do
   let(:order) { create :setup_order, product: service }
   let(:order_detail) { create :order_detail, order: order, product: service }
 
-  let(:host_params) do {
+  let(:host_params) do 
+    {
     host: 'localhost.test',
       port: 8080,
       protocol: 'https'
   } 
   end
 
-  let :url_components do {
+  let :url_components do 
+    {
     facility_id: order_detail.product.facility.url_name,
     service_id: order_detail.product.url_name,
     external_service_id: url_service.id,
