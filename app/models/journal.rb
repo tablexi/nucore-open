@@ -80,10 +80,10 @@ class Journal < ActiveRecord::Base
     if facility_id?
       [facility_id]
     else
-        order_details.joins(:order).
-        select('orders.facility_id').
-        collect(&:facility_id).
-        uniq
+        order_details.joins(:order)
+        .select('orders.facility_id')
+        .collect(&:facility_id)
+        .uniq
     end
   end
 

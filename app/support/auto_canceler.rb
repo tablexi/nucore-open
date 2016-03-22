@@ -13,11 +13,11 @@ class AutoCanceler
   end
 
   def cancelable_reservations
-    @cancelable_reservations ||= Reservation.
-      joins(:product, :order_detail => :order).
-      where(build_sql, :now => Time.zone.now).
-      merge(Order.purchased).
-      readonly(false)
+    @cancelable_reservations ||= Reservation
+      .joins(:product, :order_detail => :order)
+      .where(build_sql, :now => Time.zone.now)
+      .merge(Order.purchased)
+      .readonly(false)
   end
 
   def cancel_reservation(res)

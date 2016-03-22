@@ -72,24 +72,24 @@ module TransactionSearch
   # variables have the full non-searched section of values
   def load_search_options
 
-    @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility).
-                                                      select("distinct(facilities.id), facilities.name, facilities.abbreviation").
-                                                      reorder("facilities.name").to_sql)
+    @facilities = Facility.find_by_sql(@order_details.joins(:order => :facility)
+                                                      .select("distinct(facilities.id), facilities.name, facilities.abbreviation")
+                                                      .reorder("facilities.name").to_sql)
 
-    @accounts = Account.select("accounts.id, accounts.account_number, accounts.description, accounts.type").
-                        where(id: @order_details.select("distinct order_details.account_id")).
-                        order(:account_number, :description)
+    @accounts = Account.select("accounts.id, accounts.account_number, accounts.description, accounts.type")
+                        .where(id: @order_details.select("distinct order_details.account_id"))
+                        .order(:account_number, :description)
 
     @products = Product.where(id: @order_details.select("distinct product_id")).order(:name)
 
-    @account_owners = User.select("users.id, users.first_name, users.last_name").
-               where(id: @order_details.select("distinct account_users.user_id").joins(account: :owner_user)).
-               order(:last_name, :first_name)
+    @account_owners = User.select("users.id, users.first_name, users.last_name")
+               .where(id: @order_details.select("distinct account_users.user_id").joins(account: :owner_user))
+               .order(:last_name, :first_name)
 
     # Unlike the other lookups, this query is much faster this way than using a subquery
-    @order_statuses = OrderStatus.find_by_sql(@order_details.joins(:order_status).
-                                                             select("distinct(order_statuses.id), order_statuses.facility_id, order_statuses.name, order_statuses.lft").
-                                                             reorder("order_statuses.lft").to_sql)
+    @order_statuses = OrderStatus.find_by_sql(@order_details.joins(:order_status)
+                                                             .select("distinct(order_statuses.id), order_statuses.facility_id, order_statuses.name, order_statuses.lft")
+                                                             .reorder("order_statuses.lft").to_sql)
 
   end
 
@@ -125,16 +125,16 @@ module TransactionSearch
 
   def add_optimizations
     # cut down on some n+1s
-    @order_details = @order_details.
-        includes(:order => :facility).
-        includes(:account).
-        preload(:product).
-        preload(:order_status).
-        includes(:reservation).
-        includes(:order => :user).
-        includes(:price_policy).
-        preload(:bundle).
-        preload(:account => :owner_user)
+    @order_details = @order_details
+        .includes(:order => :facility)
+        .includes(:account)
+        .preload(:product)
+        .preload(:order_status)
+        .includes(:reservation)
+        .includes(:order => :user)
+        .includes(:price_policy)
+        .preload(:bundle)
+        .preload(:account => :owner_user)
 
   end
 

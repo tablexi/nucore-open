@@ -25,15 +25,15 @@ class Cart
 
   def self.abandoned_carts(limit = nil)
     # Orders with one order detail
-    subquery = OrderDetail.joins(:order).
-                           merge(Order.carts).
-                           group(:order_id).
-                           having("count(*) = 1").
-                           select(:order_id)
+    subquery = OrderDetail.joins(:order)
+                           .merge(Order.carts)
+                           .group(:order_id)
+                           .having("count(*) = 1")
+                           .select(:order_id)
 
-    orders = Order.joins(:order_details => :product).
-                   where(:products => { :type => 'Instrument' }).
-                   where(:id => subquery)
+    orders = Order.joins(:order_details => :product)
+                   .where(:products => { :type => 'Instrument' })
+                   .where(:id => subquery)
 
     orders = orders.limit(limit) if limit
     orders
@@ -48,8 +48,8 @@ class Cart
   end
 
   def all_carts
-    @user.orders.
-      created_by_user(@created_by_user).
-      carts.order('updated_at DESC')
+    @user.orders
+      .created_by_user(@created_by_user)
+      .carts.order('updated_at DESC')
   end
 end

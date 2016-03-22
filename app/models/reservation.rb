@@ -51,8 +51,8 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.joins_order
-    joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id').
-    joins('LEFT JOIN orders ON orders.id = order_details.order_id')
+    joins('LEFT JOIN order_details ON order_details.id = reservations.order_detail_id')
+    .joins('LEFT JOIN orders ON orders.id = order_details.order_id')
   end
 
   def self.admin
@@ -88,8 +88,8 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.in_range(start_time, end_time)
-    where('reserve_end_at >= ?', start_time).
-    where('reserve_start_at < ?', end_time)
+    where('reserve_end_at >= ?', start_time)
+    .where('reserve_start_at < ?', end_time)
   end
 
   def self.upcoming(t=Time.zone.now)

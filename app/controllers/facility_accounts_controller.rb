@@ -124,8 +124,8 @@ class FacilityAccountsController < ApplicationController
 
       # retrieve accounts matched on account_number for this facility
       @accounts += Account.for_facility(current_facility).where(
-        "LOWER(account_number) LIKE ?", term).
-        order("type, account_number"
+        "LOWER(account_number) LIKE ?", term)
+        .order("type, account_number"
              )
 
       # only show an account once.
