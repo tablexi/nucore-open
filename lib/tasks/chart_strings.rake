@@ -6,7 +6,8 @@ namespace :chart_strings do
       next if fs.suspended?
       validator=NucsValidator.new(fs.account_number)
 
-      now, latest=Time.zone.now, validator.latest_expiration
+      now = Time.zone.now
+      latest = validator.latest_expiration
       # don't change date on previously expired accounts
       next if latest.nil? && fs.expires_at && fs.expires_at < now
       fs.expires_at=(latest.nil? || !validator.components_exist?) ? now : latest

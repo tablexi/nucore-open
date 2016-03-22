@@ -47,13 +47,22 @@ class BudgetedChartString < ActiveRecord::Base
             starts_at   = SettingsHelper.fiscal_year(fiscal_year.to_i) # Time.zone.parse("#{fiscal_year}0901")
             expires_at  = starts_at + 1.year - 1.second
             # parse fields
-            fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]
+            fund = tokens[1]
+            dept = tokens[2]
+            project = tokens[3]
+            activity = tokens[4]
+            account = tokens[5]
           when line =~ /\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/
             # chart string with start and expire dates
             tokens = line.split('|').map{ |s| s.delete('-') }
             # parse fields
-            fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]
-            starts_at, expires_at = parse_2_digit_year_date(tokens[6]), parse_2_digit_year_date(tokens[7]).end_of_day
+            fund = tokens[1]
+            dept = tokens[2]
+            project = tokens[3]
+            activity = tokens[4]
+            account = tokens[5]
+            starts_at = parse_2_digit_year_date(tokens[6])
+            expires_at = parse_2_digit_year_date(tokens[7]).end_of_day
           else
             # invalid line
             puts "error: skipping - #{line}"

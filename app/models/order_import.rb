@@ -218,7 +218,8 @@ class OrderImport < ActiveRecord::Base
     attr_accessor :successes, :failures
 
     def initialize
-      self.successes, self.failures=0, 0
+      self.successes = 0
+      self.failures = 0
     end
 
     def failed?
