@@ -37,7 +37,7 @@ class OrderStatus < ActiveRecord::Base
   end
 
   def state_name
-    root.name.downcase.gsub(/ /,'').to_sym
+    root.name.downcase.delete(' ').to_sym
   end
 
   def downcase_name

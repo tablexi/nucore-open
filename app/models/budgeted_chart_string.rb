@@ -40,7 +40,7 @@ class BudgetedChartString < ActiveRecord::Base
           case
           when line =~ /^\d{4,4}\|/
             # chart string with fiscal year
-            tokens = line.split('|').map{ |s| s.gsub('-', '') }
+            tokens = line.split('|').map{ |s| s.delete('-') }
             # build start_at, expires_at from fiscal year
             fiscal_year = tokens[0]
             starts_at   = SettingsHelper::fiscal_year(fiscal_year.to_i) #Time.zone.parse("#{fiscal_year}0901")
@@ -49,7 +49,7 @@ class BudgetedChartString < ActiveRecord::Base
             fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]
           when line =~ /\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/
             # chart string with start and expire dates
-            tokens = line.split('|').map{ |s| s.gsub('-', '') }
+            tokens = line.split('|').map{ |s| s.delete('-') }
             # parse fields
             fund, dept, project, activity, account = tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]
             starts_at, expires_at = parse_2_digit_year_date(tokens[6]), parse_2_digit_year_date(tokens[7]).end_of_day
