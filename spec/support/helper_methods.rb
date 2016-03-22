@@ -252,7 +252,7 @@ def account_users_attributes_hash(options = {})
   options[:user] ||= @user
   options[:created_by] ||= options[:user].id
   # force created_by to a fixnum id
-  options[:created_by] = options[:created_by].kind_of?(Fixnum) ? options[:created_by] : options[:created_by].id
+  options[:created_by] = options[:created_by].is_a?(Fixnum) ? options[:created_by] : options[:created_by].id
 
   options[:user_role] ||= AccountUser::ACCOUNT_OWNER
   [Hash[options]]
