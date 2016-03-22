@@ -39,14 +39,14 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
     end
 
     Statement.all.each do |stmt|
-      aid_rows=Statement.find_by_sql(%<
+      aid_rows=Statement.find_by_sql(%(
         SELECT
           DISTINCT at.account_id
         FROM
           account_transactions at, statements s
         WHERE
           at.statement_id=s.id AND s.id=#{stmt.id} AND at.type = 'PurchaseAccountTransaction'
-      >)
+      ))
 
       aid_rows.each do |aid_row|
         acct=Account.find(aid_row.account_id)
@@ -55,12 +55,12 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
         statement.account=acct
         statement.save!
 
-        at_rows=Statement.find_by_sql(%<
+        at_rows=Statement.find_by_sql(%(
           SELECT * FROM
             account_transactions
           WHERE
             statement_id=#{stmt.id} AND account_id=#{acct.id} AND type = 'PurchaseAccountTransaction'
-        >)
+        ))
 
         at_rows.each do |at_row|
           od=OrderDetail.find(at_row.order_detail_id)

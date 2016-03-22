@@ -58,7 +58,7 @@ RSpec.describe StoredFile do
     end
 
     it "is stored with a partitioned path" do
-      expect(file_upload.file.url).to match(%r(\A/files/\d+/\d+/\d+/))
+      expect(file_upload.file.url).to match(%r{\A/files/\d+/\d+/\d+/})
     end
 
     it "stored the file content" do
