@@ -45,11 +45,11 @@ class OrderStatus < ActiveRecord::Base
     name.downcase.gsub(/\s+/, '_')
   end
 
-  def is_left_of? (o)
+  def is_left_of?(o)
     rgt < o.lft
   end
 
-  def is_right_of? (o)
+  def is_right_of?(o)
     lft > o.rgt
   end
 
@@ -75,7 +75,7 @@ class OrderStatus < ActiveRecord::Base
       root_statuses.first
     end
 
-    def initial_statuses (facility)
+    def initial_statuses(facility)
       first_invalid_status = find_by_name('Canceled')
       statuses = find(:all).sort {|a, b| a.lft <=> b.lft }.reject do|os|
         !os.is_left_of?(first_invalid_status)
@@ -84,7 +84,7 @@ class OrderStatus < ActiveRecord::Base
       statuses
     end
 
-    def non_protected_statuses (facility)
+    def non_protected_statuses(facility)
       first_protected_status = find_by_name('Reconciled')
       statuses = find(:all).sort {|a, b| a.lft <=> b.lft }.reject do|os|
         !os.is_left_of?(first_protected_status)

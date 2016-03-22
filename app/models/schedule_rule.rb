@@ -154,7 +154,7 @@ class ScheduleRule < ActiveRecord::Base
     percent_overlap(start_at, end_at) * discount_percent.to_f
   end
 
-  def percent_overlap (start_at, end_at)
+  def percent_overlap(start_at, end_at)
     return 0 unless end_at > start_at
     overlap  = 0
     duration = (end_at - start_at)/60

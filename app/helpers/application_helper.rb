@@ -36,7 +36,7 @@ module ApplicationHelper
     end.html_safe
   end
 
-  def sortable (column, title = nil)
+  def sortable(column, title = nil)
     title ||= column.titleize
     direction = column == sort_column && sort_direction == 'asc' ? 'desc' : 'asc'
     link_to title, {sort: column, dir: direction}, class: (column == sort_column ? sort_direction : 'sortable')

@@ -102,7 +102,7 @@ module Reservations::Validations
     errors.add(:base, "The reservation spans time that the instrument is unavailable for reservation") unless instrument_is_available_to_reserve?
   end
 
-  def instrument_is_available_to_reserve? (start_at = reserve_start_at, end_at = reserve_end_at)
+  def instrument_is_available_to_reserve?(start_at = reserve_start_at, end_at = reserve_end_at)
     # check for order_detail and order because some old specs don't set an order detail
     # if we're saving as an administrator, or doing a starting in the grace period,
     # we want access to all schedule rules

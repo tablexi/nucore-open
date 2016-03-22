@@ -200,19 +200,19 @@ class Account < ActiveRecord::Base
     order_detail.statement_id.present?
   end
 
-  def self.need_statements (facility)
+  def self.need_statements(facility)
     # find details that are complete, not yet statemented, priced, and not in dispute
     details = OrderDetail.need_statement(facility)
     find(details.collect{ |detail| detail.account_id }.uniq || [])
   end
 
-  def self.need_notification (facility)
+  def self.need_notification(facility)
     # find details that are complete, not yet notified, priced, and not in dispute
     details = OrderDetail.for_facility(facility).need_notification
     find(details.collect{ |detail| detail.account_id }.uniq || [])
   end
 
-  def facility_balance (facility, date=Time.zone.now)
+  def facility_balance(facility, date=Time.zone.now)
     details = OrderDetail.for_facility(facility).complete.where('order_details.fulfilled_at <= ? AND price_policy_id IS NOT NULL AND order_details.account_id = ?', date, id)
     details.collect{|od| od.total}.sum.to_f
   end
@@ -229,11 +229,11 @@ class Account < ActiveRecord::Base
     end
   end
 
-  def latest_facility_statement (facility)
+  def latest_facility_statement(facility)
     statements.latest(facility).first
   end
 
-  def update_order_details_with_statement (statement)
+  def update_order_details_with_statement(statement)
     details=order_details.joins(:order)
                          .where('orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL', statement.facility.id, Time.zone.now)
                          .readonly(false)
