@@ -83,7 +83,6 @@ class PricePolicy < ActiveRecord::Base
       policy.expire_date = (start_date - 1.day).end_of_day
       policy.save
     end
-
   end
 
   def product_type

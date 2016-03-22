@@ -759,7 +759,6 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cancellation_fee
-
     assign_price_policy unless price_policy
 
     return 0 unless reservation && price_policy && product.min_cancel_hours.to_i > 0

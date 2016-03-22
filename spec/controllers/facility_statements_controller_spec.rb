@@ -20,7 +20,6 @@ if Account.config.statements_enabled?
         od.reviewed_at = 1.day.ago
         od.save!
       end
-
     end
 
     before(:all) do

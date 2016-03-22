@@ -26,7 +26,6 @@ class AddFieldsToAccounts < ActiveRecord::Migration
 
     add_column    :accounts, :updated_at,         :datetime,              :null => true
     add_column    :accounts, :updated_by,         :integer,               :null => true
-
   end
 
   def self.down

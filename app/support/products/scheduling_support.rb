@@ -100,7 +100,6 @@ module Products::SchedulingSupport
   private
 
   def reservation_in_week(after, duration, rules, options)
-
     day_of_week = after.wday
 
     0.upto(6) do |i|

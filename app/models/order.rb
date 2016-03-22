@@ -153,7 +153,6 @@ class Order < ActiveRecord::Base
     end
 
     return self.errors.empty?
-
   end
 
   def can_backdate_order_details?

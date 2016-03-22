@@ -179,7 +179,6 @@ def it_should_allow_managers_only(response=:success, spec_desc='', &eval)
     is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
-
 end
 
 def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc='', &eval)
@@ -193,7 +192,6 @@ def it_should_allow_managers_and_senior_staff_only(response=:success, spec_desc=
     is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
-
 end
 
 #
@@ -207,7 +205,6 @@ def it_should_allow_operators_only(response=:success, spec_desc='', &eval)
     is_expected.to respond_with response
     instance_exec(user, &eval) if eval
   end
-
 end
 
 #
@@ -225,7 +222,6 @@ def it_should_allow_admin_only(response=:success, spec_desc='', &eval)
     is_expected.to respond_with response
     instance_eval &eval if eval
   end
-
 end
 
 #

@@ -1,7 +1,6 @@
 class CreatePriceGroupProducts < ActiveRecord::Migration
 
   def self.up
-
     create_table :price_group_products do |t|
       t.integer :price_group_id, :null => false
       t.integer :product_id, :null => false
