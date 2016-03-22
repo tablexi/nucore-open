@@ -25,14 +25,14 @@ class AccountPriceGroupMembersController < ApplicationController
     redirect_to facility_price_group_path(current_facility, @price_group)
   end
 
-  def create_flash_arguments # TODO very similar to UserPriceGroupMembersController#create_flash_arguments
+  def create_flash_arguments # TODO: very similar to UserPriceGroupMembersController#create_flash_arguments
     {
       account_number: price_group_member.account.account_number,
       price_group_name: @price_group.name
     }
   end
 
-  def price_group_member # TODO very similar to UserPriceGroupMembersController#price_group_member
+  def price_group_member # TODO: very similar to UserPriceGroupMembersController#price_group_member
     @account_price_group_member.account ||= account
     @account_price_group_member.price_group ||= @price_group
     @account_price_group_member

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe StatementRow do
-  # TODO reduce this elaborate setup!
+  # TODO: reduce this elaborate setup!
   let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
   let(:facility) { create(:facility) }
   let(:facility_account) { facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)) }

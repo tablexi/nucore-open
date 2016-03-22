@@ -19,7 +19,7 @@ RSpec.describe GeneralReportsController do
 
     before do
       allow(controller).to receive(:authenticate_user!).and_return true
-      allow(controller).to receive(:current_user).and_return build_stubbed(:user) # TODO including this doesn't matter
+      allow(controller).to receive(:current_user).and_return build_stubbed(:user) # TODO: including this doesn't matter
       allow(controller).to receive(:current_facility).and_return build_stubbed(:facility)
     end
 

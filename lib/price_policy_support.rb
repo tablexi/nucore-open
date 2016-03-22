@@ -1,5 +1,5 @@
 module PricePolicySupport
-  # TODO Refactor out of InstrumentPricePolicy into here
+  # TODO: Refactor out of InstrumentPricePolicy into here
   module ReservationPolicy
   end
 

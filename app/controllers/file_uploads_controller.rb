@@ -29,7 +29,7 @@ class FileUploadsController < ApplicationController
       current_facility
         .products
         .where(type: params[:product].capitalize.singularize)
-        .find_by_url_name!(params[:product_id]) # TODO update to #find_by for Rails 4
+        .find_by_url_name!(params[:product_id]) # TODO: update to #find_by for Rails 4
         .stored_files
         .where(file_type: params[:file_type])
         .find(params[:id])

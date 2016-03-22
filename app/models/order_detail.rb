@@ -572,7 +572,7 @@ class OrderDetail < ActiveRecord::Base
     # payment method is not expired
     return "The account is expired and cannot be used" if account.expires_at < Time.zone.now || account.suspended_at
 
-    # TODO if chart string, is chart string + account valid
+    # TODO: if chart string, is chart string + account valid
     return "The #{account.type_string} is not open for the required account" if account.is_a?(NufsAccount) && !account.account_open?(product.account)
 
     # is the user approved for the product

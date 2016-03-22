@@ -10,7 +10,7 @@ RSpec.describe FacilityAccountsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = facility # TODO replace '@authable' with 'facility' throughout
+    @authable = facility # TODO: replace '@authable' with 'facility' throughout
     @facility_account = FactoryGirl.create(:facility_account, :facility => @authable)
     @item = FactoryGirl.create(:item, :facility_account => @facility_account, :facility => @authable)
     @account = FactoryGirl.create(:credit_card_account, :account_users_attributes => [ FactoryGirl.attributes_for(:account_user, :user => @owner) ])
