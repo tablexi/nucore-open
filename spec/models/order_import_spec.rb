@@ -39,11 +39,11 @@ RSpec.describe OrderImport, :timecop_freeze do
 
   let(:account_users_attributes) do
     account_users_attributes_hash(user: guest) +
-    account_users_attributes_hash(
-      user: guest2,
-      created_by: guest,
-      user_role: AccountUser::ACCOUNT_PURCHASER,
-    )
+      account_users_attributes_hash(
+        user: guest2,
+        created_by: guest,
+        user_role: AccountUser::ACCOUNT_PURCHASER,
+      )
   end
   let(:default_order_date) { 4.days.ago.to_date }
   let(:default_fulfilled_date) { 3.days.ago.to_date }

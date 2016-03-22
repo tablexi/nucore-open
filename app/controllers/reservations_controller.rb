@@ -57,7 +57,7 @@ class ReservationsController < ApplicationController
       as_calendar_object_options = {start_date: @start_date, with_details: params[:with_details]}
       format.js do 
         render json: @reservations.map{|r| r.as_calendar_object(as_calendar_object_options)}.flatten +
-                                  @unavailable.map{ |r| r.as_calendar_object(as_calendar_object_options)}.flatten 
+                     @unavailable.map{ |r| r.as_calendar_object(as_calendar_object_options)}.flatten 
       end
     end
   end
@@ -330,8 +330,8 @@ class ReservationsController < ApplicationController
     can_edit = @reservation.admin_editable?
     can_edit &&= @reservation.can_customer_edit? unless current_user.administrator?
     params[:id].to_i != @reservation.id ||
-    @reservation.actual_end_at ||
-    !can_edit
+      @reservation.actual_end_at ||
+      !can_edit
   end
 
   def save_reservation_and_order_detail

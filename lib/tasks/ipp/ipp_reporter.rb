@@ -52,9 +52,9 @@ class IppReporter
 
   def same?(detail, actuals, estimates)
     detail.estimated_cost == estimates[:cost] &&
-    detail.estimated_subsidy == estimates[:subsidy] &&
-    detail.actual_cost == actuals[:cost] &&
-    detail.actual_subsidy == actuals[:subsidy]
+      detail.estimated_subsidy == estimates[:subsidy] &&
+      detail.actual_cost == actuals[:cost] &&
+      detail.actual_subsidy == actuals[:subsidy]
   end
 
 end
