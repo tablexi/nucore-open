@@ -219,7 +219,7 @@ class FacilityReservationsController < ApplicationController
   def new_or_in_process_orders(order_by_clause = "reservations.reserve_start_at")
     current_facility.order_details.new_or_inprocess.reservations
                     .includes(
-        { order: :user },
+                      { order: :user },
         :order_status,
         :reservation,
         :assigned_user,
