@@ -5,7 +5,7 @@ class Reports::InstrumentUtilizationReport
     @reservations = reservations
   end
 
-  def build_report()
+  def build_report
     @data = {}
     @totals = DataRow.new(0, 0, 0)
     @reservations.each do |reservation|
