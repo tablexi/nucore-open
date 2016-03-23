@@ -39,9 +39,9 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
   def self.down
     PricePolicy.all.each do |policy|
       product = case policy
-              when ItemPricePolicy then policy.item
-              when ServicePricePolicy then policy.service
-              when InstrumentPricePolicy then policy.instrument
+                when ItemPricePolicy then policy.item
+                when ServicePricePolicy then policy.service
+                when InstrumentPricePolicy then policy.instrument
               end
 
       pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, product.id)
