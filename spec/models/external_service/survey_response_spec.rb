@@ -5,9 +5,9 @@ RSpec.describe SurveyResponse do
 
   let :deserialized_response_data do
     {
-    show_url: params[:survey_url],
+      show_url: params[:survey_url],
     edit_url: params[:survey_edit_url],
-  }
+    }
   end
 
   subject(:survey_response) { described_class.new params }

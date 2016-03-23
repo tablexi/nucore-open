@@ -10,11 +10,11 @@ RSpec.describe Api::OrderDetail do
   let(:ordered_for) { build(:user, id: 2) }
   let(:ordered_for_hash) do
     {
-    id: ordered_for.id,
+      id: ordered_for.id,
     name: ordered_for.name,
     username: ordered_for.username,
     email: ordered_for.email,
-  }
+    }
   end
 
   describe "#to_h" do
@@ -24,14 +24,14 @@ RSpec.describe Api::OrderDetail do
       let(:account_user) { double(AccountUser, user: account_owner) }
       let(:account_hash) do
         {
-        id: account.id,
+          id: account.id,
         owner: {
           id: account_owner.id,
           name: account_owner.name,
           username: account_owner.username,
           email: account_owner.email,
         },
-      }
+        }
       end
 
       it "generates the expected hash" do

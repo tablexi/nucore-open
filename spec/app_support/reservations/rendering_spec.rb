@@ -64,12 +64,12 @@ RSpec.describe Reservations::Rendering do
 
     let(:hash_without_details) do
       {
-      "allDay" => false,
+        "allDay" => false,
       "end" => "Sat, 01 Aug 2015 10:16:17",
       "product" => "Generic",
       "start" => "Sat, 01 Aug 2015 09:15:16",
       "title" => title,
-    }
+      }
     end
 
     before { reservation.product = build_stubbed(:product, name: "Generic") }

@@ -147,18 +147,18 @@ class OrderDetail < ActiveRecord::Base
 
   scope :for_facility_with_price_policy, lambda { |facility|
                                            {
-    joins: :order,
+                                             joins: :order,
     conditions: ["orders.facility_id = ? AND price_policy_id IS NOT NULL", facility.id], order: "order_details.fulfilled_at DESC" }
   }
 
   scope :need_notification, lambda {
                               {
-    joins: :product,
+                                joins: :product,
     conditions: ['order_details.state = ?
                      AND order_details.reviewed_at IS NULL
                      AND order_details.price_policy_id IS NOT NULL
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', "complete"],
-  }}
+                              }}
 
   def self.all_need_notification
     where(state: "complete")
@@ -248,7 +248,7 @@ class OrderDetail < ActiveRecord::Base
 
   scope :need_statement, lambda { |facility|
                            {
-    joins: [:product, :account],
+                             joins: [:product, :account],
     conditions: [
       "products.facility_id = :facility_id
         AND order_details.state = :state
@@ -264,11 +264,11 @@ class OrderDetail < ActiveRecord::Base
       reviewed_at: Time.zone.now,
       account_types: Account.config.statement_account_types,
     ],
-  }}
+                           }}
 
   scope :need_journal, lambda {
                          {
-    joins: [:product, :account],
+                           joins: [:product, :account],
     conditions: [
       "order_details.state = :state
         AND problem = :problem
@@ -282,11 +282,11 @@ class OrderDetail < ActiveRecord::Base
       reviewed_at: Time.zone.now,
       account_types: Account.config.journal_account_types,
     ],
-  } }
+                         } }
 
   scope :statemented, lambda {|facility|
                         {
-    joins: :order,
+                          joins: :order,
     order: "order_details.created_at DESC",
     conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id] }
   }
