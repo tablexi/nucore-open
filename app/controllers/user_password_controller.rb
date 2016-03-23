@@ -18,7 +18,6 @@ class UserPasswordController < ApplicationController
     end
   end
 
-
   def reset
     if request.post? && params[:user]
       @user = User.find_by_email(params[:user][:email])

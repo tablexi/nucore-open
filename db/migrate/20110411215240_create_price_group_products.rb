@@ -35,7 +35,6 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
     price_policies.each(&:destroy)
   end
 
-
   def self.down
     PricePolicy.all.each do |policy|
       product = case policy

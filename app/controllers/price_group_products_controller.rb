@@ -49,14 +49,12 @@ class PriceGroupProductsController < ApplicationController
     redirect_to edit_facility_price_group_product_path(current_facility, @product)
   end
 
-
   private
 
   def init_price_group_products
     @product = Product.find_by_url_name!(params[:id])
     @is_instrument = @product.is_a? Instrument
     @price_groups = current_facility.price_groups
-
 
     existing_pgps = @product.price_group_products
     # TODO: change to plain Hash once we don't need to support Ruby 1.8
