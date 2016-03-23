@@ -1,12 +1,10 @@
-require "hash_helper"
 module SplitAccounts
   module Reports
     class ExportRawTransformer
-      include HashHelper
       include ActionView::Helpers::NumberHelper
 
       def transform(original_hash)
-        insert_into_hash_after(original_hash, :actual_total, split_percent: method(:split_percent))
+        original_hash.merge(split_percent: method(:split_percent))
       end
 
       private
