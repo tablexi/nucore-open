@@ -4,7 +4,7 @@ module SplitAccounts
 
     def initialize(user, resource, controller)
       super
-      cannot :manage, SplitAccounts::SplitAccount unless user.administrator?
+      cannot :create, SplitAccounts::SplitAccount unless user.administrator?
     end
 
   end
