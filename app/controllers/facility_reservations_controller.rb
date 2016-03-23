@@ -220,9 +220,9 @@ class FacilityReservationsController < ApplicationController
     current_facility.order_details.new_or_inprocess.reservations
                     .includes(
                       { order: :user },
-        :order_status,
-        :reservation,
-        :assigned_user,
+                      :order_status,
+                      :reservation,
+                      :assigned_user,
                     )
                     .where("reservations.id IS NOT NULL")
                     .order(order_by_clause)
