@@ -19,7 +19,7 @@ module DateHelper
 
     Time.zone.parse(date_string)
   rescue
-     nil
+    nil
   end
 
   def format_usa_date(datetime)
