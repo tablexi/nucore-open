@@ -10,6 +10,9 @@ engines:
     config: .coffeelint.json
   duplication:
     enabled: true
+    exclude_paths:
+      - "spec/**"
+      - "vendor/engines/**/spec/**"
     config:
       languages:
       - ruby
