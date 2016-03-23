@@ -1,4 +1,5 @@
 class ProductUserCreator
+
   def self.create(user:, product:, approver:)
     product_user = ProductUser.new(
       product: product,
@@ -18,4 +19,5 @@ class ProductUserCreator
     product_user.update_attribute(:requested_at, training_request.created_at)
     training_request.destroy || raise(ActiveRecord::Rollback)
   end
+
 end
