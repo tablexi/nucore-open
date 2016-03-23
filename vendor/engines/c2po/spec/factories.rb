@@ -11,7 +11,7 @@ FactoryGirl.define do
   end
 
   factory :purchase_order_account do
-    sequence(:account_number) { |n| n.to_s }
+    sequence(:account_number, &:to_s)
     description "purchase order account description"
     expires_at Time.zone.now + 1.month
     sequence(:affiliate) { |n| Affiliate.find_or_create_by_name("po_affiliate#{n}") }
