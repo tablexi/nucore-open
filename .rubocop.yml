@@ -1,5 +1,6 @@
 inherit_from:
   - .rubocop-txi.yml
+  - .rubocop_todo.yml
 
 # Overrides can go here, but try to conform to TXI standards as specified in
 # .rubocop-txi.yml when possible.
