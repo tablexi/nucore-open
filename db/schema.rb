@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160309224521) do
+ActiveRecord::Schema.define(:version => 20160322175922) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -139,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20160309224521) do
     t.string   "email"
     t.string   "journal_mask",                 :limit => 50,                     :null => false
     t.boolean  "show_instrument_availability",                :default => false, :null => false
+    t.string   "order_notification_recipient"
   end
 
   add_index "facilities", ["abbreviation"], :name => "index_facilities_on_abbreviation", :unique => true
