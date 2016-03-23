@@ -39,7 +39,7 @@ module SplitAccounts
     end
 
     def extra_penny_count
-      splits.select(&:extra_penny?).size
+      splits.to_a.count(&:extra_penny?)
     end
 
     def duplicate_subaccounts?
