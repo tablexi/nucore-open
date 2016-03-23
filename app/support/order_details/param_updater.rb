@@ -65,7 +65,7 @@ class OrderDetails::ParamUpdater
       true
     rescue StandardError => e
       @order_detail.errors.add(:base, :changing_status)
-      # returns nil
+    # returns nil
 
   end
 

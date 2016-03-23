@@ -373,7 +373,7 @@ RSpec.describe OrderDetail do
      @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10, price_policy_id: @service_pp.id)
     end
 
-    ## TODO will need to re-write to check for file uploads
+     ## TODO will need to re-write to check for file uploads
      it "should validate for a service with no file template upload" do
        expect(@order_detail.valid_service_meta?).to be true
      end

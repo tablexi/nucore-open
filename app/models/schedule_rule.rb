@@ -17,7 +17,7 @@ class ScheduleRule < ActiveRecord::Base
   def self.available_to_user(user)
     where(product_users: { user_id: user.id })
       .joins(instrument: :product_users).
-    # instrument doesn't have any restrictions at all, or has one that matches the product_user
+      # instrument doesn't have any restrictions at all, or has one that matches the product_user
       where("(not EXISTS (SELECT * FROM product_access_schedule_rules WHERE product_access_schedule_rules.schedule_rule_id = schedule_rules.id)
      OR (exists (select * from product_access_schedule_rules
          where product_access_schedule_rules.product_access_group_id = product_users.product_access_group_id

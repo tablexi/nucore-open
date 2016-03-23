@@ -13,7 +13,7 @@ class Orders::ItemAdder
             add_bundles(product, @quantity, attributes)
           elsif product.is_a? Service
             add_services(product, @quantity, attributes)
-    # products which have reservations (instruments) should each get their own order_detail
+          # products which have reservations (instruments) should each get their own order_detail
           elsif product.respond_to?(:reservations) && quantity > 1
             add_instruments(product, @quantity, attributes)
           else
