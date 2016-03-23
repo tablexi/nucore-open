@@ -22,22 +22,22 @@ class OrderDetailObserver < ActiveRecord::Observer
   def after_save(order_detail)
     if order_detail.order_status_id_changed?
       old_status = order_detail.order_status_id_was ? OrderStatus.find(order_detail.order_status_id_was) : nil
-     new_status = order_detail.order_status
-     hooks_to_run = self.class.status_change_hooks[new_status.downcase_name.to_sym]
-     hooks_to_run.each { |hook| hook.on_status_change(order_detail, old_status, new_status) } if hooks_to_run
+      new_status = order_detail.order_status
+      hooks_to_run = self.class.status_change_hooks[new_status.downcase_name.to_sym]
+      hooks_to_run.each { |hook| hook.on_status_change(order_detail, old_status, new_status) } if hooks_to_run
     end
 
-     changes = order_detail.changes
+    changes = order_detail.changes
      # check to see if #before_save switch order ids on us
-     if changes.key?("order_id") && changes["order_id"][0].present?
-       merge_order = Order.find changes["order_id"][0].to_i
-  
-       # clean up merge notifications
-       MergeNotification.about(order_detail).first.try(:destroy)
-  
-       # clean up detail-less merge orders
-       merge_order.destroy if merge_order.to_be_merged? && merge_order.order_details.blank?
-     end
+    if changes.key?("order_id") && changes["order_id"][0].present?
+      merge_order = Order.find changes["order_id"][0].to_i
+ 
+      # clean up merge notifications
+      MergeNotification.about(order_detail).first.try(:destroy)
+ 
+      # clean up detail-less merge orders
+      merge_order.destroy if merge_order.to_be_merged? && merge_order.order_details.blank?
+    end
   end
 
   def self.status_change_hooks
