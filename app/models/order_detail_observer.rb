@@ -31,10 +31,10 @@ class OrderDetailObserver < ActiveRecord::Observer
      # check to see if #before_save switch order ids on us
     if changes.key?("order_id") && changes["order_id"][0].present?
       merge_order = Order.find changes["order_id"][0].to_i
- 
+
       # clean up merge notifications
       MergeNotification.about(order_detail).first.try(:destroy)
- 
+
       # clean up detail-less merge orders
       merge_order.destroy if merge_order.to_be_merged? && merge_order.order_details.blank?
     end
