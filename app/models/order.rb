@@ -74,7 +74,7 @@ class Order < ActiveRecord::Base
   end
 
   def has_valid_payment?
-    account.present? &&                                 # order has account
+    account.present? && # order has account
       order_details.all? { |od| od.account_id == account_id } && # order detail accounts match order account
       facility.can_pay_with_account?(account) &&               # payment is accepted by facility
       account.can_be_used_by?(user) &&                         # user can pay with account

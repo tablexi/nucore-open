@@ -334,7 +334,7 @@ Nucore::Application.routes.draw do
   post  "/facilities/:facility_id/:product/:product_id/files/create_product_survey",                    to: 'file_uploads#create_product_survey', as: "create_product_survey"
   put   "/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
   put   "/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
-  match "/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete",          to: 'surveys#complete',                 as: "complete_survey",     via: [:get, :post]
+  match "/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete",          to: 'surveys#complete',                 as: "complete_survey", via: [:get, :post]
 
   # general reports
   match "/facilities/:facility_id/general_reports/assigned_to",   to: 'general_reports#assigned_to',   as: "assigned_to_facility_general_reports",   via: [:get, :post]

@@ -4,7 +4,7 @@ class UpdateVarcharFields < ActiveRecord::Migration
     change_column :facilities, :url_name,      :string, limit: 50,  null: false
     change_column :facilities, :account,       :string, limit: 50,  null: false
 
-    add_column    :facilities, :description_c, :text,                  null: true
+    add_column    :facilities, :description_c, :text, null: true
     execute "UPDATE facilities SET description_c = description"
     remove_column :facilities, :description
     rename_column :facilities, :description_c, :description

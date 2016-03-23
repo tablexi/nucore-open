@@ -7,7 +7,7 @@ class AddFieldsToAccounts < ActiveRecord::Migration
     add_column :accounts, :expires_at, :datetime, null: true
     Account.update_all(expires_at: DateTime.civil(2012, 1, 1))
 
-    change_column :accounts, :expires_at,         :datetime,              null: false
+    change_column :accounts, :expires_at,         :datetime, null: false
 
     add_column    :accounts, :name_on_card,       :string, limit: 200, null: true
     add_column    :accounts, :credit_card_number, :text,                  null: true

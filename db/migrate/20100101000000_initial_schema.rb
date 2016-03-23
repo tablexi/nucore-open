@@ -102,7 +102,7 @@ class InitialSchema < ActiveRecord::Migration
     end
 
     create_table "schedule_rules" do |t|
-      t.integer "instrument_id",    precision: 38, scale: 0,                  null: false
+      t.integer "instrument_id",    precision: 38, scale: 0, null: false
       t.decimal "discount_percent", precision: 10, scale: 2, default: 0.0, null: false
       t.integer "start_hour",       precision: 38, scale: 0,                  null: false
       t.integer "start_min",        precision: 38, scale: 0,                  null: false
