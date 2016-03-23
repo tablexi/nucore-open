@@ -28,7 +28,6 @@ class CreateAnswers < ActiveRecord::Migration
       t.string :custom_renderer
 
       t.timestamps
-
     end
   end
 
