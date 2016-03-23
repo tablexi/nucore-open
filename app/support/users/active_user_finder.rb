@@ -17,12 +17,12 @@ class Users::ActiveUserFinder
 
   def user_fields(user)
     [user.id,
-      user.email,
-      user.username,
-      user.first_name,
-      user.last_name,
-      user.last_sign_in_at,
-      user.orders.last.try(:created_at),
+     user.email,
+     user.username,
+     user.first_name,
+     user.last_name,
+     user.last_sign_in_at,
+     user.orders.last.try(:created_at),
     ]
   end
 

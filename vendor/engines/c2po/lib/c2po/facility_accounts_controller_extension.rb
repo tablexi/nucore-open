@@ -71,9 +71,9 @@ module C2po
         .account_unreconciled(current_facility, @selected)
         .order(%w(
                  order_details.account_id
-          order_details.statement_id
-          order_details.order_id
-          order_details.id))
+                 order_details.statement_id
+                 order_details.order_id
+                 order_details.id))
         .paginate(page: params[:page])
     end
 

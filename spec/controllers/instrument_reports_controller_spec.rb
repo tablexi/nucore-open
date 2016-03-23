@@ -7,9 +7,9 @@ RSpec.describe InstrumentReportsController do
 
   run_report_tests([
                      { action: :instrument, index: 0, report_on_label: nil, report_on: proc { |res| [res.product.url_name] } },
-    { action: :account, index: 1, report_on_label: "Description", report_on: proc { |res| [res.product.url_name, res.order_detail.account.to_s] } },
-    { action: :account_owner, index: 2, report_on_label: "Name", report_on: proc { |res| owner = res.order_detail.account.owner.user; [res.product.url_name, "#{owner.full_name} (#{owner.username})"] } },
-    { action: :purchaser, index: 3, report_on_label: "Name", report_on: proc { |res| usr = res.order_detail.order.user; [res.product.url_name, "#{usr.full_name} (#{usr.username})"] } },
+                     { action: :account, index: 1, report_on_label: "Description", report_on: proc { |res| [res.product.url_name, res.order_detail.account.to_s] } },
+                     { action: :account_owner, index: 2, report_on_label: "Name", report_on: proc { |res| owner = res.order_detail.account.owner.user; [res.product.url_name, "#{owner.full_name} (#{owner.username})"] } },
+                     { action: :purchaser, index: 3, report_on_label: "Name", report_on: proc { |res| usr = res.order_detail.order.user; [res.product.url_name, "#{usr.full_name} (#{usr.username})"] } },
                    ])
 
   private
