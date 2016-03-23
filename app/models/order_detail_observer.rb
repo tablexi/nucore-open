@@ -20,12 +20,12 @@ class OrderDetailObserver < ActiveRecord::Observer
   end
 
   def after_save(order_detail)
-     if order_detail.order_status_id_changed?
+    if order_detail.order_status_id_changed?
       old_status = order_detail.order_status_id_was ? OrderStatus.find(order_detail.order_status_id_was) : nil
-      new_status = order_detail.order_status
-      hooks_to_run = self.class.status_change_hooks[new_status.downcase_name.to_sym]
-      hooks_to_run.each { |hook| hook.on_status_change(order_detail, old_status, new_status) } if hooks_to_run
-     end
+     new_status = order_detail.order_status
+     hooks_to_run = self.class.status_change_hooks[new_status.downcase_name.to_sym]
+     hooks_to_run.each { |hook| hook.on_status_change(order_detail, old_status, new_status) } if hooks_to_run
+    end
 
      changes = order_detail.changes
    # check to see if #before_save switch order ids on us

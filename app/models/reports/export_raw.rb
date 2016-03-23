@@ -132,21 +132,21 @@ class Reports::ExportRaw
   end
 
   def order_detail_row(order_detail)
-      report_hash.values.map do |callable|
-        result = if callable.is_a?(Symbol)
-                   order_detail.public_send(callable)
-                 else
-                   callable.call(order_detail)
-        end
-
-        if result.is_a?(DateTime)
-          format_usa_datetime(result)
-        else
-          result
-        end
+    report_hash.values.map do |callable|
+      result = if callable.is_a?(Symbol)
+                 order_detail.public_send(callable)
+               else
+                 callable.call(order_detail)
       end
-    rescue => e
-      ["*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***"]
+
+      if result.is_a?(DateTime)
+        format_usa_datetime(result)
+      else
+        result
+      end
+    end
+  rescue => e
+    ["*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***"]
   end
 
   def csv_body
