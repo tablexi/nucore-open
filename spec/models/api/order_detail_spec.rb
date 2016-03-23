@@ -26,11 +26,11 @@ RSpec.describe Api::OrderDetail do
         {
           id: account.id,
           owner: {
-          id: account_owner.id,
+            id: account_owner.id,
           name: account_owner.name,
           username: account_owner.username,
           email: account_owner.email,
-        },
+          },
         }
       end
 
