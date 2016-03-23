@@ -12,8 +12,8 @@ RSpec.describe EndReservationOnly, :timecop_freeze do
 
       before do
         action.perform
-       order_detail.reload
-       reservation.reload
+        order_detail.reload
+        reservation.reload
       end
 
       it "uses a reservation only reservation" do

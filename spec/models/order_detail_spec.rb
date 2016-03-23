@@ -364,38 +364,38 @@ RSpec.describe OrderDetail do
   context "service purchase validation" do
     before(:each) do
       @account = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-     @price_group = create(:price_group, facility: @facility)
-     create(:account_price_group_member, account: account, price_group: @price_group)
-     @order          = @user.orders.create(attributes_for(:order, facility_id: @facility.id, account_id: @account.id, created_by: @user.id))
-     @service        = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
-     @service_pp     = @service.service_price_policies.create(attributes_for(:service_price_policy, price_group_id: @price_group.id))
-     @order_detail   = @order.order_details.create(attributes_for(:order_detail).update(product_id: @service.id, account_id: @account.id))
-     @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10, price_policy_id: @service_pp.id)
+      @price_group = create(:price_group, facility: @facility)
+      create(:account_price_group_member, account: account, price_group: @price_group)
+      @order          = @user.orders.create(attributes_for(:order, facility_id: @facility.id, account_id: @account.id, created_by: @user.id))
+      @service        = @facility.services.create(attributes_for(:service, facility_account_id: @facility_account.id))
+      @service_pp     = @service.service_price_policies.create(attributes_for(:service_price_policy, price_group_id: @price_group.id))
+      @order_detail   = @order.order_details.create(attributes_for(:order_detail).update(product_id: @service.id, account_id: @account.id))
+      @order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10, price_policy_id: @service_pp.id)
     end
 
      ## TODO will need to re-write to check for file uploads
-     it "should validate for a service with no file template upload" do
-       expect(@order_detail.valid_service_meta?).to be true
-     end
+    it "should validate for a service with no file template upload" do
+      expect(@order_detail.valid_service_meta?).to be true
+    end
 
-     it "should not validate_extras for a service file template upload with no template results" do
-       # add service file template
-       @file1      = "#{Rails.root}/spec/files/template1.txt"
-       @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
-                                                  created_by: @user.id)
-       expect(@order_detail.valid_service_meta?).to be false
-     end
+    it "should not validate_extras for a service file template upload with no template results" do
+      # add service file template
+      @file1      = "#{Rails.root}/spec/files/template1.txt"
+      @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
+                                                 created_by: @user.id)
+      expect(@order_detail.valid_service_meta?).to be false
+    end
 
-     it "should validate_extras for a service file template upload with template results" do
-       # add service file template
-       @file1      = "#{Rails.root}/spec/files/template1.txt"
-       @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
-                                                  created_by: @user)
-       # add results for a specific order detail
-       @results1   = @service.stored_files.create(name: "Results 1", file: File.open(@file1), file_type: "template_result",
-                                                  order_detail: @order_detail, created_by: @user)
-       expect(@order_detail.valid_service_meta?).to be true
-     end
+    it "should validate_extras for a service file template upload with template results" do
+      # add service file template
+      @file1      = "#{Rails.root}/spec/files/template1.txt"
+      @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
+                                                 created_by: @user)
+      # add results for a specific order detail
+      @results1   = @service.stored_files.create(name: "Results 1", file: File.open(@file1), file_type: "template_result",
+                                                 order_detail: @order_detail, created_by: @user)
+      expect(@order_detail.valid_service_meta?).to be true
+    end
   end
 
   context "instrument" do

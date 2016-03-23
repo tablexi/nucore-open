@@ -4,11 +4,11 @@ module CSVHelper
         when "1.8.7"
           require "faster_csv" unless defined?(FasterCSV)
 
-      FasterCSV
+          FasterCSV
         else
           require "csv" unless defined?(CSV)
 
-      CSV
+          CSV
     end
 
   def set_csv_headers(filename)

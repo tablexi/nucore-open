@@ -85,11 +85,11 @@ class ReportsController < ApplicationController
           raise "Export type not found"
         when "report" # AKA "Export"
           init_report(report_on_label, &report_on)
-            render_csv("#{action_name}_#{@export_type}", @export_type)
+          render_csv("#{action_name}_#{@export_type}", @export_type)
         when "report_data" # AKA "Export Raw"
           @report_on = report_on
-            @report_on_label = report_on_label
-            generate_report_data_csv
+          @report_on_label = report_on_label
+          generate_report_data_csv
         end
       end
     end
