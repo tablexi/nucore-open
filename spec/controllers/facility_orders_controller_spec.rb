@@ -16,7 +16,7 @@ RSpec.describe FacilityOrdersController do
     @product = FactoryGirl.create(:item,
                                   facility_account: @facility_account,
                                   facility: @authable,
-                               )
+                                 )
     @account = create_nufs_account_with_owner :director
     @order_detail = place_product_order(@director, @authable, @product, @account)
     @order_detail.order.update_attributes!(state: "purchased")

@@ -126,7 +126,7 @@ class FacilityAccountsController < ApplicationController
       @accounts += Account.for_facility(current_facility).where(
         "LOWER(account_number) LIKE ?", term)
                           .order("type, account_number",
-             )
+                                )
 
       # only show an account once.
       @accounts = @accounts.uniq.paginate(page: params[:page]) # hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)

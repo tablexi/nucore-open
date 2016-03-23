@@ -223,7 +223,7 @@ class FacilityReservationsController < ApplicationController
         :order_status,
         :reservation,
         :assigned_user,
-      )
+                    )
                     .where("reservations.id IS NOT NULL")
                     .order(order_by_clause)
   end
