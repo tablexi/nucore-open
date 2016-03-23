@@ -27,9 +27,9 @@ module Products::SchedulingSupport
 
   def started_reservations
     purchased_reservations
-        .not_canceled
-        .merge(OrderDetail.unreconciled)
-        .merge(Reservation.relay_in_progress)
+      .not_canceled
+      .merge(OrderDetail.unreconciled)
+      .merge(Reservation.relay_in_progress)
   end
 
   def visible_reservations(date = nil)
