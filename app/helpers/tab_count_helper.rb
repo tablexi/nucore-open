@@ -9,9 +9,7 @@ module TabCountHelper
   def tab_counts
     @counts = {}
     ACTIONS_TO_COUNT_TYPE.values.each do |count|
-      if params[:tabs].include? count.to_s
-        @counts[count] = send(count).count
-      end
+      @counts[count] = send(count).count if params[:tabs].include? count.to_s
     end
     render json: @counts
   end
