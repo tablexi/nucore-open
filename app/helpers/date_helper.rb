@@ -18,7 +18,7 @@ module DateHelper
     date_string += " #{extra_date_info}" if extra_date_info
 
     Time.zone.parse(date_string)
-   rescue
+  rescue
      nil
   end
 
