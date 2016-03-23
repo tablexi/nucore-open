@@ -250,9 +250,7 @@ class Account < ActiveRecord::Base
     !expired? && !suspended?
   end
 
-  def account_number_to_s
-    account_number.to_s
-  end
+  delegate :to_s, to: :account_number, prefix: true
 
   def to_s(with_owner = false, flag_suspended = true)
     desc = "#{description} / #{account_number_to_s}"
