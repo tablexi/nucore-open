@@ -90,11 +90,6 @@ Lint/ParenthesesAsGroupedExpression:
     - 'spec/models/reservation_setup_spec.rb'
     - 'spec/models/reservation_spec.rb'
 
-# Offense count: 1
-Lint/RescueException:
-  Exclude:
-    - 'db/migrate/20100701232820_change_order_detail_status.rb'
-
 # Offense count: 4
 Lint/ShadowingOuterLocalVariable:
   Exclude:

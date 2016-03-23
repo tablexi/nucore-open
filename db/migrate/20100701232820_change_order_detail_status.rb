@@ -5,7 +5,7 @@ class ChangeOrderDetailStatus < ActiveRecord::Migration
 
     begin
       execute "ALTER TABLE order_details add CONSTRAINT fk_order_statuses FOREIGN KEY (order_status_id) REFERENCES order_statuses (id)"
-    rescue Exception => e
+    rescue => e
     end
 
     ## this would work if oracle wasn't stupid
