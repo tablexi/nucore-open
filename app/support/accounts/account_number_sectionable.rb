@@ -19,7 +19,7 @@ module Accounts::AccountNumberSectionable
   end
 
   def account_number_to_storage_format
-    (account_number_parts.account_number).to_s
+    account_number_parts.account_number.to_s
   end
 
   def account_number_parts
