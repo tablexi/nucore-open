@@ -1028,10 +1028,10 @@ RSpec.describe OrderDetail do
 
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument = create(:instrument,
-                         facility: @facility,
-                         facility_account: @facility_account,
-                         min_reserve_mins: 60,
-                         max_reserve_mins: 60)
+                           facility: @facility,
+                           facility_account: @facility_account,
+                           min_reserve_mins: 60,
+                           max_reserve_mins: 60)
 
       # all reservations get placed in today
       @reservation_yesterday = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now - 1.day)

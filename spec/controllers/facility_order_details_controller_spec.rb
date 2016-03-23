@@ -10,17 +10,17 @@ RSpec.describe FacilityOrderDetailsController do
     @authable = FactoryGirl.create(:facility)
     @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
     @product = FactoryGirl.create(:item,
-                                facility_account: @facility_account,
-                                facility: @authable,
+                                  facility_account: @facility_account,
+                                  facility: @authable,
                                )
     @account = create_nufs_account_with_owner :director
     @order = FactoryGirl.create(:order,
-                              facility: @authable,
-                              user: @director,
-                              created_by: @director.id,
-                              account: @account,
-                              ordered_at: Time.zone.now,
-                              state: "purchased",
+                                facility: @authable,
+                                user: @director,
+                                created_by: @director.id,
+                                account: @account,
+                                ordered_at: Time.zone.now,
+                                state: "purchased",
                              )
     @price_group = FactoryGirl.create(:price_group, facility: @authable)
     @price_policy = FactoryGirl.create(:item_price_policy, product: @product, price_group: @price_group)
@@ -61,10 +61,10 @@ RSpec.describe FacilityOrderDetailsController do
     @instrument = FactoryGirl.create(:instrument, facility: @authable,
                                                   facility_account: @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)))
     @instrument_price_policy = FactoryGirl.create(:instrument_price_policy,
-                                                product: @instrument,
-                                                price_group: @price_group,
-                                                usage_rate: 10,
-                                                usage_subsidy: 0)
+                                                  product: @instrument,
+                                                  price_group: @price_group,
+                                                  usage_rate: 10,
+                                                  usage_subsidy: 0)
     expect(@instrument_price_policy).to be_persisted
     allow_any_instance_of(Instrument).to receive(:cheapest_price_policy).and_return(@instrument_price_policy)
     @reservation = place_reservation @authable, @order_detail, 1.day.ago

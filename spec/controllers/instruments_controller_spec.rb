@@ -259,8 +259,8 @@ RSpec.describe InstrumentsController do
       @action = :create
       @params.merge!(
         instrument: FactoryGirl.attributes_for(:instrument,
-                                                  facility_account_id: @facility_account.id,
-                                                  control_mechanism: "manual",
+                                               facility_account_id: @facility_account.id,
+                                               control_mechanism: "manual",
                                                  ),
       )
     end

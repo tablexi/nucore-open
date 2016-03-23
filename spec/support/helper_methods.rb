@@ -163,10 +163,10 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
   @instrument ||= FactoryGirl.create(
     :instrument,
-        facility: facility,
-        facility_account: facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)),
-        min_reserve_mins: 60,
-        max_reserve_mins: 60)
+    facility: facility,
+    facility_account: facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)),
+    min_reserve_mins: 60,
+    max_reserve_mins: 60)
 
   assert @instrument.valid?
   @instrument.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24)) if @instrument.schedule_rules.empty?
@@ -208,10 +208,10 @@ end
 def setup_reservation(facility, facility_account, account, user)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
   @instrument = FactoryGirl.create(:instrument,
-                                         facility: facility,
-                                         facility_account: facility_account,
-                                         min_reserve_mins: 60,
-                                         max_reserve_mins: 60)
+                                   facility: facility,
+                                   facility_account: facility_account,
+                                   min_reserve_mins: 60,
+                                   max_reserve_mins: 60)
   assert @instrument.valid?
   @price_group = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
   FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)

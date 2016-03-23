@@ -17,10 +17,10 @@ class Product < ActiveRecord::Base
   validate_url_name :url_name, :facility_id
   validates_numericality_of(
     :account,
-      only_integer: true,
-      greater_than_or_equal_to: 0,
-      less_than_or_equal_to: 99_999,
-      if: :account_required,
+    only_integer: true,
+    greater_than_or_equal_to: 0,
+    less_than_or_equal_to: 99_999,
+    if: :account_required,
   ) if SettingsHelper.feature_on? :expense_accounts
 
   # Use lambda so we can dynamically enable/disable in specs

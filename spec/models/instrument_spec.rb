@@ -176,9 +176,9 @@ RSpec.describe Instrument do
   context "updating nested relay" do
     before :each do
       @instrument = FactoryGirl.create(:instrument,
-                                             facility: facility,
-                                             facility_account: facility_account,
-                                             no_relay: true)
+                                       facility: facility,
+                                       facility_account: facility_account,
+                                       no_relay: true)
     end
 
     context "existing type: 'timer' (Timer without relay)" do
@@ -339,10 +339,10 @@ RSpec.describe Instrument do
     before(:each) do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument = FactoryGirl.create(:instrument,
-                                             facility: facility,
-                                             facility_account: facility_account,
-                                             min_reserve_mins: 60,
-                                             max_reserve_mins: 60)
+                                       facility: facility,
+                                       facility_account: facility_account,
+                                       min_reserve_mins: 60,
+                                       max_reserve_mins: 60)
       assert @instrument.valid?
       # add rule, available every day from 9 to 5, 60 minutes duration
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
@@ -438,11 +438,11 @@ RSpec.describe Instrument do
     before(:each) do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument = create(:instrument,
-                                 facility: facility,
-                                 facility_account: facility_account,
-                                 min_reserve_mins: 60,
-                                 reserve_interval: 60,
-                                 max_reserve_mins: 60)
+                           facility: facility,
+                           facility_account: facility_account,
+                           min_reserve_mins: 60,
+                           reserve_interval: 60,
+                           max_reserve_mins: 60)
       assert @instrument.valid?
       # add rule, available every day from 9 to 5, 60 minutes duration/interval
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
@@ -513,10 +513,10 @@ RSpec.describe Instrument do
     before(:each) do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument = FactoryGirl.create(:instrument,
-                                             facility: facility,
-                                             facility_account: facility_account,
-                                             min_reserve_mins: 60,
-                                             max_reserve_mins: 60)
+                                       facility: facility,
+                                       facility_account: facility_account,
+                                       min_reserve_mins: 60,
+                                       max_reserve_mins: 60)
       assert @instrument.valid?
     end
 
@@ -593,8 +593,8 @@ RSpec.describe Instrument do
 
     before :each do
       @instrument = FactoryGirl.create(:instrument,
-                                             facility: facility,
-                                             facility_account: facility_account)
+                                       facility: facility,
+                                       facility_account: facility_account)
       @price_group = FactoryGirl.create(:price_group, facility: facility)
       @user = FactoryGirl.create(:user)
       @price_group_member = create(:account_price_group_member, account: account, price_group: @price_group)
@@ -714,9 +714,9 @@ RSpec.describe Instrument do
       context "with a current reservation" do
         let!(:reservation) do
           FactoryGirl.create :purchased_reservation,
-                                                reserve_start_at: 30.minutes.ago,
-                                                reserve_end_at: 30.minutes.from_now,
-                                                product: instrument
+                             reserve_start_at: 30.minutes.ago,
+                             reserve_end_at: 30.minutes.from_now,
+                             product: instrument
         end
 
         it { is_expected.not_to be_available }
@@ -751,9 +751,9 @@ RSpec.describe Instrument do
       context "with a current reservation" do
         let!(:reservation) do
           FactoryGirl.create :purchased_reservation,
-                                                reserve_start_at: 30.minutes.ago,
-                                                reserve_end_at: 30.minutes.from_now,
-                                                product: instrument
+                             reserve_start_at: 30.minutes.ago,
+                             reserve_end_at: 30.minutes.from_now,
+                             product: instrument
         end
 
         context "and is started" do
