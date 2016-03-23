@@ -27,10 +27,6 @@
 
   = f.input :display_status, input_html: { class: @account.suspended? ? "suspended-account" : "" }
 
-  -# TODO: this belongs in the c2po engine
-  - unless @account.is_a?(NufsAccount)
-    = f.input :remittance_information, value_method: Proc.new { |value| value.present? ? simple_format(value) : "None Entered"}
-
   = render_view_hook("after_end_of_form", f: f, account: @account)
 
 %ul.inline
