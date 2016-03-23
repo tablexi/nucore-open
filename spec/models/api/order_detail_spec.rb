@@ -11,9 +11,9 @@ RSpec.describe Api::OrderDetail do
   let(:ordered_for_hash) do
     {
       id: ordered_for.id,
-    name: ordered_for.name,
-    username: ordered_for.username,
-    email: ordered_for.email,
+      name: ordered_for.name,
+      username: ordered_for.username,
+      email: ordered_for.email,
     }
   end
 
@@ -25,7 +25,7 @@ RSpec.describe Api::OrderDetail do
       let(:account_hash) do
         {
           id: account.id,
-        owner: {
+          owner: {
           id: account_owner.id,
           name: account_owner.name,
           username: account_owner.username,

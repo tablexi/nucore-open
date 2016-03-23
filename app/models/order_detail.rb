@@ -148,13 +148,13 @@ class OrderDetail < ActiveRecord::Base
   scope :for_facility_with_price_policy, lambda { |facility|
     {
       joins: :order,
-    conditions: ["orders.facility_id = ? AND price_policy_id IS NOT NULL", facility.id], order: "order_details.fulfilled_at DESC" }
+      conditions: ["orders.facility_id = ? AND price_policy_id IS NOT NULL", facility.id], order: "order_details.fulfilled_at DESC" }
   }
 
   scope :need_notification, lambda {
                               {
                                 joins: :product,
-    conditions: ['order_details.state = ?
+                                conditions: ['order_details.state = ?
                      AND order_details.reviewed_at IS NULL
                      AND order_details.price_policy_id IS NOT NULL
                      AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', "complete"],
@@ -249,7 +249,7 @@ class OrderDetail < ActiveRecord::Base
   scope :need_statement, lambda { |facility|
                            {
                              joins: [:product, :account],
-    conditions: [
+                             conditions: [
       "products.facility_id = :facility_id
         AND order_details.state = :state
         AND problem = :problem
@@ -269,7 +269,7 @@ class OrderDetail < ActiveRecord::Base
   scope :need_journal, lambda {
                          {
                            joins: [:product, :account],
-    conditions: [
+                           conditions: [
       "order_details.state = :state
         AND problem = :problem
         AND reviewed_at <= :reviewed_at
@@ -287,8 +287,8 @@ class OrderDetail < ActiveRecord::Base
   scope :statemented, lambda {|facility|
     {
       joins: :order,
-    order: "order_details.created_at DESC",
-    conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id] }
+      order: "order_details.created_at DESC",
+      conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id] }
   }
 
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")

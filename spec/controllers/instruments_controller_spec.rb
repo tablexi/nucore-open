@@ -275,11 +275,11 @@ RSpec.describe InstrumentsController do
         @params[:instrument].merge!(control_mechanism: "relay",
                                     relay_attributes: {
                                       ip: "192.168.1.2",
-            port: 1234,
-            username: "username",
-            password: "password",
-            type: RelaySynaccessRevA.name,
-            instrument_id: -1 # nested attributes want something
+                                      port: 1234,
+                                      username: "username",
+                                      password: "password",
+                                      type: RelaySynaccessRevA.name,
+                                      instrument_id: -1 # nested attributes want something
                                     })
       end
 
@@ -427,11 +427,11 @@ RSpec.describe InstrumentsController do
         @params[:instrument].merge!(control_mechanism: "relay",
                                     relay_attributes: {
                                       ip: "192.168.1.2",
-            port: 1234,
-            username: "username",
-            password: "password",
-            type: RelaySynaccessRevA.name,
-            instrument_id: @instrument.id,
+                                      port: 1234,
+                                      username: "username",
+                                      password: "password",
+                                      type: RelaySynaccessRevA.name,
+                                      instrument_id: @instrument.id,
                                     })
       end
 
