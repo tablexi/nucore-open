@@ -11,7 +11,7 @@ module PricePolicySupport
       validates_numericality_of :unit_cost, unless: :restrict_purchase
       validate :subsidy_more_than_cost?, unless: ->(pp) { pp.unit_cost.nil? || pp.unit_subsidy.nil? }
       before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
-     end
+    end
 
     def subsidy_more_than_cost?
       errors.add("unit_subsidy", "cannot be greater than the Unit cost") if unit_subsidy > unit_cost
