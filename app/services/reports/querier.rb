@@ -12,10 +12,11 @@ module Reports
       @date_range_start = options[:date_range_start]
       @date_range_end = options[:date_range_end]
       @extra_includes = options[:includes]
+      @transformer_options = options[:transformer_options]
     end
 
     def perform
-      OrderDetailListTransformerFactory.instance(order_details).perform
+      OrderDetailListTransformerFactory.instance(order_details).perform(@transformer_options)
     end
 
     def order_details

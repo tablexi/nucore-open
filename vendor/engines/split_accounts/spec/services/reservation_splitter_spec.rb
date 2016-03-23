@@ -24,7 +24,12 @@ RSpec.describe SplitAccounts::ReservationSplitter do
     end
   end
 
-  let(:reservation) { build_stubbed(:reservation, duration_mins: 25, actual_duration_mins: 35, order_detail: order_detail) }
+  let(:start_at) { 1.hour.ago }
+  let(:reservation) do
+    build_stubbed(:reservation, reserve_start_at: start_at,
+                                reserve_end_at: start_at + 25.minutes, actual_start_at: start_at,
+                                actual_end_at: start_at + 35.minutes, order_detail: order_detail)
+  end
   let(:results) { described_class.new(reservation).split }
 
   it "splits the reservation minutes" do
@@ -41,5 +46,15 @@ RSpec.describe SplitAccounts::ReservationSplitter do
 
   it "splits to order details costs" do
     expect(results.map { |res| res.order_detail.actual_cost }).to eq([5, 4.99])
+  end
+
+  it "copies the reservation start and end times" do
+    expect(results.map(&:reserve_start_at)).to all(eq(start_at))
+    expect(results.map(&:reserve_end_at)).to all(eq(start_at + 25.minutes))
+  end
+
+  it "copies the actual start and end times" do
+    expect(results.map(&:actual_start_at)).to all(eq(start_at))
+    expect(results.map(&:actual_end_at)).to all(eq(start_at + 35.minutes))
   end
 end

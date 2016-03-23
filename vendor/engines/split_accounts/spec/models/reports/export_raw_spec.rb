@@ -14,13 +14,14 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   let(:user) { FactoryGirl.create(:user) }
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
+  let(:base_order_detail) { place_product_order(user, facility, item, account) }
   let(:order_detail) do
-    order_detail = place_product_order(user, facility, item, account)
+    order_detail = base_order_detail
 
     # prevent the order_detail from assigning different actual_cost and actual_subsidy
     allow(order_detail).to receive(:assign_actual_price).and_return(nil)
 
-    order_detail.quantity = 3
+    order_detail.quantity = 1
     order_detail.actual_subsidy = BigDecimal("9.99")
     order_detail.actual_cost = BigDecimal("19.99")
     order_detail.estimated_subsidy = BigDecimal("29.99")
@@ -63,7 +64,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
     end
 
     it "splits quantity" do
-      expect(column_values).to contain_exactly("1.5", "1.5")
+      expect(column_values).to contain_exactly("0.5", "0.5")
     end
   end
 
@@ -163,6 +164,83 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
 
       it "has the actual_cost" do
         expect(column_values).to contain_exactly("$19.99")
+      end
+    end
+  end
+
+  describe "with a reservation", :timecop_freeze do
+    let(:instrument) { FactoryGirl.create(:setup_instrument, :always_available, facility: facility) }
+    let(:now) { Time.zone.parse("2016-02-01 10:30") }
+    let(:reservation) do
+      FactoryGirl.create(:completed_reservation,
+                         product: instrument,
+                         reserve_start_at: Time.zone.parse("2016-02-01 08:30"),
+                         reserve_end_at: Time.zone.parse("2016-02-01 09:30"),
+                         actual_start_at: Time.zone.parse("2016-02-01 08:30"),
+                         actual_end_at: Time.zone.parse("2016-02-01 09:35"))
+    end
+    let(:user) { order_detail.user }
+    let(:base_order_detail) { reservation.order_detail }
+
+    before { order_detail.update_attributes!(account: account) }
+
+    context "for reserve_start_at" do
+      let(:column_index) { headers.index("Reservation Start Time") }
+
+      it "always has the same value" do
+        expect(column_values).to be_present
+        expect(column_values).to all(eq(reservation.reserve_start_at.to_s))
+      end
+    end
+
+    context "for reserve_end_at" do
+      let(:column_index) { headers.index("Reservation End Time") }
+
+      it "always has the same value" do
+        expect(column_values).to be_present
+        expect(column_values).to all(eq(reservation.reserve_end_at.to_s))
+      end
+    end
+
+    context "for the reservation duration" do
+      let(:column_index) { headers.index("Reservation Minutes") }
+
+      it "has the splits" do
+        expect(column_values).to eq(%w(30.0 30.0))
+      end
+    end
+
+    context "for actual_start_at" do
+      let(:column_index) { headers.index("Actual Start Time") }
+
+      it "always has the same value" do
+        expect(column_values).to be_present
+        expect(column_values).to all(eq(reservation.actual_start_at.to_s))
+      end
+    end
+
+    context "for actual_end_at" do
+      let(:column_index) { headers.index("Actual End Time") }
+
+      it "always has the same value" do
+        expect(column_values).to be_present
+        expect(column_values).to all(eq(reservation.actual_end_at.to_s))
+      end
+    end
+
+    context "for the reservation duration" do
+      let(:column_index) { headers.index("Actual Minutes") }
+
+      it "has the splits" do
+        expect(column_values).to eq(["32.5", "32.5"])
+      end
+    end
+
+    context "for the quantity" do
+      let(:column_index) { headers.index("Quantity") }
+
+      it "has the splits" do
+        expect(column_values).to eq(["0.5", "0.5"])
       end
     end
   end
