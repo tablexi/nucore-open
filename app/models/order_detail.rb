@@ -103,8 +103,8 @@ class OrderDetail < ActiveRecord::Base
 
   scope :finalized, lambda {|facility|
                       { joins: :order,
-                                         conditions: ["orders.facility_id = ? AND order_details.reviewed_at < ?", facility.id, Time.zone.now],
-                                         order: "order_details.created_at DESC" }
+                        conditions: ["orders.facility_id = ? AND order_details.reviewed_at < ?", facility.id, Time.zone.now],
+                        order: "order_details.created_at DESC" }
   }
 
   def self.for_facility(facility)
@@ -287,8 +287,8 @@ class OrderDetail < ActiveRecord::Base
   scope :statemented, lambda {|facility|
                         {
     joins: :order,
-      order: "order_details.created_at DESC",
-      conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id] }
+    order: "order_details.created_at DESC",
+    conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id] }
   }
 
   scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")

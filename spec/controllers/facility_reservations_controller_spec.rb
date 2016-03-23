@@ -351,7 +351,7 @@ RSpec.describe FacilityReservationsController do
         @reservation.update_attributes(actual_start_at: nil, actual_end_at: nil)
         @params.merge!(reservation: {
                          reserve_start_at: @reservation.reserve_start_at,
-                reserve_end_at: @reservation.reserve_end_at - 15.minutes,
+                         reserve_end_at: @reservation.reserve_end_at - 15.minutes,
                        },
                       )
       end

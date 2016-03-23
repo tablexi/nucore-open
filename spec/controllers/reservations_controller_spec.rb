@@ -259,11 +259,11 @@ RSpec.describe ReservationsController do
         order_account: @account.id,
         reservation: {
           reserve_start_date: format_usa_date(Time.zone.now.to_date - 5.days),
-            reserve_start_hour: "9",
-            reserve_start_min: "0",
-            reserve_start_meridian: "am",
-            duration_value: "60",
-            duration_unit: "minutes",
+          reserve_start_hour: "9",
+          reserve_start_min: "0",
+          reserve_start_meridian: "am",
+          duration_value: "60",
+          duration_unit: "minutes",
         },
       }
     end
@@ -306,11 +306,11 @@ RSpec.describe ReservationsController do
         order_account: @account.id,
         reservation: {
           reserve_start_date: format_usa_date(Time.zone.now.to_date + 1.day),
-            reserve_start_hour: "9",
-            reserve_start_min: "0",
-            reserve_start_meridian: "am",
-            duration_value: "60",
-            duration_unit: "minutes",
+          reserve_start_hour: "9",
+          reserve_start_min: "0",
+          reserve_start_meridian: "am",
+          duration_value: "60",
+          duration_unit: "minutes",
         },
       )
     end
@@ -1090,7 +1090,7 @@ RSpec.describe ReservationsController do
           context "and there is another reservation still going on" do
             let!(:reservation2) do
               create(:purchased_reservation, product: @instrument,
-                                                                 reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at)
+                                             reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at)
             end
 
             it "allows it to start" do
@@ -1167,8 +1167,8 @@ RSpec.describe ReservationsController do
          context "and a reservation using the same relay as another running reservation" do
            let!(:reservation_running) do
              create(:purchased_reservation, product: @instrument,
-                                                                       actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
-                                                                       reserve_end_at: 30.minutes.from_now)
+                                            actual_start_at: 30.minutes.ago, reserve_start_at: 30.minutes.ago,
+                                            reserve_end_at: 30.minutes.from_now)
            end
 
            before { @params[:reservation_id] = reservation_running.id }

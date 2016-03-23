@@ -47,7 +47,7 @@ RSpec.describe ItemPricePolicy do
     it "should create a price policy for today if no active price policy already exists" do
       is_expected.to allow_value(Date.today).for(:start_date)
       ipp = @item.item_price_policies.create(unit_cost: 1, unit_subsidy: 0, start_date: Date.today - 7,
-                                                 price_group: @price_group)
+                                             price_group: @price_group)
       ipp.save(validate: false)
       ipp_new = @item.item_price_policies.create(unit_cost: 1, unit_subsidy: 0, start_date: Date.today,
                                                  price_group: @price_group)

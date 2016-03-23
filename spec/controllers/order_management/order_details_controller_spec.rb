@@ -486,7 +486,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
       it "returns an error when trying to set subsidy more than quantity" do
         @params[:order_detail] = {
           actual_cost: "10.00",
-            actual_subsidy: "11.00",
+          actual_subsidy: "11.00",
         }
         do_request
         expect(assigns(:order_detail).errors).to include(:actual_total)

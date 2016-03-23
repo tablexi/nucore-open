@@ -11,7 +11,7 @@ RSpec.describe AutoExpireReservation, :timecop_freeze do
     context "a new reservation" do
       let!(:reservation) do
         create(:purchased_reservation, :yesterday, actual_start_at: 1.hour.ago,
-                                                                      product: instrument)
+                                                   product: instrument)
       end
 
       before do
@@ -41,7 +41,7 @@ RSpec.describe AutoExpireReservation, :timecop_freeze do
     context "an unpurchased reservation" do
       let!(:reservation) do
         create(:setup_reservation, :yesterday, actual_start_at: 1.hour.ago,
-                                                                  product: instrument)
+                                               product: instrument)
       end
 
       before do

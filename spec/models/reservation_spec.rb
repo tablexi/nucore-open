@@ -184,8 +184,8 @@ RSpec.describe Reservation do
       @instrument.save
 
       @reservation1 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
-                                                       reserve_start_min: 0, reserve_start_meridian: "am",
-                                                       duration_value: 30, duration_unit: "minutes", order_detail: @detail1)
+                                                      reserve_start_min: 0, reserve_start_meridian: "am",
+                                                      duration_value: 30, duration_unit: "minutes", order_detail: @detail1)
     end
 
     context "#can_customer_edit?" do
@@ -324,8 +324,8 @@ RSpec.describe Reservation do
 
     it "should not allow two reservations with the same order detail id" do
       reservation2 = @instrument.reservations.new(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
-                                                reserve_start_min: 0, reserve_start_meridian: "am",
-                                                duration_value: 30, duration_unit: "minutes", order_detail: @reservation1.order_detail)
+                                                  reserve_start_min: 0, reserve_start_meridian: "am",
+                                                  duration_value: 30, duration_unit: "minutes", order_detail: @reservation1.order_detail)
       assert !reservation2.save
       expect(reservation2.errors[:order_detail]).not_to be_nil
     end
@@ -348,20 +348,20 @@ RSpec.describe Reservation do
       expect(@reservation1).to be_valid
 
       @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
-                                                       reserve_start_min: 0, reserve_start_meridian: "am",
-                                                       duration_value: 30, duration_unit: "minutes", order_detail: @detail2)
+                                                      reserve_start_min: 0, reserve_start_meridian: "am",
+                                                      duration_value: 30, duration_unit: "minutes", order_detail: @detail2)
       expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
       @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
-                                                       reserve_start_min: 15, reserve_start_meridian: "am",
-                                                       duration_value: 30, duration_unit: "minutes", order_detail: @detail2)
+                                                      reserve_start_min: 15, reserve_start_meridian: "am",
+                                                      duration_value: 30, duration_unit: "minutes", order_detail: @detail2)
       expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
 
       @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 9,
-                                                       reserve_start_min: 45, reserve_start_meridian: "am",
-                                                       duration_value: 30, duration_unit: "minutes", order_detail: @detail2)
+                                                      reserve_start_min: 45, reserve_start_meridian: "am",
+                                                      duration_value: 30, duration_unit: "minutes", order_detail: @detail2)
       expect(@reservation2).not_to be_valid
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
     end
@@ -370,8 +370,8 @@ RSpec.describe Reservation do
       expect(@reservation1).to be_valid
 
       @reservation2 = @instrument.reservations.create(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
-                                                       reserve_start_min: 0, reserve_start_meridian: "am",
-                                                       duration_value: 30, duration_unit: "minutes", order_detail: @detail2)
+                                                      reserve_start_min: 0, reserve_start_meridian: "am",
+                                                      duration_value: 30, duration_unit: "minutes", order_detail: @detail2)
 
       expect(@reservation2).not_to be_does_not_conflict_with_other_reservation
 
@@ -735,8 +735,8 @@ RSpec.describe Reservation do
     @rule2 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 22, end_hour: 24))
     assert @rule2.valid?
     @reservation = @instrument.reservations.create(reserve_start_date: @tomorrow, reserve_start_hour: 10,
-                                                    reserve_start_min: 0, reserve_start_meridian: "pm",
-                                                    duration_value: 4, duration_unit: "hours")
+                                                   reserve_start_min: 0, reserve_start_meridian: "pm",
+                                                   duration_value: 4, duration_unit: "hours")
     assert @reservation.valid?
   end
 

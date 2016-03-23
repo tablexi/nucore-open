@@ -175,8 +175,8 @@ RSpec.describe FacilityOrdersController do
       @method = :put
       @action = :update
       @params.merge!(id: @order.id,
-        product_add: @product.id,
-        product_add_quantity: 0)
+                     product_add: @product.id,
+                     product_add_quantity: 0)
     end
 
     it_should_allow_operators_only :redirect, "to submit product quantity 0 and get failure notice" do
@@ -388,8 +388,8 @@ RSpec.describe FacilityOrdersController do
       @disputed_order_details = (1..4).map do |_i|
         order_detail = place_and_complete_item_order(@staff, @authable)
         order_detail.update_attributes(dispute_at: Time.zone.now,
-          dispute_resolved_at: nil,
-          dispute_reason: "because")
+                                       dispute_resolved_at: nil,
+                                       dispute_reason: "because")
         order_detail
       end
       expect(@authable.order_details.in_dispute.size).to eq(4)

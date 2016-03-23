@@ -34,7 +34,7 @@ RSpec.describe OrderDetailJournalRemover do
     describe "and the order detail was part of a previous journal" do
       let(:old_journal) do
         create(:journal, facility: facility, updated_by: 1,
-                                           reference: "xyz", is_successful: false)
+                         reference: "xyz", is_successful: false)
       end
 
       before do

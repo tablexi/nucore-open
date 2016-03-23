@@ -99,7 +99,7 @@ RSpec.describe AccountBuilder, type: :service do
       let(:params) do
         ActionController::Parameters.new(nufs_account: {
                                            account_number: "1234",
-            description: "my description",
+                                           description: "my description",
                                          })
       end
 
@@ -205,7 +205,7 @@ RSpec.describe AccountBuilder, type: :service do
     let(:params) do
       ActionController::Parameters.new(nufs_account: {
                                          account_number: "9999",
-          description: "changed description",
+                                         description: "changed description",
                                        })
     end
 

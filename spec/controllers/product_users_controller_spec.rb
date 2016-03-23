@@ -56,7 +56,7 @@ RSpec.describe ProductUsersController do
       @method = :put
       @params.deep_merge!(instrument: { product_users: {
                             @guest_product.id => { product_access_group_id: @level.id },
-          @staff_product.id => { product_access_group_id: @level2.id },
+                            @staff_product.id => { product_access_group_id: @level2.id },
                           },
         })
     end

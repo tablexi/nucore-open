@@ -14,9 +14,9 @@ class InstrumentStatus < ActiveRecord::Base
   def as_json(_options = {})
     { instrument_status:       {
       created_at: created_at,
-        instrument_id: instrument.id,
-        is_on: is_on?,
-        error_message: @error_message,
+      instrument_id: instrument.id,
+      is_on: is_on?,
+      error_message: @error_message,
     },
     }
   end

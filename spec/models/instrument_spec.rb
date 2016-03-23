@@ -406,7 +406,7 @@ RSpec.describe Instrument do
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 10:30 am, using reserve_start_date, reserve_start_hour, reserve_start_min, reserve_start_meridian
       @options      = { reserve_start_date: @start.to_s, reserve_start_hour: "9", reserve_start_min: "30",
-                       reserve_start_meridian: "am", duration_value: "60", duration_unit: "minutes" }
+                        reserve_start_meridian: "am", duration_value: "60", duration_unit: "minutes" }
       @reservation2 = @instrument.reservations.create(@options)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 11:30 am

@@ -11,8 +11,8 @@ RSpec.describe UrlService do
   let(:host_params) do
     {
     host: "localhost.test",
-      port: 8080,
-      protocol: "https",
+    port: 8080,
+    protocol: "https",
   }
   end
 
