@@ -24,3 +24,7 @@
   = f.input :phone_number
   = f.input :fax_number
   = f.input :email
+
+.well
+  %p= t(".order_notification")
+  = f.input :order_notification_recipient, hint: f.object.email

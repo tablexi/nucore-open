@@ -18,6 +18,7 @@
   = f.input :fax_number, default_value: "None Entered"
   = f.input :email, default_value: "None Entered"
   = f.input :journal_mask
+  = f.input :order_notification_recipient, default_value: "None Entered"
 
   %ul.inline
     %li= link_to "Edit", edit_facility_path(current_facility), class: "btn"
