@@ -43,11 +43,9 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, t("notifier.account_update.subject")
   end
 
-  def order_notification(order)
+  def order_notification(order, recipient)
     @order = order
-    to_email = @order.facility.order_notification_recipient
-    return if to_email.blank?
-    send_nucore_mail to_email, t("notifier.order_notification.subject")
+    send_nucore_mail recipient, t("notifier.order_notification.subject")
   end
 
   # Custom order forms send out a confirmation email when filled out by a

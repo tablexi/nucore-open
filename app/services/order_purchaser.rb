@@ -19,6 +19,7 @@ class OrderPurchaser
       order_in_the_past! if order_in_past?
 
       Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
+      Notifier.delay.order_notification(order, order.facility.order_notification_recipient) if order.facility.order_notification_recipient.present?
     end
   end
 

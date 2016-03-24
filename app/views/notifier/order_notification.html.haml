@@ -12,6 +12,6 @@
         %td="##{order_detail}"
         %td= order_detail.product
 
-  Ordered By: TK
+  Ordered By #{@order.user}
   - @order.order_details.each do |order_detail|
     = order_detail.id

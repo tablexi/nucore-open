@@ -8,23 +8,15 @@ RSpec.describe Notifier do
   let(:user) { order.user }
 
   describe ".order_notification" do
-    context "when the order's facility has an order notification recipient set" do
-      let(:facility) { create(:setup_facility, :with_order_notification) }
+    before { Notifier.order_notification(order, recipient).deliver }
 
-      before { Notifier.order_notification(order).deliver }
+    let(:recipient) { "orders@example.net" }
 
-      it "generates an order notification" do
-        expect(email.to).to include(facility.order_notification_recipient)
-        expect(email.subject).to include("Order Notification")
-        expect(email.html_part.to_s).to include("Ordered By: #{user.full_name}")
-      end
-    end
-
-    context "when the order's facility does not have an order notification receipient set" do
-      it "does not send a notification" do
-        expect { Notifier.order_notification(order).deliver }
-          .not_to change(ActionMailer::Base.deliveries, :count)
-      end
+    it "generates an order notification", :aggregate_failures do
+      expect(email.to).to include("orders@example.net")
+      expect(email.subject).to include("Order Notification")
+      expect(email.html_part.to_s).to include("Ordered By #{user.full_name}")
+      expect(email.text_part.to_s).to include("Ordered By #{user.full_name}")
     end
   end
 

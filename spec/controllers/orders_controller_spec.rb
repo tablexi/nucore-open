@@ -27,11 +27,11 @@ RSpec.describe OrdersController do
     expect(get: "/orders/1/choose_account").to route_to(controller: "orders", action: "choose_account", id: "1")
   end
 
-  before :each do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @item = @authable.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
+  before(:each) do
+    @authable = facility
+    @facility_account = facility.facility_accounts.create(attributes_for(:facility_account))
+    @price_group = facility.price_groups.create(attributes_for(:price_group))
+    @item = facility.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
     @account = add_account_for_user(:staff, @item, @price_group)
     @order = @staff.orders.create(FactoryGirl.attributes_for(:order, created_by: @staff.id, account: @account))
 
@@ -41,6 +41,7 @@ RSpec.describe OrdersController do
   end
 
   let(:account) { @account }
+  let(:facility) { create(:facility) }
   let(:item) { @item }
   let(:params) { @params }
   let(:price_group) { @price_group }
@@ -472,6 +473,26 @@ RSpec.describe OrdersController do
               expect(Notifier).not_to receive(:order_receipt)
               do_request
             end
+          end
+        end
+      end
+
+      describe "emailed order notifications" do
+        before { sign_in @admin }
+
+        context "when the facility has an order_notification_recipient" do
+          let(:facility) { create(:facility, :with_order_notification) }
+
+          it "sends order notifications" do
+            expect(Notifier).to receive(:order_notification).once { DummyNotifier.new }
+            do_request
+          end
+        end
+
+        context "when the facility has no order_notification_recipient" do
+          it "sends no order notifications" do
+            expect(Notifier).not_to receive(:order_notification)
+            do_request
           end
         end
       end
