@@ -70,7 +70,7 @@ class Reports::InstrumentDayReport
     end
 
     def value
-      1
+      @reservation.quantity
     end
 
   end
@@ -102,7 +102,7 @@ class Reports::InstrumentDayReport
     end
 
     def value
-      @reservation.actual_start_at.present? ? @reservation.duration_mins : 0
+      @reservation.actual_start_at.present? ? @reservation.actual_duration_mins : 0
     end
 
     def transform(data)
@@ -118,7 +118,7 @@ class Reports::InstrumentDayReport
     end
 
     def value
-      @reservation.actual_start_at.present? ? 1 : 0
+      @reservation.actual_start_at.present? ? @reservation.quantity : 0
     end
 
   end
