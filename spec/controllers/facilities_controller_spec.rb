@@ -21,7 +21,6 @@ RSpec.describe FacilitiesController do
   end
 
   context "new" do
-
     before(:each) do
       @method = :get
       @action = :new
@@ -37,7 +36,6 @@ RSpec.describe FacilitiesController do
       expect(response).to be_success
       expect(response).to render_template("facilities/new")
     end
-
   end
 
   context "create" do
@@ -91,7 +89,6 @@ RSpec.describe FacilitiesController do
         expect(assigns(:facility).journal_mask).not_to eq("C17")
       end
     end
-
   end
 
   describe "update" do
@@ -144,7 +141,6 @@ RSpec.describe FacilitiesController do
   end
 
   context "index" do
-
     before(:each) do
       @method = :get
       @action = :index
@@ -155,11 +151,9 @@ RSpec.describe FacilitiesController do
       expect(response).to be_success
       expect(response).to render_template("facilities/index")
     end
-
   end
 
   context "manage" do
-
     before(:each) do
       @method = :get
       @action = :manage
@@ -174,7 +168,6 @@ RSpec.describe FacilitiesController do
       expect(response).to be_success
       expect(response).to render_template("facilities/manage")
     end
-
   end
 
   context "show" do
@@ -221,7 +214,6 @@ RSpec.describe FacilitiesController do
   end
 
   context "list" do
-
     before(:each) do
       @method = :get
       @action = :list
@@ -232,7 +224,6 @@ RSpec.describe FacilitiesController do
     it_should_deny :guest
 
     context "as facility operators with two facilities" do
-
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
         allow(@controller).to receive(:current_facility).and_return(@authable)
@@ -273,7 +264,6 @@ RSpec.describe FacilitiesController do
     end
 
     context "as administrator" do
-
       before(:each) do
         @facility2 = FactoryGirl.create(:facility)
         allow(@controller).to receive(:current_facility).and_return(@authable)
@@ -285,7 +275,6 @@ RSpec.describe FacilitiesController do
         expect(response).to render_template("facilities/list")
       end
     end
-
   end
 
   shared_context "transactions" do |action|
