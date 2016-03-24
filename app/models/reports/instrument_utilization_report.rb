@@ -35,6 +35,8 @@ class Reports::InstrumentUtilizationReport
   class DataRow
 
     include ReportsHelper
+    include ActionView::Helpers::NumberHelper
+
     attr_accessor :quantity, :reserved_mins, :actual_mins
     def initialize(quantity, reserved_mins, actual_mins)
       @quantity = quantity
@@ -61,7 +63,7 @@ class Reports::InstrumentUtilizationReport
 
     def row_with_percents(totals)
       percent = self / totals
-      [quantity,
+      [number_with_precision(quantity, strip_insignificant_zeros: true),
        to_hours(reserved_mins, 1),
        format_percent(percent.reserved_mins),
        to_hours(actual_mins, 1),

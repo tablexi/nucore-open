@@ -45,6 +45,8 @@ class Reports::InstrumentDayReport
 
   class DayValue
 
+    include ActionView::Helpers::NumberHelper
+
     def initialize(reservation)
       @reservation = reservation
     end
@@ -71,6 +73,10 @@ class Reports::InstrumentDayReport
 
     def value
       @reservation.quantity
+    end
+
+    def transform(data)
+      number_with_precision(data, strip_insignificant_zeros: true)
     end
 
   end
@@ -119,6 +125,10 @@ class Reports::InstrumentDayReport
 
     def value
       @reservation.actual_start_at.present? ? @reservation.quantity : 0
+    end
+
+    def transform(data)
+      number_with_precision(data, strip_insignificant_zeros: true)
     end
 
   end

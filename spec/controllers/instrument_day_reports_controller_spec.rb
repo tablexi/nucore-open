@@ -35,9 +35,9 @@ RSpec.describe InstrumentDayReportsController do
     ndx = @reservation.actual_start_at.wday
     assigns(:totals).each_with_index do |sum, i|
       if i == ndx
-        expect(sum).to be > 0
+        expect(sum.to_f).to be > 0
       else
-        expect(sum).to eq(0)
+        expect(sum.to_f).to eq(0)
       end
     end
 
@@ -48,7 +48,8 @@ RSpec.describe InstrumentDayReportsController do
     assigns(:rows).each do |row|
       expect(row.size).to eq(8)
       expect(instruments.collect(&:name)).to be_include(row[0])
-      row[1..-1].all? { |data| expect(data).to be_is_a(Numeric) }
+      # Float(data) will raise an error if it's not a valid number
+      row[1..-1].all? { |data| expect(Float(data)).to be_is_a(Numeric) }
     end
   end
 

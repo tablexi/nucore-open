@@ -33,7 +33,7 @@ RSpec.describe InstrumentReportsController do
   def assert_report_init(_label)
     expect(assigns(:totals).size).to eq(5)
     reservations = Reservation.all
-    expect(assigns(:totals)[0]).to eq(reservations.size)
+    expect(assigns(:totals)[0].to_s).to eq(reservations.size.to_s)
 
     reserved_mins = reservations.map(&:duration_mins).inject(0, &:+)
     expect(assigns(:totals)[1]).to eq(to_hours(reserved_mins, 1))
