@@ -106,6 +106,7 @@ RSpec.describe FacilitiesController do
           fax_number: "555-3211",
           is_active: 0,
           name: "A New Facility",
+          order_notification_recipient: "order@example.net",
           phone_number: "555-1223",
           short_description: "A short boring desc",
           show_instrument_availability: false,
@@ -131,6 +132,7 @@ RSpec.describe FacilitiesController do
         expect(facility.email).to eq("facility@example.com")
         expect(facility.fax_number).to eq("555-3211")
         expect(facility.name).to eq("A New Facility")
+        expect(facility.order_notification_recipient).to eq("order@example.net")
         expect(facility.phone_number).to eq("555-1223")
         expect(facility.short_description).to eq("A short boring desc")
         expect(facility.url_name).to eq("anf")
