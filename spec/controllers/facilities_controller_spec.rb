@@ -90,7 +90,7 @@ RSpec.describe FacilitiesController do
     end
   end
 
-  describe "update" do
+  describe "PUT #update" do
     let(:facility) { FactoryGirl.create(:facility) }
     before(:each) do
       @method = :put
@@ -98,11 +98,18 @@ RSpec.describe FacilitiesController do
       @params = {
         facility_id: facility.url_name,
         facility: {
-          name: "A New Facility", abbreviation: "anf", description: "A boring description",
-          is_active: 0, url_name: "anf", short_description: "A short boring desc",
-          accepts_multi_add: false, show_instrument_availability: false,
-          address: "Test Address", phone_number: "555-1223", fax_number: "555-3211",
-          email: "facility@example.com"
+          abbreviation: "anf",
+          accepts_multi_add: false,
+          address: "Test Address",
+          description: "A boring description",
+          email: "facility@example.com",
+          fax_number: "555-3211",
+          is_active: 0,
+          name: "A New Facility",
+          phone_number: "555-1223",
+          short_description: "A short boring desc",
+          show_instrument_availability: false,
+          url_name: "anf",
         },
       }
     end
@@ -116,19 +123,21 @@ RSpec.describe FacilitiesController do
 
       it "sets all the fields", :aggregate_failures do
         do_request
+        facility.reload
 
-        expect(facility.reload.name).to eq("A New Facility")
         expect(facility.abbreviation).to eq("anf")
-        expect(facility.description).to eq("A boring description")
-        expect(facility).not_to be_is_active
-        expect(facility.url_name).to eq("anf")
-        expect(facility.short_description).to eq("A short boring desc")
-        expect(facility).not_to be_accepts_multi_add
-        expect(facility).not_to be_show_instrument_availability
         expect(facility.address).to eq("Test Address")
-        expect(facility.phone_number).to eq("555-1223")
-        expect(facility.fax_number).to eq("555-3211")
+        expect(facility.description).to eq("A boring description")
         expect(facility.email).to eq("facility@example.com")
+        expect(facility.fax_number).to eq("555-3211")
+        expect(facility.name).to eq("A New Facility")
+        expect(facility.phone_number).to eq("555-1223")
+        expect(facility.short_description).to eq("A short boring desc")
+        expect(facility.url_name).to eq("anf")
+
+        expect(facility).not_to be_accepts_multi_add
+        expect(facility).not_to be_is_active
+        expect(facility).not_to be_show_instrument_availability
       end
 
       it "does not allow setting journal_mask" do
