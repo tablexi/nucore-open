@@ -22,7 +22,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
       let(:split_account) { FactoryGirl.create(:split_account) }
       before { get :edit, facility_id: facility.url_name, id: split_account.id }
 
-      it "has only the description field" do
+      it "has only the description field", :aggregate_failures do
         expect(response.body).to include("Description")
         expect(response.body).not_to include("Account Number")
         expect(response.body).not_to include("Add another subaccount")
@@ -67,7 +67,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     describe "default new" do
       before { get :new, facility_id: facility.url_name, owner_user_id: user.id }
 
-      it "sees split account option" do
+      it "sees split account option", :aggregate_failures do
         expect(response.code).to eq("200")
         expect(response.body).to include("Chart String")
         expect(response.body).to include("Split Account")
@@ -77,7 +77,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     describe "new on split accounts" do
       before { get :new, facility_id: facility.url_name, owner_user_id: user.id, account_type: "SplitAccounts::SplitAccount" }
 
-      it "renders successfully" do
+      it "renders successfully", :aggregate_failures do
         expect(response.code).to eq("200")
         expect(response.body).to include("Account Number")
         expect(response.body).to include("Add another subaccount")
@@ -98,7 +98,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     describe "default new" do
       before { get :new, facility_id: facility.url_name, owner_user_id: user.id }
 
-      it "does not see split account option" do
+      it "does not see split account option", :aggregate_failures do
         expect(response.code).to eq("200")
         expect(response.body).to include("Chart String")
         expect(response.body).not_to include("Split Account")
@@ -138,7 +138,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
       before { get :show, facility_id: facility.url_name, id: split_account.id }
 
-      it "does not show the edit/suspend buttons" do
+      it "does not show the edit/suspend buttons", :aggregate_failures do
         expect(response.body).not_to include("Edit")
         expect(response.body).not_to include("Suspend")
       end
