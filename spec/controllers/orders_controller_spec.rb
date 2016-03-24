@@ -443,34 +443,36 @@ RSpec.describe OrdersController do
         expect(response).to redirect_to receipt_order_url(@order)
       end
 
-      describe "notification sending" do
-        it "sends a notification" do
-          expect(Notifier).to receive(:order_receipt).once.and_return(DummyNotifier.new)
-          sign_in @admin
-          do_request
+      describe "emailed receipts" do
+        before { sign_in @admin }
+
+        context "when ordering" do
+          it "sends receipts" do
+            expect(Notifier).to receive(:order_receipt).once { DummyNotifier.new }
+            do_request
+          end
         end
 
-        it "does not send an email by default when acting as" do
-          expect(Notifier).to receive(:order_receipt).never
-          sign_in @admin
-          switch_to @staff
-          do_request
-        end
+        context "when ordering on behalf of (acting as)" do
+          before { switch_to @staff }
 
-        it "does not send an email when acting as and unchecks the checkbox" do
-          expect(Notifier).to receive(:order_receipt).never
-          sign_in @admin
-          switch_to @staff
-          @params[:send_notification] = "0"
-          do_request
-        end
+          context "when send_notification is checked" do
+            before { @params[:send_notification] = "1" }
 
-        it "sends an email when acting as and checks the checkbox" do
-          expect(Notifier).to receive(:order_receipt).once.and_return(DummyNotifier.new)
-          sign_in @admin
-          switch_to @staff
-          @params[:send_notification] = "1"
-          do_request
+            it "sends receipts" do
+              expect(Notifier).to receive(:order_receipt).once { DummyNotifier.new }
+              do_request
+            end
+          end
+
+          context "when send_notification is unchecked" do
+            before { @params[:send_notification] = "" }
+
+            it "does not send receipts" do
+              expect(Notifier).not_to receive(:order_receipt)
+              do_request
+            end
+          end
         end
       end
     end
