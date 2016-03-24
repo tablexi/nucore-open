@@ -33,8 +33,7 @@ RSpec.describe FacilitiesController do
     it_should_allow :admin do
       expect(@controller).to receive(:init_current_facility).never
       do_request
-      expect(response).to be_success
-      expect(response).to render_template("facilities/new")
+      expect(response).to be_success.and render_template("facilities/new")
     end
   end
 
@@ -148,8 +147,7 @@ RSpec.describe FacilitiesController do
 
     it_should_allow_all [:admin, :guest] do
       expect(assigns[:facilities]).to eq([@authable])
-      expect(response).to be_success
-      expect(response).to render_template("facilities/index")
+      expect(response).to be_success.and render_template("facilities/index")
     end
   end
 
@@ -165,8 +163,7 @@ RSpec.describe FacilitiesController do
     it_should_deny :guest
 
     it_should_allow :director do
-      expect(response).to be_success
-      expect(response).to render_template("facilities/manage")
+      expect(response).to be_success.and render_template("facilities/manage")
     end
   end
 
@@ -179,8 +176,7 @@ RSpec.describe FacilitiesController do
 
     it_should_allow_all ([:guest] + facility_operators) do
       expect(@controller.current_facility).to eq(facility)
-      expect(response).to be_success
-      expect(response).to render_template("facilities/show")
+      expect(response).to be_success.and render_template("facilities/show")
     end
 
     describe "daily view link" do
@@ -233,8 +229,7 @@ RSpec.describe FacilitiesController do
 
       it_should_allow_all facility_operators do
         expect(assigns(:facilities)).to eq([@authable, @facility2])
-        expect(response).to be_success
-        expect(response).to render_template("facilities/list")
+        expect(response).to be_success.and render_template("facilities/list")
       end
     end
 
@@ -271,8 +266,7 @@ RSpec.describe FacilitiesController do
 
       it_should_allow :admin do
         expect(assigns[:facilities]).to eq([@authable, @facility2])
-        expect(response).to be_success
-        expect(response).to render_template("facilities/list")
+        expect(response).to be_success.and render_template("facilities/list")
       end
     end
   end
