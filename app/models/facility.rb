@@ -87,11 +87,6 @@ class Facility < ActiveRecord::Base
     is_active? ? "Active" : "Inactive"
   end
 
-  def order_notification_email
-    # TODO: generate an email address to send the order notifications to
-    nil
-  end
-
   def has_contact_info?
     address || phone_number || fax_number || email
   end
