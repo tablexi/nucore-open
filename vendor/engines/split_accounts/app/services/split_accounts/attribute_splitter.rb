@@ -14,6 +14,10 @@ module SplitAccounts
       end
     end
 
+    def to_a
+      splittable_attributes
+    end
+
     private
 
     def floored_amount(percent, value)
