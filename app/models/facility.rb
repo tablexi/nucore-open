@@ -43,6 +43,10 @@ class Facility < ActiveRecord::Base
   validates_format_of    :abbreviation, with: /^[a-zA-Z\d\-\.\s]+$/, message: "may include letters, numbers, hyphens, spaces, or periods only"
   validates_format_of    :journal_mask, with: /^C\d{2}$/, message: "must be in the format C##"
 
+  validates :order_notification_recipient,
+    format: { with: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,6}$/i },
+    if: proc { |facility| facility.order_notification_recipient.present? }
+
   validates :short_description,
             length: { maximum: 300 },
             if: -> { SettingsHelper.feature_on?(:limit_short_description) }
