@@ -17,7 +17,10 @@ module SplitAccounts
 
     def split
       @split_order_details = splits.map { |split| build_split_order_detail(split) }
-      apply_remainders
+
+      apply_order_detail_remainders
+      apply_reservation_remainders if split_reservations?
+
       split_order_details
     end
 
@@ -63,24 +66,15 @@ module SplitAccounts
       split_order_detail.reservation = split_reservation
     end
 
-    def apply_remainders
-      index = find_remainder_index
-      order_detail_attribute_splitter.splittable_attributes.each { |attr| apply_remainder(attr, index) }
+    def apply_order_detail_remainders
+      applier = RemainderApplier.new(order_detail, split_order_details, splits)
+      applier.apply_remainders(order_detail_attribute_splitter)
     end
 
-    def apply_remainder(attr, index)
-      return if order_detail.send(attr).blank?
-      adjustment = order_detail.send(attr) - floored_total(split_order_details, attr)
-      new_value = split_order_details[index].send(attr) + adjustment
-      split_order_details[index].send "#{attr}=", new_value
-    end
-
-    def find_remainder_index
-      split_order_details.find_index { |item| item.split.extra_penny? }
-    end
-
-    def floored_total(items, attr)
-      items.reduce(BigDecimal(0)) { |sum, item| sum + item.send(attr) }
+    def apply_reservation_remainders
+      return unless order_detail.reservation
+      applier = RemainderApplier.new(order_detail.reservation, split_order_details.map(&:reservation), splits)
+      applier.apply_remainders(reservation_attribute_splitter)
     end
 
   end
