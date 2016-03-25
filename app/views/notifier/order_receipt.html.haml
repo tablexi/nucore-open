@@ -1,6 +1,5 @@
-- @order.order_details.each { |order_detail| order_detail.send(:extend, PriceDisplayment) }
-
-%p= t(".intro")
+- if @greeting.present?
+  %p= @greeting
 
 %ul
   %li

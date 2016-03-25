@@ -13,10 +13,12 @@ RSpec.describe Notifier do
     let(:recipient) { "orders@example.net" }
 
     it "generates an order notification", :aggregate_failures do
-      expect(email.to).to include("orders@example.net")
+      expect(email.to).to eq [recipient]
       expect(email.subject).to include("Order Notification")
-      expect(email.html_part.to_s).to include("Ordered By #{user.full_name}")
-      expect(email.text_part.to_s).to include("Ordered By #{user.full_name}")
+      expect(email.html_part.to_s).to match(/Ordered By.+\n#{user.full_name}/)
+      expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
+      expect(email.html_part.to_s).not_to include("Thank you for your order")
+      expect(email.text_part.to_s).not_to include("Thank you for your order")
     end
   end
 
@@ -28,17 +30,25 @@ RSpec.describe Notifier do
       Notifier.order_receipt(order: order, user: user).deliver
     end
 
-    it { expect(email.to).to eq([user.email]) }
-    it { expect(email.subject).to include("Order Receipt") }
-    it { expect(email.html_part.to_s).to match(/Ordered By.+\n#{user.full_name}/) }
-    it { expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}") }
+    it "generates a receipt", :aggregate_failures do
+      expect(email.to).to eq [user.email]
+      expect(email.subject).to include("Order Receipt")
+      expect(email.html_part.to_s).to match(/Ordered By.+\n#{user.full_name}/)
+      expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
+      expect(email.html_part.to_s).to include("Thank you for your order")
+      expect(email.text_part.to_s).to include("Thank you for your order")
+    end
 
     context "when ordered on behalf of another user" do
       let(:administrator) { create(:user, :administrator) }
       let(:order) { create(:purchased_order, product: product, created_by: administrator.id) }
 
-      it { expect(email.html_part.to_s).to match(/Ordered By.+\n#{administrator.full_name}/) }
-      it { expect(email.text_part.to_s).to include("Ordered By: #{administrator.full_name}") }
+      it "mentions who placed the order in the receipt", :aggregate_failures do
+        expect(email.html_part.to_s)
+          .to match(/Ordered By.+\n#{administrator.full_name}/)
+        expect(email.text_part.to_s)
+          .to include("Ordered By: #{administrator.full_name}")
+      end
 
       context "with a note" do
         let(:note) { "*NOTE CONTENT*" }
