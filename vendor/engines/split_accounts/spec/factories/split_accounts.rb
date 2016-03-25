@@ -13,9 +13,9 @@ FactoryGirl.define do
 
     trait :with_three_splits do
       callback(:after_build, :before_create) do |split_account, _evalutor|
-        split_account.splits << build(:split, percent: 33.33, extra_penny: true, parent_split_account: split_account)
-        split_account.splits << build(:split, percent: 33.33, extra_penny: false, parent_split_account: split_account)
-        split_account.splits << build(:split, percent: 33.34, extra_penny: false, parent_split_account: split_account)
+        split_account.splits << build(:split, percent: 33.33, apply_remainder: true, parent_split_account: split_account)
+        split_account.splits << build(:split, percent: 33.33, apply_remainder: false, parent_split_account: split_account)
+        split_account.splits << build(:split, percent: 33.34, apply_remainder: false, parent_split_account: split_account)
       end
     end
 
@@ -23,8 +23,8 @@ FactoryGirl.define do
     # Add valid splits if none exist and if transient `without_splits` is false.
     callback(:after_build, :before_create) do |split_account, evaluator|
       unless split_account.splits.present? || evaluator.without_splits
-        split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account)
-        split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account)
+        split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account)
+        split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account)
       end
     end
   end

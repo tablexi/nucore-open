@@ -38,7 +38,7 @@ module SplitAccounts
     end
 
     def remainder_index
-      @remainder_index ||= splits.find_index(&:extra_penny?)
+      @remainder_index ||= splits.find_index(&:apply_remainder?)
     end
 
     def floored_total(attribute)

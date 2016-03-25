@@ -26,9 +26,9 @@ RSpec.describe JournalRowBuilder, :enable_split_accounts, type: :service do
   context "with a three way split" do
     let(:splits) do
       [
-        build_stubbed(:split, percent: 33.33, extra_penny: false),
-        build_stubbed(:split, percent: 33.33, extra_penny: true),
-        build_stubbed(:split, percent: 33.34, extra_penny: false),
+        build_stubbed(:split, percent: 33.33, apply_remainder: false),
+        build_stubbed(:split, percent: 33.33, apply_remainder: true),
+        build_stubbed(:split, percent: 33.34, apply_remainder: false),
       ]
     end
 

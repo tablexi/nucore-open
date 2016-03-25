@@ -4,8 +4,8 @@ require_relative "../../split_accounts_spec_helper"
 RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   let(:account) do
     FactoryGirl.build(:split_account, without_splits: true, account_users_attributes: account_users_attributes_hash(user: user)).tap do |account|
-      account.splits << build(:split, percent: 50, extra_penny: true, subaccount: subaccounts[0], parent_split_account: account)
-      account.splits << build(:split, percent: 50, extra_penny: false, subaccount: subaccounts[1], parent_split_account: account)
+      account.splits << build(:split, percent: 50, apply_remainder: true, subaccount: subaccounts[0], parent_split_account: account)
+      account.splits << build(:split, percent: 50, apply_remainder: false, subaccount: subaccounts[1], parent_split_account: account)
       account.save
     end
   end

@@ -3,6 +3,6 @@ FactoryGirl.define do
     association :parent_split_account, factory: :split_account
     association :subaccount, factory: :setup_account
     percent 100
-    extra_penny true
+    apply_remainder true
   end
 end

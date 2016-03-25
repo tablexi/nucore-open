@@ -31,12 +31,12 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, :enable_split_accounts do
               "0" => {
                 subaccount_id: subaccount_2.id,
                 percent: 50,
-                extra_penny: true,
+                apply_remainder: true,
               },
               "1" => {
                 subaccount_id: subaccount_1.id,
                 percent: 50,
-                extra_penny: false,
+                apply_remainder: false,
               },
             },
           },
@@ -67,7 +67,7 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, :enable_split_accounts do
               "0" => {
                 subaccount_id: "",
                 percent: 100,
-                extra_penny: true,
+                apply_remainder: true,
               },
             },
           },
@@ -90,9 +90,9 @@ RSpec.describe SplitAccounts::SplitAccountBuilder, :enable_split_accounts do
         expect(splits.map(&:percent)).to all(eq(50))
       end
 
-      it "sets the first one, and only the first one to extra_penny" do
-        expect(splits.first).to be_extra_penny
-        expect(splits.second).not_to be_extra_penny
+      it "sets the first one, and only the first one to apply_remainder" do
+        expect(splits.first).to be_apply_remainder
+        expect(splits.second).not_to be_apply_remainder
       end
     end
   end
