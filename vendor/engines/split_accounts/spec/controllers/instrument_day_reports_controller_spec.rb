@@ -27,7 +27,7 @@ RSpec.describe InstrumentDayReportsController, :enable_split_accounts do
   describe "reserved_quantity" do
     it "has the correct data" do
       do_request(:reserved_quantity)
-      expect(assigns(:rows).first).to eq([instrument.name, 0, 0, 0, 0, 1, 0, 0])
+      expect(assigns(:rows).first).to eq([instrument.name, "0", "0", "0", "0", "1", "0", "0"])
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe InstrumentDayReportsController, :enable_split_accounts do
   describe "actual_quantity" do
     it "has the correct data" do
       do_request(:actual_quantity)
-      expect(assigns(:rows).first).to eq([instrument.name, 0, 0, 0, 0, 1, 0, 0])
+      expect(assigns(:rows).first).to eq([instrument.name, "0", "0", "0", "0", "1", "0", "0"])
     end
   end
 
