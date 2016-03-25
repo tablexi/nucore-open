@@ -39,7 +39,9 @@ module SplitAccounts
     end
 
     def floored_total(attribute)
-      split_objects.reduce(BigDecimal(0)) { |sum, item| sum + item.public_send(attribute) }
+      split_objects.reduce(BigDecimal(0)) do |sum, item|
+        sum + item.public_send(attribute)
+      end
     end
 
   end
