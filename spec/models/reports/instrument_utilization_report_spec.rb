@@ -16,13 +16,13 @@ RSpec.describe Reports::InstrumentUtilizationReport do
 
     it "has the correct totals" do
       totals = report.totals
-      expect(totals).to eq([5, 2.6, "100.0%", 0.9, "100.0%"])
+      expect(totals).to eq(["5", 2.6, "100.0%", 0.9, "100.0%"])
     end
 
     it "has the correct rows" do
       rows = report.rows
-      expect(rows[0]).to eq([product.name, 3, 1.8, "67.7%", 0.8, "81.8%"])
-      expect(rows[1]).to eq([product2.name, 2, 0.8, "32.3%", 0.2, "18.2%"])
+      expect(rows[0]).to eq([product.name, "3", 1.8, "67.7%", 0.8, "81.8%"])
+      expect(rows[1]).to eq([product2.name, "2", 0.8, "32.3%", 0.2, "18.2%"])
     end
   end
 
@@ -33,13 +33,13 @@ RSpec.describe Reports::InstrumentUtilizationReport do
 
     it "has the correct totals" do
       totals = report.totals
-      expect(totals).to eq([5, 2.9, "100.0%", 0, "0.0%"])
+      expect(totals).to eq(["5", 2.9, "100.0%", 0, "0.0%"])
     end
 
     it "has the correct rows" do
       rows = report.rows
-      expect(rows[0]).to eq([product.name, 3, 1.8, "60.0%", 0, "0.0%"])
-      expect(rows[1]).to eq([product2.name, 2, 1.2, "40.0%", 0, "0.0%"])
+      expect(rows[0]).to eq([product.name, "3", 1.8, "60.0%", 0, "0.0%"])
+      expect(rows[1]).to eq([product2.name, "2", 1.2, "40.0%", 0, "0.0%"])
     end
   end
 end

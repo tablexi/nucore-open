@@ -44,6 +44,7 @@ class Reports::InstrumentDayReport
   end
 
   class DayValue
+
     include ActionView::Helpers::NumberHelper
 
     def initialize(reservation)
