@@ -14,7 +14,7 @@ module SplitAccounts
       end
     end
 
-    def to_ary
+    def to_a
       splittable_attributes
     end
 
