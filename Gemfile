@@ -89,7 +89,7 @@ group :development, :test do
   gem "pry-rails",         "~> 0.3.2"
   gem "pry-byebug",        "~> 2.0.0"
   gem "quiet_assets"
-  gem "rspec-rails",       "~> 3.3.0"
+  gem "rspec-rails",       "~> 3.4.2"
   gem "shoulda-matchers",  "~> 2.8.0", require: false
   gem "rspec-collection_matchers"
   gem "single_test", "0.4.0"
