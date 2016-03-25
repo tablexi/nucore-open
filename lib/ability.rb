@@ -183,6 +183,8 @@ class Ability
         can :manage, TrainingRequest
       end
     end
+
+    ability_extender.extend(user, resource)
   end
 
   def in_role?(user, facility, *roles)
@@ -206,6 +208,10 @@ class Ability
 
   def editable_global_group?(resource)
     resource.global? && resource.admin_editable?
+  end
+
+  def ability_extender
+    @extender ||= AbilityExtensionManager.new(self)
   end
 
 end
