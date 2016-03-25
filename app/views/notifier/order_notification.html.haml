@@ -1,17 +1,53 @@
-%h1= @order.facility
+- @order.order_details.each { |order_detail| order_detail.send(:extend, PriceDisplayment) }
 
-%p The following order has been placed.
+%p= t(".intro")
+
+%ul
+  %li
+    %label= t(".label.ordered_at")
+    = l(@order.ordered_at, format: :receipt)
+  %li
+    %label= OrderDetail.human_attribute_name(:facility)
+    = @order.facility
+  %li
+    %label= OrderDetail.human_attribute_name(:ordered_by)
+    = @order.created_by_user.full_name
+
 %table.table.table-striped.table-hover
   %thead
     %tr
-      %th= Order.model_name.human
-      %th= Product.model_name.human
+      %th= OrderDetail.human_attribute_name(:id)
+      %th= OrderDetail.human_attribute_name(:product)
+      %th= OrderDetail.human_attribute_name(:quantity)
+      %th= OrderDetail.human_attribute_name(:status)
+      - label_key_prefix = display_cost_prefix_for_order(@order)
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_cost")
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy")
+      %th= OrderDetail.human_attribute_name("#{label_key_prefix}_total")
+      %th= OrderDetail.human_attribute_name(:note).pluralize
   %tbody
     - @order.order_details.each do |order_detail|
+      - order_detail.send(:extend, PriceDisplayment)
       %tr
-        %td="##{order_detail}"
-        %td= order_detail.product
+        %td= order_detail
+        %td
+          = order_detail_description_as_html(order_detail)
+          - if order_detail.reservation
+            %br
+            = order_detail.reservation
+        %td= order_detail.quantity
+        %td= order_detail.order_status.name
+        %td= order_detail.display_cost
+        %td= order_detail.display_subsidy
+        %td= order_detail.display_total
+        %td
+          - if order_detail.note.present?
+            = order_detail.note
+    %tr
+      %td{colspan: 6}
+        %strong= t(".total")
+      %td.currency= number_to_currency(@order.order_details.sum { |d| d.total || 0 })
+      %td
 
-  Ordered By #{@order.user}
-  - @order.order_details.each do |order_detail|
-    = order_detail.id
+- if @order.any_details_estimated?
+  %p= t(".outro")
