@@ -1,6 +1,7 @@
 class OrderPurchaser
   attr_reader :order, :params, :user
 
+  delegate :order_notification_recipient, to: :order
   delegate :quantities_changed?, to: :order_detail_updater
 
   def initialize(acting_as:, order:, order_in_past:, params:, user:)
@@ -19,7 +20,7 @@ class OrderPurchaser
       order_in_the_past! if order_in_past?
 
       Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
-      Notifier.delay.order_notification(order, order.facility.order_notification_recipient) if order.facility.order_notification_recipient.present?
+      Notifier.delay.order_notification(order, order_notification_recipient) if send_notification?
     end
   end
 
@@ -61,6 +62,10 @@ class OrderPurchaser
 
   def quantities
     order.order_details.order("order_details.id").pluck(:quantity)
+  end
+
+  def send_notification?
+    order_notification_recipient.present?
   end
 
   def send_receipt?
