@@ -11,7 +11,7 @@ module SplitAccounts
       [
         :account_number,
         :description,
-        { splits_attributes: [:subaccount_id, :percent, :extra_penny, :_destroy] },
+        { splits_attributes: [:subaccount_id, :percent, :apply_remainder, :_destroy] },
       ]
     end
 
@@ -34,7 +34,7 @@ module SplitAccounts
     end
 
     def setup_default_splits
-      account.splits.build(percent: 50, extra_penny: true)
+      account.splits.build(percent: 50, apply_remainder: true)
       account.splits.build(percent: 50)
     end
 

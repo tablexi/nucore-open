@@ -6,8 +6,8 @@ RSpec.describe SplitAccounts::OrderDetailListTransformer, type: :service do
 
   let(:split_account) do
     build_stubbed(:split_account).tap do |split_account|
-      split_account.splits.build percent: 50, extra_penny: true, subaccount: subaccount_1
-      split_account.splits.build percent: 50, extra_penny: false, subaccount: subaccount_2
+      split_account.splits.build percent: 50, apply_remainder: true, subaccount: subaccount_1
+      split_account.splits.build percent: 50, apply_remainder: false, subaccount: subaccount_2
     end
   end
 
