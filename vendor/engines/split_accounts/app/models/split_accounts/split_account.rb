@@ -73,7 +73,7 @@ module SplitAccounts
     # become unsuspended.
     def set_suspended_at_from_subaccounts
       subaccount = earliest_suspended_subaccount
-      self.suspended_at = subaccount.suspended_at if subaccount
+      self.suspended_at ||= subaccount.suspended_at if subaccount
     end
 
     def recreate_journal_rows_on_order_detail_update?
