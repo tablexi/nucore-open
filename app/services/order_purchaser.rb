@@ -1,4 +1,5 @@
 class OrderPurchaser
+
   attr_reader :order, :params, :user
 
   delegate :order_notification_recipient, to: :order
@@ -78,4 +79,5 @@ class OrderPurchaser
       raise NUCore::PurchaseException.new("")
     end
   end
+
 end

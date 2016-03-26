@@ -1,9 +1,12 @@
 module NUCore
+
   class QuantityUpdateChangeException < StandardError
   end
+
 end
 
 class OrderDetailUpdater
+
   attr_reader :order, :params
 
   def initialize(order, params)
@@ -31,4 +34,5 @@ class OrderDetailUpdater
   def quantities
     order.order_details.order("order_details.id").pluck(:quantity)
   end
+
 end
