@@ -267,7 +267,6 @@ class OrdersController < ApplicationController
   rescue => e
     flash[:error] = I18n.t("orders.purchase.error")
     flash[:error] += " #{e.message}" if e.message
-    puts e.message
     @order.reload.invalidate!
     redirect_to order_path(@order)
   end
