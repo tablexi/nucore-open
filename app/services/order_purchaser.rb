@@ -1,6 +1,8 @@
 class OrderPurchaser
 
-  attr_reader :order, :params, :user
+  attr_reader :acting_as, :order, :order_in_past, :params, :user
+  alias acting_as? acting_as
+  alias order_in_past? order_in_past
 
   delegate :order_notification_recipient, to: :order
   delegate :quantities_changed?, to: :order_detail_updater
@@ -27,10 +29,6 @@ class OrderPurchaser
 
   private
 
-  def acting_as?
-    @acting_as
-  end
-
   def order_detail_updater
     @order_detail_updater ||= OrderDetailUpdater.new(order, order_update_params)
   end
@@ -46,10 +44,6 @@ class OrderPurchaser
     else
       order.complete_past_reservations!
     end
-  end
-
-  def order_in_past?
-    @order_in_past
   end
 
   def order_status_id

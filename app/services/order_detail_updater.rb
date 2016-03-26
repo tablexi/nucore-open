@@ -7,16 +7,13 @@ end
 
 class OrderDetailUpdater
 
-  attr_reader :order, :params
+  attr_reader :order, :params, :quantities_changed
+  alias quantities_changed? quantities_changed
 
   def initialize(order, params)
     @order = order
     @params = params
     @initial_quantities = quantities
-  end
-
-  def quantities_changed?
-    @quantities_changed
   end
 
   def update
