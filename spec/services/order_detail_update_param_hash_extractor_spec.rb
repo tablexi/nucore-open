@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe OrderDetailUpdateParamHashExtractor do
-  describe "#updates_as_hash" do
-    subject { described_class.new(params).updates_as_hash }
+  describe "#to_h" do
+    subject { described_class.new(params).to_h }
 
     context "when the params contain a quantity key" do
       let(:params) { { "quantity101" => quantity_value } }

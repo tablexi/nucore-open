@@ -6,7 +6,9 @@ class OrderDetailUpdateParamHashExtractor
     @params = params
   end
 
-  def updates_as_hash
+  # This extracts and transforms a hash (like controller params) into the form
+  # of a hash that Order#update_details expects.
+  def to_h
     params.each_with_object({}) do |(key, value), memo|
       match = key.match(/\A(note|quantity)(\d+)\z/) || next
       property = match[1].to_sym

@@ -335,8 +335,7 @@ class OrdersController < ApplicationController
   end
 
   def order_update_params
-    @order_update_params ||=
-      OrderDetailUpdateParamHashExtractor.new(params).updates_as_hash
+    @order_update_params ||= OrderDetailUpdateParamHashExtractor.new(params).to_h
   end
 
   def ordering_on_behalf_with_date_params?
