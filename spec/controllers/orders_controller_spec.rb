@@ -276,8 +276,9 @@ RSpec.describe OrdersController do
         do_request
       end
 
-      it "updates the quantity" do
+      it "updates the quantity", :aggregate_failures do
         @order_detail.reload
+        expect(flash[:notice]).to include("Quantities have changed")
         expect(@order_detail.quantity).to eq(5)
       end
 
