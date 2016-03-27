@@ -1,6 +1,6 @@
 module NUCore
 
-  class QuantityUpdateChangeException < StandardError
+  class OrderDetailUpdateException < StandardError
   end
 
 end
@@ -23,7 +23,7 @@ class OrderDetailUpdater
   end
 
   def update!
-    update || raise(NUCore::QuantityUpdateChangeException)
+    update || raise(NUCore::OrderDetailUpdateException)
   end
 
   private

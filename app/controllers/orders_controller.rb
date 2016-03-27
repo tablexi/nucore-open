@@ -260,7 +260,7 @@ class OrdersController < ApplicationController
         redirect_to receipt_order_path(@order)
       end
     end
-  rescue NUCore::QuantityUpdateChangeException => e
+  rescue NUCore::OrderDetailUpdateException => e
     logger.debug "errors #{@order.errors.full_messages}"
     flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
     render :show
