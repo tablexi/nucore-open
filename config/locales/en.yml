@@ -587,7 +587,7 @@ en:
       notice: "You have no completed orders for any facility with this payment source."
       th:
         facility: "Facility"
-        total: "Unreconciled Total (actual + estimated)"
+        total: "Unreconciled Total"
     list:
       head:
         h1: "Payment Source Transactions"
@@ -831,8 +831,9 @@ en:
       empty: "No %{items} are available at this time."
       recently_used: Recently Used Facilities
       welcome: |
-        Welcome to NUcore, the centralized ordering system for all shared facilities at Northwestern University.
-        Please select the shared facility below to view and purchase services and products offered by the facility.
+        Welcome to NUcore, the centralized ordering system for shared facilities.
+        Please select the shared facility below to view and purchase services
+        and products offered by the facility.
 
     list:
       add: Add Facility
@@ -889,7 +890,9 @@ en:
         minimum_cost: Minimum Cost
         reservation_cost: Reservation Cost
     instructional_text:
-      common: "All Northwestern users must be charged the same base rate.  Rates must be reviewed by the Provost's Office.  You may define adjustments to this rate for individual internal price groups."
+      common: |
+        All users must be charged the same base rate. You may define adjustments
+        to this rate for individual internal price groups.
       item: ""
       service: ""
       instrument: "The user will be charged the sum of actual, scheduled, and overage usage fees.  Actual usage is measured by power relay or manually entered by facility staff.  Scheduled usage is calculated from the user's reservation.  Overage is any usage that exceeds the user's reservation.  If an overage rate is not specified, the actual usage rate will be applied for any overage."
@@ -908,7 +911,7 @@ en:
 
   price_groups:
     price_group_fields:
-      internal_instruction: "Check this box if this price group is internal, intended for use by Northwestern Customers:"
+      internal_instruction: "Check this box if this price group is internal:"
     accounts:
       intro: "Pricing policies apply to orders paid for with the following payment sources."
       notice: "No payment sources have been added to this price group."
@@ -948,7 +951,7 @@ en:
     new_user:
       intro_html: "Congratulations, %{first_name}. A NUcore account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
       intro: "Congratulations, %{first_name}. A NUcore account has been created for you. You may log in at %{login_url}."
-      no_password: "You may log in with your Northwestern NetID and password."
+      no_password: You may log in with your username and password.
       subject: "Welcome to NUcore"
     new_account:
       subject: "NUcore New Payment Method"
@@ -1010,7 +1013,7 @@ en:
       success: Your password has been updated
     reset:
       head: Reset Password
-      instructions_html: 'Please enter your email address below. If you use a NetID, please reset it through <a href="https://validate.it.northwestern.edu/idm/user/login.jsp">NUVALIDATE</a>'
+      instructions_html: Please enter your email address below.
       success: Instructions on how to reset your password have been sent to %{email}
       not_found: We cannot find %{email} in our records.
 
