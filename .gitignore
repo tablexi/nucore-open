@@ -30,3 +30,6 @@ config/settings/*.local.yml
 config/environments/*.local.yml
 
 public/images/bg-search-form.pxm
+
+# Ignore RSpec's persistence file:
+spec/examples.txt
