@@ -587,7 +587,7 @@ en:
       notice: "You have no completed orders for any facility with this payment source."
       th:
         facility: "Facility"
-        total: "Unreconciled Total (actual + estimated)"
+        total: "Unreconciled Total"
     list:
       head:
         h1: "Payment Source Transactions"
