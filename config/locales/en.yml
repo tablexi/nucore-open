@@ -83,7 +83,7 @@ en:
 
   shared:
     footer:
-      copyright_html: "&copy; Copyright 2010%{to_date} Northwestern University"
+      copyright_html: "&copy; Copyright 2010&ndash;%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"
     problem_order_details:
       actual_usage_missing: Actual Usage Missing
