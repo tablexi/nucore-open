@@ -149,7 +149,7 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
         build(:split_account, without_splits: true).tap do |split_account|
           split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: create(:setup_account))
           split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: create(:setup_account))
-          split_account.save
+          split_account.save!
         end
       end
 
@@ -158,13 +158,12 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
       end
     end
 
-    context "when parent account is suspended" do
+    context "when parent account is suspended, but the children are not" do
       let(:split_account) do
-        build(:split_account, without_splits: true).tap do |split_account|
-          split_account.suspended_at = Time.current
+        build(:split_account, without_splits: true, suspended_at: Time.current).tap do |split_account|
           split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: create(:setup_account))
           split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: create(:setup_account))
-          split_account.save
+          split_account.save!
         end
       end
 
@@ -181,7 +180,7 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
         build(:split_account, without_splits: true).tap do |split_account|
           split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: suspended_subaccount)
           split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: create(:setup_account))
-          split_account.save
+          split_account.save!
         end
       end
 
@@ -193,7 +192,7 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
       context "when subaccount unsuspends" do
         before do
           split_account
-          suspended_subaccount.unsuspend!
+          suspended_subaccount.unsuspend
         end
 
         it "keeps parent split_account suspended" do
@@ -202,7 +201,7 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
 
         context "and the child gets re-suspend" do
           before do
-            suspended_subaccount.reload.suspend!
+            suspended_subaccount.reload.suspend
           end
 
           it "keeps the original suspended_at" do

@@ -4,6 +4,7 @@ en:
     errors:
       models:
         split_accounts/split_account:
+          suspended_child: "One or more sub-accounts are currently suspended. All sub-accounts must be reactivated prior to split payment source activation."
           attributes:
             splits:
               percent_total: percent total must equal 100

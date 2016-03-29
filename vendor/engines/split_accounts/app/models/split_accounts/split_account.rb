@@ -80,6 +80,15 @@ module SplitAccounts
       true
     end
 
+    def unsuspend
+      if subaccounts.any?(&:suspended?)
+        errors.add(:base, :suspended_child)
+        false
+      else
+        super
+      end
+    end
+
   end
 
 end
