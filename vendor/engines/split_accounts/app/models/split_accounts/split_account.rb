@@ -13,8 +13,8 @@ module SplitAccounts
 
     accepts_nested_attributes_for :splits, allow_destroy: true
 
-    before_save :set_expires_at_from_subaccounts
-    before_save :set_suspended_at_from_subaccounts
+    before_validation :set_expires_at_from_subaccounts
+    before_validation :set_suspended_at_from_subaccounts
 
     def valid_percent_total
       errors.add(:splits, :percent_total) if percent_total != 100
