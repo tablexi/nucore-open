@@ -29,7 +29,7 @@ en:
         failure: "An error was encountered while suspending the payment source"
       unsuspend:
         success: "Payment source activated successfully"
-        failure: "An error was encountered while activating the payment source"
+        failure: "Cannot activate. %{errors}"
 
     facility_notifications:
       no_selection: No orders selected

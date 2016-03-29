@@ -9,6 +9,7 @@ module SplitAccounts
     validate :one_split_has_apply_remainder
     validate :unique_split_subaccounts
     validate :more_than_one_split
+    validate :no_suspended_children
 
     accepts_nested_attributes_for :splits, allow_destroy: true
 
@@ -78,6 +79,12 @@ module SplitAccounts
 
     def recreate_journal_rows_on_order_detail_update?
       true
+    end
+
+    def no_suspended_children
+      if !suspended? && splits.map(&:subaccount).any?(&:suspended?)
+        errors.add(:base, :suspended_child)
+      end
     end
 
   end

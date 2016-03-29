@@ -138,14 +138,12 @@ class Account < ActiveRecord::Base
     [owner_user] + business_admin_users
   end
 
-  def suspend!
-    self.suspended_at = Time.zone.now
-    save!
+  def suspend
+    update_attributes(suspended_at: Time.current)
   end
 
-  def unsuspend!
-    self.suspended_at = nil
-    save!
+  def unsuspend
+    update_attributes(suspended_at: nil)
   end
 
   def display_status
