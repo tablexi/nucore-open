@@ -9,12 +9,11 @@ module SplitAccounts
     validate :one_split_has_apply_remainder
     validate :unique_split_subaccounts
     validate :more_than_one_split
-    validate :no_suspended_children
 
     accepts_nested_attributes_for :splits, allow_destroy: true
 
-    before_validation :set_expires_at_from_subaccounts
-    before_validation :set_suspended_at_from_subaccounts
+    before_save :set_expires_at_from_subaccounts
+    before_save :set_suspended_at_from_subaccounts
 
     def valid_percent_total
       errors.add(:splits, :percent_total) if percent_total != 100
@@ -81,9 +80,12 @@ module SplitAccounts
       true
     end
 
-    def no_suspended_children
-      if !suspended? && splits.map(&:subaccount).any?(&:suspended?)
+    def unsuspend
+      if subaccounts.any?(&:suspended?)
         errors.add(:base, :suspended_child)
+        false
+      else
+        super
       end
     end
 
