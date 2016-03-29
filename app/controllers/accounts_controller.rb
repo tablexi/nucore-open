@@ -16,7 +16,7 @@ class AccountsController < ApplicationController
 
   # GET /accounts
   def index
-    @account_users = session_user.account_users.active
+    @account_users = session_user.account_users
   end
 
   # GET /accounts/1

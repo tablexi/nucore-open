@@ -12,7 +12,8 @@ class Account < ActiveRecord::Base
   include Accounts::AccountNumberSectionable
   include DateHelper
 
-  has_many   :account_users, inverse_of: :account
+  has_many   :account_users, conditions: { deleted_at: nil }, inverse_of: :account
+  has_many   :deleted_account_users, class_name: "AccountUser", conditions: "account_users.deleted_at IS NOT NULL"
   # Using a basic hash doesn't work with the `owner_user` :through association. It would
   # only include the last item in the hash as part of the scoping.
   # TODO Consider changing when we get to Rails 4.
@@ -90,12 +91,12 @@ class Account < ActiveRecord::Base
   end
 
   def self.for_user(user)
-    joins(:account_users).where("account_users.user_id = ?", user.id)
+    joins(:account_users).where(account_users: { user_id: user.id })
   end
 
   def self.for_order_detail(order_detail)
     for_user(order_detail.user)
-      .where("accounts.facility_id IS NULL OR accounts.facility_id = ?", order_detail.facility.id)
+      .where(facility_id: [nil, order_detail.facility.id])
   end
 
   def self.with_orders_for_facility(facility)

@@ -99,9 +99,8 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
           expect(assigns(:account_user).user_role).to eq(AccountUser::ACCOUNT_OWNER)
           expect(assigns(:account_user).user).to eq(@purchaser)
           expect(assigns(:account_user).created_by).to eq(@director.id)
-          # there will be two because the old owner record will have been expired
-          expect(@account.reload.account_users.owners.count).to eq(2)
-          expect(@account.account_users.owners.active).to be_one
+          expect(@account.reload.account_users.owners.count).to eq(1)
+          expect(@account.deleted_account_users.count).to eq(1)
           expect(assigns(:account).reload.owner_user).to eq(@purchaser)
           is_expected.to set_flash
           assert_redirected_to facility_account_members_path(@authable, @account)

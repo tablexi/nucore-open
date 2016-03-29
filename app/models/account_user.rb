@@ -3,8 +3,6 @@ class AccountUser < ActiveRecord::Base
   belongs_to :user
   belongs_to :account, inverse_of: :account_users
 
-  scope :active, conditions: { deleted_at: nil }
-
   ACCOUNT_PURCHASER = "Purchaser".freeze
   ACCOUNT_OWNER = "Owner".freeze
   ACCOUNT_ADMINISTRATOR = "Business Administrator".freeze

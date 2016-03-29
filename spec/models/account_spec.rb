@@ -354,4 +354,19 @@ RSpec.describe Account do
       end
     end
   end
+
+  describe ".for_user" do
+    let(:owner) { account.owner_user }
+    it "finds the account for the owner" do
+      expect(Account.for_user(owner)).to include(account)
+    end
+
+    describe "and there is a deleted owner" do
+      before { FactoryGirl.create(:account_user, :inactive, user: owner, account: account) }
+
+      it "only has the one account" do
+        expect(Account.for_user(owner)).to eq([account])
+      end
+    end
+  end
 end
