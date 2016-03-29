@@ -18,7 +18,7 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
     context "when only one split" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 100, extra_penny: true, parent_split_account: split_account)
+          split_account.splits << build(:split, percent: 100, apply_remainder: true, parent_split_account: split_account)
         end
       end
 
@@ -28,11 +28,11 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
       end
     end
 
-    context "when splits total 100 and one split has extra_penny" do
+    context "when splits total 100 and one split has apply_remainder" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_2)
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: subaccount_2)
         end
       end
 
@@ -41,11 +41,11 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
       end
     end
 
-    context "when splits do not total 100 and one split has extra_penny" do
+    context "when splits do not total 100 and one split has apply_remainder" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
-          split_account.splits << build(:split, percent: 49.99, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_2)
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 49.99, apply_remainder: false, parent_split_account: split_account, subaccount: subaccount_2)
         end
       end
 
@@ -56,32 +56,32 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
       end
     end
 
-    context "when splits total 100 and no splits have extra_penny" do
+    context "when splits total 100 and no splits have apply_remainder" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_1)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_2)
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: subaccount_2)
         end
       end
 
       it "is invalid" do
         expect(split_account).not_to be_valid
-        message = I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.only_one_extra_penny")
+        message = I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.only_one_apply_remainder")
         expect(split_account.errors[:splits]).to include(message)
       end
     end
 
-    context "when splits total 100 and multiple splits have extra_penny" do
+    context "when splits total 100 and multiple splits have apply_remainder" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_2)
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: subaccount_2)
         end
       end
 
       it "is invalid" do
         expect(split_account).not_to be_valid
-        message = I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.only_one_extra_penny")
+        message = I18n.t("activerecord.errors.models.split_accounts/split_account.attributes.splits.only_one_apply_remainder")
         expect(split_account.errors[:splits]).to include(message)
       end
     end
@@ -89,8 +89,8 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
     context "when splits share one or more subaccount" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: subaccount_1)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: subaccount_1)
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: subaccount_1)
         end
       end
 
@@ -121,17 +121,17 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
     end
   end
 
-  describe "#extra_penny_count" do
+  describe "#apply_remainder_count" do
     let(:split_account) do
       described_class.new.tap do |split_account|
-        split_account.splits.build(extra_penny: true)
-        split_account.splits.build(extra_penny: true)
-        split_account.splits.build(extra_penny: false)
+        split_account.splits.build(apply_remainder: true)
+        split_account.splits.build(apply_remainder: true)
+        split_account.splits.build(apply_remainder: false)
       end
     end
 
     it "counts splits with extra penny" do
-      expect(split_account.extra_penny_count).to eq(2)
+      expect(split_account.apply_remainder_count).to eq(2)
     end
   end
 
@@ -147,8 +147,8 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
     context "when subaccounts and parent account are not suspended" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: create(:setup_account))
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: create(:setup_account))
           split_account.save
         end
       end
@@ -162,8 +162,8 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
           split_account.suspended_at = Time.current
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: create(:setup_account))
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: create(:setup_account))
           split_account.save
         end
       end
@@ -179,8 +179,8 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
 
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: suspended_subaccount)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: suspended_subaccount)
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: create(:setup_account))
           split_account.save
         end
       end
@@ -217,8 +217,8 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
     context "when subaccounts and parent account are not expired" do
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: create(:setup_account))
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: create(:setup_account))
           split_account.save
         end
       end
@@ -233,8 +233,8 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
 
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: expired_subaccount)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: create(:setup_account))
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: expired_subaccount)
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: create(:setup_account))
           split_account.save
         end
       end
@@ -264,8 +264,8 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
 
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: suspended_subaccount)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: unsuspended_subaccount)
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: suspended_subaccount)
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: unsuspended_subaccount)
         end
       end
 
@@ -280,8 +280,8 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
 
       let(:split_account) do
         build(:split_account, without_splits: true).tap do |split_account|
-          split_account.splits << build(:split, percent: 50, extra_penny: true, parent_split_account: split_account, subaccount: unsuspended_subaccount)
-          split_account.splits << build(:split, percent: 50, extra_penny: false, parent_split_account: split_account, subaccount: unsuspended_subaccount2)
+          split_account.splits << build(:split, percent: 50, apply_remainder: true, parent_split_account: split_account, subaccount: unsuspended_subaccount)
+          split_account.splits << build(:split, percent: 50, apply_remainder: false, parent_split_account: split_account, subaccount: unsuspended_subaccount2)
         end
       end
 

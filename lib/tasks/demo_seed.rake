@@ -315,12 +315,12 @@ namespace :demo do
               {
                 subaccount_id: nufsaccount.id,
                 percent: 50,
-                extra_penny: true,
+                apply_remainder: true,
               },
               {
                 subaccount_id: nufsaccount2.id,
                 percent: 50,
-                extra_penny: false,
+                apply_remainder: false,
               },
             ],
           },
