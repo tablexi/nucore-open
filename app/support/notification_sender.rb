@@ -40,8 +40,7 @@ class NotificationSender
   private
 
   def find_missing_order_details
-    ids = order_detail_groups.flat_map { |order_details| order_details.pluck(:id) }
-    order_details_not_found = @order_detail_ids.map(&:to_i) - ids
+    order_details_not_found = @order_detail_ids.map(&:to_i) - order_details.pluck(:id)
 
     order_details_not_found.each do |order_detail_id|
       @errors << I18n.t("controllers.facility_notifications.send_notifications.order_error", order_detail_id: order_detail_id)
@@ -49,33 +48,21 @@ class NotificationSender
   end
 
   def find_accounts_to_notify
-    order_detail_groups.each do |order_details|
-      # TODO: Poor man's multi-item `pluck`
-      ActiveRecord::Base.connection.select_all(order_details.select(["order_details.account_id", "products.facility_id"])).each do |od|
-        @account_ids_to_notify << [od["account_id"], od["facility_id"]]
-      end
+    # TODO: Poor man's multi-item `pluck`. Fix in Rails 4
+    ActiveRecord::Base.connection.select_all(order_details.select(["order_details.account_id", "products.facility_id"])).each do |od|
+      @account_ids_to_notify << [od["account_id"], od["facility_id"]]
     end
   end
 
   def mark_order_details_as_reviewed
-    order_detail_groups.each do |order_details|
-      order_details.update_all(reviewed_at: reviewed_at)
-    end
+    order_details.update_all(reviewed_at: reviewed_at)
   end
 
-  def order_detail_groups
-    return @order_detail_groups if @order_detail_groups
-
-    # An array of AR relations because Oracle doesn't allow WHERE IN (...) to
-    # have more than 1000 items.
-    enumerator = NUCore::Database.oracle? ? @order_detail_ids.each_slice(1000) : [@order_detail_ids]
-
-    @order_detail_groups = enumerator.map do |od_slice|
-      OrderDetail.for_facility(current_facility)
-                 .need_notification
-                 .where(id: od_slice)
-                 .includes(:product, :order, :price_policy, :reservation)
-    end
+  def order_details
+    @order_details ||= OrderDetail.for_facility(current_facility)
+                                  .need_notification
+                                  .where_ids_in(@order_detail_ids)
+                                  .includes(:product, :order, :price_policy, :reservation)
   end
 
   def account

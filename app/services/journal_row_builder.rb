@@ -4,8 +4,6 @@ require "set"
 # We should improve upon this logic.
 class JournalRowBuilder
 
-  include NUCore::Database::ArrayHelper
-
   attr_reader :order_details, :journal, :journal_rows, :errors, :options,
               :recharge_enabled, :product_recharges, :journaled_facility_ids
 
@@ -177,9 +175,7 @@ class JournalRowBuilder
 
   # Updates the journal_id of each order_detail.
   def set_journal_for_order_details(journal, order_detail_ids)
-    array_slice(order_detail_ids) do |id_slice|
-      OrderDetail.where(id: id_slice).update_all(journal_id: journal.id)
-    end
+    OrderDetail.where_ids_in(order_detail_ids).update_all(journal_id: journal.id)
   end
 
 end
