@@ -2,6 +2,8 @@ module Projects
 
   class Project < ActiveRecord::Base
 
+    include ActiveModel::ForbiddenAttributesProtection
+
     belongs_to :facility, foreign_key: :facility_id
     attr_accessible :description, :name
 
