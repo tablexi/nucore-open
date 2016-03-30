@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Projects::Project, type: :model do
-  subject(:project) { create(:project) }
+  subject(:project) { build(:project) }
 
   context "validations" do
     it { is_expected.to validate_presence_of(:facility_id) }
@@ -16,6 +16,8 @@ RSpec.describe Projects::Project, type: :model do
   end
 
   context "when its facility is destroyed" do
+    subject(:project) { create(:project) }
+
     before { project.facility.destroy }
 
     it "is destroyed" do
