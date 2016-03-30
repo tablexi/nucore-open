@@ -147,10 +147,10 @@ RSpec.describe Account do
   it "should set suspend_at on suspend and unsuspend" do
     @owner   = FactoryGirl.create(:user)
     @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @owner))
-    expect(@account.suspend).to be_truthy
+    expect(@account.suspend).to be(true)
     expect(@account.suspended_at).to be_present
-    expect(@account.unsuspend).to be_truthy
-    expect(@account.suspended_at).to be_blank
+    expect(@account.unsuspend).to be(true)
+    expect(@account.suspended_at).to be_nil
   end
 
   context "account users" do
