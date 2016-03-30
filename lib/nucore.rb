@@ -37,14 +37,23 @@ module NUCore
       end
     end
 
-    module ArrayHelper
+    module WhereIdsIn
 
-      def array_slice(array, slice_size = 999, &block)
-        if NUCore::Database.oracle?
-          array.each_slice(slice_size, &block)
-        else
-          array.each(&block)
+      extend ActiveSupport::Concern
+
+      module ClassMethods
+
+        def where_ids_in(ids)
+          if NUCore::Database.oracle?
+            queries = ids.each_slice(999).flat_map do |id_slice|
+              unscoped.where(id: id_slice).where_clauses
+            end
+            where(queries.join(" OR "))
+          else
+            where(id: ids)
+          end
         end
+
       end
 
     end
@@ -80,55 +89,6 @@ module NUCore
           Time.zone.parse("#{day} #{month} #{year}")
         end
 
-      end
-
-    end
-
-    module RelationHelper
-
-      #
-      # If ActiveRecord might produce a query with a large IN clause (>= 1000)
-      # then use this method. It prevents Oracle from barfing up this error:
-      # OCIError: ORA-01795: maximum number of expressions in a list is 1000.
-      # Essentially the method "slices" the query into sizeable chunks it knows
-      # Oracle can handle.
-      # [_relation_]
-      #   An ActiveRecord::Relation
-      # [_slice_size_]
-      #   The number of results to fetch per query. Defaults to a size it knows
-      #   Oracle can handle.
-      # [_returns_]
-      #   The results of the relation in an +Array+
-      def query_in_slices(relation, slice_size = 999)
-        # We could slice for all DBs but we might as well
-        # do it all in 1 query if the DB (MySQL) can handle it
-        return relation unless NUCore::Database.oracle?
-
-        return relation if relation.is_a? Array
-
-        # If the limit has already been explicitly set, don't slice
-        # Likely because the relation has already been paginated
-        return relation if relation.limit_value && relation.limit_value < slice_size
-
-        # If provided an offset already, use that as the base
-        offset = relation.offset_value || 0
-        slice = []
-        results = []
-
-        begin
-          # If a limit has already been set, make sure we don't go over that limit
-          limit = if relation.limit_value && results.size + slice_size > relation.limit_value
-                    relation.limit_value % slice_size
-                  else
-                    slice_size
-                  end
-
-          slice = relation.limit(limit).offset(offset).all
-          results += slice
-          offset += slice_size
-        end while slice.size == slice_size
-
-        results
       end
 
     end

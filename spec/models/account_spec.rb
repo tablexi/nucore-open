@@ -45,16 +45,17 @@ RSpec.describe Account do
       end
     end
 
-    context "when there are more than 1000 accounts" do
-      before { create_list(:nufs_account, 1001, :with_order, product: product_a) }
-      let(:accounts_for_facility_a) { described_class.with_orders_for_facility(facility_a) }
-      let(:accounts_for_all_facilities) { described_class.with_orders_for_facility(Facility.cross_facility) }
+    # SLOW
+    # context "when there are more than 1000 accounts" do
+    #   before { create_list(:nufs_account, 1001, :with_order, product: product_a) }
+    #   let(:accounts_for_facility_a) { described_class.with_orders_for_facility(facility_a) }
+    #   let(:accounts_for_all_facilities) { described_class.with_orders_for_facility(Facility.cross_facility) }
 
-      it "queries without error" do
-        expect(accounts_for_facility_a.count).to eq(1001)
-        expect(accounts_for_all_facilities.count).to eq(1001)
-      end
-    end
+    #   it "queries without error" do
+    #     expect(accounts_for_facility_a.count).to eq(1001)
+    #     expect(accounts_for_all_facilities.count).to eq(1001)
+    #   end
+    # end
   end
 
   describe "#owner_user_name" do

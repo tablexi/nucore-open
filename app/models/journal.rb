@@ -28,7 +28,6 @@ class Journal < ActiveRecord::Base
   end
 
   include DownloadableFile
-  include NUCore::Database::ArrayHelper
   include Overridable
 
   attr_accessor :order_details_for_creation
