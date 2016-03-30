@@ -853,7 +853,7 @@ en:
       contact: "The following contact information will appear on statements and should indicate where payment should be sent"
       show_instrument_availability: Show Instrument Availability Status?
       order_notification: |
-        The email address that will receive order notifications
+        This email address will be notified when an order is placed by a user
         (if left blank, notifications will not be sent)
 
     movable_transactions:
