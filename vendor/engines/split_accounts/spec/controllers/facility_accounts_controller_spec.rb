@@ -107,7 +107,6 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
         expect(assigns(:account)).to be_a(SplitAccounts::SplitAccount)
       end
     end
-
   end
 
   describe "as a facility admin" do

@@ -49,6 +49,27 @@ module NUCore
 
     end
 
+    module WhereIdsIn
+
+      extend ActiveSupport::Concern
+
+      module ClassMethods
+
+        def where_ids_in(ids)
+          if NUCore::Database.oracle?
+            queries = ids.each_slice(999).flat_map do |id_slice|
+              unscoped.where(id: id_slice).where_clauses
+            end
+            where(queries.join(" OR "))
+          else
+            where(id: ids)
+          end
+        end
+
+      end
+
+    end
+
     module DateHelper
 
       def self.included(base)

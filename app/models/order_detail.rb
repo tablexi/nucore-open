@@ -4,6 +4,7 @@ class OrderDetail < ActiveRecord::Base
   include TranslationHelper
   include NotificationSubject
   include OrderDetail::Accessorized
+  include NUCore::Database::WhereIdsIn
 
   versioned
 

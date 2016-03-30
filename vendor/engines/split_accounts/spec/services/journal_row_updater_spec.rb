@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe JournalRowUpdater, type: :service do
-
   let(:updater) { described_class.new(order_detail) }
 
   describe "when the order detail is on a failed journal" do
@@ -52,5 +51,4 @@ RSpec.describe JournalRowUpdater, type: :service do
       end
     end
   end
-
 end
