@@ -488,6 +488,15 @@ RSpec.describe OrdersController do
             expect(Notifier).to receive(:order_notification).once { DummyNotifier.new }
             do_request
           end
+
+          context "when the order was made on behalf of another user" do
+            before { switch_to @staff }
+
+            it "does not send order notifications" do
+              expect(Notifier).not_to receive(:order_notification)
+              do_request
+            end
+          end
         end
 
         context "when the facility has no order_notification_recipient" do

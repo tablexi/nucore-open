@@ -59,7 +59,7 @@ class OrderPurchaser
   end
 
   def send_notification?
-    order_notification_recipient.present?
+    order_notification_recipient.present? && !acting_as?
   end
 
   def send_receipt?
