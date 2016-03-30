@@ -2,6 +2,10 @@ module Projects
 
   class Engine < Rails::Engine
 
+    def self.enable!
+      ::AbilityExtensionManager.extensions << "Projects::AbilityExtension"
+    end
+
     config.to_prepare do
       Facility.send :include, Projects::FacilityExtension
     end

@@ -9,6 +9,8 @@ RSpec.describe Projects::ProjectsController, type: :controller do
   let(:senior_staff) { create(:user, :senior_staff, facility: facility) }
   let(:staff) { create(:user, :staff, facility: facility) }
 
+  before(:all) { Projects::Engine.enable! }
+
   describe "GET #index" do
     def do_request
       get :index, facility_id: facility.url_name
@@ -56,6 +58,49 @@ RSpec.describe Projects::ProjectsController, type: :controller do
   end
 
   describe "GET #new" do
+    def do_request
+      get :new, facility_id: facility.url_name
+    end
+
+    describe "when not logged in" do
+      before { do_request }
+
+      it { is_expected.to redirect_to new_user_session_path }
+    end
+
+    describe "when logged in" do
+      shared_examples_for "it allows new views" do
+        before(:each) do
+          sign_in user
+          do_request
+        end
+
+        it "shows the new view", :aggregate_failures do
+          expect(response.code).to eq("200")
+          expect(assigns(:project)).to be_kind_of(Projects::Project).and be_new_record
+        end
+      end
+
+      context "as a facility_administrator" do
+        let(:user) { facility_administrator }
+        it_behaves_like "it allows new views"
+      end
+
+      context "as a facility_director" do
+        let(:user) { facility_director }
+        it_behaves_like "it allows new views"
+      end
+
+      context "as facility senior_staff" do
+        let(:user) { senior_staff }
+        it_behaves_like "it allows new views"
+      end
+
+      context "as facility staff" do
+        let(:user) { staff }
+        it_behaves_like "it allows new views"
+      end
+    end
   end
 
   describe "POST #create" do
