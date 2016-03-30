@@ -249,7 +249,7 @@ class OrdersController < ApplicationController
       flash[:notice] = I18n.t("controllers.orders.purchase.quantities_changed")
       redirect_to order_path(@order)
     else
-      if single_reservation?
+      if single_reservation? && !acting_as?
         flash[:notice] = I18n.t("controllers.orders.purchase.reservation.success")
         if can_switch_instrument_on?
           redirect_to switch_instrument_path
@@ -345,8 +345,7 @@ class OrdersController < ApplicationController
   def single_reservation?
     @order.order_details.size == 1 &&
       @order.order_details.first.product.is_a?(Instrument) &&
-      !@order.order_details.first.bundled? &&
-      !acting_as?
+      !@order.order_details.first.bundled?
   end
 
   def switch_instrument_path
