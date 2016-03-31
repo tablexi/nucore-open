@@ -5,7 +5,7 @@ class OrderSearchController < ApplicationController
   before_filter :check_acting_as
 
   def index
-    @order_details = OrderSearcher.new(current_user).search(params[:search])
+    @order_details = GlobalSearch::OrderSearcher.new(current_user).search(params[:search])
   end
 
 end
