@@ -44,7 +44,7 @@ RSpec.describe AccountTransactionReportMailer do
     end
 
     let(:order_details) do
-      1001.times.map do
+      Array.new(1001) do
         place_product_order(user, facility, item, account)
       end
     end
