@@ -5,7 +5,6 @@ module Projects
     include ActiveModel::ForbiddenAttributesProtection
 
     belongs_to :facility, foreign_key: :facility_id
-    attr_accessible :description, :name
 
     validates :facility_id, presence: true
     validates :name,
