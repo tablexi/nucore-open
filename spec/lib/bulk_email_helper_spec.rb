@@ -216,21 +216,22 @@ RSpec.describe BulkEmailHelper do
     end
   end
 
+  # SLOW
   # Oracle blows up if you do a WHERE IN (...) clause with more than a 1000 items
   # so let's test it.
   # commented out because the creation of users takes so long. run it every once in a while
-  context "being ready for Oracle" do
-    before :each do
-      1001.times do
-        user = FactoryGirl.create(:user)
-        od = place_product_order(user, @facility, @product, @account)
-      end
-      expect(OrderDetail.all.size).to eq(1001)
-    end
-    it "should return 1001 users" do
-      users = @controller.do_search(@params)
-      expect(users.size).to eq(1001)
-    end
-  end
+  # describe "being ready for Oracle" do
+  #   before :each do
+  #     Array.new(1001) do
+  #       user = FactoryGirl.create(:user)
+  #       od = place_product_order(user, @facility, @product, @account)
+  #     end
+  #     expect(OrderDetail.all.size).to eq(1001)
+  #   end
+  #   it "returns 1001 users" do
+  #     users = @controller.do_search(@params)
+  #     expect(users.size).to eq(1001)
+  #   end
+  # end
 
 end

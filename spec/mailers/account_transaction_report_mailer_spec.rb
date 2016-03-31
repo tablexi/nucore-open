@@ -28,31 +28,34 @@ RSpec.describe AccountTransactionReportMailer do
     end
   end
 
-  context "with over 1000 order details" do
+  # SLOW
+  # Commented out because the test is slow
+  # context "with over 1000 order details" do
 
-    let(:facility) { create(:facility) }
-    let(:user) { create(:user) }
-    let(:account) { create(:setup_account, owner: user) }
-    let(:facility_account) do
-      facility.facility_accounts.create(attributes_for(:facility_account))
-    end
+  #   let(:facility) { create(:facility) }
+  #   let(:user) { create(:user) }
+  #   let(:account) { create(:setup_account, owner: user) }
+  #   let(:facility_account) do
+  #     facility.facility_accounts.create(attributes_for(:facility_account))
+  #   end
 
-    let(:item) do
-      facility
-        .items
-        .create(attributes_for(:item, facility_account_id: facility_account.id))
-    end
+  #   let(:item) do
+  #     facility
+  #       .items
+  #       .create(attributes_for(:item, facility_account_id: facility_account.id))
+  #   end
 
-    let(:order_details) do
-      Array.new(1001) do
-        place_product_order(user, facility, item, account)
-      end
-    end
+  #   let(:order_details) do
+  #     Array.new(1001) do
+  #       place_product_order(user, facility, item, account)
+  #     end
+  #   end
 
-    it "does not fail" do
-      expect do
-        described_class.csv_report_email("recipient@example.net", order_details.map(&:id), :statement_date).deliver
-      end.to change(ActionMailer::Base.deliveries, :count).by(1)
-    end
-  end
+  #   it "does not fail" do
+  #     expect do
+  #       described_class.csv_report_email("recipient@example.net", order_details.map(&:id), :statement_date).deliver
+  #     end.to change(ActionMailer::Base.deliveries, :count).by(1)
+  #   end
+  # end
+
 end
