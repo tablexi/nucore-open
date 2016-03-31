@@ -35,7 +35,7 @@ class Orders::ItemAdder
   end
 
   def add_instruments(product, quantity, attributes)
-    quantity.times.collect do
+    Array.new(quantity) do
       create_order_detail({ product_id: product.id, quantity: 1 }.merge(attributes))
     end
   end
@@ -48,7 +48,7 @@ class Orders::ItemAdder
     # quantity to add them with
     individual_quantity = separate ? 1 : quantity
 
-    repeat.times.collect do
+    Array.new(repeat) do
       create_order_detail({ product_id: product.id, quantity: individual_quantity }.merge(attributes))
     end
   end

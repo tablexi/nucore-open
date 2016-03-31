@@ -1354,7 +1354,7 @@ RSpec.describe OrderDetail do
       let(:unreconciled_order_details) { OrderDetail.account_unreconciled(facility, account) }
 
       before :each do
-        @order_details = 3.times.map do
+        @order_details = Array.new(3) do
           order_detail = order.order_details.create(attributes_for(:order_detail)
             .update(product_id: item.id, account_id: account.id, journal_id: journal.id))
           order_detail.change_status!(OrderStatus.find_by_name("In Process"))

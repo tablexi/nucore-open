@@ -78,7 +78,7 @@ RSpec.describe Account do
     end
 
     context "with unreconciled order_details" do
-      let(:order_details) { 5.times.map { double OrderDetail } }
+      let(:order_details) { Array.new(5) { double OrderDetail } }
 
       context "with estimated totals" do
         before :each do

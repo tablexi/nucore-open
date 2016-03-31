@@ -23,7 +23,7 @@ RSpec.describe NotificationSender, :aggregate_failures do
   before { allow(SettingsHelper).to receive(:has_review_period?).and_return true }
 
   describe "with a reasonable sized group" do
-    let!(:order_details) { 5.times.map { place_product_order(user, facility, item, account) } }
+    let!(:order_details) { Array.new(5) { place_product_order(user, facility, item, account) } }
 
     before { OrderDetail.update_all(state: "complete", price_policy_id: item.price_policies.first.id) }
 
