@@ -1,6 +1,5 @@
 en:
   activerecord:
-
     errors:
       models:
         split_accounts/split_account:
@@ -16,6 +15,10 @@ en:
             subaccount:
               not_self_referential: can not be self referential
               not_split_subaccount: can not be a split account
+    attributes:
+      split_accounts/split:
+        subaccount: Account
+        apply_remainder: Apply Remainder?
 
     models:
       split_accounts/split_account:

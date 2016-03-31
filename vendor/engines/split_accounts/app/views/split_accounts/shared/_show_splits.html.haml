@@ -1,14 +1,13 @@
 - if account.respond_to?(:splits) && account.splits.present?
 
-  -# TODO: use locales for h3 and table headings
-  %h3 Splits
+  %h3= SplitAccounts::Split.model_name.human(count: 2)
 
   %table.table.table-striped
     %thead
       %tr
-        %th Account
-        %th Percent
-        %th Extra Penny
+        %th= SplitAccounts::Split.human_attribute_name(:subaccount)
+        %th= SplitAccounts::Split.human_attribute_name(:percent)
+        %th= SplitAccounts::Split.human_attribute_name(:apply_remainder)
     %tbody
       - account.splits.each do |split|
         %tr
