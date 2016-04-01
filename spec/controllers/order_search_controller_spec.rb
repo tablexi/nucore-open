@@ -72,7 +72,7 @@ RSpec.describe OrderSearchController do
       end
     end
 
-    context "when signed in as a facility admin" do
+    context "when signed in as a facility staff" do
       before :each do
         grant_role(@staff, facility)
         sign_in @staff
@@ -115,10 +115,11 @@ RSpec.describe OrderSearchController do
     end
 
     describe "account roles" do
+      let(:account) { order_detail.account }
       context "when signed in as a business admin" do
         before :each do
           sign_in @staff
-          AccountUser.grant(@staff, AccountUser::ACCOUNT_ADMINISTRATOR, order_detail.account, @admin)
+          AccountUser.grant(@staff, AccountUser::ACCOUNT_ADMINISTRATOR, account, @admin)
         end
 
         it_should_find_the_order
@@ -128,7 +129,7 @@ RSpec.describe OrderSearchController do
       context "when signed in as a purchaser" do
         before :each do
           sign_in @staff
-          AccountUser.grant(@staff, AccountUser::ACCOUNT_PURCHASER, order_detail.account, @admin)
+          AccountUser.grant(@staff, AccountUser::ACCOUNT_PURCHASER, account, @admin)
         end
 
         it_should_not_find_the_order
@@ -137,7 +138,7 @@ RSpec.describe OrderSearchController do
       context "when signed in as an account owner" do
         before :each do
           sign_in @staff
-          order_detail.account.add_or_update_member(@staff, AccountUser::ACCOUNT_OWNER, @admin)
+          account.add_or_update_member(@staff, AccountUser::ACCOUNT_OWNER, @admin)
         end
 
         it_should_find_the_order
@@ -196,6 +197,20 @@ RSpec.describe OrderSearchController do
         it "finds the correct order detail and renders the index page" do
           get :index, search: external_id
           expect(assigns[:order_details]).to eq [external_service_receiver.receiver]
+        end
+      end
+
+      describe "when searching for a statement" do
+        let!(:statement) { FactoryGirl.create(:statement, created_by_user: create(:user)) }
+
+        it "finds it by the invoice number" do
+          get :index, search: statement.invoice_number
+          expect(assigns(:other_results)).to eq([statement])
+        end
+
+        it "does not find it by the wrong invoice number" do
+          get :index, search: "0-123"
+          expect(assigns(:other_results)).to be_empty
         end
       end
     end

@@ -6,6 +6,7 @@ class OrderSearchController < ApplicationController
 
   def index
     @order_details = GlobalSearch::OrderSearcher.new(current_user).search(params[:search])
+    @other_results = GlobalSearch::StatementSearcher.new(current_user).search(params[:search])
   end
 
 end
