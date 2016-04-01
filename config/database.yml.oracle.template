@@ -7,9 +7,9 @@ defaults: &defaults
 development:
   <<: *defaults
   username: nucore_open_development
-  password:
+  password: password
 
 test:
   <<: *defaults
   username: nucore_open_test
-  password:
+  password: password

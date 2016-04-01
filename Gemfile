@@ -8,14 +8,14 @@ gem "strong_parameters"
 gem "rails_config",     "0.3.3"
 
 group :mysql do
-  gem 'mysql2',           '~> 0.3.20'
-  gem 'foreigner',        '~> 1.7.4'
+  gem "mysql2",           "~> 0.3.20"
+  gem "foreigner",        "~> 1.7.4"
 end
 
 group :oracle do
-  gem 'ruby-oci8',        '~> 2.2.1'
-  gem 'activerecord-oracle_enhanced-adapter', '~> 1.4.3'
-  gem 'highline'
+  gem "ruby-oci8",        "~> 2.2.1"
+  gem "activerecord-oracle_enhanced-adapter", "~> 1.4.3"
+  gem "highline"
 end
 
 ## auth

@@ -27,8 +27,9 @@ RUN rm /tmp/oracle-*
 RUN mkdir /app
 WORKDIR /app
 ADD Gemfile /app/Gemfile
-#ADD Gemfile.lock /app/Gemfile.lock
+ADD Gemfile.lock /app/Gemfile.lock
 ADD vendor/engines /app/vendor/engines
+RUN gem update --system && gem update bundler
 RUN bundle install --without mysql
 
 ADD . /app

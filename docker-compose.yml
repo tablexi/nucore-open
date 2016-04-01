@@ -1,28 +1,28 @@
 web:
   build: .
-  dockerfile: docker/Dockerfile.mysql
-  # dockerfile: docker/Dockerfile.oracle
+  # dockerfile: docker/Dockerfile.mysql
+  dockerfile: docker/Dockerfile.oracle
   command: docker/web/startup.sh
   volumes:
     - .:/app
   ports:
     - "3000:3000"
   links:
-    - mysql
-    # - oracle
+    # - mysql
+    - oracle
     # - ldap
 
-mysql:
-  image: mysql:5.7
-  environment:
-    - MYSQL_ALLOW_EMPTY_PASSWORD=true
-  ports:
-    - "3306:3306"
-
-# oracle:
-#   image: wnameless/oracle-xe-11g
+# mysql:
+#   image: mysql:5.7
+#   environment:
+#     - MYSQL_ALLOW_EMPTY_PASSWORD=true
 #   ports:
-#     - "1521:1521"
+#     - "3306:3306"
+
+oracle:
+  image: wnameless/oracle-xe-11g
+  ports:
+    - "1521:1521"
 
 # ldap:
 #   image: "osixia/openldap"
