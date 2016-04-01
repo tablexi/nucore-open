@@ -1,4 +1,4 @@
-class OrderSearchController < ApplicationController
+class GlobalSearchController < ApplicationController
 
   customer_tab :all
   before_filter :authenticate_user!
