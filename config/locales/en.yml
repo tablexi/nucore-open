@@ -142,10 +142,11 @@ en:
       facility_tooltip:
         admin_reservation: Administrative Reservation
 
-  order_search:
-    search: "Search by Order #"
-    results: Search Results
-    no_results: No orders found
+  global_search:
+    search: "Search"
+    index:
+      results: Search Results
+      no_results: No results found
 
   facility_accounts:
     edit:
@@ -616,6 +617,10 @@ en:
         unassigned: "Unassigned"
     pdf:
       filename: "%{facility}-%{invoice_number}-%{date}.pdf"
+      download: Download
+    reconciled:
+      "true": Reconciled
+      "false": Unreconciled
 
   orders:
     add_account:

@@ -160,6 +160,9 @@ en:
       service:
         one: Services
         other: Services
+      statement:
+        one: Statement
+        other: Statements
       training_request:
         one: Training Request
         other: Training Requests
