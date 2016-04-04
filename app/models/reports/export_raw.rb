@@ -10,7 +10,7 @@ class Reports::ExportRaw
   end
 
   def initialize(arguments)
-    [:action_name, :date_end, :date_start, :facility, :order_status_ids].each do |property|
+    [:date_end, :date_start, :facility, :order_status_ids].each do |property|
       if arguments[property].present?
         instance_variable_set("@#{property}".to_sym, arguments[property])
       else
@@ -37,11 +37,11 @@ class Reports::ExportRaw
   end
 
   def filename
-    "#{@action_name}_#{formatted_compact_date_range}.csv"
+    "#{facility.name.underscore}_#{formatted_compact_date_range}.csv"
   end
 
   def description
-    "#{@action_name.capitalize} Raw Export, #{formatted_date_range}"
+    "#{facility.name} Export Raw, #{formatted_date_range}"
   end
 
   def formatted_date_range

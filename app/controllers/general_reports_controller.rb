@@ -50,7 +50,6 @@ class GeneralReportsController < ReportsController
       date_start: @date_start,
       date_end: @date_end,
       order_status_ids: @status_ids,
-      action_name: action_name,
     )
   end
 
