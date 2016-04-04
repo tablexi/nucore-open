@@ -8,8 +8,8 @@ module GlobalSearch
 
     def search(query)
       query = query.to_s
-        .strip # get rid of leading/trailing whitespace
-        .sub(/\A#/, "") # remove a leading hash sign to support searching like "#123-456"
+                   .strip # get rid of leading/trailing whitespace
+                   .sub(/\A#/, "") # remove a leading hash sign to support searching like "#123-456"
 
       statement = Statement.find_by_invoice_number(query)
       Array(restrict(statement))
