@@ -161,19 +161,6 @@ Performance/StartWith:
   Exclude:
     - 'vendor/engines/dataprobe/spec/lib/dataprobe/ipio_spec.rb'
 
-# Offense count: 13
-Performance/TimesMap:
-  Exclude:
-    - 'app/support/orders/item_adder.rb'
-    - 'spec/app_support/notification_sender_spec.rb'
-    - 'spec/controllers/facility_journals_controller_spec.rb'
-    - 'spec/controllers/facility_orders_controller_spec.rb'
-    - 'spec/models/account_spec.rb'
-    - 'spec/models/order_detail_spec.rb'
-    - 'spec/models/product_spec.rb'
-    - 'spec/models/reports/instrument_utilization_report_spec.rb'
-    - 'vendor/engines/c2po/spec/models/order_detail_spec.rb'
-
 # Offense count: 88
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: strict, flexible

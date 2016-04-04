@@ -57,13 +57,11 @@ RSpec.describe Product do
       before { instrument.price_policies.each(&:delete) }
 
       let!(:current_price_policies) do
-        3.times.map do
-          create(:instrument_price_policy,
-                 product: instrument,
-                 start_date: 3.days.ago,
-                 expire_date: 3.days.from_now,
-                )
-        end
+        create_list(:instrument_price_policy, 3,
+                    product: instrument,
+                    start_date: 3.days.ago,
+                    expire_date: 3.days.from_now
+                   )
       end
 
       let!(:past_price_policies) do

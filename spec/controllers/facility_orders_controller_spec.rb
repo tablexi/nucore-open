@@ -25,7 +25,7 @@ RSpec.describe FacilityOrdersController do
 
   context '#assign_price_policies_to_problem_orders' do
     let(:order_details) do
-      3.times.map do
+      Array.new(3) do
         order_detail = place_and_complete_item_order(@director, facility)
         order_detail.update_attribute(:price_policy_id, nil)
         order_detail

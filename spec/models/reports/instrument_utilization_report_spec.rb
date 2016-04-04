@@ -10,8 +10,8 @@ RSpec.describe Reports::InstrumentUtilizationReport do
   end
 
   context "with actual reservations" do
-    let(:product1_reservations) { 3.times.collect { build_stubbed(:reservation, duration_mins: 35, actual_duration_mins: 15, product: product) } }
-    let(:product2_reservations) { 2.times.collect { build_stubbed(:reservation, duration_mins: 25, actual_duration_mins: 5, product: product2) } }
+    let(:product1_reservations) { build_stubbed_list(:reservation, 3, duration_mins: 35, actual_duration_mins: 15, product: product) }
+    let(:product2_reservations) { build_stubbed_list(:reservation, 2, duration_mins: 25, actual_duration_mins: 5, product: product2) }
     let(:reservations) { product1_reservations + product2_reservations }
 
     it "has the correct totals" do
@@ -27,8 +27,8 @@ RSpec.describe Reports::InstrumentUtilizationReport do
   end
 
   context "with zero length actuals" do
-    let(:product1_reservations) { 3.times.collect { build_stubbed(:reservation, duration_mins: 35, actual_duration_mins: 0, product: product) } }
-    let(:product2_reservations) { 2.times.collect { build_stubbed(:reservation, duration_mins: 35, actual_duration_mins: 0, product: product2) } }
+    let(:product1_reservations) { build_stubbed_list(:reservation, 3, duration_mins: 35, actual_duration_mins: 0, product: product) }
+    let(:product2_reservations) { build_stubbed_list(:reservation, 2, duration_mins: 35, actual_duration_mins: 0, product: product2) }
     let(:reservations) { product1_reservations + product2_reservations }
 
     it "has the correct totals" do
