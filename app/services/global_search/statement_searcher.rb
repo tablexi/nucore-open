@@ -7,7 +7,11 @@ module GlobalSearch
     end
 
     def search(query)
-      statement = Statement.find_by_invoice_number(query.to_s.strip)
+      query = query.to_s
+        .strip # get rid of leading/trailing whitespace
+        .sub(/\A#/, "") # remove a leading hash sign to support searching like "#123-456"
+
+      statement = Statement.find_by_invoice_number(query)
       Array(restrict(statement))
     end
 

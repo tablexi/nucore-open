@@ -44,6 +44,16 @@ RSpec.describe GlobalSearch::StatementSearcher do
         let(:query) { "0-#{statement.id}" }
         it { is_expected.to be_empty }
       end
+
+      describe "starting with a pound sign" do
+        let(:query) { "##{statement.invoice_number}" }
+        it { is_expected.to eq([statement]) }
+      end
+
+      describe "with a pound sign and whitespace" do
+        let(:query) { "  ##{statement.invoice_number}  " }
+        it { is_expected.to eq([statement]) }
+      end
     end
 
     describe "permissions" do
