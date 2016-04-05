@@ -23,7 +23,7 @@ class OrderPurchaser
       order_in_the_past! if order_in_past?
 
       Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
-      Notifier.delay.order_notification(order, order_notification_recipient) if send_notification?
+      Notifier.delay.order_notification(order, order_notification_recipient) if send_facility_notification?
     end
   end
 
@@ -58,7 +58,7 @@ class OrderPurchaser
     order.order_details.order("order_details.id").pluck(:quantity)
   end
 
-  def send_notification?
+  def send_facility_notification?
     order_notification_recipient.present? && !acting_as?
   end
 
