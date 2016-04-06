@@ -11,7 +11,7 @@ class Ability
   #   The controller whose authorization request is being handled. Used to provide
   #   a context for the sticky situation that is multiple controllers managing one
   #   one model each with their own authorization rules.
-  def initialize(user, resource, controller)
+  def initialize(user, resource, controller = nil)
     return unless user
 
     if user.administrator?

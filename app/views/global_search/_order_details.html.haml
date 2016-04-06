@@ -1,0 +1,27 @@
+%h3= Order.model_name.human(count: 2)
+
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th= "#{Order.model_name.human} #"
+      %th.nowrap= OrderDetail.human_attribute_name(:ordered_at)
+      %th= Facility.model_name.human
+      %th= OrderDetail.human_attribute_name("description")
+      %th.nowrap= OrderDetail.human_attribute_name("user")
+      %th= OrderDetail.human_attribute_name("cost")
+      %th= OrderDetail.human_attribute_name("order_status")
+  %tbody
+    - results.each do |order_detail|
+      %tr{class: row_class(order_detail)}
+        %td.nowrap= order_detail_result_link order_detail
+        %td= format_usa_date(order_detail.ordered_at)
+        %td= order_detail.order.facility
+        %td
+          = order_detail_description(order_detail)
+          %br
+          %em= order_detail.reservation
+        %td= order_detail.order.user.full_name
+        %td.currency
+          - order_detail.send(:extend, PriceDisplayment)
+          = order_detail.wrapped_total
+        %td.nowrap= order_detail.order_status

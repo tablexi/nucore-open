@@ -19,7 +19,7 @@ module RoutesHelper
   end
 
   def statement_path(statement)
-    facility_account_statement_path(current_facility, statement.account_id, statement, format: :pdf)
+    facility_account_statement_path(statement.facility, statement.account_id, statement, format: :pdf)
   end
 
   def product_file_path(product_info_file)

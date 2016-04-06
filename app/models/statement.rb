@@ -34,6 +34,12 @@ class Statement < ActiveRecord::Base
     "#{account_id}-#{id}"
   end
 
+  def self.find_by_invoice_number(query)
+    return nil unless /\A(?<account_id>\d+)-(?<id>\d+)\z/ =~ query
+    # TODO: Use `find_by(id: id, account_id: account_id)` in Rails 4
+    find_by_id_and_account_id(id, account_id)
+  end
+
   def invoice_date
     created_at.to_date
   end
