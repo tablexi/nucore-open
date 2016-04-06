@@ -4,7 +4,6 @@
   %thead
     %tr
       %th= "#{Order.model_name.human} #"
-      -# %th= "#{OrderDetail.model_name.human} #"
       %th.nowrap= OrderDetail.human_attribute_name(:ordered_at)
       %th= Facility.model_name.human
       %th= OrderDetail.human_attribute_name("description")
@@ -13,10 +12,9 @@
       %th= OrderDetail.human_attribute_name("order_status")
   %tbody
     - results.each do |order_detail|
-      %tr{:class => row_class(order_detail)}
+      %tr{class: row_class(order_detail)}
         %td.nowrap= order_detail_result_link order_detail
-        -# %td.nowrap= order_detail_result_link order_detail
-        %td= order_detail.ordered_at.try(:strftime, "%m/%d/%Y")
+        %td= format_usa_date(order_detail.ordered_at)
         %td= order_detail.order.facility
         %td
           = order_detail_description(order_detail)
