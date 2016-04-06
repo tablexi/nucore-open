@@ -169,4 +169,20 @@ class User < ActiveRecord::Base
     @recently_used_facilities[limit]
   end
 
+  def deactivate
+    update_attribute(:deactivated_at, deactivated_at || Time.current)
+  end
+
+  def activate
+    update_attribute(:deactivated_at, nil)
+  end
+
+  def active?
+    deactivated_at.blank?
+  end
+
+  def self.active
+    where(deactivated_at: nil)
+  end
+
 end
