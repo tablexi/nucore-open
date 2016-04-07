@@ -18,15 +18,19 @@ class BulkEmailSearcher
 
   def search_customers
     order_details = find_order_details.joins(order: :user)
-    User.find_by_sql(order_details.select("distinct(users.id), users.*")
-                                          .reorder("users.last_name, users.first_name").to_sql)
+    users.find_by_sql(order_details.select("distinct(users.id), users.*")
+                                          .reorder("users.last_name, users.first_name")
+                                          .merge(users)
+                                          .to_sql)
   end
 
   def search_account_owners
     order_details = find_order_details_for_roles([AccountUser::ACCOUNT_OWNER])
     User.find_by_sql(order_details.joins(account: { account_users: :user })
                                    .select("distinct(users.id), users.*")
-                                   .reorder("users.last_name, users.first_name").to_sql)
+                                   .reorder("users.last_name, users.first_name")
+                                   .merge(users)
+                                   .to_sql)
   end
 
   def search_customers_and_account_owners
@@ -36,13 +40,17 @@ class BulkEmailSearcher
   end
 
   def search_authorized_users
-    result = User.joins(:product_users)
+    result = users.joins(:product_users)
     # if we don't have any products, listed get them all for the current facility
     product_ids = search_fields[:products].presence || Facility.find(search_fields[:facility_id]).products.map(&:id)
     result.where(product_users: { product_id: product_ids }).reorder(*self.class::DEFAULT_SORT)
   end
 
   private
+
+  def users
+    User.active
+  end
 
   def find_order_details
     order_details = OrderDetail.for_products(search_fields[:products])

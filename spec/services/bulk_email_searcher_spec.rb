@@ -11,7 +11,7 @@ RSpec.describe BulkEmailSearcher do
     describe "with an inactive user" do
       before { user.deactivate }
 
-      xit "does not include the user" do
+      it "does not include the user" do
         expect(users).not_to include(user)
       end
     end
