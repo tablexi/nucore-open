@@ -26,7 +26,7 @@ en:
 
   facilities:
     facility_fields:
-      payment_options: "By default, all facilities accept NU Chart Strings; you may check additional payment options:"
+      payment_options: "By default, all facilities accept Chart Strings; you may check additional payment options:"
       accepts_po: "Accept Purchase Orders?"
       accepts_cc: "Accept Credit Cards?"
 
