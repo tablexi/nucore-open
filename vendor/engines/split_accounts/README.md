@@ -13,7 +13,7 @@ line is enabled in `Gemfile`. Then ensure the `feature.split_accounts_on` in
 
 * Only global admins may create a Split Account. Other account admins and facility
     admins may edit the membership list.
-* `SplitAccounts` expire when the earliest of its children expire
+* `SplitAccounts` expire when the earliest of its children expire.
 * If you suspend a child account, the parent gets suspended as well. However, if you
     unsuspend a child account, the parent remains suspended. You must re-activate
     the parent account yourself.
@@ -60,5 +60,3 @@ more evenly:
     * A: $3.51
     * B: $3.50
     * C: $3.49
-
-
