@@ -4,4 +4,14 @@
   = render "admin/shared/sidenav_users", sidenav_tab: "users"
 
 = render "search_form"
-= render "list"
+
+#result
+  %h3= t("users.index.head")
+  %p= t("users.index.instruct")
+  - if @users.any?
+    = render "search/results_table", order_for: true, users: @users
+    = will_paginate(@users)
+
+  - else
+    %p.notice= t("users.index.no_users")
+

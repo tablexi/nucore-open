@@ -4,7 +4,7 @@ require "controller_spec_helper"
 RSpec.describe UsersController do
   render_views
 
-  before(:all) { create_users }
+  before(:each) { create_users }
 
   before(:each) do
     @authable = FactoryGirl.create(:facility)
@@ -197,18 +197,24 @@ RSpec.describe UsersController do
   end
 
   context "switch_to" do
-
+    let(:user) { FactoryGirl.create(:user) }
     before :each do
       @method = :get
       @action = :switch_to
-      @params.merge!(user_id: @guest.id)
+      @params.merge!(user_id: user.id)
     end
 
     it_should_allow_operators_only :redirect do
-      expect(assigns(:user)).to eq(@guest)
-      expect(session[:acting_user_id]).to eq(@guest.id)
+      expect(assigns(:user)).to eq(user)
+      expect(session[:acting_user_id]).to eq(user.id)
       expect(session[:acting_ref_url]).to eq(facility_users_path)
       assert_redirected_to facility_path(@authable)
+    end
+
+    describe "a deactivated user" do
+      before(:each) { user.deactivate }
+
+      it_should_deny_all([:admin] + facility_operators)
     end
 
   end

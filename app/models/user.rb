@@ -157,8 +157,20 @@ class User < ActiveRecord::Base
     end
   end
 
+  def last_first_name
+    "#{last_name}, #{first_name}" + deactivated_string
+  end
+
   def to_s
-    full_name
+    full_name + deactivated_string
+  end
+
+  def deactivated_string
+    if active?
+      ""
+    else
+      " (#{self.class.human_attribute_name(:deactivated)})"
+    end
   end
 
   def recently_used_facilities(limit = 5)

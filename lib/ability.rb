@@ -27,6 +27,8 @@ class Ability
           cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
         end
       end
+
+      cannot(:switch_to, User) { |user| !user.active? }
       return
     end
 
@@ -116,8 +118,9 @@ class Ability
           fileupload.file_type == "sample_result"
         end
 
-        can [:administer, :switch_to], User
+        can [:administer], User
         can :manage, User if controller.is_a?(UsersController)
+        cannot(:switch_to, User) { |user| !user.active? }
 
         can [:list, :show], Facility
         can :act_as, Facility

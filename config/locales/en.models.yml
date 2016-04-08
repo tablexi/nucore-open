@@ -183,6 +183,7 @@ en:
         current_password: Current password
         last_sign_in_at: Last Login
         full_name: Full Name
+        deactivated: DEACTIVATED
       facility:
         fax_number: Fax Number
         is_active: Is Active?

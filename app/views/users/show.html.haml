@@ -7,9 +7,10 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_users', :locals => {:secondary_tab => 'details'}
 
-%h1= @user.full_name
+%h1= @user
 
 = readonly_form_for :user do |f|
   = f.input :full_name
   = f.input :email
   = f.input :last_sign_in_at, :default_value => 'none'
+  = f.input :deactivated_at unless f.object.active?

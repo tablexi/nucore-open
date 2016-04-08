@@ -767,6 +767,11 @@ en:
         search_term: "Search by name, NetID, or username"
 
   search:
+    results_table:
+      order_for: Order For
+      name: Name
+      username: Username # or NetID
+      email: Email
     create_new_user:
       prompt: Can't find the user you're looking for?
       link: Create a new user
@@ -777,18 +782,6 @@ en:
         other: "%{count} more users exist. Try refining your search."
       no_users_found: No existing users found.
       select_existing_user: Select an Existing User
-      th:
-        name: "Name"
-        username: "Username or NetID"
-        email: "Email"
-    manage_user_table:
-      notice:
-        one: "One more user exists. Try refining your search."
-        other: "%{count} more users exist. Try refining your search."
-      th:
-        name: "Name"
-        username: "Username or NetID"
-        email: "Email"
 
   account_price_group_members:
     new:
@@ -1058,20 +1051,17 @@ en:
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
-    list:
-      head:
-        h3: Active Users
+
+    search:
+      no_results: There are no active users for this facility.
+      no_users: There are no active users for this facility.
+
+    index:
+      head: Active Users
       instruct: |
         Active users are users which have placed an order or had an order placed
         on their behalf at this facility in the last year.
-      label:
-        order_for: Order For
-      notice:
-        no_users: There are no active users for this facility.
-      th:
-        name: Name
-        username: Username or NetID
-        email: Email
+
     new_external:
       head: "Add External User"
       main: "You may use this to grant NUcore access to external users. The email address and username must match."

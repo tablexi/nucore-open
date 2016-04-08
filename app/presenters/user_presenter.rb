@@ -16,8 +16,13 @@ class UserPresenter < SimpleDelegator
     options_for_select(UserRole.global_roles, selected: user_roles.map(&:role))
   end
 
-  def name_last_comma_first
-    "#{last_name}, #{first_name}"
+  # pretend to be a User
+  def kind_of?(clazz)
+    if clazz == User
+      true
+    else
+      super
+    end
   end
 
   private

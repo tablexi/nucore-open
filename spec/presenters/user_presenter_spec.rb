@@ -27,10 +27,4 @@ RSpec.describe UserPresenter, feature_setting: { billing_administrator: true } d
     it { expect(global_role_select_options).to include('selected="selected">Administrator') }
     it { expect(global_role_select_options).to include('selected="selected">Billing Administrator') }
   end
-
-  describe "#name_last_comma_first" do
-    let(:user) { create(:user, first_name: "First", last_name: "Last") }
-
-    it { expect(subject.name_last_comma_first).to eq("Last, First") }
-  end
 end
