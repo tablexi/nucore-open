@@ -8,12 +8,12 @@
 = render "search_form"
 
 #result
-  %h3= t("users.index.head")
-  %p= t("users.index.instruct")
+  %h3= t(".head")
+  %p= t(".instruct")
   - if @users.any?
     = render "search/results_table", order_for: true, users: @users
     = will_paginate(@users)
 
   - else
-    %p.notice= t("users.index.no_users")
+    %p.notice= t(".no_users")
 
