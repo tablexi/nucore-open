@@ -119,8 +119,10 @@ class Ability
         end
 
         can [:administer], User
-        can :manage, User if controller.is_a?(UsersController)
-        cannot(:switch_to, User) { |user| !user.active? }
+        if controller.is_a?(UsersController)
+          can :manage, User
+          cannot(:switch_to, User) { |user| !user.active? }
+        end
 
         can [:list, :show], Facility
         can :act_as, Facility
