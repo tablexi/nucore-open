@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(:version => 20160325213918) do
     t.string   "journal_mask",                 :limit => 50,                                                   :null => false
     t.boolean  "accepts_multi_add",                           :precision => 1, :scale => 0, :default => false, :null => false
     t.boolean  "show_instrument_availability",                :precision => 1, :scale => 0, :default => false, :null => false
+    t.string   "order_notification_recipient"
   end
 
   add_index "facilities", ["abbreviation"], :name => "i_facilities_abbreviation", :unique => true
@@ -617,7 +618,7 @@ ActiveRecord::Schema.define(:version => 20160325213918) do
 
   add_foreign_key "accounts", "facilities", :name => "fk_account_facility_id"
 
-  add_foreign_key "bi_netids", "facilities", :name => "sys_c007347"
+  add_foreign_key "bi_netids", "facilities", :name => "sys_c008076"
 
   add_foreign_key "bundle_products", "products", :column => "bundle_product_id", :name => "fk_bundle_prod_prod"
   add_foreign_key "bundle_products", "products", :name => "fk_bundle_prod_bundle"
@@ -628,16 +629,16 @@ ActiveRecord::Schema.define(:version => 20160325213918) do
 
   add_foreign_key "order_details", "accounts", :name => "fk_od_accounts"
   add_foreign_key "order_details", "order_details", :column => "parent_order_detail_id", :name => "ord_det_par_ord_det_id_fk"
-  add_foreign_key "order_details", "orders", :name => "sys_c007077"
-  add_foreign_key "order_details", "price_policies", :name => "sys_c007080"
+  add_foreign_key "order_details", "orders", :name => "sys_c007806"
+  add_foreign_key "order_details", "price_policies", :name => "sys_c007809"
   add_foreign_key "order_details", "product_accessories", :name => "ord_det_pro_acc_id_fk"
   add_foreign_key "order_details", "products", :column => "bundle_product_id", :name => "fk_bundle_prod_id"
-  add_foreign_key "order_details", "products", :name => "sys_c007078"
+  add_foreign_key "order_details", "products", :name => "sys_c007807"
   add_foreign_key "order_details", "users", :column => "dispute_by_id", :name => "order_details_dispute_by_id_fk"
 
   add_foreign_key "order_imports", "facilities", :name => "fk_order_imports_facilities"
 
-  add_foreign_key "orders", "accounts", :name => "sys_c007062"
+  add_foreign_key "orders", "accounts", :name => "sys_c007791"
   add_foreign_key "orders", "facilities", :name => "orders_facility_id_fk"
 
   add_foreign_key "payments", "accounts", :name => "payments_account_id_fk"
