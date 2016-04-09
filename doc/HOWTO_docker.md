@@ -42,7 +42,8 @@ mysql references.
     * Basic
     * SQL Plus
     * SDK
-3. Move the `.deb` files into the `tmp` directory
+3. Move the `.rpm` files into the app's `tmp` directory. If the version numbers have
+    changed, please update Dockerfile.oracle and submit a PR
 
 ```
 docker-compose build

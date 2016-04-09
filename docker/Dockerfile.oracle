@@ -6,18 +6,21 @@ RUN apt-get update
 # libaio1 is required for rails to find ruby-oci8
 # http://stackoverflow.com/questions/7016937/activerecord-oracle-enhanced-adapter-cant-load-ruby-oci8-library
 RUN apt-get install -qq -y nodejs libaio1
+# This is used to convert .rpm packages into .deb
+RUN apt-get install -qq -y alien
 
 ENV ORACLE_HOME /usr/lib/oracle/12.1/client64
 ENV PATH $PATH:$ORACLE_HOME/bin
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$ORACLE_HOME/lib
 ENV NLS_LANG AMERICAN_AMERICA.WE8MSWIN1252
 
-ADD tmp/oracle-* /tmp/
+# If you have multiple versions in your `tmp` directory, you
+# might run into problems, but this avoids needing to change
+# the command anytime a version number changes.
+ADD tmp/oracle-instantclient* /tmp/
 
 # Install instantclients
-RUN dpkg -i /tmp/oracle-instantclient12.1-basic_12.1.0.2.0-2_amd64.deb
-RUN dpkg -i /tmp/oracle-instantclient12.1-devel_12.1.0.2.0-2_amd64.deb
-RUN dpkg -i /tmp/oracle-instantclient12.1-sqlplus_12.1.0.2.0-2_amd64.deb
+RUN alien -i /tmp/oracle-instantclient*
 
 RUN rm /tmp/oracle-*
 
@@ -29,7 +32,8 @@ WORKDIR /app
 ADD Gemfile /app/Gemfile
 ADD Gemfile.lock /app/Gemfile.lock
 ADD vendor/engines /app/vendor/engines
-RUN gem update --system && gem update bundler
+#RUN gem update --system
+RUN gem update bundler
 RUN bundle install --without mysql
 
 ADD . /app
