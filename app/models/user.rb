@@ -181,6 +181,13 @@ class User < ActiveRecord::Base
     @recently_used_facilities[limit]
   end
 
+  # Devise uses this method for determining if a user is allowed to log in. It
+  # also gets called on each request, so if a user gets deactivated, they'll be
+  # kicked out of their session.
+  def active_for_authentication?
+    super && active?
+  end
+
   def deactivate
     update_attribute(:deactivated_at, deactivated_at || Time.current)
   end
