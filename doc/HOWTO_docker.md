@@ -32,6 +32,8 @@ docker-compose run web rake demo:seed
 
 * This runs Oracle 11g XE, which is the free version of Oracle. Your production
   infrastructure might run Oracle 12c, so do not rely on this for 100% coverage.
+  Unfortunately, the distribution license for 12 is restrictive so there is no
+  ready-built Docker container available.
 
 1. Uncomment the `oracle` references in `docker-compose.yml` and comment/delete the
 mysql references.
@@ -40,17 +42,21 @@ mysql references.
     * Basic
     * SQL Plus
     * SDK
-3. Copy the `.deb` files into the `tmp` directory
+3. Move the `.deb` files into the `tmp` directory
 
 ```
 docker-compose build
 docker-compose run web docker/oracle/setup.sh
-docker-compose up -d
-#Optional
+# demo:seed is optional
 docker-compose run web rake demo:seed
-
+docker-compose up -d
 ```
-TODO
+
+You should now be able to access NUcore at `http://dockerhost:3000/`. It may take
+a minute for the server to come up, so watch the logs.
+
+You can access a bash shell on the container with `docker exec -i -t <container_name> bash`
+(`<container_name>` is likely something like `nucoreopen_web_1`)
 
 ## LDAP
 
