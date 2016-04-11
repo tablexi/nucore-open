@@ -11,6 +11,7 @@ class SearchController < ApplicationController
     @price_group = PriceGroup.find(params[:price_group_id]) if params[:price_group_id].present?
     @account = Account.find(params[:account_id]) if params[:account_id].present?
     @product = Product.find(params[:product_id]) if params[:product_id].present?
+    @search_type = valid_search_types.find { |t| t == params[:search_type] }
     @users, @count = UserFinder.search(params[:search_term], @limit)
 
     render layout: false
@@ -24,6 +25,12 @@ class SearchController < ApplicationController
   end
 
   private
+
+  def valid_search_types
+    %w(account_account_user create_new_user facility_account_account_user
+       global_user_role manage_user map_user user_accounts user_new_account
+       user_price_group_member user_product_approval)
+  end
 
   def load_facility
     @facility =

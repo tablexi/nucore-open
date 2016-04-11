@@ -65,11 +65,11 @@ class BulkEmailSearcher
   end
 
   def start_date
-    parse_usa_date(search_fields[:start_date].to_s.to_s.tr("-", "/")) if search_fields[:start_date]
+    parse_usa_date(search_fields[:start_date].to_s.tr("-", "/")) if search_fields[:start_date]
   end
 
   def end_date
-    parse_usa_date(search_fields[:end_date].to_s.to_s.tr("-", "/")) if search_fields[:end_date]
+    parse_usa_date(search_fields[:end_date].to_s.tr("-", "/")) if search_fields[:end_date]
   end
 
 end

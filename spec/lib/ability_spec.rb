@@ -34,8 +34,8 @@ RSpec.describe Ability do
 
   shared_examples_for "it allows switch_to on active, but not deactivated users" do
     let(:stub_controller) { UsersController.new }
-    let(:active_user) { User.new }
-    let(:deactivated_user) { User.new(deactivated_at: 1.day.ago) }
+    let(:active_user) { FactoryGirl.build(:user) }
+    let(:deactivated_user) { FactoryGirl.build(:user, deactivated_at: 1.day.ago) }
 
     it { is_expected.to be_allowed_to(:switch_to, active_user) }
     it { is_expected.not_to be_allowed_to(:switch_to, deactivated_user) }
