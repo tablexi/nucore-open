@@ -13,6 +13,8 @@ engines:
     exclude_paths:
       - "spec/**"
       - "vendor/engines/**/spec/**"
+      - "vendor/engines/*/lib/*/engine.rb"
+      - "vendor/engines/*/*.gemspec"
     config:
       languages:
       - ruby
