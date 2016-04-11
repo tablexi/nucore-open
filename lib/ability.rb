@@ -28,7 +28,7 @@ class Ability
         end
       end
 
-      cannot(:switch_to, User) { |user| !user.active? }
+      cannot(:switch_to, User) { |target_user| !target_user.active? }
       return
     end
 
@@ -121,7 +121,7 @@ class Ability
         can [:administer], User
         if controller.is_a?(UsersController)
           can :manage, User
-          cannot(:switch_to, User) { |user| !user.active? }
+          cannot(:switch_to, User) { |target_user| !target_user.active? }
         end
 
         can [:list, :show], Facility

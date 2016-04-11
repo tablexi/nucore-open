@@ -239,7 +239,6 @@ RSpec.describe BulkEmailSearcher do
     end
   end
 
-
   # SLOW
   # Oracle blows up if you do a WHERE IN (...) clause with more than a 1000 items
   # so let's test it.
