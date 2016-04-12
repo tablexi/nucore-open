@@ -299,7 +299,7 @@ namespace :demo do
                                            { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
                                            { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
                                          ])
-      nufsaccount2.set_expires_at!
+      nufsaccount2.set_expires_at
     end
 
     # create split account if the feature is enabled
