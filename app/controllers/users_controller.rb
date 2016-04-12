@@ -16,9 +16,8 @@ class UsersController < ApplicationController
   before_filter :init_current_facility, except: [:password, :password_reset]
   before_filter :authenticate_user!, except: [:password_reset]
   before_filter :check_acting_as
-  before_filter :load_user_from_user_id_param, only: [:access_list, :access_list_approvals, :accounts, :orders, :reservations, :switch_to]
 
-  load_and_authorize_resource except: [:password, :password_reset]
+  load_and_authorize_resource except: [:password, :password_reset], id_param: :user_id
 
   layout "two_column"
 
@@ -179,10 +178,6 @@ class UsersController < ApplicationController
     else
       []
     end
-  end
-
-  def load_user_from_user_id_param
-    @user = User.find(params[:user_id])
   end
 
   def username_lookup(username)

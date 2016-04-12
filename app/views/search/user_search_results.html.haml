@@ -6,21 +6,11 @@
     %p.alert.alert-info= t(".no_users_found")
   - else
     %h3= t(".select_existing_user")
-    - if params[:search_type] == "manage_user"
-      = render "manage_user_table", users: @users
+    - if @search_type == "manage_user"
+      = render "results_table", order_for: true, users: @users
     - else
-      %table.table.table-striped.table-hover
-        %thead
-          %tr
-            %th= t(".th.name")
-            %th= t(".th.username")
-            %th= t(".th.email")
-        %tbody
-          - @users.each do |user|
-            %tr
-              %td= render "#{params[:search_type]}_link", user: user
-              %td= user.username
-              %td= user.email
-      - if @count > @limit
-        %p.alert.alert-info= t(".more_users_alert", count: @count - @limit)
+      = render "results_table", users: @users
+
+    - if @count > @limit
+      %p.notice= t(".more_users_alert", count: @count - @limit)
     = render "create_new_user"

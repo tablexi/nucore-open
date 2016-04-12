@@ -32,8 +32,19 @@ RSpec.describe Ability do
     end
   end
 
+  shared_examples_for "it allows switch_to on active, but not deactivated users" do
+    let(:stub_controller) { UsersController.new }
+    let(:active_user) { FactoryGirl.build(:user) }
+    let(:deactivated_user) { FactoryGirl.build(:user, deactivated_at: 1.day.ago) }
+
+    it { is_expected.to be_allowed_to(:switch_to, active_user) }
+    it { is_expected.not_to be_allowed_to(:switch_to, deactivated_user) }
+    it { is_expected.not_to be_allowed_to(:switch_to, UserPresenter.new(deactivated_user)) }
+  end
+
   describe "account manager" do
     let(:user) { create(:user, :account_manager) }
+    let(:other_user) { User.new }
 
     it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:read, Notification) }
@@ -50,7 +61,7 @@ RSpec.describe Ability do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.not_to be_allowed_to(:manage, AccountUser) }
       it { is_expected.not_to be_allowed_to(:manage, User) }
-      it { is_expected.not_to be_allowed_to(:switch_to, User) }
+      it { is_expected.not_to be_allowed_to(:switch_to, other_user) }
     end
 
     context "in cross-facility" do
@@ -59,7 +70,7 @@ RSpec.describe Ability do
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.to be_allowed_to(:manage, AccountUser) }
       it { is_expected.to be_allowed_to(:manage, User) }
-      it { is_expected.not_to be_allowed_to(:switch_to, User) }
+      it { is_expected.not_to be_allowed_to(:switch_to, other_user) }
     end
 
     context "in no facility" do
@@ -67,12 +78,14 @@ RSpec.describe Ability do
 
       it { is_expected.to be_allowed_to(:manage, AccountUser) }
       it { is_expected.to be_allowed_to(:manage, User) }
-      it { is_expected.not_to be_allowed_to(:switch_to, User) }
+      it { is_expected.not_to be_allowed_to(:switch_to, other_user) }
     end
   end
 
   describe "administrator" do
     let(:user) { create(:user, :administrator) }
+
+    it_behaves_like "it allows switch_to on active, but not deactivated users"
 
     context "managing price groups" do
       context "when the price group has a facility" do
@@ -179,9 +192,9 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:administer, User) }
-    it { is_expected.to be_allowed_to(:switch_to, User) }
 
     it_behaves_like "it can destroy admistrative reservations"
+    it_behaves_like "it allows switch_to on active, but not deactivated users"
   end
 
   describe "facility director" do
@@ -215,11 +228,11 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:administer, User) }
-    it { is_expected.to be_allowed_to(:switch_to, User) }
     it { is_expected.not_to be_allowed_to(:manage_accounts, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:manage_billing, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
     it_behaves_like "it can destroy admistrative reservations"
+    it_behaves_like "it allows switch_to on active, but not deactivated users"
   end
 
   shared_examples_for "it has common staff abilities" do
@@ -230,10 +243,10 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:administer, User) }
-    it { is_expected.to be_allowed_to(:switch_to, User) }
     it { is_expected.to be_allowed_to(:read, UserPriceGroupMember) }
 
     it_behaves_like "it can destroy admistrative reservations"
+    it_behaves_like "it allows switch_to on active, but not deactivated users"
   end
 
   describe "senior staff" do
@@ -257,7 +270,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage, Account) }
     it { is_expected.to be_allowed_to(:create, TrainingRequest) }
     it_behaves_like "it can not manage training requests"
-    it { is_expected.not_to be_allowed_to(:switch_to, User) }
+    it { is_expected.not_to be_allowed_to(:switch_to, user) }
 
     %i(sample_result template_result).each do |file_type|
       describe "downloading a #{file_type}" do

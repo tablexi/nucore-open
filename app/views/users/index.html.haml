@@ -6,4 +6,14 @@
 = render "new_user" if @new_user
 
 = render "search_form"
-= render "list"
+
+#result
+  %h3= t(".head")
+  %p= t(".instruct")
+  - if @users.any?
+    = render "search/results_table", order_for: true, users: @users
+    = will_paginate(@users)
+
+  - else
+    %p.notice= t(".no_users")
+

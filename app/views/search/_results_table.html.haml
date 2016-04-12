@@ -1,0 +1,21 @@
+- order_for = local_assigns[:order_for]
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      - if order_for
+        %th
+      %th= t(".name")
+      %th= t(".username")
+      %th= t(".email")
+  %tbody
+    - users.each do |user|
+      %tr
+        - if order_for
+          %td.centered
+            - if current_ability.can?(:switch_to, user)
+              = link_to t(".order_for"),
+                facility_user_switch_to_path(current_facility, user)
+        %td
+          = render "search/#{@search_type || "manage_user"}_link", user: user
+        %td= user.username
+        %td= user.email

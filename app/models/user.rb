@@ -157,8 +157,20 @@ class User < ActiveRecord::Base
     end
   end
 
+  def last_first_name
+    "#{last_name}, #{first_name}" + deactivated_string
+  end
+
   def to_s
-    full_name
+    full_name + deactivated_string
+  end
+
+  def deactivated_string
+    if active?
+      ""
+    else
+      " (#{self.class.human_attribute_name(:deactivated)})"
+    end
   end
 
   def recently_used_facilities(limit = 5)
@@ -167,6 +179,22 @@ class User < ActiveRecord::Base
       hash[key] = Facility.where(id: facility_ids).sorted
     end
     @recently_used_facilities[limit]
+  end
+
+  def deactivate
+    update_attribute(:deactivated_at, deactivated_at || Time.current)
+  end
+
+  def activate
+    update_attribute(:deactivated_at, nil)
+  end
+
+  def active?
+    deactivated_at.blank?
+  end
+
+  def self.active
+    where(deactivated_at: nil)
   end
 
 end

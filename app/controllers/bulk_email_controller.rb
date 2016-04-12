@@ -1,6 +1,5 @@
 class BulkEmailController < ApplicationController
 
-  include BulkEmailHelper
   include CSVHelper
 
   admin_tab :all
@@ -16,7 +15,11 @@ class BulkEmailController < ApplicationController
   before_filter :init_search_options
 
   def search
-    @users = do_search(@search_fields) if params[:search_type]
+    if params[:search_type]
+      searcher = BulkEmailSearcher.new(@search_fields)
+      @users = searcher.do_search
+      @order_details = searcher.order_details
+    end
 
     respond_to do |format|
       format.html { @users = @users.paginate(page: params[:page]) if @users }
@@ -30,10 +33,16 @@ class BulkEmailController < ApplicationController
   private
 
   def init_search_options
-    @search_fields = params.merge(facility_id: current_facility.id)
     @products = current_facility.products.active_plus_hidden.order("products.name").includes(:facility)
-    @search_types = BulkEmailHelper.search_types_and_titles
+    @search_fields = params.merge(facility_id: current_facility.id)
+    @search_types = search_types
     @search_types.delete(:authorized_users) unless @products.exists?(requires_approval: true)
+  end
+
+  def search_types
+    BulkEmailSearcher::SEARCH_TYPES.each_with_object({}) do |search_type, hash|
+      hash[search_type] = I18n.t("bulk_email.search_type.#{search_type}")
+    end
   end
 
 end
