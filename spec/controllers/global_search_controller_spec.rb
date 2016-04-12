@@ -200,7 +200,7 @@ RSpec.describe GlobalSearchController do
         end
       end
 
-      describe "when searching for a statement" do
+      describe "when searching for a statement", if: Account.config.statements_enabled? do
         let!(:statement) { FactoryGirl.create(:statement, created_by_user: create(:user)) }
 
         it "finds it by the invoice number" do

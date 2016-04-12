@@ -7,6 +7,8 @@ module GlobalSearch
     end
 
     def search(query)
+      return [] unless Account.config.statements_enabled?
+
       query = query.to_s
                    .strip # get rid of leading/trailing whitespace
                    .sub(/\A#/, "") # remove a leading hash sign to support searching like "#123-456"
