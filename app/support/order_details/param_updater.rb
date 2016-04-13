@@ -7,15 +7,14 @@ class OrderDetails::ParamUpdater
   end
 
   def assign_attributes(params)
-    params = params.try(:dup) || {}
+    params = ActionController::Parameters.new(params.try(:dup))
     params.delete(:quantity) unless params[:quantity].to_s =~ /\A\d+\z/
 
-    cost_params = [:actual_cost, :actual_subsidy]
-    assign_self_and_reservation_attributes(params.except(*cost_params))
+    assign_self_and_reservation_attributes(permitted_params(params))
     # this will overwrite the prices, so if we got cost/subsidy as parameters,
     # we need to use them instead
     assign_policy_and_prices
-    @order_detail.assign_attributes(params.slice(*cost_params))
+    @order_detail.assign_attributes(cost_params(params))
 
     @order_detail
   end
@@ -45,6 +44,15 @@ class OrderDetails::ParamUpdater
 
   private
 
+  def cost_params(params)
+    params.permit(:actual_cost, :actual_subsidy)
+  end
+
+  def permitted_params(params)
+    params.permit(:account_id, :resolve_dispute, :dispute_resolved_reason, :quantity, :note,
+                  reservation: [:reserve_start_at, :duration_mins, :actual_start_at, :actual_duration_mins])
+  end
+
   def assign_self_and_reservation_attributes(params)
     reservation_attrs = params.delete :reservation
     @order_detail.assign_attributes(params)
@@ -62,7 +70,7 @@ class OrderDetails::ParamUpdater
                                        admin: true,
                                        apply_cancel_fee: apply_cancel_fee
     true
-  rescue StandardError => e
+  rescue => e
     @order_detail.errors.add(:base, :changing_status)
     # returns nil
   end
