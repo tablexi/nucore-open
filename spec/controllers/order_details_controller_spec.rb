@@ -65,7 +65,7 @@ RSpec.describe OrderDetailsController do
         context "and the reservation is cancelable" do
           before(:each) do
             expect(reservation).to be_can_cancel
-            put :cancel, order_id: order.id, order_detail_id: order_detail.id, cancel: true
+            put :cancel, order_id: order.id, order_detail_id: order_detail.id
           end
 
           it { expect(order_detail.reload).to be_canceled }
@@ -74,7 +74,7 @@ RSpec.describe OrderDetailsController do
         context "and the reservation is not cancelable" do
           before do
             reservation.update_attributes(actual_start_at: Time.current)
-            put :cancel, order_id: order.id, order_detail_id: order_detail.id, cancel: true
+            put :cancel, order_id: order.id, order_detail_id: order_detail.id
           end
 
           it { expect(order_detail.reload).not_to be_canceled }
