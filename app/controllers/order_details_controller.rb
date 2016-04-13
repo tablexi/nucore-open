@@ -14,10 +14,10 @@ class OrderDetailsController < ApplicationController
     super
   end
 
-  # PUT /orders/:order_id/order_details/:id
-  def update
+  # PUT /orders/:order_id/order_details/:id/cancel
+  def cancel
     # handle reservation cancellation
-    if params[:cancel] && @order_detail.reservation && @order_detail.reservation.can_cancel?
+    if @order_detail.reservation && @order_detail.reservation.can_cancel?
       @order_detail.transaction do
         if @order_detail.cancel_reservation(session_user)
           flash[:notice] = "The reservation has been canceled successfully." # TODO: I18n
@@ -26,9 +26,10 @@ class OrderDetailsController < ApplicationController
           raise ActiveRecord::Rollback
         end
       end
-      redirect_to(reservations_path) && return
+      redirect_to(reservations_path)
+    else
+      raise ActiveRecord::RecordNotFound
     end
-    raise ActiveRecord::RecordNotFound
   end
 
   def dispute
@@ -97,6 +98,7 @@ class OrderDetailsController < ApplicationController
   def remove_order_file
     if @order_detail.stored_files.template_result.all?(&:destroy)
       flash[:notice] = "The uploaded Order File has been deleted successfully" # TODO: I18n
+    else
       flash[:error] = "An error was encountered while deleting the uploaded Order File" # TODO: I18n
     end
     @order.invalidate!

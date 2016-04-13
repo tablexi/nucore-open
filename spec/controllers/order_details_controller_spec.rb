@@ -57,27 +57,28 @@ RSpec.describe OrderDetailsController do
     end
   end
 
-  describe "#update" do
+  describe "#cancel" do
     context "when the order is a reservation" do
       context "when attempting to cancel the reservation" do
         before { sign_in user }
 
         context "and the reservation is cancelable" do
           before(:each) do
-            put :update, order_id: order.id, order_detail_id: order_detail.id, cancel: true
+            expect(reservation).to be_can_cancel
+            put :cancel, order_id: order.id, order_detail_id: order_detail.id, cancel: true
           end
 
           it { expect(order_detail.reload).to be_canceled }
         end
 
         context "and the reservation is not cancelable" do
-          before(:each) do
-            create(:journal_row, order_detail: order_detail)
-            put :update, order_id: order.id, order_detail_id: order_detail.id, cancel: true
+          before do
+            reservation.update_attributes(actual_start_at: Time.current)
+            put :cancel, order_id: order.id, order_detail_id: order_detail.id, cancel: true
           end
 
-# PROBLEM: order_detail.cancelable? is false, but reservation.can_cancel? is true
           it { expect(order_detail.reload).not_to be_canceled }
+          it { expect(response.code).to eq("404") }
         end
       end
     end

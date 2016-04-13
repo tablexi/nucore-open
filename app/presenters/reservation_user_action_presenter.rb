@@ -73,11 +73,11 @@ class ReservationUserActionPresenter
     fee = with_cancelation_now { order_detail.cancellation_fee }
 
     if fee > 0
-      link_to I18n.t("reservations.delete.link"), order_order_detail_path(order, order_detail, cancel: "cancel"),
+      link_to I18n.t("reservations.delete.link"), cancel_order_order_detail_path(order, order_detail),
               method: :put,
               confirm: I18n.t("reservations.delete.confirm_with_fee", fee: number_to_currency(fee))
     else
-      link_to I18n.t("reservations.delete.link"), order_order_detail_path(order, order_detail, cancel: "cancel"),
+      link_to I18n.t("reservations.delete.link"), cancel_order_order_detail_path(order, order_detail),
               method: :put,
               confirm: I18n.t("reservations.delete.confirm")
     end
