@@ -170,7 +170,7 @@ RSpec.describe ReservationUserActionPresenter do
 
       context "there is a fee" do
         let(:link) do
-          order_order_detail_path(order, order_detail, cancel: "cancel")
+          cancel_order_order_detail_path(order, order_detail)
         end
 
         before :each do
@@ -186,7 +186,7 @@ RSpec.describe ReservationUserActionPresenter do
 
       context "there is not a fee" do
         let(:link) do
-          order_order_detail_path(order, order_detail, cancel: "cancel")
+          cancel_order_order_detail_path(order, order_detail)
         end
 
         before :each do

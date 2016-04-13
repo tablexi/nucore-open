@@ -49,6 +49,84 @@ RSpec.describe Reservation do
     end
   end
 
+  describe "#can_cancel?" do
+    context "when the reservation has a canceled_at timestamp" do
+      before { allow(reservation).to receive(:canceled_at).and_return(1.day.ago) }
+
+      it { is_expected.not_to be_can_cancel }
+    end
+
+    context "when the reservation does not have a canceled_at timestamp" do
+      before(:each) do
+        allow(reservation).to receive(:actual_end_at).and_return(actual_end_at)
+        allow(reservation).to receive(:actual_start_at).and_return(actual_start_at)
+        allow(reservation).to receive(:reserve_start_at).and_return(reserve_start_at)
+      end
+
+      shared_examples_for "the reservation has actuals" do
+        context "when it has an actual start time" do
+          let(:actual_start_at) { 1.hour.ago }
+
+          context "and an actual end time" do
+            let(:actual_end_at) { 1.minute.ago }
+
+            it { is_expected.not_to be_can_cancel }
+          end
+
+          context "and no actual end time" do
+            let(:actual_end_at) { nil }
+
+            it { is_expected.not_to be_can_cancel }
+          end
+        end
+      end
+
+      context "when the reservation start time is in the past" do
+        let(:reserve_start_at) { 1.minute.ago }
+
+        it_behaves_like "the reservation has actuals"
+
+        context "when it has no actual start time" do
+          let(:actual_start_at) { nil }
+
+          context "and no actual end time" do
+            let(:actual_end_at) { nil }
+
+            it { is_expected.not_to be_can_cancel }
+          end
+
+          context "but an actual end time" do
+            let(:actual_end_at) { 1.minute.ago }
+
+            it { is_expected.not_to be_can_cancel }
+          end
+        end
+      end
+
+      context "when the reservation start time is in the future" do
+        let(:reserve_start_at) { 1.hour.from_now }
+
+        it_behaves_like "the reservation has actuals"
+
+        context "when it has no actual start time" do
+          let(:actual_start_at) { nil }
+
+          context "and no actual end time" do
+            let(:actual_end_at) { nil }
+
+            it { is_expected.to be_can_cancel }
+          end
+
+          context "but an actual end time" do
+            let(:actual_end_at) { 1.minute.ago }
+
+            it { is_expected.not_to be_can_cancel }
+          end
+        end
+      end
+    end
+  end
+
   describe "#locked?" do
     before(:each) do
       allow(reservation).to receive(:admin_editable?).and_return(admin_editable?)

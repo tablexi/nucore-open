@@ -14,10 +14,10 @@ class OrderDetailsController < ApplicationController
     super
   end
 
-  # PUT /orders/:order_id/order_details/:id
-  def update
+  # PUT /orders/:order_id/order_details/:id/cancel
+  def cancel
     # handle reservation cancellation
-    if params[:cancel] && @order_detail.reservation && @order_detail.reservation.can_cancel?
+    if @order_detail.reservation && @order_detail.reservation.can_cancel?
       @order_detail.transaction do
         if @order_detail.cancel_reservation(session_user)
           flash[:notice] = "The reservation has been canceled successfully." # TODO: I18n
@@ -26,9 +26,10 @@ class OrderDetailsController < ApplicationController
           raise ActiveRecord::Rollback
         end
       end
-      redirect_to(reservations_path) && return
+      redirect_to(reservations_path)
+    else
+      raise ActiveRecord::RecordNotFound
     end
-    raise ActiveRecord::RecordNotFound
   end
 
   def dispute
@@ -40,12 +41,12 @@ class OrderDetailsController < ApplicationController
         @order_detail.dispute_at = Time.zone.now
         @order_detail.dispute_by = current_user
         @order_detail.save!
-        flash[:notice] = "Your purchase has been disputed"
+        flash[:notice] = "Your purchase has been disputed" # TODO: I18n
         return_path = @order_detail.reservation ? reservations_path : orders_path
         redirect_to return_path
-      rescue => e
-        flash.now[:error] = "An error was encountered while disputing the order."
-        @order_detail.dispute_at = nil # rollback does not reset the un-saved value, so have to manually set to the view will render correctly
+      rescue => e # TODO: be more specific about what Exceptions to rescue
+        flash.now[:error] = "An error was encountered while disputing the order." # TODO: I18n
+        @order_detail.dispute_at = nil # manually set this because rollback doesn't reset the unsaved value
         @order_detail.send(:extend, PriceDisplayment)
         render :show
         raise ActiveRecord::Rollback
@@ -79,7 +80,7 @@ class OrderDetailsController < ApplicationController
     @file.created_by = session_user.id ## this is correct, session_user instead of acting_user
 
     if @file.save
-      flash[:notice] = "Order File uploaded successfully"
+      flash[:notice] = "Order File uploaded successfully" # TODO: I18n
 
       if @order_detail.order.to_be_merged?
         @order_detail.merge! # trigger the OrderDetailObserver callbacks
@@ -88,7 +89,7 @@ class OrderDetailsController < ApplicationController
         redirect_to(order_path(@order))
       end
     else
-      flash.now[:error] = "An error was encountered while uploading the Order File"
+      flash.now[:error] = "An error was encountered while uploading the Order File" # TODO: I18n
       render :order_file
     end
   end
@@ -96,20 +97,16 @@ class OrderDetailsController < ApplicationController
   # GET /orders/:order_id/order_details/:order_detail_id/remove_order_file
   def remove_order_file
     if @order_detail.stored_files.template_result.all?(&:destroy)
-      flash[:notice] = "The uploaded Order File has been deleted successfully"
+      flash[:notice] = "The uploaded Order File has been deleted successfully" # TODO: I18n
     else
-      flash[:error] = "An error was encountered while deleting the uploaded Order File"
+      flash[:error] = "An error was encountered while deleting the uploaded Order File" # TODO: I18n
     end
     @order.invalidate!
     redirect_to(order_path(@order))
   end
 
   def set_active_tab
-    @active_tab = if @order_detail.reservation.nil?
-                    "orders"
-                  else
-                    "reservations"
-                  end
+    @active_tab = @order_detail.reservation.nil? ? "orders" : "reservations"
   end
 
   private
