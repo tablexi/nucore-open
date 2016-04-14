@@ -493,6 +493,24 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
     end
 
+    describe "changing quantity" do
+      before do
+        @params[:order_detail] = { quantity: 2 }
+      end
+
+      it "updates the quanity" do
+        expect { do_request }.to change { order_detail.reload.quantity }.to(2)
+      end
+    end
+
+    describe "adding a note" do
+      it "updates the note" do
+        @params[:order_detail] = { note: "A note" }
+        do_request
+        expect(order_detail.reload.note).to eq("A note")
+      end
+    end
+
     describe "resolving dispute" do
       before :each do
         order_detail.change_status!(OrderStatus.complete.first)

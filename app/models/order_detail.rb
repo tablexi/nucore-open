@@ -1,5 +1,7 @@
 class OrderDetail < ActiveRecord::Base
 
+  include ActiveModel::ForbiddenAttributesProtection
+
   include NUCore::Database::SortHelper
   include TranslationHelper
   include NotificationSubject

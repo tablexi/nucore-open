@@ -74,7 +74,7 @@ class Accessories::Accessorizer
   end
 
   def assign_attributes_and_save(od, params)
-    od.assign_attributes(params.slice("quantity"))
+    od.assign_attributes(permitted_attributes(params))
     od.update_quantity # so auto-scaled overrides the parameter
     od.order_status_id = @order_detail.order_status_id
     od.assign_estimated_price
@@ -86,6 +86,10 @@ class Accessories::Accessorizer
     else
       od.save!
     end
+  end
+
+  def permitted_attributes(params)
+    ActionController::Parameters.new(params).permit(:quantity)
   end
 
   def product_accessory(accessory)
