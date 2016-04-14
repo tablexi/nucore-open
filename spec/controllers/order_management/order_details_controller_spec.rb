@@ -500,7 +500,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
       it "updates the quanity" do
         expect { do_request }.to change { order_detail.reload.quantity }.to(2)
-
       end
     end
 
