@@ -22,7 +22,3 @@ class exports.Flash
 
     flash = $("<p></p>").text(message).addClass('alert').addClass("alert-#{level}")
     @location_selector.append(flash)
-
-    setTimeout ->
-      flash.fadeOut('slow').remove()
-    , 10000
