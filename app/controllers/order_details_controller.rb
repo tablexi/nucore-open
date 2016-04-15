@@ -25,7 +25,7 @@ class OrderDetailsController < ApplicationController
 
   # Put /orders/:order_id/order_details/:id
   def update
-    if @order_detail.update_attributes(order_detail_params)
+    if @order_detail.customer_editable? && @order_detail.update_attributes(order_detail_params)
       redirect_to [@order, @order_detail]
     else
       render :edit

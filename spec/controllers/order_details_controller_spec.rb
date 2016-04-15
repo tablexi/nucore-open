@@ -169,8 +169,51 @@ RSpec.describe OrderDetailsController do
         let(:account2) { FactoryGirl.create(:setup_account, owner: user) }
         let(:params) { { account_id: account2.id } }
 
-        it "changes the account" do
-          expect { perform }.to change { order_detail.reload.account }.to(account2)
+        shared_examples_for "changes the account" do
+          it "changes the account" do
+            expect { perform }.to change { order_detail.reload.account }.to(account2)
+          end
+        end
+
+        shared_examples_for "does not change the account" do
+          it "does not change the account" do
+            expect { perform }.not_to change { order_detail.reload.account }
+          end
+        end
+
+        describe "before completion" do
+          it_behaves_like "changes the account"
+        end
+
+        describe "after completion" do
+          let(:reservation) { FactoryGirl.create(:completed_reservation) }
+
+          describe "while in the review period" do
+            before { order_detail.update_attributes!(reviewed_at: 7.days.from_now) }
+            it_behaves_like "changes the account"
+          end
+
+          describe "when the review period is over" do
+            before { order_detail.update_attributes!(reviewed_at: 1.day.ago) }
+            it_behaves_like "does not change the account"
+          end
+
+          describe "when the review period is over, but it is being disputed" do
+            before { order_detail.update_attributes!(reviewed_at: 1.day.ago, dispute_at: 2.days.ago, dispute_reason: "reason") }
+            it_behaves_like "changes the account"
+          end
+
+          describe "when the dispute has been resolved" do
+            before { order_detail.update_attributes!(reviewed_at: 1.day.ago, dispute_at: 2.days.ago, dispute_resolved_at: Time.current, dispute_reason: "reason", dispute_resolved_reason: "notes") }
+            it_behaves_like "does not change the account"
+          end
+        end
+
+        describe "a canceled reservation" do
+          before do
+            order_detail.update_order_status!(user, OrderStatus.canceled_status)
+          end
+          it_behaves_like "does not change the account"
         end
       end
 
