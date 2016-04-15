@@ -11,6 +11,6 @@ class AvailableAccountsFinder
     accounts += [@current_account] if @current_account
     accounts
   end
-  alias_method :to_a, :accounts
+  alias to_a accounts
 
 end

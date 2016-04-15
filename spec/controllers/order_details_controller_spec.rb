@@ -99,7 +99,7 @@ RSpec.describe OrderDetailsController do
         let(:signed_in_user) { FactoryGirl.create(:user) }
         before do
           FactoryGirl.create(:account_user, :business_administrator,
-            user: signed_in_user, account: order_detail.account)
+                             user: signed_in_user, account: order_detail.account)
           perform
         end
 
@@ -112,7 +112,7 @@ RSpec.describe OrderDetailsController do
         let(:signed_in_user) { FactoryGirl.create(:user) }
         before do
           FactoryGirl.create(:account_user, :purchaser,
-            user: signed_in_user, account: order_detail.account)
+                             user: signed_in_user, account: order_detail.account)
           perform
         end
 
@@ -125,7 +125,7 @@ RSpec.describe OrderDetailsController do
         let(:signed_in_user) { FactoryGirl.create(:user) }
         before do
           FactoryGirl.create(:account_user, :purchaser,
-            user: signed_in_user, account: order_detail.account)
+                             user: signed_in_user, account: order_detail.account)
           order.update_attributes(user: signed_in_user)
           perform
         end
