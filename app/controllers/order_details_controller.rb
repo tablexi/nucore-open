@@ -7,12 +7,8 @@ class OrderDetailsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as, except: [:order_file, :upload_order_file, :remove_order_file]
   before_filter :init_order_detail
+  before_filter :set_active_tab
   authorize_resource
-
-  def initialize
-    @active_tab = "orders"
-    super
-  end
 
   # GET /orders/:order_id/order_details/:id
   def show
@@ -25,9 +21,11 @@ class OrderDetailsController < ApplicationController
 
   # Put /orders/:order_id/order_details/:id
   def update
-    if @order_detail.customer_editable? && @order_detail.update_attributes(order_detail_params)
+    if order_editable? && @order_detail.update_attributes(order_detail_params)
+      flash[:notice] = I18n.t("order_details.update.success")
       redirect_to [@order, @order_detail]
     else
+      flash.now[:error] = I18n.t("order_details.update.failure")
       render :edit
     end
   end
@@ -113,6 +111,11 @@ class OrderDetailsController < ApplicationController
   end
 
   private
+
+  def order_editable?
+    @order_detail.customer_editable?
+  end
+  helper_method :order_editable?
 
   def init_order_detail
     @order = Order.find(params[:order_id])

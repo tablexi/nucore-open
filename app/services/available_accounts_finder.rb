@@ -1,12 +1,15 @@
 class AvailableAccountsFinder
 
-  def initialize(user, facility)
+  def initialize(user, facility, current: nil)
     @user = user
     @facility = facility
+    @current_account = current
   end
 
   def accounts
-    @user.accounts.for_facility(@facility).active
+    accounts = @user.accounts.for_facility(@facility).active
+    accounts += [@current_account] if @current_account
+    accounts
   end
   alias_method :to_a, :accounts
 
