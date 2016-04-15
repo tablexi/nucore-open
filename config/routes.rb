@@ -295,7 +295,7 @@ Nucore::Application.routes.draw do
       put   "clear"
     end
 
-    resources :order_details, only: [:show] do
+    resources :order_details, only: [:show, :edit, :update] do
       put :cancel, on: :member
       put :dispute, on: :member
       get :order_file

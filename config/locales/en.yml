@@ -682,9 +682,12 @@ en:
       error: Unable to place order.
 
   order_details:
+    edit:
+      save: "Save"
+      cancel: "Cancel"
     show:
       head:
-        h1: "Order # %{order_number}"
+        h1: "Order #%{order_number}"
         dispute: "Dispute Order"
         results: "Download Results"
       label:

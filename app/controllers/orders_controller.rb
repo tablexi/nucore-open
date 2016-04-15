@@ -185,7 +185,7 @@ class OrdersController < ApplicationController
 
     redirect_to(cart_path) && return unless @product
 
-    @accounts = acting_user.accounts.for_facility(@product.facility).active
+    @accounts = AvailableAccountsFinder.new(acting_user, @product.facility).accounts
     @errors   = {}
     details   = @order.order_details
     @accounts.each do |account|
