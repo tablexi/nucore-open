@@ -9,11 +9,15 @@ FactoryGirl.define do
     end
 
     trait :owner do
-      user_role "Owner"
+      user_role AccountUser::ACCOUNT_OWNER
+    end
+
+    trait :business_administrator do
+      user_role AccountUser::ACCOUNT_ADMINISTRATOR
     end
 
     trait :purchaser do
-      user_role "Purchaser"
+      user_role AccountUser::ACCOUNT_PURCHASER
     end
   end
 end
