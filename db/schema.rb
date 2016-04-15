@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160405203240) do
+ActiveRecord::Schema.define(:version => 20160415231343) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -175,9 +175,9 @@ ActiveRecord::Schema.define(:version => 20160405203240) do
   create_table "journal_rows", :force => true do |t|
     t.integer "journal_id",                                                   :null => false
     t.integer "order_detail_id"
+    t.string  "account",         :limit => 5
     t.decimal "amount",                         :precision => 9, :scale => 2, :null => false
     t.string  "description",     :limit => 200
-    t.string  "account",         :limit => 5
     t.integer "account_id"
   end
 
@@ -486,7 +486,7 @@ ActiveRecord::Schema.define(:version => 20160405203240) do
     t.string   "admin_note"
   end
 
-  add_index "reservations", ["order_detail_id"], :name => "reservations_order_detail_id_fk"
+  add_index "reservations", ["order_detail_id"], :name => "res_od_uniq_fk", :unique => true
   add_index "reservations", ["product_id", "reserve_start_at"], :name => "index_reservations_on_product_id_and_reserve_start_at"
 
   create_table "roles", :force => true do |t|

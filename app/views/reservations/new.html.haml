@@ -40,7 +40,7 @@
           = t('reservations.new.notify')
 
   %ul.inline
-    %li= f.submit 'Create', class: 'btn', id: 'reservation_submit'
+    %li= f.submit 'Create', class: 'btn', id: 'reservation_submit', data: { disable_with: 'Create' }
     - url_after_action = facility_path(@instrument.facility)
     - if @order_detail.bundled?
       %li= link_to 'Cancel', url_after_action
