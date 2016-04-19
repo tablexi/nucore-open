@@ -11,6 +11,9 @@
   %li
     %label= OrderDetail.human_attribute_name(:ordered_by)
     = @order.created_by_user.full_name
+  %li
+    %label= OrderDetail.human_attribute_name(:account)
+    = @order.account
 
 %table.table.table-striped.table-hover
   %thead
