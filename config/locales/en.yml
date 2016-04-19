@@ -682,19 +682,25 @@ en:
       error: Unable to place order.
 
   order_details:
+    edit:
+      save: "Save"
+      cancel: "Cancel"
+      warning: |
+        Changing the Payment Source could result in adjusted pricing. If you are
+        concerned about this or receive incorrect pricing, please contact the facility.
+    update:
+      success: "The order has been updated"
+      failure: "There was a problem updating the order"
     show:
       head:
-        h1: "Order # %{order_number}"
+        h1: "Order #%{order_number}"
         dispute: "Dispute Order"
         results: "Download Results"
-      label:
-        facility: "Facility"
-        account: "Payment Source"
       instruct:
         dispute: "If you wish to dispute the charges for this purchase, please explain the issue with the charges and click \"Dispute Purchase\"."
       link:
-        orders: "My Orders"
         receipt: "View Receipt"
+        change_account: "Change"
         reservation:
           cancel: "Cancel"
         view:

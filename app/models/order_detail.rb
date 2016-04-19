@@ -559,6 +559,10 @@ class OrderDetail < ActiveRecord::Base
     in_review?
   end
 
+  def customer_editable?
+    !reviewed? && !canceled?
+  end
+
   def validate_for_purchase
     # can purchase product
     return "The product may not be purchased" unless product.available_for_purchase?

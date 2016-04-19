@@ -7,11 +7,27 @@ class OrderDetailsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as, except: [:order_file, :upload_order_file, :remove_order_file]
   before_filter :init_order_detail
-  after_filter :set_active_tab
+  before_filter :set_active_tab
+  authorize_resource
 
-  def initialize
-    @active_tab = "orders"
-    super
+  # GET /orders/:order_id/order_details/:id
+  def show
+    @order_detail.send(:extend, PriceDisplayment)
+  end
+
+  # GET /orders/:order_id/order_details/:id
+  def edit
+  end
+
+  # Put /orders/:order_id/order_details/:id
+  def update
+    if order_editable? && @order_detail.update_attributes(order_detail_params)
+      flash[:notice] = I18n.t("order_details.update.success")
+      redirect_to [@order, @order_detail]
+    else
+      flash.now[:error] = I18n.t("order_details.update.failure")
+      render :edit
+    end
   end
 
   # PUT /orders/:order_id/order_details/:id/cancel
@@ -32,6 +48,7 @@ class OrderDetailsController < ApplicationController
     end
   end
 
+  # PUT /orders/:order_id/order_details/:id/dispute
   def dispute
     raise ActiveRecord::RecordNotFound unless @order_detail.can_dispute?
 
@@ -52,18 +69,6 @@ class OrderDetailsController < ApplicationController
         raise ActiveRecord::Rollback
       end
     end
-  end
-
-  # GET /orders/:order_id/order_details/:id
-  def show
-    set_active_tab
-    @order_detail.send(:extend, PriceDisplayment)
-  end
-
-  def init_order_detail
-    @order = Order.find(params[:order_id])
-    @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
-    raise ActiveRecord::RecordNotFound unless @order.to_be_merged? || @order_detail.can_be_viewed_by?(acting_user)
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/order_file
@@ -105,14 +110,29 @@ class OrderDetailsController < ApplicationController
     redirect_to(order_path(@order))
   end
 
+  private
+
+  def order_editable?
+    @order_detail.customer_editable?
+  end
+  helper_method :order_editable?
+
+  def init_order_detail
+    @order = Order.find(params[:order_id])
+    @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
+    raise ActiveRecord::RecordNotFound if @order.to_be_merged?
+  end
+
   def set_active_tab
     @active_tab = @order_detail.reservation.nil? ? "orders" : "reservations"
   end
 
-  private
-
   def ability_resource
     @order_detail
+  end
+
+  def order_detail_params
+    params.require(:order_detail).permit(:account_id)
   end
 
 end
