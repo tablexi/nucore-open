@@ -17,6 +17,8 @@ RSpec.describe Notifier do
       expect(email.subject).to include("Order Notification")
       expect(email.html_part.to_s).to match(/Ordered By.+\n#{user.full_name}/)
       expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
+      expect(email.html_part.to_s).to match(/Payment Source.+#{order.account}/m)
+      expect(email.text_part.to_s).to include("Payment Source: #{order.account}")
       expect(email.html_part.to_s).not_to include("Thank you for your order")
       expect(email.text_part.to_s).not_to include("Thank you for your order")
     end
@@ -35,6 +37,8 @@ RSpec.describe Notifier do
       expect(email.subject).to include("Order Receipt")
       expect(email.html_part.to_s).to match(/Ordered By.+\n#{user.full_name}/)
       expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
+      expect(email.html_part.to_s).to match(/Payment Source.+#{order.account}/m)
+      expect(email.text_part.to_s).to include("Payment Source: #{order.account}")
       expect(email.html_part.to_s).to include("Thank you for your order")
       expect(email.text_part.to_s).to include("Thank you for your order")
     end
