@@ -224,7 +224,15 @@ Nucore::Application.routes.draw do
         match "search_results", via: [:get, :post]
       end
       get "/members", to: 'facility_accounts#members', as: "members"
+
       get "/statements/:statement_id(.:format)", to: 'facility_accounts#show_statement', as: "statement", defaults: { format: "html" } if Account.config.statements_enabled?
+
+      # Dynamically add routes for credit_cards and purchase_orders
+      Account.config.statement_account_types.map(&:constantize).select { |t| t < ReconcilableAccount }.each do |type|
+        plural_name = type.model_name.human(count: 2).parameterize("_")
+        get plural_name, on: :collection
+        get "update_#{plural_name}", on: :collection
+      end
 
       if SettingsHelper.feature_on?(:suspend_accounts)
         match "suspend",   to: 'facility_accounts#suspend',   as: "suspend"
