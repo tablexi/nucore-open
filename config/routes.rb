@@ -227,11 +227,11 @@ Nucore::Application.routes.draw do
 
       get "/statements/:statement_id(.:format)", to: 'facility_accounts#show_statement', as: "statement", defaults: { format: "html" } if Account.config.statements_enabled?
 
-      # Dynamically add routes for credit_cards and purchase_orders
-      Account.config.statement_account_types.map(&:constantize).select { |t| t < ReconcilableAccount }.each do |type|
-        plural_name = type.model_name.human(count: 2).parameterize("_")
-        get plural_name, on: :collection
-        get "update_#{plural_name}", on: :collection
+      # Dynamically add routes like credit_cards and purchase_orders
+      Account.config.reconcilable_account_types.each do |type|
+        plural_name = Account.config.account_type_to_route(type)
+        get plural_name, to: "facility_accounts_reconciliation#index", on: :collection, account_type: plural_name
+        post "update_#{plural_name}", to: "facility_accounts_reconciliation#update", on: :collection, account_type: plural_name
       end
 
       if SettingsHelper.feature_on?(:suspend_accounts)

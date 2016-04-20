@@ -9,14 +9,12 @@ module C2po
     config.to_prepare do
       # Include extensions
       Facility.send :include, C2po::FacilityExtension
-      FacilityAccountsController.send :include, C2po::FacilityAccountsControllerExtension
 
       # Concat class variables
       Account.config.account_types.concat C2po::C2PO_ACCOUNT_TYPES
       Account.config.facility_account_types.concat C2po::C2PO_ACCOUNT_TYPES
       Account.config.statement_account_types.concat C2po::C2PO_ACCOUNT_TYPES
       Account.config.affiliate_account_types.concat C2po::C2PO_ACCOUNT_TYPES
-      FacilityAccountsController.check_billing_access_actions.concat C2po::FacilityAccountsControllerExtension.check_billing_access_actions_extension
       FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
 
       # Make this engine's views override the main app's views
