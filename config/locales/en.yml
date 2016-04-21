@@ -148,6 +148,12 @@ en:
       results: Search Results
       no_results: No results found
 
+  facility_account:
+    account_fields:
+      label:
+        account_number:
+          account_number: Account Number
+
   facility_accounts:
     edit:
       cancel: Cancel
