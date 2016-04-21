@@ -50,7 +50,10 @@ class OrderDetails::ParamUpdater
 
   def permitted_params(params)
     params.permit(:account_id, :resolve_dispute, :dispute_resolved_reason, :quantity, :note,
-                  reservation: [:reserve_start_at, :duration_mins, :actual_start_at, :actual_duration_mins])
+                  reservation: [:reserve_start_date, :reserve_start_hour,
+                                :reserve_start_min, :reserve_start_meridian, :duration_mins,
+                                :actual_start_date, :actual_start_hour,
+                                :actual_start_min, :actual_start_meridian, :actual_duration_mins])
   end
 
   def assign_self_and_reservation_attributes(params)

@@ -2,6 +2,24 @@ require "rails_helper"
 require "controller_spec_helper"
 
 RSpec.describe OrderManagement::OrderDetailsController do
+  def reservation_params(reserve_start_at, actual_start_at = nil)
+    params = {
+      reserve_start_date: I18n.l(reserve_start_at.to_date, format: :usa),
+      reserve_start_hour: reserve_start_at.strftime("%l"),
+      reserve_start_min: reserve_start_at.strftime("%M"),
+      reserve_start_meridian: reserve_start_at.strftime("%p"),
+    }
+
+    params.merge!(
+      actual_start_date: I18n.l(actual_start_at.to_date, format: :usa),
+      actual_start_hour: actual_start_at.strftime("%l"),
+      actual_start_min: actual_start_at.strftime("%M"),
+      actual_start_meridian: actual_start_at.strftime("%p"),
+    ) if actual_start_at
+
+    params
+  end
+
   before(:all) { create_users }
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
@@ -202,10 +220,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
             instrument.update_attributes(min_reserve_mins: 1)
             @new_reserve_start = reservation.reserve_start_at + 1.hour
             @params[:order_detail] = {
-              reservation: {
-                reserve_start_at: @new_reserve_start,
-                duration_mins: 30,
-              },
+              reservation: reservation_params(@new_reserve_start).merge(duration_mins: 30),
             }
           end
 
@@ -254,10 +269,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           before :each do
             instrument.update_attributes(requires_approval: true, min_reserve_mins: 10)
             @params[:order_detail] = {
-              reservation: {
-                reserve_start_at: reservation.reserve_start_at,
-                duration_mins: 30,
-              },
+              reservation: reservation_params(reservation.reserve_start_at).merge(duration_mins: 30),
             }
           end
 
@@ -587,10 +599,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
         let(:json_response) { JSON.parse(response.body) }
         before :each do
           @params[:order_detail] = {
-            reservation: {
-              reserve_start_at: reservation.reserve_start_at,
-              duration_mins: new_duration,
-            },
+            reservation: reservation_params(reservation.reserve_start_at)
+                                   .merge(duration_mins: new_duration),
           }
           do_request
         end
@@ -620,16 +630,13 @@ RSpec.describe OrderManagement::OrderDetailsController do
       context "completed reservation" do
         let(:new_duration) { 73 }
         let(:json_response) { JSON.parse(response.body) }
+
         before :each do
           reservation.update_attributes(reserve_start_at: reservation.reserve_start_at - 2.days, reserve_end_at: reservation.reserve_end_at - 2.days)
           order_detail.update_order_status! @admin, OrderStatus.complete.first
           @params[:order_detail] = {
-            reservation: {
-              reserve_start_at: reservation.reserve_start_at,
-              duration_mins: reservation.duration_mins,
-              actual_start_at: reservation.reserve_start_at,
-              actual_duration_mins: new_duration,
-            },
+            reservation: reservation_params(reservation.reserve_start_at, reservation.reserve_start_at)
+                                   .merge(duration_mins: reservation.duration_mins, actual_duration_mins: new_duration),
           }
           expect(order_detail).to be_complete
         end
