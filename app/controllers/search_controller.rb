@@ -5,7 +5,6 @@ class SearchController < ApplicationController
 
   ## return users of portal 'nucore'
   def user_search_results
-    raise NUCore::PermissionDenied if session_user.blank?
     @limit = 25
     load_facility
     @price_group = PriceGroup.find(params[:price_group_id]) if params[:price_group_id].present?

@@ -119,7 +119,7 @@ class Ability
         end
 
         can [:administer], User
-        if controller.is_a?(UsersController)
+        if controller.is_a?(UsersController) || controller.is_a?(SearchController)
           can :manage, User
           cannot(:switch_to, User) { |target_user| !target_user.active? }
         end
