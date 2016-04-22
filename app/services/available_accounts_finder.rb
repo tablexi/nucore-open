@@ -8,7 +8,9 @@ class AvailableAccountsFinder
 
   def accounts
     accounts = @user.accounts.for_facility(@facility).active
-    accounts += [@current_account] if @current_account
+    if @current_account && !accounts.include?(@current_account)
+      accounts += [@current_account]
+    end
     accounts
   end
   alias to_a accounts
