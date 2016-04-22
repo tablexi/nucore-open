@@ -23,7 +23,6 @@ RSpec.describe AvailableAccountsFinder do
       is_expected.to eq([chartstring])
     end
 
-
     describe "and that account is expired" do
       before { chartstring.update_attributes!(suspended_at: 1.month.ago) }
 
