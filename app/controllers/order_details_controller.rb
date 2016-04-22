@@ -8,6 +8,7 @@ class OrderDetailsController < ApplicationController
   before_filter :check_acting_as, except: [:order_file, :upload_order_file, :remove_order_file]
   before_filter :init_order_detail
   before_filter :set_active_tab
+  before_filter :prevent_edit_based_on_state, only: [:edit, :update]
   authorize_resource
 
   # GET /orders/:order_id/order_details/:id
@@ -21,9 +22,9 @@ class OrderDetailsController < ApplicationController
 
   # Put /orders/:order_id/order_details/:id
   def update
-    if order_editable? && @order_detail.update_attributes(order_detail_params)
+    if @order_detail.update_attributes(order_detail_params)
       flash[:notice] = I18n.t("order_details.update.success")
-      redirect_to [@order, @order_detail]
+      redirect_to action: :show
     else
       flash.now[:error] = I18n.t("order_details.update.failure")
       render :edit
@@ -111,6 +112,13 @@ class OrderDetailsController < ApplicationController
   end
 
   private
+
+  def prevent_edit_based_on_state
+    unless order_editable?
+      flash[:notice] = I18n.t("order_details.edit.failure")
+      redirect_to action: :show
+    end
+  end
 
   def order_editable?
     @order_detail.customer_editable?

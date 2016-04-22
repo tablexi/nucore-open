@@ -694,6 +694,7 @@ en:
       warning: |
         Changing the Payment Source could result in adjusted pricing. If you are
         concerned about this or receive incorrect pricing, please contact the facility.
+      failure: This order is not currently editable.
     update:
       success: "The order has been updated"
       failure: "There was a problem updating the order"

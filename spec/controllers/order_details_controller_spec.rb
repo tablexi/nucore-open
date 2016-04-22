@@ -154,68 +154,16 @@ RSpec.describe OrderDetailsController do
       it_behaves_like "allows the proper users"
     end
 
-    describe "#update" do
+    describe "#update permissions" do
       # need some params to satisfy strong params
       let(:params) { { field: "dummy" } }
+
       def perform
         sign_in signed_in_user
         put :update, order_id: order.id, id: order_detail.id, order_detail: params
       end
 
       it_behaves_like "allows the proper users"
-
-      describe "updating the account" do
-        let(:signed_in_user) { user }
-        let(:account2) { FactoryGirl.create(:setup_account, owner: user) }
-        let(:params) { { account_id: account2.id } }
-
-        shared_examples_for "changes the account" do
-          it "changes the account" do
-            expect { perform }.to change { order_detail.reload.account }.to(account2)
-          end
-        end
-
-        shared_examples_for "does not change the account" do
-          it "does not change the account" do
-            expect { perform }.not_to change { order_detail.reload.account }
-          end
-        end
-
-        describe "before completion" do
-          it_behaves_like "changes the account"
-        end
-
-        describe "after completion" do
-          let(:reservation) { FactoryGirl.create(:completed_reservation) }
-
-          describe "while in the review period" do
-            before { order_detail.update_attributes!(reviewed_at: 7.days.from_now) }
-            it_behaves_like "changes the account"
-          end
-
-          describe "when the review period is over" do
-            before { order_detail.update_attributes!(reviewed_at: 1.day.ago) }
-            it_behaves_like "does not change the account"
-          end
-
-          describe "when the review period is over, but it is being disputed" do
-            before { order_detail.update_attributes!(reviewed_at: 1.day.ago, dispute_at: 2.days.ago, dispute_reason: "reason") }
-            it_behaves_like "changes the account"
-          end
-
-          describe "when the dispute has been resolved" do
-            before { order_detail.update_attributes!(reviewed_at: 1.day.ago, dispute_at: 2.days.ago, dispute_resolved_at: Time.current, dispute_reason: "reason", dispute_resolved_reason: "notes") }
-            it_behaves_like "does not change the account"
-          end
-        end
-
-        describe "a canceled reservation" do
-          before do
-            order_detail.update_order_status!(user, OrderStatus.canceled_status)
-          end
-          it_behaves_like "does not change the account"
-        end
-      end
 
       describe "does not update other fields" do
         let(:signed_in_user) { user }
@@ -225,6 +173,110 @@ RSpec.describe OrderDetailsController do
           expect { perform }.not_to change { order_detail.reload.attributes }
           expect(response).to be_redirect
         end
+      end
+    end
+
+    describe "#show/edit/update based on state" do
+      let(:signed_in_user) { user }
+      let(:account2) { FactoryGirl.create(:setup_account, owner: user) }
+      let(:params) { { account_id: account2.id } }
+
+      def perform_show
+        sign_in signed_in_user
+        get :show, order_id: order.id, id: order_detail.id, order_detail: params
+      end
+
+      def perform_edit
+        sign_in signed_in_user
+        get :edit, order_id: order.id, id: order_detail.id, order_detail: params
+      end
+
+      def perform_update
+        sign_in signed_in_user
+        put :update, order_id: order.id, id: order_detail.id, order_detail: params
+      end
+
+      shared_examples_for "can modify the account" do
+        describe "on #show" do
+          render_views
+          it "has the change link on #show" do
+            perform_show
+            expect(response.body).to include("Change")
+          end
+        end
+
+        it "has access to the edit page" do
+          perform_edit
+          expect(response).to be_success
+        end
+
+        it "can update the account" do
+          expect { perform_update }.to change { order_detail.reload.account }.to(account2)
+        end
+      end
+
+      shared_examples_for "cannot modify the account" do
+        describe "on #show" do
+          render_views
+          it "does not have the change link on #show" do
+            perform_show
+            expect(response.body).not_to include("Change")
+          end
+        end
+
+        it "does not have access to the edit page" do
+          perform_edit
+          expect(response).to be_redirect
+        end
+
+        it "does not update the account" do
+          expect { perform_update }.not_to change { order_detail.reload.account }
+        end
+      end
+
+      describe "before completion" do
+        it_behaves_like "can modify the account"
+      end
+
+      describe "after completion" do
+        let(:reservation) { FactoryGirl.create(:completed_reservation) }
+
+        describe "while in the review period" do
+          before { order_detail.update_attributes!(reviewed_at: 7.days.from_now) }
+          it_behaves_like "can modify the account"
+        end
+
+        describe "when the review period is over" do
+          before { order_detail.update_attributes!(reviewed_at: 1.day.ago) }
+          it_behaves_like "cannot modify the account"
+        end
+
+        describe "when the review period is over, but it is being disputed" do
+          before { order_detail.update_attributes!(reviewed_at: 1.day.ago, dispute_at: 2.days.ago, dispute_reason: "reason") }
+          it_behaves_like "can modify the account"
+        end
+
+        describe "when the dispute has been resolved" do
+          before { order_detail.update_attributes!(reviewed_at: 1.day.ago, dispute_at: 2.days.ago, dispute_resolved_at: Time.current, dispute_reason: "reason", dispute_resolved_reason: "notes") }
+          it_behaves_like "cannot modify the account"
+        end
+
+        describe "when the order is statemented" do
+          before { order_detail.update_attributes!(reviewed_at: 1.day.ago, statement_id: 10) }
+          it_behaves_like "cannot modify the account"
+        end
+
+        describe "when the order is journaled" do
+          before { order_detail.update_attributes!(reviewed_at: 1.day.ago, journal_id: 10) }
+          it_behaves_like "cannot modify the account"
+        end
+      end
+
+      describe "a canceled reservation" do
+        before do
+          order_detail.update_order_status!(user, OrderStatus.canceled_status)
+        end
+        it_behaves_like "cannot modify the account"
       end
     end
   end
