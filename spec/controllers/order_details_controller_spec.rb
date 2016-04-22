@@ -41,19 +41,64 @@ RSpec.describe OrderDetailsController do
   end
 
   describe "#show" do
-    before(:each) do
-      sign_in user
+    def perform
       get :show, order_id: order.id, id: order_detail.id
     end
 
+    before(:each) do
+      sign_in user
+    end
+
     context "when logged in as the user who owns the order" do
-      it { expect(response).to access_the_page }
+      it "can access the page" do
+        perform
+        expect(response).to access_the_page
+      end
     end
 
     context "when logged in as a user that does not own the order" do
       let(:user) { create(:user) }
 
-      it { expect(response.code).to eq("403") }
+      it "cannot access the page" do
+        perform
+        expect(response.code).to eq("403")
+      end
+    end
+
+    describe "dispute box" do
+      render_views
+      before do
+        order_detail.update_attributes!(state: "complete", reviewed_at: 7.days.from_now)
+      end
+
+      describe "as the owner" do
+        let(:user) { order_detail.account.owner_user }
+
+        it "sees the dispute box" do
+          perform
+          expect(response.body).to include("Dispute")
+        end
+      end
+
+      describe "as a BA" do
+        let!(:account_user) { FactoryGirl.create(:account_user, :business_administrator, account: order_detail.account, user: user) }
+        let(:user) { FactoryGirl.create(:user) }
+
+        it "sees the dispute box" do
+          perform
+          expect(response.body).to include("Dispute")
+        end
+      end
+
+      describe "as an account purchaser" do
+        let!(:account_user) { FactoryGirl.create(:account_user, :purchaser, account: order_detail.account, user: user) }
+        let(:user) { FactoryGirl.create(:user) }
+
+        it "does not see the dispute box" do
+          perform
+          expect(response.body).not_to include("Dispute")
+        end
+      end
     end
   end
 

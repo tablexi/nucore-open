@@ -26,7 +26,7 @@
       = f.input :created_by_user
 
   .span6
-    - if @order_detail.can_dispute?
+    - if @order_detail.can_dispute? && current_ability.can?(:dispute, @order_detail)
       .well
         %h3= t('.head.dispute')
         %p= t('.instruct.dispute')
