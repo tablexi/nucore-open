@@ -47,7 +47,7 @@ RSpec.describe SearchController do
     it_behaves_like "searching", "manage_user" do
       let(:params) { { facility_id: facility.id } }
 
-      it "has order for", :focus do
+      it "has order for" do
         expect(response.body).to include("Order For")
       end
     end
