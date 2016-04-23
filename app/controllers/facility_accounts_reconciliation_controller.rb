@@ -34,7 +34,6 @@ class FacilityAccountsReconciliationController < ApplicationController
   end
 
   def account_route
-    # This is coming in from the router, not the user, so it should be safe
     Account.config.account_type_to_route(params[:account_type])
   end
   helper_method :account_route
@@ -48,6 +47,7 @@ class FacilityAccountsReconciliationController < ApplicationController
   end
 
   def account_class
+    # This is coming in from the router, not the user, so it should be safe
     params[:account_type].constantize
   end
   helper_method :account_class
