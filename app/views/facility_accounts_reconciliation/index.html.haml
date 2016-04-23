@@ -4,15 +4,15 @@
   = current_facility
 
 = content_for :sidebar do
-  = render :partial => "admin/shared/sidenav_billing", locals: { sidenav_tab: account_type }
+  = render :partial => "admin/shared/sidenav_billing", locals: { sidenav_tab: account_route }
 
-%h2= t(:head, scope: "facility_accounts_reconciliation.#{account_type}")
+%h2= t(".head", model: account_class.model_name.human(count: 2))
 
 - if @accounts.empty?
-  %p.notice= t(:none, scope: "facility_accounts_reconciliation.#{account_type}")
+  %p.notice= t(".none", model: account_class.model_name.human(count: 2).downcase)
 - else
 
-  = form_tag([account_type, FacilityAccount], method: :get) do
+  = form_tag([account_route, FacilityAccount], method: :get) do
     %p= select_tag :selected_account, options_from_collection_for_select(@accounts, :id, :to_s, @selected_account.id)
 
   - if @selected_account.owner_user
@@ -21,7 +21,7 @@
 
   %p= t(".instructions")
 
-  = form_tag([:update, account_type, FacilityAccount], method: :post) do
+  = form_tag([:update, account_route, FacilityAccount], method: :post) do
     = hidden_field_tag :selected_account, @selected_account.id
     = render partial: "table"
 

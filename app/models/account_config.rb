@@ -50,9 +50,9 @@ class AccountConfig
   end
 
   # Given a subclassed `Account` name, return a string that will be used for routing.
-  # Uses the humanized name for the class.
+  # Will convert something like `CreditCardAccount` to `credit_cards`
   def account_type_to_route(class_string)
-    class_string.constantize.model_name.human(count: 2).parameterize("_")
+    account_type_to_param(class_string).sub(/_account\z/, "").pluralize
   end
 
   # Returns an array of subclassed Account objects given a facility.

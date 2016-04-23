@@ -65,7 +65,7 @@ RSpec.describe FacilityAccountsReconciliationController do
     let(:redirect_path) { credit_cards_facility_accounts_path }
 
     before :each do
-      prepare_for_account_show(:credit_cards, unreconciled_account)
+      prepare_for_account_show("CreditCardAccount", unreconciled_account)
     end
 
     it_behaves_like "an authable account"
@@ -75,7 +75,7 @@ RSpec.describe FacilityAccountsReconciliationController do
     before :each do
       @method = :get
       @action = :index
-      @params = { facility_id: @authable.url_name, account_type: "credit_cards" }
+      @params = { facility_id: @authable.url_name, account_type: "CreditCardAccount" }
     end
 
     it_should_allow :director do
@@ -93,7 +93,7 @@ RSpec.describe FacilityAccountsReconciliationController do
     let(:redirect_path) { purchase_orders_facility_accounts_path }
 
     before :each do
-      prepare_for_account_show(:purchase_orders, unreconciled_account)
+      prepare_for_account_show("PurchaseOrderAccount", unreconciled_account)
     end
 
     it_behaves_like "an authable account"
@@ -103,7 +103,7 @@ RSpec.describe FacilityAccountsReconciliationController do
     before :each do
       @method = :get
       @action = :index
-      @params = { facility_id: @authable.url_name, account_type: "purchase_orders" }
+      @params = { facility_id: @authable.url_name, account_type: "PurchaseOrderAccount" }
     end
 
     it_should_allow :director do
@@ -119,7 +119,7 @@ RSpec.describe FacilityAccountsReconciliationController do
   context "update_credit_cards" do
     before :each do
       ccact = FactoryGirl.build(:credit_card_account)
-      prepare_for_account_update(:credit_cards, ccact)
+      prepare_for_account_update("CreditCardAccount", ccact)
     end
 
     it_should_require_login
@@ -139,7 +139,7 @@ RSpec.describe FacilityAccountsReconciliationController do
   context "update_purchase_orders" do
     before :each do
       @poact = FactoryGirl.build(:purchase_order_account)
-      prepare_for_account_update(:purchase_orders, @poact)
+      prepare_for_account_update("PurchaseOrderAccount", @poact)
     end
 
     it_should_require_login

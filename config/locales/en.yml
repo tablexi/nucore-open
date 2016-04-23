@@ -225,6 +225,8 @@ en:
       title: "Payment Sources for %{name}"
   facility_accounts_reconciliation:
     index:
+      head: Reconcile %{model}
+      none: There are no %{model} with completed orders to be reconciled at this time
       instructions: "Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'."
       owner: "Owner: %{owner}"
       balance: "Balance: %{balance}"

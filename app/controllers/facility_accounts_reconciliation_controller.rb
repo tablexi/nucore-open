@@ -17,13 +17,13 @@ class FacilityAccountsReconciliationController < ApplicationController
       @unreconciled_details = unreconciled_details
       @balance = selected_account.unreconciled_total(current_facility, @unreconciled_details)
     else
-      redirect_to([account_type, :facility_accounts])
+      redirect_to([account_route, :facility_accounts])
     end
   end
 
   def update
     update_account
-    redirect_to([account_type, :facility_accounts])
+    redirect_to([account_route, :facility_accounts])
   end
 
   private
@@ -33,11 +33,11 @@ class FacilityAccountsReconciliationController < ApplicationController
     @active_tab = "admin_billing"
   end
 
-  def account_type
+  def account_route
     # This is coming in from the router, not the user, so it should be safe
-    params[:account_type]
+    Account.config.account_type_to_route(params[:account_type])
   end
-  helper_method :account_type
+  helper_method :account_route
 
   def selected_account
     @selected_account ||= if params[:selected_account].present?
@@ -48,8 +48,9 @@ class FacilityAccountsReconciliationController < ApplicationController
   end
 
   def account_class
-    "#{account_type.singularize.camelize}Account".constantize
+    params[:account_type].constantize
   end
+  helper_method :account_class
 
   def unreconciled_details
     OrderDetail

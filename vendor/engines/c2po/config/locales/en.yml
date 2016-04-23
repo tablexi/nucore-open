@@ -7,14 +7,6 @@ en:
         po_instruct: "Where the invoice should be sent to for this payment source; this text will appear on the customer's invoice."
       errors:
         expires_at: "Expiration may not be blank and must be in MM/DD/YYYY format"
-  facility_accounts_reconciliation:
-    credit_cards:
-      head: Reconcile Credit Cards
-      none: There are no credit cards with completed orders to be reconciled at this time
-    purchase_orders:
-      head: Reconcile Purchase Orders
-      none: There are no purchase orders with completed orders to be reconciled at this time
-      account_number: Purchase Order Number
 
   facilities:
     facility_fields:
