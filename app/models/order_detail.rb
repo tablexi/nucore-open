@@ -559,8 +559,8 @@ class OrderDetail < ActiveRecord::Base
     in_review?
   end
 
-  def customer_editable?
-    !reviewed? && !canceled?
+  def customer_account_changeable?
+    journal_id.blank? && statement_id.blank? && !canceled?
   end
 
   def validate_for_purchase

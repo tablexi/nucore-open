@@ -248,7 +248,7 @@ RSpec.describe OrderDetailsController do
 
         describe "when the review period is over" do
           before { order_detail.update_attributes!(reviewed_at: 1.day.ago) }
-          it_behaves_like "cannot modify the account"
+          it_behaves_like "can modify the account"
         end
 
         describe "when the review period is over, but it is being disputed" do
@@ -258,7 +258,7 @@ RSpec.describe OrderDetailsController do
 
         describe "when the dispute has been resolved" do
           before { order_detail.update_attributes!(reviewed_at: 1.day.ago, dispute_at: 2.days.ago, dispute_resolved_at: Time.current, dispute_reason: "reason", dispute_resolved_reason: "notes") }
-          it_behaves_like "cannot modify the account"
+          it_behaves_like "can modify the account"
         end
 
         describe "when the order is statemented" do

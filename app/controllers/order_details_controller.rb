@@ -121,7 +121,7 @@ class OrderDetailsController < ApplicationController
   end
 
   def order_editable?
-    @order_detail.customer_editable?
+    @order_detail.customer_account_changeable?
   end
   helper_method :order_editable?
 
