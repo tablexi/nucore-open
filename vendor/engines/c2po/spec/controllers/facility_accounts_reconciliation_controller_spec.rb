@@ -201,5 +201,4 @@ RSpec.describe FacilityAccountsReconciliationController do
     @order_detail.statement = statement
     @order_detail.save
   end
-
 end
