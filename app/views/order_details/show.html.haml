@@ -26,26 +26,27 @@
       = f.input :created_by_user
 
   .span6
-    - if @order_detail.can_dispute?
-      .well
-        %h3= t('.head.dispute')
-        %p= t('.instruct.dispute')
-        = simple_form_for(@order_detail, :url => dispute_order_order_detail_path, :html => {:method => :put}) do |f|
-          = f.input :dispute_reason
+    - if current_ability.can?(:dispute, @order_detail)
+      - if @order_detail.can_dispute?
+        .well
+          %h3= t('.head.dispute')
+          %p= t('.instruct.dispute')
+          = simple_form_for(@order_detail, :url => dispute_order_order_detail_path, :html => {:method => :put}) do |f|
+            = f.input :dispute_reason
 
-          = f.submit t('.submit.dispute'), :class => 'btn'
+            = f.submit t('.submit.dispute'), :class => 'btn'
 
-    - if @order_detail.dispute_at
-      .well
-        = readonly_form_for :order_detail do |f|
-          .container
-            .row
-              .span3
-                = f.input :dispute_at
-                = f.input :dispute_reason
-              .span3
-                = f.input :dispute_resolved_at if @order_detail.dispute_resolved_at
-                = f.input :dispute_resolved_reason if @order_detail.dispute_resolved_reason.present?
+      - if @order_detail.dispute_at
+        .well
+          = readonly_form_for :order_detail do |f|
+            .container
+              .row
+                .span3
+                  = f.input :dispute_at
+                  = f.input :dispute_reason
+                .span3
+                  = f.input :dispute_resolved_at if @order_detail.dispute_resolved_at
+                  = f.input :dispute_resolved_reason if @order_detail.dispute_resolved_reason.present?
 
     - if @order_detail.stored_files.sample_result.any?
       .well
