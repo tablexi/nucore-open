@@ -202,6 +202,4 @@ RSpec.describe FacilityAccountsReconciliationController do
     @order_detail.save
   end
 
-  def make_order_statemented
-  end
 end
