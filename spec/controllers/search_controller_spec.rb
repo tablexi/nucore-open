@@ -36,9 +36,11 @@ RSpec.describe SearchController do
       let(:params) { { account_id: account.id } }
     end
 
-    it_behaves_like "searching", "facility_account_account_user" do
-      let(:account) { FactoryGirl.create(:setup_account) }
-      let(:params) { { account_id: account.id } }
+    describe "facility_account_account_user", feature_setting: { edit_accounts: true } do
+      it_behaves_like "searching", "facility_account_account_user" do
+        let(:account) { FactoryGirl.create(:setup_account) }
+        let(:params) { { account_id: account.id } }
+      end
     end
 
     # This is safe for a non-admin to see because the links themselves are protected
@@ -56,7 +58,9 @@ RSpec.describe SearchController do
 
     it_behaves_like "searching", "user_accounts"
 
-    it_behaves_like "searching", "user_new_account"
+    describe "user_new_account", feature_setting: { edit_accounts: true } do
+      it_behaves_like "searching", "user_new_account"
+    end
 
     it_behaves_like "searching", "user_price_group_member" do
       let(:price_group) { FactoryGirl.create(:price_group, facility: facility) }
