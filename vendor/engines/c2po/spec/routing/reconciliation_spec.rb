@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "FacilityAccountsReconciliationController" do
-
   it "routes credit_cards" do
     expect(get("/facilities/test-facility/accounts/credit_cards"))
       .to route_to(controller: "facility_accounts_reconciliation",
