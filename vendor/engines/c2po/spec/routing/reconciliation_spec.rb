@@ -1,0 +1,27 @@
+require "rails_helper"
+
+RSpec.describe "FacilityAccountsReconciliationController" do
+  it "routes credit_cards" do
+    expect(get("/facilities/test-facility/accounts/credit_cards"))
+      .to route_to(controller: "facility_accounts_reconciliation",
+                   action: "index",
+                   facility_id: "test-facility",
+                   account_type: "CreditCardAccount")
+  end
+
+  it "routes purchase_orders" do
+    expect(get("/facilities/test-facility/accounts/purchase_orders"))
+      .to route_to(controller: "facility_accounts_reconciliation",
+                   action: "index",
+                   facility_id: "test-facility",
+                   account_type: "PurchaseOrderAccount")
+  end
+
+  it "does not allow overriding the account_type" do
+    expect(get("/facilities/test-facility/accounts/purchase_orders?account_type=CreditCardAccount"))
+      .to route_to(controller: "facility_accounts_reconciliation",
+                   action: "index",
+                   facility_id: "test-facility",
+                   account_type: "PurchaseOrderAccount")
+  end
+end

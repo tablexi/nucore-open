@@ -1,5 +1,5 @@
 %table.table.table-striped.table-hover
-  = render partial: "c2po/reconcile/action_row"
+  = render partial: "action_row"
   %thead
     %tr
       %th
@@ -23,4 +23,4 @@
 
         %td= show_actual_total(order_detail)
         %td= text_field_tag "order_detail[#{order_detail.id}][notes]", begin params[:order_detail][order_detail.id.to_s][:notes] rescue "" end
-  = render partial: "c2po/reconcile/action_row"
+  = render partial: "action_row"

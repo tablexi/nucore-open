@@ -27,11 +27,6 @@ class NufsAccount < Account
     true
   end
 
-  def can_reconcile?(order_detail)
-    order_detail.journal.try(:successful?) ||
-      OrderDetail.need_journal.exists?(order_detail.id)
-  end
-
   #
   # Retrieves +#components+ from +ValidatorFactory#instance+ and sets
   # the keys of the return as methods on this class (if necessary) and

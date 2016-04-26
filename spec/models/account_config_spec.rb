@@ -54,6 +54,20 @@ RSpec.describe AccountConfig, type: :model do
     end
   end
 
+  describe "#account_type_to_route" do
+    it "accepts a normal class" do
+      expect(instance.account_type_to_route("CreditCardAccount")).to eq("credit_cards")
+    end
+
+    it "accepts a namespaced class" do
+      expect(instance.account_type_to_route("Foo::BarAccount")).to eq("foo_bars")
+    end
+
+    it "accepts an object" do
+      expect(instance.account_type_to_route(TrueClass)).to eq("true_classes")
+    end
+  end
+
   describe "#multiple_account_types?" do
     context "when more than one account_types" do
       it "returns true" do

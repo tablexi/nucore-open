@@ -27,6 +27,10 @@ class AccountConfig
     @statement_account_types ||= []
   end
 
+  def reconcilable_account_types
+    statement_account_types.map(&:constantize).select { |t| t < ReconcilableAccount }.map(&:to_s)
+  end
+
   # Returns an array of subclassed Account object names that support affiliates.
   # Engines can append to this list.
   def affiliate_account_types
@@ -43,6 +47,12 @@ class AccountConfig
   # any backslashes with underscore to support namespaced class names.
   def account_type_to_param(account_type)
     account_type.to_s.underscore.tr("/", "_")
+  end
+
+  # Given a subclassed `Account` name, return a string that will be used for routing.
+  # Will convert something like `CreditCardAccount` to `credit_cards`
+  def account_type_to_route(class_string)
+    account_type_to_param(class_string).sub(/_account\z/, "").pluralize
   end
 
   # Returns an array of subclassed Account objects given a facility.
