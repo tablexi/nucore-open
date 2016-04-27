@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :facility_account do
+    facility
     revenue_account 51_234
     sequence(:account_number) do |n|
       # This sequence was often running into blacklist problems
