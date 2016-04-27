@@ -124,7 +124,7 @@ RSpec.describe FacilityAccountsController do
 
     end
 
-    context "create" do
+    context "create", if: Account.config.creation_enabled?(NufsAccount) do
       let(:owner_user) { assigns(:account).owner_user }
 
       before :each do

@@ -89,7 +89,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
       it "sees split account option", :aggregate_failures do
         expect(response.code).to eq("200")
-        expect(response.body).to include("Chart String")
+        expect(response.body).to include("Add Payment Source")
         expect(response.body).to include("Split Account")
       end
     end
@@ -120,7 +120,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
       it "does not see split account option", :aggregate_failures do
         expect(response.code).to eq("200")
-        expect(response.body).to include("Chart String")
+        expect(response.body).to include("Add Payment Source")
         expect(response.body).not_to include("Split Account")
       end
     end

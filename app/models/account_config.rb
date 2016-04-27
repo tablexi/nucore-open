@@ -48,6 +48,10 @@ class AccountConfig
     @creation_disabled_types ||= []
   end
 
+  def creation_enabled?(type)
+    type.to_s.in?(account_types - creation_disabled_types)
+  end
+
   # Given an subclassed `Account` name return a param-friendly string. Replaces
   # any backslashes with underscore to support namespaced class names.
   def account_type_to_param(account_type)
