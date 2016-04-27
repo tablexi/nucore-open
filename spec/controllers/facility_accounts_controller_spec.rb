@@ -334,7 +334,7 @@ RSpec.describe FacilityAccountsController do
       expect(assigns(:facility)).to eq(@authable)
       expect(assigns(:statement)).to eq(@statement)
       expect(response.content_type).to eq("application/pdf")
-      expect(response.body).to match(/%PDF-1.3/)
+      expect(response.body).to match(/%PDF-1.\d/)
       is_expected.to render_template "statements/show"
     end
 
