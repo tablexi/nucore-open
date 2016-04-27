@@ -1,0 +1,29 @@
+- active_key = params[:archived].nil? ? "active" : "inactive"
+
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: plural_object_name
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product_index"
+
+%h2= t(".headers.#{active_key}", models: product_class.model_name.human(count: 2))
+
+%p= t("admin.#{plural_object_name}.index.description")
+
+- if current_user.manager_of?(current_facility)
+  %p= link_to t("admin.shared.add", model: product_class.model_name.human), [:new, current_facility, singular_object_name], class: "btn-add"
+
+- if @products.empty?
+  %p.notice= t(".none.#{active_key}", models: product_class.model_name.human(count: 2).downcase)
+- else
+  %table.table.table-striped.table-hover.product_list
+    %thead
+      %tr
+        %th= t(".header", model: product_class.model_name.human)
+    %tbody
+      - @products.each do |product|
+        %tr
+          %td
+            = link_to product.name, [:manage, current_facility, product]
+            = price_policy_errors(product) unless params[:archived] == "true"

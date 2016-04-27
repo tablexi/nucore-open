@@ -29,9 +29,9 @@ RSpec.describe ServicesController do
     end
 
     it_should_allow_operators_only do
-      expect(assigns[:services]).to eq([@service])
+      expect(assigns(:products)).to eq([@service])
       expect(response).to be_success
-      expect(response).to render_template("services/index")
+      expect(response).to render_template("admin/products/index")
     end
   end
 

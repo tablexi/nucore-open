@@ -33,9 +33,8 @@ RSpec.describe BundlesController do
     it_should_allow_all facility_operators do
       expect(assigns(:archived_product_count)).to be_kind_of Fixnum
       expect(assigns(:not_archived_product_count)).to be_kind_of Fixnum
-      expect(assigns(:product_name)).to be_kind_of String
-      expect(assigns(:bundles).size).to eq(1)
-      expect(assigns(:bundles)).to eq(@authable.bundles.not_archived)
+      expect(assigns(:products).size).to eq(1)
+      expect(assigns(:products)).to eq(@authable.bundles.not_archived)
     end
 
     it "should show archived facilities" do
@@ -44,8 +43,8 @@ RSpec.describe BundlesController do
       maybe_grant_always_sign_in(:director)
       @params[:archived] = "true"
       do_request
-      expect(assigns(:bundles).size).to eq(1)
-      expect(assigns(:bundles)).to eq(@authable.bundles.archived)
+      expect(assigns(:products).size).to eq(1)
+      expect(assigns(:products)).to eq(@authable.bundles.archived)
     end
   end
 

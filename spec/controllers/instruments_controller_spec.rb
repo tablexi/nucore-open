@@ -33,8 +33,8 @@ RSpec.describe InstrumentsController do
     end
 
     it_should_allow_operators_only do |_user|
-      expect(assigns[:instruments]).to eq([@instrument])
-      expect(response).to render_template("instruments/index")
+      expect(assigns(:products)).to eq([@instrument])
+      expect(response).to render_template("admin/products/index")
     end
   end
 

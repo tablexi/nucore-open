@@ -20,7 +20,7 @@
               %th= t(".th.download")
               %th= t(".th.journaled_at")
               - if cross_facility?
-                %th Facility
+                %th= Facility.model_name.human
               %th= f.label :reference
               %th= f.label :description
               %th= f.label :journal_status, required: true

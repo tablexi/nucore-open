@@ -1,11 +1,11 @@
-= render :partial => 'shared/headers/ckeditor'
+= render :partial => "shared/headers/ckeditor"
 
 = content_for :h1 do
-  Add Facility
+  = t("admin.shared.add", model: Facility.model_name.human)
 
 = simple_form_for @facility do |f|
   .form-inputs
-    = render :partial => 'facility_fields', :locals => {:f => f}
+    = render "facility_fields", { f: f }
   .form-actions
-    = f.button :submit, 'Add Facility'
-    = link_to 'Cancel', :controller => :facilities, :action => :list
+    = f.button :submit, t("admin.shared.add", model: Facility.model_name.human)
+    = link_to t("shared.cancel"), controller: :facilities, action: :list

@@ -20,8 +20,6 @@ class ProductsCommonController < ApplicationController
 
   # GET /services
   def index
-    @product_name = self.class.name.gsub(/Controller$/, "")
-
     @archived_product_count     = current_facility_products.archived.length
     @not_archived_product_count = current_facility_products.not_archived.length
     @products = if params[:archived].nil? || params[:archived] != "true"
@@ -35,8 +33,7 @@ class ProductsCommonController < ApplicationController
     # into this class
     @products.sort!
 
-    # save to @services, @items, etc.
-    instance_variable_set("@#{plural_object_name}", @products)
+    render "admin/products/index"
   end
 
   # GET /facilities/:facility_id/(services|items|bundles)/:(service|item|bundle)_id
@@ -181,14 +178,21 @@ class ProductsCommonController < ApplicationController
     instance_variable_set("@#{singular_object_name}", @product)
   end
 
+  def product_class
+    self.class.name.gsub(/Controller$/, "").singularize.constantize
+  end
+  helper_method :product_class
+
   # Get the object name to work off of. E.g. In ServicesController, this returns "services"
   def plural_object_name
-    self.class.name.underscore.gsub(/_controller$/, "")
+    singular_object_name.pluralize
   end
+  helper_method :plural_object_name
 
   def singular_object_name
-    plural_object_name.singularize
+    product_class.to_s.underscore
   end
+  helper_method :singular_object_name
 
   def session_user_can_override_restrictions?(product)
     session_user.present? && session_user.can_override_restrictions?(product)
