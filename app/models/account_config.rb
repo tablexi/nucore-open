@@ -43,6 +43,11 @@ class AccountConfig
     @journal_account_types ||= ["NufsAccount"]
   end
 
+  # An array of account types where creation should be disabled
+  def creation_disabled_types
+    @creation_disabled_types ||= []
+  end
+
   # Given an subclassed `Account` name return a param-friendly string. Replaces
   # any backslashes with underscore to support namespaced class names.
   def account_type_to_param(account_type)
@@ -58,9 +63,11 @@ class AccountConfig
   # Returns an array of subclassed Account objects given a facility.
   # Facility can be a NullObject (used when not in the context of a facility)
   # and the NullObject always returns `true` for cross_facility?.
-  def account_types_for_facility(facility)
-    return account_types.select { |type| type.constantize.cross_facility? } if facility.try(:cross_facility?)
-    account_types
+  def account_types_for_facility(facility, action)
+    types = account_types
+    types = account_types.select { |type| type.constantize.cross_facility? } if facility.try(:cross_facility?)
+    types = account_types - creation_disabled_types if action == :create
+    types
   end
 
   # Returns true if multiple account types are available

@@ -175,7 +175,7 @@ class FacilityAccountsController < ApplicationController
   private
 
   def available_account_types
-    Account.config.account_types_for_facility(current_facility).select do |account_type|
+    Account.config.account_types_for_facility(current_facility, :create).select do |account_type|
       current_ability.can?(:create, account_type.constantize)
     end
   end
