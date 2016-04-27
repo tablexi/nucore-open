@@ -125,7 +125,7 @@ class AccountBuilder
   # or a null object and this should still work. Throws an
   # ActionController::RoutingError if the account type is invalid.
   def validate_account_type!
-    valid_account_types = Account.config.account_types_for_facility(facility)
+    valid_account_types = Account.config.account_types_for_facility(facility, action)
     unless valid_account_types.include?(account_type)
       raise ActionController::RoutingError, "invalid account_type"
     end
