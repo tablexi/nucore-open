@@ -151,10 +151,6 @@ en:
         hidden: "Is Hidden?"
     sidenav_admin:
       overview: "Overview"
-      deposit_accounts: "Recharge Chart Strings"
-      facility_staff: "Facility Staff"
-      price_groups: "Price Groups"
-      statuses: "Order Statuses"
     tabnav_account:
       details: "Payment Source Details"
       transact: "Transactions"
@@ -268,21 +264,7 @@ en:
           reconcile_note: "Reconcile Note"
 
   facility_users:
-    index:
-      add: Add Facility Staff
-      head: Facility Staff
-      no_users: No staff has been added to this facility.
-      remove_roles_confirm: Are you sure?
-      remove_roles: Remove Roles
-      th:
-        email: Email
-        name: Name
-        roles: Roles
-        username: Username
-    map_user:
-      cancel: Cancel
-      h2: Grant Facility Role
-      submit: Create
+    title: "!Facility! Staff"
     search:
       instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 

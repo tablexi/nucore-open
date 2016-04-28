@@ -3,10 +3,6 @@ en:
     facility_facility_accounts:
       facility_account_fields:
         instruct: "Use hyphens to separate Chart String number groups e.g. 123-1234567-12345678"
-        active: "Is Active?"
-        label:
-          account_number: "Chart String Number"
-          deposit_account: "Revenue Account"
       edit:
         main: "Editing the !activerecord.models.facility_account.one! may effect the !facility_downcase!'s ability to collect funds. Edit the Chart String with caution!"
       index:

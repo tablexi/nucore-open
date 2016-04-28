@@ -1,0 +1,13 @@
+en:
+  views:
+    facility_users:
+      index:
+        head: "!facility_users.title!"
+        no_users: No staff has been added to this !facility_downcase!.
+        remove_roles_confirm: Are you sure?
+        remove_roles: Remove Roles
+        th:
+          roles: Roles
+
+      map_user:
+        h2: Grant !Facility! Role

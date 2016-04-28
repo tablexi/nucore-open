@@ -1,8 +1,8 @@
 .well
   = render "shared/account_fields", f: f, account_class: FacilityAccount
-  = f.label :revenue_account, t(".label.deposit_account"), class: "require"
+  = f.label :revenue_account, class: "require"
   = f.text_field :revenue_account, maxLength: 5, size: 10
 
   = f.label :is_active do
     = f.check_box :is_active
-    = t(".active")
+    = FacilityAccount.human_attribute_name(:is_active)
