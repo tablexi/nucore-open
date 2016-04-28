@@ -458,6 +458,17 @@ ActiveRecord::Schema.define(:version => 20160415231343) do
   add_index "products", ["schedule_id"], :name => "i_instruments_schedule_id"
   add_index "products", ["url_name"], :name => "index_products_on_url_name"
 
+  create_table "projects", :force => true do |t|
+    t.string   "name",        :null => false
+    t.text     "description"
+    t.integer  "facility_id", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "projects", ["facility_id", "name"], :name => "index_projects_on_facility_id_and_name", :unique => true
+  add_index "projects", ["facility_id"], :name => "index_projects_on_facility_id"
+
   create_table "relays", :force => true do |t|
     t.integer  "instrument_id"
     t.string   "ip",                  :limit => 15
@@ -674,6 +685,8 @@ ActiveRecord::Schema.define(:version => 20160415231343) do
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
 
   add_foreign_key "reservations", "order_details", name: "reservations_order_detail_id_fk"
+  add_foreign_key "projects", "facilities", name: "projects_facility_id_fk"
+
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
 
   add_foreign_key "schedule_rules", "products", name: "schedule_rules_instrument_id_fk", column: "instrument_id"
