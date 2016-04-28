@@ -1,4 +1,4 @@
 .well
-  %p= t("facilities.facility_fields.payment_options")
-  = f.input :accepts_po, as: :boolean, label: false, inline_label: t("facilities.facility_fields.accepts_po")
-  = f.input :accepts_cc, as: :boolean, label: false, inline_label: t("facilities.facility_fields.accepts_cc")
+  %p= text(".payment_options")
+  = f.input :accepts_po, as: :boolean, label: false, inline_label: text(".labels.accepts_po")
+  = f.input :accepts_cc, as: :boolean, label: false, inline_label: text(".labels.accepts_cc")

@@ -2,6 +2,13 @@
 en:
   # app_name: NUcore
   # institution_name: Northwestern
+  activerecord:
+    models:
+      facility:
+        one: Resource
+        other: Resources
+  facility_downcase: resource
+  facilities_downcase: resources
 
   # shared:
   #   footer:
