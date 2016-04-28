@@ -34,10 +34,10 @@ en:
   facility_downcase: facility
   facilities_downcase: facilities
 
-
   admin:
     shared:
       add: "Add %{model}"
+      edit: "Edit %{model}"
       tabnav_users:
         details: "Details"
         orders: "Orders"
@@ -111,6 +111,9 @@ en:
 
   shared:
     cancel: Cancel
+    edit: Edit
+    save: Save
+    create: Create
     footer:
       copyright_html: "&copy; Copyright 2010&ndash;%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"
@@ -564,25 +567,6 @@ en:
         estimated: "* Clicking 'Save' will update the cost estimate by quantity"
         price_policy: "* Clicking 'Save' will attempt to estimate the cost by quantity"
         default: "* Changing the quantity will automatically update the price fields"
-
-  facility_facility_accounts:
-    facility_account_fields:
-      instruct: "Use hyphens to separate Chart String number groups e.g. 123-1234567-12345678"
-      active: "Is Active?"
-      label:
-        account_number: "Chart String Number"
-        deposit_account: "Revenue Account"
-    edit:
-      head: "Edit Recharge Chart String"
-      main: "Editing the Recharge Chart String may effect the facility's ability to collect funds. Edit the Chart String with caution!"
-    index:
-      head: "Recharge Chart Strings"
-      main: "Chart Strings that are approved by the Provost for collection of facility revenue."
-      notice: "No Recharge Chart Strings have been added to this facility yet."
-      th: "Chart String Number"
-      add: "Add Recharge Chart String"
-    new:
-      head: "Add Recharge Chart String"
 
   order_management:
     order_details:

@@ -129,6 +129,9 @@ en:
       facility:
         one: Facility
         other: Facilities
+      facility_account:
+        one: Recharge Chart String
+        other: Recharge Chart Strings
       instrument:
         one: Instrument
         other: Instruments
@@ -191,6 +194,8 @@ en:
         phone_number: Phone Number
         short_description: Short Description
         url_name: URL Name
+      facility_account:
+        account_number: Chart String Number
       product:
         url: URL
         url_name: URL Name

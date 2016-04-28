@@ -1,15 +1,17 @@
 = content_for :h1 do
-  =h current_facility
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'recharge_accounts' }
-= content_for :head_content do
-  = javascript_include_tag 'accounts.js'
+  = current_facility
 
-%h2= t('.head')
-%p= t('.main')
+= content_for :sidebar do
+  = render "admin/shared/sidenav_admin", :sidenav_tab => "recharge_accounts"
+
+= content_for :head_content do
+  = javascript_include_tag "accounts.js"
+
+%h2= text("admin.shared.edit", model: FacilityAccount.model_name.human)
+%p= text(".main")
 = form_for @facility_account, :url => facility_facility_account_path do |f|
   = f.error_messages
-  = render :partial => 'facility_account_fields', :locals => {:f => f}
+  = render "facility_account_fields", f: f
   %ul.inline
-    %li= f.submit 'Save', :class => 'btn'
-    %li= link_to 'Cancel', facility_facility_accounts_path
+    %li= f.submit t("shared.save"), class: "btn"
+    %li= link_to t("shared.cancel"), facility_facility_accounts_path

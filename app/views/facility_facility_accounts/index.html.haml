@@ -1,25 +1,26 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
+
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'recharge_accounts' }
+  = render "admin/shared/sidenav_admin", sidenav_tab: "recharge_accounts"
 
-%h2= t('.head')
+%h2= FacilityAccount.model_name.human(count: 2)
 
-%p= t('.main')
+%p= text(".main")
 
 %ul.inline
-  %li= link_to t('.add'), new_facility_facility_account_path, :class => 'btn-add'
+  %li= link_to t("admin.shared.add", model: FacilityAccount.model_name.human), new_facility_facility_account_path, :class => "btn-add"
 
 - if @accounts.empty?
-  %p.notice= t('.notice')
+  %p.notice= t(".notice")
 - else
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th
-        %th= t('.th')
+        %th= FacilityAccount.human_attribute_name(:account_number)
     %tbody
       - @accounts.each do |a|
         %tr
-          %td= link_to 'Edit', edit_facility_facility_account_path(current_facility, a)
-          %td=h a.to_s + (a.is_active? ? '' : ' (inactive)')
+          %td= link_to t("shared.edit"), edit_facility_facility_account_path(current_facility, a)
+          %td=h a.to_s + (a.is_active? ? "" : text(".inactive"))
