@@ -4,8 +4,8 @@ class FacilityAccount < ActiveRecord::Base
 
   belongs_to :facility
 
-  validates_numericality_of :revenue_account, only_integer: true, greater_than_or_equal_to: 10_000, less_than_or_equal_to: 99_999
-  validates_uniqueness_of   :account_number, scope: [:revenue_account, :facility_id]
+  validates :revenue_account, numericality: { only_integer: true }
+  validates_uniqueness_of :account_number, scope: [:revenue_account, :facility_id]
   validate :validate_chartstring
 
   scope :active,   conditions: { is_active: true }
