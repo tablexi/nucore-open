@@ -13,7 +13,7 @@
   %p= add_accessories_link(reservation)
 
 = readonly_form_for :order do |f|
-  = f.input :facility
+  = f.input :facility, label: Facility.model_name.human
 
   = f.input :account, :input_html => { :value => @accounts.join(', ') }
   = f.input :ordered_at

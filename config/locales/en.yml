@@ -29,6 +29,12 @@ en:
       calendar: "%a, %d %b %Y %H:%M:%S"
       usa: "%m/%d/%Y %l:%M %p"
 
+  Facility: "!activerecord.models.facility.one!"
+  Facilities: "!activerecord.models.facility.other!"
+  facility_downcase: facility
+  facilities_downcase: facilities
+
+
   admin:
     shared:
       add: "Add %{model}"
@@ -84,7 +90,7 @@ en:
     instrument_utilization_reports: Instrument Utilization
     login: Login
     logout: Logout
-    manage: Manage %{model}
+    manage: Manage !Facilities!
     my_tab: My %{model}
     notices: Notices
 
@@ -872,13 +878,7 @@ en:
       no_orders: There are no disputed orders for this facility
 
     index:
-      all: All Facilities
       empty: "No %{items} are available at this time."
-      recently_used: Recently Used Facilities
-      welcome: |
-        Welcome to NUcore, the centralized ordering system for shared facilities.
-        Please select the shared facility below to view and purchase services
-        and products offered by the facility.
 
     list:
       add: Add Facility
