@@ -100,7 +100,7 @@ class ProductsCommonController < ApplicationController
 
   # GET /services/new
   def new
-    @product = current_facility_products.new(account: NUCore::COMMON_ACCOUNT)
+    @product = current_facility_products.new(account: Settings.accounts.product_default)
     save_product_into_object_name_instance
   end
 

@@ -21,7 +21,7 @@ class FacilityFacilityAccountsController < ApplicationController
 
   # GET /facilities/:facility_id/facility_accounts/new(.:format)
   def new
-    @facility_account = current_facility.facility_accounts.new(is_active: true, revenue_account: "50617")
+    @facility_account = current_facility.facility_accounts.new(is_active: true, revenue_account: Settings.accounts.revenue_account_default)
   end
 
   # POST /facilities/:facility_id/facility_accounts(.:format)

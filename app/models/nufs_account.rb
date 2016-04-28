@@ -34,7 +34,7 @@ class NufsAccount < Account
   # [_return_]
   #   The Validator from which the components were retrieved
   def load_components
-    validator = ValidatorFactory.instance(account_number, NUCore::COMMON_ACCOUNT)
+    validator = ValidatorFactory.instance(account_number, Settings.accounts.product_default)
     @components = validator.components
 
     @components.each do |k, v|

@@ -4,6 +4,11 @@ price_group:
     external: 'External Rate'
     cancer_center: 'Cancer Center Rate'
 
+accounts:
+  # Most frequently used account by NU
+  product_default: 75340
+  revenue_account_default: 50617
+
 financial:
   # in the format MM-DD
   fiscal_year_begins: 09-01
