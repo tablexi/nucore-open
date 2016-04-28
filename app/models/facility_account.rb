@@ -5,7 +5,7 @@ class FacilityAccount < ActiveRecord::Base
   belongs_to :facility
 
   validates :revenue_account, numericality: { only_integer: true }
-  validates_uniqueness_of   :account_number, scope: [:revenue_account, :facility_id]
+  validates_uniqueness_of :account_number, scope: [:revenue_account, :facility_id]
   validate :validate_chartstring
 
   scope :active,   conditions: { is_active: true }
