@@ -9,10 +9,6 @@ en:
     "true": "Yes"
     "false": "No"
 
-  sessions:
-    new:
-      help_text: "If you do not have a NUcore account, please contact the facility manager."
-
   date:
     formats:
       journal_line_reference: "%Y%m%d"
@@ -603,7 +599,7 @@ en:
       add: "Add a Payment Source"
     choose_account:
       select: "Select Payment Source"
-      notice: "You do not have any payment sources. You must have a payment source in order to place an order. Please contact the facility to add a payment source."
+      notice: "You do not have any payment sources. You must have a payment source in order to place an order. Please contact the !facility_downcase! to add a payment source."
       th:
         account: "Payment Source"
         owner: "Owner"
@@ -797,7 +793,7 @@ en:
   facilities:
     disputed_orders:
       head: Disputed Orders
-      no_orders: There are no disputed orders for this facility
+      no_orders: There are no disputed orders for this !facility_downcase!
 
     index:
       empty: "No %{items} are available at this time."
@@ -824,7 +820,7 @@ en:
       submit: "Reassign chart string"
 
     transactions:
-      no_orders: There are no orders in this facility
+      no_orders: There are no orders in this !facility_downcase!
 
   price_policies:
     adjustment: Adjustment
@@ -1002,9 +998,6 @@ en:
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
-
-    search:
-      no_results: There are no active users for this facility.
 
     new_external:
       head: "Add External User"

@@ -30,7 +30,7 @@ en:
 
       services:
         index:
-          description: Services are provided by the facility on behalf of the user. Forms for collection of additional information may be attached to the service.  Results files may be returned to the user.
+          description: Services are provided by the !facility_downcase! on behalf of the user. Forms for collection of additional information may be attached to the service.  Results files may be returned to the user.
 
       items:
         index:

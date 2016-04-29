@@ -4,7 +4,7 @@
 = error_messages_for(:object => @order, :object_name => "order" )
 
 - if @accounts.empty?
-  %p.notice= t('.notice')
+  %p.notice= text('orders.choose_account.notice')
 - else
   = form_tag({}, :id => 'choose-account-frm') do
     %table.table.table-striped.table-hover
