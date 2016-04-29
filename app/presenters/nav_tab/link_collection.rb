@@ -24,7 +24,7 @@ class NavTab::LinkCollection
     )
   end
 
-   def admin
+  def admin
     default + admin_only
   end
 

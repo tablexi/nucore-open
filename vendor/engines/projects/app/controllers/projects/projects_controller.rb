@@ -19,7 +19,7 @@ module Projects
       @project = current_facility.projects.new(project_params)
       if @project.save
         flash[:notice] =
-         I18n.t("controllers.projects.projects.create.success", project_name: @project.name)
+          I18n.t("controllers.projects.projects.create.success", project_name: @project.name)
         redirect_to facility_projects_path(current_facility)
       else
         render action: :new
@@ -33,4 +33,5 @@ module Projects
     end
 
   end
+
 end

@@ -13,6 +13,7 @@ module Projects
         ability.can([:create, :index, :new], Projects::Project)
       end
     end
+
   end
 
 end
