@@ -5,7 +5,8 @@ module Projects
     extend ActiveSupport::Concern
 
     included do
-      tab_methods << :admin_projects
+      insert_index = tab_methods.index(:admin_facility) || -1
+      tab_methods.insert(insert_index, :admin_projects)
     end
 
     def admin_projects
