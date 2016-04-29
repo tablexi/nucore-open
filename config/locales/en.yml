@@ -105,20 +105,6 @@ en:
         problem: Problem
         actual_start: Actual Start Date
 
-    product_details_fields:
-      name: "Name of the %{field} as displayed to the end user"
-      description: "Description as it will appear on the product page"
-      account: "Expense account from which fees will be withdrawn; must be open on purchaser's Chart String"
-      requires_approval: "Restrict access to approved users"
-      initial_order_status: "Default status for new orders"
-      is_archived: "Inactivate the product, disallowing purchase and viewing"
-      is_hidden: "Hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
-      contact_email: "If left blank, email will default to the facility's email address (%{facility_email})."
-      training_request_contacts: Comma separated list of email addresses to be notified when a training request is placed.
-      deposit_account:
-        label: "Recharge Chart String and Account"
-        instruct: "Revenue account to which fees will be deposited"
-        add: "Add Chart String"
     product_manage:
       label:
         url: "URL Name"
@@ -1109,6 +1095,8 @@ en:
       schedule:
         unshared: Unshared schedule
         shared: Shared schedule
+      hints:
+        schedule: You may share a schedule with other products. Choose an exisiting schedule or use an unshared schedule.
 
   notifications:
     index:
