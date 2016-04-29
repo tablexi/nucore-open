@@ -1,13 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Projects::ProjectsController, type: :controller do
-  let(:facility) { create(:facility) }
-
-  let(:administrator) { create(:user, :administrator) }
-  let(:facility_administrator) { create(:user, :facility_administrator, facility: facility) }
-  let(:facility_director) { create(:user, :facility_director, facility: facility) }
-  let(:senior_staff) { create(:user, :senior_staff, facility: facility) }
-  let(:staff) { create(:user, :staff, facility: facility) }
+  let(:facility) { FactoryGirl.create(:facility) }
 
   before(:all) { Projects::Engine.enable! }
 
@@ -23,7 +17,9 @@ RSpec.describe Projects::ProjectsController, type: :controller do
     end
 
     describe "when logged in" do
-      shared_examples_for "it allows index views" do
+      shared_examples_for "it allows index views" do |role|
+        let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+
         before(:each) do
           sign_in user
           do_request
@@ -35,24 +31,10 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         end
       end
 
-      context "as a facility_administrator" do
-        let(:user) { facility_administrator }
-        it_behaves_like "it allows index views"
-      end
-
-      context "as a facility_director" do
-        let(:user) { facility_director }
-        it_behaves_like "it allows index views"
-      end
-
-      context "as facility senior_staff" do
-        let(:user) { senior_staff }
-        it_behaves_like "it allows index views"
-      end
-
-      context "as facility staff" do
-        let(:user) { staff }
-        it_behaves_like "it allows index views"
+      %i(facility_administrator facility_director senior_staff staff).each do |role|
+        context "as #{role}" do
+          it_behaves_like "it allows index views", role
+        end
       end
     end
   end
@@ -69,7 +51,9 @@ RSpec.describe Projects::ProjectsController, type: :controller do
     end
 
     describe "when logged in" do
-      shared_examples_for "it allows new views" do
+      shared_examples_for "it allows new views" do |role|
+        let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+
         before(:each) do
           sign_in user
           do_request
@@ -81,24 +65,10 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         end
       end
 
-      context "as a facility_administrator" do
-        let(:user) { facility_administrator }
-        it_behaves_like "it allows new views"
-      end
-
-      context "as a facility_director" do
-        let(:user) { facility_director }
-        it_behaves_like "it allows new views"
-      end
-
-      context "as facility senior_staff" do
-        let(:user) { senior_staff }
-        it_behaves_like "it allows new views"
-      end
-
-      context "as facility staff" do
-        let(:user) { staff }
-        it_behaves_like "it allows new views"
+      %i(facility_administrator facility_director senior_staff staff).each do |role|
+        context "as #{role}" do
+          it_behaves_like "it allows new views", role
+        end
       end
     end
   end
@@ -120,13 +90,14 @@ RSpec.describe Projects::ProjectsController, type: :controller do
     end
 
     describe "when logged in" do
-      shared_examples_for "it allows project creation" do
+      shared_examples_for "it allows project creation" do |role|
+        let(:created_project) { Projects::Project.last }
+        let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+
         before(:each) do
           sign_in user
           do_request
         end
-
-        let(:created_project) { Projects::Project.last }
 
         it "creates a new project" do
           is_expected.to redirect_to facility_projects_path(facility)
@@ -135,24 +106,10 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         end
       end
 
-      context "as a facility_administrator" do
-        let(:user) { facility_administrator }
-        it_behaves_like "it allows project creation"
-      end
-
-      context "as a facility_director" do
-        let(:user) { facility_director }
-        it_behaves_like "it allows project creation"
-      end
-
-      context "as facility senior_staff" do
-        let(:user) { senior_staff }
-        it_behaves_like "it allows project creation"
-      end
-
-      context "as facility staff" do
-        let(:user) { staff }
-        it_behaves_like "it allows project creation"
+      %i(facility_administrator facility_director senior_staff staff).each do |role|
+        context "as #{role}" do
+          it_behaves_like "it allows project creation", role
+        end
       end
     end
   end
