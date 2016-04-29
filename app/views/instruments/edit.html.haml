@@ -1,17 +1,21 @@
-= render :partial => 'shared/headers/ckeditor'
+= render "shared/headers/ckeditor"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
+
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+  = render "admin/shared/sidenav_product", sidenav_tab: "instruments"
+
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'details'}
+  = render "admin/shared/tabnav_product", secondary_tab: "details"
+
+%h2= @instrument
 
 = simple_form_for([current_facility, @instrument]) do |f|
   = f.error_notification
   .form-inputs
-    = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
-    = render :partial => 'instrument_fields', :locals => {:f => f}
-
-  = f.button :submit, 'Save', :class => ['btn', 'btn-primary']
-  = link_to 'Cancel', manage_facility_instrument_path(current_facility, @instrument)
+    = render "admin/products/details_fields", f: f
+    = render "instrument_fields", f: f
+  %ul.inline
+    %li= f.button :submit, text("shared.save"), class: ["btn", "btn-primary"]
+    %li= link_to text("shared.cancel"), manage_facility_instrument_path(current_facility, @instrument)

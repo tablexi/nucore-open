@@ -1,3 +1,0 @@
-%ul.nav.nav-tabs
-  = tab "#{t('admin.products.index.headers.active', models: product_class.model_name.human(count: 2))} (#{@not_archived_product_count})", {action: :index}, !(params[:archived] == "true")
-  = tab "#{t('admin.products.index.headers.inactive', models: product_class.model_name.human(count: 2))} (#{@archived_product_count})", {action: :index, archived: "true"}, (params[:archived] == "true")

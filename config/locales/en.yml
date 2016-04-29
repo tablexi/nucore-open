@@ -49,27 +49,6 @@ en:
         members: Members
         orders: Orders
         statements: Statements
-    products:
-      index:
-        headers:
-          active: "Active %{models}"
-          inactive: "Inactive %{models}"
-        none:
-          active: "No active %{models} exist for this facility."
-          inactive: "No inactive %{models} exist for this facility."
-        header: "%{model} Name"
-    services:
-      index:
-        description: Services are provided by the facility on behalf of the user. Forms for collection of additional information may be attached to the service.  Results files may be returned to the user.
-    items:
-      index:
-        description: Items are fixed-price products that do not require a reservation or additional user information.
-    instruments:
-      index:
-        description: Instruments are products that must be reserved; billing is based on reservation duration and/or actual time used.
-    bundles:
-      index:
-        description: Bundles are collections of products that are ordered as a single purchase by the purchaser.
 
   pages:
     admin_billing: Billing
