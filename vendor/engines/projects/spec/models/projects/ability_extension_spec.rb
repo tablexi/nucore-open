@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Projects::AbilityExtension do
   subject(:ability) { Ability.new(user, facility, stub_controller) }
   let(:facility) { project.facility }
-  let(:project) { build(:project) }
+  let(:project) { FactoryGirl.build(:project) }
   let(:stub_controller) { OpenStruct.new }
 
   before(:all) { Projects::Engine.enable! }
@@ -25,42 +25,42 @@ RSpec.describe Projects::AbilityExtension do
   end
 
   describe "account manager" do
-    let(:user) { create(:user, :account_manager) }
+    let(:user) { FactoryGirl.create(:user, :account_manager) }
     it_behaves_like "it has no access"
   end
 
   describe "administrator" do
-    let(:user) { create(:user, :administrator) }
+    let(:user) { FactoryGirl.create(:user, :administrator) }
     it_behaves_like "it has full access"
   end
 
   describe "billing administrator", feature_setting: { billing_administrator: true } do
-    let(:user) { create(:user, :billing_administrator) }
+    let(:user) { FactoryGirl.create(:user, :billing_administrator) }
     it_behaves_like "it has no access"
   end
 
   describe "facility administrator" do
-    let(:user) { create(:user, :facility_administrator, facility: project.facility) }
+    let(:user) { FactoryGirl.create(:user, :facility_administrator, facility: facility) }
     it_behaves_like "it has full access"
   end
 
   describe "facility director" do
-    let(:user) { create(:user, :facility_director, facility: project.facility) }
+    let(:user) { FactoryGirl.create(:user, :facility_director, facility: facility) }
     it_behaves_like "it has full access"
   end
 
   describe "senior staff" do
-    let(:user) { create(:user, :senior_staff, facility: project.facility) }
+    let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
     it_behaves_like "it has full access"
   end
 
   describe "staff" do
-    let(:user) { create(:user, :staff, facility: project.facility) }
+    let(:user) { FactoryGirl.create(:user, :staff, facility: facility) }
     it_behaves_like "it has full access"
   end
 
   describe "unprivileged user" do
-    let(:user) { create(:user) }
+    let(:user) { FactoryGirl.create(:user) }
     it_behaves_like "it has no access"
   end
 end
