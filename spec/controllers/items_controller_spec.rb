@@ -30,9 +30,9 @@ RSpec.describe ItemsController do
     end
 
     it_should_allow_operators_only do |_user|
-      expect(assigns[:items]).to eq([@item])
+      expect(assigns(:products)).to eq([@item])
       expect(response).to be_success
-      expect(response).to render_template("items/index")
+      expect(response).to render_template("admin/products/index")
     end
   end
 
