@@ -803,6 +803,7 @@ en:
 
     movable_transactions:
       head: "Move Transactions"
+      no_orders: There are no movable orders
 
     confirm_transactions:
       head: "Confirm Transaction Moves"
@@ -821,6 +822,7 @@ en:
 
     transactions:
       no_orders: There are no orders in this !facility_downcase!
+
 
   price_policies:
     adjustment: Adjustment
