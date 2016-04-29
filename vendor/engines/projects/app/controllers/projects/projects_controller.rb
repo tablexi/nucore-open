@@ -13,7 +13,7 @@ module Projects
     end
 
     def create
-      @project = current_facility.projects.new(params[:projects_project])
+      @project = current_facility.projects.new(project_params)
       if @project.save
         flash[:notice] =
          I18n.t("controllers.projects.projects.create.success", project_name: @project.name)
@@ -22,5 +22,12 @@ module Projects
         render action: :new
       end
     end
+
+    private
+
+    def project_params
+      params.require(:projects_project).permit("description", "name")
+    end
+
   end
 end
