@@ -104,5 +104,56 @@ RSpec.describe Projects::ProjectsController, type: :controller do
   end
 
   describe "POST #create" do
+    def do_request
+      post :create,
+           facility_id: facility.url_name,
+           projects_project: { name: name, description: description }
+    end
+
+    let(:name) { "Project Name" }
+    let(:description) { "A project description" }
+
+    describe "when not logged in" do
+      before { do_request }
+
+      it { is_expected.to redirect_to new_user_session_path }
+    end
+
+    describe "when logged in" do
+      shared_examples_for "it allows project creation" do
+        before(:each) do
+          sign_in user
+          do_request
+        end
+
+        let(:created_project) { Projects::Project.last }
+
+        it "creates a new project" do
+          is_expected.to redirect_to facility_projects_path(facility)
+          expect(created_project.name).to eq(name)
+          expect(created_project.description).to eq(description)
+        end
+      end
+
+      context "as a facility_administrator" do
+        let(:user) { facility_administrator }
+        it_behaves_like "it allows project creation"
+      end
+
+      context "as a facility_director" do
+        let(:user) { facility_director }
+        it_behaves_like "it allows project creation"
+      end
+
+      context "as facility senior_staff" do
+        let(:user) { senior_staff }
+        it_behaves_like "it allows project creation"
+      end
+
+      context "as facility staff" do
+        let(:user) { staff }
+        it_behaves_like "it allows project creation"
+      end
+    end
   end
 end

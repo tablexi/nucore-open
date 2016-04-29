@@ -9,7 +9,9 @@ module Projects
     end
 
     def extend(user, resource)
-      ability.can([:index, :new], Projects::Project) if user.operator_of?(resource)
+      if user.operator_of?(resource)
+        ability.can([:create, :index, :new], Projects::Project)
+      end
     end
   end
 
