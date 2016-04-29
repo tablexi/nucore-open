@@ -1,4 +1,10 @@
 en:
+  activerecord:
+    models:
+      projects/project:
+        one: Project
+        other: Projects
+
   controllers:
     projects:
       projects:

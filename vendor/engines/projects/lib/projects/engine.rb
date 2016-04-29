@@ -8,6 +8,7 @@ module Projects
 
     config.to_prepare do
       Facility.send :include, Projects::FacilityExtension
+      NavTab::LinkCollection.send :include, Projects::LinkCollectionExtension
     end
 
     initializer :append_migrations do |app|

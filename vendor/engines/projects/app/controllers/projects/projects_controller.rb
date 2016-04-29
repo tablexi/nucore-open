@@ -2,6 +2,9 @@ module Projects
 
   class ProjectsController < ApplicationController
 
+    admin_tab :all
+    before_filter { @active_tab = "admin_projects" }
+
     load_and_authorize_resource
 
     def index
