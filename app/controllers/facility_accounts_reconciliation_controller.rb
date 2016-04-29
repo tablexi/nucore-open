@@ -1,4 +1,5 @@
 class FacilityAccountsReconciliationController < ApplicationController
+  include DateHelper
 
   admin_tab :all
   layout "two_column"
@@ -64,13 +65,17 @@ class FacilityAccountsReconciliationController < ApplicationController
   end
 
   def update_account
-    reconciler = OrderDetails::Reconciler.new(unreconciled_details, params[:order_detail])
+    reconciled_at = parse_usa_date(params[:reconciled_at])
+    reconciler = OrderDetails::Reconciler.new(unreconciled_details, params[:order_detail], reconciled_at)
 
     if reconciler.reconcile_all > 0
       count = reconciler.count
       flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully reconciled" if count > 0
     else
-      flash.now[:error] = (["There was an error processing the #{account_class.name.underscore.humanize.downcase} payments"] + reconciler.errors).join("<br />")
+      errors = ["There was an error processing the #{account_class.name.underscore.humanize.downcase} payments"] +
+        Array(reconciler.persist_errors) +
+        reconciler.errors.full_messages
+      flash[:error] = errors.join("<br />").html_safe
     end
   end
 

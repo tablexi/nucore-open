@@ -8,7 +8,8 @@ class AddReconciliationDateToOrderDetail < ActiveRecord::Migration
       elsif od.journal
         od.update_attribute(:reconciled_at, od.journal.journal_date)
       else
-        puts "No statement or journal! #{od.id}"
+        # TODO: What do we do with these
+        od.update_attribute(:reconciled_at, od.reviewed_at)
       end
     end
   end
