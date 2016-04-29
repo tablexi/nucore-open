@@ -13,3 +13,5 @@
       - @projects.each do |project|
         %tr
           %td= project.name
+
+  = will_paginate(@projects)

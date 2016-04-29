@@ -8,7 +8,7 @@ module Projects
     load_and_authorize_resource
 
     def index
-      @projects = current_facility.projects
+      @projects = current_facility.projects.paginate(page: params[:page])
     end
 
     def new
