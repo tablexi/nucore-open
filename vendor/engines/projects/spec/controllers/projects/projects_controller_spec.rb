@@ -1,9 +1,8 @@
 require "rails_helper"
+require_relative "../../projects_spec_helper"
 
 RSpec.describe Projects::ProjectsController, type: :controller do
   let(:facility) { FactoryGirl.create(:facility) }
-
-  before(:all) { Projects::Engine.enable! }
 
   describe "GET #index" do
     def do_request

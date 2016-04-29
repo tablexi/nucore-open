@@ -1,12 +1,11 @@
 require "rails_helper"
+require_relative "../../projects_spec_helper"
 
 RSpec.describe Projects::AbilityExtension do
   subject(:ability) { Ability.new(user, facility, stub_controller) }
   let(:facility) { project.facility }
   let(:project) { FactoryGirl.build(:project) }
   let(:stub_controller) { OpenStruct.new }
-
-  before(:all) { Projects::Engine.enable! }
 
   shared_examples_for "it has full access" do
     it "has full access" do
