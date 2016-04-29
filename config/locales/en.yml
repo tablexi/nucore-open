@@ -599,7 +599,6 @@ en:
       h1: "Payment Source Transactions"
       notice: "You have no completed orders for any facility with this payment source."
       th:
-        facility: "Facility"
         total: "Unreconciled Total"
     list:
       head:
@@ -650,14 +649,11 @@ en:
       h1: "Order Receipt"
       intro: "Thank you for your order."
       label:
-        facility: "Facility"
-        account: "Payment Source"
         ordered:
           at: "Ordered At"
           for: "Ordered For"
           by: "Ordered By"
       th:
-        order_no: "Order #"
         quantity: "Quantity/Product"
         cost: "Cost"
         adjust: "Adjustment"
@@ -695,11 +691,6 @@ en:
 
   order_details:
     edit:
-      save: "Save"
-      cancel: "Cancel"
-      warning: |
-        Changing the Payment Source could result in adjusted pricing. If you are
-        concerned about this or receive incorrect pricing, please contact the facility.
       failure: This order is not currently editable.
     update:
       success: "The order has been updated"
@@ -1049,13 +1040,6 @@ en:
 
     search:
       no_results: There are no active users for this facility.
-      no_users: There are no active users for this facility.
-
-    index:
-      head: Active Users
-      instruct: |
-        Active users are users which have placed an order or had an order placed
-        on their behalf at this facility in the last year.
 
     new_external:
       head: "Add External User"

@@ -23,7 +23,7 @@
 %table.table.table-striped.table-hover.old-table
   %thead
     %tr
-      %th.centered= t('.th.order_no')
+      %th.centered= OrderDetail.human_attribute_name(:id)
       %th{:colspan => 2}= t('.th.quantity')
       %th.currency= t('.th.cost')
       - if @order.has_subsidies?

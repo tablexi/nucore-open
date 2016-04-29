@@ -1,0 +1,7 @@
+en:
+  views:
+    order_details:
+      edit:
+        warning: |
+          Changing the Payment Source could result in adjusted pricing. If you are
+          concerned about this or receive incorrect pricing, please contact the !facility_downcase!.
