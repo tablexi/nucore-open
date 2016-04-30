@@ -3,14 +3,15 @@ module OrderDetails
   class Reconciler
     include ActiveModel::Validations
 
-    attr_reader :persist_errors, :count, :reconciled_at
+    attr_reader :persist_errors, :count, :order_details, :reconciled_at
 
     validate :reconciliation_must_be_in_past
     validate :all_journals_and_statements_must_be_before_reconciliation_date
+    validates_presence_of :order_details
 
     def initialize(order_detail_scope, params, reconciled_at)
-      @order_details = order_detail_scope.readonly(false).find(params.keys)
       @params = params
+      @order_details = order_detail_scope.readonly(false).find(to_be_reconciled.keys)
       @reconciled_at = reconciled_at || Time.current
     end
 
@@ -18,7 +19,7 @@ module OrderDetails
       return 0 unless valid?
       @count = 0
       OrderDetail.transaction do
-        @order_details.each do |od|
+        order_details.each do |od|
           od_params = @params[od.id.to_s]
           reconcile(od, od_params)
         end
@@ -26,11 +27,19 @@ module OrderDetails
       @count
     end
 
+    def full_errors
+      Array(persist_errors) + errors.map { |_attr, msg| msg }
+    end
+
     private
 
-    def reconcile(order_detail, params)
-      return unless params[:reconciled] == "1"
+    # The params hash comes in with the unchecked IDs as well. Filter out to only
+    # those we're going to reconcile. Returns an array of IDs.
+    def to_be_reconciled
+      Hash(@params).select { |order_detail_id, params| params[:reconciled] == "1" }
+    end
 
+    def reconcile(order_detail, params)
       order_detail.reconciled_at = @reconciled_at
       order_detail.assign_attributes(allowed(params))
       order_detail.change_status!(OrderStatus.reconciled_status)

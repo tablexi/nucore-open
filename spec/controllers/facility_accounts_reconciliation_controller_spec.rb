@@ -105,7 +105,7 @@ RSpec.describe FacilityAccountsReconciliationController do
 
         it "has a flash message" do
           perform
-          expect(flash[:error]).to include("must be in the past")
+          expect(flash[:error]).to include("cannot be in the future")
         end
       end
 

@@ -72,10 +72,7 @@ class FacilityAccountsReconciliationController < ApplicationController
       count = reconciler.count
       flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully reconciled" if count > 0
     else
-      errors = ["There was an error processing the #{account_class.name.underscore.humanize.downcase} payments"] +
-        Array(reconciler.persist_errors) +
-        reconciler.errors.full_messages
-      flash[:error] = errors.join("<br />").html_safe
+      flash[:error] = reconciler.full_errors.join("<br />").html_safe
     end
   end
 

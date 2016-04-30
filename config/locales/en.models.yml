@@ -7,11 +7,13 @@ en:
 
   activemodel:
     errors:
-      messages:
-        must_be_in_past: "must be in the past"
       models:
         order_details/reconciler:
-          after_all_journal_dates: "must be after all journal or statement dates"
+          must_be_in_past: "Reconciliation Date cannot be in the future"
+          after_all_journal_dates: "Reconciliation Date must be after all journal or statement dates"
+          attributes:
+            order_details:
+              blank: No orders were selected to reconcile
 
   activerecord:
     errors:

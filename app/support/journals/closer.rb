@@ -5,7 +5,7 @@ class Journals::Closer
   def initialize(journal, params)
     @journal = journal
     # It's like strong_params...
-    @params = params.slice(:reference, :description, :updated_by)
+    @params = params.permit(:reference, :description, :updated_by)
   end
 
   def perform(status)
@@ -45,8 +45,7 @@ class Journals::Closer
 
   def mark_as_succeeded
     if journal.update_attributes(params.merge(is_successful: true))
-      reconciled_status = OrderStatus.reconciled.first
-      journal.order_details.update_all(state: "reconciled", order_status_id: reconciled_status.id)
+      journal.order_details.update_all(state: "reconciled", order_status_id: OrderStatus.reconciled_status.id, reconciled_at: reconciled_at)
     else
       false
     end
@@ -60,6 +59,10 @@ class Journals::Closer
         raise ActiveRecord::Rollback
       end
     end
+  end
+
+  def reconciled_at
+    Time.current
   end
 
 end
