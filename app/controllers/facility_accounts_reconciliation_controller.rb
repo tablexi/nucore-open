@@ -1,4 +1,5 @@
 class FacilityAccountsReconciliationController < ApplicationController
+
   include DateHelper
 
   admin_tab :all

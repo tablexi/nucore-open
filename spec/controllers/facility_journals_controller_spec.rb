@@ -476,7 +476,7 @@ RSpec.describe FacilityJournalsController do
       let(:order_detail_params) do
         {
           @order_detail1.id.to_s => { reconciled: "1" },
-          @order_detail3.id.to_s => { reconciled: "0" }
+          @order_detail3.id.to_s => { reconciled: "0" },
         }
       end
 
@@ -500,7 +500,7 @@ RSpec.describe FacilityJournalsController do
       let(:order_detail_params) do
         {
           @order_detail1.id.to_s => { reconciled: "1" },
-          @order_detail2.id.to_s => { reconciled: "1" }
+          @order_detail2.id.to_s => { reconciled: "1" },
         }
       end
 
@@ -515,7 +515,7 @@ RSpec.describe FacilityJournalsController do
       let(:order_detail_params) do
         {
           @order_detail1.id.to_s => { reconciled: "0" },
-          @order_detail3.id.to_s => { reconciled: "0" }
+          @order_detail3.id.to_s => { reconciled: "0" },
         }
       end
 

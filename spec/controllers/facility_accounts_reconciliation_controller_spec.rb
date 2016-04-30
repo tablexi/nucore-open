@@ -3,7 +3,9 @@ require "rails_helper"
 RSpec.describe FacilityAccountsReconciliationController do
 
   class ReconciliationTestAccount < Account
+
     include ReconcilableAccount
+
   end
 
   FactoryGirl.define do
@@ -24,10 +26,12 @@ RSpec.describe FacilityAccountsReconciliationController do
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:account) { FactoryGirl.create(:reconciliation_test_account, :with_account_owner) }
   let(:product) { FactoryGirl.create(:setup_item, facility: facility) }
-  let(:order) { FactoryGirl.create(:purchased_order, product: product, account: account ) }
+  let(:order) { FactoryGirl.create(:purchased_order, product: product, account: account) }
   let(:order_detail) { order.order_details.first }
-  let(:statement) { FactoryGirl.create(:statement, account: account, facility: facility,
-    created_by_user: admin, created_at: 5.days.ago) }
+  let(:statement) do
+    FactoryGirl.create(:statement, account: account, facility: facility,
+                                   created_by_user: admin, created_at: 5.days.ago)
+  end
   let(:admin) { FactoryGirl.create(:user, :administrator) }
 
   before do
@@ -61,13 +65,13 @@ RSpec.describe FacilityAccountsReconciliationController do
 
     def perform
       post :update, facility_id: facility.url_name, account_type: "ReconciliationTestAccount",
-          reconciled_at: format_usa_date(reconciled_at),
-          order_detail: {
-            order_detail.id.to_s => {
-              reconciled: "1",
-              reconciled_note: "A note"
-            }
-          }
+                    reconciled_at: format_usa_date(reconciled_at),
+                    order_detail: {
+                      order_detail.id.to_s => {
+                        reconciled: "1",
+                        reconciled_note: "A note",
+                      },
+                    }
     end
 
     describe "reconciliation date", :timecop_freeze do

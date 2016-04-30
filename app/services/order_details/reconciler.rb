@@ -1,6 +1,7 @@
 module OrderDetails
 
   class Reconciler
+
     include ActiveModel::Validations
 
     attr_reader :persist_errors, :count, :order_details, :reconciled_at
@@ -36,7 +37,7 @@ module OrderDetails
     # The params hash comes in with the unchecked IDs as well. Filter out to only
     # those we're going to reconcile. Returns an array of IDs.
     def to_be_reconciled
-      Hash(@params).select { |order_detail_id, params| params[:reconciled] == "1" }
+      Hash(@params).select { |_order_detail_id, params| params[:reconciled] == "1" }
     end
 
     def reconcile(order_detail, params)
@@ -67,6 +68,7 @@ module OrderDetails
         errors.add(:reconciled_at, :after_all_journal_dates)
       end
     end
+
   end
 
 end
