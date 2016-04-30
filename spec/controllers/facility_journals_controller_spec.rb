@@ -493,6 +493,24 @@ RSpec.describe FacilityJournalsController do
       end
     end
 
+    describe "when submitting an order detail on another journal" do
+      let(:journal2) { create(:journal, facility: facility, created_by: @admin.id, journal_date: 2.days.ago) }
+      before { journal2.create_journal_rows!([@order_detail2]) }
+
+      let(:order_detail_params) do
+        {
+          @order_detail1.id.to_s => { reconciled: "1" },
+          @order_detail2.id.to_s => { reconciled: "1" }
+        }
+      end
+
+      it "does not reconcile either" do
+        perform
+        expect(@order_detail1.reload.state).to eq("complete")
+        expect(@order_detail2.reload.state).to eq("complete")
+      end
+    end
+
     describe "when submitting nothing checked" do
       let(:order_detail_params) do
         {
