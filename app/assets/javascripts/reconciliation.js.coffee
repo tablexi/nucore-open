@@ -1,3 +1,3 @@
 $ ->
   $('#selected_account').change ->
-    $(this).closest('form').submit();
+    $(@).closest('form').submit()
