@@ -25,6 +25,9 @@ module Projects
       end
     end
 
+    def show
+    end
+
     private
 
     def project_params

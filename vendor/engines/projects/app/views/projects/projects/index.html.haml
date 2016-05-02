@@ -12,6 +12,7 @@
     %tbody
       - @projects.each do |project|
         %tr
-          %td= project.name
+          %td
+            = link_to project.name, facility_project_path(project.facility, project)
 
   = will_paginate(@projects)

@@ -37,7 +37,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
           do_request
         end
 
-        it "shows the index view", :aggregate_failures do
+        it "shows the index view" do
           expect(response.code).to eq("200")
           expect(assigns(:projects)).to match_array(facility.projects)
         end
@@ -71,7 +71,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
           do_request
         end
 
-        it "shows the new view", :aggregate_failures do
+        it "shows the new view" do
           expect(response.code).to eq("200")
           expect(assigns(:project)).to be_kind_of(Projects::Project).and be_new_record
         end
@@ -80,6 +80,42 @@ RSpec.describe Projects::ProjectsController, type: :controller do
       facility_operator_roles.each do |role|
         context "as #{role}" do
           it_behaves_like "it allows new views", role
+        end
+      end
+    end
+  end
+
+  describe "GET #show" do
+    let(:project) { FactoryGirl.create(:project, facility: facility) }
+
+    def do_request
+      get :show, facility_id: facility.url_name, id: project.id
+    end
+
+    describe "when not logged in" do
+      before { do_request }
+
+      it { is_expected.to redirect_to new_user_session_path }
+    end
+
+    describe "when logged in" do
+      shared_examples_for "it allows show views" do |role|
+        let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+
+        before(:each) do
+          sign_in user
+          do_request
+        end
+
+        it "shows the show view" do
+          expect(response.code).to eq("200")
+          expect(assigns(:project)).to be_kind_of(Projects::Project).and be_persisted
+        end
+      end
+
+      facility_operator_roles.each do |role|
+        context "as #{role}" do
+          it_behaves_like "it allows show views", role
         end
       end
     end
