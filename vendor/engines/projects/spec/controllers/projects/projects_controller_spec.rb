@@ -37,7 +37,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
           do_request
         end
 
-        it "shows the index view", :aggregate_failures do
+        it "shows the index view" do
           expect(response.code).to eq("200")
           expect(assigns(:projects)).to match_array(facility.projects)
         end
@@ -71,7 +71,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
           do_request
         end
 
-        it "shows the new view", :aggregate_failures do
+        it "shows the new view" do
           expect(response.code).to eq("200")
           expect(assigns(:project)).to be_kind_of(Projects::Project).and be_new_record
         end
