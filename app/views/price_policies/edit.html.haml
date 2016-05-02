@@ -9,7 +9,7 @@
 
 %h2= @product
 %h3= t(".head")
-= render "price_policies/instructional_text"
+%p= t("price_policies.instructional_text.common")
 
 = modelless_form_for url: price_policy_path(@product, params[:id]), method: :put do |f|
   - @price_policies.each do |price_policy|

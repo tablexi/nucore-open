@@ -827,9 +827,6 @@ en:
       common: |
         All users must be charged the same base rate. You may define adjustments
         to this rate for individual internal price groups.
-      item: ""
-      service: ""
-      instrument: "The user will be charged the sum of actual, scheduled, and overage usage fees.  Actual usage is measured by power relay or manually entered by facility staff.  Scheduled usage is calculated from the user's reservation.  Overage is any usage that exceeds the user's reservation.  If an overage rate is not specified, the actual usage rate will be applied for any overage."
     price_policy_fields:
       price_group: Price Group
       type: Type

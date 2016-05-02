@@ -9,7 +9,7 @@
 
 %h2=h @product
 %h3 Add Pricing Rules
-= render :partial => 'price_policies/instructional_text'
+%p= t("price_policies.instructional_text.common")
 
 = modelless_form_for :url => price_policies_path do |f|
   - @price_policies.each do |pp|
