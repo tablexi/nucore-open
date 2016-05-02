@@ -1,5 +1,4 @@
 require "rails_helper"
-require_relative "../../projects_spec_helper"
 
 RSpec.describe Projects::AbilityExtension do
   subject(:ability) { Ability.new(user, facility, stub_controller) }
