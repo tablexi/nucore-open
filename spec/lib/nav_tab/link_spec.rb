@@ -65,7 +65,7 @@ RSpec.describe NavTab::Link do
     subject { link.tab_id }
 
     context "when the tab is defined" do
-      before { set_translation('pages.a_named_tab', 'A Tab') }
+      before { set_translation("pages.a_named_tab", "A Tab") }
       let(:tab) { "a_named_tab" }
 
       it { is_expected.to eq("a_named_tab_tab") }

@@ -82,7 +82,7 @@ RSpec.configure do |config|
   #     end
   config.infer_spec_type_from_file_location!
 
-  require 'text_helpers/rspec'
+  require "text_helpers/rspec"
 
   config.before(:suite) do
     TextHelpers::RSpec.setup_spec_translations

@@ -42,8 +42,8 @@ module ProductsHelper
     product_url_name = product.try(:url_name) || "url-name"
 
     url_name_hint = send("facility_#{product.class.name.downcase}_url",
-      current_facility.url_name,
-      product_url_name)
+                         current_facility.url_name,
+                         product_url_name)
   end
 
   private
