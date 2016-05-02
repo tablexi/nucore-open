@@ -1,4 +1,18 @@
 require "rails_helper"
+require "controller_spec_helper" # for the #facility_operators helper method
+
+def facility_operator_roles # Translates helper roles to User factory traits
+  facility_operators.map do |role|
+    case role
+    when :admin
+      :facility_administrator
+    when :senior_staff, :staff
+      role
+    else
+      "facility_#{role}".to_sym
+    end
+  end
+end
 
 RSpec.describe Projects::ProjectsController, type: :controller do
   let(:facility) { FactoryGirl.create(:facility) }
@@ -29,7 +43,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         end
       end
 
-      %i(facility_administrator facility_director senior_staff staff).each do |role|
+      facility_operator_roles.each do |role|
         context "as #{role}" do
           it_behaves_like "it allows index views", role
         end
@@ -63,7 +77,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         end
       end
 
-      %i(facility_administrator facility_director senior_staff staff).each do |role|
+      facility_operator_roles.each do |role|
         context "as #{role}" do
           it_behaves_like "it allows new views", role
         end
@@ -104,7 +118,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         end
       end
 
-      %i(facility_administrator facility_director senior_staff staff).each do |role|
+      facility_operator_roles.each do |role|
         context "as #{role}" do
           it_behaves_like "it allows project creation", role
         end
