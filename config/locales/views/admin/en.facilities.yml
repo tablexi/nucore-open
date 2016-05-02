@@ -7,6 +7,7 @@ en:
           abbreviation: "Abbreviated name or acronym for the !facility_downcase!"
           short_description: "Description as it will appear on the home page"
           description: "Description as it will appear on the !facility_downcase! main page"
+          show_instrument_availability: Public schedule icon on !facility_downcase! page will show current availability.
         labels:
           is_active: "Is Active?"
           accepts_multi_add: "Show Order Form for !Facility! (allows adding of multiple products simultaneously)"
