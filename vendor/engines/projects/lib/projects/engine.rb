@@ -3,7 +3,9 @@ module Projects
   class Engine < Rails::Engine
 
     config.to_prepare do
+      ::AbilityExtensionManager.extensions << "Projects::AbilityExtension"
       Facility.send :include, Projects::FacilityExtension
+      NavTab::LinkCollection.send :include, Projects::LinkCollectionExtension
     end
 
     initializer :append_migrations do |app|

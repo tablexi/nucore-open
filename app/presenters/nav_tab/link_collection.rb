@@ -12,16 +12,20 @@ class NavTab::LinkCollection
     @ability = ability
   end
 
+  def self.tab_methods
+    @tab_methods ||= %i(
+      admin_orders
+      admin_reservations
+      admin_billing
+      admin_products
+      admin_users
+      admin_reports
+      admin_facility
+    )
+  end
+
   def admin
-    default + [
-      admin_orders,
-      admin_reservations,
-      admin_billing,
-      admin_products,
-      admin_users,
-      admin_reports,
-      admin_facility,
-    ].select(&:present?)
+    default + admin_only
   end
 
   def customer
@@ -42,6 +46,12 @@ class NavTab::LinkCollection
     if single_facility? && ability.can?(:manage_billing, facility)
       NavTab::Link.new(tab: :admin_billing, url: billing_tab_landing_path)
     end
+  end
+
+  def admin_only
+    self.class.tab_methods.map do |tab_method|
+      send(tab_method)
+    end.select(&:present?)
   end
 
   def admin_orders
