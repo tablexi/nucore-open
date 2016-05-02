@@ -5,14 +5,14 @@ module Projects
     admin_tab :all
     before_filter { @active_tab = "admin_projects" }
 
-    load_and_authorize_resource
+    load_and_authorize_resource through: :current_facility
 
     def index
-      @projects = current_facility.projects.paginate(page: params[:page])
+      @projects = @projects.paginate(page: params[:page])
     end
 
     def new
-      @project = Projects::Project.new(facility: current_facility)
+
     end
 
     def create
