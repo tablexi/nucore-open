@@ -21,4 +21,4 @@
               .order-detail-extra.order-detail-note= order_detail.note
 
         %td= show_actual_total(order_detail)
-        %td= text_field_tag "order_detail[#{order_detail.id}][reconciled_note]", begin params[:order_detail][order_detail.id.to_s][:reconciled_note] rescue "" end
+        %td= text_field_tag "order_detail[#{order_detail.id}][reconciled_note]"

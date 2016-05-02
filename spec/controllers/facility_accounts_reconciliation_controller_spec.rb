@@ -103,8 +103,7 @@ RSpec.describe FacilityAccountsReconciliationController do
         let(:reconciled_at) { 1.day.from_now }
 
         it "does not reconcile the order" do
-          expect { perform }.not_to change { order_detail.reload.state }
-          expect(order_detail.state).to eq("complete")
+          expect { perform }.not_to change { order_detail.reload.state }.from("complete")
         end
 
         it "has a flash message" do
@@ -117,8 +116,7 @@ RSpec.describe FacilityAccountsReconciliationController do
         let(:reconciled_at) { 10.days.ago }
 
         it "does not reconcile the order" do
-          expect { perform }.not_to change { order_detail.reload.state }
-          expect(order_detail.state).to eq("complete")
+          expect { perform }.not_to change { order_detail.reload.state }.from("complete")
         end
 
         it "has a flash message" do
