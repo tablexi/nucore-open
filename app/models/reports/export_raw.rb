@@ -2,6 +2,7 @@ require "csv"
 class Reports::ExportRaw
 
   include DateHelper
+  include TextHelpers::Translation
 
   attr_reader :order_status_ids, :facility, :date_range_field
 
@@ -54,8 +55,12 @@ class Reports::ExportRaw
 
   def column_headers
     report_hash.keys.map do |key|
-      I18n.t("controllers.general_reports.headers.#{key}")
+      text(".headers.#{key}")
     end
+  end
+
+  def translation_scope
+    "controllers.general_reports"
   end
 
   private
