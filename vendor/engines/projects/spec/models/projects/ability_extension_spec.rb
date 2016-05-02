@@ -11,6 +11,7 @@ RSpec.describe Projects::AbilityExtension do
       is_expected.to be_allowed_to(:create, Projects::Project)
       is_expected.to be_allowed_to(:index, Projects::Project)
       is_expected.to be_allowed_to(:new, Projects::Project)
+      is_expected.to be_allowed_to(:show, Projects::Project)
     end
   end
 
@@ -19,6 +20,7 @@ RSpec.describe Projects::AbilityExtension do
       is_expected.not_to be_allowed_to(:create, Projects::Project)
       is_expected.not_to be_allowed_to(:index, Projects::Project)
       is_expected.not_to be_allowed_to(:new, Projects::Project)
+      is_expected.not_to be_allowed_to(:show, Projects::Project)
     end
   end
 
