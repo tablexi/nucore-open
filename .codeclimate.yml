@@ -7,7 +7,6 @@ engines:
     enabled: true
   coffeelint:
     enabled: true
-    config: .coffeelint.json
   duplication:
     enabled: true
     exclude_paths:
