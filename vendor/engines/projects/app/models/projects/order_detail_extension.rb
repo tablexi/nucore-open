@@ -11,6 +11,12 @@ module Projects
                  inverse_of: :order_details
 
       validate :project_facility_matches?
+
+      delegate :projects, to: :facility, allow_nil: true
+    end
+
+    def selectable_projects
+      (projects.active + [project]).uniq.compact
     end
 
     private

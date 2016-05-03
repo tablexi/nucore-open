@@ -35,4 +35,54 @@ RSpec.describe Projects::OrderDetailExtension do
       end
     end
   end
+
+  describe "#selectable_projects" do
+    subject(:order_detail) { order.order_details.first }
+    let(:facility) { order.facility }
+    let(:item) { FactoryGirl.create(:setup_item) }
+    let(:order) { FactoryGirl.create(:setup_order, product: item) }
+
+    context "when there are no active projects for the associated facility" do
+      before(:each) do
+        FactoryGirl.create(:project, :inactive, facility: order_detail.facility)
+      end
+
+      it { expect(order_detail.selectable_projects).to be_empty }
+    end
+
+    context "when there are active projects for the associated facility" do
+      let(:active_projects) { FactoryGirl.create_list(:project, 3, facility: facility) }
+      let(:inactive_project) { FactoryGirl.create(:project, :inactive, facility: facility) }
+      let!(:all_projects) { active_projects + [inactive_project] }
+
+      before { order_detail.update_attribute(:project_id, project_id) }
+
+      context "and the order_detail has an inactive project" do
+        let(:project_id) { inactive_project.id }
+
+        it "includes the inactive project in the list" do
+          expect(order_detail.selectable_projects)
+            .to match_array(active_projects + [inactive_project])
+        end
+      end
+
+      context "and the order_detail has no project selected" do
+        let(:project_id) { nil }
+
+        it "returns all active projects for the facility" do
+          expect(order_detail.selectable_projects)
+            .to match_array(active_projects)
+        end
+      end
+
+      context "when the order_detail has an active project selected" do
+        let(:project_id) { active_projects.first.id }
+
+        it "returns all active projects for the facility" do
+          expect(order_detail.selectable_projects)
+            .to match_array(active_projects)
+        end
+      end
+    end
+  end
 end

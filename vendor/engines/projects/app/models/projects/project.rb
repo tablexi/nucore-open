@@ -12,6 +12,7 @@ module Projects
               presence: true,
               uniqueness: { case_sensitive: false, scope: :facility_id }
 
+    scope :active, conditions: { active: true }
   end
 
 end
