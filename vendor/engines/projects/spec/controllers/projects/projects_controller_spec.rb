@@ -187,6 +187,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
           is_expected.to redirect_to facility_projects_path(facility)
           expect(created_project.name).to eq(name)
           expect(created_project.description).to eq(description)
+          expect(created_project).to be_active
         end
       end
 
@@ -199,6 +200,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
   end
 
   describe "PUT #update" do
+    let(:active?) { true }
     let(:project) { FactoryGirl.create(:project, name: "Old name", facility: facility) }
     let(:new_description) { "New project description" }
     let(:new_name) { "New project name" }
@@ -208,6 +210,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
           facility_id: facility.url_name,
           id: project.id,
           projects_project: {
+            active: active?,
             description: new_description,
             name: new_name,
           }
@@ -233,9 +236,16 @@ RSpec.describe Projects::ProjectsController, type: :controller do
           it "updates the project" do
             expect(project.name).to eq(new_name)
             expect(project.description).to eq(new_description)
+            expect(project).to be_active
             is_expected.to redirect_to facility_projects_path(facility)
             expect(flash[:notice]).to include("was updated")
           end
+        end
+
+        context "when unsetting the active flag" do
+          let(:active?) { false }
+
+          it { expect(project).not_to be_active }
         end
 
         context "when the project name is blank" do

@@ -7,6 +7,7 @@
 
 = simple_form_for @project, url: facility_project_path(@project.facility, @project), method: :put do |f|
   .form-inputs
+    = f.input :active
     = f.input :name, hint: t(".name")
     = f.input :description, hint: t(".description"), input_html: { class: :editor }
   .form-actions
