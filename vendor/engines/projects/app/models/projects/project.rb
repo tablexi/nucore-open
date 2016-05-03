@@ -5,6 +5,7 @@ module Projects
     include ActiveModel::ForbiddenAttributesProtection
 
     belongs_to :facility, foreign_key: :facility_id
+    has_many :order_details, inverse_of: :project
 
     validates :facility_id, presence: true
     validates :name,

@@ -6,6 +6,7 @@ module Projects
       ::AbilityExtensionManager.extensions << "Projects::AbilityExtension"
       Facility.send :include, Projects::FacilityExtension
       NavTab::LinkCollection.send :include, Projects::LinkCollectionExtension
+      OrderDetail.send :include, Projects::OrderDetailExtension
     end
 
     initializer :append_migrations do |app|

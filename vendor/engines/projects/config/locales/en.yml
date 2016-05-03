@@ -1,5 +1,12 @@
 en:
   activerecord:
+    errors:
+      models:
+        order_detail:
+          attributes:
+            project_id:
+              project_facility_mismatch: The project belongs to another facility
+
     models:
       projects/project:
         one: Project
