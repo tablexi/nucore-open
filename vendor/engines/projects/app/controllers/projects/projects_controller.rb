@@ -16,13 +16,7 @@ module Projects
 
     def create
       @project = current_facility.projects.new(project_params)
-      if @project.save
-        flash[:notice] =
-          I18n.t("controllers.projects.projects.create.success", project_name: @project.name)
-        redirect_to facility_projects_path(current_facility)
-      else
-        render action: :new
-      end
+      render action: :new unless save_project
     end
 
     def edit
@@ -33,19 +27,21 @@ module Projects
 
     def update
       @project.attributes = project_params
-      if @project.save
-        flash[:notice] =
-          I18n.t("controllers.projects.projects.update.success", project_name: @project.name)
-        redirect_to facility_projects_path(@project.facility)
-      else
-        render action: :edit
-      end
+      render action: :edit unless save_project
     end
 
     private
 
     def project_params
       params.require(:projects_project).permit("description", "name")
+    end
+
+    def save_project
+      if @project.save
+        flash[:notice] =
+          I18n.t("controllers.projects.projects.#{action_name}.success", project_name: @project.name)
+        redirect_to facility_projects_path(@project.facility)
+      end
     end
 
   end
