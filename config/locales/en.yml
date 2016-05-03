@@ -164,6 +164,7 @@ en:
     timeline:
       facility_tooltip:
         admin_reservation: Administrative Reservation
+    update: Update
 
   global_search:
     search: "Search"

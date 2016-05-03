@@ -25,7 +25,21 @@ module Projects
       end
     end
 
+    def edit
+    end
+
     def show
+    end
+
+    def update
+      @project.attributes = project_params
+      if @project.save
+        flash[:notice] =
+          I18n.t("controllers.projects.projects.update.success", project_name: @project.name)
+        redirect_to facility_projects_path(@project.facility)
+      else
+        render action: :edit
+      end
     end
 
     private

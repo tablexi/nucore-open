@@ -10,6 +10,9 @@ en:
       projects:
         create:
           success: "New project %{project_name} was created."
+        update:
+          success: "Project %{project_name} was updated."
+
   projects:
     projects:
       index:
