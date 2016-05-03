@@ -29,3 +29,5 @@ en:
         description: Description as it will appear on the project's page
         head: Add Project
         name: Name of the label as displayed to the end user
+      show:
+        edit: Edit Project
