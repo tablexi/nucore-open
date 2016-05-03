@@ -7,6 +7,7 @@ RSpec.describe FacilityJournalsController do
   let(:admin_user) { @admin }
   let(:facility) { @authable }
   let(:user) { @user }
+  let(:journal) { @journal }
 
   include DateHelper
 
@@ -33,7 +34,7 @@ RSpec.describe FacilityJournalsController do
   before(:each) do
     @authable = create(:facility)
     @account = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @admin), facility_id: facility.id)
-    @journal = create(:journal, facility: facility, created_by: @admin.id, journal_date: Time.zone.now)
+    @journal = create(:journal, facility: facility, created_by: @admin.id, journal_date: 2.days.ago)
   end
 
   describe "#index" do
@@ -122,6 +123,11 @@ RSpec.describe FacilityJournalsController do
           reconciled_status = OrderStatus.reconciled.first
           expect(@order_detail1.reload.order_status).to eq(reconciled_status)
           expect(@order_detail3.reload.order_status).to eq(reconciled_status)
+        end
+
+        it "sets the reconciled_at for all order details", :timecop_freeze do
+          expect(@order_detail1.reload.reconciled_at).to eq(Time.current.change(usec: 0))
+          expect(@order_detail3.reload.reconciled_at).to eq(Time.current.change(usec: 0))
         end
       end
 
@@ -451,6 +457,72 @@ RSpec.describe FacilityJournalsController do
         @user = @admin
       end
       it_should_support_searching
+    end
+  end
+
+  describe "#reconcile" do
+    def perform
+      post :reconcile, facility_id: facility.url_name, order_detail: order_detail_params, journal_id: journal.id, reconciled_at: format_usa_date(1.day.ago)
+    end
+
+    before do
+      sign_in admin_user
+      ignore_account_validations
+      create_order_details
+      @journal.create_journal_rows!([@order_detail1, @order_detail3])
+    end
+
+    describe "submitting a single order detail" do
+      let(:order_detail_params) do
+        {
+          @order_detail1.id.to_s => { reconciled: "1" },
+          @order_detail3.id.to_s => { reconciled: "0" },
+        }
+      end
+
+      it "sets it to reconciled" do
+        expect { perform }.to change { @order_detail1.reload.state }.to eq("reconciled")
+      end
+
+      it "does not reconcile the one not selected" do
+        expect { perform }.not_to change { @order_detail3.reload.state }
+      end
+
+      it "sets the reconciled_at" do
+        expect { perform }.to change { @order_detail1.reload.reconciled_at }
+      end
+    end
+
+    describe "when submitting an order detail on another journal" do
+      let(:journal2) { create(:journal, facility: facility, created_by: @admin.id, journal_date: 2.days.ago) }
+      before { journal2.create_journal_rows!([@order_detail2]) }
+
+      let(:order_detail_params) do
+        {
+          @order_detail1.id.to_s => { reconciled: "1" },
+          @order_detail2.id.to_s => { reconciled: "1" },
+        }
+      end
+
+      it "does not reconcile either" do
+        perform
+        expect(@order_detail1.reload.state).to eq("complete")
+        expect(@order_detail2.reload.state).to eq("complete")
+      end
+    end
+
+    describe "when submitting nothing checked" do
+      let(:order_detail_params) do
+        {
+          @order_detail1.id.to_s => { reconciled: "0" },
+          @order_detail3.id.to_s => { reconciled: "0" },
+        }
+      end
+
+      it "sets a flash message" do
+        perform
+        expect(flash[:error]).to include("No orders")
+      end
     end
   end
 

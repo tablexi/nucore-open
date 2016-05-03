@@ -1,4 +1,4 @@
-= javascript_include_tag "account_mgmt"
+= javascript_include_tag "reconciliation"
 
 = content_for :h1 do
   = current_facility
@@ -22,7 +22,9 @@
   %p= t(".instructions")
 
   = form_tag([:update, account_route, FacilityAccount], method: :post) do
+    = render "action_row", date: true, unreconciled_order_details: @unreconciled_details
     = hidden_field_tag :selected_account, @selected_account.id
     = render partial: "table"
+    = render partial: "action_row"
 
   %p= will_paginate(@unreconciled_details)

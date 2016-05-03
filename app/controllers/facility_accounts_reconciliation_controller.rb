@@ -1,5 +1,7 @@
 class FacilityAccountsReconciliationController < ApplicationController
 
+  include DateHelper
+
   admin_tab :all
   layout "two_column"
 
@@ -64,32 +66,14 @@ class FacilityAccountsReconciliationController < ApplicationController
   end
 
   def update_account
-    @error_fields = {}
-    update_details = unreconciled_details.readonly(false).find(params[:order_detail].keys)
+    reconciled_at = parse_usa_date(params[:reconciled_at])
+    reconciler = OrderDetails::Reconciler.new(unreconciled_details, params[:order_detail], reconciled_at)
 
-    OrderDetail.transaction do
-      count = 0
-      update_details.each do |od|
-        od_params = params[:order_detail][od.id.to_s]
-        od.reconciled_note = od_params[:notes]
-
-        begin
-          if od_params[:reconciled] == "1"
-            od.change_status!(OrderStatus.reconciled.first)
-            count += 1
-          else
-            od.save!
-          end
-        rescue => e
-          @error_fields = { od.id => od.errors.collect { |field, _error| field } }
-          errors = od.errors.full_messages
-          errors = [$ERROR_INFO.message] if errors.empty?
-          flash.now[:error] = (["There was an error processing the #{account_class.name.underscore.humanize.downcase} payments"] + errors).join("<br />")
-          raise ActiveRecord::Rollback
-        end
-      end
-
+    if reconciler.reconcile_all > 0
+      count = reconciler.count
       flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully reconciled" if count > 0
+    else
+      flash[:error] = reconciler.full_errors.join("<br />").html_safe
     end
   end
 

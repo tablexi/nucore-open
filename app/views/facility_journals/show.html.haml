@@ -37,12 +37,10 @@
 - else
   = form_tag facility_journal_reconcile_path(current_facility, @journal), method: :post do
     - journal_is_submittable = @journal.submittable?
+    - if journal_is_submittable
+      = render "facility_accounts_reconciliation/action_row", date: true, unreconciled_order_details: @order_details, starting: :all
     %table.table.table-striped.table-hover
       %thead
-        - if journal_is_submittable
-          %tr.borderless
-            %th{colspan: 3}= link_to "Select All", "JavaScript:void(0);", class: "select_all"
-            %th.currency{colspan: 3}= submit_tag t(".submit"), class: "btn btn-primary"
         %tr
           - if journal_is_submittable
             %th
@@ -56,7 +54,7 @@
           - disable = order_detail.reconciled? || @journal.open?
           %tr
             - if journal_is_submittable
-              %td= check_box_tag "order_detail_ids[]", order_detail.id, (order_detail.reconciled? ? true : false), disabled: (order_detail.reconciled? ? true : false), class: (order_detail.reconciled? ? "" : "toggle")
+              %td= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", order_detail.reconciled?, disabled: order_detail.reconciled?, class: (order_detail.reconciled? ? "" : "toggle")
             %td
               = link_to order_detail, facility_order_path(order_detail.order.facility.url_name, order_detail.order_id)
               - if order_detail.note?
@@ -66,7 +64,5 @@
             %td= order_detail.account
             %td= number_to_currency(order_detail.total)
             %td= order_detail.reconciled? ? t("boolean.true") : t("boolean.false")
-        - if journal_is_submittable
-          %tr.borderless
-            %td{colspan: 3}
-            %td.currency{colspan: 3}= submit_tag t(".submit"), class: "btn btn-primary"
+    - if journal_is_submittable
+      = render "facility_accounts_reconciliation/action_row", starting: :all

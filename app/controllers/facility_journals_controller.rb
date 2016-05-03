@@ -100,21 +100,16 @@ class FacilityJournalsController < ApplicationController
   end
 
   def reconcile
-    if params[:order_detail_ids].blank?
-      flash[:error] = "No orders were selected to reconcile"
-      redirect_to(facility_journal_path(current_facility, @journal)) && return
+    reconciled_at = parse_usa_date(params[:reconciled_at])
+    reconciler = OrderDetails::Reconciler.new(@journal.order_details, params[:order_detail], reconciled_at)
+
+    if reconciler.reconcile_all > 0
+      count = reconciler.count
+      flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully reconciled" if count > 0
+    else
+      flash[:error] = reconciler.full_errors.join("<br />").html_safe
     end
-    rec_status = OrderStatus.reconciled.first
-    order_details = OrderDetail.for_facility(current_facility).where(id: params[:order_detail_ids]).readonly(false)
-    order_details.each do |od|
-      if od.journal_id != @journal.id
-        flash[:error] = "Order detail #{od} does not belong to this journal! Please reconcile without it."
-        redirect_to(facility_journal_path(current_facility, @journal)) && return
-      end
-      od.change_status!(rec_status)
-    end
-    flash[:notice] = "The selected orders have been reconciled successfully"
-    redirect_to(facility_journal_path(current_facility, @journal)) && return
+    redirect_to [current_facility, @journal]
   end
 
   private

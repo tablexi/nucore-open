@@ -127,12 +127,24 @@ RSpec.describe FacilityAccountsReconciliationController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do
-      expect(assigns(:error_fields)).to be_empty
+      expect(flash.now[:error]).to be_blank
       is_expected.to set_flash
       assert_redirected_to credit_cards_facility_accounts_path
       @order_detail.reload
       expect(@order_detail.state).to eq("reconciled")
       expect(@order_detail.reconciled_note).not_to be_nil
+    end
+
+    describe "errors" do
+      describe "an exception" do
+        before do
+          allow_any_instance_of(OrderDetail).to receive(:change_status!).and_raise("Some error")
+        end
+
+        it_should_allow :admin do
+          expect(flash.now[:error]).to include("Some error")
+        end
+      end
     end
   end
 
@@ -147,7 +159,7 @@ RSpec.describe FacilityAccountsReconciliationController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_all facility_managers do |_user|
-      expect(assigns(:error_fields)).to be_empty
+      expect(flash.now[:error]).to be_blank
       is_expected.to set_flash
       assert_redirected_to purchase_orders_facility_accounts_path
       @order_detail.reload
@@ -183,7 +195,7 @@ RSpec.describe FacilityAccountsReconciliationController do
       order_detail: {
         @order_detail.id.to_s => {
           reconciled: "1",
-          notes: "this transaction is fake",
+          reconciled_note: "this transaction is fake",
         },
       },
     }

@@ -5,6 +5,16 @@ en:
     order:
       auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
 
+  activemodel:
+    errors:
+      models:
+        order_details/reconciler:
+          must_be_in_past: "Reconciliation Date cannot be in the future"
+          after_all_journal_dates: "Reconciliation Date must be after all journal or statement dates"
+          attributes:
+            order_details:
+              blank: No orders were selected to reconcile
+
   activerecord:
     errors:
       # The values :model, :attribute and :value are always available for interpolation
@@ -244,6 +254,7 @@ en:
         product: Product
         quantity: Quantity
         reconciled_note: Reconciliation Note
+        reconciled_at: Reconciliation Date
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
         status: Status
