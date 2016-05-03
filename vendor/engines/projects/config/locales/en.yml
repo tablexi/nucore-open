@@ -15,11 +15,16 @@ en:
 
   projects:
     projects:
+      edit:
+        description: Description as it will appear on the project's page
+        name: Name of the label as displayed to the end user
+        update: Update Project
       index:
         add: Add Project
         head: Manage Projects
       new:
         add: Add Project
+        create: Create a Project
         cancel: Cancel
         description: Description as it will appear on the project's page
         head: Add Project
