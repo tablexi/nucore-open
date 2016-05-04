@@ -2,7 +2,7 @@
   = @project.facility
 
 %h2= @project.name
-%p= @project.description
+= sanitize @project.description
 
 = link_to t(".edit"),
   edit_facility_project_path(@project.facility, @project),
