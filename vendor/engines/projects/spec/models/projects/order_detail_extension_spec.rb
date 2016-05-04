@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe Projects::OrderDetailExtension do
-  subject(:order_detail) { FactoryGirl.build(:order_detail) }
+  subject(:order_detail) { order.order_details.first }
+  let(:facility) { order.facility }
+  let(:item) { FactoryGirl.create(:setup_item) }
+  let(:order) { FactoryGirl.create(:setup_order, product: item) }
   let(:project) { FactoryGirl.create(:project, facility: facility) }
 
   context "validations" do
@@ -14,17 +17,14 @@ RSpec.describe Projects::OrderDetailExtension do
 
     describe "Facility scoping" do
       subject(:order_detail) { order.order_details.first }
-      let(:item) { FactoryGirl.create(:setup_item) }
-      let(:order) { FactoryGirl.create(:setup_order, product: item) }
 
       before { order_detail.update_attribute(:project_id, project.id) }
 
-      context "when the Project belongs to the same facility as the OrderDetail" do
-        let(:facility) { order_detail.facility }
+      context "when the Project belongs to the same facility as the Order" do
         it { is_expected.to be_valid }
       end
 
-      context "when the Project belongs to a different facility than the OrderDetail" do
+      context "when the Project belongs to a different facility than the Order" do
         let(:facility) { FactoryGirl.create(:facility) }
 
         it "is invalid" do
@@ -34,13 +34,36 @@ RSpec.describe Projects::OrderDetailExtension do
         end
       end
     end
+
+    context "when the project is inactive" do
+      before { order_detail.update_attribute(:project_id, project.id) }
+
+      context "and the order_detail was already associated with it" do
+        before(:each) do
+          project.update_attribute(:active, false)
+          order_detail.project_id = project.id
+        end
+
+        it { is_expected.to be_valid }
+      end
+
+      context "and the order_detail was not already associated with it" do
+        let(:inactive_project) do
+          FactoryGirl.create(:project, :inactive, facility: facility)
+        end
+
+        it "is invalid" do
+          order_detail.project_id = inactive_project.id
+          is_expected.not_to be_valid
+          expect(order_detail.errors[:project_id])
+            .to include("The project is inactive")
+        end
+      end
+    end
   end
 
   describe "#selectable_projects" do
     subject(:order_detail) { order.order_details.first }
-    let(:facility) { order.facility }
-    let(:item) { FactoryGirl.create(:setup_item) }
-    let(:order) { FactoryGirl.create(:setup_order, product: item) }
 
     context "when there are no active projects for the associated facility" do
       before(:each) do
