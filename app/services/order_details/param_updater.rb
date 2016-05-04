@@ -23,7 +23,6 @@ class OrderDetails::ParamUpdater
       ]
   end
 
-
   def initialize(order_detail, options = {})
     @order_detail = order_detail
     @editing_user = options[:user]

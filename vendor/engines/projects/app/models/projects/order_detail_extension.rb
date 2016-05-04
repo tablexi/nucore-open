@@ -33,6 +33,7 @@ module Projects
         errors.add(:project_id, :project_is_inactive)
       end
     end
+
   end
 
 end
