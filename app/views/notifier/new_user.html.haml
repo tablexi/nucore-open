@@ -1,9 +1,9 @@
-%p= t(".intro_html", :first_name => @user.first_name, :last_name => @user.last_name, :login_url => new_user_session_url)
+= html(".intro_html", first_name: @user.first_name, last_name: @user.last_name, login_url: new_user_session_url)
 
 - if @password
   %p
-    =h "#{User.human_attribute_name(:username)}: #{@user.username}"
+    = "#{User.human_attribute_name(:username)}: #{@user.username}"
     %br
-    =h "#{User.human_attribute_name(:password)}: #{@password}"
+    = "#{User.human_attribute_name(:password)}: #{@password}"
 - else
-  %p= t(".no_password")
+  %p= text(".no_password")

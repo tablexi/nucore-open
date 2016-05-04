@@ -10,6 +10,7 @@ class UsersController < ApplicationController
   end
 
   include Overridable
+  include TextHelpers::Translation
 
   customer_tab :password
   admin_tab     :all
@@ -79,7 +80,7 @@ class UsersController < ApplicationController
       flash[:error] = I18n.t("users.search.notice1")
       redirect_to facility_users_path
     elsif @user.persisted?
-      flash[:error] = I18n.t("users.search.user_already_exists", username: @user.username)
+      flash[:error] = text("users.search.user_already_exists", username: @user.username)
       redirect_to facility_users_path
     elsif @user.save
       save_user_success

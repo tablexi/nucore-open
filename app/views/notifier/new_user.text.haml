@@ -1,7 +1,7 @@
-= t(".intro", :first_name => @user.first_name, :last_name => @user.last_name, :login_url => new_user_session_url)
+= text(".intro", first_name: @user.first_name, last_name: @user.last_name, login_url: new_user_session_url)
 
 = "#{User.human_attribute_name(:username)}: #{@user.username}"
 - if @password
   = "#{User.human_attribute_name(:password)}: #{@password}"
 - else
-  = t(".no_password")
+  = text(".no_password")

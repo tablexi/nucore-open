@@ -3,7 +3,7 @@
 
 %ul
   %li
-    %label= t(".label.ordered_at")
+    %label= text(".label.ordered_at")
     = l(@order.ordered_at, format: :receipt)
   %li
     %label= OrderDetail.human_attribute_name(:facility)
@@ -47,9 +47,9 @@
             = order_detail.note
     %tr
       %td{colspan: 6}
-        %strong= t(".total")
+        %strong= text(".total")
       %td.currency= number_to_currency(@order.order_details.sum { |d| d.total || 0 })
       %td
 
 - if @order.any_details_estimated?
-  %p= t(".outro")
+  %p= text(".outro")
