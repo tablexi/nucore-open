@@ -55,6 +55,9 @@
               data: { connect: "#order_detail_order_status_id", show_on: OrderStatus.canceled.first.id }
             = t("facility_order_details.edit.label.with_cancel_fee")
 
+    = render_view_hook "after_order_status",
+      f: f, modal: modal?, order_detail: @order_detail
+
     .row
       - if @order_detail.reservation
         .span5= render "reservation", f: f, reservation: @order_detail.reservation

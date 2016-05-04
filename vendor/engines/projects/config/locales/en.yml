@@ -39,3 +39,7 @@ en:
         name: Name of the label as displayed to the end user
       show:
         edit: Edit Project
+
+    shared:
+      select_project:
+        placeholder: Choose a project...

@@ -8,6 +8,10 @@ module Projects
       NavTab::LinkCollection.send :include, Projects::LinkCollectionExtension
       ::OrderDetails::ParamUpdater.send :include, Projects::OrderDetails::ParamUpdaterExtension
       OrderDetail.send :include, Projects::OrderDetailExtension
+
+      ViewHook.add_hook "order_management.order_details.edit",
+                        "after_order_status",
+                        "projects/shared/select_project"
     end
 
     initializer :append_migrations do |app|
