@@ -3,3 +3,7 @@
 
 %h2= @project.name
 = sanitize @project.description
+
+= link_to t(".edit"),
+  edit_facility_project_path(@project.facility, @project),
+  class: "btn btn-primary"

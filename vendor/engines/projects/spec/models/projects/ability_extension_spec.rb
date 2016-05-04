@@ -2,25 +2,24 @@ require "rails_helper"
 
 RSpec.describe Projects::AbilityExtension do
   subject(:ability) { Ability.new(user, facility, stub_controller) }
+  let(:common_actions) { %i(create edit index new show update) }
   let(:facility) { project.facility }
   let(:project) { FactoryGirl.build(:project) }
   let(:stub_controller) { OpenStruct.new }
 
   shared_examples_for "it has full access" do
     it "has full access" do
-      is_expected.to be_allowed_to(:create, Projects::Project)
-      is_expected.to be_allowed_to(:index, Projects::Project)
-      is_expected.to be_allowed_to(:new, Projects::Project)
-      is_expected.to be_allowed_to(:show, Projects::Project)
+      common_actions.each do |action|
+        is_expected.to be_allowed_to(action, Projects::Project)
+      end
     end
   end
 
   shared_examples_for "it has no access" do
     it "has no access" do
-      is_expected.not_to be_allowed_to(:create, Projects::Project)
-      is_expected.not_to be_allowed_to(:index, Projects::Project)
-      is_expected.not_to be_allowed_to(:new, Projects::Project)
-      is_expected.not_to be_allowed_to(:show, Projects::Project)
+      common_actions.each do |action|
+        is_expected.not_to be_allowed_to(action, Projects::Project)
+      end
     end
   end
 

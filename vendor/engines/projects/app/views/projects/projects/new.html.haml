@@ -1,12 +1,14 @@
 = render "shared/headers/ckeditor"
 
 = content_for :h1 do
-  = t(".head")
+  = @project.facility
 
-= simple_form_for @project, url: facility_projects_path(current_facility), method: :post do |f|
+%h2= t(".create")
+
+= simple_form_for @project, url: facility_projects_path(@project.facility), method: :post do |f|
   .form-inputs
     = f.input :name, hint: t(".name")
     = f.input :description, hint: t(".description"), input_html: { class: :editor }
   .form-actions
-    = f.button :submit, t(".add")
-    = link_to t(".cancel"), facility_projects_path(current_facility)
+    = f.button :submit, t(".add"), class: "btn-primary"
+    = link_to t("shared.cancel"), facility_projects_path(@project.facility)
