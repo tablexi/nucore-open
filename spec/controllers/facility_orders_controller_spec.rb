@@ -164,7 +164,7 @@ RSpec.describe FacilityOrdersController do
       expect(flash[:notice]).to be_present
       expect(ActionMailer::Base.deliveries.size).to eq(1)
       mail = ActionMailer::Base.deliveries.first
-      expect(mail.subject).to eq(I18n.t("notifier.order_receipt.subject"))
+      expect(mail.subject).to include("Order Receipt")
       expect(mail.from.first).to eq(Settings.email.from)
       assert_redirected_to facility_order_path(@authable, @order)
     end
