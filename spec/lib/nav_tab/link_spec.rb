@@ -64,7 +64,7 @@ RSpec.describe NavTab::Link do
   describe "#tab_id" do
     subject { link.tab_id }
 
-    context "when the tab is defined" do
+    context "when the tab is defined", :locales do
       before { set_translation("pages.a_named_tab", "A Tab") }
       let(:tab) { "a_named_tab" }
 

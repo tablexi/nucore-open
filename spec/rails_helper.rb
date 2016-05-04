@@ -88,7 +88,7 @@ RSpec.configure do |config|
     TextHelpers::RSpec.setup_spec_translations
   end
 
-  config.after(:each) do
+  config.after(:each, :locales) do
     TextHelpers::RSpec.reset_spec_translations
   end
 
