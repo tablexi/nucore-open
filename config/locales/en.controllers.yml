@@ -109,7 +109,7 @@ en:
 
     general_reports:
       headers:
-        facility: 'Facility'
+        facility: '!Facility!'
         order: 'Order'
         ordered_at: 'Ordered At'
         fulfilled_at: 'Fulfilled At'

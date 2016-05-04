@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe NavTab::Link do
+  include TextHelpers::RSpec::TestHelpers
+
   let(:cross_facility) { false }
   let(:link) do
     described_class.new(
@@ -63,6 +65,7 @@ RSpec.describe NavTab::Link do
     subject { link.tab_id }
 
     context "when the tab is defined" do
+      before { set_translation("pages.a_named_tab", "A Tab") }
       let(:tab) { "a_named_tab" }
 
       it { is_expected.to eq("a_named_tab_tab") }

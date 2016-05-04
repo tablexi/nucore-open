@@ -9,7 +9,7 @@
   %table.table.table-striped.table-hover
     %thead
       %tr
-        %th= t('.th.facility')
+        %th= Facility.model_name.human
         %th.centered= t('.th.total')
     %tbody
       - @facilities.each do |facility|

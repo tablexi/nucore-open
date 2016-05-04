@@ -13,7 +13,7 @@
   %p= add_accessories_link(reservation)
 
 = readonly_form_for :order do |f|
-  = f.input :facility
+  = f.input :facility, label: Facility.model_name.human
 
   = f.input :account, :input_html => { :value => @accounts.join(', ') }
   = f.input :ordered_at
@@ -23,7 +23,7 @@
 %table.table.table-striped.table-hover.old-table
   %thead
     %tr
-      %th.centered= t('.th.order_no')
+      %th.centered= OrderDetail.human_attribute_name(:id)
       %th{:colspan => 2}= t('.th.quantity')
       %th.currency= t('.th.cost')
       - if @order.has_subsidies?

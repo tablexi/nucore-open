@@ -139,6 +139,9 @@ en:
       facility:
         one: Facility
         other: Facilities
+      facility_account:
+        one: Recharge Chart String
+        other: Recharge Chart Strings
       instrument:
         one: Instrument
         other: Instruments
@@ -163,6 +166,9 @@ en:
       order_status:
         one: Order Status
         other: Order Statuses
+      price_group:
+        one: Price Group
+        other: Price Groups
       product:
         one: Product
         other: Products
@@ -201,6 +207,10 @@ en:
         phone_number: Phone Number
         short_description: Short Description
         url_name: URL Name
+      facility_account:
+        account_number: Chart String Number
+        revenue_account: Revenue Account
+        is_active: "Is Active?"
       product:
         url: URL
         url_name: URL Name

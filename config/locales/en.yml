@@ -9,10 +9,6 @@ en:
     "true": "Yes"
     "false": "No"
 
-  sessions:
-    new:
-      help_text: "If you do not have a NUcore account, please contact the facility manager."
-
   date:
     formats:
       journal_line_reference: "%Y%m%d"
@@ -29,9 +25,15 @@ en:
       calendar: "%a, %d %b %Y %H:%M:%S"
       usa: "%m/%d/%Y %l:%M %p"
 
+  Facility: "!activerecord.models.facility.one!"
+  Facilities: "!activerecord.models.facility.other!"
+  facility_downcase: facility
+  facilities_downcase: facilities
+
   admin:
     shared:
       add: "Add %{model}"
+      edit: "Edit %{model}"
       tabnav_users:
         details: "Details"
         orders: "Orders"
@@ -43,27 +45,6 @@ en:
         members: Members
         orders: Orders
         statements: Statements
-    products:
-      index:
-        headers:
-          active: "Active %{models}"
-          inactive: "Inactive %{models}"
-        none:
-          active: "No active %{models} exist for this facility."
-          inactive: "No inactive %{models} exist for this facility."
-        header: "%{model} Name"
-    services:
-      index:
-        description: Services are provided by the facility on behalf of the user. Forms for collection of additional information may be attached to the service.  Results files may be returned to the user.
-    items:
-      index:
-        description: Items are fixed-price products that do not require a reservation or additional user information.
-    instruments:
-      index:
-        description: Instruments are products that must be reserved; billing is based on reservation duration and/or actual time used.
-    bundles:
-      index:
-        description: Bundles are collections of products that are ordered as a single purchase by the purchaser.
 
   pages:
     admin_billing: Billing
@@ -105,6 +86,9 @@ en:
 
   shared:
     cancel: Cancel
+    edit: Edit
+    save: Save
+    create: Create
     footer:
       copyright_html: "&copy; Copyright 2010&ndash;%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"
@@ -117,20 +101,6 @@ en:
         problem: Problem
         actual_start: Actual Start Date
 
-    product_details_fields:
-      name: "Name of the %{field} as displayed to the end user"
-      description: "Description as it will appear on the product page"
-      account: "Expense account from which fees will be withdrawn; must be open on purchaser's Chart String"
-      requires_approval: "Restrict access to approved users"
-      initial_order_status: "Default status for new orders"
-      is_archived: "Inactivate the product, disallowing purchase and viewing"
-      is_hidden: "Hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
-      contact_email: "If left blank, email will default to the facility's email address (%{facility_email})."
-      training_request_contacts: Comma separated list of email addresses to be notified when a training request is placed.
-      deposit_account:
-        label: "Recharge Chart String and Account"
-        instruct: "Revenue account to which fees will be deposited"
-        add: "Add Chart String"
     product_manage:
       label:
         url: "URL Name"
@@ -142,10 +112,6 @@ en:
         hidden: "Is Hidden?"
     sidenav_admin:
       overview: "Overview"
-      deposit_accounts: "Recharge Chart Strings"
-      facility_staff: "Facility Staff"
-      price_groups: "Price Groups"
-      statuses: "Order Statuses"
     tabnav_account:
       details: "Payment Source Details"
       transact: "Transactions"
@@ -259,21 +225,7 @@ en:
           reconcile_note: "Reconcile Note"
 
   facility_users:
-    index:
-      add: Add Facility Staff
-      head: Facility Staff
-      no_users: No staff has been added to this facility.
-      remove_roles_confirm: Are you sure?
-      remove_roles: Remove Roles
-      th:
-        email: Email
-        name: Name
-        roles: Roles
-        username: Username
-    map_user:
-      cancel: Cancel
-      h2: Grant Facility Role
-      submit: Create
+    title: "!Facility! Staff"
     search:
       instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 
@@ -320,7 +272,7 @@ en:
         short: XML
         long: "Download XML File"
     new:
-      instructions: Select the orders that you wish to journal. Only one journal per-facility may be pending at a time. Please note that selected orders may not span multiple fiscal years.
+      instructions: Select the orders that you wish to journal. Only one journal per-!facility_downcase! may be pending at a time. Please note that selected orders may not span multiple fiscal years.
       not_closed: You may not generate a new journal until the pending journal is closed.
       not_closed_html: You may not generate a new journal until the <a href="%{link}">pending journal</a> is closed.
       no_orders: There are no orders to be journaled at this time.
@@ -497,22 +449,6 @@ en:
     update:
       success: Cutoff date successfully updated
 
-  order_imports:
-    new:
-      h2: "Bulk Import"
-      fail_on_error: "Halt import on error"
-      in_process: "In process"
-      send_receipts: "Send receipts"
-      send_report_to: "Send results to"
-      download_link: "Right-click and choose 'save target' to download import template"
-      instructions_html: |
-        <p>Bulk imports are done using a CSV formatted file (from Excel, save as “CSV (Comma delimited)”). The required fields are defined in the template, downloadable below.</p>
-        <p>To upload the completed CSV file, click the "Choose File" button to select the file and then click the "Import" button to add the orders to your facility.</p>
-        <p>By default, if import errors occur the valid entries are imported and the failed entries are returned in a CSV file for you to correct and upload later.
-        If you prefer to halt the import process entirely when any import error occurs (allowing you to correct the file and try again), then check the "Halt import on error" box.</p>
-        <p>By default receipts are NOT sent to customers for bulk imported orders. If you would like receipts to be sent to customers check the "send receipts" box.</p>
-      history:
-        head: Import History
 
   facility_order_details:
     edit:
@@ -558,25 +494,6 @@ en:
         estimated: "* Clicking 'Save' will update the cost estimate by quantity"
         price_policy: "* Clicking 'Save' will attempt to estimate the cost by quantity"
         default: "* Changing the quantity will automatically update the price fields"
-
-  facility_facility_accounts:
-    facility_account_fields:
-      instruct: "Use hyphens to separate Chart String number groups e.g. 123-1234567-12345678"
-      active: "Is Active?"
-      label:
-        account_number: "Chart String Number"
-        deposit_account: "Revenue Account"
-    edit:
-      head: "Edit Recharge Chart String"
-      main: "Editing the Recharge Chart String may effect the facility's ability to collect funds. Edit the Chart String with caution!"
-    index:
-      head: "Recharge Chart Strings"
-      main: "Chart Strings that are approved by the Provost for collection of facility revenue."
-      notice: "No Recharge Chart Strings have been added to this facility yet."
-      th: "Chart String Number"
-      add: "Add Recharge Chart String"
-    new:
-      head: "Add Recharge Chart String"
 
   order_management:
     order_details:
@@ -627,7 +544,6 @@ en:
       h1: "Payment Source Transactions"
       notice: "You have no completed orders for any facility with this payment source."
       th:
-        facility: "Facility"
         total: "Unreconciled Total"
     list:
       head:
@@ -667,7 +583,7 @@ en:
       add: "Add a Payment Source"
     choose_account:
       select: "Select Payment Source"
-      notice: "You do not have any payment sources. You must have a payment source in order to place an order. Please contact the facility to add a payment source."
+      notice: "You do not have any payment sources. You must have a payment source in order to place an order. Please contact the !facility_downcase! to add a payment source."
       th:
         account: "Payment Source"
         owner: "Owner"
@@ -678,14 +594,11 @@ en:
       h1: "Order Receipt"
       intro: "Thank you for your order."
       label:
-        facility: "Facility"
-        account: "Payment Source"
         ordered:
           at: "Ordered At"
           for: "Ordered For"
           by: "Ordered By"
       th:
-        order_no: "Order #"
         quantity: "Quantity/Product"
         cost: "Cost"
         adjust: "Adjustment"
@@ -723,11 +636,6 @@ en:
 
   order_details:
     edit:
-      save: "Save"
-      cancel: "Cancel"
-      warning: |
-        Changing the Payment Source could result in adjusted pricing. If you are
-        concerned about this or receive incorrect pricing, please contact the facility.
       failure: This order is not currently editable.
     update:
       success: "The order has been updated"
@@ -869,40 +777,17 @@ en:
   facilities:
     disputed_orders:
       head: Disputed Orders
-      no_orders: There are no disputed orders for this facility
+      no_orders: There are no disputed orders for this !facility_downcase!
 
     index:
-      all: All Facilities
       empty: "No %{items} are available at this time."
-      recently_used: Recently Used Facilities
-      welcome: |
-        Welcome to NUcore, the centralized ordering system for shared facilities.
-        Please select the shared facility below to view and purchase services
-        and products offered by the facility.
-
-    list:
-      add: Add Facility
-      head: Manage Facilities
 
     show:
       daily_view: 'daily view'
 
-    facility_fields:
-      name: "Name of the facility as displayed to the end user"
-      abbreviation: "Abbreviated name or acronym for the facility"
-      short_description: "Description as it will appear on the home page"
-      description: "Description as it will appear on the facility main page"
-      accepts_multi_add: "Show Order Form for Facility (allows adding of multiple products simultaneously)"
-      inactive: "Uncheck this box to prevent end users from viewing or purchasing from this facility:"
-      is_active: "Is Active?"
-      contact: "The following contact information will appear on statements and should indicate where payment should be sent"
-      show_instrument_availability: Show Instrument Availability Status?
-      order_notification: |
-        This email address will be notified when an order is placed by a user
-        (if left blank, notifications will not be sent)
-
     movable_transactions:
       head: "Move Transactions"
+      no_orders: There are no movable orders
 
     confirm_transactions:
       head: "Confirm Transaction Moves"
@@ -920,7 +805,8 @@ en:
       submit: "Reassign chart string"
 
     transactions:
-      no_orders: There are no orders in this facility
+      no_orders: There are no orders in this !facility_downcase!
+
 
   price_policies:
     adjustment: Adjustment
@@ -941,9 +827,6 @@ en:
       common: |
         All users must be charged the same base rate. You may define adjustments
         to this rate for individual internal price groups.
-      item: ""
-      service: ""
-      instrument: "The user will be charged the sum of actual, scheduled, and overage usage fees.  Actual usage is measured by power relay or manually entered by facility staff.  Scheduled usage is calculated from the user's reservation.  Overage is any usage that exceeds the user's reservation.  If an overage rate is not specified, the actual usage rate will be applied for any overage."
     price_policy_fields:
       price_group: Price Group
       type: Type
@@ -1099,16 +982,6 @@ en:
       update_approvals:
         submit: "Update Access List"
 
-    search:
-      no_results: There are no active users for this facility.
-      no_users: There are no active users for this facility.
-
-    index:
-      head: Active Users
-      instruct: |
-        Active users are users which have placed an order or had an order placed
-        on their behalf at this facility in the last year.
-
     new_external:
       head: "Add External User"
       main: "You may use this to grant NUcore access to external users. The email address and username must match."
@@ -1198,6 +1071,8 @@ en:
       schedule:
         unshared: Unshared schedule
         shared: Shared schedule
+      hints:
+        schedule: You may share a schedule with other products. Choose an exisiting schedule or use an unshared schedule.
 
   notifications:
     index:

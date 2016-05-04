@@ -81,6 +81,17 @@ RSpec.configure do |config|
   #       # Equivalent to being in spec/controllers
   #     end
   config.infer_spec_type_from_file_location!
+
+  require "text_helpers/rspec"
+
+  config.before(:suite) do
+    TextHelpers::RSpec.setup_spec_translations
+  end
+
+  config.after(:each) do
+    TextHelpers::RSpec.reset_spec_translations
+  end
+
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

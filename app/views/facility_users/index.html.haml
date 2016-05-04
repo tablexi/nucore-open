@@ -3,29 +3,29 @@
 = content_for :sidebar do
   = render "admin/shared/sidenav_admin", sidenav_tab: "staff"
 
-%h2= t(".head")
+%h2= text(".head")
 
 %ul.inline
-  %li= link_to t(".add"), search_facility_facility_users_path, class: "btn-add"
+  %li= link_to text("admin.shared.add", model: text("facility_users.title")), search_facility_facility_users_path, class: "btn-add"
 
 - if @users.empty?
-  %p.notice= t(".no_users")
+  %p.notice= text(".no_users")
 - else
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th
-        %th= t(".th.name")
-        %th= t(".th.username")
-        %th= t(".th.email")
+        %th= User.human_attribute_name(:name)
+        %th= User.human_attribute_name(:username)
+        %th= User.human_attribute_name(:email)
         %th= t(".th.roles")
     %tbody
       - @users.each do |user|
         %tr
           %td.centered
-            = link_to t(".remove_roles"),
+            = link_to text(".remove_roles"),
               facility_facility_user_path(current_facility, user),
-              confirm: t(".remove_roles_confirm"),
+              confirm: text(".remove_roles_confirm"),
               method: :delete
           %td= user.full_name
           %td= user.username

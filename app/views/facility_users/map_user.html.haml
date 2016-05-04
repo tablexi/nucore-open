@@ -4,7 +4,7 @@
 = content_for :sidebar do
   = render "admin/shared/sidenav_admin", sidenav_tab: "staff"
 
-%h2= t(".h2")
+%h2= text(".h2")
 
 = form_for(:user_role, url: facility_facility_user_map_user_path) do |form|
   = form.error_messages
@@ -22,5 +22,5 @@
     = form.select :role, options_for_select(UserRole.facility_roles, selected: UserRole::FACILITY_STAFF.to_s)
 
   %ul.inline
-    %li= form.submit t(".submit"), class: "btn"
-    %li= link_to t(".cancel"), facility_facility_users_path
+    %li= form.submit text("shared.create"), class: "btn"
+    %li= link_to text("shared.cancel"), facility_facility_users_path

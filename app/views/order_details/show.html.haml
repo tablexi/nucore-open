@@ -13,7 +13,7 @@
     %p= link_to t('.link.receipt'), receipt_order_path(@order)
 
     = readonly_form_for :order do |f|
-      = f.input :facility
+      = f.input :facility, label: Facility.model_name.human
 
       .control-group
         %label.control-label

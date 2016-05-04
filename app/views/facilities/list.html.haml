@@ -1,8 +1,8 @@
 = content_for :h1 do
-  = t(".head")
+  = text("pages.manage", model: Facility.model_name.human(count: 2))
 
 - if current_user.administrator?
-  %p= link_to t(".add"), new_facility_path, class: "btn-add"
+  %p= link_to text("admin.shared.add", model: Facility.model_name.human), new_facility_path, class: "btn-add"
 
 - if @facilities.any?
   %table.table.table-striped.table-hover

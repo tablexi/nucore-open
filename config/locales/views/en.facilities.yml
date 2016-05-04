@@ -1,0 +1,10 @@
+en:
+  views:
+    facilities:
+      index:
+        recently_used: Recently Used !Facilities!
+        all: All !Facilities!
+        welcome: |
+          Welcome to NUcore, the centralized ordering system for shared !facilities_downcase!.
+          Please select the shared !facility_downcase! below to view and purchase services
+          and products offered by the !facility_downcase!.

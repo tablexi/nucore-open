@@ -1,5 +1,5 @@
 - if !acting_as? && current_user.try(:administrator?)
-  %li= link_to t("pages.manage", model: t("activerecord.models.facility", count: 2)), :list_facilities
+  %li= link_to text("pages.manage", model: Facility.model_name.human(count: 2)), :list_facilities
 
 - elsif !acting_as? && menu_facilities.any?
   %li.dropdown.pull-right{class: controller.active_tab == "manage_facilites" ? "active" : ""}

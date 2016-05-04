@@ -1,0 +1,20 @@
+en:
+  views:
+    facilities:
+      facility_fields:
+        hints:
+          name: "Name of the !facility_downcase! as displayed to the end user"
+          abbreviation: "Abbreviated name or acronym for the !facility_downcase!"
+          short_description: "Description as it will appear on the home page"
+          description: "Description as it will appear on the !facility_downcase! main page"
+          show_instrument_availability: Public schedule icon on !facility_downcase! page will show current availability.
+        labels:
+          is_active: "Is Active?"
+          accepts_multi_add: "Show Order Form for !Facility! (allows adding of multiple products simultaneously)"
+          show_instrument_availability: Show Instrument Availability Status?
+
+        inactive: "Uncheck this box to prevent end users from viewing or purchasing from this !facility_downcase!:"
+        contact: "The following contact information will appear on statements and should indicate where payment should be sent"
+        order_notification: |
+          This email address will be notified when an order is placed by a user
+          (if left blank, notifications will not be sent)

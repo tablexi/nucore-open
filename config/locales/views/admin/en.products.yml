@@ -1,0 +1,45 @@
+en:
+  views:
+    admin:
+      products:
+        index:
+          headers:
+            active: "Active %{models}"
+            inactive: "Inactive %{models}"
+          none:
+            active: "No active %{models} exist for this !facility_downcase!."
+            inactive: "No inactive %{models} exist for this !facility_downcase!."
+          header: "%{model} Name"
+
+        details_fields:
+          hints:
+            name: "Name of the %{field} as displayed to the end user"
+            contact_email: "If left blank, email will default to the !facility_downcase!'s email address (%{facility_email})."
+            description: "Description as it will appear on the product page"
+            deposit_account: "Revenue account to which fees will be deposited"
+            account: "Expense account from which fees will be withdrawn; must be open on purchaser's Chart String"
+            requires_approval: "Restrict access to approved users"
+            initial_order_status: "Default status for new orders"
+            is_archived: "Inactivate the product, disallowing purchase and viewing"
+            is_hidden: "Hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
+            training_request_contacts: Comma separated list of email addresses to be notified when a training request is placed.
+          deposit_account:
+            label: "Recharge Chart String and Account"
+            add: "Add Chart String"
+
+
+      services:
+        index:
+          description: Services are provided by the !facility_downcase! on behalf of the user. Forms for collection of additional information may be attached to the service.  Results files may be returned to the user.
+
+      items:
+        index:
+          description: Items are fixed-price products that do not require a reservation or additional user information.
+
+      instruments:
+        index:
+          description: Instruments are products that must be reserved; billing is based on reservation duration and/or actual time used.
+
+      bundles:
+        index:
+          description: Bundles are collections of products that are ordered as a single purchase by the purchaser.

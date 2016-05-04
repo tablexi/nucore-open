@@ -1,30 +1,30 @@
-= f.input :name, hint: t(".name")
-= f.input :abbreviation, hint: t(".abbreviation")
+= f.input :name, hint: text(".hints.name")
+= f.input :abbreviation, hint: text(".hints.abbreviation")
 = f.input :url_name, hint: facility_url(f.object.url_name || "url-name"), as: :string
-= f.input :short_description, input_html: { class: "wide" }, hint: t(".short_description")
-= f.input :description, input_html: { class: "editor" }, hint: t(".description")
+= f.input :short_description, input_html: { class: "wide" }, hint: text(".hints.short_description")
+= f.input :description, input_html: { class: "editor" }, hint: text(".hints.description")
 
 .well
   %p
     = f.input :accepts_multi_add,
-      as: :boolean, label: false, inline_label: t(".accepts_multi_add")
+      as: :boolean, label: false, inline_label: text(".labels.accepts_multi_add")
   %p
     = f.input :show_instrument_availability,
-      as: :boolean, label: false, inline_label: t(".show_instrument_availability")
+      as: :boolean, label: false, inline_label: text(".labels.show_instrument_availability"), hint: text(".hints.show_instrument_availability")
 
 = render_view_hook("before_is_active", f: f)
 
 .well
-  %p= t(".inactive")
-  = f.input :is_active, as: :boolean, label: false, inline_label: t(".is_active")
+  %p= text(".inactive")
+  = f.input :is_active, as: :boolean, label: false, inline_label: t(".labels.is_active")
 
 .well
-  %p= t(".contact")
+  %p= text(".contact")
   = f.input :address, input_html: { cols: 46, rows: 5 }
   = f.input :phone_number
   = f.input :fax_number
   = f.input :email
 
 .well
-  %p= t(".order_notification")
+  %p= text(".order_notification")
   = f.input :order_notification_recipient, hint: f.object.email

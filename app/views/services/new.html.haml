@@ -1,15 +1,15 @@
-= render :partial => 'shared/headers/ckeditor'
+= render "shared/headers/ckeditor"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'services' }
+  = render "admin/shared/sidenav_product", sidenav_tab: "services"
 
-%h2== Add Service
+%h2= text("admin.shared.add", model: Service.model_name.human)
 = simple_form_for([current_facility, @service]) do |f|
   = f.error_messages
   %ul.form
-    = render :partial => 'admin/shared/product_details_fields', :locals => {:f => f}
+    = render "admin/products/details_fields", f: f
   %ul.inline
-    %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Cancel', facility_services_path
+    %li= f.submit text("shared.create"), class: "btn"
+    %li= link_to text("shared.cancel"), facility_services_path

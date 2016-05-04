@@ -1,22 +1,20 @@
-- plural_model_name = Facility.model_name.human.pluralize
-
 = content_for :h1 do
-  = plural_model_name
+  = Facility.model_name.human(count: 2)
 
-.alert.alert-info= t(".welcome")
+.alert.alert-info= text(".welcome")
 
 - if @facilities.any?
 
   - if @recently_used_facilities.present?
-    %h4= t(".recently_used")
+    %h4= text(".recently_used")
     - @recently_used_facilities.each do |facility|
       %h4.header-tight= link_to facility, facility_path(facility)
     %hr
-    %h4= t(".all")
+    %h4= text(".all")
 
   - @facilities.each do |facility|
     %h4.header-tight= link_to facility, facility_path(facility)
     %p= facility.short_description
 
 - else
-  .alert.alert-info= t(".empty", items: plural_model_name.downcase)
+  .alert.alert-info= t(".empty", items: Facility.model_name.human(count: 2))

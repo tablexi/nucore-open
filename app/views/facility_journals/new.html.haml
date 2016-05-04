@@ -30,6 +30,6 @@
     - if has_pending_journals?
       %p.notice= t("facility_journals.new.not_closed_html", :link => facility_journals_path)
     - else
-      %p.notice= t("facility_journals.new.instructions")
+      %p.notice= text("facility_journals.new.instructions")
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'

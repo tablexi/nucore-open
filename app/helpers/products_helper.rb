@@ -38,6 +38,14 @@ module ProductsHelper
     end
   end
 
+  def product_url_hint(product)
+    product_url_name = product.try(:url_name) || "url-name"
+
+    url_name_hint = send("facility_#{product.class.name.downcase}_url",
+                         current_facility.url_name,
+                         product_url_name)
+  end
+
   private
 
   def public_calendar_options(product)
