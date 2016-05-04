@@ -1,0 +1,44 @@
+en:
+  views:
+    notifier:
+      account_update:
+        subject: "!app_name! Payment Method Updated"
+      new_user:
+        intro_html: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
+        intro: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at %{login_url}."
+        no_password: You may log in with your username and password.
+        subject: "Welcome to !app_name!"
+      order_notification:
+        subject: "!app_name! Order Notification"
+      order_receipt:
+        subject: "!app_name! Order Receipt"
+        intro: "Thank you for your order on the !app_name! website."
+        label:
+          ordered_at: Ordered at
+        outro: "All prices are estimates. Actual cost is assigned when the order is complete."
+        total: Total
+      order_status_changed_to_approved:
+        subject: "Reservation #%{order_detail} has been approved"
+      order_status_changed_to_pending_approval:
+        subject: "%{user} has made a reservation for %{product}. Please approve."
+      review_orders:
+        subject: "!app_name! Orders For Review"
+        body: "New transactions for %{facility} have been posted to \"%{account}\". Please log in to !app_name! and review these charges."
+        body_html: |
+          New transactions for %{facility} have been posted to \"%{account}\".
+
+          Please log in to [!app_name!](%{login_url}) and review these charges.
+      statement:
+        subject: "!app_name! Statement"
+        body: "A new statement from %{facility} has been created for your payment source, \"%{account}\"."
+        body_html: "A new statement from %{facility} has been created for your payment source, \"%{account}\"."
+      user_update:
+        subject: "!app_name! User Updated"
+        body: |
+          The following user %{user} has been added to your payment source %{account} by administrator %{created_by}.
+          If this is incorrect you may log in to !app_name! at %{login_url} and remove this user or contact the administrator named above.
+        body_html: |
+          The following user %{user} has been added to your payment source "%{account}" by administrator %{created_by}.
+
+          If this is incorrect you may [log in to !app_name!](%{login_url}) and remove this user or contact the administrator named above.
+

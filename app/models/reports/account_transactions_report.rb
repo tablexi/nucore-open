@@ -4,6 +4,7 @@ class Reports::AccountTransactionsReport
 
   include ApplicationHelper
   include ERB::Util
+  include TextHelpers::Translation
 
   def initialize(order_details, options = {})
     @order_details = order_details
@@ -27,15 +28,19 @@ class Reports::AccountTransactionsReport
   end
 
   def description
-    I18n.t("reports.account_transactions.subject")
+    text(".subject")
   end
 
   def text_content
-    I18n.t("reports.account_transactions.body")
+    text(".body")
   end
 
   def has_attachment?
     true
+  end
+
+  def translation_scope
+    "reports.account_transactions"
   end
 
   private
