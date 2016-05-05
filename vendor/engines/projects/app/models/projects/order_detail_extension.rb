@@ -13,11 +13,11 @@ module Projects
       validate :project_facility_must_match
       validate :project_must_be_active, if: :project_id_changed?
 
-      delegate :projects, to: :facility, allow_nil: true
+      delegate :projects, to: :facility, prefix: true
     end
 
     def selectable_projects
-      (projects.active + [project]).uniq.compact
+      (facility_projects.active + [project]).uniq.compact
     end
 
     private
