@@ -89,7 +89,7 @@ class Notifier < ActionMailer::Base
   end
 
   def send_nucore_mail(to, subject, template_name = nil)
-    mail(subject: subject, to: Settings.email.fake.enabled ? Settings.email.fake.to : to, template_name: template_name)
+    mail(subject: subject, to: to, template_name: template_name)
   end
 
 end
