@@ -1,5 +1,28 @@
 class OrderDetails::ParamUpdater
 
+  def self.permitted_attributes
+    @permitted_attributes ||=
+      [
+        :account_id,
+        :resolve_dispute,
+        :dispute_resolved_reason,
+        :quantity,
+        :note,
+        reservation: [
+          :reserve_start_date,
+          :reserve_start_hour,
+          :reserve_start_min,
+          :reserve_start_meridian,
+          :duration_mins,
+          :actual_start_date,
+          :actual_start_hour,
+          :actual_start_min,
+          :actual_start_meridian,
+          :actual_duration_mins,
+        ],
+      ]
+  end
+
   def initialize(order_detail, options = {})
     @order_detail = order_detail
     @editing_user = options[:user]
@@ -49,11 +72,7 @@ class OrderDetails::ParamUpdater
   end
 
   def permitted_params(params)
-    params.permit(:account_id, :resolve_dispute, :dispute_resolved_reason, :quantity, :note,
-                  reservation: [:reserve_start_date, :reserve_start_hour,
-                                :reserve_start_min, :reserve_start_meridian, :duration_mins,
-                                :actual_start_date, :actual_start_hour,
-                                :actual_start_min, :actual_start_meridian, :actual_duration_mins])
+    params.permit(*self.class.permitted_attributes)
   end
 
   def assign_self_and_reservation_attributes(params)

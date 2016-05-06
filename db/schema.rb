@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160503170055) do
+ActiveRecord::Schema.define(:version => 20160503184205) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -250,6 +250,7 @@ ActiveRecord::Schema.define(:version => 20160503170055) do
     t.integer  "product_accessory_id"
     t.boolean  "problem",                                                               :default => false, :null => false
     t.datetime "reconciled_at"
+    t.integer  "project_id"
   end
 
   add_index "order_details", ["account_id"], :name => "fk_od_accounts"

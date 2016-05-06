@@ -6,6 +6,7 @@ RSpec.describe Projects::Project, type: :model do
   context "validations" do
     it { is_expected.to validate_presence_of(:facility_id) }
     it { is_expected.to belong_to(:facility).with_foreign_key(:facility_id) }
+    it { is_expected.to have_many(:order_details).inverse_of(:project) }
 
     it "enforces unique names per facility" do
       is_expected

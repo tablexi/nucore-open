@@ -193,7 +193,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
   describe "update reservation" do
     before :each do
       @action = :update
-      @method = :post
+      @method = :put
       @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
     end
 
@@ -361,7 +361,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         before :each do
           @action = :update
-          @method = :post
+          @method = :put
           @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
         end
 
@@ -477,7 +477,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
     before :each do
       sign_in @admin
       @action = :update
-      @method = :post
+      @method = :put
       @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
     end
 

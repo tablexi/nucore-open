@@ -1,5 +1,13 @@
 en:
   activerecord:
+    errors:
+      models:
+        order_detail:
+          attributes:
+            project_id:
+              project_facility_mismatch: The project belongs to another facility
+              project_is_inactive: The project is inactive
+
     models:
       projects/project:
         one: Project
@@ -31,3 +39,7 @@ en:
         name: Name of the label as displayed to the end user
       show:
         edit: Edit Project
+
+    shared:
+      select_project:
+        placeholder: Choose a project...
