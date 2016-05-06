@@ -112,6 +112,7 @@ en:
         requires_approval: "Requires Approval?"
         inactive: "Is Inactive?"
         hidden: "Is Hidden?"
+    purchase: Purchase
     sidenav_admin:
       overview: "Overview"
     tabnav_account:
@@ -132,6 +133,7 @@ en:
     timeline:
       facility_tooltip:
         admin_reservation: Administrative Reservation
+    update: Update
 
   global_search:
     search: "Search"

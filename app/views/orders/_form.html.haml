@@ -36,10 +36,10 @@
 
   - if order.order_details.size > 0
     %ul.inline{style: "float: left"}
-      %li= submit_tag "Update", class: "btn"
+      %li= submit_tag t("shared.update"), class: "btn"
       - if order.validated?
         %li
-          = f.submit "Purchase",
+          = f.submit t("shared.purchase"),
             class: %w(btn btn-primary),
             confirm: t(".confirm")
 
