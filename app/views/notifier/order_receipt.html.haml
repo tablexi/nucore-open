@@ -1,19 +1,22 @@
 - if @greeting.present?
   %p= @greeting
 
-%ul
-  %li
-    %label= text(".label.ordered_at")
-    = l(@order.ordered_at, format: :receipt)
-  %li
-    %label= OrderDetail.human_attribute_name(:facility)
-    = @order.facility
-  %li
-    %label= OrderDetail.human_attribute_name(:ordered_by)
-    = @order.created_by_user.full_name
-  %li
-    %label= OrderDetail.human_attribute_name(:account)
-    = @order.account
+%table{ border: 0 }
+  %tr
+    %td= Order.human_attribute_name(:ordered_at)
+    %td= l(@order.ordered_at, format: :receipt)
+
+  %tr
+    %td= Facility.model_name.human
+    %td= @order.facility
+  %tr
+    %td= OrderDetail.human_attribute_name(:ordered_by)
+    %td= @order.created_by_user.full_name
+  %tr
+    %td= Account.model_name.human
+    %td= @order.account
+
+%hr
 
 %table.table.table-striped.table-hover
   %thead
