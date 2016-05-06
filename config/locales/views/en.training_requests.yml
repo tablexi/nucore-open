@@ -1,0 +1,7 @@
+en:
+  views:
+    training_requests:
+      new:
+        requires_approval: |
+          The %{product} requires approval to reserve. Would you like to be
+          contacted by the !facility_downcase! for access or training?
