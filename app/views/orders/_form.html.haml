@@ -1,4 +1,4 @@
-= form_for order, url: { action: :update_or_purchase } do |f|
+= simple_form_for order, url: { action: :update_or_purchase } do |f|
   %table.table.table-striped.table-hover#cart
     %thead
       %tr
@@ -46,3 +46,6 @@
     - if acting_as?
       .backdate_fields
         = render "edit_date", f: f
+
+      = render_view_hook "acting_as",
+        f: f, order_detail: order.order_details.first
