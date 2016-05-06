@@ -10,9 +10,6 @@ class Journal < ActiveRecord::Base
       rows = journal_rows
       return false if rows.empty?
 
-      # write journal spreadsheet to tmp directory
-      # temp_file   = Tempfile.new("journalspreadsheet")
-      temp_file   = File.new("#{Dir.tmpdir}/journal.spreadsheet.#{Time.zone.now.strftime('%Y%m%dT%H%M%S')}.xls", "w")
       output_file = JournalSpreadsheet.write_journal_entry(rows, output_file: temp_file.path)
       # add/import journal spreadsheet
       status      = add_spreadsheet(output_file)
@@ -23,6 +20,16 @@ class Journal < ActiveRecord::Base
         nil
       end
       status
+    end
+
+    private
+
+    def temp_file
+      @temp_file ||= File.new(spreadsheet_filename, "w")
+    end
+
+    def spreadsheet_filename
+      Rails.root.join("tmp/journal.spreadsheet.#{Time.current.strftime('%Y%m%dT%H%M%S')}.xls")
     end
 
   end
