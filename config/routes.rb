@@ -17,8 +17,8 @@ Nucore::Application.routes.draw do
 
   # shared searches
   post  "/user_search_results", to: 'search#user_search_results'
-  match "/facilities/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
-  match "/facilities/:facility_id/accounts/user/:user_id", to: 'facility_accounts#user_accounts', as: "user_accounts"
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/accounts/user/:user_id", to: 'facility_accounts#user_accounts', as: "user_accounts"
 
   post "global_search" => 'global_search#index', as: "global_search"
 
@@ -41,7 +41,7 @@ Nucore::Application.routes.draw do
       end
     end
 
-    resources :facilities, only: [] do
+    resources :facilities, only: [], path: I18n.t("facilities_downcase") do
       resources :statements, only: [:show]
     end
   end
@@ -49,7 +49,7 @@ Nucore::Application.routes.draw do
   # transaction searches
   match "/transactions", to: 'transaction_history#my_history', as: "transaction_history"
 
-  resources :facilities, except: [:delete] do
+  resources :facilities, except: [:delete], path: I18n.t("facilities_downcase") do
     collection do
       get "list"
     end
@@ -122,7 +122,7 @@ Nucore::Application.routes.draw do
 
     resources :order_statuses, except: [:show]
 
-    resources :facility_users, controller: "facility_users", only: [:index, :destroy] do
+    resources :facility_users, controller: "facility_users", only: [:index, :destroy], path: "#{I18n.t("facility_downcase")}_users" do
       collection do
         get "search"
       end
@@ -155,7 +155,10 @@ Nucore::Application.routes.draw do
     end
     ######
 
-    resources :facility_accounts, controller: "facility_facility_accounts", only: [:index, :new, :create, :edit, :update] if SettingsHelper.feature_on? :recharge_accounts
+    if SettingsHelper.feature_on? :recharge_accounts
+      resources :facility_accounts, controller: "facility_facility_accounts",
+        only: [:index, :new, :create, :edit, :update], path: "#{I18n.t("facility_downcase")}_accounts"
+    end
 
     resources :orders, controller: "facility_orders", only: [:index, :update, :show] do
       member do
@@ -334,36 +337,36 @@ Nucore::Application.routes.draw do
   match "reservations(/:status)", to: 'reservations#list', as: "reservations_status"
 
   # file upload routes
-  get   "/facilities/:facility_id/:product/:product_id/files/upload",                                   to: 'file_uploads#upload',                as: "upload_product_file"
-  post  "/facilities/:facility_id/:product/:product_id/files",                                          to: 'file_uploads#create',                as: "add_product_file"
-  post  "/facilities/:facility_id/:product/:product_id/uploader_files",                                 to: 'file_uploads#uploader_create',       as: "add_uploader_file"
-  match "/facilities/:facility_id/:product/:product_id/files/:id",                                      to: 'file_uploads#destroy',               as: "remove_product_file", via: :delete
-  get   "/facilities/:facility_id/:product/:product_id/files/:file_type/:id",                           to: 'file_uploads#download',              as: "download_product_file"
-  get   "/facilities/:facility_id/:product/:product_id/files/product_survey",                           to: 'file_uploads#product_survey',        as: "product_survey"
-  post  "/facilities/:facility_id/:product/:product_id/files/create_product_survey",                    to: 'file_uploads#create_product_survey', as: "create_product_survey"
-  put   "/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
-  put   "/facilities/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
-  match "/facilities/:facility_id/services/:service_id/surveys/:external_service_id/complete",          to: 'surveys#complete',                 as: "complete_survey", via: [:get, :post]
+  get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/upload",                                   to: 'file_uploads#upload',                as: "upload_product_file"
+  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files",                                          to: 'file_uploads#create',                as: "add_product_file"
+  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/uploader_files",                                 to: 'file_uploads#uploader_create',       as: "add_uploader_file"
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:id",                                      to: 'file_uploads#destroy',               as: "remove_product_file", via: :delete
+  get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:file_type/:id",                           to: 'file_uploads#download',              as: "download_product_file"
+  get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/product_survey",                           to: 'file_uploads#product_survey',        as: "product_survey"
+  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/create_product_survey",                    to: 'file_uploads#create_product_survey', as: "create_product_survey"
+  put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
+  put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete",          to: 'surveys#complete',                 as: "complete_survey", via: [:get, :post]
 
   # general reports
-  match "/facilities/:facility_id/general_reports/assigned_to",   to: 'general_reports#assigned_to',   as: "assigned_to_facility_general_reports",   via: [:get, :post]
-  match "/facilities/:facility_id/general_reports/account",       to: 'general_reports#account',       as: "account_facility_general_reports",       via: [:get, :post]
-  match "/facilities/:facility_id/general_reports/price_group",   to: 'general_reports#price_group',   as: "price_group_facility_general_reports",   via: [:get, :post]
-  match "/facilities/:facility_id/general_reports/account_owner", to: 'general_reports#account_owner', as: "account_owner_facility_general_reports", via: [:get, :post]
-  match "/facilities/:facility_id/general_reports/product",       to: 'general_reports#product',       as: "product_facility_general_reports",       via: [:get, :post]
-  match "/facilities/:facility_id/general_reports/purchaser",     to: 'general_reports#purchaser',     as: "purchaser_facility_general_reports",     via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/assigned_to",   to: 'general_reports#assigned_to',   as: "assigned_to_facility_general_reports",   via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/account",       to: 'general_reports#account',       as: "account_facility_general_reports",       via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/price_group",   to: 'general_reports#price_group',   as: "price_group_facility_general_reports",   via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/account_owner", to: 'general_reports#account_owner', as: "account_owner_facility_general_reports", via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/product",       to: 'general_reports#product',       as: "product_facility_general_reports",       via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/purchaser",     to: 'general_reports#purchaser',     as: "purchaser_facility_general_reports",     via: [:get, :post]
 
   # instrument reports
-  match "/facilities/:facility_id/instrument_reports/account",       to: 'instrument_reports#account',       as: "account_facility_instrument_reports",       via: [:get, :post]
-  match "/facilities/:facility_id/instrument_reports/account_owner", to: 'instrument_reports#account_owner', as: "account_owner_facility_instrument_reports", via: [:get, :post]
-  match "/facilities/:facility_id/instrument_reports/instrument",    to: 'instrument_reports#instrument',    as: "instrument_facility_instrument_reports",    via: [:get, :post]
-  match "/facilities/:facility_id/instrument_reports/purchaser",     to: 'instrument_reports#purchaser',     as: "purchaser_facility_instrument_reports",     via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/account",       to: 'instrument_reports#account',       as: "account_facility_instrument_reports",       via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/account_owner", to: 'instrument_reports#account_owner', as: "account_owner_facility_instrument_reports", via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/instrument",    to: 'instrument_reports#instrument',    as: "instrument_facility_instrument_reports",    via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/purchaser",     to: 'instrument_reports#purchaser',     as: "purchaser_facility_instrument_reports",     via: [:get, :post]
 
   # instrument day reports
-  match "/facilities/:facility_id/instrument_day_reports/actual_quantity",   to: 'instrument_day_reports#actual_quantity',   as: "actual_quantity_facility_instrument_day_reports",   via: [:get, :post]
-  match "/facilities/:facility_id/instrument_day_reports/reserved_quantity", to: 'instrument_day_reports#reserved_quantity', as: "reserved_quantity_facility_instrument_day_reports", via: [:get, :post]
-  match "/facilities/:facility_id/instrument_day_reports/reserved_hours",    to: 'instrument_day_reports#reserved_hours',    as: "reserved_hours_facility_instrument_day_reports",    via: [:get, :post]
-  match "/facilities/:facility_id/instrument_day_reports/actual_hours",      to: 'instrument_day_reports#actual_hours',      as: "actual_hours_facility_instrument_day_reports",      via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/actual_quantity",   to: 'instrument_day_reports#actual_quantity',   as: "actual_quantity_facility_instrument_day_reports",   via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/reserved_quantity", to: 'instrument_day_reports#reserved_quantity', as: "reserved_quantity_facility_instrument_day_reports", via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/reserved_hours",    to: 'instrument_day_reports#reserved_hours',    as: "reserved_hours_facility_instrument_day_reports",    via: [:get, :post]
+  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/actual_hours",      to: 'instrument_day_reports#actual_hours',      as: "actual_hours_facility_instrument_day_reports",      via: [:get, :post]
 
   # api
   namespace :api do
