@@ -11,3 +11,11 @@ en:
         inactive: "(inactive)"
       new:
         head: "Add Recharge Chart String"
+
+  controllers:
+    facility_facility_accounts:
+      create:
+        success: "%{model} was successfully created"
+      update:
+        success: "%{model} was successfully updated."
+
