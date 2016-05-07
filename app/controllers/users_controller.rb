@@ -128,6 +128,7 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:id
   def show
     @user = User.find(params[:id])
+    save_user_success
   end
 
   # GET /facilities/:facility_id/users/:user_id/access_list
@@ -196,9 +197,10 @@ class UsersController < ApplicationController
   end
 
   def save_user_success
-    flash[:notice] = I18n.t("users.create.success")
+    flash[:notice] = text("create.success")
     if session_user.manager_of?(current_facility)
-      flash[:notice] = (flash[:notice] + "  You may wish to <a href=\"#{facility_facility_user_map_user_path(current_facility, @user)}\">add a facility role</a> for this user.").html_safe
+      add_role = html("create.add_role", link: facility_facility_user_map_user_path(current_facility, @user), inline: true)
+      flash[:notice].safe_concat(add_role)
     end
     Notifier.delay.new_user(user: @user, password: nil)
     redirect_to facility_users_path(user: @user.id)
