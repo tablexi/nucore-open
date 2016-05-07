@@ -60,7 +60,7 @@ en:
         product:
           attributes:
             contact_email:
-              required: must be set on either the product or the facility
+              required: must be set on either the product or the !facility_downcase!
         instrument:
           not_interval: "must be a multiple of the interval (%{reserve_interval})"
           max_less_than_min: "must be greater than or equal to minimum reservation minutes"
@@ -222,7 +222,6 @@ en:
         estimated_cost: Estimated Price
         estimated_subsidy: Estimated Adjustment
         estimated_total: Estimated Total
-        facility: Facility
         fulfilled_at: Fulfilled Date
         id: "Order #"
         journal_date: Journal Date

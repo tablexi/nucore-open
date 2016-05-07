@@ -1,4 +1,5 @@
 class Product < ActiveRecord::Base
+  include TextHelpers::Translation
 
   belongs_to :facility
   belongs_to :initial_order_status, class_name: "OrderStatus"
@@ -25,7 +26,7 @@ class Product < ActiveRecord::Base
 
   # Use lambda so we can dynamically enable/disable in specs
   validate if: -> { SettingsHelper.feature_on?(:product_specific_contacts) } do
-    errors.add(:contact_email, :required) unless email.present?
+    errors.add(:contact_email, text("errors.models.product.attributes.contact_email.required")) unless email.present?
   end
 
   validate do |record|
@@ -224,6 +225,12 @@ class Product < ActiveRecord::Base
 
   def training_request_contacts=(str)
     self[:training_request_contacts] = CsvArrayString.new(str).to_s
+  end
+
+  protected
+
+  def translation_scope
+    self.class.i18n_scope
   end
 
   private
