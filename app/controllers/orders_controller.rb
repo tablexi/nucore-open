@@ -7,6 +7,10 @@ class OrdersController < ApplicationController
   before_filter :init_order,               except: [:cart, :index, :receipt]
   before_filter :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
 
+  def self.before_order_detail_update_hooks
+    @before_order_detail_update_hooks ||= []
+  end
+
   def initialize
     @active_tab = "orders"
     super
@@ -225,7 +229,10 @@ class OrdersController < ApplicationController
   def update
     load_statuses
     params[:order_datetime] = build_order_date if acting_as?
+
     @order.transaction do
+      self.class.before_order_detail_update_hooks.each { |hook| public_send(hook) }
+
       if OrderDetailUpdater.new(@order, order_update_params).update
         # Must show instead of render to maintain "more options" state when
         # ordering on behalf of
