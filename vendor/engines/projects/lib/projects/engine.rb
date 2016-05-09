@@ -9,6 +9,7 @@ module Projects
       ::OrderDetails::ParamUpdater.send :include, Projects::OrderDetails::ParamUpdaterExtension
       Order.send :include, Projects::OrderExtension
       OrderDetail.send :include, Projects::OrderDetailExtension
+      OrdersController.send :include, Projects::OrdersControllerExtension
 
       ViewHook.add_hook "order_management.order_details.edit",
                         "after_order_status",
