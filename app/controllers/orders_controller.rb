@@ -231,7 +231,7 @@ class OrdersController < ApplicationController
     params[:order_datetime] = build_order_date if acting_as?
 
     @order.transaction do
-      self.class.before_order_detail_update_hooks.each { |hook| public_send(hook) }
+      run_order_detail_update_hooks
 
       if OrderDetailUpdater.new(@order, order_update_params).update
         # Must show instead of render to maintain "more options" state when
@@ -249,7 +249,10 @@ class OrdersController < ApplicationController
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.ordered_at = build_order_date if ordering_on_behalf_with_date_params?
 
-    order_purchaser.purchase!
+    @order.transaction do
+      run_order_detail_update_hooks
+      order_purchaser.purchase!
+    end
 
     if order_purchaser.quantities_changed?
       flash[:notice] = I18n.t("controllers.orders.purchase.quantities_changed")
@@ -346,6 +349,10 @@ class OrdersController < ApplicationController
 
   def ordering_on_behalf_with_date_params?
     params[:order_date].present? && params[:order_time].present? && acting_as?
+  end
+
+  def run_order_detail_update_hooks
+    self.class.before_order_detail_update_hooks.each { |hook| public_send(hook) }
   end
 
   def single_reservation?
