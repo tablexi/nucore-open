@@ -62,7 +62,7 @@ class Journals::Closer
   end
 
   def reconciled_at
-    Time.current
+    @journal.journal_date
   end
 
 end
