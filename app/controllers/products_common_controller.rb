@@ -74,7 +74,7 @@ class ProductsCommonController < ApplicationController
     end
 
     # is the user approved?
-    if true#add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
+    if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
       if SettingsHelper.feature_on?(:training_requests)
         if TrainingRequest.submitted?(session_user, @product)
           flash[:notice] = text(".already_requested_access", product: @product)
