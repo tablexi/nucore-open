@@ -1,4 +1,5 @@
 class Product < ActiveRecord::Base
+
   include TextHelpers::Translation
 
   belongs_to :facility

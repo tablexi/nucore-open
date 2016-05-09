@@ -90,7 +90,7 @@ class ProductsCommonController < ApplicationController
 
     if @error
       flash.now[:notice] = text(@error, singular: @product.class.model_name.downcase,
-        plural: @product.class.model_name.human(count: 2).downcase)
+                                        plural: @product.class.model_name.human(count: 2).downcase)
     end
 
     @add_to_cart = add_to_cart

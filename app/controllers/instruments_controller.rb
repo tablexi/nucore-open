@@ -49,10 +49,10 @@ class InstrumentsController < ProductsCommonController
       else
         add_to_cart = false
         flash[:notice] = html(".requires_approval",
-          email: @instrument.email,
-          facility: @instrument.facility,
-          instrument: @instrument,
-        )
+                              email: @instrument.email,
+                              facility: @instrument.facility,
+                              instrument: @instrument,
+                             )
       end
     end
 
@@ -144,12 +144,12 @@ class InstrumentsController < ProductsCommonController
         status = instrument.relay.get_status
         instrument_status = instrument.current_instrument_status
         # if the status hasn't changed, don't create a new status
-        if instrument_status && status == instrument_status.is_on?
-          @instrument_statuses << instrument_status
-        else
-          # || false will ensure that the value of is_on is not nil (causes a DB error)
-          @instrument_statuses << instrument.instrument_statuses.create!(is_on: status || NUCore::Database.boolean(false))
-        end
+        @instrument_statuses << if instrument_status && status == instrument_status.is_on?
+                                  instrument_status
+                                else
+                                  # || false will ensure that the value of is_on is not nil (causes a DB error)
+                                  instrument.instrument_statuses.create!(is_on: status || NUCore::Database.boolean(false))
+                                end
       rescue => e
         logger.error e.message
         @instrument_statuses << InstrumentStatus.new(instrument: instrument, error_message: e.message)
