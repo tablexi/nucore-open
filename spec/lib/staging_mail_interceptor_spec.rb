@@ -24,6 +24,14 @@ RSpec.describe StagingMailInterceptor do
         end
       end
 
+      describe "case insensitivity" do
+        let(:to) { ["ALLOWED@example.org"] }
+
+        it "lets the message through" do
+          expect(message.to).to eq(to)
+        end
+      end
+
       describe "multiple addresses" do
         let(:to) { whitelist.first(2) }
 

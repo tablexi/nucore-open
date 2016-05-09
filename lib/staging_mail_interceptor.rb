@@ -65,9 +65,7 @@ class StagingMailInterceptor
   def whitelisted?(recipient)
     recipient = Mail::Address.new(recipient)
     recipient.domain == "tablexi.com" ||
-      send_to_addresses.include?(recipient.address) ||
-      whitelist.include?(recipient.address) ||
-      exception_recipients.include?(recipient.address)
+      full_whitelist.map(&:downcase).include?(recipient.address.downcase)
   end
 
   # Internal: Get a list of the whitelisted email addresses for this message.
@@ -87,6 +85,13 @@ class StagingMailInterceptor
     message.to.all? { |recipient| whitelisted?(recipient) } &&
       message.cc.blank? &&
       message.bcc.blank?
+  end
+
+  # Internal: The list of all users that will be able to receive emails
+  #
+  # Returns an Array of strings
+  def full_whitelist
+    send_to_addresses + whitelist + exception_recipients
   end
 
   def send_to_addresses
