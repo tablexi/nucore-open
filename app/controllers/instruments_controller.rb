@@ -182,6 +182,12 @@ class InstrumentsController < ProductsCommonController
     end
   end
 
+  protected
+
+  def translation_scope
+    "controllers.instruments"
+  end
+
   private
 
   def acting_user_can_purchase?
