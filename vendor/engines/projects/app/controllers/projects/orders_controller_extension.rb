@@ -9,7 +9,7 @@ module Projects
     end
 
     def update_project_id!
-      if acting_as?
+      if acting_as? && params[:order].present?
         @order.project_id = params[:order][:project_id]
         @order.save!
       end
