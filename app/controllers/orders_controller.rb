@@ -229,12 +229,11 @@ class OrdersController < ApplicationController
       if OrderDetailUpdater.new(@order, order_update_params).update
         # Must show instead of render to maintain "more options" state when
         # ordering on behalf of
-        render :show
       else
         logger.debug "errors #{@order.errors.full_messages}"
         flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
-        return render :show
       end
+      render :show
     end
   end
 
