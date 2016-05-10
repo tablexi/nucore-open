@@ -36,6 +36,7 @@ email:
   fake:
     enabled: false
     to:
+    whitelist:
   exceptions:
     sender: 'noreply@example.com'
     recipients: [ 'warn@example.com', 'error@example.com' ]
