@@ -7,8 +7,12 @@ class OrdersController < ApplicationController
   before_filter :init_order,               except: [:cart, :index, :receipt]
   before_filter :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
 
-  def self.before_order_detail_update_hooks
-    @before_order_detail_update_hooks ||= []
+  def self.permitted_params
+    @permitted_params ||= []
+  end
+
+  def self.permitted_acting_as_params
+    @permitted_acting_as_params ||= []
   end
 
   def initialize
@@ -231,7 +235,7 @@ class OrdersController < ApplicationController
     params[:order_datetime] = build_order_date if acting_as?
 
     @order.transaction do
-      run_order_detail_update_hooks
+      @order.assign_attributes(order_params)
 
       if OrderDetailUpdater.new(@order, order_update_params).update
         # Must show instead of render to maintain "more options" state when
@@ -250,7 +254,7 @@ class OrdersController < ApplicationController
     @order.ordered_at = build_order_date if ordering_on_behalf_with_date_params?
 
     @order.transaction do
-      run_order_detail_update_hooks
+      @order.assign_attributes(order_params)
       order_purchaser.purchase!
     end
 
@@ -333,6 +337,15 @@ class OrdersController < ApplicationController
     @order_statuses = OrderStatus.non_protected_statuses(@order.facility)
   end
 
+  def order_params
+    return if params[:order].blank?
+    if acting_as?
+      params[:order].permit(*(self.class.permitted_params + self.class.permitted_acting_as_params))
+    else
+      params[:order].permit(*self.class.permitted_params)
+    end
+  end
+
   def order_purchaser
     @order_purchaser ||= OrderPurchaser.new(
       acting_as: acting_as?,
@@ -349,10 +362,6 @@ class OrdersController < ApplicationController
 
   def ordering_on_behalf_with_date_params?
     params[:order_date].present? && params[:order_time].present? && acting_as?
-  end
-
-  def run_order_detail_update_hooks
-    self.class.before_order_detail_update_hooks.each { |hook| public_send(hook) }
   end
 
   def single_reservation?

@@ -24,9 +24,7 @@ RSpec.describe OrdersController do
         let(:order_params) { { project_id: project_id } }
 
         it "sets the project_id" do
-          expect(order.project_id).to eq(project_id)
-
-          order.order_details.each do |order_detail|
+          assigns[:order].order_details.each do |order_detail|
             expect(order_detail.project_id). to eq(project_id)
           end
         end
@@ -36,9 +34,7 @@ RSpec.describe OrdersController do
         let(:order_params) { {} }
 
         it "has no project_id" do
-          expect(order.project_id).to be_blank
-
-          order.order_details.each do |order_detail|
+          assigns[:order].order_details.each do |order_detail|
             expect(order_detail.project_id). to be_blank
           end
         end
@@ -52,9 +48,7 @@ RSpec.describe OrdersController do
         let(:order_params) { { project_id: project_id } }
 
         it "has no project_id" do
-          expect(order.project_id).to be_blank
-
-          order.order_details.each do |order_detail|
+          assigns[:order].order_details.each do |order_detail|
             expect(order_detail.project_id). to be_blank
           end
         end
@@ -66,11 +60,33 @@ RSpec.describe OrdersController do
     let(:action) { :purchase }
 
     it_behaves_like "it updates project_ids"
+
+    context "when reloaded" do
+      let(:order_params) { { project_id: project_id } }
+
+      before(:each) do
+        session[:acting_user_id] = order.user.id
+        perform_request
+      end
+
+      it "persists project_id" do
+        expect(order.reload.order_details.pluck(:project_id))
+          .to all(eq(project_id))
+      end
+    end
   end
 
   describe "PUT #update" do
     let(:action) { :update }
 
     it_behaves_like "it updates project_ids"
+  end
+
+  describe ".permitted_params" do
+    it { expect(described_class.permitted_params).not_to include(:project_id) }
+  end
+
+  describe ".permitted_acting_as_params" do
+    it { expect(described_class.permitted_acting_as_params).to include(:project_id) }
   end
 end

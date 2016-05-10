@@ -10,6 +10,11 @@ module Projects
       Order.send :include, Projects::OrderExtension
       OrderDetail.send :include, Projects::OrderDetailExtension
       OrdersController.send :include, Projects::OrdersControllerExtension
+      Reservation.send :include, Projects::ReservationExtension
+
+      ViewHook.add_hook "reservations.new",
+                        "acting_as",
+                        "projects/shared/select_project"
 
       ViewHook.add_hook "order_management.order_details.edit",
                         "after_order_status",

@@ -20,13 +20,15 @@ RSpec.describe Projects::OrderExtension do
   end
 
   describe "#project_id=" do
-    before { order.project_id = project_id }
+    before(:each) do
+      order.project_id = project_id
+      order.save
+    end
 
     context "when setting it to nil" do
       let(:project_id) { nil }
 
       it "sets the project_id on its order_details to nil on #save" do
-        expect(order.save).to be_truthy
         order.order_details.each do |order_detail|
           expect(order_detail.project_id).to be_blank
         end
@@ -36,8 +38,6 @@ RSpec.describe Projects::OrderExtension do
     context "when setting it to a project_id" do
       context "that is valid for the facility" do
         it "sets this project_id on its order_details on #save" do
-          expect(order.save).to be_truthy
-
           order.order_details.each do |order_detail|
             expect(order_detail.project_id).to eq(project_id)
           end
@@ -47,9 +47,7 @@ RSpec.describe Projects::OrderExtension do
       context "that is invalid for the facility" do
         let(:project_id) { FactoryGirl.create(:project).id }
 
-        it "fails to save the order and order_details" do
-          expect(order.save).to be_falsy
-
+        it "fails to set project_id on the order_details" do
           order.reload.order_details.each do |order_detail|
             expect(order_detail.project_id).to be_blank
           end
