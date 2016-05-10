@@ -18,3 +18,10 @@ en:
         order_notification: |
           This email address will be notified when an order is placed by a user
           (if left blank, notifications will not be sent)
+
+  controllers:
+    facilities:
+      create:
+        success: "The !facility_downcase! was successfully created."
+      update:
+        success: "The !facility_downcase! was successfully updated."

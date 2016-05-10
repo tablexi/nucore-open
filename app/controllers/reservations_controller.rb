@@ -159,7 +159,7 @@ class ReservationsController < ApplicationController
     @reservation = next_available || default_reservation
     @reservation.round_reservation_times
     unless @instrument.can_be_used_by?(acting_user)
-      flash[:notice] = t_model_error(Instrument, "acting_as_not_on_approval_list")
+      flash[:notice] = text(".acting_as_not_on_approval_list")
     end
     set_windows
   end

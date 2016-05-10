@@ -2,10 +2,10 @@
   #{@greeting}
 ==
 
-#{text(".label.ordered_at")}: #{l(@order.ordered_at, format: :receipt)}
-#{OrderDetail.human_attribute_name(:facility)}: #{@order.facility}
+#{Order.human_attribute_name(:ordered_at)}: #{l(@order.ordered_at, format: :receipt)}
+#{Facility.model_name.human}: #{@order.facility}
 #{OrderDetail.human_attribute_name(:ordered_by)}: #{@order.created_by_user.full_name}
-#{OrderDetail.human_attribute_name(:account)}: #{@order.account}
+#{Account.model_name.human}: #{@order.account}
 ==
 = OrderDetail.model_name.titleize.pluralize
 = "========================================"

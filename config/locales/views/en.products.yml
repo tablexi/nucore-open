@@ -1,0 +1,37 @@
+en:
+  controllers:
+    instruments:
+      requires_approval: |
+        The %{instrument} instrument requires approval to reserve;
+        please contact the !facility_downcase! for further information:
+
+        %{facility}
+
+        [%{email}](mailto:%{email})
+      not_available: |
+        The %{instrument} instrument is currently unavailable for reservation online.
+      no_accounts: "Sorry, but we could not find a valid payment source that you can use to reserve this instrument"
+      no_price_groups: |
+        You are not in a price group that may reserve instrument %{instrument_name};
+        please contact the !facility_downcase!.
+      not_authorized_to_order_on_behalf: |
+        You are not authorized to order instruments from this !facility_downcase!
+        on behalf of a user.
+
+    products_common:
+      already_requested_access: |
+        You have requested that the !facility_downcase! contact you regarding
+        access or training for %{product}.
+      not_available: "This %{singular} is currently unavailable for purchase online."
+      not_authorized_acting_as: |
+        You are not authorized to order %{plural} from this !facility_downcase!
+        on behalf of a user.
+      no_accounts: |
+        Sorry, but we could not find a valid payment source that you can use to
+        purchase this %{singular}
+      not_in_price_group: |
+        You are not in a price group that may purchase this %{singular}; please contact
+        the !facility_downcase!.
+      requires_approval: |
+        This %{singular} requires approval to purchase; please contact the !facility_downcase!.
+

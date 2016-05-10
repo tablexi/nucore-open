@@ -15,7 +15,7 @@ RSpec.describe Notifier do
     it "generates an order notification", :aggregate_failures do
       expect(email.to).to eq [recipient]
       expect(email.subject).to include("Order Notification")
-      expect(email.html_part.to_s).to match(/Ordered By.+\n#{user.full_name}/)
+      expect(email.html_part.to_s).to match(/Ordered By.+#{user.full_name}/m)
       expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
       expect(email.html_part.to_s).to match(/Payment Source.+#{order.account}/m)
       expect(email.text_part.to_s).to include("Payment Source: #{order.account}")
@@ -35,7 +35,7 @@ RSpec.describe Notifier do
     it "generates a receipt", :aggregate_failures do
       expect(email.to).to eq [user.email]
       expect(email.subject).to include("Order Receipt")
-      expect(email.html_part.to_s).to match(/Ordered By.+\n#{user.full_name}/)
+      expect(email.html_part.to_s).to match(/Ordered By.+#{user.full_name}/m)
       expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
       expect(email.html_part.to_s).to match(/Payment Source.+#{order.account}/m)
       expect(email.text_part.to_s).to include("Payment Source: #{order.account}")
@@ -49,7 +49,7 @@ RSpec.describe Notifier do
 
       it "mentions who placed the order in the receipt", :aggregate_failures do
         expect(email.html_part.to_s)
-          .to match(/Ordered By.+\n#{administrator.full_name}/)
+          .to match(/Ordered By.+#{administrator.full_name}/m)
         expect(email.text_part.to_s)
           .to include("Ordered By: #{administrator.full_name}")
       end

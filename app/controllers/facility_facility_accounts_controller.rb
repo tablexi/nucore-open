@@ -30,7 +30,7 @@ class FacilityFacilityAccountsController < ApplicationController
     @facility_account.created_by = session_user.id
 
     if @facility_account.save
-      flash[:notice] = "Facility account was successfully created."
+      flash[:notice] = text("create.success", model: FacilityAccount.model_name.human)
       redirect_to facility_facility_accounts_path
     else
       render action: "new"
@@ -47,7 +47,7 @@ class FacilityFacilityAccountsController < ApplicationController
     @facility_account = current_facility.facility_accounts.find(params[:id])
 
     if @facility_account.update_attributes(params[:facility_account])
-      flash[:notice] = "Facility account was successfully updated."
+      flash[:notice] = text("update.success", model: FacilityAccount.model_name.human)
       redirect_to facility_facility_accounts_path
     else
       render action: "edit"

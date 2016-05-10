@@ -29,8 +29,7 @@ class InstrumentsController < ProductsCommonController
     # does the product have active price policies and schedule rules?
     unless @instrument.available_for_purchase?
       add_to_cart = false
-      flash[:notice] =
-        t_model_error(@instrument.class, "not_available", instrument: @instrument)
+      flash[:notice] = text(".not_available", instrument: @instrument)
     end
 
     # is user logged in?
@@ -42,44 +41,37 @@ class InstrumentsController < ProductsCommonController
     if add_to_cart && !@instrument.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@instrument)
       if SettingsHelper.feature_on?(:training_requests)
         if TrainingRequest.submitted?(current_user, @instrument)
-          flash[:notice] = t_model_error(Product, "already_requested_access", product: @instrument)
+          flash[:notice] = text("controllers.products_common.already_requested_access", product: @instrument)
           return redirect_to facility_path(current_facility)
         else
           return redirect_to new_facility_product_training_request_path(current_facility, @instrument)
         end
       else
         add_to_cart = false
-        flash[:notice] = t_model_error(
-          @instrument.class,
-          "requires_approval_html",
-          email: @instrument.email,
-          facility: @instrument.facility,
-          instrument: @instrument,
-        ).html_safe
+        flash[:notice] = html(".requires_approval",
+                              email: @instrument.email,
+                              facility: @instrument.facility,
+                              instrument: @instrument,
+                             )
       end
     end
 
     # does the user have a valid payment source for purchasing this reservation?
     if add_to_cart && acting_user.accounts_for_product(@instrument).blank?
       add_to_cart = false
-      flash[:notice] = t_model_error(@instrument.class, "no_accounts")
+      flash[:notice] = text(".no_accounts")
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
     if add_to_cart && !acting_user_can_purchase?
       add_to_cart = false
-      flash[:notice] = t_model_error(
-        @instrument.class,
-        "no_price_groups",
-        instrument_name: @instrument.to_s,
-      )
+      flash[:notice] = text(".no_price_groups", instrument_name: @instrument.to_s)
     end
 
     # when ordering on behalf of, does the staff have permissions for this facility?
     if add_to_cart && acting_as? && !session_user.operator_of?(@instrument.facility)
       add_to_cart = false
-      flash[:notice] =
-        t_model_error(@instrument.class, "not_authorized_to_order_on_behalf")
+      flash[:notice] = text(".not_authorized_to_order_on_behalf")
     end
 
     @add_to_cart = add_to_cart
@@ -152,12 +144,12 @@ class InstrumentsController < ProductsCommonController
         status = instrument.relay.get_status
         instrument_status = instrument.current_instrument_status
         # if the status hasn't changed, don't create a new status
-        if instrument_status && status == instrument_status.is_on?
-          @instrument_statuses << instrument_status
-        else
-          # || false will ensure that the value of is_on is not nil (causes a DB error)
-          @instrument_statuses << instrument.instrument_statuses.create!(is_on: status || NUCore::Database.boolean(false))
-        end
+        @instrument_statuses << if instrument_status && status == instrument_status.is_on?
+                                  instrument_status
+                                else
+                                  # || false will ensure that the value of is_on is not nil (causes a DB error)
+                                  instrument.instrument_statuses.create!(is_on: status || NUCore::Database.boolean(false))
+                                end
       rescue => e
         logger.error e.message
         @instrument_statuses << InstrumentStatus.new(instrument: instrument, error_message: e.message)
@@ -188,6 +180,12 @@ class InstrumentsController < ProductsCommonController
       format.html { render action: :instrument_status, layout: false }
       format.json { render json: @status }
     end
+  end
+
+  protected
+
+  def translation_scope
+    "controllers.instruments"
   end
 
   private

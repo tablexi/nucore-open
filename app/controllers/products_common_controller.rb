@@ -77,7 +77,7 @@ class ProductsCommonController < ApplicationController
     if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
       if SettingsHelper.feature_on?(:training_requests)
         if TrainingRequest.submitted?(session_user, @product)
-          flash[:notice] = t_model_error(Product, "already_requested_access", product: @product)
+          flash[:notice] = text(".already_requested_access", product: @product)
           return redirect_to facility_path(current_facility)
         else
           return redirect_to new_facility_product_training_request_path(current_facility, @product)
@@ -88,7 +88,10 @@ class ProductsCommonController < ApplicationController
       end
     end
 
-    flash.now[:notice] = t_model_error(@product.class, @error) if @error
+    if @error
+      flash.now[:notice] = text(@error, singular: @product.class.model_name.downcase,
+                                        plural: @product.class.model_name.human(count: 2).downcase)
+    end
 
     @add_to_cart = add_to_cart
     @active_tab = "home"
@@ -145,6 +148,12 @@ class ProductsCommonController < ApplicationController
   def manage
     authorize! :view_details, @product
     @active_tab = "admin_products"
+  end
+
+  protected
+
+  def translation_scope
+    "controllers.products_common"
   end
 
   private

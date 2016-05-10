@@ -1,0 +1,4 @@
+en:
+  controllers:
+    reservations:
+      acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
