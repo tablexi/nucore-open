@@ -203,11 +203,11 @@ class Ability
 
   def order_details_ability(user, resource)
     # Purchaser
-    can [:add_accessories, :sample_results, :show, :update, :template_results], OrderDetail, order: { user_id: user.id }
+    can [:add_accessories, :sample_results, :show, :update, :cancel, :template_results], OrderDetail, order: { user_id: user.id }
     # Facility managers
     can :manage, OrderDetail, order: { facility_id: resource.order.facility_id } if user.operator_of?(resource.facility)
     # Account owners/business admins
-    can [:show, :update, :cancel, :dispute], OrderDetail, account: { id: resource.account_id } if user.account_administrator_of?(resource.account)
+    can [:show, :update, :dispute], OrderDetail, account: { id: resource.account_id } if user.account_administrator_of?(resource.account)
   end
 
   def user_has_facility_role?(user)

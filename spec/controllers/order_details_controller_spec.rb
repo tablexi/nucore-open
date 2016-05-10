@@ -4,6 +4,7 @@ RSpec.describe OrderDetailsController do
   let(:order) { order_detail.order }
   let(:order_detail) { reservation.order_detail }
   let(:reservation) { create(:purchased_reservation) }
+  let(:account) { order_detail.account }
   let(:user) { order_detail.user }
 
   describe "#dispute" do
@@ -110,6 +111,26 @@ RSpec.describe OrderDetailsController do
         context "and the reservation is cancelable" do
           before(:each) do
             expect(reservation).to be_can_cancel
+            put :cancel, order_id: order.id, id: order_detail.id
+          end
+
+          it { expect(order_detail.reload).to be_canceled }
+        end
+
+        context "and I am an administrator on the account, but do not own the order" do
+          let(:user) { FactoryGirl.create(:user) }
+          before do
+            FactoryGirl.create(:account_user, :business_administrator, account: account, user: user)
+            put :cancel, order_id: order.id, id: order_detail.id
+          end
+
+          it { expect(order_detail.reload).not_to be_canceled }
+          it { expect(response.code).to eq("403") }
+        end
+
+        context "and I am just a purchaser on the account" do
+          before do
+            account.account_users.update_all(user_role: AccountUser::ACCOUNT_PURCHASER)
             put :cancel, order_id: order.id, id: order_detail.id
           end
 
