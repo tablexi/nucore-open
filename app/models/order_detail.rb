@@ -349,7 +349,7 @@ class OrderDetail < ActiveRecord::Base
   }
 
   scope :action_in_date_range, lambda {|action, start_date, end_date|
-    valid = TransactionSearch::DATE_RANGE_FIELDS.map { |arr| arr[1].to_sym } + [:journal_date]
+    valid = TransactionSearch::DateRangeSearcher::FIELDS.map(&:to_sym) + [:journal_date]
     raise ArgumentError.new("Invalid action: #{action}. Must be one of: #{valid}") unless valid.include? action.to_sym
     logger.debug("searching #{action} between #{start_date} and #{end_date}")
     search = scoped

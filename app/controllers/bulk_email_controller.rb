@@ -34,6 +34,7 @@ class BulkEmailController < ApplicationController
 
   def init_search_options
     @products = current_facility.products.active_plus_hidden.order("products.name").includes(:facility)
+    @search_options = { products: @products }
     @search_fields = params.merge(facility_id: current_facility.id)
     @search_types = search_types
     @search_types.delete(:authorized_users) unless @products.exists?(requires_approval: true)
