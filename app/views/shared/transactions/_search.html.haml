@@ -7,6 +7,7 @@
         = f.input :products, :as => :transaction_chosen, :data_method => :product_options
         = f.input :account_owners, :label => Account.human_attribute_name(:owner).pluralize, :label_method => :full_name, :as => :transaction_chosen unless @account
         = f.input :order_statuses, :data_method => :order_statuses_options, :as => :transaction_chosen
+        = render_view_hook("end_of_first_column", f: f)
       %fieldset.span2#calendar_filter
         %br
         = f.input "date_range[field]", :collection => @search_options[:date_range], :selected => @date_range_field, :label => false
