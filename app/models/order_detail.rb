@@ -411,7 +411,7 @@ class OrderDetail < ActiveRecord::Base
   aasm_state            :new
   aasm_state            :inprocess
   aasm_state            :complete, enter: :make_complete
-  aasm_state            :reconciled
+  aasm_state            :reconciled, enter: :set_reconciled_at
   aasm_state            :canceled, enter: :clear_costs
 
   aasm_event :to_new do
@@ -1005,6 +1005,11 @@ class OrderDetail < ActiveRecord::Base
     if problem_changed? && !problem_order?
       self.fulfilled_at = reservation.reserve_end_at
     end
+  end
+
+  def set_reconciled_at
+    # Do not override it if it has been set by something already (e.g. journaling)
+    self.reconciled_at ||= Time.current
   end
 
 end
