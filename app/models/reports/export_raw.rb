@@ -129,6 +129,7 @@ class Reports::ExportRaw
       statemented_on: -> (od) { od.statement.created_at if od.statement },
       journal_date: -> (od) { od.journal.journal_date if od.journal },
       reconciled_note: :reconciled_note,
+      reconciled_at: :reconciled_at,
     }
   end
 
