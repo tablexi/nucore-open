@@ -161,6 +161,7 @@ en:
         statemented_on: 'Statemented On'
         journal_date: 'Journal Date'
         reconciled_note: 'Reconciled Note'
+        reconciled_at: "Reconciled At"
 
     notifications:
       no_notices: "You have no notifications at this time"

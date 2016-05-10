@@ -9,7 +9,7 @@ module SplitAccounts
       include ActionView::Helpers::NumberHelper
 
       def transform(original_hash)
-        insert_into_hash_after(original_hash, :reconciled_note, split_percent: method(:split_percent))
+        insert_into_hash_after(original_hash, :actual_total, split_percent: method(:split_percent))
       end
 
       private

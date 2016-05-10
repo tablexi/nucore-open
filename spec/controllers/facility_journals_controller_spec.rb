@@ -34,7 +34,7 @@ RSpec.describe FacilityJournalsController do
   before(:each) do
     @authable = create(:facility)
     @account = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @admin), facility_id: facility.id)
-    @journal = create(:journal, facility: facility, created_by: @admin.id, journal_date: 2.days.ago)
+    @journal = create(:journal, facility: facility, created_by: @admin.id, journal_date: 2.days.ago.change(usec: 0))
   end
 
   describe "#index" do
@@ -125,9 +125,9 @@ RSpec.describe FacilityJournalsController do
           expect(@order_detail3.reload.order_status).to eq(reconciled_status)
         end
 
-        it "sets the reconciled_at for all order details", :timecop_freeze do
-          expect(@order_detail1.reload.reconciled_at).to eq(Time.current.change(usec: 0))
-          expect(@order_detail3.reload.reconciled_at).to eq(Time.current.change(usec: 0))
+        it "sets the reconciled_at for all order details to the journal date", :timecop_freeze do
+          expect(@order_detail1.reload.reconciled_at).to eq(@journal.journal_date)
+          expect(@order_detail3.reload.reconciled_at).to eq(@journal.journal_date)
         end
       end
 
@@ -462,7 +462,7 @@ RSpec.describe FacilityJournalsController do
 
   describe "#reconcile" do
     def perform
-      post :reconcile, facility_id: facility.url_name, order_detail: order_detail_params, journal_id: journal.id, reconciled_at: format_usa_date(1.day.ago)
+      post :reconcile, facility_id: facility.url_name, order_detail: order_detail_params, journal_id: journal.id
     end
 
     before do
@@ -488,8 +488,9 @@ RSpec.describe FacilityJournalsController do
         expect { perform }.not_to change { @order_detail3.reload.state }
       end
 
-      it "sets the reconciled_at" do
+      it "sets the reconciled_at to the journal date" do
         expect { perform }.to change { @order_detail1.reload.reconciled_at }
+          .to(journal.journal_date)
       end
     end
 

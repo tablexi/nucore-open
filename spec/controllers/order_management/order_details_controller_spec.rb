@@ -559,6 +559,23 @@ RSpec.describe OrderManagement::OrderDetailsController do
         expect(order_detail.reload.dispute_resolved_at).to be_nil
       end
     end
+
+    describe "reconciling", :timecop_freeze do
+      before do
+        order_detail.change_status!(OrderStatus.complete.first)
+        order_detail.update_attributes(reviewed_at: 1.day.ago)
+        @params[:order_detail] = { order_status_id: OrderStatus.reconciled_status.id }
+      end
+
+      it "make the order reconciled" do
+        expect { do_request }.to change { order_detail.reload.state }.to("reconciled")
+        expect(order_detail.order_status).to eq(OrderStatus.reconciled_status)
+      end
+
+      it "sets the reconciled_at to now" do
+        expect { do_request }.to change { order_detail.reload.reconciled_at }.to(Time.current.change(usec: 0))
+      end
+    end
   end
 
   describe "pricing" do
