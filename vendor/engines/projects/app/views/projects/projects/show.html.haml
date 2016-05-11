@@ -7,3 +7,7 @@
 = link_to t(".edit"),
   edit_facility_project_path(@project.facility, @project),
   class: "btn btn-primary"
+
+- if @project.order_details.any?
+  - @date_range_field = :created_at
+  = render "shared/transactions/table", order_details: @project.order_details

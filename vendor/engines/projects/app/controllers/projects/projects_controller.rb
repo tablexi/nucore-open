@@ -14,6 +14,10 @@ module Projects
     def new
     end
 
+    def backend?
+      true
+    end
+
     def create
       @project = current_facility.projects.new(project_params)
       render action: :new unless save_project
