@@ -24,8 +24,3 @@ en:
       split_accounts/split_account:
         one: Split Account
         other: Split Accounts
-
-  controllers:
-    general_reports:
-      headers:
-        split_percent: "Split Percent"

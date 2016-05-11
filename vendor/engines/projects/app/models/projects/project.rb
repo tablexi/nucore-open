@@ -14,6 +14,10 @@ module Projects
 
     scope :active, -> { where(active: true) }
 
+    def to_s
+      name
+    end
+
   end
 
 end

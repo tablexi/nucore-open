@@ -17,6 +17,8 @@ module Projects
       ViewHook.add_hook "shared.transactions.search",
                         "end_of_first_column",
                         "projects/shared/transactions/search"
+
+      ::Reports::ExportRaw.transformers << "Projects::ExportRawTransformer"
     end
 
     initializer :append_migrations do |app|

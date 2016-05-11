@@ -55,7 +55,7 @@ class Reports::ExportRaw
 
   def column_headers
     report_hash.keys.map do |key|
-      text(".headers.#{key}")
+      text(".headers.#{key}", default: key.to_s.titleize)
     end
   end
 
