@@ -118,7 +118,7 @@ class NavTab::LinkCollection
   def instrument_utilization_reports
     NavTab::Link.new(
       text: I18n.t("pages.instrument_utilization_reports"),
-      url: instrument_facility_instrument_reports_path(facility),
+      url: facility_instrument_reports_path(facility, report_by: :instrument),
     )
   end
 

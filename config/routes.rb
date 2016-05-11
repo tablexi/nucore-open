@@ -282,6 +282,7 @@ Nucore::Application.routes.draw do
     end
 
     get "general_reports/:report_by", to: "general_reports#report_by", as: "general_reports"
+    get "instrument_reports/:report_by", to: "instrument_reports#report_by", as: "instrument_reports"
   end
 
   # global settings
@@ -349,12 +350,6 @@ Nucore::Application.routes.draw do
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
   match "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete",          to: 'surveys#complete',                 as: "complete_survey", via: [:get, :post]
-
-  # instrument reports
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/account",       to: 'instrument_reports#account',       as: "account_facility_instrument_reports",       via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/account_owner", to: 'instrument_reports#account_owner', as: "account_owner_facility_instrument_reports", via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/instrument",    to: 'instrument_reports#instrument',    as: "instrument_facility_instrument_reports",    via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/purchaser",     to: 'instrument_reports#purchaser',     as: "purchaser_facility_instrument_reports",     via: [:get, :post]
 
   # instrument day reports
   match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/actual_quantity",   to: 'instrument_day_reports#actual_quantity',   as: "actual_quantity_facility_instrument_day_reports",   via: [:get, :post]

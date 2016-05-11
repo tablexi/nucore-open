@@ -12,7 +12,7 @@ class GeneralReportsController < ReportsController
   private
 
   def reports
-    @reports ||= {
+    {
       product: -> (od) { od.product.name },
       account: :account,
       account_owner: method(:account_owner_group),

@@ -2,29 +2,28 @@ class InstrumentReportsController < ReportsController
 
   include InstrumentReporter
 
-  def instrument
-    render_report(0, nil) { |r| [r.product.name] }
-  end
-
-  def account
-    render_report(1, "Description") { |r| [r.product.name, r.order_detail.account.to_s] }
-  end
-
-  def account_owner
-    render_report(2, "Name") do |r|
-      owner = r.order_detail.account.owner.user
-      [r.product.name, format_username(owner)]
-    end
-  end
-
-  def purchaser
-    render_report(3, "Name") do |r|
-      usr = r.order_detail.order.user
-      [r.product.name, format_username(usr)]
-    end
+  def report_by
+    key = params[:report_by].to_sym
+    index = reports.keys.find_index(key)
+    header = key == :account ? "Description" : "Name" # TODO refactor
+    render_report(index, header, &reports[key])
   end
 
   private
+
+  def reports
+    {
+      instrument: -> (r) { [r.product.name] },
+      account: -> (r) { [r.product.name, r.order_detail.account.to_s] },
+      account_owner: -> (r) { [r.product.name, format_username(r.order_detail.account.owner.user)] },
+      purchaser: -> (r) { [r.product.name, format_username(r.order_detail.order.user)]}
+    }
+  end
+
+  def report_keys
+    reports.keys
+  end
+  helper_method :report_keys
 
   def init_report_headers(report_on_label)
     @headers = ["Instrument", "Quantity", "Reserved Time (h)", "Percent of Reserved", "Actual Time (h)", "Percent of Actual Time"]
