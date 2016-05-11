@@ -136,7 +136,7 @@ class Ability
         can :manage, [
           AccountUser, Facility, FacilityAccount, Journal,
           Statement, StoredFile, PricePolicy, InstrumentPricePolicy,
-          ItemPricePolicy, OrderStatus, PriceGroup, ReportsController,
+          ItemPricePolicy, OrderStatus, PriceGroup, Reports::ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
           ProductAccessory, Product, BundleProduct, TrainingRequest
         ]
@@ -159,8 +159,8 @@ class Ability
         can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, StoredFile, ProductAccessory, TrainingRequest]
 
         # they can get to reports controller, but they're not allowed to export all
-        can :manage, ReportsController
-        cannot :export_all, ReportsController
+        can :manage, Reports::ReportsController
+        cannot :export_all, Reports::ReportsController
       end
 
     elsif resource.is_a?(Account)

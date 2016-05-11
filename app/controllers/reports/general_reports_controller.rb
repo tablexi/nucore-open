@@ -1,11 +1,13 @@
 module Reports
+
   class GeneralReportsController < ReportsController
+
     include StatusFilterParams
 
     def index
       @report_by = (params[:report_by].presence || "product")
       index = reports.keys.find_index(@report_by)
-      header = @report_by == "account" ? "Description" : "Name" # TODO refactor
+      header = @report_by == "account" ? "Description" : "Name" # TODO: refactor
       render_report(index, header, &reports[@report_by])
     end
 
@@ -17,8 +19,8 @@ module Reports
         account: :account,
         account_owner: method(:account_owner_group),
         purchaser: -> (od) { format_username od.order.user },
-        price_group: -> (od) { od.price_policy ? od.price_policy.price_group.name : "Unassigned"  },
-        assigned_to: -> (od) { od.assigned_user.presence ? format_username(od.assigned_user) : "Unassigned" }
+        price_group: -> (od) { od.price_policy ? od.price_policy.price_group.name : "Unassigned" },
+        assigned_to: -> (od) { od.assigned_user.presence ? format_username(od.assigned_user) : "Unassigned" },
       )
     end
 
@@ -89,4 +91,5 @@ module Reports
     end
 
   end
+
 end

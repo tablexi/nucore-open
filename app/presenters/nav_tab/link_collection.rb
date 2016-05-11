@@ -67,7 +67,7 @@ class NavTab::LinkCollection
   end
 
   def admin_reports
-    if single_facility? && ability.can?(:manage, ReportsController)
+    if single_facility? && ability.can?(:manage, Reports::ReportsController)
       NavTab::Link.new(
         tab: :admin_reports,
         subnav: [general_reports, instrument_utilization_reports],

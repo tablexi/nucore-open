@@ -1,5 +1,7 @@
 module Reports
+
   class ExportRawReportsController < ReportsController
+
     include StatusFilterParams
 
     def export_all
@@ -33,4 +35,5 @@ module Reports
     end
 
   end
+
 end

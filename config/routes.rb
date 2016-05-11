@@ -283,7 +283,7 @@ Nucore::Application.routes.draw do
 
     get "general_reports/raw", to: "reports/export_raw_reports#export_all", as: "export_raw_reports"
     get "general_reports/:report_by", to: "reports/general_reports#index", as: "general_reports"
-    get "instrument_reports/:report_by", to: "instrument_reports#report_by", as: "instrument_reports"
+    get "instrument_reports/:report_by", to: "reports/instrument_reports#index", as: "instrument_reports"
   end
 
   # global settings
