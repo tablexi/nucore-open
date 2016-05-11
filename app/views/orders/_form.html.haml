@@ -35,6 +35,11 @@
     %p.footnote= t(".foot.instrument")
 
   - if order.order_details.size > 0
+
+    - if acting_as?
+      = render_view_hook "acting_as", f: f, order_detail: order.order_details.first
+      .backdate_fields= render "edit_date", f: f
+
     %ul.inline{style: "float: left"}
       %li= submit_tag t("shared.update"), class: "btn"
       - if order.validated?
@@ -42,9 +47,3 @@
           = f.submit t("shared.purchase"),
             class: %w(btn btn-primary),
             confirm: t(".confirm")
-
-      - if acting_as?
-        %li
-          = render_view_hook "acting_as", f: f, order_detail: order.order_details.first
-
-        %li= render "edit_date", f: f
