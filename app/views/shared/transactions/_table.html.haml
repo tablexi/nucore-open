@@ -9,7 +9,7 @@
       .row
         .span12= yield :action_instructions
       .row.table-actions
-        .span1.select_all_none= link_to 'Select All', '#', :class => 'select_all'
+        .span1.select_all_none= select_all_link
         .span9
           - if @action_date_field
             .control-group.fields

@@ -58,10 +58,10 @@ $(document).ready(function() {
     });
   });
 
-  $('.select_all').click(function(e) {
-    var check = this.innerHTML == 'Select All' ? true : false;
-    $('.select_all').each(function() {
-      this.innerHTML = check ? 'Select None' : 'Select All';
+  $('.js--select_all').click(function(e) {
+    var check = this.innerHTML == $(this).data("select-all");
+    $('.js--select_all').each(function() {
+      this.innerHTML = check ? $(this).data("select-none") : $(this).data("select-all");
     });
     $('.toggle:checkbox').each(function() {
       this.checked = check;

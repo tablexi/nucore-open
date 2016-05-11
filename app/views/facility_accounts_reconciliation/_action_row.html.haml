@@ -1,5 +1,5 @@
 .row.table-actions.form-horizontal
-  .span2.select_all_none= link_to(local_assigns[:starting] == :all ? "Select All" : "Select None", "", class: "select_all")
+  .span2.select_all_none= select_all_link(start_none: true)
 
   - if local_assigns[:date]
     .span5.control-group.fields

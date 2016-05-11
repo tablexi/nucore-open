@@ -41,7 +41,7 @@
       %thead
         - if journal_is_submittable
           %tr.borderless
-            %th{colspan: 3}= link_to "Select All", "JavaScript:void(0);", class: "select_all"
+            %th{colspan: 3}= select_all_link
             %th.currency{colspan: 3}= submit_tag t(".submit"), class: "btn btn-primary"
         %tr
           - if journal_is_submittable
