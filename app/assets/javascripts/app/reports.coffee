@@ -7,6 +7,9 @@ class TabbableReports
     @init_pagination()
     @init_export_all_handler()
 
+  export_all_link: ->
+    $("#export-all")
+
   update_parameters: ->
     @update_href $(@current_tab())
     @refresh_tab()
@@ -84,12 +87,13 @@ class TabbableReports
   update_export_urls: ->
     url = @tab_url(@current_tab())
     $('#export').attr('href', url + '&export_id=report&format=csv')
-    $('#export-all').attr('href', url + '&export_id=report_data&format=csv')
+    @export_all_link().attr("href", @export_all_link().data("original-url") + @build_query_string())
 
   init_export_all_handler: ->
     @$emailToAddressField = $('#email_to_address')
-    $('#export-all')
+    @export_all_link()
       .attr("data-remote", true)
+      .data("original-url", @export_all_link().attr("href"))
       .click (event) => @export_all_email_confirm(event)
 
   export_all_email_confirm: (event) ->

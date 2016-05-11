@@ -2,15 +2,15 @@ require "rails_helper"
 require "controller_spec_helper"
 require "report_spec_helper"
 
-RSpec.describe GeneralReportsController do
+RSpec.describe Reports::GeneralReportsController do
   include ReportSpecHelper
 
   run_report_tests([
-                     { action: :product, index: 0, report_on_label: "Name", report_on: proc { |od| od.product.name } },
-                     { action: :account, index: 1, report_on_label: "Description", report_on: proc { |od| od.account } },
-                     { action: :account_owner, index: 2, report_on_label: "Name", report_on: proc { |od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})" } },
-                     { action: :purchaser, index: 3, report_on_label: "Name", report_on: proc { |od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})" } },
-                     { action: :price_group, index: 4, report_on_label: "Name", report_on: proc { |od| od.price_policy ? od.price_policy.price_group.name : "Unassigned" } },
+                     { action: :index, report_by: "product", index: 0, report_on_label: "Name", report_on: proc { |od| od.product.name } },
+                     { action: :index, report_by: :account, index: 1, report_on_label: "Description", report_on: proc { |od| od.account } },
+                     { action: :index, report_by: :account_owner, index: 2, report_on_label: "Name", report_on: proc { |od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})" } },
+                     { action: :index, report_by: :purchaser, index: 3, report_on_label: "Name", report_on: proc { |od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})" } },
+                     { action: :index, report_by: :price_group, index: 4, report_on_label: "Name", report_on: proc { |od| od.price_policy ? od.price_policy.price_group.name : "Unassigned" } },
                    ])
 
   describe "time parameters", :timecop_freeze do
@@ -23,7 +23,7 @@ RSpec.describe GeneralReportsController do
     end
 
     context "defaults" do
-      before { get :product }
+      before { get :index }
 
       it "assigns the proper start date" do
         expect(assigns(:date_start)).to eq(Time.zone.local(2014, 2, 1))
@@ -35,7 +35,7 @@ RSpec.describe GeneralReportsController do
     end
 
     context "with date parameters" do
-      before { get :product, date_start: "01/01/2014", date_end: "01/31/2014" }
+      before { get :index, date_start: "01/01/2014", date_end: "01/31/2014" }
 
       it "assigns the start date to the beginning of the day" do
         expect(assigns(:date_start)).to eq(Time.zone.local(2014, 1, 1))
@@ -87,7 +87,7 @@ RSpec.describe GeneralReportsController do
       @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday.change_status!(OrderStatus.reconciled.first)
 
       @method = :xhr
-      @action = :product
+      @action = :index
       @params = {
         facility_id: @authable.url_name,
         date_start: Time.zone.now.strftime("%m/%d/%Y"),
@@ -253,19 +253,8 @@ RSpec.describe GeneralReportsController do
   end
 
   def assert_report_rendered_csv(label, &report_on)
-    export_type = @params[:export_id]
-
-    case export_type
-    when "report"
-      assert_report_init label, &report_on
-      assert_report_download_rendered "#{@action}_report"
-    when "report_data"
-      assert_report_data_init label
-    end
-  end
-
-  def assert_report_data_init(_label)
-    expect(assigns :report_on).to be_a Proc
+    assert_report_init label, &report_on
+    assert_report_download_rendered "#{@params[:report_by]}_report"
   end
 
 end

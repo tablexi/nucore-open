@@ -78,26 +78,10 @@ class ReportsController < ApplicationController
       end
 
       format.csv do
-        @export_type = params[:export_id]
-
-        case @export_type
-        when nil, ""
-          raise "Export type not found"
-        when "report" # AKA "Export"
-          init_report(report_on_label, &report_on)
-          render_csv("#{action_name}_#{@export_type}", @export_type)
-        when "report_data" # AKA "Export Raw"
-          @report_on = report_on
-          @report_on_label = report_on_label
-          generate_report_data_csv
-        end
+        init_report(report_on_label, &report_on)
+        render_csv("#{@report_by}_report", "report")
       end
     end
-  end
-
-  def generate_report_data_csv
-    init_report_data(@report_on_label, &@report_on)
-    render_csv("#{action_name}_#{@export_type}", @export_type)
   end
 
   def render_report_download(report_prefix)
