@@ -6,12 +6,13 @@
         = f.input :accounts, :label_method => 'account_list_item', :as => :transaction_chosen unless @account
         = f.input :products, :as => :transaction_chosen, :data_method => :product_options
         = f.input :account_owners, :label => Account.human_attribute_name(:owner).pluralize, :label_method => :full_name, :as => :transaction_chosen unless @account
-        = f.input :order_statuses, :data_method => :order_statuses_options, :as => :transaction_chosen if @order_statuses
+        = f.input :order_statuses, :data_method => :order_statuses_options, :as => :transaction_chosen
+        = render_view_hook("end_of_first_column", f: f)
       %fieldset.span2#calendar_filter
         %br
-        = f.input :date_range_field, :collection => TransactionSearch::DATE_RANGE_FIELDS, :selected => @date_range_field, :label => false
-        = f.input :start_date, :input_html => { :value => (@search_fields[:start_date] || "").gsub("-","/"), :class => ['datepicker', 'in_past'] }, :label => 'Start Date'
-        = f.input :end_date, :input_html => { :value => (@search_fields[:end_date] || "").gsub("-","/"), :class => ['datepicker', 'in_past'] }, :label => 'End Date'
+        = f.input "date_range[field]", :collection => @search_options[:date_range], :selected => @date_range_field, :label => false
+        = f.input "date_range[start]", :input_html => { value: @search_fields[:date_range].try(:[], :start).to_s.gsub("-","/"), class: ['datepicker', 'in_past'] }, label: 'Start Date'
+        = f.input "date_range[end]", :input_html => { value: @search_fields[:date_range].try(:[], :end).to_s.gsub("-","/"), :class => ['datepicker', 'in_past'] }, :label => 'End Date'
 
         .submit_button
           = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true

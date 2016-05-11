@@ -9,15 +9,10 @@ RSpec.describe TransactionSearch do
 
   class TransactionSearcher < ApplicationController
 
-    attr_reader :facility, :facilities, :account, :accounts, :account_owners, :products, :order_statuses
-    attr_writer :facility, :account
-    # give us a way to set the user
-    attr_accessor :session_user, :order_details
+    attr_reader :search_options
+    attr_accessor :session_user, :order_details, :params, :facility, :account
 
     include TransactionSearch
-    attr_reader :params
-
-    attr_writer :params
 
     def all_order_details_with_search
       # everything that needs to be done will be done by the module
@@ -63,13 +58,13 @@ RSpec.describe TransactionSearch do
       it "should populate facility" do
         @controller.all_order_details
         expect(@controller.current_facility).to eq(@authable)
-        expect(@controller.facilities).to eq([@authable])
+        expect(@controller.search_options[:facilities]).to eq([@authable])
       end
 
       it "should populate accounts" do
         @controller.all_order_details
         expect(@controller.account).to be_nil
-        expect(@controller.accounts).to eq([@account])
+        expect(@controller.search_options[:accounts]).to eq([@account])
       end
 
       it "populates accounts based off order_details, not orders" do
@@ -78,7 +73,7 @@ RSpec.describe TransactionSearch do
         OrderDetail.all.each { |od| od.update_attributes!(account: @account2) }
         expect(@order.reload.account).to eq(@account)
         @controller.all_order_details
-        expect(@controller.accounts).to eq([@account2])
+        expect(@controller.search_options[:accounts]).to eq([@account2])
       end
 
       it "populates owners based off of order_details, not orders" do
@@ -87,7 +82,7 @@ RSpec.describe TransactionSearch do
         OrderDetail.all.each { |od| od.update_attributes!(account: @account2) }
         expect(@order.reload.account.owner.user).to eq(@staff)
         @controller.all_order_details
-        expect(@controller.account_owners).to eq([@staff2])
+        expect(@controller.search_options[:account_owners]).to eq([@staff2])
       end
 
       it "should not populate an account for another facility" do
@@ -97,11 +92,12 @@ RSpec.describe TransactionSearch do
         @controller.all_order_details
         expect(@controller.current_facility).to eq(@authable)
         expect(@controller.account).to be_nil
-        expect(@controller.accounts).to eq([@account])
+        expect(@controller.search_options[:accounts]).to eq([@account])
       end
+
       it "should populate order statuses" do
         @controller.all_order_details
-        expect(@controller.order_statuses).to contain_all [@os_new, @os_complete]
+        expect(@controller.search_options[:order_statuses]).to contain_all [@os_new, @os_complete]
       end
     end
 
@@ -122,17 +118,19 @@ RSpec.describe TransactionSearch do
         @controller.all_order_details
         expect(@controller.current_facility).to be_nil
         expect(@controller.account).to eq(@account)
-        expect(@controller.facilities).to contain_all [@authable, @facility2]
+        expect(@controller.search_options[:facilities]).to contain_all [@authable, @facility2]
       end
+
       it "should only have a single facility for credit card" do
         @controller.params = { account_id: @credit_account.id }
         @controller.init_current_account
         @controller.all_order_details
         expect(@controller.current_facility).to be_nil
         expect(@controller.account).to eq(@credit_account)
-        expect(@controller.facilities).to eq([@facility2])
+        expect(@controller.search_options[:facilities]).to eq([@facility2])
       end
     end
+
     context "account owners" do
       before :each do
         @user2 = FactoryGirl.create(:user)
@@ -141,11 +139,12 @@ RSpec.describe TransactionSearch do
         # account 2 needs to have an order detail for it to show up
         place_and_complete_item_order(@user2, @authable, @account2)
       end
+
       it "should populate account owners" do
         @controller.params = { facility_id: @authable.url_name }
         @controller.init_current_facility
         @controller.all_order_details
-        expect(@controller.account_owners).to contain_all [@staff, @user2]
+        expect(@controller.search_options[:account_owners]).to contain_all [@staff, @user2]
       end
     end
 
@@ -166,8 +165,9 @@ RSpec.describe TransactionSearch do
         @controller.init_current_facility
         @controller.all_order_details
       end
+
       it "should populate products" do
-        expect(@controller.products).to contain_all [@item, @instrument, @service]
+        expect(@controller.search_options[:products]).to contain_all [@item, @instrument, @service]
       end
     end
   end

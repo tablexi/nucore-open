@@ -1,12 +1,18 @@
 module TransactionSearch
 
-  DATE_RANGE_FIELDS = [%w(Ordered ordered_at),
-                       %w(Fulfilled fulfilled_at),
-                       ["Journaled/Statement", "journal_or_statement_date"],
-                      ].freeze
-
   def self.included(base)
     base.extend(ClassMethods)
+  end
+
+  def self.searchers
+    @searchers ||= {
+      facilities: FacilitySearcher,
+      accounts: AccountSearcher,
+      products: ProductSearcher,
+      account_owners: AccountOwnerSearcher,
+      order_statuses: OrderStatusSearcher,
+      date_range: DateRangeSearcher,
+    }
   end
 
   module ClassMethods
@@ -37,8 +43,7 @@ module TransactionSearch
         send(:"#{old_method_name}")
         load_search_options
         @empty_orders = @order_details.empty?
-        # simple_form will wrap in :transactions object
-        @search_fields = params[:transactions] || params
+        @search_fields = params
         do_search(@search_fields)
         add_optimizations
         @paginate_order_details = false if request.format.csv?
@@ -75,24 +80,9 @@ module TransactionSearch
   def load_search_options
     order_details = @order_details.reorder(nil)
 
-    @facilities = Facility.find_by_sql(order_details.joins(order: :facility)
-                                                    .select("distinct(facilities.id), facilities.name, facilities.abbreviation")
-                                                    .reorder("facilities.name").to_sql)
-
-    @accounts = Account.select("accounts.id, accounts.account_number, accounts.description, accounts.type")
-                       .where(id: order_details.select("distinct order_details.account_id"))
-                       .order(:account_number, :description)
-
-    @products = Product.where(id: order_details.select("distinct product_id")).order(:name)
-
-    @account_owners = User.select("users.id, users.first_name, users.last_name")
-                          .where(id: order_details.select("distinct account_users.user_id").joins(account: :owner_user))
-                          .order(:last_name, :first_name)
-
-    # Unlike the other lookups, this query is much faster this way than using a subquery
-    @order_statuses = OrderStatus.find_by_sql(order_details.joins(:order_status)
-                                                           .select("distinct(order_statuses.id), order_statuses.facility_id, order_statuses.name, order_statuses.lft")
-                                                           .reorder("order_statuses.lft").to_sql)
+    @search_options = TransactionSearch.searchers.map do |key, searcher|
+      [key, searcher.new(order_details).options]
+    end.to_h
   end
 
   def paginate_order_details(per_page = nil)
@@ -105,7 +95,9 @@ module TransactionSearch
   end
 
   def set_default_start_date
-    params[:start_date] = format_usa_date(1.month.ago.beginning_of_month) unless params[:start_date].present?
+    params[:date_range].try(:merge!,
+                            start: format_usa_date(1.month.ago.beginning_of_month),
+                           ) unless params[:date_range].try(:[], :start).present?
   end
 
   private
@@ -113,30 +105,24 @@ module TransactionSearch
   def do_search(search_params)
     # Rails.logger.debug "search: #{search_params}"
     @order_details ||= OrderDetail.joins(:order).ordered
-    @order_details = @order_details.for_accounts(search_params[:accounts])
-    @order_details = @order_details.for_products(search_params[:products])
-    @order_details = @order_details.for_owners(search_params[:account_owners])
-    @order_details = @order_details.for_order_statuses(search_params[:order_statuses])
-    start_date = parse_usa_date(search_params[:start_date].to_s.tr("-", "/"))
-    end_date = parse_usa_date(search_params[:end_date].to_s.tr("-", "/"))
-
-    @order_details = @order_details.for_facilities(search_params[:facilities])
-    @date_range_field = date_range_field(search_params[:date_range_field])
-    @order_details = @order_details.action_in_date_range(@date_range_field, start_date, end_date)
+    TransactionSearch.searchers.each do |key, searcher_class|
+      searcher = searcher_class.new(@order_details)
+      @order_details = searcher.search(search_params[key])
+      @date_range_field = searcher.date_range_field if key == :date_range
+    end
   end
 
   def add_optimizations
     # cut down on some n+1s
     @order_details = @order_details
-                     .includes(order: :facility)
-                     .includes(:account)
-                     .preload(:product)
-                     .preload(:order_status)
                      .includes(:reservation)
                      .includes(order: :user)
                      .includes(:price_policy)
                      .preload(:bundle)
-                     .preload(account: :owner_user)
+
+    TransactionSearch.searchers.each do |_key, searcher|
+      @order_details = searcher.new(@order_details).optimized
+    end
   end
 
   def sort_and_paginate
@@ -150,11 +136,6 @@ module TransactionSearch
     args = { page: params[:page] }
     args[:per_page] = @per_page if @per_page.present?
     args
-  end
-
-  def date_range_field(field)
-    whitelist = TransactionSearch::DATE_RANGE_FIELDS.map(&:last)
-    whitelist.include?(field) ? field : "fulfilled_at"
   end
 
   def handle_csv_search

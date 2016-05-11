@@ -12,6 +12,11 @@ module Projects
       ViewHook.add_hook "order_management.order_details.edit",
                         "after_order_status",
                         "projects/shared/select_project"
+
+      TransactionSearch.searchers[:projects] = Projects::ProjectSearcher
+      ViewHook.add_hook "shared.transactions.search",
+                        "end_of_first_column",
+                        "projects/shared/transactions/search"
     end
 
     initializer :append_migrations do |app|

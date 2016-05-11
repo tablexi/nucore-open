@@ -71,7 +71,7 @@ if Account.config.statements_enabled?
         grant_and_sign_in(@user)
         do_request
         expect(response).to be_success
-        expect(assigns(:accounts)).to contain_all [@account, @account2]
+        expect(assigns[:search_options][:accounts]).to contain_all [@account, @account2]
         expect(assigns(:facility)).to eq(@authable)
         expect(assigns(:order_detail_action)).to eq(:send_statements)
         expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
