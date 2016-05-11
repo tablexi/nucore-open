@@ -87,17 +87,17 @@ RSpec.describe ServicePricePolicy do
     end
 
     it "should return the date for the current policies" do
-      spp = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today - 7.days, price_group_id: @price_group.id)
-      @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today + 7.days, price_group_id: @price_group.id)
+      spp = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Time.current.beginning_of_day - 7.days, price_group_id: @price_group.id)
+      @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Time.current.beginning_of_day + 7.days, price_group_id: @price_group.id)
       expect(ServicePricePolicy.current_date(@service)).to eq(spp.start_date.to_date)
-      spp3 = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today, price_group_id: @price_group.id)
+      spp3 = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Time.current.beginning_of_day, price_group_id: @price_group.id)
       expect(ServicePricePolicy.current_date(@service)).to eq(spp3.start_date.to_date)
     end
 
     it "should return the date for upcoming policies" do
-      @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today, price_group_id: @price_group.id)
-      spp2 = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today + 7.days, price_group_id: @price_group.id)
-      spp3 = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today + 14.days, price_group_id: @price_group.id)
+      @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Time.current.beginning_of_day, price_group_id: @price_group.id)
+      spp2 = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Time.current.beginning_of_day + 7.days, price_group_id: @price_group.id)
+      spp3 = @service.service_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Time.current.beginning_of_day + 14.days, price_group_id: @price_group.id)
 
       expect(ServicePricePolicy.next_date(@service)).to eq(spp2.start_date.to_date)
       next_dates = ServicePricePolicy.next_dates(@service)

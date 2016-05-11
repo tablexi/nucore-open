@@ -20,10 +20,10 @@ RSpec.describe Reservations::Rendering do
 
   describe "#actuals_string" do
     context "when there is an actual start_at" do
-      let(:actual_start_at) { DateTime.new(2015, 6, 1, 13, 14, 15) }
+      let(:actual_start_at) { Time.zone.local(2015, 6, 1, 8, 14, 15) }
 
       context "and an actual end_at" do
-        let(:actual_end_at) { DateTime.new(2015, 6, 1, 14, 15, 16) }
+        let(:actual_end_at) { Time.zone.local(2015, 6, 1, 9, 15, 16) }
 
         it "returns the formatted range" do
           expect(reservation.actuals_string)
@@ -41,7 +41,7 @@ RSpec.describe Reservations::Rendering do
 
     context "when there is no actual start_at" do
       context "and there is an actual end_at" do
-        let(:actual_end_at) { DateTime.new(2015, 6, 1, 14, 15, 16) }
+        let(:actual_end_at) { Time.zone.local(2015, 6, 1, 9, 15, 16) }
 
         it "uses '???' for the start time and formats the end time" do
           expect(reservation.actuals_string)
@@ -58,8 +58,8 @@ RSpec.describe Reservations::Rendering do
   end
 
   describe "#as_calendar_object" do
-    let(:actual_start_at) { DateTime.new(2015, 8, 1, 14, 15, 16) }
-    let(:actual_end_at) { DateTime.new(2015, 8, 1, 15, 16, 17) }
+    let(:actual_start_at) { Time.zone.local(2015, 8, 1, 9, 15, 16) }
+    let(:actual_end_at) { Time.zone.local(2015, 8, 1, 10, 16, 17) }
     let(:title) { "Admin\nReservation" }
 
     let(:hash_without_details) do
@@ -178,7 +178,7 @@ RSpec.describe Reservations::Rendering do
 
   describe "#range_to_s" do
     let(:result) { reservation.range_to_s(start_at, end_at) }
-    let(:start_at) { DateTime.new(2015, 6, 1, 13, 14, 15) }
+    let(:start_at) { Time.zone.local(2015, 6, 1, 13, 14, 15) }
 
     context "when the reservation is within a single day" do
       let(:end_at) { start_at + 1.hour }
@@ -199,8 +199,8 @@ RSpec.describe Reservations::Rendering do
   end
 
   describe "#reserve_to_s" do
-    let(:reserve_start_at) { DateTime.new(2015, 5, 1, 13, 14, 15) }
-    let(:reserve_end_at) { DateTime.new(2015, 5, 1, 14, 15, 16) }
+    let(:reserve_start_at) { Time.zone.local(2015, 5, 1, 8, 14, 15) }
+    let(:reserve_end_at) { Time.zone.local(2015, 5, 1, 9, 15, 16) }
 
     it "formats the reservation start and end time range" do
       expect(reservation.reserve_to_s)
@@ -210,8 +210,8 @@ RSpec.describe Reservations::Rendering do
 
   describe "#to_s" do
     context "when there are reserve start and end times" do
-      let(:reserve_start_at) { DateTime.new(2015, 7, 1, 13, 14, 15) }
-      let(:reserve_end_at) { DateTime.new(2015, 7, 1, 14, 15, 16) }
+      let(:reserve_start_at) { Time.zone.local(2015, 7, 1, 8, 14, 15) }
+      let(:reserve_end_at) { Time.zone.local(2015, 7, 1, 9, 15, 16) }
 
       context "and the reservation is not canceled" do
         it "returns the formatted range" do

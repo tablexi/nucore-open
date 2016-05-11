@@ -93,9 +93,9 @@ RSpec.describe ItemPricePolicy do
     end
 
     it "should return the date for upcoming policies" do
-      @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Date.today, price_group_id: @price_group.id, can_purchase: true)
-      ipp2 = @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75,  start_date: Date.today + 7.days, price_group_id: @price_group.id, can_purchase: true)
-      ipp3 = @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75,  start_date: Date.today + 14.days, price_group_id: @price_group.id, can_purchase: true)
+      @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75, start_date: Time.current.beginning_of_day, price_group_id: @price_group.id, can_purchase: true)
+      ipp2 = @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75,  start_date: Time.current.beginning_of_day + 7.days, price_group_id: @price_group.id, can_purchase: true)
+      ipp3 = @item.item_price_policies.create(unit_cost: 10.75, unit_subsidy: 0.75,  start_date: Time.current.beginning_of_day + 14.days, price_group_id: @price_group.id, can_purchase: true)
 
       expect(ItemPricePolicy.next_date(@item).to_date).to eq(ipp2.start_date.to_date)
       next_dates = ItemPricePolicy.next_dates(@item)

@@ -75,9 +75,9 @@ RSpec.describe OldInstrumentPricePolicy do
       end
 
       it "should return the date for upcoming policies" do
-        create :old_instrument_price_policy, start_date: Date.current, price_group: @price_group, product: @instrument
-        ipp2 = create :old_instrument_price_policy, start_date: Date.current + 7.days, price_group: @price_group, product: @instrument
-        ipp3 = create :old_instrument_price_policy, start_date: Date.current + 14.days, price_group: @price_group, product: @instrument
+        create :old_instrument_price_policy, start_date: Time.current.beginning_of_day, price_group: @price_group, product: @instrument
+        ipp2 = create :old_instrument_price_policy, start_date: Time.current.beginning_of_day + 7.days, price_group: @price_group, product: @instrument
+        ipp3 = create :old_instrument_price_policy, start_date: Time.current.beginning_of_day + 14.days, price_group: @price_group, product: @instrument
         expect(ipp2.class.next_date(@instrument).to_date).to eq ipp2.start_date.to_date
         next_dates = ipp2.class.next_dates @instrument
         expect(next_dates.size).to eq 2
