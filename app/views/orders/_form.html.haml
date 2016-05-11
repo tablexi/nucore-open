@@ -43,10 +43,8 @@
             class: %w(btn btn-primary),
             confirm: t(".confirm")
 
-    - if acting_as?
-      %li
-        = render_view_hook "acting_as",
-          f: f, order_detail: order.order_details.first
+      - if acting_as?
+        %li
+          = render_view_hook "acting_as", f: f, order_detail: order.order_details.first
 
-      .backdate_fields
-        = render "edit_date", f: f
+        %li= render "edit_date", f: f
