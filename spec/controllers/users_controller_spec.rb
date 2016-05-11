@@ -188,10 +188,10 @@ RSpec.describe UsersController do
     context "disabled" do
       include_context "feature disabled", :create_users
       it "doesn't route route" do
-        expect(get: "/facilities/url_name/users/new").not_to be_routable
-        expect(post: "/facilities/url_name/users").not_to be_routable
-        expect(get: "/facilities/url_name/users/new_external").not_to be_routable
-        expect(post: "/facilities/url_name/users/search").not_to be_routable
+        expect(get: "/#{facilities_route}/url_name/users/new").not_to be_routable
+        expect(post: "/#{facilities_route}/url_name/users").not_to be_routable
+        expect(get: "/#{facilities_route}/url_name/users/new_external").not_to be_routable
+        expect(post: "/#{facilities_route}/url_name/users/search").not_to be_routable
       end
     end
   end
