@@ -49,11 +49,11 @@ RSpec.describe UsersController do
     context "enabled" do
       include_context "feature enabled", :create_users
 
-      it "routes" do
-        expect(get: "/facilities/url_name/users/new").to route_to(controller: "users", action: "new", facility_id: "url_name")
-        expect(post: "/facilities/url_name/users").to route_to(controller: "users", action: "create", facility_id: "url_name")
-        expect(get: "/facilities/url_name/users/new_external").to route_to(controller: "users", action: "new_external", facility_id: "url_name")
-        expect(post: "/facilities/url_name/users/search").to route_to(controller: "users", action: "search", facility_id: "url_name")
+      it "routes", :aggregate_failures do
+        expect(get: "/#{facilities_route}/url_name/users/new").to route_to(controller: "users", action: "new", facility_id: "url_name")
+        expect(post: "/#{facilities_route}/url_name/users").to route_to(controller: "users", action: "create", facility_id: "url_name")
+        expect(get: "/#{facilities_route}/url_name/users/new_external").to route_to(controller: "users", action: "new_external", facility_id: "url_name")
+        expect(post: "/#{facilities_route}/url_name/users/search").to route_to(controller: "users", action: "search", facility_id: "url_name")
       end
 
       context "search" do
@@ -188,10 +188,10 @@ RSpec.describe UsersController do
     context "disabled" do
       include_context "feature disabled", :create_users
       it "doesn't route route" do
-        expect(get: "/facilities/url_name/users/new").not_to be_routable
-        expect(post: "/facilities/url_name/users").not_to be_routable
-        expect(get: "/facilities/url_name/users/new_external").not_to be_routable
-        expect(post: "/facilities/url_name/users/search").not_to be_routable
+        expect(get: "/#{facilities_route}/url_name/users/new").not_to be_routable
+        expect(post: "/#{facilities_route}/url_name/users").not_to be_routable
+        expect(get: "/#{facilities_route}/url_name/users/new_external").not_to be_routable
+        expect(post: "/#{facilities_route}/url_name/users/search").not_to be_routable
       end
     end
   end

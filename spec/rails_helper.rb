@@ -92,6 +92,10 @@ RSpec.configure do |config|
     TextHelpers::RSpec.reset_spec_translations
   end
 
+  def facilities_route
+    I18n.t("facilities_downcase")
+  end
+
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

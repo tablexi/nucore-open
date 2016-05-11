@@ -463,7 +463,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
   private
 
   def price_policy_index_path
-    "/facilities/#{@authable.url_name}/#{@product_type.to_s.pluralize}/#{@product.url_name}/price_policies"
+    send("facility_#{@product_type}_price_policies_path", @authable, @product)
   end
 
   def make_price_policy(price_group, extra_attr = {})

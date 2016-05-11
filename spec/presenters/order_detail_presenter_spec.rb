@@ -60,7 +60,7 @@ RSpec.describe OrderDetailPresenter do
     include_context "order with a reservation"
 
     let(:expected_path) do
-      "/facilities/#{facility.url_name}/orders/#{order.id}/order_details/"\
+      "/#{facilities_route}/#{facility.url_name}/orders/#{order.id}/order_details/"\
       "#{order_detail.id}/reservations/#{reservation.id}/edit"
     end
 
@@ -140,7 +140,7 @@ RSpec.describe OrderDetailPresenter do
 
     include_context "order with a reservation"
 
-    it { is_expected.to eq("/facilities/#{facility.url_name}/orders/#{order.id}") }
+    it { is_expected.to eq("/#{facilities_route}/#{facility.url_name}/orders/#{order.id}") }
   end
 
   describe "#show_reservation_path" do
@@ -149,7 +149,7 @@ RSpec.describe OrderDetailPresenter do
     include_context "order with a reservation"
 
     let(:expected_path) do
-      "/facilities/#{facility.url_name}/orders/#{order.id}/order_details/"\
+      "/#{facilities_route}/#{facility.url_name}/orders/#{order.id}/order_details/"\
       "#{order_detail.id}/reservations/#{reservation.id}"
     end
 
