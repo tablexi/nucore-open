@@ -28,7 +28,7 @@ en:
   Facility: "!activerecord.models.facility.one!"
   Facilities: "!activerecord.models.facility.other!"
   facility_downcase: facility
-  facilities_downcase: facilities
+  facilities_downcase: resources
 
   admin:
     shared:
