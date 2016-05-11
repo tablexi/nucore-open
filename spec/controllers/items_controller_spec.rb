@@ -8,8 +8,8 @@ RSpec.describe ItemsController do
   render_views
 
   it "should route" do
-    expect(get: "/facilities/url_name/items").to route_to(controller: "items", action: "index", facility_id: "url_name")
-    expect(get: "/facilities/url_name/items/1").to route_to(controller: "items", action: "show", facility_id: "url_name", id: "1")
+    expect(get: "/#{I18n.t('facilities_downcase')}/url_name/items").to route_to(controller: "items", action: "index", facility_id: "url_name")
+    expect(get: "/#{I18n.t('facilities_downcase')}/url_name/items/1").to route_to(controller: "items", action: "show", facility_id: "url_name", id: "1")
   end
 
   before(:all) { create_users }

@@ -8,8 +8,8 @@ RSpec.describe InstrumentsController do
   render_views
 
   it "should route" do
-    expect(get: "/facilities/alpha/instruments").to route_to(controller: "instruments", action: "index", facility_id: "alpha")
-    expect(get: "/facilities/alpha/instruments/1/manage").to route_to(controller: "instruments", action: "manage", id: "1", facility_id: "alpha")
+    expect(get: "/#{I18n.t('facilities_downcase')}/alpha/instruments").to route_to(controller: "instruments", action: "index", facility_id: "alpha")
+    expect(get: "/#{I18n.t('facilities_downcase')}/alpha/instruments/1/manage").to route_to(controller: "instruments", action: "manage", id: "1", facility_id: "alpha")
   end
 
   before(:all) { create_users }

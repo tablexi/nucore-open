@@ -17,7 +17,7 @@ RSpec.describe AccountsHelper do
     context "when allowed to manage the account" do
       let(:allowed?) { true }
       let(:expected_path) do
-        "/facilities/#{current_facility.url_name}/accounts/#{account.id}"
+        facility_account_path(current_facility, account)
       end
 
       it { is_expected.to include(expected_path).and include(account.to_s) }
