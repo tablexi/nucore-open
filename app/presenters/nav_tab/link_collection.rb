@@ -107,7 +107,7 @@ class NavTab::LinkCollection
   def general_reports
     NavTab::Link.new(
       text: I18n.t("pages.general_reports"),
-      url: product_facility_general_reports_path(facility),
+      url: facility_general_reports_path(facility, report_by: :products),
     )
   end
 

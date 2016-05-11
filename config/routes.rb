@@ -280,6 +280,8 @@ Nucore::Application.routes.draw do
         post "send_statements"
       end
     end
+
+    get "general_reports/:report_by", to: "general_reports#report_by", as: "general_reports"
   end
 
   # global settings
@@ -347,14 +349,6 @@ Nucore::Application.routes.draw do
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
   match "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete",          to: 'surveys#complete',                 as: "complete_survey", via: [:get, :post]
-
-  # general reports
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/assigned_to",   to: 'general_reports#assigned_to',   as: "assigned_to_facility_general_reports",   via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/account",       to: 'general_reports#account',       as: "account_facility_general_reports",       via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/price_group",   to: 'general_reports#price_group',   as: "price_group_facility_general_reports",   via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/account_owner", to: 'general_reports#account_owner', as: "account_owner_facility_general_reports", via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/product",       to: 'general_reports#product',       as: "product_facility_general_reports",       via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/purchaser",     to: 'general_reports#purchaser',     as: "purchaser_facility_general_reports",     via: [:get, :post]
 
   # instrument reports
   match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/account",       to: 'instrument_reports#account',       as: "account_facility_instrument_reports",       via: [:get, :post]

@@ -1,33 +1,36 @@
 class GeneralReportsController < ReportsController
 
-  def product
-    render_report(0, "Name") { |od| od.product.name }
-  end
-
-  def account
-    render_report(1, "Description", &:account)
-  end
-
-  def account_owner
-    render_report(2, "Name") do |od|
-      # Space at beginning is intentional to bubble it to the top of the list
-      od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
-    end
-  end
-
-  def purchaser
-    render_report(3, "Name") { |od| format_username od.order.user }
-  end
-
-  def price_group
-    render_report(4, "Name") { |od| od.price_policy ? od.price_policy.price_group.name : "Unassigned" }
-  end
-
-  def assigned_to
-    render_report(5, "Name") { |od| od.assigned_user.presence ? format_username(od.assigned_user) : "Unassigned" }
+  def report_by
+    key = params[:report_by].to_sym
+    index = reports.keys.find_index(key)
+    header = key == :account ? "Description" : "Name" # TODO refactor
+    render_report(index, header, &reports[key])
   end
 
   private
+
+  private
+
+  def reports
+    @reports ||= {
+      product: -> (od) { od.product.name },
+      account: :account,
+      account_owner: method(:account_owner_group),
+      purchaser: -> (od) { format_username od.order.user },
+      price_group: -> (od) { od.price_policy ? od.price_policy.price_group.name : "Unassigned"  },
+      assigned_to: -> (od) { od.assigned_user.presence ? format_username(od.assigned_user) : "Unassigned" }
+    }
+  end
+
+  def report_keys
+    reports.keys
+  end
+  helper_method :report_keys
+
+  def account_owner_group(od)
+    # Space at beginning is intentional to bubble it to the top of the list
+    od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
+  end
 
   def email_to_address
     params[:email_to_address].presence || current_user.email
