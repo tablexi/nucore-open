@@ -145,42 +145,52 @@ RSpec.describe Product do
         it "should return the product's email if it has it" do
           expect(@product.email).to eq("product@example.com")
         end
+
         it "should return the facility's email if no product email" do
           @product.contact_email = ""
           expect(@product.email).to eq("facility@example.com")
         end
+
         it "should validate with the product email set" do
           expect(@product).to be_valid
         end
+
         it "should validate with the facility's email set" do
           @product.contact_email = ""
           expect(@product).to be_valid
         end
-        it "should not validate without an email on either product or facility" do
+
+        it "should not validate without an email on either product or facility", :locales do
           @facility.update_attributes!(email: "")
           @product.contact_email = ""
           expect(@product).not_to be_valid
-          expect(@product.errors.full_messages).to include "Contact email must be set on either the product or the facility"
+          expect(@product.errors.full_messages).to include("Contact email must be set on either the product or the #{I18n.t('facility_downcase')}")
         end
       end
+
       context "product specific disabled" do
         before :all do
           @original_setting = SettingsHelper.feature_on? :product_specific_contacts
           SettingsHelper.enable_feature(:product_specific_contacts, false)
         end
+
         after :all do
           SettingsHelper.enable_feature(:product_specific_contacts, @original_setting)
         end
+
         it "should return the facility's email address even if the product has an email" do
           expect(@product.email).to eq("facility@example.com")
         end
+
         it "should validate if the product email is set" do
           expect(@product).to be_valid
         end
+
         it "should validate if the product email is not set, but the the facility is" do
           @product.contact_email = ""
           expect(@product).to be_valid
         end
+
         it "should validate even if the facility's email is blank" do
           @facility.update_attributes!(email: "")
           @product.contact_email = ""
