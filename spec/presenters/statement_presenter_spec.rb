@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe StatementPresenter do
   subject { StatementPresenter.new(statement) }
   let(:account) { statement.account }
-  let(:created_at) { DateTime.parse("2015-10-14 16:41:00 CST") }
+  let(:created_at) { Time.zone.local(2015, 10, 14, 17, 41) }
   let(:creator) { create(:user) }
   let(:facility) { statement.facility }
   let(:statement) { create(:statement, created_at: created_at, created_by: creator.id) }
