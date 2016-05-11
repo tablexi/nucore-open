@@ -38,7 +38,7 @@ module Nucore
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # TODO: Rails 4 can move this into an initializer meaning we can move it into
     # settings.yml or secrets.yml
-    config.time_zone = "Pacific Time (US & Canada)"
+    config.time_zone = "Central Time (US & Canada)"
 
     # The default locale is :en and all translations under config/locales/ are auto-loaded
     # But we want to make sure anything in the override folder happens at the very end
