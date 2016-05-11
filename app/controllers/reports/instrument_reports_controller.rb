@@ -5,21 +5,31 @@ module Reports
     include InstrumentReporter
 
     def index
-      @report_by = (params[:report_by].presence || "product")
+      @report_by = (params[:report_by].presence || "instrument")
       index = reports.keys.find_index(@report_by)
-      header = @report_by == "account" ? "Description" : "Name" # TODO: refactor
       render_report(index, header, &reports[@report_by])
     end
 
-    private
-
     def reports
-      {
+      HashWithIndifferentAccess.new(
         instrument: -> (r) { [r.product.name] },
         account: -> (r) { [r.product.name, r.order_detail.account.to_s] },
         account_owner: -> (r) { [r.product.name, format_username(r.order_detail.account.owner.user)] },
         purchaser: -> (r) { [r.product.name, format_username(r.order_detail.order.user)] },
-      }
+      )
+    end
+
+    private
+
+    def header
+      case @report_by
+      when "account"
+        "Description"
+      when "instrument"
+        nil
+      else
+        "Name"
+      end
     end
 
     def report_keys

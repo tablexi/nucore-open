@@ -12,6 +12,7 @@ module ReportSpecHelper
     base.before(:each) do
       @method = :get
       @authable = FactoryGirl.create(:facility)
+      @action = :index
       @params = {
         facility_id: @authable.url_name,
         date_start: Time.zone.now.strftime("%m/%d/%Y"),
@@ -27,9 +28,8 @@ module ReportSpecHelper
 
     def run_report_tests(tests)
       tests.each do |test|
-        context "#{test[:action]}_#{test[:report_by]}" do
+        context test[:report_by].to_s do
           before :each do
-            @action = test[:action]
             @params[:report_by] = test[:report_by]
             [:owner, :staff, :purchaser].each do |user|
               acct = create_nufs_account_with_owner user
@@ -144,7 +144,7 @@ module ReportSpecHelper
 
   def assert_report_rendered_csv(label, &report_on)
     assert_report_init label, &report_on
-    assert_report_download_rendered "#{@report_by}_#{export_type}"
+    assert_report_download_rendered "#{@params[:report_by]}_report"
   end
 
 end

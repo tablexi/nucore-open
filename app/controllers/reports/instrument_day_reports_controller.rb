@@ -5,20 +5,19 @@ module Reports
     include InstrumentReporter
     helper_method :report_data_row
 
-    def reserved_quantity
-      render_report(4, nil) { |res| Reports::InstrumentDayReport::ReservedQuantity.new(res) }
+    def index
+      @report_by = (params[:report_by].presence || "instrument")
+      index = reports.keys.find_index(@report_by) + 4
+      render_report(index, nil, &reports[@report_by])
     end
 
-    def reserved_hours
-      render_report(5, nil) { |res| Reports::InstrumentDayReport::ReservedHours.new(res) }
-    end
-
-    def actual_quantity
-      render_report(6, nil) { |res| Reports::InstrumentDayReport::ActualQuantity.new(res) }
-    end
-
-    def actual_hours
-      render_report(7, nil) { |res| Reports::InstrumentDayReport::ActualHours.new(res) }
+    def reports
+      HashWithIndifferentAccess.new(
+        reserved_quantity: -> (res) { Reports::InstrumentDayReport::ReservedQuantity.new(res) },
+        reserved_hours: -> (res) { Reports::InstrumentDayReport::ReservedHours.new(res) },
+        actual_quantity: -> (res) { Reports::InstrumentDayReport::ActualQuantity.new(res) },
+        actual_hours: -> (res) { Reports::InstrumentDayReport::ActualHours.new(res) }
+      )
     end
 
     private

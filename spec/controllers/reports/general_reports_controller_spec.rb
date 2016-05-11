@@ -6,11 +6,11 @@ RSpec.describe Reports::GeneralReportsController do
   include ReportSpecHelper
 
   run_report_tests([
-                     { action: :index, report_by: "product", index: 0, report_on_label: "Name", report_on: proc { |od| od.product.name } },
-                     { action: :index, report_by: :account, index: 1, report_on_label: "Description", report_on: proc { |od| od.account } },
-                     { action: :index, report_by: :account_owner, index: 2, report_on_label: "Name", report_on: proc { |od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})" } },
-                     { action: :index, report_by: :purchaser, index: 3, report_on_label: "Name", report_on: proc { |od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})" } },
-                     { action: :index, report_by: :price_group, index: 4, report_on_label: "Name", report_on: proc { |od| od.price_policy ? od.price_policy.price_group.name : "Unassigned" } },
+                     { report_by: :product, index: 0, report_on_label: "Name", report_on: proc { |od| od.product.name } },
+                     { report_by: :account, index: 1, report_on_label: "Description", report_on: proc { |od| od.account } },
+                     { report_by: :account_owner, index: 2, report_on_label: "Name", report_on: proc { |od| owner = od.account.owner.user; "#{owner.last_name}, #{owner.first_name} (#{owner.username})" } },
+                     { report_by: :purchaser, index: 3, report_on_label: "Name", report_on: proc { |od| usr = od.order.user; "#{usr.last_name}, #{usr.first_name} (#{usr.username})" } },
+                     { report_by: :price_group, index: 4, report_on_label: "Name", report_on: proc { |od| od.price_policy ? od.price_policy.price_group.name : "Unassigned" } },
                    ])
 
   describe "time parameters", :timecop_freeze do
@@ -252,9 +252,9 @@ RSpec.describe Reports::GeneralReportsController do
     end
   end
 
-  def assert_report_rendered_csv(label, &report_on)
-    assert_report_init label, &report_on
-    assert_report_download_rendered "#{@params[:report_by]}_report"
-  end
+  # def assert_report_rendered_csv(label, &report_on)
+  #   assert_report_init label, &report_on
+  #   assert_report_download_rendered "#{@params[:report_by]}_report"
+  # end
 
 end
