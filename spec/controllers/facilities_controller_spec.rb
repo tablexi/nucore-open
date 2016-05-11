@@ -5,7 +5,7 @@ require "transaction_search_spec_helper"
 RSpec.describe FacilitiesController do
   render_views
 
-  it "should route" do
+  it "routes", :aggregate_failures do
     expect(get: "/#{facilities_route}").to route_to(controller: "facilities", action: "index")
     expect(get: "/#{facilities_route}/url_name").to route_to(controller: "facilities", action: "show", id: "url_name")
     expect(get: "/#{facilities_route}/url_name/manage").to route_to(controller: "facilities", action: "manage", id: "url_name")

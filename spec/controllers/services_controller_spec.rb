@@ -7,7 +7,7 @@ RSpec.describe ServicesController do
 
   render_views
 
-  it "should route" do
+  it "routes", :aggregate_failures do
     expect(get: "/#{facilities_route}/alpha/services").to route_to(controller: "services", action: "index", facility_id: "alpha")
     expect(get: "/#{facilities_route}/alpha/services/1/manage").to route_to(controller: "services", action: "manage", id: "1", facility_id: "alpha")
   end

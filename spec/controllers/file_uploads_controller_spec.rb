@@ -4,7 +4,7 @@ require "controller_spec_helper"
 RSpec.describe FileUploadsController do
   render_views
 
-  it "should route" do
+  it "routes", :aggregate_failures do
     expect(get: "/#{facilities_route}/alpha/services/1/files/upload").to route_to(controller: "file_uploads", action: "upload", facility_id: "alpha", product: "services", product_id: "1")
     expect(post: "/#{facilities_route}/alpha/services/1/files").to route_to(controller: "file_uploads", action: "create", facility_id: "alpha", product: "services", product_id: "1")
   end

@@ -49,11 +49,11 @@ RSpec.describe UsersController do
     context "enabled" do
       include_context "feature enabled", :create_users
 
-      it "routes" do
-        expect(get: "/facilities/url_name/users/new").to route_to(controller: "users", action: "new", facility_id: "url_name")
-        expect(post: "/facilities/url_name/users").to route_to(controller: "users", action: "create", facility_id: "url_name")
-        expect(get: "/facilities/url_name/users/new_external").to route_to(controller: "users", action: "new_external", facility_id: "url_name")
-        expect(post: "/facilities/url_name/users/search").to route_to(controller: "users", action: "search", facility_id: "url_name")
+      it "routes", :aggregate_failures do
+        expect(get: "/#{facilities_route}/url_name/users/new").to route_to(controller: "users", action: "new", facility_id: "url_name")
+        expect(post: "/#{facilities_route}/url_name/users").to route_to(controller: "users", action: "create", facility_id: "url_name")
+        expect(get: "/#{facilities_route}/url_name/users/new_external").to route_to(controller: "users", action: "new_external", facility_id: "url_name")
+        expect(post: "/#{facilities_route}/url_name/users/search").to route_to(controller: "users", action: "search", facility_id: "url_name")
       end
 
       context "search" do
