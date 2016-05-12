@@ -8,6 +8,7 @@ module Projects
       NavTab::LinkCollection.send :include, Projects::LinkCollectionExtension
       ::OrderDetails::ParamUpdater.send :include, Projects::OrderDetails::ParamUpdaterExtension
       OrderDetail.send :include, Projects::OrderDetailExtension
+      OrderDetailBatchUpdater.send :include, Projects::OrderDetailBatchUpdaterExtension
 
       ViewHook.add_hook "order_management.order_details.edit",
                         "after_order_status",
