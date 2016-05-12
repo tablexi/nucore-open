@@ -40,6 +40,10 @@ class OrderDetailBatchUpdater
   #                   order_details associated with reservations)
   #                   defaults to 'orders'
 
+  def self.permitted_attributes
+    @permitted_attributes ||= %i(assigned_user_id order_status_id)
+  end
+
   def initialize(order_detail_ids, facility, user, params, msg_type = "orders")
     @order_detail_ids = order_detail_ids
     @facility = facility
@@ -63,9 +67,18 @@ class OrderDetailBatchUpdater
     end
 
     changes = false
-    if params[:assigned_user_id] && params[:assigned_user_id].length > 0
+
+    self.class.permitted_attributes.each do |attribute|
+      next if attribute == :order_status_id # Special case; see below
+      next if params[attribute].blank?
+
       changes = true
-      order_details.each { |od| od.assigned_user_id = (params[:assigned_user_id] == "unassign" ? nil : params[:assigned_user_id]) }
+
+      value = params[attribute] == "unassign" ? nil : params[attribute]
+
+      order_details.each do |order_detail|
+        order_detail.public_send("#{attribute}=", value)
+      end
     end
 
     OrderDetail.transaction do
