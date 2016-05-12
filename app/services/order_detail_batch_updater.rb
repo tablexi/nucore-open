@@ -1,6 +1,6 @@
 class OrderDetailBatchUpdater
 
-  attr_accessor :current_facility, :msg_hash, :msg_type, :order_detail_ids, :session_user, :update_params
+  attr_accessor :facility, :msg_hash, :msg_type, :order_detail_ids, :user, :params
 
   # returns a hash of :notice (and/or?) :error
   # these should be shown to the user as an appropriate flash message
@@ -10,9 +10,9 @@ class OrderDetailBatchUpdater
   # order_detail_ids: enumerable of strings or integers representing
   #                   order_details to attempt update of
   #
-  # update_params:    a hash containing updates to attempt on the order_details
+  # params:           a hash containing updates to attempt on the order_details
   #
-  # session_user:     user requesting the update
+  # user:             user requesting the update
   #
   # Acceptable Updates:
   #   key                     value
@@ -38,11 +38,11 @@ class OrderDetailBatchUpdater
   #                   order_details associated with reservations)
   #                   defaults to 'orders'
 
-  def initialize(order_detail_ids, current_facility, session_user, update_params, msg_type = "orders")
+  def initialize(order_detail_ids, facility, user, params, msg_type = "orders")
     @order_detail_ids = order_detail_ids
-    @current_facility = current_facility
-    @session_user = session_user
-    @update_params = update_params
+    @facility = facility
+    @user = user
+    @params = params
     @msg_type = msg_type
     @msg_hash = {}
   end
@@ -55,26 +55,26 @@ class OrderDetailBatchUpdater
 
     order_details = OrderDetail.find(order_detail_ids)
 
-    if order_details.any? { |od| od.product.facility_id != current_facility.id || !(od.state.include?("inprocess") || od.state.include?("new")) }
+    if order_details.any? { |od| od.product.facility_id != facility.id || !(od.state.include?("inprocess") || od.state.include?("new")) }
       msg_hash[:error] = "There was an error updating the selected #{msg_type}"
       return msg_hash
     end
 
     changes = false
-    if update_params[:assigned_user_id] && update_params[:assigned_user_id].length > 0
+    if params[:assigned_user_id] && params[:assigned_user_id].length > 0
       changes = true
-      order_details.each { |od| od.assigned_user_id = (update_params[:assigned_user_id] == "unassign" ? nil : update_params[:assigned_user_id]) }
+      order_details.each { |od| od.assigned_user_id = (params[:assigned_user_id] == "unassign" ? nil : params[:assigned_user_id]) }
     end
 
     OrderDetail.transaction do
-      if update_params[:order_status_id] && update_params[:order_status_id].length > 0
+      if params[:order_status_id] && params[:order_status_id].length > 0
         changes = true
         begin
-          os = OrderStatus.find(update_params[:order_status_id])
+          os = OrderStatus.find(params[:order_status_id])
           order_details.each do |od|
             # cancel reservation order details
             if os.id == OrderStatus.canceled.first.id && od.reservation
-              raise "#{msg_type} ##{od} failed cancellation." unless od.cancel_reservation(session_user, os, true)
+              raise "#{msg_type} ##{od} failed cancellation." unless od.cancel_reservation(user, os, true)
             # cancel other orders or change status of any order
             else
               od.change_status!(os)
