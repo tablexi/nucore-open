@@ -8,9 +8,13 @@ module Projects
 
     private
 
-    # TODO: I18n and move to the main app for use in order_detail_action_form
     def blank_options
-      options_for_select([["Select project...", nil], ["Unassign", "unassign"]])
+      options_for_select(
+        [
+          [I18n.t("projects.shared.select_project.placeholder"), nil],
+          [I18n.t("projects.shared.select_project.unassign"), "unassign"],
+        ]
+      )
     end
 
   end
