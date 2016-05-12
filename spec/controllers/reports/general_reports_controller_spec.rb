@@ -245,7 +245,7 @@ RSpec.describe Reports::GeneralReportsController do
     ods.sort! { |a, b| yield(a) <=> yield(b) }
 
     ods.each_with_index do |od, i|
-      expect(rows[i][0].to_s).to eq(yield(od))
+      expect(rows[i][0].to_s).to eq(yield(od).to_s)
       expect(rows[i][1]).to eq(od.quantity)
       expect(rows[i][2]).to eq(od.total.to_i)
       expect(rows[i][3]).to eq(to_percent(od.total / assigns(:total_cost)))
