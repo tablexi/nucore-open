@@ -54,36 +54,23 @@ class OrderDetailBatchUpdater
   end
 
   def update!
+    @changes = false
+
     unless order_detail_ids.present?
       msg_hash[:error] = "No #{msg_type} selected"
       return msg_hash
     end
-
-    order_details = facility.order_details.where(id: order_detail_ids)
 
     if order_details.any? { |od| !(od.state.include?("inprocess") || od.state.include?("new")) }
       msg_hash[:error] = "There was an error updating the selected #{msg_type}"
       return msg_hash
     end
 
-    changes = false
-
-    self.class.permitted_attributes.each do |attribute|
-      next if attribute == :order_status_id # Special case; see below
-      next if params[attribute].blank?
-
-      changes = true
-
-      value = params[attribute] == "unassign" ? nil : params[attribute]
-
-      order_details.each do |order_detail|
-        order_detail.public_send("#{attribute}=", value)
-      end
-    end
-
     OrderDetail.transaction do
-      if params[:order_status_id] && params[:order_status_id].length > 0
-        changes = true
+      update_order_details_from_params
+
+      if params[:order_status_id].present?
+        @changes = true
         begin
           os = OrderStatus.find(params[:order_status_id])
           order_details.each do |od|
@@ -100,10 +87,12 @@ class OrderDetailBatchUpdater
           raise ActiveRecord::Rollback
         end
       end
-      unless changes
+
+      unless @changes
         msg_hash[:notice] = "No changes were required"
         return msg_hash
       end
+
       begin
         order_details.all?(&:save!)
         msg_hash[:notice] = "The #{msg_type} were successfully updated"
@@ -114,6 +103,27 @@ class OrderDetailBatchUpdater
     end
 
     msg_hash
+  end
+
+  private
+
+  def order_details
+   @order_details ||= facility.order_details.where(id: order_detail_ids)
+  end
+
+  def update_order_details_from_params
+    self.class.permitted_attributes.each do |attribute|
+      next if attribute == :order_status_id # Special case
+      next if params[attribute].blank?
+
+      @changes = true
+
+      value = params[attribute] == "unassign" ? nil : params[attribute]
+
+      order_details.each do |order_detail|
+        order_detail.public_send("#{attribute}=", value)
+      end
+    end
   end
 
 end
