@@ -22,7 +22,7 @@ module Reports
 
     def init_report(&report_on)
       report = Reports::InstrumentUtilizationReport.new(report_data)
-      report.build_report &report_on
+      report.build_report(&report_on)
 
       @totals = report.totals
       @label_columns = report.key_length

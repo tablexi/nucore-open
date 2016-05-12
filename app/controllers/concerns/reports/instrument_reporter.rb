@@ -1,4 +1,5 @@
 module Reports
+
   module InstrumentReporter
 
     def report_data

@@ -28,7 +28,7 @@ module Reports
 
     def init_report(&report_on)
       report = Reports::InstrumentDayReport.new(report_data)
-      report.build_report &report_on
+      report.build_report(&report_on)
       @totals = report.totals
       rows = report.rows
 
