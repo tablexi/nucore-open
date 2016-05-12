@@ -851,11 +851,6 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
-  # TODO: deprecate this in favor of OrderDetailBatchUpdater#update!
-  def self.batch_update(order_detail_ids, current_facility, session_user, update_params, msg_type = "orders")
-    OrderDetailBatchUpdater.new(order_detail_ids, current_facility, session_user, update_params, msg_type).update!
-  end
-
   def can_be_assigned_to_account?(account)
     user.accounts.include?(account)
   end

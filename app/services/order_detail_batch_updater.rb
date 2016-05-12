@@ -1,5 +1,7 @@
 class OrderDetailBatchUpdater
 
+  # TODO: Extracted from the OrderDetail model almost as-is and still needs refactoring
+
   attr_accessor :facility, :msg_hash, :msg_type, :order_detail_ids, :user, :params
 
   # returns a hash of :notice (and/or?) :error

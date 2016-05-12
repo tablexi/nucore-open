@@ -164,7 +164,7 @@ class FacilityReservationsController < ApplicationController
   def batch_update
     redirect_to facility_reservations_path
 
-    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params, "reservations")
+    msg_hash = batch_updater.update!
 
     # add flash messages if necessary
     flash.merge!(msg_hash) if msg_hash
@@ -194,6 +194,10 @@ class FacilityReservationsController < ApplicationController
   end
 
   private
+
+  def batch_updater
+    @batch_updater ||= OrderDetailBatchUpdater.new(params[:order_detail_ids], current_facility, session_user, params, "reservations")
+  end
 
   def reserve_changed?
     @reservation.admin_editable? &&
