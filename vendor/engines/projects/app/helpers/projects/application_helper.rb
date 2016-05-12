@@ -13,7 +13,7 @@ module Projects
         [
           [I18n.t("projects.shared.select_project.placeholder"), nil],
           [I18n.t("projects.shared.select_project.unassign"), "unassign"],
-        ]
+        ],
       )
     end
 
