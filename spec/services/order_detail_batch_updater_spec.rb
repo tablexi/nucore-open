@@ -27,9 +27,7 @@ RSpec.describe OrderDetailBatchUpdater do
   describe "#update!" do
     shared_examples_for "batch updating" do
       context "when assigned_user_id is already set" do
-        before(:each) do
-          order_detail.update_attribute(:assigned_user_id, 2)
-        end
+        before { order_detail.update_attribute(:assigned_user_id, 2) }
 
         context "and the assigned_user_id parameter is blank" do
           it "does not change the assigned_user_id" do
@@ -73,6 +71,22 @@ RSpec.describe OrderDetailBatchUpdater do
               .to eq(notice: "The #{record_type} were successfully updated")
           end
         end
+
+        context "and the assigned_user_id parameter is set to 'unassign'" do
+          let(:assigned_user_id) { "unassign" }
+
+          it "changes the assigned_user_id to nil" do
+            expect { updater.update! }
+              .to change { order_detail.reload.assigned_user_id }
+              .from(2)
+              .to(nil)
+          end
+
+          it "returns a successful update note" do
+            expect(updater.update!)
+              .to eq(notice: "The #{record_type} were successfully updated")
+          end
+        end
       end
 
       context "when assigned_user_id is not set" do
@@ -105,14 +119,17 @@ RSpec.describe OrderDetailBatchUpdater do
         end
 
         context "and the assigned_user_id parameter is set to 'unassign'" do
+          let(:assigned_user_id) { "unassign" }
+
           it "does not change the assigned_user_id from nil" do
             expect { updater.update! }
               .not_to change { order_detail.reload.assigned_user_id }
               .from(nil)
           end
 
-          it "returns a no-changes-required note" do
-            expect(updater.update!).to eq(notice: "No changes were required")
+          it "returns a successful update note (despite nothing changing)" do
+            expect(updater.update!)
+              .to eq(notice: "The #{record_type} were successfully updated")
           end
         end
       end
@@ -174,29 +191,7 @@ RSpec.describe OrderDetailBatchUpdater do
     context "when associated with Orders" do
       let(:record_type) { "orders" }
 
-      it_behaves_like "batch updating" do
-        context "when assigned_user_id is already set" do
-          before(:each) do
-            order_detail.update_attribute(:assigned_user_id, 2)
-          end
-
-          context "and the assigned_user_id parameter is set to 'unassign'" do
-            let(:assigned_user_id) { "unassign" }
-
-            it "changes the assigned_user_id to nil" do
-              expect { updater.update! }
-                .to change { order_detail.reload.assigned_user_id }
-                .from(2)
-                .to(nil)
-            end
-
-            it "returns a successful update note" do
-              expect(updater.update!)
-                .to eq(notice: "The #{record_type} were successfully updated")
-            end
-          end
-        end
-      end
+      it_behaves_like "batch updating"
     end
 
     context "when associated with Reservations" do
