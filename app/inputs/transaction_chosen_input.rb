@@ -15,7 +15,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
 
     # If there is only one possible value, then we want to show it, and not allow
     # selection, but only if it's not a nullable field
-    if collection_size <= 1 && !options[:allow_blank]
+    if collection_size == 1 && !options[:allow_blank]
       search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)]
       select_options[:disabled] = :disabled
     end
