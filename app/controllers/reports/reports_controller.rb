@@ -91,7 +91,7 @@ module Reports
       respond_to do |format|
         format.html do
           if request.xhr?
-            init_report( &report_on)
+            init_report(&report_on)
             render template: "reports/report_table", layout: false
           else
             render template: "reports/report"
@@ -100,7 +100,7 @@ module Reports
 
         format.csv do
           init_report(&report_on)
-          render_csv("#{@report_by}_report", "report")
+          render_csv("#{@report_by}_report")
         end
       end
     end
@@ -114,13 +114,10 @@ module Reports
       end
     end
 
-    def render_csv(filename = nil, action = nil)
-      filename ||= params[:action]
+    def render_csv(filename)
       filename += "_#{@date_start.strftime('%Y%m%d')}-#{@date_end.strftime('%Y%m%d')}.csv"
-
       set_csv_headers(filename)
-
-      render template: "reports/#{action ? action : action_name}", layout: false
+      render template: "reports/report", layout: false
     end
 
     def report_data_request?

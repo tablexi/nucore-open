@@ -6,7 +6,7 @@ RSpec.describe Reports::InstrumentUtilizationReport do
   let(:product2) { build_stubbed(:product, name: "Test 2") }
 
   before :each do
-    report.build_report { |res| [res.product.name] }
+    report.build_report
   end
 
   context "with actual reservations" do

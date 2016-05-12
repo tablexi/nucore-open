@@ -8,7 +8,7 @@ module Reports
       @reports ||= HashWithIndifferentAccess.new(
         product: :product,
         account: :account,
-        account_owner: -> (od) do
+        account_owner: lambda do |od|
           # Space at beginning is intentional to bubble it to the top of the list
           od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
         end,

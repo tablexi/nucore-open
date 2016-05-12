@@ -7,9 +7,7 @@ module Projects
     end
 
     def self.instrument_report
-      -> (res) do
-          [res.product, res.order_detail.project.try(:name)]
-      end
+      -> (reservation) { reservation.order_detail.project }
     end
 
   end
