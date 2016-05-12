@@ -1,6 +1,6 @@
 - if facility.projects.active.any?
   %td.action-form
     = select_tag :project_id,
-      (options_for_select([["Select project...", nil], ["Unassign", "unassign"]]) + options_from_collection_for_select(facility.projects.active, :id, :name)),
+      project_id_assignment_options(facility.projects.active),
       class: "sync_select",
       include_blank: false
