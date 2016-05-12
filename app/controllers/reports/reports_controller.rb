@@ -18,6 +18,12 @@ module Reports
       super
     end
 
+    protected
+
+    def report_by_header
+      text(@report_by, default: @report_by.titleize)
+    end
+
     private
 
     def format_username(user)
@@ -44,15 +50,15 @@ module Reports
                   end
     end
 
-    def init_report(_report_on_label)
+    def init_report
       raise "Subclass must implement!"
     end
 
-    def init_report_data(_report_on_label)
+    def init_report_data
       raise "Subclass must implement!"
     end
 
-    def init_report_headers(_report_on_label)
+    def init_report_headers
       raise "Subclass must implement!"
     end
 
@@ -65,14 +71,14 @@ module Reports
               end
     end
 
-    def render_report(tab_index, report_on_label, &report_on)
+    def render_report(tab_index, &report_on)
       @selected_index = tab_index
-      init_report_headers report_on_label
+      init_report_headers
 
       respond_to do |format|
         format.html do
           if request.xhr?
-            init_report(report_on_label, &report_on)
+            init_report( &report_on)
             render template: "reports/report_table", layout: false
           else
             render template: "reports/report"
@@ -80,7 +86,7 @@ module Reports
         end
 
         format.csv do
-          init_report(report_on_label, &report_on)
+          init_report(&report_on)
           render_csv("#{@report_by}_report", "report")
         end
       end

@@ -8,7 +8,7 @@ module Reports
     def index
       @report_by = (params[:report_by].presence || "instrument")
       index = reports.keys.find_index(@report_by) + 4
-      render_report(index, nil, &reports[@report_by])
+      render_report(index, &reports[@report_by])
     end
 
     def reports
@@ -22,11 +22,11 @@ module Reports
 
     private
 
-    def init_report_headers(_report_on_label)
-      @headers ||= %w(Instrument Sunday Monday Tuesday Wednesday Thursday Friday Saturday)
+    def init_report_headers
+      @headers ||= [text("instrument")] + I18n.t("date.day_names")
     end
 
-    def init_report(_report_on_label, &report_on)
+    def init_report(&report_on)
       report = Reports::InstrumentDayReport.new(report_data)
       report.build_report &report_on
       @totals = report.totals
@@ -35,7 +35,7 @@ module Reports
       page_report rows
     end
 
-    def init_report_data(_report_on_label)
+    def init_report_data
       @report_data = report_data
       reservation = @report_data.first
       @headers += report_attributes(reservation, reservation.product)

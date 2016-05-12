@@ -7,11 +7,8 @@ module Reports
     def index
       @report_by = (params[:report_by].presence || "product")
       index = reports.keys.find_index(@report_by)
-      header = @report_by == "account" ? "Description" : "Name" # TODO: refactor
-      render_report(index, header, &reports[@report_by])
+      render_report(index, &reports[@report_by])
     end
-
-    private
 
     def reports
       HashWithIndifferentAccess.new(
@@ -19,30 +16,27 @@ module Reports
         account: :account,
         account_owner: method(:account_owner_group),
         purchaser: -> (od) { format_username od.order.user },
-        price_group: -> (od) { od.price_policy ? od.price_policy.price_group.name : "Unassigned" },
-        assigned_to: -> (od) { od.assigned_user.presence ? format_username(od.assigned_user) : "Unassigned" },
+        price_group: -> (od) { od.price_policy ? od.price_policy.price_group.name : text("unassigned") },
+        assigned_to: -> (od) { od.assigned_user.presence ? format_username(od.assigned_user) : text("unassigned") },
       )
     end
 
-    def report_keys
-      reports.keys
-    end
-    helper_method :report_keys
+    private
 
     def account_owner_group(od)
       # Space at beginning is intentional to bubble it to the top of the list
       od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
     end
 
-    def init_report_headers(report_on_label = nil)
-      @headers = [report_on_label, "Quantity", "Total Cost", "Percent of Cost"]
+    def init_report_headers
+      @headers = [report_by_header, text("quantity"), text("total_cost"), text("percent")]
     end
 
-    def init_report_data(_report_on_label)
+    def init_report_data
       @report_data = report_data
     end
 
-    def init_report(_report_on_label)
+    def init_report
       sums = {}
       rows = []
       @total_quantity = 0
