@@ -53,9 +53,9 @@ class OrderDetailBatchUpdater
       return msg_hash
     end
 
-    order_details = OrderDetail.find(order_detail_ids)
+    order_details = facility.order_details.where(id: order_detail_ids)
 
-    if order_details.any? { |od| od.product.facility_id != facility.id || !(od.state.include?("inprocess") || od.state.include?("new")) }
+    if order_details.any? { |od| !(od.state.include?("inprocess") || od.state.include?("new")) }
       msg_hash[:error] = "There was an error updating the selected #{msg_type}"
       return msg_hash
     end
