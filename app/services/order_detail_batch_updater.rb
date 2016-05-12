@@ -69,25 +69,6 @@ class OrderDetailBatchUpdater
     OrderDetail.transaction do
       update_order_details_from_params
 
-      if params[:order_status_id].present?
-        @changes = true
-        begin
-          os = OrderStatus.find(params[:order_status_id])
-          order_details.each do |od|
-            # cancel reservation order details
-            if os.id == OrderStatus.canceled.first.id && od.reservation
-              raise "#{msg_type} ##{od} failed cancellation." unless od.cancel_reservation(user, os, true)
-            # cancel other orders or change status of any order
-            else
-              od.change_status!(os)
-            end
-          end
-        rescue => e
-          msg_hash[:error] = "There was an error updating the selected #{msg_type}.  #{e.message}"
-          raise ActiveRecord::Rollback
-        end
-      end
-
       unless @changes
         msg_hash[:notice] = "No changes were required"
         return msg_hash
@@ -108,22 +89,41 @@ class OrderDetailBatchUpdater
   private
 
   def order_details
-   @order_details ||= facility.order_details.where(id: order_detail_ids)
+    @order_details ||= facility.order_details.where(id: order_detail_ids)
   end
 
   def update_order_details_from_params
     self.class.permitted_attributes.each do |attribute|
-      next if attribute == :order_status_id # Special case
       next if params[attribute].blank?
 
       @changes = true
 
-      value = params[attribute] == "unassign" ? nil : params[attribute]
+      if attribute == :order_status_id
+        update_order_status_ids
+      else
+        value = params[attribute] == "unassign" ? nil : params[attribute]
 
-      order_details.each do |order_detail|
-        order_detail.public_send("#{attribute}=", value)
+        order_details.each do |order_detail|
+          order_detail.public_send("#{attribute}=", value)
+        end
       end
     end
+  end
+
+  def update_order_status_ids
+    os = OrderStatus.find(params[:order_status_id])
+    order_details.each do |od|
+      # cancel reservation order details
+      if os.id == OrderStatus.canceled.first.id && od.reservation
+        raise "#{msg_type} ##{od} failed cancellation." unless od.cancel_reservation(user, os, true)
+      # cancel other orders or change status of any order
+      else
+        od.change_status!(os)
+      end
+    end
+  rescue => e
+    msg_hash[:error] = "There was an error updating the selected #{msg_type}.  #{e.message}"
+    raise ActiveRecord::Rollback
   end
 
 end
