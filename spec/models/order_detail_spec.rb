@@ -29,6 +29,89 @@ RSpec.describe OrderDetail do
     expect(@order_detail.order_status).to be_nil
   end
 
+  describe ".batch_update" do
+    let(:assigned_user_id) { "" }
+    let(:order_status_id) { "" }
+
+    let(:params) do
+      {
+        assigned_user_id: assigned_user_id,
+        order_status_id: order_status_id,
+      }
+    end
+
+    let(:result) do
+      described_class.batch_update(
+        [order_detail.id],
+        facility,
+        user,
+        params,
+        record_type,
+      )
+    end
+
+    context "when associated with Orders" do
+      let(:record_type) { "orders" }
+
+      context "when assigned_user_id is set" do
+        let(:assigned_user_id) { "1" }
+
+        context "to the same value it was" do
+          before(:each) do
+            order_detail.update_attribute(:assigned_user_id, assigned_user_id)
+          end
+
+          it "does not change the assigned_user_id" do
+            expect { result }
+              .not_to change { order_detail.reload.assigned_user_id }
+              .from(1)
+          end
+
+          it "returns a successful update note (despite nothing changing)" do
+            expect(result).to eq(notice: "The orders were successfully updated")
+          end
+        end
+
+        context "to a new value" do
+          it "updates the assigned_user_id" do
+            expect { result }
+              .to change { order_detail.reload.assigned_user_id }
+              .from(nil)
+              .to(1)
+          end
+        end
+
+        it "returns a successful update note" do
+          expect(result).to eq(notice: "The orders were successfully updated")
+        end
+      end
+
+      context "when assigned_user_id is blank" do
+        before { order_detail.update_attribute(:assigned_user_id, 1) }
+
+        it "does not change the assigned_user_id" do
+          expect { result }
+            .not_to change { order_detail.reload.assigned_user_id }
+            .from(1)
+        end
+
+        it { expect(result).to eq(notice: "No changes were required") }
+      end
+
+      context "when order_status_id is set" do
+        let(:order_status_id) { "1" }
+      end
+
+      context "when order_status_id is blank" do
+        it { expect(result).to eq(notice: "No changes were required") }
+      end
+    end
+
+    context "when associated with Reservations" do
+      let(:record_type) { "reservations" }
+    end
+  end
+
   context "#assign_price_policy" do
     before :each do
       create(:account_price_group_member, account: account, price_group: price_group)
