@@ -4,14 +4,16 @@ module Reports
 
     include InstrumentReporter
 
+    delegate :reports, to: "self.class"
+
     def index
       @report_by = (params[:report_by].presence || "instrument")
       index = reports.keys.find_index(@report_by)
       render_report(index, &reports[@report_by])
     end
 
-    def reports
-      HashWithIndifferentAccess.new(
+    def self.reports
+      @reports ||= HashWithIndifferentAccess.new(
         instrument: -> (r) { [r.product.name] },
         account: -> (r) { [r.product.name, r.order_detail.account.to_s] },
         account_owner: -> (r) { [r.product.name, format_username(r.order_detail.account.owner.user)] },

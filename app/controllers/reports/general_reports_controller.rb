@@ -4,17 +4,22 @@ module Reports
 
     include StatusFilterParams
 
+    delegate :reports, :format_username, to: "self.class"
+
     def index
       @report_by = (params[:report_by].presence || "product")
       index = reports.keys.find_index(@report_by)
       render_report(index, &reports[@report_by])
     end
 
-    def reports
-      HashWithIndifferentAccess.new(
-        product: -> (od) { od.product.name },
+    def self.reports
+      @reports ||= HashWithIndifferentAccess.new(
+        product: :product,
         account: :account,
-        account_owner: method(:account_owner_group),
+        account_owner: -> (od) do
+          # Space at beginning is intentional to bubble it to the top of the list
+          od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
+        end,
         purchaser: -> (od) { format_username od.order.user },
         price_group: -> (od) { od.price_policy ? od.price_policy.price_group.name : text("unassigned") },
         assigned_to: -> (od) { od.assigned_user.presence ? format_username(od.assigned_user) : text("unassigned") },
@@ -22,11 +27,6 @@ module Reports
     end
 
     private
-
-    def account_owner_group(od)
-      # Space at beginning is intentional to bubble it to the top of the list
-      od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
-    end
 
     def init_report_headers
       @headers = [report_by_header, text("quantity"), text("total_cost"), text("percent")]
@@ -36,13 +36,13 @@ module Reports
       @report_data = report_data
     end
 
-    def init_report
+    def init_report(&block)
       sums = {}
       rows = []
       @total_quantity = 0
       @total_cost = 0.0
       report_data.each do |od|
-        key = yield od
+        key = instance_exec(od, &block)
 
         key = "Undefined" if key.blank?
 

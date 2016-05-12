@@ -18,6 +18,14 @@ module Reports
       super
     end
 
+    def self.format_username(user)
+      name = ""
+      name += (user.last_name || "")
+      name += ", " unless name.blank?
+      name += (user.first_name || "")
+      "#{name} (#{user.username})"
+    end
+
     protected
 
     def report_by_header
@@ -25,14 +33,6 @@ module Reports
     end
 
     private
-
-    def format_username(user)
-      name = ""
-      name += (user.last_name || "")
-      name += ", " unless name.blank?
-      name += (user.first_name || "")
-      "#{name} (#{user.username})"
-    end
 
     def init_report_params
       @date_start = parse_usa_date(params[:date_start])
