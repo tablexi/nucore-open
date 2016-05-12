@@ -11,10 +11,14 @@ class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
     # which were slowing down the page.
     collection_size = collection_items.to_a.size
 
-    search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)] if collection_size == 1
-
     select_options = { :multiple => true, :"data-placeholder" => placeholder_label }
-    select_options[:disabled] = :disabled unless collection_size > 1
+
+    # If there is only one possible value, then we want to show it, and not allow
+    # selection, but only if it's not a nullable field
+    if collection_size == 1 && !options[:allow_blank]
+      search_fields[attribute_name] = [collection_items.first.send(options[:value_method].to_sym)]
+      select_options[:disabled] = :disabled
+    end
 
     template.select_tag(attribute_name, option_data, select_options).html_safe
   end

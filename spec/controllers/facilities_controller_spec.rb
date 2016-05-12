@@ -308,7 +308,13 @@ RSpec.describe FacilitiesController do
   end
 
   context "transactions" do
-    it_behaves_like "transactions", :transactions
+    it_behaves_like "transactions", :transactions do
+      it "has a default date set" do
+        sign_in @admin
+        do_request
+        expect(controller.params[:date_range][:start]).to be_present
+      end
+    end
   end
 
   context "disputed_orders" do
