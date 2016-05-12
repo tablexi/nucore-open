@@ -1,6 +1,6 @@
 class OrderDetailBatchUpdater
 
-  # TODO: Extracted from the OrderDetail model almost as-is and still needs refactoring
+  # TODO: Extracted from the OrderDetail model almost as-is and needs refactoring
 
   attr_accessor :facility, :msg_hash, :msg_type, :order_detail_ids, :user, :params
 
@@ -54,8 +54,6 @@ class OrderDetailBatchUpdater
   end
 
   def update!
-    @changes = false
-
     unless order_detail_ids.present?
       msg_hash[:error] = "No #{msg_type} selected"
       return msg_hash
@@ -69,7 +67,7 @@ class OrderDetailBatchUpdater
     OrderDetail.transaction do
       update_order_details_from_params
 
-      unless @changes
+      unless changes?
         msg_hash[:notice] = "No changes were required"
         return msg_hash
       end
@@ -88,41 +86,58 @@ class OrderDetailBatchUpdater
 
   private
 
+  def changes?
+    @changes.present?
+  end
+
+  def flag_change
+    @changes = true
+  end
+
   def order_details
     @order_details ||= facility.order_details.where(id: order_detail_ids)
+  end
+
+  def order_status
+    @order_status ||= OrderStatus.find(params[:order_status_id])
   end
 
   def update_order_details_from_params
     self.class.permitted_attributes.each do |attribute|
       next if params[attribute].blank?
 
-      @changes = true
+      flag_change
 
       if attribute == :order_status_id
-        update_order_status_ids
+        update_all_order_status_ids
       else
         value = params[attribute] == "unassign" ? nil : params[attribute]
-
-        order_details.each do |order_detail|
-          order_detail.public_send("#{attribute}=", value)
-        end
+        update_all(attribute, value)
       end
     end
   end
 
-  def update_order_status_ids
-    os = OrderStatus.find(params[:order_status_id])
-    order_details.each do |od|
+  def update_all(attribute, value)
+    order_details.each do |order_detail|
+      order_detail.public_send("#{attribute}=", value)
+    end
+  end
+
+  def update_all_order_status_ids
+    order_details.each do |order_detail|
       # cancel reservation order details
-      if os.id == OrderStatus.canceled.first.id && od.reservation
-        raise "#{msg_type} ##{od} failed cancellation." unless od.cancel_reservation(user, os, true)
+      if order_status.id == OrderStatus.canceled.first.id && order_detail.reservation
+        unless order_detail.cancel_reservation(user, order_status, true)
+          raise "#{msg_type} ##{order_detail} failed cancellation."
+        end
       # cancel other orders or change status of any order
       else
-        od.change_status!(os)
+        order_detail.change_status!(order_status)
       end
     end
   rescue => e
-    msg_hash[:error] = "There was an error updating the selected #{msg_type}.  #{e.message}"
+    msg_hash[:error] =
+      "There was an error updating the selected #{msg_type}. #{e.message}"
     raise ActiveRecord::Rollback
   end
 
