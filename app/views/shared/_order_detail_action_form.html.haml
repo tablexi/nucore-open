@@ -13,4 +13,6 @@
     - OrderStatus.non_protected_statuses(current_facility).each do |order_status|
       = options_for_select([[order_status.name_with_level, order_status.id]])
 
+= render_view_hook "before_bulk_action_submit_button", facility: current_facility
+
 %td= submit_tag button_label, class: ["btn", "btn-primary"]

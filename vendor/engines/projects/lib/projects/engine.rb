@@ -19,6 +19,10 @@ module Projects
                         "projects/shared/transactions/search"
 
       ::Reports::ExportRaw.transformers << "Projects::ExportRawTransformer"
+
+      ViewHook.add_hook "shared.order_detail_action_form",
+                        "before_bulk_action_submit_button",
+                        "projects/shared/select_facility_project"
     end
 
     initializer :append_migrations do |app|
