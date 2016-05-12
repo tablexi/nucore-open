@@ -4,14 +4,6 @@ module Reports
 
     include StatusFilterParams
 
-    delegate :reports, :format_username, to: "self.class"
-
-    def index
-      @report_by = (params[:report_by].presence || "product")
-      index = reports.keys.find_index(@report_by)
-      render_report(index, &reports[@report_by])
-    end
-
     def self.reports
       @reports ||= HashWithIndifferentAccess.new(
         product: :product,
@@ -65,7 +57,7 @@ module Reports
         rows << v.push(percent_cost).unshift(k)
       end
 
-      rows.sort! { |a, b| a.first <=> b.first }
+      rows.sort! { |a, b| a.first.to_s <=> b.first.to_s }
 
       page_report(rows)
     end

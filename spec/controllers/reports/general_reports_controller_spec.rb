@@ -89,6 +89,7 @@ RSpec.describe Reports::GeneralReportsController do
       @method = :xhr
       @action = :index
       @params = {
+        report_by: :product,
         facility_id: @authable.url_name,
         date_start: Time.zone.now.strftime("%m/%d/%Y"),
         date_end: 1.day.from_now.strftime("%m/%d/%Y"),
@@ -251,10 +252,5 @@ RSpec.describe Reports::GeneralReportsController do
       expect(rows[i][3]).to eq(to_percent(od.total / assigns(:total_cost)))
     end
   end
-
-  # def assert_report_rendered_csv(label, &report_on)
-  #   assert_report_init label, &report_on
-  #   assert_report_download_rendered "#{@params[:report_by]}_report"
-  # end
 
 end

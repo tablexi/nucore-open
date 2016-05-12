@@ -13,9 +13,18 @@ module Reports
 
     load_and_authorize_resource class: ReportsController
 
+    delegate :reports, :format_username, to: "self.class"
+
     def initialize
       @active_tab = "admin_reports"
       super
+    end
+
+    def index
+      @report_by = params[:report_by].presence
+      index = reports.keys.find_index(@report_by)
+      raise ActionController::RoutingError unless index
+      render_report(index + tab_offset, &reports[@report_by])
     end
 
     def self.format_username(user)
@@ -27,6 +36,10 @@ module Reports
     end
 
     protected
+
+    def tab_offset
+      0
+    end
 
     def report_by_header
       text(@report_by, default: @report_by.titleize)

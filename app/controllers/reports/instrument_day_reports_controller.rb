@@ -5,14 +5,6 @@ module Reports
     include InstrumentReporter
     helper_method :report_data_row
 
-    delegate :reports, to: "self.class"
-
-    def index
-      @report_by = (params[:report_by].presence || "instrument")
-      index = reports.keys.find_index(@report_by) + 4
-      render_report(index, &reports[@report_by])
-    end
-
     def self.reports
       @reports ||= HashWithIndifferentAccess.new(
         reserved_quantity: -> (res) { Reports::InstrumentDayReport::ReservedQuantity.new(res) },
@@ -20,6 +12,12 @@ module Reports
         actual_quantity: -> (res) { Reports::InstrumentDayReport::ActualQuantity.new(res) },
         actual_hours: -> (res) { Reports::InstrumentDayReport::ActualHours.new(res) }
       )
+    end
+
+    protected
+
+    def tab_offset
+      InstrumentReportsController.reports.size
     end
 
     private
