@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Reports::InstrumentReportsController do
-
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:instrument) { FactoryGirl.create(:setup_instrument, facility: facility) }
   let!(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
@@ -15,7 +14,7 @@ RSpec.describe Reports::InstrumentReportsController do
       order_detail.update_attributes(project: project)
       sign_in user
       xhr :get, :index, report_by: :project, facility_id: facility.url_name,
-        date_start: 1.month.ago, date_end: Time.current
+                        date_start: 1.month.ago, date_end: Time.current
     end
 
     describe "the project row" do
@@ -36,5 +35,4 @@ RSpec.describe Reports::InstrumentReportsController do
       end
     end
   end
-
 end

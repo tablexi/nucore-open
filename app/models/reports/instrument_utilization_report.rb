@@ -13,7 +13,7 @@ class Reports::InstrumentUtilizationReport
       grouping = if block_given?
                    yield(reservation).to_s
                  else
-                  grouping = nil
+                   grouping = nil
                  end
       key = [reservation.product.name, grouping].compact
       @key_length = [@key_length.to_i, key.length].max
