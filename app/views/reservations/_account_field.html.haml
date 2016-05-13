@@ -16,5 +16,8 @@
               prompt: t(".prompt"),
               selected: selected_account_id
 
+          - if acting_as?
+            = render_view_hook "after_account", f: f, order_detail: @order_detail
+
         - if acting_as?
           .span6= f.input :note

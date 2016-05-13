@@ -112,6 +112,7 @@ en:
         requires_approval: "Requires Approval?"
         inactive: "Is Inactive?"
         hidden: "Is Hidden?"
+    purchase: Purchase
     sidenav_admin:
       overview: "Overview"
     tabnav_account:
@@ -132,6 +133,7 @@ en:
     timeline:
       facility_tooltip:
         admin_reservation: Administrative Reservation
+    update: Update
 
   global_search:
     search: "Search"
@@ -589,6 +591,19 @@ en:
       th:
         account: "Payment Source"
         owner: "Owner"
+    form:
+      confirm: "Are you sure you wish to place this order?"
+      foot:
+        all: "All prices are estimates. Actual cost is assigned when the order is complete."
+        instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
+      td:
+        total: Estimated Totals
+      th:
+        product: Product
+        quantity: Quantity
+        cost: Estimated Price
+        adjust: Estimated Adjustment
+        extend: Estimated Total
     receipt:
       crumbs:
         orders: "My Orders"
@@ -617,19 +632,7 @@ en:
         account: "Payment Source"
       link:
         change_account: "Change Payment Source"
-      th:
-        product: "Product"
-        quantity: "Quantity"
-        cost: "Estimated Price"
-        adjust: "Estimated Adjustment"
-        extend: "Estimated Total"
-      td:
-        total: "Estimated Totals"
-      foot:
-        all: "All prices are estimates. Actual cost is assigned when the order is complete."
-        instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
       more_options: More options
-      confirm: "Are you sure you wish to place this order?"
       order_form:
         edit: "Edit Online Order Form"
         new: "Complete Online Order Form"

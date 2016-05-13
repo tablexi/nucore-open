@@ -16,15 +16,13 @@ class OrderPurchaser
   end
 
   def purchase!
-    order.transaction do
-      return if order_detail_updater.update! && quantities_changed?
+    return if order_detail_updater.update! && quantities_changed?
 
-      validate_and_purchase!
-      order_in_the_past! if order_in_past?
+    validate_and_purchase!
+    order_in_the_past! if order_in_past?
 
-      Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
-      Notifier.delay.order_notification(order, order_notification_recipient) if send_facility_notification?
-    end
+    Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
+    Notifier.delay.order_notification(order, order_notification_recipient) if send_facility_notification?
   end
 
   private
