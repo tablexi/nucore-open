@@ -30,6 +30,10 @@ en:
       index:
         add: Add Project
         head: Manage Projects
+        tab:
+          active: "Active Projects (%{count})"
+          inactive: "Inactive Projects (%{count})"
+
       new:
         add: Add Project
         create: Create a Project
