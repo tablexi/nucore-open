@@ -128,7 +128,6 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:id
   def show
     @user = User.find(params[:id])
-    save_user_success
   end
 
   # GET /facilities/:facility_id/users/:user_id/access_list
