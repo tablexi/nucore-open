@@ -12,10 +12,12 @@ module ReportSpecHelper
     base.before(:each) do
       @method = :get
       @authable = FactoryGirl.create(:facility)
+      @action = :index
       @params = {
         facility_id: @authable.url_name,
         date_start: Time.zone.now.strftime("%m/%d/%Y"),
         date_end: (Time.zone.now + 1.year).strftime("%m/%d/%Y"),
+        report_by: @report_by,
       }
 
       setup_extra_params(@params)
@@ -26,9 +28,9 @@ module ReportSpecHelper
 
     def run_report_tests(tests)
       tests.each do |test|
-        context test[:action].to_s do
+        context test[:report_by].to_s do
           before :each do
-            @action = test[:action]
+            @params[:report_by] = test[:report_by]
             [:owner, :staff, :purchaser].each do |user|
               acct = create_nufs_account_with_owner user
               place_and_complete_item_order(instance_variable_get("@#{user}"), @authable, acct)
@@ -45,7 +47,6 @@ module ReportSpecHelper
           context "ajax" do
             before :each do
               @method = :xhr
-              # @params.merge!(:format => :js)
             end
 
             it_should_allow :director do
@@ -55,21 +56,11 @@ module ReportSpecHelper
 
           context "export" do
             before :each do
-              @params.merge!(format: :csv, export_id: "report")
+              @params.merge!(format: :csv)
             end
 
             it_should_allow :director do
               assert_report_rendered(test[:index], test[:report_on_label], &test[:report_on])
-            end
-
-            context "export data" do
-              before :each do
-                @params[:export_id] = "report_data"
-              end
-
-              it_should_allow :director do
-                assert_report_rendered(test[:index], test[:report_on_label], &test[:report_on])
-              end
             end
           end
         end
@@ -152,16 +143,8 @@ module ReportSpecHelper
   end
 
   def assert_report_rendered_csv(label, &report_on)
-    export_type = @params[:export_id]
-
-    case export_type
-    when "report"
-      assert_report_init label, &report_on
-    when "report_data"
-      assert_report_data_init label
-    end
-
-    assert_report_download_rendered "#{@action}_#{export_type}"
+    assert_report_init label, &report_on
+    assert_report_download_rendered "#{@params[:report_by]}_report"
   end
 
 end

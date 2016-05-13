@@ -19,6 +19,8 @@ module Projects
                         "projects/shared/transactions/search"
 
       ::Reports::ExportRaw.transformers << "Projects::ExportRawTransformer"
+      ::Reports::GeneralReportsController.reports[:project] = Projects::ReportsExtension.general_report
+      ::Reports::InstrumentReportsController.reports[:project] = Projects::ReportsExtension.instrument_report
     end
 
     initializer :append_migrations do |app|
