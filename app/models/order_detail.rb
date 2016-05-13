@@ -96,6 +96,7 @@ class OrderDetail < ActiveRecord::Base
 
   scope :with_product_type, ->(s) { { joins: :product, conditions: ["products.type = ?", s.to_s.capitalize] } }
 
+  scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
   scope :new_or_inprocess, conditions: ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], include: :order
 
   scope :facility_recent, lambda { |facility|
