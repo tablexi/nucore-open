@@ -95,9 +95,10 @@ module TransactionSearch
   end
 
   def set_default_start_date
-    params[:date_range].try(:merge!,
-                            start: format_usa_date(1.month.ago.beginning_of_month),
-                           ) unless params[:date_range].try(:[], :start).present?
+    params[:date_range] ||= {}
+    if params[:date_range][:start].blank?
+      params[:date_range][:start] = format_usa_date(1.month.ago.beginning_of_month)
+    end
   end
 
   private

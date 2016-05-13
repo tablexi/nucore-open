@@ -225,17 +225,22 @@ RSpec.describe BulkEmailSearcher do
 
     it "returns all authorized users for any instrument" do
       params[:products] = []
-      expect(users).to contain_all [user, user2, user3]
+      expect(users).to contain_exactly(user, user2, user3)
     end
 
     it "returns only the users for the first product" do
       params[:products] = [product.id]
-      expect(users).to contain_all [user, user2]
+      expect(users).to contain_exactly(user, user2)
     end
 
     it "returns only the users for the second product" do
       params[:products] = [product2.id]
-      expect(users).to contain_all [user2, user3]
+      expect(users).to contain_exactly(user2, user3)
+    end
+
+    it "returns only the users for both products and no more" do
+      params[:products] = [product.id, product2.id]
+      expect(users).to contain_exactly(user, user2, user3)
     end
   end
 

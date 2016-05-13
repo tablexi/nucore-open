@@ -1,11 +1,9 @@
 - if order_detail.selectable_projects.any?
-  .row
-    .span10
-      = f.input :project_id,
-        collection: order_detail.selectable_projects,
-        input_html: { class: "js--chosen", data: { placeholder: t(".placeholder") } },
-        selected: order_detail.project_id,
-        include_blank: true
+  = f.input :project_id,
+    collection: order_detail.selectable_projects,
+    input_html: { class: "js--chosen", data: { placeholder: t(".placeholder") } },
+    selected: order_detail.project_id || order_detail.order.project_id,
+    include_blank: true
 
   :javascript
     ChosenActivator.activate();

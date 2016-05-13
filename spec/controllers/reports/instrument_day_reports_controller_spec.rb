@@ -2,14 +2,15 @@ require "rails_helper"
 require "controller_spec_helper"
 require "report_spec_helper"
 
-RSpec.describe InstrumentDayReportsController do
+RSpec.describe Reports::InstrumentDayReportsController do
   include ReportSpecHelper
 
+  tab_offset = Reports::InstrumentReportsController.reports.size
   run_report_tests([
-                     { action: :reserved_quantity, index: 4, report_on_label: nil, report_on: proc { |res| Reports::InstrumentDayReport::ReservedQuantity.new(res) } },
-                     { action: :reserved_hours, index: 5, report_on_label: nil, report_on: proc { |res| Reports::InstrumentDayReport::ReservedHours.new(res) } },
-                     { action: :actual_quantity, index: 6, report_on_label: nil, report_on: proc { |res| Reports::InstrumentDayReport::ActualQuantity.new(res) } },
-                     { action: :actual_hours, index: 7, report_on_label: nil, report_on: proc { |res| Reports::InstrumentDayReport::ActualHours.new(res) } },
+                     { report_by: :reserved_quantity, index: 0 + tab_offset, report_on_label: nil, report_on: proc { |res| Reports::InstrumentDayReport::ReservedQuantity.new(res) } },
+                     { report_by: :reserved_hours, index: 1 + tab_offset, report_on_label: nil, report_on: proc { |res| Reports::InstrumentDayReport::ReservedHours.new(res) } },
+                     { report_by: :actual_quantity, index: 2 + tab_offset, report_on_label: nil, report_on: proc { |res| Reports::InstrumentDayReport::ActualQuantity.new(res) } },
+                     { report_by: :actual_hours, index: 3 + tab_offset, report_on_label: nil, report_on: proc { |res| Reports::InstrumentDayReport::ActualHours.new(res) } },
                    ])
 
   private

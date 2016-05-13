@@ -40,7 +40,7 @@ class BulkEmailSearcher
   end
 
   def search_authorized_users
-    result = users.joins(:product_users)
+    result = users.joins(:product_users).uniq
     # if we don't have any products, listed get them all for the current facility
     product_ids = search_fields[:products].presence || Facility.find(search_fields[:facility_id]).products.map(&:id)
     result.where(product_users: { product_id: product_ids }).reorder(*self.class::DEFAULT_SORT)

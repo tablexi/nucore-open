@@ -1,7 +1,7 @@
 require "rails_helper"
 require_relative "../split_accounts_spec_helper"
 
-RSpec.describe InstrumentDayReportsController, :enable_split_accounts do
+RSpec.describe Reports::InstrumentDayReportsController, :enable_split_accounts do
   let(:account) { FactoryGirl.create(:split_account, owner: user) }
   let(:instrument) { FactoryGirl.create(:setup_instrument, :always_available, facility: facility) }
   let(:facility) { FactoryGirl.create(:setup_facility) }
@@ -21,7 +21,7 @@ RSpec.describe InstrumentDayReportsController, :enable_split_accounts do
   before { sign_in admin }
 
   def do_request(action)
-    xhr :get, action, facility_id: facility.url_name, date_start: "03/01/2016", date_end: "03/31/2016"
+    xhr :get, :index, report_by: action, facility_id: facility.url_name, date_start: "03/01/2016", date_end: "03/31/2016"
   end
 
   describe "reserved_quantity" do

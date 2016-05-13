@@ -8,9 +8,11 @@ class Reports::InstrumentUtilizationReport
   def build_report
     @data = {}
     @totals = DataRow.new(0, 0, 0)
+
     @reservations.each do |reservation|
-      key = yield reservation
-      @key_length = key.length
+      grouping = yield(reservation) if block_given?
+      key = [reservation.product.name, grouping].compact
+      @key_length = [@key_length.to_i, key.length].max
       add_reservation(key, reservation)
     end
   end

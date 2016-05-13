@@ -15,8 +15,8 @@
     %li
       = link_to t("reports.export.export"), "#", id: "export"
     %li
-      - if controller_name == "general_reports" && can?(:export_all, ReportsController)
-        = link_to t("reports.export.raw"), "#", id: "export-all"
+      - if controller_name == "general_reports" && can?(:export_all, Reports::ReportsController)
+        = link_to t("reports.export.raw"), facility_export_raw_reports_path(format: :csv), id: "export-all"
         = hidden_field_tag :email_to_address, current_user.email
 
   %div#tabs

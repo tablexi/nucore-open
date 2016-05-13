@@ -7,6 +7,14 @@ class OrdersController < ApplicationController
   before_filter :init_order,               except: [:cart, :index, :receipt]
   before_filter :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
 
+  def self.permitted_params
+    @permitted_params ||= []
+  end
+
+  def self.permitted_acting_as_params
+    @permitted_acting_as_params ||= []
+  end
+
   def initialize
     @active_tab = "orders"
     super
@@ -225,16 +233,18 @@ class OrdersController < ApplicationController
   def update
     load_statuses
     params[:order_datetime] = build_order_date if acting_as?
+
     @order.transaction do
+      @order.assign_attributes(order_params)
+
       if OrderDetailUpdater.new(@order, order_update_params).update
         # Must show instead of render to maintain "more options" state when
         # ordering on behalf of
-        render :show
       else
         logger.debug "errors #{@order.errors.full_messages}"
         flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
-        return render :show
       end
+      render :show
     end
   end
 
@@ -243,7 +253,10 @@ class OrdersController < ApplicationController
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.ordered_at = build_order_date if ordering_on_behalf_with_date_params?
 
-    order_purchaser.purchase!
+    @order.transaction do
+      @order.assign_attributes(order_params)
+      order_purchaser.purchase!
+    end
 
     if order_purchaser.quantities_changed?
       flash[:notice] = I18n.t("controllers.orders.purchase.quantities_changed")
@@ -322,6 +335,15 @@ class OrdersController < ApplicationController
 
   def load_statuses
     @order_statuses = OrderStatus.non_protected_statuses(@order.facility)
+  end
+
+  def order_params
+    return if params[:order].blank?
+    if acting_as?
+      params[:order].permit(*(self.class.permitted_params + self.class.permitted_acting_as_params))
+    else
+      params[:order].permit(*self.class.permitted_params)
+    end
   end
 
   def order_purchaser

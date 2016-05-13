@@ -17,6 +17,7 @@ class OrderDetailUpdater
   end
 
   def update
+    order.save
     update_result = order.update_details(params)
     @quantities_changed = (@initial_quantities != quantities)
     update_result

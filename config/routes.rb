@@ -280,6 +280,11 @@ Nucore::Application.routes.draw do
         post "send_statements"
       end
     end
+
+    get "general_reports/raw", to: "reports/export_raw_reports#export_all", as: "export_raw_reports"
+    get "general_reports/:report_by", to: "reports/general_reports#index", as: "general_reports"
+    get "instrument_reports/:report_by", to: "reports/instrument_reports#index", as: "instrument_reports"
+    get "instrument_day_reports/:report_by",   to: 'reports/instrument_day_reports#index',   as: "instrument_day_reports"
   end
 
   # global settings
@@ -347,26 +352,6 @@ Nucore::Application.routes.draw do
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
   match "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete",          to: 'surveys#complete',                 as: "complete_survey", via: [:get, :post]
-
-  # general reports
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/assigned_to",   to: 'general_reports#assigned_to',   as: "assigned_to_facility_general_reports",   via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/account",       to: 'general_reports#account',       as: "account_facility_general_reports",       via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/price_group",   to: 'general_reports#price_group',   as: "price_group_facility_general_reports",   via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/account_owner", to: 'general_reports#account_owner', as: "account_owner_facility_general_reports", via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/product",       to: 'general_reports#product',       as: "product_facility_general_reports",       via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/general_reports/purchaser",     to: 'general_reports#purchaser',     as: "purchaser_facility_general_reports",     via: [:get, :post]
-
-  # instrument reports
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/account",       to: 'instrument_reports#account',       as: "account_facility_instrument_reports",       via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/account_owner", to: 'instrument_reports#account_owner', as: "account_owner_facility_instrument_reports", via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/instrument",    to: 'instrument_reports#instrument',    as: "instrument_facility_instrument_reports",    via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_reports/purchaser",     to: 'instrument_reports#purchaser',     as: "purchaser_facility_instrument_reports",     via: [:get, :post]
-
-  # instrument day reports
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/actual_quantity",   to: 'instrument_day_reports#actual_quantity',   as: "actual_quantity_facility_instrument_day_reports",   via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/reserved_quantity", to: 'instrument_day_reports#reserved_quantity', as: "reserved_quantity_facility_instrument_day_reports", via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/reserved_hours",    to: 'instrument_day_reports#reserved_hours',    as: "reserved_hours_facility_instrument_day_reports",    via: [:get, :post]
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/instrument_day_reports/actual_hours",      to: 'instrument_day_reports#actual_hours',      as: "actual_hours_facility_instrument_day_reports",      via: [:get, :post]
 
   # api
   namespace :api do
