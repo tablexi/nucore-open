@@ -12,8 +12,8 @@ module Projects
       OrdersController.send :include, Projects::OrdersControllerExtension
       Reservation.send :include, Projects::ReservationExtension
 
-      ViewHook.add_hook "reservations.new",
-                        "acting_as",
+      ViewHook.add_hook "reservations.account_field",
+                        "after_account",
                         "projects/shared/select_project"
 
       ViewHook.add_hook "order_management.order_details.edit",

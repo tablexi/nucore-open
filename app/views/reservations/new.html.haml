@@ -40,8 +40,6 @@
             = check_box_tag :send_notification, 1, params[:send_notification] == "1"
             = t(".notify")
 
-      .span6= render_view_hook "acting_as", f: f, order_detail: @order_detail
-
   %ul.inline
     %li
       = f.submit t("shared.create"),
