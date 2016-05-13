@@ -59,7 +59,7 @@ class OrderDetailBatchUpdater
       return msg_hash
     end
 
-    if order_details.any? { |od| !(od.state.include?("inprocess") || od.state.include?("new")) }
+    if order_details.none?
       msg_hash[:error] = "There was an error updating the selected #{msg_type}"
       return msg_hash
     end
@@ -95,7 +95,8 @@ class OrderDetailBatchUpdater
   end
 
   def order_details
-    @order_details ||= facility.order_details.where(id: order_detail_ids)
+    @order_details ||=
+      facility.order_details.batch_updatable.where(id: order_detail_ids)
   end
 
   def order_status
