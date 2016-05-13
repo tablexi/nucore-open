@@ -383,6 +383,8 @@ en:
         policy or are instrument orders without usage information.
         Each will need to be corrected.
       no_problem_orders: There are no problem orders.
+    table_controls:
+      update_orders: Update Orders
 
   facility_reservations:
     disputed:
