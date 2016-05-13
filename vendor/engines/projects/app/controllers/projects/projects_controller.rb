@@ -47,11 +47,15 @@ module Projects
       params.require(:projects_project).permit("active", "description", "name")
     end
 
+    def project_index_params
+      @project.active? ? {} : { archived: "true" }
+    end
+
     def save_project
       if @project.save
         flash[:notice] =
           I18n.t("controllers.projects.projects.#{action_name}.success", project_name: @project.name)
-        redirect_to facility_projects_path(@project.facility)
+        redirect_to facility_projects_path(@project.facility, project_index_params)
       end
     end
 

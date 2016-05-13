@@ -245,7 +245,11 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         context "when unsetting the active flag" do
           let(:active?) { false }
 
-          it { expect(project).not_to be_active }
+          it "sets the project inactive then redirects to the inactive index" do
+            expect(project).not_to be_active
+            is_expected
+              .to redirect_to facility_projects_path(facility, archived: "true")
+          end
         end
 
         context "when the project name is blank" do
