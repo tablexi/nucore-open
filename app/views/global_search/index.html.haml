@@ -1,11 +1,9 @@
 = content_for :h1 do
-  = t('.results')
+  = t(".results")
 
 - if @results.values.all?(&:empty?)
-  .notice= t('.no_results')
+  .notice= t(".no_results")
 
 - @results.each do |type, results|
   - if results.any?
     = render type.to_s.pluralize, results: results
-
-
