@@ -1,6 +1,9 @@
 - @facility_users ||= User.find_users_by_facility(current_facility) || []
 
 %td.action-form
+  = render_view_hook "batch_update_above_product_column", facility: current_facility
+
+%td.action-form
   -# TODO: refactor/extract/I18n options building:
   - assigned_user_options = @facility_users.map { |u| [u.full_name, u.id] }.unshift(["Assign to...", nil], ["Unassign", "unassign"])
 
@@ -12,7 +15,5 @@
     = options_for_select([["Status...", nil]])
     - OrderStatus.non_protected_statuses(current_facility).each do |order_status|
       = options_for_select([[order_status.name_with_level, order_status.id]])
-
-= render_view_hook "before_bulk_action_submit_button", facility: current_facility
 
 %td= submit_tag button_label, class: ["btn", "btn-primary"]

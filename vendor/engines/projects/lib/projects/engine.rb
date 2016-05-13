@@ -22,7 +22,7 @@ module Projects
       ::Reports::ExportRaw.transformers << "Projects::ExportRawTransformer"
 
       ViewHook.add_hook "shared.order_detail_action_form",
-                        "before_bulk_action_submit_button",
+                        "batch_update_above_product_column",
                         "projects/shared/select_facility_project"
     end
 
