@@ -198,6 +198,22 @@ RSpec.describe Reports::GeneralReportsController do
     end
   end
 
+  describe "an invalid report type" do
+    let(:facility) { FactoryGirl.create(:facility) }
+    let(:user) { FactoryGirl.create(:user, :administrator) }
+    before { sign_in user }
+
+    it "returns a 404" do
+      get :index, report_by: "asdfasdf", facility_id: facility
+      expect(response.code).to eq("404")
+    end
+
+    it "returns a 404 for a blank report_by" do
+      get :index, facility_id: facility
+      expect(response.code).to eq("404")
+    end
+  end
+
   private
 
   def setup_extra_params(params)

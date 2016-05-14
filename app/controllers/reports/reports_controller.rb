@@ -23,7 +23,7 @@ module Reports
     def index
       @report_by = params[:report_by].presence
       index = reports.keys.find_index(@report_by)
-      raise ActionController::RoutingError unless index
+      raise ActionController::RoutingError, "Invalid report_by" unless index
       render_report(index + tab_offset, &reports[@report_by])
     end
 
