@@ -245,7 +245,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         context "when unsetting the active flag" do
           let(:active?) { false }
 
-          it "sets the project archived then redirects to its 'show' view" do
+          it "sets the project inactive then redirects to its 'show' view" do
             expect(project).not_to be_active
             is_expected .to redirect_to facility_project_path(facility, project)
           end

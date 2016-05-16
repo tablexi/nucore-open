@@ -6,12 +6,12 @@
     %li.active
       = tab t(".tab.active", count: @all_projects.active.count),
         { action: :index },
-        !showing_archived?
+        !showing_inactive?
 
     %li
-      = tab t(".tab.archived", count: @all_projects.archived.count),
-        { action: :index, archived: "true" },
-        showing_archived?
+      = tab t(".tab.inactive", count: @all_projects.inactive.count),
+        { action: :index, inactive: "true" },
+        showing_inactive?
 
 - if current_ability.can?(:create, Projects::Project)
   %p= link_to t(".add"), new_facility_project_path, class: "btn-add"

@@ -9,7 +9,7 @@ module Projects
 
     def index
       @all_projects = @projects
-      @projects = showing_archived? ? @projects.archived : @projects.active
+      @projects = showing_inactive? ? @projects.inactive : @projects.active
       @projects = @projects.paginate(page: params[:page])
     end
 
@@ -36,10 +36,10 @@ module Projects
       render action: :edit unless save_project
     end
 
-    def showing_archived?
-      params[:archived] == "true"
+    def showing_inactive?
+      params[:inactive] == "true"
     end
-    helper_method :showing_archived?
+    helper_method :showing_inactive?
 
     private
 

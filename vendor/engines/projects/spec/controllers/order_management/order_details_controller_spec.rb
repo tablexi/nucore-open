@@ -6,7 +6,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
   let(:item) { FactoryGirl.create(:setup_item) }
   let(:order) { FactoryGirl.create(:purchased_order, product: item) }
   let(:active_project) { FactoryGirl.create(:project, facility: facility) }
-  let(:archived_project) { FactoryGirl.create(:project, :archived, facility: facility) }
+  let(:inactive_project) { FactoryGirl.create(:project, :inactive, facility: facility) }
 
   describe "PUT #update" do
     def perform_request
@@ -31,8 +31,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
             it { expect(order_detail.project_id).to eq(project_id) }
           end
 
-          context "and is archived" do
-            let(:project_id) { archived_project.id }
+          context "and is inactive" do
+            let(:project_id) { inactive_project.id }
             it { expect(order_detail.project_id).to be_blank }
           end
         end
@@ -60,8 +60,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
               it { expect(order_detail.project_id).to eq(project_id) }
             end
 
-            context "and is archived" do
-              let(:project_id) { archived_project.id }
+            context "and is inactive" do
+              let(:project_id) { inactive_project.id }
               it { expect(order_detail.project_id).to eq(active_project.id) }
             end
           end
@@ -73,14 +73,14 @@ RSpec.describe OrderManagement::OrderDetailsController do
         end
       end
 
-      context "that is currently archived" do
+      context "that is currently inactive" do
         before(:each) do
-          order_detail.update_attribute(:project_id, archived_project.id)
+          order_detail.update_attribute(:project_id, inactive_project.id)
         end
 
-        context "and it updates using this same archived project_id" do
-          let(:project_id) { archived_project.id }
-          it { expect(order_detail.project_id).to eq(archived_project.id) }
+        context "and it updates using this same inactive project_id" do
+          let(:project_id) { inactive_project.id }
+          it { expect(order_detail.project_id).to eq(inactive_project.id) }
         end
       end
     end
