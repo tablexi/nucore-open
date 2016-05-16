@@ -7,18 +7,8 @@ class GlobalSearchController < ApplicationController
   def index
     @results = {
       order_details: GlobalSearch::OrderSearcher.new(current_user).search(params[:search]),
-      statements: search_statements,
+      statements: GlobalSearch::StatementSearcher.new(current_user).search(params[:search])
     }
-  end
-
-  private
-
-  def search_statements
-    if Account.config.statements_enabled?
-      GlobalSearch::StatementSearcher.new(current_user).search(params[:search])
-    else
-      []
-    end
   end
 
 end
