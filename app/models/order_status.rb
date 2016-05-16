@@ -21,6 +21,10 @@ class OrderStatus < ActiveRecord::Base
   scope :complete, conditions: { name: "Complete" }, limit: 1
   scope :reconciled, conditions: { name: "Reconciled" }, limit: 1
 
+  def self.new_status
+    new_os.first
+  end
+
   def self.complete_status
     complete.first
   end
