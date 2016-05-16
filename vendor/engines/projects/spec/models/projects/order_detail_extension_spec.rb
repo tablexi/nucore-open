@@ -35,7 +35,7 @@ RSpec.describe Projects::OrderDetailExtension do
       end
     end
 
-    context "when the project is inactive" do
+    context "when the project is archived" do
       before { order_detail.update_attribute(:project_id, project.id) }
 
       context "and the order_detail was already associated with it" do
@@ -48,15 +48,15 @@ RSpec.describe Projects::OrderDetailExtension do
       end
 
       context "and the order_detail was not already associated with it" do
-        let(:inactive_project) do
-          FactoryGirl.create(:project, :inactive, facility: facility)
+        let(:archived_project) do
+          FactoryGirl.create(:project, :archived, facility: facility)
         end
 
         it "is invalid" do
-          order_detail.project_id = inactive_project.id
+          order_detail.project_id = archived_project.id
           is_expected.not_to be_valid
           expect(order_detail.errors[:project_id])
-            .to include("The project is inactive")
+            .to include("The project is archived")
         end
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe Projects::OrderDetailExtension do
 
     context "when there are no active projects for the associated facility" do
       before(:each) do
-        FactoryGirl.create(:project, :inactive, facility: order_detail.facility)
+        FactoryGirl.create(:project, :archived, facility: order_detail.facility)
       end
 
       it { expect(order_detail.selectable_projects).to be_empty }
@@ -75,17 +75,17 @@ RSpec.describe Projects::OrderDetailExtension do
 
     context "when there are active projects for the associated facility" do
       let(:active_projects) { FactoryGirl.create_list(:project, 3, facility: facility) }
-      let(:inactive_project) { FactoryGirl.create(:project, :inactive, facility: facility) }
-      let!(:all_projects) { active_projects + [inactive_project] }
+      let(:archived_project) { FactoryGirl.create(:project, :archived, facility: facility) }
+      let!(:all_projects) { active_projects + [archived_project] }
 
       before { order_detail.update_attribute(:project_id, project_id) }
 
-      context "and the order_detail has an inactive project" do
-        let(:project_id) { inactive_project.id }
+      context "and the order_detail has an archived project" do
+        let(:project_id) { archived_project.id }
 
-        it "includes the inactive project in the list" do
+        it "includes the archived project in the list" do
           expect(order_detail.selectable_projects)
-            .to match_array(active_projects + [inactive_project])
+            .to match_array(active_projects + [archived_project])
         end
       end
 

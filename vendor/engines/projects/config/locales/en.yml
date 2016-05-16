@@ -6,7 +6,7 @@ en:
           attributes:
             project_id:
               project_facility_mismatch: The project belongs to another facility
-              project_is_inactive: The project is inactive
+              project_is_archived: The project is archived
 
     models:
       projects/project:
@@ -32,7 +32,7 @@ en:
         head: Manage Projects
         tab:
           active: "Active Projects (%{count})"
-          inactive: "Inactive Projects (%{count})"
+          archived: "Archived Projects (%{count})"
 
       new:
         add: Add Project

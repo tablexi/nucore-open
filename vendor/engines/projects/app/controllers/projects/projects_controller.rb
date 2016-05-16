@@ -8,9 +8,9 @@ module Projects
     load_and_authorize_resource through: :current_facility
 
     def index
-      filter_projects_for_index
-      @active_project_count = Project.active.count
-      @inactive_project_count = Project.inactive.count
+      @all_projects = @projects
+      @projects = showing_archived? ? @projects.archived : @projects.active
+      @projects = @projects.paginate(page: params[:page])
     end
 
     def new
@@ -57,11 +57,6 @@ module Projects
           I18n.t("controllers.projects.projects.#{action_name}.success", project_name: @project.name)
         redirect_to facility_projects_path(@project.facility, project_index_params)
       end
-    end
-
-    def filter_projects_for_index
-      @projects = showing_archived? ? @projects.inactive : @projects.active
-      @projects = @projects.paginate(page: params[:page])
     end
 
   end

@@ -30,7 +30,7 @@ module Projects
 
     def project_must_be_active
       if project.present? && !project.active?
-        errors.add(:project_id, :project_is_inactive)
+        errors.add(:project_id, :project_is_archived)
       end
     end
 

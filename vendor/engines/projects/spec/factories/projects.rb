@@ -3,7 +3,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "Project #{n}" }
     facility
 
-    trait :inactive do
+    trait :archived do
       active false
     end
   end
