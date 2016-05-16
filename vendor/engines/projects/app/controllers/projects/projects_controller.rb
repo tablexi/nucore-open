@@ -50,7 +50,7 @@ module Projects
     def save_project
       if @project.save
         flash[:notice] =
-          I18n.t("controllers.projects.projects.#{action_name}.success", project_name: @project.name)
+          text(".#{action_name}.success", project_name: @project.name)
         redirect_to facility_project_path(@project.facility, @project)
       end
     end
