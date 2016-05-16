@@ -184,7 +184,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         end
 
         it "creates a new project" do
-          is_expected.to redirect_to facility_projects_path(facility)
+          is_expected.to redirect_to facility_project_path(facility, created_project)
           expect(created_project.name).to eq(name)
           expect(created_project.description).to eq(description)
           expect(created_project).to be_active
@@ -237,7 +237,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
             expect(project.name).to eq(new_name)
             expect(project.description).to eq(new_description)
             expect(project).to be_active
-            is_expected.to redirect_to facility_projects_path(facility)
+            is_expected.to redirect_to facility_project_path(facility, project)
             expect(flash[:notice]).to include("was updated")
           end
         end
@@ -245,10 +245,9 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         context "when unsetting the active flag" do
           let(:active?) { false }
 
-          it "sets the project archived then redirects to the archived index" do
+          it "sets the project archived then redirects to its 'show' view" do
             expect(project).not_to be_active
-            is_expected
-              .to redirect_to facility_projects_path(facility, archived: "true")
+            is_expected .to redirect_to facility_project_path(facility, project)
           end
         end
 
