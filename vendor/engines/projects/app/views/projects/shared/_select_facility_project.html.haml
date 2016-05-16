@@ -1,0 +1,5 @@
+- if facility.projects.active.any?
+  = select_tag :project_id,
+    project_id_assignment_options(facility.projects.active),
+    class: "sync_select",
+    include_blank: false

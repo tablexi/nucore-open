@@ -39,7 +39,7 @@ class FacilityOrdersController < ApplicationController
   def batch_update
     redirect_to facility_orders_path
 
-    msg_hash = OrderDetail.batch_update(params[:order_detail_ids], current_facility, session_user, params)
+    msg_hash = batch_updater.update!
 
     # add flash messages if necessary
     flash.merge!(msg_hash) if msg_hash
@@ -85,6 +85,10 @@ class FacilityOrdersController < ApplicationController
   end
 
   private
+
+  def batch_updater
+    @batch_updater ||= OrderDetailBatchUpdater.new(params[:order_detail_ids], current_facility, session_user, params)
+  end
 
   def merge?(product)
     products = product.is_a?(Bundle) ? product.products : [product]

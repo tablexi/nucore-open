@@ -385,6 +385,8 @@ en:
         policy or are instrument orders without usage information.
         Each will need to be corrected.
       no_problem_orders: There are no problem orders.
+    table_controls:
+      update_orders: Update Orders
 
   facility_reservations:
     disputed:
@@ -395,6 +397,8 @@ en:
         price policy or are reservations without usage information.
         Each will need to be corrected.
       no_problem_reservations: There are no problem reservations.
+    table_controls:
+      update_reservations: Update Reservations
 
   global_user_roles:
     destroy:

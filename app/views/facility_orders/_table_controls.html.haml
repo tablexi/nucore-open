@@ -1,4 +1,4 @@
 %thead
   %tr.borderless
-    %td{ :colspan => 7 }= select_all_link
-    = render :partial => 'shared/order_detail_action_form', :locals => { :button_label => 'Update Orders' }
+    %td{ colspan: 6 }= select_all_link
+    = render "shared/order_detail_action_form", button_label: t(".update_orders")

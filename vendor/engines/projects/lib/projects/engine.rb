@@ -9,6 +9,7 @@ module Projects
       ::OrderDetails::ParamUpdater.send :include, Projects::OrderDetails::ParamUpdaterExtension
       Order.send :include, Projects::OrderExtension
       OrderDetail.send :include, Projects::OrderDetailExtension
+      OrderDetailBatchUpdater.send :include, Projects::OrderDetailBatchUpdaterExtension
       OrdersController.send :include, Projects::OrdersControllerExtension
       Reservation.send :include, Projects::ReservationExtension
 
@@ -30,6 +31,11 @@ module Projects
                         "projects/shared/transactions/search"
 
       ::Reports::ExportRaw.transformers << "Projects::ExportRawTransformer"
+
+      ViewHook.add_hook "shared.order_detail_action_form",
+                        "batch_update_above_product_column",
+                        "projects/shared/select_facility_project"
+
       ::Reports::GeneralReportsController.reports[:project] = Projects::ReportsExtension.general_report
       ::Reports::InstrumentReportsController.reports[:project] = Projects::ReportsExtension.instrument_report
     end

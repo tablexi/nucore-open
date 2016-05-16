@@ -43,3 +43,4 @@ en:
     shared:
       select_project:
         placeholder: Choose a project...
+        unassign: Unassign
