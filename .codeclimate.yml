@@ -15,6 +15,7 @@ engines:
       - "vendor/engines/**/spec/**"
       - "vendor/engines/*/lib/*/engine.rb"
       - "vendor/engines/*/*.gemspec"
+      - "vendor/assets/**"
     config:
       languages:
       - ruby
