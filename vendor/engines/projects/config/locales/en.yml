@@ -14,12 +14,11 @@ en:
         other: Projects
 
   controllers:
-    projects:
-      projects:
-        create:
-          success: "New project %{project_name} was created."
-        update:
-          success: "Project %{project_name} was updated."
+    projects/projects:
+      create:
+        success: "New project %{project_name} was created."
+      update:
+        success: "Project %{project_name} was updated."
 
   projects:
     projects:
@@ -30,6 +29,10 @@ en:
       index:
         add: Add Project
         head: Manage Projects
+        tab:
+          active: "Active Projects (%{count})"
+          inactive: "Inactive Projects (%{count})"
+
       new:
         add: Add Project
         create: Create a Project

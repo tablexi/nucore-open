@@ -8,7 +8,14 @@ module Projects
     load_and_authorize_resource through: :current_facility
 
     def index
-      @projects = @projects.paginate(page: params[:page])
+      @all_projects = @projects
+      @projects = @all_projects.active.paginate(page: params[:page])
+    end
+
+    def inactive
+      @all_projects = @projects
+      @projects = @all_projects.inactive.paginate(page: params[:page])
+      render action: :index
     end
 
     def new
@@ -34,6 +41,11 @@ module Projects
       render action: :edit unless save_project
     end
 
+    def showing_inactive?
+      action_name == "inactive"
+    end
+    helper_method :showing_inactive?
+
     private
 
     def project_params
@@ -43,8 +55,8 @@ module Projects
     def save_project
       if @project.save
         flash[:notice] =
-          I18n.t("controllers.projects.projects.#{action_name}.success", project_name: @project.name)
-        redirect_to facility_projects_path(@project.facility)
+          text(".#{action_name}.success", project_name: @project.name)
+        redirect_to facility_project_path(@project.facility, @project)
       end
     end
 

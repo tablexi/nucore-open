@@ -17,35 +17,76 @@ end
 RSpec.describe Projects::ProjectsController, type: :controller do
   let(:facility) { FactoryGirl.create(:facility) }
 
-  describe "GET #index" do
-    def do_request
-      get :index, facility_id: facility.url_name
-    end
+  context "showing project indexes" do
+    render_views
 
-    describe "when not logged in" do
-      before { do_request }
+    let!(:active_projects) { FactoryGirl.create_list(:project, 3, facility: facility) }
+    let!(:inactive_projects) { FactoryGirl.create_list(:project, 3, :inactive, facility: facility) }
 
-      it { is_expected.to redirect_to new_user_session_path }
-    end
-
-    describe "when logged in" do
-      shared_examples_for "it allows index views" do |role|
-        let(:user) { FactoryGirl.create(:user, role, facility: facility) }
-
-        before(:each) do
-          sign_in user
-          do_request
-        end
-
-        it "shows the index view" do
-          expect(response.code).to eq("200")
-          expect(assigns(:projects)).to match_array(facility.projects)
-        end
+    describe "GET #index" do
+      def do_request
+        get :index, facility_id: facility.url_name
       end
 
-      facility_operator_roles.each do |role|
-        context "as #{role}" do
-          it_behaves_like "it allows index views", role
+      describe "when not logged in" do
+        before { do_request }
+
+        it { is_expected.to redirect_to new_user_session_path }
+      end
+
+      describe "when logged in" do
+        shared_examples_for "it allows index views" do |role|
+          let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+
+          before(:each) do
+            sign_in user
+            do_request
+          end
+
+          it "shows the index view of active projects" do
+            expect(response.code).to eq("200")
+            expect(assigns(:projects)).to match_array(active_projects)
+          end
+        end
+
+        facility_operator_roles.each do |role|
+          context "as #{role}" do
+            it_behaves_like "it allows index views", role
+          end
+        end
+      end
+    end
+
+    describe "GET #inactive" do
+      def do_request
+        get :inactive, facility_id: facility.url_name
+      end
+
+      describe "when not logged in" do
+        before { do_request }
+
+        it { is_expected.to redirect_to new_user_session_path }
+      end
+
+      describe "when logged in" do
+        shared_examples_for "it allows inactive index views" do |role|
+          let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+
+          before(:each) do
+            sign_in user
+            do_request
+          end
+
+          it "shows the index view of inactive projects" do
+            expect(response.code).to eq("200")
+            expect(assigns(:projects)).to match_array(inactive_projects)
+          end
+        end
+
+        facility_operator_roles.each do |role|
+          context "as #{role}" do
+            it_behaves_like "it allows inactive index views", role
+          end
         end
       end
     end
@@ -184,7 +225,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         end
 
         it "creates a new project" do
-          is_expected.to redirect_to facility_projects_path(facility)
+          is_expected.to redirect_to facility_project_path(facility, created_project)
           expect(created_project.name).to eq(name)
           expect(created_project.description).to eq(description)
           expect(created_project).to be_active
@@ -237,7 +278,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
             expect(project.name).to eq(new_name)
             expect(project.description).to eq(new_description)
             expect(project).to be_active
-            is_expected.to redirect_to facility_projects_path(facility)
+            is_expected.to redirect_to facility_project_path(facility, project)
             expect(flash[:notice]).to include("was updated")
           end
         end
@@ -245,7 +286,10 @@ RSpec.describe Projects::ProjectsController, type: :controller do
         context "when unsetting the active flag" do
           let(:active?) { false }
 
-          it { expect(project).not_to be_active }
+          it "sets the project inactive then redirects to its 'show' view" do
+            expect(project).not_to be_active
+            is_expected .to redirect_to facility_project_path(facility, project)
+          end
         end
 
         context "when the project name is blank" do
