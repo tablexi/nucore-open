@@ -14,7 +14,6 @@ RSpec.describe Reports::GeneralReportsController do
       sign_in administrator
       xhr :get, :index, report_by: :project, date_start: 2.months.ago, date_end: Time.current,
                         status_filter: [OrderStatus.new_status], facility_id: facility.url_name, date_range_field: "ordered_at"
-      true
     end
 
     describe "the project row" do
