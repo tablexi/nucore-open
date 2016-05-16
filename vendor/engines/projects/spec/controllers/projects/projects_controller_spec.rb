@@ -17,35 +17,76 @@ end
 RSpec.describe Projects::ProjectsController, type: :controller do
   let(:facility) { FactoryGirl.create(:facility) }
 
-  describe "GET #index" do
-    def do_request
-      get :index, facility_id: facility.url_name
-    end
+  context "showing project indexes" do
+    render_views
 
-    describe "when not logged in" do
-      before { do_request }
+    let!(:active_projects) { FactoryGirl.create_list(:project, 3, facility: facility) }
+    let!(:inactive_projects) { FactoryGirl.create_list(:project, 3, :inactive, facility: facility) }
 
-      it { is_expected.to redirect_to new_user_session_path }
-    end
-
-    describe "when logged in" do
-      shared_examples_for "it allows index views" do |role|
-        let(:user) { FactoryGirl.create(:user, role, facility: facility) }
-
-        before(:each) do
-          sign_in user
-          do_request
-        end
-
-        it "shows the index view" do
-          expect(response.code).to eq("200")
-          expect(assigns(:projects)).to match_array(facility.projects)
-        end
+    describe "GET #index" do
+      def do_request
+        get :index, facility_id: facility.url_name
       end
 
-      facility_operator_roles.each do |role|
-        context "as #{role}" do
-          it_behaves_like "it allows index views", role
+      describe "when not logged in" do
+        before { do_request }
+
+        it { is_expected.to redirect_to new_user_session_path }
+      end
+
+      describe "when logged in" do
+        shared_examples_for "it allows index views" do |role|
+          let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+
+          before(:each) do
+            sign_in user
+            do_request
+          end
+
+          it "shows the index view of active projects" do
+            expect(response.code).to eq("200")
+            expect(assigns(:projects)).to match_array(active_projects)
+          end
+        end
+
+        facility_operator_roles.each do |role|
+          context "as #{role}" do
+            it_behaves_like "it allows index views", role
+          end
+        end
+      end
+    end
+
+    describe "GET #inactive" do
+      def do_request
+        get :inactive, facility_id: facility.url_name
+      end
+
+      describe "when not logged in" do
+        before { do_request }
+
+        it { is_expected.to redirect_to new_user_session_path }
+      end
+
+      describe "when logged in" do
+        shared_examples_for "it allows inactive index views" do |role|
+          let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+
+          before(:each) do
+            sign_in user
+            do_request
+          end
+
+          it "shows the index view of inactive projects" do
+            expect(response.code).to eq("200")
+            expect(assigns(:projects)).to match_array(inactive_projects)
+          end
+        end
+
+        facility_operator_roles.each do |role|
+          context "as #{role}" do
+            it_behaves_like "it allows inactive index views", role
+          end
         end
       end
     end

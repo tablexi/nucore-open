@@ -9,8 +9,13 @@ module Projects
 
     def index
       @all_projects = @projects
-      @projects = showing_inactive? ? @projects.inactive : @projects.active
-      @projects = @projects.paginate(page: params[:page])
+      @projects = @all_projects.active.paginate(page: params[:page])
+    end
+
+    def inactive
+      @all_projects = @projects
+      @projects = @all_projects.inactive.paginate(page: params[:page])
+      render action: :index
     end
 
     def new
@@ -37,7 +42,7 @@ module Projects
     end
 
     def showing_inactive?
-      params[:inactive] == "true"
+      action_name == "inactive"
     end
     helper_method :showing_inactive?
 

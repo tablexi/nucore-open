@@ -10,7 +10,7 @@
 
     %li
       = tab t(".tab.inactive", count: @all_projects.inactive.count),
-        { action: :index, inactive: "true" },
+        { action: :inactive },
         showing_inactive?
 
 - if current_ability.can?(:create, Projects::Project)
