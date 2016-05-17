@@ -173,7 +173,6 @@ GEM
     factory_girl_rails (4.5.0)
       factory_girl (~> 4.5.0)
       railties (>= 3.0.0)
-    fast-aes (0.1.1)
     ffi (1.9.10)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
@@ -561,7 +560,6 @@ DEPENDENCIES
   dynamic_form (~> 1.1.4)
   exception_notification (~> 4.0.1)
   factory_girl_rails (~> 4.5.0)
-  fast-aes (= 0.1.1)
   fog
   font-awesome-rails (~> 3.2.0)
   foreigner (= 1.7.4)
@@ -577,7 +575,6 @@ DEPENDENCIES
   nested_form_fields
   nokogiri (~> 1.6.1)
   paperclip (~> 4.2.0)
-  pdf-reader (= 1.3.3)
   prawn (= 0.12)
   prawn_rails (= 0.0.11)
   projects (~> 0.0.1)!
