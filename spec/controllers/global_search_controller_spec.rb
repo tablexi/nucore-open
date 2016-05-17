@@ -4,14 +4,14 @@ require "controller_spec_helper"
 def it_should_find_the_order(desc = "")
   it "should find the order " + desc do
     get :index, search: order.id.to_s
-    expect(assigns[:results][:order_details]).to eq([order_detail])
+    expect(order_detail_results).to eq([order_detail])
   end
 end
 
 def it_should_not_find_the_order(desc = "")
   it "should not find the order " + desc do
     get :index, search: order.id.to_s
-    expect(assigns[:results][:order_details]).to be_empty
+    expect(order_detail_results).to be_empty
   end
 end
 
@@ -38,6 +38,8 @@ RSpec.describe GlobalSearchController do
   let!(:order) { FactoryGirl.create(:purchased_order, product: product) }
   let!(:order_detail) { order.order_details.first }
   let!(:facility) { order.facility }
+  let(:order_detail_results) { assigns[:searchers].find { |s| s.template == "order_details" }.results }
+  let(:statement_results) { assigns[:searchers].find { |s| s.template == "statements" }.results }
 
   describe "index" do
     describe "permissions" do
@@ -154,7 +156,7 @@ RSpec.describe GlobalSearchController do
       it "should not return an unpurchased order" do
         order2 = FactoryGirl.create(:setup_order, product: product)
         get :index, search: order2.id.to_s
-        expect(assigns[:results][:order_details]).to be_empty
+        expect(order_detail_results).to be_empty
       end
 
       it_should_find_the_order
@@ -162,7 +164,7 @@ RSpec.describe GlobalSearchController do
 
       it "should return the order detail with the id" do
         get :index, search: order_detail.id.to_s
-        expect(assigns[:results][:order_details]).to match_array([order_detail])
+        expect(order_detail_results).to match_array([order_detail])
       end
 
       context "when there is an order and order detail with same ids" do
@@ -172,7 +174,8 @@ RSpec.describe GlobalSearchController do
         end
 
         it "should include both order and order detail" do
-          expect(assigns[:results][:order_details]).to match_array([order2.order_details.first, order_detail])
+          expect(order_detail_results)
+            .to match_array([order2.order_details.first, order_detail])
         end
 
         it "should render a template" do
@@ -186,7 +189,7 @@ RSpec.describe GlobalSearchController do
         end
 
         it "should redirect to order detail" do
-          expect(assigns[:results][:order_details]).to eq([order_detail])
+          expect(order_detail_results).to eq([order_detail])
         end
       end
 
@@ -196,7 +199,7 @@ RSpec.describe GlobalSearchController do
 
         it "finds the correct order detail and renders the index page" do
           get :index, search: external_id
-          expect(assigns[:results][:order_details]).to eq [external_service_receiver.receiver]
+          expect(order_detail_results).to eq [external_service_receiver.receiver]
         end
       end
 
@@ -205,12 +208,12 @@ RSpec.describe GlobalSearchController do
 
         it "finds it by the invoice number" do
           get :index, search: statement.invoice_number
-          expect(assigns[:results][:statements]).to eq([statement])
+          expect(statement_results).to eq([statement])
         end
 
         it "does not find it by the wrong invoice number" do
           get :index, search: "0-123"
-          expect(assigns[:results][:statements]).to be_empty
+          expect(statement_results).to be_empty
         end
       end
     end
