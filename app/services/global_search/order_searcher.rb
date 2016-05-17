@@ -5,6 +5,10 @@ module GlobalSearch
     include NUCore::Database::CaseSensitivityHelper
     include Common
 
+    def template
+      "order_details"
+    end
+
     private
 
     def execute_search_query

@@ -4,11 +4,18 @@ class GlobalSearchController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
 
+  def self.searcher_classes
+    @searcher_classes ||=
+      [
+        GlobalSearch::OrderSearcher,
+        GlobalSearch::StatementSearcher,
+      ]
+  end
+
   def index
-    @results = {
-      order_details: GlobalSearch::OrderSearcher.new(current_user).search(params[:search]),
-      statements: GlobalSearch::StatementSearcher.new(current_user).search(params[:search])
-    }
+    @searchers = self.class.searcher_classes.map do |searcher_class|
+      searcher_class.new(current_user, current_facility, params[:search])
+    end
   end
 
 end

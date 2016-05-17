@@ -4,6 +4,10 @@ module GlobalSearch
 
     include Common
 
+    def template
+      "statements"
+    end
+
     private
 
     def execute_search_query
