@@ -2,27 +2,26 @@ require "rails_helper"
 
 RSpec.describe GlobalSearch::OrderSearcher do
 
-  subject(:searcher) { described_class.new(user, facility, query) }
+  subject(:results) { searcher.results }
+
   let(:facility) { nil }
+  let(:searcher) { described_class.new(user, facility, query) }
   let(:user) { nil }
 
   describe "#results" do
     context "when the query matches no orders" do
       let(:query) { "gobbledy gook" }
-
-      it { expect(searcher.results).to be_empty }
+      it { is_expected.to be_empty }
     end
 
     context "when the query is nil" do
       let(:query) { nil }
-
-      it { expect(searcher.results).to be_empty }
+      it { is_expected.to be_empty }
     end
 
     context "when the query contains only whitespace" do
       let(:query) { " " }
-
-      it { expect(searcher.results).to be_empty }
+      it { is_expected.to be_empty }
     end
 
     context "when the query has a lowercased prefix" do
