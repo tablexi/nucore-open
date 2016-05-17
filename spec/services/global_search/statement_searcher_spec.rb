@@ -2,10 +2,12 @@ require "rails_helper"
 
 RSpec.describe GlobalSearch::StatementSearcher do
 
-  describe "search" do
+  describe "#results" do
+    subject(:results) { described_class.new(user, facility, query).results }
+
     let(:creator) { FactoryGirl.build_stubbed(:user) }
+    let(:facility) { nil }
     let!(:statement) { FactoryGirl.create(:statement, created_by_user: creator) }
-    subject(:results) { described_class.new(user).search(query) }
 
     describe "as a global admin" do
       let(:user) { FactoryGirl.create(:user, :administrator) }
