@@ -6,7 +6,7 @@ RSpec.describe OrderStatusesController do
   before(:all) { create_users }
   before :each do
     # remove the default ones so they're not in the way
-    OrderStatus.all.each(&:destroy)
+    OrderStatus.delete_all
     expect(OrderStatus.all).to be_empty
 
     @authable = @facility = FactoryGirl.create(:facility)

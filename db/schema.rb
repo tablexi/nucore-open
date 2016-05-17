@@ -687,9 +687,9 @@ ActiveRecord::Schema.define(:version => 20160503184205) do
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
 
-  add_foreign_key "reservations", "order_details", name: "reservations_order_detail_id_fk"
   add_foreign_key "projects", "facilities", name: "projects_facility_id_fk"
 
+  add_foreign_key "reservations", "order_details", name: "reservations_order_detail_id_fk"
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
 
   add_foreign_key "schedule_rules", "products", name: "schedule_rules_instrument_id_fk", column: "instrument_id"
