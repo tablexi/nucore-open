@@ -3,18 +3,7 @@ module GlobalSearch
   class OrderSearcher
 
     include NUCore::Database::CaseSensitivityHelper
-
-    attr_reader :facility, :query, :user
-
-    def initialize(user = nil, facility = nil, query = nil)
-      @user = user
-      @facility = facility
-      @query = query
-    end
-
-    def results
-      @results ||= execute_search_query
-    end
+    include Common
 
     private
 
@@ -38,6 +27,16 @@ module GlobalSearch
       end
     end
 
+    def restrict_to_user(items)
+      items.select do |item|
+        ability = Ability.new(user, item)
+        ability.can? :show, item
+      end
+    end
+
+    def sanitize_search_string(search_string)
+      search_string.to_s.strip
+    end
 
     def search_full(query)
       order_id, order_detail_id = query.split("-")
@@ -46,13 +45,6 @@ module GlobalSearch
 
     def search_external(query)
       insensitive_where OrderDetail.joins(:external_service_receiver), "external_service_receivers.external_id", query
-    end
-
-    def restrict_to_user(items)
-      items.select do |item|
-        ability = Ability.new(user, item)
-        ability.can? :show, item
-      end
     end
 
   end

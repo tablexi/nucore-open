@@ -2,22 +2,12 @@ module GlobalSearch
 
   class StatementSearcher
 
-    attr_reader :facility, :query, :user
-
-    def initialize(user = nil, facility = nil, query = nil)
-      @user = user
-      @facility = facility
-      @query = sanitize_search_string(query)
-    end
-
-    def results
-      @results ||= execute_search_query
-    end
+    include Common
 
     private
 
     def execute_search_query
-      return [] unless Account.config.statements_enabled?
+      return [] unless Account.config.statements_enabled? && query.present?
       statement = Statement.find_by_invoice_number(query)
       Array(restrict(statement))
     end
