@@ -5,6 +5,7 @@ module Projects
     config.to_prepare do
       ::AbilityExtensionManager.extensions << "Projects::AbilityExtension"
       Facility.send :include, Projects::FacilityExtension
+      GlobalSearchController.send :include, Projects::GlobalSearchControllerExtension
       NavTab::LinkCollection.send :include, Projects::LinkCollectionExtension
       ::OrderDetails::ParamUpdater.send :include, Projects::OrderDetails::ParamUpdaterExtension
       Order.send :include, Projects::OrderExtension
