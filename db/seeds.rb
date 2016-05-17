@@ -29,5 +29,6 @@ end
 
 new_status = OrderStatus.new_os.first
 OrderDetailObserver.status_change_hooks.keys.each do |status|
+  # TODO: Rails 4 use newer method
   OrderStatus.find_or_create_by_name_and_facility_id(name: status.to_s.titleize, facility_id: nil, parent: new_status)
 end
