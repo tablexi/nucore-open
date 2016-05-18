@@ -34,8 +34,8 @@ module GlobalSearch
 
     def sanitize_search_string(search_string)
       search_string.to_s
-        .strip # get rid of leading/trailing whitespace
-        .sub(/\A#/, "") # remove a leading hash sign to support searching like "#123-456"
+                   .strip # get rid of leading/trailing whitespace
+                   .sub(/\A#/, "") # remove a leading hash sign to support searching like "#123-456"
     end
 
   end

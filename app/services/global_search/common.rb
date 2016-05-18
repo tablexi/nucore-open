@@ -17,6 +17,7 @@ module GlobalSearch
     def results
       @results ||= execute_search_query
     end
+
   end
 
 end

@@ -71,7 +71,7 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
           let(:query) { project_b.name }
 
           it "returns the project belonging to this facility only" do
-            is_expected.to match_array [ project_a ]
+            is_expected.to match_array [project_a]
           end
         end
       end
@@ -82,7 +82,7 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
 
       context "when the query matches a project name" do
         let(:query) { facility_b_projects.last.name }
-        it { is_expected.to eq [ facility_b_projects.last ] }
+        it { is_expected.to eq [facility_b_projects.last] }
       end
 
       context "when projects in different facilities have identical names" do
@@ -98,7 +98,7 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
           let(:query) { project_a.name }
 
           it "returns projects from both facilities" do
-            is_expected.to match_array [ project_a, project_b ]
+            is_expected.to match_array [project_a, project_b]
           end
         end
       end
