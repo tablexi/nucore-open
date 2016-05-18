@@ -17,7 +17,7 @@ module Projects
     end
 
     def selectable_projects
-      (facility_projects.active + [project]).uniq.compact
+      (facility_projects.active.display_order + [project]).uniq.compact
     end
 
     private
