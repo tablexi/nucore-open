@@ -7,7 +7,7 @@ module GlobalSearch
     def initialize(user = nil, facility = nil, query = nil)
       @user = user
       @facility = facility
-      @query = sanitize_search_string(query)
+      @query = query.to_s.strip
     end
 
     def results

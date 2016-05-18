@@ -37,10 +37,6 @@ module GlobalSearch
       end
     end
 
-    def sanitize_search_string(search_string)
-      search_string.to_s.strip
-    end
-
     def search_full(query)
       order_id, order_detail_id = query.split("-")
       OrderDetail.where(id: order_detail_id, order_id: order_id)

@@ -10,7 +10,7 @@ module GlobalSearch
 
     def execute_search_query
       return [] unless Account.config.statements_enabled? && query.present?
-      statement = Statement.find_by_invoice_number(query)
+      statement = Statement.find_by_invoice_number(query.sub(/\A#/, ""))
       Array(restrict(statement))
     end
 
@@ -28,12 +28,6 @@ module GlobalSearch
         Ability.new(user, statement.facility),
         Ability.new(user, statement.account),
       ]
-    end
-
-    def sanitize_search_string(search_string)
-      search_string.to_s
-                   .strip # get rid of leading/trailing whitespace
-                   .sub(/\A#/, "") # remove a leading hash sign to support searching like "#123-456"
     end
 
   end
