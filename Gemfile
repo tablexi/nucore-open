@@ -3,7 +3,7 @@ source "https://rubygems.org"
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
-gem "rails", "3.2.22.2"
+gem "rails", "4.0.13"
 gem "strong_parameters"
 gem "rails_config",     "0.3.3"
 
@@ -30,10 +30,10 @@ gem "haml",             "~> 4.0.5"
 gem "will_paginate",    "~> 3.0.5"
 gem "dynamic_form",     "~> 1.1.4"
 gem "ckeditor",         "~> 4.0.10"
-gem "jquery-rails",     "~> 2.1.4"
+gem "jquery-rails", "~> 3.1.4"
 gem "jquery-ui-sass-rails"
 gem "clockpunch",       "~> 0.1.0"
-gem "simple_form",      "~> 2.1.1"
+gem "simple_form", "~> 3.2.1"
 gem "font-awesome-rails", "~> 3.2.0"
 gem "nested_form_fields"
 gem "text_helpers"
@@ -107,8 +107,8 @@ group :test do
 end
 
 group :assets do
-  gem "sass-rails",   "~> 3.2.6"
-  gem "coffee-rails", "~> 3.2.2"
+  gem "sass-rails", "~> 5.0.4"
+  gem "coffee-rails", "~> 4.1.1"
   gem "uglifier",     "~> 2.7.2"
   gem "therubyracer"
   gem "turbo-sprockets-rails3"
