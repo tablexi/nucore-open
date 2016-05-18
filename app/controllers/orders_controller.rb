@@ -6,6 +6,7 @@ class OrdersController < ApplicationController
   before_filter :check_acting_as,          except: [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
   before_filter :init_order,               except: [:cart, :index, :receipt]
   before_filter :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
+  before_filter :load_statuses, only: [:show, :update, :purchase, :update_or_purchase]
 
   def self.permitted_params
     @permitted_params ||= []
@@ -38,7 +39,6 @@ class OrdersController < ApplicationController
 
   # GET /orders/:id
   def show
-    load_statuses
     facility_ability = Ability.new(session_user, @order.facility, self)
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.validate_order! if @order.new?
@@ -215,7 +215,7 @@ class OrdersController < ApplicationController
     flash.now[:notice] = "This page is still in development; please add an account administratively"
   end
 
-  # PUT /orders/:id/update (submission from a cart)
+  # PUT /orders/:id/update_or_purchase (submission from a cart)
   def update_or_purchase
     # When returning from an external service, we may be called with a get; in that
     # case, we should just redirect to the show path
@@ -231,7 +231,6 @@ class OrdersController < ApplicationController
 
   # PUT /orders/:id/update
   def update
-    load_statuses
     params[:order_datetime] = build_order_date if acting_as?
 
     @order.transaction do
@@ -260,7 +259,7 @@ class OrdersController < ApplicationController
 
     if order_purchaser.quantities_changed?
       flash[:notice] = I18n.t("controllers.orders.purchase.quantities_changed")
-      redirect_to order_path(@order)
+      render :show
     else
       if single_reservation? && !acting_as?
         flash[:notice] = I18n.t("controllers.orders.purchase.reservation.success")

@@ -5,20 +5,6 @@ RSpec.describe Projects::OrderExtension do
   let(:item) { FactoryGirl.create(:setup_item) }
   let(:project_id) { FactoryGirl.create(:project, facility: order.facility).id }
 
-  describe "#project_id" do
-    context "when none of its order_details has a project" do
-      it { expect(order.project_id).to be_blank }
-    end
-
-    context "when at least one of its order_details has a project" do
-      let(:order_detail) { order.order_details.last }
-
-      before { order_detail.update_attribute(:project_id, project_id) }
-
-      it { expect(order.project_id).to eq(project_id) }
-    end
-  end
-
   describe "#project_id=" do
     before(:each) do
       order.project_id = project_id

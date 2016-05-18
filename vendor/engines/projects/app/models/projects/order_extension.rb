@@ -6,11 +6,7 @@ module Projects
 
     included do
       before_save :assign_project_to_order_details
-      attr_writer :project_id
-    end
-
-    def project_id
-      @project_id ||= order_details.where("project_id IS NOT NULL").pluck(:project_id).first
+      attr_accessor :project_id
     end
 
     private
