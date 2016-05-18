@@ -1,6 +1,7 @@
 Nucore::Application.routes.draw do
   match "/users/sign_in.pdf" => redirect("/users/sign_in")
   devise_for :users
+  mount SangerSequencing::Engine => "/sanger_sequencing" if defined?(SangerSequencing)
 
   if SettingsHelper.feature_on?(:password_update)
     match "/users/password/edit_current", to: 'user_password#edit_current', as: "edit_current_password"

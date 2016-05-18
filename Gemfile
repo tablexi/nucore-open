@@ -57,6 +57,7 @@ gem "logstash-event"
 gem "c2po",             "~> 1.0.0", path: "vendor/engines/c2po"
 gem "dataprobe",        "~> 1.0.0", path: "vendor/engines/dataprobe"
 gem "projects",         "~> 0.0.1", path: "vendor/engines/projects"
+gem "sanger_sequencing", "~> 0.0.1", path: "vendor/engines/sanger_sequencing"
 gem "split_accounts",   "~> 0.0.1", path: "vendor/engines/split_accounts"
 gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
 
