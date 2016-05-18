@@ -12,7 +12,7 @@ gem "mysql2",           "~> 0.3.20"
 gem "foreigner",        "1.7.4"
 
 ## auth
-gem "devise",           "~> 3.5.0"
+gem "devise",           "~> 3.5.10"
 gem "devise-encryptable", "~> 0.2.0"
 gem "devise_ldap_authenticatable", "~> 0.8.5"
 gem "cancancan",        "1.10"
