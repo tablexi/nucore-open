@@ -19,7 +19,8 @@ module Projects
       end
 
       def search
-        query_object.where("lower(name) = ?", query.downcase).select do |project|
+        return [] if query.blank?
+        query_object.where("lower(name) LIKE ?", "%#{query.downcase}%").select do |project|
           Ability.new(user, project).can?(:show, project)
         end
       end

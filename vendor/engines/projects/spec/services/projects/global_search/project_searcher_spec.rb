@@ -41,14 +41,22 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
 
       context "when the query matches a project name" do
         context "that belongs to the facility" do
+          let(:project_a) { facility_a_projects.first }
+
           context "and the case matches" do
-            let(:query) { facility_a_projects.first.name }
-            it { is_expected.to eq [facility_a_projects.first] }
+            let(:query) { project_a.name }
+            it { is_expected.to eq [project_a] }
           end
 
           context "and the case does not match" do
-            let(:query) { facility_a_projects.first.name.upcase }
-            it { is_expected.to eq [facility_a_projects.first] }
+            let(:query) { project_a.name.upcase }
+            it { is_expected.to eq [project_a] }
+          end
+
+          context "and the name partially matches the query" do
+            before { project_a.update_attribute(:name, "Some Label") }
+            let(:query) { "ME lab" }
+            it { is_expected.to eq [project_a] }
           end
         end
 
@@ -69,6 +77,24 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
 
         context "when the query matches this repeated project name" do
           let(:query) { project_b.name }
+
+          it "returns the project belonging to this facility only" do
+            is_expected.to match_array [project_a]
+          end
+        end
+      end
+
+      context "when projects in different facilities have similar names" do
+        let(:project_a) { facility_a_projects.first }
+        let(:project_b) { facility_b_projects.first }
+
+        before(:each) do
+          project_a.update_attribute(:name, "Some Label A")
+          project_a.update_attribute(:name, "Some Label B")
+        end
+
+        context "when the query partially matches both project names" do
+          let(:query) { "ME lab" }
 
           it "returns the project belonging to this facility only" do
             is_expected.to match_array [project_a]
@@ -98,6 +124,24 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
           let(:query) { project_a.name }
 
           it "returns projects from both facilities" do
+            is_expected.to match_array [project_a, project_b]
+          end
+        end
+      end
+
+      context "when projects in different facilities have similar names" do
+        let(:project_a) { facility_a_projects.first }
+        let(:project_b) { facility_b_projects.first }
+
+        before(:each) do
+          project_a.update_attribute(:name, "Some ProjectA Label")
+          project_b.update_attribute(:name, "Some ProjectB Label")
+        end
+
+        context "when the query partially matches both project names" do
+          let(:query) { "ME proJEC" }
+
+          it "returns both projects" do
             is_expected.to match_array [project_a, project_b]
           end
         end
