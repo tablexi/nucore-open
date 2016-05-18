@@ -41,8 +41,15 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
 
       context "when the query matches a project name" do
         context "that belongs to the facility" do
-          let(:query) { facility_a_projects.first.name }
-          it { is_expected.to eq [facility_a_projects.first] }
+          context "and the case matches" do
+            let(:query) { facility_a_projects.first.name }
+            it { is_expected.to eq [facility_a_projects.first] }
+          end
+
+          context "and the case does not match" do
+            let(:query) { facility_a_projects.first.name.upcase }
+            it { is_expected.to eq [facility_a_projects.first] }
+          end
         end
 
         context "that belongs to another facility" do

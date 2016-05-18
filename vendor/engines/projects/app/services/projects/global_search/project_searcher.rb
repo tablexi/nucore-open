@@ -21,13 +21,13 @@ module Projects
       end
 
       def execute_search_query
-        query_object.where(name: query).select do |project|
+        query_object.where("lower(name) = ?", query).select do |project|
           Ability.new(user, project).can?(:show, project)
         end
       end
 
       def sanitize_search_string(search_string)
-        search_string.to_s.strip
+        search_string.to_s.strip.downcase
       end
 
     end
