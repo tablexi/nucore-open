@@ -1,8 +1,6 @@
 module GlobalSearch
 
-  class StatementSearcher
-
-    include Common
+  class StatementSearcher < Base
 
     def template
       "statements"

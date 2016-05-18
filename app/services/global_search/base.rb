@@ -1,12 +1,8 @@
 module GlobalSearch
 
-  module Common
+  class Base
 
-    extend ActiveSupport::Concern
-
-    included do
-      attr_reader :facility, :query, :user
-    end
+    attr_reader :facility, :query, :user
 
     def initialize(user = nil, facility = nil, query = nil)
       @user = user

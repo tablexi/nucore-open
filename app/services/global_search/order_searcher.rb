@@ -1,9 +1,8 @@
 module GlobalSearch
 
-  class OrderSearcher
+  class OrderSearcher < Base
 
     include NUCore::Database::CaseSensitivityHelper
-    include Common
 
     def template
       "order_details"

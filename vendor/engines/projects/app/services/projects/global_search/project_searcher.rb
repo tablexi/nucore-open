@@ -2,9 +2,7 @@ module Projects
 
   module GlobalSearch
 
-    class ProjectSearcher
-
-      include ::GlobalSearch::Common
+    class ProjectSearcher < ::GlobalSearch::Base
 
       def template
         "projects"
