@@ -18,7 +18,7 @@ module Projects
         end
       end
 
-      def execute_search_query
+      def search
         query_object.where("lower(name) = ?", query.downcase).select do |project|
           Ability.new(user, project).can?(:show, project)
         end

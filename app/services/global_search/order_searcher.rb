@@ -10,7 +10,7 @@ module GlobalSearch
 
     private
 
-    def execute_search_query
+    def search
       return [] unless query.present?
       query.gsub!(/\s/, "")
 
@@ -23,18 +23,7 @@ module GlobalSearch
                    OrderDetail.where("order_details.id = :id OR order_details.order_id = :id", id: query)
       end
 
-      if relation
-        restrict_to_user(relation.joins(:order).ordered)
-      else
-        []
-      end
-    end
-
-    def restrict_to_user(items)
-      items.select do |item|
-        ability = Ability.new(user, item)
-        ability.can? :show, item
-      end
+      relation ? relation.joins(:order).ordered : []
     end
 
     def search_full(query)

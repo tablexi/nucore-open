@@ -11,7 +11,13 @@ module GlobalSearch
     end
 
     def results
-      @results ||= execute_search_query
+      @results ||= restrict(search)
+    end
+
+    private
+
+    def restrict(items)
+      items.select { |item| Ability.new(user, item).can?(:show, item) }
     end
 
   end

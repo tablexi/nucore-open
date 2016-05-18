@@ -8,16 +8,15 @@ module GlobalSearch
 
     private
 
-    def execute_search_query
+    def search
       return [] unless Account.config.statements_enabled? && query.present?
-      statement = Statement.find_by_invoice_number(query.sub(/\A#/, ""))
-      Array(restrict(statement))
+      Array(Statement.find_by_invoice_number(query.sub(/\A#/, "")))
     end
 
-    def restrict(statement)
-      return unless statement
-
-      statement if abilities(statement).any? { |ability| ability.can? :show, statement }
+    def restrict(statements)
+      statements.select do |statement|
+        abilities(statement).any? { |ability| ability.can?(:show, statement) }
+      end
     end
 
     # Account owners & business admins get their abilities through the account,
