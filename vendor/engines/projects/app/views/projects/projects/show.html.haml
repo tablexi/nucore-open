@@ -9,5 +9,6 @@
   class: "btn btn-primary"
 
 - if @project.order_details.any?
-  - @date_range_field = :created_at
-  = render "shared/transactions/table", order_details: @project.order_details
+  - @date_range_field = :ordered_at
+  = render "shared/transactions/table",
+    order_details: @project.order_details.by_ordered_at.paginate(page: params[:page])
