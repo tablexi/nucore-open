@@ -22,6 +22,7 @@ gem "paperclip",        "~> 4.2.0"
 gem "vestal_versions",  "1.2.4.3", github: "elzoiddy/vestal_versions"
 gem "awesome_nested_set", "2.1.6"
 gem "nokogiri",         "~> 1.6.1"
+gem "rails-observers"
 
 ## views
 gem "bootstrap-sass",   "~> 2.3.2"
