@@ -14,6 +14,7 @@ module Projects
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
+    scope :display_order, -> { order(:name) }
 
     def to_s
       name
