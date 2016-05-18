@@ -4,7 +4,6 @@ git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
 gem "rails", "4.0.13"
-gem "strong_parameters"
 gem "rails_config",     "0.3.3"
 
 ## database
