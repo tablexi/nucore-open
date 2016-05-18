@@ -94,6 +94,7 @@ class OrderDetail < ActiveRecord::Base
   ## TODO validate order status is global or a member of the product's facility
   ## TODO validate which fields can be edited for which states
 
+  scope :by_ordered_at, -> { joins(:order).order("orders.ordered_at") }
   scope :with_product_type, ->(s) { { joins: :product, conditions: ["products.type = ?", s.to_s.capitalize] } }
 
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
