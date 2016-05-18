@@ -111,6 +111,8 @@ class OrderDetailManagement
     form_elements.prop 'disabled', ->
       leaveEnabled = $(this).hasClass('js-always-enabled') || $(this).is('[type=submit]') || obj.isRailsFormInput(this)
       !leaveEnabled
+    # TODO Change event to chosen:updated in chosen 1.X
+    @$element.find("select.js--chosen").trigger("liszt:updated")
 
     # remove the submit button if all form elements are disabled (and ignore
     # Rails hidden inputs)
