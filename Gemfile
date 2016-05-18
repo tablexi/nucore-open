@@ -111,7 +111,6 @@ group :assets do
   gem "coffee-rails", "~> 4.1.1"
   gem "uglifier",     "~> 2.7.2"
   gem "therubyracer"
-  gem "turbo-sprockets-rails3"
 end
 
 group :oracle do
