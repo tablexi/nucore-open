@@ -50,6 +50,24 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
           it { is_expected.to be_empty }
         end
       end
+
+      context "when projects in different facilities have identical names" do
+        let(:project_a) { facility_a_projects.first }
+        let(:project_b) { facility_b_projects.first }
+
+        before(:each) do
+          project_b.update_attribute(:name, project_a.name)
+          expect(project_a.name).to eq(project_b.name)
+        end
+
+        context "when the query matches this repeated project name" do
+          let(:query) { project_b.name }
+
+          it "returns the project belonging to this facility only" do
+            is_expected.to match_array [ project_a ]
+          end
+        end
+      end
     end
 
     shared_examples_for "it's not in a single facility context" do
@@ -57,7 +75,25 @@ RSpec.describe Projects::GlobalSearch::ProjectSearcher do
 
       context "when the query matches a project name" do
         let(:query) { facility_b_projects.last.name }
-        it { is_expected.to eq [facility_b_projects.last ] }
+        it { is_expected.to eq [ facility_b_projects.last ] }
+      end
+
+      context "when projects in different facilities have identical names" do
+        let(:project_a) { facility_a_projects.first }
+        let(:project_b) { facility_b_projects.first }
+
+        before(:each) do
+          project_b.update_attribute(:name, project_a.name)
+          expect(project_a.name).to eq(project_b.name)
+        end
+
+        context "when the query matches this repeated project name" do
+          let(:query) { project_a.name }
+
+          it "returns projects from both facilities" do
+            is_expected.to match_array [ project_a, project_b ]
+          end
+        end
       end
     end
 
