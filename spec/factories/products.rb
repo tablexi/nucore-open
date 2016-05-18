@@ -79,6 +79,12 @@ FactoryGirl.define do
           product.facility.facility_accounts.create(attributes_for(:facility_account))
       end
     end
+
+    trait :with_order_form do
+      after(:create) do |product|
+        create(:stored_file, :template, product: product)
+      end
+    end
   end
 
   factory :setup_instrument, class: Instrument, parent: :setup_product do

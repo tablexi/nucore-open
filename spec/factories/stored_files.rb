@@ -11,4 +11,11 @@ FactoryGirl.define do
     name { "clean_import.csv" }
     association :creator, factory: :user
   end
+
+  trait :template do
+    file { StringIO.new("c,s,v") }
+    file_type { "template" }
+    name { "template.csv" }
+    association :creator, factory: :user
+  end
 end
