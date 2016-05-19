@@ -10,7 +10,7 @@ module GlobalSearch
 
     def search
       return [] unless Account.config.statements_enabled? && query.present?
-      Array(Statement.find_by_invoice_number(query.sub(/\A#/, "")))
+      Array(Statement.find_by_invoice_number(query.sub(/\A#/, ""))) # Remove leading hash signs to support searching like "#123-456"
     end
 
     def restrict(statements)
