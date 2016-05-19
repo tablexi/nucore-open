@@ -19,7 +19,6 @@ module Projects
       end
 
       def search
-        return [] if query.blank?
         query_object.where("lower(name) LIKE ?", "%#{query.downcase}%")
       end
 

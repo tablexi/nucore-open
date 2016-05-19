@@ -11,7 +11,6 @@ module GlobalSearch
     private
 
     def search
-      return [] unless query.present?
       query.gsub!(/\s/, "")
 
       relation = case query

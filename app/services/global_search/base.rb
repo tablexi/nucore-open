@@ -11,7 +11,7 @@ module GlobalSearch
     end
 
     def results
-      @results ||= restrict(search)
+      @results ||= query.present? ? restrict(search) : []
     end
 
     private
