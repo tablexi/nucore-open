@@ -32,5 +32,14 @@ FactoryGirl.define do
         order.purchase!
       end
     end
+
+    factory :merge_order do
+      transient do
+        merge_with_order { nil }
+      end
+      product { merge_with_order.order_details.first.product }
+      account { merge_with_order.account }
+      user { merge_with_order.user }
+    end
   end
 end

@@ -367,7 +367,7 @@ RSpec.describe OrderDetailsController do
     describe "adding to an existing order" do
       let(:order) { create(:purchased_order, product: product) }
       let(:user) { create(:user, :staff, facility: facility) }
-      let(:merge_order) { create(:setup_order, product: product, account: order.account, user: order.user, merge_with_order_id: order.id) }
+      let(:merge_order) { create(:merge_order, merge_with_order: order) }
 
       it "has access" do
         get :order_file, order_id: merge_order.id, id: merge_order.order_details.first.id
