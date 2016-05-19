@@ -4,6 +4,8 @@
 # (the receiver).
 class ExternalServiceReceiver < ActiveRecord::Base
 
+  attr_accessor :receiver_id, :response_data # TODO: why are these necessary for Rails 4?
+
   belongs_to :external_service
   belongs_to :receiver, polymorphic: true
 
