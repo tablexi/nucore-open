@@ -153,7 +153,8 @@ class OrderDetail < ActiveRecord::Base
   scope :for_facility_with_price_policy, lambda { |facility|
     {
       joins: :order,
-      conditions: ["orders.facility_id = ? AND price_policy_id IS NOT NULL", facility.id], order: "order_details.fulfilled_at DESC" }
+      conditions: ["orders.facility_id = ? AND price_policy_id IS NOT NULL", facility.id], order: "order_details.fulfilled_at DESC"
+    }
   }
 
   scope :need_notification, lambda {
@@ -293,7 +294,8 @@ class OrderDetail < ActiveRecord::Base
     {
       joins: :order,
       order: "order_details.created_at DESC",
-      conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id] }
+      conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id],
+    }
   }
 
   scope :non_reservations, -> { joins(:product).where("products.type <> 'Instrument'") }
@@ -307,9 +309,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :pending, joins(:order).where(state: %w(new inprocess)).ordered
-  scope :confirmed_reservations, -> do
-    reservations.joins(:order).includes(:reservation).purchased
-  end
+  scope :confirmed_reservations, -> { reservations.joins(:order).includes(:reservation).purchased }
 
   scope :upcoming_reservations, lambda {
                                   confirmed_reservations
@@ -631,8 +631,7 @@ class OrderDetail < ActiveRecord::Base
 
   def validate_uploaded_files
     templates = product.stored_files.template
-    case
-    when templates.empty?
+    if templates.empty?
       nil # no file templates
     else
       # check for a template result
@@ -642,10 +641,9 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def validate_survey
-    case
-    when !product.active_survey?
+    if !product.active_survey?
       nil # no active survey
-    when (product.active_survey? && survey_completed?)
+    elsif product.active_survey? && survey_completed?
       nil # active survey with a completed response set
     else
       # active survey but no response
