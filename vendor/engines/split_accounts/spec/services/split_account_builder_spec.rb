@@ -1,5 +1,4 @@
 require "rails_helper"
-require "action_controller/parameters"
 require_relative "../split_accounts_spec_helper"
 
 RSpec.describe SplitAccounts::SplitAccountBuilder, :enable_split_accounts do
