@@ -577,6 +577,7 @@ RSpec.describe OrderDetail do
 
       context "with no price policy" do
         before :each do
+          product.price_policies.destroy_all
           Timecop.travel(2.days.from_now) do
             order_detail.change_status!(OrderStatus.find_by_name("In Process"))
             order_detail.change_status!(OrderStatus.find_by_name("Complete"))
