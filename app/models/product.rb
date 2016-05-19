@@ -38,10 +38,10 @@ class Product < ActiveRecord::Base
     end
   end
 
-  scope :active,             conditions: { is_archived: false, is_hidden: false }
-  scope :active_plus_hidden, conditions: { is_archived: false }
-  scope :archived,           conditions: { is_archived: true }
-  scope :not_archived,       conditions: { is_archived: false }
+  scope :active, -> { where(is_archived: false, is_hidden: false) }
+  scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: is this scope named correctly?
+  scope :archived, -> { where(is_archived: true) }
+  scope :not_archived, -> { where(is_archived: false) }
 
   def self.non_instruments
     where("products.type <> 'Instrument'")
