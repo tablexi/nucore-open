@@ -296,10 +296,10 @@ class OrderDetail < ActiveRecord::Base
       conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id] }
   }
 
-  scope :non_reservations, joins(:product).where("products.type <> 'Instrument'")
-  scope :reservations, joins(:product).where("products.type = 'Instrument'")
+  scope :non_reservations, -> { joins(:product).where("products.type <> 'Instrument'") }
+  scope :reservations, -> { joins(:product).where("products.type = 'Instrument'") }
 
-  scope :purchased, joins(:order).merge(Order.purchased)
+  scope :purchased, -> { joins(:order).merge(Order.purchased) }
   class << self
 
     alias ordered purchased # TODO: deprecate .ordered in favor of .purchased
@@ -307,10 +307,9 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :pending, joins(:order).where(state: %w(new inprocess)).ordered
-  scope :confirmed_reservations, reservations
-    .joins(:order)
-    .includes(:reservation)
-    .ordered
+  scope :confirmed_reservations, -> do
+    reservations.joins(:order).includes(:reservation).purchased
+  end
 
   scope :upcoming_reservations, lambda {
                                   confirmed_reservations
