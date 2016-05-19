@@ -128,7 +128,6 @@ class OrderDetailsController < ApplicationController
   def init_order_detail
     @order = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:id] || params[:order_detail_id])
-    raise ActiveRecord::RecordNotFound if @order.to_be_merged?
   end
 
   def set_active_tab
