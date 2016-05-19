@@ -1,15 +1,16 @@
 module GlobalSearch
 
-  class OrderSearcher
+  class OrderSearcher < Base
 
     include NUCore::Database::CaseSensitivityHelper
 
-    def initialize(user = nil)
-      @user = user
+    def template
+      "order_details"
     end
 
-    def search(query)
-      return [] unless query.present?
+    private
+
+    def search
       query.gsub!(/\s/, "")
 
       relation = case query
@@ -21,14 +22,8 @@ module GlobalSearch
                    OrderDetail.where("order_details.id = :id OR order_details.order_id = :id", id: query)
       end
 
-      if relation
-        restrict_to_user(relation.joins(:order).ordered)
-      else
-        []
-      end
+      relation ? relation.joins(:order).ordered : []
     end
-
-    private
 
     def search_full(query)
       order_id, order_detail_id = query.split("-")
@@ -37,13 +32,6 @@ module GlobalSearch
 
     def search_external(query)
       insensitive_where OrderDetail.joins(:external_service_receiver), "external_service_receivers.external_id", query
-    end
-
-    def restrict_to_user(items)
-      items.select do |item|
-        ability = Ability.new(@user, item)
-        ability.can? :show, item
-      end
     end
 
   end

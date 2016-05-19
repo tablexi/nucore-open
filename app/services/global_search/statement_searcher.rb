@@ -1,26 +1,22 @@
 module GlobalSearch
 
-  class StatementSearcher
+  class StatementSearcher < Base
 
-    def initialize(user = nil)
-      @user = user
-    end
-
-    def search(query)
-      query = query.to_s
-                   .strip # get rid of leading/trailing whitespace
-                   .sub(/\A#/, "") # remove a leading hash sign to support searching like "#123-456"
-
-      statement = Statement.find_by_invoice_number(query)
-      Array(restrict(statement))
+    def template
+      "statements"
     end
 
     private
 
-    def restrict(statement)
-      return unless statement
+    def search
+      return [] unless Account.config.statements_enabled?
+      Array(Statement.find_by_invoice_number(query.sub(/\A#/, ""))) # Remove leading hash signs to support searching like "#123-456"
+    end
 
-      statement if abilities(statement).any? { |ability| ability.can? :show, statement }
+    def restrict(statements)
+      statements.select do |statement|
+        abilities(statement).any? { |ability| ability.can?(:show, statement) }
+      end
     end
 
     # Account owners & business admins get their abilities through the account,
@@ -28,8 +24,8 @@ module GlobalSearch
     # both.
     def abilities(statement)
       [
-        Ability.new(@user, statement.facility),
-        Ability.new(@user, statement.account),
+        Ability.new(user, statement.facility),
+        Ability.new(user, statement.account),
       ]
     end
 

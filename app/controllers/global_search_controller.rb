@@ -4,20 +4,17 @@ class GlobalSearchController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_acting_as
 
-  def index
-    @results = {
-      order_details: GlobalSearch::OrderSearcher.new(current_user).search(params[:search]),
-      statements: search_statements,
-    }
+  def self.searcher_classes
+    @searcher_classes ||=
+      [
+        GlobalSearch::OrderSearcher,
+        GlobalSearch::StatementSearcher,
+      ]
   end
 
-  private
-
-  def search_statements
-    if Account.config.statements_enabled?
-      GlobalSearch::StatementSearcher.new(current_user).search(params[:search])
-    else
-      []
+  def index
+    @searchers = self.class.searcher_classes.map do |searcher_class|
+      searcher_class.new(current_user, current_facility, params[:search])
     end
   end
 
