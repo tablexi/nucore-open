@@ -282,8 +282,8 @@ RSpec.describe OrdersController do
         expect(@order_detail.quantity).to eq(5)
       end
 
-      it "redirects to the cart" do
-        is_expected.to redirect_to order_path(@order)
+      it "renders the show view" do
+        is_expected.to render_template(:show)
       end
 
       it { expect(assigns[:order].state).not_to eq("purchased") }
@@ -316,8 +316,12 @@ RSpec.describe OrdersController do
         expect(@order_detail2.quantity).to eq(4)
       end
 
-      it "redirects to the cart" do
-        is_expected.to redirect_to order_path(@order)
+      it "has a flash message" do
+        expect(flash[:notice]).to include("Quantities have changed")
+      end
+
+      it "renders the show view" do
+        is_expected.to render_template(:show)
       end
 
       it { expect(assigns[:order].state).not_to eq("purchased") }
