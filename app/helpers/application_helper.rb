@@ -50,7 +50,7 @@ module ApplicationHelper
   end
 
   def facility_product_path(facility, product)
-    method = "facility_#{product.class.model_name.underscore}_path"
+    method = "facility_#{product.class.model_name.to_s.underscore}_path"
     send(method, facility, product)
   end
 
