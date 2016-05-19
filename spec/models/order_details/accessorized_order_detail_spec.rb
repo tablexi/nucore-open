@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe OrderDetail do
-  let(:instrument) { FactoryGirl.create(:instrument_with_accessory) }
-  let(:accessory) { instrument.accessories.first }
+  let(:instrument) { FactoryGirl.create(:setup_instrument) }
+  let(:accessory) { FactoryGirl.create(:accessory, parent: instrument) }
   let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
   let(:order_detail) { reservation.order_detail }
   let(:accessorizer) { Accessories::Accessorizer.new(order_detail) }

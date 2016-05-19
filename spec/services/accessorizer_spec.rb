@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Accessories::Accessorizer do
-  let(:product) { create(:instrument_with_accessory) }
-  let(:quantity_accessory) { product.accessories.first }
+  let(:product) { FactoryGirl.create(:setup_instrument) }
+  let(:quantity_accessory) { FactoryGirl.create(:accessory, parent: product) }
   let!(:auto_scaled_accessory) { create(:accessory, parent: product, scaling_type: "auto") }
 
   let(:order) { build_stubbed :order }

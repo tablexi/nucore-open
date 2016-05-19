@@ -5,9 +5,9 @@ RSpec.describe AccessoriesController do
   render_views
   before(:all) { create_users }
 
-  let(:instrument) { create(:instrument_with_accessory) }
+  let(:instrument) { FactoryGirl.create(:setup_instrument) }
   let(:facility) { instrument.facility }
-  let(:quantity_accessory) { instrument.accessories.first }
+  let(:quantity_accessory) { FactoryGirl.create(:accessory, parent: instrument) }
   let(:auto_accessory) { create(:accessory, parent: instrument, scaling_type: "auto") }
   let(:manual_accessory) { create(:accessory, parent: instrument, scaling_type: "manual") }
   let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 1.day.ago) }
