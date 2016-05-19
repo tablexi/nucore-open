@@ -354,7 +354,7 @@ RSpec.describe ReservationsController do
 
       it_should_allow :director, "to create a reservation on merge order detail and redirect to order summary when merge order is destroyed" do
         assert_redirected_to facility_order_path(@authable, @merge_to_order)
-        assert_raises(ActiveRecord::RecordNotFound) { Order.find @order }
+        expect { Order.find(@order) }.to raise_error ActiveRecord::RecordNotFound
       end
 
       context "extra order details" do
@@ -366,7 +366,7 @@ RSpec.describe ReservationsController do
 
         it_should_allow :director, "to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed" do
           assert_redirected_to facility_order_path(@authable, @merge_to_order)
-          assert_nothing_raised { Order.find @order }
+          expect { Order.find(order) }.not_to raise_error
         end
       end
 

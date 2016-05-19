@@ -128,7 +128,7 @@ RSpec.describe PricePolicy do
     end
 
     it "should raise on bad input" do
-      assert_raise(ArgumentError) { @pp.restrict_purchase = 44 }
+      expect { @pp.restrict_purchase = 44 }.to raise_error ArgumentError
     end
 
     it "should destroy PriceGroupProduct when restricted" do
@@ -187,12 +187,12 @@ RSpec.describe PricePolicy do
 
       it 'should abstract #calculate_cost_and_subsidy' do
         expect(@sp).to be_respond_to(:calculate_cost_and_subsidy)
-        assert_raise(RuntimeError) { @sp.calculate_cost_and_subsidy }
+        expect { @sp.calculate_cost_and_subsidy }.to raise_error RuntimeError
       end
 
       it 'should abstract #estimate_cost_and_subsidy' do
         expect(@sp).to be_respond_to(:estimate_cost_and_subsidy)
-        assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
+        expect { @sp.estimate_cost_and_subsidy }.to raise_error RuntimeError
       end
 
     end

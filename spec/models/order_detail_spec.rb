@@ -1460,7 +1460,7 @@ RSpec.describe OrderDetail do
 
         it "should destroy merge order when its last detail is killed" do
           @order_detail.destroy
-          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
 
         it "should not destroy merge order when there are other details" do
@@ -1482,7 +1482,7 @@ RSpec.describe OrderDetail do
         it "should update order_id and delete merge order" do
           assert @order_detail.save
           expect(@order_detail.reload.order).to eq(@merge_to_order)
-          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
 
         it "should not affect non merge orders" do
@@ -1498,9 +1498,7 @@ RSpec.describe OrderDetail do
           @order.order_details.create(attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
           assert @order_detail.reload.save
           expect(@order_detail.reload.order).to eq(@merge_to_order)
-          assert_nothing_raised do
-            expect(@order.reload.order_details.size).to eq(1)
-          end
+          expect(@order.reload.order_details.size).to eq(1)
         end
 
         context "notifications" do
@@ -1563,7 +1561,7 @@ RSpec.describe OrderDetail do
           @order_detail.destroy
           assert @service_order_detail.save
           expect(@service_order_detail.reload.order).to eq(@merge_to_order)
-          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
       end
 
@@ -1604,7 +1602,7 @@ RSpec.describe OrderDetail do
           @order_detail.destroy
           assert @instrument_order_detail.save
           expect(@instrument_order_detail.reload.order).to eq(@merge_to_order)
-          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
       end
     end

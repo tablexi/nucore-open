@@ -8,6 +8,7 @@ RSpec.describe SurveysController do
 
   let(:authable) { create :facility }
   let(:facility_account) { authable.facility_accounts.create attributes_for(:facility_account) }
+  let(:order) { @order }
   let(:order_status) { create :order_status }
   let(:service) { authable.services.create attributes_for(:service, initial_order_status_id: order_status.id, facility_account_id: facility_account.id) }
   let(:external_service) { UrlService.create! location: "http://ext.service.com" }
@@ -97,7 +98,7 @@ RSpec.describe SurveysController do
 
       it_should_allow :director, "to complete survey on merge order" do
         expect(@order_detail.reload.order).to eq @clone
-        assert_raises(ActiveRecord::RecordNotFound) { @order.reload }
+        expect { order.reload }.to raise_error ActiveRecord::RecordNotFound
       end
 
     end
