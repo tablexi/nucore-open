@@ -96,18 +96,23 @@ class OrderDetail < ActiveRecord::Base
 
   scope :by_ordered_at, -> { joins(:order).order("orders.ordered_at DESC") }
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
-  scope :new_or_inprocess, conditions: ["order_details.state IN ('new', 'inprocess') AND orders.ordered_at IS NOT NULL"], include: :order
+  scope :new_or_inprocess, -> { where(state: %w(new inprocess)).includes(:orders).where.not("orders.ordered_at" => nil) }
 
-  scope :facility_recent, lambda { |facility|
-    { conditions: ["(order_details.statement_id IS NULL OR order_details.reviewed_at > ?) AND orders.facility_id = ?", Time.zone.now, facility.id],
-      joins: "LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id",
-      order: "order_details.created_at DESC" }
+  scope :facility_recent, lambda {|facility|
+    joins("LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id")
+      .where(
+        "(order_details.statement_id IS NULL OR order_details.reviewed_at > :reviewed_at) AND orders.facility_id = :facility_id",
+        reviewed_at: Time.zone.now,
+        facility_id: facility.id,
+      )
+      .order("order_details.created_at DESC")
   }
 
-  scope :finalized, lambda {|facility|
-    { joins: :order,
-      conditions: ["orders.facility_id = ? AND order_details.reviewed_at < ?", facility.id, Time.zone.now],
-      order: "order_details.created_at DESC" }
+  scope :finalized, lambda { |facility|
+    joins(:order)
+      .where("orders.facility_id" => facility.id)
+      .where("reviewed_at < ?", Time.current)
+      .order(created_at: :desc)
   }
 
   def self.for_facility(facility)
@@ -149,22 +154,21 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :for_facility_with_price_policy, lambda { |facility|
-    {
-      joins: :order,
-      conditions: ["orders.facility_id = ? AND price_policy_id IS NOT NULL", facility.id], order: "order_details.fulfilled_at DESC"
-    }
+    joins(:order)
+      .order(fulfilled_at: :desc)
+      .where("orders.facility_id" => facility.id)
+      .where.not(price_policy_id: nil)
   }
 
   scope :need_notification, lambda {
-                              {
-                                joins: :product,
-                                conditions: ['order_details.state = ?
-                     AND order_details.reviewed_at IS NULL
-                     AND order_details.price_policy_id IS NOT NULL
-                     AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)', "complete"],
-                              }}
+    joins(:product)
+      .where(state: "complete")
+      .where(reviewed_at: nil)
+      .where.not(price_policy_id: nil)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+  }
 
-  def self.all_need_notification
+  def self.all_need_notification # TODO: is use need_notification instead?
     where(state: "complete")
       .where(reviewed_at: nil)
       .where("price_policy_id IS NOT NULL")
@@ -251,49 +255,33 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :need_statement, lambda { |facility|
-                           {
-                             joins: [:product, :account],
-                             conditions: [
-                               "products.facility_id = :facility_id
-                                 AND order_details.state = :state
-                                 AND problem = :problem
-                                 AND reviewed_at <= :reviewed_at
-                                 AND order_details.statement_id IS NULL
-                                 AND order_details.price_policy_id IS NOT NULL
-                                 AND accounts.type IN (:account_types)
-                                 AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
-                               facility_id: facility.id,
-                               state: "complete",
-                               problem: false,
-                               reviewed_at: Time.zone.now,
-                               account_types: Account.config.statement_account_types,
-                             ],
-                           }}
+    complete
+      .joins(:product, :account)
+      .where("products.facility_id" => facility.id)
+      .where(problem: false)
+      .where("reviewed_at <= ?", Time.current)
+      .where(statement_id: nil)
+      .where.not(price_policy_id: nil)
+      .where("accounts.type" => Account.config.statement_account_types)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+  }
 
-  scope :need_journal, lambda {
-                         {
-                           joins: [:product, :account],
-                           conditions: [
-                             "order_details.state = :state
-                               AND problem = :problem
-                               AND reviewed_at <= :reviewed_at
-                               AND accounts.type IN (:account_types)
-                               AND journal_id IS NULL
-                               AND order_details.price_policy_id IS NOT NULL
-                               AND (dispute_at IS NULL OR dispute_resolved_at IS NOT NULL)",
-                             state: "complete",
-                             problem: false,
-                             reviewed_at: Time.zone.now,
-                             account_types: Account.config.journal_account_types,
-                           ],
-                         } }
+  scope :need_journal, lambda { # TODO: share common pieces with :need_statement scope
+    complete
+      .joins(:product, :account)
+      .where(problem: false)
+      .where("reviewed_at <= ?", Time.current)
+      .where("accounts.type" => Account.config.journal_account_types)
+      .where(journal_id: nil)
+      .where.not(price_policy_id: nil)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+  }
 
-  scope :statemented, lambda {|facility|
-    {
-      joins: :order,
-      order: "order_details.created_at DESC",
-      conditions: ["orders.facility_id = ? AND order_details.statement_id IS NOT NULL", facility.id],
-    }
+  scope :statemented, lambda { |facility|
+    joins(:order)
+      .order(created_at: :desc)
+      .where(facility_id: facility.id)
+      .where.not(statement_id: nil)
   }
 
   scope :non_reservations, -> { joins(:product).where("products.type <> 'Instrument'") }
@@ -315,12 +303,13 @@ class OrderDetail < ActiveRecord::Base
                                     .order("reservations.reserve_start_at ASC")
                                 }
 
-  scope :in_progress_reservations, confirmed_reservations
-    .merge(Reservation.relay_in_progress)
-    .order("reservations.reserve_start_at ASC")
+  scope :in_progress_reservations, lambda {
+    confirmed_reservations
+      .merge(Reservation.relay_in_progress)
+      .order("reservations.reserve_start_at ASC")
+  }
 
-  scope :all_reservations, confirmed_reservations
-    .order("reservations.reserve_start_at DESC")
+  scope :all_reservations, -> { confirmed_reservations.order("reservations.reserve_start_at DESC") }
 
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }

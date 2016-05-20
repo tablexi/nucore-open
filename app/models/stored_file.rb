@@ -10,12 +10,12 @@ class StoredFile < ActiveRecord::Base
   validates_presence_of   :order_detail_id, if: ->(o) { o.file_type == "template_result" || o.file_type == "sample_result" }
   validates_inclusion_of  :file_type, in: %w(info template template_result sample_result import_error import_upload)
 
-  scope :info,              conditions: { file_type: "info" }
-  scope :template,          conditions: { file_type: "template" }
-  scope :template_result,   conditions: { file_type: "template_result" }
-  scope :sample_result,     conditions: { file_type: "sample_result" }
-  scope :import_upload,     conditions: { file_type: "import_upload" }
-  scope :import_error,      conditions: { file_type: "import_error" }
+  scope :import_error, -> { where(file_type: "import_error") }
+  scope :import_upload, -> { where(file_type: "import_upload") }
+  scope :info, -> { where(file_type: "info") }
+  scope :sample_result, -> { where(file_type: "sample_result") }
+  scope :template, -> { where(file_type: "template") }
+  scope :template_result, -> { where(file_type: "template_result") }
 
   validates_attachment_presence :file
 
