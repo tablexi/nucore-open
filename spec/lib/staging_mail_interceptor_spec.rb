@@ -3,7 +3,11 @@ require "rails_helper"
 RSpec.describe StagingMailInterceptor do
   let(:to) { [] }
   let(:interceptor) { StagingMailInterceptor.new(message) }
-  subject(:message) { OpenStruct.new to: to, subject: "A message" }
+  subject(:message) do
+    Mail::Message.new(to: to, subject: "A message").tap do |msg|
+      msg.text_part = Mail::Part.new(body: "testing")
+    end
+  end
 
   describe "whitelisting" do
     let(:whitelist) { ["allowed@example.org", "allowed2@example.org", "allowed3@example.org"] }
@@ -57,8 +61,8 @@ RSpec.describe StagingMailInterceptor do
       end
 
       it "includes the blocked addresses in the message" do
-        expect(message.body).to include("Intercepted email")
-        expect(message.body).to include(*to)
+        expect(message.text_part.body).to include("Intercepted email")
+        expect(message.text_part.body).to include(*to)
       end
     end
 
@@ -70,8 +74,8 @@ RSpec.describe StagingMailInterceptor do
       end
 
       it "includes the blocked addresses in the message" do
-        expect(message.body).to include("Intercepted email")
-        expect(message.body).to include(*to)
+        expect(message.text_part.body).to include("Intercepted email")
+        expect(message.text_part.body).to include(*to)
       end
     end
   end
