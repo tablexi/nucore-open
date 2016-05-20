@@ -8,8 +8,8 @@ class FacilityAccount < ActiveRecord::Base
   validates_uniqueness_of :account_number, scope: [:revenue_account, :facility_id]
   validate :validate_chartstring
 
-  scope :active,   conditions: { is_active: true }
-  scope :inactive, conditions: { is_active: false }
+  scope :active, -> { where(is_active: true) }
+  scope :inactive, -> { where(is_active: false) }
 
   def to_s
     "#{account_number} (#{revenue_account})"

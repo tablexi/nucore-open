@@ -15,11 +15,11 @@ class OrderStatus < ActiveRecord::Base
     end
   end
 
-  scope :new_os, conditions: { name: "New" }, limit: 1
-  scope :inprocess, conditions: { name: "In Process" }, limit: 1
-  scope :canceled, conditions: { name: "Canceled" }, limit: 1
-  scope :complete, conditions: { name: "Complete" }, limit: 1
-  scope :reconciled, conditions: { name: "Reconciled" }, limit: 1
+  scope :new_os, -> { where(name: "New").limit(1) }
+  scope :inprocess, -> { where(name: "In Process").limit(1) }
+  scope :canceled, -> { where(name: "Canceled").limit(1) }
+  scope :complete, -> { where(name: "Complete").limit(1) }
+  scope :reconciled, -> { where(name: "Reconciled").limit(1) }
 
   def self.new_status
     new_os.first

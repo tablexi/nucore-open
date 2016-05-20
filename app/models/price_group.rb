@@ -12,16 +12,16 @@ class PriceGroup < ActiveRecord::Base
   validates_presence_of   :name
   validates_uniqueness_of :name, scope: :facility_id
 
-  default_scope order: "is_internal DESC, display_order ASC, name ASC"
+  default_scope -> { order(is_internal: :desc, display_order: :asc, name: :asc) }
 
   before_destroy :is_not_global
   before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil? }
 
-  scope :base, conditions: { name: Settings.price_group.name.base, facility_id: nil }
-  scope :external,      conditions: { name: Settings.price_group.name.external, facility_id: nil }
-  scope :cancer_center, conditions: { name: Settings.price_group.name.cancer_center, facility_id: nil }
+  scope :globals, -> { where(facility_id: nil) }
 
-  scope :globals, conditions: { facility_id: nil }
+  scope :base, -> { globals.where(name: Settings.price_group.name.base) }
+  scope :external, -> { globals.where(name: Settings.price_group.name.external) }
+  scope :cancer_center, -> { globals.where(name: Settings.price_group.name.cancer_center) }
 
   def is_not_global
     !global?
