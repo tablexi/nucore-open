@@ -225,6 +225,11 @@ Nucore::Application.routes.draw do
       collection do
         get "search"
         get "search_results", via: [:get, :post]
+
+        if SettingsHelper.feature_on?(:suspend_accounts)
+          get "suspend",   to: 'facility_accounts#suspend',   as: "suspend"
+          get "unsuspend", to: 'facility_accounts#unsuspend', as: "unsuspend"
+        end
       end
       get "/members", to: 'facility_accounts#members', as: "members"
 
@@ -235,11 +240,6 @@ Nucore::Application.routes.draw do
         plural_name = Account.config.account_type_to_route(type)
         get plural_name, to: "facility_accounts_reconciliation#index", on: :collection, account_type: type
         post "update_#{plural_name}", to: "facility_accounts_reconciliation#update", on: :collection, account_type: type
-      end
-
-      if SettingsHelper.feature_on?(:suspend_accounts)
-        get "suspend",   to: 'facility_accounts#suspend',   as: "suspend"
-        get "unsuspend", to: 'facility_accounts#unsuspend', as: "unsuspend"
       end
 
       resources :orders, controller: "facility_account_orders", only: [:index]
