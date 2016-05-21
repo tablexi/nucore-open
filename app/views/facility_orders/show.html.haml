@@ -67,11 +67,11 @@
       %td
       %td
       %td.currency
-        %strong= number_to_currency @order_details.inject(0) {|sum,od| sum + od.cost.to_f}
+        %strong= number_to_currency @order_details.inject(0) { |sum,od| sum + od.cost }
       %td.currency
-        %strong= number_to_currency @order_details.inject(0) {|sum,od| sum + od.subsidy.to_f}
+        %strong= number_to_currency @order_details.inject(0) { |sum,od| sum + od.subsidy }
       %td.currency
-        %strong= number_to_currency @order_details.inject(0) {|sum,od| sum + od.total.to_f}
+        %strong= number_to_currency @order_details.inject(0) { |sum,od| sum + od.total }
       %td
 
 = render :partial => 'merge_order_form'
