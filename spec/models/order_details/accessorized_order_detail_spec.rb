@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe OrderDetail do
-  let(:instrument) { FactoryGirl.create(:setup_instrument) }
-  let(:accessory) { FactoryGirl.create(:accessory, parent: instrument) }
+  let(:instrument) { FactoryGirl.create(:instrument_with_accessory) }
+  let(:accessory) { instrument.accessories.first }
   let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
   let(:order_detail) { reservation.order_detail }
   let(:accessorizer) { Accessories::Accessorizer.new(order_detail) }
@@ -103,7 +103,8 @@ RSpec.describe OrderDetail do
   end
 
   context "auto scaled accessory" do
-    let(:accessory_order_detail) { accessorizer.add_accessory(accessory) }
+    # reload in order to avoid timestamp truncation causing false-positives on `changes`
+    let(:accessory_order_detail) { accessorizer.add_accessory(accessory).reload }
     before :each do
       accessorizer.send(:product_accessory, accessory).update_attributes(scaling_type: "auto")
       accessory_order_detail # load
