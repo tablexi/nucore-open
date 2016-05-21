@@ -96,6 +96,11 @@ RSpec.configure do |config|
     I18n.t("facilities_downcase")
   end
 
+  config.include Warden::Test::Helpers, type: :feature
+  config.after type: :feature do
+    Warden.test_reset!
+  end
+
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

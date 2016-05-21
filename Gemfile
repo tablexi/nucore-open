@@ -106,6 +106,7 @@ group :test do
   gem "rspec_junit_formatter", "0.2.3"
   gem "ci_reporter_rspec"
   gem "codeclimate_circle_ci_coverage"
+  gem "capybara"
 end
 
 group :assets do

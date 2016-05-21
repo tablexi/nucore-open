@@ -20,11 +20,13 @@ class UrlService < ExternalService
   end
 
   def query_string(receiver, request)
-    {
+    query = {
       success_url: success_path(receiver, request),
       referer: referer_url(request),
       receiver_id: receiver.id,
-    }.to_query
+    }
+    query[:quantity] = receiver.quantity if receiver.respond_to?(:quantity)
+    query.to_query
   end
 
   private

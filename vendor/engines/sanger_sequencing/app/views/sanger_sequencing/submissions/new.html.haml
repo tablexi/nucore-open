@@ -1,3 +1,6 @@
 %h1= t("sanger_sequencing.name")
 
+= hidden_field_tag :referer, params[:referer]
+= hidden_field_tag :success_url, params[:success_url]
+
 = "Quantity: #{params[:quantity]}"
