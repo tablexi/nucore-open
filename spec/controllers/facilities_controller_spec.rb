@@ -96,7 +96,7 @@ RSpec.describe FacilitiesController do
       @method = :put
       @action = :update
       @params = {
-        facility_id: facility.url_name,
+        id: facility.url_name,
         facility: {
           abbreviation: "anf",
           accepts_multi_add: false,
