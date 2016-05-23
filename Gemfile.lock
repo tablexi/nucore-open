@@ -76,8 +76,8 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     arel (4.0.2)
     ast (2.2.0)
-    awesome_nested_set (2.1.6)
-      activerecord (>= 3.0.0)
+    awesome_nested_set (3.0.3)
+      activerecord (>= 4.0.0, < 5)
     awesome_print (1.1.0)
     bcrypt (3.1.11)
     better_errors (2.1.1)
@@ -582,7 +582,7 @@ PLATFORMS
 DEPENDENCIES
   aasm (= 2.2.0)
   activerecord-oracle_enhanced-adapter (= 1.4.3)
-  awesome_nested_set (= 2.1.6)
+  awesome_nested_set (= 3.0.3)
   awesome_print (= 1.1.0)
   better_errors
   binding_of_caller
