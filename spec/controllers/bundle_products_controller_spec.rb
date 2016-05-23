@@ -27,7 +27,7 @@ RSpec.describe BundleProductsController do
     it_should_require_login
 
     it_should_allow_all facility_operators do
-      expect(assigns(:bundle_products)).to be_kind_of Array
+      expect(assigns(:bundle_products)).to all be_kind_of(BundleProduct)
       is_expected.to render_template("index")
     end
 
