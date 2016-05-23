@@ -280,7 +280,7 @@ class OrderDetail < ActiveRecord::Base
   scope :statemented, lambda { |facility|
     joins(:order)
       .order(created_at: :desc)
-      .where(facility_id: facility.id)
+      .where("orders.facility_id" => facility.id)
       .where.not(statement_id: nil)
   }
 
