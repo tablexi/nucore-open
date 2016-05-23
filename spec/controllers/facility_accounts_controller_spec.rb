@@ -307,7 +307,7 @@ RSpec.describe FacilityAccountsController do
         Timecop.travel(1.second.from_now) # need different timestamp on statement
       end
 
-      @params = { facility_id: facility.url_name, account_id: @account.id }
+      @params = { facility_id: facility.url_name, account_id: @account.id, statement_id: "" }
     end
 
     it_should_require_login
