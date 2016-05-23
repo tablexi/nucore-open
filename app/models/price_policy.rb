@@ -143,14 +143,14 @@ class PricePolicy < ActiveRecord::Base
     expire_date <= Time.zone.now
   end
 
-  def start_date_is_unique
+  def start_date_is_unique # TODO: Refactor
     type          = self.class.name.downcase.gsub(/pricepolicy$/, "")
     price_group   = self.price_group
     unless product.nil? || price_group.nil?
       if id.nil?
-        pp = PricePolicy.find(:first, conditions: ["price_group_id = ? AND product_id = ? AND start_date = ?", price_group.id, product.id, start_date])
+        pp = PricePolicy.find_by(price_group_id: price_group.id, product_id: product.id, start_date: start_date)
       else
-        pp = PricePolicy.find(:first, conditions: ["price_group_id = ? AND product_id = ? AND start_date = ? AND id <> ?", price_group.id, product.id, start_date, id])
+        pp = PricePolicy.where(price_group_id: price_group.id, product_id: product.id, start_date: start_date).where.not(id: id).first
       end
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
     end
