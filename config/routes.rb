@@ -313,6 +313,7 @@ Nucore::Application.routes.draw do
       get "choose_account"
       post "choose_account"
       get "update_or_purchase"
+      patch "update_or_purchase"
       put "update_or_purchase"
       get "receipt"
       put "clear"
