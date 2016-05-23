@@ -164,11 +164,14 @@ class AccountBuilder
   # param is present, and the affiliate exists. Also ensure affiliate_other
   # gets wiped out if the affiliate_id does not point to `Other`.
   def set_affiliate
-    return account unless account.class.using_affiliate? && account_params.key?(:affiliate_id)
-
-    affiliate = Affiliate.find_by_id(account_params[:affiliate_id])
-    account.affiliate_id = affiliate.try(:id)
-    account.affiliate_other = nil if affiliate.try(:id) != Affiliate.OTHER.id
+    if account.class.using_affiliate? && account_params.key?(:affiliate_id)
+      affiliate = Affiliate.find_by_id(account_params[:affiliate_id])
+      account.affiliate_id = affiliate.try(:id)
+      account.affiliate_other = nil if affiliate.try(:id) != Affiliate.OTHER.id
+    else
+      account.affiliate_id = nil
+      account.affiliate_other = nil
+    end
     account
   end
 
