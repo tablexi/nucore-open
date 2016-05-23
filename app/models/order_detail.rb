@@ -96,7 +96,12 @@ class OrderDetail < ActiveRecord::Base
 
   scope :by_ordered_at, -> { joins(:order).order("orders.ordered_at DESC") }
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
-  scope :new_or_inprocess, -> { where(state: %w(new inprocess)).includes(:orders).where.not("orders.ordered_at" => nil) }
+  scope :new_or_inprocess, lambda {
+    where(state: %w(new inprocess))
+      .includes(:order)
+      .where.not("orders.ordered_at" => nil)
+      .references(:order)
+  }
 
   scope :facility_recent, lambda {|facility|
     joins("LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id")
