@@ -306,12 +306,16 @@ Nucore::Application.routes.draw do
 
   resources :orders do
     member do
-      get "add",            via: [:get, :put]
-      get "purchase",       via: [:get, :put]
-      get "choose_account", via: [:get, :post]
-      get "update_or_purchase", via: [:get, :put]
-      get   "receipt"
-      put   "clear"
+      get "add"
+      put "add"
+      get "purchase"
+      put "purchase"
+      get "choose_account"
+      post "choose_account"
+      get "update_or_purchase"
+      put "update_or_purchase"
+      get "receipt"
+      put "clear"
     end
 
     resources :order_details, only: [:show, :edit, :update] do
