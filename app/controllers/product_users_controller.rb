@@ -23,8 +23,11 @@ class ProductUsersController < ApplicationController
   # GET /facilities/:facility_id/services/service_id/users
   def index
     if @product.requires_approval?
-      @product_users = @product.product_users.includes(:user).order(user: [:last_name, :first_name])
-      @product_users = @product_users.paginate(page: params[:page])
+      @product_users = @product
+        .product_users
+        .includes(:user)
+        .order("users.last_name ASC", "users.first_name ASC")
+        .paginate(page: params[:page])
     else
       @product_users = nil
       flash.now[:notice] = "This #{@product.class.name.downcase} does not require user authorization"
