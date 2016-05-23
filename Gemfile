@@ -21,7 +21,7 @@ gem "cancancan",        "1.10"
 gem "aasm",             "2.2.0"
 gem "paperclip",        "~> 4.2.0"
 gem "vestal_versions",  "1.2.4.3", github: "elzoiddy/vestal_versions"
-gem "awesome_nested_set", "2.1.6"
+gem "awesome_nested_set", "3.0.3"
 gem "nokogiri",         "~> 1.6.1"
 gem "rails-observers"
 
