@@ -33,7 +33,7 @@ RSpec.describe ReservationsController do
       @order.validate_order!
       @order.purchase!
 
-      @method = :get
+      @method = :xhr
       @action = :index
       @params.merge!(instrument_id: @instrument.url_name, facility_id: @authable.url_name)
     end
