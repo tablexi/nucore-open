@@ -227,11 +227,13 @@ Nucore::Application.routes.draw do
         get "search"
         get "search_results", via: [:get, :post]
 
-        if SettingsHelper.feature_on?(:suspend_accounts)
-          get "suspend",   to: 'facility_accounts#suspend',   as: "suspend"
-          get "unsuspend", to: 'facility_accounts#unsuspend', as: "unsuspend"
-        end
       end
+
+      if SettingsHelper.feature_on?(:suspend_accounts)
+        get "suspend",   to: 'facility_accounts#suspend',   as: "suspend"
+        get "unsuspend", to: 'facility_accounts#unsuspend', as: "unsuspend"
+      end
+
       get "/members", to: 'facility_accounts#members', as: "members"
 
       get "/statements/:statement_id(.:format)", to: 'facility_accounts#show_statement', as: "statement", defaults: { format: "html" } if Account.config.statements_enabled?
