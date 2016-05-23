@@ -352,7 +352,7 @@ RSpec.describe OrderDetailsController do
     let(:order_detail) { order.order_details.first }
     let(:facility) { order.facility }
 
-    let(:params) { { order_id: order.id, id: order_detail.id } }
+    let(:params) { { order_id: order.id, order_detail_id: order_detail.id } }
     before { sign_in user }
 
     describe "while in the cart" do
@@ -370,7 +370,7 @@ RSpec.describe OrderDetailsController do
       let(:merge_order) { create(:merge_order, merge_with_order: order) }
 
       it "has access" do
-        get :order_file, order_id: merge_order.id, id: merge_order.order_details.first.id
+        get :order_file, order_id: merge_order.id, order_detail_id: merge_order.order_details.first.id
         expect(response).to be_success
       end
     end
