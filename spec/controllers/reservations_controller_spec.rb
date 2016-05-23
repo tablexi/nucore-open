@@ -1201,7 +1201,7 @@ RSpec.describe ReservationsController do
       @params = { facility_id: @authable.url_name }
       do_request
       expect(assigns[:public_timeline]).to be true
-      expect(response).to render_template :timeline
+      expect(response).to render_template :public_timeline
     end
 
     it "considers display for every active schedule" do
