@@ -4,8 +4,6 @@
 # (the receiver).
 class ExternalServiceReceiver < ActiveRecord::Base
 
-  attr_accessor :receiver_id, :response_data # TODO: why are these necessary for Rails 4?
-
   belongs_to :external_service
   belongs_to :receiver, polymorphic: true
 
@@ -24,7 +22,7 @@ class ExternalServiceReceiver < ActiveRecord::Base
   end
 
   def parsed_response_data
-    JSON.parse(response_data).symbolize_keys
+    JSON.parse(self[:response_data]).symbolize_keys
   rescue TypeError, JSON::ParserError
     {}
   end
