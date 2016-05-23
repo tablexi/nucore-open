@@ -20,6 +20,12 @@ module Projects
       name
     end
 
+    # This returns the total cost using actual cost if the order has it, otherwise
+    # uses the estimated cost.
+    def total_cost
+      order_details.inject(0) { |sum, od| sum += od.total }
+    end
+
   end
 
 end

@@ -516,11 +516,11 @@ class OrderDetail < ActiveRecord::Base
   delegate :ordered_on_behalf_of?, to: :order
 
   def cost
-    actual_cost || estimated_cost
+    actual_cost || estimated_cost || 0
   end
 
   def subsidy
-    actual_subsidy || estimated_subsidy
+    actual_subsidy || estimated_subsidy || 0
   end
 
   def actual_total

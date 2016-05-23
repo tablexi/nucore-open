@@ -136,7 +136,8 @@ RSpec.describe FacilityOrdersController do
 
     describe "with an order detail with no cost assigned" do
       it "renders" do
-        expect(@order_detail.cost).to be_nil
+        expect(@order_detail.actual_cost).to be_nil
+        expect(@order_detail.estimated_cost).to be_nil
         expect { do_request }.not_to raise_error
       end
     end
