@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
 
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
-    UserRole.find_all_by_facility_id_and_user_id(facility.id, id)
+    UserRole.where(facility_id: facility.id, user_id: id)
   end
 
   #
