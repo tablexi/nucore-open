@@ -54,7 +54,7 @@ class Facility < ActiveRecord::Base
   delegate :in_dispute, to: :order_details, prefix: true
   delegate :requiring_approval, :requiring_approval_by_type, to: :products, prefix: true
 
-  scope :active, conditions: { is_active: true }
+  scope :active, -> { where(is_active: true) }
   scope :sorted, order: :name
 
   def self.cross_facility
@@ -131,7 +131,7 @@ class Facility < ActiveRecord::Base
   end
 
   def set_journal_mask
-    f = Facility.find(:all, limit: 1, order: "journal_mask DESC").first
+    f = Facility.all.order(journal_mask: :desc).first
     self.journal_mask = if f && f.journal_mask.match(/^C(\d{2})$/)
                           sprintf("C%02d", Regexp.last_match(1).to_i + 1)
                         else

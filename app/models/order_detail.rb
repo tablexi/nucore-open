@@ -294,7 +294,7 @@ class OrderDetail < ActiveRecord::Base
 
   end
 
-  scope :pending, joins(:order).where(state: %w(new inprocess)).ordered
+  scope :pending, -> { joins(:order).where(state: %w(new inprocess)).ordered }
   scope :confirmed_reservations, -> { reservations.joins(:order).includes(:reservation).purchased }
 
   scope :upcoming_reservations, lambda {
@@ -540,7 +540,9 @@ class OrderDetail < ActiveRecord::Base
 
   def account_usable_by_order_owner?
     return unless order && account_id
-    errors.add("account_id", "is not valid for the orderer") unless AccountUser.find(:first, conditions: ["user_id = ? AND account_id = ? AND deleted_at IS NULL", order.user_id, account_id])
+    unless AccountUser.find_by(user_id: order.user_id, account_id: account_id, deleted_at: nil)
+      errors.add("account_id", "is not valid for the orderer")
+    end
   end
 
   def can_dispute?
