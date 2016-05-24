@@ -201,14 +201,6 @@ Rails/Output:
     - 'lib/tasks/ipp/ipp_converter.rb'
     - 'lib/tasks/ipp/ipp_updater.rb'
 
-# Offense count: 8
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/ScopeArgs:
-  Exclude:
-    - 'app/models/notification.rb'
-    - 'app/models/order_detail.rb'
-
 # Offense count: 27
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: strict, flexible
