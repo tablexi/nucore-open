@@ -4,7 +4,7 @@ class Affiliate < ActiveRecord::Base
   validates_uniqueness_of :name
 
   def self.OTHER
-    @@other ||= find_or_create_by_name("Other")
+    @@other ||= find_or_create_by(name: "Other")
   end
 
   def self.ordered_by_name
