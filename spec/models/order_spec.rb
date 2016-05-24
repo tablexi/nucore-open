@@ -165,7 +165,7 @@ RSpec.describe Order do
       @order.order_details.create(product_id: @service.id, quantity: 1)
       expect(@order.new?).to be true
       @order.save
-      expect(@order.purchase!).to be false
+      expect { @order.purchase! }.to raise_exception AASM::InvalidTransition
     end
 
     context "successfully moving to purchase" do
@@ -203,7 +203,7 @@ RSpec.describe Order do
       @facility.save!
       @order.reload
       @order.invalidate!
-      expect(@order.validate_order!).to be(false)
+      expect(@order.validate_order!).to be false
     end
 
     it "should check for product active/inactive changes before purchase" do
