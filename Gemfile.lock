@@ -38,7 +38,7 @@ GEM
   specs:
     Ascii85 (1.0.2)
     CFPropertyList (2.3.1)
-    aasm (2.2.0)
+    aasm (4.10.1)
     actionmailer (3.2.22.2)
       actionpack (= 3.2.22.2)
       mail (~> 2.5.4)
@@ -331,7 +331,7 @@ GEM
     method_source (0.8.2)
     mime-types (1.25.1)
     mini_portile2 (2.0.0)
-    multi_json (1.12.0)
+    multi_json (1.12.1)
     mysql2 (0.3.20)
     nenv (0.3.0)
     nested_form_fields (0.7.4)
@@ -517,7 +517,7 @@ GEM
     turbo-sprockets-rails3 (0.3.14)
       railties (> 3.2.8, < 4.0.0)
       sprockets (>= 2.2.0)
-    tzinfo (0.3.47)
+    tzinfo (0.3.49)
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
@@ -532,7 +532,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  aasm (= 2.2.0)
+  aasm (~> 4.10.1)
   activerecord-oracle_enhanced-adapter (= 1.4.3)
   awesome_nested_set (= 2.1.6)
   awesome_print (= 1.1.0)

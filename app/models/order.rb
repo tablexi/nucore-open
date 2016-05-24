@@ -34,29 +34,28 @@ class Order < ActiveRecord::Base
 
   attr_accessor :being_purchased_by_admin
 
-  # BEGIN acts_as_state_machhine
   include AASM
 
-  aasm_column           :state
-  aasm_initial_state    :new
-  aasm_state            :new
-  aasm_state            :validated
-  aasm_state            :purchased
+  aasm column: :state, whiny_transitions: false do
+    state :new, initial: true
+    state :validated
+    state :purchased
 
-  aasm_event :invalidate do
-    transitions to: :new, from: [:new, :validated]
-  end
+    event :invalidate do
+      transitions to: :new, from: [:new, :validated]
+    end
 
-  aasm_event :validate_order do
-    transitions to: :validated, from: [:new, :validated], guard: :cart_valid?
-  end
+    event :validate_order do
+      transitions to: :validated, from: [:new, :validated], guard: :cart_valid?
+    end
 
-  aasm_event :purchase, success: :move_order_details_to_default_status do
-    transitions to: :purchased, from: :validated, guard: :place_order?
-  end
+    event :purchase, success: :move_order_details_to_default_status do
+      transitions to: :purchased, from: :validated, guard: :place_order?
+    end
 
-  aasm_event :clear do
-    transitions to: :new, from: [:new, :validated], guard: :clear_cart?
+    event :clear do
+      transitions to: :new, from: [:new, :validated], guard: :clear_cart?
+    end
   end
 
   [:total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy].each do |method_name|
