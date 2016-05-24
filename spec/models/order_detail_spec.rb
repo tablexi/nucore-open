@@ -691,7 +691,7 @@ RSpec.describe OrderDetail do
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         @order_detail.to_reconciled!
-        expect { @order_detail.to_canceled! }.to raise_exception AASM::InvalidTransition
+        expect { @order_detail.to_canceled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("reconciled")
         expect(@order_detail.version).to eq(4)
       end
@@ -702,7 +702,7 @@ RSpec.describe OrderDetail do
         expect(@order_detail.reload.journal).to eq(journal)
         @order_detail.to_inprocess!
         @order_detail.to_complete!
-        @order_detail.to_canceled!
+        expect { @order_detail.to_canceled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("complete")
         expect(@order_detail.version).to eq(4)
       end
@@ -732,7 +732,7 @@ RSpec.describe OrderDetail do
           end
 
           it "should not transition to canceled" do
-            expect { order_detail.to_canceled! }.to raise_exception AASM::InvalidTransition
+            expect { order_detail.to_canceled! }.to raise_error(AASM::InvalidTransition)
           end
         end
       end
@@ -753,7 +753,7 @@ RSpec.describe OrderDetail do
         @order_detail.to_complete!
         expect(@order_detail.state).to eq("complete")
         expect(@order_detail.version).to eq(3)
-        @order_detail.to_reconciled!
+        expect { @order_detail.to_reconciled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("complete")
         expect(@order_detail.version).to eq(3)
       end
