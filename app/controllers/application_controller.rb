@@ -194,19 +194,4 @@ class ApplicationController < ActionController::Base
     current_facility
   end
 
-  def remove_ugly_params_and_redirect
-    if params[:commit] && request.get?
-      remove_ugly_params
-      # redirect to self
-      redirect_to params
-      return false
-    end
-  end
-
-  def remove_ugly_params
-    [:commit, :utf8, :authenticity_token].each do |p|
-      params.delete(p)
-    end
-  end
-
 end
