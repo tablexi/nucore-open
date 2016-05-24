@@ -73,7 +73,6 @@ class FacilityJournalsController < ApplicationController
       redirect_to facility_journals_path(current_facility)
     else
       flash_error_messages
-      remove_ugly_params
       redirect_to new_facility_journal_path
     end
   end
