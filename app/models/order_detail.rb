@@ -394,45 +394,43 @@ class OrderDetail < ActiveRecord::Base
 
     query.where(sql, start: start_date, end: end_date)
   end
-  # BEGIN acts_as_state_machine
+
   include AASM
 
-  aasm_column           :state
-  aasm_initial_state    :new
-  aasm_state            :new
-  aasm_state            :inprocess
-  aasm_state            :complete, enter: :make_complete
-  aasm_state            :reconciled, enter: :set_reconciled_at
-  aasm_state            :canceled, enter: :clear_costs
-
-  aasm_event :to_new do
-    transitions to: :new, from: :inprocess
-  end
-
-  aasm_event :to_inprocess do
-    transitions to: :inprocess, from: :new
-  end
-
-  aasm_event :to_complete do
-    transitions to: :complete, from: [:new, :inprocess], guard: :has_completed_reservation?
-  end
-
-  aasm_event :to_reconciled do
-    transitions to: :reconciled, from: :complete, guard: :actual_total
-  end
-
   CANCELABLE_STATES = [:new, :inprocess, :complete].freeze
-  aasm_event :to_canceled do
-    transitions to: :canceled, from: CANCELABLE_STATES, guard: :cancelable?
-  end
+  aasm column: :state do
+    state :new, initial: true
+    state :inprocess
+    state :complete, enter: :make_complete
+    state :reconciled, enter: :set_reconciled_at
+    state :canceled, enter: :clear_costs
 
-  # END acts_as_state_machine
+    event :to_new do
+      transitions to: :new, from: :inprocess
+    end
+
+    event :to_inprocess do
+      transitions to: :inprocess, from: :new
+    end
+
+    event :to_complete do
+      transitions to: :complete, from: [:new, :inprocess], guard: :has_completed_reservation?
+    end
+
+    event :to_reconciled do
+      transitions to: :reconciled, from: :complete, guard: :actual_total
+    end
+
+    event :to_canceled do
+      transitions to: :canceled, from: CANCELABLE_STATES, guard: :cancelable?
+    end
+  end
 
   # block will be called after the transition, but before the save
   def change_status!(new_status, &block)
     new_state = new_status.state_name
     # don't try to change state if it's not a valid state or it's the same as it was before
-    if OrderDetail.aasm_states.map(&:name).include?(new_state) && new_state != state.to_sym
+    if OrderDetail.aasm.states.map(&:name).include?(new_state) && new_state != state.to_sym
       raise AASM::InvalidTransition, "Event '#{new_state}' cannot transition from '#{state}'" unless send("to_#{new_state}!")
     end
     # don't try to change status if it's the same as before
@@ -505,11 +503,11 @@ class OrderDetail < ActiveRecord::Base
   delegate :ordered_on_behalf_of?, to: :order
 
   def cost
-    actual_cost || estimated_cost
+    actual_cost || estimated_cost || 0
   end
 
   def subsidy
-    actual_subsidy || estimated_subsidy
+    actual_subsidy || estimated_subsidy || 0
   end
 
   def actual_total

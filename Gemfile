@@ -18,7 +18,7 @@ gem "devise_ldap_authenticatable", "~> 0.8.5"
 gem "cancancan",        "1.10"
 
 ## models
-gem "aasm",             "2.2.0"
+gem "aasm",             "~> 4.10.1"
 gem "paperclip",        "~> 4.2.0"
 gem "vestal_versions",  "1.2.4.3", github: "elzoiddy/vestal_versions"
 gem "awesome_nested_set", "3.0.3"
