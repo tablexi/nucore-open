@@ -36,7 +36,7 @@ class Order < ActiveRecord::Base
 
   include AASM
 
-  aasm column: :state, whiny_transitions: false do
+  aasm column: :state do
     state :new, initial: true
     state :validated
     state :purchased
@@ -45,7 +45,7 @@ class Order < ActiveRecord::Base
       transitions to: :new, from: [:new, :validated]
     end
 
-    event :validate_order do
+    event :_validate_order do
       transitions to: :validated, from: [:new, :validated], guard: :cart_valid?
     end
 
@@ -56,6 +56,14 @@ class Order < ActiveRecord::Base
     event :clear do
       transitions to: :new, from: [:new, :validated], guard: :clear_cart?
     end
+  end
+
+  # In older versions of AASM, a guard condition failing would not raise an error.
+  # This is to maintain the previous API of simply returning false
+  def validate_order!
+    _validate_order!
+  rescue AASM::InvalidTransition => e
+    false
   end
 
   [:total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy].each do |method_name|
