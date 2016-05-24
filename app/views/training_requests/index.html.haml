@@ -3,7 +3,7 @@
 = content_for :sidebar do
   = render "admin/shared/sidenav_product", sidenav_tab: TrainingRequest.model_name.plural
 
-%h2= TrainingRequest.model_name.titleize.pluralize
+%h2= TrainingRequest.model_name.to_s.titleize.pluralize
 
 - if @training_requests.any?
   %table.table.table-striped.table-hover
