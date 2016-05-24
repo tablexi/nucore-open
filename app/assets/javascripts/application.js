@@ -11,7 +11,7 @@
 //= require jquery.ui.effect
 //= require nested_form_fields
 //= require bootstrap
-//= require chosen.jquery.min
+//= require chosen-jquery
 //= require activate_chosen
 //= require _common
 //= require date

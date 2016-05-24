@@ -37,6 +37,7 @@ gem "simple_form",      "~> 2.1.1"
 gem "font-awesome-rails", "~> 3.2.0"
 gem "nested_form_fields"
 gem "text_helpers"
+gem "chosen-rails"
 
 ## controllers
 gem "prawn",            "0.12"
