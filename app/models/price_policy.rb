@@ -133,7 +133,7 @@ class PricePolicy < ActiveRecord::Base
   # Returns true if this +PricePolicy+ is assigned
   # to any order, false otherwise
   def assigned_to_order?
-    !OrderDetail.find_all_by_price_policy_id(id).empty?
+    OrderDetail.where(price_policy_id: id).any?
   end
 
   #
