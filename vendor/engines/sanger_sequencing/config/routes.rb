@@ -1,3 +1,5 @@
 SangerSequencing::Engine.routes.draw do
-  resources :submissions, only: [:new]
+  scope module: "sanger_sequencing" do
+    resources :submissions, only: [:new]
+  end
 end

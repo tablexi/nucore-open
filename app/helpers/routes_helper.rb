@@ -12,9 +12,9 @@ module RoutesHelper
 
   def sign_out_user_path
     if current_facility.present?
-      main_app.destroy_user_session_path(facility_id: current_facility.url_name)
+      destroy_user_session_path(facility_id: current_facility.url_name)
     else
-      main_app.destroy_user_session_path
+      destroy_user_session_path
     end
   end
 
