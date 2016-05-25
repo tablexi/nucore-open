@@ -11,52 +11,18 @@
     line-height: 70px;
   }
 
-  .options {
-    margin-top: 1em;
+  .chosen-choices {
+    height: 3em;
   }
 
-  .options a {
+  .reportForm__downloads a {
     display: block;
-    padding-top: 23px;
+    padding-top: 2.3em;
   }
 
-  .options a:hover {
-    text-decoration: underline;
-  }
-
-  .options li {
+  .reportForm > li {
     float: left;
     padding-right: 10px;
-  }
-
-  .options li label {
-    padding-left: 2px;
-  }
-
-  .options ul {
-    display: none;
-    z-index: 2;
-  }
-
-  .chzn-container ul {
-    display: block;
-  }
-
-  .chzn-container a {
-    padding: 0;
-  }
-
-  .chzn-container-multi .chzn-choices {
-    width: 210px;
-  }
-
-  .chzn-results li {
-    float: none;
-  }
-
-  .chzn-container-multi .chzn-choices .search-choice {
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
   }
 
   #tabs {
