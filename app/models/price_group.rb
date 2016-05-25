@@ -17,6 +17,7 @@ class PriceGroup < ActiveRecord::Base
   before_destroy :is_not_global
   before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil? }
 
+  scope :for_facility, -> (facility) { where(facility_id: [nil, facility.id]) }
   scope :globals, -> { where(facility_id: nil) }
 
   scope :base, -> { globals.where(name: Settings.price_group.name.base) }
