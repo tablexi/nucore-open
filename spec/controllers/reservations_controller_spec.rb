@@ -4,6 +4,7 @@ require "controller_spec_helper"
 RSpec.describe ReservationsController do
   include DateHelper
 
+  let(:facility) { @authable }
   let(:instrument) { @instrument }
   let(:order) { @order }
   let(:order_detail) { order.order_details.first }
@@ -484,7 +485,7 @@ RSpec.describe ReservationsController do
         expect(@order.account).to be_nil
         expect(@order_detail.account).to be_nil
         @instrument.price_policies.first.update_attributes usage_rate: 240
-        @price_group2      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+        @price_group2 = FactoryGirl.create(:price_group, facility: facility)
         @pg_account        = FactoryGirl.create(:account_price_group_member, account: @account, price_group: @price_group2)
         @price_policy2     = create :instrument_price_policy, product: @instrument, price_group_id: @price_group2.id, usage_rate: 120, usage_subsidy: 15
         sign_in @guest

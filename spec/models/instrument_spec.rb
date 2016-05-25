@@ -555,7 +555,7 @@ RSpec.describe Instrument do
 
   context "last reserve dates, days from now" do
     before(:each) do
-      @price_group      = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @price_group = FactoryGirl.create(:price_group, facility: facility)
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument       = FactoryGirl.create(:instrument,
                                              facility: facility,

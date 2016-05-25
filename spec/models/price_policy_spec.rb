@@ -9,10 +9,12 @@ RSpec.describe PricePolicy do
     Settings.reload!
   end
 
+  let(:facility) { @facility }
+
   before :each do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: facility)
     @item             = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
   end
 

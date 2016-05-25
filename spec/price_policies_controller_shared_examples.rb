@@ -12,8 +12,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
     # Delete the default price groups since they get in the way of testing
     PriceGroup.all.each(&:delete)
 
-    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @price_group2     = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: facility)
+    @price_group2 = FactoryGirl.create(:price_group, facility: facility)
     @product          = create product_type, facility_account_id: @facility_account.id, facility: @authable
     @price_policy     = make_price_policy(@price_group)
     expect(@price_policy).to be_valid
@@ -112,7 +112,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           expect(assigns[:price_policies][1].unit_cost).to eq(@price_group2_policy.unit_cost)
         end
         it "should leave can_purchase as false if there isn't an existing policy for the group, but there are policies" do
-          @price_group3 = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+          @price_group3 = FactoryGirl.create(:price_group, facility: facility)
 
           do_request
           expect(assigns[:price_policies].size).to eq 3
@@ -349,9 +349,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         end
 
         context "when creating a new price group" do
-          let!(:new_price_group) do
-            facility.price_groups.create(attributes_for(:price_group))
-          end
+          let!(:new_price_group) { FactoryGirl.create(:price_group, facility: facility) }
           let(:new_price_policy) do
             product
               .price_policies
