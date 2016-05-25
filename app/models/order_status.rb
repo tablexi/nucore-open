@@ -15,6 +15,7 @@ class OrderStatus < ActiveRecord::Base
     end
   end
 
+  scope :for_facility, -> (facility) { where(facility_id: [nil, facility.id]).order(:lft) }
   scope :new_os, -> { where(name: "New").limit(1) }
   scope :inprocess, -> { where(name: "In Process").limit(1) }
   scope :canceled, -> { where(name: "Canceled").limit(1) }
