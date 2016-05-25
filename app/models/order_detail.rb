@@ -120,6 +120,11 @@ class OrderDetail < ActiveRecord::Base
       .order(created_at: :desc)
   }
 
+  scope :for_product_type, lambda { |product_type|
+    joins("LEFT JOIN products ON products.id = order_details.product_id")
+      .where("products.type" => product_type)
+  }
+
   def self.for_facility(facility)
     for_facility_id(facility.id)
   end
