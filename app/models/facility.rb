@@ -31,7 +31,7 @@ class Facility < ActiveRecord::Base
     end
   end
   has_many :order_imports, dependent: :destroy
-  has_many :orders, conditions: "ordered_at IS NOT NULL"
+  has_many :orders, -> { where.not(ordered_at: nil) }
   has_many :facility_accounts
   has_many :training_requests, through: :products
   has_many :user_roles, dependent: :destroy
@@ -55,7 +55,7 @@ class Facility < ActiveRecord::Base
   delegate :requiring_approval, :requiring_approval_by_type, to: :products, prefix: true
 
   scope :active, -> { where(is_active: true) }
-  scope :sorted, order: :name
+  scope :sorted, -> { order(:name) }
 
   def self.cross_facility
     @@cross_facility ||=

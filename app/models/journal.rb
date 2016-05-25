@@ -41,7 +41,7 @@ class Journal < ActiveRecord::Base
 
   has_many                :journal_rows
   belongs_to              :facility
-  has_many                :order_details, through: :journal_rows, uniq: true
+  has_many :order_details, -> { uniq }, through: :journal_rows
   belongs_to              :created_by_user, class_name: "User", foreign_key: :created_by
 
   validates_presence_of   :reference, :updated_by, on: :update

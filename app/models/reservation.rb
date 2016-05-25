@@ -75,7 +75,7 @@ class Reservation < ActiveRecord::Base
     if reservation.id
       where("reservations.id <> ?", reservation.id)
     else
-      scoped
+      all
     end
   end
 

@@ -292,11 +292,7 @@ class Account < ActiveRecord::Base
 
       # find non-deleted record for this user and account or init new one
       # deleted_at MUST be nil to preserve existing audit trail
-      @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
-        id,
-        user.id,
-        nil,
-      )
+      @account_user = AccountUser.find_or_initialize_by(account_id: id, user_id: user.id, deleted_at: nil)
       # set (new?) role
       @account_user.user_role = new_role
       # set creation information

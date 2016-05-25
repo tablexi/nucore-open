@@ -133,7 +133,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.for_facility_url(facility_url)
-    details = scoped.joins(:order)
+    details = all.joins(:order)
 
     unless facility_url.nil?
       details = details.joins(order: :facility)
@@ -151,9 +151,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.purchased_active_reservations
-    scoped.pending
-          .joins(:reservation)
-          .merge(Reservation.not_canceled)
+    pending.joins(:reservation).merge(Reservation.not_canceled)
   end
 
   scope :for_facility_with_price_policy, lambda { |facility|
@@ -193,11 +191,11 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :in_review, lambda { |facility|
-    scoped.joins(:product)
-          .where(products: { facility_id: facility.id })
-          .where(state: "complete")
-          .where("order_details.reviewed_at > ?", Time.zone.now)
-          .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+    all.joins(:product)
+      .where(products: { facility_id: facility.id })
+      .where(state: "complete")
+      .where("order_details.reviewed_at > ?", Time.zone.now)
+      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   }
 
   def self.all_in_review
@@ -325,7 +323,7 @@ class OrderDetail < ActiveRecord::Base
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
   scope :in_date_range, lambda { |start_date, end_date|
-    search = scoped
+    search = all
     if start_date
       search = search.where("orders.ordered_at > ?", start_date.beginning_of_day)
     end
@@ -343,7 +341,7 @@ class OrderDetail < ActiveRecord::Base
     valid = TransactionSearch::DateRangeSearcher::FIELDS.map(&:to_sym) + [:journal_date]
     raise ArgumentError.new("Invalid action: #{action}. Must be one of: #{valid}") unless valid.include? action.to_sym
     logger.debug("searching #{action} between #{start_date} and #{end_date}")
-    search = scoped
+    search = all
 
     return journaled_or_statemented_in_date_range(start_date, end_date) if action.to_sym == :journal_or_statement_date
     search = search.joins(:journal) if action.to_sym == :journal_date
