@@ -1,18 +1,18 @@
-= simple_form_for :bulk_email, :url => facility_bulk_email_path, :method => :get, :html => { :class => "search_form", :id => "bulk_email" }, :defaults => { :required => false } do |f|
+= simple_form_for :bulk_email, url: facility_bulk_email_path, method: :get, html: { class: "search_form", id: "bulk_email" }, defaults: { required: false } do |f|
 
   .row
     .span3
-      = f.input :search_type, :collection => @search_types.invert, :selected => params[:search_type], :input_html => { :name => 'search_type' }
+      = f.input :search_type, collection: @search_types.invert, selected: params[:search_type], input_html: { name: "search_type" }
     .span4.full-width
-      = f.input :products, :as => :transaction_chosen
+      = f.input :products, as: :transaction_chosen, data_method: :product_options
   .row
-    %h4.span8= t('bulk_email.dates.label')
+    %h4.span8= t("bulk_email.dates.label")
   .row
     .span3
-      = f.input :start_date, :input_html => { :value => @search_fields[:start_date].try(:gsub, "-","/"), :class => 'datepicker', :name => 'start_date' }
+      = f.input :start_date, input_html: { value: @search_fields[:start_date].try(:gsub, "-","/"), class: "datepicker", name: "start_date" }
     .span3
-      = f.input :end_date, :input_html => { :value => @search_fields[:end_date].try(:gsub, "-","/"), :class => 'datepicker', :name => 'end_date' }
+      = f.input :end_date, input_html: { value: @search_fields[:end_date].try(:gsub, "-","/"), class: "datepicker", name: "end_date" }
 
   .row
     .span8
-      = f.submit "Search", :class => ['btn']
+      = f.submit "Search", class: ["btn"]

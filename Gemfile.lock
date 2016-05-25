@@ -104,6 +104,10 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    chosen-rails (1.5.2)
+      coffee-rails (>= 3.2)
+      railties (>= 3.0)
+      sass-rails (>= 3.2)
     chronic (0.10.2)
     ci_reporter (2.0.0)
       builder (>= 2.1.2)
@@ -574,6 +578,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
+  chosen-rails
   ci_reporter_rspec
   ckeditor (~> 4.0.10)
   clockpunch (~> 0.1.0)
