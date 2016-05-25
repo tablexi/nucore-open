@@ -28,7 +28,7 @@ class Account < ActiveRecord::Base
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
-  scope :active, -> { { conditions: ["expires_at > ? AND suspended_at IS NULL", Time.zone.now] } }
+  scope :active, -> { where("expires_at > ?", Time.current).where(suspended_at: nil) }
   scope :global_account_types, -> { where(accounts: { type: config.global_account_types }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
