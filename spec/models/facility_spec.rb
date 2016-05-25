@@ -119,4 +119,16 @@ RSpec.describe Facility do
       end
     end
   end
+
+  describe "#order_statuses" do
+    let(:facility) { FactoryGirl.create(:facility) }
+    let(:other_facility) { FactoryGirl.create(:facility) }
+    let!(:my_order_statuses) { FactoryGirl.create_list(:order_status, 3, facility: facility) }
+    let!(:other_order_statuses) { FactoryGirl.create_list(:order_status, 3, facility: other_facility) }
+
+    it "returns only statuses belonging to its own facility or no facility" do
+      expect(facility.order_statuses)
+        .to match_array(my_order_statuses + OrderStatus.where(facility_id: nil))
+    end
+  end
 end

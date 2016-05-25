@@ -14,7 +14,6 @@ class Facility < ActiveRecord::Base
 
   before_validation :set_journal_mask, on: :create
 
-  has_many :order_statuses, finder_sql: proc { "SELECT * FROM order_statuses WHERE facility_id = #{id} or facility_id IS NULL order by lft" }
   has_many :items
   has_many :services
   has_many :instruments
@@ -77,6 +76,10 @@ class Facility < ActiveRecord::Base
 
   def description
     self[:description].html_safe if self[:description]
+  end
+
+  def order_statuses
+    OrderStatus.for_facility(self)
   end
 
   def to_param
