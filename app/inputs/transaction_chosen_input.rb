@@ -2,7 +2,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
 
   disable :required
 
-  def input
+  def input(wrapper_options)
     options[:label_method] ||= :name
     options[:value_method] ||= :id
 
@@ -23,7 +23,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
     template.select_tag(attribute_name, option_data, select_options).html_safe
   end
 
-  def label
+  def label(wrapper_options)
     options[:label] ||= model_label
     super
   end
