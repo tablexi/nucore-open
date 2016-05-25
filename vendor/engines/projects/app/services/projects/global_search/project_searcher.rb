@@ -18,6 +18,12 @@ module Projects
         end
       end
 
+      def restrict(projects)
+        projects.select do |project|
+          Ability.new(user, project.facility).can?(:show, project)
+        end
+      end
+
       def search
         query_object.where("lower(name) LIKE ?", "%#{query.downcase}%")
       end
