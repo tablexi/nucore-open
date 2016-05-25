@@ -25,19 +25,24 @@ RSpec.describe User do
 
   it { is_expected.to be_valid }
 
-  context "when the username does not contain an '@' symbol" do
-    before { expect(user.username).not_to include("@") }
+  describe "Default #price_groups" do
+    # Only run if we're using the default implementation
+    if User.new.method(:price_groups).owner == User::Overridable
+      context "when the username does not contain an '@' symbol" do
+        before { expect(user.username).not_to include("@") }
 
-    it "belongs to the NU price group" do
-      expect(user.price_groups.include?(@nupg)).to eq(true)
-    end
-  end
+        it "belongs to the NU price group" do
+          expect(user.price_groups.include?(@nupg)).to eq(true)
+        end
+      end
 
-  context "when the username contains an '@' symbol" do
-    subject(:user) { create(:user, username: "ext@example.net") }
+      context "when the username contains an '@' symbol" do
+        subject(:user) { create(:user, username: "ext@example.net") }
 
-    it "belongs to the External price group" do
-      expect(user.price_groups.include?(@epg)).to eq(true)
+        it "belongs to the External price group" do
+          expect(user.price_groups.include?(@epg)).to eq(true)
+        end
+      end
     end
   end
 
