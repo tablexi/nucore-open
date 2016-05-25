@@ -15,7 +15,7 @@ RSpec.describe DateHelper do
       %w(1/1/2014 3/31/2014 10/2/2014 12/31/2014).each do |date_string|
         it "considers '#{date_string}' a valid date" do
           expect(parse_usa_import_date(date_string))
-            .to eq DateTime.strptime(date_string, "%m/%d/%Y").to_time_in_current_zone
+            .to eq DateTime.strptime(date_string, "%m/%d/%Y").in_time_zone
         end
       end
 
