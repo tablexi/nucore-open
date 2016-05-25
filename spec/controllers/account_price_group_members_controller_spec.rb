@@ -4,7 +4,8 @@ require "controller_spec_helper"
 RSpec.describe AccountPriceGroupMembersController do
   render_views
 
-  let(:price_group) { @authable.price_groups.create(FactoryGirl.attributes_for(:price_group)) }
+  let(:facility) { @authable }
+  let(:price_group) { FactoryGirl.create(:price_group, facility: facility) }
 
   before(:all) { create_users }
 

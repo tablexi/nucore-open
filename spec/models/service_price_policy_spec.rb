@@ -29,7 +29,7 @@ RSpec.describe ServicePricePolicy do
     before(:each) do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @price_group = FactoryGirl.create(:price_group, facility: @facility)
       @service = @facility.services.create(FactoryGirl.attributes_for(:service, facility_account: @facility_account))
       @price_group_product = FactoryGirl.create(:price_group_product, product: @service, price_group: @price_group, reservation_window: nil)
     end

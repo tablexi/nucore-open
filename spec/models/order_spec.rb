@@ -49,7 +49,7 @@ RSpec.describe Order do
     let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
     let(:item) { facility.items.create(attributes_for(:item, facility_account_id: facility_account.id)) }
     let(:order) { user.orders.create(attributes_for(:order, created_by: user.id)) }
-    let(:price_group) { facility.price_groups.create(attributes_for(:price_group)) }
+    let(:price_group) { FactoryGirl.create(:price_group, facility: facility) }
     let!(:price_policy) { item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: price_group.id)) }
     let(:user) { create(:user) }
 
@@ -130,7 +130,7 @@ RSpec.describe Order do
     before(:each) do
       @facility = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @price_group  = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @price_group = FactoryGirl.create(:price_group, facility: @facility)
       @order_status = FactoryGirl.create(:order_status)
       @service      = @facility.services.create(FactoryGirl.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account.id))
       @service_pp   = FactoryGirl.create(:service_price_policy, product: @service, price_group: @price_group)

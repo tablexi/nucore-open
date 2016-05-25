@@ -1016,7 +1016,7 @@ RSpec.describe Reservation do
       @nupg_pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @nupg)
 
       # Setup a price group with an account for this user
-      @price_group1 = facility.price_groups.create(attributes_for(:price_group))
+      @price_group1 = FactoryGirl.create(:price_group, facility: facility)
       @pg1_pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group1)
       @account1 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       @account_price_group_member1 = AccountPriceGroupMember.create(FactoryGirl.attributes_for(:account_price_group_member).merge(account: @account1, price_group: @price_group1))

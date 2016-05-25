@@ -1,10 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Order do
+  let(:facility) { @facility }
+
   before(:each) do
     @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group  = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: facility)
     @order_status = FactoryGirl.create(:order_status)
     @service      = @facility.services.create(FactoryGirl.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account.id))
     @service_pp   = FactoryGirl.create(:service_price_policy, product: @service, price_group: @price_group)
