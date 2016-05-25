@@ -115,15 +115,15 @@ class Order < ActiveRecord::Base
   # END acts_as_state_machine
 
   def instrument_order_details
-    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Instrument" })
+    order_details.for_product_type("Instrument")
   end
 
   def service_order_details
-    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Service" })
+    order_details.for_product_type("Service")
   end
 
   def item_order_details
-    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Item" })
+    order_details.for_product_type("Item")
   end
 
   def add(product, quantity = 1, attributes = {})
