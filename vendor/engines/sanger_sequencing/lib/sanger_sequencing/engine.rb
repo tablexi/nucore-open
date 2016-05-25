@@ -2,6 +2,10 @@ module SangerSequencing
 
   class Engine < ::Rails::Engine
 
+    config.to_prepare do
+      NavTab::LinkCollection.send :include, SangerSequencing::LinkCollectionExtension
+    end
+
     config.generators do |g|
       g.test_framework :rspec
     end

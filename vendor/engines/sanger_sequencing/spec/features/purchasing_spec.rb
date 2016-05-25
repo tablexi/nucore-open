@@ -6,7 +6,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service" do
   let(:facility) { service.facility }
   let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base.first, product: service) }
   let(:user) { FactoryGirl.create(:user) }
-  let(:external_service) { create(:external_service, location: SangerSequencing::Engine.routes.url_helpers.new_submission_path) }
+  let(:external_service) { create(:external_service, location: SangerSequencing::Engine.routes.url_helpers.new_sanger_sequencing_submission_path) }
   let!(:sanger_order_form) { create(:external_service_passer, external_service: external_service, active: true, passer: service) }
 
   before do
