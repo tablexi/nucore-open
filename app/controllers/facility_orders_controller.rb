@@ -140,7 +140,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def load_merge_orders
-    @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id).all
+    @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id)
   end
 
 end
