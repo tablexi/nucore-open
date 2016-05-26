@@ -17,8 +17,15 @@
               %p.muted Edit
               %p.muted Remove
             - else
-              %p= link_to 'Edit', edit_price_policy_path(price_policy, url_date)
-              %p= link_to 'Remove', price_policy_path(price_policy, url_date), :confirm => 'Are you sure?', :method => :delete
+              %p
+                = link_to t("shared.edit"),
+                  edit_price_policy_path(price_policy, url_date)
+              %p
+                = link_to t("shared.remove"),
+                  price_policy_path(price_policy, url_date),
+                  data: { confirm: t("shared.confirm_message") },
+                  method: :delete
+
         %td= price_policy.price_group.name
         %td= price_policy.price_group.type_string
         - if price_policy.valid?

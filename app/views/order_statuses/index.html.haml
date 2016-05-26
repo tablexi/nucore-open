@@ -17,7 +17,13 @@
 
       - children_for_facility(root, current_facility.id) do |child|
         %tr
-          %td.action-column= link_to('Remove', facility_order_status_path(current_facility, child), :confirm => 'Are you sure?', :method => :delete) if child.editable?
+          %td.action-column
+            - if child.editable?
+              = link_to t("shared.remove"),
+                facility_order_status_path(current_facility, child),
+                data: { confirm: t("shared.confirm_message") },
+                method: :delete
+
           %td.child
             = child.name
             - if child.editable?
