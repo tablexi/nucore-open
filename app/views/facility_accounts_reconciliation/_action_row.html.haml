@@ -5,6 +5,6 @@
     .span5.control-group.fields
       %label.control-label{ for: :reconciled_at }= OrderDetail.human_attribute_name(:reconciled_at)
       .controls
-        = text_field_tag :reconciled_at, format_usa_date(Time.current), class: :datepicker__data, data: { min_date: unreconciled_order_details.map(&:journal_or_statement_date).min.to_s, max_date: Time.current.iso8601 }
+        = text_field_tag :reconciled_at, format_usa_date(Time.current), class: :datepicker__data, data: { min_date: unreconciled_order_details.map(&:journal_or_statement_date).min.iso8601, max_date: Time.current.iso8601 }
 
   .span1.pull-right= submit_tag t("facility_journals.show.submit"), class: ["btn", "btn-primary"]
