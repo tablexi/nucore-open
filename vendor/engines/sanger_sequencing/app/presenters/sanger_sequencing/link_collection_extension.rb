@@ -14,7 +14,7 @@ module SangerSequencing
         NavTab::Link.new(
           tab: :admin_sanger_sequencing,
           text: "Sanger",
-          url: SangerSequencing::Engine.routes.url_helpers.facility_sanger_sequencing_admin_submissions_path(facility),
+          url: facility_sanger_sequencing_admin_submissions_path(facility),
         )
       end
     end
