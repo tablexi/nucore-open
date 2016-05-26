@@ -18,11 +18,14 @@ RSpec.describe DateHelper do
         end
       end
 
-      it "reads dates in USA-style MM/DD/YYYY format" do
-        expect(parse_usa_import_date("12/8/2014").month).to be 12
-        expect(parse_usa_import_date("8/12/2014").month).to be 8
-        expect(parse_usa_import_date("12/8/2014").day).to be 8
+      it "parses dates in USA-style MM/DD/YYYY format" do
         expect(parse_usa_import_date("8/12/2014").day).to be 12
+        expect(parse_usa_import_date("8/12/2014").month).to be 8
+        expect(parse_usa_import_date("8/12/2014").year).to be 2014
+
+        expect(parse_usa_import_date("12/8/2014").day).to be 8
+        expect(parse_usa_import_date("12/8/2014").month).to be 12
+        expect(parse_usa_import_date("12/8/2014").year).to be 2014
       end
     end
   end
