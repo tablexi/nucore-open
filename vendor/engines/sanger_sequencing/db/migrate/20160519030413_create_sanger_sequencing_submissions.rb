@@ -9,7 +9,7 @@ class CreateSangerSequencingSubmissions < ActiveRecord::Migration
     add_index :sanger_sequencing_submissions, :order_detail_id
 
     # sequence_start_value is oracle-specific, but mysql throws it away
-    create_table :sanger_sequencing_samples, sequence_start_value: 11111 do |t|
+    create_table :sanger_sequencing_samples, sequence_start_value: 11_111 do |t|
       t.integer :submission_id, null: false
       t.foreign_key :sanger_sequencing_submissions, column: :submission_id, dependent: :delete, options: "ON UPDATE CASCADE"
       t.timestamps
