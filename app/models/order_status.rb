@@ -82,7 +82,7 @@ class OrderStatus < ActiveRecord::Base
 
     def initial_statuses(facility)
       first_invalid_status = find_by_name("Canceled")
-      statuses = find(:all).sort { |a, b| a.lft <=> b.lft }.reject do |os|
+      statuses = all.sort { |a, b| a.lft <=> b.lft }.reject do |os|
         !os.is_left_of?(first_invalid_status)
       end
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?

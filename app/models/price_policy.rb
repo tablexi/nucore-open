@@ -53,13 +53,25 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.current_date(product)
-    ipp = product.price_policies.find(:first, conditions: [dateize("start_date", " <= ? AND ") + dateize("expire_date", " > ?"), Time.zone.now, Time.zone.now], order: "start_date DESC")
-    ipp ? ipp.start_date.to_date : nil
+    now = Time.current
+    product
+      .price_policies
+      .where("start_date <= ?", now)
+      .where("expire_date > ?", now)
+      .order(start_date: :desc)
+      .pluck(:start_date)
+      .first
+      .try(:to_date)
   end
 
   def self.next_date(product)
-    ipp = product.price_policies.find(:first, conditions: [dateize("start_date", " > ?"), Time.zone.now], order: "start_date")
-    ipp ? ipp.start_date.to_date : nil
+    product
+      .price_policies
+      .where("start_date > ?", Time.current)
+      .order(:start_date)
+      .pluck(:start_date)
+      .first
+      .try(:to_date)
   end
 
   def self.next_dates(product)
