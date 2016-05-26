@@ -3,15 +3,15 @@
 
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.datepicker
-//= require jquery.ui.draggable
-//= require jquery.ui.droppable
-//= require jquery.ui.tabs
-//= require jquery.ui.dialog
-//= require jquery.ui.effect
+//= require jquery-ui/datepicker
+//= require jquery-ui/draggable
+//= require jquery-ui/droppable
+//= require jquery-ui/tabs
+//= require jquery-ui/dialog
+//= require jquery-ui/effect
 //= require nested_form_fields
 //= require bootstrap
-//= require chosen.jquery.min
+//= require chosen-jquery
 //= require activate_chosen
 //= require _common
 //= require date

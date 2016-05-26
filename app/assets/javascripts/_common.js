@@ -69,19 +69,6 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.menu_accordion li.sub_menu').click(function() {
-    if ($(this).find('ul').is(":hidden")) {
-      $(this).find('ul').toggle();
-      $(this).siblings("li").find("ul").hide();
-    }
-  });
-
-
-
-  $('.menu_accordion li.sub_menu').has("ul li a.active").each(function() {
-    $(this).find('ul').show();
-  });
-
   $('#filter_toggle').click(function(){
      $('#filter_container').toggle('fast');
    });

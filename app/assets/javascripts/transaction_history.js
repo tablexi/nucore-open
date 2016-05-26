@@ -1,6 +1,6 @@
 $(function() {
 	$("select[multiple]").chosen();
-	
+
   $(".datepicker").each(function() {
     var datepickerParams = {};
     if ($(this).hasClass('in_past')) datepickerParams.maxDate = new Date();
@@ -9,9 +9,9 @@ $(function() {
 	// call trigger("change") to make sure that it updates on page load
 	$(".datepicker[name=start_date]").change(DatePickerRange.updateEndMaxDate).trigger("change");
 	$(".datepicker[name=end_date]").change(DatePickerRange.updateStartMinDate).trigger("change");
-	
-	
-	
+
+
+
 });
 
 var DatePickerRange = {
@@ -29,7 +29,7 @@ var DatePickerRange = {
 			$(".datepicker[name=start_date]").datepicker("option", {maxDate: end});
 		}
 	}
-		
+
 }
 
 $(function() {
@@ -41,7 +41,7 @@ $(function() {
 			});
 		} else {
 			$("#products option, #order_statuses option").each(function() {
-				// If the option doesn't have a facility or the facility is in the list of values 
+				// If the option doesn't have a facility or the facility is in the list of values
         if (!$(this).is("[data-facility]") || $.inArray($(this).attr("data-facility"), facilitiesValues) > -1) {
 					$(this).removeAttr("disabled");
 				} else {
@@ -49,6 +49,6 @@ $(function() {
 				}
 			});
 		}
-		$("#products, #order_statuses").trigger("liszt:updated")
+		$("#products, #order_statuses").trigger("chosen:updated")
 	});
 });

@@ -104,6 +104,10 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    chosen-rails (1.5.2)
+      coffee-rails (>= 3.2)
+      railties (>= 3.0)
+      sass-rails (>= 3.2)
     chronic (0.10.2)
     ci_reporter (2.0.0)
       builder (>= 2.1.2)
@@ -335,13 +339,8 @@ GEM
     jquery-rails (3.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    jquery-ui-rails (4.0.3)
-      jquery-rails
-      railties (>= 3.1.0)
-    jquery-ui-sass-rails (4.0.3.0)
-      jquery-rails
-      jquery-ui-rails (= 4.0.3)
-      railties (>= 3.1.0)
+    jquery-ui-rails (5.0.5)
+      railties (>= 3.2.16)
     json (1.8.3)
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -574,6 +573,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
+  chosen-rails
   ci_reporter_rspec
   ckeditor (~> 4.0.10)
   clockpunch (~> 0.1.0)
@@ -596,7 +596,7 @@ DEPENDENCIES
   guard-teaspoon
   haml (~> 4.0.5)
   jquery-rails
-  jquery-ui-sass-rails
+  jquery-ui-rails
   letter_opener
   lograge
   logstash-event
