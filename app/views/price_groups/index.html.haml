@@ -11,24 +11,34 @@
   %li= link_to t('.link.add'), new_facility_price_group_path, :class => 'btn-add'
 
 - if @price_groups.empty?
-  %p.alert.alert-info= t('.notice')
+  %p.alert.alert-info= t(".notice")
 - else
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th
-        %th= t('.th.pg')
-        %th= t('.th.type')
-        %th= t('.th.users')
-        %th= t('.th.accounts')
+        %th= t(".th.pg")
+        %th= t(".th.type")
+        %th= t(".th.users")
+        %th= t(".th.accounts")
     %tbody
       - @price_groups.each do |price_group|
         %tr
-          %td= link_to('Remove', [current_facility, price_group], :confirm => 'Are you sure?', :method => :delete) if price_group.can_delete?
-          %td= link_to price_group.name, facility_price_group_path(current_facility, price_group)
+          %td
+            - if price_group.can_delete?
+              = link_to t("shared.remove"),
+                [current_facility, price_group],
+                data: { confirm: t("shared.confirm_message") },
+                method: :delete
+
+          %td
+            = link_to price_group.name,
+              facility_price_group_path(current_facility, price_group)
+
           %td= price_group.type_string
           - if price_group.admin_editable?
             %td= price_group.user_price_group_members.count
           - else
-            %td N/A
+            %td= t("shared.not_applicable")
+
           %td= price_group.account_price_group_members.count
