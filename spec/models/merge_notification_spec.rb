@@ -30,7 +30,7 @@ RSpec.describe MergeNotification do
     end
 
     it "should find notifications by subject" do
-      notices = MergeNotification.about(@subject2).all
+      notices = MergeNotification.about(@subject2)
       expect(notices.size).to eq(1)
       expect(notices.first.subject).to eq(@subject2)
     end
