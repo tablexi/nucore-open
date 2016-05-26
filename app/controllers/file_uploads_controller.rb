@@ -140,7 +140,7 @@ class FileUploadsController < ApplicationController
     else
       begin
         url = params[survey_param][:location]
-        ext = ExternalServiceManager.survey_service.find_or_create_by_location(location: url)
+        ext = ExternalServiceManager.survey_service.find_or_create_by(location: url)
         esp = ExternalServicePasser.where(passer_id: @product.id, external_service_id: ext.id).first
 
         if esp
