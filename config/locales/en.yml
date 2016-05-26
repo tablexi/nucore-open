@@ -512,6 +512,10 @@ en:
       edit:
         remove_from_journal: "Remove From Journal"
 
+  product_access_groups:
+    index:
+      add_button: Add %{group}
+
   reservations:
     logout:
       body: "You will be logged out automatically in 60 seconds. Would you like to remain logged in?"
