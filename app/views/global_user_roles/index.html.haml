@@ -27,7 +27,7 @@
             - if current_user.id != user.id
               = link_to t(".remove_roles"),
                 global_user_role_path(user.id),
-                confirm: t(".remove_roles_confirm"),
+                data: { confirm: t(".remove_roles_confirm") },
                 method: :delete
           %td= user.full_name
           %td
