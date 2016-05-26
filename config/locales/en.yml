@@ -86,7 +86,9 @@ en:
 
   shared:
     cancel: Cancel
+    confirm_message: Are you sure?
     edit: Edit
+    remove: Remove
     save: Save
     create: Create
     select_all: Select All
