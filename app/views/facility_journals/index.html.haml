@@ -37,7 +37,9 @@
               %td= f.text_field :description, class: 'input-medium'
               %td
                 = select_tag :journal_status, options_for_select([[' ', nil], ['Succeeded, no errors', 'succeeded'], ['Succeeded, with errors', 'succeeded_errors'], ['Failed', 'failed']], params[:journal_status]), class: 'input-medium'
-                = submit_tag t(".journal.close"), confirm: t(".journal.confirm"), class: ['btn', 'btn-primary']
+                = submit_tag t(".journal.close"),
+                  data: { confirm: t(".journal.confirm") },
+                  class: ["btn", "btn-primary"]
               %td= number_to_currency(pending_journal.amount)
 
   - else    # there's pending journals, but user can't edit
