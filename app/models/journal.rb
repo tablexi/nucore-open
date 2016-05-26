@@ -134,8 +134,7 @@ class Journal < ActiveRecord::Base
     elsif !successful?
       true
     else
-      details = OrderDetail.find(:all, conditions: ["journal_id = ? AND state <> ?", id, "reconciled"])
-      details.empty? ? true : false
+      OrderDetail.where(journal_id: id).where.not(state: "reconciled").empty?
     end
   end
 

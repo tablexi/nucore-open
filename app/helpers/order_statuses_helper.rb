@@ -5,7 +5,7 @@ module OrderStatusesHelper
     items = Array(class_or_item)
     result = []
     items.each do |root|
-      result += root.children.find(:all, conditions: "facility_id = #{facility_id} OR facility_id IS NULL").map do |i|
+      result += root.children.where(facility_id: [nil, facility_id]).map do |i|
         if mover.nil? || mover.new_record? || mover.move_possible?(i)
           [yield(i), i.id]
         end
@@ -15,7 +15,7 @@ module OrderStatusesHelper
   end
 
   def root_options_for_facility(klass, facility_id)
-    roots = klass.roots.find(:all, conditions: "facility_id = #{facility_id} OR facility_id IS NULL")
+    roots = klass.roots.where(facility_id: [nil, facility_id])
     result = []
     roots.each do |root|
       result.push [root.name, root.id]
