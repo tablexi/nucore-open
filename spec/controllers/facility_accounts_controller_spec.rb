@@ -1,7 +1,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-RSpec.describe FacilityAccountsController do
+RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: true } do
   let(:facility) { @authable }
 
   render_views
