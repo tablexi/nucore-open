@@ -911,7 +911,7 @@ RSpec.describe OrderDetail do
       it "should be upcoming" do
         start_time = @now + 2.days
         place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour
-        upcoming = OrderDetail.upcoming_reservations.all
+        upcoming = OrderDetail.upcoming_reservations
         expect(upcoming.size).to eq(1)
         expect(upcoming[0]).to eq(@order_detail)
       end
@@ -919,31 +919,31 @@ RSpec.describe OrderDetail do
       it "should not be upcoming because reserve_end_at is in the past" do
         start_time = @now - 2.days
         place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour
-        expect(OrderDetail.upcoming_reservations.all).to be_blank
+        expect(OrderDetail.upcoming_reservations).to be_blank
       end
 
       it "should not be upcoming because actual_start_at exists" do
         start_time = @now + 2.days
         place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour, actual_start_at: start_time
-        expect(OrderDetail.upcoming_reservations.all).to be_blank
+        expect(OrderDetail.upcoming_reservations).to be_blank
       end
 
       it "should be in progress" do
         place_reservation @facility, @order_detail, @now, actual_start_at: @now
-        upcoming = OrderDetail.in_progress_reservations.all
+        upcoming = OrderDetail.in_progress_reservations
         expect(upcoming.size).to eq(1)
         expect(upcoming[0]).to eq(@order_detail)
       end
 
       it "should not be in progress because actual_start_at missing" do
         place_reservation @facility, @order_detail, @now
-        expect(OrderDetail.in_progress_reservations.all).to be_empty
+        expect(OrderDetail.in_progress_reservations).to be_empty
       end
 
       it "should not be in progress because actual_end_at exists" do
         start_time = @now - 3.hours
         place_reservation @facility, @order_detail, start_time, actual_start_at: start_time, actual_end_at: start_time + 1.hour
-        expect(OrderDetail.in_progress_reservations.all).to be_empty
+        expect(OrderDetail.in_progress_reservations).to be_empty
       end
     end
 

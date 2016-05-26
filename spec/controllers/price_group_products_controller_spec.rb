@@ -101,7 +101,7 @@ RSpec.describe PriceGroupProductsController do
     @price_group_products = []
 
     PriceGroup.all.each do |pg|
-      price_group_product = PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pg.id, @product.id)
+      price_group_product = PriceGroupProduct.find_or_create_by(price_group_id: pg.id, product_id: @product.id)
 
       if @product.is_a? Instrument
         price_group_product.reservation_window = 14
