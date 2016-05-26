@@ -1,7 +1,7 @@
 class AutoLogout
 
   def perform
-    order_details.each do |od|
+    order_details.to_a.each do |od|
       next unless should_auto_logout?(od)
 
       od.transaction do
@@ -18,7 +18,6 @@ class AutoLogout
                .where("reserve_end_at < ?", Time.zone.now)
                .includes(:product)
                .readonly(false)
-               .all
   end
 
   def should_auto_logout?(order_detail)
