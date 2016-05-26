@@ -60,7 +60,7 @@ RSpec.describe AffiliatesController do
   context "with id param" do
 
     before :each do
-      @affiliate = Affiliate.find_or_create_by_name("CTA")
+      @affiliate = Affiliate.find_or_create_by(name: "CTA")
       @params = { id: @affiliate.id }
     end
 
