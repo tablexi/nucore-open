@@ -27,9 +27,9 @@ class NotificationsController < ApplicationController
   private
 
   def check_notifications
-    @notices = current_user.notifications.active.all
+    @notices = current_user.notifications.active
 
-    if @notices.count == 0
+    if @notices.none?
       flash[:notice] = I18n.t "controllers.notifications.no_notices"
 
       begin
