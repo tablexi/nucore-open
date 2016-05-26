@@ -352,7 +352,7 @@ Nucore::Application.routes.draw do
   get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/upload",                                   to: 'file_uploads#upload',                as: "upload_product_file"
   post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files",                                          to: 'file_uploads#create',                as: "add_product_file"
   post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/uploader_files",                                 to: 'file_uploads#uploader_create',       as: "add_uploader_file"
-  get "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:id",                                      to: 'file_uploads#destroy',               as: "remove_product_file", via: :delete
+  delete "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:id",                                      to: 'file_uploads#destroy',               as: "remove_product_file"
   get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:file_type/:id",                           to: 'file_uploads#download',              as: "download_product_file"
   get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/product_survey",                           to: 'file_uploads#product_survey',        as: "product_survey"
   post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/create_product_survey",                    to: 'file_uploads#create_product_survey', as: "create_product_survey"
