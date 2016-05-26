@@ -3,4 +3,18 @@
 = hidden_field_tag :referer, params[:referer]
 = hidden_field_tag :success_url, params[:success_url]
 
-= "Quantity: #{params[:quantity]}"
+= "Submission ##{@submission.id}"
+
+= simple_form_for @submission, url: sanger_sequencing_submissions_path do |f|
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= SangerSequencing::Sample.human_attribute_name(:customer_sample_id)
+        %th= SangerSequencing::Sample.human_attribute_name(:id)
+    %tbody
+      = f.simple_fields_for :samples, wrapper: false do |sf|
+        %tr
+          %td
+            = sf.input :customer_sample_id, label: false
+            = sf.input :id, as: :hidden
+          %td= sf.object.id
