@@ -339,13 +339,8 @@ GEM
     jquery-rails (3.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    jquery-ui-rails (4.0.3)
-      jquery-rails
-      railties (>= 3.1.0)
-    jquery-ui-sass-rails (4.0.3.0)
-      jquery-rails
-      jquery-ui-rails (= 4.0.3)
-      railties (>= 3.1.0)
+    jquery-ui-rails (5.0.5)
+      railties (>= 3.2.16)
     json (1.8.3)
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -601,7 +596,7 @@ DEPENDENCIES
   guard-teaspoon
   haml (~> 4.0.5)
   jquery-rails
-  jquery-ui-sass-rails
+  jquery-ui-rails
   letter_opener
   lograge
   logstash-event
