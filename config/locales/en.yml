@@ -779,6 +779,13 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
+    member_table:
+      add_access: Add Access
+      remove_access: Remove Access
+      th:
+        name: Name (username)
+        email: Email
+        role: Role
     show:
       head: "Payment Source Details"
     suspend_button:
