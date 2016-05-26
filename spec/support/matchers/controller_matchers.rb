@@ -4,6 +4,6 @@ RSpec::Matchers.define :access_the_page do
   end
 
   match do |actual|
-    actual.code.in?("200", "302")
+    ["200", "302"].include?(actual.code)
   end
 end
