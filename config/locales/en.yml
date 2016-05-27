@@ -77,6 +77,10 @@ en:
       label: Remove
     th: Affiliate
 
+  bundle_products:
+    new:
+      head: Add Bundled Product
+
   message_summarizer:
     heading: "Notices (%{count})"
     order_details_in_dispute: Disputed Orders
