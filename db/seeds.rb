@@ -29,5 +29,5 @@ end
 
 new_status = OrderStatus.new_os.first
 OrderDetailObserver.status_change_hooks.keys.each do |status|
-  OrderStatus.find_or_create_by(name: status.to_s.titleize, facility_id: nil, parent: new_status)
+  OrderStatus.find_or_create_by(name: status.to_s.titleize, facility_id: nil, parent_id: new_status.id)
 end
