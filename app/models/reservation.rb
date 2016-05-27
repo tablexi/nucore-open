@@ -99,6 +99,7 @@ class Reservation < ActiveRecord::Base
       .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
       .where(canceled_at: nil, "orders.state" => [nil, "purchased"])
       .order(reserve_end_at: :asc)
+      .to_a
       .delete_if { |reservation| reservation.reserve_end_at < t }
   end
 

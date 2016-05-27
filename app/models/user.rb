@@ -140,7 +140,7 @@ class User < ActiveRecord::Base
   # Given a +Product+ returns all valid accounts this user has for
   # purchasing that product
   def accounts_for_product(product)
-    acts = accounts.active.for_facility(product.facility)
+    acts = accounts.active.for_facility(product.facility).to_a
     acts.reject! { |acct| !acct.validate_against_product(product, self).nil? }
     acts
   end

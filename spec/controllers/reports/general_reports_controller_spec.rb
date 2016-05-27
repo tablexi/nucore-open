@@ -252,7 +252,7 @@ RSpec.describe Reports::GeneralReportsController do
     expect(assigns(:total_quantity)).to be_instance_of Fixnum
 
     rows = assigns(:rows)
-    ods = OrderDetail.all
+    ods = OrderDetail.all.to_a
     expect(rows.size).to eq(ods.size)
 
     rows.each do |row|
