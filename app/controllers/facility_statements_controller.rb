@@ -18,7 +18,11 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements
   def index
-    @statements = current_facility.statements.find(:all, order: "statements.created_at DESC").paginate(page: params[:page])
+    @statements =
+      current_facility
+      .statements
+      .order(created_at: :desc)
+      .paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/statements/new
@@ -41,7 +45,7 @@ class FacilityStatementsController < ApplicationController
       params[:order_detail_ids].each do |order_detail_id|
         od = nil
         begin
-          od = OrderDetail.need_statement(current_facility).find(order_detail_id, readonly: false)
+          od = OrderDetail.need_statement(current_facility).readonly(false).find(order_detail_id)
           to_statement[od.account] ||= []
           to_statement[od.account] << od
         rescue => e
