@@ -1,31 +1,44 @@
 %table.table
   %thead
     %tr
-      %th.actions{:rowspan => 2}
-      %th{:rowspan => 2} Price Group (Type)
-      %th.currency{:colspan => 2} Rate Per hour
-      %th.currency{:rowspan => 2} Minimum Cost
-      %th.currency{:rowspan => 2} Reservation Cost
+      %th.actions{rowspan: 2}
+      %th{rowspan: 2} Price Group (Type)
+      %th.currency{colspan: 2} Rate Per hour
+      %th.currency{rowspan: 2} Minimum Cost
+      %th.currency{rowspan: 2} Reservation Cost
   %tbody
     - price_policies_to_show = price_policies.select { |pp| pp.can_purchase? }
     - price_policies_to_show.each do |price_policy|
       %tr
         - if price_policies_to_show.first == price_policy
-          %td.centered{ :rowspan => price_policies_to_show.length }
-            - unless price_policies.all?{|pp| pp.editable?} and can? :edit, PricePolicy
-              %p.muted Edit
-              %p.muted Remove
+          %td.centered{rowspan: price_policies_to_show.length}
+            - if price_policies.all? { |pp| pp.editable? } && can?(:edit, PricePolicy)
+              %p
+                = link_to t("shared.edit"),
+                  edit_facility_instrument_price_policy_path(current_facility, @product, url_date)
+              %p
+                = link_to t("shared.remove"),
+                  facility_instrument_price_policy_path(current_facility, @product, url_date),
+                  data: { confirm: t("shared.confirm_message") },
+                  method: :delete
             - else
-              %p= link_to('Edit', edit_facility_instrument_price_policy_path(current_facility, @product, url_date))
-              %p= link_to('Remove', facility_instrument_price_policy_path(current_facility, @product, url_date), :confirm => 'Are you sure?', :method => :delete)
+              %p.muted= t("shared.edit")
+              %p.muted= t("shared.remove")
+
         %td= "#{price_policy.price_group.name} (#{price_policy.price_group.type_string})"
+
         - if price_policy.valid?
           %td.currency{colspan: 2}
-            = render partial: 'price_policies/instrument/rate_calculation', locals: { price_policy: price_policy }
+            = render "price_policies/instrument/rate_calculation",
+              price_policy: price_policy
+
           %td.currency
-            = render partial: 'price_policies/instrument/minimum_calculation', locals: { price_policy: price_policy }
-          %td.currency= number_to_currency price_policy.cancellation_cost
+            = render "price_policies/instrument/minimum_calculation",
+              price_policy: price_policy
+
+          %td.currency= number_to_currency(price_policy.cancellation_cost)
+
         - else
-          %td.centered{:colspan => 5}
-            = t('price_policies.problem')
+          %td.centered{colspan: 5}
+            = t("price_policies.problem")
             = price_policy.errors.full_messages.to_sentence
