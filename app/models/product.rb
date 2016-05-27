@@ -71,7 +71,7 @@ class Product < ActiveRecord::Base
     self.is_hidden         ||= false
 
     # return true so validations will run
-    return true
+    true
   end
   after_create :set_default_pricing
 
