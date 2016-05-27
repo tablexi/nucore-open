@@ -239,7 +239,7 @@ RSpec.describe ReservationsController do
         do_request
         expect(assigns(:status)).to eq("all")
         expect(assigns(:available_statuses).size).to eq(2)
-        expect(assigns(:order_details)).to eq(OrderDetail.all_reservations.all)
+        expect(assigns(:order_details)).to eq(OrderDetail.all_reservations)
         expect(assigns(:active_tab)).to eq("reservations")
         is_expected.to render_template("list")
       end
