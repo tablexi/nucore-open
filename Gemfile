@@ -3,7 +3,7 @@ source "https://rubygems.org"
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
-gem "rails", "4.1.15"
+gem "rails", "4.2.6"
 gem "protected_attributes"
 gem "rails_config",     "0.3.3"
 
