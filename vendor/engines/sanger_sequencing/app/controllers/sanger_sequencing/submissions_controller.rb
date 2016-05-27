@@ -20,10 +20,10 @@ module SangerSequencing
 
     def update
       @order_detail = SangerSequencing::OrderDetail.find(@submission.order_detail_id)
-      if @submission.update_attributes(submission_params)
+      if SubmissionUpdater.new(@submission).update_attributes(submission_params)
         redirect_to "#{params[:success_url]}&#{external_return_options.to_query}"
       else
-        flash.now[:alert] = "There was a problem with your submission"
+        flash.now[:alert] = @submission.errors.messages.values.join(". ")
         render :new
       end
     end

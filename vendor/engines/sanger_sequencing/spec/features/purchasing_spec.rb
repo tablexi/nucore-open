@@ -45,11 +45,37 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       expect(SangerSequencing::Sample.count).to eq(5)
     end
 
-    it "does not allow submitting a blank value" do
-      page.first(customer_id_selector).set("")
-      click_button "Save Submission"
-      expect(page.first(customer_id_selector).value).to eq("")
-      expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("TEST123")
+    describe "blank fields" do
+      it "does not allow submitting a blank value" do
+        page.first(customer_id_selector).set("")
+        click_button "Save Submission"
+        expect(page.first(customer_id_selector).value).to be_blank
+        expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("")
+      end
+
+      it "deletes blanks from the end" do
+        page.all(customer_id_selector).last.set("")
+        click_button "Save Submission"
+        expect(SangerSequencing::Sample.count).to eq(4)
+      end
+
+      it "does not delete blanks on invalid" do
+        page.first(customer_id_selector).set("")
+        page.all(customer_id_selector)[-2].set("")
+        page.all(customer_id_selector).last.set("")
+        click_button "Save Submission"
+        expect(page.first(customer_id_selector).value).to be_blank
+        expect(page.all(customer_id_selector).last.value).to be_blank
+        expect(page).to have_css(customer_id_selector, count: 5)
+        expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("")
+      end
+
+      it "does not save if they are all blank" do
+        page.all(customer_id_selector).each { |textbox| textbox.set("") }
+        click_button "Save Submission"
+        expect(page).to have_css(customer_id_selector, count: 5)
+        expect(page.all(customer_id_selector).map(&:value)).to all(be_blank)
+      end
     end
   end
 end
