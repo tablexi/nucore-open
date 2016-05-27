@@ -44,5 +44,12 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to include("TEST123")
       expect(SangerSequencing::Sample.count).to eq(5)
     end
+
+    it "does not allow submitting a blank value" do
+      page.first(customer_id_selector).set("")
+      click_button "Save Submission"
+      expect(page.first(customer_id_selector).value).to eq("")
+      expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("TEST123")
+    end
   end
 end

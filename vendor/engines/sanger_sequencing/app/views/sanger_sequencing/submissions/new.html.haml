@@ -14,7 +14,8 @@
       = f.simple_fields_for :samples, wrapper: false do |sf|
         %tr
           %td
-            = sf.input :customer_sample_id, label: false
+
+            = sf.input :customer_sample_id, label: false, input_html: { value: sf.object.customer_sample_id }
             = sf.input :id, as: :hidden
           %td= sf.object.id
 
