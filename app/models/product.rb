@@ -40,6 +40,7 @@ class Product < ActiveRecord::Base
 
   scope :active, -> { where(is_archived: false, is_hidden: false) }
   scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: phase out in favor of the .not_archived scope
+  scope :alphabetized, -> { order("lower(name)") }
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
 
@@ -98,6 +99,7 @@ class Product < ActiveRecord::Base
     upcoming_price_policies.order("start_date ASC").group_by(&:start_date)
   end
 
+  # TODO: favor the alphabetized scope over relying on Array#sort
   def <=>(obj)
     name.casecmp obj.name
   end
