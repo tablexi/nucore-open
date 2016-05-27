@@ -529,6 +529,7 @@ RSpec.describe Reservation do
         before do
           ScheduleRule.destroy_all
           @instrument.update_attributes(requires_approval: true)
+          @instrument.reload
           @everybody_schedule_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
           group1 = FactoryGirl.create(:product_access_group, product: @instrument)
           @everybody_schedule_rule.product_access_groups << group1
@@ -921,6 +922,7 @@ RSpec.describe Reservation do
       before :each do
         @rule.destroy
         @instrument.update_attribute :reserve_interval, 15
+        @instrument.reload
         @rule_9_to_5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 9, end_hour: 17))
         @rule_5_to_7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 17, end_hour: 19))
       end
@@ -1103,6 +1105,7 @@ RSpec.describe Reservation do
     before :each do
       @rule.destroy
       @instrument.update_attribute :reserve_interval, 15
+      @instrument.reload
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
       @spans_day_reservation = @instrument.reservations.create!(reserve_start_at: Time.zone.now.end_of_day - 1.hour,
                                                                 duration_value: 120, duration_unit: "minutes")
@@ -1130,7 +1133,7 @@ RSpec.describe Reservation do
 
     let! :instrument do
       @instrument.update_attributes max_reserve_mins: nil, reserve_interval: 15
-      @instrument
+      @instrument.reload
     end
 
     let! :rule do
