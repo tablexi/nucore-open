@@ -2,6 +2,12 @@ en:
   sanger_sequencing:
     name: Sanger Sequencing
 
+  views:
+    sanger_sequencing:
+      submissions:
+        new:
+          submit: "Save Submission"
+
   activerecord:
     attributes:
       sanger_sequencing/sample:

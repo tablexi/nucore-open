@@ -1,11 +1,10 @@
 %h1= t("sanger_sequencing.name")
 
-= hidden_field_tag :referer, params[:referer]
-= hidden_field_tag :success_url, params[:success_url]
-
 = "Submission ##{@submission.id}"
 
-= simple_form_for @submission, url: sanger_sequencing_submissions_path do |f|
+= simple_form_for @submission do |f|
+  = hidden_field_tag :referer, params[:referer]
+  = hidden_field_tag :success_url, params[:success_url]
   %table.table.table-striped
     %thead
       %tr
@@ -18,3 +17,5 @@
             = sf.input :customer_sample_id, label: false
             = sf.input :id, as: :hidden
           %td= sf.object.id
+
+  = f.submit text("submit"), class: "btn btn-primary"

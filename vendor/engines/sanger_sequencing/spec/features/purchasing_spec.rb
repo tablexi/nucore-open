@@ -37,5 +37,12 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       expect(values).to all(match(/\A\d{4}\z/))
       expect(values.uniq).to eq(values)
     end
+
+    it "saves the form" do
+      page.first(customer_id_selector).set("TEST123")
+      click_button "Save Submission"
+      expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to include("TEST123")
+      expect(SangerSequencing::Sample.count).to eq(5)
+    end
   end
 end

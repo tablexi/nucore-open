@@ -2,6 +2,8 @@ module SangerSequencing
 
   class Sample < ActiveRecord::Base
 
+    include ActiveModel::ForbiddenAttributesProtection
+
     self.table_name = "sanger_sequencing_samples"
     belongs_to :submission
     # customer_sample_id is based off of the ID, which we don't have until
