@@ -179,6 +179,7 @@ Nucore::Application.routes.draw do
         resources :accessories, only: [:new, :create]
         member do
           get "manage", to: 'order_management/order_details#edit'
+          patch "manage", to: "order_management/order_details#update"
           put "manage", to: 'order_management/order_details#update'
           get "pricing", to: 'order_management/order_details#pricing'
           get "files", to: 'order_management/order_details#files'
