@@ -9,7 +9,7 @@ class Payment < ActiveRecord::Base
     @@valid_sources ||= [:check]
   end
 
-  validates :source, presence: true, inclusion: { in: valid_sources }
+  validates :source, presence: true, inclusion: { in: valid_sources.map(&:to_s) }
   validates :account, presence: true
   # TODO: use `numericality: { other_than: 0 }` in newer rails
   validates :amount, presence: true, numericality: true, exclusion: { in: [0], message: "may not be 0" }
