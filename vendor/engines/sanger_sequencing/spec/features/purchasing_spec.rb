@@ -77,5 +77,17 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
         expect(page.all(customer_id_selector).map(&:value)).to all(be_blank)
       end
     end
+
+    describe "saving and returning to the form" do
+      before do
+        page.first(customer_id_selector).set("TEST123")
+        click_button "Save Submission"
+      end
+
+      it "returns to the form" do
+        click_link "Edit Online Order Form"
+        expect(page.first(customer_id_selector).value).to eq("TEST123")
+      end
+    end
   end
 end
