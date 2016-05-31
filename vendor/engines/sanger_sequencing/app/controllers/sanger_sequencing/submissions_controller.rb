@@ -1,6 +1,7 @@
 module SangerSequencing
 
   class SubmissionsController < ApplicationController
+
     load_resource only: [:edit, :update]
 
     def new

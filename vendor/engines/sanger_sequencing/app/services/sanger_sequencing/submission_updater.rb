@@ -1,5 +1,7 @@
 module SangerSequencing
+
   class SubmissionUpdater
+
     def initialize(submission)
       @submission = submission
     end
@@ -19,11 +21,13 @@ module SangerSequencing
     def blank_samples_at_end
       @submission.samples.reverse.each_with_object([]) do |sample, to_delete|
         if sample.customer_sample_id?
-          break to_delete;
+          break to_delete
         else
           to_delete << sample
         end
       end
     end
+
   end
+
 end

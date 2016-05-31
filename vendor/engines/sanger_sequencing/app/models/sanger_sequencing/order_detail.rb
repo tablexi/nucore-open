@@ -1,5 +1,7 @@
 module SangerSequencing
+
   class OrderDetail
+
     include ActiveModel::AttributeMethods
 
     def self.find(id)
