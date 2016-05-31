@@ -1,0 +1,24 @@
+module SangerSequencing
+
+  module LinkCollectionExtension
+
+    extend ActiveSupport::Concern
+
+    included do
+      insert_index = tab_methods.index(:admin_facility) || -1
+      tab_methods.insert(insert_index, :admin_sanger_sequencing)
+    end
+
+    def admin_sanger_sequencing
+      if single_facility?
+        NavTab::Link.new(
+          tab: :admin_sanger_sequencing,
+          text: "Sanger",
+          url: SangerSequencing::Engine.routes.url_helpers.facility_sanger_sequencing_admin_submissions_path(facility),
+        )
+      end
+    end
+
+  end
+
+end

@@ -54,10 +54,11 @@ gem "lograge"
 gem "logstash-event"
 
 ## custom
-gem "c2po",             "~> 1.0.0", path: "vendor/engines/c2po"
-gem "dataprobe",        "~> 1.0.0", path: "vendor/engines/dataprobe"
-gem "projects",         "~> 0.0.1", path: "vendor/engines/projects"
-gem "split_accounts",   "~> 0.0.1", path: "vendor/engines/split_accounts"
+gem "c2po", "~> 1.0.0", path: "vendor/engines/c2po"
+gem "dataprobe", "~> 1.0.0", path: "vendor/engines/dataprobe"
+gem "projects", "~> 0.0.1", path: "vendor/engines/projects"
+gem "sanger_sequencing", "~> 0.0.1", path: "vendor/engines/sanger_sequencing"
+gem "split_accounts", "~> 0.0.1", path: "vendor/engines/split_accounts"
 gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
 
 group :development do
@@ -105,6 +106,7 @@ group :test do
   gem "rspec_junit_formatter", "0.2.3"
   gem "ci_reporter_rspec"
   gem "codeclimate_circle_ci_coverage"
+  gem "capybara"
 end
 
 group :assets do

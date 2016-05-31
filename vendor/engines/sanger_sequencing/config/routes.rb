@@ -1,0 +1,15 @@
+# This engine should be mounted at "/" in order to support both the front-end
+# /sanger_sequencing/submissions/new and the back end /facilities/xxx/sanger_sequencing/submissions
+SangerSequencing::Engine.routes.draw do
+  namespace :sanger_sequencing do
+    resources :submissions, only: [:new]
+  end
+
+  resources :facilities, only: [] do
+    namespace :sanger_sequencing do
+      namespace :admin do
+        resources :submissions, only: [:index]
+      end
+    end
+  end
+end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160503184205) do
+ActiveRecord::Schema.define(:version => 20160519030413) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -507,6 +507,22 @@ ActiveRecord::Schema.define(:version => 20160503184205) do
     t.string "name"
   end
 
+  create_table "sanger_sequencing_samples", :force => true do |t|
+    t.integer  "submission_id", :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "sanger_sequencing_samples", ["submission_id"], :name => "index_sanger_sequencing_samples_on_submission_id"
+
+  create_table "sanger_sequencing_submissions", :force => true do |t|
+    t.integer  "order_detail_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "sanger_sequencing_submissions", ["order_detail_id"], :name => "index_sanger_sequencing_submissions_on_order_detail_id"
+
   create_table "schedule_rules", :force => true do |t|
     t.integer "instrument_id",                                                    :null => false
     t.decimal "discount_percent", :precision => 10, :scale => 2, :default => 0.0, :null => false
@@ -691,6 +707,8 @@ ActiveRecord::Schema.define(:version => 20160503184205) do
 
   add_foreign_key "reservations", "order_details", name: "reservations_order_detail_id_fk"
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
+
+  add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", name: "sanger_sequencing_samples_submission_id_fk", column: "submission_id", dependent: :delete, options: "ON UPDATE CASCADE"
 
   add_foreign_key "schedule_rules", "products", name: "schedule_rules_instrument_id_fk", column: "instrument_id"
 

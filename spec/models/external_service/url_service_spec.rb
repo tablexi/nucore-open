@@ -25,11 +25,14 @@ RSpec.describe UrlService do
     }
   end
 
-  it "uses the default host, port, and protocol if there is no request" do
-    url_service.default_url_options[:host] = "localhost"
-    complete_survey_url = url_service.complete_survey_url url_components
-    url = "#{url_service.location}?#{{ success_url: complete_survey_url, referer: nil, receiver_id: order_detail.id }.to_query}"
-    expect(url_service.new_url(order_detail)).to eq url
+  describe "with no request" do
+    it "uses the default host, port, and protocol if there is no request" do
+      url_service.default_url_options[:host] = "localhost"
+      complete_survey_url = url_service.complete_survey_url url_components
+      query_string = { quantity: 1, success_url: complete_survey_url, referer: nil, receiver_id: order_detail.id }
+      url = "#{url_service.location}?#{query_string.to_query}"
+      expect(url_service.new_url(order_detail)).to eq url
+    end
   end
 
   it "uses the host, port, and protocol of the request" do
@@ -37,7 +40,8 @@ RSpec.describe UrlService do
     host_params[:host_with_port] = "#{host_params[:host]}:#{host_params[:port]}"
     host_params[:fullpath] = "/path/to/somewhere"
     referer_url = "#{host_params[:protocol]}#{host_params[:host_with_port]}#{host_params[:fullpath]}"
-    url = "#{url_service.location}?#{{ success_url: complete_survey_url, referer: referer_url, receiver_id: order_detail.id }.to_query}"
+    query = { quantity: 1, success_url: complete_survey_url, referer: referer_url, receiver_id: order_detail.id }
+    url = "#{url_service.location}?#{query.to_query}"
     expect(url_service.new_url(order_detail, double(host_params))).to eq url
   end
 
