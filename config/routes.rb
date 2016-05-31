@@ -311,8 +311,7 @@ Nucore::Application.routes.draw do
       put "add"
       get "purchase"
       put "purchase"
-      get "choose_account"
-      post "choose_account"
+      match "choose_account", via: [:get, :post]
       get "update_or_purchase"
       patch "update_or_purchase"
       put "update_or_purchase"
