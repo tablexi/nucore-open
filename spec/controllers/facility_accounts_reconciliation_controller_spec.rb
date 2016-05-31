@@ -62,10 +62,11 @@ RSpec.describe FacilityAccountsReconciliationController do
     include DateHelper
 
     before { sign_in admin }
+    let(:formatted_reconciled_at) { format_usa_date(reconciled_at) }
 
     def perform
       post :update, facility_id: facility.url_name, account_type: "ReconciliationTestAccount",
-                    reconciled_at: format_usa_date(reconciled_at),
+                    reconciled_at: formatted_reconciled_at,
                     order_detail: {
                       order_detail.id.to_s => {
                         reconciled: "1",
@@ -75,14 +76,6 @@ RSpec.describe FacilityAccountsReconciliationController do
     end
 
     describe "reconciliation date", :timecop_freeze do
-      describe "a nil reconciliation date" do
-        let(:reconciled_at) { nil }
-
-        it "updates the reconciled_at" do
-          expect { perform }.to change { order_detail.reload.reconciled_at }.to(Time.current.change(usec: 0))
-        end
-      end
-
       describe "with a reconciliation date of today" do
         let(:reconciled_at) { Time.current }
 
@@ -130,6 +123,43 @@ RSpec.describe FacilityAccountsReconciliationController do
 
         it "updates the reconciled_at" do
           expect { perform }.to change { order_detail.reload.reconciled_at }.to(reconciled_at.beginning_of_day)
+        end
+      end
+
+      describe "invalid reconciliation date" do
+        describe "a nil reconciliation date" do
+          let(:reconciled_at) { nil }
+
+          it "does not update" do
+            expect { perform }.not_to change { order_detail.reload.state }.from("complete")
+          end
+
+          it "has an error" do
+            perform
+            expect(flash[:error]).to include("Reconciliation Date is required")
+          end
+        end
+
+        describe "a blank reconciliation date" do
+          let(:reconciled_at) { "" }
+
+          it "does not update" do
+            expect { perform }.not_to change { order_detail.reload.state }.from("complete")
+          end
+
+          it "has an error" do
+            perform
+            expect(flash[:error]).to include("Reconciliation Date is required")
+          end
+        end
+
+        describe "an invalid date" do
+          let(:formatted_reconciled_at) { "something" }
+
+          it "has an error" do
+            perform
+            expect(flash[:error]).to include("Reconciliation Date is required")
+          end
         end
       end
     end
