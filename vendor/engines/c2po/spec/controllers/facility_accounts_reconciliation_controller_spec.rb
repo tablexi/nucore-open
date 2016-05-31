@@ -78,7 +78,7 @@ RSpec.describe FacilityAccountsReconciliationController do
       @method = :get
       @action = :index
       @params = { facility_id: @authable.url_name, account_type: "CreditCardAccount",
-        reconciled_at: format_usa_date(Time.current) }
+                  reconciled_at: format_usa_date(Time.current) }
     end
 
     it_should_allow :director do
@@ -107,7 +107,7 @@ RSpec.describe FacilityAccountsReconciliationController do
       @method = :get
       @action = :index
       @params = { facility_id: @authable.url_name, account_type: "PurchaseOrderAccount",
-        reconciled_at: format_usa_date(Time.current) }
+                  reconciled_at: format_usa_date(Time.current) }
     end
 
     it_should_allow :director do
