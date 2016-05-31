@@ -13,10 +13,10 @@ module SangerSequencing
         quantity = 10 if quantity <= 0
         quantity.times { @submission.samples.create! }
       end
+      render :edit
     end
 
     def edit
-      render :new
     end
 
     def update
@@ -25,14 +25,15 @@ module SangerSequencing
         redirect_to "#{params[:success_url]}&#{external_return_options.to_query}"
       else
         flash.now[:alert] = @submission.errors.messages.values.join(". ")
-        render :new
+        render :edit
       end
     end
 
     private
 
     def submission_params
-      params.require(:sanger_sequencing_submission).permit(samples_attributes: [:id, :customer_sample_id])
+      params.require(:sanger_sequencing_submission)
+        .permit(samples_attributes: [:id, :customer_sample_id, :_destroy])
     end
 
     def external_return_options

@@ -9,7 +9,7 @@ module SangerSequencing
     self.table_name = "sanger_sequencing_submissions"
     belongs_to :order_detail
     has_many :samples
-    accepts_nested_attributes_for :samples
+    accepts_nested_attributes_for :samples, allow_destroy: true
 
     private
 

@@ -11,12 +11,12 @@
         %th= SangerSequencing::Sample.human_attribute_name(:customer_sample_id)
         %th= SangerSequencing::Sample.human_attribute_name(:id)
     %tbody
-      = f.simple_fields_for :samples, wrapper: false do |sf|
-        %tr
-          %td
-
-            = sf.input :customer_sample_id, label: false, input_html: { value: sf.object.customer_sample_id }
-            = sf.input :id, as: :hidden
-          %td= sf.object.id
+      = f.nested_fields_for :samples, wrapper: false, class_name: "SangerSequencing::Sample", wrapper_tag: :tr do |sf|
+        %td
+          = sf.input :customer_sample_id, label: false, input_html: { value: sf.object.customer_sample_id }
+          = sf.input :id, as: :hidden
+        %td= sf.object.id
+        %td= sf.remove_nested_fields_link "Remove", class: "btn"
+  = f.add_nested_fields_link :samples, "Add another", class: "btn btn-success"
 
   = f.submit text("submit"), class: "btn btn-primary"
