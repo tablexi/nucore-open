@@ -74,6 +74,8 @@ module Nucore
       g.test_framework :rspec
     end
 
+    # TODO: this appears to be necessary to suppress deprecations from fog:
+    config.active_record.raise_in_transactional_callbacks = true
   end
 
 end
