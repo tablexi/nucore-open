@@ -28,12 +28,12 @@ RSpec.describe InstrumentPricePolicyCalculations do
 
   it "calculates cost based on the given duration and discount" do
     policy.usage_rate = 5
-    expect(policy.calculate_cost(120, 0.15).to_f).to eq 1.5
+    expect(policy.calculate_cost(120, 0.15).round 2).to eq 1.5
   end
 
   it "calculates subsidy based on the given duration and discount" do
     policy.usage_subsidy = 5
-    expect(policy.calculate_subsidy(120, 0.15).to_f).to eq 1.5
+    expect(policy.calculate_subsidy(120, 0.15).round 2).to eq 1.5
   end
 
   describe "calculating with two effective schedule rules, one discounting one not" do
