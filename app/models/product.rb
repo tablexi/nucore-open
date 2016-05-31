@@ -39,7 +39,7 @@ class Product < ActiveRecord::Base
   end
 
   scope :active, -> { where(is_archived: false, is_hidden: false) }
-  scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: is this scope named correctly?
+  scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: phase out in favor of the .not_archived scope
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
 
