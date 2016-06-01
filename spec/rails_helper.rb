@@ -22,6 +22,9 @@ RSpec.configure do |config|
 
   config.use_transactional_fixtures = true
 
+  require "capybara/poltergeist"
+  Capybara.javascript_driver = :poltergeist
+
   config.include Devise::TestHelpers, type: :controller
   config.include FactoryGirl::Syntax::Methods
 
