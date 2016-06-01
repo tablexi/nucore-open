@@ -1,8 +1,12 @@
-%h1= t("sanger_sequencing.name")
+= content_for :h1 do
+  = t("sanger_sequencing.name")
+
+= content_for :head_content do
+  = javascript_include_tag "sanger_sequencing/submission"
 
 = "Submission ##{@submission.id}"
 
-= simple_form_for @submission do |f|
+= simple_form_for @submission, html: { data: { fetch_ids_url: fetch_ids_sanger_sequencing_submission_path(@submission) } } do |f|
   = hidden_field_tag :referer, params[:referer]
   = hidden_field_tag :success_url, params[:success_url]
   %table.table.table-striped
@@ -13,10 +17,14 @@
     %tbody
       = f.nested_fields_for :samples, wrapper: false, class_name: "SangerSequencing::Sample", wrapper_tag: :tr do |sf|
         %td
-          = sf.input :customer_sample_id, label: false, input_html: { value: sf.object.customer_sample_id }
-          = sf.input :id, as: :hidden
-        %td= sf.object.id
-        %td= sf.remove_nested_fields_link "Remove", class: "btn"
-  = f.add_nested_fields_link :samples, "Add another", class: "btn btn-success"
+          = sf.input :customer_sample_id, label: false, input_html: { value: sf.object.form_customer_sample_id, class: "js--customerSampleId" }
+          = sf.input :id, as: :hidden, input_html: { class: "js--sampleId" }
+        %td.js--sampleId= sf.object.id
+        %td
+          = sf.remove_nested_fields_link "Remove", class: "btn"
+          = sf.input :_destroy, as: :hidden
+    %tfoot
+      %td{colspan: 2}
+      %td= f.add_nested_fields_link :samples, "Add another", class: "btn btn-success"
 
   = f.submit text("submit"), class: "btn btn-primary"

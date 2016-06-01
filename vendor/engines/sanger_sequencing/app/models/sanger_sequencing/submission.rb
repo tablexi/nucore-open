@@ -11,6 +11,14 @@ module SangerSequencing
     has_many :samples
     accepts_nested_attributes_for :samples, allow_destroy: true
 
+    def create_samples!(quantity)
+      quantity = quantity.to_i
+      raise ArgumentError, "quantity must be positive" if quantity <= 0
+      transaction do
+        quantity.times.collect { samples.create! }
+      end
+    end
+
     private
 
     def savable_samples

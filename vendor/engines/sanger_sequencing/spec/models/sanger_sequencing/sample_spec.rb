@@ -7,9 +7,9 @@ RSpec.describe SangerSequencing::Sample do
     expect(sample.submission).to eq(submission)
   end
 
-  describe "#customer_sample_id" do
+  describe "#form_customer_sample_id" do
     let(:sample) { described_class.new.tap { |s| s.id = id } }
-    subject(:customer_sample_id) { sample.customer_sample_id }
+    subject(:customer_sample_id) { sample.form_customer_sample_id }
 
     describe "when I've set the customer_sample_id myself" do
       let(:id) { 123 }
