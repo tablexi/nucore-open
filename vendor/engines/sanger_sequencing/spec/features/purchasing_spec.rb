@@ -34,7 +34,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
 
     it "has prefilled values in the text boxes with unique four digit numbers" do
       values = page.all(customer_id_selector).map(&:value)
-      expect(values).to all(match(/\d{4}/))
+      expect(values).to all(match(/\A\d{4}\z/))
       expect(values.uniq).to eq(values)
     end
   end

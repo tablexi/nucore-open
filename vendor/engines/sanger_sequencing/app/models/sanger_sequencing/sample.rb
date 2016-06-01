@@ -16,7 +16,7 @@ module SangerSequencing
 
     def default_customer_sample_id
       # last four digits of the id as a zero-padded string
-      id.to_s.last(4).rjust(4, "0")
+      format("%04d", id).last(4)
     end
 
   end
