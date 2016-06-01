@@ -2,9 +2,11 @@ require "rails_helper"
 
 RSpec.describe PriceGroup do
 
+  let(:facility) { @facility }
+
   before :each do
     @facility     = FactoryGirl.create(:facility)
-    @price_group  = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: facility)
   end
 
   it "should create using factory" do

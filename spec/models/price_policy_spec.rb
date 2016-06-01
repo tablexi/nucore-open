@@ -9,10 +9,12 @@ RSpec.describe PricePolicy do
     Settings.reload!
   end
 
+  let(:facility) { @facility }
+
   before :each do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: facility)
     @item             = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
   end
 
@@ -128,7 +130,7 @@ RSpec.describe PricePolicy do
     end
 
     it "should raise on bad input" do
-      assert_raise(ArgumentError) { @pp.restrict_purchase = 44 }
+      expect { @pp.restrict_purchase = 44 }.to raise_error ArgumentError
     end
 
     it "should destroy PriceGroupProduct when restricted" do
@@ -152,9 +154,7 @@ RSpec.describe PricePolicy do
         @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
         @pp2 = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
         expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
-        # they weren't matching up exactly right, but were within a second of each other
-        # @pp.exire_date.should == (@today + 1.day).end_of_day
-        expect(((@today.end_of_day + 1.day) - @pp.expire_date).abs).to be < 1
+        expect(@pp.expire_date).to be < (@today + 1.day).end_of_day
         expect(@pp2.reload.start_date).to eq(@today + 2.days)
         expect(@pp2.expire_date).to eq(@today + 30.days)
       end
@@ -168,9 +168,7 @@ RSpec.describe PricePolicy do
         @pp3 = FactoryGirl.create(:item_price_policy, product: @item2, price_group: @price_group, start_date: @today, expire_date: @today + 30.days)
         @pp2 = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
         expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
-        # they weren't matching up exactly right, but were within a second of each other
-        # @pp.exire_date.should == (@today + 1.day).end_of_day
-        expect(((@today.end_of_day + 1.day) - @pp.expire_date).abs).to be < 1
+        expect(@pp.expire_date).to be < (@today + 1.day).end_of_day
         expect(@pp2.reload.start_date).to eq(@today + 2.days)
         expect(@pp2.expire_date).to eq(@today + 30.days)
 
@@ -187,12 +185,12 @@ RSpec.describe PricePolicy do
 
       it 'should abstract #calculate_cost_and_subsidy' do
         expect(@sp).to be_respond_to(:calculate_cost_and_subsidy)
-        assert_raise(RuntimeError) { @sp.calculate_cost_and_subsidy }
+        expect { @sp.calculate_cost_and_subsidy }.to raise_error RuntimeError
       end
 
       it 'should abstract #estimate_cost_and_subsidy' do
         expect(@sp).to be_respond_to(:estimate_cost_and_subsidy)
-        assert_raise(RuntimeError) { @sp.estimate_cost_and_subsidy }
+        expect { @sp.estimate_cost_and_subsidy }.to raise_error RuntimeError
       end
 
     end

@@ -47,14 +47,14 @@ RSpec.describe User do
   end
 
   it "is a member of any explicitly mapped price groups" do
-    pg = facility.price_groups.create(attributes_for(:price_group))
+    pg = FactoryGirl.create(:price_group, facility: facility)
     UserPriceGroupMember.create(user: user, price_group: pg)
     expect(user.price_groups.include?(pg)).to eq(true)
   end
 
   it "belongs to price groups of accounts" do
     cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
-    pg = facility.price_groups.create(attributes_for(:price_group))
+    pg = FactoryGirl.create(:price_group, facility: facility)
     AccountPriceGroupMember.create(account: cc, price_group: pg)
     expect(user.account_price_groups.include?(pg)).to be true
   end
@@ -62,7 +62,7 @@ RSpec.describe User do
   it "belongs to price groups of the account owner" do
     owner = create(:user)
     cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: owner))
-    pg = facility.price_groups.create(attributes_for(:price_group))
+    pg = FactoryGirl.create(:price_group, facility: facility)
     UserPriceGroupMember.create(user: owner, price_group: pg)
 
     cc.account_users.create(user: user, created_by: owner.id, user_role: "Purchaser")

@@ -77,6 +77,10 @@ en:
       label: Remove
     th: Affiliate
 
+  bundle_products:
+    new:
+      head: Add Bundled Product
+
   message_summarizer:
     heading: "Notices (%{count})"
     order_details_in_dispute: Disputed Orders
@@ -86,7 +90,11 @@ en:
 
   shared:
     cancel: Cancel
+    confirm_message: Are you sure?
+    delete: Delete
     edit: Edit
+    not_applicable: N/A
+    remove: Remove
     save: Save
     create: Create
     select_all: Select All
@@ -508,6 +516,10 @@ en:
       edit:
         remove_from_journal: "Remove From Journal"
 
+  product_access_groups:
+    index:
+      add_button: Add %{group}
+
   reservations:
     logout:
       body: "You will be logged out automatically in 60 seconds. Would you like to remain logged in?"
@@ -718,6 +730,20 @@ en:
       quantity: Quantity
 
   product_users:
+    index:
+      add_approved_user: Add Approved User
+      approval_explanation: |
+        This %{product_type} requires a user to be approved before they may
+        purchase the %{product_type}.
+      approved_users: Approved Users
+      confirm_removal: |
+        Are you sure you wish to remove this user from this %{product_type}?
+      no_users_approved: No users are currently approved.
+      th:
+        name: Name
+        user_name: User Name
+        email: Email
+      update: Update %{plural_label}
     new:
       label:
         search_term: "Search by name, NetID, or username"
@@ -777,6 +803,13 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
+    member_table:
+      add_access: Add Access
+      remove_access: Remove Access
+      th:
+        name: Name (username)
+        email: Email
+        role: Role
     show:
       head: "Payment Source Details"
     suspend_button:
@@ -908,6 +941,19 @@ en:
         main: "Downloadable Order Forms are templates to be filled in by the user and submitted when ordering.  Uploading a new template will replace any existing Downloadable Order Forms."
         notice: "No Downloadable Order Forms have been uploaded."
         confirm: "Are you sure you wish to remove this file?"
+    upload:
+      confirm_delete: Are you sure you wish to remove this file?
+      documentation_note: |
+        If provided, documentation will be available for download from the
+        product page.
+      filename_hint: Name of the file as displayed on the product page
+      no_uploads: No documents have been uploaded yet
+      submit: Upload
+      submitted: Uploading...
+      th:
+        file: File
+        created_at: Date Uploaded
+        created_by: Uploaded by
 
   user_password:
     edit:

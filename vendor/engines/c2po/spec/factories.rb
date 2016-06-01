@@ -7,14 +7,14 @@ FactoryGirl.define do
     expiration_year((Time.zone.now + 1.year).year)
     expires_at Time.zone.now + 1.month
     created_by 0
-    sequence(:affiliate) { |n| Affiliate.find_or_create_by_name("cc_affiliate#{n}") }
+    sequence(:affiliate) { |n| Affiliate.find_or_create_by(name: "cc_affiliate#{n}") }
   end
 
   factory :purchase_order_account do
     sequence(:account_number, &:to_s)
     description "purchase order account description"
     expires_at Time.zone.now + 1.month
-    sequence(:affiliate) { |n| Affiliate.find_or_create_by_name("po_affiliate#{n}") }
+    sequence(:affiliate) { |n| Affiliate.find_or_create_by(name: "po_affiliate#{n}") }
     created_by 0
   end
 end

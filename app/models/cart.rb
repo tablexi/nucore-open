@@ -37,7 +37,7 @@ class Cart
                   .where(id: subquery)
 
     orders = orders.limit(limit) if limit
-    orders
+    orders.readonly(false)
   end
 
   private

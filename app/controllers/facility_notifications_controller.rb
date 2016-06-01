@@ -67,7 +67,7 @@ class FacilityNotificationsController < ApplicationController
       @order_details_updated = []
       params[:order_detail_ids].each do |order_detail_id|
         begin
-          od = OrderDetail.for_facility(current_facility).find(order_detail_id, readonly: false)
+          od = OrderDetail.for_facility(current_facility).readonly(false).find(order_detail_id)
           od.reviewed_at = Time.zone.now
           od.save!
           @order_details_updated << od

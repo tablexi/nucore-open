@@ -90,7 +90,7 @@ RSpec.describe OrderImport, :timecop_freeze do
   before :each do
     grant_role(director, facility)
 
-    price_group = facility.price_groups.create!(attributes_for(:price_group))
+    price_group = FactoryGirl.create(:price_group, facility: facility)
     create(:account_price_group_member, account: account, price_group: price_group)
     item.item_price_policies.create!(attributes_for(:item_price_policy,
                                                     price_group_id: price_group.id,

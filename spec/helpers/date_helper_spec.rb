@@ -14,14 +14,18 @@ RSpec.describe DateHelper do
     context "with valid dates" do
       %w(1/1/2014 3/31/2014 10/2/2014 12/31/2014).each do |date_string|
         it "considers '#{date_string}' a valid date" do
-          expect(parse_usa_import_date(date_string))
-            .to eq DateTime.strptime(date_string, "%m/%d/%Y").to_time_in_current_zone
+          expect(parse_usa_import_date(date_string)).to be_present
         end
       end
 
-      it "reads dates in USA-style MM/DD/YYYY format" do
-        expect(parse_usa_import_date("12/8/2014").month).to be 12
+      it "parses dates in USA-style MM/DD/YYYY format" do
+        expect(parse_usa_import_date("8/12/2014").day).to be 12
         expect(parse_usa_import_date("8/12/2014").month).to be 8
+        expect(parse_usa_import_date("8/12/2014").year).to be 2014
+
+        expect(parse_usa_import_date("12/8/2014").day).to be 8
+        expect(parse_usa_import_date("12/8/2014").month).to be 12
+        expect(parse_usa_import_date("12/8/2014").year).to be 2014
       end
     end
   end

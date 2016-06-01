@@ -568,13 +568,13 @@ RSpec.describe InstrumentsController do
                                                     facility: @authable,
                                                     facility_account: @facility_account,
                                                     no_relay: true)
-        @instrument_with_relay.update_attributes(relay: FactoryGirl.create(:relay_syna, instrument: @instrument_with_relay))
+        FactoryGirl.create(:relay_syna, instrument: @instrument_with_relay)
 
         @instrument_with_dummy_relay = FactoryGirl.create(:instrument,
                                                           facility: @authable,
                                                           facility_account: @facility_account,
                                                           no_relay: true)
-        @instrument_with_dummy_relay.update_attributes(relay: FactoryGirl.create(:relay_dummy, instrument: @instrument_with_dummy_relay))
+        FactoryGirl.create(:relay_dummy, instrument: @instrument_with_dummy_relay)
 
         @instrument_with_dummy_relay.instrument_statuses.create(is_on: true)
         @instrument_with_bad_relay = FactoryGirl.create(:instrument,
@@ -582,7 +582,7 @@ RSpec.describe InstrumentsController do
                                                         facility_account: @facility_account,
                                                         no_relay: true)
 
-        @instrument_with_bad_relay.update_attributes(relay: FactoryGirl.create(:relay_synb, instrument: @instrument_with_bad_relay))
+        FactoryGirl.create(:relay_synb, instrument: @instrument_with_bad_relay)
         allow_any_instance_of(RelaySynaccessRevB).to receive(:query_status).and_raise(StandardError.new("Error!"))
         @instrument_with_bad_relay.relay.update_attribute(:ip, "")
       end

@@ -15,11 +15,12 @@ class OrderStatus < ActiveRecord::Base
     end
   end
 
-  scope :new_os, conditions: { name: "New" }, limit: 1
-  scope :inprocess, conditions: { name: "In Process" }, limit: 1
-  scope :canceled, conditions: { name: "Canceled" }, limit: 1
-  scope :complete, conditions: { name: "Complete" }, limit: 1
-  scope :reconciled, conditions: { name: "Reconciled" }, limit: 1
+  scope :for_facility, -> (facility) { where(facility_id: [nil, facility.id]).order(:lft) }
+  scope :new_os, -> { where(name: "New").limit(1) }
+  scope :inprocess, -> { where(name: "In Process").limit(1) }
+  scope :canceled, -> { where(name: "Canceled").limit(1) }
+  scope :complete, -> { where(name: "Complete").limit(1) }
+  scope :reconciled, -> { where(name: "Reconciled").limit(1) }
 
   def self.new_status
     new_os.first
@@ -81,7 +82,7 @@ class OrderStatus < ActiveRecord::Base
 
     def initial_statuses(facility)
       first_invalid_status = find_by_name("Canceled")
-      statuses = find(:all).sort { |a, b| a.lft <=> b.lft }.reject do |os|
+      statuses = all.sort { |a, b| a.lft <=> b.lft }.reject do |os|
         !os.is_left_of?(first_invalid_status)
       end
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
@@ -90,7 +91,7 @@ class OrderStatus < ActiveRecord::Base
 
     def non_protected_statuses(facility)
       first_protected_status = find_by_name("Reconciled")
-      statuses = find(:all).sort { |a, b| a.lft <=> b.lft }.reject do |os|
+      statuses = all.sort { |a, b| a.lft <=> b.lft }.reject do |os|
         !os.is_left_of?(first_protected_status)
       end
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?

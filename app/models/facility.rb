@@ -14,12 +14,10 @@ class Facility < ActiveRecord::Base
 
   before_validation :set_journal_mask, on: :create
 
-  has_many :order_statuses, finder_sql: proc { "SELECT * FROM order_statuses WHERE facility_id = #{id} or facility_id IS NULL order by lft" }
   has_many :items
   has_many :services
   has_many :instruments
   has_many :bundles
-  has_many :price_groups, finder_sql: proc { "SELECT * FROM price_groups WHERE price_groups.facility_id = #{id} OR price_groups.facility_id IS NULL ORDER BY price_groups.is_internal DESC, price_groups.display_order ASC, price_groups.name ASC" }
   has_many :journals
   has_many :products
   has_many :schedules
@@ -31,7 +29,7 @@ class Facility < ActiveRecord::Base
     end
   end
   has_many :order_imports, dependent: :destroy
-  has_many :orders, conditions: "ordered_at IS NOT NULL"
+  has_many :orders, -> { where.not(ordered_at: nil) }
   has_many :facility_accounts
   has_many :training_requests, through: :products
   has_many :user_roles, dependent: :destroy
@@ -40,8 +38,8 @@ class Facility < ActiveRecord::Base
   validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
   validates_uniqueness_of :abbreviation, :journal_mask, case_sensitive: false
-  validates_format_of    :abbreviation, with: /^[a-zA-Z\d\-\.\s]+$/, message: "may include letters, numbers, hyphens, spaces, or periods only"
-  validates_format_of    :journal_mask, with: /^C\d{2}$/, message: "must be in the format C##"
+  validates_format_of :abbreviation, with: /\A[a-zA-Z\d\-\.\s]+\z/, message: "may include letters, numbers, hyphens, spaces, or periods only"
+  validates_format_of :journal_mask, with: /\AC\d{2}\z/, message: "must be in the format C##"
 
   validates :order_notification_recipient,
             email_format: true,
@@ -54,8 +52,8 @@ class Facility < ActiveRecord::Base
   delegate :in_dispute, to: :order_details, prefix: true
   delegate :requiring_approval, :requiring_approval_by_type, to: :products, prefix: true
 
-  scope :active, conditions: { is_active: true }
-  scope :sorted, order: :name
+  scope :active, -> { where(is_active: true) }
+  scope :sorted, -> { order(:name) }
 
   def self.cross_facility
     @@cross_facility ||=
@@ -77,6 +75,14 @@ class Facility < ActiveRecord::Base
 
   def description
     self[:description].html_safe if self[:description]
+  end
+
+  def order_statuses
+    OrderStatus.for_facility(self)
+  end
+
+  def price_groups
+    PriceGroup.for_facility(self)
   end
 
   def to_param
@@ -131,7 +137,7 @@ class Facility < ActiveRecord::Base
   end
 
   def set_journal_mask
-    f = Facility.find(:all, limit: 1, order: "journal_mask DESC").first
+    f = Facility.all.order(journal_mask: :desc).first
     self.journal_mask = if f && f.journal_mask.match(/^C(\d{2})$/)
                           sprintf("C%02d", Regexp.last_match(1).to_i + 1)
                         else

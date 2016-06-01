@@ -1,7 +1,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-RSpec.describe FacilityAccountsController do
+RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: true } do
   let(:facility) { @authable }
 
   render_views
@@ -307,7 +307,7 @@ RSpec.describe FacilityAccountsController do
         Timecop.travel(1.second.from_now) # need different timestamp on statement
       end
 
-      @params = { facility_id: facility.url_name, account_id: @account.id }
+      @params = { facility_id: facility.url_name, account_id: @account.id, statement_id: "" }
     end
 
     it_should_require_login

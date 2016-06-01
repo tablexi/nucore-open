@@ -22,7 +22,7 @@ class ExternalServiceReceiver < ActiveRecord::Base
   end
 
   def parsed_response_data
-    JSON.parse(response_data).symbolize_keys
+    JSON.parse(self[:response_data]).symbolize_keys
   rescue TypeError, JSON::ParserError
     {}
   end

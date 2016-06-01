@@ -168,15 +168,6 @@ Rails/Date:
   Enabled: false
 
 # Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/FindEach:
-  Exclude:
-    - 'app/models/instrument.rb'
-    - 'app/models/product.rb'
-
-# Offense count: 2
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
 Rails/HasAndBelongsToMany:
@@ -200,14 +191,6 @@ Rails/Output:
     - 'db/migrate/20120622185758_move_can_purchase_into_price_policy.rb'
     - 'lib/tasks/ipp/ipp_converter.rb'
     - 'lib/tasks/ipp/ipp_updater.rb'
-
-# Offense count: 8
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/ScopeArgs:
-  Exclude:
-    - 'app/models/notification.rb'
-    - 'app/models/order_detail.rb'
 
 # Offense count: 27
 # Configuration parameters: EnforcedStyle, SupportedStyles.

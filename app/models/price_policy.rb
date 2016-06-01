@@ -53,13 +53,25 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.current_date(product)
-    ipp = product.price_policies.find(:first, conditions: [dateize("start_date", " <= ? AND ") + dateize("expire_date", " > ?"), Time.zone.now, Time.zone.now], order: "start_date DESC")
-    ipp ? ipp.start_date.to_date : nil
+    now = Time.current
+    product
+      .price_policies
+      .where("start_date <= ?", now)
+      .where("expire_date > ?", now)
+      .order(start_date: :desc)
+      .pluck(:start_date)
+      .first
+      .try(:to_date)
   end
 
   def self.next_date(product)
-    ipp = product.price_policies.find(:first, conditions: [dateize("start_date", " > ?"), Time.zone.now], order: "start_date")
-    ipp ? ipp.start_date.to_date : nil
+    product
+      .price_policies
+      .where("start_date > ?", Time.current)
+      .order(:start_date)
+      .pluck(:start_date)
+      .first
+      .try(:to_date)
   end
 
   def self.next_dates(product)
@@ -133,7 +145,7 @@ class PricePolicy < ActiveRecord::Base
   # Returns true if this +PricePolicy+ is assigned
   # to any order, false otherwise
   def assigned_to_order?
-    !OrderDetail.find_all_by_price_policy_id(id).empty?
+    OrderDetail.where(price_policy_id: id).any?
   end
 
   #
@@ -143,14 +155,14 @@ class PricePolicy < ActiveRecord::Base
     expire_date <= Time.zone.now
   end
 
-  def start_date_is_unique
+  def start_date_is_unique # TODO: Refactor
     type          = self.class.name.downcase.gsub(/pricepolicy$/, "")
     price_group   = self.price_group
     unless product.nil? || price_group.nil?
       if id.nil?
-        pp = PricePolicy.find(:first, conditions: ["price_group_id = ? AND product_id = ? AND start_date = ?", price_group.id, product.id, start_date])
+        pp = PricePolicy.find_by(price_group_id: price_group.id, product_id: product.id, start_date: start_date)
       else
-        pp = PricePolicy.find(:first, conditions: ["price_group_id = ? AND product_id = ? AND start_date = ? AND id <> ?", price_group.id, product.id, start_date, id])
+        pp = PricePolicy.where(price_group_id: price_group.id, product_id: product.id, start_date: start_date).where.not(id: id).first
       end
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
     end

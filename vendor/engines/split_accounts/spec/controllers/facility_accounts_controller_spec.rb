@@ -52,7 +52,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
     describe "suspending" do
       it "suspends the account" do
-        expect { get :suspend, facility_id: facility.url_name, id: split_account.id }
+        expect { get :suspend, facility_id: facility.url_name, account_id: split_account.id }
           .to change { split_account.reload.suspended_at }
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
       before { split_account.update_attributes(suspended_at: 1.day.ago) }
 
       it "reactivates" do
-        expect { get :unsuspend, facility_id: facility.url_name, id: split_account.id }
+        expect { get :unsuspend, facility_id: facility.url_name, account_id: split_account.id }
           .to change { split_account.reload.suspended? }.from(true).to(false)
       end
 
@@ -69,7 +69,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
         before { split_account.subaccounts.first.update_attributes(suspended_at: 1.day.ago) }
 
         it "does not reactivate", :aggregate_failures do
-          expect { get :unsuspend, facility_id: facility.url_name, id: split_account.id }
+          expect { get :unsuspend, facility_id: facility.url_name, account_id: split_account.id }
             .not_to change { split_account.reload.suspended? }
 
           expect(flash[:alert]).to include(I18n.t("activerecord.errors.models.split_accounts/split_account.suspended_child"))

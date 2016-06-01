@@ -1,11 +1,11 @@
 class OrderDetailQuantityInput < SimpleForm::Inputs::FileInput
 
-  def input
+  def input(wrapper_options)
     input_html_options[:class] << "timeinput" if object.quantity_as_time?
     @builder.text_field(attribute_name, input_html_options).html_safe
   end
 
-  def hint
+  def hint(wrapper_options = nil)
     if object.scaling_type && !object.quantity_editable?
       @hint ||= I18n.t("product_accessories.type.#{object.scaling_type}")
     end

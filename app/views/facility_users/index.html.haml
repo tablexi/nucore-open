@@ -25,7 +25,7 @@
           %td.centered
             = link_to text(".remove_roles"),
               facility_facility_user_path(current_facility, user),
-              confirm: text(".remove_roles_confirm"),
+              data: { confirm: text(".remove_roles_confirm") },
               method: :delete
           %td= user.full_name
           %td= user.username

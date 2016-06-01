@@ -5,7 +5,7 @@ module ReconcilableAccount
   module ClassMethods
 
     def need_reconciling(facility)
-      accounts = OrderDetail.unreconciled_accounts(facility, model_name)
+      accounts = OrderDetail.unreconciled_accounts(facility, model_name.name)
       where(id: accounts.pluck(:account_id))
     end
 

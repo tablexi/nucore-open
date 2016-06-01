@@ -17,20 +17,13 @@ module TransactionSearch
 
   module ClassMethods
 
-    def transaction_search(*actions)
-      before_filter :remove_ugly_params_and_redirect, only: actions
-    end
-
     # If a method is tagged with _with_search at the end, then define the normal controller
     # action to be wrapped in the search.
     # e.g. index_with_search will define #index, which will init_order_details before passing
     # control to the controller method. Then it will further filter @order_details after the controller
     # method has run
     def method_added(name)
-      @@methods_with_remove_ugly_filter ||= []
       if name.to_s =~ /(.*)_with_search$/
-        @@methods_with_remove_ugly_filter << Regexp.last_match(1)
-        before_filter :remove_ugly_params_and_redirect, only: @@methods_with_remove_ugly_filter
         define_search_method(Regexp.last_match(1), $&)
       end
     end
