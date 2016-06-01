@@ -1,3 +1,9 @@
 en:
   sanger_sequencing:
     name: Sanger Sequencing
+
+  activerecord:
+    attributes:
+      sanger_sequencing/sample:
+        id: Core Sample
+        customer_sample_id: Customer Sample

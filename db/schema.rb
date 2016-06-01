@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160519030413) do
+ActiveRecord::Schema.define(:version => 20160526192926) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -508,9 +508,10 @@ ActiveRecord::Schema.define(:version => 20160519030413) do
   end
 
   create_table "sanger_sequencing_samples", :force => true do |t|
-    t.integer  "submission_id", :null => false
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.integer  "submission_id",      :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.string   "customer_sample_id"
   end
 
   add_index "sanger_sequencing_samples", ["submission_id"], :name => "index_sanger_sequencing_samples_on_submission_id"
