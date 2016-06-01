@@ -18,13 +18,13 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
   describe "submission form" do
     let(:quantity) { 5 }
     let(:customer_id_selector) { ".nested_sanger_sequencing_submission_samples input[type=text]" }
-
+    let(:cart_quantity_selector) { ".edit_order input[type=text]" }
     before do
       visit facility_service_path(facility, service)
       click_link "Add to cart"
       choose account.to_s
       click_button "Continue"
-      find(".edit_order input[type=text]").set(quantity.to_s)
+      find(cart_quantity_selector).set(quantity.to_s)
       click_button "Update"
       click_link "Complete Online Order Form"
     end
@@ -44,6 +44,29 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       click_button "Save Submission"
       expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to include("TEST123")
       expect(SangerSequencing::Sample.count).to eq(5)
+    end
+
+    describe "adding/removing more fields", :js do
+      it "adds fields" do
+        page.click_link "Add"
+        expect(page).to have_css("#{customer_id_selector}:enabled", count: 6)
+        expect(page.all(customer_id_selector).last.value).to match(/\A\d{4}\z/)
+        click_button "Save Submission"
+        expect(SangerSequencing::Sample.count).to eq(6)
+
+        # back on the cart
+        expect(page.find(cart_quantity_selector).value).to eq("6")
+      end
+
+      it "can remove fields" do
+        page.all(:link, "Remove").first.click
+        expect(page).to have_css(customer_id_selector, count: 4)
+        click_button "Save Submission"
+        expect(SangerSequencing::Sample.count).to eq(4)
+
+        # back on the cart
+        expect(page.find(cart_quantity_selector).value).to eq("4")
+      end
     end
 
     describe "blank fields" do

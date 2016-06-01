@@ -21,10 +21,10 @@
           = sf.input :id, as: :hidden, input_html: { class: "js--sampleId" }
         %td.js--sampleId= sf.object.id
         %td
-          = sf.remove_nested_fields_link "Remove", class: "btn"
+          = sf.remove_nested_fields_link text("remove"), class: "btn"
           = sf.input :_destroy, as: :hidden
     %tfoot
       %td{colspan: 2}
-      %td= f.add_nested_fields_link :samples, "Add another", class: "btn btn-success"
+      %td= f.add_nested_fields_link :samples, text("add"), class: "btn btn-success"
 
   = f.submit text("submit"), class: "btn btn-primary"
