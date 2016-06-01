@@ -4,6 +4,8 @@ require "controller_spec_helper"
 RSpec.describe FacilityAccountsReconciliationController do
   render_views
 
+  include DateHelper
+
   let(:account) { @account }
   let(:facility) { FactoryGirl.create(:facility) }
 
@@ -75,7 +77,8 @@ RSpec.describe FacilityAccountsReconciliationController do
     before :each do
       @method = :get
       @action = :index
-      @params = { facility_id: @authable.url_name, account_type: "CreditCardAccount" }
+      @params = { facility_id: @authable.url_name, account_type: "CreditCardAccount",
+                  reconciled_at: format_usa_date(Time.current) }
     end
 
     it_should_allow :director do
@@ -103,7 +106,8 @@ RSpec.describe FacilityAccountsReconciliationController do
     before :each do
       @method = :get
       @action = :index
-      @params = { facility_id: @authable.url_name, account_type: "PurchaseOrderAccount" }
+      @params = { facility_id: @authable.url_name, account_type: "PurchaseOrderAccount",
+                  reconciled_at: format_usa_date(Time.current) }
     end
 
     it_should_allow :director do
@@ -192,6 +196,7 @@ RSpec.describe FacilityAccountsReconciliationController do
       facility_id: @authable.url_name,
       account_type: account_type,
       selected_account: account.id,
+      reconciled_at: format_usa_date(Time.current),
       order_detail: {
         @order_detail.id.to_s => {
           reconciled: "1",

@@ -6,14 +6,14 @@ module OrderDetails
 
     attr_reader :persist_errors, :count, :order_details, :reconciled_at
 
+    validates :reconciled_at, :order_details, presence: true
     validate :reconciliation_must_be_in_past
     validate :all_journals_and_statements_must_be_before_reconciliation_date
-    validates_presence_of :order_details
 
     def initialize(order_detail_scope, params, reconciled_at)
       @params = params
       @order_details = order_detail_scope.readonly(false).find(to_be_reconciled.keys)
-      @reconciled_at = reconciled_at || Time.current
+      @reconciled_at = reconciled_at
     end
 
     def reconcile_all
@@ -58,13 +58,15 @@ module OrderDetails
     end
 
     def reconciliation_must_be_in_past
-      errors.add(:reconciled_at, :must_be_in_past) if @reconciled_at > Time.current.end_of_day
+      return unless reconciled_at.present?
+      errors.add(:reconciled_at, :must_be_in_past) if reconciled_at > Time.current.end_of_day
     end
 
     # You cannot set the reconciliation date for a date before the journal/statement date,
     # but we do need to make sure to allow them on the same day.
     def all_journals_and_statements_must_be_before_reconciliation_date
-      if @order_details.any? { |od| od.journal_or_statement_date.beginning_of_day > @reconciled_at }
+      return unless reconciled_at.present?
+      if @order_details.any? { |od| od.journal_or_statement_date.beginning_of_day > reconciled_at }
         errors.add(:reconciled_at, :after_all_journal_dates)
       end
     end

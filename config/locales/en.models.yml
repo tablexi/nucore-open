@@ -14,6 +14,8 @@ en:
           attributes:
             order_details:
               blank: No orders were selected to reconcile
+            reconciled_at:
+              blank: Reconciliation Date is required before orders can be reconciled
 
   activerecord:
     errors:
