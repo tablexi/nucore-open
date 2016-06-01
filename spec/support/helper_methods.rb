@@ -1,6 +1,6 @@
 # used by factory to find or create order status
 def find_order_status(status)
-  OrderStatus.find_or_create_by_name(status)
+  OrderStatus.find_or_create_by(name: status)
 end
 
 def assert_true(x)
@@ -213,7 +213,7 @@ def setup_reservation(facility, facility_account, account, user)
                                    min_reserve_mins: 60,
                                    max_reserve_mins: 60)
   assert @instrument.valid?
-  @price_group = facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+  @price_group = FactoryGirl.create(:price_group, facility: facility)
   FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)
   # add rule, available every day from 9 to 5, 60 minutes duration
   @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, end_hour: 23))

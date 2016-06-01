@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :encryptable, :trackable, :recoverable
 
   has_many :accounts, through: :account_users
-  has_many :account_users, conditions: { deleted_at: nil }
+  has_many :account_users, -> { where(deleted_at: nil) }
   has_many :orders
   has_many :order_details, through: :orders
   has_many :price_group_members
@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
 
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
-    UserRole.find_all_by_facility_id_and_user_id(facility.id, id)
+    UserRole.where(facility_id: facility.id, user_id: id)
   end
 
   #

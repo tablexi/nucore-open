@@ -20,7 +20,7 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
     end
 
     it_should_allow_managers_only do
-      expect(assigns(:accounts)).to be_kind_of Array
+      expect(assigns(:accounts)).to all be_kind_of(FacilityAccount)
       expect(assigns(:accounts).size).to eq(1)
       expect(assigns(:accounts)[0]).to eq(@facility_account)
       is_expected.to render_template "index"

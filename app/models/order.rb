@@ -12,7 +12,7 @@ class Order < ActiveRecord::Base
 
   after_save :update_order_detail_accounts, if: :account_id_changed?
 
-  scope :for_user, ->(user) { { conditions: ["user_id = ? AND ordered_at IS NOT NULL AND state = ?", user.id, "purchased"] } }
+  scope :for_user, -> (user) { where(user_id: user.id, state: "purchased").where.not(ordered_at: nil) }
 
   delegate :order_notification_recipient, to: :facility
 
@@ -25,7 +25,7 @@ class Order < ActiveRecord::Base
   end
 
   def self.for_facility(facility)
-    facility.cross_facility? ? scoped : where(facility_id: facility.id)
+    facility.cross_facility? ? all : where(facility_id: facility.id)
   end
 
   def self.recent
@@ -34,29 +34,36 @@ class Order < ActiveRecord::Base
 
   attr_accessor :being_purchased_by_admin
 
-  # BEGIN acts_as_state_machhine
   include AASM
 
-  aasm_column           :state
-  aasm_initial_state    :new
-  aasm_state            :new
-  aasm_state            :validated
-  aasm_state            :purchased
+  aasm column: :state do
+    state :new, initial: true
+    state :validated
+    state :purchased
 
-  aasm_event :invalidate do
-    transitions to: :new, from: [:new, :validated]
+    event :invalidate do
+      transitions to: :new, from: [:new, :validated]
+    end
+
+    event :_validate_order do
+      transitions to: :validated, from: [:new, :validated], guard: :cart_valid?
+    end
+
+    event :purchase, success: :move_order_details_to_default_status do
+      transitions to: :purchased, from: :validated, guard: :place_order?
+    end
+
+    event :clear do
+      transitions to: :new, from: [:new, :validated], guard: :clear_cart?
+    end
   end
 
-  aasm_event :validate_order do
-    transitions to: :validated, from: [:new, :validated], guard: :cart_valid?
-  end
-
-  aasm_event :purchase, success: :move_order_details_to_default_status do
-    transitions to: :purchased, from: :validated, guard: :place_order?
-  end
-
-  aasm_event :clear do
-    transitions to: :new, from: [:new, :validated], guard: :clear_cart?
+  # In older versions of AASM, a guard condition failing would not raise an error.
+  # This is to maintain the previous API of simply returning false
+  def validate_order!
+    _validate_order!
+  rescue AASM::InvalidTransition => e
+    false
   end
 
   [:total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy].each do |method_name|
@@ -108,15 +115,15 @@ class Order < ActiveRecord::Base
   # END acts_as_state_machine
 
   def instrument_order_details
-    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Instrument" })
+    order_details.for_product_type("Instrument")
   end
 
   def service_order_details
-    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Service" })
+    order_details.for_product_type("Service")
   end
 
   def item_order_details
-    order_details.find(:all, joins: "LEFT JOIN products p ON p.id = order_details.product_id", conditions: { "p.type" => "Item" })
+    order_details.for_product_type("Item")
   end
 
   def add(product, quantity = 1, attributes = {})

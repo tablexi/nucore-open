@@ -1,25 +1,25 @@
 Nucore::Application.routes.draw do
-  match "/users/sign_in.pdf" => redirect("/users/sign_in")
+  get "/users/sign_in.pdf" => redirect("/users/sign_in")
   devise_for :users
   mount SangerSequencing::Engine => "/" if defined?(SangerSequencing)
 
   if SettingsHelper.feature_on?(:password_update)
-    match "/users/password/edit_current", to: 'user_password#edit_current', as: "edit_current_password"
-    match "/users/password/reset",        to: 'user_password#reset',        as: "reset_password"
-    match "/users/password/edit",         to: 'user_password#edit',         as: "edit_password"
-    match "/users/password/update",       to: 'user_password#update',       as: "update_password"
+    get "/users/password/edit_current", to: 'user_password#edit_current', as: "edit_current_password"
+    get "/users/password/reset",        to: 'user_password#reset',        as: "reset_password"
+    get "/users/password/edit",         to: 'user_password#edit',         as: "edit_password"
+    get "/users/password/update",       to: 'user_password#update',       as: "update_password"
   end
 
   # root route
   root to: 'public#index'
 
   # authentication
-  match "switch_back", to: 'public#switch_back'
+  get "switch_back", to: 'public#switch_back'
 
   # shared searches
   post  "/user_search_results", to: 'search#user_search_results'
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/accounts/user/:user_id", to: 'facility_accounts#user_accounts', as: "user_accounts"
+  get "/#{I18n.t("facilities_downcase")}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
+  get "/#{I18n.t("facilities_downcase")}/:facility_id/accounts/user/:user_id", to: 'facility_accounts#user_accounts', as: "user_accounts"
 
   post "global_search" => 'global_search#index', as: "global_search"
 
@@ -32,8 +32,8 @@ Nucore::Application.routes.draw do
     end
 
     if SettingsHelper.feature_on? :suspend_accounts
-      match "suspend", to: 'accounts#suspend', as: "suspend"
-      match "unsuspend", to: 'accounts#unsuspend', as: "unsuspend"
+      get "suspend", to: 'accounts#suspend', as: "suspend"
+      get "unsuspend", to: 'accounts#unsuspend', as: "unsuspend"
     end
 
     resources :account_users, only: [:new, :destroy, :create, :index] do
@@ -48,7 +48,7 @@ Nucore::Application.routes.draw do
   end
 
   # transaction searches
-  match "/transactions", to: 'transaction_history#my_history', as: "transaction_history"
+  get "/transactions", to: 'transaction_history#my_history', as: "transaction_history"
 
   resources :facilities, except: [:delete], path: I18n.t("facilities_downcase") do
     collection do
@@ -64,7 +64,7 @@ Nucore::Application.routes.draw do
       resources :training_requests, only: [:new, :create] if SettingsHelper.feature_on?(:training_requests)
     end
 
-    match "instrument_statuses", to: 'instruments#instrument_statuses', as: "instrument_statuses"
+    get "instrument_statuses", to: 'instruments#instrument_statuses', as: "instrument_statuses"
 
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
@@ -73,10 +73,10 @@ Nucore::Application.routes.draw do
         get "manage"
       end
 
-      match "public_schedule", to: 'instruments#public_schedule'
-      match "schedule",        to: 'instruments#schedule'
-      match "status",          to: 'instruments#instrument_status'
-      match "switch",          to: 'instruments#switch'
+      get "public_schedule", to: 'instruments#public_schedule'
+      get "schedule",        to: 'instruments#schedule'
+      get "status",          to: 'instruments#instrument_status'
+      get "switch",          to: 'instruments#switch'
 
       resources :schedule_rules, except: [:show]
       resources :product_access_groups
@@ -88,8 +88,8 @@ Nucore::Application.routes.draw do
 
       resources :reservations, only: [:index]
       resources :users, controller: "product_users", except: [:show, :edit, :create]
-      match "/users/user_search_results", to: 'product_users#user_search_results'
-      match "update_restrictions",        to: 'product_users#update_restrictions'
+      get "/users/user_search_results", to: 'product_users#user_search_results'
+      get "update_restrictions",        to: 'product_users#update_restrictions'
     end
 
     resources :services do
@@ -98,7 +98,7 @@ Nucore::Application.routes.draw do
       end
       resources :price_policies, controller: "service_price_policies", except: [:show]
       resources :users, controller: "product_users", except: [:show, :edit, :create]
-      match "/users/user_search_results", to: 'product_users#user_search_results'
+      get "/users/user_search_results", to: 'product_users#user_search_results'
     end
 
     resources :items do
@@ -107,7 +107,7 @@ Nucore::Application.routes.draw do
       end
       resources :price_policies, controller: "item_price_policies", except: [:show]
       resources :users, controller: "product_users", except: [:show, :edit, :create]
-      match "/users/user_search_results", to: 'product_users#user_search_results'
+      get "/users/user_search_results", to: 'product_users#user_search_results'
     end
 
     resources :bundles do
@@ -115,7 +115,7 @@ Nucore::Application.routes.draw do
         get "manage"
       end
       resources :users, controller: "product_users", except: [:show, :edit, :create]
-      match "/users/user_search_results", to: 'product_users#user_search_results'
+      get "/users/user_search_results", to: 'product_users#user_search_results'
       resources :bundle_products, controller: "bundle_products", except: [:show]
     end
 
@@ -127,7 +127,7 @@ Nucore::Application.routes.draw do
       collection do
         get "search"
       end
-      match "map_user", to: 'facility_users#map_user'
+      get "map_user", to: 'facility_users#map_user'
     end
 
     ### Feature Toggle Create Users ###
@@ -138,19 +138,19 @@ Nucore::Application.routes.draw do
           post "search"
         end
         get   "switch_to",    to: 'users#switch_to'
-        match "orders",       to: 'users#orders'
-        match "reservations", to: 'users#reservations'
-        match "accounts",     to: 'users#accounts'
-        match "access_list",  to: 'users#access_list'
+        get "orders",       to: 'users#orders'
+        get "reservations", to: 'users#reservations'
+        get "accounts",     to: 'users#accounts'
+        get "access_list",  to: 'users#access_list'
         post  "access_list/approvals", to: 'users#access_list_approvals'
       end
     else
       resources :users, except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } do
         get   "switch_to",    to: 'users#switch_to'
-        match "orders",       to: 'users#orders'
-        match "reservations", to: 'users#reservations'
-        match "accounts",     to: 'users#accounts'
-        match "access_list",  to: 'users#access_list'
+        get "orders",       to: 'users#orders'
+        get "reservations", to: 'users#reservations'
+        get "accounts",     to: 'users#accounts'
+        get "access_list",  to: 'users#access_list'
         post  "access_list/approvals", to: 'users#access_list_approvals'
       end
     end
@@ -179,6 +179,7 @@ Nucore::Application.routes.draw do
         resources :accessories, only: [:new, :create]
         member do
           get "manage", to: 'order_management/order_details#edit'
+          patch "manage", to: "order_management/order_details#update"
           put "manage", to: 'order_management/order_details#update'
           get "pricing", to: 'order_management/order_details#pricing'
           get "files", to: 'order_management/order_details#files'
@@ -225,8 +226,15 @@ Nucore::Application.routes.draw do
     resources :accounts, controller: "facility_accounts", only: [:index, :show] do
       collection do
         get "search"
-        match "search_results", via: [:get, :post]
+        get "search_results", via: [:get, :post]
+
       end
+
+      if SettingsHelper.feature_on?(:suspend_accounts)
+        get "suspend",   to: 'facility_accounts#suspend',   as: "suspend"
+        get "unsuspend", to: 'facility_accounts#unsuspend', as: "unsuspend"
+      end
+
       get "/members", to: 'facility_accounts#members', as: "members"
 
       get "/statements/:statement_id(.:format)", to: 'facility_accounts#show_statement', as: "statement", defaults: { format: "html" } if Account.config.statements_enabled?
@@ -236,11 +244,6 @@ Nucore::Application.routes.draw do
         plural_name = Account.config.account_type_to_route(type)
         get plural_name, to: "facility_accounts_reconciliation#index", on: :collection, account_type: type
         post "update_#{plural_name}", to: "facility_accounts_reconciliation#update", on: :collection, account_type: type
-      end
-
-      if SettingsHelper.feature_on?(:suspend_accounts)
-        match "suspend",   to: 'facility_accounts#suspend',   as: "suspend"
-        match "unsuspend", to: 'facility_accounts#unsuspend', as: "unsuspend"
       end
 
       resources :orders, controller: "facility_account_orders", only: [:index]
@@ -296,20 +299,24 @@ Nucore::Application.routes.draw do
   end
 
   # order process
-  match "/orders/cart", to: 'orders#cart', as: "cart"
-  match "/orders(\/:status)", to: 'orders#index', as: "orders_status", constraints: { status: /pending|all/ } ## emacs quoting \/
+  get "/orders/cart", to: 'orders#cart', as: "cart"
+  get "/orders(\/:status)", to: 'orders#index', as: "orders_status", constraints: { status: /pending|all/ } ## emacs quoting \/
 
   put "/orders/:id/remove/:order_detail_id", to: 'orders#remove',      as: "remove_order"
-  match "/order/:id/add_account",            to: 'orders#add_account', as: "add_account"
+  get "/order/:id/add_account",            to: 'orders#add_account', as: "add_account"
 
   resources :orders do
     member do
-      match "add",            via: [:get, :put]
-      match "purchase",       via: [:get, :put]
+      get "add"
+      put "add"
+      get "purchase"
+      put "purchase"
       match "choose_account", via: [:get, :post]
-      match "update_or_purchase", via: [:get, :put]
-      get   "receipt"
-      put   "clear"
+      get "update_or_purchase"
+      patch "update_or_purchase"
+      put "update_or_purchase"
+      get "receipt"
+      put "clear"
     end
 
     resources :order_details, only: [:show, :edit, :update] do
@@ -339,20 +346,20 @@ Nucore::Application.routes.draw do
   end
 
   # reservations
-  match "reservations", to: 'reservations#list', as: "reservations"
-  match "reservations(/:status)", to: 'reservations#list', as: "reservations_status"
+  get "reservations", to: 'reservations#list', as: "reservations"
+  get "reservations(/:status)", to: 'reservations#list', as: "reservations_status"
 
   # file upload routes
   get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/upload",                                   to: 'file_uploads#upload',                as: "upload_product_file"
   post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files",                                          to: 'file_uploads#create',                as: "add_product_file"
   post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/uploader_files",                                 to: 'file_uploads#uploader_create',       as: "add_uploader_file"
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:id",                                      to: 'file_uploads#destroy',               as: "remove_product_file", via: :delete
+  delete "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:id",                                      to: 'file_uploads#destroy',               as: "remove_product_file"
   get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:file_type/:id",                           to: 'file_uploads#download',              as: "download_product_file"
   get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/product_survey",                           to: 'file_uploads#product_survey',        as: "product_survey"
   post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/create_product_survey",                    to: 'file_uploads#create_product_survey', as: "create_product_survey"
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
-  match "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete",          to: 'surveys#complete',                 as: "complete_survey", via: [:get, :post]
+  get "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete", to: "surveys#complete", as: "complete_survey"
 
   # api
   namespace :api do

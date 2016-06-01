@@ -6,7 +6,6 @@ class BulkEmailController < ApplicationController
   layout "two_column"
 
   before_filter { @active_tab = "admin_users" }
-  before_filter :remove_ugly_params_and_redirect
   before_filter :authenticate_user!
   before_filter :check_acting_as
   before_filter :init_current_facility

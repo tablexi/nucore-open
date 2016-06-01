@@ -176,14 +176,14 @@ RSpec.describe AccessoriesController do
 
       describe "adding a manual-scaled accessory" do
         before :each do
-          instrument.product_accessories.first.update_attributes(scaling_type: "manual")
-
           @params.merge! accessories: {
             quantity_accessory.id.to_s => {
               quantity: "30",
               enabled: "true",
             },
           }
+
+          instrument.product_accessories.first.update_attributes(scaling_type: "manual")
         end
 
         it "creates the order detail" do
@@ -221,14 +221,14 @@ RSpec.describe AccessoriesController do
 
       describe "adding an autoscaled accessory" do
         before :each do
-          instrument.product_accessories.first.update_attributes(scaling_type: "auto")
-
           @params.merge! accessories: {
             quantity_accessory.id.to_s => {
               quantity: "40",
               enabled: "true",
             },
           }
+
+          instrument.product_accessories.first.update_attributes(scaling_type: "auto")
         end
 
         it "creates the order detail" do

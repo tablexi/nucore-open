@@ -2,7 +2,9 @@
 class EngineManager
 
   def self.loaded_engines
-    Rails.application.railties.engines.map { |e| e.class.name }.to_set
+    Rails.application.railties
+      .select { |r| r.class < Rails::Engine }
+      .map { |e| e.class.name }.to_set
   end
 
   def self.engine_loaded?(engine_name)

@@ -691,7 +691,7 @@ RSpec.describe OrderDetail do
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         @order_detail.to_reconciled!
-        expect { @order_detail.to_canceled! }.to raise_exception AASM::InvalidTransition
+        expect { @order_detail.to_canceled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("reconciled")
         expect(@order_detail.version).to eq(4)
       end
@@ -702,7 +702,7 @@ RSpec.describe OrderDetail do
         expect(@order_detail.reload.journal).to eq(journal)
         @order_detail.to_inprocess!
         @order_detail.to_complete!
-        @order_detail.to_canceled!
+        expect { @order_detail.to_canceled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("complete")
         expect(@order_detail.version).to eq(4)
       end
@@ -732,7 +732,7 @@ RSpec.describe OrderDetail do
           end
 
           it "should not transition to canceled" do
-            expect { order_detail.to_canceled! }.to raise_exception AASM::InvalidTransition
+            expect { order_detail.to_canceled! }.to raise_error(AASM::InvalidTransition)
           end
         end
       end
@@ -753,7 +753,7 @@ RSpec.describe OrderDetail do
         @order_detail.to_complete!
         expect(@order_detail.state).to eq("complete")
         expect(@order_detail.version).to eq(3)
-        @order_detail.to_reconciled!
+        expect { @order_detail.to_reconciled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("complete")
         expect(@order_detail.version).to eq(3)
       end
@@ -911,7 +911,7 @@ RSpec.describe OrderDetail do
       it "should be upcoming" do
         start_time = @now + 2.days
         place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour
-        upcoming = OrderDetail.upcoming_reservations.all
+        upcoming = OrderDetail.upcoming_reservations
         expect(upcoming.size).to eq(1)
         expect(upcoming[0]).to eq(@order_detail)
       end
@@ -919,31 +919,31 @@ RSpec.describe OrderDetail do
       it "should not be upcoming because reserve_end_at is in the past" do
         start_time = @now - 2.days
         place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour
-        expect(OrderDetail.upcoming_reservations.all).to be_blank
+        expect(OrderDetail.upcoming_reservations).to be_blank
       end
 
       it "should not be upcoming because actual_start_at exists" do
         start_time = @now + 2.days
         place_reservation @facility, @order_detail, start_time, reserve_end_at: start_time + 1.hour, actual_start_at: start_time
-        expect(OrderDetail.upcoming_reservations.all).to be_blank
+        expect(OrderDetail.upcoming_reservations).to be_blank
       end
 
       it "should be in progress" do
         place_reservation @facility, @order_detail, @now, actual_start_at: @now
-        upcoming = OrderDetail.in_progress_reservations.all
+        upcoming = OrderDetail.in_progress_reservations
         expect(upcoming.size).to eq(1)
         expect(upcoming[0]).to eq(@order_detail)
       end
 
       it "should not be in progress because actual_start_at missing" do
         place_reservation @facility, @order_detail, @now
-        expect(OrderDetail.in_progress_reservations.all).to be_empty
+        expect(OrderDetail.in_progress_reservations).to be_empty
       end
 
       it "should not be in progress because actual_end_at exists" do
         start_time = @now - 3.hours
         place_reservation @facility, @order_detail, start_time, actual_start_at: start_time, actual_end_at: start_time + 1.hour
-        expect(OrderDetail.in_progress_reservations.all).to be_empty
+        expect(OrderDetail.in_progress_reservations).to be_empty
       end
     end
 
@@ -1461,7 +1461,7 @@ RSpec.describe OrderDetail do
 
         it "should destroy merge order when its last detail is killed" do
           @order_detail.destroy
-          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
 
         it "should not destroy merge order when there are other details" do
@@ -1483,7 +1483,7 @@ RSpec.describe OrderDetail do
         it "should update order_id and delete merge order" do
           assert @order_detail.save
           expect(@order_detail.reload.order).to eq(@merge_to_order)
-          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
 
         it "should not affect non merge orders" do
@@ -1499,9 +1499,7 @@ RSpec.describe OrderDetail do
           @order.order_details.create(attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
           assert @order_detail.reload.save
           expect(@order_detail.reload.order).to eq(@merge_to_order)
-          assert_nothing_raised do
-            expect(@order.reload.order_details.size).to eq(1)
-          end
+          expect(@order.reload.order_details.size).to eq(1)
         end
 
         context "notifications" do
@@ -1564,7 +1562,7 @@ RSpec.describe OrderDetail do
           @order_detail.destroy
           assert @service_order_detail.save
           expect(@service_order_detail.reload.order).to eq(@merge_to_order)
-          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
       end
 
@@ -1605,7 +1603,7 @@ RSpec.describe OrderDetail do
           @order_detail.destroy
           assert @instrument_order_detail.save
           expect(@instrument_order_detail.reload.order).to eq(@merge_to_order)
-          assert_raise(ActiveRecord::RecordNotFound) { Order.find @order.id }
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
       end
     end

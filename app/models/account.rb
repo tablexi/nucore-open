@@ -12,14 +12,14 @@ class Account < ActiveRecord::Base
   include Accounts::AccountNumberSectionable
   include DateHelper
 
-  has_many   :account_users, conditions: { deleted_at: nil }, inverse_of: :account
-  has_many   :deleted_account_users, class_name: "AccountUser", conditions: "account_users.deleted_at IS NOT NULL"
+  has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
+  has_many :deleted_account_users, -> { where.not("account_users.deleted_at" => nil) }, class_name: "AccountUser"
   # Using a basic hash doesn't work with the `owner_user` :through association. It would
   # only include the last item in the hash as part of the scoping.
   # TODO Consider changing when we get to Rails 4.
-  has_one    :owner, class_name: "AccountUser", conditions: "account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL"
+  has_one :owner, -> { where("account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL") }, class_name: "AccountUser"
   has_one    :owner_user, through: :owner, source: :user
-  has_many   :business_admins, class_name: "AccountUser", conditions: { user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil }
+  has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"
   has_many   :price_group_members
   has_many   :order_details
   has_many   :orders
@@ -28,7 +28,7 @@ class Account < ActiveRecord::Base
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
 
-  scope :active, -> { { conditions: ["expires_at > ? AND suspended_at IS NULL", Time.zone.now] } }
+  scope :active, -> { where("expires_at > ?", Time.current).where(suspended_at: nil) }
   scope :global_account_types, -> { where(accounts: { type: config.global_account_types }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
@@ -76,18 +76,16 @@ class Account < ActiveRecord::Base
   end
 
   def self.for_facility(facility)
-    accounts = scoped
-
     if facility.single_facility?
-      accounts = accounts.where(
+      where(
         "accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
         allow_all: config.global_account_types,
         limit_one: config.facility_account_types,
         facility: facility,
       )
+    else
+      all
     end
-
-    accounts
   end
 
   def self.for_user(user)
@@ -242,7 +240,7 @@ class Account < ActiveRecord::Base
     details = order_details.joins(:order)
                            .where("orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL", statement.facility.id, Time.zone.now)
                            .readonly(false)
-                           .all
+                           .to_a
 
     details.each { |od| od.update_attributes(reviewed_at: Time.zone.now + Settings.billing.review_period, statement: statement) }
   end
@@ -294,11 +292,7 @@ class Account < ActiveRecord::Base
 
       # find non-deleted record for this user and account or init new one
       # deleted_at MUST be nil to preserve existing audit trail
-      @account_user = AccountUser.find_or_initialize_by_account_id_and_user_id_and_deleted_at(
-        id,
-        user.id,
-        nil,
-      )
+      @account_user = AccountUser.find_or_initialize_by(account_id: id, user_id: user.id, deleted_at: nil)
       # set (new?) role
       @account_user.user_role = new_role
       # set creation information

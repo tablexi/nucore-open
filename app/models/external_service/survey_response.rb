@@ -11,7 +11,7 @@ class SurveyResponse
     external_service = ExternalService.find params[:external_service_id]
 
     ExternalServiceReceiver.transaction do
-      receiver = ExternalServiceReceiver.find_or_initialize_by_receiver_id_and_external_service_id od.id, external_service.id
+      receiver = ExternalServiceReceiver.find_or_initialize_by(receiver_id: od.id, external_service_id: external_service.id)
       receiver.receiver = od # must assign so receiver type is stored
       receiver.response_data = response_data
       receiver.external_id = params[:survey_id].presence

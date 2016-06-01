@@ -68,15 +68,15 @@ class ReservationsController < ApplicationController
     notices = []
 
     relation = acting_user.order_details
-    in_progress = relation.in_progress_reservations.all
+    in_progress = relation.in_progress_reservations
     @status = params[:status]
     @available_statuses = [in_progress.blank? ? "upcoming" : "upcoming_and_in_progress", "all"]
 
     if @status == "all"
-      @order_details = relation.all_reservations.all
+      @order_details = relation.all_reservations
     elsif @status == "upcoming"
       @status = @available_statuses.first
-      @order_details = in_progress + relation.upcoming_reservations.all
+      @order_details = in_progress + relation.upcoming_reservations
     else
       return redirect_to reservations_status_path(status: "upcoming")
     end

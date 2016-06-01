@@ -6,7 +6,7 @@
 #
 # https://github.com/rails/rails/pull/13247#issuecomment-32425844
 
-raise "Remove #{__FILE__} for Rails 4+" if Rails.version >= "4"
+raise "Remove #{__FILE__} for Rails 4.1+" if Rails.version >= "4.1"
 
 class ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter
 

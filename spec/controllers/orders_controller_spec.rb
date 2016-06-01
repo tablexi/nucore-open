@@ -30,7 +30,7 @@ RSpec.describe OrdersController do
   before(:each) do
     @authable = facility
     @facility_account = facility.facility_accounts.create(attributes_for(:facility_account))
-    @price_group = facility.price_groups.create(attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: facility)
     @item = facility.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
     @account = add_account_for_user(:staff, @item, @price_group)
     @order = @staff.orders.create(FactoryGirl.attributes_for(:order, created_by: @staff.id, account: @account))

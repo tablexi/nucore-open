@@ -30,7 +30,7 @@ RSpec.describe MergeNotification do
     end
 
     it "should find notifications by subject" do
-      notices = MergeNotification.about(@subject2).all
+      notices = MergeNotification.about(@subject2)
       expect(notices.size).to eq(1)
       expect(notices.first.subject).to eq(@subject2)
     end
@@ -38,7 +38,7 @@ RSpec.describe MergeNotification do
     it "should find non dismissed notifications" do
       notification = MergeNotification.about(@subject2).first
       notification.update_attribute :dismissed_at, Time.zone.now
-      notices = MergeNotification.active.all
+      notices = MergeNotification.active
       expect(notices.size).to eq(1)
       expect(notices.first.subject).to eq(@subject)
     end

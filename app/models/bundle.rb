@@ -4,7 +4,7 @@ class Bundle < Product
   has_many :bundle_products, foreign_key: :bundle_product_id
 
   def products_for_group_select
-    products = facility.products.find(:all, conditions: ["type <> 'Bundle'"], order: "products.type, products.name")
+    products = facility.products.where.not(type: "Bundle").order(:type, :name)
     current_group = []
     current_opts  = []
     groups = []

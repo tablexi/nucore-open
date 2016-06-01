@@ -9,8 +9,8 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
     @user = FactoryGirl.create(:user)
     @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
-    @price_group = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @price_group2 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: @facility)
+    @price_group2 = FactoryGirl.create(:price_group, facility: @facility)
 
     FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group)
     FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group2)
@@ -28,8 +28,8 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   context '#cheapest_price_policy' do
     context "current policies" do
       before :each do
-        @price_group3 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-        @price_group4 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+        @price_group3 = FactoryGirl.create(:price_group, facility: @facility)
+        @price_group4 = FactoryGirl.create(:price_group, facility: @facility)
 
         @pp_g1 = make_price_policy(unit_cost: 22, price_group: @price_group)
         @pp_g2 = make_price_policy(unit_cost: 23, price_group: @price_group2)
@@ -80,7 +80,7 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
       end
       context "with a restricted price_policy" do
         before :each do
-          @price_group5 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+          @price_group5 = FactoryGirl.create(:price_group, facility: @facility)
           FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group5)
           @pp_g3_restricted = make_price_policy(unit_cost: 1, price_group: @price_group5, can_purchase: false)
         end
@@ -130,8 +130,8 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
     @user = FactoryGirl.create(:user)
     @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
-    @price_group = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-    @price_group2 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: @facility)
+    @price_group2 = FactoryGirl.create(:price_group, facility: @facility)
 
     FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group)
     FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group2)
@@ -157,8 +157,8 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
   context '#cheapest_price_policy' do
     context "current policies" do
       before :each do
-        @price_group3 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
-        @price_group4 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+        @price_group3 = FactoryGirl.create(:price_group, facility: @facility)
+        @price_group4 = FactoryGirl.create(:price_group, facility: @facility)
 
         @pp_g1 = make_price_policy(usage_rate: 22, price_group: @price_group)
         @pp_g2 = make_price_policy(usage_rate: 23, price_group: @price_group2)
@@ -194,7 +194,7 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
       end
       context "with a restricted price_policy" do
         before :each do
-          @price_group5 = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+          @price_group5 = FactoryGirl.create(:price_group, facility: @facility)
           FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group5)
           @pp_g3_restricted = make_price_policy(usage_rate: 1, price_group: @price_group5, can_purchase: false)
         end

@@ -7,13 +7,13 @@
 #{OrderDetail.human_attribute_name(:ordered_by)}: #{@order.created_by_user.full_name}
 #{Account.model_name.human}: #{@order.account}
 ==
-= OrderDetail.model_name.titleize.pluralize
+= OrderDetail.model_name.to_s.titleize.pluralize
 = "========================================"
 - @order.order_details.each do |order_detail|
   #{OrderDetail.human_attribute_name(:id)}: #{order_detail}
   #{order_detail_description_as_text(order_detail)}
   - if order_detail.reservation
-    #{Reservation.model_name.titleize}: #{order_detail.reservation}
+    #{Reservation.model_name.to_s.titleize}: #{order_detail.reservation}
   #{OrderDetail.human_attribute_name(:quantity)}: #{order_detail.quantity}
   #{OrderDetail.human_attribute_name(:status)}: #{order_detail.order_status.name}
   - order_detail.send(:extend, PriceDisplayment)

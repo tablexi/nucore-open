@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe TrainingRequestsController do
+RSpec.describe TrainingRequestsController, feature_setting: { training_requests: true } do
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:product) do
     FactoryGirl.create(:setup_item, facility: facility,

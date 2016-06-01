@@ -95,7 +95,7 @@ RSpec.describe OldInstrumentPricePolicy do
     before(:each) do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @price_group = FactoryGirl.create(:price_group, facility: @facility)
       @instrument       = FactoryGirl.create(:instrument,
                                              facility: @facility,
                                              reserve_interval: 30,
@@ -371,7 +371,7 @@ RSpec.describe OldInstrumentPricePolicy do
     before(:each) do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create!(FactoryGirl.attributes_for(:price_group))
+      @price_group = FactoryGirl.create(:price_group, facility: @facility)
       @instrument       = FactoryGirl.create(:instrument,
                                              facility: @facility,
                                              reserve_interval: 30,
@@ -427,7 +427,7 @@ RSpec.describe OldInstrumentPricePolicy do
     before :each do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @price_group      = @facility.price_groups.create(FactoryGirl.attributes_for(:price_group))
+      @price_group = FactoryGirl.create(:price_group, facility: @facility)
       @instrument       = FactoryGirl.create(:instrument, facility_account: @facility_account, facility: @facility)
       @ipp = create :old_instrument_price_policy, ipp_attributes(
         usage_rate: 100,

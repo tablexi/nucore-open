@@ -126,14 +126,14 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render app_template_file: "/404", status: 404, layout: "application"
+    render "/404", status: 404, layout: "application"
   end
 
   rescue_from NUCore::PermissionDenied, CanCan::AccessDenied, with: :render_403
   def render_403(_exception)
     # if current_user is nil, the user should be redirected to login
     if current_user
-      render app_template_file: "/403", status: 403, layout: "application"
+      render "/403", status: 403, layout: "application"
     else
       redirect_to new_user_session_path
     end
@@ -141,7 +141,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from NUCore::NotPermittedWhileActingAs, with: :render_acting_error
   def render_acting_error
-    render app_template_file: "/acting_error", status: 403, layout: "application"
+    render "/acting_error", status: 403, layout: "application"
   end
 
   #
@@ -192,21 +192,6 @@ class ApplicationController < ActionController::Base
   # Override here to easily change the resource.
   def ability_resource
     current_facility
-  end
-
-  def remove_ugly_params_and_redirect
-    if params[:commit] && request.get?
-      remove_ugly_params
-      # redirect to self
-      redirect_to params
-      return false
-    end
-  end
-
-  def remove_ugly_params
-    [:commit, :utf8, :authenticity_token].each do |p|
-      params.delete(p)
-    end
   end
 
 end
