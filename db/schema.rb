@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160526192926) do
+ActiveRecord::Schema.define(:version => 20160601214939) do
 
   create_table "account_users", :force => true do |t|
     t.integer  "account_id",               :null => false
@@ -105,10 +105,11 @@ ActiveRecord::Schema.define(:version => 20160526192926) do
     t.integer  "external_service_id"
     t.integer  "receiver_id"
     t.string   "receiver_type"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.string   "external_id"
     t.text     "response_data"
+    t.boolean  "manages_quantity",    :default => false, :null => false
   end
 
   add_index "external_service_receivers", ["external_service_id"], :name => "index_external_service_receivers_on_external_service_id"

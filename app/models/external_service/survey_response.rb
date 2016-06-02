@@ -15,8 +15,11 @@ class SurveyResponse
       receiver.receiver = od # must assign so receiver type is stored
       receiver.response_data = response_data
       receiver.external_id = params[:survey_id].presence
+      if params[:quantity].present?
+        receiver.manages_quantity = true
+        od.quantity = params[:quantity].to_i
+      end
       receiver.save!
-      od.quantity = params[:quantity].to_i if params[:quantity].present?
       od.merge!
       receiver
     end

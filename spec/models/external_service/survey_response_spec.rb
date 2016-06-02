@@ -83,6 +83,24 @@ RSpec.describe SurveyResponse do
       receiver = survey_response.save!
       expect(receiver.receiver.quantity).to eq quantity
     end
+
+    it "locks the quantity for order if there is a quantity param" do
+      params[:quantity] = order_detail.quantity
+      receiver = survey_response.save!
+      expect(order_detail.reload).to be_quantity_locked_by_survey
+    end
+
+    it "does not lock the quantity for order detail if no quantity" do
+      params[:quantity] = nil
+      receiver = survey_response.save!
+      expect(order_detail.reload).not_to be_quantity_locked_by_survey
+    end
+
+    it "does not lock the quantity for order detail if no quantity" do
+      params.delete(:quantity)
+      receiver = survey_response.save!
+      expect(order_detail.reload).not_to be_quantity_locked_by_survey
+    end
   end
 
 end

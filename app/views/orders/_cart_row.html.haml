@@ -16,7 +16,7 @@
     - if order_detail.bundle
       %td.centered= order_detail.quantity
     - else
-      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, value: order_detail.quantity, size: 3
+      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, value: order_detail.quantity, size: 3, disabled: order_detail.quantity_locked_by_survey?
 
   - elsif order_detail.product.is_a?(Item)
     %td
