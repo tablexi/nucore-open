@@ -2,8 +2,31 @@ require "rails_helper"
 
 RSpec.describe SangerSequencing::SubmissionsController do
   let(:submission) { FactoryGirl.create(:sanger_sequencing_submission) }
+  let(:user) { FactoryGirl.create(:user) }
+  before { allow_any_instance_of(SangerSequencing::Submission).to receive(:user).and_return(user) }
+
+  describe "#edit" do
+    describe "as the purchaser" do
+      before { sign_in user }
+      it "has access" do
+        get :edit, id: submission.id
+        expect(response).to be_success
+      end
+    end
+
+    describe "as someone else" do
+      let(:other_user) { FactoryGirl.create(:user) }
+      before { sign_in other_user }
+      it "does not have access" do
+        get :edit, id: submission.id
+        expect(response.code).to eq("403")
+      end
+    end
+  end
 
   describe "#fetch_ids" do
+    before { sign_in user }
+
     let(:data) { JSON.parse(response.body) }
 
     it "gets an array of ids" do
