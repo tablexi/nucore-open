@@ -4,12 +4,18 @@
 = content_for :head_content do
   = javascript_include_tag "sanger_sequencing/submission"
 
-= "Submission ##{@submission.id}"
+= content_for :breadcrumb do
+  %ul.breadcrumb
+    %li= link_to t("pages.home"), :root
+    %li &raquo;
+    %li= link_to current_facility, facility_path(current_facility)
+    %li &raquo;
+    %li= link_to t("pages.cart"), :cart
 
 = simple_form_for @submission, html: { data: { fetch_ids_url: fetch_ids_sanger_sequencing_submission_path(@submission) } } do |f|
   = hidden_field_tag :referer, params[:referer]
   = hidden_field_tag :success_url, params[:success_url]
-  %table.table.table-striped
+  %table.table.table-striped.table-tight
     %thead
       %tr
         %th= SangerSequencing::Sample.human_attribute_name(:customer_sample_id)
@@ -21,7 +27,7 @@
           = sf.input :id, as: :hidden, input_html: { class: "js--sampleId" }
         %td.js--sampleId= sf.object.id
         %td
-          = sf.remove_nested_fields_link text("remove"), class: "btn"
+          = sf.remove_nested_fields_link text("remove"), tabindex: -1
           = sf.input :_destroy, as: :hidden
     %tfoot
       %td{colspan: 2}
