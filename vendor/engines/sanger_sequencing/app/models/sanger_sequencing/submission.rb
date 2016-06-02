@@ -15,7 +15,7 @@ module SangerSequencing
       quantity = quantity.to_i
       raise ArgumentError, "quantity must be positive" if quantity <= 0
       transaction do
-        quantity.times.collect { samples.create! }
+        Array.new(quantity) { samples.create! }
       end
     end
 

@@ -29,7 +29,6 @@ module SangerSequencing
     end
 
     def blank_samples_at_end
-      binding.pry
       @submission.samples.reverse.each_with_object([]) do |sample, to_delete|
         if sample.customer_sample_id.blank? || sample.marked_for_destruction?
           to_delete << sample

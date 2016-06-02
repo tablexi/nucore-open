@@ -14,7 +14,7 @@ $ ->
             callback(@availableIds.shift())
 
   class SangerSequencingSubmission
-    constructor: (fetcher_url)->
+    constructor: (fetcher_url) ->
       @ids = new SangerSequencingSampleArray(fetcher_url)
 
     fieldsAdded: (event, param) =>
@@ -26,8 +26,6 @@ $ ->
         customerSampleIdField.val(sample_data.customer_sample_id).prop("disabled", false)
         idField.val(sample_data.id).text(sample_data.id)
 
-
   fetchDataUrl = $(".edit_sanger_sequencing_submission").data("fetch-ids-url")
   submission = new SangerSequencingSubmission(fetchDataUrl)
   $(document).on "fields_added.nested_form_fields", submission.fieldsAdded
-

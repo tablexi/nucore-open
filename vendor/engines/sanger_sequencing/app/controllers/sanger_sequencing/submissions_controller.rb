@@ -1,6 +1,7 @@
 module SangerSequencing
 
   class SubmissionsController < ApplicationController
+
     NEW_IDS_COUNT = 5
 
     load_resource only: [:edit, :update, :fetch_ids]
@@ -41,7 +42,7 @@ module SangerSequencing
 
     def submission_params
       params.require(:sanger_sequencing_submission)
-        .permit(samples_attributes: [:id, :customer_sample_id, :_destroy])
+            .permit(samples_attributes: [:id, :customer_sample_id, :_destroy])
     end
 
     def external_return_options

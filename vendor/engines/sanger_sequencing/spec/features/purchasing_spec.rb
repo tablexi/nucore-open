@@ -98,7 +98,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       it "does removes the extra ones" do
         page.all(customer_id_selector).each_with_index { |textbox, i| textbox.set(i + 1) }
         click_button "Save Submission"
-        expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to eq(["1", "2", "3", "4", "5"])
+        expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to eq(%w(1 2 3 4 5))
       end
     end
 
