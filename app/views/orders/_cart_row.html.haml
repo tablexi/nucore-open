@@ -1,6 +1,6 @@
 %tr
   - if first_of_group
-    - row_span = @order.order_details.find(:all, :conditions => {:group_id => order_detail.group_id}).length
+    - row_span = @order.order_details.where(group_id: order_detail.group_id).count
     %td.centered{:rowspan => row_span * (acting_as? ? 2 : 1) }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
   - elsif order_detail.group_id.nil?
     %td.centered{:rowspan => (acting_as? ? 2 : 1) }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put

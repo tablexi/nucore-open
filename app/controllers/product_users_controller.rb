@@ -54,7 +54,7 @@ class ProductUsersController < ApplicationController
   # DELETE /facilities/:facility_id/items/item_id/users/:id
   # DELETE /facilities/:facility_id/services/service_id/users/:id
   def destroy
-    product_user = ProductUser.find(:first, conditions: { product_id: @product.id, user_id: params[:id] })
+    product_user = ProductUser.find_by(product_id: @product.id, user_id: params[:id])
     product_user.destroy
 
     if product_user.destroyed?
@@ -72,9 +72,11 @@ class ProductUsersController < ApplicationController
 
     term = generate_multipart_like_search_term(params[:search_term])
     if params[:search_term].length > 0
-      conditions = ["LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ? OR LOWER(username) LIKE ? OR LOWER(CONCAT(first_name, last_name)) LIKE ?", term, term, term, term]
-      @users = User.find(:all, conditions: conditions, order: "last_name, first_name", limit: @limit)
-      @count = @users.length
+      @users = User
+        .where("LOWER(first_name) LIKE :term OR LOWER(last_name) LIKE :term OR LOWER(username) LIKE :term OR LOWER(CONCAT(first_name, last_name)) LIKE :term", term: term)
+        .order(:last_name, :first_name)
+        .limit(@limit)
+      @count = @users.count
     end
 
     render layout: false
