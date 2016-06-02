@@ -9,7 +9,9 @@ class ProductsCommonController < ApplicationController
   before_filter :store_fullpath_in_session
 
   include TranslationHelper
-  load_and_authorize_resource except: [:show, :manage]
+
+  load_resource except: [:show, :manage, :index]
+  authorize_resource except: [:show, :manage]
 
   layout "two_column"
 

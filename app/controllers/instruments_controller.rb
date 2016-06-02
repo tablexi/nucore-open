@@ -12,14 +12,6 @@ class InstrumentsController < ProductsCommonController
 
   skip_before_filter :init_product, only: [:instrument_statuses]
 
-  # GET /facilities/:facility_id/instruments
-  def index
-    super
-    # find current and next upcoming reservations for each instrument
-    @reservations = {}
-    @instruments.each { |i| @reservations[i.id] = i.reservations.upcoming[0..2] }
-  end
-
   # GET /facilities/:facility_id/instruments/:instrument_id
   def show
     assert_product_is_accessible!
