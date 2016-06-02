@@ -37,5 +37,57 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       expect(values).to all(match(/\A\d{4}\z/))
       expect(values.uniq).to eq(values)
     end
+
+    it "saves the form" do
+      page.first(customer_id_selector).set("TEST123")
+      click_button "Save Submission"
+      expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to include("TEST123")
+      expect(SangerSequencing::Sample.count).to eq(5)
+    end
+
+    describe "blank fields" do
+      it "does not allow submitting a blank value" do
+        page.first(customer_id_selector).set("")
+        click_button "Save Submission"
+        expect(page.first(customer_id_selector).value).to be_blank
+        expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("")
+      end
+
+      it "deletes blanks from the end" do
+        page.all(customer_id_selector).last.set("")
+        click_button "Save Submission"
+        expect(SangerSequencing::Sample.count).to eq(4)
+      end
+
+      it "does not delete blanks on invalid" do
+        page.first(customer_id_selector).set("")
+        page.all(customer_id_selector)[-2].set("")
+        page.all(customer_id_selector).last.set("")
+        click_button "Save Submission"
+        expect(page.first(customer_id_selector).value).to be_blank
+        expect(page.all(customer_id_selector).last.value).to be_blank
+        expect(page).to have_css(customer_id_selector, count: 5)
+        expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("")
+      end
+
+      it "does not save if they are all blank" do
+        page.all(customer_id_selector).each { |textbox| textbox.set("") }
+        click_button "Save Submission"
+        expect(page).to have_css(customer_id_selector, count: 5)
+        expect(page.all(customer_id_selector).map(&:value)).to all(be_blank)
+      end
+    end
+
+    describe "saving and returning to the form" do
+      before do
+        page.first(customer_id_selector).set("TEST123")
+        click_button "Save Submission"
+      end
+
+      it "returns to the form" do
+        click_link "Edit Online Order Form"
+        expect(page.first(customer_id_selector).value).to eq("TEST123")
+      end
+    end
   end
 end

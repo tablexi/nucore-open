@@ -2,8 +2,20 @@ en:
   sanger_sequencing:
     name: Sanger Sequencing
 
+  views:
+    sanger_sequencing:
+      submissions:
+        new:
+          submit: "Save Submission"
+
   activerecord:
     attributes:
       sanger_sequencing/sample:
         id: Core Sample
         customer_sample_id: Customer Sample
+    errors:
+      models:
+        sanger_sequencing/submission:
+          attributes:
+            savable_samples:
+              too_short: You must have at least one sample.

@@ -2,14 +2,15 @@ module SangerSequencing
 
   class Sample < ActiveRecord::Base
 
+    include ActiveModel::ForbiddenAttributesProtection
+
     self.table_name = "sanger_sequencing_samples"
     belongs_to :submission
-    # customer_sample_id is based off of the ID, which we don't have until
-    # after the initial persistence.
-    after_create { customer_sample_id && save }
+
+    validates :customer_sample_id, presence: true, on: :update
 
     def customer_sample_id
-      self[:customer_sample_id] ||= default_customer_sample_id
+      self[:customer_sample_id] || (id && default_customer_sample_id)
     end
 
     private
