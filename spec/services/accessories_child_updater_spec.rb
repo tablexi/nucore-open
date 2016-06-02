@@ -28,7 +28,11 @@ RSpec.describe Accessories::ChildUpdater do
     let(:order) { order_detail.order }
     let(:product) { create :setup_item, facility: order_detail.facility }
     let(:user) { reservation.user }
-    let!(:child_order_detail) { order_detail.child_order_details.create(attributes_for :order_detail, product: product, order: order) }
+    let!(:child_order_detail) do
+      order_detail
+        .child_order_details
+        .create(attributes_for(:order_detail, order_status: OrderStatus.new_status, product: product, order: order))
+    end
 
     context "when the parent moves from new to in process" do
       before do
@@ -36,7 +40,7 @@ RSpec.describe Accessories::ChildUpdater do
       end
 
       it "moves the child to in process as well" do
-        expect(child_order_detail).to be_inprocess
+        expect(child_order_detail.reload).to be_inprocess
       end
     end
 
