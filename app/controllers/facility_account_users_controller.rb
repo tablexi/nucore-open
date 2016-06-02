@@ -44,7 +44,7 @@ class FacilityAccountUsersController < ApplicationController
       render(action: "new")
     else
       flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
-      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver
+      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver_now
       redirect_to facility_account_members_path(current_facility, @account)
     end
   end
