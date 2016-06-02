@@ -1,14 +1,16 @@
 require "rails_helper"
 
 RSpec.describe Accessories::ChildUpdater do
-  let!(:child_order_detail) do
+  let(:child_order_detail) do
     FactoryGirl.create(
       :order_detail,
       order: order,
+      order_status: OrderStatus.new_status,
       parent_order_detail_id: parent_order_detail.id,
       product: product,
     )
   end
+
 
   let(:order) { FactoryGirl.create(:purchased_order, product: product) }
   let(:parent_order_detail) { order.order_details.first }
@@ -23,7 +25,7 @@ RSpec.describe Accessories::ChildUpdater do
 
     it "transitions parent and child to inprocess" do
       expect(parent_order_detail).to be_inprocess
-      expect(child_order_detail).to be_inprocess
+      expect(child_order_detail.reload).to be_inprocess
     end
   end
 end
