@@ -709,7 +709,7 @@ ActiveRecord::Schema.define(:version => 20160526192926) do
   add_foreign_key "reservations", "order_details", name: "reservations_order_detail_id_fk"
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
 
-  add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", name: "sanger_sequencing_samples_submission_id_fk", column: "submission_id", dependent: :delete, options: "ON UPDATE CASCADE"
+  add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", name: "sanger_sequencing_samples_submission_id_fk", column: "submission_id", dependent: :delete
 
   add_foreign_key "schedule_rules", "products", name: "schedule_rules_instrument_id_fk", column: "instrument_id"
 
