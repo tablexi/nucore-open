@@ -3,7 +3,10 @@ require "rails_helper"
 RSpec.describe SangerSequencing::SubmissionsController do
   let(:submission) { FactoryGirl.create(:sanger_sequencing_submission) }
   let(:user) { FactoryGirl.create(:user) }
-  before { allow_any_instance_of(SangerSequencing::Submission).to receive(:user).and_return(user) }
+  before do
+    allow_any_instance_of(SangerSequencing::Submission).to receive(:purchased?).and_return(false)
+    allow_any_instance_of(SangerSequencing::Submission).to receive(:user).and_return(user)
+  end
 
   describe "#edit" do
     describe "as the purchaser" do
