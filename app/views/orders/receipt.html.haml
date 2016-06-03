@@ -40,6 +40,8 @@
           .order-detail-description= order_detail_description(order_detail)
           - if res
             .order-detail-extra= res
+          - if order_detail.note.present?
+            .order-detail-extra.order-detail-note= "Note: #{order_detail.note}"
         %td.currency=order_detail.wrapped_cost
         - if @order.has_subsidies?
           %td.currency= order_detail.wrapped_subsidy

@@ -251,7 +251,6 @@ class OrdersController < ApplicationController
   def purchase
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
     @order.ordered_at = build_order_date if ordering_on_behalf_with_date_params?
-
     @order.transaction do
       @order.assign_attributes(order_params)
       order_purchaser.purchase!
@@ -313,6 +312,20 @@ class OrdersController < ApplicationController
   end
 
   private
+
+  def show_notes_field?(order_detail)
+    acting_as? || order_detail.product.note_available_to_users?
+  end
+  helper_method :show_notes_field?
+
+  # Group into chunks by the group id. If group_id is nil, then it should get its
+  # own chunk.
+  def grouped_order_details
+    @order.order_details.order(:group_id).slice_when do |before, after|
+      before.group_id.nil? || before.group_id != after.group_id
+    end
+  end
+  helper_method :grouped_order_details
 
   def build_order_date
     if params[:order_date].present? && params[:order_time].present?

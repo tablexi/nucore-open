@@ -21,3 +21,4 @@
 
 = f.input :is_archived, as: :boolean, label: false, inline_label: text(".hints.is_archived")
 = f.input :is_hidden, as: :boolean, label: false, inline_label: text(".hints.is_hidden", field: f.object.class.name.downcase)
+= f.input :note_available_to_users, label: false, inline_label: text(".hints.note_available_to_users")

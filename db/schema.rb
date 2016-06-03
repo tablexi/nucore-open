@@ -456,6 +456,7 @@ ActiveRecord::Schema.define(version: 20160606205228) do
     t.integer  "reserve_interval",          limit: 4
     t.integer  "lock_window",               limit: 4,     default: 0,     null: false
     t.text     "training_request_contacts", limit: 65535
+    t.boolean  "note_available_to_users",                 default: false, null: false
   end
 
   add_index "products", ["facility_account_id"], name: "fk_facility_accounts", using: :btree

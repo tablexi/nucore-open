@@ -103,7 +103,7 @@ class ProductsCommonController < ApplicationController
 
   # POST /services
   def create
-    @product = current_facility_products.new(params[:"#{singular_object_name}"])
+    @product = current_facility_products.new(product_params)
     @product.initial_order_status_id = OrderStatus.default_order_status.id
 
     save_product_into_object_name_instance
@@ -123,13 +123,18 @@ class ProductsCommonController < ApplicationController
   # PUT /services/1
   def update
     respond_to do |format|
-      if @product.update_attributes(params[:"#{singular_object_name}"])
+      if @product.update_attributes(product_params)
         flash[:notice] = "#{@product.class.name.capitalize} was successfully updated."
         format.html { redirect_to([:manage, current_facility, @product]) }
       else
         format.html { render action: "edit" }
       end
     end
+  end
+
+  def product_params
+    # TODO: Strong params
+    params[:"#{singular_object_name}"]
   end
 
   # DELETE /services/1
