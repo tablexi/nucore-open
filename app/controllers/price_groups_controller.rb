@@ -3,10 +3,10 @@ class PriceGroupsController < ApplicationController
   # TODO: refactor to use PriceGroupMembersController concern, maybe with a new name?
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :load_price_group_and_ability!, only: [:accounts, :destroy, :edit, :show, :update, :users]
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
+  before_action :load_price_group_and_ability!, only: [:accounts, :destroy, :edit, :show, :update, :users]
 
   load_and_authorize_resource
 

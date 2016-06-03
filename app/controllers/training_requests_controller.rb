@@ -2,8 +2,8 @@ class TrainingRequestsController < ApplicationController
 
   admin_tab :index
 
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
+  before_action :authenticate_user!
+  before_action :check_acting_as
 
   load_and_authorize_resource
 

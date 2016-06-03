@@ -3,7 +3,7 @@ class AccountPriceGroupMembersController < ApplicationController
   include PriceGroupMembersController
   include SearchHelper
 
-  before_filter :authorize_account_price_group_member!, only: [:new, :create, :destroy]
+  before_action :authorize_account_price_group_member!, only: [:new, :create, :destroy]
 
   # POST /facilities/:facility_id/price_groups/:price_group_id/account_price_group_members/search_results
   def search_results

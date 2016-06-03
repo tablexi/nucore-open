@@ -1,10 +1,10 @@
 class StatementsController < ApplicationController
 
   customer_tab  :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_account
-  before_filter :init_statement
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_account
+  before_action :init_statement
 
   load_and_authorize_resource
 
