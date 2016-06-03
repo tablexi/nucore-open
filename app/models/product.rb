@@ -40,6 +40,7 @@ class Product < ActiveRecord::Base
 
   scope :active, -> { where(is_archived: false, is_hidden: false) }
   scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: phase out in favor of the .not_archived scope
+  scope :alphabetized, -> { order("lower(name)") }
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
 
@@ -70,7 +71,7 @@ class Product < ActiveRecord::Base
     self.is_hidden         ||= false
 
     # return true so validations will run
-    return true
+    true
   end
   after_create :set_default_pricing
 
@@ -98,6 +99,7 @@ class Product < ActiveRecord::Base
     upcoming_price_policies.order("start_date ASC").group_by(&:start_date)
   end
 
+  # TODO: favor the alphabetized scope over relying on Array#sort
   def <=>(obj)
     name.casecmp obj.name
   end
@@ -182,7 +184,7 @@ class Product < ActiveRecord::Base
   def cheapest_price_policy(order_detail, date = Time.zone.now)
     groups = order_detail.price_groups
     return nil if groups.empty?
-    price_policies = current_price_policies(date).delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
+    price_policies = current_price_policies(date).to_a.delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
 
     # provide a predictable ordering of price groups so that equal unit costs
     # are always handled the same way. Put the base group at the front of the

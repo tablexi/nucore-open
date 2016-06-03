@@ -28,11 +28,6 @@ class ProductsCommonController < ApplicationController
                   current_facility_products.archived
                 end
 
-    # not sure this actually does anything since @products is a Relation, not an Array, but it was
-    # in ServicesController, ItemsController, and InstrumentsController before I pulled #index up
-    # into this class
-    @products.sort!
-
     render "admin/products/index"
   end
 
@@ -169,7 +164,7 @@ class ProductsCommonController < ApplicationController
 
   # The equivalent of calling current_facility.services or current_facility.items
   def current_facility_products
-    current_facility.send(:"#{plural_object_name}")
+    current_facility.public_send(:"#{plural_object_name}").alphabetized
   end
 
   def price_policy_available_for_product?
