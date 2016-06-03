@@ -12,7 +12,7 @@ OrderStatus.create(name: "Canceled")
 OrderStatus.create(name: "Complete")
 OrderStatus.create(name: "Reconciled")
 
-Affiliate.find_or_create_by_name("Other")
+Affiliate.find_or_create_by(name: "Other")
 
 # TODO revisit in Rails 4. If you run `rake db:reset db:create db:migrate db:seed` as one step,
 # it fails on not recognizing `is_internal`
@@ -29,6 +29,5 @@ end
 
 new_status = OrderStatus.new_os.first
 OrderDetailObserver.status_change_hooks.keys.each do |status|
-  # TODO: Rails 4 use newer method
-  OrderStatus.find_or_create_by_name_and_facility_id(name: status.to_s.titleize, facility_id: nil, parent: new_status)
+  OrderStatus.find_or_create_by(name: status.to_s.titleize, facility_id: nil, parent_id: new_status.id)
 end

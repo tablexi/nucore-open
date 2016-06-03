@@ -12,14 +12,6 @@ class Statement < ActiveRecord::Base
 
   default_scope -> { order(created_at: :desc) }
 
-  def account_balance_due(account)
-    at = order_details.find(:first,
-                            joins: "INNER JOIN statement_rows ON statement_rows.statement_id=statements.id",
-                            conditions: ["order_details.reviewed_at <= ? AND order_details.account_id = ?", invoice_date, account.id],
-                            select: "SUM(statement_rows.amount) AS balance")
-    at.nil? ? 0 : at.balance.to_f
-  end
-
   # Used in NU branch
   def first_order_detail_date
     min_order = order_details.min { |a, b| a.order.ordered_at <=> b.order.ordered_at }

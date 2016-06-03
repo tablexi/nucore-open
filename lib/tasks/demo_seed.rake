@@ -8,22 +8,22 @@ namespace :demo do
   desc "bootstrap db with data appropriate for demonstration"
 
   task seed: :environment do
-    new_status = OrderStatus.find_or_create_by_name(name: "New")
-    in_process = OrderStatus.find_or_create_by_name(name: "In Process")
-    canceled   = OrderStatus.find_or_create_by_name(name: "Canceled")
-    complete   = OrderStatus.find_or_create_by_name(name: "Complete")
-    reconciled = OrderStatus.find_or_create_by_name(name: "Reconciled")
+    new_status = OrderStatus.find_or_create_by(name: "New")
+    in_process = OrderStatus.find_or_create_by(name: "In Process")
+    canceled   = OrderStatus.find_or_create_by(name: "Canceled")
+    complete   = OrderStatus.find_or_create_by(name: "Complete")
+    reconciled = OrderStatus.find_or_create_by(name: "Reconciled")
 
-    facility = Facility.find_or_create_by_name(name: "Example Facility",
-                                               abbreviation: "EF",
-                                               url_name: "example",
-                                               short_description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in mi tellus. Nunc ut turpis rhoncus mauris vehicula volutpat in fermentum metus. Sed eleifend purus at nunc facilisis fermentum metus.",
-                                               description: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris scelerisque metus et augue elementum ac pellentesque neque blandit. Nunc ultrices auctor velit, et ullamcorper lacus ultrices id. Pellentesque vulputate dapibus mauris, sollicitudin mollis diam malesuada nec. Fusce turpis augue, consectetur nec consequat nec, tristique sit amet urna. Nunc vitae imperdiet est. Aenean gravida, risus eget posuere fermentum, risus odio bibendum ligula, sit amet lobortis enim odio facilisis ipsum. Donec iaculis dolor vitae massa ullamcorper pulvinar. In hac habitasse platea dictumst. Pellentesque iaculis sapien id est auctor a semper odio tincidunt. Suspendisse nec lectus sit amet est imperdiet elementum non sagittis nulla. Sed tempor velit nec sapien rhoncus consequat semper neque malesuada. Nunc gravida justo in felis tempus dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis tristique diam dolor. Curabitur lacinia molestie est vel mollis. Ut facilisis vestibulum scelerisque. Aenean placerat purus in nisi auctor scelerisque.</p>",
-                                               address: "Example Facility\nFinancial Dept\n111 University Rd.\nEvanston, IL 60201-0111",
-                                               phone_number: "(312) 123-4321",
-                                               fax_number: "(312) 123-1234",
-                                               email: "example-support@example.com",
-                                               is_active: true)
+    facility = Facility.find_or_create_by(name: "Example Facility",
+                                          abbreviation: "EF",
+                                          url_name: "example",
+                                          short_description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in mi tellus. Nunc ut turpis rhoncus mauris vehicula volutpat in fermentum metus. Sed eleifend purus at nunc facilisis fermentum metus.",
+                                          description: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris scelerisque metus et augue elementum ac pellentesque neque blandit. Nunc ultrices auctor velit, et ullamcorper lacus ultrices id. Pellentesque vulputate dapibus mauris, sollicitudin mollis diam malesuada nec. Fusce turpis augue, consectetur nec consequat nec, tristique sit amet urna. Nunc vitae imperdiet est. Aenean gravida, risus eget posuere fermentum, risus odio bibendum ligula, sit amet lobortis enim odio facilisis ipsum. Donec iaculis dolor vitae massa ullamcorper pulvinar. In hac habitasse platea dictumst. Pellentesque iaculis sapien id est auctor a semper odio tincidunt. Suspendisse nec lectus sit amet est imperdiet elementum non sagittis nulla. Sed tempor velit nec sapien rhoncus consequat semper neque malesuada. Nunc gravida justo in felis tempus dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis tristique diam dolor. Curabitur lacinia molestie est vel mollis. Ut facilisis vestibulum scelerisque. Aenean placerat purus in nisi auctor scelerisque.</p>",
+                                          address: "Example Facility\nFinancial Dept\n111 University Rd.\nEvanston, IL 60201-0111",
+                                          phone_number: "(312) 123-4321",
+                                          fax_number: "(312) 123-1234",
+                                          email: "example-support@example.com",
+                                          is_active: true)
 
     # create chart strings, which are required when creating a facility account and nufs account
     chart_strings = [
@@ -52,7 +52,7 @@ namespace :demo do
     pgnu = pgex = nil
 
     Settings.price_group.name.to_hash.each do |k, v|
-      price_group = PriceGroup.find_or_create_by_name(name: v, is_internal: (k == :base || k == :cancer_center), display_order: order)
+      price_group = PriceGroup.find_or_create_by(name: v, is_internal: (k == :base || k == :cancer_center), display_order: order)
 
       price_group.save(validate: false) # override facility validator
 
@@ -341,7 +341,7 @@ namespace :demo do
       end
     end
 
-    other_affiliate = Affiliate.find_or_create_by_name("Other")
+    other_affiliate = Affiliate.find_or_create_by(name: "Other")
 
     if EngineManager.engine_loaded? :c2po
       ccaccount = CreditCardAccount.find_by_account_number("xxxx-xxxx-xxxx-xxxx")

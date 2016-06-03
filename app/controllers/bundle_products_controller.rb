@@ -19,8 +19,7 @@ class BundleProductsController < ApplicationController
 
   # GET /facilities/:facility_id/bundles/:bundle_id/bundle_products
   def index
-    @bundle_products = @bundle.bundle_products
-    @bundle_products.sort!
+    @bundle_products = @bundle.bundle_products.alphabetized
   end
 
   # POST /facilities/:facility_id/bundles/:bundle_id/bundle_products
