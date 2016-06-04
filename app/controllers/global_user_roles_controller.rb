@@ -1,6 +1,6 @@
 class GlobalUserRolesController < GlobalSettingsController
 
-  before_filter :load_user, only: [:destroy, :edit, :update]
+  before_action :load_user, only: [:destroy, :edit, :update]
 
   def index
     @users = UserPresenter.wrap(User.with_global_roles)

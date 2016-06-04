@@ -45,7 +45,7 @@ class Reservations::DurationChangeValidations
   private
 
   def was_reserve_start_at_editable?(reservation)
-    Reservation.find(reservation).reserve_start_at_editable?
+    Reservation.find(reservation.id).reserve_start_at_editable?
   end
 
 end

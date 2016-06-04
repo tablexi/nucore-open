@@ -1,10 +1,10 @@
 class JournalCutoffDatesController < ApplicationController
 
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   load_and_authorize_resource
 
   layout "two_column"
-  before_filter { @active_tab = "global_settings" }
+  before_action { @active_tab = "global_settings" }
 
   def index
     @journal_cutoff_dates = JournalCutoffDate.recent_and_upcoming

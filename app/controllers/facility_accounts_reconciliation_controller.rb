@@ -5,12 +5,12 @@ class FacilityAccountsReconciliationController < ApplicationController
   admin_tab :all
   layout "two_column"
 
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :check_billing_access
-  before_filter :set_billing_navigation
-  before_filter { @accounts = account_class.need_reconciling(current_facility) }
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
+  before_action :check_billing_access
+  before_action :set_billing_navigation
+  before_action { @accounts = account_class.need_reconciling(current_facility) }
 
   def index
     if @accounts.none?

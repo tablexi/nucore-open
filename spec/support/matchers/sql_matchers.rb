@@ -26,17 +26,23 @@ if NUCore::Database.oracle?
   end
 else
   RSpec::Matchers.define :contain_end_of_day do |field, datetime|
-    expected = "#{field} <= '#{datetime.end_of_day.utc.strftime('%Y-%m-%d %H:%M:%S')}'"
+    expected = /\A#{field} <= '#{datetime.end_of_day.utc.strftime('%Y-%m-%d %H:%M:%S')}(\.9+)?'\z/
     match do |actual|
-      actual.where_values.include? expected
+      actual.where_values.any? do |where_value|
+        where_value =~ expected
+      end
     end
   end
+
   RSpec::Matchers.define :contain_beginning_of_day do |field, datetime|
-    expected = "#{field} >= '#{datetime.beginning_of_day.utc.strftime('%Y-%m-%d %H:%M:%S')}'"
+    expected = /\A#{field} >= '#{datetime.beginning_of_day.utc.strftime('%Y-%m-%d %H:%M:%S')}(\.0+)?'\z/
     match do |actual|
-      actual.where_values.include? expected
+      actual.where_values.any? do |where_value|
+        where_value =~ expected
+      end
     end
   end
+
   RSpec::Matchers.define :contain_string_in_sql do |expected|
     match do |actual|
       actual.to_sql.include? expected

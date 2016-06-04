@@ -1,7 +1,7 @@
 class UserPasswordController < ApplicationController
 
-  before_filter :authenticate_user!, only: :edit_current
-  before_filter :no_user_allowed, only: [:reset, :edit, :update]
+  before_action :authenticate_user!, only: :edit_current
+  before_action :no_user_allowed, only: [:reset, :edit, :update]
   layout "application"
   # GET /users/password/edit_current
   # POST /users/password/edit_current

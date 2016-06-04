@@ -6,7 +6,7 @@ RSpec.describe ExportRawReportMailer do
     let(:report) { double Reports::ExportRaw, filename: "test.csv", to_csv: "1,2,3\n", description: "test" }
 
     before :each do
-      ExportRawReportMailer.raw_report_email("recipient@example.net", report).deliver
+      ExportRawReportMailer.raw_report_email("recipient@example.net", report).deliver_now
     end
 
     context "mail headers" do

@@ -17,7 +17,7 @@ RSpec.describe CsvReportMailer do
     let(:subject_line) { "Subject Line" }
     let(:text_content) { "Text Content" }
 
-    before { CsvReportMailer.csv_report_email(recipient, report).deliver }
+    before { CsvReportMailer.csv_report_email(recipient, report).deliver_now }
 
     context "mail headers" do
       it "has the expected recipient" do

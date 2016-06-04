@@ -32,14 +32,14 @@ module ReservationsHelper
   def start_time_disabled?(reservation)
     return false if !reservation.persisted? || reservation.in_cart?
 
-    original = Reservation.find(reservation)
+    original = Reservation.find(reservation.id)
     !original.reserve_start_at_editable?
   end
 
   def end_time_disabled?(reservation)
     return false if !reservation.persisted? || reservation.in_cart?
 
-    original = Reservation.find(reservation)
+    original = Reservation.find(reservation.id)
     !original.reserve_end_at_editable?
   end
 

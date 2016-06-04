@@ -5,7 +5,7 @@ module Reports
     extend ActiveSupport::Concern
 
     included do
-      before_filter :init_status_filter_report_params
+      before_action :init_status_filter_report_params
     end
 
     def init_status_filter_report_params

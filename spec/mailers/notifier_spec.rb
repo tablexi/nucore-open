@@ -8,7 +8,7 @@ RSpec.describe Notifier do
   let(:user) { order.user }
 
   describe ".order_notification" do
-    before { Notifier.order_notification(order, recipient).deliver }
+    before { Notifier.order_notification(order, recipient).deliver_now }
 
     let(:recipient) { "orders@example.net" }
 
@@ -29,7 +29,7 @@ RSpec.describe Notifier do
 
     before(:each) do
       order.order_details.first.update_attribute(:note, note) if note.present?
-      Notifier.order_receipt(order: order, user: user).deliver
+      Notifier.order_receipt(order: order, user: user).deliver_now
     end
 
     it "generates a receipt", :aggregate_failures do

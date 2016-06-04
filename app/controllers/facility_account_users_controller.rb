@@ -1,9 +1,9 @@
 class FacilityAccountUsersController < ApplicationController
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
 
   load_and_authorize_resource class: AccountUser
 
@@ -44,7 +44,7 @@ class FacilityAccountUsersController < ApplicationController
       render(action: "new")
     else
       flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
-      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver
+      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver_now
       redirect_to facility_account_members_path(current_facility, @account)
     end
   end

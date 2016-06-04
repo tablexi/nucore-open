@@ -26,7 +26,7 @@ module Reservations::RelaySupport
 
   def can_kill_power?
     return false if actual_start_at.nil?
-    return false unless Reservation.find(:first, conditions: ["actual_start_at > ? AND product_id = ? AND id <> ? AND actual_end_at IS NULL", actual_start_at, product_id, id]).nil?
+    return false if Reservation.where("actual_start_at > ? AND product_id = ? AND id <> ? AND actual_end_at IS NULL", actual_start_at, product_id, id).present?
     true
   end
   deprecate can_kill_power?: "Most likely not used anywhere"

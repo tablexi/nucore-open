@@ -8,9 +8,9 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
   helper_method :edit_disabled?
 
-  before_filter :authorize_order_detail, except: %i(sample_results template_results)
-  before_filter :load_accounts, only: [:edit, :update]
-  before_filter :load_order_statuses, only: [:edit, :update]
+  before_action :authorize_order_detail, except: %i(sample_results template_results)
+  before_action :load_accounts, only: [:edit, :update]
+  before_action :load_order_statuses, only: [:edit, :update]
 
   admin_tab :all
 

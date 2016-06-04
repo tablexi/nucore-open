@@ -3,13 +3,12 @@ source "https://rubygems.org"
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
-gem "rails", "4.1.15"
+gem "rails", "4.2.6"
 gem "protected_attributes"
 gem "rails_config",     "0.3.3"
 
 ## database
 gem "mysql2",           "~> 0.3.20"
-gem "foreigner",        "1.7.4"
 
 ## auth
 gem "devise",           "~> 3.5.10"
@@ -30,7 +29,7 @@ gem "bootstrap-sass",   "~> 2.3.2"
 gem "haml",             "~> 4.0.5"
 gem "will_paginate",    "~> 3.0.5"
 gem "dynamic_form",     "~> 1.1.4"
-gem "ckeditor",         "~> 4.0.10"
+gem "ckeditor", "~> 4.1.6"
 gem "jquery-rails"
 gem "jquery-ui-rails"
 gem "clockpunch",       "~> 0.1.0"

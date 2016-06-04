@@ -2,11 +2,11 @@ class OrdersController < ApplicationController
 
   customer_tab  :all
 
-  before_filter :authenticate_user!
-  before_filter :check_acting_as,          except: [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
-  before_filter :init_order,               except: [:cart, :index, :receipt]
-  before_filter :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
-  before_filter :load_statuses, only: [:show, :update, :purchase, :update_or_purchase]
+  before_action :authenticate_user!
+  before_action :check_acting_as,          except: [:cart, :add, :choose_account, :show, :remove, :purchase, :update_or_purchase, :receipt, :update]
+  before_action :init_order,               except: [:cart, :index, :receipt]
+  before_action :protect_purchased_orders, except: [:cart, :receipt, :confirmed, :index]
+  before_action :load_statuses, only: [:show, :update, :purchase, :update_or_purchase]
 
   def self.permitted_params
     @permitted_params ||= []
@@ -129,7 +129,7 @@ class OrdersController < ApplicationController
 
     # remove bundles
     if order_detail.group_id
-      order_details = @order.order_details.find(:all, conditions: { group_id: order_detail.group_id })
+      order_details = @order.order_details.where(group_id: order_detail.group_id)
       OrderDetail.transaction do
         if order_details.all?(&:destroy)
           flash[:notice] = "The bundle has been removed."
