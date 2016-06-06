@@ -28,12 +28,12 @@ RSpec.describe InstrumentPricePolicyCalculations do
 
   it "calculates cost based on the given duration and discount" do
     policy.usage_rate = 5
-    expect(policy.calculate_cost(120, 0.15).to_f).to eq 1.5
+    expect(policy.calculate_cost(120, 0.15).round 2).to eq 1.5
   end
 
   it "calculates subsidy based on the given duration and discount" do
     policy.usage_subsidy = 5
-    expect(policy.calculate_subsidy(120, 0.15).to_f).to eq 1.5
+    expect(policy.calculate_subsidy(120, 0.15).round 2).to eq 1.5
   end
 
   describe "calculating with two effective schedule rules, one discounting one not" do
@@ -45,12 +45,12 @@ RSpec.describe InstrumentPricePolicyCalculations do
           on_sat: false,
           on_sun: false,
         )
-        policy.product.schedule_rules << create(:weekend_schedule_rule,
-                                                instrument: policy.product,
-                                                discount_percent: 25,
-                                                start_hour: 0,
-                                                end_hour: 24,
-                                               )
+
+        policy.product.reload.schedule_rules << create(:weekend_schedule_rule,
+                                                       instrument: policy.product,
+                                                       discount_percent: 25,
+                                                       start_hour: 0,
+                                                       end_hour: 24)
       end
 
       it "calculates a discount based on the given time and configured schedule rules" do
@@ -75,8 +75,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
                                                 instrument: policy.product,
                                                 discount_percent: 20,
                                                 start_hour: 17,
-                                                end_hour: 24,
-                                               )
+                                                end_hour: 24)
         @reservation_start = 1.day.from_now.change hour: 16, min: 15, sec: 0
         @reservation_end = @reservation_start + 1.hour + 30.minutes
       end
@@ -299,8 +298,8 @@ RSpec.describe InstrumentPricePolicyCalculations do
       reservation.actual_start_at = reservation.reserve_start_at
       reservation.actual_end_at = reservation.reserve_end_at - 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
-      expect(new_costs[:cost].round 4).to eq 61
-      expect(new_costs[:subsidy].round 4).to eq 8.6083
+      expect(new_costs[:cost]).to eq(61.to_d)
+      expect(new_costs[:subsidy]).to eq(8.61.to_d)
     end
 
     it "calculates overage costs precisely" do
@@ -313,8 +312,8 @@ RSpec.describe InstrumentPricePolicyCalculations do
       reservation.actual_start_at = reservation.reserve_start_at
       reservation.actual_end_at = reservation.reserve_end_at + 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
-      expect(new_costs[:cost].round(4).to_s).to eq "29.1667"
-      expect(new_costs[:subsidy].round(4).to_s).to eq "8.1667"
+      expect(new_costs[:cost]).to eq(29.169.to_d)
+      expect(new_costs[:subsidy]).to eq(8.169.to_d)
     end
 
     it "charges for 90 minutes when an hour reservation is started 15 minutes late and goes over the reserved end time by 30 minutes" do

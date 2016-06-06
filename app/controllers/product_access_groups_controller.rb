@@ -1,7 +1,7 @@
 class ProductAccessGroupsController < ApplicationController
 
-  before_filter :authenticate_user!
-  before_filter :init_current_facility
+  before_action :authenticate_user!
+  before_action :init_current_facility
 
   admin_tab :all
   load_and_authorize_resource :facility, find_by: :url_name

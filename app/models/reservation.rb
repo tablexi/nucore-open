@@ -75,7 +75,7 @@ class Reservation < ActiveRecord::Base
     if reservation.id
       where("reservations.id <> ?", reservation.id)
     else
-      scoped
+      all
     end
   end
 
@@ -95,9 +95,12 @@ class Reservation < ActiveRecord::Base
   def self.upcoming(t = Time.zone.now)
     # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
     # Eliminate by letting Rails filter by #reserve_end_at
-    reservations = find(:all, conditions: "reservations.canceled_at IS NULL AND (orders.state = 'purchased' OR orders.state IS NULL)", order: "reserve_end_at asc", joins: ["LEFT JOIN order_details ON order_details.id = reservations.order_detail_id", "LEFT JOIN orders ON orders.id = order_details.order_id"])
-    reservations.delete_if { |r| r.reserve_end_at < t }
-    reservations
+    joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
+      .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
+      .where(canceled_at: nil, "orders.state" => [nil, "purchased"])
+      .order(reserve_end_at: :asc)
+      .to_a
+      .delete_if { |reservation| reservation.reserve_end_at < t }
   end
 
   def self.overlapping(start_at, end_at)

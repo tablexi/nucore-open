@@ -3,14 +3,14 @@ class PricePoliciesController < ApplicationController
   include DateHelper
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :init_product
-  before_filter :init_price_policy, except: [:index, :new]
-  before_filter :build_price_policies!, only: [:create, :edit, :update]
-  before_filter :set_expire_date_from_params, only: [:create, :update]
-  before_filter :set_max_expire_date, only: [:edit, :update]
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
+  before_action :init_product
+  before_action :init_price_policy, except: [:index, :new]
+  before_action :build_price_policies!, only: [:create, :edit, :update]
+  before_action :set_expire_date_from_params, only: [:create, :update]
+  before_action :set_max_expire_date, only: [:edit, :update]
 
   load_and_authorize_resource
 

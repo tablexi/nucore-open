@@ -4,14 +4,14 @@ class FacilityOrdersController < ApplicationController
   include TabCountHelper
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
 
   load_and_authorize_resource class: Order
 
-  before_filter :load_order, only: [:edit, :show, :update, :send_receipt]
-  before_filter :load_merge_orders, only: [:edit, :show]
+  before_action :load_order, only: [:edit, :show, :update, :send_receipt]
+  before_action :load_merge_orders, only: [:edit, :show]
 
   include FacilityOrderStatusHelper
 
@@ -140,7 +140,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def load_merge_orders
-    @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id).all
+    @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id)
   end
 
 end

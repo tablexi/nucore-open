@@ -1,13 +1,13 @@
 class OrderStatusesController < ApplicationController
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
 
   load_and_authorize_resource
   # Disallow editing root statuses
-  before_filter :ensure_editable, only: [:edit, :update, :destroy]
+  before_action :ensure_editable, only: [:edit, :update, :destroy]
 
   layout "two_column"
 
@@ -24,7 +24,7 @@ class OrderStatusesController < ApplicationController
 
   # GET /order_statuses/new
   def new
-    @order_status = current_facility.order_statuses.new
+    @order_status = OrderStatus.new(facility: current_facility)
   end
 
   # GET /facilities/:facility_id/order_statuses/:id/edit
@@ -34,7 +34,8 @@ class OrderStatusesController < ApplicationController
 
   # POST /order_statuses
   def create
-    @order_status = current_facility.order_statuses.new(params[:order_status])
+    @order_status = OrderStatus.new(params[:order_status])
+    @order_status.facility = current_facility
 
     if @order_status.save
       flash[:notice] = "The Order Status was successfully created."

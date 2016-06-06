@@ -4,7 +4,7 @@ class ReadonlyInput < SimpleForm::Inputs::Base
 
   disable :required
 
-  def input
+  def input(wrapper_options)
     classes = [*input_html_options[:class]]
     template.content_tag :div, class: classes do
       value = input_html_options[:value] || object.send(attribute_name)

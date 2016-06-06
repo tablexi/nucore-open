@@ -15,6 +15,9 @@ module Nucore
 
   class Application < Rails::Application
 
+    # TODO: This disables strong parameters across the board:
+    config.action_controller.permit_all_parameters = true
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -71,6 +74,7 @@ module Nucore
       g.test_framework :rspec
     end
 
+    config.active_record.raise_in_transactional_callbacks = true
   end
 
 end

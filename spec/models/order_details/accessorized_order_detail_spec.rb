@@ -103,7 +103,8 @@ RSpec.describe OrderDetail do
   end
 
   context "auto scaled accessory" do
-    let(:accessory_order_detail) { accessorizer.add_accessory(accessory) }
+    # reload in order to avoid timestamp truncation causing false-positives on `changes`
+    let(:accessory_order_detail) { accessorizer.add_accessory(accessory).reload }
     before :each do
       accessorizer.send(:product_accessory, accessory).update_attributes(scaling_type: "auto")
       accessory_order_detail # load

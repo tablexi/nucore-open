@@ -1,10 +1,10 @@
 class ProductAccessoriesController < ApplicationController
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :init_product
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
+  before_action :init_product
   load_and_authorize_resource through: :product
 
   layout "two_column"
@@ -41,7 +41,7 @@ class ProductAccessoriesController < ApplicationController
     # Already set as an accessory, or is this instrument
     non_available_accessories = [@product.id]
     non_available_accessories += @product_accessories.map(&:accessory_id) if @product_accessories.present?
-    @available_accessories = current_facility.products.non_instruments.exclude(non_available_accessories).order(:name).all
+    @available_accessories = current_facility.products.non_instruments.exclude(non_available_accessories).order(:name)
   end
 
 end

@@ -10,7 +10,7 @@ class Product < ActiveRecord::Base
   has_many   :stored_files
   has_many   :price_groups, through: :price_group_products
   has_many   :price_group_products
-  has_many   :product_accessories, conditions: { deleted_at: nil }, dependent: :destroy
+  has_many :product_accessories, -> { where(deleted_at: nil) }, dependent: :destroy
   has_many   :accessories, through: :product_accessories, class_name: "Product"
   has_many   :price_policies
   has_many   :training_requests, dependent: :destroy
@@ -38,10 +38,11 @@ class Product < ActiveRecord::Base
     end
   end
 
-  scope :active,             conditions: { is_archived: false, is_hidden: false }
-  scope :active_plus_hidden, conditions: { is_archived: false }
-  scope :archived,           conditions: { is_archived: true }
-  scope :not_archived,       conditions: { is_archived: false }
+  scope :active, -> { where(is_archived: false, is_hidden: false) }
+  scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: phase out in favor of the .not_archived scope
+  scope :alphabetized, -> { order("lower(name)") }
+  scope :archived, -> { where(is_archived: true) }
+  scope :not_archived, -> { where(is_archived: false) }
 
   def self.non_instruments
     where("products.type <> 'Instrument'")
@@ -70,7 +71,7 @@ class Product < ActiveRecord::Base
     self.is_hidden         ||= false
 
     # return true so validations will run
-    return true
+    true
   end
   after_create :set_default_pricing
 
@@ -98,6 +99,7 @@ class Product < ActiveRecord::Base
     upcoming_price_policies.order("start_date ASC").group_by(&:start_date)
   end
 
+  # TODO: favor the alphabetized scope over relying on Array#sort
   def <=>(obj)
     name.casecmp obj.name
   end
@@ -142,7 +144,7 @@ class Product < ActiveRecord::Base
   end
 
   def set_default_pricing
-    PriceGroup.globals.all.each do |pg|
+    PriceGroup.globals.find_each do |pg|
       PriceGroupProduct.create!(product: self, price_group: pg)
     end
   end
@@ -182,7 +184,7 @@ class Product < ActiveRecord::Base
   def cheapest_price_policy(order_detail, date = Time.zone.now)
     groups = order_detail.price_groups
     return nil if groups.empty?
-    price_policies = current_price_policies(date).delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
+    price_policies = current_price_policies(date).to_a.delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
 
     # provide a predictable ordering of price groups so that equal unit costs
     # are always handled the same way. Put the base group at the front of the

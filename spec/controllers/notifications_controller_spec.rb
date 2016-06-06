@@ -5,7 +5,7 @@ require "notifications_helper"
 RSpec.shared_examples "user without notifications" do
   context "director without notices" do
     before :each do
-      @director.notifications.all.each(&:destroy)
+      @director.notifications.each(&:destroy)
     end
 
     it_should_allow :director, "no access to notifications if there aren't any" do

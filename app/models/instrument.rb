@@ -55,7 +55,7 @@ class Instrument < Product
   end
 
   def set_default_pricing
-    PriceGroup.globals.all.each do |pg|
+    PriceGroup.globals.find_each do |pg|
       PriceGroupProduct.create!(product: self, price_group: pg, reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
     end
   end

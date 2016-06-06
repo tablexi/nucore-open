@@ -3,10 +3,10 @@ class ReservationsController < ApplicationController
   include Timelineable
 
   customer_tab  :all
-  before_filter :authenticate_user!, except: [:index]
-  before_filter :check_acting_as, only: [:switch_instrument, :show, :list]
-  before_filter :load_basic_resources, only: [:new, :create, :edit, :update]
-  before_filter :load_and_check_resources, only: [:move, :switch_instrument]
+  before_action :authenticate_user!, except: [:index]
+  before_action :check_acting_as, only: [:switch_instrument, :show, :list]
+  before_action :load_basic_resources, only: [:new, :create, :edit, :update]
+  before_action :load_and_check_resources, only: [:move, :switch_instrument]
 
   include TranslationHelper
   include FacilityReservationsHelper
@@ -68,15 +68,15 @@ class ReservationsController < ApplicationController
     notices = []
 
     relation = acting_user.order_details
-    in_progress = relation.in_progress_reservations.all
+    in_progress = relation.in_progress_reservations
     @status = params[:status]
     @available_statuses = [in_progress.blank? ? "upcoming" : "upcoming_and_in_progress", "all"]
 
     if @status == "all"
-      @order_details = relation.all_reservations.all
+      @order_details = relation.all_reservations
     elsif @status == "upcoming"
       @status = @available_statuses.first
-      @order_details = in_progress + relation.upcoming_reservations.all
+      @order_details = in_progress + relation.upcoming_reservations
     else
       return redirect_to reservations_status_path(status: "upcoming")
     end

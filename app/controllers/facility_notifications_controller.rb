@@ -1,13 +1,13 @@
 class FacilityNotificationsController < ApplicationController
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
+  before_action :authenticate_user!
+  before_action :check_acting_as
 
-  before_filter :init_current_facility
-  before_filter :check_billing_access
+  before_action :init_current_facility
+  before_action :check_billing_access
 
-  before_filter :check_review_period
+  before_action :check_review_period
 
   include TransactionSearch
 
@@ -67,7 +67,7 @@ class FacilityNotificationsController < ApplicationController
       @order_details_updated = []
       params[:order_detail_ids].each do |order_detail_id|
         begin
-          od = OrderDetail.for_facility(current_facility).find(order_detail_id, readonly: false)
+          od = OrderDetail.for_facility(current_facility).readonly(false).find(order_detail_id)
           od.reviewed_at = Time.zone.now
           od.save!
           @order_details_updated << od

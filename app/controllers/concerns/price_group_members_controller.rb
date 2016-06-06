@@ -4,10 +4,10 @@ module PriceGroupMembersController
 
   included do
     admin_tab :all
-    before_filter :authenticate_user!
-    before_filter :check_acting_as
-    before_filter :init_current_facility
-    before_filter :load_price_group_and_ability!
+    before_action :authenticate_user!
+    before_action :check_acting_as
+    before_action :init_current_facility
+    before_action :load_price_group_and_ability!
 
     layout "two_column"
 

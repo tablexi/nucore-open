@@ -3,9 +3,9 @@ class OrderImportsController < ApplicationController
   include ActionView::Helpers::TextHelper
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
 
   authorize_resource class: Order
 

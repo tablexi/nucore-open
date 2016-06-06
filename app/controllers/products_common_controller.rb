@@ -2,11 +2,11 @@ class ProductsCommonController < ApplicationController
 
   customer_tab  :show
   admin_tab     :create, :destroy, :new, :edit, :index, :update, :manage
-  before_filter :authenticate_user!, except: [:show]
-  before_filter :check_acting_as, except: [:show]
-  before_filter :init_current_facility
-  before_filter :init_product, except: [:index, :new, :create]
-  before_filter :store_fullpath_in_session
+  before_action :authenticate_user!, except: [:show]
+  before_action :check_acting_as, except: [:show]
+  before_action :init_current_facility
+  before_action :init_product, except: [:index, :new, :create]
+  before_action :store_fullpath_in_session
 
   include TranslationHelper
 
@@ -29,11 +29,6 @@ class ProductsCommonController < ApplicationController
                 else
                   current_facility_products.archived
                 end
-
-    # not sure this actually does anything since @products is a Relation, not an Array, but it was
-    # in ServicesController, ItemsController, and InstrumentsController before I pulled #index up
-    # into this class
-    @products.sort!
 
     render "admin/products/index"
   end
@@ -91,7 +86,7 @@ class ProductsCommonController < ApplicationController
     end
 
     if @error
-      flash.now[:notice] = text(@error, singular: @product.class.model_name.downcase,
+      flash.now[:notice] = text(@error, singular: @product.class.model_name.to_s.downcase,
                                         plural: @product.class.model_name.human(count: 2).downcase)
     end
 
@@ -171,7 +166,7 @@ class ProductsCommonController < ApplicationController
 
   # The equivalent of calling current_facility.services or current_facility.items
   def current_facility_products
-    current_facility.send(:"#{plural_object_name}")
+    current_facility.public_send(:"#{plural_object_name}").alphabetized
   end
 
   def price_policy_available_for_product?

@@ -4,10 +4,10 @@ class FacilityJournalsController < ApplicationController
   include CSVHelper
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :check_billing_access
-  before_filter :init_journals, except: :create_with_search
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :check_billing_access
+  before_action :init_journals, except: :create_with_search
   helper_method :has_pending_journals?
 
   include TransactionSearch
@@ -73,7 +73,6 @@ class FacilityJournalsController < ApplicationController
       redirect_to facility_journals_path(current_facility)
     else
       flash_error_messages
-      remove_ugly_params
       redirect_to new_facility_journal_path
     end
   end

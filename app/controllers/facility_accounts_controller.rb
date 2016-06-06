@@ -4,15 +4,15 @@ class FacilityAccountsController < ApplicationController
   include SearchHelper
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter :init_account
-  before_filter :build_account, only: [:new, :create]
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
+  before_action :init_account
+  before_action :build_account, only: [:new, :create]
 
   authorize_resource :account
 
-  before_filter :check_billing_access, only: [:accounts_receivable, :show_statement]
+  before_action :check_billing_access, only: [:accounts_receivable, :show_statement]
 
   layout "two_column"
 

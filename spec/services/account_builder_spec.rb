@@ -133,10 +133,11 @@ RSpec.describe AccountBuilder, type: :service do
     end
 
     context "when affilate supported" do
-      let(:affiliate) { Affiliate.new(id: Affiliate.OTHER.id + 1) }
+      let(:affiliate) { Affiliate.create!(name: "New Affiliate") }
 
       before do
         allow(NufsAccount).to receive(:using_affiliate?).and_return(true)
+        allow(builder).to receive(:account_params_for_build).and_return([:affiliate_id])
       end
 
       context "and affiliate param blank" do
@@ -153,13 +154,14 @@ RSpec.describe AccountBuilder, type: :service do
         end
 
         it "sets affiliate" do
+          expect(affiliate.id).to be_present
           expect(builder.build.affiliate_id).to eq(affiliate.id)
         end
       end
     end
 
     context "when affilate unsupported" do
-      let(:affiliate) { Affiliate.new(id: Affiliate.OTHER.id + 1) }
+      let(:affiliate) { Affiliate.create!(name: "New Affiliate") }
 
       before do
         allow(NufsAccount).to receive(:using_affiliate?).and_return(false)

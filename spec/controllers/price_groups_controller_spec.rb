@@ -22,7 +22,9 @@ RSpec.describe PriceGroupsController do
     end
 
     it_should_allow_managers_only do
-      expect(assigns(:price_groups)).to be_kind_of(Array).and eq(facility.price_groups)
+      expect(assigns(:price_groups))
+        .to eq(facility.price_groups)
+        .and all be_kind_of(PriceGroup)
     end
   end
 

@@ -50,21 +50,21 @@ RSpec.configure do |config|
     User.delete_all
 
     # initialize order status constants
-    @os_new        = OrderStatus.find_or_create_by_name("New")
-    @os_in_process = OrderStatus.find_or_create_by_name("In Process")
-    @os_complete   = OrderStatus.find_or_create_by_name("Complete")
-    @os_canceled   = OrderStatus.find_or_create_by_name("Canceled")
-    @os_reconciled = OrderStatus.find_or_create_by_name("Reconciled")
+    @os_new        = OrderStatus.find_or_create_by(name: "New")
+    @os_in_process = OrderStatus.find_or_create_by(name: "In Process")
+    @os_complete   = OrderStatus.find_or_create_by(name: "Complete")
+    @os_canceled   = OrderStatus.find_or_create_by(name: "Canceled")
+    @os_reconciled = OrderStatus.find_or_create_by(name: "Reconciled")
 
     # initialize affiliates
-    Affiliate.find_or_create_by_name("Other")
+    Affiliate.find_or_create_by(name: "Other")
 
     # initialize price groups
-    @nupg = PriceGroup.find_or_create_by_name(name: Settings.price_group.name.base, is_internal: true, display_order: 1)
+    @nupg = PriceGroup.find_or_create_by(name: Settings.price_group.name.base, is_internal: true, display_order: 1)
     @nupg.save(validate: false)
-    @ccpg = PriceGroup.find_or_create_by_name(name: Settings.price_group.name.cancer_center, is_internal: true, display_order: 2)
+    @ccpg = PriceGroup.find_or_create_by(name: Settings.price_group.name.cancer_center, is_internal: true, display_order: 2)
     @ccpg.save(validate: false)
-    @epg = PriceGroup.find_or_create_by_name(name: Settings.price_group.name.external, is_internal: false, display_order: 3)
+    @epg = PriceGroup.find_or_create_by(name: Settings.price_group.name.external, is_internal: false, display_order: 3)
     @epg.save(validate: false)
 
     # now=Time.zone.parse("#{Date.today.to_s} 09:30:00")

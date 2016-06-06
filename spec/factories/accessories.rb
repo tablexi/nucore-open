@@ -4,7 +4,7 @@ FactoryGirl.define do
       accessory { create :setup_item, facility: facility }
     end
 
-    after(:build) do |instrument, evaluator|
+    after(:create) do |instrument, evaluator|
       instrument.accessories << evaluator.accessory
     end
   end

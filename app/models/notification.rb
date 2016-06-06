@@ -6,7 +6,7 @@ class Notification < ActiveRecord::Base
   validates_presence_of :user_id, :subject_id, :notice
 
   scope :about, ->(subject) { where(subject_id: subject.id, subject_type: subject.class.name) }
-  scope :active, where("dismissed_at IS NULL")
+  scope :active, -> { where(dismissed_at: nil) }
 
   def notice
     self[:notice].try(:html_safe)

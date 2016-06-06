@@ -528,6 +528,7 @@ RSpec.describe Reservation do
         let(:tomorrow_noon) { 1.day.from_now.change(hour: 12, min: 00) }
         before do
           ScheduleRule.destroy_all
+          @instrument.schedule_rules.reload
           @instrument.update_attributes(requires_approval: true)
           @everybody_schedule_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
           group1 = FactoryGirl.create(:product_access_group, product: @instrument)
@@ -919,7 +920,8 @@ RSpec.describe Reservation do
 
     context "schedule rules" do
       before :each do
-        @rule.destroy
+        @instrument.schedule_rules.destroy_all
+        @instrument.schedule_rules.reload
         @instrument.update_attribute :reserve_interval, 15
         @rule_9_to_5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 9, end_hour: 17))
         @rule_5_to_7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 17, end_hour: 19))
@@ -1016,7 +1018,7 @@ RSpec.describe Reservation do
       @nupg_pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @nupg)
 
       # Setup a price group with an account for this user
-      @price_group1 = facility.price_groups.create(attributes_for(:price_group))
+      @price_group1 = FactoryGirl.create(:price_group, facility: facility)
       @pg1_pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group1)
       @account1 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       @account_price_group_member1 = AccountPriceGroupMember.create(FactoryGirl.attributes_for(:account_price_group_member).merge(account: @account1, price_group: @price_group1))
@@ -1103,6 +1105,7 @@ RSpec.describe Reservation do
     before :each do
       @rule.destroy
       @instrument.update_attribute :reserve_interval, 15
+      @instrument.reload
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
       @spans_day_reservation = @instrument.reservations.create!(reserve_start_at: Time.zone.now.end_of_day - 1.hour,
                                                                 duration_value: 120, duration_unit: "minutes")
@@ -1130,7 +1133,7 @@ RSpec.describe Reservation do
 
     let! :instrument do
       @instrument.update_attributes max_reserve_mins: nil, reserve_interval: 15
-      @instrument
+      @instrument.reload
     end
 
     let! :rule do

@@ -1,9 +1,9 @@
 class NotificationsController < ApplicationController
 
   customer_tab  :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :check_notifications
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :check_notifications
 
   # respond_to :js, :only => :update
 
@@ -27,9 +27,9 @@ class NotificationsController < ApplicationController
   private
 
   def check_notifications
-    @notices = current_user.notifications.active.all
+    @notices = current_user.notifications.active
 
-    if @notices.count == 0
+    if @notices.none?
       flash[:notice] = I18n.t "controllers.notifications.no_notices"
 
       begin

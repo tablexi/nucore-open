@@ -4,12 +4,14 @@ require "controller_spec_helper"
 RSpec.describe ScheduleRulesController do
   render_views
 
+  let(:facility) { @authable }
+
   before(:all) { create_users }
 
   before(:each) do
     @authable         = FactoryGirl.create(:facility)
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+    @price_group = FactoryGirl.create(:price_group, facility: facility)
     @instrument       = FactoryGirl.create(:instrument, facility: @authable, facility_account_id: @facility_account.id)
     @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
     expect(@price_policy).to be_valid

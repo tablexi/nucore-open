@@ -1,11 +1,11 @@
 class SurveysController < ApplicationController
 
   admin_tab     :all
-  before_filter :authenticate_user!
-  before_filter :check_acting_as, except: :complete
-  before_filter :init_current_facility
-  before_filter :init_service
-  before_filter :init_survey, only: [:activate, :deactivate]
+  before_action :authenticate_user!
+  before_action :check_acting_as, except: :complete
+  before_action :init_current_facility
+  before_action :init_service
+  before_action :init_survey, only: [:activate, :deactivate]
 
   load_and_authorize_resource class: "ExternalService"
 

@@ -5,14 +5,13 @@ class BulkEmailController < ApplicationController
   admin_tab :all
   layout "two_column"
 
-  before_filter { @active_tab = "admin_users" }
-  before_filter :remove_ugly_params_and_redirect
-  before_filter :authenticate_user!
-  before_filter :check_acting_as
-  before_filter :init_current_facility
-  before_filter { authorize! :send_bulk_emails, current_facility }
+  before_action { @active_tab = "admin_users" }
+  before_action :authenticate_user!
+  before_action :check_acting_as
+  before_action :init_current_facility
+  before_action { authorize! :send_bulk_emails, current_facility }
 
-  before_filter :init_search_options
+  before_action :init_search_options
 
   def search
     if params[:search_type]

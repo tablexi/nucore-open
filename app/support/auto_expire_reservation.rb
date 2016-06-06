@@ -20,7 +20,6 @@ class AutoExpireReservation
                .joins_relay
                .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
                .readonly(false)
-               .all
   end
 
   def expire_reservation(od)

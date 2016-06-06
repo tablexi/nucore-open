@@ -4,6 +4,8 @@ require "controller_spec_helper"
 RSpec.describe FacilityOrderDetailsController do
   render_views
 
+  let(:order_detail) { @order_detail }
+
   before(:all) { create_users }
 
   before(:each) do
@@ -49,7 +51,8 @@ RSpec.describe FacilityOrderDetailsController do
       end
 
       it_should_allow :director, "to destroy a detail that is part of a merge order" do
-        assert_raises(ActiveRecord::RecordNotFound) { OrderDetail.find @order_detail.id }
+        expect { OrderDetail.find(order_detail.id) }
+          .to raise_error ActiveRecord::RecordNotFound
         expect(flash[:notice]).to be_present
         assert_redirected_to facility_order_path(@authable, @clone)
       end

@@ -17,7 +17,7 @@ module TranslationHelper
   end
 
   def t_model_error(clazz, error, *options)
-    I18n.t("activerecord.errors.models.#{clazz.model_name.underscore}.#{error}", *options)
+    I18n.t("activerecord.errors.models.#{clazz.model_name.to_s.underscore}.#{error}", *options)
   end
 
   def t_boolean(value)

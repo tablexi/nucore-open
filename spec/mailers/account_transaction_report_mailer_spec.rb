@@ -7,7 +7,9 @@ RSpec.describe AccountTransactionReportMailer do
       let(:report) { double Reports::AccountTransactionsReport, to_csv: "1,2,3\n", description: "test" }
 
       before :each do
-        AccountTransactionReportMailer.csv_report_email("recipient@example.net", [1, 2, 3], :statement_date).deliver
+        AccountTransactionReportMailer
+          .csv_report_email("recipient@example.net", [1, 2, 3], :statement_date)
+          .deliver_now
       end
 
       context "mail headers" do

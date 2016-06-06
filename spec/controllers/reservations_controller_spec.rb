@@ -4,6 +4,7 @@ require "controller_spec_helper"
 RSpec.describe ReservationsController do
   include DateHelper
 
+  let(:facility) { @authable }
   let(:instrument) { @instrument }
   let(:order) { @order }
   let(:order_detail) { order.order_details.first }
@@ -33,7 +34,7 @@ RSpec.describe ReservationsController do
       @order.validate_order!
       @order.purchase!
 
-      @method = :get
+      @method = :xhr
       @action = :index
       @params.merge!(instrument_id: @instrument.url_name, facility_id: @authable.url_name)
     end
@@ -238,7 +239,7 @@ RSpec.describe ReservationsController do
         do_request
         expect(assigns(:status)).to eq("all")
         expect(assigns(:available_statuses).size).to eq(2)
-        expect(assigns(:order_details)).to eq(OrderDetail.all_reservations.all)
+        expect(assigns(:order_details)).to eq(OrderDetail.all_reservations)
         expect(assigns(:active_tab)).to eq("reservations")
         is_expected.to render_template("list")
       end
@@ -354,7 +355,7 @@ RSpec.describe ReservationsController do
 
       it_should_allow :director, "to create a reservation on merge order detail and redirect to order summary when merge order is destroyed" do
         assert_redirected_to facility_order_path(@authable, @merge_to_order)
-        assert_raises(ActiveRecord::RecordNotFound) { Order.find @order }
+        expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
       end
 
       context "extra order details" do
@@ -366,7 +367,7 @@ RSpec.describe ReservationsController do
 
         it_should_allow :director, "to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed" do
           assert_redirected_to facility_order_path(@authable, @merge_to_order)
-          assert_nothing_raised { Order.find @order }
+          expect { Order.find(order.id) }.not_to raise_error
         end
       end
 
@@ -484,7 +485,7 @@ RSpec.describe ReservationsController do
         expect(@order.account).to be_nil
         expect(@order_detail.account).to be_nil
         @instrument.price_policies.first.update_attributes usage_rate: 240
-        @price_group2      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
+        @price_group2 = FactoryGirl.create(:price_group, facility: facility)
         @pg_account        = FactoryGirl.create(:account_price_group_member, account: @account, price_group: @price_group2)
         @price_policy2     = create :instrument_price_policy, product: @instrument, price_group_id: @price_group2.id, usage_rate: 120, usage_subsidy: 15
         sign_in @guest
@@ -1201,7 +1202,7 @@ RSpec.describe ReservationsController do
       @params = { facility_id: @authable.url_name }
       do_request
       expect(assigns[:public_timeline]).to be true
-      expect(response).to render_template :timeline
+      expect(response).to render_template :public_timeline
     end
 
     it "considers display for every active schedule" do
