@@ -30,7 +30,6 @@
           = sf.remove_nested_fields_link text("remove"), tabindex: -1
           = sf.input :_destroy, as: :hidden
     %tfoot
-      %td{colspan: 2}
-      %td= f.add_nested_fields_link :samples, text("add"), class: "btn btn-success"
+      %td{colspan: 3}= f.add_nested_fields_link :samples, text("add"), class: "btn btn-success"
 
   = f.submit text("submit"), class: "btn btn-primary"
