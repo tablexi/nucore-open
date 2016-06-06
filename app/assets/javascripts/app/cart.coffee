@@ -1,3 +1,9 @@
+class window.CartQuantityReplacer
+  constructor: (@originalPath, @newQuantity) ->
+
+  toString: ->
+    @originalPath.replace(/\bquantity=\d+(&|$)/, "quantity=#{@newQuantity}$1")
+
 $ ->
   class Cart
     constructor: (cartSelector) ->
@@ -8,6 +14,6 @@ $ ->
       trackedField = $(link).data("quantity-field")
       $("##{trackedField}").change ->
         newQuantity = $(@).val()
-        link.href = link.href.replace(/quantity=\d+&/, "quantity=#{newQuantity}&")
+        link.href = new CartQuantityReplacer(link.href, newQuantity)
 
   new Cart ".js--cart"
