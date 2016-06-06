@@ -1,5 +1,5 @@
 class window.CartQuantityReplacer
-  constructor: (@originalPath, @newQuantity) ->
+  constructor: (@originalPath, @newQuantity) -> undefined
 
   toString: ->
     @originalPath.replace(/\bquantity=\d+(&|$)/, "quantity=#{@newQuantity}$1")

@@ -16,5 +16,3 @@ describe "CartQuantityReplacer", ->
     it "replaces the quantity if it is not the last item", ->
       subject = new CartQuantityReplacer("http://www.nucore.org?quantity=16&something=17", 13)
       expect(subject.toString()).toEqual("http://www.nucore.org?quantity=13&something=17")
-
-
