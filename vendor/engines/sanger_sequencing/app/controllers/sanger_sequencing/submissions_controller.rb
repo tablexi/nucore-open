@@ -4,6 +4,9 @@ module SangerSequencing
 
     NEW_IDS_COUNT = 5
 
+    customer_tab :all
+    before_filter { @active_tab = "orders" }
+
     load_and_authorize_resource only: [:edit, :update, :fetch_ids]
 
     def new
@@ -38,6 +41,10 @@ module SangerSequencing
     end
 
     private
+
+    def current_facility
+      @current_facility ||= @submission.order_detail.facility
+    end
 
     def clean_samples
       # Clean up from abandoned submissions that might have requested extra IDs
