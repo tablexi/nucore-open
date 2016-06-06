@@ -10,14 +10,4 @@
     %li= t("sanger_sequencing.name")
 
 
-%div
-  %table.table.table-striped.table-tight
-    %thead
-      %tr
-        %th= SangerSequencing::Sample.human_attribute_name(:customer_sample_id)
-        %th= SangerSequencing::Sample.human_attribute_name(:id)
-    %tbody
-      - @submission.samples.each do |sample|
-        %tr
-          %td= sample.customer_sample_id
-          %td= sample.id
+= render "samples_table"

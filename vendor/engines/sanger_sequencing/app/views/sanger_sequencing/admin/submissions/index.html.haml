@@ -1,4 +1,23 @@
 = content_for :h1 do
   = current_facility
 
-Welcome to Sanger Sequencing
+%h2= text("sanger_sequencing.name")
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th= OrderDetail.human_attribute_name(:id)
+      %th= SangerSequencing::Submission.human_attribute_name(:id)
+      %th= OrderDetail.human_attribute_name(:ordered_at)
+      %th= OrderDetail.human_attribute_name(:user)
+      %th= OrderDetail.human_attribute_name(:quantity)
+      %th= OrderDetail.human_attribute_name(:order_status)
+  %tbody
+    - @submissions.each do |submission|
+      %tr
+        %td= link_to submission.order_detail, manage_order_detail_path(submission.order_detail), class: "manage-order-detail"
+        %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission)
+        %td= format_usa_datetime(submission.purchased_at)
+        %td= submission.user
+        %td= submission.samples.count
+        %td= submission.order_status
