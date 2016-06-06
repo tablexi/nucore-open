@@ -9,13 +9,14 @@ module SangerSequencing
 
     validates :customer_sample_id, presence: true, on: :update
 
-    def customer_sample_id
-      self[:customer_sample_id] || (id && default_customer_sample_id)
+    def form_customer_sample_id
+      customer_sample_id || default_customer_sample_id
     end
 
     private
 
     def default_customer_sample_id
+      return "" unless id
       # last four digits of the id as a zero-padded string
       format("%04d", id).last(4)
     end

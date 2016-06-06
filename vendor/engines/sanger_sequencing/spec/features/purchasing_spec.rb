@@ -17,13 +17,14 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
 
   describe "submission form" do
     let(:quantity) { 5 }
-    let(:customer_id_selector) { ".edit_sanger_sequencing_submission input[type=text]" }
+    let(:customer_id_selector) { ".nested_sanger_sequencing_submission_samples input[type=text]" }
+    let(:cart_quantity_selector) { ".edit_order input[type=text]" }
     before do
       visit facility_service_path(facility, service)
       click_link "Add to cart"
       choose account.to_s
       click_button "Continue"
-      find(".edit_order input[type=text]").set(quantity.to_s)
+      find(cart_quantity_selector).set(quantity.to_s)
       click_button "Update"
       click_link "Complete Online Order Form"
     end
@@ -45,6 +46,29 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       expect(SangerSequencing::Sample.count).to eq(5)
     end
 
+    describe "adding/removing more fields", :js do
+      it "adds fields" do
+        page.click_link "Add"
+        expect(page).to have_css("#{customer_id_selector}:enabled", count: 6)
+        expect(page.all(customer_id_selector).last.value).to match(/\A\d{4}\z/)
+        click_button "Save Submission"
+        expect(SangerSequencing::Sample.count).to eq(6)
+
+        # back on the cart
+        expect(page.find(cart_quantity_selector).value).to eq("6")
+      end
+
+      it "can remove fields" do
+        page.all(:link, "Remove").first.click
+        expect(page).to have_css(customer_id_selector, count: 4)
+        click_button "Save Submission"
+        expect(SangerSequencing::Sample.count).to eq(4)
+
+        # back on the cart
+        expect(page.find(cart_quantity_selector).value).to eq("4")
+      end
+    end
+
     describe "blank fields" do
       it "does not allow submitting a blank value" do
         page.first(customer_id_selector).set("")
@@ -59,22 +83,22 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
         expect(SangerSequencing::Sample.count).to eq(4)
       end
 
-      it "does not delete blanks on invalid" do
-        page.first(customer_id_selector).set("")
-        page.all(customer_id_selector)[-2].set("")
-        page.all(customer_id_selector).last.set("")
-        click_button "Save Submission"
-        expect(page.first(customer_id_selector).value).to be_blank
-        expect(page.all(customer_id_selector).last.value).to be_blank
-        expect(page).to have_css(customer_id_selector, count: 5)
-        expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("")
-      end
-
       it "does not save if they are all blank" do
         page.all(customer_id_selector).each { |textbox| textbox.set("") }
         click_button "Save Submission"
-        expect(page).to have_css(customer_id_selector, count: 5)
-        expect(page.all(customer_id_selector).map(&:value)).to all(be_blank)
+        expect(page).to have_content("You must have at least one sample")
+      end
+    end
+
+    describe "and more samples were created in another page" do
+      before do
+        SangerSequencing::Submission.first.create_samples!(5)
+      end
+
+      it "does removes the extra ones" do
+        page.all(customer_id_selector).each_with_index { |textbox, i| textbox.set(i + 1) }
+        click_button "Save Submission"
+        expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to eq(%w(1 2 3 4 5))
       end
     end
 

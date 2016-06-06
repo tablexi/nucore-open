@@ -5,8 +5,10 @@ en:
   views:
     sanger_sequencing:
       submissions:
-        new:
+        edit:
           submit: "Save Submission"
+          add: Add
+          remove: Remove
 
   activerecord:
     attributes:

@@ -2,21 +2,20 @@ module SangerSequencing
 
   class SubmissionsController < ApplicationController
 
-    load_resource only: [:edit, :update]
+    NEW_IDS_COUNT = 5
+
+    load_resource only: [:edit, :update, :fetch_ids]
 
     def new
       order_detail = SangerSequencing::OrderDetail.find(params[:receiver_id])
       @submission = Submission.where(order_detail_id: order_detail.id).first_or_create
-      # TODO: refactor
-      if @submission.samples.empty?
-        quantity = params[:quantity].to_i
-        quantity = 10 if quantity <= 0
-        quantity.times { @submission.samples.create! }
-      end
+      clean_samples
+      @submission.create_samples!(params[:quantity]) if @submission.samples.empty?
+      render :edit
     end
 
     def edit
-      render :new
+      clean_samples
     end
 
     def update
@@ -25,14 +24,25 @@ module SangerSequencing
         redirect_to "#{params[:success_url]}&#{external_return_options.to_query}"
       else
         flash.now[:alert] = @submission.errors.messages.values.join(". ")
-        render :new
+        render :edit
       end
+    end
+
+    def fetch_ids
+      new_samples = @submission.create_samples!(NEW_IDS_COUNT)
+      render json: new_samples.map { |s| { id: s.id, customer_sample_id: s.form_customer_sample_id } }
     end
 
     private
 
+    def clean_samples
+      # Clean up from abandoned submissions that might have requested extra IDs
+      @submission.samples.where(customer_sample_id: nil).delete_all
+    end
+
     def submission_params
-      params.require(:sanger_sequencing_submission).permit(samples_attributes: [:id, :customer_sample_id])
+      params.require(:sanger_sequencing_submission)
+            .permit(samples_attributes: [:id, :customer_sample_id, :_destroy])
     end
 
     def external_return_options

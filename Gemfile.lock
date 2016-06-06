@@ -130,6 +130,7 @@ GEM
       orm_adapter (~> 0.5.0)
     climate_control (0.0.3)
       activesupport (>= 3.0)
+    cliver (0.3.2)
     clockpunch (0.1.9)
       coffee-script
       railties (>= 3.1)
@@ -378,6 +379,11 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
+    poltergeist (1.9.0)
+      capybara (~> 2.1)
+      cliver (~> 0.3.1)
+      multi_json (~> 1.0)
+      websocket-driver (>= 0.2.0)
     polyglot (0.3.5)
     power_assert (0.2.7)
     powerpack (0.1.1)
@@ -541,6 +547,9 @@ GEM
     unicode-display_width (1.0.2)
     warden (1.2.6)
       rack (>= 1.0)
+    websocket-driver (0.6.4)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.2)
     whenever (0.9.4)
       chronic (>= 0.6.3)
     will_paginate (3.0.7)
@@ -596,6 +605,7 @@ DEPENDENCIES
   nested_form_fields
   nokogiri (~> 1.6.1)
   paperclip (~> 4.2.0)
+  poltergeist
   prawn (= 0.12)
   prawn_rails (= 0.0.11)
   projects (~> 0.0.1)!
