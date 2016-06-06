@@ -27,6 +27,15 @@ RSpec.describe DateHelper do
         expect(parse_usa_import_date("12/8/2014").month).to be 12
         expect(parse_usa_import_date("12/8/2014").year).to be 2014
       end
+
+      context "when running in the Eastern time zone" do
+        Time.use_zone("Eastern Time (US & Canada)") do
+          it "returns beginning_of_day (midnight) in the local zone" do
+            expect(parse_usa_import_date("05/01/2014").to_s)
+              .to eq("2014-05-01 00:00:00 -0500")
+          end
+        end
+      end
     end
   end
 
