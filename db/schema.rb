@@ -105,11 +105,11 @@ ActiveRecord::Schema.define(version: 20160602153918) do
     t.integer  "external_service_id", limit: 4
     t.integer  "receiver_id",         limit: 4
     t.string   "receiver_type",       limit: 255
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
     t.string   "external_id",         limit: 255
     t.text     "response_data",       limit: 65535
-    t.boolean  "manages_quantity",    default: false, null: false
+    t.boolean  "manages_quantity",                  default: false, null: false
   end
 
   add_index "external_service_receivers", ["external_service_id"], name: "index_external_service_receivers_on_external_service_id", using: :btree
@@ -512,18 +512,18 @@ ActiveRecord::Schema.define(version: 20160602153918) do
   end
 
   create_table "sanger_sequencing_samples", force: :cascade do |t|
-    t.integer  "submission_id", limit: 4, null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.string   "customer_sample_id"
+    t.integer  "submission_id",      limit: 4,   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "customer_sample_id", limit: 255
   end
 
   add_index "sanger_sequencing_samples", ["submission_id"], name: "index_sanger_sequencing_samples_on_submission_id", using: :btree
 
   create_table "sanger_sequencing_submissions", force: :cascade do |t|
     t.integer  "order_detail_id", limit: 4
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "sanger_sequencing_submissions", ["order_detail_id"], name: "index_sanger_sequencing_submissions_on_order_detail_id", using: :btree
@@ -697,7 +697,7 @@ ActiveRecord::Schema.define(version: 20160602153918) do
   add_foreign_key "projects", "facilities", name: "projects_facility_id_fk"
   add_foreign_key "reservations", "order_details", name: "res_ord_det_id_fk"
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
-  add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id", name: "sanger_sequencing_samples_submission_id_fk", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id"
   add_foreign_key "schedule_rules", "products", column: "instrument_id", name: "sys_c008573"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
