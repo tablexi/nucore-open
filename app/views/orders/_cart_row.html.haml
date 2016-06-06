@@ -1,30 +1,30 @@
 %tr
   - if first_of_group
-    - row_span = @order.order_details.find(:all, :conditions => {:group_id => order_detail.group_id}).length
-    %td.centered{:rowspan => row_span * (acting_as? ? 2 : 1) }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
+    - row_span = @order.order_details.find(:all, conditions: { group_id: order_detail.group_id}).length
+    %td.centered{ rowspan: row_span * (acting_as? ? 2 : 1) }= link_to "Remove", remove_order_path(@order, order_detail), method: :put
   - elsif order_detail.group_id.nil?
-    %td.centered{:rowspan => (acting_as? ? 2 : 1) }= link_to 'Remove', remove_order_path(@order, order_detail), :method => :put
+    %td.centered{ rowspan: (acting_as? ? 2 : 1) }= link_to "Remove", remove_order_path(@order, order_detail), method: :put
 
   - if order_detail.product.is_a?(Instrument)
     %td
-      = render :partial => 'instrument_desc', :locals => { :order_detail => order_detail }
+      = render partial: "instrument_desc", locals: { order_detail: order_detail }
     %td
 
   - elsif order_detail.product.is_a?(Service)
     %td
-      = render :partial => 'service_desc', :locals => { :order_detail => order_detail }
+      = render partial: "service_desc", locals: { order_detail: order_detail }
     - if order_detail.bundle
       %td.centered= order_detail.quantity
     - else
-      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, :value => order_detail.quantity, :size => 3
+      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, value: order_detail.quantity, size: 3, disabled: order_detail.quantity_locked_by_survey?
 
   - elsif order_detail.product.is_a?(Item)
     %td
-      = render :partial => 'item_desc', :locals => { :order_detail => order_detail }
+      = render partial: "item_desc", locals: { order_detail: order_detail }
     - if order_detail.bundle
       %td.centered= order_detail.quantity
     - else
-      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, :value => order_detail.quantity, :size => 3
+      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, value: order_detail.quantity, size: 3
 
   - if order_detail.cost_estimated?
     %td.currency= show_estimated_cost(order_detail)
@@ -38,7 +38,7 @@
     %td.currency Unassigned
 - if acting_as?
   %tr
-    %td{:colspan => 4 }
+    %td{ colspan: 4 }
       %label.inline Note:
-      = text_field_tag("note#{order_detail.id}", order_detail.note, :maxlength => 100, :size => 100 )
+      = text_field_tag("note#{order_detail.id}", order_detail.note, maxlength: 100, size: 100 )
 

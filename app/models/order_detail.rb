@@ -549,7 +549,11 @@ class OrderDetail < ActiveRecord::Base
 
   # returns true if the associated survey response set has been completed
   def survey_completed?
-    !external_service_receiver.nil?
+    external_service_receiver.present?
+  end
+
+  def quantity_locked_by_survey?
+    survey_completed? && external_service_receiver.manages_quantity?
   end
 
   def account_usable_by_order_owner?
