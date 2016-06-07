@@ -1,0 +1,5 @@
+normal_user_nufs_account:
+  account: nufs_account
+  user: user
+  user_role: Owner
+  created_by: 0

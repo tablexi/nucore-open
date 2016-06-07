@@ -1,0 +1,11 @@
+normal_user:
+  email: "normal_user@nucore.org"
+  first_name: Normal
+  last_name: User
+  username: "normal_user@nucore.org"
+
+facility_admin:
+  email: "facility_admin@nucore.org"
+  first_name: Facility
+  last_name: Staff
+  username: "facility_admin@nucore.org"

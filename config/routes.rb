@@ -127,7 +127,7 @@ Nucore::Application.routes.draw do
       collection do
         get "search"
       end
-      get "map_user", to: 'facility_users#map_user'
+      match "map_user", to: 'facility_users#map_user', via: [:get, :post]
     end
 
     ### Feature Toggle Create Users ###

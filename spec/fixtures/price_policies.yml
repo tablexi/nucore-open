@@ -1,0 +1,17 @@
+DEFAULTS: &DEFAULTS
+  price_group_id: <%= PriceGroup.external.first.id %>
+  can_purchase: true
+  unit_cost: 10
+  unit_subsidy: 0
+  start_date: <%= Time.current.beginning_of_day %>
+  expire_date: <%= PricePolicy.generate_expire_date(Date.today) %>
+
+standard_item_price_policy:
+  <<: *DEFAULTS
+  type: ItemPricePolicy
+  product: standard_item
+
+standard_service_price_policy:
+  <<: *DEFAULTS
+  type: ServicePricePolicy
+  product: standard_service

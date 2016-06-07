@@ -22,6 +22,8 @@ RSpec.configure do |config|
 
   config.use_transactional_fixtures = true
 
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
   require "capybara/poltergeist"
   Capybara.javascript_driver = :poltergeist
 
