@@ -6,15 +6,13 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
 
   before(:all) { create_users }
 
-  before(:each) do
-    @authable = FactoryGirl.create(:facility)
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable, created_by: @admin.id)
-    @params = { facility_id: @authable.url_name }
-  end
+  let(:facility) { @authable = create(:facility) }
+  let!(:facility_account) { create(:facility_account, facility: facility, created_by: @admin.id) }
 
-  context "index" do
+  before { @params = { facility_id: facility.url_name } }
 
-    before :each do
+  describe "GET #index" do
+    before(:each) do
       @method = :get
       @action = :index
     end
@@ -22,75 +20,73 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
     it_should_allow_managers_only do
       expect(assigns(:accounts)).to all be_kind_of(FacilityAccount)
       expect(assigns(:accounts).size).to eq(1)
-      expect(assigns(:accounts)[0]).to eq(@facility_account)
+      expect(assigns(:accounts).first).to eq(facility_account)
       is_expected.to render_template "index"
     end
-
   end
 
-  context "new" do
-
-    before :each do
+  describe "GET #new" do
+    before(:each) do
       @method = :get
       @action = :new
     end
 
     it_should_allow_managers_only do
-      expect(assigns(:facility_account)).to be_kind_of FacilityAccount
-      expect(assigns(:facility_account)).to be_new_record
+      expect(assigns(:facility_account))
+        .to be_kind_of(FacilityAccount).and be_new_record
       is_expected.to render_template "new"
     end
-
   end
 
-  context "update" do
-
-    before :each do
+  describe "PUT #update" do
+    before(:each) do
       @method = :put
       @action = :update
-      @params.merge!(id: @facility_account.id, facility_account: FactoryGirl.attributes_for(:facility_account))
+      @params.merge!(
+        id: facility_account.id,
+        facility_account: attributes_for(:facility_account),
+      )
     end
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:facility_account)).to be_kind_of FacilityAccount
-      expect(assigns(:facility_account)).to eq(@facility_account)
+      expect(assigns(:facility_account))
+        .to be_kind_of(FacilityAccount).and eq(facility_account)
       is_expected.to set_flash
-      assert_redirected_to facility_facility_accounts_path
+      is_expected.to redirect_to(facility_facility_accounts_path)
     end
-
   end
 
-  context "create" do
-
-    before :each do
+  describe "POST #create" do
+    before(:each) do
       @method = :post
       @action = :create
-      @params.merge!(facility_account: FactoryGirl.attributes_for(:facility_account))
+      @params.merge!(facility_account: attributes_for(:facility_account))
     end
 
     it_should_allow_managers_only :redirect do |user|
-      expect(assigns(:facility_account)).to be_kind_of FacilityAccount
+      expect(assigns(:facility_account)).to be_kind_of(FacilityAccount)
       expect(assigns(:facility_account).created_by).to eq(user.id)
       is_expected.to set_flash
-      assert_redirected_to facility_facility_accounts_path
+      is_expected.to redirect_to(facility_facility_accounts_path)
     end
-
   end
 
-  context "edit" do
-
-    before :each do
+  describe "GET #edit" do
+    before(:each) do
       @method = :get
       @action = :edit
-      @params.merge!(id: @facility_account.id)
+      @params.merge!(id: facility_account.id)
     end
 
     it_should_allow_managers_only do
-      expect(assigns(:facility_account)).to be_kind_of FacilityAccount
-      expect(assigns(:facility_account)).to eq(@facility_account)
+      expect(assigns(:facility_account))
+        .to be_kind_of(FacilityAccount).and eq(facility_account)
+
+      assigns(:facility_account).account_number_parts.to_h.each do |key, value|
+        expect(response.body).to match(/\[account_number_parts\]\[#{key}\].+value="#{value}"/)
+      end
+
       is_expected.to render_template "edit"
     end
-
   end
-
 end
