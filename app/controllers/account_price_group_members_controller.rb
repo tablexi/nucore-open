@@ -47,13 +47,9 @@ class AccountPriceGroupMembersController < ApplicationController
   end
 
   def set_search_conditions
-    @accounts = Account.find(
-      :all,
-      conditions: search_conditions,
-      order: "account_number",
-      limit: @limit,
-    )
-    @count = Account.count(:all, conditions: search_conditions)
+    @accounts = Account.where(search_conditions)
+                       .order(:account_number)
+                       .limit(@limit)
   end
 
   def authorize_account_price_group_member!
