@@ -5,7 +5,7 @@ class AccountPriceGroupMembersController < ApplicationController
 
   before_action :authorize_account_price_group_member!, only: [:new, :create, :destroy]
 
-  # POST /facilities/:facility_id/price_groups/:price_group_id/account_price_group_members/search_results
+  # GET /facilities/:facility_id/price_groups/:price_group_id/account_price_group_members/search_results
   def search_results
     @limit = 25
     set_search_conditions if params[:search_term].present?

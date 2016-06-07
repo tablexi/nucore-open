@@ -17,7 +17,7 @@ Nucore::Application.routes.draw do
   get "switch_back", to: 'public#switch_back'
 
   # shared searches
-  post  "/user_search_results", to: 'search#user_search_results'
+  get  "/user_search_results", to: 'search#user_search_results'
   get "/#{I18n.t("facilities_downcase")}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
   get "/#{I18n.t("facilities_downcase")}/:facility_id/accounts/user/:user_id", to: 'facility_accounts#user_accounts', as: "user_accounts"
 
@@ -137,21 +137,21 @@ Nucore::Application.routes.draw do
           get "new_external"
           post "search"
         end
-        get   "switch_to",    to: 'users#switch_to'
+        get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
         get "reservations", to: 'users#reservations'
         get "accounts",     to: 'users#accounts'
         get "access_list",  to: 'users#access_list'
-        post  "access_list/approvals", to: 'users#access_list_approvals'
+        post "access_list/approvals", to: 'users#access_list_approvals'
       end
     else
       resources :users, except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } do
-        get   "switch_to",    to: 'users#switch_to'
+        get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
         get "reservations", to: 'users#reservations'
         get "accounts",     to: 'users#accounts'
         get "access_list",  to: 'users#access_list'
-        post  "access_list/approvals", to: 'users#access_list_approvals'
+        post "access_list/approvals", to: 'users#access_list_approvals'
       end
     end
     ######
