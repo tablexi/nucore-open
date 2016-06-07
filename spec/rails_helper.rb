@@ -27,6 +27,10 @@ RSpec.configure do |config|
   require "capybara/poltergeist"
   Capybara.javascript_driver = :poltergeist
 
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
   config.include Devise::TestHelpers, type: :controller
   config.include FactoryGirl::Syntax::Methods
 
