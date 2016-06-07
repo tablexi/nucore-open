@@ -641,9 +641,6 @@ en:
       h1: "Cart"
       intro: "Your cart will be saved between visits and can be added to, or your order completed at a later time."
       notice: "Your cart is empty."
-      crumbs:
-        home: "Home"
-        cart: "Cart"
       label:
         account: "Payment Source"
       link:

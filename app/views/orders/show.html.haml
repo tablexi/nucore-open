@@ -3,7 +3,7 @@
 
 = content_for :breadcrumb do
   %ul.breadcrumb
-    %li= link_to t(".crumbs.home"), :root
+    %li= link_to t("pages.home"), :root
 
     - order_detail = @order.order_details.first
     - if order_detail.present?
@@ -13,7 +13,7 @@
           facility_path(order_detail.product.facility)
 
     %li &raquo;
-    %li= t(".crumbs.cart")
+    %li= t("pages.cart")
 
 %p= t(".intro")
 
