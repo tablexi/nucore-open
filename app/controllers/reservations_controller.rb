@@ -308,8 +308,9 @@ class ReservationsController < ApplicationController
   end
 
   def load_basic_resources
-    @order_detail = Order.find(params[:order_id]).order_details.find(params[:order_detail_id])
-    @order = @order_detail.order
+    @order = Order.find(params[:order_id])
+    # It's important that the order_detail be the same object as the one in @order.order_details.first
+    @order_detail = @order.order_details.find { |od| od.id.to_i == params[:order_detail_id].to_i }
     @reservation = @order_detail.reservation
     @instrument = @order_detail.product
     @facility = @instrument.facility
@@ -337,7 +338,7 @@ class ReservationsController < ApplicationController
 
   def save_reservation_and_order_detail
     @reservation.save_as_user!(session_user)
-    @order_detail.reload.assign_estimated_price(nil, @reservation.reserve_end_at)
+    @order_detail.assign_estimated_price(nil, @reservation.reserve_end_at)
     @order_detail.save_as_user!(session_user)
   end
 

@@ -21,3 +21,12 @@ standard_service:
   url_name: "standard-service"
   description: "Standard service"
 
+reservation_only_instrument:
+  <<: *DEFAULTS
+  type: Instrument
+  name: Reservation Only Instrument
+  url_name: "reservation-only-instrument"
+  description: "Reservation only instrument"
+  reserve_interval: 10
+  schedule: reservation_only_instrument_schedule
+

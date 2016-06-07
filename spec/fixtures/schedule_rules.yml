@@ -1,0 +1,14 @@
+reservation_only_schedule_rules:
+  instrument: reservation_only_instrument
+  discount_percent: 0
+  start_hour: 0
+  start_min: 0
+  end_hour: 24
+  end_min: 0
+  on_sun: true
+  on_mon: true
+  on_tue: true
+  on_wed: true
+  on_thu: true
+  on_fri: true
+  on_sat: true

@@ -1,0 +1,4 @@
+reservation_only_external_price_group_product:
+  product: reservation_only_instrument
+  price_group_id: <%= PriceGroup.external.first.id %>
+  reservation_window: 14

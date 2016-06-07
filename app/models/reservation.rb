@@ -22,14 +22,13 @@ class Reservation < ActiveRecord::Base
   # Represents a resevation time that is unavailable, but is not an admin reservation
   # Used by timeline view
   attr_accessor     :blackout
-  attr_writer       :note
 
   # used for overriding certain restrictions
   attr_accessor :reserved_by_admin
 
   # Delegations
   #####
-  delegate :note, :ordered_on_behalf_of?, :complete?, :account, :order,
+  delegate :note, :note=, :ordered_on_behalf_of?, :complete?, :account, :order,
            :problem?, :complete!, to: :order_detail, allow_nil: true
 
   delegate :account, :in_cart?, :user, to: :order, allow_nil: true
@@ -38,7 +37,6 @@ class Reservation < ActiveRecord::Base
   delegate :owner, to: :account, allow_nil: true
 
   ## AR Hooks
-  after_save :save_note
   after_update :auto_save_order_detail, if: :order_detail
 
   # Scopes
@@ -281,13 +279,6 @@ class Reservation < ActiveRecord::Base
 
   def auto_save_order_detail
     if (%w(actual_start_at actual_end_at reserve_start_at reserve_end_at) & changes.keys).any?
-      order_detail.save
-    end
-  end
-
-  def save_note
-    if order_detail && @note
-      order_detail.note = @note
       order_detail.save
     end
   end
