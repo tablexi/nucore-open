@@ -25,11 +25,12 @@ $(document).ready(function() {
         if (element.qtip) {
           $(element).qtip({
             content: tooltip,
+            style: {
+              classes: "qtip-light"
+            },
             position: {
-              corner: {
-                target:   'bottomLeft',
-                tooltip:  'topRight'
-              }
+              at:  'bottom left',
+              my:  'topRight'
             }
           });
         }
