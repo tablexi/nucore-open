@@ -1,0 +1,4 @@
+facility_admin_role:
+  user: facility_admin
+  facility: facility
+  role: Facility Administrator

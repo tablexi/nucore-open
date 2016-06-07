@@ -1,18 +1,18 @@
 = content_for :tabnav do
-  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'members'}
+  = render partial: "shared/tabnav_account", locals: {secondary_tab: "members"}
 = content_for :h1 do
-  = t('.head')
+  = t(".head")
 
 %header.account
   %h3= @account.account_number
   %p= @account.description_to_s
 
-= form_tag user_search_results_path, :id => "ajax_form" do
-  = label_tag :search_term, t('.label.search')
-  = text_field_tag :search_term, nil, :size => 30, :class => 'search-query'
-  = submit_tag "Search", :class => 'btn'
+= form_tag user_search_results_path, id: "ajax_form", method: :get do
+  = label_tag :search_term, t(".label.search")
+  = text_field_tag :search_term, nil, size: 30, class: "search-query"
+  = submit_tag "Search", class: "btn"
   = hidden_field_tag :account_id, @account.id
-  = hidden_field_tag :search_type, 'account_account_user'
-  = hidden_field_tag :create_link, 'false'
+  = hidden_field_tag :search_type, "account_account_user"
+  = hidden_field_tag :create_link, "false"
 %br
 #result

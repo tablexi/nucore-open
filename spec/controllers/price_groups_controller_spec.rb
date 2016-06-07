@@ -78,8 +78,11 @@ RSpec.describe PriceGroupsController do
       end
 
       context "when user-based price groups are enabled", feature_setting: { user_based_price_groups: true } do
+        let(:user) { FactoryGirl.create(:user) }
+        let!(:user_member) { FactoryGirl.create(:user_price_group_member, price_group: price_group, user: user) }
+
         it_should_allow_managers_only do
-          expect(assigns(:user_members)).to be_kind_of(ActiveRecord::Relation)
+          expect(assigns(:user_members)).to include(user_member)
           expect(assigns(:tab)).to eq(:users)
           is_expected.to render_template("show")
         end
@@ -119,13 +122,16 @@ RSpec.describe PriceGroupsController do
     end
 
     describe "GET #accounts" do
+      let(:account) { FactoryGirl.create(:account, :with_account_owner) }
+      let!(:account_member) { FactoryGirl.create(:account_price_group_member, price_group: price_group, account: account) }
+
       before(:each) do
         @method = :get
         @action = :accounts
       end
 
       it_should_allow_managers_only do
-        expect(assigns(:account_members)).to be_kind_of(ActiveRecord::Relation)
+        expect(assigns(:account_members)).to include(account_member)
         expect(assigns(:tab)).to eq(:accounts)
         is_expected.to render_template("show")
       end

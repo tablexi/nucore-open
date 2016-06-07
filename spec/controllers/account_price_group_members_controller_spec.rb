@@ -119,20 +119,23 @@ RSpec.describe AccountPriceGroupMembersController do
   end
 
   context "search_results" do
+    let!(:account) { FactoryGirl.create(:account, :with_account_owner, account_number: "TESTING123") }
+
     before :each do
       @method = :get
       @action = :search_results
-      @params = { facility_id: @authable.url_name, price_group_id: price_group.id, search_term: "" }
+      @params = { facility_id: @authable.url_name, price_group_id: price_group.id, search_term: "TESTING123" }
     end
 
     it_should_require_login
 
     it_should_deny :guest
 
-    it_should_allow_all facility_operators do
-      # TODO: test GET with valid search term
+    # it_should_allow_all facility_operators do
+    it_should_allow :admin do
+      expect(assigns(:accounts)).to include(account)
       expect(assigns(:limit)).to be_kind_of Fixnum
-      expect(assigns(:price_group)).to be_kind_of PriceGroup
+      expect(assigns(:price_group)).to eq(price_group)
       is_expected.to render_template("search_results")
     end
   end

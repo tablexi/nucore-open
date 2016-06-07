@@ -36,7 +36,7 @@ class PriceGroupsController < ApplicationController
     @user_members = @price_group.user_price_group_members
                                 .includes(:user)
                                 .joins(:user)
-                                .order(:last_name, :first_name)
+                                .merge(User.sort_last_first)
     @user_members = paginate(@user_members)
     @tab = :users
 
@@ -48,7 +48,7 @@ class PriceGroupsController < ApplicationController
     @account_members = @price_group.account_price_group_members
                                    .includes(:account)
                                    .joins(:account)
-                                   .order(:account_number)
+                                   .merge(Account.order(:account_number))
     @account_members = paginate(@account_members)
     @tab = :accounts
 

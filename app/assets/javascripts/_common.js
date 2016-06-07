@@ -15,7 +15,7 @@ $(document).ready(function() {
     submit.val("Please Wait...");
     submit.attr("disabled", true);
     jQuery.ajax({
-      type: "post",
+      type: "get",
       data: form.serialize(),
       url:  form.attr('action'),
       timeout: 25000,

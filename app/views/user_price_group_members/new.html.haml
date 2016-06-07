@@ -1,21 +1,21 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'price_groups' }
+  = render partial: "admin/shared/sidenav_admin", locals: { sidenav_tab: "price_groups" }
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_price_group', :locals => { :secondary_tab => 'users' }
+  = render partial: "admin/shared/tabnav_price_group", locals: { secondary_tab: "users" }
 
-%h2= t('.head')
+%h2= t(".head")
 
 %fieldset
-  = form_tag user_search_results_path, :id => 'ajax_form' do
-    = label_tag :search_term, t('.label.search_term')
+  = form_tag user_search_results_path, id: "ajax_form", method: :get do
+    = label_tag :search_term, t(".label.search_term")
     %br
-    = text_field_tag :search_term, nil, :size => 30
-    = submit_tag "Search", :class => 'btn'
+    = text_field_tag :search_term, nil, size: 30, class: "search-query"
+    = submit_tag "Search", class: "btn"
     = hidden_field_tag :facility_id, current_facility.id
     = hidden_field_tag :price_group_id, @price_group.id
-    = hidden_field_tag :search_type, 'user_price_group_member'
-    = hidden_field_tag :create_link, 'true'
+    = hidden_field_tag :search_type, "user_price_group_member"
+    = hidden_field_tag :create_link, "true"
 %br
 #result

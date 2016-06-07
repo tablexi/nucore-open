@@ -1,0 +1,23 @@
+DEFAULTS: &DEFAULTS
+  account: 71234
+  requires_approval: false
+  is_archived: false
+  is_hidden: false
+  facility: facility
+  initial_order_status_id: <%= OrderStatus.new_status.id %>
+  facility_account: facility_account
+
+standard_item:
+  <<: *DEFAULTS
+  type: Item
+  name: "Standard Item"
+  url_name: "standard-item"
+  description: "Standard item"
+
+standard_service:
+  <<: *DEFAULTS
+  type: Service
+  name: "Standard Service"
+  url_name: "standard-service"
+  description: "Standard service"
+

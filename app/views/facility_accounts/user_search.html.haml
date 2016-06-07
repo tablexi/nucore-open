@@ -1,20 +1,20 @@
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'accounts' }
+  = render partial: "admin/shared/sidenav_billing", locals: { sidenav_tab: "accounts" }
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_account', :locals => {:secondary_tab => 'search_by_user'}
+  = render partial: "admin/shared/tabnav_account", locals: {secondary_tab: "search_by_user"}
 
 = content_for :h1 do
   =h current_facility
 
-= form_tag user_search_results_path, :id => 'ajax_form' do
-  = label_tag :search_term, t('.label.search_term')
+= form_tag user_search_results_path, id: "ajax_form", method: :get do
+  = label_tag :search_term, t(".label.search_term")
   %br
-  = text_field_tag :search_term, nil, :size => 30
-  = submit_tag "Search", :class => 'btn'
+  = text_field_tag :search_term, nil, size: 30
+  = submit_tag "Search", class: "btn"
   = hidden_field_tag :facility_id, current_facility.id
-  = hidden_field_tag :search_type, 'user_accounts'
-  = hidden_field_tag :create_link, 'true'
+  = hidden_field_tag :search_type, "user_accounts"
+  = hidden_field_tag :create_link, "true"
 
 %br
 #result

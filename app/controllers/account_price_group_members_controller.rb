@@ -5,7 +5,7 @@ class AccountPriceGroupMembersController < ApplicationController
 
   before_action :authorize_account_price_group_member!, only: [:new, :create, :destroy]
 
-  # POST /facilities/:facility_id/price_groups/:price_group_id/account_price_group_members/search_results
+  # GET /facilities/:facility_id/price_groups/:price_group_id/account_price_group_members/search_results
   def search_results
     @limit = 25
     set_search_conditions if params[:search_term].present?
@@ -47,13 +47,9 @@ class AccountPriceGroupMembersController < ApplicationController
   end
 
   def set_search_conditions
-    @accounts = Account.find(
-      :all,
-      conditions: search_conditions,
-      order: "account_number",
-      limit: @limit,
-    )
-    @count = Account.count(:all, conditions: search_conditions)
+    @accounts = Account.where(search_conditions)
+                       .order(:account_number)
+                       .limit(@limit)
   end
 
   def authorize_account_price_group_member!

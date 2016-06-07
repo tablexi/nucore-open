@@ -1,7 +1,7 @@
 - if params[:search_term] == '' || params[:search_term].nil?
   %p.error= t('.error.noterm')
 - else
-  - if @accounts.nil?
+  - if @accounts.blank?
     %p.error= t('.error.notfound')
   - else
     %h3= t('.head')
@@ -23,5 +23,5 @@
             - owner=account.owner_user
             %td=h owner.full_name if owner
             %td=h owner.email if owner
-    - if @count > @limit
+    - if @accounts.count > @limit
       %p.notice= t('.notice', :count => @count-@limit)

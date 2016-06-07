@@ -55,6 +55,10 @@ class User < ActiveRecord::Base
       .merge(order_query)
   end
 
+  def self.sort_last_first
+    order(:last_name, :first_name)
+  end
+
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
     UserRole.where(facility_id: facility.id, user_id: id)
