@@ -3,7 +3,7 @@ require "controller_spec_helper"
 
 def fixture_file(filename)
   fixture_file_upload(
-    "../files/order_imports/#{filename}",
+    "#{Rails.root}/spec/files/order_imports/#{filename}",
     "text/csv",
   )
 end
