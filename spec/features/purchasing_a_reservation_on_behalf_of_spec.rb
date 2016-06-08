@@ -8,6 +8,9 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
   let!(:price_policy) { FactoryGirl.create(:instrument_price_policy, price_group: PriceGroup.base.first, product: instrument) }
   let(:user) { FactoryGirl.create(:user) }
   let(:facility_admin) { FactoryGirl.create(:user, :facility_administrator, facility: facility) }
+  let!(:account_price_group_member) do
+    FactoryGirl.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
+  end
 
   before do
     login_as facility_admin

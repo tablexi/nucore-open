@@ -7,6 +7,9 @@ RSpec.describe "Purchasing a reservation" do
   let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
   let!(:price_policy) { FactoryGirl.create(:instrument_price_policy, price_group: PriceGroup.base.first, product: instrument) }
   let(:user) { FactoryGirl.create(:user) }
+  let!(:account_price_group_member) do
+    FactoryGirl.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
+  end
 
   before do
     login_as user
