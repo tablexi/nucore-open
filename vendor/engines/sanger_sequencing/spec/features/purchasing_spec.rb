@@ -10,6 +10,9 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
   let(:user) { FactoryGirl.create(:user) }
   let(:external_service) { create(:external_service, location: new_sanger_sequencing_submission_path) }
   let!(:sanger_order_form) { create(:external_service_passer, external_service: external_service, active: true, passer: service) }
+  let!(:account_price_group_member) do
+    FactoryGirl.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
+  end
 
   before do
     login_as user
