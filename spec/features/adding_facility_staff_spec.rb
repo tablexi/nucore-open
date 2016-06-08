@@ -18,7 +18,7 @@ RSpec.describe "Adding/Removing Facility Staff" do
   describe "adding a staff member", :js do
     before do
       visit facility_facility_users_path(facility)
-      click_link "Add #{text("Facility")} Staff"
+      click_link "Add #{text('Facility')} Staff"
       fill_in "search_term", with: normal_user.first_name
       click_button "Search"
     end
