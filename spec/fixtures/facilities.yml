@@ -1,9 +1,0 @@
-facility:
-  name: "Testing Facility"
-  email: "testing@nucore.org"
-  abbreviation: TF
-  short_description: This is a test description.
-  description: This is a full description.
-  is_active: true
-  url_name: testing-facility
-  journal_mask: C01
