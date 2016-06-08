@@ -1,11 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "Purchasing a reservation" do
-  fixtures :all
 
-  let(:facility) { facilities(:facility) }
-  let(:instrument) { products(:reservation_only_instrument) }
-  let(:user) { users(:normal_user) }
+  let!(:instrument) { FactoryGirl.create(:setup_instrument) }
+  let!(:facility) { instrument.facility }
+  let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
+  let!(:price_policy) { FactoryGirl.create(:instrument_price_policy, price_group: PriceGroup.base.first, product: instrument) }
+  let(:user) { FactoryGirl.create(:user) }
 
   before do
     login_as user

@@ -1,6 +1,0 @@
-facility_account:
-  facility: facility
-  revenue_account: 51234
-  account_number: 123-7123456
-  is_active: true
-  created_by: 0

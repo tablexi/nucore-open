@@ -103,7 +103,6 @@ group :test do
   gem "codeclimate_circle_ci_coverage"
   gem "capybara"
   gem "poltergeist"
-  gem "database_cleaner"
 end
 
 group :assets do

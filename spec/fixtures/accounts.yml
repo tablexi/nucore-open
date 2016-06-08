@@ -1,6 +1,0 @@
-nufs_account:
-  type: NufsAccount
-  account_number: "1234567890"
-  description: Testing NufsAccount
-  expires_at: <%= 50.years.from_now %>
-  created_by: 0

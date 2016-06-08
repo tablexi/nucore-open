@@ -1,17 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Adding/Removing Facility Staff" do
-  fixtures :all
-
   include TextHelpers::Translation
 
   def translation_scope
     ""
   end
 
-  let(:facility) { facilities(:facility) }
-  let(:admin) { users(:facility_admin) }
-  let(:normal_user) { users(:normal_user) }
+  let(:facility) { FactoryGirl.create(:facility) }
+  let(:admin) { FactoryGirl.create(:user, :facility_administrator, facility: facility) }
+  let(:normal_user) { FactoryGirl.create(:user) }
 
   before { login_as admin }
 
