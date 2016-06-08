@@ -5,11 +5,11 @@ module SangerSequencing
     NEW_IDS_COUNT = 5
 
     customer_tab :all
-    before_filter { @active_tab = "orders" }
+    before_action { @active_tab = "orders" }
 
     load_and_authorize_resource except: :new
-    before_filter :load_and_authorize_on_new, only: :new
-    before_filter :prevent_after_purchase, except: [:show]
+    before_action :load_and_authorize_on_new, only: :new
+    before_action :prevent_after_purchase, except: [:show]
 
     def new
       clean_samples
