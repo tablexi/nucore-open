@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160602153918) do
+ActiveRecord::Schema.define(version: 20160606205228) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -141,6 +141,7 @@ ActiveRecord::Schema.define(version: 20160602153918) do
     t.string   "journal_mask",                 limit: 50,                    null: false
     t.boolean  "show_instrument_availability",               default: false, null: false
     t.string   "order_notification_recipient", limit: 255
+    t.boolean  "sanger_sequencing_enabled",                  default: false, null: false
   end
 
   add_index "facilities", ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true, using: :btree

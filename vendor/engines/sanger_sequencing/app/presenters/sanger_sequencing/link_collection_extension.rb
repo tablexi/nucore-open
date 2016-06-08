@@ -10,7 +10,7 @@ module SangerSequencing
     end
 
     def admin_sanger_sequencing
-      if single_facility?
+      if single_facility? && facility.sanger_sequencing_enabled?
         NavTab::Link.new(
           tab: :admin_sanger_sequencing,
           text: "Sanger",

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Sanger Sequencing Administration" do
-  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility) { FactoryGirl.create(:facility, sanger_sequencing_enabled: true) }
 
   describe "as the facility director" do
     let(:facility_director) { FactoryGirl.create(:user, :facility_director, facility: facility) }
