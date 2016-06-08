@@ -2,7 +2,12 @@ require "rails_helper"
 
 RSpec.describe "Adding/Removing Facility Staff" do
   fixtures :all
-  # fixtures :facilities, :users, :user_roles
+
+  include TextHelpers::Translation
+
+  def translation_scope
+    ""
+  end
 
   let(:facility) { facilities(:facility) }
   let(:admin) { users(:facility_admin) }
@@ -13,7 +18,7 @@ RSpec.describe "Adding/Removing Facility Staff" do
   describe "adding a staff member", :js do
     before do
       visit facility_facility_users_path(facility)
-      click_link "Add Facility Staff"
+      click_link "Add #{text("Facility")} Staff"
       fill_in "search_term", with: normal_user.first_name
       click_button "Search"
     end
