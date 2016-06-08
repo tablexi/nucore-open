@@ -4,7 +4,7 @@
 
   %td
     = render "#{order_detail.product.class.name.underscore}_desc", order_detail: order_detail
-    - if show_notes_field?(order_detail)
+    - if show_note_input_to_user?(order_detail)
       %label.inline.cart__noteField{ for: "note#{order_detail.id}" }
         Note:
         = text_field_tag("note#{order_detail.id}", order_detail.note, maxlength: 100, size: 100 )

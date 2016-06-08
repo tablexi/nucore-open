@@ -22,4 +22,8 @@ module OrdersHelper
     end
   end
 
+  def show_note_input_to_user?(order_detail)
+    acting_as? || order_detail.product.note_available_to_users?
+  end
+
 end

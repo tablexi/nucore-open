@@ -313,11 +313,6 @@ class OrdersController < ApplicationController
 
   private
 
-  def show_notes_field?(order_detail)
-    acting_as? || order_detail.product.note_available_to_users?
-  end
-  helper_method :show_notes_field?
-
   # Group into chunks by the group id. If group_id is nil, then it should get its
   # own chunk.
   def grouped_order_details
