@@ -1,6 +1,6 @@
 %tr
   - if order_detail_iteration.first?
-    %td.centered{ rowspan: order_details.count }= link_to "Remove", remove_order_path(@order, order_detail), method: :put
+    %td.centered{ rowspan: order_details.count }= link_to text("shared.remove"), remove_order_path(@order, order_detail), method: :put
 
   %td
     = render "#{order_detail.product.class.name.underscore}_desc", order_detail: order_detail
@@ -22,7 +22,7 @@
       %td.currency= show_estimated_subsidy(order_detail)
     %td.currency= show_estimated_total(order_detail)
   - else
-    %td.currency Unassigned
+    %td.currency= text("shared.unassigned")
     - if @order.has_subsidies?
-      %td.currency Unassigned
-    %td.currency Unassigned
+      %td.currency= text("shared.unassigned")
+    %td.currency= text("shared.unassigned")
