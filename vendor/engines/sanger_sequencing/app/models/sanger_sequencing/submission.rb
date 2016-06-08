@@ -11,6 +11,7 @@ module SangerSequencing
     belongs_to :order_detail, class_name: "::OrderDetail"
     has_one :order, through: :order_detail
     has_one :user, through: :order
+    has_one :facility, through: :order
     has_many :samples
 
     accepts_nested_attributes_for :samples, allow_destroy: true
