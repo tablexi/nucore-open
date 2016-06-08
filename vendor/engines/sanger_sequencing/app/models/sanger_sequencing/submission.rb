@@ -16,6 +16,7 @@ module SangerSequencing
     accepts_nested_attributes_for :samples, allow_destroy: true
 
     delegate :order_id, to: :order_detail
+    delegate :purchased?, to: :order
 
     def create_samples!(quantity)
       quantity = quantity.to_i

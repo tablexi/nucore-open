@@ -5,17 +5,19 @@ module SangerSequencing
     NEW_IDS_COUNT = 5
 
     customer_tab :all
-    before_filter { @active_tab = "orders" }
+    before_action { @active_tab = "orders" }
 
-    load_and_authorize_resource only: [:edit, :update, :fetch_ids]
+    load_and_authorize_resource except: :new
+    before_action :load_and_authorize_on_new, only: :new
+    before_action :prevent_after_purchase, except: [:show]
 
     def new
-      order_detail = ::OrderDetail.find(params[:receiver_id])
-      @submission = Submission.where(order_detail_id: order_detail.id).first_or_create
-      authorize! :create, @submission
       clean_samples
       @submission.create_samples!(params[:quantity]) if @submission.samples.empty?
       render :edit
+    end
+
+    def show
     end
 
     def edit
@@ -68,6 +70,16 @@ module SangerSequencing
 
     def cart_path
       Rails.application.routes.url_helpers.order_path(@submission.order_id)
+    end
+
+    def load_and_authorize_on_new
+      order_detail = ::OrderDetail.find(params[:receiver_id])
+      @submission = Submission.where(order_detail_id: order_detail.id).first_or_create
+      authorize! :create, @submission
+    end
+
+    def prevent_after_purchase
+      raise ActiveRecord::RecordNotFound if @submission.purchased?
     end
 
   end

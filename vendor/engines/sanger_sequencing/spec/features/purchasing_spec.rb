@@ -29,6 +29,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
 
     it "sends the quantity without needing Update", :js do
       click_link "Complete Online Order Form"
+
       expect(page).to have_css(customer_id_selector, count: 5)
     end
 
@@ -51,6 +52,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       it "saves the form" do
         page.first(customer_id_selector).set("TEST123")
         click_button "Save Submission"
+
         expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to include("TEST123")
         expect(SangerSequencing::Sample.count).to eq(5)
       end
@@ -61,6 +63,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
           expect(page).to have_css("#{customer_id_selector}:enabled", count: 6)
           expect(page.all(customer_id_selector).last.value).to match(/\A\d{4}\z/)
           click_button "Save Submission"
+
           expect(SangerSequencing::Sample.count).to eq(6)
 
           # back on the cart
@@ -71,6 +74,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
           page.all(:link, "Remove").first.click
           expect(page).to have_css(customer_id_selector, count: 4)
           click_button "Save Submission"
+
           expect(SangerSequencing::Sample.count).to eq(4)
 
           # back on the cart
@@ -82,6 +86,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
         it "does not allow submitting a blank value" do
           page.first(customer_id_selector).set("")
           click_button "Save Submission"
+
           expect(page.first(customer_id_selector).value).to be_blank
           expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("")
         end
@@ -89,12 +94,14 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
         it "deletes blanks from the end" do
           page.all(customer_id_selector).last.set("")
           click_button "Save Submission"
+
           expect(SangerSequencing::Sample.count).to eq(4)
         end
 
         it "does not save if they are all blank" do
           page.all(customer_id_selector).each { |textbox| textbox.set("") }
           click_button "Save Submission"
+
           expect(page).to have_content("You must have at least one sample")
         end
       end
@@ -102,11 +109,11 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
       describe "and more samples were created in another page" do
         before do
           SangerSequencing::Submission.first.create_samples!(5)
+          page.all(customer_id_selector).each_with_index { |textbox, i| textbox.set(i + 1) }
+          click_button "Save Submission"
         end
 
         it "does removes the extra ones" do
-          page.all(customer_id_selector).each_with_index { |textbox, i| textbox.set(i + 1) }
-          click_button "Save Submission"
           expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to eq(%w(1 2 3 4 5))
         end
       end
@@ -115,11 +122,27 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
         before do
           page.first(customer_id_selector).set("TEST123")
           click_button "Save Submission"
+          click_link "Edit Online Order Form"
         end
 
         it "returns to the form" do
-          click_link "Edit Online Order Form"
           expect(page.first(customer_id_selector).value).to eq("TEST123")
+        end
+      end
+
+      describe "after purchasing" do
+        before do
+          click_button "Save Submission"
+          click_button "Purchase"
+          expect(Order.first).to be_purchased
+        end
+
+        it "can show, but not edit" do
+          visit sanger_sequencing_submission_path(SangerSequencing::Submission.last)
+          expect(page.status_code).to eq(200)
+
+          visit edit_sanger_sequencing_submission_path(SangerSequencing::Submission.last)
+          expect(page.status_code).to eq(404)
         end
       end
     end
