@@ -91,12 +91,6 @@ GEM
       activerecord (>= 4.0.0, < 5)
     awesome_print (1.1.0)
     bcrypt (3.1.11)
-    better_errors (2.1.1)
-      coderay (>= 1.0.0)
-      erubis (>= 2.6.6)
-      rack (>= 0.9.0)
-    binding_of_caller (0.7.2)
-      debug_inspector (>= 0.0.1)
     bootstrap-sass (2.3.2.2)
       sass (~> 3.2)
     builder (3.2.2)
@@ -596,6 +590,10 @@ GEM
     unicode-display_width (1.0.5)
     warden (1.2.6)
       rack (>= 1.0)
+    web-console (3.2.0)
+      activemodel (>= 4.2)
+      debug_inspector
+      railties (>= 4.2)
     websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
@@ -614,8 +612,6 @@ DEPENDENCIES
   activerecord-oracle_enhanced-adapter (= 1.4.3)
   awesome_nested_set (= 3.0.3)
   awesome_print (= 1.1.0)
-  better_errors
-  binding_of_caller
   bootstrap-sass (~> 2.3.2)
   c2po (~> 1.0.0)!
   cancancan (= 1.10)
@@ -689,6 +685,7 @@ DEPENDENCIES
   timecop (~> 0.6.3)
   uglifier (~> 2.7.2)
   vestal_versions (= 1.2.4.3)!
+  web-console
   whenever
   will_paginate (~> 3.0.5)
 
