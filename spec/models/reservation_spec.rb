@@ -646,7 +646,7 @@ RSpec.describe Reservation do
                                        duration_value: "60", duration_unit: "minutes")
     end
 
-    let (:conflicting_reservation) do
+    let(:conflicting_reservation) do
       res = @instrument.reservations.build(reserve_start_date: Date.today + 1.day, reserve_start_hour: 10,
                                            reserve_start_min: 0, reserve_start_meridian: "am",
                                            duration_value: "60", duration_unit: "minutes")

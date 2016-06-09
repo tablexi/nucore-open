@@ -81,8 +81,8 @@ RSpec.describe Reservation do
   end
 
   describe "order setup" do
-    let (:product) { FactoryGirl.create(:setup_instrument) }
-    let (:order) { FactoryGirl.create(:setup_order, product: product) }
+    let(:product) { FactoryGirl.create(:setup_instrument) }
+    let(:order) { FactoryGirl.create(:setup_order, product: product) }
 
     it "should have an order detail" do
       expect(order.order_details).not_to be_empty

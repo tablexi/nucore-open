@@ -21,7 +21,7 @@ class Reservation < ActiveRecord::Base
 
   # Represents a resevation time that is unavailable, but is not an admin reservation
   # Used by timeline view
-  attr_accessor     :blackout
+  attr_accessor :blackout
 
   # used for overriding certain restrictions
   attr_accessor :reserved_by_admin
