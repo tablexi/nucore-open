@@ -1,7 +1,12 @@
 = content_for :h1 do
   = current_facility
 
+= content_for :sidebar do
+  = render "sidenav", sidenav_tab: "submissions"
+
 %h2= text("sanger_sequencing.name")
+
+%p= link_to text("new_batch"), new_facility_sanger_sequencing_admin_batch_path, class: "btn btn-add"
 
 %table.table.table-striped
   %thead
@@ -21,3 +26,5 @@
         %td= submission.user
         %td= submission.samples.count
         %td= submission.order_status
+
+= will_paginate(@submissions)

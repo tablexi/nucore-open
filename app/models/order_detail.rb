@@ -99,7 +99,7 @@ class OrderDetail < ActiveRecord::Base
   scope :new_or_inprocess, lambda {
     where(state: %w(new inprocess))
       .includes(:order)
-      .where.not("orders.ordered_at" => nil)
+      .merge(Order.purchased)
       .references(:order)
   }
 

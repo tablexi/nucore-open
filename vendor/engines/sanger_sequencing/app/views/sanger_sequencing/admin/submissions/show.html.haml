@@ -1,11 +1,17 @@
 = content_for :h1 do
   = text("sanger_sequencing.name")
 
-%h2= "#{SangerSequencing::Submission.human_attribute_name(:id)}#{@submission.id}"
+= content_for :sidebar do
+  = render "sidenav", sidenav_tab: "submissions"
 
-.container.banner-list
-  .row
-    = banner_date_label @submission.order, :ordered_at
-    = banner_label @submission.order, :user
+%div{class: modal? ? "modal-header" : ""}
+  = modal_close_button if modal?
+  %h2= "#{SangerSequencing::Submission.human_attribute_name(:id)}#{@submission.id}"
 
-= render "sanger_sequencing/submissions/samples_table"
+%div{class: modal? ? "modal-body" : ""}
+  .container.banner-list
+    .row
+      = banner_date_label @submission.order, :ordered_at
+      = banner_label @submission.order, :user
+
+  = render "sanger_sequencing/submissions/samples_table"

@@ -9,6 +9,10 @@ en:
           submit: "Save Submission"
           add: Add
           remove: Remove
+      admin:
+        submissions:
+          index:
+            new_batch: Create New Batch
 
   activerecord:
     attributes:
@@ -17,6 +21,12 @@ en:
         customer_sample_id: Customer Sample
       sanger_sequencing/submission:
         id: "Submission #"
+
+    models:
+      sanger_sequencing/submission:
+        one: Submission
+        other: Submissions
+
     errors:
       models:
         sanger_sequencing/submission:

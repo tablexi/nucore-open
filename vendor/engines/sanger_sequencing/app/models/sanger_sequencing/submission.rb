@@ -20,7 +20,8 @@ module SangerSequencing
     delegate :purchased?, :ordered_at, to: :order
     alias purchased_at ordered_at
 
-    scope :purchased, -> { joins(:order).merge(Order.purchased.order(:ordered_at)) }
+    scope :purchased, -> { joins(:order).merge(Order.purchased.order(ordered_at: :desc)) }
+    scope :ready_for_batch, -> { purchased.merge(OrderDetail.new_or_inprocess) }
     scope :for_facility, -> (facility) { where(orders: { facility_id: facility.id }) }
 
     def create_samples!(quantity)

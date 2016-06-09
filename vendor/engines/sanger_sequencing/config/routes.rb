@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     namespace :sanger_sequencing do
       namespace :admin do
         resources :submissions, only: [:index, :show]
+        resources :batches, only: [:new]
       end
     end
   end
