@@ -25,6 +25,15 @@ RSpec.describe SangerSequencing::SubmissionsController do
         expect(response.code).to eq("403")
       end
     end
+
+    describe "as a global admin" do
+      let(:admin) { FactoryGirl.create(:user, :administrator) }
+      before { sign_in admin }
+      it "does not have access" do
+        get :edit, id: submission.id
+        expect(response.code).to eq("403")
+      end
+    end
   end
 
   describe "#fetch_ids" do

@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   resources :facilities, only: [] do
     namespace :sanger_sequencing do
       namespace :admin do
-        resources :submissions, only: [:index]
+        resources :submissions, only: [:index, :show]
       end
     end
   end

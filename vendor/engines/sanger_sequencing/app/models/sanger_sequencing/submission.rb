@@ -11,12 +11,17 @@ module SangerSequencing
     belongs_to :order_detail, class_name: "::OrderDetail"
     has_one :order, through: :order_detail
     has_one :user, through: :order
+    has_one :facility, through: :order
     has_many :samples
 
     accepts_nested_attributes_for :samples, allow_destroy: true
 
-    delegate :order_id, to: :order_detail
-    delegate :purchased?, to: :order
+    delegate :order_id, :user, :order_status, to: :order_detail
+    delegate :purchased?, :ordered_at, to: :order
+    alias purchased_at ordered_at
+
+    scope :purchased, -> { joins(:order).merge(Order.purchased.order(:ordered_at)) }
+    scope :for_facility, -> (facility) { where(orders: { facility_id: facility.id }) }
 
     def create_samples!(quantity)
       quantity = quantity.to_i
