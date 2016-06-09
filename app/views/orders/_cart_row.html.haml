@@ -1,30 +1,20 @@
 %tr
-  - if first_of_group
-    - row_span = @order.order_details.where(group_id: order_detail.group_id).count
-    %td.centered{ rowspan: row_span * (acting_as? ? 2 : 1) }= link_to "Remove", remove_order_path(@order, order_detail), method: :put
-  - elsif order_detail.group_id.nil?
-    %td.centered{ rowspan: (acting_as? ? 2 : 1) }= link_to "Remove", remove_order_path(@order, order_detail), method: :put
+  - if order_detail_iteration.first?
+    %td.centered{ rowspan: order_details.count }= link_to text("shared.remove"), remove_order_path(@order, order_detail), method: :put
 
-  - if order_detail.product.is_a?(Instrument)
-    %td
-      = render partial: "instrument_desc", locals: { order_detail: order_detail }
-    %td
+  %td
+    = render "#{order_detail.product.class.name.underscore}_desc", order_detail: order_detail
+    - if show_note_input_to_user?(order_detail)
+      %label.inline.cart__noteField{ for: "note#{order_detail.id}" }
+        Note:
+        = text_field_tag("note#{order_detail.id}", order_detail.note, maxlength: 100, size: 100 )
 
-  - elsif order_detail.product.is_a?(Service)
-    %td
-      = render partial: "service_desc", locals: { order_detail: order_detail }
-    - if order_detail.bundle
+    - if order_detail.product.is_a?(Instrument)
+      %td
+    - elsif order_detail.bundle
       %td.centered= order_detail.quantity
     - else
-      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, value: order_detail.quantity, size: 3, disabled: order_detail.quantity_locked_by_survey?
-
-  - elsif order_detail.product.is_a?(Item)
-    %td
-      = render partial: "item_desc", locals: { order_detail: order_detail }
-    - if order_detail.bundle
-      %td.centered= order_detail.quantity
-    - else
-      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, value: order_detail.quantity, size: 3
+      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, value: order_detail.quantity, size: 3, class: "cart__quantityField", disabled: order_detail.quantity_locked_by_survey?
 
   - if order_detail.cost_estimated?
     %td.currency= show_estimated_cost(order_detail)
@@ -32,12 +22,7 @@
       %td.currency= show_estimated_subsidy(order_detail)
     %td.currency= show_estimated_total(order_detail)
   - else
-    %td.currency Unassigned
+    %td.currency= text("shared.unassigned")
     - if @order.has_subsidies?
-      %td.currency Unassigned
-    %td.currency Unassigned
-- if acting_as?
-  %tr
-    %td{ colspan: 4 }
-      %label.inline Note:
-      = text_field_tag("note#{order_detail.id}", order_detail.note, maxlength: 100, size: 100 )
+      %td.currency= text("shared.unassigned")
+    %td.currency= text("shared.unassigned")

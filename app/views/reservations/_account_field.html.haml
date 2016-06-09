@@ -19,5 +19,5 @@
           - if acting_as?
             = render_view_hook "after_account", f: f, order_detail: @order_detail
 
-        - if acting_as?
+        - if show_note_input_to_user?(@order_detail)
           .span6= f.input :note

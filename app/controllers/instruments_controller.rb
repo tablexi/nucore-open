@@ -1,7 +1,6 @@
 class InstrumentsController < ProductsCommonController
 
   customer_tab  :show, :public_schedule
-  admin_tab     :create, :edit, :index, :manage, :new, :schedule, :update
 
   before_action :store_fullpath_in_session, only: [:index, :show]
   before_action :set_default_lock_window, only: [:create, :update]
@@ -78,18 +77,6 @@ class InstrumentsController < ProductsCommonController
       acting_user.cart(session_user),
       order: { order_details: [{ product_id: @instrument.id, quantity: 1 }] },
     )
-  end
-
-  # PUT /facilities/:facility_id/instruments/:instrument_id
-  def update
-    @header_prefix = "Edit"
-
-    if @instrument.update_attributes(params[:instrument])
-      flash[:notice] = "Instrument was successfully updated."
-      return redirect_to(manage_facility_instrument_path(current_facility, @instrument))
-    end
-
-    render action: "edit"
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/schedule

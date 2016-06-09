@@ -99,6 +99,7 @@ en:
     create: Create
     select_all: Select All
     select_none: Select None
+    unassigned: Unassigned
     footer:
       copyright_html: "&copy; Copyright 2010&ndash;%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"

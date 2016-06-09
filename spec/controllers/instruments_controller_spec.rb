@@ -469,7 +469,6 @@ RSpec.describe InstrumentsController do
     end
 
     def assert_successful_update
-      expect(assigns(:header_prefix)).to eq("Edit")
       expect(assigns(:instrument)).to eq(@instrument)
       yield
       is_expected.to set_flash
