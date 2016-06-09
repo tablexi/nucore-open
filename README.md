@@ -119,6 +119,19 @@ NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following fr
     rake spec:controllers
 
 
+## Optional Modules
+
+The following modules are provided as optional features via
+[Rails engines](http://guides.rubyonrails.org/engines.html). These are enabled
+by adding the appropriate engine to your Gemfile (all are on by default). They
+exist in the `vendor/engines` directory.
+
+* Accept Credit Cards & Purchase Orders (c2po)
+* Connect to Dataprobe Power Relays (dataprobe)
+* Link orders together as a Project (projects)
+* [Sanger Sequencing order form and well plate management](vendor/engines/sanger_sequencing/README.md)
+* [Split charges between different accounts](vendor/engines/split_accounts/README.md)
+
 ## Learn more
 
 There are valuable resources in the NUcore's doc directory.
