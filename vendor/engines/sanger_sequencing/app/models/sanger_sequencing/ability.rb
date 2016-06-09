@@ -9,8 +9,8 @@ module SangerSequencing
 
       can [:show, :create, :update, :fetch_ids], Submission, user: user
 
-      if facility
-        can [:index, :show], Submission if user.operator_of?(facility)
+      if facility && user.operator_of?(facility)
+        can [:index, :show], Submission
       end
     end
 
