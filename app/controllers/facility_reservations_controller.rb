@@ -213,7 +213,8 @@ class FacilityReservationsController < ApplicationController
     if reserve_changed? || actual_changed?
       @order_detail.assign_estimated_price_from_policy(@order_detail.price_policy)
 
-      if costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
+      costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
+      if costs.present?
         @order_detail.actual_cost    = costs[:cost]
         @order_detail.actual_subsidy = costs[:subsidy]
       end

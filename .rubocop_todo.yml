@@ -33,7 +33,6 @@ Lint/AmbiguousRegexpLiteral:
 # Configuration parameters: AllowSafeAssignment.
 Lint/AssignmentInCondition:
   Exclude:
-    - 'app/controllers/facility_reservations_controller.rb'
     - 'app/helpers/facility_orders_helper.rb'
     - 'app/models/budgeted_chart_string.rb'
     - 'app/support/accessories/accessorizer.rb'
