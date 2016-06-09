@@ -834,11 +834,11 @@ RSpec.describe Reservation do
   describe '#start_reservation!' do
     it "sets actual start time", :timecop_freeze do
       reservation.start_reservation!
-      expect(reservation.actual_start_at).to eq(Time.now)
+      expect(reservation.actual_start_at).to eq(Time.current)
     end
 
     context "with a running reservation" do
-      let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: 1.hour.ago, reserve_end_at: Time.now, actual_start_at: 1.hour.ago }
+      let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: 1.hour.ago, reserve_end_at: Time.current, actual_start_at: 1.hour.ago }
 
       before do
         order = running.order_detail.order

@@ -16,7 +16,7 @@ FactoryGirl.define do
     end
 
     trait :later_today do
-      reserve_start_at { Time.now + 2.hours }
+      reserve_start_at { 2.hours.from_now }
     end
 
     trait :running do
