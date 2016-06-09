@@ -2,7 +2,7 @@ module SangerSequencing
 
   module Admin
 
-    class SubmissionsController < ApplicationController
+    class SubmissionsController < BaseController
 
       admin_tab :all
       before_filter { @active_tab = "admin_sanger_sequencing" }

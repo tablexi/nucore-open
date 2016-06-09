@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
   include RSpec::Matchers.clone # Give RSpec's `all` precedence over Capybara's
 
-  let!(:service) { FactoryGirl.create(:setup_service) }
+  let(:facility) { FactoryGirl.create(:setup_facility, sanger_sequencing_enabled: true) }
+  let!(:service) { FactoryGirl.create(:setup_service, facility: facility) }
   let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
-  let(:facility) { service.facility }
   let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base.first, product: service) }
   let(:user) { FactoryGirl.create(:user) }
   let(:external_service) { create(:external_service, location: new_sanger_sequencing_submission_path) }
@@ -148,6 +148,21 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
           expect(page.status_code).to eq(404)
         end
       end
+    end
+  end
+
+  describe "when the facility does not have sanger enabled" do
+    before do
+      facility.update_attributes(sanger_sequencing_enabled: false)
+      visit facility_service_path(facility, service)
+      click_link "Add to cart"
+      choose account.to_s
+      click_button "Continue"
+    end
+
+    it "is not found" do
+      click_link "Complete Online Order Form"
+      expect(page.status_code).to eq(404)
     end
   end
 end

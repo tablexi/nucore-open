@@ -1,15 +1,18 @@
 module SangerSequencing
 
-  class SubmissionsController < ApplicationController
+  class SubmissionsController < BaseController
 
     NEW_IDS_COUNT = 5
 
     customer_tab :all
     before_action { @active_tab = "orders" }
 
+    # In BaseController, but needs to happen after loading the @submission
+    skip_before_action :assert_sanger_enabled_for_facility
     load_and_authorize_resource except: :new
     before_action :load_and_authorize_on_new, only: :new
     before_action :prevent_after_purchase, except: [:show]
+    before_action :assert_sanger_enabled_for_facility
 
     def new
       clean_samples
@@ -45,7 +48,7 @@ module SangerSequencing
     private
 
     def current_facility
-      @current_facility ||= @submission.order_detail.facility
+      @current_facility ||= @submission.try(:facility)
     end
 
     def clean_samples
