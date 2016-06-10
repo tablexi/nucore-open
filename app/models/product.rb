@@ -61,7 +61,7 @@ class Product < ActiveRecord::Base
   end
 
   def self.group_by_type
-    scoped.order(:type, :name).group_by(&:type)
+    order(:type, :name).group_by(&:type)
   end
 
   ## AR Hooks

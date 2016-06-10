@@ -4,10 +4,11 @@ require "controller_spec_helper"
 RSpec.describe UsersController do
   render_views
 
-  before(:each) { create_users }
+  let(:facility) { FactoryGirl.create(:facility) }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
+    create_users
+    @authable = facility
     @params = { facility_id: @authable.url_name }
   end
 
@@ -43,6 +44,35 @@ RSpec.describe UsersController do
       end
     end
 
+  end
+
+  describe "GET #access_list" do
+    let(:facility) { FactoryGirl.create(:setup_facility) }
+    let(:user) { FactoryGirl.create(:user) }
+    let!(:instruments) { FactoryGirl.create_list(:instrument_requiring_approval, 2, facility: facility) }
+    let!(:services) { FactoryGirl.create_list(:setup_service, 2, requires_approval: true, facility: facility) }
+    let!(:training_requests) do
+      [
+        FactoryGirl.create(:training_request, user: user, product: instruments.last),
+        FactoryGirl.create(:training_request, user: user, product: services.first),
+      ]
+    end
+
+    before(:each) do
+      @method = :get
+      @action = :access_list
+      @params[:user_id] = user.id
+    end
+
+    it_should_allow_operators_only do
+      expect(assigns[:facility]).to eq(facility)
+      expect(assigns[:products_by_type]["Instrument"]).to match_array(instruments)
+      expect(assigns[:products_by_type]["Service"]).to match_array(services)
+      expect(assigns[:training_requested_product_ids]).to match_array [
+        instruments.last.id,
+        services.first.id,
+      ]
+    end
   end
 
   context "creating users" do
