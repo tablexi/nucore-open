@@ -88,8 +88,7 @@ $(function() {
           updateRelayStatus(data.instrument_status);
         },
         data: {
-          // This is what we're switching to, not what we currently display
-          switch: $(this).is(":checked") ? 'off' : 'on'
+          switch: $(this).is(":checked") ? "on" : "off"
         },
         dataType: 'json'
       });
