@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Passwords", feature_setting: { password_update: true } do
+RSpec.describe "Passwords", :aggregate_failures, feature_setting: { password_update: true } do
   let(:external_user) { FactoryGirl.create(:user, :external, password: "originalpassword") }
   let(:internal_user) { FactoryGirl.create(:user, password: "originalpassword") }
 
@@ -51,7 +51,46 @@ RSpec.describe "Passwords", feature_setting: { password_update: true } do
       end
 
       it "receives an error when trying to access the edit password page" do
-        visit update_password_path
+        visit edit_current_password_path
+        expect(page).to have_content "You cannot change this user's password"
+      end
+    end
+  end
+
+  describe "Resetting" do
+    before do
+      clear_emails
+      visit new_user_session_path
+      click_link "Forgot password?"
+    end
+
+    describe "as the external user" do
+
+      before do
+        fill_in "Email", with: external_user.email
+        click_button "Submit"
+      end
+
+      it "gets an email and can reset the password" do
+        open_email(external_user.email)
+        current_email.click_link "Change my password"
+        fill_in "New password", with: "newpassword"
+        fill_in "Confirm your new password", with: "newpassword"
+        click_button "Change my password"
+
+        expect(page).to have_content "Your password has been changed successfully"
+        expect(external_user.reload).to be_valid_password("newpassword")
+        expect(page).to have_content external_user.email
+      end
+    end
+
+    describe "as an internal user" do
+      before do
+        fill_in "Email", with: internal_user.email
+        click_button "Submit"
+      end
+
+      it "cannot reset" do
         expect(page).to have_content "You cannot change this user's password"
       end
     end

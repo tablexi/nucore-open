@@ -35,29 +35,6 @@ class UserPasswordController < ApplicationController
     end
   end
 
-  def edit
-    unless params[:reset_password_token] && (@user = User.find_by_reset_password_token(params[:reset_password_token])) && @user.password_updatable? && @user.reset_password_period_valid?
-      flash[:error] = I18n.t("activerecord.errors.models.user.invalid_token")
-      redirect_to action: :reset
-    end
-  end
-
-  def update
-    unless params[:user] && params[:user][:reset_password_token] && (@user = User.find_by_reset_password_token(params[:user][:reset_password_token])) && @user.password_updatable? && @user.reset_password_period_valid?
-      flash[:error] = I18n.t("activerecord.errors.models.user.invalid_token")
-      redirect_to(action: :reset) && return
-    end
-    # devise's reset has problems with the ldap module enabled and no ldap.yml
-    # @user = User.reset_password_by_token(params[:user])
-    @user.update_password(params[:user])
-    if @user.errors.empty?
-      flash[:notice] = I18n.t("user_password.edit.success")
-      sign_in(@user)
-      redirect_to(:root) && return
-    end
-    render action: :edit
-  end
-
   private
 
   def no_user_allowed

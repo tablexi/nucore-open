@@ -5,9 +5,7 @@ Nucore::Application.routes.draw do
 
   if SettingsHelper.feature_on?(:password_update)
     match "/users/password/edit_current", to: 'user_password#edit_current', as: "edit_current_password", via: [:get, :post]
-    get "/users/password/reset",        to: 'user_password#reset',        as: "reset_password"
-    get "/users/password/edit",         to: 'user_password#edit',         as: "edit_password"
-    get "/users/password/update",       to: 'user_password#update',       as: "update_password"
+    match "/users/password/reset", to: 'user_password#reset', as: "reset_password", via: [:get, :post]
   end
 
   # root route

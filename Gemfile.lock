@@ -122,6 +122,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    capybara-email (2.5.0)
+      capybara (~> 2.4)
+      mail
     chosen-rails (1.5.2)
       coffee-rails (>= 3.2)
       railties (>= 3.0)
@@ -620,6 +623,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rvm
   capybara
+  capybara-email
   chosen-rails
   ci_reporter_rspec
   ckeditor (~> 4.1.6)
