@@ -8,6 +8,10 @@ FactoryGirl.define do
     sequence(:email) { |n| "user#{n}@example.com" }
   end
 
+  trait :external do
+    username { email }
+  end
+
   trait :account_manager do
     after(:create) do |user, _|
       UserRole.create!(user: user, role: UserRole::ACCOUNT_MANAGER)

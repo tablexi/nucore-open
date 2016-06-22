@@ -1,0 +1,59 @@
+require "rails_helper"
+
+RSpec.describe "Passwords", feature_setting: { password_update: true } do
+  let(:external_user) { FactoryGirl.create(:user, :external, password: "originalpassword") }
+  let(:internal_user) { FactoryGirl.create(:user, password: "originalpassword") }
+
+  describe "Changing" do
+    describe "as an external user" do
+      before do
+        login_as external_user
+        visit root_path
+        click_link "Change Password"
+      end
+
+      describe "correct password" do
+        before do
+          fill_in "Current password", with: "originalpassword"
+          fill_in "user[password]", with: "newpassword"
+          fill_in "user[password_confirmation]", with: "newpassword"
+          click_button "Change Password"
+        end
+
+        it "changes the password" do
+          expect(page).to have_content "Your password has been updated"
+          expect(external_user.reload).to be_valid_password("newpassword")
+        end
+      end
+
+      describe "incorrect password" do
+        before do
+          fill_in "Current password", with: "random"
+          fill_in "user[password]", with: "newpassword"
+          fill_in "user[password_confirmation]", with: "newpassword"
+          click_button "Change Password"
+        end
+
+        it "has an error" do
+          expect(page).to have_content "Current password is incorrect"
+        end
+      end
+    end
+
+    describe "as a user who cannot update their password" do
+      before do
+        login_as internal_user
+        visit root_path
+      end
+
+      it "does not have a change password link" do
+        expect(page).not_to have_link "Change Password"
+      end
+
+      it "receives an error when trying to access the edit password page" do
+        visit update_password_path
+        expect(page).to have_content "You cannot change this user's password"
+      end
+    end
+  end
+end

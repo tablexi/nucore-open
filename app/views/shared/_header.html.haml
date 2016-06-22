@@ -13,7 +13,7 @@
             - else
               %li.navbar-text= "#{session_user.full_name} (#{session_user.username})"
               %li.divider-vertical
-              - if current_user.external? && SettingsHelper.feature_on?(:password_update)
+              - if current_user.password_updatable? && SettingsHelper.feature_on?(:password_update)
                 %li= link_to t("user_password.edit.head"), :edit_current_password
                 %li.divider-vertical
               %li= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
