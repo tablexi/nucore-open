@@ -1,8 +1,11 @@
 class SangerSequencing.Sample
   constructor: (@attributes) -> undefined
 
-  toString: ->
+  customerSampleId: ->
     @attributes.customer_sample_id
+
+  displayId: ->
+    @attributes.id
 
   submission_id: ->
     @attributes.submission_id
@@ -11,17 +14,21 @@ class SangerSequencing.Sample
     @attributes.id
 
   class @Blank
-    toString: ->
-      ""
     submission_id: ->
+      ""
+    customerSampleId: ->
+      ""
+    displayId: ->
       ""
     id: ->
       ""
 
   class @Reserved
-    toString: ->
-      "reserved"
     submission_id: ->
       ""
-    id: ->
+    customerSampleId: ->
+      "reserved"
+    displayId: ->
       ""
+    id: ->
+      "reserved"
