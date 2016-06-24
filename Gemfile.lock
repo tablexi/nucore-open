@@ -591,6 +591,7 @@ GEM
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     unicode-display_width (1.0.5)
+    vuejs-rails (1.0.24)
     warden (1.2.6)
       rack (>= 1.0)
     web-console (3.2.0)
@@ -689,6 +690,7 @@ DEPENDENCIES
   timecop (~> 0.6.3)
   uglifier (~> 2.7.2)
   vestal_versions (= 1.2.4.3)!
+  vuejs-rails
   web-console
   whenever
   will_paginate (~> 3.0.5)

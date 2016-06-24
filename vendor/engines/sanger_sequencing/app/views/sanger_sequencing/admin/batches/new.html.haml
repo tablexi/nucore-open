@@ -1,31 +1,43 @@
 = content_for :h1 do
   = current_facility
 
-%table.table.table-bordered
-  %tr
-    %th
-    - (1..12).each do |col|
-      %th.centered= col
-  - ("A"..."H").each do |row|
-    %tr
-      %th= row
-      - 12.times do
-        %td
+= content_for :head_content do
+  = javascript_include_tag "sanger_sequencing/well_plate"
+  = javascript_include_tag "sanger_sequencing/bootstrap"
+  = javascript_include_tag "sanger_sequencing/sanger_app"
 
-%table.table.table-striped
-  %thead
+%vue-sanger-app(inline-template)
+  {{ foo }}
+
+  %table.table.table-bordered
     %tr
-      %th= SangerSequencing::Submission.human_attribute_name(:id)
-      %th= OrderDetail.human_attribute_name(:ordered_at)
-      %th= OrderDetail.human_attribute_name(:user)
-      %th= OrderDetail.human_attribute_name(:quantity)
-  %tbody
-    - @submissions.each do |submission|
+      %th
+      - (1..12).each do |col|
+        %th.centered= col
+    - ("A"..."H").each do |row|
       %tr
-        %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
-        %td= format_usa_datetime(submission.purchased_at)
-        %td= submission.user
-        %td= submission.samples.count
+        %th= row
+        - 12.times do
+          %td
+
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= SangerSequencing::Submission.human_attribute_name(:id)
+        %th= OrderDetail.human_attribute_name(:ordered_at)
+        %th= OrderDetail.human_attribute_name(:user)
+        %th= OrderDetail.human_attribute_name(:quantity)
+    %tbody
+      - @submissions.each do |submission|
+        %tr
+          %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
+          %td= format_usa_datetime(submission.purchased_at)
+          %td= submission.user
+          %td= submission.samples.count
 
 :javascript
   new AjaxModal(".js--modal", ".js--submissionModal")
+
+:javascript
+  window.bootstrap();
+
