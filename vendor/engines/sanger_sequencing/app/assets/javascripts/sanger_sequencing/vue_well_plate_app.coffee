@@ -1,4 +1,4 @@
-window.sanger_app = {
+window.vue_sanger_sequencing_well_plate_app = {
   props: ["submissions"]
   data: ->
     plate: SangerSequencing.WellPlateBuilder.rows()
