@@ -6,6 +6,7 @@ window.sanger_app = {
 
   ready: ->
     vueBus.$on "submission-added", @addSubmission
+    new AjaxModal(".js--modal", ".js--submissionModal")
     console.debug new SangerSequencing.WellPlateBuilder()
 
   methods:
@@ -23,10 +24,7 @@ window.sanger_app = {
         submission.id == submissionId
       )[0]
 
-    hasBeenAdded: (submissionId) ->
-      @addedSubmissions.indexOf(submissionId) >= 0
-
     hasNotBeenAdded: (submissionId) ->
-      !@hasBeenAdded(submissionId)
+      !@builder.hasBeenAdded(@findSubmission(submissionId))
 
 }

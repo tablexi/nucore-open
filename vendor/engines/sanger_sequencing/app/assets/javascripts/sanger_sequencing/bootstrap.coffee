@@ -5,7 +5,3 @@ window.bootstrap = ->
 
   new Vue
     el: "body",
-    methods:
-      handleAdd: (submissionId) ->
-        vueBus.$emit("submission-added", submissionId)
-

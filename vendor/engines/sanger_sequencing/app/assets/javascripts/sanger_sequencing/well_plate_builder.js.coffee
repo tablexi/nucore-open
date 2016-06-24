@@ -15,7 +15,10 @@ class SangerSequencing.WellPlateBuilder
     @cellNames = Util.flattenArray(@cellArray())
 
   addSubmission: (submission) ->
-    @submissions.push(submission) if @submissions.indexOf(submission) < 0
+    @submissions.push(submission) unless @hasBeenAdded(submission.id)
+
+  hasBeenAdded: (submission) ->
+    @submissions.indexOf(submission) >= 0
 
   samples: ->
     Util.flattenArray(@submissions.map (submission) ->
