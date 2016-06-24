@@ -7,16 +7,16 @@
   = javascript_include_tag "sanger_sequencing/sanger_app"
 
 %vue-sanger-app(inline-template){ ":submissions" => @submissions.to_json(include: :samples) }
-  {{ foo }}
 
   %table.table.table-bordered(v-cloak)
     %tr
       %th
       - (1..12).each do |col|
         %th.centered= col
-    %tr{ "v-for" => "row in plate" }
+    %tr(v-for="row in plate")
       %th {{row.name}}
-      %td{ "v-for" => "cell in row.cells", "@click" => "handleCellClick(cell)" }
+      %td(v-for="cell in row.cells" v-on:click="handleCellClick(cell)" v-bind:data-submission-id="sampleAtCell(cell.name).submission_id()")
+        = hidden_field_tag "well_plate[][{{cell.name}}]", "{{sampleAtCell(cell.name).id()}}"
         {{sampleAtCell(cell.name)}}
 
   %table.table.table-striped
