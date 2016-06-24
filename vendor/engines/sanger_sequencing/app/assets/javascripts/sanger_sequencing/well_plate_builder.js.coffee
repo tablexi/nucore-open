@@ -45,6 +45,13 @@ class SangerSequencing.WellPlateBuilder
 
     results
 
+  @rows: ->
+    for ch in "ABCDEFGH"
+      name: ch
+      cells: for num in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+        column: num
+        name: "#{ch}#{num}"
+
   cellArray: ->
     cells = for num in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
       for ch in "ABCDEFGH"

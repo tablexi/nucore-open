@@ -6,8 +6,17 @@
   = javascript_include_tag "sanger_sequencing/bootstrap"
   = javascript_include_tag "sanger_sequencing/sanger_app"
 
-%vue-sanger-app(inline-template)
+%vue-sanger-app(inline-template){ ":submissions" => @submissions.to_json(include: :samples) }
   {{ foo }}
+
+  %table.table.table-bordered
+    %tr
+      %th
+      - (1..12).each do |col|
+        %th.centered= col
+    %tr{ "v-for" => "row in plate" }
+      %th {{row.name}}
+      %td{ "v-for" => "cell in row.cells", "@click" => "handleCellClick(cell)" }
 
   %table.table.table-bordered
     %tr
@@ -19,6 +28,9 @@
         %th= row
         - 12.times do
           %td
+
+
+
 
   %table.table.table-striped
     %thead
