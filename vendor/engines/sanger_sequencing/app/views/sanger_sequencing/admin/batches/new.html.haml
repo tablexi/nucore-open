@@ -18,34 +18,22 @@
       %th {{row.name}}
       %td{ "v-for" => "cell in row.cells", "@click" => "handleCellClick(cell)" }
 
-  %table.table.table-bordered
+%table.table.table-striped
+  %thead
     %tr
-      %th
-      - (1..12).each do |col|
-        %th.centered= col
-    - ("A"..."H").each do |row|
+      %td
+      %th= SangerSequencing::Submission.human_attribute_name(:id)
+      %th= OrderDetail.human_attribute_name(:ordered_at)
+      %th= OrderDetail.human_attribute_name(:user)
+      %th= OrderDetail.human_attribute_name(:quantity)
+  %tbody
+    - @submissions.each do |submission|
       %tr
-        %th= row
-        - 12.times do
-          %td
-
-
-
-
-  %table.table.table-striped
-    %thead
-      %tr
-        %th= SangerSequencing::Submission.human_attribute_name(:id)
-        %th= OrderDetail.human_attribute_name(:ordered_at)
-        %th= OrderDetail.human_attribute_name(:user)
-        %th= OrderDetail.human_attribute_name(:quantity)
-    %tbody
-      - @submissions.each do |submission|
-        %tr
-          %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
-          %td= format_usa_datetime(submission.purchased_at)
-          %td= submission.user
-          %td= submission.samples.count
+        %td= link_to "Add", "#", "@click.prevent" => "handleAdd(#{submission.id})"
+        %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
+        %td= format_usa_datetime(submission.purchased_at)
+        %td= submission.user
+        %td= submission.samples.count
 
 :javascript
   new AjaxModal(".js--modal", ".js--submissionModal")
