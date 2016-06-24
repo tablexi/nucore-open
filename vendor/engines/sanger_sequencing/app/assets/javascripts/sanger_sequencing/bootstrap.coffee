@@ -1,11 +1,11 @@
 window.bootstrap = ->
   Vue.component "vue-sanger-app", window.sanger_app
 
-  window.bus = new Vue
+  window.vueBus = new Vue
 
   new Vue
     el: "body",
     methods:
       handleAdd: (submissionId) ->
-        bus.$emit("submission-added", submissionId)
+        vueBus.$emit("submission-added", submissionId)
 

@@ -19,7 +19,8 @@ class SangerSequencing.WellPlateBuilder
 
   samples: ->
     Util.flattenArray(@submissions.map (submission) ->
-      submission.samples
+      submission.samples.map (s) ->
+        new SangerSequencing.Sample(s)
     )
 
   sampleAtCell: (cell) ->

@@ -17,6 +17,7 @@
     %tr{ "v-for" => "row in plate" }
       %th {{row.name}}
       %td{ "v-for" => "cell in row.cells", "@click" => "handleCellClick(cell)" }
+        {{sampleAtCell(cell.name)}}
 
 %table.table.table-striped
   %thead

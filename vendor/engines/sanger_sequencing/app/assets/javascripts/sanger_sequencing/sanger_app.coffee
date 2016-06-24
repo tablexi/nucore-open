@@ -2,10 +2,10 @@ window.sanger_app = {
   props: ["submissions"]
   data: ->
     plate: SangerSequencing.WellPlateBuilder.rows()
-    addedSubmissions: []
+    builder: new SangerSequencing.WellPlateBuilder
 
   ready: ->
-    bus.$on "submission-added", @addSubmission
+    vueBus.$on "submission-added", @addSubmission
     console.debug new SangerSequencing.WellPlateBuilder()
 
   methods:
@@ -13,8 +13,15 @@ window.sanger_app = {
       console.log "handleCellClick", cell
 
     addSubmission: (submissionId) ->
-      @addedSubmissions.push(submissionId) unless @hasBeenAdded(submissionId)
-      console.debug @addedSubmissions
+      @builder.addSubmission @findSubmission(submissionId)
+
+    sampleAtCell: (cellName) ->
+      @builder.sampleAtCell(cellName)
+
+    findSubmission: (submissionId) ->
+      @submissions.filter((submission) =>
+        submission.id == submissionId
+      )[0]
 
     hasBeenAdded: (submissionId) ->
       @addedSubmissions.indexOf(submissionId) >= 0
