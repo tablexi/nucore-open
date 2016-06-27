@@ -7,10 +7,10 @@ window.vue_sanger_sequencing_well_plate_app = {
   ready: ->
     vueBus.$on "submission-added", @addSubmission
     new AjaxModal(".js--modal", ".js--submissionModal")
-    console.debug new SangerSequencing.WellPlateBuilder()
 
   methods:
     handleCellClick: (cell) ->
+      # TODO: Remove
       console.log "handleCellClick", cell
 
     addSubmission: (submissionId) ->

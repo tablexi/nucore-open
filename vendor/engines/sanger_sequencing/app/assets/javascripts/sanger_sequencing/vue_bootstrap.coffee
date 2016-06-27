@@ -4,4 +4,4 @@ window.vue_sanger_sequencing_bootstrap = ->
   window.vueBus = new Vue
 
   new Vue
-    el: "body",
+    el: "body"

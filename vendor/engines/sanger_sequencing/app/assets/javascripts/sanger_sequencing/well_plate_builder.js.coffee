@@ -65,5 +65,3 @@ class SangerSequencing.WellPlateBuilder
       odds = (column for column, i in cellsByColumn when i % 2 == 0)
       evens = (column for column, i in cellsByColumn when i % 2 == 1)
       Util.flattenArray(odds.concat(evens))
-
-
