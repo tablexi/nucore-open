@@ -40,31 +40,33 @@ class SangerSequencing.WellPlateBuilder
     @render()[plateIndex][cell]
 
   render: ->
-    fillOrder = @orderingStrategy.fillOrder(@cellArray())
-
     samples = @samples()
-    platesNeeded = Math.ceil(samples.length / fillOrder.length)
-
+    platesNeeded = Math.ceil(samples.length / @fillOrder().length)
     allPlates = []
 
     for plate in [0..platesNeeded]
-      plate = {}
-
-      for cellName in fillOrder
-        sample = null
-        if @reservedCells.indexOf(cellName) < 0
-          if sample = samples.shift()
-            sample = sample
-          else
-            sample = new SangerSequencing.Sample.Blank
-        else
-          sample = new SangerSequencing.Sample.Reserved
-
-        plate[cellName] = sample
-
-      allPlates.push(plate)
+      allPlates.push(@renderPlate(samples))
 
     allPlates
+
+  renderPlate: (samples) ->
+    plate = {}
+
+    for cellName in @fillOrder()
+      plate[cellName] = if @reservedCells.indexOf(cellName) < 0
+        if sample = samples.shift()
+          sample
+        else
+          new SangerSequencing.Sample.Blank
+      else
+        new SangerSequencing.Sample.Reserved
+
+       sample
+
+    plate
+
+  fillOrder: ->
+    @orderingStrategy.fillOrder(@cellArray())
 
   @rows: ->
     for ch in "ABCDEFGH"
