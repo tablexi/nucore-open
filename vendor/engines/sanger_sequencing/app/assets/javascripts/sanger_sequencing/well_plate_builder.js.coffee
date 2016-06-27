@@ -15,7 +15,7 @@ class SangerSequencing.WellPlateBuilder
     @cellNames = Util.flattenArray(@cellArray())
 
   addSubmission: (submission) ->
-    @submissions.push(submission) unless @hasBeenAdded(submission.id)
+    @submissions.push(submission) unless @hasBeenAdded(submission)
 
   hasBeenAdded: (submission) ->
     @submissions.indexOf(submission) >= 0
@@ -23,7 +23,7 @@ class SangerSequencing.WellPlateBuilder
   samples: ->
     Util.flattenArray(@submissions.map (submission) ->
       submission.samples.map (s) ->
-        new SangerSequencing.Sample(s)
+        if s instanceof SangerSequencing.Sample then s else new SangerSequencing.Sample(s)
     )
 
   sampleAtCell: (cell) ->

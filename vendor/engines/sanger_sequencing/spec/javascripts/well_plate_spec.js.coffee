@@ -2,14 +2,14 @@
 
 describe "SangerSequencingWellPlate", ->
   sampleList = (count) ->
-    @lastSampleId ||= 0
+    @lastSampleId = 0 if @lastSampleId == undefined
     for x in [0...count]
-      new SangerSequencing.Sample(@lastSampleId + x, "Testing #{x}")
-
+      @lastSampleId++
+      new SangerSequencing.Sample(id: @lastSampleId, customer_sample_id: "Testing #{x}")
 
   describe "addSubmission()", ->
     beforeEach ->
-      @submission1 = { id: 542, samples: sampleList(2) }
+      @submission = { id: 542, samples: sampleList(2) }
       @wellPlate = new SangerSequencing.WellPlateBuilder
 
     it "can add a submission", ->

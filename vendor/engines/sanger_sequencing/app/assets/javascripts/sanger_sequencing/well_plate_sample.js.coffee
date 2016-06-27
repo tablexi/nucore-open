@@ -2,10 +2,11 @@ class SangerSequencing.Sample
   constructor: (@attributes) -> undefined
 
   toString: ->
-    "#{@attributes.customer_sample_id}: #{@attributes.id}"
+    @attributes.customer_sample_id
 
   submission_id: ->
     @attributes.submission_id
+
   id: ->
     @attributes.id
 
