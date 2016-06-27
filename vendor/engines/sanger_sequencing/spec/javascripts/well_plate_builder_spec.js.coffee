@@ -55,6 +55,18 @@ describe "SangerSequencing.WellPlateBuilder", ->
     it "finds the first sample at B01 (because the A01 is blank", ->
       expect(@wellPlate.sampleAtCell("B01")).toEqual(@submission1.samples[0])
 
+    describe "when it rolls over into a second plate", ->
+      beforeEach ->
+        @submission3 = { id: 544, samples: sampleList(92) }
+        @wellPlate.addSubmission(@submission3)
+
+      it "finds the first sample at B01", ->
+        expect(@wellPlate.sampleAtCell("B01", 0)).toEqual(@submission1.samples[0])
+
+      it "finds the sample in the second plate at B01", ->
+        # 89 because 96 - 5(already added) - 2 (reserved) = 89
+        expect(@wellPlate.sampleAtCell("B01", 1)).toEqual(@submission3.samples[89])
+
   describe "render()", ->
     beforeEach ->
       @wellPlate = new SangerSequencing.WellPlateBuilder
@@ -62,11 +74,11 @@ describe "SangerSequencing.WellPlateBuilder", ->
       @wellPlate.addSubmission(@submission)
 
     it "has 96 cells", ->
-      results = @wellPlate.render()
+      results = @wellPlate.render()[0]
       expect(Object.keys(results).length).toEqual(96)
 
     it "renders odd rows first", ->
-      results = @wellPlate.render()
+      results = @wellPlate.render()[0]
       for expected in [
         ["A01", "reserved" ],
         ["B01", "Testing 0" ],

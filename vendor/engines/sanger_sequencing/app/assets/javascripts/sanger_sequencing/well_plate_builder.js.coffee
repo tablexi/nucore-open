@@ -17,7 +17,6 @@ class SangerSequencing.WellPlateBuilder
     @orderingStrategy = new OddFirstOrderingStrategy
 
   addSubmission: (submission) ->
-
     @submissions.push(submission) unless @isInPlate(submission)
     @allSubmissions.push(submission) unless @hasBeenAddedBefore(submission)
 
@@ -37,28 +36,35 @@ class SangerSequencing.WellPlateBuilder
         if s instanceof SangerSequencing.Sample then s else new SangerSequencing.Sample(s)
     )
 
-  sampleAtCell: (cell) ->
-    @render()[cell]
+  sampleAtCell: (cell, plateIndex = 0) ->
+    @render()[plateIndex][cell]
 
   render: ->
     fillOrder = @orderingStrategy.fillOrder(@cellArray())
 
     samples = @samples()
-    results = {}
+    platesNeeded = Math.ceil(samples.length / fillOrder.length)
 
-    for cellName in fillOrder
-      sample = null
-      if @reservedCells.indexOf(cellName) < 0
-        if sample = samples.shift()
-          sample = sample
+    allPlates = []
+
+    for plate in [0..platesNeeded]
+      plate = {}
+
+      for cellName in fillOrder
+        sample = null
+        if @reservedCells.indexOf(cellName) < 0
+          if sample = samples.shift()
+            sample = sample
+          else
+            sample = new SangerSequencing.Sample.Blank
         else
-          sample = new SangerSequencing.Sample.Blank
-      else
-        sample = new SangerSequencing.Sample.Reserved
+          sample = new SangerSequencing.Sample.Reserved
 
-      results[cellName] = sample
+        plate[cellName] = sample
 
-    results
+      allPlates.push(plate)
+
+    allPlates
 
   @rows: ->
     for ch in "ABCDEFGH"
