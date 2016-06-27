@@ -48,6 +48,17 @@ RSpec.describe "Sanger Sequencing Administration" do
         end
       end
     end
+
+    describe "if the feature is disabled" do
+      before do
+        facility.update(sanger_sequencing_enabled: false)
+        visit facility_sanger_sequencing_admin_submissions_path(facility)
+      end
+
+      it "renders a 404" do
+        expect(page.status_code).to eq(404)
+      end
+    end
   end
 
   describe "as a member of another facility" do

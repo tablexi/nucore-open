@@ -1,9 +1,12 @@
 require "rails_helper"
 
 RSpec.describe SangerSequencing::SubmissionsController do
+  let(:facility) { FactoryGirl.create(:facility, sanger_sequencing_enabled: true) }
   let(:submission) { FactoryGirl.create(:sanger_sequencing_submission) }
   let(:user) { FactoryGirl.create(:user) }
+
   before do
+    allow_any_instance_of(SangerSequencing::Submission).to receive(:facility).and_return(facility)
     allow_any_instance_of(SangerSequencing::Submission).to receive(:purchased?).and_return(false)
     allow_any_instance_of(SangerSequencing::Submission).to receive(:user).and_return(user)
   end
