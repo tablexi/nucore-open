@@ -1,31 +1,39 @@
 = content_for :h1 do
   = current_facility
 
-%table.table.table-bordered
-  %tr
-    %th
-    - (1..12).each do |col|
-      %th.centered= col
-  - ("A"..."H").each do |row|
-    %tr
-      %th= row
-      - 12.times do
-        %td
+= content_for :head_content do
+  = javascript_include_tag "sanger_sequencing/well_plate"
 
-%table.table.table-striped
-  %thead
+%vue-sanger-sequencing-well-plate-app(inline-template){ ":submissions" => @submissions.to_json(include: :samples) }
+
+  %table.table.table-bordered(v-cloak)
     %tr
-      %th= SangerSequencing::Submission.human_attribute_name(:id)
-      %th= OrderDetail.human_attribute_name(:ordered_at)
-      %th= OrderDetail.human_attribute_name(:user)
-      %th= OrderDetail.human_attribute_name(:quantity)
-  %tbody
-    - @submissions.each do |submission|
+      %th
+      - (1..12).each do |col|
+        %th.centered= col
+    %tr(v-for="row in plate")
+      %th {{row.name}}
+      %td(v-for="cell in row.cells" v-on:click="handleCellClick(cell)" v-bind:data-submission-id="sampleAtCell(cell.name).submission_id()")
+        = hidden_field_tag "well_plate[][{{cell.name}}]", "{{sampleAtCell(cell.name).id()}}"
+        {{sampleAtCell(cell.name)}}
+
+  %table.table.table-striped
+    %thead
       %tr
-        %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
-        %td= format_usa_datetime(submission.purchased_at)
-        %td= submission.user
-        %td= submission.samples.count
+        %td
+        %th= SangerSequencing::Submission.human_attribute_name(:id)
+        %th= OrderDetail.human_attribute_name(:ordered_at)
+        %th= OrderDetail.human_attribute_name(:user)
+        %th= OrderDetail.human_attribute_name(:quantity)
+    %tbody
+      - @submissions.each do |submission|
+        %tr
+          %td= link_to "Add", "#", "@click.prevent" => "addSubmission(#{submission.id})", "v-if" => "hasNotBeenAdded(#{submission.id})"
+          %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
+          %td= format_usa_datetime(submission.purchased_at)
+          %td= submission.user
+          %td= submission.samples.count
 
 :javascript
-  new AjaxModal(".js--modal", ".js--submissionModal")
+  window.vue_sanger_sequencing_bootstrap();
+
