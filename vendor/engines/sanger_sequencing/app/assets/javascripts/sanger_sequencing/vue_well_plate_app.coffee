@@ -16,6 +16,9 @@ window.vue_sanger_sequencing_well_plate_app = {
     addSubmission: (submissionId) ->
       @builder.addSubmission @findSubmission(submissionId)
 
+    removeSubmission: (submissionId) ->
+      @builder.removeSubmission @findSubmission(submissionId)
+
     sampleAtCell: (cellName) ->
       @builder.sampleAtCell(cellName)
 
@@ -32,14 +35,14 @@ window.vue_sanger_sequencing_well_plate_app = {
       "sangerSequencing--colorCoded__color#{index}"
 
     submissionIndex: (submissionId) ->
-      @builder.submissions.map((submission) ->
+      @builder.allSubmissions.map((submission) ->
         submission.id
       ).indexOf(submissionId)
 
-    hasBeenAdded: (submissionId) ->
-      @builder.hasBeenAdded(@findSubmission(submissionId))
+    isInPlate: (submissionId) ->
+      @builder.isInPlate(@findSubmission(submissionId))
 
-    hasNotBeenAdded: (submissionId) ->
-      !@hasBeenAdded(submissionId)
+    isNotInPlate: (submissionId) ->
+      !@isInPlate(submissionId)
 
 }

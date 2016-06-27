@@ -18,6 +18,8 @@
         %td.sangerSequencing--cell(v-for="cell in row.cells" v-on:click="handleCellClick(cell)" v-bind:data-submission-id="sampleAtCell(cell.name).submission_id()" v-bind:class="colorForCell(cell)")
           = f.input "{{cell.name}}", input_html: { value: "{{sampleAtCell(cell.name).id()}}" }, as: :hidden
           {{sampleAtCell(cell.name)}}
+          %br
+          {{sampleAtCell(cell.name).id()}}
 
     = f.submit class: "btn btn-primary"
 
@@ -33,8 +35,10 @@
       - @submissions.each do |submission|
         %tr
           %td
-            .sangerSequencing--colorCoded__box(v-bind:class="colorForSubmissionId(#{submission.id})" v-if="hasBeenAdded(#{submission.id})")
-            = link_to "Add", "#", "@click.prevent" => "addSubmission(#{submission.id})", "v-if" => "hasNotBeenAdded(#{submission.id})"
+            %div(v-if="isInPlate(#{submission.id})")
+              .sangerSequencing--colorCoded__box(v-bind:class="colorForSubmissionId(#{submission.id})")
+              = link_to "Remove", "#", "@click.prevent" => "removeSubmission(#{submission.id})"
+            = link_to "Add", "#", "@click.prevent" => "addSubmission(#{submission.id})", "v-if" => "isNotInPlate(#{submission.id})"
           %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
           %td= format_usa_datetime(submission.purchased_at)
           %td= submission.user

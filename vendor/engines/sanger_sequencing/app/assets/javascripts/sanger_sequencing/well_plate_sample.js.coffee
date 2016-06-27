@@ -24,4 +24,4 @@ class SangerSequencing.Sample
     submission_id: ->
       ""
     id: ->
-      "reserved"
+      ""

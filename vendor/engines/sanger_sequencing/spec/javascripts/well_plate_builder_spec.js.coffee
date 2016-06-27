@@ -21,6 +21,18 @@ describe "SangerSequencing.WellPlateBuilder", ->
       @wellPlate.addSubmission(@submission)
       expect(@wellPlate.submissions).toEqual([@submission])
 
+  describe "removeSubmission()", ->
+    beforeEach ->
+      @wellPlate = new SangerSequencing.WellPlateBuilder
+      @submission1 = { id: 542, samples: sampleList(2) }
+      @submission2 = { id: 543, samples: sampleList(3) }
+      @wellPlate.addSubmission(@submission1)
+      @wellPlate.addSubmission(@submission2)
+
+    it "can remove a submission", ->
+      @wellPlate.removeSubmission(@submission1)
+      expect(@wellPlate.submissions).toEqual([@submission2])
+
   describe "samples()", ->
     beforeEach ->
       @wellPlate = new SangerSequencing.WellPlateBuilder
