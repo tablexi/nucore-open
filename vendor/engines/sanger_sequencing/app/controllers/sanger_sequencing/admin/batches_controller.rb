@@ -12,6 +12,9 @@ module SangerSequencing
         @submissions = Submission.ready_for_batch.for_facility(current_facility)
       end
 
+      def create
+      end
+
     end
 
   end

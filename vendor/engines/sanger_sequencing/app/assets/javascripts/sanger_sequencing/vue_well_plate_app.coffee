@@ -24,7 +24,22 @@ window.vue_sanger_sequencing_well_plate_app = {
         submission.id == submissionId
       )[0]
 
+    colorForCell: (cell) ->
+      @colorForSubmissionId(@sampleAtCell(cell.name).submission_id())
+
+    colorForSubmissionId: (submissionId) ->
+      index = @submissionIndex(submissionId) + 1
+      "sangerSequencing--colorCoded__color#{index}"
+
+    submissionIndex: (submissionId) ->
+      @builder.submissions.map((submission) ->
+        submission.id
+      ).indexOf(submissionId)
+
+    hasBeenAdded: (submissionId) ->
+      @builder.hasBeenAdded(@findSubmission(submissionId))
+
     hasNotBeenAdded: (submissionId) ->
-      !@builder.hasBeenAdded(@findSubmission(submissionId))
+      !@hasBeenAdded(submissionId)
 
 }

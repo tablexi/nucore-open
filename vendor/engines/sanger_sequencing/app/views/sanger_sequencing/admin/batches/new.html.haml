@@ -3,19 +3,23 @@
 
 = content_for :head_content do
   = javascript_include_tag "sanger_sequencing/well_plate"
+  = stylesheet_link_tag "sanger_sequencing/application"
 
 %vue-sanger-sequencing-well-plate-app(inline-template){ ":submissions" => @submissions.to_json(include: :samples) }
 
-  %table.table.table-bordered(v-cloak)
-    %tr
-      %th
-      - (1..12).each do |col|
-        %th.centered= col
-    %tr(v-for="row in plate")
-      %th {{row.name}}
-      %td(v-for="cell in row.cells" v-on:click="handleCellClick(cell)" v-bind:data-submission-id="sampleAtCell(cell.name).submission_id()")
-        = hidden_field_tag "well_plate[][{{cell.name}}]", "{{sampleAtCell(cell.name).id()}}"
-        {{sampleAtCell(cell.name)}}
+  = simple_form_for :batch, url: facility_sanger_sequencing_admin_batches_path do |f|
+    %table.table.table-bordered(v-cloak)
+      %tr
+        %th
+        - (1..12).each do |col|
+          %th.centered= col
+      %tr(v-for="row in plate")
+        %th {{row.name}}
+        %td.sangerSequencing--cell(v-for="cell in row.cells" v-on:click="handleCellClick(cell)" v-bind:data-submission-id="sampleAtCell(cell.name).submission_id()" v-bind:class="colorForCell(cell)")
+          = f.input "{{cell.name}}", input_html: { value: "{{sampleAtCell(cell.name).id()}}" }, as: :hidden
+          {{sampleAtCell(cell.name)}}
+
+    = f.submit class: "btn btn-primary"
 
   %table.table.table-striped
     %thead
@@ -28,7 +32,9 @@
     %tbody
       - @submissions.each do |submission|
         %tr
-          %td= link_to "Add", "#", "@click.prevent" => "addSubmission(#{submission.id})", "v-if" => "hasNotBeenAdded(#{submission.id})"
+          %td
+            .sangerSequencing--colorCoded__box(v-bind:class="colorForSubmissionId(#{submission.id})" v-if="hasBeenAdded(#{submission.id})")
+            = link_to "Add", "#", "@click.prevent" => "addSubmission(#{submission.id})", "v-if" => "hasNotBeenAdded(#{submission.id})"
           %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
           %td= format_usa_datetime(submission.purchased_at)
           %td= submission.user
