@@ -12,7 +12,6 @@ class SangerSequencing.WellPlateBuilder
     @submissions = []
     @reservedCells = ["A01", "A02"]
     @orderingStrategy = new OddFirstOrderingStrategy
-    @cellNames = Util.flattenArray(@cellArray())
 
   addSubmission: (submission) ->
     @submissions.push(submission) unless @hasBeenAdded(submission)

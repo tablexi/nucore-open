@@ -1,6 +1,6 @@
 #= require sanger_sequencing/well_plate
 
-describe "SangerSequencingWellPlate", ->
+describe "SangerSequencing.WellPlateBuilder", ->
   sampleList = (count) ->
     @lastSampleId = 0 if @lastSampleId == undefined
     for x in [0...count]
@@ -32,15 +32,6 @@ describe "SangerSequencingWellPlate", ->
     it "returns the samples in order", ->
       expect(@wellPlate.samples()).toEqual(@submission1.samples.concat @submission2.samples)
 
-  describe "cellNames", ->
-    it "has 96 of them", ->
-      expect(new SangerSequencing.WellPlateBuilder().cellNames.length).toEqual(96)
-
-    it "has the right order", ->
-      expect(new SangerSequencing.WellPlateBuilder().cellNames[0...16]).toEqual([
-        "A01", "B01", "C01", "D01", "E01", "F01", "G01", "H01",
-        "A02", "B02", "C02", "D02", "E02", "F02", "G02", "H02"])
-
   describe "sampleAtCell()", ->
     beforeEach ->
       @wellPlate = new SangerSequencing.WellPlateBuilder
@@ -57,6 +48,10 @@ describe "SangerSequencingWellPlate", ->
       @wellPlate = new SangerSequencing.WellPlateBuilder
       @submission = { id: 542, samples: sampleList(8) }
       @wellPlate.addSubmission(@submission)
+
+    it "has 96 cells", ->
+      results = @wellPlate.render()
+      expect(Object.keys(results).length).toEqual(96)
 
     it "renders odd rows first", ->
       results = @wellPlate.render()
@@ -89,13 +84,3 @@ describe "SangerSequencingWellPlate", ->
         well = expected[0]
         value = expected[1]
         expect(results[well].toString()).toEqual(value)
-
-
-
-
-
-
-
-
-
-
