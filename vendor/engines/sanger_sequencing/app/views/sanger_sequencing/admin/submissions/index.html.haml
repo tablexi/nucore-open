@@ -19,6 +19,7 @@
       %th= OrderDetail.human_attribute_name(:user)
       %th= OrderDetail.human_attribute_name(:quantity)
       %th= OrderDetail.human_attribute_name(:order_status)
+      %th= SangerSequencing::Batch.model_name.human
   %tbody
     - @submissions.each do |submission|
       %tr
@@ -28,5 +29,6 @@
         %td= submission.user
         %td= submission.samples.count
         %td= submission.order_status
+        %td= submission.batch_id
 
 = will_paginate(@submissions)
