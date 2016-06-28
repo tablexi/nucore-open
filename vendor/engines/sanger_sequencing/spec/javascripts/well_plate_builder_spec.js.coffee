@@ -107,4 +107,4 @@ describe "SangerSequencing.WellPlateBuilder", ->
       ]
         well = expected[0]
         value = expected[1]
-        expect(results[well].toString()).toEqual(value)
+        expect(results[well].customerSampleId()).toEqual(value)
