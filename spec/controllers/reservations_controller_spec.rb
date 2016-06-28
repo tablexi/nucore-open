@@ -79,6 +79,7 @@ RSpec.describe ReservationsController do
           instrument.offline_reservations.create(
             reserve_start_at: now,
             actual_start_at: now,
+            admin_note: "It is broken",
           )
         end
         let(:parsed_response) { JSON.parse(response.body) }
@@ -91,9 +92,10 @@ RSpec.describe ReservationsController do
               "start" => I18n.l(now, format: :calendar),
               "end" => false,
               "allDay" => false,
-              "title" => "Offline",
+              "title" => "Offline\nIt is broken",
               "product" => instrument.name,
               "admin" => true,
+              "offline" => true,
             ),
           )
         end

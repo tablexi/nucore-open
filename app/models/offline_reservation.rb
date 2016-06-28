@@ -13,7 +13,8 @@ class OfflineReservation < Reservation
       "start" => I18n.l(reserve_start_at, format: :calendar),
       "end" => false,
       "allDay" => false,
-      "title" => "Offline",
+      "offline" => true,
+      "title" => "Offline\n#{admin_note}",
       "product" => product.name,
     }
   end
