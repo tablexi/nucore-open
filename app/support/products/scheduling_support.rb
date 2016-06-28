@@ -98,6 +98,10 @@ module Products::SchedulingSupport
     end
   end
 
+  def online?
+    offline_reservations.current.none?
+  end
+
   private
 
   def reservation_in_week(after, duration, rules, options)

@@ -24,9 +24,10 @@
     new_facility_instrument_reservation_path,
     class: "btn-add"
 
-  = link_to t(".mark_instrument_offline"),
-    new_facility_instrument_offline_reservation_path,
-    class: "btn-add"
+  - if @instrument.online?
+    = link_to t(".mark_instrument_offline"),
+      new_facility_instrument_offline_reservation_path,
+      class: "btn-add"
 
 - if @admin_reservations.empty?
   %p.notice= t(".no_upcoming_admin_reservations")
