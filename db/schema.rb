@@ -495,7 +495,7 @@ ActiveRecord::Schema.define(version: 20160614185348) do
     t.integer  "order_detail_id",  limit: 4
     t.integer  "product_id",       limit: 4,   null: false
     t.datetime "reserve_start_at",             null: false
-    t.datetime "reserve_end_at",               null: false
+    t.datetime "reserve_end_at"
     t.datetime "actual_start_at"
     t.datetime "actual_end_at"
     t.datetime "canceled_at"
