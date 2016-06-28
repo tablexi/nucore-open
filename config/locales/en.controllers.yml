@@ -78,6 +78,10 @@ en:
         error: "Could not delete order detail %{order_detail_id}"
         success: "The order detail was successfully removed"
 
+    offline_reservations:
+      create:
+        success: The instrument has been marked offline
+
     order_management:
       order_details:
         remove_from_journal:

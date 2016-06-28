@@ -512,6 +512,10 @@ en:
         price_policy: "* Clicking 'Save' will attempt to estimate the cost by quantity"
         default: "* Changing the quantity will automatically update the price fields"
 
+  offline_reservations:
+    new:
+      mark_offline: Take instrument offline
+
   order_management:
     order_details:
       edit:
