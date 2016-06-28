@@ -22,7 +22,7 @@ module SangerSequencing
     alias purchased_at ordered_at
 
     scope :purchased, -> { joins(:order).merge(Order.purchased.order(ordered_at: :desc)) }
-    scope :ready_for_batch, -> { purchased.merge(OrderDetail.new_or_inprocess) }
+    scope :ready_for_batch, -> { purchased.merge(OrderDetail.new_or_inprocess).where(batch_id: nil) }
     scope :for_facility, -> (facility) { where(orders: { facility_id: facility.id }) }
 
     def create_samples!(quantity)
