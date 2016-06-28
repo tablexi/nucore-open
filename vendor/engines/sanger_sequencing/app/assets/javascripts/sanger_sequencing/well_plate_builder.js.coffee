@@ -39,12 +39,14 @@ class SangerSequencing.WellPlateBuilder
   sampleAtCell: (cell, plateIndex = 0) ->
     @render()[plateIndex][cell]
 
+  plateCount: ->
+    Math.max(1, Math.ceil(@samples().length / @fillOrder().length))
+
   render: ->
     samples = @samples()
-    platesNeeded = Math.ceil(samples.length / @fillOrder().length)
     allPlates = []
 
-    for plate in [0..platesNeeded]
+    for plate in [0..@plateCount()]
       allPlates.push(@renderPlate(samples))
 
     allPlates
