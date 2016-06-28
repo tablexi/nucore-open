@@ -26,7 +26,13 @@
 
   - if @instrument.online?
     = link_to t(".mark_instrument_offline"),
-      new_facility_instrument_offline_reservation_path,
+      new_facility_instrument_offline_reservation_path(current_facility, @instrument),
+      class: "btn-add"
+
+  - else
+    = link_to t(".bring_instrument_online"),
+      facility_instrument_bring_online_path(current_facility, @instrument),
+      method: :put,
       class: "btn-add"
 
 - if @admin_reservations.empty?

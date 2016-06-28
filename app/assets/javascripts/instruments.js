@@ -11,8 +11,17 @@ $(document).ready(function() {
                       $.fullCalendar.formatDate(event.end,   'hh:mmTT')
                     ].join('&mdash;') + '<br/>';
 
+                    if (event.editPath) {
+                      $(element).on("click", function () { location.href = event.editPath });
+                    }
+
                     if (event.admin) {// administrative reservation
-                      tooltip += 'Admin Reservation<br/>';
+                      if (event.offline) {
+                        tooltip += "Offline";
+                      }
+                      else {
+                        tooltip += 'Admin Reservation<br/>';
+                      }
                     } else {          // normal reservation
                       tooltip += [
                         event.name,

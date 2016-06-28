@@ -58,7 +58,7 @@ class ReservationsController < ApplicationController
       format.js do
         render json: @reservations.map { |r| r.as_calendar_object(as_calendar_object_options) }.flatten +
                      @unavailable.map { |r| r.as_calendar_object(as_calendar_object_options) }.flatten +
-                     @instrument.offline_reservations.map { |r| r.as_calendar_object(as_calendar_object_options) }.flatten
+                     @instrument.offline_reservations.current.map { |r| r.as_calendar_object(as_calendar_object_options) }.flatten
       end
     end
   end

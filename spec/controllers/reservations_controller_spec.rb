@@ -78,7 +78,6 @@ RSpec.describe ReservationsController do
         let!(:offline_reservation) do
           instrument.offline_reservations.create(
             reserve_start_at: now,
-            actual_start_at: now,
             admin_note: "It is broken",
           )
         end

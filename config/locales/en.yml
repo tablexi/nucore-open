@@ -1058,6 +1058,7 @@ en:
     schedule:
       administrative_reservations: Administrative Reservations
       add_addmin_reservation: Add Admin Reservation
+      bring_instrument_online: Bring Instrument Online
       no_upcoming_admin_reservations: There are no upcoming administrative reservations.
       reservations_calendar: Reservations Calendar
 

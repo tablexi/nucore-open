@@ -26,6 +26,17 @@ class OfflineReservationsController < ApplicationController
     end
   end
 
+  def bring_online
+    @instrument.online!
+    if @instrument.online?
+      flash[:notice] = text("bring_online.success")
+    else
+      flash[:error] = text("bring_online.error")
+    end
+
+    redirect_to facility_instrument_schedule_path
+  end
+
   private
 
   def load_instrument
