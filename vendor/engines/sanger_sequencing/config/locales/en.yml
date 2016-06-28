@@ -13,6 +13,11 @@ en:
         submissions:
           index:
             new_batch: Create New Batch
+        batches:
+          new:
+            add: Add
+            remove: Remove
+            submit: Save Batch
 
   activerecord:
     attributes:
