@@ -89,6 +89,7 @@ RSpec.describe ReservationsController do
         it "includes the offline reservation in the response" do
           expect(parsed_response).to include(
             a_hash_including(
+              "editPath" => edit_facility_instrument_offline_reservation_path(facility, instrument, offline_reservation),
               "start" => I18n.l(now, format: :calendar),
               "end" => false,
               "allDay" => false,

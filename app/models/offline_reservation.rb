@@ -16,7 +16,14 @@ class OfflineReservation < Reservation
       "offline" => true,
       "title" => "Offline\n#{admin_note}",
       "product" => product.name,
+      "editPath" => edit_path,
     }
+  end
+
+  private
+
+  def edit_path
+    Rails.application.routes.url_helpers.edit_facility_instrument_offline_reservation_path(facility, product, self)
   end
 
 end

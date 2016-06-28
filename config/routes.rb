@@ -76,7 +76,7 @@ Nucore::Application.routes.draw do
       get "status",          to: 'instruments#instrument_status'
       get "switch",          to: 'instruments#switch'
 
-      resources :offline_reservations, only: [:new, :create]
+      resources :offline_reservations, only: [:new, :create, :edit]
 
       resources :schedule_rules, except: [:show]
       resources :product_access_groups
