@@ -43,7 +43,6 @@
     %tr(v-for="row in plateGrid")
       %th {{row.name}}
       %td.sangerSequencing--cell(v-for="cell in row.cells" v-on:click="handleCellClick(cell)" v-bind:class="colorForCell(cell, plateIndex)")
-        {{plateIndex}}
         {{sampleAtCell(cell.name, plateIndex)}}
         %br
         {{sampleAtCell(cell.name, plateIndex).id()}}

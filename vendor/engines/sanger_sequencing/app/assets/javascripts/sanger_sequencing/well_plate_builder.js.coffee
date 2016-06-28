@@ -15,14 +15,17 @@ class SangerSequencing.WellPlateBuilder
     @allSubmissions = []
     @reservedCells = ["A01", "A02"]
     @orderingStrategy = new OddFirstOrderingStrategy
+    @_render()
 
   addSubmission: (submission) ->
     @submissions.push(submission) unless @isInPlate(submission)
     @allSubmissions.push(submission) unless @hasBeenAddedBefore(submission)
+    @_render()
 
   removeSubmission: (submission) ->
     index = @submissions.indexOf(submission)
     @submissions.splice(index, 1) if index > -1
+    @_render()
 
   isInPlate: (submission) ->
     @submissions.indexOf(submission) >= 0
@@ -30,31 +33,35 @@ class SangerSequencing.WellPlateBuilder
   hasBeenAddedBefore: (submission) ->
     @allSubmissions.indexOf(submission) >= 0
 
+  sampleAtCell: (cell, plateIndex = 0) ->
+    @plates[plateIndex][cell]
+
   samples: ->
     Util.flattenArray(@submissions.map (submission) ->
       submission.samples.map (s) ->
         if s instanceof SangerSequencing.Sample then s else new SangerSequencing.Sample(s)
     )
 
-  sampleAtCell: (cell, plateIndex = 0) ->
-    @render()[plateIndex][cell]
-
   plateCount: ->
-    Math.max(1, Math.ceil(@samples().length / @fillOrder().length))
+    @_plateCount
 
-  render: ->
+  # Private
+
+  _render: ->
+    @_plateCount = Math.max(1, Math.ceil(@samples().length / @_fillOrder().length))
+
     samples = @samples()
     allPlates = []
 
     for plate in [0..@plateCount()]
-      allPlates.push(@renderPlate(samples))
+      allPlates.push(@_renderPlate(samples))
 
-    allPlates
+    @plates = allPlates
 
-  renderPlate: (samples) ->
+  _renderPlate: (samples) ->
     plate = {}
 
-    for cellName in @fillOrder()
+    for cellName in @_fillOrder()
       plate[cellName] = if @reservedCells.indexOf(cellName) < 0
         if sample = samples.shift()
           sample
@@ -67,7 +74,7 @@ class SangerSequencing.WellPlateBuilder
 
     plate
 
-  fillOrder: ->
+  _fillOrder: ->
     @orderingStrategy.fillOrder(@cellArray())
 
   @rows: ->
