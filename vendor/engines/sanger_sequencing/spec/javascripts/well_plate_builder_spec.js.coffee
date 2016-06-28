@@ -67,18 +67,18 @@ describe "SangerSequencing.WellPlateBuilder", ->
         # 89 because 96 - 5(already added) - 2 (reserved) = 89
         expect(@wellPlate.sampleAtCell("B01", 1)).toEqual(@submission3.samples[89])
 
-  describe "render()", ->
+  describe "plates", ->
     beforeEach ->
       @wellPlate = new SangerSequencing.WellPlateBuilder
       @submission = { id: 542, samples: sampleList(8) }
       @wellPlate.addSubmission(@submission)
 
     it "has 96 cells", ->
-      results = @wellPlate.render()[0]
+      results = @wellPlate.plates[0]
       expect(Object.keys(results).length).toEqual(96)
 
     it "renders odd rows first", ->
-      results = @wellPlate.render()[0]
+      results = @wellPlate.plates[0]
       for expected in [
         ["A01", "reserved" ],
         ["B01", "Testing 0" ],

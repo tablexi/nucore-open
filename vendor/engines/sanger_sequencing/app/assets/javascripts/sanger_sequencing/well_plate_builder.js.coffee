@@ -8,6 +8,17 @@ class SangerSequencing.WellPlateBuilder
         total.concat submission
       arrays.reduce(concatFunction, [])
 
+  class OddFirstOrderingStrategy
+    fillOrder: ->
+      odds = (column for column, i in @_cellsByColumn() when i % 2 == 0)
+      evens = (column for column, i in @_cellsByColumn() when i % 2 == 1)
+      Util.flattenArray(odds.concat(evens))
+
+    _cellsByColumn: ->
+      cells = for num in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+        for ch in "ABCDEFGH"
+          "#{ch}#{num}"
+
   constructor: ->
     @submissions = []
     # This array maintains all of the submissions that have ever been added
@@ -45,6 +56,13 @@ class SangerSequencing.WellPlateBuilder
   plateCount: ->
     @_plateCount
 
+  @grid: ->
+    for ch in "ABCDEFGH"
+      name: ch
+      cells: for num in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+        column: num
+        name: "#{ch}#{num}"
+
   # Private
 
   _render: ->
@@ -75,22 +93,6 @@ class SangerSequencing.WellPlateBuilder
     plate
 
   _fillOrder: ->
-    @orderingStrategy.fillOrder(@cellArray())
+    @orderingStrategy.fillOrder()
 
-  @rows: ->
-    for ch in "ABCDEFGH"
-      name: ch
-      cells: for num in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
-        column: num
-        name: "#{ch}#{num}"
 
-  cellArray: ->
-    cells = for num in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
-      for ch in "ABCDEFGH"
-        "#{ch}#{num}"
-
-  class OddFirstOrderingStrategy
-    fillOrder: (cellsByColumn) ->
-      odds = (column for column, i in cellsByColumn when i % 2 == 0)
-      evens = (column for column, i in cellsByColumn when i % 2 == 1)
-      Util.flattenArray(odds.concat(evens))
