@@ -1051,6 +1051,11 @@ en:
       icon: Public Schedule
       available: Available
       in-use: In Use
+    schedule:
+      administrative_reservations: Administrative Reservations
+      add_addmin_reservation: Add Admin Reservation
+      no_upcoming_admin_reservations: There are no upcoming administrative reservations.
+      reservations_calendar: Reservations Calendar
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"
