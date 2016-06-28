@@ -6,4 +6,16 @@ class OfflineReservation < Reservation
   def admin?
     true
   end
+
+  def as_calendar_object(options = nil)
+    {
+      "admin" => true,
+      "start" => I18n.l(reserve_start_at, format: :calendar),
+      "end" => false,
+      "allDay" => false,
+      "title" => "Offline",
+      "product" => product.name,
+    }
+  end
+
 end
