@@ -1,32 +1,34 @@
 = content_for :head_content do
-  = render :partial => 'shared/headers/calendar'
+  = render "shared/headers/calendar"
   :javascript
-    var events_path     = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, :format => 'js', :with_details => true)}";
-    var minDate         = "#{@min_date}";
-    var maxDate         = "#{@max_date}";
-    var maxDaysFromNow  = #{@max_window};
+    var events_path = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, format: :js, with_details: true)}";
+    var minDate = "#{@min_date}";
+    var maxDate = "#{@max_date}";
+    var maxDaysFromNow = #{@max_window};
 
-    var minTime         = #{@instrument.first_available_hour};
-    var maxTime         = #{@instrument.last_available_hour+1};
-    var withDetails     = true
-  = javascript_include_tag 'reservations.js'
+    var minTime = #{@instrument.first_available_hour};
+    var maxTime = #{@instrument.last_available_hour + 1};
+    var withDetails = true
+  = javascript_include_tag "reservations.js"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
+
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+  = render "admin/shared/sidenav_product", sidenav_tab: "instruments"
+
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
+  = render "admin/shared/tabnav_product", secondary_tab: "reservations"
 
 %h2= @instrument
 
 = simple_form_for([@instrument, @reservation], :url => facility_instrument_reservations_path) do |f|
   = f.error_messages
-  = render :partial => 'reservation_fields', :locals => {:f => f}
+  = render "reservation_fields", f: f
   .clearfix
   %ul.inline
-    %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Cancel', facility_instrument_schedule_path
+    %li= f.submit t("shared.create"), class: "btn"
+    %li= link_to t("shared.cancel"), facility_instrument_schedule_path
 
 #overlay
   #spinner
