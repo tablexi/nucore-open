@@ -14,7 +14,7 @@ class SangerSequencing.WellPlateColors
             "#BCBD22", # pea green
             "#8C564B", # brown
             "#FF9896", # rose
-            "#E377C2", # pink/perple
+            "#E377C2", # pink/purple
             "#17BECF", # teal
             "#2CA02C", # green
             "#C5B0D5", # light purple

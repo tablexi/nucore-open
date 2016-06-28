@@ -1,10 +1,13 @@
 window.vue_sanger_sequencing_well_plate_app = {
   props: ["submissions"]
+
   data: ->
     builder: new SangerSequencing.WellPlateBuilder
 
+  beforeCompile: ->
+    @colorBuilder = new SangerSequencing.WellPlateColors(@builder)
+
   ready: ->
-    vueBus.$on "submission-added", @addSubmission
     new AjaxModal(".js--modal", ".js--submissionModal")
 
   methods:
@@ -20,7 +23,6 @@ window.vue_sanger_sequencing_well_plate_app = {
       )[0]
 
     styleForSubmissionId: (submissionId) ->
-      @colorBuilder ||= new SangerSequencing.WellPlateColors(@builder)
       @colorBuilder.styleForSubmissionId(submissionId)
 
     isInPlate: (submissionId) ->

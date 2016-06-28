@@ -1,8 +1,12 @@
 window.vue_sanger_sequencing_well_plate = {
   props: ["builder", "plate-index"]
   template: "#vue-sanger-sequencing-well-plate"
+
   data: ->
     plateGrid: SangerSequencing.WellPlateBuilder.grid()
+
+  beforeCompile: ->
+    @colorBuilder = new SangerSequencing.WellPlateColors(@builder)
 
   methods:
     handleCellClick: (cell) ->
@@ -13,7 +17,6 @@ window.vue_sanger_sequencing_well_plate = {
       @builder.sampleAtCell(cellName, plateIndex)
 
     styleForCell: (cell, plateIndex) ->
-      @colorBuilder ||= new SangerSequencing.WellPlateColors(@builder)
       @colorBuilder.styleForSubmissionId(@sampleAtCell(cell.name, plateIndex).submission_id())
 
 }

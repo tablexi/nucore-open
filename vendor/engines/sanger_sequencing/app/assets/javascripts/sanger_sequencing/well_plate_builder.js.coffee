@@ -94,5 +94,3 @@ class SangerSequencing.WellPlateBuilder
 
   _fillOrder: ->
     @orderingStrategy.fillOrder()
-
-
