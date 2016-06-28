@@ -10,14 +10,26 @@ class SangerSequencing.WellPlateBuilder
 
   constructor: ->
     @submissions = []
+    # This array maintains all of the submissions that have ever been added
+    # in order to keep consistent colors when removing and adding samples.
+    @allSubmissions = []
     @reservedCells = ["A01", "A02"]
     @orderingStrategy = new OddFirstOrderingStrategy
 
   addSubmission: (submission) ->
-    @submissions.push(submission) unless @hasBeenAdded(submission)
 
-  hasBeenAdded: (submission) ->
+    @submissions.push(submission) unless @isInPlate(submission)
+    @allSubmissions.push(submission) unless @hasBeenAddedBefore(submission)
+
+  removeSubmission: (submission) ->
+    index = @submissions.indexOf(submission)
+    @submissions.splice(index, 1) if index > -1
+
+  isInPlate: (submission) ->
     @submissions.indexOf(submission) >= 0
+
+  hasBeenAddedBefore: (submission) ->
+    @allSubmissions.indexOf(submission) >= 0
 
   samples: ->
     Util.flattenArray(@submissions.map (submission) ->
