@@ -777,6 +777,29 @@ RSpec.describe Instrument do
     end
   end
 
+  describe "#online!" do
+    before { instrument.save! }
+
+    context "when the instrument is offline" do
+      let!(:offline_reservation) do
+        instrument.offline_reservations.create!(reserve_start_at: 1.day.ago)
+      end
+
+      it "switches the instrument to be online" do
+        expect { instrument.online! }
+          .to change { instrument.online? }.from(false).to(true)
+          .and change { offline_reservation.reload.reserve_end_at }.from(nil)
+      end
+    end
+
+    context "when the instrument is online" do
+      it "remains online" do
+        expect { instrument.online! }
+          .not_to change(instrument, :online?).from(true)
+      end
+    end
+  end
+
   describe "#online?" do
     before { instrument.save! }
 
