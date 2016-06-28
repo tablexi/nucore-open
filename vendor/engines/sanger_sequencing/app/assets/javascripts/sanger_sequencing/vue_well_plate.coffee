@@ -12,8 +12,8 @@ window.vue_sanger_sequencing_well_plate = {
     sampleAtCell: (cellName, plateIndex) ->
       @builder.sampleAtCell(cellName, plateIndex)
 
-    colorForCell: (cell, plateIndex) ->
+    styleForCell: (cell, plateIndex) ->
       @colorBuilder ||= new SangerSequencing.WellPlateColors(@builder)
-      @colorBuilder.colorForSubmissionId(@sampleAtCell(cell.name, plateIndex).submission_id())
+      @colorBuilder.styleForSubmissionId(@sampleAtCell(cell.name, plateIndex).submission_id())
 
 }

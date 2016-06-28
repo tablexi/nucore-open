@@ -25,7 +25,7 @@
         %tr
           %td
             %div(v-if="isInPlate(#{submission.id})")
-              .sangerSequencing--colorCoded__box(v-bind:class="colorForSubmissionId(#{submission.id})")
+              .sangerSequencing--colorCoded__box(v-bind:style="styleForSubmissionId(#{submission.id})")
               = link_to text("remove"), "#", "@click.prevent" => "removeSubmission(#{submission.id})"
             = link_to text("add"), "#", "@click.prevent" => "addSubmission(#{submission.id})", "v-if" => "isNotInPlate(#{submission.id})"
           %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
@@ -42,7 +42,7 @@
         %th.centered= col
     %tr(v-for="row in plateGrid")
       %th {{row.name}}
-      %td.sangerSequencing--cell(v-for="cell in row.cells" v-on:click="handleCellClick(cell)" v-bind:class="colorForCell(cell, plateIndex)")
+      %td.sangerSequencing--cell(v-for="cell in row.cells" v-on:click="handleCellClick(cell)" v-bind:style="styleForCell(cell, plateIndex)")
         {{sampleAtCell(cell.name, plateIndex)}}
         %br
         {{sampleAtCell(cell.name, plateIndex).id()}}

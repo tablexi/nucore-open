@@ -19,9 +19,9 @@ window.vue_sanger_sequencing_well_plate_app = {
         submission.id == submissionId
       )[0]
 
-    colorForSubmissionId: (submissionId) ->
+    styleForSubmissionId: (submissionId) ->
       @colorBuilder ||= new SangerSequencing.WellPlateColors(@builder)
-      @colorBuilder.colorForSubmissionId(submissionId)
+      @colorBuilder.styleForSubmissionId(submissionId)
 
     isInPlate: (submissionId) ->
       @builder.isInPlate(@findSubmission(submissionId))
