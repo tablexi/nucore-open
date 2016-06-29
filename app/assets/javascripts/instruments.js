@@ -12,7 +12,9 @@ $(document).ready(function() {
                     ].join('&mdash;') + '<br/>';
 
                     if (event.editPath) {
-                      $(element).on("click", function () { location.href = event.editPath });
+                      $(element)
+                        .css("cursor", "pointer")
+                        .on("click", function () { location.href = event.editPath });
                     }
 
                     if (event.admin) {// administrative reservation

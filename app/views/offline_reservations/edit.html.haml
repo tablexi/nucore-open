@@ -9,11 +9,11 @@
 
 %h2= @instrument
 
-= simple_form_for([@instrument, @reservation], url: facility_instrument_offline_reservations_path) do |f|
+= simple_form_for([@instrument, @reservation], url: facility_instrument_offline_reservation_path) do |f|
   = f.error_messages
   = f.input :admin_note, input_html: { class: "span6" }
 
   .clearfix
   %ul.inline
-    %li= f.submit t(".mark_offline"), class: "btn btn-danger"
+    %li= f.submit t(".update"), class: "btn btn-danger"
     %li= link_to t("shared.cancel"), facility_instrument_schedule_path

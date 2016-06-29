@@ -84,6 +84,9 @@ en:
         error: An error occurred while attempting to bring the instrument back online
       create:
         success: The instrument has been marked offline
+      update:
+        success: The downtime note has been updated
+        error: An error occurred while attempting to update the downtime note
 
     order_management:
       order_details:

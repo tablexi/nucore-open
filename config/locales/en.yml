@@ -513,6 +513,8 @@ en:
         default: "* Changing the quantity will automatically update the price fields"
 
   offline_reservations:
+    edit:
+      update: Update the note
     new:
       mark_offline: Take instrument offline
 

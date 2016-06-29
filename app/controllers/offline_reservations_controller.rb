@@ -37,6 +37,22 @@ class OfflineReservationsController < ApplicationController
     redirect_to facility_instrument_schedule_path
   end
 
+  def edit
+    @reservation = @instrument.offline_reservations.find(params[:id])
+    render layout: "two_column"
+  end
+
+  def update
+    @reservation = @instrument.offline_reservations.find(params[:id])
+    if @reservation.update(params[:offline_reservation])
+      flash[:notice] = text("update.success")
+      redirect_to facility_instrument_schedule_path
+    else
+      flash[:error] = text("update.error")
+      render action: "edit", layout: "two_column"
+    end
+  end
+
   private
 
   def load_instrument
