@@ -11,7 +11,7 @@
     = hidden_field_tag "batch[submission_ids]", "{{submissionIds()}}"
     %vue-sanger-sequencing-well-plate(v-for="plateIndex in builder.plateCount()"){":builder" => "builder", ":plate-index" => "$index" }
 
-    -# = f.submit text("submit"), class: "btn btn-primary"
+    = f.submit text("submit"), class: "btn btn-primary"
 
   %table.table.table-striped
     %thead
