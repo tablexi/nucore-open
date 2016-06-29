@@ -2,14 +2,16 @@ $(document).ready(function() {
   // initialize fullcalendar
   var calendarOptions = {
     editable: false,
+    defaultEventMinutes: 60480, // 42 days
     defaultView: 'agendaWeek',
     allDaySlot: false,
     events: events_path,
     eventAfterRender: function(event, element) {
-      var tooltip = [
-        $.fullCalendar.formatDate(event.start, 'hh:mmTT'),
-        $.fullCalendar.formatDate(event.end,   'hh:mmTT')
-      ].join('&mdash;') + '<br/>';
+      var tooltip = $.fullCalendar.formatDate(event.start, "hh:mmTT");
+      if (event.end) {
+        tooltip += "&mdash;" + $.fullCalendar.formatDate(event.end, "hh:mmTT");
+      }
+      tooltip += "<br/>";
 
       if (typeof withDetails != 'undefined' && withDetails) {
         if (event.admin) {  // administrative reservation
