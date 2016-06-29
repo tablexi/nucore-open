@@ -42,5 +42,4 @@ RSpec.describe "Creating a batch", :js do
       end
     end
   end
-
 end

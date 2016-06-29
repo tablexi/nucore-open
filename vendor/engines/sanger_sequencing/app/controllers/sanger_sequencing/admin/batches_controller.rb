@@ -26,6 +26,7 @@ module SangerSequencing
           render :new
         end
       end
+
     end
 
   end

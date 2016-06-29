@@ -20,11 +20,9 @@ RSpec.describe SangerSequencing::BatchForm do
     describe "with one submission" do
       describe "with all the samples" do
         let(:params) do
-          { submission_ids: "#{submission.id}",
+          { submission_ids: submission.id.to_s,
             well_plate_data: { "0" => { "A01" => submission.samples.first.id,
-                                        "B02" => submission.samples.second.id }
-                         }
-          }
+                                        "B02" => submission.samples.second.id } } }
         end
 
         it "is valid" do
@@ -35,9 +33,8 @@ RSpec.describe SangerSequencing::BatchForm do
 
     describe "missing a sample" do
       let(:params) do
-        { submission_ids: "#{submission.id}",
-          well_plate_data: { "0" => { "A01" => submission.samples.first.id } }
-        }
+        { submission_ids: submission.id.to_s,
+          well_plate_data: { "0" => { "A01" => submission.samples.first.id } } }
       end
 
       it "is invalid" do
@@ -48,10 +45,9 @@ RSpec.describe SangerSequencing::BatchForm do
 
     describe "with a sample from the second submission" do
       let(:params) do
-        { submission_ids: "#{submission.id}",
+        { submission_ids: submission.id.to_s,
           well_plate_data: { "0" => { "A01" => submission.samples.first.id,
-                                      "B01" => submission2.samples.first.id } }
-        }
+                                      "B01" => submission2.samples.first.id } } }
       end
 
       it "is invalid" do
@@ -71,6 +67,5 @@ RSpec.describe SangerSequencing::BatchForm do
         expect(form.errors).to be_added(:submission_ids, :submission_part_of_other_batch, id: submission.id)
       end
     end
-
   end
 end
