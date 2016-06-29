@@ -9,6 +9,7 @@
 %table.table.table-striped
   %thead
     %tr
+      %th
       %th= SangerSequencing::Batch.model_name.human
       %th= SangerSequencing::Batch.human_attribute_name(:created_at)
       %th= SangerSequencing::Batch.human_attribute_name(:created_by)
@@ -17,6 +18,7 @@
   %tbody
     - @batches.each do |batch|
       %tr
+        %td= link_to "Delete", facility_sanger_sequencing_admin_batch_path(current_facility, batch), method: :delete
         %td= batch.id
         %td= format_usa_date(batch.created_at)
         %td= batch.created_by

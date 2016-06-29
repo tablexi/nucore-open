@@ -22,13 +22,18 @@ module SangerSequencing
 
         # Whitelisting should happen in the form object
         if @batch.update_attributes(params[:batch].merge(created_by: current_user))
-          flash[:notice] = "We have saved your batch"
-          redirect_to [current_facility, :sanger_sequencing, :admin, :submissions]
+          redirect_to [current_facility, :sanger_sequencing, :admin, :submissions], notice: text("create.success")
         else
           @submissions = Submission.ready_for_batch.for_facility(current_facility)
           flash.now[:alert] = @batch.errors.map { |_k, msg| msg }.to_sentence
           render :new
         end
+      end
+
+      def destroy
+        @batch = Batch.find(params[:id])
+        @batch.destroy
+        redirect_to facility_sanger_sequencing_admin_batches_path, notice: text("destroy.success")
       end
 
     end
