@@ -1,31 +1,18 @@
 $(document).ready(function() {
   var calendarOptions = ({
                   editable: false,
-                  defaultEventMinutes: 60480, // 42 days
                   defaultView: 'agendaWeek',
                   allDaySlot: false,
                   header: {left: '', center: 'title', right: 'prev,next today agendaDay,agendaWeek,month'},
                   events: events_path,
                   eventAfterRender: function(event, element) {
-                    var tooltip = $.fullCalendar.formatDate(event.start, "hh:mmTT");
-                    if (event.end) {
-                      tooltip += "&mdash;" + $.fullCalendar.formatDate(event.end, "hh:mmTT");
-                    }
-                    tooltip += "<br/>";
-
-                    if (event.editPath) {
-                      $(element)
-                        .css("cursor", "pointer")
-                        .on("click", function () { location.href = event.editPath });
-                    }
+                    var tooltip = [
+                      $.fullCalendar.formatDate(event.start, 'hh:mmTT'),
+                      $.fullCalendar.formatDate(event.end,   'hh:mmTT')
+                    ].join('&mdash;') + '<br/>';
 
                     if (event.admin) {// administrative reservation
-                      if (event.offline) {
-                        tooltip += "Offline";
-                      }
-                      else {
-                        tooltip += 'Admin Reservation<br/>';
-                      }
+                      tooltip += 'Admin Reservation<br/>';
                     } else {          // normal reservation
                       tooltip += [
                         event.name,

@@ -44,6 +44,7 @@ class Reservation < ActiveRecord::Base
 
   def self.active
     not_canceled
+      .untyped
       .where(orders: { state: ["purchased", nil] })
       .joins_order
   end
@@ -60,6 +61,8 @@ class Reservation < ActiveRecord::Base
   def self.not_canceled
     where(canceled_at: nil)
   end
+
+  scope :untyped, -> { where(type: nil) }
 
   def self.not_started
     where(actual_start_at: nil)

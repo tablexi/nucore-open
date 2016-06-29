@@ -74,32 +74,6 @@ RSpec.describe ReservationsController do
         it { expect(assigns[:reservations]).to match_array([reservation]) }
       end
 
-      context "when an active offline (instrument down) reservation exists" do
-        let!(:offline_reservation) do
-          instrument.offline_reservations.create(
-            reserve_start_at: now,
-            admin_note: "It is broken",
-          )
-        end
-        let(:parsed_response) { JSON.parse(response.body) }
-
-        before { do_request }
-
-        it "includes the offline reservation in the response" do
-          expect(parsed_response).to include(
-            a_hash_including(
-              "editPath" => edit_facility_instrument_offline_reservation_path(facility, instrument, offline_reservation),
-              "start" => I18n.l(now, format: :calendar),
-              "allDay" => false,
-              "title" => "Offline\nIt is broken",
-              "product" => instrument.name,
-              "admin" => true,
-              "offline" => true,
-            ),
-          )
-        end
-      end
-
       context "when reservations exist before the start date" do
         let!(:reservation) do
           instrument.reservations.create(reserve_start_at: now - 1.day,
