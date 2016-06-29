@@ -6,10 +6,10 @@ module SangerSequencing
 
       admin_tab :all
       layout "two_column", only: [:index]
-      before_action(only: :index) { @active_tab = "admin_sanger_sequencing" }
+      before_action { @active_tab = "admin_sanger_sequencing" }
       before_action :load_batch_form, only: [:new, :create]
       before_action :load_batch, only: :destroy
-      authorize_resource class: "SangerSequencing::Batch"
+      authorize_sanger_resource class: "SangerSequencing::Batch"
 
       def index
         @batches = Batch.for_facility(current_facility).order(created_at: :desc).paginate(page: params[:page])

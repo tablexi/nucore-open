@@ -9,7 +9,7 @@ module SangerSequencing
       before_action { @active_tab = "admin_sanger_sequencing" }
 
       before_action :load_submission, only: :show
-      authorize_resource class: "SangerSequencing::Submission"
+      authorize_sanger_resource class: "SangerSequencing::Submission"
 
       def index
         @submissions = Submission.purchased.for_facility(current_facility).paginate(page: params[:page])
