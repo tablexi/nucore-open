@@ -74,7 +74,7 @@ RSpec.describe ReservationsController do
         it { expect(assigns[:reservations]).to match_array([reservation]) }
       end
 
-      context "when an offline (instrument down) exists" do
+      context "when an active offline (instrument down) reservation exists" do
         let!(:offline_reservation) do
           instrument.offline_reservations.create(
             reserve_start_at: now,
@@ -90,7 +90,6 @@ RSpec.describe ReservationsController do
             a_hash_including(
               "editPath" => edit_facility_instrument_offline_reservation_path(facility, instrument, offline_reservation),
               "start" => I18n.l(now, format: :calendar),
-              "end" => false,
               "allDay" => false,
               "title" => "Offline\nIt is broken",
               "product" => instrument.name,

@@ -782,7 +782,9 @@ RSpec.describe Instrument do
 
     context "when the instrument is offline" do
       let!(:offline_reservation) do
-        instrument.offline_reservations.create!(reserve_start_at: 1.day.ago)
+        instrument
+          .offline_reservations
+          .create!(admin_note: "Down", reserve_start_at: 1.day.ago)
       end
 
       it "switches the instrument to be online" do
@@ -808,7 +810,11 @@ RSpec.describe Instrument do
     end
 
     context "when an offline reservation exists" do
-      before { instrument.offline_reservations.create!(reserve_start_at: 1.day.ago) }
+      let!(:offline_reservation) do
+        instrument
+          .offline_reservations
+          .create!(admin_note: "Down", reserve_start_at: 1.day.ago)
+      end
 
       it { is_expected.not_to be_online }
     end

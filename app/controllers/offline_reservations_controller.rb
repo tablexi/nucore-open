@@ -15,7 +15,7 @@ class OfflineReservationsController < ApplicationController
   end
 
   def create
-    @reservation = @instrument.offline_reservations.new(params[:reservation])
+    @reservation = @instrument.offline_reservations.new(params[:offline_reservation])
     @reservation.reserve_start_at = Time.current
 
     if @reservation.save
