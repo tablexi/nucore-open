@@ -536,6 +536,10 @@ en:
       documentation: "Documentation"
       crumb: "Create Reservation"
       notify: Send Notification
+      offline_notice: |
+        This instrument is currently offline. If it is not back online before
+        your scheduled time, you will receive at notice and your reservation
+        will be canceled.
     list:
       status:
         upcoming: Upcoming
