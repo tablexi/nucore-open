@@ -10,7 +10,7 @@ Teaspoon.configure do |config|
 
   # Paths that will be appended to the Rails assets paths
   # Note: Relative to `config.root`.
-  config.asset_paths = ["spec/javascripts", "spec/javascripts/stylesheets", "vendor/engines/sanger_sequencing/spec/javascripts"]
+  config.asset_paths = ["spec/javascripts", "spec/javascripts/stylesheets"]
 
   # Fixtures are rendered through a controller, which allows using HAML, RABL/JBuilder, etc. Files in these paths will
   # be rendered as fixtures.
@@ -79,8 +79,11 @@ Teaspoon.configure do |config|
   #  suite.matcher = "spec/javascripts/targeted/*_spec.{js,js.coffee,coffee}"
   # end
 
+  config.asset_paths += EngineManager.loaded_nucore_engines.map { |e| File.join(e.root, "spec/javascripts") } #{}"vendor/engines/sanger_sequencing/spec/javascripts"
+
   config.suite :engines do |suite|
-    suite.matcher = "vendor/engines/*/spec/javascripts/**/*_spec.{js,js.coffee,coffee}"
+    engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
+    suite.matcher = "vendor/engines/{#{engine_names.join(",")}}/spec/javascripts/**/*_spec.{js,js.coffee,coffee}"
   end
 
   # CONSOLE RUNNER SPECIFIC
