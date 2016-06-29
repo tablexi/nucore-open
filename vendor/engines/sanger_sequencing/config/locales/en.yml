@@ -60,6 +60,7 @@ en:
             submission_ids:
               blank: "You must submit at least one submission"
               submission_part_of_other_batch: "Submission %{id} is already part of a batch"
+              invalid_facility: "Submission %{id} is not part of this facility"
             submitted_sample_ids:
               must_match_submissions: Samples submitted must match the submissions
 

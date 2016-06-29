@@ -11,6 +11,7 @@ module SangerSequencing
 
       if facility && user.operator_of?(facility)
         can [:index, :show], Submission
+        can [:index, :create, :destroy], [Batch, BatchForm]
       end
     end
 
