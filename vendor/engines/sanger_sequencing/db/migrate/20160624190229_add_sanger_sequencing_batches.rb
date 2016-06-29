@@ -1,0 +1,11 @@
+class AddSangerSequencingBatches < ActiveRecord::Migration
+
+  def change
+    create_table :sanger_sequencing_batches do |t|
+      t.integer :created_by_id, index: true
+      t.text :well_plates_raw
+      t.timestamps
+    end
+  end
+
+end

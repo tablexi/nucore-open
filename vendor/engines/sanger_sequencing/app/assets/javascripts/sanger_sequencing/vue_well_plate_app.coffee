@@ -17,6 +17,10 @@ window.vue_sanger_sequencing_well_plate_app = {
     removeSubmission: (submissionId) ->
       @builder.removeSubmission @findSubmission(submissionId)
 
+    submissionIds: ->
+      @builder.submissions.map (submission) ->
+        submission.id
+
     findSubmission: (submissionId) ->
       @submissions.filter((submission) =>
         submission.id == submissionId

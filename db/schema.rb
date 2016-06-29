@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160606205228) do
+ActiveRecord::Schema.define(version: 20160628194243) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -513,6 +513,15 @@ ActiveRecord::Schema.define(version: 20160606205228) do
     t.string "name", limit: 255
   end
 
+  create_table "sanger_sequencing_batches", force: :cascade do |t|
+    t.integer  "created_by_id",   limit: 4
+    t.text     "well_plates_raw", limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sanger_sequencing_batches", ["created_by_id"], name: "index_sanger_sequencing_batches_on_created_by_id", using: :btree
+
   create_table "sanger_sequencing_samples", force: :cascade do |t|
     t.integer  "submission_id",      limit: 4,   null: false
     t.datetime "created_at"
@@ -526,8 +535,10 @@ ActiveRecord::Schema.define(version: 20160606205228) do
     t.integer  "order_detail_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "batch_id",        limit: 4
   end
 
+  add_index "sanger_sequencing_submissions", ["batch_id"], name: "fk_rails_24eeb2c9b4", using: :btree
   add_index "sanger_sequencing_submissions", ["order_detail_id"], name: "index_sanger_sequencing_submissions_on_order_detail_id", using: :btree
 
   create_table "schedule_rules", force: :cascade do |t|
@@ -700,6 +711,7 @@ ActiveRecord::Schema.define(version: 20160606205228) do
   add_foreign_key "reservations", "order_details", name: "res_ord_det_id_fk"
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
   add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id"
+  add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
   add_foreign_key "schedule_rules", "products", column: "instrument_id", name: "sys_c008573"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"

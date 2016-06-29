@@ -13,6 +13,10 @@ module SangerSequencing
       customer_sample_id || default_customer_sample_id
     end
 
+    def reserved?
+      false
+    end
+
     private
 
     def default_customer_sample_id

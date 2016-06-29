@@ -38,3 +38,15 @@ en:
           attributes:
             savable_samples:
               too_short: You must have at least one sample.
+
+  activemodel:
+    errors:
+      models:
+        sanger_sequencing/batch_form:
+          attributes:
+            submission_ids:
+              blank: "You must submit at least one submission"
+              submission_part_of_other_batch: "Submission %{id} is already part of a batch"
+            submitted_sample_ids:
+              must_match_submissions: Samples submitted must match the submissions
+
