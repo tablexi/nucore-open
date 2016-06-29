@@ -10,4 +10,12 @@ class OfflineReservation < Reservation
     true
   end
 
+  def admin_removable?
+    false
+  end
+
+  def to_s
+    self.class.model_name.human + " " + I18n.l(reserve_start_at)
+  end
+
 end

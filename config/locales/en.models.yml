@@ -126,6 +126,8 @@ en:
       nufs_account:
         one: Chart String
         other: Chart Strings
+      offline_reservation:
+        one: Offline
       reservation:
         one: Reservation
         other: Reservations

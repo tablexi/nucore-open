@@ -49,6 +49,10 @@ RSpec.describe Reservation do
     end
   end
 
+  describe "#admin_removable?" do
+    it { is_expected.to be_admin_removable }
+  end
+
   describe "#can_cancel?" do
     context "when the reservation has a canceled_at timestamp" do
       before { allow(reservation).to receive(:canceled_at).and_return(1.day.ago) }

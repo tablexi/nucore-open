@@ -49,20 +49,19 @@ class Reservation < ActiveRecord::Base
       .joins_order
   end
 
+  scope :admin, -> { where(order_detail_id: nil) }
+  scope :ends_in_the_future, -> {
+    where("reserve_end_at IS NULL OR reserve_end_at > ?", Time.current)
+  }
+
   def self.joins_order
     joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
       .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
   end
 
-  def self.admin
-    where(order_detail_id: nil)
-  end
-
   def self.not_canceled
     where(canceled_at: nil)
   end
-
-  scope :untyped, -> { where(type: nil) }
 
   def self.not_started
     where(actual_start_at: nil)
@@ -121,6 +120,8 @@ class Reservation < ActiveRecord::Base
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
   end
 
+  scope :untyped, -> { where(type: nil) }
+
   # Instance Methods
   #####
 
@@ -166,6 +167,10 @@ class Reservation < ActiveRecord::Base
 
   def admin?
     order.nil? && !blackout?
+  end
+
+  def admin_removable?
+    true
   end
 
   def blackout?
