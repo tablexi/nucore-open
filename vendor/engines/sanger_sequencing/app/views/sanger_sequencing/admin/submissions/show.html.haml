@@ -2,7 +2,7 @@
   = text("sanger_sequencing.name")
 
 = content_for :sidebar do
-  = render "sidenav", sidenav_tab: "submissions"
+  = render "sanger_sequencing/admin/shared/sidenav", sidenav_tab: "submissions"
 
 %div{class: modal? ? "modal-header" : ""}
   = modal_close_button if modal?
