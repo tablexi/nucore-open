@@ -22,7 +22,7 @@ RSpec.configure do |config|
 
   # rspec-rails by default excludes stack traces from within vendor Lots of our
   # engines are under vendor, so we don't want to exclude them
-  config.backtrace_exclusion_patterns.delete /vendor\//
+  config.backtrace_exclusion_patterns.delete(%r{vendor/})
 
   config.use_transactional_fixtures = true
 
