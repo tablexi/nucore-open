@@ -39,7 +39,8 @@
   %p.notice= t(".no_upcoming_admin_reservations")
 
 - else
-  %p.notice= t(".instrument_is_offline") unless @instrument.online?
+  - unless @instrument.online?
+    %p.notice= t(".instrument_is_offline")
 
   %table.table.table-striped.table-hover
     %thead
