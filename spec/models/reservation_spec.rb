@@ -131,6 +131,10 @@ RSpec.describe Reservation do
     end
   end
 
+  describe "#end_at_required?" do
+    it { is_expected.to be_end_at_required }
+  end
+
   describe "#locked?" do
     before(:each) do
       allow(reservation).to receive(:admin_editable?).and_return(admin_editable?)

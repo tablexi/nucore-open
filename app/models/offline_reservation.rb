@@ -14,6 +14,10 @@ class OfflineReservation < Reservation
     false
   end
 
+  def end_at_required?
+    false
+  end
+
   def to_s
     self.class.model_name.human + " " + I18n.l(reserve_start_at)
   end

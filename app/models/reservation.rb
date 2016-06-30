@@ -125,6 +125,10 @@ class Reservation < ActiveRecord::Base
   # Instance Methods
   #####
 
+  def end_at_required?
+    true
+  end
+
   def start_reservation!
     product.schedule.products.map(&:started_reservations).flatten.each(&:complete!)
     self.actual_start_at = Time.zone.now

@@ -5,7 +5,7 @@ module Reservations::Validations
   included do
     validates_uniqueness_of :order_detail_id, allow_nil: true
     validates :product_id, :reserve_start_at, presence: true
-    validates :reserve_end_at, presence: true, unless: "is_a?(OfflineReservation)"
+    validates :reserve_end_at, presence: true, if: :end_at_required?
     validate :does_not_conflict_with_other_reservation,
              :instrument_is_available_to_reserve,
              :satisfies_minimum_length,
@@ -14,7 +14,6 @@ module Reservations::Validations
              unless: :admin?
 
     validates_each [:actual_start_at, :actual_end_at] do |record, attr, value|
-      next if record.is_a?(OfflineReservation)
       if value
         record.errors.add(attr.to_s, "cannot be in the future") if Time.zone.now < value
       end
@@ -27,7 +26,6 @@ module Reservations::Validations
   # Validation Methods
 
   def starts_before_ends
-    return if is_a?(OfflineReservation)
     if reserve_start_at && reserve_end_at
       errors.add("reserve_end_date", "must be after the reservation start time") if reserve_end_at <= reserve_start_at
     end

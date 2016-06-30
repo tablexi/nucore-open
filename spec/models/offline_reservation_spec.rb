@@ -12,4 +12,8 @@ RSpec.describe OfflineReservation do
   describe "#admin_removable?" do
     it { is_expected.not_to be_admin_removable }
   end
+
+  describe "#end_at_required?" do
+    it { is_expected.not_to be_end_at_required }
+  end
 end
