@@ -32,13 +32,15 @@ RSpec.describe "Creating a batch", :js do
         click_button "Save Batch"
       end
 
-      it "Saves the batch", :aggregate_failures do
+      it "Saves the batch and takes you to the batches index", :aggregate_failures do
         expect(purchased_submission.reload.batch_id).to be_present
         expect(purchased_submission2.reload.batch_id).to be_present
 
         expect(SangerSequencing::Batch.last.sample_at(0, "A01")).to be_reserved
         expect(SangerSequencing::Batch.last.sample_at(0, "B01")).to eq(purchased_submission.samples.first)
         expect(SangerSequencing::Batch.last.sample_at(1, "B01")).to eq(purchased_submission2.samples[44])
+
+        expect(current_path).to eq(facility_sanger_sequencing_admin_batches_path(facility))
       end
     end
   end

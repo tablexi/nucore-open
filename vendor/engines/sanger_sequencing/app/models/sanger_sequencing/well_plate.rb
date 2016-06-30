@@ -35,7 +35,7 @@ module SangerSequencing
       end
 
       def customer_sample_id
-        "Control"
+        ""
       end
 
     end
@@ -46,6 +46,10 @@ module SangerSequencing
 
       def reserved?
         false
+      end
+
+      def blank?
+        true
       end
 
       def customer_sample_id

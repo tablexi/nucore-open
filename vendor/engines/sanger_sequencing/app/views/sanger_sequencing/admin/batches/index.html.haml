@@ -1,13 +1,16 @@
 = content_for :h1 do
   = current_facility
 
+= content_for :head_content do
+  = stylesheet_link_tag "sanger_sequencing/application"
+
 = content_for :sidebar do
   = render "sanger_sequencing/admin/shared/sidenav", sidenav_tab: "batches"
 
 %h2= text("sanger_sequencing.name")
 
 - if @batches.any?
-  %table.table.table-striped
+  %table.table.table-striped.sangerSequencing--batches__table
     %thead
       %tr
         %th
@@ -16,15 +19,21 @@
         %th= SangerSequencing::Batch.human_attribute_name(:created_by)
         %th= SangerSequencing::Batch.human_attribute_name(:submissions)
         %th= SangerSequencing::Batch.human_attribute_name(:samples)
+        %th
     %tbody
       - @batches.each do |batch|
         %tr
-          %td= link_to "Delete", facility_sanger_sequencing_admin_batch_path(current_facility, batch), method: :delete
+          %td
+            %ul.sangerSequencing--wellPlate__list
+              - batch.well_plates.count.times do |i|
+                %li= link_to text("download_plate", index: i + 1), well_plate_facility_sanger_sequencing_admin_batch_path(current_facility, batch, i + 1, format: :csv)
           %td= batch.id
           %td= format_usa_date(batch.created_at)
           %td= batch.created_by
           %td= batch.submissions.count
           %td= batch.samples.count
+          %td= link_to "Delete", facility_sanger_sequencing_admin_batch_path(current_facility, batch), method: :delete
+
 
   = will_paginate(@batches)
 

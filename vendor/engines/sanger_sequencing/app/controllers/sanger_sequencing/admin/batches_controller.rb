@@ -8,7 +8,7 @@ module SangerSequencing
       layout "two_column", only: [:index]
       before_action { @active_tab = "admin_sanger_sequencing" }
       before_action :load_batch_form, only: [:new, :create]
-      before_action :load_batch, only: :destroy
+      before_action :load_batch, only: [:well_plate, :destroy]
       authorize_sanger_resource class: "SangerSequencing::Batch"
 
       def index
@@ -22,11 +22,23 @@ module SangerSequencing
       def create
         # Whitelisting should happen in the form object
         if @batch.update_attributes(params[:batch].merge(created_by: current_user, facility: current_facility))
-          redirect_to [current_facility, :sanger_sequencing, :admin, :submissions], notice: text("create.success")
+          redirect_to [current_facility, :sanger_sequencing, :admin, :batches], notice: text("create.success")
         else
           @submissions = Submission.ready_for_batch.for_facility(current_facility)
           flash.now[:alert] = @batch.errors.map { |_k, msg| msg }.to_sentence
           render :new
+        end
+      end
+
+      def well_plate
+        index = params[:well_plate_index].to_i
+        @well_plate = @batch.well_plates[index - 1]
+        raise ActiveRecord::RecordNotFound unless @well_plate
+
+        respond_to do |format|
+          format.csv do
+            render csv: WellPlatePresenter.new(@well_plate), filename: "well_plate_#{@batch.id}_#{index}"
+          end
         end
       end
 
