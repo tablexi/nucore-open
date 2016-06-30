@@ -22,7 +22,7 @@ module Products::SchedulingSupport
   end
 
   def admin_reservations
-    reservations.admin.untyped
+    reservations.admin.not_offline
   end
 
   def started_reservations
