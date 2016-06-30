@@ -10,25 +10,29 @@
 
 %p= link_to text("new_batch"), new_facility_sanger_sequencing_admin_batch_path, class: "btn btn-add"
 
-%table.table.table-striped
-  %thead
-    %tr
-      %th= OrderDetail.human_attribute_name(:id)
-      %th= SangerSequencing::Submission.human_attribute_name(:id)
-      %th= OrderDetail.human_attribute_name(:ordered_at)
-      %th= OrderDetail.human_attribute_name(:user)
-      %th= OrderDetail.human_attribute_name(:quantity)
-      %th= OrderDetail.human_attribute_name(:order_status)
-      %th= SangerSequencing::Batch.model_name.human
-  %tbody
-    - @submissions.each do |submission|
+- if @submissions.any?
+  %table.table.table-striped
+    %thead
       %tr
-        %td= link_to submission.order_detail, manage_order_detail_path(submission.order_detail), class: "manage-order-detail"
-        %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission)
-        %td= format_usa_datetime(submission.purchased_at)
-        %td= submission.user
-        %td= submission.samples.count
-        %td= submission.order_status
-        %td= submission.batch_id
+        %th= OrderDetail.human_attribute_name(:id)
+        %th= SangerSequencing::Submission.human_attribute_name(:id)
+        %th= OrderDetail.human_attribute_name(:ordered_at)
+        %th= OrderDetail.human_attribute_name(:user)
+        %th= OrderDetail.human_attribute_name(:quantity)
+        %th= OrderDetail.human_attribute_name(:order_status)
+        %th= SangerSequencing::Batch.model_name.human
+    %tbody
+      - @submissions.each do |submission|
+        %tr
+          %td= link_to submission.order_detail, manage_order_detail_path(submission.order_detail), class: "manage-order-detail"
+          %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission)
+          %td= format_usa_datetime(submission.purchased_at)
+          %td= submission.user
+          %td= submission.samples.count
+          %td= submission.order_status
+          %td= submission.batch_id
 
-= will_paginate(@submissions)
+  = will_paginate(@submissions)
+
+- else
+  %p.notice= text("none")

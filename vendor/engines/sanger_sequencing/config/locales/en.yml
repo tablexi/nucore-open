@@ -20,11 +20,14 @@ en:
         submissions:
           index:
             new_batch: Create New Batch
+            none: There are no new or in process submissions
         batches:
           new:
             add: Add
             remove: Remove
             submit: Save Batch
+          index:
+            none: There are currently no batches
 
   activerecord:
     attributes:
