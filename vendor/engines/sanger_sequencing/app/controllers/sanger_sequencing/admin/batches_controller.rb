@@ -8,7 +8,7 @@ module SangerSequencing
       layout "two_column", only: [:index]
       before_action { @active_tab = "admin_sanger_sequencing" }
       before_action :load_batch_form, only: [:new, :create]
-      before_action :load_batch, only: [:well_plate, :destroy]
+      before_action :load_batch, only: [:well_plate, :show, :destroy]
       authorize_sanger_resource class: "SangerSequencing::Batch"
 
       def index
@@ -28,6 +28,10 @@ module SangerSequencing
           flash.now[:alert] = @batch.errors.map { |_k, msg| msg }.to_sentence
           render :new
         end
+      end
+
+      def show
+        @submissions = @batch.submissions.purchased # purchased to get the same sorting
       end
 
       def well_plate

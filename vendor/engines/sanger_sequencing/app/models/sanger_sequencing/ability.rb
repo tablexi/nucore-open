@@ -11,7 +11,7 @@ module SangerSequencing
 
       if facility && user.operator_of?(facility)
         can [:index, :show], Submission
-        can [:index, :create, :destroy, :well_plate], [Batch, BatchForm]
+        can [:index, :show, :create, :destroy, :well_plate], [Batch, BatchForm]
       end
     end
 

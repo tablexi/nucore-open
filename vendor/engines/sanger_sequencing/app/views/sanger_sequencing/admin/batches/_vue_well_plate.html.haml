@@ -1,0 +1,13 @@
+%script#vue-sanger-sequencing-well-plate{type: "x-template"}
+  %table.table.table-bordered(v-cloak)
+    %tr
+      %th
+      - (1..12).each do |col|
+        %th.centered= col
+    %tr(v-for="row in plateGrid")
+      %th {{row.name}}
+      %td.sangerSequencing--cell(v-for="cell in row.cells" v-bind:style="styleForCell(cell, plateIndex)")
+        {{sampleAtCell(cell.name, plateIndex).customerSampleId()}}
+        %br
+        {{sampleAtCell(cell.name, plateIndex).displayId()}}
+        = hidden_field_tag("batch[well_plate_data[{{plateIndex}}][{{cell.name}}]]", "{{sampleAtCell(cell.name, plateIndex).id()}}", id: "well_plate_{{plateIndex}}_{{cell.name}}")

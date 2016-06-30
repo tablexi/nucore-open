@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     namespace :sanger_sequencing do
       namespace :admin do
         resources :submissions, only: [:index, :show]
-        resources :batches, only: [:index, :new, :create, :destroy] do
+        resources :batches, only: [:index, :show, :new, :create, :destroy] do
           get "well_plates/:well_plate_index", action: :well_plate, on: :member, as: :well_plate
         end
       end
