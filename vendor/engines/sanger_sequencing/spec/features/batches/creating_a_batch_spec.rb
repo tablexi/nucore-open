@@ -1,5 +1,5 @@
 require "rails_helper"
-require_relative "../support/shared_contexts/setup_sanger_service"
+require_relative "../../support/shared_contexts/setup_sanger_service"
 
 RSpec.describe "Creating a batch", :js do
   include_context "Setup Sanger Service"

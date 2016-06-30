@@ -2,27 +2,27 @@ module SangerSequencing
 
   module Admin
 
-    class SubmissionsController < BaseController
+    class SubmissionsController < AdminController
 
       admin_tab :all
       layout "two_column"
-      before_filter { @active_tab = "admin_sanger_sequencing" }
+      before_action { @active_tab = "admin_sanger_sequencing" }
+
+      before_action :load_submission, only: :show
+      authorize_sanger_resource class: "SangerSequencing::Submission"
 
       def index
-        sanger_ability.authorize! :index, Submission
         @submissions = Submission.purchased.for_facility(current_facility).paginate(page: params[:page])
       end
 
       def show
-        @submission = Submission.purchased.for_facility(current_facility).find(params[:id])
-        sanger_ability.authorize! :show, @submission
         render layout: false if modal?
       end
 
       private
 
-      def sanger_ability
-        SangerSequencing::Ability.new(current_user, current_facility)
+      def load_submission
+        @submission = Submission.purchased.for_facility(current_facility).find(params[:id])
       end
 
       def modal?

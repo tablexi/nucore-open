@@ -11,15 +11,18 @@ module SangerSequencing
     validates :submission_ids, presence: true
     validate :samples_must_match_submissions
     validate :submission_part_of_other_batch
+    validate :submissions_in_correct_facility
 
     def initialize(batch = SangerSequencing::Batch.new)
       @batch = batch
     end
 
     def assign_attributes(params = {})
-      batch.submission_ids = params[:submission_ids].to_s.split(",")
-      batch.well_plates_raw = params[:well_plate_data].to_h.values
-      batch.created_by = params[:created_by]
+      batch.assign_attributes(
+        submission_ids: params[:submission_ids].to_s.split(","),
+        well_plates_raw: params[:well_plate_data].to_h.values,
+        created_by: params[:created_by],
+        facility: params[:facility])
     end
 
     def update_attributes(params = {})
@@ -32,6 +35,13 @@ module SangerSequencing
     end
 
     private
+
+    def submissions_in_correct_facility
+      incorrect_facilities = batch.submissions.reject { |s| s.facility == batch.facility }
+      if incorrect_facilities.any?
+        errors.add(:submission_ids, :invalid_facility, id: incorrect_facilities.map(&:id).join(", "))
+      end
+    end
 
     def submission_part_of_other_batch
       changed = Submission.where(id: batch.submission_ids).where.not(batch: nil).pluck(:id)
