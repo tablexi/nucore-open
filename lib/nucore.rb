@@ -42,6 +42,8 @@ module NUCore
 
         def where_ids_in(ids)
           if NUCore::Database.oracle?
+            return none if ids.blank?
+
             queries = ids.each_slice(999).flat_map do |id_slice|
               unscoped.where(id: id_slice).where_values
             end
