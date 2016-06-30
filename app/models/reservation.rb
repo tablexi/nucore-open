@@ -50,7 +50,7 @@ class Reservation < ActiveRecord::Base
   end
 
   scope :admin, -> { where(order_detail_id: nil) }
-  scope :ends_in_the_future, -> {
+  scope :ends_in_the_future, lambda {
     where("reserve_end_at IS NULL OR reserve_end_at > ?", Time.current)
   }
 

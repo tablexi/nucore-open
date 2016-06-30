@@ -42,8 +42,7 @@ class InstrumentsController < ProductsCommonController
         flash[:notice] = html(".requires_approval",
                               email: @instrument.email,
                               facility: @instrument.facility,
-                              instrument: @instrument,
-                             )
+                              instrument: @instrument)
       end
     end
 
@@ -83,11 +82,11 @@ class InstrumentsController < ProductsCommonController
   def schedule
     @admin_reservations =
       @instrument
-        .schedule
-        .reservations
-        .admin
-        .ends_in_the_future
-        .order(:reserve_start_at)
+      .schedule
+      .reservations
+      .admin
+      .ends_in_the_future
+      .order(:reserve_start_at)
   end
 
   def public_schedule
