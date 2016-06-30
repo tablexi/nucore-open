@@ -81,7 +81,7 @@ Nucore::Application.routes.draw do
       resources :price_policies, controller: "instrument_price_policies", except: [:show]
       resources :reservations, only: [:new, :create, :destroy], controller: "facility_reservations" do
         get "edit_admin",   to: 'facility_reservations#edit_admin'
-        put "update_admin", to: 'facility_reservations#update_admin'
+        patch "update_admin", to: 'facility_reservations#update_admin'
       end
 
       resources :reservations, only: [:index]
