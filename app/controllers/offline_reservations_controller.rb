@@ -7,6 +7,7 @@ class OfflineReservationsController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
   before_action :load_instrument
+  before_action :load_reservation, only: %i(edit update)
 
   load_and_authorize_resource class: Reservation
 
@@ -38,11 +39,10 @@ class OfflineReservationsController < ApplicationController
   end
 
   def edit
-    @reservation = @instrument.offline_reservations.find(params[:id])
+
   end
 
   def update
-    @reservation = @instrument.offline_reservations.find(params[:id])
     if @reservation.update(params[:offline_reservation])
       flash[:notice] = text("update.success")
       redirect_to facility_instrument_schedule_path
@@ -56,6 +56,10 @@ class OfflineReservationsController < ApplicationController
 
   def load_instrument
     @instrument = current_facility.instruments.find_by!(url_name: params[:instrument_id])
+  end
+
+  def load_reservation
+    @reservation = @instrument.offline_reservations.find(params[:id])
   end
 
 end
