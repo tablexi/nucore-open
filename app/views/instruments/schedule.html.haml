@@ -47,6 +47,7 @@
     %thead
       %tr
         %th
+        %th= Reservation.human_attribute_name(:type)
         %th= Reservation.model_name.human
         %th= Reservation.human_attribute_name(:admin_note)
     %tbody
@@ -59,6 +60,8 @@
                 confirm: t("shared.confirm_message"),
                 method: :delete
 
+            %td= t(".admin")
+
             %td
               = link_to reservation,
                 facility_instrument_reservation_edit_admin_path(current_facility, @instrument, reservation)
@@ -69,6 +72,7 @@
 
             - if current_user.administrator? # TODO: restrict to global admins until the offline feature is complete
               %td
+              %td= reservation.class.model_name.human
               %td
                 = link_to reservation,
                   edit_facility_instrument_offline_reservation_path(current_facility, @instrument, reservation)

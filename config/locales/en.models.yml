@@ -280,6 +280,7 @@ en:
         canceled_by_user: Canceled By
         canceled_by: Canceled By
         canceled_at: Canceled At
+        type: Type
       statement:
         id: "Invoice #"
         created_by: Sent By
