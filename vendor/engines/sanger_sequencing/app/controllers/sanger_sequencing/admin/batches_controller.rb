@@ -5,8 +5,12 @@ module SangerSequencing
     class BatchesController < BaseController
 
       admin_tab :all
-      # layout "two_column"
-      # before_filter { @active_tab = "admin_sanger_sequencing" }
+      layout "two_column", only: [:index]
+      before_filter(only: :index) { @active_tab = "admin_sanger_sequencing" }
+
+      def index
+        @batches = Batch.order(created_at: :desc).paginate(page: params[:page])
+      end
 
       def new
         @submissions = Submission.ready_for_batch.for_facility(current_facility)
