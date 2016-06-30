@@ -1,6 +1,8 @@
 class OfflineReservationsController < ApplicationController
 
   admin_tab :all
+  layout "two_column"
+
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_current_facility
@@ -10,8 +12,6 @@ class OfflineReservationsController < ApplicationController
 
   def new
     @reservation = @instrument.offline_reservations.new
-
-    render layout: "two_column"
   end
 
   def create
@@ -22,7 +22,7 @@ class OfflineReservationsController < ApplicationController
       flash[:notice] = text("create.success")
       redirect_to facility_instrument_schedule_path
     else
-      render action: "new", layout: "two_column"
+      render action: "new"
     end
   end
 
@@ -39,7 +39,6 @@ class OfflineReservationsController < ApplicationController
 
   def edit
     @reservation = @instrument.offline_reservations.find(params[:id])
-    render layout: "two_column"
   end
 
   def update
@@ -49,7 +48,7 @@ class OfflineReservationsController < ApplicationController
       redirect_to facility_instrument_schedule_path
     else
       flash[:error] = text("update.error")
-      render action: "edit", layout: "two_column"
+      render action: "edit"
     end
   end
 
