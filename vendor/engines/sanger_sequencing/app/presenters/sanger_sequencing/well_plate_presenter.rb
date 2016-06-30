@@ -13,7 +13,7 @@ module SangerSequencing
       CSV.generate do |csv|
         csv << ["Container Name", "Plate ID", "Description", "ContainerType", "AppType", "Owner", "Operator", "PlateSealing", "SchedulingPref"]
         csv << ["",               "",         "",            "96-Well",       "Regular", "mb core", "mbcore", "Septa", "1234"]
-        csv << ["AppServer", "AppInstance"]
+        csv << %w(AppServer AppInstance)
         csv << ["SequencingAnalysis"]
         csv << ["Well", "Sample Name", "Comment", "Results Group 1", "Instrument Protocol 1", "Analysis Protocol 1"]
 
@@ -33,14 +33,14 @@ module SangerSequencing
 
     def cleaned_cells
       # Remove blank cells
-      sorted_cells.reject { |position, sample| sample.blank? }
+      sorted_cells.reject { |_position, sample| sample.blank? }
     end
 
     def sorted_cells
       well_plate.cells.sort_by do |position, _sample|
         # Order by A01, B01, C01, etc.
         position =~ /\A([A-H])(\d{2})\z/
-        [$2, $1]
+        [Regexp.last_match(2), Regexp.last_match(1)]
       end
     end
 
