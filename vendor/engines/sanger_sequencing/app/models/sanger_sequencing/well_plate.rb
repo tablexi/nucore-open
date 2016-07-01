@@ -38,7 +38,7 @@ module SangerSequencing
         ""
       end
 
-      def as_json(options)
+      def as_json(_options)
         "reserved"
       end
 
@@ -60,7 +60,7 @@ module SangerSequencing
         ""
       end
 
-      def as_json(options)
+      def as_json(_options)
         ""
       end
 
