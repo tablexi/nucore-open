@@ -61,7 +61,7 @@ RSpec.describe "Managing Instrument Offline Reservations" do
 
   describe "taking an offline instrument back online" do
     before(:each) do
-     instrument
+      instrument
         .offline_reservations
         .create!(reserve_start_at: 1.hour.ago, admin_note: "It's broken")
 
