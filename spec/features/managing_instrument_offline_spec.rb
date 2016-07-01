@@ -18,7 +18,6 @@ RSpec.describe "Managing Instrument Offline Reservations" do
 
     it "marks the instrument offline" do
       expect(page).to have_content("The instrument has been marked offline")
-      expect(instrument.reload).not_to be_online
     end
 
     describe "editing the note of an ongoing offline reservation" do
