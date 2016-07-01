@@ -142,7 +142,10 @@ def place_reservation_for_instrument(ordered_by, instrument, account, reserve_st
   }
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
-  instrument.reservations.create(res_attrs)
+  res = instrument.reservations.build(res_attrs)
+  res.assign_times_from_params(res_attrs)
+  res.save!
+  res
 end
 
 #
@@ -182,9 +185,7 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
   @reservation = @instrument.reservations.build(res_attrs)
-  # force validation to run to set reserve_end_at, but ignore the errors
-  # we don't need to be worried about all the validations when running this method
-  @reservation.valid?
+  @reservation.assign_times_from_params(res_attrs)
   @reservation.save(validate: false)
   @reservation
 end

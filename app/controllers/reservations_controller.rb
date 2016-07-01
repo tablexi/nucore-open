@@ -100,6 +100,7 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation = @order_detail.build_reservation
     @reservation.assign_attributes(reservation_create_params)
+    @reservation.assign_times_from_params(reservation_create_params)
 
     if !@order_detail.bundled? && params[:order_account].blank?
       flash.now[:error] = I18n.t "controllers.reservations.create.no_selection"

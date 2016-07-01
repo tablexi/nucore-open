@@ -10,8 +10,6 @@ module Reservations::DateSupport
                 :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
                 :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
                 :actual_duration_mins
-
-    before_validation :set_all_split_times, if: :end_at_required?
   end
 
   def assign_times_from_params(params)

@@ -122,7 +122,8 @@ class FacilityReservationsController < ApplicationController
   # POST /facilities/:facility_id/instruments/:instrument_id/reservations
   def create
     @instrument   = current_facility.instruments.find_by_url_name!(params[:instrument_id])
-    @reservation  = @instrument.admin_reservations.new(params[:reservation])
+    @reservation  = @instrument.reservations.new
+    @reservation.assign_times_from_params(params[:reservation])
 
     if @reservation.save
       flash[:notice] = "The reservation has been created successfully."
