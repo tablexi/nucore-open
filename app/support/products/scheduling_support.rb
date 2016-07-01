@@ -21,10 +21,6 @@ module Products::SchedulingSupport
     reservations.joins(order_detail: :order).merge(Order.purchased)
   end
 
-  def admin_reservations
-    reservations.admin.not_offline
-  end
-
   def started_reservations
     purchased_reservations
       .not_canceled

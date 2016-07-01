@@ -10,6 +10,7 @@ class Instrument < Product
 
   has_many :instrument_price_policies, foreign_key: "product_id"
   has_many :product_access_groups, foreign_key: "product_id"
+  has_many :admin_reservations, foreign_key: "product_id"
   has_many :offline_reservations, foreign_key: "product_id"
 
   # Validations

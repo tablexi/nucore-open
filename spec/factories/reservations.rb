@@ -41,6 +41,10 @@ FactoryGirl.define do
     end
   end
 
+  factory :admin_reservation, class: AdminReservation, parent: :reservation do
+    order_detail nil
+  end
+
   factory :setup_reservation, class: Reservation, parent: :reservation do
     product factory: :setup_instrument
 

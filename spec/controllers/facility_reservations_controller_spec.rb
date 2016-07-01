@@ -292,7 +292,12 @@ RSpec.describe FacilityReservationsController do
         expect(@canceled_reservation).to be_persisted
         @order_detail3.update_order_status! @admin, OrderStatus.canceled.first
 
-        @admin_reservation = FactoryGirl.create(:reservation, product: @product, reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
+        @admin_reservation = FactoryGirl.create(
+          :admin_reservation,
+          product: @product,
+          reserve_start_at: Time.zone.now,
+          reserve_end_at: 1.hour.from_now,
+        )
 
         maybe_grant_always_sign_in :director
         @method = :get
@@ -320,7 +325,7 @@ RSpec.describe FacilityReservationsController do
       end
 
       it "should include admin reservation" do
-        expect(response.body).to include "id='tooltip_reservation_#{@admin_reservation.id}'"
+        expect(response.body).to include "id='tooltip_admin_reservation_#{@admin_reservation.id}'"
       end
     end
   end
@@ -469,7 +474,7 @@ RSpec.describe FacilityReservationsController do
       before :each do
         @method = :put
         @action = :update_admin
-        @params.merge!(reservation: FactoryGirl.attributes_for(:reservation))
+        @params.merge!(admin_reservation: FactoryGirl.attributes_for(:admin_reservation))
       end
 
       it_should_allow_operators_only :redirect

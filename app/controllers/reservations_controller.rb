@@ -31,11 +31,15 @@ class ReservationsController < ApplicationController
 
     @end_at       = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at.end_of_day
 
-    @reservations = @instrument.schedule
+    @admin_reservations = @instrument.schedule.admin_reservations.in_range(@start_at, @end_at)
+
+    @user_reservations = @instrument.schedule
                                .reservations
                                .active
                                .in_range(@start_at, @end_at)
                                .includes(order_detail: { order: :user })
+
+    @reservations = @admin_reservations + @user_reservations
 
     @rules        = @instrument.schedule_rules
 
