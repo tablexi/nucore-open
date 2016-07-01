@@ -58,19 +58,23 @@ RSpec.describe "Managing Instrument Offline Reservations" do
         end
       end
     end
+  end
 
-    describe "taking an offline instrument back online" do
-      before(:each) do
-        visit facility_instrument_schedule_path(facility, instrument)
-        click_link "Bring Instrument Online"
-      end
+  describe "taking an offline instrument back online" do
+    before(:each) do
+     instrument
+        .offline_reservations
+        .create!(reserve_start_at: 1.hour.ago, admin_note: "It's broken")
 
-      it "brings the instrument back online" do
-        expect(page).to have_content "The instrument is back online"
-        expect(current_path)
-          .to eq(facility_instrument_schedule_path(facility, instrument))
-        expect(instrument.reload).to be_online
-      end
+      visit facility_instrument_schedule_path(facility, instrument)
+      click_link "Bring Instrument Online"
+    end
+
+    it "brings the instrument back online" do
+      expect(page).to have_content "The instrument is back online"
+      expect(current_path)
+        .to eq(facility_instrument_schedule_path(facility, instrument))
+      expect(instrument.reload).to be_online
     end
   end
 end
