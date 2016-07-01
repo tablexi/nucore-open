@@ -21,7 +21,8 @@
 
 .wysiwyg= @instrument.description
 
-%p.notice= t(".offline_notice") unless @instrument.online?
+- unless @instrument.online?
+  %p.notice= t(".offline_notice")
 
 = render "documentation"
 
