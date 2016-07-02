@@ -8,7 +8,7 @@ module SangerSequencing
       layout "two_column", only: [:index]
       before_action { @active_tab = "admin_sanger_sequencing" }
       before_action :load_batch_form, only: [:new, :create]
-      before_action :load_batch, only: [:well_plate, :show, :destroy]
+      before_action :load_batch, only: [:well_plate, :show, :destroy, :upload]
       authorize_sanger_resource class: "SangerSequencing::Batch"
 
       def index
@@ -49,6 +49,12 @@ module SangerSequencing
       def destroy
         @batch.destroy
         redirect_to facility_sanger_sequencing_admin_batches_path, notice: text("destroy.success")
+      end
+
+      def upload
+        respond_to do |format|
+          format.json { render json: { success: false, error: "There was an error HELLO" } }
+        end
       end
 
       private
