@@ -17,7 +17,7 @@
 
             <span class="qq-drop-processing-selector qq-drop-processing">
                 <span>Processing dropped files...</span>
-                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+                <!--<span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span> -->
             </span>
         <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
             <li>
@@ -36,14 +36,14 @@
             </li>
         </ul>
 
-        <dialog class="qq-alert-dialog-selector">
+        <dialog class="qq-alert-dialog-selector" v-pre>
             <div class="qq-dialog-message-selector"></div>
             <div class="qq-dialog-buttons">
                 <button type="button" class="qq-cancel-button-selector">Close</button>
             </div>
         </dialog>
 
-        <dialog class="qq-confirm-dialog-selector">
+        <dialog class="qq-confirm-dialog-selector" v-pre>
             <div class="qq-dialog-message-selector"></div>
             <div class="qq-dialog-buttons">
                 <button type="button" class="qq-cancel-button-selector">No</button>
@@ -51,7 +51,7 @@
             </div>
         </dialog>
 
-        <dialog class="qq-prompt-dialog-selector">
+        <dialog class="qq-prompt-dialog-selector" v-pre>
             <div class="qq-dialog-message-selector"></div>
             <input type="text">
             <div class="qq-dialog-buttons">
