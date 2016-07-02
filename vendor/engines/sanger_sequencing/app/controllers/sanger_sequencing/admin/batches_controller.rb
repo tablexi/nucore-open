@@ -52,25 +52,12 @@ module SangerSequencing
       end
 
       def upload
-        response = begin
-          params[:qqfilename] =~ /\A(\d+).+/
-          raise UploadError, "Filename should begin with the sample ID, e.g. 43212_B01_001.seq" unless $1.present?
+        saver = SampleResultFileSaver.new(@batch, current_user, params)
 
-          sample = @batch.samples.find_by(id: $1)
-          raise UploadError, "Could not find sample #{$1} in this batch" unless sample
-
-          file = StoredFile.new(file: params[:qqfile], name: params[:qqfilename],
-            file_type: "sample_result", created_by: current_user.id,
-            order_detail: sample.submission.order_detail)
-
-          if file.save
-            { success: true }
-          else
-            raise UploadError, file.errors.full_messages
-          end
-
-        rescue UploadError => e
-          { success: false, error: e.message }
+        response = if saver.save
+          { success: true }
+        else
+          { success: false, error: saver.errors.map { |_k, msg| msg }.to_sentence }
         end
 
         respond_to do |format|

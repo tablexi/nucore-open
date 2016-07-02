@@ -1,0 +1,57 @@
+require "rails_helper"
+
+RSpec.describe SangerSequencing::SampleResultFileSaver do
+  let(:user) { FactoryGirl.create(:user) }
+  let(:facility) { FactoryGirl.create(:facility) }
+  let(:product) { FactoryGirl.build(:service, facility: facility).tap { |s| s.save(validate: false) } }
+  let(:order) { FactoryGirl.build(:order, user: user, created_by: user.id).tap { |o| o.save(validate: false) } }
+  let(:order_detail) { FactoryGirl.build(:order_detail, order: order, product: product).tap { |od| od.save(validate: false) } }
+  let(:submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: order_detail, sample_count: 2) }
+  let(:batch) { FactoryGirl.create(:sanger_sequencing_batch, submissions: [submission]) }
+
+  let(:saver) { described_class.new(batch, user, params) }
+
+  let(:params) { { qqfile: fixture_file_upload(filename) } }
+
+  describe "with a filename that doesn't begin with an integer" do
+    let(:filename) { File.join(SangerSequencing::Engine.root, "spec/support/file_fixtures/invalid_file_name.txt") }
+
+    it "does not save" do
+      expect(saver.save).to be(false)
+      expect(saver.errors).to be_added(:filename, :invalid)
+    end
+  end
+
+  describe "with a filename that does not match a valid sample id" do
+    let(:filename) { File.join(Rails.root, "tmp", "0_file.txt") }
+
+    before do
+      original_file = File.join(SangerSequencing::Engine.root, "spec/support/file_fixtures/SAMPLE_ID_file_name.txt")
+      FileUtils.cp_r(original_file, filename)
+    end
+
+    it "does not save" do
+      expect(saver.save).to be(false)
+      expect(saver.errors).to be_added(:sample, :blank, id: 0)
+    end
+  end
+
+  describe "saving" do
+    let(:sample_id) { submission.samples.first.id }
+    let(:filename) { File.join(Rails.root, "tmp", "#{sample_id}_file.txt") }
+    let(:stored_file) { StoredFile.last }
+    before do
+      original_file = File.join(SangerSequencing::Engine.root, "spec/support/file_fixtures/SAMPLE_ID_file_name.txt")
+      FileUtils.cp_r(original_file, filename)
+    end
+
+    it "saves", :aggregate_failures do
+      expect { saver.save }.to change(StoredFile, :count).by(1)
+      expect(stored_file.order_detail).to eq(order_detail)
+      expect(stored_file.file_type).to eq("sample_result")
+      expect(stored_file.created_by).to eq(user.id)
+      expect(stored_file.name).to eq("#{sample_id}_file.txt")
+    end
+  end
+
+end
