@@ -12,3 +12,6 @@ cp node_modules/fine-uploader/fine-uploader/*.gif vendor/assets/images/fine-uplo
 
 mkdir -p vendor/assets/images/fine-uploader/placeholders
 cp node_modules/fine-uploader/fine-uploader/placeholders/*.png vendor/assets/images/fine-uploader/placeholders
+
+mkdir -p vendor/assets/templates/fine-uploader
+cp node_modules/fine-uploader/fine-uploader/templates/*.html vendor/assets/templates

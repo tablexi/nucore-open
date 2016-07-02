@@ -65,6 +65,8 @@ Using the jQuery version (see the [docs](http://docs.fineuploader.com/quickstart
 </script>
 ```
 
+You also need to include the `<script type="text/template" id="qq-template">` section from one of the template files in [vendor/assets/templates](vendor/assets/templates) in your HTML.
+
 ## Building
 
 Building a new version requires `npm`.
