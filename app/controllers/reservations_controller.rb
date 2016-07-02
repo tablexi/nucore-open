@@ -34,10 +34,10 @@ class ReservationsController < ApplicationController
     @admin_reservations = @instrument.schedule.admin_reservations.in_range(@start_at, @end_at)
 
     @user_reservations = @instrument.schedule
-                               .reservations
-                               .active
-                               .in_range(@start_at, @end_at)
-                               .includes(order_detail: { order: :user })
+                                    .reservations
+                                    .active
+                                    .in_range(@start_at, @end_at)
+                                    .includes(order_detail: { order: :user })
 
     @reservations = @admin_reservations + @user_reservations
 
