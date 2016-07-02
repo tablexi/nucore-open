@@ -42,6 +42,8 @@ class Reservation < ActiveRecord::Base
   # Scopes
   #####
 
+  scope :non_user, -> { where(type: %w(AdminReservation OfflineReservation)) }
+
   def self.active
     not_canceled
       .not_offline

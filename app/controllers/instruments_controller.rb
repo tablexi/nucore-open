@@ -83,7 +83,8 @@ class InstrumentsController < ProductsCommonController
     @admin_reservations =
       @instrument
       .schedule
-      .admin_reservations
+      .reservations
+      .non_user
       .ends_in_the_future
       .order(:reserve_start_at)
   end
