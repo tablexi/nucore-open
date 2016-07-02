@@ -139,13 +139,11 @@ def place_reservation_for_instrument(ordered_by, instrument, account, reserve_st
     order_detail: order_detail,
     duration_value: 60,
     duration_unit: "minutes",
+    split_times: true,
   }
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
-  res = instrument.reservations.build(res_attrs)
-  res.assign_times_from_params(res_attrs)
-  res.save!
-  res
+  instrument.reservations.create(res_attrs)
 end
 
 #
@@ -179,13 +177,13 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
     order_detail: order_detail,
     duration_value: 60,
     duration_unit: "minutes",
+    split_times: true,
   }
   order_detail.update_attributes!(product: @instrument)
   order_detail.order.update_attributes!(state: "purchased")
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
   @reservation = @instrument.reservations.build(res_attrs)
-  @reservation.assign_times_from_params(res_attrs)
   @reservation.save(validate: false)
   @reservation
 end

@@ -10,6 +10,10 @@ module Reservations::DateSupport
                 :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
                 :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
                 :actual_duration_mins
+
+    # Use only in tests to make creation a little easier
+    attr_accessor :split_times
+    before_validation :set_all_split_times, if: :split_times
   end
 
   def assign_times_from_params(params)

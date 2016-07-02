@@ -66,6 +66,7 @@ RSpec.describe ReservationsController do
             order_detail: order_detail,
             duration_value: 60,
             duration_unit: "minutes",
+            split_times: true,
           )
         end
 
@@ -79,7 +80,8 @@ RSpec.describe ReservationsController do
           instrument.reservations.create(reserve_start_at: now - 1.day,
                                          order_detail: order_detail,
                                          duration_value: 60,
-                                         duration_unit: "minutes")
+                                         duration_unit: "minutes",
+                                         split_times: true)
         end
 
         before { do_request }
@@ -92,7 +94,8 @@ RSpec.describe ReservationsController do
           instrument.reservations.create(reserve_start_at: now + 3.days,
                                          order_detail: order_detail,
                                          duration_value: 60,
-                                         duration_unit: "minutes")
+                                         duration_unit: "minutes",
+                                         split_times: true)
         end
 
         before(:each) do
@@ -740,7 +743,7 @@ RSpec.describe ReservationsController do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
       @reservation  = @instrument.reservations.create(reserve_start_at: @start, order_detail: @order_detail,
-                                                      duration_value: 60, duration_unit: "minutes")
+                                                      duration_value: 60, duration_unit: "minutes", split_times: true)
       assert @reservation.valid?
     end
 
@@ -936,6 +939,7 @@ RSpec.describe ReservationsController do
           order_detail: @order_detail,
           duration_value: 60,
           duration_unit: "minutes",
+          split_times: true,
         )
 
         @params[:reservation_id] = @reservation.id
@@ -962,6 +966,7 @@ RSpec.describe ReservationsController do
           order_detail: @order_detail,
           duration_value: 24,
           duration_unit: "hours",
+          split_times: true,
         )
 
         @params[:reservation_id] = @reservation.id
@@ -1022,7 +1027,7 @@ RSpec.describe ReservationsController do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now + 1.second
       @reservation  = @instrument.reservations.create(reserve_start_at: @start, order_detail: @order_detail,
-                                                      duration_value: 60, duration_unit: "minutes")
+                                                      duration_value: 60, duration_unit: "minutes", split_times: true)
       assert @reservation.valid?
     end
 
