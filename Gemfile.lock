@@ -24,6 +24,12 @@ PATH
     dataprobe (1.0.0)
 
 PATH
+  remote: vendor/engines/fine_uploader
+  specs:
+    fine_uploader (5.10.0)
+      rails (~> 4.2.6)
+
+PATH
   remote: vendor/engines/projects
   specs:
     projects (0.0.1)
@@ -641,6 +647,7 @@ DEPENDENCIES
   dynamic_form (~> 1.1.4)
   exception_notification (~> 4.0.1)
   factory_girl_rails (~> 4.5.0)
+  fine_uploader!
   fog
   font-awesome-rails (~> 3.2.0)
   guard-rspec

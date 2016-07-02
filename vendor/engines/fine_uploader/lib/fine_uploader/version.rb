@@ -1,3 +1,5 @@
 module FineUploader
-  VERSION = "0.0.1"
+
+  VERSION = "5.10.0".freeze
+
 end
