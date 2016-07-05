@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Jason Hanggi"]
   s.email       = ["jason@tablexi.com"]
   s.homepage    = "http://fineuploader.com/"
-  s.summary     = "Summary of FineUploader."
-  s.description = "Description of FineUploader."
+  s.summary     = "FineUploader for Rails Asset Pipeline"
+  s.description = "FineUploader for Rails Asset Pipeline."
   s.license     = "MIT"
 
   s.files = Dir["{lib,vendor}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
