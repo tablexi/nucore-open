@@ -28,6 +28,7 @@ en:
             submit: Save Batch
           index:
             none: There are currently no batches
+            download_plate: "Download Plate %{index}"
 
   activerecord:
     attributes:
