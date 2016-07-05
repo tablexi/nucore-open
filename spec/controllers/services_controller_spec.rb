@@ -169,6 +169,13 @@ RSpec.describe ServicesController do
       is_expected.to set_flash
       assert_redirected_to [:manage, @authable, assigns(:service)]
     end
+
+    it "does not raise error on blank url name" do
+      sign_in @admin
+      @params[:service][:url_name] = ""
+      do_request
+      expect(assigns(:service)).to be_invalid
+    end
   end
 
   context "update" do
