@@ -5,35 +5,10 @@
   = javascript_include_tag "sanger_sequencing/well_plate"
 
   = stylesheet_link_tag "sanger_sequencing/application"
-  = render "shared/fine_uploader"
+  = render "shared/fine_uploader_template"
 
   = javascript_include_tag "fine-uploader/jquery.fine-uploader"
   = stylesheet_link_tag "fine-uploader/fine-uploader-new"
-
-#uploader{ data: { authenticity_token: form_authenticity_token } }
-
-:javascript
-  $("#uploader").fineUploader({
-    autoUpload: true,
-    request: {
-      endpoint: '#{upload_facility_sanger_sequencing_admin_batch_path(current_facility, @batch)}',
-      params: {
-        authenticity_token: $('#uploader').data('authenticity-token')
-      }
-    },
-    failedUploadTextDisplay: {
-      mode: 'custom'
-    },
-    validation: {
-      //allowedExtensions: ["ab1", "seq"],
-      sizeLimit: 1000000, // 1 MB
-    }
-  });
-
-  $("#trigger-upload").click(function() {
-    $("#uploader").fineUploader("uploadStoredFiles");
-  });
-
 
 %vue-sanger-sequencing-well-plate-displayer-app(inline-template){ ":submissions" => @submissions.to_json, ":well-plates" => @batch.well_plates.to_json }
   %vue-sanger-sequencing-well-plate(v-for="plateIndex in builder.plateCount()"){":builder" => "builder", ":plate-index" => "$index" }
@@ -41,6 +16,22 @@
   = render "submission_list"
 
 = render "vue_well_plate"
+
+#js-fineUploader{ data: { authenticity_token: form_authenticity_token } }
+
+:javascript
+  $("#js-fineUploader").fineUploader({
+    autoUpload: true,
+    request: {
+      endpoint: '#{upload_facility_sanger_sequencing_admin_batch_path(current_facility, @batch)}',
+      params: {
+        authenticity_token: $('#js-fineUploader').data('authenticity-token')
+      }
+    },
+    failedUploadTextDisplay: {
+      mode: 'custom'
+    }
+  });
 
 :javascript
   window.vue_sanger_sequencing_bootstrap();

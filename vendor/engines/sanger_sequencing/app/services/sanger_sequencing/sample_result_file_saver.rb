@@ -26,7 +26,7 @@ module SangerSequencing
     end
 
     def filename
-      file.original_filename
+      params[:qqfilename].presence || file.original_filename
     end
 
     def sample

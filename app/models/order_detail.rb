@@ -50,6 +50,7 @@ class OrderDetail < ActiveRecord::Base
   has_many   :journal_rows, inverse_of: :order_detail
   has_many   :notifications, as: :subject, dependent: :destroy
   has_many   :stored_files, dependent: :destroy
+  has_many   :sample_results_files, -> { sample_result }, class_name: "StoredFile"
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true

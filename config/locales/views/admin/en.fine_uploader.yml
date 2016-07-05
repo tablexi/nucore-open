@@ -1,0 +1,12 @@
+en:
+  views:
+    shared:
+      fine_uploader_template:
+        select: Select files
+        upload: Upload
+        processing: Processing dropped files...
+        cancel: Cancel
+        retry: Retry
+        delete: Delete
+        edit_filename: Edit filename
+        drop_files: Drop results files
