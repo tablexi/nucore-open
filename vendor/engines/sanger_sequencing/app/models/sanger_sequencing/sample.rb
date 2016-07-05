@@ -18,7 +18,7 @@ module SangerSequencing
     end
 
     def results_files
-      submission.order_detail.sample_results_files.select { |file| file.name.start_with?(id.to_s) }
+      submission.order_detail.sample_results_files.select { |file| file.name.start_with?("#{id}_") }
     end
 
     private
