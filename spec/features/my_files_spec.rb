@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Visiting my files" do
+RSpec.describe "Visiting my files", feature_setting: { my_files: true } do
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let!(:service) { FactoryGirl.create(:setup_service, facility: facility) }
   let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
