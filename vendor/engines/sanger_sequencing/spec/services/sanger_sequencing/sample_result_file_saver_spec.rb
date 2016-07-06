@@ -53,5 +53,4 @@ RSpec.describe SangerSequencing::SampleResultFileSaver do
       expect(stored_file.name).to eq("#{sample_id}_file.txt")
     end
   end
-
 end

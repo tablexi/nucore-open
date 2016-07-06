@@ -55,9 +55,9 @@ module SangerSequencing
         saver = SampleResultFileSaver.new(@batch, current_user, params)
 
         response = if saver.save
-          { success: true }
-        else
-          { success: false, error: saver.errors.map { |_k, msg| msg }.to_sentence }
+                     { success: true }
+                   else
+                     { success: false, error: saver.errors.map { |_k, msg| msg }.to_sentence }
         end
 
         respond_to do |format|
