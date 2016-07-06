@@ -32,6 +32,15 @@ module RoutesHelper
     )
   end
 
+  def stored_file_path(file)
+    public_send("#{file.file_type.pluralize}_facility_order_order_detail_path",
+      file.order_detail.facility,
+      file.order_detail.order,
+      file.order_detail,
+      file,
+    )
+  end
+
   def sample_result_path(sample_result_file)
     sample_results_facility_order_order_detail_path(
       sample_result_file.order_detail.facility,

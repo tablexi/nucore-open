@@ -83,6 +83,7 @@ class OrderDetailsController < ApplicationController
     @file = @order_detail.stored_files.new(params[:stored_file])
     @file.file_type  = "template_result"
     @file.name       = "Order File"
+    @file.product = @order_detail.product
     @file.created_by = session_user.id ## this is correct, session_user instead of acting_user
 
     if @file.save

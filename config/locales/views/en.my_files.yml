@@ -1,0 +1,5 @@
+en:
+  views:
+    my_files:
+      index:
+        header: My Files
