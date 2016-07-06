@@ -8,5 +8,6 @@ Rails.application.config.assets.precompile += [
   "*.js",
   "jquery.qtip.css",
   "uploadify/*",
+  "fine-uploader-new.css",
 
 ]

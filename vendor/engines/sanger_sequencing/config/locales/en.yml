@@ -68,4 +68,9 @@ en:
               invalid_facility: "Submission %{id} is not part of this facility"
             submitted_sample_ids:
               must_match_submissions: Samples submitted must match the submissions
-
+        sanger_sequencing/sample_result_file_saver:
+          attributes:
+            filename:
+              invalid: "Filename should begin with the sample ID, e.g. 43212_B01_001.seq"
+            sample:
+              blank: "Could not find sample %{id} in this batch"
