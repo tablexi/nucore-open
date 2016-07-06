@@ -9,7 +9,7 @@
   %h2= "#{SangerSequencing::Submission.human_attribute_name(:id)}#{@submission.id}"
 
 %div{class: modal? ? "modal-body" : ""}
-  .container.banner-list
+  .banner-list
     .row
       = banner_date_label @submission.order, :ordered_at
       = banner_label @submission.order, :user

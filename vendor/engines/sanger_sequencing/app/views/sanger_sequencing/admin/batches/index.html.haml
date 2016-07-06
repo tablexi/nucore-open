@@ -27,7 +27,7 @@
             %ul.sangerSequencing--wellPlate__list
               - batch.well_plates.count.times do |i|
                 %li= link_to text("download_plate", index: i + 1), well_plate_facility_sanger_sequencing_admin_batch_path(current_facility, batch, i + 1, format: :csv)
-          %td= batch.id
+          %td= link_to batch.id, facility_sanger_sequencing_admin_batch_path(current_facility, batch)
           %td= format_usa_date(batch.created_at)
           %td= batch.created_by
           %td= batch.submissions.count
