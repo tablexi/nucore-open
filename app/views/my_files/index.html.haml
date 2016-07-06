@@ -1,0 +1,24 @@
+= content_for :h1 do
+  = text("header")
+
+%table.table.table-striped
+  %thead
+    %th= StoredFile.human_attribute_name(:file_type)
+    %th= StoredFile.human_attribute_name(:file_file_name)
+    %th= OrderDetail.human_attribute_name(:id)
+    %th= Facility.model_name.human
+    %th= Product.model_name.human
+    %th= StoredFile.human_attribute_name(:created_at)
+    %th= StoredFile.human_attribute_name(:creator)
+  %tbody
+    - @files.each do |file|
+      %tr
+        %td= text("types.#{file.file_type}")
+        %td= link_to file.file_file_name, stored_file_path(file)
+        %td= link_to file.order_detail, [file.order_detail.order, file.order_detail]
+        %td= file.order_detail.facility
+        %td= file.product
+        %td= human_datetime(file.created_at)
+        %td= file.creator
+
+= will_paginate(@files)

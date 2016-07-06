@@ -29,7 +29,7 @@ class NavTab::LinkCollection
   end
 
   def customer
-    default + [orders, reservations, accounts]
+    default + [orders, reservations, accounts, files]
   end
 
   def default
@@ -40,6 +40,10 @@ class NavTab::LinkCollection
 
   def accounts
     NavTab::Link.new(tab: :accounts, text: t_my(Account), url: accounts_path)
+  end
+
+  def files
+    NavTab::Link.new(tab: :my_files, text: I18n.t("views.my_files.index.header"), url: my_files_path) if SettingsHelper.feature_on?(:my_files)
   end
 
   def admin_billing

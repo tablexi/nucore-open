@@ -1,0 +1,8 @@
+en:
+  views:
+    my_files:
+      index:
+        header: My Files
+        types:
+          template_result: Order Form
+          sample_result: Results File

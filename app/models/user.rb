@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
   has_many :user_roles, dependent: :destroy
   has_many :facilities, through: :user_roles
   has_many :training_requests, dependent: :destroy
-
+  has_many :stored_files, through: :order_details, class_name: "StoredFile"
   validates_presence_of :username, :first_name, :last_name
   validates :email, presence: true, email_format: true
   validates_uniqueness_of :username, :email

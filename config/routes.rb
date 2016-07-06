@@ -347,6 +347,8 @@ Nucore::Application.routes.draw do
   get "reservations", to: 'reservations#list', as: "reservations"
   get "reservations(/:status)", to: 'reservations#list', as: "reservations_status"
 
+  resources :my_files, only: [:index] if SettingsHelper.feature_on?(:my_files)
+
   # file upload routes
   get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/upload",                                   to: 'file_uploads#upload',                as: "upload_product_file"
   post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files",                                          to: 'file_uploads#create',                as: "add_product_file"
