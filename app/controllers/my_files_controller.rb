@@ -5,8 +5,8 @@ class MyFilesController < ApplicationController
 
   def index
     @files = current_user.stored_files
-      .merge(Order.purchased)
-      .order(id: :desc).paginate(page: params[:page])
+                         .merge(Order.purchased)
+                         .order(id: :desc).paginate(page: params[:page])
   end
 
 end
