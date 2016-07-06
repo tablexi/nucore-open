@@ -3,5 +3,6 @@ en:
     attributes:
       stored_file:
         file_file_name: Filename
+        file_type: File Type
         created_at: Uploaded At
         creator: Uploaded By

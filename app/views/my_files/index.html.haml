@@ -3,6 +3,7 @@
 
 %table.table.table-striped
   %thead
+    %th= StoredFile.human_attribute_name(:file_type)
     %th= StoredFile.human_attribute_name(:file_file_name)
     %th= OrderDetail.human_attribute_name(:id)
     %th= Facility.model_name.human
@@ -12,6 +13,7 @@
   %tbody
     - @files.each do |file|
       %tr
+        %td= text("types.#{file.file_type}")
         %td= link_to file.file_file_name, stored_file_path(file)
         %td= link_to file.order_detail, [file.order_detail.order, file.order_detail]
         %td= file.order_detail.facility
