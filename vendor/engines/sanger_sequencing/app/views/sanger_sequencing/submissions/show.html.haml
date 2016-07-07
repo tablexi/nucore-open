@@ -21,4 +21,4 @@
   %label= OrderDetail.human_attribute_name(:note)
   %p= @submission.order_detail.note
 
-= render "samples_table"
+= render "samples_table", submission: @submission

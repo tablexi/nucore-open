@@ -17,4 +17,4 @@
       = banner_date_label @submission.order, :ordered_at
       = banner_label @submission.order, :user
 
-  = render "sanger_sequencing/submissions/samples_table"
+  = render "sanger_sequencing/submissions/samples_table", submission: @submission
