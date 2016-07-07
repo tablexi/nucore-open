@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160628194243) do
+ActiveRecord::Schema.define(version: 20160706195345) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -519,9 +519,11 @@ ActiveRecord::Schema.define(version: 20160628194243) do
     t.text     "well_plates_raw", limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "facility_id",     limit: 4
   end
 
   add_index "sanger_sequencing_batches", ["created_by_id"], name: "index_sanger_sequencing_batches_on_created_by_id", using: :btree
+  add_index "sanger_sequencing_batches", ["facility_id"], name: "index_sanger_sequencing_batches_on_facility_id", using: :btree
 
   create_table "sanger_sequencing_samples", force: :cascade do |t|
     t.integer  "submission_id",      limit: 4,   null: false
@@ -711,6 +713,7 @@ ActiveRecord::Schema.define(version: 20160628194243) do
   add_foreign_key "projects", "facilities", name: "projects_facility_id_fk"
   add_foreign_key "reservations", "order_details", name: "res_ord_det_id_fk"
   add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
+  add_foreign_key "sanger_sequencing_batches", "facilities"
   add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id"
   add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
   add_foreign_key "schedule_rules", "products", column: "instrument_id", name: "sys_c008573"

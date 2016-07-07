@@ -17,6 +17,10 @@ module SangerSequencing
       false
     end
 
+    def results_files
+      submission.order_detail.sample_results_files.select { |file| file.name.start_with?("#{id}_") }
+    end
+
     private
 
     def default_customer_sample_id

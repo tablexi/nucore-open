@@ -8,22 +8,23 @@ namespace :demo do
   desc "bootstrap db with data appropriate for demonstration"
 
   task seed: :environment do
-    new_status = OrderStatus.find_or_create_by(name: "New")
-    in_process = OrderStatus.find_or_create_by(name: "In Process")
-    canceled   = OrderStatus.find_or_create_by(name: "Canceled")
-    complete   = OrderStatus.find_or_create_by(name: "Complete")
-    reconciled = OrderStatus.find_or_create_by(name: "Reconciled")
+    new_status = OrderStatus.find_or_create_by!(name: "New")
+    in_process = OrderStatus.find_or_create_by!(name: "In Process")
+    canceled   = OrderStatus.find_or_create_by!(name: "Canceled")
+    complete   = OrderStatus.find_or_create_by!(name: "Complete")
+    reconciled = OrderStatus.find_or_create_by!(name: "Reconciled")
 
-    facility = Facility.find_or_create_by(name: "Example Facility",
-                                          abbreviation: "EF",
-                                          url_name: "example",
-                                          short_description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in mi tellus. Nunc ut turpis rhoncus mauris vehicula volutpat in fermentum metus. Sed eleifend purus at nunc facilisis fermentum metus.",
-                                          description: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris scelerisque metus et augue elementum ac pellentesque neque blandit. Nunc ultrices auctor velit, et ullamcorper lacus ultrices id. Pellentesque vulputate dapibus mauris, sollicitudin mollis diam malesuada nec. Fusce turpis augue, consectetur nec consequat nec, tristique sit amet urna. Nunc vitae imperdiet est. Aenean gravida, risus eget posuere fermentum, risus odio bibendum ligula, sit amet lobortis enim odio facilisis ipsum. Donec iaculis dolor vitae massa ullamcorper pulvinar. In hac habitasse platea dictumst. Pellentesque iaculis sapien id est auctor a semper odio tincidunt. Suspendisse nec lectus sit amet est imperdiet elementum non sagittis nulla. Sed tempor velit nec sapien rhoncus consequat semper neque malesuada. Nunc gravida justo in felis tempus dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis tristique diam dolor. Curabitur lacinia molestie est vel mollis. Ut facilisis vestibulum scelerisque. Aenean placerat purus in nisi auctor scelerisque.</p>",
-                                          address: "Example Facility\nFinancial Dept\n111 University Rd.\nEvanston, IL 60201-0111",
-                                          phone_number: "(312) 123-4321",
-                                          fax_number: "(312) 123-1234",
-                                          email: "example-support@example.com",
-                                          is_active: true)
+    facility = Facility.find_or_create_by!(url_name: "example") do |example_facility|
+      example_facility.name = "Example Facility"
+      example_facility.abbreviation = "EF"
+      example_facility.short_description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in mi tellus. Nunc ut turpis rhoncus mauris vehicula volutpat in fermentum metus. Sed eleifend purus at nunc facilisis fermentum metus."
+      example_facility.description = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris scelerisque metus et augue elementum ac pellentesque neque blandit. Nunc ultrices auctor velit, et ullamcorper lacus ultrices id. Pellentesque vulputate dapibus mauris, sollicitudin mollis diam malesuada nec. Fusce turpis augue, consectetur nec consequat nec, tristique sit amet urna. Nunc vitae imperdiet est. Aenean gravida, risus eget posuere fermentum, risus odio bibendum ligula, sit amet lobortis enim odio facilisis ipsum. Donec iaculis dolor vitae massa ullamcorper pulvinar. In hac habitasse platea dictumst. Pellentesque iaculis sapien id est auctor a semper odio tincidunt. Suspendisse nec lectus sit amet est imperdiet elementum non sagittis nulla. Sed tempor velit nec sapien rhoncus consequat semper neque malesuada. Nunc gravida justo in felis tempus dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis tristique diam dolor. Curabitur lacinia molestie est vel mollis. Ut facilisis vestibulum scelerisque. Aenean placerat purus in nisi auctor scelerisque.</p>"
+      example_facility.address = "Example Facility\nFinancial Dept\n111 University Rd.\nEvanston, IL 60201-0111"
+      example_facility.phone_number = "(312) 123-4321"
+      example_facility.fax_number = "(312) 123-1234"
+      example_facility.email = "example-support@example.com"
+      example_facility.is_active = true
+    end
 
     # create chart strings, which are required when creating a facility account and nufs account
     chart_strings = [
@@ -40,11 +41,11 @@ namespace :demo do
 
     if Settings.validator.class_name == "NucsValidator"
       chart_strings.each do |cs|
-        NucsFund.find_or_create_by_value(cs[:fund])
-        NucsDepartment.find_or_create_by_value(cs[:department])
-        NucsAccount.find_or_create_by_value(cs[:account]) if cs[:account]
-        NucsProjectActivity.find_or_create_by_project_and_activity(project: cs[:project], activity: cs[:activity])
-        NucsGl066.find_or_create_by_fund_and_department_and_project_and_account(cs)
+        NucsFund.find_or_create_by!(value: cs[:fund])
+        NucsDepartment.find_or_create_by!(value: cs[:department])
+        NucsAccount.find_or_create_by!(value: cs[:account]) if cs[:account]
+        NucsProjectActivity.find_or_create_by!(project: cs[:project], activity: cs[:activity])
+        NucsGl066.find_or_create_by!(fund: cs[:fund], department: cs[:department], account: cs[:account])
       end
     end
 
@@ -52,7 +53,10 @@ namespace :demo do
     pgnu = pgex = nil
 
     Settings.price_group.name.to_hash.each do |k, v|
-      price_group = PriceGroup.find_or_create_by(name: v, is_internal: (k == :base || k == :cancer_center), display_order: order)
+      price_group = PriceGroup.find_or_create_by!(name: v) do |pg|
+        pg.is_internal = (k == :base || k == :cancer_center)
+        pg.display_order = order
+      end
 
       price_group.save(validate: false) # override facility validator
 
@@ -65,53 +69,59 @@ namespace :demo do
       order += 1
     end
 
-    fa = FacilityAccount.find_or_create_by_facility_id(facility_id: facility.id,
-                                                       account_number: "123-1234567-12345678",
-                                                       revenue_account: "50617",
-                                                       is_active: 1,
-                                                       created_by: 1)
+    fa = FacilityAccount.find_or_initialize_by(facility_id: facility.id) do |facility_account|
+      facility_account.account_number = "123-1234567-12345678"
+      facility_account.revenue_account = "50617"
+      facility_account.is_active = true
+      facility_account.created_by = 1
+    end
+    fa.save(validate: false) # specifically to skip account_number validations
 
-    item = Item.find_or_create_by_url_name(facility_id: facility.id,
-                                           account: "75340",
-                                           name: "Example Item",
-                                           url_name: "example-item",
-                                           description: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>",
-                                           requires_approval: false,
-                                           initial_order_status_id: new_status.id,
-                                           is_archived: false,
-                                           is_hidden: false,
-                                           facility_account_id: fa.id)
+    item = Item.find_or_create_by!(url_name: "example-item") do |example_item|
+      example_item.facility_id = facility.id
+      example_item.account = "75340"
+      example_item.name = "Example Item"
+      example_item.description = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>"
+      example_item.requires_approval = false
+      example_item.initial_order_status_id = new_status.id
+      example_item.is_archived = false
+      example_item.is_hidden = false
+      example_item.facility_account_id = fa.id
+    end
 
-    service = Service.find_or_create_by_url_name(facility_id: facility.id,
-                                                 account: "75340",
-                                                 name: "Example Service",
-                                                 url_name: "example-service",
-                                                 description: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>",
-                                                 requires_approval: false,
-                                                 initial_order_status_id: in_process.id,
-                                                 is_archived: false,
-                                                 is_hidden: false,
-                                                 facility_account_id: fa.id)
+    service = Service.find_or_create_by!(url_name: "example-service") do |example_service|
+      example_service.facility_id = facility.id
+      example_service.account = "75340"
+      example_service.name = "Example Service"
+      example_service.description = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>"
+      example_service.requires_approval = false
+      example_service.initial_order_status_id = in_process.id
+      example_service.is_archived = false
+      example_service.is_hidden = false
+      example_service.facility_account_id = fa.id
+    end
 
-    instrument = Instrument.find_or_create_by_url_name(facility_id: facility.id,
-                                                       account: "75340",
-                                                       name: "Example Instrument",
-                                                       url_name: "example-instrument",
-                                                       description: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>",
-                                                       initial_order_status_id: new_status.id,
-                                                       requires_approval: false,
-                                                       is_archived: false,
-                                                       is_hidden: false,
-                                                       facility_account_id: fa.id,
-                                                       reserve_interval: 5)
+    instrument = Instrument.find_or_create_by!(url_name: "example-instrument") do |example_instrument|
+      example_instrument.facility_id = facility.id
+      example_instrument.account = "75340"
+      example_instrument.name = "Example Instrument"
+      example_instrument.description = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>"
+      example_instrument.initial_order_status_id = new_status.id
+      example_instrument.requires_approval = false
+      example_instrument.is_archived = false
+      example_instrument.is_hidden = false
+      example_instrument.facility_account_id = fa.id
+      example_instrument.reserve_interval = 5
+    end
 
-    RelaySynaccessRevB.find_or_create_by_instrument_id(instrument_id: instrument.id,
-                                                       ip: "192.168.10.135",
-                                                       port: "1",
-                                                       username: "admin",
-                                                       password: "admin")
+    RelaySynaccessRevB.find_or_create_by!(instrument_id: instrument.id) do |relay_instrument|
+      relay_instrument.ip = "192.168.10.135"
+      relay_instrument.port = "1"
+      relay_instrument.username = "admin"
+      relay_instrument.password = "admin"
+    end
 
-    bundle = Bundle.find_by_url_name "example-bundle"
+    bundle = Bundle.find_by(url_name: "example-bundle")
 
     unless bundle
       bundle = Bundle.create!(facility_id: facility.id,
@@ -133,64 +143,68 @@ namespace :demo do
     @instrument    = instrument
     @bundle        = bundle
 
-    sr = ScheduleRule.find_or_create_by_instrument_id(instrument_id: instrument.id,
-                                                      discount_percent: 0,
-                                                      start_hour: 8,
-                                                      start_min: 0,
-                                                      end_hour: 19,
-                                                      end_min: 0,
-                                                      on_sun: true,
-                                                      on_mon: true,
-                                                      on_tue: true,
-                                                      on_wed: true,
-                                                      on_thu: true,
-                                                      on_fri: true,
-                                                      on_sat: true)
-
-    [item, service, bundle].each do |product|
-      PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgnu.id, product.id)
-      PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgex.id, product.id)
+    sr = ScheduleRule.find_or_create_by!(instrument_id: instrument.id) do |schedule_rule|
+      schedule_rule.discount_percent = 0
+      schedule_rule.start_hour = 8
+      schedule_rule.start_min = 0
+      schedule_rule.end_hour = 19
+      schedule_rule.end_min = 0
+      schedule_rule.on_sun = true
+      schedule_rule.on_mon = true
+      schedule_rule.on_tue = true
+      schedule_rule.on_wed = true
+      schedule_rule.on_thu = true
+      schedule_rule.on_fri = true
+      schedule_rule.on_sat = true
     end
 
-    pgp = PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgnu.id, instrument.id)
+    [item, service, bundle].each do |product|
+      PriceGroupProduct.find_or_create_by!(price_group_id: pgnu.id, product_id: product.id)
+      PriceGroupProduct.find_or_create_by!(price_group_id: pgex.id, product_id: product.id)
+    end
+
+    pgp = PriceGroupProduct.find_or_create_by!(price_group_id: pgnu.id, product_id: instrument.id)
     pgp.reservation_window = 14
     pgp.save!
 
-    pgp = PriceGroupProduct.find_or_create_by_price_group_id_and_product_id(pgex.id, instrument.id)
+    pgp = PriceGroupProduct.find_or_create_by!(price_group_id: pgex.id, product_id: instrument.id)
     pgp.reservation_window = 14
     pgp.save!
 
-    inpp = InstrumentPricePolicy.find_or_create_by_product_id_and_price_group_id(can_purchase: true,
-                                                                                 product_id: instrument.id,
-                                                                                 price_group_id: pgnu.id,
-                                                                                 start_date: SettingsHelper.fiscal_year_beginning,
-                                                                                 expire_date: SettingsHelper.fiscal_year_end,
-                                                                                 usage_rate: 20,
-                                                                                 usage_subsidy: 0,
-                                                                                 minimum_cost: 0,
-                                                                                 cancellation_cost: 0,
-                                                                                 charge_for: "usage")
+    inpp = InstrumentPricePolicy.find_or_initialize_by(product_id: instrument.id, price_group_id: pgnu.id) do |price_policy|
+      price_policy.can_purchase = true
+      price_policy.start_date = SettingsHelper.fiscal_year_beginning
+      price_policy.expire_date = SettingsHelper.fiscal_year_end
+      price_policy.usage_rate = 20
+      price_policy.usage_subsidy = 0
+      price_policy.minimum_cost = 0
+      price_policy.cancellation_cost = 0
+      price_policy.charge_for = "usage"
+    end
+
     inpp.save(validate: false) # override date validator
 
-    itpp = ItemPricePolicy.find_or_create_by_product_id_and_price_group_id(can_purchase: true,
-                                                                           product_id: item.id,
-                                                                           price_group_id: pgnu.id,
-                                                                           start_date: Time.zone.now - 1.year,
-                                                                           expire_date: Time.zone.now + 1.year,
-                                                                           unit_cost: 30,
-                                                                           unit_subsidy: 0)
+    itpp = ItemPricePolicy.find_or_initialize_by(product_id: item.id, price_group_id: pgnu.id) do |price_policy|
+      price_policy.can_purchase = true
+      price_policy.start_date = 1.year.ago
+      price_policy.expire_date = 1.year.from_now
+      price_policy.unit_cost = 30
+      price_policy.unit_subsidy = 0
+    end
+
     itpp.save(validate: false) # override date validator
 
-    spp = ServicePricePolicy.find_or_create_by_product_id_and_price_group_id(can_purchase: true,
-                                                                             product_id: service.id,
-                                                                             price_group_id: pgnu.id,
-                                                                             start_date: Time.zone.now - 1.year,
-                                                                             expire_date: Time.zone.now + 1.year,
-                                                                             unit_cost: 75,
-                                                                             unit_subsidy: 0)
+    spp = ServicePricePolicy.find_or_initialize_by(product_id: service.id, price_group_id: pgnu.id) do |price_policy|
+      price_policy.can_purchase = true
+      price_policy.start_date = 1.year.ago
+      price_policy.expire_date = 1.year.from_now
+      price_policy.unit_cost = 75
+      price_policy.unit_subsidy = 0
+    end
+
     spp.save(validate: false) # override date validator
 
-    user_admin = User.find_by_username("admin@example.com")
+    user_admin = User.find_by(username: "admin@example.com")
     unless user_admin
       user_admin = User.new(username: "admin@example.com",
                             email: "admin@example.com",
@@ -262,18 +276,14 @@ namespace :demo do
 
     UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
 
-    UserPriceGroupMember.find_or_create_by_user_id_and_price_group_id(user_id: user_pi.id,
-                                                                      price_group_id: pgnu.id)
-    UserPriceGroupMember.find_or_create_by_user_id_and_price_group_id(user_id: user_student.id,
-                                                                      price_group_id: pgnu.id)
-    UserPriceGroupMember.find_or_create_by_user_id_and_price_group_id(user_id: user_staff.id,
-                                                                      price_group_id: pgnu.id)
-    UserPriceGroupMember.find_or_create_by_user_id_and_price_group_id(user_id: user_director.id,
-                                                                      price_group_id: pgnu.id)
+    UserPriceGroupMember.find_or_create_by!(user_id: user_pi.id, price_group_id: pgnu.id)
+    UserPriceGroupMember.find_or_create_by!(user_id: user_student.id, price_group_id: pgnu.id)
+    UserPriceGroupMember.find_or_create_by!(user_id: user_staff.id, price_group_id: pgnu.id)
+    UserPriceGroupMember.find_or_create_by!(user_id: user_director.id, price_group_id: pgnu.id)
 
     # account creation / setup
     # see FacilityAccountsController#create
-    nufsaccount = NufsAccount.find_by_account_number("111-2222222-33333333-01")
+    nufsaccount = NufsAccount.find_by(account_number: "111-2222222-33333333-01")
 
     unless nufsaccount
       nufsaccount = NufsAccount.create!(account_number: "111-2222222-33333333-01",
@@ -341,7 +351,7 @@ namespace :demo do
       end
     end
 
-    other_affiliate = Affiliate.find_or_create_by(name: "Other")
+    other_affiliate = Affiliate.find_or_create_by!(name: "Other")
 
     if EngineManager.engine_loaded? :c2po
       ccaccount = CreditCardAccount.find_by_account_number("xxxx-xxxx-xxxx-xxxx")

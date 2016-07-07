@@ -1,4 +1,4 @@
-window.vue_sanger_sequencing_well_plate_app = {
+window.vue_sanger_sequencing_well_plate_editor_app = {
   props: ["submissions"]
 
   data: ->

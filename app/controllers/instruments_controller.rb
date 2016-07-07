@@ -1,7 +1,7 @@
 class InstrumentsController < ProductsCommonController
 
-  customer_tab  :show, :public_schedule
-
+  customer_tab :show, :public_schedule
+  admin_tab :create, :new, :edit, :index, :manage, :update, :manage, :schedule
   before_action :store_fullpath_in_session, only: [:index, :show]
   before_action :set_default_lock_window, only: [:create, :update]
 

@@ -25,5 +25,8 @@
       - @products.each do |product|
         %tr
           %td
-            = link_to product.name, [:manage, current_facility, product]
+            - if product.is_a?(Instrument)
+              = link_to product.name, [current_facility, product, :schedule]
+            - else
+              = link_to product.name, [:manage, current_facility, product]
             = price_policy_errors(product) unless params[:archived] == "true"

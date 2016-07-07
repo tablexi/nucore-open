@@ -1,4 +1,4 @@
 %li
-  = link_to "Results File #{result_file_counter + 1}", sample_result_path(result_file)
+  = link_to result_file.name, sample_result_path(result_file)
   &mdash;
   = human_datetime(result_file.created_at)

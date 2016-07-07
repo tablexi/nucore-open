@@ -9,14 +9,10 @@ window.vue_sanger_sequencing_well_plate = {
     @colorBuilder = new SangerSequencing.WellPlateColors(@builder)
 
   methods:
-    handleCellClick: (cell) ->
-      # TODO: Remove
-      console.log "handleCellClick", cell
-
     sampleAtCell: (cellName, plateIndex) ->
       @builder.sampleAtCell(cellName, plateIndex)
 
     styleForCell: (cell, plateIndex) ->
-      @colorBuilder.styleForSubmissionId(@sampleAtCell(cell.name, plateIndex).submission_id())
+      @colorBuilder.styleForSubmissionId(@sampleAtCell(cell.name, plateIndex).submissionId())
 
 }

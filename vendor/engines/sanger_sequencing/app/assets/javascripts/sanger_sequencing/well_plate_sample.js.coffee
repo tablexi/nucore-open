@@ -7,14 +7,14 @@ class SangerSequencing.Sample
   displayId: ->
     @attributes.id
 
-  submission_id: ->
+  submissionId: ->
     @attributes.submission_id
 
   id: ->
     @attributes.id
 
   class @Blank
-    submission_id: ->
+    submissionId: ->
       ""
     customerSampleId: ->
       ""
@@ -23,8 +23,20 @@ class SangerSequencing.Sample
     id: ->
       ""
 
+  # Treated as blank in the backend, but displays like reserved
+  class @ReservedButUnused
+    submissionId: ->
+      ""
+    customerSampleId: ->
+      "reserved"
+    displayId: ->
+      ""
+    id: ->
+      ""
+
+
   class @Reserved
-    submission_id: ->
+    submissionId: ->
       ""
     customerSampleId: ->
       "reserved"

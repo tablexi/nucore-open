@@ -2,6 +2,13 @@ en:
   sanger_sequencing:
     name: Sanger Sequencing
 
+  controllers:
+    sanger_sequencing/admin/batches:
+      create:
+        success: "We have saved your batch"
+      destroy:
+        success: "Batch was successfully deleted"
+
   views:
     sanger_sequencing:
       submissions:
@@ -13,11 +20,16 @@ en:
         submissions:
           index:
             new_batch: Create New Batch
+            none: There are no new or in process submissions
         batches:
           new:
+            submit: Save Batch
+          submission_list:
             add: Add
             remove: Remove
-            submit: Save Batch
+          index:
+            none: There are currently no batches
+            download_plate: "Download Plate %{index}"
 
   activerecord:
     attributes:
@@ -26,11 +38,17 @@ en:
         customer_sample_id: Customer Sample
       sanger_sequencing/submission:
         id: "Submission #"
+      sanger_sequencing/batch:
+        created_at: Created
+        created_by: Created By
 
     models:
       sanger_sequencing/submission:
         one: Submission
         other: Submissions
+      sanger_sequencing/batch:
+        one: Batch
+        other: Batches
 
     errors:
       models:
@@ -47,6 +65,12 @@ en:
             submission_ids:
               blank: "You must submit at least one submission"
               submission_part_of_other_batch: "Submission %{id} is already part of a batch"
+              invalid_facility: "Submission %{id} is not part of this facility"
             submitted_sample_ids:
               must_match_submissions: Samples submitted must match the submissions
-
+        sanger_sequencing/sample_result_file_saver:
+          attributes:
+            filename:
+              invalid: "Filename should begin with the sample ID, e.g. 43212_B01_001.seq"
+            sample:
+              blank: "Could not find sample %{id} in this batch"

@@ -9,7 +9,7 @@ module SangerSequencing
       @samples = samples
     end
 
-    delegate :[], to: :cells
+    delegate :[], :as_json, to: :cells
 
     def cells
       return @cells if @cells
@@ -35,7 +35,11 @@ module SangerSequencing
       end
 
       def customer_sample_id
-        "Control"
+        ""
+      end
+
+      def as_json(_options)
+        "reserved"
       end
 
     end
@@ -48,7 +52,15 @@ module SangerSequencing
         false
       end
 
+      def blank?
+        true
+      end
+
       def customer_sample_id
+        ""
+      end
+
+      def as_json(_options)
         ""
       end
 

@@ -472,7 +472,7 @@ RSpec.describe FacilityReservationsController do
 
     context '#update_admin' do
       before :each do
-        @method = :put
+        @method = :patch
         @action = :update_admin
         @params.merge!(admin_reservation: FactoryGirl.attributes_for(:admin_reservation))
       end

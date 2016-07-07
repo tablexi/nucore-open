@@ -86,7 +86,13 @@ class SangerSequencing.WellPlateBuilder
         else
           new SangerSequencing.Sample.Blank
       else
-        new SangerSequencing.Sample.Reserved
+        # Reserved will actually take up a cell, while ReservedButUnused is
+        # for when we have not actually reached that cell in the fill order,
+        # so it will instead be treated as blank.
+        if samples.length > 0
+          new SangerSequencing.Sample.Reserved
+        else
+          new SangerSequencing.Sample.ReservedButUnused
 
        sample
 

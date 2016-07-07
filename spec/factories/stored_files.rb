@@ -18,4 +18,9 @@ FactoryGirl.define do
     name { "template.csv" }
     association :creator, factory: :user
   end
+
+  trait :results do
+    template
+    file_type { "sample_result" }
+  end
 end

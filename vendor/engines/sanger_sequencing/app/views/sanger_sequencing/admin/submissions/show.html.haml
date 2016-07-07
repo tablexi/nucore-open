@@ -2,15 +2,18 @@
   = text("sanger_sequencing.name")
 
 = content_for :sidebar do
-  = render "sidenav", sidenav_tab: "submissions"
+  = render "sanger_sequencing/admin/shared/sidenav", sidenav_tab: "submissions"
 
 %div{class: modal? ? "modal-header" : ""}
   = modal_close_button if modal?
   %h2= "#{SangerSequencing::Submission.human_attribute_name(:id)}#{@submission.id}"
 
 %div{class: modal? ? "modal-body" : ""}
-  .container.banner-list
+  .banner-list
     .row
+      %dl.span2
+        %dt= Order.model_name.human
+        %dd= link_to @submission.order_detail, [@submission.facility, @submission.order]
       = banner_date_label @submission.order, :ordered_at
       = banner_label @submission.order, :user
 
