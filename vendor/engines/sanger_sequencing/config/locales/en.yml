@@ -37,6 +37,7 @@ en:
       sanger_sequencing/sample:
         id: Core Sample
         customer_sample_id: Customer Sample
+        results_files: Results Files
       sanger_sequencing/submission:
         id: "Submission #"
       sanger_sequencing/batch:
