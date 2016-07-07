@@ -24,6 +24,7 @@ en:
         batches:
           new:
             submit: Save Batch
+            none: There are no submissions available to be added.
           submission_list:
             add: Add
             remove: Remove
