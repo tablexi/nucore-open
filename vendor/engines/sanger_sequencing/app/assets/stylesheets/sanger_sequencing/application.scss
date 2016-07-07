@@ -18,12 +18,28 @@
 }
 
 .sangerSequencing--colorCoded__box {
-  display: block;
-  width: 1.7em;
-  height: 1.7em;
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  vertical-align: middle;
 }
 
 .sangerSequencing--wellPlate__list {
   margin: 0;
   list-style: none;
 }
+
+.sangerSequencing--wellPlate__cell {
+  // 1/13 is 7.69%, but this will shrink the header cell a bit.
+  width: 8%;
+}
+
+.sangerSequencing--submissionTable__initialCell {
+  width: 6%;
+}
+
+.sangerSequencing--submissionTable__noteCell {
+  width: 50%;
+}
+
+
