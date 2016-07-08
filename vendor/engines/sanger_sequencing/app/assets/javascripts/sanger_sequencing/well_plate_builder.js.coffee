@@ -66,7 +66,8 @@ class SangerSequencing.WellPlateBuilder
   # Private
 
   _render: ->
-    @_plateCount = Math.max(1, Math.ceil(@samples().length / @_fillOrder().length))
+    wellsInPlate = @_fillOrder().length - @reservedCells.length
+    @_plateCount = Math.max(1, Math.ceil(@samples().length / wellsInPlate))
 
     samples = @samples()
     allPlates = []
