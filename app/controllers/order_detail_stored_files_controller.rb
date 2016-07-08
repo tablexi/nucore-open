@@ -13,21 +13,11 @@ class OrderDetailStoredFilesController < ApplicationController
   end
 
   def sample_results_zip
-    data = Zip::OutputStream.write_buffer do |stream|
-      @order_detail.stored_files.sample_result.each do |file|
-        stream.put_next_entry(file.name)
-        stream << file.read
-      end
-    end
-
-    data.rewind
+    zip_data = StoredFileZipper.new(@order_detail.stored_files.sample_result).read
 
     respond_to do |format|
-      format.zip { send_data data.read, filename: "sample_results_#{@order_detail}.zip" }
+      format.zip { send_data zip_data, filename: "sample_results_#{@order_detail}.zip" }
     end
-
-  ensure
-    data.close if data
   end
 
   def template_results
