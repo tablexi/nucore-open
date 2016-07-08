@@ -4,6 +4,7 @@ class OrderDetailStoredFilesController < ApplicationController
 
   before_action :authenticate_user!
   before_action :init_order_detail
+  authorize_resource class: OrderDetail
 
   def sample_results
     redirect_to @order_detail.stored_files.sample_result.find(params[:id]).download_url
@@ -58,6 +59,10 @@ class OrderDetailStoredFilesController < ApplicationController
   def init_order_detail
     @order = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:order_detail_id])
+  end
+
+  def ability_resource
+    @order_detail
   end
 
 end
