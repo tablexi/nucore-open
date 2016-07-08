@@ -323,11 +323,12 @@ Nucore::Application.routes.draw do
     resources :order_details, only: [:show, :edit, :update] do
       put :cancel, on: :member
       put :dispute, on: :member
-      get :order_file
-      post :upload_order_file
-      get :remove_order_file
-      get "sample_results/:stored_file_id", to: "order_details#sample_results", as: "sample_results"
-      get "template_results/:stored_file_id", to: "order_details#template_results", as: "template_results"
+      get :order_file, controller: "order_detail_stored_files"
+      post :upload_order_file, controller: "order_detail_stored_files"
+      get :remove_order_file, controller: "order_detail_stored_files"
+
+      get "sample_results/:id", to: "order_detail_stored_files#sample_results", as: "sample_results"
+      get "template_results/:id", to: "order_detail_stored_files#template_results", as: "template_results"
 
       resources :reservations, except: [:index] do
         get "/move",               to: 'reservations#earliest_move_possible'
