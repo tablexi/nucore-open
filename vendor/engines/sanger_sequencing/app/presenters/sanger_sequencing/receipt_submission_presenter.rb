@@ -11,7 +11,7 @@ module SangerSequencing
     end
 
     def to_s
-      return unless submission
+      return "" unless submission
       render("sanger_sequencing/submissions/samples_table", submission: submission, caption: caption)
         .safe_concat(render(body: print_me_text))
     end
