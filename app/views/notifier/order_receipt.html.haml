@@ -3,17 +3,21 @@
 
 %table{ border: 0 }
   %tr
-    %td= Order.human_attribute_name(:ordered_at)
+    %td
+      %strong= Order.human_attribute_name(:ordered_at)
     %td= l(@order.ordered_at, format: :receipt)
 
   %tr
-    %td= Facility.model_name.human
-    %td= @order.facility
+    %td
+      %strong= Facility.model_name.human
+    %td= link_to @order.facility, @order.facility
   %tr
-    %td= OrderDetail.human_attribute_name(:ordered_by)
+    %td
+      %strong= OrderDetail.human_attribute_name(:ordered_by)
     %td= @order.created_by_user.full_name
   %tr
-    %td= Account.model_name.human
+    %td
+      %strong= Account.model_name.human
     %td= @order.account
 
 %hr
@@ -34,7 +38,7 @@
     - @order.order_details.each do |order_detail|
       - order_detail.send(:extend, PriceDisplayment)
       %tr
-        %td= order_detail
+        %td= link_to(order_detail, [order_detail.order, order_detail])
         %td
           = order_detail_description_as_html(order_detail)
           - if order_detail.reservation
@@ -48,6 +52,7 @@
         %td
           - if order_detail.note.present?
             = order_detail.note
+          = render_view_hook "after_note", order_detail: order_detail
     %tr
       %td{colspan: 6}
         %strong= text(".total")

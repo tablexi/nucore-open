@@ -135,6 +135,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
 
       describe "after purchasing" do
         before do
+          page.first(customer_id_selector).set("TEST123")
           click_button "Save Submission"
           click_button "Purchase"
           expect(Order.first).to be_purchased
@@ -146,6 +147,11 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
 
           visit edit_sanger_sequencing_submission_path(SangerSequencing::Submission.last)
           expect(page.status_code).to eq(404)
+        end
+
+        it "renders the sample ID on the receipt" do
+          expect(page).to have_content "Receipt"
+          expect(page).to have_content "TEST123"
         end
       end
     end

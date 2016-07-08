@@ -42,6 +42,7 @@
             .order-detail-extra= res
           - if order_detail.note.present?
             .order-detail-extra.order-detail-note= "Note: #{order_detail.note}"
+          = render_view_hook "after_note", order_detail: order_detail
         %td.currency=order_detail.wrapped_cost
         - if @order.has_subsidies?
           %td.currency= order_detail.wrapped_subsidy

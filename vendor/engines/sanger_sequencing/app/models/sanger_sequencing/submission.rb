@@ -33,6 +33,10 @@ module SangerSequencing
       end
     end
 
+    def has_results_files?
+      order_detail.sample_results_files.present?
+    end
+
     private
 
     def savable_samples

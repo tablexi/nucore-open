@@ -16,6 +16,9 @@ en:
           submit: "Save Submission"
           add: Add
           remove: Remove
+      orders:
+        receipt:
+          print: Please print this receipt to accompany your submission.
       admin:
         submissions:
           index:
