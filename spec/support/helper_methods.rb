@@ -183,6 +183,11 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
   order_detail.order.update_attributes!(state: "purchased")
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
+
+  # If reserve_end_at is unset, derive it from reserve_start_at + duration:
+  res_attrs[:reserve_end_at] ||=
+    reserve_start + res_attrs[:duration_value].public_send(res_attrs[:duration_unit])
+
   @reservation = @instrument.reservations.build(res_attrs)
   @reservation.save(validate: false)
   @reservation
