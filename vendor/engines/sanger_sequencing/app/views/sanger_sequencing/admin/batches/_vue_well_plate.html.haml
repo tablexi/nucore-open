@@ -6,7 +6,7 @@
         %th.centered= col
     %tr(v-for="row in plateGrid")
       %th {{row.name}}
-      %td.sangerSequencing--cell(v-for="cell in row.cells" v-bind:style="styleForCell(cell, plateIndex)")
+      %td.sangerSequencing--wellPlate__cell(v-for="cell in row.cells" v-bind:style="styleForCell(cell, plateIndex)")
         {{sampleAtCell(cell.name, plateIndex).customerSampleId()}}
         %br
         {{sampleAtCell(cell.name, plateIndex).displayId()}}

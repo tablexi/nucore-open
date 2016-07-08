@@ -2,21 +2,26 @@
   %thead
     %tr
       %td
+      %th= OrderDetail.human_attribute_name(:id)
       %th= SangerSequencing::Submission.human_attribute_name(:id)
       %th= OrderDetail.human_attribute_name(:ordered_at)
       %th= OrderDetail.human_attribute_name(:user)
       %th= OrderDetail.human_attribute_name(:quantity)
+      %th= OrderDetail.human_attribute_name(:note)
   %tbody
     - @submissions.each do |submission|
       %tr{data: { submission_id: submission.id } }
-        %td
+        %td.sangerSequencing--submissionTable__initialCell
           %div(v-if="isInPlate(#{submission.id})")
             .sangerSequencing--colorCoded__box(v-bind:style="styleForSubmissionId(#{submission.id})")
             - if action_name != "show"
               = link_to text("remove"), "#", "@click.prevent" => "removeSubmission(#{submission.id})"
 
           = link_to text("add"), "#", "@click.prevent" => "addSubmission(#{submission.id})", "v-if" => "isNotInPlate(#{submission.id})"
+
+        %td= link_to submission.order_detail, manage_order_detail_path(submission.order_detail), class: "manage-order-detail"
         %td= link_to submission.id, facility_sanger_sequencing_admin_submission_path(current_facility, submission), class: "js--modal"
         %td= format_usa_datetime(submission.purchased_at)
         %td= submission.user
         %td= submission.samples.count
+        %td.sangerSequencing--submissionTable__noteCell= submission.note

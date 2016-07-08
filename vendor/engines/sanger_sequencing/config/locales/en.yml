@@ -24,6 +24,7 @@ en:
         batches:
           new:
             submit: Save Batch
+            none: There are no submissions available to be added.
           submission_list:
             add: Add
             remove: Remove
@@ -36,6 +37,7 @@ en:
       sanger_sequencing/sample:
         id: Core Sample
         customer_sample_id: Customer Sample
+        results_files: Results Files
       sanger_sequencing/submission:
         id: "Submission #"
       sanger_sequencing/batch:
