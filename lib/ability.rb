@@ -203,7 +203,7 @@ class Ability
 
   def order_details_ability(user, resource)
     # Purchaser
-    can [:add_accessories, :sample_results, :show, :update, :cancel, :template_results,
+    can [:add_accessories, :sample_results, :sample_results_zip, :show, :update, :cancel, :template_results,
          :order_file, :upload_order_file, :remove_order_file], OrderDetail, order: { user_id: user.id }
     # Facility managers
     can :manage, OrderDetail, order: { facility_id: resource.order.facility_id } if user.operator_of?(resource.facility)

@@ -52,6 +52,7 @@
       .well
         %h3= t('.head.results')
         %ul= render :partial => 'result_file', :collection => @order_detail.stored_files.sample_result
+        = link_to "Zip", order_order_detail_sample_results_zip_path(@order_detail.order, @order_detail, format: :zip)
 
 .row
   .span12

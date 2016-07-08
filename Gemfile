@@ -40,6 +40,7 @@ gem "nested_form_fields"
 gem "text_helpers"
 gem "chosen-rails"
 gem "fine_uploader", path: "vendor/engines/fine_uploader"
+gem "rubyzip"
 
 ## controllers
 gem "prawn",            "0.12"

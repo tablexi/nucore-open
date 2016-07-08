@@ -1,3 +1,5 @@
+require 'zip'
+
 class OrderDetailStoredFilesController < ApplicationController
 
   customer_tab  :all
@@ -8,6 +10,24 @@ class OrderDetailStoredFilesController < ApplicationController
 
   def sample_results
     redirect_to @order_detail.stored_files.sample_result.find(params[:id]).download_url
+  end
+
+  def sample_results_zip
+    data = Zip::OutputStream.write_buffer do |stream|
+      @order_detail.stored_files.sample_result.each do |file|
+        stream.put_next_entry(file.name)
+        stream << file.read
+      end
+    end
+
+    data.rewind
+
+    respond_to do |format|
+      format.zip { send_data data.read, filename: "sample_results_#{@order_detail}.zip" }
+    end
+
+  ensure
+    data.close if data
   end
 
   def template_results

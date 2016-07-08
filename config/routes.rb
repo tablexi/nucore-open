@@ -327,6 +327,7 @@ Nucore::Application.routes.draw do
       post :upload_order_file, controller: "order_detail_stored_files"
       get :remove_order_file, controller: "order_detail_stored_files"
 
+      get :sample_results, to: "order_detail_stored_files#sample_results_zip", as: "sample_results_zip"
       get "sample_results/:id", to: "order_detail_stored_files#sample_results", as: "sample_results"
       get "template_results/:id", to: "order_detail_stored_files#template_results", as: "template_results"
 
