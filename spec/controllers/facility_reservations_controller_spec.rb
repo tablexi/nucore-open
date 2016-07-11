@@ -101,17 +101,18 @@ RSpec.describe FacilityReservationsController do
     it_should_allow_operators_only :redirect
   end
 
-  context '#create' do
-    let(:reservation_attributes) do
-      FactoryGirl.attributes_for(
-        :reservation,
-        reserve_start_at: reserve_start_at,
-        reserve_end_at: reserve_end_at,
-        split_times: true,
-      )
+  describe 'POST #create' do
+    let(:reservation_params) do
+      {
+        reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
+        reserve_start_hour: reserve_start_at.hour.to_s,
+        reserve_start_min: reserve_start_at.min.to_s,
+        reserve_start_meridian: reserve_start_at.hour < 12 ? "AM" : "PM",
+        duration_mins: "60",
+        admin_note: "Testing",
+      }
     end
     let(:reserve_start_at) { 1.hour.from_now.change(sec: 0) }
-    let(:reserve_end_at) { reserve_start_at + 1.hour }
 
     before(:each) do
       @method = :post
@@ -119,9 +120,8 @@ RSpec.describe FacilityReservationsController do
       @params = {
         facility_id: facility.url_name,
         instrument_id: product.url_name,
-        reservation: reservation_attributes,
+        reservation: reservation_params,
       }
-      parametrize_dates(@params[:reservation], :reserve)
     end
 
     it_should_allow_operators_only(:redirect) {}
@@ -132,18 +132,15 @@ RSpec.describe FacilityReservationsController do
       context "when the reservation is valid" do
         before { do_request }
 
-        it "creates the reservation", :aggregate_failures do
-          expect(assigns[:reservation]).to be_present
+        it "creates an admin_reservation", :aggregate_failures do
+          expect(assigns[:reservation]).to be_present.and be_admin
           expect(assigns[:reservation]).not_to be_new_record
-        end
-
-        it "is an admin reservation" do
-          expect(assigns[:reservation]).to be_admin
         end
 
         it "sets times", :aggregate_failures do
           expect(assigns[:reservation].reserve_start_at).to eq(reserve_start_at)
-          expect(assigns[:reservation].reserve_end_at).to eq(reserve_end_at)
+          expect(assigns[:reservation].reserve_end_at)
+            .to eq(reserve_start_at + 60.minutes)
         end
 
         it "redirects to the facility's schedule page" do
