@@ -106,8 +106,8 @@ RSpec.describe FacilityReservationsController do
       {
         reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
         reserve_start_hour: reserve_start_at.hour.to_s,
-        reserve_start_min: reserve_start_at.min.to_s,
-        reserve_start_meridian: reserve_start_at.hour < 12 ? "AM" : "PM",
+        reserve_start_min: reserve_start_at.strftime("%M"),
+        reserve_start_meridian: reserve_start_at.strftime("%p"),
         duration_mins: "60",
         admin_note: "Testing",
       }
