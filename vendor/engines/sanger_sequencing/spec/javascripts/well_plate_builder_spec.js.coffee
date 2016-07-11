@@ -67,6 +67,33 @@ describe "SangerSequencing.WellPlateBuilder", ->
         # 89 because 96 - 5(already added) - 2 (reserved) = 89
         expect(@wellPlate.sampleAtCell("B01", 1)).toEqual(@submission3.samples[89])
 
+  describe "plateCount()", ->
+    beforeEach ->
+      @wellPlate = new SangerSequencing.WellPlateBuilder
+
+    it "has one plate when empty", ->
+      expect(@wellPlate.plateCount()).toEqual(1)
+
+    it "has one plate when less than 96 cells", ->
+      @submission = { id: 542, samples: sampleList(40) }
+      @wellPlate.addSubmission(@submission)
+      expect(@wellPlate.plateCount()).toEqual(1)
+
+    it "has one plates when it is completely full", ->
+      @submission = { id: 542, samples: sampleList(94) }
+      @wellPlate.addSubmission(@submission)
+      expect(@wellPlate.plateCount()).toEqual(1)
+
+    it "has two plates when it is just over full", ->
+      @submission = { id: 542, samples: sampleList(95) }
+      @wellPlate.addSubmission(@submission)
+      expect(@wellPlate.plateCount()).toEqual(2)
+
+    it "has three plates when it gets really big", ->
+      @submission = { id: 542, samples: sampleList(280) }
+      @wellPlate.addSubmission(@submission)
+      expect(@wellPlate.plateCount()).toEqual(3)
+
   describe "plates", ->
     beforeEach ->
       @wellPlate = new SangerSequencing.WellPlateBuilder
