@@ -16,8 +16,7 @@ class OfflineReservationsController < ApplicationController
   end
 
   def create
-    @reservation = @instrument.offline_reservations.new(params[:offline_reservation])
-    @reservation.reserve_start_at = Time.current
+    @reservation = @instrument.offline_reservations.new(new_offline_reservation_params)
 
     if @reservation.save
       flash[:notice] = text("create.success")
@@ -59,6 +58,12 @@ class OfflineReservationsController < ApplicationController
 
   def load_reservation
     @reservation = @instrument.offline_reservations.find(params[:id])
+  end
+
+  def new_offline_reservation_params
+    params[:offline_reservation]
+      .permit(:admin_note)
+      .merge(reserve_start_at: Time.current)
   end
 
 end
