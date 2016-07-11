@@ -41,7 +41,7 @@
 
 - else
   - unless @instrument.online?
-    %p.notice= t(".instrument_is_offline")
+    %p.alert.alert-danger= t(".instrument_is_offline")
 
   %table.table.table-striped.table-hover
     %thead
