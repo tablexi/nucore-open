@@ -154,7 +154,6 @@ RSpec.describe FacilityReservationsController do
           # allowed to per ticket 38975
           allow_any_instance_of(Reservation).to receive(:valid?).and_return(false)
           @params[:reservation] = FactoryGirl.attributes_for(:reservation)
-          parametrize_dates(@params[:reservation], :reserve)
           do_request
         end
 
