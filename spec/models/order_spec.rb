@@ -228,9 +228,13 @@ RSpec.describe Order do
       # default rule, 9am - 5pm all days
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       define_open_account(@instrument.account, @account.account_number)
-      @order_detail  = @order.order_details.create(product_id: @instrument.id, quantity: 1,
-                                                   price_policy_id: @instrument_pp.id, account_id: @account.id,
-                                                   estimated_cost: 10, estimated_subsidy: 5, created_by: 0)
+      @order_detail = @order.order_details.create(product_id: @instrument.id,
+                                                  quantity: 1,
+                                                  price_policy_id: @instrument_pp.id,
+                                                  account_id: @account.id,
+                                                  estimated_cost: 10,
+                                                  estimated_subsidy: 5,
+                                                  created_by: 0)
 
       @reservation = @instrument.reservations.create(reserve_start_date: Date.today + 1.day,
                                                      reserve_start_hour: 9,
