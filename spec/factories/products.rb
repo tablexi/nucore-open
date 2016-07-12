@@ -105,6 +105,14 @@ FactoryGirl.define do
         product.reload
       end
     end
+
+    trait :offline do
+      after(:create) do |product|
+        product
+          .offline_reservations
+          .create!(reserve_start_at: 1.month.ago, admin_note: "Offline")
+      end
+    end
   end
 
   factory :instrument_requiring_approval, parent: :setup_instrument do
