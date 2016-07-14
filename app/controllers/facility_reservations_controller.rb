@@ -124,6 +124,7 @@ class FacilityReservationsController < ApplicationController
     @instrument =
       current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.admin_reservations.new
+    @reservation.assign_attributes(params[:reservation])
     @reservation.assign_times_from_params(params[:reservation])
 
     if @reservation.save

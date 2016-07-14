@@ -143,6 +143,10 @@ RSpec.describe FacilityReservationsController do
             .to eq(reserve_start_at + 60.minutes)
         end
 
+        it "sets admin_note" do
+          expect(assigns[:reservation].admin_note).to eq "Testing"
+        end
+
         it "redirects to the facility's schedule page" do
           is_expected.to redirect_to facility_instrument_schedule_path
         end
