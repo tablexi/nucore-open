@@ -58,7 +58,7 @@ module ProductsHelper
   end
 
   def public_calendar_availability_options(product)
-    if product.available?
+    if product.available? && product.online?
       { class: ["icon-calendar", "available"],
         title: t("instruments.public_schedule.available") }
     else
