@@ -80,6 +80,10 @@ class Reservation < ActiveRecord::Base
     end
   end
 
+  scope :ongoing, -> {
+    where("actual_start_at <= ?", Time.current).where(actual_end_at: nil)
+  }
+
   def self.today
     for_date(Time.zone.now)
   end
