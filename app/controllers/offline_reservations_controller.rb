@@ -8,7 +8,6 @@ class OfflineReservationsController < ApplicationController
   before_action :init_current_facility
   before_action :load_instrument
   before_action :load_reservation, only: %i(edit update)
-  after_action :flag_ongoing_reservations_as_problem, only: %i(create)
 
   load_and_authorize_resource class: Reservation
 
@@ -20,6 +19,7 @@ class OfflineReservationsController < ApplicationController
     @reservation = @instrument.offline_reservations.new(new_offline_reservation_params)
 
     if @reservation.save
+      flag_ongoing_reservations_as_problem
       flash[:notice] = text("create.success")
       redirect_to facility_instrument_schedule_path
     else
