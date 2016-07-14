@@ -101,7 +101,7 @@ RSpec.describe FacilityReservationsController do
     it_should_allow_operators_only :redirect
   end
 
-  describe 'POST #create' do
+  describe "POST #create" do
     let(:reservation_params) do
       {
         reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
