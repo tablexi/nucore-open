@@ -22,7 +22,7 @@
 .wysiwyg= @instrument.description
 
 - unless @instrument.online?
-  %p.alert.alert-danger= t(".offline_notice")
+  %p.alert.alert-danger= t("instruments.offline.notice")
 
 = render "documentation"
 
@@ -44,7 +44,7 @@
             = t(".notify")
 
   - unless @instrument.online?
-    %p.alert.alert-danger= t(".offline_notice")
+    %p.alert.alert-danger= t("instruments.offline.notice")
 
   %ul.inline
     %li

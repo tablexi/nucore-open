@@ -538,11 +538,6 @@ en:
       documentation: "Documentation"
       crumb: "Create Reservation"
       notify: Send Notification
-      offline_notice: |
-        This instrument is currently down.
-        Contact facility for more information.
-        It will be canceled for $0 if the instrument is still down at the time
-        of scheduled reservation.
     list:
       status:
         upcoming: Upcoming
@@ -1058,6 +1053,12 @@ en:
         max_res: "Maximum Reservation Minutes"
         cancel_hours: "Minimum Cancelation Hours"
         cancel_mins: "Automatic Cancelation Minutes"
+    offline:
+      notice: |
+        This instrument is currently down.
+        Contact facility for more information.
+        It will be canceled for $0 if the instrument is still down at the time
+        of scheduled reservation.
     public_schedule:
       title: Schedule
       place_reservation: Place Reservation
