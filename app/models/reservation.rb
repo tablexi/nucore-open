@@ -60,17 +60,9 @@ class Reservation < ActiveRecord::Base
       .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
   end
 
-  def self.not_canceled
-    where(canceled_at: nil)
-  end
-
-  def self.not_started
-    where(actual_start_at: nil)
-  end
-
-  def self.not_ended
-    where(actual_end_at: nil)
-  end
+  scope :not_canceled, -> { where(canceled_at: nil) }
+  scope :not_started, -> { where(actual_start_at: nil) }
+  scope :not_ended, -> { where(actual_end_at: nil) }
 
   def self.not_this_reservation(reservation)
     if reservation.id
@@ -80,9 +72,7 @@ class Reservation < ActiveRecord::Base
     end
   end
 
-  scope :ongoing, -> {
-    where("actual_start_at <= ?", Time.current).where(actual_end_at: nil)
-  }
+  scope :ongoing, -> { not_ended.where("actual_start_at <= ?", Time.current) }
 
   def self.today
     for_date(Time.zone.now)
