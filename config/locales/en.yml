@@ -539,9 +539,10 @@ en:
       crumb: "Create Reservation"
       notify: Send Notification
       offline_notice: |
-        This instrument is currently offline. If it is not back online before
-        your scheduled time, you will receive a notice and your reservation
-        will be canceled.
+        This instrument is currently down.
+        Contact facility for more information.
+        It will be canceled for $0 if the instrument is still down at the time
+        of scheduled reservation.
     list:
       status:
         upcoming: Upcoming
