@@ -56,7 +56,7 @@ class OfflineReservationsController < ApplicationController
   def flag_ongoing_reservations_as_problem
     OrderDetail
       .where(id: @instrument.reservations.ongoing.pluck(:order_detail_id))
-      .update_all(problem: true)
+      .each(&:force_complete!)
   end
 
   def load_instrument
