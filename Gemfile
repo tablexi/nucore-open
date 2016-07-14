@@ -48,7 +48,7 @@ gem "prawn_rails",      "0.0.11"
 
 ## other
 gem "delayed_job_active_record", "~> 4.0.1"
-gem "fog"
+gem "fog-aws"
 gem "rake"
 gem "spreadsheet", "~> 1.1.2"
 gem "exception_notification", "~> 4.0.1"
