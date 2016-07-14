@@ -123,8 +123,8 @@ class FacilityReservationsController < ApplicationController
   def create
     @instrument =
       current_facility.instruments.find_by!(url_name: params[:instrument_id])
-    @reservation =
-      @instrument.admin_reservations.new(params[:reservation].merge(split_times: true))
+    @reservation = @instrument.admin_reservations.new
+    @reservation.assign_times_from_params(params[:reservation])
 
     if @reservation.save
       flash[:notice] = "The reservation has been created successfully."
