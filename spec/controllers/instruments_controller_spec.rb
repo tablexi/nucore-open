@@ -517,12 +517,18 @@ RSpec.describe InstrumentsController do
                                                 schedule: @instrument.schedule)
         end
         let(:admin_reservation) do
-          FactoryGirl.create(:reservation, product: instrument2,
-                                           reserve_start_at: 2.days.from_now)
+          FactoryGirl.create(
+            :admin_reservation,
+            product: instrument2,
+            reserve_start_at: 2.days.from_now,
+          )
         end
         let(:admin_reservation2) do
-          FactoryGirl.create(:reservation, product: instrument2,
-                                           reserve_start_at: 1.day.from_now)
+          FactoryGirl.create(
+            :admin_reservation,
+            product: instrument2,
+            reserve_start_at: 1.day.from_now,
+          )
         end
         before :each do
           sign_in @admin

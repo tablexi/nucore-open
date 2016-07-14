@@ -21,6 +21,9 @@
 
 .wysiwyg= @instrument.description
 
+- unless @instrument.online?
+  %p.alert.alert-danger= t(".offline_notice")
+
 = render "documentation"
 
 = simple_form_for([@order, @order_detail, @reservation]) do |f|

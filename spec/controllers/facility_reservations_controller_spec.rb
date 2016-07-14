@@ -101,54 +101,69 @@ RSpec.describe FacilityReservationsController do
     it_should_allow_operators_only :redirect
   end
 
-  context '#create' do
-    before :each do
+  describe "POST #create" do
+    let(:reservation_params) do
+      {
+        reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
+        reserve_start_hour: reserve_start_at.hour.to_s,
+        reserve_start_min: reserve_start_at.strftime("%M"),
+        reserve_start_meridian: reserve_start_at.strftime("%p"),
+        duration_mins: "60",
+        admin_note: "Testing",
+      }
+    end
+    let(:reserve_start_at) { 1.hour.from_now.change(sec: 0) }
+
+    before(:each) do
       @method = :post
       @action = :create
-      @time = 1.hour.from_now.change(sec: 0)
       @params = {
-        facility_id: @authable.url_name,
-        instrument_id: @product.url_name,
-        reservation: FactoryGirl.attributes_for(:reservation, reserve_start_at: @time, reserve_end_at: @time + 1.hour),
+        facility_id: facility.url_name,
+        instrument_id: product.url_name,
+        reservation: reservation_params,
       }
-      parametrize_dates(@params[:reservation], :reserve)
     end
 
     it_should_allow_operators_only(:redirect) {}
 
-    context "while signed in" do
-      before :each do
-        maybe_grant_always_sign_in :director
-      end
-      context "a success" do
-        before(:each) { do_request }
-        it "should create the reservation" do
-          expect(assigns[:reservation]).not_to be_nil
+    context "when signed in as a facility director" do
+      before { maybe_grant_always_sign_in :director }
+
+      context "when the reservation is valid" do
+        before { do_request }
+
+        it "creates an admin_reservation", :aggregate_failures do
+          expect(assigns[:reservation]).to be_present.and be_admin
           expect(assigns[:reservation]).not_to be_new_record
         end
-        it "should be an admin reservation" do
-          expect(assigns[:reservation]).to be_admin
+
+        it "sets times", :aggregate_failures do
+          expect(assigns[:reservation].reserve_start_at).to eq(reserve_start_at)
+          expect(assigns[:reservation].reserve_end_at)
+            .to eq(reserve_start_at + 60.minutes)
         end
-        it "should set the times" do
-          expect(assigns[:reservation].reserve_start_at).to eq(@time)
-          expect(assigns[:reservation].reserve_end_at).to eq(@time + 1.hour)
+
+        it "sets admin_note" do
+          expect(assigns[:reservation].admin_note).to eq "Testing"
         end
-        it "should redirect to the facility's schedule page" do
-          expect(response).to redirect_to facility_instrument_schedule_path
+
+        it "redirects to the facility's schedule page" do
+          is_expected.to redirect_to facility_instrument_schedule_path
         end
       end
 
-      context "fails validations" do
-
-        it "should not allow an invalid reservation" do
+      context "when the reservation is invalid" do
+        before(:each) do
           # Used to fail by overlapping existing reservation, but now admin reservations are
           # allowed to per ticket 38975
           allow_any_instance_of(Reservation).to receive(:valid?).and_return(false)
           @params[:reservation] = FactoryGirl.attributes_for(:reservation)
-          parametrize_dates(@params[:reservation], :reserve)
           do_request
+        end
+
+        it "does not save the reservation", :aggregate_failures do
           expect(assigns[:reservation]).to be_new_record
-          expect(response).to render_template :new
+          is_expected.to render_template :new
         end
       end
     end
@@ -292,7 +307,12 @@ RSpec.describe FacilityReservationsController do
         expect(@canceled_reservation).to be_persisted
         @order_detail3.update_order_status! @admin, OrderStatus.canceled.first
 
-        @admin_reservation = FactoryGirl.create(:reservation, product: @product, reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
+        @admin_reservation = FactoryGirl.create(
+          :admin_reservation,
+          product: @product,
+          reserve_start_at: Time.zone.now,
+          reserve_end_at: 1.hour.from_now,
+        )
 
         maybe_grant_always_sign_in :director
         @method = :get
@@ -320,7 +340,7 @@ RSpec.describe FacilityReservationsController do
       end
 
       it "should include admin reservation" do
-        expect(response.body).to include "id='tooltip_reservation_#{@admin_reservation.id}'"
+        expect(response.body).to include "id='tooltip_admin_reservation_#{@admin_reservation.id}'"
       end
     end
   end
@@ -469,7 +489,7 @@ RSpec.describe FacilityReservationsController do
       before :each do
         @method = :patch
         @action = :update_admin
-        @params.merge!(reservation: FactoryGirl.attributes_for(:reservation))
+        @params.merge!(admin_reservation: FactoryGirl.attributes_for(:admin_reservation))
       end
 
       it_should_allow_operators_only :redirect

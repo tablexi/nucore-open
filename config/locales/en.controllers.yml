@@ -78,6 +78,16 @@ en:
         error: "Could not delete order detail %{order_detail_id}"
         success: "The order detail was successfully removed"
 
+    offline_reservations:
+      bring_online:
+        success: The instrument is back online
+        error: An error occurred while attempting to bring the instrument back online
+      create:
+        success: The instrument has been marked offline
+      update:
+        success: The downtime note has been updated
+        error: An error occurred while attempting to update the downtime note
+
     order_management:
       order_details:
         remove_from_journal:

@@ -121,33 +121,7 @@ class ScheduleRule < ActiveRecord::Base
 
   # build weekly calendar object
   def as_calendar_object(options = {})
-    start_date = options[:start_date].presence || self.class.sunday_last
-    num_days = options[:num_days] ? options[:num_days].to_i : 7
-    title = ""
-
-    if instrument && !unavailable
-      duration_mins = instrument.reserve_interval
-      title = "Interval: #{duration_mins} minute#{duration_mins == 1 ? '' : 's'}"
-    end
-
-    Range.new(0, num_days - 1).inject([]) do |array, i|
-      date = (start_date + i.days).to_datetime
-      start_at = date.change hour: start_hour, min: start_min
-      end_at = date.change hour: end_hour, min: end_min
-
-      # check if rule occurs on this day
-      if send("on_#{Date::ABBR_DAYNAMES[date.wday].downcase}?")
-        array << {
-          "className" => unavailable ? "unavailable" : "default",
-          "title"  => title,
-          "start"  => I18n.l(start_at, format: :calendar),
-          "end"    => I18n.l(end_at, format: :calendar),
-          "allDay" => false,
-        }
-      end
-
-      array
-    end
+    CalendarObjectBuilder.new(self, options).generate
   end
 
   def discount_for(start_at, end_at)

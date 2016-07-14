@@ -125,7 +125,7 @@ body .unit {
 }
 
 /* tooltip_reservation should be hidden until it gets pulled into the popup */
-.tooltip_reservation {
+.tooltip_admin_reservation, .tooltip_reservation {
   display: none;
 }
 

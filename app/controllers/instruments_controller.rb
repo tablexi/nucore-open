@@ -42,8 +42,7 @@ class InstrumentsController < ProductsCommonController
         flash[:notice] = html(".requires_approval",
                               email: @instrument.email,
                               facility: @instrument.facility,
-                              instrument: @instrument,
-                             )
+                              instrument: @instrument)
       end
     end
 
@@ -81,7 +80,13 @@ class InstrumentsController < ProductsCommonController
 
   # GET /facilities/:facility_id/instruments/:instrument_id/schedule
   def schedule
-    @admin_reservations = @instrument.schedule.reservations.where("reserve_end_at > ? AND order_detail_id IS NULL", Time.zone.now).order("reserve_start_at ASC")
+    @admin_reservations =
+      @instrument
+      .schedule
+      .reservations
+      .non_user
+      .ends_in_the_future
+      .order(:reserve_start_at)
   end
 
   def public_schedule

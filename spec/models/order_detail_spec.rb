@@ -290,11 +290,12 @@ RSpec.describe OrderDetail do
         create(:account_price_group_member, account: account, price_group: @price_group)
         @pp = create(:instrument_price_policy, product: @instrument, price_group: @price_group)
         @rule = @instrument.schedule_rules.create(attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
-        @order_detail.reservation = create(:reservation,
-                                           reserve_start_at: Time.now,
-                                           reserve_end_at: Time.now + 1.hour,
-                                           product: @instrument,
-                                          )
+
+        @order_detail.reservation = FactoryGirl.create(:reservation,
+                                                       reserve_start_at: Time.current,
+                                                       reserve_end_at: 1.hour.from_now,
+                                                       product: @instrument,
+                                                       split_times: true)
         @order_detail.product = @instrument
         @order_detail.save
         assert @order_detail.reservation
@@ -1060,11 +1061,11 @@ RSpec.describe OrderDetail do
     let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
 
     before :each do
-      start_date = Time.zone.now + 1.day
-      setup_reservation facility, facility_account, account, user
-      place_reservation facility, order_detail, start_date
-      create(:account_price_group_member, account: account, price_group: @price_group)
-      order_detail.update_attribute :statement_id, statement.id
+      start_date = 1.day.from_now
+      setup_reservation(facility, facility_account, account, user)
+      place_reservation(facility, order_detail, start_date)
+      FactoryGirl.create(:account_price_group_member, account: account, price_group: @price_group)
+      order_detail.update_attribute(:statement_id, statement.id)
     end
 
     shared_context "instrument minimum cancel hours" do
@@ -1128,9 +1129,7 @@ RSpec.describe OrderDetail do
         end
       end
 
-      before :each do
-        set_cancellation_cost_for_all_policies 5.0
-      end
+      before { set_cancellation_cost_for_all_policies 5.0 }
 
       context "as admin" do
         let!(:original_statement) { order_detail.statement }

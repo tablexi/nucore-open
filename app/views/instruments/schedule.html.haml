@@ -1,40 +1,84 @@
 = content_for :head_content do
-  = render partial: 'shared/headers/calendar'
-  = javascript_include_tag 'instruments.js'
+  = render "shared/headers/calendar"
+  = javascript_include_tag "instruments.js"
+
 = content_for :h1 do
-  =h current_facility
+  = current_facility
+
 = content_for :sidebar do
-  = render partial: 'admin/shared/sidenav_product', locals: { sidenav_tab: 'instruments' }
+  = render "admin/shared/sidenav_product", sidenav_tab: "instruments"
+
 = content_for :tabnav do
-  = render partial: 'admin/shared/tabnav_product', locals: { secondary_tab: 'reservations'}
+  = render "admin/shared/tabnav_product", secondary_tab: "reservations"
 
 :javascript
   var events_path = "#{facility_instrument_reservations_path(current_facility, @instrument, format: 'js', with_details: true, all: true)}";
-  var withDetails = true
+  var withDetails = true;
 
 %h2= @instrument
 
-%h3 Administrative Reservations
+%h3= t(".administrative_reservations")
 
-%p= link_to 'Add Admin Reservation', new_facility_instrument_reservation_path, class: 'btn-add'
+%p
+  = link_to t(".add_admin_reservation"),
+    new_facility_instrument_reservation_path,
+    class: "btn-add"
+
+  - if current_user.administrator? # TODO: restrict to global admins until the offline feature is complete
+    - if @instrument.online?
+      = link_to t(".mark_instrument_offline"),
+        new_facility_instrument_offline_reservation_path(current_facility, @instrument),
+        class: "btn-add"
+
+    - else
+      = link_to t(".bring_instrument_online"),
+        facility_instrument_bring_online_path(current_facility, @instrument),
+        method: :put,
+        class: "btn-add"
 
 - if @admin_reservations.empty?
-  %p.notice There are no upcoming administrative reservations.
+  %p.notice= t(".no_upcoming_admin_reservations")
+
 - else
+  - unless @instrument.online?
+    %p.alert.alert-danger= t(".instrument_is_offline")
+
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th
-        %th Reservation
+        %th= Reservation.human_attribute_name(:type)
+        %th= Reservation.model_name.human
         %th= Reservation.human_attribute_name(:admin_note)
     %tbody
-      - @admin_reservations.each do |r|
+      - @admin_reservations.each do |reservation|
         %tr
-          %td= link_to 'Remove', facility_instrument_reservation_path(current_facility, @instrument, r), confirm: 'Are you sure?', method: :delete
-          %td= link_to r, facility_instrument_reservation_edit_admin_path(current_facility, @instrument, r)
-          %td= r.admin_note
+          - if reservation.admin_removable?
+            %td
+              = link_to t("shared.remove"),
+                facility_instrument_reservation_path(current_facility, @instrument, reservation),
+                confirm: t("shared.confirm_message"),
+                method: :delete
 
-%h3 Reservations Calendar
+            %td= t(".admin")
+
+            %td
+              = link_to reservation,
+                facility_instrument_reservation_edit_admin_path(current_facility, @instrument, reservation)
+
+            %td= reservation.admin_note
+
+          - else
+
+            - if current_user.administrator? # TODO: restrict to global admins until the offline feature is complete
+              %td
+              %td= reservation.class.model_name.human
+              %td
+                = link_to reservation,
+                  edit_facility_instrument_offline_reservation_path(current_facility, @instrument, reservation)
+              %td= reservation.admin_note
+
+%h3= t(".reservations_calendar")
 
 #overlay
   #spinner

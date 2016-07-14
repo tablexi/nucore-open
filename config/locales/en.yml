@@ -512,6 +512,12 @@ en:
         price_policy: "* Clicking 'Save' will attempt to estimate the cost by quantity"
         default: "* Changing the quantity will automatically update the price fields"
 
+  offline_reservations:
+    edit:
+      update: Update the note
+    new:
+      mark_offline: Take instrument offline
+
   order_management:
     order_details:
       edit:
@@ -530,6 +536,10 @@ en:
       documentation: "Documentation"
       crumb: "Create Reservation"
       notify: Send Notification
+      offline_notice: |
+        This instrument is currently offline. If it is not back online before
+        your scheduled time, you will receive a notice and your reservation
+        will be canceled.
     list:
       status:
         upcoming: Upcoming
@@ -1051,6 +1061,15 @@ en:
       icon: Public Schedule
       available: Available
       in-use: In Use
+    schedule:
+      administrative_reservations: Administrative Reservations
+      add_admin_reservation: Add Admin Reservation
+      admin: Admin
+      bring_instrument_online: Bring Instrument Online
+      instrument_is_offline: This instrument is currently offline
+      mark_instrument_offline: Mark Instrument Offline
+      no_upcoming_admin_reservations: There are no upcoming administrative reservations.
+      reservations_calendar: Reservations Calendar
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"

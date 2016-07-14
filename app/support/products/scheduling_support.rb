@@ -21,10 +21,6 @@ module Products::SchedulingSupport
     reservations.joins(order_detail: :order).merge(Order.purchased)
   end
 
-  def admin_reservations
-    reservations.admin
-  end
-
   def started_reservations
     purchased_reservations
       .not_canceled
@@ -96,6 +92,14 @@ module Products::SchedulingSupport
     else
       schedule_rules
     end
+  end
+
+  def online!
+    offline_reservations.current.update_all(reserve_end_at: Time.current)
+  end
+
+  def online?
+    offline_reservations.current.none?
   end
 
   private

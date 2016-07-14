@@ -6,6 +6,7 @@ class Schedule < ActiveRecord::Base
 
   has_many :products, class_name: "Instrument"
   has_many :reservations, through: :products
+  has_many :admin_reservations, through: :products
 
   # Validations
   # --------

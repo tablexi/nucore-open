@@ -31,11 +31,15 @@ class ReservationsController < ApplicationController
 
     @end_at       = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at.end_of_day
 
-    @reservations = @instrument.schedule
-                               .reservations
-                               .active
-                               .in_range(@start_at, @end_at)
-                               .includes(order_detail: { order: :user })
+    @admin_reservations = @instrument.schedule.admin_reservations.in_range(@start_at, @end_at)
+
+    @user_reservations = @instrument.schedule
+                                    .reservations
+                                    .active
+                                    .in_range(@start_at, @end_at)
+                                    .includes(order_detail: { order: :user })
+
+    @reservations = @admin_reservations + @user_reservations
 
     @rules        = @instrument.schedule_rules
 
@@ -96,6 +100,7 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
     @reservation = @order_detail.build_reservation
     @reservation.assign_attributes(reservation_create_params)
+    @reservation.assign_times_from_params(reservation_create_params)
 
     if !@order_detail.bundled? && params[:order_account].blank?
       flash.now[:error] = I18n.t "controllers.reservations.create.no_selection"

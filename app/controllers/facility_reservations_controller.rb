@@ -121,8 +121,11 @@ class FacilityReservationsController < ApplicationController
 
   # POST /facilities/:facility_id/instruments/:instrument_id/reservations
   def create
-    @instrument   = current_facility.instruments.find_by_url_name!(params[:instrument_id])
-    @reservation  = @instrument.reservations.new(params[:reservation])
+    @instrument =
+      current_facility.instruments.find_by!(url_name: params[:instrument_id])
+    @reservation = @instrument.admin_reservations.new
+    @reservation.assign_attributes(params[:reservation])
+    @reservation.assign_times_from_params(params[:reservation])
 
     if @reservation.save
       flash[:notice] = "The reservation has been created successfully."
@@ -149,8 +152,8 @@ class FacilityReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
     set_windows
 
-    @reservation.assign_times_from_params(params[:reservation])
-    @reservation.admin_note = params[:reservation][:admin_note]
+    @reservation.assign_times_from_params(params[:admin_reservation])
+    @reservation.admin_note = params[:admin_reservation][:admin_note]
 
     if @reservation.save
       flash[:notice] = "The reservation has been updated successfully."
@@ -213,7 +216,8 @@ class FacilityReservationsController < ApplicationController
     if reserve_changed? || actual_changed?
       @order_detail.assign_estimated_price_from_policy(@order_detail.price_policy)
 
-      if costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
+      costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
+      if costs.present?
         @order_detail.actual_cost    = costs[:cost]
         @order_detail.actual_subsidy = costs[:subsidy]
       end

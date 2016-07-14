@@ -134,6 +134,7 @@ def place_reservation_for_instrument(ordered_by, instrument, account, reserve_st
     order_detail: order_detail,
     duration_value: 60,
     duration_unit: "minutes",
+    split_times: true,
   }
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
@@ -171,15 +172,18 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
     order_detail: order_detail,
     duration_value: 60,
     duration_unit: "minutes",
+    split_times: true,
   }
   order_detail.update_attributes!(product: @instrument)
   order_detail.order.update_attributes!(state: "purchased")
 
   res_attrs.merge!(extra_reservation_attrs) if extra_reservation_attrs
+
+  # If reserve_end_at is unset, derive it from reserve_start_at + duration:
+  res_attrs[:reserve_end_at] ||=
+    reserve_start + res_attrs[:duration_value].public_send(res_attrs[:duration_unit])
+
   @reservation = @instrument.reservations.build(res_attrs)
-  # force validation to run to set reserve_end_at, but ignore the errors
-  # we don't need to be worried about all the validations when running this method
-  @reservation.valid?
   @reservation.save(validate: false)
   @reservation
 end

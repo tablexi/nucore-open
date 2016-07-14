@@ -27,8 +27,10 @@ $(function() {
   })
   //Tool Tip
   tooltipContent = function($el, $tip) {
-    var id = /block_reservation_(\d+)/.exec($el.attr("id"))[1];
-    return $("#tooltip_reservation_" + id).html();
+    var match = $el.attr("id").match(/block_(\w+_)?reservation_(\d+)/);
+    var prefix = match[1] || "";
+    var id = match[2];
+    return $("#tooltip_" + prefix + "reservation_" + id).html();
   }
 
   $('.tip').tooltipsy({

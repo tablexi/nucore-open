@@ -495,13 +495,14 @@ ActiveRecord::Schema.define(version: 20160706195345) do
     t.integer  "order_detail_id",  limit: 4
     t.integer  "product_id",       limit: 4,   null: false
     t.datetime "reserve_start_at",             null: false
-    t.datetime "reserve_end_at",               null: false
+    t.datetime "reserve_end_at"
     t.datetime "actual_start_at"
     t.datetime "actual_end_at"
     t.datetime "canceled_at"
     t.integer  "canceled_by",      limit: 4
     t.string   "canceled_reason",  limit: 50
     t.string   "admin_note",       limit: 255
+    t.string   "type",             limit: 255
   end
 
   add_index "reservations", ["order_detail_id"], name: "res_od_uniq_fk", unique: true, using: :btree

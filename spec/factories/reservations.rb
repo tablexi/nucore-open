@@ -16,7 +16,7 @@ FactoryGirl.define do
     end
 
     trait :later_today do
-      reserve_start_at { Time.now + 2.hours }
+      reserve_start_at { 2.hours.from_now }
     end
 
     trait :running do
@@ -39,6 +39,10 @@ FactoryGirl.define do
     trait :tomorrow do
       reserve_start_at { 1.day.from_now }
     end
+  end
+
+  factory :admin_reservation, class: AdminReservation, parent: :reservation do
+    order_detail nil
   end
 
   factory :setup_reservation, class: Reservation, parent: :reservation do

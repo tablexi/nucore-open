@@ -126,6 +126,8 @@ en:
       nufs_account:
         one: Chart String
         other: Chart Strings
+      offline_reservation:
+        one: Offline
       reservation:
         one: Reservation
         other: Reservations
@@ -278,6 +280,7 @@ en:
         canceled_by_user: Canceled By
         canceled_by: Canceled By
         canceled_at: Canceled At
+        type: Type
       statement:
         id: "Invoice #"
         created_by: Sent By

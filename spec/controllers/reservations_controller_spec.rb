@@ -27,89 +27,132 @@ RSpec.describe ReservationsController do
     create(:account_price_group_member, account: @account, price_group: @price_group)
   end
 
-  context "index" do
-    before :each do
-      allow(@order).to receive(:cart_valid?).and_return(true)
-      allow(@order).to receive(:place_order?).and_return(true)
-      @order.validate_order!
-      @order.purchase!
+  describe "GET #index" do
+    before(:each) do
+      allow(order).to receive(:cart_valid?).and_return(true)
+      allow(order).to receive(:place_order?).and_return(true)
+      order.validate_order!
+      order.purchase!
 
       @method = :xhr
       @action = :index
-      @params.merge!(instrument_id: @instrument.url_name, facility_id: @authable.url_name)
+      @params.merge!(instrument_id: instrument.url_name, facility_id: facility.url_name)
     end
 
     it_should_allow_all facility_users do
-      expect(assigns[:facility]).to eq(@authable)
-      expect(assigns[:instrument]).to eq(@instrument)
+      expect(assigns[:facility]).to eq(facility)
+      expect(assigns[:instrument]).to eq(instrument)
     end
 
     context "schedule rules" do
-      before :each do
+      let(:now) { Time.current }
+
+      before(:each) do
         sign_in @guest
-        @now = Time.zone.now
-        @params.merge!(start: @now.to_i)
+        @params.merge!(start: now.to_i)
       end
 
-      it "should set end to end of day of start if blank" do
-        do_request
-        expect(assigns[:end_at]).to match_date @now.end_of_day
+      context "when end is not set" do
+        it "sets the end to end_of_day of the start time" do
+          do_request
+          expect(assigns[:end_at]).to match_date(now.end_of_day)
+        end
       end
 
-      it "should include a reservation from today" do
-        @reservation = @instrument.reservations.create(reserve_start_at: @now, order_detail: @order_detail,
-                                                       duration_value: 60, duration_unit: "minutes")
-        do_request
-        expect(assigns[:reservations]).to match_array([@reservation])
+      context "when a reservation exists for today" do
+        let!(:reservation) do
+          instrument.reservations.create(
+            reserve_start_at: now,
+            order_detail: order_detail,
+            duration_value: 60,
+            duration_unit: "minutes",
+            split_times: true,
+          )
+        end
+
+        before { do_request }
+
+        it { expect(assigns[:reservations]).to match_array([reservation]) }
       end
 
-      it "should not contain reservations from before start date" do
-        @reservation = @instrument.reservations.create(reserve_start_at: @now - 1.day, order_detail: @order_detail,
-                                                       duration_value: 60, duration_unit: "minutes")
-        do_request
-        expect(assigns[:reservations]).not_to include @reservation
+      context "when reservations exist before the start date" do
+        let!(:reservation) do
+          instrument.reservations.create(reserve_start_at: now - 1.day,
+                                         order_detail: order_detail,
+                                         duration_value: 60,
+                                         duration_unit: "minutes",
+                                         split_times: true)
+        end
+
+        before { do_request }
+
+        it { expect(assigns[:reservations]).not_to include(reservation) }
       end
 
-      it "should not contain reservations from after the end date" do
-        @reservation = @instrument.reservations.create(reserve_start_at: @now + 3.days, order_detail: @order_detail,
-                                                       duration_value: 60, duration_unit: "minutes")
-        @params[:end] = @now + 2.days
-        do_request
-        expect(assigns[:reservations]).not_to include @reservation
+      context "when reservations exist after the end date" do
+        let!(:reservation) do
+          instrument.reservations.create(reserve_start_at: now + 3.days,
+                                         order_detail: order_detail,
+                                         duration_value: 60,
+                                         duration_unit: "minutes",
+                                         split_times: true)
+        end
+
+        before(:each) do
+          @params[:end] = now + 2.days
+          do_request
+        end
+
+        it { expect(assigns[:reservations]).not_to include(reservation) }
       end
 
-      it "should not contain @unavailable if month view" do
-        @params[:start] = 1.day.ago.to_i
-        @params[:end] = 30.days.from_now.to_i
-        do_request
-        expect(assigns[:unavailable]).to eq([])
+      context "when it's a month view" do
+        before(:each) do
+          @params[:start] = 1.day.ago.to_i
+          @params[:end] = 30.days.from_now.to_i
+          do_request
+        end
+
+        it { expect(assigns[:unavailable]).to be_empty }
       end
 
       context "schedule rules" do
-        before :each do
-          @instrument.update_attributes(requires_approval: true)
-          @restriction_level = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
-          @rule.product_access_groups = [@restriction_level]
+        let(:restriction_level) { FactoryGirl.create(:product_access_group, product_id: instrument.id) }
+
+        before(:each) do
+          instrument.update_attributes(requires_approval: true)
+          @rule.product_access_groups = [restriction_level]
           @rule.save!
         end
 
-        it "should not contain rule if not part of group" do
-          do_request
-          expect(assigns[:rules]).to be_empty
+        context "when not part of a group" do
+          before { do_request }
+
+          it { expect(assigns[:rules]).to be_empty }
         end
 
-        it "should contain rule if user is part of group" do
-          @product_user = ProductUser.create(product: @instrument, user: @guest, approved_by: @director.id, product_access_group: @restriction_level)
-          do_request
-          expect(assigns[:rules]).to match_array([@rule])
+        context "when part of a group" do
+          before do
+            ProductUser.create(
+              product: instrument,
+              user: @guest,
+              approved_by: @director.id,
+              product_access_group: restriction_level,
+            )
+
+            do_request
+          end
+
+          it { expect(assigns[:rules]).to match_array([@rule]) }
         end
 
         context "as admin" do
-          before :each do
+          before(:each) do
             maybe_grant_always_sign_in :director
-          end
-          it "should contain all schedule rules" do
             do_request
+          end
+
+          it "contains all schedule rules" do
             expect(assigns[:rules]).to match_array([@rule])
           end
         end
@@ -117,27 +160,26 @@ RSpec.describe ReservationsController do
     end
 
     describe "shared scheduling" do
-      before :each do
-        @instrument2 = FactoryGirl.create(:setup_instrument, facility: @authable, schedule: @instrument.schedule)
-        @reservation = FactoryGirl.create(:purchased_reservation, product: @instrument)
-        assert @reservation.valid?
-        # Second reservation that begins immediately after the first reservation
-        @reservation2 = FactoryGirl.create(:purchased_reservation,
-                                           product: @instrument2,
-                                           reserve_start_at: @reservation.reserve_end_at,
-                                           reserve_end_at: @reservation.reserve_end_at + 1.hour)
-        assert @reservation2.valid?
+      let(:instrument2) {  FactoryGirl.create(:setup_instrument, facility: facility, schedule: instrument.schedule) }
+      let(:reservation1) { FactoryGirl.create(:purchased_reservation, product: instrument) }
+      let(:reservation2) do
+        FactoryGirl.create(:purchased_reservation,
+                           product: instrument2,
+                           reserve_start_at: reservation1.reserve_end_at, # Immediately after reservation1
+                           reserve_end_at: reservation1.reserve_end_at + 1.hour)
+      end
+      let(:reservations) { [reservation1, reservation2] }
+
+      before(:each) do
+        expect(reservation1).to be_valid
+        expect(reservation2).to be_valid
         @params[:start] = 1.day.from_now.to_i
         sign_in @admin
         do_request
       end
 
-      it "should include reservation from instrument 1" do
-        expect(assigns(:reservations)).to include @reservation
-      end
-
-      it "should include reservation from instrument 2" do
-        expect(assigns(:reservations)).to include @reservation2
+      it "includes instrument1 and instrument2 reservations" do
+        expect(assigns(:reservations)).to match_array(reservations)
       end
     end
   end
@@ -701,7 +743,7 @@ RSpec.describe ReservationsController do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
       @reservation  = @instrument.reservations.create(reserve_start_at: @start, order_detail: @order_detail,
-                                                      duration_value: 60, duration_unit: "minutes")
+                                                      duration_value: 60, duration_unit: "minutes", split_times: true)
       assert @reservation.valid?
     end
 
@@ -897,6 +939,7 @@ RSpec.describe ReservationsController do
           order_detail: @order_detail,
           duration_value: 60,
           duration_unit: "minutes",
+          split_times: true,
         )
 
         @params[:reservation_id] = @reservation.id
@@ -923,6 +966,7 @@ RSpec.describe ReservationsController do
           order_detail: @order_detail,
           duration_value: 24,
           duration_unit: "hours",
+          split_times: true,
         )
 
         @params[:reservation_id] = @reservation.id
@@ -983,7 +1027,7 @@ RSpec.describe ReservationsController do
       # create reservation for tomorrow @ 9 am for 60 minutes, with order detail reference
       @start        = Time.zone.now + 1.second
       @reservation  = @instrument.reservations.create(reserve_start_at: @start, order_detail: @order_detail,
-                                                      duration_value: 60, duration_unit: "minutes")
+                                                      duration_value: 60, duration_unit: "minutes", split_times: true)
       assert @reservation.valid?
     end
 

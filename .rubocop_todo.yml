@@ -33,7 +33,6 @@ Lint/AmbiguousRegexpLiteral:
 # Configuration parameters: AllowSafeAssignment.
 Lint/AssignmentInCondition:
   Exclude:
-    - 'app/controllers/facility_reservations_controller.rb'
     - 'app/helpers/facility_orders_helper.rb'
     - 'app/models/budgeted_chart_string.rb'
     - 'app/support/accessories/accessorizer.rb'
@@ -87,8 +86,6 @@ Lint/ParenthesesAsGroupedExpression:
     - 'app/models/instrument_price_policy_calculations.rb'
     - 'spec/controllers/facilities_controller_spec.rb'
     - 'spec/models/instrument_price_policy_spec.rb'
-    - 'spec/models/reservation_setup_spec.rb'
-    - 'spec/models/reservation_spec.rb'
 
 # Offense count: 4
 Lint/ShadowingOuterLocalVariable:
@@ -149,6 +146,8 @@ Metrics/MethodLength:
 # Offense count: 5
 # Configuration parameters: CountComments.
 Metrics/ModuleLength:
+  Exclude:
+    - 'app/support/reservations/date_support.rb'
   Max: 185
 
 # Offense count: 46
@@ -197,13 +196,10 @@ Rails/Output:
 # SupportedStyles: strict, flexible
 Rails/TimeZone:
   Exclude:
-    - 'spec/app_support/reservations/rendering_spec.rb'
-    - 'spec/factories/reservations.rb'
     - 'spec/helpers/settings_helper_spec.rb'
     - 'spec/lib/transaction_history_search_spec.rb'
     - 'spec/models/account_spec.rb'
     - 'spec/models/order_detail_spec.rb'
-    - 'spec/models/reservation_spec.rb'
     - 'spec/models/schedule_rule_spec.rb'
     - 'spec/presenters/statement_presenter_spec.rb'
 
