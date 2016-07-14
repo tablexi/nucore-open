@@ -5,7 +5,7 @@ FactoryGirl.define do
     requires_approval false
     is_archived false
     is_hidden false
-    initial_order_status_id { |_o| find_order_status("New").id }
+    initial_order_status_id { FactoryGirl.create(:order_status, name: "New").id }
 
     factory :instrument, class: Instrument do
       transient do
@@ -50,7 +50,7 @@ FactoryGirl.define do
     requires_approval false
     is_archived false
     is_hidden false
-    initial_order_status { find_order_status("New") }
+    initial_order_status { FactoryGirl.create(:order_status, name: "New") }
     min_reserve_mins 60
     max_reserve_mins 120
 

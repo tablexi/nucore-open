@@ -1,8 +1,3 @@
-# used by factory to find or create order status
-def find_order_status(status)
-  OrderStatus.find_or_create_by(name: status)
-end
-
 def assert_true(x)
   assert(x)
 end
