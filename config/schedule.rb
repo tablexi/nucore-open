@@ -17,6 +17,10 @@ every :day, at: "4:17am", roles: [:db] do
   rake "order_details:remove_merge_orders"
 end
 
+every :day, at: "12:30am", roles: [:db] do
+  rake "reservations:notify_offline"
+end
+
 require "active_support/core_ext/numeric/time"
 instance_eval(File.read(File.expand_path("../schedule_custom.rb", __FILE__)), "schedule_custom.rb")
 
