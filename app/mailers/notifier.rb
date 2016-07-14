@@ -75,10 +75,6 @@ class Notifier < ActionMailer::Base
     send_nucore_mail to, t("views.notifier.#{template}.subject", order_detail: order_detail, user: order_detail.order.user, product: order_detail.product), template
   end
 
-  def upcoming_offline_reservation_notification(reservation)
-    # TODO: implement!
-  end
-
   private
 
   def attach_statement_pdf

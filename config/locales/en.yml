@@ -1131,6 +1131,9 @@ en:
       link: "Visit here to give them access: %{link}"
       subject: "%{facility} - User Requested Training"
 
+  upcoming_offline_reservation_mailer:
+    subject: Regarding your upcoming reservation for %{instrument}
+
   activerecord:
     errors:
       models:
