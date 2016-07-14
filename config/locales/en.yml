@@ -684,6 +684,7 @@ en:
         view:
           order_form: "View Order Form"
           order_file: "View Order File"
+          zip: "Download all as zip..."
       submit:
         dispute: "Dispute Purchase"
       th:
