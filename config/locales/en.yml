@@ -1054,6 +1054,7 @@ en:
         cancel_hours: "Minimum Cancelation Hours"
         cancel_mins: "Automatic Cancelation Minutes"
     offline:
+      note: Instrument is down
       notice: |
         This instrument is currently down.
         Contact facility for more information.
