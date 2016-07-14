@@ -43,6 +43,9 @@
             = check_box_tag :send_notification, 1, params[:send_notification] == "1"
             = t(".notify")
 
+  - unless @instrument.online?
+    %p.alert.alert-danger= t(".offline_notice")
+
   %ul.inline
     %li
       = f.submit t("shared.create"),
