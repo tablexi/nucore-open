@@ -67,15 +67,6 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
   end
 
-  def offline_cancellation_notification(reservation)
-    @instrument = reservation.product
-    @reservation = reservation
-    send_nucore_mail(
-      reservation.user.email,
-      text("views.notifier.offline_cancellation_notification.subject", instrument: @instrument),
-    )
-  end
-
   def order_detail_status_change(order_detail, old_status, new_status, to)
     @order_detail = order_detail
     @old_status = old_status

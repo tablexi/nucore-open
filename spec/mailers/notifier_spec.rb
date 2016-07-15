@@ -7,29 +7,6 @@ RSpec.describe Notifier do
   let(:product) { create(:setup_instrument, facility: facility) }
   let(:user) { order.user }
 
-  describe ".offline_cancellation_notification" do
-    before(:each) do
-      allow(reservation).to receive(:user) { user }
-      allow(reservation).to receive(:product) { product }
-      Notifier.offline_cancellation_notification(reservation).deliver_now
-    end
-
-    let(:reservation) { FactoryGirl.build_stubbed(:reservation) }
-    let(:user) { FactoryGirl.build_stubbed(:user) }
-
-    it "generates an offline cancellation notification", :aggregate_failures do
-      expect(email.to).to eq [user.email]
-
-      # TODO: Email content is TBD and therefore subject to change:
-      expect(email.subject)
-        .to eq("Your reservation for #{product} has been canceled")
-      expect(email.html_part.to_s)
-        .to include("#{product} is unavailable")
-      expect(email.text_part.to_s)
-        .to include("#{product} is unavailable")
-    end
-  end
-
   describe ".order_notification" do
     before { Notifier.order_notification(order, recipient).deliver_now }
 

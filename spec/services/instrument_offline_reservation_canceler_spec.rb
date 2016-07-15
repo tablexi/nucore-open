@@ -17,8 +17,9 @@ RSpec.describe InstrumentOfflineReservationCanceler do
         end
 
         before(:each) do
-          allow(Notifier).to receive(:delay) { Notifier }
-          allow(Notifier).to receive(:offline_cancellation_notification)
+          allow(OfflineCancellationMailer)
+            .to receive(:delay) { OfflineCancellationMailer }
+          allow(OfflineCancellationMailer).to receive(:send_notification)
           subject.cancel!
         end
 
@@ -45,8 +46,8 @@ RSpec.describe InstrumentOfflineReservationCanceler do
         end
 
         it "sends a cancellation notification to the user" do
-          expect(Notifier)
-            .to have_received(:offline_cancellation_notification)
+          expect(OfflineCancellationMailer)
+            .to have_received(:send_notification)
             .with(reservation)
         end
       end
