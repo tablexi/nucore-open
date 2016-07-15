@@ -33,14 +33,13 @@ module RoutesHelper
   end
 
   def stored_file_path(file)
-    public_send("#{file.file_type.pluralize}_facility_order_order_detail_path",
-                file.order_detail.facility,
+    public_send("order_order_detail_#{file.file_type.pluralize}_path",
                 file.order_detail.order,
                 file.order_detail,
                 file)
   end
 
-  def sample_result_path(sample_result_file)
+  def facility_sample_result_path(sample_result_file)
     sample_results_facility_order_order_detail_path(
       sample_result_file.order_detail.facility,
       sample_result_file.order_detail.order,
@@ -49,7 +48,7 @@ module RoutesHelper
     )
   end
 
-  def template_result_path(template_result_file)
+  def facility_template_result_path(template_result_file)
     template_results_facility_order_order_detail_path(
       template_result_file.order_detail.facility,
       template_result_file.order_detail.order,
@@ -59,11 +58,7 @@ module RoutesHelper
   end
 
   def order_detail_first_template_result_path(order_detail)
-    order_order_detail_template_results_path(
-      order_detail.order,
-      order_detail,
-      order_detail.stored_files.template_result.first,
-    )
+    stored_file_path(order_detail.stored_files.template_result.first)
   end
 
 end
