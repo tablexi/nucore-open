@@ -222,6 +222,14 @@ class Product < ActiveRecord::Base
     product_users.find_by_user_id(user.id)
   end
 
+  def offline?
+    false
+  end
+
+  def online?
+    !offline?
+  end
+
   def training_request_contacts
     CsvArrayString.new(self[:training_request_contacts])
   end
