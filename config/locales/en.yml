@@ -1055,9 +1055,10 @@ en:
       note: Instrument is down
       notice: |
         This instrument is currently down.
-        Contact facility for more information.
-        It will be canceled for $0 if the instrument is still down at the time
-        of scheduled reservation.
+        Contact the !facility_downcase! for more information.
+        You may place reservations, but if the instrument is still down at your
+        scheduled time they will be canceled at no charge.
+
     public_schedule:
       title: Schedule
       place_reservation: Place Reservation
