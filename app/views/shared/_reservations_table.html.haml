@@ -25,8 +25,7 @@
             - if od.note.present?
               .order-detail-extra.order-detail-note= "Note: #{od.note}"
             - if od.product.offline?
-              = tooltip_icon "icon-warning-sign",
-                t("instruments.offline.note")
+              = tooltip_icon "icon-warning-sign", t("instruments.offline.note")
         %td.centered=h od.order_status.name
         %td.currency
           - od.send(:extend, PriceDisplayment)
