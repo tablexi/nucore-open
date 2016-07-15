@@ -7,8 +7,7 @@ RSpec.describe OfflineCancellationMailer do
     before(:each) do
       allow(reservation).to receive(:user) { user }
       allow(reservation).to receive(:product) { instrument }
-      allow(Reservation).to receive(:find).with(reservation.id) { reservation }
-      described_class.send_notification(reservation.id).deliver_now
+      described_class.send_notification(reservation).deliver_now
     end
 
     let(:instrument) { FactoryGirl.create(:setup_instrument) }

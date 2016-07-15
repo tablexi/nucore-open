@@ -5,6 +5,7 @@ RSpec.describe InstrumentOfflineReservationCanceler do
 
   let(:order_detail) { reservation.order_detail }
   let(:price_policy) { instrument.price_policies.first }
+  let(:stub_mailer) { double(ActionMailer::MessageDelivery) }
   let(:user) { order_detail.user }
 
   describe "#cancel!" do
@@ -18,8 +19,8 @@ RSpec.describe InstrumentOfflineReservationCanceler do
 
         before(:each) do
           allow(OfflineCancellationMailer)
-            .to receive(:delay) { OfflineCancellationMailer }
-          allow(OfflineCancellationMailer).to receive(:send_notification)
+            .to receive(:send_notification) { stub_mailer }
+          allow(stub_mailer).to receive(:deliver_later)
           subject.cancel!
         end
 
@@ -49,6 +50,7 @@ RSpec.describe InstrumentOfflineReservationCanceler do
           expect(OfflineCancellationMailer)
             .to have_received(:send_notification)
             .with(reservation)
+          expect(stub_mailer).to have_received(:deliver_later)
         end
       end
     end
