@@ -63,6 +63,7 @@ class FileUploadsController < ApplicationController
     @upload = @product.stored_files.new(@options)
     authorize! :uploader_create, @upload
     @upload.save!
+    ResultsFileNotifier.new(@upload).notify if @upload.sample_result?
 
     render text: @upload.download_url
   end
