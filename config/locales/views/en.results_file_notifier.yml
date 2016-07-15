@@ -1,0 +1,13 @@
+en:
+  results_file_notifier_mailer:
+    file_uploaded:
+      subject: "!app_name! Results Files Uploaded"
+
+  views:
+    results_file_notifier_mailer:
+      file_uploaded:
+        html: |
+          Results file(s) for your !app_name! order #[%{order_detail}](%{order_detail_path})
+          have been uploaded by %{facility}.
+
+          You may download them from [My Orders](%{order_detail_path}) or [My Files](%{my_files_path})
