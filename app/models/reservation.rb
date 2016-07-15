@@ -46,7 +46,7 @@ class Reservation < ActiveRecord::Base
 
   def self.active
     not_canceled
-      .not_offline
+      .user
       .where(orders: { state: ["purchased", nil] })
       .joins_order
   end
@@ -121,7 +121,7 @@ class Reservation < ActiveRecord::Base
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
   end
 
-  scope :not_offline, -> { where(type: nil) }
+  scope :user, -> { where(type: nil) }
 
   # Instance Methods
   #####
