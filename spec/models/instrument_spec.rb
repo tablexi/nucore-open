@@ -818,20 +818,22 @@ RSpec.describe Instrument do
     end
   end
 
-  describe "#online?" do
+  describe "#offline? and #online?" do
     before { instrument.save! }
 
-    context "when an offline reservation does not exist" do
+    context "when an offline reservation does not exist", :aggregate_failures do
       it { is_expected.to be_online }
+      it { is_expected.not_to be_offline }
     end
 
-    context "when an offline reservation exists" do
+    context "when an offline reservation exists", :aggregate_failures do
       let!(:offline_reservation) do
         instrument
           .offline_reservations
           .create!(admin_note: "Down", reserve_start_at: 1.day.ago)
       end
 
+      it { is_expected.to be_offline }
       it { is_expected.not_to be_online }
     end
   end
