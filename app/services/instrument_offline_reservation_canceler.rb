@@ -30,7 +30,7 @@ class InstrumentOfflineReservationCanceler
       .where(product_id: offline_instrument_ids)
       .not_canceled
       .not_ended
-      .where("reserve_start_at <= ?", 1.minute.from_now)
+      .where("reserve_start_at <= ?", Time.current)
   end
 
   def offline_instrument_ids
