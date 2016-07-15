@@ -112,7 +112,9 @@ class FacilityReservationsController < ApplicationController
   # GET /facilities/:facility_id/instruments/:instrument_id/reservations/new
   def new
     @instrument   = current_facility.instruments.find_by_url_name!(params[:instrument_id])
-    @reservation  = @instrument.next_available_reservation || @instrument.reservations.build(duration_value: @instrument.min_reserve_mins, duration_unit: "minutes")
+    @reservation = @instrument.next_available_reservation ||
+                   @instrument.admin_reservations.build(duration_value: @instrument.min_reserve_mins, duration_unit: "minutes")
+    @reservation = @reservation.becomes(AdminReservation)
     @reservation.round_reservation_times
     set_windows
 
@@ -124,8 +126,8 @@ class FacilityReservationsController < ApplicationController
     @instrument =
       current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.admin_reservations.new
-    @reservation.assign_attributes(params[:reservation])
-    @reservation.assign_times_from_params(params[:reservation])
+    @reservation.assign_attributes(params[:admin_reservation])
+    @reservation.assign_times_from_params(params[:admin_reservation])
 
     if @reservation.save
       flash[:notice] = "The reservation has been created successfully."
