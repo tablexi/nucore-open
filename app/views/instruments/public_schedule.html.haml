@@ -23,7 +23,7 @@
 
 %h2 #{@instrument} #{t('.title')}
 
-- unless @instrument.online?
+- if @instrument.offline?
   %p.alert.alert-danger= t("instruments.offline.notice")
 
 #overlay

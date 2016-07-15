@@ -21,7 +21,7 @@
 
 .wysiwyg= @instrument.description
 
-- unless @instrument.online?
+- if @instrument.offline?
   %p.alert.alert-danger= t("instruments.offline.notice")
 
 = render "documentation"
@@ -43,7 +43,7 @@
             = check_box_tag :send_notification, 1, params[:send_notification] == "1"
             = t(".notify")
 
-  - unless @instrument.online?
+  - if @instrument.offline?
     %p.alert.alert-danger= t("instruments.offline.notice")
 
   %ul.inline

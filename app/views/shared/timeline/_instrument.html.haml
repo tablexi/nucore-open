@@ -8,7 +8,7 @@
         = link_to instrument,
           facility_instrument_schedule_path(current_facility, instrument)
 
-      - unless instrument.online?
+      - if instrument.offline?
         = t(".offline")
 
     -# Add .reschedulable to enable drag/drop
