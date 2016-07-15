@@ -11,15 +11,15 @@ class InstrumentOfflineReservationCanceler
 
   private
 
-  def admin
+  def admin_user
     # OrderDetail#cancel_reservation needs an object that responds to #id
-    @admin ||= OpenStruct.new(id: 0)
+    @admin_user ||= OpenStruct.new(id: 0)
   end
 
   def cancel_reservation(reservation)
     reservation
       .order_detail
-      .cancel_reservation(admin, OrderStatus.canceled.first, true, false)
+      .cancel_reservation(admin_user, OrderStatus.canceled.first, true, false)
     reservation
       .update_attribute(:canceled_reason, "The instrument was offline")
   end
