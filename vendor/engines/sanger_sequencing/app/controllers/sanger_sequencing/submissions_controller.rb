@@ -42,7 +42,7 @@ module SangerSequencing
     end
 
     def current_ability
-      SangerSequencing::Ability.new(current_user)
+      SangerSequencing::Ability.new(acting_user)
     end
 
     private
