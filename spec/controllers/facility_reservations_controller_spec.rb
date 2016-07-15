@@ -102,7 +102,7 @@ RSpec.describe FacilityReservationsController do
   end
 
   describe "POST #create" do
-    let(:reservation_params) do
+    let(:admin_reservation_params) do
       {
         reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
         reserve_start_hour: reserve_start_at.hour.to_s,
@@ -120,7 +120,7 @@ RSpec.describe FacilityReservationsController do
       @params = {
         facility_id: facility.url_name,
         instrument_id: product.url_name,
-        reservation: reservation_params,
+        admin_reservation: admin_reservation_params,
       }
     end
 
