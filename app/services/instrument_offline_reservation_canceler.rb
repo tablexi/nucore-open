@@ -4,7 +4,7 @@ class InstrumentOfflineReservationCanceler
     reservations_to_cancel.each do |reservation|
       reservation.transaction do
         cancel_reservation(reservation)
-        Notifier.offline_cancellation_notification(reservation)
+        Notifier.delay.offline_cancellation_notification(reservation)
       end
     end
   end

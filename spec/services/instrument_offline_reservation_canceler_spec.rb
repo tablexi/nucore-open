@@ -17,6 +17,7 @@ RSpec.describe InstrumentOfflineReservationCanceler do
         end
 
         before(:each) do
+          allow(Notifier).to receive(:delay) { Notifier }
           allow(Notifier).to receive(:offline_cancellation_notification)
           subject.cancel!
         end
