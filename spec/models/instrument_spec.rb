@@ -152,6 +152,26 @@ RSpec.describe Instrument do
       end
     end
 
+    describe "#offline_via_schedule_share?" do
+      context "when two instruments share a schedule" do
+        context "and one is offline" do
+          let!(:instrument1) { FactoryGirl.create(:setup_instrument, facility: facility, schedule: schedule) }
+          let!(:instrument2) { FactoryGirl.create(:setup_instrument, :offline, facility: facility, schedule: schedule) }
+          let(:schedule) { FactoryGirl.create(:schedule, facility: facility) }
+
+          before(:each) do
+            expect(instrument1).to be_online
+            expect(instrument2).to be_offline
+          end
+
+          it "considers both offline via a shared schedule", :aggregate_failures do
+            expect(instrument1).to be_offline_via_schedule_share
+            expect(instrument2).to be_offline_via_schedule_share
+          end
+        end
+      end
+    end
+
     describe "name updating" do
       before :each do
         @instrument = setup_instrument(schedule: nil)

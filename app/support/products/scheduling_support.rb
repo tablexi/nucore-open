@@ -98,6 +98,10 @@ module Products::SchedulingSupport
     offline_reservations.current.any?
   end
 
+  def offline_via_schedule_share?
+    schedule.products.any?(&:offline?)
+  end
+
   def online!
     offline_reservations.current.update_all(reserve_end_at: Time.current)
   end

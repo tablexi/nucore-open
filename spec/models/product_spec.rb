@@ -523,6 +523,10 @@ RSpec.describe Product do
     it { is_expected.not_to be_offline }
   end
 
+  describe "#offline_via_schedule_share?" do
+    it { is_expected.not_to be_offline_via_schedule_share }
+  end
+
   describe "#online?" do
     it { is_expected.to be_online }
   end
