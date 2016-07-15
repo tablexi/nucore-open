@@ -102,10 +102,6 @@ module Products::SchedulingSupport
     offline_reservations.current.update_all(reserve_end_at: Time.current)
   end
 
-  def online?
-    !offline?
-  end
-
   private
 
   def reservation_in_week(after, duration, rules, options)
