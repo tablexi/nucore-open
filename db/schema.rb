@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160706195345) do
+ActiveRecord::Schema.define(version: 20160715220430) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -88,6 +88,16 @@ ActiveRecord::Schema.define(version: 20160706195345) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "email_events", force: :cascade do |t|
+    t.integer  "user_id",      limit: 4,   null: false
+    t.string   "key",          limit: 255, null: false
+    t.datetime "last_sent_at",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "email_events", ["user_id", "key"], name: "index_email_events_on_user_id_and_key", unique: true, using: :btree
 
   create_table "external_service_passers", force: :cascade do |t|
     t.integer  "external_service_id", limit: 4
@@ -687,6 +697,7 @@ ActiveRecord::Schema.define(version: 20160706195345) do
   add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bundle_products", "products", column: "bundle_product_id", name: "fk_bundle_prod_prod"
   add_foreign_key "bundle_products", "products", name: "fk_bundle_prod_bundle"
+  add_foreign_key "email_events", "users"
   add_foreign_key "facility_accounts", "facilities", name: "fk_facilities"
   add_foreign_key "instrument_statuses", "products", column: "instrument_id", name: "fk_int_stats_product"
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"

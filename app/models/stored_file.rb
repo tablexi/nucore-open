@@ -10,6 +10,8 @@ class StoredFile < ActiveRecord::Base
   validates_presence_of   :order_detail_id, if: ->(o) { o.file_type == "template_result" || o.file_type == "sample_result" }
   validates_inclusion_of  :file_type, in: %w(info template template_result sample_result import_error import_upload)
 
+  delegate :user, to: :order_detail
+
   scope :import_error, -> { where(file_type: "import_error") }
   scope :import_upload, -> { where(file_type: "import_upload") }
   scope :info, -> { where(file_type: "info") }

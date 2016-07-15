@@ -21,7 +21,7 @@ RSpec.describe ResultsFileNotifier do
       end
 
       describe "a day later" do
-        before { Timecop.travel(1.day.from_now) }
+        before { Timecop.travel(25.hours.from_now) }
 
         it "does send" do
           expect { notifier.notify }.to change(ActionMailer::Base.deliveries, :count).by(1)
