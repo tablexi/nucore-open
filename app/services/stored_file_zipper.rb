@@ -1,4 +1,5 @@
 class StoredFileZipper
+
   attr_reader :files
 
   def initialize(files)
@@ -22,4 +23,5 @@ class StoredFileZipper
       end
     end
   end
+
 end
