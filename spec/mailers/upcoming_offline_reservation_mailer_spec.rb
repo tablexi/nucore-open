@@ -20,8 +20,8 @@ RSpec.describe UpcomingOfflineReservationMailer do
       # TODO: Email content is TBD and therefore subject to change:
       expect(email.subject)
         .to eq("Regarding your upcoming reservation for #{instrument}")
-      expect(email.html_part.to_s).to include("#{instrument} is currently down")
-      expect(email.text_part.to_s).to include("#{instrument} is currently down")
+      expect(email.html_part.to_s).to include("#{instrument}, is down")
+      expect(email.text_part.to_s).to include("#{instrument}, is down")
     end
   end
 end
