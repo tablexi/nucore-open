@@ -18,7 +18,7 @@ class UpcomingOfflineReservationNotifier
 
   def upcoming_offline_reservations
     Reservation
-      .not_offline
+      .user
       .where(product_id: offline_instrument_ids)
       .not_canceled
       .not_ended
