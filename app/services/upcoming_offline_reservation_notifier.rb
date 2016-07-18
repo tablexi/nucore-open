@@ -24,4 +24,5 @@ class UpcomingOfflineReservationNotifier
       .not_ended
       .where("reserve_start_at <= ?", Time.current + 1.day)
   end
+
 end

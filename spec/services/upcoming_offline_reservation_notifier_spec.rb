@@ -14,8 +14,7 @@ RSpec.describe UpcomingOfflineReservationNotifier do
           FactoryGirl.create(:setup_reservation,
                              product: instrument,
                              reserve_start_at: now + 10.hours,
-                             reserve_end_at: now + 11.hours,
-                            )
+                             reserve_end_at: now + 11.hours)
         end
         let(:stub_delivery) { double(ActionMailer::MessageDelivery) }
         let(:user) { reservation.user }
