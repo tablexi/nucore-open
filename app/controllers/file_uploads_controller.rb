@@ -64,7 +64,6 @@ class FileUploadsController < ApplicationController
                 product: @product,
                 created_by: current_user.id }
 
-
     @upload = @product.stored_files.new(options)
     authorize! :uploader_create, @upload
     @upload.save!
