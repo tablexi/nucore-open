@@ -121,6 +121,14 @@ class Reservation < ActiveRecord::Base
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
   end
 
+  def self.upcoming_offline(start_at_limit = 1.day.from_now)
+    user
+      .where(product: Instrument.offline)
+      .not_canceled
+      .not_ended
+      .where("reserve_start_at <= ?", start_at_limit)
+  end
+
   scope :user, -> { where(type: nil) }
 
   # Instance Methods
