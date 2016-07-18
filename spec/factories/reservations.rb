@@ -45,6 +45,18 @@ FactoryGirl.define do
     order_detail nil
   end
 
+  factory :offline_reservation, class: OfflineReservation, parent: :reservation do
+    admin_note "Out of order"
+    category "out_of_order"
+    order_detail nil
+
+    OfflineReservation::CATEGORIES.each do |category_label|
+      trait category_label.to_sym do
+        category category_label
+      end
+    end
+  end
+
   factory :setup_reservation, class: Reservation, parent: :reservation do
     product factory: :setup_instrument
 

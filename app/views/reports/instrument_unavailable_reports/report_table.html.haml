@@ -1,0 +1,16 @@
+.updated_values{style: "display: none"}
+  .date_start= human_datetime(@date_start, date_only: true)
+  .date_end= human_datetime(@date_end, date_only: true)
+
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      - @headers.each_with_index do |header, index|
+        - if @numeric_columns.include?(index)
+          %th.currency= header
+        - else
+          %th= header
+
+  = render "report_rows"
+
+= will_paginate @rows

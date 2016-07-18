@@ -980,6 +980,7 @@ en:
       date_start: Start Date
       date_end: End Date
       auto_cancel_name: 'Auto Cancel'
+      total: Total
     export:
       export: Export
       raw: Export Raw
