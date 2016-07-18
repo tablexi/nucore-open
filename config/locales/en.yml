@@ -1133,6 +1133,28 @@ en:
 
   upcoming_offline_reservation_mailer:
     subject: Regarding your upcoming reservation for %{instrument}
+    generate_mail:
+      body:
+        html: |
+          <p>
+            %{product}, the instrument you
+            <a href="%{reservation_url}">have reserved for %{reservation_time}</a>,
+            is down. If %{product} is still down at your scheduled time, your
+            reservation will be canceled at no cost.
+          </p>
+          <p>
+            Please contact <a href="%{facility_url}">the !facility_downcase!</a>
+            for more information.
+          </p>
+        text: |
+          %{product}, the instrument you have reserved for today at %{reservation_time},
+          is down. If %{product} is still down at your scheduled time, your reservation
+          will be cancelled at no cost.
+
+          Please contact the !facility_downcase! for more information.
+
+          !Facility!: %{facility_url}
+          Your reservation: %{reservation_url}
 
   activerecord:
     errors:

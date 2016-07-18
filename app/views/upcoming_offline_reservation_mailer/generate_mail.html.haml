@@ -1,10 +1,6 @@
 %p
-  The instrument you have reserved for today at
-  #{l(@reservation.reserve_start_at, format: :timeonly)},
-  #{@reservation.product}, is down.
-
-  If the instrument is still down at your scheduled time, your reservation will
-  be canceled at no cost.
-
-%p
-  Please contact the #{t("facility_downcase")} for more information.
+  = text "upcoming_offline_reservation_mailer.generate_mail.body.html",
+    facility_url: facility_url(@reservation.facility),
+    product: @reservation.product,
+    reservation_time: I18n.l(@reservation.reserve_start_at, format: :timeonly),
+    reservation_url: order_order_detail_reservation_url(@reservation.order, @reservation.order_detail, @reservation)
