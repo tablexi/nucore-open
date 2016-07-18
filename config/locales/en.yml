@@ -1133,7 +1133,7 @@ en:
 
   upcoming_offline_reservation_mailer:
     subject: Regarding your upcoming reservation for %{instrument}
-    generate_mail:
+    send_offline_instrument_warning:
       body:
         html: |
           <p>

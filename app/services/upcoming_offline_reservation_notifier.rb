@@ -2,7 +2,9 @@ class UpcomingOfflineReservationNotifier
 
   def notify
     upcoming_offline_reservations.each do |reservation|
-      UpcomingOfflineReservationMailer.generate_mail(reservation).deliver_later
+      UpcomingOfflineReservationMailer
+        .send_offline_instrument_warning(reservation)
+        .deliver_later
     end
   end
 

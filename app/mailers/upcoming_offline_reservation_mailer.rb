@@ -2,7 +2,7 @@ class UpcomingOfflineReservationMailer < BaseMailer
 
   attr_reader :reservation
 
-  def generate_mail(reservation)
+  def send_offline_instrument_warning(reservation)
     @reservation = reservation
     mail(to: recipient.email, subject: subject)
   end

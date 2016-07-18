@@ -21,14 +21,14 @@ RSpec.describe UpcomingOfflineReservationNotifier do
 
         before(:each) do
           allow(UpcomingOfflineReservationMailer)
-            .to receive(:generate_mail) { stub_delivery }
+            .to receive(:send_offline_instrument_warning) { stub_delivery }
           allow(stub_delivery).to receive(:deliver_later)
           subject.notify
         end
 
         it "creates a notification for the reservation's user" do
           expect(UpcomingOfflineReservationMailer)
-            .to have_received(:generate_mail)
+            .to have_received(:send_offline_instrument_warning)
             .with(reservation)
           expect(stub_delivery).to have_received(:deliver_later)
         end
