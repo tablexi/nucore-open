@@ -58,8 +58,8 @@ class FileUploadsController < ApplicationController
     @product  = current_facility.send(@klass).find_by_url_name!(params[:product_id])
 
     options = { file: params[:qqfile],
-                name: params[:qqfilename].presence || file.original_filename,
-                file_type: "sample_result",
+                name: params[:qqfilename].presence || params[:qqfile].original_filename,
+                file_type: params[:file_type],
                 order_detail: OrderDetail.find(params[:order_detail_id]),
                 product: @product,
                 created_by: current_user.id }
@@ -70,6 +70,7 @@ class FileUploadsController < ApplicationController
 
     respond_to do |format|
       format.json { render json: { success: true } }
+      format.html { render nothing: true }
     end
   end
 

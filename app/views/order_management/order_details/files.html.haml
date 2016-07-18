@@ -23,7 +23,8 @@
       endpoint: '#{add_uploader_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product.url_name)}',
       params: {
         authenticity_token: $('#js-fineUploader').data('authenticity-token'),
-        order_detail_id: #{@order_detail.id}
+        order_detail_id: #{@order_detail.id},
+        file_type: "sample_result"
       }
     },
     failedUploadTextDisplay: {

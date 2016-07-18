@@ -80,8 +80,7 @@ RSpec.describe FileUploadsController do
         facility_id: @authable.url_name,
         product: "services",
         product_id: @service.url_name,
-        fileData: fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", "application/x-shockwave-flash"),
-        Filename: "#{Rails.root}/spec/files/flash_file.swf",
+        qqfile: fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", "application/x-shockwave-flash"),
         file_type: "info",
         order_detail_id: @order_detail.id,
       }
