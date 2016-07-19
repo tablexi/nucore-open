@@ -466,7 +466,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def force_complete!
-    update(state: "complete", order_status: OrderStatus.complete.first)
+    update(state: "complete", order_status: OrderStatus.complete_status)
   end
 
   def backdate_to_complete!(event_time = Time.zone.now)
