@@ -226,10 +226,6 @@ class Product < ActiveRecord::Base
     false
   end
 
-  def offline_via_schedule_share?
-    offline?
-  end
-
   def online?
     !offline?
   end

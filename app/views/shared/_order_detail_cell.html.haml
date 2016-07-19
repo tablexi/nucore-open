@@ -7,7 +7,7 @@
       %br
       %em= od.reservation
 
-    - if od.product.offline? || od.product.offline_via_schedule_share?
+    - if od.product.offline?
       = tooltip_icon "icon-warning-sign", t("instruments.offline.note")
 
   - if od.survey_completed?

@@ -98,13 +98,6 @@ module Products::SchedulingSupport
     offline_reservations.current.any?
   end
 
-  # TODO: Rename to better explain that this can mean the instrument is offline
-  # even if not on a shared schedule; when not on a shared schedule, this is
-  # equivalent to #offline?
-  def offline_via_schedule_share?
-    schedule.products.any?(&:offline?)
-  end
-
   def online!
     offline_reservations.current.update_all(reserve_end_at: Time.current)
   end
