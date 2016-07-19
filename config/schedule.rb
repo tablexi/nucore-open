@@ -16,6 +16,10 @@ every 5.minutes, roles: [:db] do
   rake "order_details:auto_logout"
 end
 
+every 1.minute, roles: [:db] do
+  command "curl #{Rails.application.routes.url_helpers.admin_services_cancel_reservations_for_offline_instruments_url}"
+end
+
 every :day, at: "4:17am", roles: [:db] do
   rake "order_details:remove_merge_orders"
 end
