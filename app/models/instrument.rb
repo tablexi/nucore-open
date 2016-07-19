@@ -36,7 +36,7 @@ class Instrument < Product
   # Scopes
   # --------
 
-  scope :offline, -> {
+  scope :offline, lambda {
     where(schedule_id: OfflineReservation.current.offline_schedule_ids)
   }
 
