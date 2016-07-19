@@ -9,6 +9,8 @@
 
 %h2= text("sanger_sequencing.name")
 
+%p= link_to text("new_batch"), new_facility_sanger_sequencing_admin_batch_path, class: "btn btn-add"
+
 - if @batches.any?
   %table.table.table-striped.sangerSequencing--batches__table
     %thead
