@@ -57,14 +57,21 @@ class FileUploadsController < ApplicationController
     @klass    = params[:product]
     @product  = current_facility.send(@klass).find_by_url_name!(params[:product_id])
 
-    @options = Hash[swf_uploaded_data: params[:fileData], name: params[:Filename],
-                    file_type: params[:file_type], order_detail_id: params[:order_detail_id],
-                    created_by: session_user.id]
-    @upload = @product.stored_files.new(@options)
+    options = { file: params[:qqfile],
+                name: params[:qqfilename].presence || params[:qqfile].original_filename,
+                file_type: params[:file_type],
+                order_detail: OrderDetail.find(params[:order_detail_id]),
+                product: @product,
+                created_by: current_user.id }
+
+    @upload = @product.stored_files.new(options)
     authorize! :uploader_create, @upload
     @upload.save!
 
-    render text: @upload.download_url
+    respond_to do |format|
+      format.json { render json: { success: true } }
+      format.html { render nothing: true }
+    end
   end
 
   # GET /facilities/1/services/3/files/survey_upload
@@ -98,10 +105,13 @@ class FileUploadsController < ApplicationController
 
     # use return_to if it was sent
     @return_to = params[:return_to]
-    if @file.file_type == "template"
-      redirect_to(@return_to || product_survey_path(current_facility, @product.parameterize, @product)) && return
+
+    if request.xhr?
+      render nothing: true
+    elsif @file.file_type == "template"
+      redirect_to(@return_to || product_survey_path(current_facility, @product.parameterize, @product))
     else
-      redirect_to(@return_to || upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type)) && return
+      redirect_to(@return_to || upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type))
     end
   end
 

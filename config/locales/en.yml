@@ -930,10 +930,6 @@ en:
     export_html: Export
 
   file_uploads:
-    widget:
-      error_loading: Please enable Javascript and install Adobe Flash Player.
-      start: Start Upload
-      clear_queue: Clear Queue
     sample_result:
       title: Results Files
       count: "%{count} Results Files"

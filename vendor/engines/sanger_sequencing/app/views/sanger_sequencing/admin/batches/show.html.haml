@@ -7,9 +7,6 @@
   = stylesheet_link_tag "sanger_sequencing/application"
   = render "shared/fine_uploader_template"
 
-  = javascript_include_tag "fine-uploader/jquery.fine-uploader"
-  = stylesheet_link_tag "fine-uploader/fine-uploader-new"
-
 %vue-sanger-sequencing-well-plate-displayer-app(inline-template){ ":submissions" => @submissions.to_json, ":well-plates" => @batch.well_plates.to_json }
   %vue-sanger-sequencing-well-plate(v-for="plateIndex in builder.plateCount()"){":builder" => "builder", ":plate-index" => "$index" }
 
