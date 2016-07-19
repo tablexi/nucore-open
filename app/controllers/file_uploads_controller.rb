@@ -67,6 +67,7 @@ class FileUploadsController < ApplicationController
     @upload = @product.stored_files.new(options)
     authorize! :uploader_create, @upload
     @upload.save!
+    ResultsFileNotifier.new(@upload).notify if @upload.sample_result?
 
     respond_to do |format|
       format.json { render json: { success: true } }
