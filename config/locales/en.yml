@@ -1136,16 +1136,13 @@ en:
     send_offline_instrument_warning:
       body:
         html: |
-          <p>
             %{product}, the instrument you
-            <a href="%{reservation_url}">have reserved for %{reservation_time}</a>,
-            is down. If %{product} is still down at your scheduled time, your
-            reservation will be canceled at no cost.
-          </p>
-          <p>
-            Please contact <a href="%{facility_url}">the !facility_downcase!</a>
-            for more information.
-          </p>
+            [have reserved for %{reservation_time}](%{reservation_url}), is down.
+            If %{product} is still down at your scheduled time, your reservation
+            will be canceled at no cost.
+
+            Please contact [the !facility_downcase!](%{facility_url}) for more
+            information.
         text: |
           %{product}, the instrument you have reserved for today at %{reservation_time},
           is down. If %{product} is still down at your scheduled time, your reservation
