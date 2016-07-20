@@ -1,4 +1,4 @@
-class MailerPreview < ActionMailer::Preview
+class UpcomingOfflineReservationMailerPreview < ActionMailer::Preview
 
   def upcoming_offline_reservation
     UpcomingOfflineReservationMailer
