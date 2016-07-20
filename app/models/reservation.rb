@@ -121,7 +121,7 @@ class Reservation < ActiveRecord::Base
     where("actual_start_at IS NOT NULL AND actual_end_at IS NULL")
   end
 
-  def self.upcoming_offline(start_at_limit = 1.day.from_now)
+  def self.upcoming_offline(start_at_limit)
     user
       .where(product_id: OfflineReservation.current.pluck(:product_id))
       .not_canceled
