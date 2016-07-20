@@ -1,0 +1,23 @@
+en:
+  views:
+    upcoming_offline_reservation_mailer:
+      subject: Regarding your upcoming reservation for %{instrument}
+      send_offline_instrument_warning:
+        body:
+          html: |
+              %{product}, the instrument you
+              [have reserved for %{reservation_time}](%{reservation_url}), is down.
+              If %{product} is still down at your scheduled time, your reservation
+              will be canceled at no cost.
+
+              Please contact [the !facility_downcase!](%{facility_url}) for more
+              information.
+          text: |
+            %{product}, the instrument you have reserved for today at %{reservation_time},
+            is down. If %{product} is still down at your scheduled time, your reservation
+            will be cancelled at no cost.
+
+            Please contact the !facility_downcase! for more information.
+
+            !Facility!: %{facility_url}
+            Your reservation: %{reservation_url}

@@ -14,7 +14,7 @@ class UpcomingOfflineReservationMailer < BaseMailer
   end
 
   def subject
-    text("upcoming_offline_reservation_mailer.subject",
+    text("views.upcoming_offline_reservation_mailer.subject",
          instrument: reservation.product)
   end
 
