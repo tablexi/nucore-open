@@ -19,6 +19,7 @@ class OfflineReservationsController < ApplicationController
     @reservation = @instrument.offline_reservations.new(new_offline_reservation_params)
 
     if @reservation.save
+      flag_ongoing_reservations_as_problem
       flash[:notice] = text("create.success")
       redirect_to facility_instrument_schedule_path
     else
@@ -51,6 +52,12 @@ class OfflineReservationsController < ApplicationController
   end
 
   private
+
+  def flag_ongoing_reservations_as_problem
+    OrderDetail
+      .where(id: @instrument.reservations.ongoing.pluck(:order_detail_id))
+      .each(&:force_complete!)
+  end
 
   def load_instrument
     @instrument = current_facility.instruments.find_by!(url_name: params[:instrument_id])

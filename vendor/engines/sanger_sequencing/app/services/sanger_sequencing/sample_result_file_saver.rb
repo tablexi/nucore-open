@@ -23,7 +23,9 @@ module SangerSequencing
                                    file_type: "sample_result", created_by: current_user.id,
                                    order_detail: sample.submission.order_detail,
                                    product_id: sample.submission.order_detail.product_id)
-      stored_file.save
+      success = stored_file.save
+      trigger_notification(stored_file) if success
+      success
     end
 
     def filename
@@ -36,6 +38,10 @@ module SangerSequencing
     end
 
     private
+
+    def trigger_notification(stored_file)
+      ResultsFileNotifier.new(stored_file).notify
+    end
 
     def has_valid_sample
       return unless filename_has_sample_id?
