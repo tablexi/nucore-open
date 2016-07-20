@@ -21,9 +21,21 @@ module Reservations::Validations
 
     validate :starts_before_ends
     validate :duration_is_interval
+    validate :category_is_valid
   end
 
   # Validation Methods
+
+  def category_is_valid
+    return if category.blank?
+    if self.class.const_defined?(:CATEGORIES)
+      unless self.class::CATEGORIES.include?(category)
+        errors.add(:category, "must be a defined category")
+      end
+    else
+      errors.add(:category, "must be blank")
+    end
+  end
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at

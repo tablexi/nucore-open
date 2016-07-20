@@ -28,6 +28,10 @@ RSpec.describe Reservation do
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
+  describe "validations" do
+    it { is_expected.to validate_absence_of :category }
+  end
+
   describe "#admin_editable?" do
     context "when the reservation has been persisted" do
       context "and has been canceled" do
