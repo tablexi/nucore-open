@@ -7,7 +7,6 @@ class OfflineReservation < Reservation
   belongs_to :product
 
   scope :current, -> { where(reserve_end_at: nil).where("reserve_start_at < ?", Time.current) }
-  scope :offline_schedule_ids, -> { joins(:product).pluck(:schedule_id) }
 
   def admin?
     true

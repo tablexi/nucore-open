@@ -123,7 +123,7 @@ class Reservation < ActiveRecord::Base
 
   def self.upcoming_offline(start_at_limit = 1.day.from_now)
     user
-      .where(product: Instrument.offline)
+      .where(product_id: OfflineReservation.current.pluck(:product_id))
       .not_canceled
       .not_ended
       .where("reserve_start_at <= ?", start_at_limit)

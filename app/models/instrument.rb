@@ -36,10 +36,6 @@ class Instrument < Product
   # Scopes
   # --------
 
-  scope :offline, lambda {
-    where(schedule_id: OfflineReservation.current.offline_schedule_ids)
-  }
-
   def self.reservation_only
     joins("LEFT OUTER JOIN relays ON relays.instrument_id = products.id")
       .where("relays.instrument_id IS NULL")
