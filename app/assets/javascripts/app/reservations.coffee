@@ -23,7 +23,7 @@ $ ->
         picked = new Date(date_string)
 
         # change reservation creation button based on Reservation
-        text = if picked.between(now, future) then 'Create & Start' else 'Create'
+        text = if instrumentOnline && picked.between(now, future) then 'Create & Start' else 'Create'
         $('#reservation_submit').attr('value', text)
 
       .trigger('change')

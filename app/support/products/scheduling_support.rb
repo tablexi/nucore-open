@@ -94,12 +94,16 @@ module Products::SchedulingSupport
     end
   end
 
+  def offline?
+    offline_reservations.current.any?
+  end
+
   def online!
     offline_reservations.current.update_all(reserve_end_at: Time.current)
   end
 
   def online?
-    offline_reservations.current.none?
+    !offline?
   end
 
   private
