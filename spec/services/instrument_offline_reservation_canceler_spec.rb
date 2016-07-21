@@ -9,7 +9,9 @@ RSpec.describe InstrumentOfflineReservationCanceler do
   let(:user) { order_detail.user }
 
   describe "#cancel!" do
-    shared_context "the instrument is offline" do
+    context "when the instrument is offline" do
+      let!(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+
       context "when a reservation starting now exists" do
         let!(:reservation) do
           FactoryGirl.create(:purchased_reservation,
@@ -52,26 +54,6 @@ RSpec.describe InstrumentOfflineReservationCanceler do
             .with(reservation)
           expect(stub_mailer).to have_received(:deliver_later)
         end
-      end
-    end
-
-    context "when the instrument is offline" do
-      let!(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
-
-      it_behaves_like "the instrument is offline"
-    end
-
-    context "when the instrument is online" do
-      let!(:instrument) { FactoryGirl.create(:setup_instrument, schedule: nil) }
-
-      context "but shares a schedule with an instrument that is offline" do
-        let!(:offline_instrument_on_shared_schedule) do
-          FactoryGirl.create(:setup_instrument,
-                             :offline,
-                             schedule: instrument.schedule)
-        end
-
-        it_behaves_like "the instrument is offline"
       end
     end
   end

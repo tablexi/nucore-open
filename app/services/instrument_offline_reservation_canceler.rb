@@ -1,7 +1,7 @@
 class InstrumentOfflineReservationCanceler
 
   def cancel!
-    reservations_to_cancel.each do |reservation|
+    Reservation.upcoming_offline(Time.current).each do |reservation|
       reservation.transaction do
         cancel_reservation(reservation)
         OfflineCancellationMailer.send_notification(reservation).deliver_later
@@ -22,23 +22,6 @@ class InstrumentOfflineReservationCanceler
       .cancel_reservation(admin_user, OrderStatus.canceled.first, true, false)
     reservation
       .update_attribute(:canceled_reason, "The instrument was offline")
-  end
-
-  def reservations_to_cancel
-    Reservation
-      .user
-      .where(product_id: offline_instrument_ids)
-      .not_canceled
-      .not_ended
-      .where("reserve_start_at <= ?", Time.current)
-  end
-
-  def offline_instrument_ids
-    Instrument.where(schedule_id: offline_schedule_ids)
-  end
-
-  def offline_schedule_ids
-    OfflineReservation.current.joins(:product).pluck(:schedule_id)
   end
 
 end
