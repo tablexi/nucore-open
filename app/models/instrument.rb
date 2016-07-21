@@ -35,6 +35,7 @@ class Instrument < Product
 
   # Scopes
   # --------
+
   def self.reservation_only
     joins("LEFT OUTER JOIN relays ON relays.instrument_id = products.id")
       .where("relays.instrument_id IS NULL")

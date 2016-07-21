@@ -1,0 +1,7 @@
+<%=
+  text "body.text",
+    facility_url: facility_url(@reservation.facility),
+    product: @reservation.product,
+    reservation_time: I18n.l(@reservation.reserve_start_at, format: :timeonly),
+    reservation_url: order_order_detail_reservation_url(@reservation.order, @reservation.order_detail, @reservation)
+%>
