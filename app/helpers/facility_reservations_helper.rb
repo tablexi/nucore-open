@@ -1,8 +1,16 @@
 module FacilityReservationsHelper
 
   def offline_category_collection
-    OfflineReservation::CATEGORIES.map do |c|
-      [I18n.t("offline_reservations.categories.#{c}"), c]
+    OfflineReservation::CATEGORIES.map do |category|
+      [reservation_category_label(category), category]
+    end
+  end
+
+  def reservation_category_label(reservation_category)
+    if reservation_category.present?
+      I18n.t("offline_reservations.categories.#{reservation_category}")
+    else
+      ""
     end
   end
 

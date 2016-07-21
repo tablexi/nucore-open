@@ -272,7 +272,9 @@ en:
         auto_logout: Auto-Relay Shutoff?
         auto_logout_minutes: Auto-Relay Shutoff After X Minutes
       reservation:
+        admin_note: Admin Note
         base: '' #handled by actual messages
+        category: Category
         to_s: Reservation
         reserve_to_s: Reservation
         reserve_start_date: Reserve Start
