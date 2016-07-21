@@ -8,8 +8,6 @@ en:
         intro: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at %{login_url}."
         no_password: You may log in with your username and password.
         subject: "Welcome to !app_name!"
-      offline_cancellation_notification:
-        subject: "Your reservation for %{instrument} has been canceled"
       order_notification:
         subject: "!app_name! Order Notification"
       order_receipt:
