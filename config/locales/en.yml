@@ -536,10 +536,6 @@ en:
       documentation: "Documentation"
       crumb: "Create Reservation"
       notify: Send Notification
-      offline_notice: |
-        This instrument is currently offline. If it is not back online before
-        your scheduled time, you will receive a notice and your reservation
-        will be canceled.
     list:
       status:
         upcoming: Upcoming
@@ -1052,6 +1048,14 @@ en:
         max_res: "Maximum Reservation Minutes"
         cancel_hours: "Minimum Cancelation Hours"
         cancel_mins: "Automatic Cancelation Minutes"
+    offline:
+      note: Instrument is down
+      notice: |
+        This instrument is currently down.
+        Contact the !facility_downcase! for more information.
+        You may place reservations, but if the instrument is still down at your
+        scheduled time they will be canceled at no charge.
+
     public_schedule:
       title: Schedule
       place_reservation: Place Reservation

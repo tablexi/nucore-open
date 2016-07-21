@@ -1,18 +1,25 @@
 = content_for :h1 do
   = t_my(Reservation)
+
 = content_for :tabnav do
   %ul.nav.nav-tabs
     - @available_statuses.each do |status|
-      = tab I18n.t("reservations.list.status.#{status}"), reservations_status_path(:status => status), (@status == status)
+      = tab I18n.t("reservations.list.status.#{status}"),
+        reservations_status_path(status: status),
+        (@status == status)
+
 - if @order_details.empty?
-  %p.notice= "You have not made any #{Reservation.model_name.human.pluralize.downcase}."
+  %p.notice
+    = "You have not made any #{Reservation.model_name.human.pluralize.downcase}."
 - else
-  = render :partial => 'shared/reservations_table', :locals => { :order_details => @order_details }
+  = render "shared/reservations_table", order_details: @order_details
 
 - if session[:reservation_ended]
   - session.delete(:reservation_ended)
   #logout_modal.modal.hide.fade
     .modal-body= t("reservations.logout.body")
     .modal-footer
-      =link_to t("reservations.logout.cancel"), reservations_path, class: "btn"
-      =link_to t("pages.logout"), sign_out_user_path, class: "btn btn-primary logout"
+      = link_to t("reservations.logout.cancel"), reservations_path, class: "btn"
+      = link_to t("pages.logout"),
+        sign_out_user_path,
+        class: "btn btn-primary logout"

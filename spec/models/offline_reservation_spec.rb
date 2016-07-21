@@ -16,4 +16,31 @@ RSpec.describe OfflineReservation do
   describe "#end_at_required?" do
     it { is_expected.not_to be_end_at_required }
   end
+
+  describe "#to_s" do
+    let(:reserve_start_at) { Time.zone.local(2016, 7, 1, 12, 0) }
+
+    before(:each) do
+      allow(subject).to receive(:reserve_start_at) { reserve_start_at }
+      allow(subject).to receive(:reserve_end_at) { reserve_end_at }
+    end
+
+    context "when the offline event is ongoing" do
+      let(:reserve_end_at) { nil }
+
+      it "renders as a range with no known end" do
+        expect(subject.to_s).to eq "Fri, 07/01/2016 12:00 PM -"
+      end
+    end
+
+    context "when the offline event has ended" do
+      let(:reserve_end_at) { reserve_start_at + 1.month }
+
+      it "renders as a range with an ending" do
+        pending "TODO: Reservation#range_to_s is not handling this correctly"
+        expect(subject.to_s)
+          .to eq "Fri, 07/01/2016 12:00 PM - Fri, 08/01/2016 01:00 PM"
+      end
+    end
+  end
 end

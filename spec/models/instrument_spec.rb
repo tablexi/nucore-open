@@ -4,7 +4,7 @@ require "product_shared_examples"
 RSpec.describe Instrument do
   it_should_behave_like "ReservationProduct", :instrument
 
-  let(:facility) { create :facility }
+  let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:facility_account) { facility.facility_accounts.create attributes_for(:facility_account) }
   subject(:instrument) { build :instrument, facility: facility, facility_account: facility_account }
 
@@ -103,48 +103,51 @@ RSpec.describe Instrument do
   it { is_expected.to validate_inclusion_of(:reserve_interval).in_array Instrument::RESERVE_INTERVALS }
 
   describe "shared schedules" do
-    context "default schedule" do
-      it "should create a default schedule" do
-        @instrument = FactoryGirl.build(:instrument,
-                                        facility: facility,
-                                        facility_account: facility_account,
-                                        schedule: nil)
-        expect(@instrument.schedule).to be_nil
-        expect(@instrument.save).to be true
-        expect(@instrument.schedule).to be
-      end
+    subject(:instrument) do
+      FactoryGirl.build(:instrument,
+                        facility: facility,
+                        facility_account: facility_account,
+                        schedule: schedule)
+    end
 
-      it "should not create a new schedule when defined" do
-        @schedule = FactoryGirl.create(:schedule, facility: facility)
-        @instrument = FactoryGirl.build(:instrument,
-                                        facility: facility,
-                                        facility_account: facility_account,
-                                        schedule: @schedule)
-        expect(@instrument.schedule).to be
-        expect(@instrument.save).to be true
-        expect(@instrument.schedule).to eq(@schedule)
+    context "when no schedule is defined" do
+      let(:schedule) { nil }
+
+      it "creates a default schedule", :aggregate_failures do
+        expect { instrument.save! }.to change(instrument, :schedule).from(nil)
       end
     end
 
-    describe "schedule_sharing?" do
-      context "one instrument" do
-        before :each do
-          @facility = FactoryGirl.create(:setup_facility)
-          @instrument = FactoryGirl.create(:setup_instrument, facility: @facility)
+    context "when a schedule is defined" do
+      let(:schedule) { FactoryGirl.create(:schedule, facility: facility) }
+
+      it "does not create a new schedule" do
+        expect { instrument.save! }
+          .not_to change(instrument, :schedule).from(schedule)
+      end
+    end
+
+    describe "#schedule_sharing?" do
+      let!(:instrument1) { FactoryGirl.create(:setup_instrument) }
+      let!(:instrument2) { FactoryGirl.create(:setup_instrument, facility: facility, schedule: schedule2) }
+
+      context "when the instruments use different schedules" do
+        let(:schedule2) { nil }
+
+        it "does not consider the instruments to be sharing", :aggregate_failures do
+          expect(instrument1).not_to be_schedule_sharing
+          expect(instrument2).not_to be_schedule_sharing
+          expect(instrument1.schedule).not_to eq(instrument2.schedule)
         end
+      end
 
-        it "should not be sharing" do
-          expect(@instrument).not_to be_schedule_sharing
-        end
+      context "when the instruments use the same schedule" do
+        let(:schedule2) { instrument1.schedule }
 
-        context "two instruments" do
-          before :each do
-            @instrument2 = FactoryGirl.create(:setup_instrument, facility: @facility, schedule: @instrument.schedule)
-          end
-
-          it "should be sharing" do
-            expect(@instrument).to be_schedule_sharing
-          end
+        it "considers the instruments to be sharing", :aggregate_failures do
+          expect(instrument1).to be_schedule_sharing
+          expect(instrument2).to be_schedule_sharing
+          expect(instrument1.schedule).to eq(instrument2.schedule)
         end
       end
     end
@@ -828,7 +831,7 @@ RSpec.describe Instrument do
       end
     end
 
-    context "when an offline reservation exists" do
+    context "when an offline reservation exists", :aggregate_failures do
       let!(:offline_reservation) do
         instrument
           .offline_reservations

@@ -6,6 +6,10 @@
     - if show_reservation && od.reservation
       %br
       %em= od.reservation
+
+    - if od.product.offline?
+      = tooltip_icon "icon-warning-sign", t("instruments.offline.note")
+
   - if od.survey_completed?
     .order-detail-extra= link_to 'View Order Form', od.external_service_receiver.show_url, :target => '_blank'
   - od.stored_files.template_result.each do |stored_file|

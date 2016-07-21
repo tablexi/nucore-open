@@ -40,7 +40,7 @@
   %p.notice= t(".no_upcoming_admin_reservations")
 
 - else
-  - unless @instrument.online?
+  - if @instrument.offline?
     %p.alert.alert-danger= t(".instrument_is_offline")
 
   %table.table.table-striped.table-hover

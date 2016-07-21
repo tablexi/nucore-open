@@ -1,17 +1,26 @@
 - unless instrument.is_hidden? && public_timeline?
   .timeline_instrument
-    - if public_timeline?
-      %h4= link_to instrument, facility_instrument_path(current_facility, instrument)
-    - else
-      %h4= link_to instrument, facility_instrument_schedule_path(current_facility, instrument)
+    %h4
+      - if public_timeline?
+        = link_to instrument,
+          facility_instrument_path(current_facility, instrument)
+      - else
+        = link_to instrument,
+          facility_instrument_schedule_path(current_facility, instrument)
+
+      - if instrument.offline?
+        = tooltip_icon "icon-warning-sign", t("instruments.offline.note")
 
     -# Add .reschedulable to enable drag/drop
     .timeline
       .unit_container
-        = render :partial => "shared/timeline/reservation", :collection => ( instrument.visible_reservations(@display_datetime) + ScheduleRule.unavailable_for_date(instrument, @display_datetime)), :as => :reservation, :locals => { :product => instrument }
+        = render partial: "shared/timeline/reservation",
+          collection: (instrument.visible_reservations(@display_datetime) + ScheduleRule.unavailable_for_date(instrument, @display_datetime)),
+          as: :reservation,
+          locals: { product: instrument }
+
         - if @display_datetime.beginning_of_day == Time.zone.now.beginning_of_day
-          .current_time{:style => "left: #{datetime_left_position(@display_datetime, Time.zone.now)}"}
+          .current_time{style: "left: #{datetime_left_position(@display_datetime, Time.zone.now)}"}
 
       - if !public_timeline? && instrument.has_real_relay?
-        = render partial: 'shared/timeline/relay_switch', locals: { instrument: instrument }
-
+        = render "shared/timeline/relay_switch", instrument: instrument
