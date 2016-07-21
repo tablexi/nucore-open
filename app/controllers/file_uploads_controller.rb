@@ -66,12 +66,19 @@ class FileUploadsController < ApplicationController
 
     @upload = @product.stored_files.new(options)
     authorize! :uploader_create, @upload
-    @upload.save!
-    ResultsFileNotifier.new(@upload).notify if @upload.sample_result?
 
-    respond_to do |format|
-      format.json { render json: { success: true } }
-      format.html { render nothing: true }
+    if @upload.save
+      ResultsFileNotifier.new(@upload).notify if @upload.sample_result?
+      respond_to do |format|
+        format.json { render json: { success: true } }
+        format.html { render nothing: true }
+      end
+    else
+      errors = @upload.errors.map { |_k, msg| msg }.to_sentence
+      respond_to do |format|
+        format.json { render json: { error: errors } }
+        format.html { render text: errors, status: 400 }
+      end
     end
   end
 

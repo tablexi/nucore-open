@@ -75,6 +75,10 @@ en:
             base:
               conflict: The reservation conflicts with another reservation.
               conflict_in_cart: The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue.
+        stored_file:
+          attributes:
+            name:
+              taken: "Filename already exists for this order"
         account_user:
           attributes:
             user_id:

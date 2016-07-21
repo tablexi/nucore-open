@@ -98,6 +98,16 @@ RSpec.describe FileUploadsController do
       it_should_allow_all(facility_operators) do
         is_expected.to respond_with :success
       end
+
+      describe "with a duplicate filename" do
+        let!(:existing_file) { FactoryGirl.create(:stored_file, :results, order_detail: @order_detail, name: "flash_file.swf") }
+
+        it "returns an error" do
+          sign_in @admin
+          do_request
+          expect(response.body).to eq("Filename already exists for this order")
+        end
+      end
     end
 
   end

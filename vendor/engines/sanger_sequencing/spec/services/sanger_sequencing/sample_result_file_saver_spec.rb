@@ -36,6 +36,22 @@ RSpec.describe SangerSequencing::SampleResultFileSaver do
     end
   end
 
+  describe "with a filename that already exists" do
+    let(:sample_id) { submission.samples.first.id }
+    let(:filename) { File.join(Rails.root, "tmp", "#{sample_id}_file.txt") }
+    let!(:existing_file) { FactoryGirl.create(:stored_file, :results, order_detail: order_detail, name: "#{sample_id}_file.txt") }
+
+    before do
+      original_file = File.join(SangerSequencing::Engine.root, "spec/support/file_fixtures/SAMPLE_ID_file_name.txt")
+      FileUtils.cp_r(original_file, filename)
+    end
+
+    it "does not save" do
+      expect(saver.save).to be(false)
+      expect(saver.errors[:name]).to include("Filename already exists for this order")
+    end
+  end
+
   describe "saving" do
     let(:sample_id) { submission.samples.first.id }
     let(:filename) { File.join(Rails.root, "tmp", "#{sample_id}_file.txt") }

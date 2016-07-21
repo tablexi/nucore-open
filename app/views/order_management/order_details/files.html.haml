@@ -31,8 +31,10 @@
       mode: 'custom'
     },
     callbacks: {
-      onAllComplete: function(_succeeded, _failed) {
-        $("#js-fineUploader").closest('.modal').data('modalObject').reload()
+      onAllComplete: function(_succeeded, failed) {
+        if (failed.length == 0) {
+          $("#js-fineUploader").closest('.modal').data('modalObject').reload();
+        }
       }
     }
   });
