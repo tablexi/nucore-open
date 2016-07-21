@@ -21,7 +21,11 @@ class OfflineReservation < Reservation
   end
 
   def to_s
-    I18n.l(reserve_start_at)
+    if reserve_end_at.present?
+      super
+    else
+      "#{I18n.l(reserve_start_at)} -"
+    end
   end
 
 end
