@@ -519,6 +519,14 @@ RSpec.describe Product do
     end
   end
 
+  describe "#offline?" do
+    it { is_expected.not_to be_offline }
+  end
+
+  describe "#online?" do
+    it { is_expected.to be_online }
+  end
+
   describe "#training_request_contacts" do
     let(:product) { build(:item, training_request_contacts: contacts) }
     subject(:emails) { product.training_request_contacts.to_a }

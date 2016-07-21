@@ -1631,6 +1631,13 @@ RSpec.describe OrderDetail do
     end
   end
 
+  describe "#force_complete!" do
+    it "forces a transition from new to complete" do
+      expect { order_detail.force_complete! }
+        .to change { order_detail.reload.state }.from("new").to("complete")
+    end
+  end
+
   def set_cancellation_cost_for_all_policies(cost)
     PricePolicy.all.each do |price_policy|
       price_policy.update_attribute :cancellation_cost, cost

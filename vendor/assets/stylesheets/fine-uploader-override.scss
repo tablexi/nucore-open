@@ -1,0 +1,14 @@
+/* Since we're loading the fineuploader stylesheet in application.scss, we need
+   to make the image urls relative to the asset root
+*/
+.qq-upload-spinner {
+  background: url("fine-uploader/loading.gif");
+}
+
+.qq-drop-processing-spinner {
+  background: url("fine-uploader/processing.gif");
+}
+
+.qq-edit-filename-icon {
+  background: url("fine-uploader/edit.gif");
+}
