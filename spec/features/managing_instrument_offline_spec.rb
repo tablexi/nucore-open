@@ -49,7 +49,7 @@ RSpec.describe "Managing Instrument Offline Reservations" do
         end
 
         it "does not update the note" do
-          expect(page).to have_content "Admin note may not be blank"
+          expect(page).to have_content "Admin Note may not be blank"
           expect(current_path)
             .to eq(facility_instrument_offline_reservation_path(facility, instrument, offline_reservation))
           expect(offline_reservation.reload.admin_note)
