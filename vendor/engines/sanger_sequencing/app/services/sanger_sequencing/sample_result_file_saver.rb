@@ -22,9 +22,9 @@ module SangerSequencing
     def save
       return false unless valid?
       @stored_file = StoredFile.new(file: file, name: filename,
-                                   file_type: "sample_result", created_by: current_user.id,
-                                   order_detail: sample.submission.order_detail,
-                                   product_id: sample.submission.order_detail.product_id)
+                                    file_type: "sample_result", created_by: current_user.id,
+                                    order_detail: sample.submission.order_detail,
+                                    product_id: sample.submission.order_detail.product_id)
       if stored_file.save
         trigger_notification(stored_file)
         true
