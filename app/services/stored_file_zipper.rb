@@ -29,7 +29,7 @@ class StoredFileZipper
   # If a filename has already been used, append a -X to the end of the name
   # before the extension. E.g. 12345_B07.ab1 => 12345_B07-1.ab1
   def filename(file)
-    if @filenames.has_key?(file.name)
+    if @filenames.key?(file.name)
       @filenames[file.name] += 1
       file.name.sub(/\.(\w+)\z/, "-#{@filenames[file.name]}.\\1")
     else
