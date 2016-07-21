@@ -1,5 +1,11 @@
 module FacilityReservationsHelper
 
+  def offline_category_collection
+    OfflineReservation::CATEGORIES.map do |c|
+      [I18n.t("offline_reservations.categories.#{c}"), c]
+    end
+  end
+
   def reservation_links(reservation)
     links = []
     if reservation.admin?

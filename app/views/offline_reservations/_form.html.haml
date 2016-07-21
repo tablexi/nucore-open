@@ -11,7 +11,13 @@
 
 = simple_form_for([@instrument, @reservation], url: url) do |f|
   = f.error_messages
-  = f.input :admin_note, input_html: { class: "span6" }
+
+  %ul.inline
+    %li= f.input :admin_note, input_html: { class: "span4" }
+    %li
+      = f.input :category,
+        collection: offline_category_collection,
+        input_html: { class: "span2" }
 
   .clearfix
   %ul.inline

@@ -513,6 +513,11 @@ en:
         default: "* Changing the quantity will automatically update the price fields"
 
   offline_reservations:
+    categories:
+      operator_unavailable: Operator unavailable
+      out_of_order: Out of order
+      scheduled_maintenance: Scheduled maintenance
+
     edit:
       update: Update the note
     new:
