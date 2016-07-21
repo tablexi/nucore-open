@@ -6,10 +6,12 @@ module SangerSequencing
 
     FILENAME_FORMAT = /\A(\d+)_.+/
 
-    attr_reader :params, :current_user
+    attr_reader :params, :current_user, :stored_file
 
     validate :filename_has_sample_id
     validate :has_valid_sample
+
+    delegate :name, to: :stored_file
 
     def initialize(batch, current_user, params)
       @batch = batch
@@ -19,13 +21,17 @@ module SangerSequencing
 
     def save
       return false unless valid?
-      stored_file = StoredFile.new(file: file, name: filename,
-                                   file_type: "sample_result", created_by: current_user.id,
-                                   order_detail: sample.submission.order_detail,
-                                   product_id: sample.submission.order_detail.product_id)
-      success = stored_file.save
-      trigger_notification(stored_file) if success
-      success
+      @stored_file = StoredFile.new(file: file, name: filename,
+                                    file_type: "sample_result", created_by: current_user.id,
+                                    order_detail: sample.submission.order_detail,
+                                    product_id: sample.submission.order_detail.product_id)
+      if stored_file.save
+        trigger_notification(stored_file)
+        true
+      else
+        copy_errors_from_file
+        false
+      end
     end
 
     def filename
@@ -62,6 +68,12 @@ module SangerSequencing
 
     def file
       params[:qqfile]
+    end
+
+    def copy_errors_from_file
+      stored_file.errors.each do |k, v|
+        errors.add(k, v)
+      end
     end
 
   end
