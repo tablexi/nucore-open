@@ -720,6 +720,8 @@ RSpec.describe ReservationsController do
     end
 
     describe "restricted instrument" do
+      let(:not_authorized_message) { "not on the authorized list" }
+
       before :each do
         @instrument.update_attributes(requires_approval: true)
       end
@@ -733,6 +735,39 @@ RSpec.describe ReservationsController do
         it "shows correctly" do
           do_request
           expect(response).to be_success
+          expect(response.body).to include(not_authorized_message)
+        end
+      end
+
+      context "acting a authorized user" do
+        before :each do
+          sign_in @admin
+          ProductUser.create!(product: @instrument, user: @guest, approved_by: @admin.id)
+          switch_to @guest
+        end
+
+        it "shows correctly" do
+          do_request
+          expect(response).to be_success
+          expect(response.body).not_to include(not_authorized_message)
+        end
+      end
+
+      describe "as a merge order" do
+        describe "ordering for an authorized user" do
+          before do
+            @merge_to_order = @order.dup
+            assert @merge_to_order.save
+            assert @order.update_attribute :merge_with_order_id, @merge_to_order.id
+            @instrument.update_attributes(requires_approval: true)
+            ProductUser.create!(product: @instrument, user: @guest, approved_by: @admin.id)
+            sign_in @admin
+          end
+
+          it "does not see the authorized user note" do
+            do_request
+            expect(response.body).not_to include(not_authorized_message)
+          end
         end
       end
     end

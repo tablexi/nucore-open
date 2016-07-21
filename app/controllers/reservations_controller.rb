@@ -164,7 +164,7 @@ class ReservationsController < ApplicationController
     next_available = @instrument.next_available_reservation(1.minute.from_now, default_reservation_mins.minutes, options)
     @reservation = next_available || default_reservation
     @reservation.round_reservation_times
-    unless @instrument.can_be_used_by?(acting_user)
+    unless @instrument.can_be_used_by?(@order_detail.user)
       flash[:notice] = text(".acting_as_not_on_approval_list")
     end
     set_windows
