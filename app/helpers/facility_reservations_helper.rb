@@ -6,12 +6,8 @@ module FacilityReservationsHelper
     end
   end
 
-  def reservation_category_label(reservation_category)
-    if reservation_category.present?
-      I18n.t("offline_reservations.categories.#{reservation_category}")
-    else
-      ""
-    end
+  def reservation_category_label(category)
+    t(category.presence, scope: "offline_reservations.categories", default: "")
   end
 
   def reservation_links(reservation)
