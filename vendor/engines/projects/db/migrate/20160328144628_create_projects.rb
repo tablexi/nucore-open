@@ -6,7 +6,7 @@ class CreateProjects < ActiveRecord::Migration
       t.text :description
       t.references :facility, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :projects, [:facility_id, :name], unique: true

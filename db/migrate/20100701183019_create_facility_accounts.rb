@@ -10,7 +10,7 @@ class CreateFacilityAccounts < ActiveRecord::Migration
     end
     add_foreign_key :facility_accounts, :facilities, name: "fk_facilities"
 
-    Facility.find(:all).each do |f|
+    Facility.find_each do |f|
       execute "INSERT INTO facility_accounts (id, facility_id, account_number, is_active, created_at, created_by) VALUES (FACILITY_ACCOUNTS_SEQ.nextVal, #{f.id}, #{f.account}, 1, SYSDATE, 1)"
     end
 

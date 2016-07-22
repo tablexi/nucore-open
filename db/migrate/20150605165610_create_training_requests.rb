@@ -5,7 +5,7 @@ class CreateTrainingRequests < ActiveRecord::Migration
       t.references :user
       t.references :product
 
-      t.timestamps
+      t.timestamps null: false
     end
     add_index :training_requests, :user_id
     add_index :training_requests, :product_id
