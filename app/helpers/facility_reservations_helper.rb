@@ -1,5 +1,15 @@
 module FacilityReservationsHelper
 
+  def offline_category_collection
+    OfflineReservation::CATEGORIES.map do |category|
+      [reservation_category_label(category), category]
+    end
+  end
+
+  def reservation_category_label(category)
+    t(category.presence, scope: "offline_reservations.categories", default: "")
+  end
+
   def reservation_links(reservation)
     links = []
     if reservation.admin?

@@ -1,5 +1,11 @@
 class OfflineReservation < Reservation
 
+  CATEGORIES = %w(
+    operator_unavailable
+    out_of_order
+    scheduled_maintenance
+  ).freeze
+
   include ActiveModel::ForbiddenAttributesProtection
 
   validates :admin_note, presence: true

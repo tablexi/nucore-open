@@ -69,7 +69,7 @@ class OfflineReservationsController < ApplicationController
 
   def new_offline_reservation_params
     params[:offline_reservation]
-      .permit(:admin_note)
+      .permit(:admin_note, :category)
       .merge(reserve_start_at: Time.current)
   end
 
