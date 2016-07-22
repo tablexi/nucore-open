@@ -366,6 +366,12 @@ Nucore::Application.routes.draw do
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
   get "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete", to: "surveys#complete", as: "complete_survey"
 
+  namespace :admin do
+    namespace :services do
+      post "cancel_reservations_for_offline_instruments"
+    end
+  end
+
   # api
   namespace :api do
     resources :order_details, only: [:show]
