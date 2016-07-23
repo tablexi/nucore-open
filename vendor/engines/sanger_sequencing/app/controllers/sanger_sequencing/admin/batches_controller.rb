@@ -16,7 +16,7 @@ module SangerSequencing
       end
 
       def new
-        @submissions = Submission.ready_for_batch.for_facility(current_facility)
+        @submissions = Submission.ready_for_batch.includes(:samples, order_detail: :product).for_facility(current_facility)
       end
 
       def create
