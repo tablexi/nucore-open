@@ -7,6 +7,7 @@
       %th= OrderDetail.human_attribute_name(:ordered_at)
       %th= OrderDetail.human_attribute_name(:user)
       %th= OrderDetail.human_attribute_name(:quantity)
+      %th= Product.model_name.human
       %th= OrderDetail.human_attribute_name(:note)
   %tbody
     - @submissions.each do |submission|
@@ -24,4 +25,5 @@
         %td= format_usa_datetime(submission.purchased_at)
         %td= submission.user
         %td= submission.samples.count
+        %td= submission.product
         %td.sangerSequencing--submissionTable__noteCell= submission.note

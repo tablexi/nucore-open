@@ -17,7 +17,7 @@ module SangerSequencing
 
     accepts_nested_attributes_for :samples, allow_destroy: true
 
-    delegate :order_id, :user, :order_status, :note, to: :order_detail
+    delegate :order_id, :user, :order_status, :note, :product, to: :order_detail
     delegate :purchased?, :ordered_at, to: :order
     alias purchased_at ordered_at
 

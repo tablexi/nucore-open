@@ -19,6 +19,7 @@
         %th= OrderDetail.human_attribute_name(:ordered_at)
         %th= OrderDetail.human_attribute_name(:user)
         %th= OrderDetail.human_attribute_name(:quantity)
+        %th= Product.model_name.human
         %th= OrderDetail.human_attribute_name(:order_status)
         %th= SangerSequencing::Batch.model_name.human
     %tbody
@@ -29,6 +30,7 @@
           %td= format_usa_datetime(submission.purchased_at)
           %td= submission.user
           %td= submission.samples.count
+          %td= submission.product
           %td= submission.order_status
           %td= link_to submission.batch_id, facility_sanger_sequencing_admin_batch_path(current_facility, submission.batch_id) if submission.batch_id?
 

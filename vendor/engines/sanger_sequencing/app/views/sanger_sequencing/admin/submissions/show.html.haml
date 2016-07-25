@@ -17,4 +17,8 @@
       = banner_date_label @submission.order, :ordered_at
       = banner_label @submission.order, :user
 
+  - if @submission.note.present?
+    %label= OrderDetail.human_attribute_name(:note)
+    %p= @submission.note
+
   = render "sanger_sequencing/submissions/samples_table", submission: @submission
