@@ -9,8 +9,8 @@ class exports.SangerSequencing.WellPlateBuilder
     # This array maintains all of the submissions that have ever been added
     # in order to keep consistent colors when removing and adding samples.
     @allSubmissions = []
-    @reservedCells = ["A01", "A02"]
-    @orderingStrategy = new SangerSequencing.OddFirstOrderingStrategy
+    @_reservedCells = ["A01", "A02"]
+    @_orderingStrategy = new SangerSequencing.OddFirstOrderingStrategy
     @_render()
 
   addSubmission: (submission) ->
@@ -21,6 +21,10 @@ class exports.SangerSequencing.WellPlateBuilder
   removeSubmission: (submission) ->
     index = @submissions.indexOf(submission)
     @submissions.splice(index, 1) if index > -1
+    @_render()
+
+  setReservedCells: (cells) ->
+    @_reservedCells = cells if cells?
     @_render()
 
   isInPlate: (submission) ->
@@ -51,7 +55,7 @@ class exports.SangerSequencing.WellPlateBuilder
   # Private
 
   _render: ->
-    wellsInPlate = @_fillOrder().length - @reservedCells.length
+    wellsInPlate = @_fillOrder().length - @_reservedCells.length
     @_plateCount = Math.max(1, Math.ceil(@samples().length / wellsInPlate))
 
     samples = @samples()
@@ -66,7 +70,7 @@ class exports.SangerSequencing.WellPlateBuilder
     plate = {}
 
     for cellName in @_fillOrder()
-      plate[cellName] = if @reservedCells.indexOf(cellName) < 0
+      plate[cellName] = if @_reservedCells.indexOf(cellName) < 0
         if sample = samples.shift()
           sample
         else
@@ -85,4 +89,4 @@ class exports.SangerSequencing.WellPlateBuilder
     plate
 
   _fillOrder: ->
-    @orderingStrategy.fillOrder()
+    @_orderingStrategy.fillOrder()

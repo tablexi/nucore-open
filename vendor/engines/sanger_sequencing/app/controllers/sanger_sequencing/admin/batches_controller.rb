@@ -17,6 +17,7 @@ module SangerSequencing
 
       def new
         @submissions = Submission.ready_for_batch.includes(:samples, order_detail: :product).for_facility(current_facility)
+        @builder_config = WellPlateConfiguration.find(:default)
       end
 
       def create
