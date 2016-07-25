@@ -13,7 +13,7 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
 
     PriceGroupProduct.reset_column_information
 
-    price_policies = PricePolicy.find(:all, conditions: ["start_date <= ? AND restrict_purchase != 1", Time.zone.now])
+    price_policies = PricePolicy.where("start_date <= ? AND restrict_purchase != 1", Time.zone.now)
 
     price_policies.each do |pp|
       pgp = PriceGroupProduct.new(price_group: pp.price_group)
@@ -31,19 +31,19 @@ class CreatePriceGroupProducts < ActiveRecord::Migration
       pgp.save!
     end
 
-    price_policies = PricePolicy.find(:all, conditions: "restrict_purchase = 1")
+    price_policies = PricePolicy.where("restrict_purchase = 1")
     price_policies.each(&:destroy)
   end
 
   def self.down
-    PricePolicy.all.each do |policy|
+    PricePolicy.find_each do |policy|
       product = case policy
                 when ItemPricePolicy then policy.item
                 when ServicePricePolicy then policy.service
                 when InstrumentPricePolicy then policy.instrument
               end
 
-      pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, product.id)
+      pgp = PriceGroupProduct.find_by(price_group_id: policy.price_group.id, product_id: product.id)
 
       policy.restrict_purchase = pgp.nil?
       policy.reservation_window = pgp.reservation_window if pgp && product.is_a?(Instrument)

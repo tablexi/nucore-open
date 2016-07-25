@@ -8,7 +8,7 @@ class CreatePaymentsReceived < ActiveRecord::Migration
       t.string :source_id
       t.decimal :amount, precision: 10, scale: 2, null: false
       t.references :paid_by, null: true
-      t.timestamps
+      t.timestamps null: false
     end
     add_foreign_key :payments, :statements
     add_index :payments, :statement_id

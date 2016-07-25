@@ -1,12 +1,12 @@
 class SetOrderStates < ActiveRecord::Migration
 
   def self.up
-    Order.all(conditions: "ordered_at IS NULL").each { |o| o.state = "new"; o.save; }
-    Order.all(conditions: "ordered_at IS NOT NULL").each { |o| o.state = "purchased"; o.save; }
+    Order.where(ordered_at: nil).update_all(state: "new")
+    Order.where.not(ordered_at: nil).update_all(state: "purchased")
   end
 
   def self.down
-    Order.all.each { |o| o.state = nil; o.save; }
+    Order.update_all(state: nil)
   end
 
 end
