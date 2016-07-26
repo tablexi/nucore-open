@@ -18,15 +18,14 @@ class EmailEvent < ActiveRecord::Base
   # end
   #
   def self.notify(user, keys, wait: 24.hours)
-    lock.transaction do
-      event = find_or_initialize_by(user: user, key: key_for(keys))
+    event = find_or_initialize_by(user: user, key: key_for(keys))
 
-      if event.last_sent_at.blank? || event.last_sent_at < wait.ago
-        event.last_sent_at = Time.current
-        event.save!
-        yield
-      end
+    if event.last_sent_at.blank? || event.last_sent_at < wait.ago
+      # if a race condition makes event invalid now, we don't yield
+      yield if event.update_attributes(last_sent_at: Time.current)
     end
+  rescue ActiveRecord::RecordNotUnique
+    # Do nothing, we're in a race condition with another new EmailEvent. Let that one win.
   end
 
   def self.key_for(keys)
