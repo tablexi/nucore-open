@@ -1,5 +1,5 @@
 .container.footer__container
   .row
     .span12
-      .footer__logo= image_tag "logo.jpg", alt: t(".logo_alt")
+      .footer__logo= image_tag t(".logo_file"), alt: t(".logo_alt")
       .footer__copyright= t(".copyright_html", to_date: Date.today.year)
