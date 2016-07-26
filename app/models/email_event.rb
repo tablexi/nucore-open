@@ -18,13 +18,15 @@ class EmailEvent < ActiveRecord::Base
   # end
   #
   def self.notify(user, keys, wait: 24.hours)
-    event = find_or_initialize_by(user: user, key: key_for(keys))
+    lock.transaction do
+      event = find_or_initialize_by(user: user, key: key_for(keys))
 
-    if event.last_sent_at.blank? || event.last_sent_at < wait.ago
-      event.last_sent_at = Time.current
-      yield
+      if event.last_sent_at.blank? || event.last_sent_at < wait.ago
+        event.last_sent_at = Time.current
+        event.save!
+        yield
+      end
     end
-    event.save!
   end
 
   def self.key_for(keys)
