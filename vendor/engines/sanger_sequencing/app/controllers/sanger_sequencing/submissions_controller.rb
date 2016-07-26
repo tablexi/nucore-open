@@ -58,7 +58,11 @@ module SangerSequencing
 
     def submission_params
       params.require(:sanger_sequencing_submission)
-            .permit(samples_attributes: [:id, :customer_sample_id, :_destroy])
+            .permit(samples_attributes: self.class.permitted_sample_attributes)
+    end
+
+    def self.permitted_sample_attributes
+      @permitted_sample_attributes ||= [:id, :customer_sample_id, :_destroy]
     end
 
     def external_return_options
@@ -77,7 +81,7 @@ module SangerSequencing
 
     def load_and_authorize_on_new
       order_detail = ::OrderDetail.find(params[:receiver_id])
-      @submission = Submission.where(order_detail_id: order_detail.id).first_or_create
+      @submission = SangerSequencing::Submission.where(order_detail_id: order_detail.id).first_or_create
       authorize! :create, @submission
     end
 
