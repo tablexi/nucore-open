@@ -67,17 +67,22 @@ li.nav-spacer {
 /*
  footer
 */
-footer .container {
+.footer__container {
   border-top: 1px solid #ddd;
   padding-top: 1em;
   margin-top: 5em;
 }
 
-footer .span8 {
+.footer__copyright {
   font-size: 85%;
   color: #919191;
   text-align: right;
   line-height: 75px;
+  float: right;
+}
+
+.footer__logo {
+  float: left;
 }
 
 /* Acting As Banner */
