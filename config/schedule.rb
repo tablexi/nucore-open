@@ -1,5 +1,5 @@
-rails = File.join Dir.getwd, "config", "environment.rb"
-require rails
+ENV['RAILS_ENV'] = @environment
+require File.expand_path(File.dirname(__FILE__) + "/environment")
 
 # IMPORTANT!!! You should never edit this file in your custom fork.
 # If you want to add custom jobs to your instance, add them to schedule_custom.rb
