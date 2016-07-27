@@ -68,7 +68,7 @@ class Journal < ActiveRecord::Base
     allowed_ids = facilities.collect(&:id)
 
     if include_multi
-      Journal.includes(journal_rows: { order_detail: :order }).where("orders.facility_id IN (?)", allowed_ids).select("journals.*")
+      Journal.includes(journal_rows: { order_detail: :order }).references(:order).where("orders.facility_id IN (?)", allowed_ids).select("journals.*")
     else
       Journal.where(facility_id: allowed_ids)
     end
