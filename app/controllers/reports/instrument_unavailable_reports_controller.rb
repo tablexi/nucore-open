@@ -1,6 +1,7 @@
 module Reports
 
   class InstrumentUnavailableReportsController < ReportsController
+
     QUANTITY_COLUMN_INDEX = 3
     HOURS_COLUMN_INDEX = 4
 

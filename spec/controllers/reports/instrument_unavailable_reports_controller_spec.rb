@@ -50,7 +50,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
                                duration: 1.day)
             FactoryGirl.create(:admin_reservation,
                                product: instruments.third,
-                               reserve_start_at: (date_start + 1.days).beginning_of_day,
+                               reserve_start_at: (date_start + 1.day).beginning_of_day,
                                duration: 3.days)
           end
 
