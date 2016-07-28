@@ -36,5 +36,5 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
     end
   end
 
-  # TODO: Move tests out of price_groups_controller_spce.rb
+  # TODO: Move tests out of price_groups_controller_spec.rb
 end
