@@ -192,6 +192,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:administer, User) }
+    it { is_expected.to be_allowed_to(:manage, PriceGroup) }
 
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"
@@ -226,6 +227,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.to be_allowed_to(:disputed, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Order) }
+    it { is_expected.to be_allowed_to(:manage, PriceGroup) }
     it { is_expected.to be_allowed_to(:batch_update, Reservation) }
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:manage_accounts, Facility.cross_facility) }
@@ -244,6 +246,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.to be_allowed_to(:read, UserPriceGroupMember) }
+    it { is_expected.not_to be_allowed_to(:manage, PriceGroup) }
 
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"

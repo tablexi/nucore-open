@@ -57,7 +57,7 @@ class PriceGroupsController < ApplicationController
 
   # GET /price_groups/new
   def new
-    @price_group = current_facility.price_groups.new
+    @price_group = PriceGroup.new(facility: current_facility)
   end
 
   # GET /price_groups/:id/edit
@@ -65,7 +65,7 @@ class PriceGroupsController < ApplicationController
 
   # POST /price_groups
   def create
-    @price_group = current_facility.price_groups.new(params[:price_group])
+    @price_group = PriceGroup.new(params[:price_group].merge(facility: current_facility))
 
     if @price_group.save
       flash[:notice] = I18n.t("controllers.price_groups.create.notice")

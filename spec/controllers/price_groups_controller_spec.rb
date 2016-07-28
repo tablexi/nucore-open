@@ -28,32 +28,6 @@ RSpec.describe PriceGroupsController do
     end
   end
 
-  describe "GET #new" do
-    before(:each) do
-      @method = :get
-      @action = :new
-    end
-
-    it_should_allow_managers_only do
-      expect(assigns(:price_group)).to be_kind_of(PriceGroup).and be_new_record
-      is_expected.to render_template("new")
-    end
-  end
-
-  describe "POST #create" do
-    before(:each) do
-      @method = :post
-      @action = :create
-      @params.merge!(price_group: attributes_for(:price_group, facility_id: facility.id))
-    end
-
-    it_should_allow_managers_only :redirect do
-      expect(assigns(:price_group)).to be_kind_of(PriceGroup).and be_persisted
-      expect(flash[:notice]).to include("successfully created")
-      assert_redirected_to [facility, assigns(:price_group)]
-    end
-  end
-
   context "with a price group id parameter" do
     let(:price_group) { create(:price_group, facility: facility) }
 
