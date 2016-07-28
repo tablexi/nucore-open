@@ -7,7 +7,7 @@ class ResultsFileNotifier
   end
 
   def notify
-    return unless SettingsHelper.feature_on?(:my_files)
+    return unless SettingsHelper.feature_on?(:results_file_notifications)
 
     EmailEvent.notify(file.user, debounce_key) do
       ResultsFileNotifierMailer.file_uploaded(file).deliver_later

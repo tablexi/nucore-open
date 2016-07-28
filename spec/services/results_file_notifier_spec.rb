@@ -6,7 +6,7 @@ RSpec.describe ResultsFileNotifier do
   let(:stored_file) { FactoryGirl.create(:stored_file, :results, order_detail: order.order_details.first) }
   let(:notifier) { described_class.new(stored_file) }
 
-  describe "with My Files enabled", feature_setting: { my_files: true } do
+  describe "with notifications enabled", feature_setting: { results_file_notifications: true } do
     it "sends a notification" do
       expect { notifier.notify }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
@@ -30,7 +30,7 @@ RSpec.describe ResultsFileNotifier do
     end
   end
 
-  describe "with My Files disabled", feature_setting: { my_files: false } do
+  describe "with notifications disabled", feature_setting: { results_file_notifications: false } do
     it "does not send a notification" do
       expect { notifier.notify }.not_to change(ActionMailer::Base.deliveries, :count)
     end
