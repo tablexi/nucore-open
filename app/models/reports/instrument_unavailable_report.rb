@@ -37,11 +37,15 @@ module Reports
         key = "#{row.product_id}/#{row.type}/#{row.category}"
         report[key] ||= row_to_h(row)
         report[key][:quantity] += 1
-        reserve_end_at = row.reserve_end_at || end_time
-        reserve_end_at = end_time if reserve_end_at > end_time
-        reserve_start_at = row.reserve_start_at > start_time ? row.reserve_start_at : start_time
-        report[key][:seconds] += reserve_end_at - reserve_start_at
+        report[key][:seconds] += row_duration_in_seconds(row)
       end.values
+    end
+
+    def row_duration_in_seconds(row)
+      reserve_end_at = row.reserve_end_at || end_time
+      reserve_end_at = end_time if reserve_end_at > end_time
+      reserve_start_at = row.reserve_start_at > start_time ? row.reserve_start_at : start_time
+      reserve_end_at - reserve_start_at
     end
 
     def row_to_h(row)
