@@ -338,4 +338,29 @@ RSpec.describe Journal do
       journal.order_details_span_fiscal_years?([@order_details[3]])
     end
   end
+
+  describe ".for_facilities" do
+    let(:order_details) { order.order_details }
+    before do
+      order_details.each(&:to_complete!)
+      journal.save!
+      journal.create_journal_rows!(order_details)
+    end
+
+    describe "a normal journal" do
+      it "finds the facility" do
+        expect(described_class.for_facilities([facility])).to include(journal)
+      end
+    end
+
+    describe "multi-facility journal" do
+      subject(:journal) do
+        build(:journal, facility: nil, created_by: 1, journal_date: journal_date)
+      end
+
+      it "finds the facility" do
+        expect(described_class.for_facilities([order.facility], true)).to include(journal)
+      end
+    end
+  end
 end
