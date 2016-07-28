@@ -1,6 +1,8 @@
 module Reports
 
   class InstrumentUnavailableReportsController < ReportsController
+    QUANTITY_COLUMN_INDEX = 3
+    HOURS_COLUMN_INDEX = 4
 
     def self.reports
       @reports ||= HashWithIndifferentAccess.new(instrument_unavailable: :type)
@@ -21,7 +23,7 @@ module Reports
     def init_report
       @rows = page_report(reporter.rows)
       @totals = ["", "", reporter.total_quantity, reporter.total_hours]
-      @numeric_columns = [3, 4]
+      @numeric_columns = [QUANTITY_COLUMN_INDEX, HOURS_COLUMN_INDEX]
       @label_columns = @headers.length
     end
 
