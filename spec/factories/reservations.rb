@@ -1,5 +1,15 @@
 FactoryGirl.define do
   factory :reservation do
+    transient do
+      duration nil
+    end
+
+    after(:build) do |reservation, evaluator|
+      if evaluator.duration.present? && reservation.reserve_start_at.present?
+        reservation.reserve_end_at = reservation.reserve_start_at + evaluator.duration
+      end
+    end
+
     reserve_start_at { Time.zone.parse("#{Date.today} 10:00:00") + 1.day }
     reserve_end_at { reserve_start_at + 1.hour }
 

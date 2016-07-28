@@ -25,12 +25,12 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
                            :out_of_order,
                            product: instruments.first,
                            reserve_start_at: date_start.beginning_of_day,
-                           reserve_end_at: (date_start + 2.days).beginning_of_day)
+                           duration: 2.days)
         FactoryGirl.create(:offline_reservation,
                            :out_of_order,
                            product: instruments.first,
                            reserve_start_at: (date_start + 3.days).beginning_of_day,
-                           reserve_end_at: (date_start + 4.days).beginning_of_day)
+                           duration: 1.day)
       end
 
       context "and an instrument with 1 operator_unavailable incident totalling 24 hours" do
@@ -39,7 +39,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
                              :operator_unavailable,
                              product: instruments.second,
                              reserve_start_at: (date_start + 1.day).beginning_of_day,
-                             reserve_end_at: (date_start + 2.days).beginning_of_day)
+                             duration: 1.day)
         end
 
         context "with two instruments each with admin reservations of 24 hours each" do
@@ -47,11 +47,11 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
             FactoryGirl.create(:admin_reservation,
                                product: instruments.first,
                                reserve_start_at: (date_start + 2.days).beginning_of_day,
-                               reserve_end_at: (date_start + 3.days).beginning_of_day)
+                               duration: 1.day)
             FactoryGirl.create(:admin_reservation,
                                product: instruments.third,
                                reserve_start_at: (date_start + 1.days).beginning_of_day,
-                               reserve_end_at: (date_start + 4.days).beginning_of_day)
+                               duration: 3.days)
           end
 
           it "generates the expected rows" do
