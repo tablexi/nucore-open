@@ -90,15 +90,16 @@ en:
 
   shared:
     cancel: Cancel
+    create: Create
     confirm_message: Are you sure?
     delete: Delete
     edit: Edit
     not_applicable: N/A
     remove: Remove
     save: Save
-    create: Create
     select_all: Select All
     select_none: Select None
+    upload: Upload
     unassigned: Unassigned
     footer:
       copyright_html: "&copy; Copyright 2010&ndash;%{to_date} Northwestern University"
