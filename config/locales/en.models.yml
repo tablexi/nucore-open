@@ -45,6 +45,7 @@ en:
         incorrect: "is incorrect"
         bad_payment_source_format: "must be in format %{pattern_format}"
         subsidy_greater_than_cost: "cannot be greater than the Usage cost"
+        already_in_queue: Only one file may be in process at a time
         # Append your own errors here or at the model/attributes scope.
       full_messages:
         format: "%{attribute} %{message}"
