@@ -15,6 +15,13 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
   before { sign_in(user) }
 
+  shared_examples_for "it sets the required instance variables" do
+    it { expect(assigns(:label_columns)).to eq(5) }
+    it { expect(assigns(:numeric_columns)).to eq [3, 4] }
+    it { expect(assigns(:rows)).to be_kind_of(Array) }
+    it { expect(assigns(:totals)).to be_kind_of(Array) }
+  end
+
   context "when reporting a 5 day period" do
     let(:date_start) { Time.zone.local(2016, 7, 11).to_date }
     let(:date_end) { Time.zone.local(2016, 7, 15).to_date }
@@ -52,10 +59,12 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
                                product: instruments.third,
                                reserve_start_at: (date_start + 1.day).beginning_of_day,
                                duration: 3.days)
+            xhr(:get, :index, params)
           end
 
+          it_behaves_like "it sets the required instance variables"
+
           it "generates the expected rows" do
-            xhr(:get, :index, params)
 
             expect(assigns(:rows)).to match_array [
               [instruments.first.to_s,  "Admin",   "",                     1, 24.0],
@@ -81,6 +90,8 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
         xhr(:get, :index, params)
       end
 
+      it_behaves_like "it sets the required instance variables"
+
       it "rounds to hundreths" do
         expect(assigns(:rows).first[-1]).to eq(0.67)
       end
@@ -100,6 +111,8 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
       context "and the instrument is still offline" do
         let(:reserve_end_at) { nil }
 
+        it_behaves_like "it sets the required instance variables"
+
         it "reports only the downtime during the report range" do
           expect(assigns(:rows)).to match_array [
             [instruments.first.to_s, "Offline", "Out of order", 1, 120.0],
@@ -110,6 +123,8 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
       context "and ended before the report's date_end" do
         let(:reserve_end_at) { (date_end - 1.day).end_of_day }
 
+        it_behaves_like "it sets the required instance variables"
+
         it "reports only the downtime during the report range" do
           expect(assigns(:rows)).to match_array [
             [instruments.first.to_s, "Offline", "Out of order", 1, 96.0],
@@ -119,6 +134,8 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
       context "and ended after the report's date_end" do
         let(:reserve_end_at) { (date_end + 1.day).end_of_day }
+
+        it_behaves_like "it sets the required instance variables"
 
         it "reports only the downtime during the report range" do
           expect(assigns(:rows)).to match_array [
