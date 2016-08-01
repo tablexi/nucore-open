@@ -61,7 +61,7 @@ RSpec.describe AsyncFileProcessing do
     describe "failure" do
       it "sets the status to failed" do
         expect(instance).to receive(:process_file!).and_raise("Testing failure")
-        expect { perform_enqueued_jobs { instance.enqueue } }.to raise_error("Testing failure")
+        perform_enqueued_jobs { instance.enqueue } }
         expect(instance).to be_failed
       end
     end

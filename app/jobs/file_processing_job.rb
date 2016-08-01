@@ -7,8 +7,8 @@ class FileProcessingJob < ApplicationJob
     object.process_file!
     object.succeed!
   rescue => e
-    object.fail!(e.message)
-    raise e
+    message = e.message + e.backtrace.join("\n")
+    object.fail!(message)
   end
 
 end
