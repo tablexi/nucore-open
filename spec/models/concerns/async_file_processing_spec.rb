@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe AsyncFileProcessing do
   include ActiveJob::TestHelper
   class TestClass
+
     include ActiveModel::Model
     include ActiveRecord::AttributeAssignment
     include GlobalID::Identification
@@ -20,7 +21,7 @@ RSpec.describe AsyncFileProcessing do
 
     def initialize
       @status = "processing"
-      @id = rand(10000000)
+      @id = rand(10_000_000)
       self.class.repo[@id] = self
     end
 
@@ -28,13 +29,13 @@ RSpec.describe AsyncFileProcessing do
       assign_attributes(params)
     end
 
-
     def save
       true
     end
 
     def process_file!
     end
+
   end
 
   describe "#enqueue" do
