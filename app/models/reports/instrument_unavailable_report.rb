@@ -15,6 +15,10 @@ module Reports
       @end_time = date_end.end_of_day
     end
 
+    def numeric_columns
+      [QUANTITY_INDEX, HOURS_INDEX]
+    end
+
     def rows
       @rows ||= raw_values.map do |row|
         row[:hours] = format("%.2f", row.delete(:seconds) / 3600.0).to_f
