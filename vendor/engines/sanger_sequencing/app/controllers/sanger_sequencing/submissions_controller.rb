@@ -14,6 +14,10 @@ module SangerSequencing
     before_action :prevent_after_purchase, except: [:show]
     before_action :assert_sanger_enabled_for_facility
 
+    def self.permitted_sample_attributes
+      @permitted_sample_attributes ||= [:id, :customer_sample_id, :_destroy]
+    end
+
     def new
       clean_samples
       @submission.create_samples!(params[:quantity]) if @submission.samples.empty?
@@ -59,10 +63,6 @@ module SangerSequencing
     def submission_params
       params.require(:sanger_sequencing_submission)
             .permit(samples_attributes: self.class.permitted_sample_attributes)
-    end
-
-    def self.permitted_sample_attributes
-      @permitted_sample_attributes ||= [:id, :customer_sample_id, :_destroy]
     end
 
     def external_return_options
