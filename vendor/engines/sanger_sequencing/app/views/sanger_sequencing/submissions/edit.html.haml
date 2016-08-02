@@ -1,5 +1,5 @@
 = content_for :h1 do
-  = t("sanger_sequencing.name")
+  = @submission.product
 
 = content_for :head_content do
   = javascript_include_tag "sanger_sequencing/submission"
@@ -12,24 +12,4 @@
     %li &raquo;
     %li= link_to t("pages.cart"), :cart
 
-= simple_form_for @submission, html: { data: { fetch_ids_url: fetch_ids_sanger_sequencing_submission_path(@submission) } } do |f|
-  = hidden_field_tag :referer, params[:referer]
-  = hidden_field_tag :success_url, params[:success_url]
-  %table.table.table-striped.table-tight
-    %thead
-      %tr
-        %th= SangerSequencing::Sample.human_attribute_name(:customer_sample_id)
-        %th= SangerSequencing::Sample.human_attribute_name(:id)
-    %tbody
-      = f.nested_fields_for :samples, wrapper: false, class_name: "SangerSequencing::Sample", wrapper_tag: :tr do |sf|
-        %td
-          = sf.input :customer_sample_id, label: false, input_html: { value: sf.object.form_customer_sample_id, class: "js--customerSampleId" }
-          = sf.input :id, as: :hidden, input_html: { class: "js--sampleId" }
-        %td.js--sampleId= sf.object.id
-        %td
-          = sf.remove_nested_fields_link text("remove"), tabindex: -1
-          = sf.input :_destroy, as: :hidden
-    %tfoot
-      %td{colspan: 3}= f.add_nested_fields_link :samples, text("add"), class: "btn btn-success"
-
-  = f.submit text("submit"), class: "btn btn-primary"
+= render "form"
