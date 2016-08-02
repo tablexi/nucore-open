@@ -1,0 +1,21 @@
+en:
+  views:
+    offline_cancellation_mailer:
+      send_notification:
+        subject: Your reservation for %{product} has been canceled
+        body:
+          html: |
+            %{product}, the instrument you
+            [have reserved for %{reservation_time}](%{order_detail_url}), is down.
+            Your reservation has been canceled at no cost.
+
+            Please contact [%{facility_name}](%{facility_url})
+            at <%{facility_email}> for more information.
+          text: |
+            %{product}, the instrument you have reserved for %{reservation_time},
+            is down. Your reservation has been canceled at no cost.
+
+            Please contact %{facility_name} for more information.
+
+            %{facility_name}: %{facility_url} %{facility_email}
+            Your order: %{order_detail_url}
