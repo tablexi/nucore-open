@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160720200222) do
+ActiveRecord::Schema.define(version: 20160802202924) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -723,7 +723,7 @@ ActiveRecord::Schema.define(version: 20160720200222) do
   add_foreign_key "reservations", "order_details"
   add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"
   add_foreign_key "sanger_sequencing_batches", "facilities"
-  add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id", on_delete: :cascade
   add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
   add_foreign_key "schedule_rules", "products", column: "instrument_id"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
