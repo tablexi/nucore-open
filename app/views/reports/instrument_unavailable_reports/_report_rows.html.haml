@@ -1,0 +1,17 @@
+%tbody
+  - @rows.each do |row|
+    %tr
+      - row.each_with_index do |column, index|
+        - if @numeric_columns.include?(index)
+          %td.currency= column
+        - else
+          %td= column
+
+  - if @rows.size > 1
+    %tr
+      %td
+        %strong= text("reports.fields.total")
+
+      - @totals.each do |total|
+        %td.currency
+          %strong= total
