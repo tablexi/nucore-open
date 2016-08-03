@@ -383,6 +383,9 @@ GEM
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
       rspec-mocks (~> 3.4.0)
+    rspec-activejob (0.6.1)
+      activejob (>= 4.2)
+      rspec-mocks
     rspec-collection_matchers (1.1.2)
       rspec-expectations (>= 2.99.0.beta1)
     rspec-core (3.4.4)
@@ -556,6 +559,7 @@ DEPENDENCIES
   rails-observers
   rails_config (= 0.3.3)
   rake
+  rspec-activejob
   rspec-collection_matchers
   rspec-rails (~> 3.4.2)
   rspec_junit_formatter (= 0.2.3)
