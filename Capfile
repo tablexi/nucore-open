@@ -9,7 +9,7 @@ require "capistrano/rvm"
 require "capistrano/bundler"
 require "capistrano/rails/assets"
 require "capistrano/rails/migrations"
-# require "eye/patch/capistrano3"
+require "eye/patch/capistrano3"
 # require "rollbar/capistrano3"
 require "whenever/capistrano"
 

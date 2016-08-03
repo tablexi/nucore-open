@@ -82,7 +82,9 @@ group :development, :deployment do
   gem "capistrano-rails",   require: false
   gem "capistrano-rvm",     require: false
   gem "capistrano-bundler", require: false
+  gem "eye-patch",          require: false
   gem "whenever",           require: false
+  gem "unicorn",            require: false
 end
 
 group :development, :test do

@@ -1,0 +1,69 @@
+<%% app_root = "/home/nucore/nucore.stage.tablexi.com/current" %>
+<%% rails_env = ENV["RAILS_ENV"] %>
+---
+name: <%= @app_name.underscore.camelize %> (<%%= rails_env %>)
+
+config:
+  logger: <%%= app_root %>/log/eye.log
+
+application:
+  working_dir: <%%= app_root %>
+  stop_on_delete: true
+
+triggers:
+  - name: flapping
+    config:
+      times: 5
+      within: 5 minutes
+
+notifications:
+  - name: monitoring
+    type: ses
+    level: info
+    contact: nucore+eye@example.com
+    config:
+      from: noreply@example.com
+      access_key_id: ~
+      secret_access_key: ~
+
+processes:
+  - name: unicorn
+    config:
+      pid_file: tmp/pids/unicorn.pid
+      start_command: bundle exec unicorn -E deployment -Dc config/unicorn/<%%= rails_env %>.rb
+      restart_command: "kill -USR2 {PID}"
+      start_timeout: 15 seconds
+      start_grace: 15 seconds
+      restart_timeout: 15 seconds
+      restart_grace: 15 seconds
+      stdout: log/unicorn.stdout.log
+      stderr: log/unicorn.stderr.log
+      monitor_children:
+        stop_command: "kill -QUIT {PID}"
+      user_commands:
+        rotate: "kill -USR1 {PID}"
+
+  # only run on 1 instance
+  - name: auto_cancel
+    config:
+      start_command: bundle exec ruby lib/daemons/auto_cancel.rb start -- --no-monitor
+      stop_command: bundle exec ruby lib/daemons/auto_cancel.rb stop
+      stdall: log/auto_cancel.log
+      pid_file: tmp/pids/auto_cancel.pid
+      daemon: true
+      smart_pid: true
+      notify:
+        crash: error
+
+  - name: delayed_job
+    config:
+      start_command: ./script/delayed_job start
+      stop_command: ./script/delayed_job stop
+      stdall: log/delayed_job.log
+      pid_file: tmp/pids/delayed_job.pid
+      start_timeout: 40 seconds
+      start_grace: 30 seconds
+      stop_timeout: 40 seconds
+      stop_grace: 30 seconds
+      notify:
+        crash: error
