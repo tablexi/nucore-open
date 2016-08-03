@@ -4,8 +4,6 @@ lock "3.6.0"
 set :application, "nucore"
 set :repo_url, "git@github.com:tablexi/nucore-open.git"
 
-# NOTE: We're managing our own binstubs in the repository
-set :bundle_binstubs, nil
 set :bundle_without, "#{fetch(:bundle_without)} oracle"
 
 set :linked_files, fetch(:linked_files, []).concat(
