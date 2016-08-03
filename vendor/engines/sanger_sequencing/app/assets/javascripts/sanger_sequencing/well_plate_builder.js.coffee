@@ -1,23 +1,8 @@
-window.SangerSequencing = new Object()
+#= require sanger_sequencing/odd_first_ordering_strategy
 
-class SangerSequencing.WellPlateBuilder
+exports = exports ? @
 
-  class Util
-    @flattenArray: (arrays) ->
-      concatFunction = (total, submission) ->
-        total.concat submission
-      arrays.reduce(concatFunction, [])
-
-  class OddFirstOrderingStrategy
-    fillOrder: ->
-      odds = (column for column, i in @_cellsByColumn() when i % 2 == 0)
-      evens = (column for column, i in @_cellsByColumn() when i % 2 == 1)
-      Util.flattenArray(odds.concat(evens))
-
-    _cellsByColumn: ->
-      cells = for num in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
-        for ch in "ABCDEFGH"
-          "#{ch}#{num}"
+class exports.SangerSequencing.WellPlateBuilder
 
   constructor: ->
     @submissions = []
@@ -25,7 +10,7 @@ class SangerSequencing.WellPlateBuilder
     # in order to keep consistent colors when removing and adding samples.
     @allSubmissions = []
     @reservedCells = ["A01", "A02"]
-    @orderingStrategy = new OddFirstOrderingStrategy
+    @orderingStrategy = new SangerSequencing.OddFirstOrderingStrategy
     @_render()
 
   addSubmission: (submission) ->
@@ -48,7 +33,7 @@ class SangerSequencing.WellPlateBuilder
     @plates[plateIndex][cell]
 
   samples: ->
-    Util.flattenArray(@submissions.map (submission) ->
+    SangerSequencing.Util.flattenArray(@submissions.map (submission) ->
       submission.samples.map (s) ->
         if s instanceof SangerSequencing.Sample then s else new SangerSequencing.Sample(s)
     )
