@@ -7,7 +7,7 @@ module FacilityReservationsHelper
   end
 
   def reservation_category_label(category)
-    t(category.presence, scope: "offline_reservations.categories", default: "")
+    I18n.t(category.presence, scope: "offline_reservations.categories", default: "")
   end
 
   def reservation_links(reservation)

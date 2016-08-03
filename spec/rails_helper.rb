@@ -109,6 +109,9 @@ RSpec.configure do |config|
     Warden.test_reset!
   end
 
+  require "rspec/active_job"
+  config.include(RSpec::ActiveJob)
+
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

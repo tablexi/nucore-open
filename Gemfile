@@ -3,7 +3,7 @@ source "https://rubygems.org"
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
-gem "rails", "4.2.6"
+gem "rails", "4.2.7"
 gem "protected_attributes"
 gem "rails_config",     "0.3.3"
 
@@ -88,6 +88,7 @@ group :development, :test do
   gem "pry-byebug",        "~> 2.0.0"
   gem "quiet_assets"
   gem "rspec-rails",       "~> 3.4.2"
+  gem "rspec-activejob"
   gem "shoulda-matchers",  "~> 2.8.0", require: false
   gem "rspec-collection_matchers"
   gem "single_test", "0.4.0"

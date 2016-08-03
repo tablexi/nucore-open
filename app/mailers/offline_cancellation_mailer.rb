@@ -12,8 +12,8 @@ class OfflineCancellationMailer < BaseMailer
 
   def subject
     text(
-      "offline_cancellation_mailer.send_notification.subject",
-      instrument: reservation.product,
+      "views.offline_cancellation_mailer.send_notification.subject",
+      product: reservation.product,
     )
   end
 

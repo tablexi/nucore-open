@@ -92,9 +92,9 @@ module Reports
         format.html do
           if request.xhr?
             init_report(&report_on)
-            render template: "reports/report_table", layout: false
+            render template: xhr_html_template, layout: false
           else
-            render template: "reports/report"
+            render template: html_template
           end
         end
 
@@ -103,6 +103,14 @@ module Reports
           render_csv("#{@report_by}_report")
         end
       end
+    end
+
+    def xhr_html_template
+      "reports/report_table"
+    end
+
+    def html_template
+      "reports/report"
     end
 
     def render_report_download(report_prefix)

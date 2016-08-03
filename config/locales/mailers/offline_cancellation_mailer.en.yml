@@ -1,4 +1,0 @@
-en:
-  offline_cancellation_mailer:
-    send_notification:
-      subject: Your reservation for %{instrument} has been canceled

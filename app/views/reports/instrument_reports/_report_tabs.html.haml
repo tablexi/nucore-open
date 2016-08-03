@@ -3,6 +3,10 @@
     %li
       = link_to facility_instrument_reports_path(report_by: key) do
         %span= key.to_s.titleize
+  - Reports::InstrumentUnavailableReportsController.reports.keys.each do |key|
+    %li
+      = link_to facility_instrument_unavailable_reports_path(report_by: key) do
+        %span= key.to_s.titleize
   - Reports::InstrumentDayReportsController.reports.keys.each do |key|
     %li
       = link_to facility_instrument_day_reports_path(report_by: key) do

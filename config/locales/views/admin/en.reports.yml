@@ -6,11 +6,13 @@ en:
       percent: Percent of Cost
       unassigned: Unassigned
     reports/instrument_reports:
+      category: Category
       instrument: Instrument
       quantity: Quantity
       reserved: "Reserved Time (h)"
       percent_reserved: "Percent of Reserved"
       actual: "Actual Time (h)"
       percent_actual: "Percent of Actual Time"
+      type: Type
     reports/instrument_day_reports:
       instrument: Instrument

@@ -1,6 +1,7 @@
 en:
   sanger_sequencing:
     name: Sanger Sequencing
+    route: "sanger_sequencing"
 
   controllers:
     sanger_sequencing/admin/batches:
@@ -12,7 +13,7 @@ en:
   views:
     sanger_sequencing:
       submissions:
-        edit:
+        form:
           submit: "Save Submission"
           add: Add
           remove: Remove
