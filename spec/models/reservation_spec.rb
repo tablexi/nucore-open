@@ -41,19 +41,25 @@ RSpec.describe Reservation do
 
       context "and a user reservation exists starting now" do
         context "when the order_detail.state is :new" do
-          let!(:reservation) do
-            FactoryGirl.create(:purchased_reservation,
-                               product: instrument,
-                               reserve_start_at: now,
-                               reserve_end_at: 1.hour.from_now)
-          end
 
-          context "when it is not in the cart" do
+          context "when it is purchased (not in the cart)" do
+            let!(:reservation) do
+              FactoryGirl.create(:purchased_reservation,
+                                 product: instrument,
+                                 reserve_start_at: now,
+                                 reserve_end_at: 1.hour.from_now)
+            end
+
             it { is_expected.to eq [reservation] }
           end
 
-          context "when it is in the cart" do
-            before { reservation.order.update_attribute(:ordered_at, nil) }
+          context "when it is unpurchased (in the cart)" do
+            let!(:reservation) do
+              FactoryGirl.create(:setup_reservation,
+                                 product: instrument,
+                                 reserve_start_at: now,
+                                 reserve_end_at: 1.hour.from_now)
+            end
 
             it { is_expected.to be_blank }
           end

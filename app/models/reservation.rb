@@ -63,7 +63,6 @@ class Reservation < ActiveRecord::Base
   scope :not_canceled, -> { where(canceled_at: nil) }
   scope :not_started, -> { where(actual_start_at: nil) }
   scope :not_ended, -> { where(actual_end_at: nil) }
-  scope :not_in_cart, -> { joins(:order).where.not("orders.ordered_at" => nil) }
 
   def self.not_this_reservation(reservation)
     if reservation.id
@@ -121,7 +120,7 @@ class Reservation < ActiveRecord::Base
       .where(product_id: OfflineReservation.current.pluck(:product_id))
       .not_canceled
       .not_ended
-      .not_in_cart
+      .merge(OrderDetail.purchased)
       .joins(:order_detail)
       .where(order_details: { state: %w(new inprocess), problem: false })
       .where("reserve_start_at <= ?", start_at_limit)
