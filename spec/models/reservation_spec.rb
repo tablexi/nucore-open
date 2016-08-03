@@ -48,7 +48,15 @@ RSpec.describe Reservation do
                                reserve_end_at: 1.hour.from_now)
           end
 
-          it { is_expected.to eq [reservation] }
+          context "when it is not in the cart" do
+            it { is_expected.to eq [reservation] }
+          end
+
+          context "when it is in the cart" do
+            before { reservation.order.update_attribute(:ordered_at, nil) }
+
+            it { is_expected.to be_blank }
+          end
         end
 
         context "when the order_detail.state is :inprocess" do
