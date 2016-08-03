@@ -36,7 +36,7 @@ module AsyncFileProcessing
   end
 
   def another_in_queue?
-    self.class.where(status: :processing).any?
+    self.class.where(status: "processing").any?
   end
 
   def succeed!
