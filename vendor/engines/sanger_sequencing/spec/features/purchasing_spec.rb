@@ -89,20 +89,6 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
           expect(page.first(customer_id_selector).value).to be_blank
           expect(SangerSequencing::Sample.pluck(:customer_sample_id)).not_to include("")
         end
-
-        it "deletes blanks from the end" do
-          page.all(customer_id_selector).last.set("")
-          click_button "Save Submission"
-
-          expect(SangerSequencing::Sample.count).to eq(4)
-        end
-
-        it "does not save if they are all blank" do
-          page.all(customer_id_selector).each { |textbox| textbox.set("") }
-          click_button "Save Submission"
-
-          expect(page).to have_content("You must have at least one sample")
-        end
       end
 
       describe "and more samples were created in another page" do
