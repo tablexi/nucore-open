@@ -120,6 +120,9 @@ class Reservation < ActiveRecord::Base
       .where(product_id: OfflineReservation.current.pluck(:product_id))
       .not_canceled
       .not_ended
+      .merge(OrderDetail.purchased)
+      .joins(:order_detail)
+      .where(order_details: { state: %w(new inprocess), problem: false })
       .where("reserve_start_at <= ?", start_at_limit)
   end
 

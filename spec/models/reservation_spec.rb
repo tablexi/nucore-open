@@ -32,6 +32,78 @@ RSpec.describe Reservation do
     it { is_expected.to validate_absence_of :category }
   end
 
+  describe ".upcoming_offline", :timecop_freeze do
+    subject { described_class.upcoming_offline(1.year.from_now) }
+    let(:now) { Time.current }
+
+    context "when the instrument is down" do
+      let!(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+
+      context "and a user reservation exists starting now" do
+        context "when the order_detail.state is :new" do
+
+          context "when it is purchased (not in the cart)" do
+            let!(:reservation) do
+              FactoryGirl.create(:purchased_reservation,
+                                 product: instrument,
+                                 reserve_start_at: now,
+                                 reserve_end_at: 1.hour.from_now)
+            end
+
+            it { is_expected.to eq [reservation] }
+          end
+
+          context "when it is unpurchased (in the cart)" do
+            let!(:reservation) do
+              FactoryGirl.create(:setup_reservation,
+                                 product: instrument,
+                                 reserve_start_at: now,
+                                 reserve_end_at: 1.hour.from_now)
+            end
+
+            it { is_expected.to be_blank }
+          end
+        end
+
+        context "when the order_detail.state is :inprocess" do
+          let!(:reservation) do
+            FactoryGirl.create(:purchased_reservation,
+                               :inprocess,
+                               product: instrument,
+                               reserve_start_at: now,
+                               reserve_end_at: 1.hour.from_now)
+          end
+
+          it { is_expected.to eq [reservation] }
+        end
+
+        context "when the order_detail.state is :complete with no actual_end_at" do
+          let!(:reservation) do
+            FactoryGirl.create(:purchased_reservation, :long_running, product: instrument)
+          end
+
+          before(:each) do
+            reservation.order_detail.update_attribute(:state, :complete)
+          end
+
+          it { is_expected.to be_blank }
+        end
+
+        context "when the order_detail.state is :reconciled with no actual_end_at" do
+          let!(:reservation) do
+            FactoryGirl.create(:completed_reservation, :long_running, product: instrument)
+          end
+
+          before(:each) do
+            reservation.order_detail.update_attribute(:state, :reconciled)
+          end
+
+          it { is_expected.to be_blank }
+        end
+      end
+    end
+  end
+
   describe "#admin_editable?" do
     context "when the reservation has been persisted" do
       context "and has been canceled" do

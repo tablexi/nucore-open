@@ -9,9 +9,9 @@ RSpec.describe UpcomingOfflineReservationNotifier do
     context "when an instrument is offline" do
       let!(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
 
-      context "and a reservation exists for it" do
+      context "and a purchased reservation exists for it" do
         let!(:reservation) do
-          FactoryGirl.create(:setup_reservation,
+          FactoryGirl.create(:purchased_reservation,
                              product: instrument,
                              reserve_start_at: now + 10.hours,
                              reserve_end_at: now + 11.hours)

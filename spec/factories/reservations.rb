@@ -17,6 +17,12 @@ FactoryGirl.define do
       canceled_at { 1.minute.ago }
     end
 
+    trait :inprocess do
+      after(:create) do |reservation|
+        reservation.order_detail.to_inprocess
+      end
+    end
+
     trait :yesterday do
       reserve_start_at { Time.zone.parse("#{Date.today} 10:00:00") - 1.day }
     end
