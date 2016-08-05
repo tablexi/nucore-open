@@ -24,13 +24,13 @@ module Reports
         key +
           [
             reservations.count,
-            format_as_hours(reservations_total_seconds(reservations)),
+            as_hours(reservations_total_seconds(reservations)),
           ]
       end
     end
 
     def total_hours
-      rows.map { |row| row[HOURS_INDEX] }.sum
+      format("%.2f", rows.map { |row| BigDecimal.new(row[HOURS_INDEX]) }.sum)
     end
 
     def total_quantity
@@ -39,8 +39,8 @@ module Reports
 
     private
 
-    def format_as_hours(seconds)
-      format("%.2f", (seconds / 3600.0)).to_f
+    def as_hours(seconds)
+      format("%.2f", (seconds / 3600.0))
     end
 
     def grouped_query

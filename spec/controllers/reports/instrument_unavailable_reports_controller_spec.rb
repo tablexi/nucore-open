@@ -67,12 +67,12 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
           it "generates the expected rows" do
 
             expect(assigns(:rows)).to match_array [
-              [instruments.first.to_s,  "Admin",   "",                     1, 24.0],
-              [instruments.first.to_s,  "Offline", "Out of order",         2, 72.0],
-              [instruments.second.to_s, "Offline", "Operator unavailable", 1, 24.0],
-              [instruments.third.to_s,  "Admin",   "",                     1, 72.0],
+              [instruments.first.to_s,  "Admin",   "",                     1, "24.00"],
+              [instruments.first.to_s,  "Offline", "Out of order",         2, "72.00"],
+              [instruments.second.to_s, "Offline", "Operator unavailable", 1, "24.00"],
+              [instruments.third.to_s,  "Admin",   "",                     1, "72.00"],
             ]
-            expect(assigns(:totals)).to eq ["", "", 5, 192.0]
+            expect(assigns(:totals)).to eq ["", "", 5, "192.00"]
           end
         end
       end
@@ -93,7 +93,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
       it_behaves_like "it sets the required instance variables"
 
       it "rounds to hundreths" do
-        expect(assigns(:rows).first[-1]).to eq(0.67)
+        expect(assigns(:rows).first[-1]).to eq("0.67")
       end
     end
 
@@ -115,7 +115,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
         it "reports only the downtime during the report range" do
           expect(assigns(:rows)).to match_array [
-            [instruments.first.to_s, "Offline", "Out of order", 1, 120.0],
+            [instruments.first.to_s, "Offline", "Out of order", 1, "120.00"],
           ]
         end
       end
@@ -127,7 +127,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
         it "reports only the downtime during the report range" do
           expect(assigns(:rows)).to match_array [
-            [instruments.first.to_s, "Offline", "Out of order", 1, 96.0],
+            [instruments.first.to_s, "Offline", "Out of order", 1, "96.00"],
           ]
         end
       end
@@ -139,7 +139,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
         it "reports only the downtime during the report range" do
           expect(assigns(:rows)).to match_array [
-            [instruments.first.to_s, "Offline", "Out of order", 1, 120.0],
+            [instruments.first.to_s, "Offline", "Out of order", 1, "120.00"],
           ]
         end
       end
