@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe Reports::Querier do
 
   let(:user) { FactoryGirl.create(:user) }
-  let(:facility) { FactoryGirl.create(:setup_facility) }
-  let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
+  let(:item) { FactoryGirl.create(:setup_item) }
+  let(:facility) { item.facility }
   let(:account) { FactoryGirl.create(:setup_account, :with_account_owner, owner: user) }
   let!(:order_detail) { place_product_order(user, facility, item, account) }
 
