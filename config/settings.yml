@@ -109,6 +109,7 @@ feature:
   print_order_detail_on: false
   user_based_price_groups_on: true
   my_files_on: true
+  # results file notifications requires that my_files be on as well
   results_file_notifications_on: true
 
 # This may be overridden in settings.local.yml if your fork is using S3, so
