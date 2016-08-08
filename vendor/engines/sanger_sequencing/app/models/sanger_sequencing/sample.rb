@@ -9,6 +9,8 @@ module SangerSequencing
 
     validates :customer_sample_id, presence: true, on: :update
 
+    default_scope { order(:id) }
+
     def form_customer_sample_id
       customer_sample_id || default_customer_sample_id
     end
