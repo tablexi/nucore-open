@@ -18,6 +18,10 @@ module SangerSequencing
       @permitted_sample_attributes ||= [:id, :customer_sample_id, :_destroy]
     end
 
+    def self.permitted_submission_params
+      @permitted_submission_params ||= []
+    end
+
     def new
       clean_samples
       @submission.create_samples!(params[:quantity]) if @submission.samples.empty?
@@ -62,7 +66,8 @@ module SangerSequencing
 
     def submission_params
       params.require(:sanger_sequencing_submission)
-            .permit(samples_attributes: self.class.permitted_sample_attributes)
+            .permit(self.class.permitted_submission_params,
+                    samples_attributes: self.class.permitted_sample_attributes)
     end
 
     def external_return_options
