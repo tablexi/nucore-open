@@ -79,7 +79,7 @@ Teaspoon.configure do |config|
   #  suite.matcher = "spec/javascripts/targeted/*_spec.{js,js.coffee,coffee}"
   # end
 
-  config.asset_paths += EngineManager.loaded_nucore_engines.map { |e| File.join(e.root, "spec/javascripts") } #{}"vendor/engines/sanger_sequencing/spec/javascripts"
+  config.asset_paths += EngineManager.loaded_nucore_engines.map { |e| File.join(e.root, "spec/javascripts") }
 
   config.suite :engines do |suite|
     engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
