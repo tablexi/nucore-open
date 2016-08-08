@@ -41,9 +41,10 @@ Nucore::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.delivery_method       = :smtp
-  config.action_mailer.default_url_options   = { host: "nucore.stage.tablexi.com", protocol: "https" }
-  config.action_mailer.smtp_settings         = {
+  config.action_mailer.delivery_method = :smtp
+  Rails.application.routes.default_url_options = { host: "nucore.stage.tablexi.com", protocol: "https" }
+  config.action_mailer.default_url_options = Rails.application.routes.default_url_options
+  config.action_mailer.smtp_settings = { # TODO
     address: "mail.example.com",
     port: 25,
     domain: "example.com",
