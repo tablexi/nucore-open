@@ -2,6 +2,7 @@
 lock "3.6.0"
 
 set :application, "nucore"
+
 set :repo_url, "git@github.com:tablexi/nucore-open.git"
 
 set :bundle_without, "#{fetch(:bundle_without)} oracle"
