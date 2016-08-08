@@ -7,7 +7,7 @@ set :repo_url, "git@github.com:tablexi/nucore-open.git"
 set :bundle_without, "#{fetch(:bundle_without)} oracle"
 
 set :linked_files, fetch(:linked_files, []).concat(
-  %w(config/database.yml config/settings.local.yml config/eye.yml.erb),
+  %w(config/database.yml config/secrets.yml config/settings.local.yml config/eye.yml.erb),
 )
 set :linked_dirs, fetch(:linked_dirs, []).concat(
   %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/files),
