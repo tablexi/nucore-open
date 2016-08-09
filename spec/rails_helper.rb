@@ -67,8 +67,6 @@ RSpec.configure do |config|
     # initialize price groups
     @nupg = PriceGroup.find_or_create_by(name: Settings.price_group.name.base, is_internal: true, display_order: 1)
     @nupg.save(validate: false)
-    @ccpg = PriceGroup.find_or_create_by(name: Settings.price_group.name.cancer_center, is_internal: true, display_order: 2)
-    @ccpg.save(validate: false)
     @epg = PriceGroup.find_or_create_by(name: Settings.price_group.name.external, is_internal: false, display_order: 3)
     @epg.save(validate: false)
 
