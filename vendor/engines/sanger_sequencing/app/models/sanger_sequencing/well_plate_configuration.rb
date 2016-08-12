@@ -12,7 +12,7 @@ module SangerSequencing
     ).freeze
 
     def self.find(key)
-      CONFIGS[key]
+      CONFIGS[key] || CONFIGS[:default]
     end
 
     def to_json

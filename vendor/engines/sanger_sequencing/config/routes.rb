@@ -11,7 +11,8 @@ Rails.application.routes.draw do
     namespace :sanger_sequencing do
       namespace :admin do
         resources :submissions, only: [:index, :show]
-        resources :batches, only: [:index, :show, :new, :create, :destroy] do
+        resources :batches, only: [:index, :show, :create, :destroy] do
+          get "(:product_group)/new", on: :collection, action: :new, constraints: { product_group: /#{SangerSequencing::ProductGroup::GROUPS.join("|")}/ }, as: :new
           get "well_plates/:well_plate_index", action: :well_plate, on: :member, as: :well_plate
           post :upload, on: :member
         end

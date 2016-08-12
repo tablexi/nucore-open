@@ -25,6 +25,14 @@ module SangerSequencing
     scope :ready_for_batch, -> { purchased.merge(OrderDetail.new_or_inprocess).where(batch_id: nil) }
     scope :for_facility, -> (facility) { where(orders: { facility_id: facility.id }) }
 
+    def self.for_product_group(product_group)
+      if product_group
+        where(order_details: { product_id: ProductGroup.where(group: product_group).pluck(:product_id) })
+      else
+        where.not(order_details: { product_id: ProductGroup.pluck(:product_id) })
+      end
+    end
+
     def create_samples!(quantity)
       quantity = quantity.to_i
       raise ArgumentError, "quantity must be positive" if quantity <= 0
