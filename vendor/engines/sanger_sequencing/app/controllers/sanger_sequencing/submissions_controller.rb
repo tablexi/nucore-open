@@ -39,7 +39,6 @@ module SangerSequencing
       if SubmissionUpdater.new(@submission).update_attributes(submission_params)
         redirect_to "#{params[:success_url]}&#{external_return_options.to_query}"
       else
-        flash.now[:alert] = @submission.errors.messages.values.join(". ")
         render :edit
       end
     end
