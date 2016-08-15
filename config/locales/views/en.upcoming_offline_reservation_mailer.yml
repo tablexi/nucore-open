@@ -11,7 +11,7 @@ en:
               will be canceled at no cost.
 
               Please contact [%{facility_name}](%{facility_url})
-              at <%{facility_email}> for more information.
+              %{facility_contact} for more information.
           text: |
             %{product}, the instrument you have reserved for today at %{reservation_time},
             is down. If %{product} is still down at your scheduled time, your reservation
@@ -19,5 +19,5 @@ en:
 
             Please contact %{facility_name} for more information.
 
-            %{facility_name}: %{facility_url} %{facility_email}
+            %{facility_name}: %{facility_url} %{facility_contact}
             Your order: %{order_detail_url}

@@ -1,6 +1,6 @@
 <%=
   text "body.text",
-    facility_email: @reservation.facility.email,
+    facility_contact: @reservation.facility.email.present? ? text("views.offline_cancellation_mailer.send_notification.facility_contact", email: @reservation.facility.email) : "",
     facility_name: @reservation.facility.name,
     facility_url: facility_url(@reservation.facility),
     product: @reservation.product,
