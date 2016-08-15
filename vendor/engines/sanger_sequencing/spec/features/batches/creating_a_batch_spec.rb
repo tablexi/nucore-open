@@ -82,6 +82,8 @@ RSpec.describe "Creating a batch", :js do
           expect(SangerSequencing::Batch.last.sample_at(0, "A01")).to eq(purchased_submission.samples.first)
           expect(SangerSequencing::Batch.last.sample_at(0, "B01")).to eq(purchased_submission.samples.second)
           expect(SangerSequencing::Batch.last.sample_at(0, "A02")).to eq(purchased_submission.samples[48])
+
+          expect(SangerSequencing::Batch.last.group).to eq("fragment")
         end
       end
 

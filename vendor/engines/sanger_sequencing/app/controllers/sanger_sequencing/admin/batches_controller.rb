@@ -30,7 +30,7 @@ module SangerSequencing
       def create
         # Whitelisting should happen in the form object
         if @batch.update_attributes(params[:batch].merge(created_by: current_user, facility: current_facility))
-          redirect_to [current_facility, :sanger_sequencing, :admin, :batches], notice: text("create.success")
+          redirect_to [current_facility, :sanger_sequencing, :admin, :batches, group: @batch.group], notice: text("create.success")
         else
           @submissions = Submission.ready_for_batch.for_facility(current_facility)
           flash.now[:alert] = @batch.errors.map { |_k, msg| msg }.to_sentence
@@ -56,7 +56,7 @@ module SangerSequencing
 
       def destroy
         @batch.destroy
-        redirect_to facility_sanger_sequencing_admin_batches_path, notice: text("destroy.success")
+        redirect_to facility_sanger_sequencing_admin_batches_path(group: @batch.group), notice: text("destroy.success")
       end
 
       def upload
@@ -79,7 +79,7 @@ module SangerSequencing
       private
 
       def validate_product_group
-        @product_group = params[:group]
+        @product_group = params[:group].presence
         raise ActiveRecord::RecordNotFound unless @product_group.blank? || ProductGroup::GROUPS.include?(@product_group)
       end
 

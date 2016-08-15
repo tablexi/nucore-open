@@ -36,7 +36,6 @@
           %td= batch.samples.count
           %td= link_to "Delete", facility_sanger_sequencing_admin_batch_path(current_facility, batch), method: :delete
 
-
   = will_paginate(@batches)
 
 - else
