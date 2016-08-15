@@ -7,6 +7,9 @@ class AddSangerProductGroups < ActiveRecord::Migration
       t.string :group, null: false
       t.timestamps
     end
+
+    add_column :sanger_sequencing_batches, :group, :string
+    add_index :sanger_sequencing_batches, :group
   end
 
 end

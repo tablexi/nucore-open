@@ -2,6 +2,9 @@ en:
   sanger_sequencing:
     name: Sanger Sequencing
     route: "sanger_sequencing"
+    product_groups:
+      default: Sanger Sequencing
+      fragment: Fragment Analysis
 
   controllers:
     sanger_sequencing/admin/batches:

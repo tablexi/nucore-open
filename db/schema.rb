@@ -528,10 +528,12 @@ ActiveRecord::Schema.define(version: 20160812230426) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "facility_id",     limit: 4
+    t.string   "group",           limit: 255
   end
 
   add_index "sanger_sequencing_batches", ["created_by_id"], name: "index_sanger_sequencing_batches_on_created_by_id", using: :btree
   add_index "sanger_sequencing_batches", ["facility_id"], name: "index_sanger_sequencing_batches_on_facility_id", using: :btree
+  add_index "sanger_sequencing_batches", ["group"], name: "index_sanger_sequencing_batches_on_group", using: :btree
 
   create_table "sanger_sequencing_product_groups", force: :cascade do |t|
     t.integer  "product_id", limit: 4,   null: false

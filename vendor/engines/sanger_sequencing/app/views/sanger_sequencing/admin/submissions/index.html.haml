@@ -8,8 +8,6 @@
 
 %h2= text("sanger_sequencing.name")
 
-%p= link_to text("new_batch"), new_facility_sanger_sequencing_admin_batch_path, class: "btn btn-add"
-
 - if @submissions.any?
   %table.table.table-striped
     %thead

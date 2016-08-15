@@ -9,15 +9,22 @@ module SangerSequencing
       before_action { @active_tab = "admin_sanger_sequencing" }
       before_action :load_batch_form, only: [:new, :create]
       before_action :load_batch, only: [:well_plate, :show, :destroy, :upload]
+      before_action :validate_product_group, only: [:index, :new, :create]
       authorize_sanger_resource class: "SangerSequencing::Batch"
 
       def index
-        @batches = Batch.for_facility(current_facility).order(created_at: :desc).paginate(page: params[:page])
+        @batches = Batch.for_facility(current_facility)
+          .order(created_at: :desc)
+          .for_product_group(params[:group])
+          .paginate(page: params[:page])
       end
 
       def new
-        @submissions = Submission.ready_for_batch.includes(:samples, order_detail: :product).for_facility(current_facility).for_product_group(params[:product_group])
-        @builder_config = WellPlateConfiguration.find(params[:product_group])
+        @submissions = Submission.ready_for_batch
+          .includes(:samples, order_detail: :product)
+          .for_facility(current_facility)
+          .for_product_group(params[:group])
+        @builder_config = WellPlateConfiguration.find(params[:group])
       end
 
       def create
@@ -71,12 +78,17 @@ module SangerSequencing
 
       private
 
+      def validate_product_group
+        @product_group = params[:group]
+        raise ActiveRecord::RecordNotFound unless @product_group.blank? || ProductGroup::GROUPS.include?(@product_group)
+      end
+
       def load_batch
         @batch = Batch.for_facility(current_facility).find(params[:id])
       end
 
       def load_batch_form
-        @batch = BatchForm.new
+        @batch = BatchForm.new(SangerSequencing::Batch.new(group: params[:group]))
       end
 
     end

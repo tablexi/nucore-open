@@ -15,6 +15,10 @@ module SangerSequencing
       where(facility: facility)
     end
 
+    def self.for_product_group(group)
+      where(group: group)
+    end
+
     def well_plates
       well_plates_raw.map { |well_plate| WellPlate.new(well_plate, samples: samples) }
     end
