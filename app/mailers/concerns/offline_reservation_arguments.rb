@@ -13,7 +13,7 @@ module OfflineReservationArguments
       facility_url: facility_url(reservation.facility),
       product: reservation.product,
       reservation_time: I18n.l(reservation.reserve_start_at, format: :timeonly),
-      order_detail_url: order_order_detail_url(reservation.order, reservation.order_detail)
+      order_detail_url: order_order_detail_url(reservation.order, reservation.order_detail),
     }
   end
 
