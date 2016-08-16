@@ -2,6 +2,7 @@ en:
   views:
     offline_cancellation_mailer:
       send_notification:
+        facility_contact: at <%{email}>
         subject: Your reservation for %{product} has been canceled
         body:
           html: |
@@ -10,12 +11,12 @@ en:
             Your reservation has been canceled at no cost.
 
             Please contact [%{facility_name}](%{facility_url})
-            at <%{facility_email}> for more information.
+            %{facility_contact} for more information.
           text: |
             %{product}, the instrument you have reserved for %{reservation_time},
             is down. Your reservation has been canceled at no cost.
 
             Please contact %{facility_name} for more information.
 
-            %{facility_name}: %{facility_url} %{facility_email}
+            %{facility_name}: %{facility_url} %{facility_contact}
             Your order: %{order_detail_url}

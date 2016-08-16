@@ -1,5 +1,7 @@
 class UpcomingOfflineReservationMailer < BaseMailer
 
+  include OfflineReservationArguments
+
   attr_reader :reservation
 
   def send_offline_instrument_warning(reservation)

@@ -1,9 +1,1 @@
-<%=
-  text "body.text",
-    facility_email: @reservation.facility.email,
-    facility_name: @reservation.facility.name,
-    facility_url: facility_url(@reservation.facility),
-    product: @reservation.product,
-    reservation_time: I18n.l(@reservation.reserve_start_at, format: :timeonly),
-    order_detail_url: order_order_detail_url(@reservation.order, @reservation.order_detail)
-%>
+<%= text "body.text", offline_notification_arguments %>
