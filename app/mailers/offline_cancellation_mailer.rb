@@ -1,5 +1,7 @@
 class OfflineCancellationMailer < BaseMailer
 
+  include OfflineReservationArguments
+
   attr_reader :reservation
 
   def send_notification(reservation)
