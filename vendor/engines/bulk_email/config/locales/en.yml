@@ -1,0 +1,14 @@
+en:
+  bulk_email:
+    title: Bulk Email
+    search_type:
+      customers: Customers
+      account_owners: Account Owners
+      customers_and_account_owners: Customers and Account Owners
+      authorized_users: Authorized Users
+    dates:
+      label: Orders or Reservations
+      start: Starting
+      end: Ending
+    no_results: No users found
+    export_html: Export
