@@ -30,7 +30,6 @@ RSpec.describe ReservationsController do
   describe "GET #index" do
     before(:each) do
       allow(order).to receive(:cart_valid?).and_return(true)
-      allow(order).to receive(:place_order?).and_return(true)
       order.validate_order!
       order.purchase!
 
