@@ -14,6 +14,11 @@ GIT
       nokogiri (> 1.5)
 
 PATH
+  remote: vendor/engines/bulk_email
+  specs:
+    bulk_email (0.0.1)
+
+PATH
   remote: vendor/engines/c2po
   specs:
     c2po (1.0.0)
@@ -508,6 +513,7 @@ DEPENDENCIES
   awesome_nested_set (= 3.0.3)
   awesome_print (= 1.1.0)
   bootstrap-sass (~> 2.3.2)
+  bulk_email (~> 0.0.1)!
   c2po (~> 1.0.0)!
   cancancan (= 1.10)
   capistrano

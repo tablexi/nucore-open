@@ -57,6 +57,7 @@ gem "lograge"
 gem "logstash-event"
 
 ## custom
+gem "bulk_email", "~> 0.0.1", path: "vendor/engines/bulk_email"
 gem "c2po", "~> 1.0.0", path: "vendor/engines/c2po"
 gem "dataprobe", "~> 1.0.0", path: "vendor/engines/dataprobe"
 gem "projects", "~> 0.0.1", path: "vendor/engines/projects"
