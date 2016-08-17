@@ -581,6 +581,16 @@ RSpec.describe Reservation do
 
       before(:each) { @morning = Time.zone.parse("#{Date.today} 10:31:00") }
 
+      context "when the reserved instrument is online" do
+        it { is_expected.to be_can_move }
+      end
+
+      context "when the reserved instrument is offline" do
+        let(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+
+        it { is_expected.not_to be_can_move }
+      end
+
       it "should return the earliest possible time slot" do
         expect(human_date(@reservation1.reserve_start_at)).to eq(human_date(@morning + 1.day))
 
