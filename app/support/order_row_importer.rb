@@ -157,7 +157,7 @@ class OrderRowImporter
 
   def purchase_order!
     if order.validate_order!
-      add_error("Couldn't purchase order") unless order.purchase!
+      add_error("Couldn't purchase order") unless order.purchase_without_default_status!
     else
       add_error("Couldn't validate order")
     end
