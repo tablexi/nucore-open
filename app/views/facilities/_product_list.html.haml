@@ -14,3 +14,6 @@
           - if acting_user.present? && !product.can_be_used_by?(acting_user)
             %i.icon-lock
             = " (#{product.class.human_attribute_name(:requires_approval_show)})"
+
+          - if product.offline?
+            = tooltip_icon "icon-warning-sign", t("instruments.offline.note")
