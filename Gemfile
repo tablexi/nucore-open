@@ -9,6 +9,10 @@ gem "rails_config",     "0.3.3"
 
 ## database
 gem "mysql2",           "~> 0.3.20"
+group :oracle do
+  gem "ruby-oci8", "~> 2.2.0"
+  gem "activerecord-oracle_enhanced-adapter", "~> 1.6.0"
+end
 
 ## auth
 gem "devise",           "~> 3.5.10"
@@ -114,9 +118,4 @@ group :assets do
   gem "coffee-rails", "~> 4.1.1"
   gem "uglifier",     "~> 2.7.2"
   gem "therubyracer"
-end
-
-group :oracle do
-  gem "ruby-oci8", "~> 2.2.0"
-  gem "activerecord-oracle_enhanced-adapter", "1.4.3"
 end
