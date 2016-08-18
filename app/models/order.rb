@@ -39,7 +39,7 @@ class Order < ActiveRecord::Base
   aasm column: :state do
     state :new, initial: true
     state :validated
-    state :purchased
+    state :purchased, before_enter: :set_ordered_at
 
     event :invalidate do
       transitions to: :new, from: [:new, :validated]
@@ -50,7 +50,11 @@ class Order < ActiveRecord::Base
     end
 
     event :purchase, success: :move_order_details_to_default_status do
-      transitions to: :purchased, from: :validated, guard: :place_order?
+      transitions to: :purchased, from: :validated
+    end
+
+    event :purchase_without_default_status do
+      transitions to: :purchased, from: :validated
     end
 
     event :clear do
@@ -105,11 +109,8 @@ class Order < ActiveRecord::Base
     save
   end
 
-  # set the ordered time and send emails
-  def place_order?
-    # set the ordered_at date
+  def set_ordered_at
     self.ordered_at ||= Time.zone.now
-    save
   end
   #####
   # END acts_as_state_machine

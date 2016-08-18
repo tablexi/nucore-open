@@ -111,6 +111,29 @@ RSpec.describe OrderRowImporter do
       end
     end
 
+    context "when the product starts in Pending Approval" do
+      let(:order_status) { OrderStatus.find_or_create_by(name: "Pending Approval") }
+      before { service.update(initial_order_status: order_status) }
+
+      include_context "valid row values"
+      it_behaves_like "an order was created"
+
+      it "does not trigger any emails" do
+        expect { subject.import }.not_to change(ActionMailer::Base.deliveries, :count)
+      end
+
+      it "puts the order detail into Completed status" do
+        subject.import
+        expect(OrderDetail.last.state).to eq("complete")
+        expect(OrderDetail.last.order_status.name).to eq("Complete")
+      end
+
+      it "puts the order into a purchased state" do
+        subject.import
+        expect(Order.last.state).to eq("purchased")
+      end
+    end
+
     context "when the fulfillment date" do
       shared_examples_for "an invalid fulfillment_date" do
         it_behaves_like "an order was not created"
@@ -274,7 +297,7 @@ RSpec.describe OrderRowImporter do
           context "when the order was not purchased" do
             before(:each) do
               allow_any_instance_of(Order).to receive(:purchased?).and_return(false)
-              allow_any_instance_of(Order).to receive(:purchase!).and_return(false)
+              allow_any_instance_of(Order).to receive(:purchase_without_default_status!).and_return(false)
             end
 
             context "and the order is valid" do
@@ -299,7 +322,7 @@ RSpec.describe OrderRowImporter do
               context "and the product is hidden" do
                 before(:each) do
                   product.update_attribute(:is_hidden, true)
-                  allow_any_instance_of(Order).to receive(:purchase!).and_return(true)
+                  allow_any_instance_of(Order).to receive(:purchase_without_default_status!).and_return(true)
                 end
 
                 it_behaves_like "an order was created"

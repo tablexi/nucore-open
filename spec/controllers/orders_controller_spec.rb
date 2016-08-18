@@ -532,7 +532,7 @@ RSpec.describe OrdersController do
 
       it "validates and places the order" do
         @order.validate_order!
-        expect(@order).to be_place_order
+        expect(@order).to be_validated
       end
 
       it "redirects to the order receipt on a successful purchase" do
