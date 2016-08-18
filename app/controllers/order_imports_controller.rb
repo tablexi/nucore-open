@@ -7,7 +7,7 @@ class OrderImportsController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
 
-  authorize_resource class: Order
+  authorize_resource
 
   def initialize
     @active_tab = "admin_orders"
