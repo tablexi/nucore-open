@@ -52,5 +52,4 @@ RSpec.describe BulkEmail::AbilityExtension do
     let(:user) { FactoryGirl.create(:user) }
     it_behaves_like "it may not send bulk email"
   end
-
 end
