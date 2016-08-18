@@ -513,7 +513,7 @@ DEPENDENCIES
   awesome_nested_set (= 3.0.3)
   awesome_print (= 1.1.0)
   bootstrap-sass (~> 2.3.2)
-  bulk_email (~> 0.0.1)!
+  bulk_email!
   c2po (~> 1.0.0)!
   cancancan (= 1.10)
   capistrano
