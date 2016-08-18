@@ -187,15 +187,6 @@ class OrderDetail < ActiveRecord::Base
       .where("order_details.state NOT IN('canceled', 'reconciled')")
   end
 
-  def self.unreconciled_accounts(facility, account_type)
-    joins(:order, :account)
-      .select("DISTINCT(order_details.account_id) AS account_id")
-      .where("orders.facility_id" => facility.id)
-      .where("accounts.type" => account_type)
-      .where("order_details.state" => "complete")
-      .where("statement_id IS NOT NULL")
-  end
-
   scope :in_review, lambda { |facility|
     all.joins(:product)
       .where(products: { facility_id: facility.id })
@@ -286,8 +277,7 @@ class OrderDetail < ActiveRecord::Base
 
   scope :statemented, lambda { |facility|
     joins(:order)
-      .order(created_at: :desc)
-      .where("orders.facility_id" => facility.id)
+      .where(orders: { facility_id: facility.id })
       .where.not(statement_id: nil)
   }
 
