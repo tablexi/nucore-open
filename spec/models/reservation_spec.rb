@@ -581,6 +581,16 @@ RSpec.describe Reservation do
 
       before(:each) { @morning = Time.zone.parse("#{Date.today} 10:31:00") }
 
+      context "when the reserved instrument is online" do
+        it { is_expected.to be_startable_now }
+      end
+
+      context "when the reserved instrument is offline" do
+        let(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+
+        it { is_expected.not_to be_startable_now }
+      end
+
       it "should return the earliest possible time slot" do
         expect(human_date(@reservation1.reserve_start_at)).to eq(human_date(@morning + 1.day))
 
@@ -603,20 +613,20 @@ RSpec.describe Reservation do
         @instrument.update_attributes(reserve_interval: 1)
         @reservation1.duration_mins = 1
         Timecop.freeze(@reservation1.reserve_start_at - 4.minutes) do
-          expect(@reservation1).to_not be_can_move
+          expect(@reservation1).to_not be_startable_now
         end
       end
 
       it "should not be moveable if the reservation is canceled" do
-        expect(@reservation1).to be_can_move
+        expect(@reservation1).to be_startable_now
         @reservation1.canceled_at = Time.zone.now
-        expect(@reservation1).not_to be_can_move
+        expect(@reservation1).not_to be_startable_now
       end
 
       it "should not be moveable if there is not a time slot earlier than this one" do
-        expect(@reservation1).to be_can_move
+        expect(@reservation1).to be_startable_now
         expect(@reservation1.move_to_earliest).to be true
-        expect(@reservation1).not_to be_can_move
+        expect(@reservation1).not_to be_startable_now
         expect(@reservation1.move_to_earliest).to be false
         expect(@reservation1.errors.messages).to eq(base: ["Sorry, but your reservation can no longer be moved."])
       end
