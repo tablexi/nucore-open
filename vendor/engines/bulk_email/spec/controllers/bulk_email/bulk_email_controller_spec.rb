@@ -1,7 +1,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-RSpec.describe BulkEmailController do
+RSpec.describe BulkEmail::BulkEmailController do
   render_views
 
   before(:all) { create_users }

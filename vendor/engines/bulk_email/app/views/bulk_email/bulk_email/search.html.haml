@@ -1,0 +1,19 @@
+= render "shared/transactions/headers"
+= javascript_include_tag "bulk_email/bulk_email.js"
+
+= content_for :h1 do
+  = current_facility
+
+%h2= t("bulk_email.title")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "email"
+
+= render "fields"
+
+- if @users
+  - if @users.any?
+    = render "results"
+  - else
+    .clear
+    .alert.alert-info= t("bulk_email.no_results")

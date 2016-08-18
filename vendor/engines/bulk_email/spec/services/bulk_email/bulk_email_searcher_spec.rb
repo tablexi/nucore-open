@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BulkEmailSearcher do
+RSpec.describe BulkEmail::BulkEmailSearcher do
   shared_examples_for "active/inactive users" do
     describe "with an active user" do
       it "returns the user" do
@@ -170,7 +170,6 @@ RSpec.describe BulkEmailSearcher do
       expect(users).to contain_all [owner, owner2]
       expect(searcher.order_details).to contain_all [@od1, @od2]
     end
-
   end
 
   context "customers_and_account_owners" do
@@ -201,7 +200,6 @@ RSpec.describe BulkEmailSearcher do
       expect(users).to contain_all [owner, owner2, purchaser, purchaser2]
       expect(searcher.order_details).to contain_all [@od1, @od2]
     end
-
   end
 
   context "search authorized users" do
@@ -261,5 +259,4 @@ RSpec.describe BulkEmailSearcher do
   #     expect(users.size).to eq(1001)
   #   end
   # end
-
 end
