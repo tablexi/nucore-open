@@ -26,7 +26,7 @@ RSpec.describe OrderImportsController do
       @method = :get
     end
 
-    it_should_allow_operators_only do
+    it_should_allow_managers_only do
       expect(assigns :order_import).to be_new_record
       is_expected.to render_template "new"
     end
@@ -50,7 +50,7 @@ RSpec.describe OrderImportsController do
       let(:fail_on_error) { false }
       let(:send_receipts) { false }
 
-      it_should_allow_operators_only(:redirect) do
+      it_should_allow_managers_only(:redirect) do
         expect(flash[:error]).to be_blank
         expect(flash[:notice]).to be_present
         is_expected.to redirect_to new_facility_order_import_url
@@ -67,6 +67,28 @@ RSpec.describe OrderImportsController do
           expect { do_request }.to change(StoredFile, :count).from(0).to(1)
         end
       end
+    end
+  end
+
+  describe "downloading an error file" do
+    let(:stored_file) { FactoryGirl.create(:csv_stored_file) }
+    let!(:order_import) do
+      OrderImport.create!(
+        created_by: @director.id,
+        upload_file: stored_file,
+        error_file: stored_file,
+        facility: facility,
+      )
+    end
+
+    before do
+      @action = :error_report
+      @method = :get
+      @params.merge!(id: order_import.id)
+    end
+
+    it_should_allow_managers_only(:redirect) do
+      is_expected.to redirect_to order_import.error_file_download_url
     end
   end
 end

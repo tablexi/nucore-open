@@ -138,7 +138,7 @@ class Ability
           Statement, StoredFile, PricePolicy, InstrumentPricePolicy,
           ItemPricePolicy, OrderStatus, PriceGroup, Reports::ReportsController,
           ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
-          ProductAccessory, Product, BundleProduct, TrainingRequest
+          ProductAccessory, Product, BundleProduct, TrainingRequest, OrderImport
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
