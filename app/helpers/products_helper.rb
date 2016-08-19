@@ -63,7 +63,7 @@ module ProductsHelper
         title: text("instruments.public_schedule.available") }
     else
       { class: ["icon-calendar", "in-use"],
-        title: text("instruments.public_schedule.in-use") }
+        title: text("instruments.public_schedule.in_use") }
     end
   end
 
