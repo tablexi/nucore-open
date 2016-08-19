@@ -1055,7 +1055,7 @@ en:
       place_reservation: Place Reservation
       icon: Public Schedule
       available: Available
-      in-use: In Use
+      unavailable: Unavailable
     schedule:
       administrative_reservations: Administrative Reservations
       add_admin_reservation: Add Admin Reservation
