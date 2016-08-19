@@ -34,6 +34,9 @@ Nucore::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  # Raise exceptions when missing I18n translations
+  config.action_view.raise_on_missing_translations = true
 end
 
 # What's this for?
