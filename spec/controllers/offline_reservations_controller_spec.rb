@@ -11,7 +11,10 @@ RSpec.describe OfflineReservationsController do
       {
         facility_id: instrument.facility.url_name,
         instrument_id: instrument.url_name,
-        offline_reservation: { admin_note: "The instrument is down" },
+        offline_reservation: {
+          admin_note: "The instrument is down",
+          category: "out_of_order",
+        },
       }
     end
 

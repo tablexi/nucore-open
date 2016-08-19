@@ -803,7 +803,11 @@ RSpec.describe Instrument do
       let!(:offline_reservation) do
         instrument
           .offline_reservations
-          .create!(admin_note: "Down", reserve_start_at: 1.day.ago)
+          .create!(
+            admin_note: "Down",
+            category: "out_of_order",
+            reserve_start_at: 1.day.ago,
+          )
       end
 
       it "switches the instrument to be online" do
@@ -835,7 +839,11 @@ RSpec.describe Instrument do
       let!(:offline_reservation) do
         instrument
           .offline_reservations
-          .create!(admin_note: "Down", reserve_start_at: 1.day.ago)
+          .create!(
+            admin_note: "Down",
+            category: "out_of_order",
+            reserve_start_at: 1.day.ago,
+          )
       end
 
       it "is offline", :aggregate_failures do

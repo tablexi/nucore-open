@@ -63,7 +63,11 @@ RSpec.describe "Managing Instrument Offline Reservations" do
     before(:each) do
       instrument
         .offline_reservations
-        .create!(reserve_start_at: 1.hour.ago, admin_note: "It's broken")
+        .create!(
+          reserve_start_at: 1.hour.ago,
+          admin_note: "It's broken",
+          category: "out_of_order",
+        )
 
       visit facility_instrument_schedule_path(facility, instrument)
       click_link "Bring Instrument Online"

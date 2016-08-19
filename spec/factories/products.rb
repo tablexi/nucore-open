@@ -110,7 +110,11 @@ FactoryGirl.define do
       after(:create) do |product|
         product
           .offline_reservations
-          .create!(reserve_start_at: 1.month.ago, admin_note: "Offline")
+          .create!(
+            admin_note: "Offline",
+            category: "out_of_order",
+            reserve_start_at: 1.month.ago,
+          )
       end
     end
   end

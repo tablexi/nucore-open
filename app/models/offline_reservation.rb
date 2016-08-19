@@ -9,6 +9,7 @@ class OfflineReservation < Reservation
   include ActiveModel::ForbiddenAttributesProtection
 
   validates :admin_note, presence: true
+  validates :category, presence: true
 
   belongs_to :product
 
