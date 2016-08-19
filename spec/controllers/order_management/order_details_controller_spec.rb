@@ -523,6 +523,14 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
     end
 
+    describe "assigning to a user" do
+      it "updates the assigned user" do
+        @params[:order_detail] = { assigned_user_id: @staff.id }
+        do_request
+        expect(order_detail.reload.assigned_user).to eq(@staff)
+      end
+    end
+
     describe "resolving dispute" do
       before :each do
         order_detail.change_status!(OrderStatus.complete.first)
