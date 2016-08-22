@@ -2,8 +2,10 @@
 
   .row
     .span3
-      = f.input :search_type,
-        collection: @search_types.invert,
+      = f.collection_check_boxes :search_type,
+        @search_types.to_a,
+        :first,
+        :last,
         selected: params[:search_type],
         input_html: { name: "search_type" }
 
