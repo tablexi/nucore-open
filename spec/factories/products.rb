@@ -38,6 +38,14 @@ FactoryGirl.define do
       sequence(:name) { |n| "Bundle #{n}" }
       sequence(:url_name) { |n| "bundle-#{n}" }
     end
+
+    trait :archived do
+      is_archived true
+    end
+
+    trait :hidden do
+      is_hidden true
+    end
   end
 
   factory :setup_product, class: Product do
