@@ -14,16 +14,16 @@ module SangerSequencing
 
       def index
         @batches = Batch.for_facility(current_facility)
-          .order(created_at: :desc)
-          .for_product_group(params[:group])
-          .paginate(page: params[:page])
+                        .order(created_at: :desc)
+                        .for_product_group(params[:group])
+                        .paginate(page: params[:page])
       end
 
       def new
         @submissions = Submission.ready_for_batch
-          .includes(:samples, order_detail: :product)
-          .for_facility(current_facility)
-          .for_product_group(params[:group])
+                                 .includes(:samples, order_detail: :product)
+                                 .for_facility(current_facility)
+                                 .for_product_group(params[:group])
         @builder_config = WellPlateConfiguration.find(params[:group])
       end
 

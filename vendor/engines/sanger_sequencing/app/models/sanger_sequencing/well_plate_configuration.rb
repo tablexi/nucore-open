@@ -7,8 +7,8 @@ module SangerSequencing
     end
 
     CONFIGS = ActiveSupport::HashWithIndifferentAccess.new(
-      default: new(reserved_cells: ["A01", "A02"]),
-      fragment: new(reserved_cells: [])
+      default: new(reserved_cells: %w(A01 A02)),
+      fragment: new(reserved_cells: []),
     ).freeze
 
     def self.find(key)
@@ -17,7 +17,7 @@ module SangerSequencing
 
     def to_json
       {
-        reserved_cells: Array(@reserved_cells)
+        reserved_cells: Array(@reserved_cells),
       }.to_json
     end
 

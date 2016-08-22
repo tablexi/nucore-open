@@ -23,7 +23,8 @@ module SangerSequencing
         well_plates_raw: params[:well_plate_data].to_h.values,
         created_by: params[:created_by],
         facility: params[:facility],
-        group: params[:group])
+        group: params[:group],
+      )
     end
 
     def update_attributes(params = {})

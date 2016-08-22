@@ -86,8 +86,6 @@ RSpec.describe "Creating a batch", :js do
           expect(SangerSequencing::Batch.last.group).to eq("fragment")
         end
       end
-
-
     end
   end
 end
