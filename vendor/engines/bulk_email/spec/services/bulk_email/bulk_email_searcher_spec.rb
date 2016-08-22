@@ -34,11 +34,9 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
 
   let(:account) { FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]) }
 
-  let(:params) { { search_type: :customers, facility_id: facility.id } }
+  let(:params) { { user_types: [:customers], facility_id: facility.id } }
 
-  before :each do
-    ignore_order_detail_account_validations
-  end
+  before { ignore_order_detail_account_validations }
 
   context "search customers filtered by ordered dates" do
     before :each do
@@ -153,7 +151,7 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       @od1 = place_product_order(purchaser, facility, product, account)
       @od2 = place_product_order(purchaser, facility, product2, account2)
       @od3 = place_product_order(purchaser, facility, product3, account3)
-      params.merge!(search_type: :account_owners)
+      params.merge!(user_types: [:account_owners])
     end
 
     it_behaves_like "active/inactive users" do
@@ -183,7 +181,7 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       @od1 = place_product_order(purchaser, facility, product, account)
       @od2 = place_product_order(purchaser2, facility, product2, account2)
       @od3 = place_product_order(purchaser3, facility, product3, account3)
-      params.merge!(search_type: :customers_and_account_owners)
+      params.merge!(user_types: [:customers, :account_owners])
     end
 
     it_behaves_like "active/inactive users" do
@@ -216,7 +214,7 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       ProductUser.create(product: product, user: user2, approved_by: owner.id, approved_at: Time.zone.now)
       ProductUser.create(product: product2, user: user2, approved_by: owner.id, approved_at: Time.zone.now)
       ProductUser.create(product: product2, user: user3, approved_by: owner.id, approved_at: Time.zone.now)
-      params.merge!(search_type: :authorized_users)
+      params.merge!(user_types: [:authorized_users])
     end
 
     it_behaves_like "active/inactive users"

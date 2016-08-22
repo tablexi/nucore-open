@@ -8,14 +8,22 @@ module BulkEmail
 
     DEFAULT_SORT = [:last_name, :first_name].freeze
     SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users].freeze
+    USER_TYPES = %i(customers authorized_users account_owners).freeze
 
     def initialize(search_fields)
       @search_fields = search_fields
     end
 
+    def user_types
+      @user_types ||=
+        USER_TYPES & (search_fields[:user_types] || []).map(&:to_sym)
+    end
+
     def do_search
-      return unless SEARCH_TYPES.include? search_fields[:search_type].to_sym
-      public_send(:"search_#{search_fields[:search_type]}")
+      return if user_types.blank?
+      search_fields[:user_types].map do |user_type|
+        public_send(:"search_#{user_type}")
+      end.sum
     end
 
     def search_customers
