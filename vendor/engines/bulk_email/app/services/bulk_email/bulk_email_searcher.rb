@@ -43,12 +43,6 @@ module BulkEmail
                                      .to_sql)
     end
 
-    def search_customers_and_account_owners
-      customers = search_customers
-      account_owners = search_account_owners
-      (customers + account_owners).uniq.sort { |x, y| x.last_name <=> y.last_name }
-    end
-
     def search_authorized_users
       result = users.joins(:product_users).uniq
       # if we don't have any products, listed get them all for the current facility
