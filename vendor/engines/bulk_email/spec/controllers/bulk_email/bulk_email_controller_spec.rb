@@ -18,7 +18,7 @@ RSpec.describe BulkEmail::BulkEmailController do
     @params = { facility_id: facility.url_name }
   end
 
-  context "search" do
+  describe "POST #search" do
     before :each do
       @action = "search"
       @method = :post
@@ -112,19 +112,31 @@ RSpec.describe BulkEmail::BulkEmailController do
       end
     end
 
-    context "when rendering as csv" do
-      let(:user_types) { %i(customers) }
+  end
 
-      before(:each) do
-        maybe_grant_always_sign_in :director
-        @params[:format] = "csv"
-        do_request
-      end
+  describe "POST #download" do
+    let(:recipients) { FactoryGirl.create_list(:user, 3) }
+    let(:expected_csv_content) { csv_header + "\n" + expected_csv_body + "\n" }
+    let(:csv_header) { "Name,Username,Email" }
+    let(:expected_csv_body) do
+      recipients.map do |user|
+        [user.full_name, user.username, user.email].join(",")
+      end.join("\n")
+    end
 
-      it "sets the filename" do
-        expect(response.headers["Content-Disposition"])
-          .to eq('attachment; filename="bulk_email_customers.csv"')
-      end
+    before(:each) do
+      @action = "download"
+      @method = :post
+      @params.merge!(format: :csv, recipient_ids: recipients.map(&:id))
+
+      maybe_grant_always_sign_in :director
+      do_request
+    end
+
+    it "generates the expected CSV" do
+      expect(response.headers["Content-Disposition"])
+        .to eq('attachment; filename="bulk_email_recipients.csv"')
+      expect(response.body).to eq(expected_csv_content)
     end
   end
 end

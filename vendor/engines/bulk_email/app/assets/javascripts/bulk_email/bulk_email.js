@@ -31,4 +31,15 @@ $(function() {
     return false;
   })
 
+  function showHideRecipientExportButton() {
+    if ($('.js--bulk-email-recipient').is(':checked')) {
+      $('.js--bulk-email-export-button').show();
+    }
+    else {
+      $('.js--bulk-email-export-button').hide();
+    }
+  }
+
+  $('.js--bulk-email-recipient').change(showHideRecipientExportButton).trigger('change');
+  $('#bulk_email_export .js--select_all').click(showHideRecipientExportButton);
 });
