@@ -29,7 +29,7 @@ module TabCountHelper
   end
 
   def tab(title, link, active = nil, options = {})
-    active ||= request.path == link
+    active = (request.path == link) if active.nil?
     classes = []
     classes << "active" if active
     classes.concat [*options[:class]]

@@ -29,3 +29,16 @@ Facility.find_by(url_name: "facility-name").update_attributes(sanger_sequencing_
 * Under "Order Forms", add a new Online Order Form
 * Use the URL `https://[yourdomain]/sanger_sequencing/submissions/new` and click "Add"
 * Click "Activate" to turn it on
+
+### Enable Fragment Analysis Well Plate Creation
+
+* Create a Fragment Analysis Product
+* Add a row "fragment" under `sanger_sequencing_product_groups` that maps to
+  the new product.
+
+  ```ruby
+  SangerSequencing::ProductGroup.create(product: product, group: "fragment")
+  ```
+
+A product can only be part of a single group. If it isnot part of a group,
+it fall back to a "default" group, which is the standard Sanger Sequencing.

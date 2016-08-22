@@ -9,20 +9,28 @@ module SangerSequencing
       before_action { @active_tab = "admin_sanger_sequencing" }
       before_action :load_batch_form, only: [:new, :create]
       before_action :load_batch, only: [:well_plate, :show, :destroy, :upload]
+      before_action :validate_product_group, only: [:index, :new, :create]
       authorize_sanger_resource class: "SangerSequencing::Batch"
 
       def index
-        @batches = Batch.for_facility(current_facility).order(created_at: :desc).paginate(page: params[:page])
+        @batches = Batch.for_facility(current_facility)
+                        .order(created_at: :desc)
+                        .for_product_group(params[:group])
+                        .paginate(page: params[:page])
       end
 
       def new
-        @submissions = Submission.ready_for_batch.includes(:samples, order_detail: :product).for_facility(current_facility)
+        @submissions = Submission.ready_for_batch
+                                 .includes(:samples, order_detail: :product)
+                                 .for_facility(current_facility)
+                                 .for_product_group(params[:group])
+        @builder_config = WellPlateConfiguration.find(params[:group])
       end
 
       def create
         # Whitelisting should happen in the form object
         if @batch.update_attributes(params[:batch].merge(created_by: current_user, facility: current_facility))
-          redirect_to [current_facility, :sanger_sequencing, :admin, :batches], notice: text("create.success")
+          redirect_to [current_facility, :sanger_sequencing, :admin, :batches, group: @batch.group], notice: text("create.success")
         else
           @submissions = Submission.ready_for_batch.for_facility(current_facility)
           flash.now[:alert] = @batch.errors.map { |_k, msg| msg }.to_sentence
@@ -48,7 +56,7 @@ module SangerSequencing
 
       def destroy
         @batch.destroy
-        redirect_to facility_sanger_sequencing_admin_batches_path, notice: text("destroy.success")
+        redirect_to facility_sanger_sequencing_admin_batches_path(group: @batch.group), notice: text("destroy.success")
       end
 
       def upload
@@ -70,12 +78,17 @@ module SangerSequencing
 
       private
 
+      def validate_product_group
+        @product_group = params[:group].presence
+        raise ActiveRecord::RecordNotFound unless @product_group.blank? || ProductGroup::GROUPS.include?(@product_group)
+      end
+
       def load_batch
         @batch = Batch.for_facility(current_facility).find(params[:id])
       end
 
       def load_batch_form
-        @batch = BatchForm.new
+        @batch = BatchForm.new(SangerSequencing::Batch.new(group: params[:group]))
       end
 
     end

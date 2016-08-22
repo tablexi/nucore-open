@@ -5,11 +5,11 @@
   = stylesheet_link_tag "sanger_sequencing/application"
 
 = content_for :sidebar do
-  = render "sanger_sequencing/admin/shared/sidenav", sidenav_tab: "batches"
+  = render "sanger_sequencing/admin/shared/sidenav", sidenav_tab: [@product_group, "batches"].compact.join("_")
 
-%h2= text("sanger_sequencing.name")
+%h2= text(@product_group || :default, scope: "sanger_sequencing.product_groups")
 
-%p= link_to text("new_batch"), new_facility_sanger_sequencing_admin_batch_path, class: "btn btn-add"
+%p= link_to text("new_batch"), new_facility_sanger_sequencing_admin_batch_path(group: params[:group]), class: "btn btn-add"
 
 - if @batches.any?
   %table.table.table-striped.sangerSequencing--batches__table
@@ -35,7 +35,6 @@
           %td= batch.submissions.count
           %td= batch.samples.count
           %td= link_to "Delete", facility_sanger_sequencing_admin_batch_path(current_facility, batch), method: :delete
-
 
   = will_paginate(@batches)
 

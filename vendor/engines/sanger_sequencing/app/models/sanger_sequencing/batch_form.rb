@@ -6,7 +6,7 @@ module SangerSequencing
 
     attr_reader :batch
 
-    delegate :submission_ids, to: :batch
+    delegate :submission_ids, :group, to: :batch
 
     validates :submission_ids, presence: true
     validate :samples_must_match_submissions
@@ -22,7 +22,9 @@ module SangerSequencing
         submission_ids: params[:submission_ids].to_s.split(","),
         well_plates_raw: params[:well_plate_data].to_h.values,
         created_by: params[:created_by],
-        facility: params[:facility])
+        facility: params[:facility],
+        group: params[:group],
+      )
     end
 
     def update_attributes(params = {})

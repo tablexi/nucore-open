@@ -1,11 +1,12 @@
 window.vue_sanger_sequencing_well_plate_editor_app = {
-  props: ["submissions"]
+  props: ["submissions", "builder_config"]
 
   data: ->
     builder: new SangerSequencing.WellPlateBuilder
 
   beforeCompile: ->
     @colorBuilder = new SangerSequencing.WellPlateColors(@builder)
+    @builder.setReservedCells(@builder_config.reserved_cells)
 
   ready: ->
     new AjaxModal(".js--modal", ".js--submissionModal")
