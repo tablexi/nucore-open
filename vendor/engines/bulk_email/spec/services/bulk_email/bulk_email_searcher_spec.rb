@@ -39,14 +39,20 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
   before { ignore_order_detail_account_validations }
 
   context "search customers filtered by ordered dates" do
-    before :each do
-      @od_yesterday = place_product_order(purchaser, facility, product, account)
-      @od_yesterday.order.update_attributes(ordered_at: (Time.zone.now - 1.day))
+    let!(:od_yesterday) do
+      place_product_order(purchaser, facility, product, account).tap do |order_detail|
+        order_detail.order.update_attributes(ordered_at: 1.day.ago)
+      end
+    end
 
-      @od_tomorrow = place_product_order(purchaser2, facility, product2, account)
-      @od_tomorrow.order.update_attributes(ordered_at: (Time.zone.now + 1.day))
+    let!(:od_tomorrow) do
+      place_product_order(purchaser2, facility, product2, account).tap do |order_detail|
+        order_detail.order.update_attributes(ordered_at: 1.day.from_now)
+      end
+    end
 
-      @od_today = place_product_order(purchaser3, facility, product, account)
+    let!(:od_today) do
+      place_product_order(purchaser3, facility, product, account)
     end
 
     it_behaves_like "active/inactive users" do
@@ -56,20 +62,20 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
     it "returns only the one today and the one tomorrow" do
       params[:start_date] = Time.zone.now
       expect(users).to contain_all [purchaser3, purchaser2]
-      expect(searcher.order_details).to contain_all [@od_today, @od_tomorrow]
+      expect(searcher.order_details).to contain_all [od_today, od_tomorrow]
     end
 
     it "returns only the one today and the one yesterday" do
       params[:end_date] = Time.zone.now
       expect(users).to contain_all [purchaser3, purchaser]
-      expect(searcher.order_details).to contain_all [@od_yesterday, @od_today]
+      expect(searcher.order_details).to contain_all [od_yesterday, od_today]
     end
 
     it "returns only the one from today" do
       params[:start_date] = Time.zone.now
       params[:end_date] = Time.zone.now
       expect(users).to eq([purchaser3])
-      expect(searcher.order_details).to eq([@od_today])
+      expect(searcher.order_details).to eq [od_today]
     end
   end
 
@@ -112,10 +118,12 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
   end
 
   context "search customers filtered by products" do
-    before :each do
-      @od1 = place_product_order(purchaser, facility, product, account)
-      @od2 = place_product_order(purchaser2, facility, product2, account)
-      @od3 = place_product_order(purchaser3, facility, product3, account)
+    let!(:order_details) do
+      [
+        place_product_order(purchaser, facility, product, account),
+        place_product_order(purchaser2, facility, product2, account),
+        place_product_order(purchaser3, facility, product3, account),
+      ]
     end
 
     it_behaves_like "active/inactive users" do
@@ -124,35 +132,39 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
 
     it "returns all three user details" do
       expect(users).to contain_all [purchaser, purchaser2, purchaser3]
-      expect(searcher.order_details).to contain_all [@od1, @od2, @od3]
+      expect(searcher.order_details).to contain_all(order_details)
     end
 
     it "returns just one product" do
       params[:products] = [product.id]
       expect(users).to eq([purchaser])
-      expect(searcher.order_details).to contain_all [@od1]
+      expect(searcher.order_details).to contain_all [order_details.first]
     end
 
     it "returns two products" do
       params[:products] = [product.id, product2.id]
       expect(users).to contain_all [purchaser, purchaser2]
-      expect(searcher.order_details).to contain_all [@od1, @od2]
+      expect(searcher.order_details)
+        .to contain_all [order_details.first, order_details.second]
     end
   end
 
-  context "account owners" do
+  context "when searching for account_owners" do
     let(:owner2) { FactoryGirl.create(:user) }
     let(:owner3) { FactoryGirl.create(:user) }
-
-    before :each do
-      account2 = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner2)])
-      account3 = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner3)])
-
-      @od1 = place_product_order(purchaser, facility, product, account)
-      @od2 = place_product_order(purchaser, facility, product2, account2)
-      @od3 = place_product_order(purchaser, facility, product3, account3)
-      params.merge!(user_types: [:account_owners])
+    let!(:order_details) do
+      account2 = FactoryGirl.create(:nufs_account,
+                                    account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner2)])
+      account3 = FactoryGirl.create(:nufs_account,
+                                    account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner3)])
+      [
+        place_product_order(purchaser, facility, product, account),
+        place_product_order(purchaser, facility, product2, account2),
+        place_product_order(purchaser, facility, product3, account3),
+      ]
     end
+
+    before { params.merge!(user_types: [:account_owners]) }
 
     it_behaves_like "active/inactive users" do
       let(:user) { owner }
@@ -160,29 +172,33 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
 
     it "finds owners if no other limits" do
       expect(users.map(&:id)).to contain_all [owner, owner2, owner3].map(&:id)
-      expect(searcher.order_details).to contain_all [@od1, @od2, @od3]
+      expect(searcher.order_details).to contain_all(order_details)
     end
 
     it "finds owners with limited order details" do
       params[:products] = [product.id, product2.id]
       expect(users).to contain_all [owner, owner2]
-      expect(searcher.order_details).to contain_all [@od1, @od2]
+      expect(searcher.order_details)
+        .to contain_all [order_details.first, order_details.second]
     end
   end
 
-  context "customers_and_account_owners" do
+  context "when searching for customers and account_owners" do
     let(:owner2) { FactoryGirl.create(:user) }
     let(:owner3) { FactoryGirl.create(:user) }
-
-    before :each do
-      account2 = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner2)])
-      account3 = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner3)])
-
-      @od1 = place_product_order(purchaser, facility, product, account)
-      @od2 = place_product_order(purchaser2, facility, product2, account2)
-      @od3 = place_product_order(purchaser3, facility, product3, account3)
-      params.merge!(user_types: [:customers, :account_owners])
+    let!(:order_details) do
+      account2 = FactoryGirl.create(:nufs_account,
+                                    account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner2)])
+      account3 = FactoryGirl.create(:nufs_account,
+                                    account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner3)])
+      [
+        place_product_order(purchaser, facility, product, account),
+        place_product_order(purchaser2, facility, product2, account2),
+        place_product_order(purchaser3, facility, product3, account3),
+      ]
     end
+
+    before { params.merge!(user_types: [:customers, :account_owners]) }
 
     it_behaves_like "active/inactive users" do
       let(:user) { owner }
@@ -190,20 +206,22 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
 
     it "finds owners and purchaser if no other limits" do
       expect(users).to contain_all [owner, owner2, owner3, purchaser, purchaser2, purchaser3]
-      expect(searcher.order_details).to contain_all [@od1, @od2, @od3]
+      expect(searcher.order_details).to contain_all(order_details)
     end
 
     it "finds owners and purchasers with limited order details" do
       params[:products] = [product.id, product2.id]
       expect(users).to contain_all [owner, owner2, purchaser, purchaser2]
-      expect(searcher.order_details).to contain_all [@od1, @od2]
+      expect(searcher.order_details)
+        .to contain_all [order_details.first, order_details.second]
     end
   end
 
   context "search authorized users" do
-    let(:user) { FactoryGirl.create(:user) }
-    let(:user2) { FactoryGirl.create(:user) }
-    let(:user3) { FactoryGirl.create(:user) }
+    let(:authorized_users) { FactoryGirl.create_list(:user, 3) }
+    let(:user) { authorized_users.first }
+    let(:user2) { authorized_users.second }
+    let(:user3) { authorized_users.third }
 
     before :each do
       product.update_attributes(requires_approval: true)
@@ -219,24 +237,36 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
 
     it_behaves_like "active/inactive users"
 
-    it "returns all authorized users for any instrument" do
-      params[:products] = []
-      expect(users).to contain_exactly(user, user2, user3)
+    context "when specifying no specific instrument" do
+      before { params[:products] = [] }
+
+      it "returns all authorized users for any instrument" do
+        expect(users).to eq(authorized_users)
+      end
     end
 
-    it "returns only the users for the first product" do
-      params[:products] = [product.id]
-      expect(users).to contain_exactly(user, user2)
+    context "when specifying the first instrument" do
+      before { params[:products] = [product.id] }
+
+      it "returns only the users authorized for the first instrument" do
+        expect(users).to eq(authorized_users[0..1])
+      end
     end
 
-    it "returns only the users for the second product" do
-      params[:products] = [product2.id]
-      expect(users).to contain_exactly(user2, user3)
+    context "when specifying the second instrument" do
+      before { params[:products] = [product2.id] }
+
+      it "returns only the users authorized for the second product" do
+        expect(users).to eq(authorized_users[1..2])
+      end
     end
 
-    it "returns only the users for both products and no more" do
-      params[:products] = [product.id, product2.id]
-      expect(users).to contain_exactly(user, user2, user3)
+    context "when specifying the the first and second instruments" do
+      before { params[:products] = [product.id, product2.id] }
+
+      it "returns only the users for both products and no more" do
+        expect(users).to eq(authorized_users)
+      end
     end
   end
 
