@@ -4,6 +4,7 @@ class OrderDetails::ParamUpdater
     @permitted_attributes ||=
       [
         :account_id,
+        :assigned_user_id,
         :resolve_dispute,
         :dispute_resolved_reason,
         :quantity,
