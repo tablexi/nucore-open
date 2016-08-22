@@ -33,8 +33,12 @@ Facility.find_by(url_name: "facility-name").update_attributes(sanger_sequencing_
 ### Enable Fragment Analysis Well Plate Creation
 
 * Create a Fragment Analysis Product
-* Add a "fragment" group under `sanger_sequencing_product_group` that maps to
-  the new product
+* Add a row "fragment" under `sanger_sequencing_product_groups` that maps to
+  the new product.
 
-A product can only be part of a single group. If they are not part of a group,
-they fall back to a "default" group, which is the standard Sanger Sequencing.
+  ```ruby
+  SangerSequencing::ProductGroup.create(product: product, group: "fragment")
+  ```
+
+A product can only be part of a single group. If it isnot part of a group,
+it fall back to a "default" group, which is the standard Sanger Sequencing.
