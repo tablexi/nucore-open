@@ -278,9 +278,7 @@ RSpec.describe User do
     let!(:normal_user) { create(:user) }
     let!(:other_facilitly_director) { create(:user, :facility_director, facility: build_stubbed(:facility)) }
     let!(:facility_admin_and_director) do
-      create(:user, :facility_director, facility: facility) do |u|
-        UserRole.create!(user: u, facility: facility, role: UserRole::FACILITY_ADMINISTRATOR)
-      end
+      create(:user, :facility_director, :facility_administrator, facility: facility)
     end
 
     it "finds just the users for that facility" do

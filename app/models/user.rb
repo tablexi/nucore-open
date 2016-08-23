@@ -113,7 +113,6 @@ class User < ActiveRecord::Base
     facility
       .users
       .order("LOWER(user_roles.role), LOWER(users.last_name), LOWER(users.first_name)")
-      .distinct
   end
 
   #
