@@ -1,7 +1,8 @@
 class AddSangerProductGroups < ActiveRecord::Migration
 
   def change
-    create_table :sanger_sequencing_product_groups do |t|
+    # sanger_sequencing_product_groups is too long of a table name for Oracle
+    create_table :sanger_seq_product_groups do |t|
       t.references :product, null: false, foreign_key: true
       t.index :product_id, unique: true
       t.string :group, null: false
