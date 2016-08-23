@@ -136,7 +136,7 @@ module ReportSpecHelper
   def assert_report_rendered_html(label, &report_on)
     if @method == :xhr
       assert_report_init label, &report_on
-      is_expected.to render_template "reports/report_table"
+      is_expected.to render_template controller.xhr_html_template
     else
       is_expected.to render_template "reports/report"
     end

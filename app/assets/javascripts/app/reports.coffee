@@ -55,6 +55,7 @@ class TabbableReports
               show()
 
       load: (_, ui) =>
+        @update_export_all_link_visibility(ui.panel)
         @fix_bad_dates(ui.panel)
         @update_export_urls()
     )
@@ -83,6 +84,12 @@ class TabbableReports
       evt.preventDefault()
       $(@current_tab()).find('a').attr('href', $(evt.target).attr('href'))
       @refresh_tab()
+
+  update_export_all_link_visibility: (panel) ->
+    if $(panel).find('.export_raw').data('visible')
+      @export_all_link().show()
+    else
+      @export_all_link().hide()
 
   update_export_urls: ->
     url = @tab_url(@current_tab())

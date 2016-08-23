@@ -2,6 +2,8 @@ module Reports
 
   class GeneralReportsController < ReportsController
 
+    helper_method(:export_csv_report_path)
+
     include StatusFilterParams
 
     def self.reports
@@ -16,6 +18,10 @@ module Reports
         price_group: -> (od) { od.price_policy ? od.price_policy.price_group.name : text("unassigned") },
         assigned_to: -> (od) { od.assigned_user.presence ? format_username(od.assigned_user) : text("unassigned") },
       )
+    end
+
+    def export_csv_report_path
+      facility_export_raw_reports_path(format: :csv)
     end
 
     private

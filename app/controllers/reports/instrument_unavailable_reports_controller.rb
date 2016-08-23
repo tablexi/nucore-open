@@ -2,8 +2,18 @@ module Reports
 
   class InstrumentUnavailableReportsController < ReportsController
 
+    helper_method(:export_csv_report_path)
+
     def self.reports
       @reports ||= HashWithIndifferentAccess.new(instrument_unavailable: :type)
+    end
+
+    def export_csv_report_path
+      facility_export_raw_instrument_unavailable_reports_path(format: :csv)
+    end
+
+    def xhr_html_template
+      "reports/instrument_unavailable_reports/report_table"
     end
 
     private
@@ -28,10 +38,6 @@ module Reports
     def reporter
       @reporter ||=
         InstrumentUnavailableReport.new(current_facility, @date_start, @date_end)
-    end
-
-    def xhr_html_template
-      "reports/instrument_unavailable_reports/report_table"
     end
 
   end

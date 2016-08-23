@@ -35,6 +35,10 @@ module Reports
       "#{name} (#{user.username})"
     end
 
+    def xhr_html_template
+      "reports/report_table"
+    end
+
     protected
 
     def tab_offset
@@ -103,10 +107,6 @@ module Reports
           render_csv("#{@report_by}_report")
         end
       end
-    end
-
-    def xhr_html_template
-      "reports/report_table"
     end
 
     def html_template
