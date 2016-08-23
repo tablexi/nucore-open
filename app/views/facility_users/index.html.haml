@@ -18,7 +18,7 @@
         %th= User.human_attribute_name(:name)
         %th= User.human_attribute_name(:username)
         %th= User.human_attribute_name(:email)
-        %th= t(".th.roles")
+        %th= text(".th.roles")
     %tbody
       - @users.each do |user|
         %tr
