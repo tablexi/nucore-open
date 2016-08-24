@@ -20,10 +20,9 @@ RSpec.describe FacilityUsersController do
     end
 
     it_should_allow_managers_only do |user|
-      expect(assigns(:users)).to be_kind_of Array
       expect(assigns(:users).size).to be >= 1
-      expect(assigns(:users)).to be_include @staff
-      expect(assigns(:users)).to be_include user unless user == @admin
+      expect(assigns(:users)).to include @staff
+      expect(assigns(:users)).to include user unless user == @admin
     end
 
   end
