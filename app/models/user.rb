@@ -109,15 +109,10 @@ class User < ActiveRecord::Base
   end
 
   # Find the users for a facility
-  # TODO: move this to facility?
   def self.find_users_by_facility(facility)
-    find_by_sql(<<-SQL)
-      SELECT u.*
-      FROM #{User.table_name} u
-      LEFT JOIN #{UserRole.table_name} ur ON u.id=ur.user_id
-      WHERE ur.facility_id = #{facility.id}
-      ORDER BY LOWER(ur.role), LOWER(u.last_name), LOWER(u.first_name)
-    SQL
+    facility
+      .users
+      .order("LOWER(user_roles.role), LOWER(users.last_name), LOWER(users.first_name)")
   end
 
   #

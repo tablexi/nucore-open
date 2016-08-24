@@ -271,4 +271,18 @@ RSpec.describe User do
       end
     end
   end
+
+  describe ".find_users_by_facility" do
+    let!(:facility_director) { create(:user, :facility_director, facility: facility) }
+    let!(:staff) { create(:user, :staff, facility: facility) }
+    let!(:normal_user) { create(:user) }
+    let!(:other_facilitly_director) { create(:user, :facility_director, facility: build_stubbed(:facility)) }
+    let!(:facility_admin_and_director) do
+      create(:user, :facility_director, :facility_administrator, facility: facility)
+    end
+
+    it "finds just the users for that facility" do
+      expect(described_class.find_users_by_facility(facility)).to contain_exactly(facility_director, staff, facility_admin_and_director)
+    end
+  end
 end
