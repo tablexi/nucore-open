@@ -49,7 +49,7 @@ module SangerSequencing
 
         respond_to do |format|
           format.csv do
-            render csv: WellPlatePresenter.new(@well_plate), filename: "well_plate_#{@batch.id}_#{index}"
+            render csv: WellPlatePresenter.new(@well_plate, @batch.group), filename: "well_plate_#{@batch.id}_#{index}"
           end
         end
       end

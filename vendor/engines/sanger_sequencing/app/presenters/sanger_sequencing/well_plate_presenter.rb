@@ -2,20 +2,23 @@ module SangerSequencing
 
   class WellPlatePresenter
 
-    attr_reader :well_plate
+    include TextHelpers::Translation
+
+    attr_reader :well_plate, :plate_mode
     delegate :samples, to: :well_plate
 
-    def initialize(well_plate)
+    def initialize(well_plate, plate_mode = :default)
       @well_plate = well_plate
+      @plate_mode = plate_mode
     end
 
     def to_csv
       CSV.generate do |csv|
         csv << ["Container Name", "Plate ID", "Description", "ContainerType", "AppType", "Owner", "Operator", "PlateSealing", "SchedulingPref"]
-        csv << ["",               "",         "",            "96-Well",       "Regular", "mb core", "mbcore", "Septa", "1234"]
+        csv << ["",               "",         "",            "96-Well",       "Regular", text("owner"), text("operator"), "Septa", "1234"]
         csv << %w(AppServer AppInstance)
-        csv << ["SequencingAnalysis"]
-        csv << ["Well", "Sample Name", "Comment", "Results Group 1", "Instrument Protocol 1", "Analysis Protocol 1"]
+        csv << [plate_text("app_server"), plate_text("app_instance")]
+        csv << ["Well", "Sample Name", "Comment"] + additional_columns.keys
 
         sample_rows.each do |row|
           csv << row
@@ -29,7 +32,16 @@ module SangerSequencing
       end
     end
 
+    def translation_scope
+      "sanger_sequencing.well_plate_files"
+    end
+
     private
+
+    def plate_text(key)
+      default = "default.#{key}".to_sym
+      text("#{plate_mode}.#{key}", default: default)
+    end
 
     def cleaned_cells
       # Remove blank cells
@@ -45,7 +57,18 @@ module SangerSequencing
     end
 
     def sample_row(sample)
-      [sample.id.to_s, sample.customer_sample_id.to_s, "50cm_POP7_BDv3", "XLR_50POP7", "XLR__50POP7_KBSeqAna"]
+      [sample.id.to_s, sample.customer_sample_id.to_s] + additional_columns.values
+    end
+
+    # Define your additional columns as a set of hashes under `columns`:
+    # Example:
+    # custom_type:
+    #   columns:
+    #     Results Group 1: 50cm_POP7_BDv3
+    #     Instrument Protocol 1: XLR_50POP7
+    #     Analysis Protocol 1: XLR__50POP7_KBSeqAna
+    def additional_columns
+      I18n.t("#{translation_scope}.#{plate_mode}.columns")
     end
 
   end
