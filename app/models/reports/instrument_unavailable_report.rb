@@ -87,13 +87,16 @@ module Reports
     end
 
     def query
-      @query ||=
-        Reservation
-        .non_user
-        .joins(:product)
-        .where("products.facility_id" => facility.id)
-        .where("reserve_start_at <= ?", end_time)
-        .where("reserve_end_at IS NULL OR reserve_end_at >= ?", start_time)
+      querier.reservations
+    end
+
+    private
+
+    def querier
+      @querier ||=
+        AdminReservationQuerier.new(facility: facility,
+                                    start_time: start_time,
+                                    end_time: end_time)
     end
 
   end
