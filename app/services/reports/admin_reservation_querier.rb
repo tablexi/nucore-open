@@ -13,11 +13,11 @@ module Reports
     def reservations
       @reservations ||=
         Reservation
-          .non_user
-          .joins(:product)
-          .where(products: { facility_id: facility.id })
-          .where("reserve_end_at IS NULL OR reserve_end_at >= ?", start_time)
-          .where("reserve_start_at <= ?", end_time)
+        .non_user
+        .joins(:product)
+        .where(products: { facility_id: facility.id })
+        .where("reserve_end_at IS NULL OR reserve_end_at >= ?", start_time)
+        .where("reserve_start_at <= ?", end_time)
     end
 
   end

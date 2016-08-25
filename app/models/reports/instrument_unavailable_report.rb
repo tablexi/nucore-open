@@ -69,8 +69,6 @@ module Reports
       querier.reservations
     end
 
-    private
-
     def querier
       @querier ||=
         AdminReservationQuerier.new(facility: facility,
