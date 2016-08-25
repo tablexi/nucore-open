@@ -12,10 +12,12 @@
           = sf.input :customer_sample_id, label: false, input_html: { value: sf.object.form_customer_sample_id, class: "js--customerSampleId" }
           = sf.input :id, as: :hidden, input_html: { class: "js--sampleId" }
         %td.js--sampleId= sf.object.id
-        %td
-          = sf.remove_nested_fields_link text("remove"), tabindex: -1
-          = sf.input :_destroy, as: :hidden
-    %tfoot
-      %td{colspan: 3}= f.add_nested_fields_link :samples, text("add"), class: "btn btn-success"
+        - if @submission.quantity_editable?
+          %td
+            = sf.remove_nested_fields_link text("remove"), tabindex: -1
+            = sf.input :_destroy, as: :hidden
+    - if @submission.quantity_editable?
+      %tfoot
+        %td{colspan: 3}= f.add_nested_fields_link :samples, text("add"), class: "btn btn-success"
 
   = f.submit text("submit"), class: "btn btn-primary"

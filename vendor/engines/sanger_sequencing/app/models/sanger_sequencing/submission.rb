@@ -45,6 +45,12 @@ module SangerSequencing
       order_detail.sample_results_files.present?
     end
 
+    # You cannot edit the quantity of a bundled product, so If the order is
+    # placed via a bundle, then we should not be able to edit the quantity.
+    def quantity_editable?
+      order_detail.bundle.blank?
+    end
+
     private
 
     def savable_samples
