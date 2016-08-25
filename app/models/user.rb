@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
   end
 
   def self.sort_last_first
-    order(:last_name, :first_name)
+    order("LOWER(users.last_name), LOWER(users.first_name)")
   end
 
   # finds all user role mappings for a this user in a facility
@@ -112,7 +112,7 @@ class User < ActiveRecord::Base
   def self.find_users_by_facility(facility)
     facility
       .users
-      .order("LOWER(user_roles.role), LOWER(users.last_name), LOWER(users.first_name)")
+      .sort_last_first
   end
 
   #
