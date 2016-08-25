@@ -26,19 +26,12 @@ module Reports
     private
 
     def formatted_total_minutes(reservation)
-      start_time = if reservation.reserve_start_at < date_start.beginning_of_day
-                     date_start.beginning_of_day
-                   else
-                     reservation.reserve_start_at
-                   end
+      duration_in_seconds =
+        ReservationRowDurationCalculator
+        .new(reservation, start_time: date_start.beginning_of_day, end_time: date_end.end_of_day)
+        .duration_in_seconds
 
-      end_time = if reservation.reserve_end_at.blank? || (reservation.reserve_end_at > date_end.end_of_day)
-                   date_end.end_of_day
-                 else
-                   reservation.reserve_end_at
-                 end
-
-      format("%.2f", (end_time - start_time) / 60.0)
+      format("%.2f", (duration_in_seconds / 60.0))
     end
 
     def default_report_hash
