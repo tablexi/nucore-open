@@ -46,10 +46,10 @@ module Nucore
 
     # The default locale is :en and all translations under config/locales/ are auto-loaded
     # But we want to make sure anything in the override folder happens at the very end
-    config.i18n.load_path += FileList[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
-      .exclude(Rails.root.join("config", "locales", "override", "**"))
-
-    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "override", "*.{rb,yml}").to_s]
+    initializer "nucore.i18n.move_overrides_to_end", after: "text_helpers.i18n.add_load_paths" do
+      config.i18n.load_path -= Dir[Rails.root.join("config", "locales", "override", "*.{rb,yml}").to_s]
+      config.i18n.load_path += Dir[Rails.root.join("config", "locales", "override", "*.{rb,yml}").to_s]
+    end
     # config.i18n.default_locale = :de
 
     # JavaScript files you want as :defaults (application.js is always included).
