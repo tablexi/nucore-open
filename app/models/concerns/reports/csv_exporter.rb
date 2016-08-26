@@ -79,7 +79,6 @@ module Reports
       ["*** ERROR WHEN REPORTING ON #{row.class} #{row.id}: #{e.message} ***"]
     end
 
-
     def report_hash
       transformers.reduce(default_report_hash) do |result, class_name|
         class_name.constantize.new.transform(result)
