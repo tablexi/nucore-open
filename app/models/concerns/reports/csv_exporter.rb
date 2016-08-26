@@ -23,8 +23,16 @@ module Reports
       @date_end.in_time_zone
     end
 
+    def has_attachment?
+      true
+    end
+
     def report_data
       @report_data ||= report_data_query
+    end
+
+    def text_content
+      ""
     end
 
     def to_csv
