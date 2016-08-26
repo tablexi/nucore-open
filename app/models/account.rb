@@ -11,6 +11,7 @@ class Account < ActiveRecord::Base
   include Overridable
   include Accounts::AccountNumberSectionable
   include DateHelper
+  include NUCore::Database::WhereIdsIn
 
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
   has_many :deleted_account_users, -> { where.not("account_users.deleted_at" => nil) }, class_name: "AccountUser"
