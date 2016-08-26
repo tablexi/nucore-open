@@ -17,12 +17,32 @@ RSpec.describe "Purchasing a reservation" do
     click_link facility.name
     click_link instrument.name
     select user.accounts.first.description, from: "Payment Source"
-    fill_in "Note", with: "A note about my reservation"
-    click_button "Create"
   end
 
-  it "is on the My Reservations page" do
-    expect(page).to have_content "My Reservations"
-    expect(page).to have_content "Note: A note about my reservation"
+  describe "selecting the default time" do
+    before do
+      fill_in "Note", with: "A note about my reservation"
+      click_button "Create"
+    end
+
+    it "is on the My Reservations page" do
+      expect(page).to have_content "My Reservations"
+      expect(page).to have_content "Note: A note about my reservation"
+    end
   end
+
+  describe "attempting to order in the past", :timecop_freeze do
+    let(:now) { Time.zone.local(2016, 8, 20, 11, 0) }
+
+    before do
+      select "10", from: "reservation[reserve_start_hour]"
+      select "10", from: "reservation[reserve_end_hour]"
+      click_button "Create"
+    end
+
+    it "has an error" do
+      expect(page).to have_content "must start at a future time"
+    end
+  end
+
 end

@@ -98,63 +98,29 @@ class ReservationsController < ApplicationController
   # POST /orders/1/order_details/1/reservations
   def create
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
-    @reservation = @order_detail.build_reservation
-    @reservation.assign_attributes(reservation_create_params)
-    @reservation.assign_times_from_params(reservation_create_params)
 
-    if !@order_detail.bundled? && params[:order_account].blank?
-      flash.now[:error] = I18n.t "controllers.reservations.create.no_selection"
-      @reservation.valid? # run validations so it sets reserve_end_at
-      set_windows
-      render(:new) && return
-      # return redirect_to new_order_order_detail_reservation_path(@order, @order_detail)
-    end
+    creator = ReservationCreator.new(@order, @order_detail, params)
+    if creator.save(session_user)
+      @reservation = creator.reservation
+      flash[:notice] = I18n.t "controllers.reservations.create.success"
 
-    @reservation.transaction do
-      begin
-        unless params[:order_account].blank?
-          account = Account.find(params[:order_account].to_i)
-          if account != @order.account
-            @order.invalidate
-            @order.update_attributes!(account: account)
-          end
-        end
-
-        # merge state can change after call to #save! due to OrderDetailObserver#before_save
-        mergeable = @order_detail.order.to_be_merged?
-
-        save_reservation_and_order_detail
-
-        flash[:notice] = I18n.t "controllers.reservations.create.success"
-
-        if mergeable
-          # The purchase_order_path or cart_path will handle the backdating, but we need
-          # to do this here for merged reservations.
-          backdate_reservation_if_necessary
-          redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
-        elsif @order_detail.product.is_a?(Instrument) && @order.order_details.count == 1
-          redirect_params = {}
-          redirect_params[:send_notification] = "1" if params[:send_notification] == "1"
-          # only trigger purchase if instrument
-          # and is only thing in cart (isn't bundled or on a multi-add order)
-          redirect_to purchase_order_path(@order, redirect_params)
-        else
-          redirect_to cart_path
-        end
-
-        return
-      rescue ActiveRecord::RecordInvalid => e
-        logger.error e.message
-        raise ActiveRecord::Rollback
-      rescue => e
-        logger.error e.message
-        flash.now[:error] = I18n.t("orders.purchase.error")
-        flash.now[:error] += " #{e.message}" if e.message
-        raise ActiveRecord::Rollback
+      if creator.merged_order?
+        redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+      elsif creator.instrument_only_order?
+        redirect_params = {}
+        redirect_params[:send_notification] = "1" if params[:send_notification] == "1"
+        # only trigger purchase if instrument
+        # and is only thing in cart (isn't bundled or on a multi-add order)
+        redirect_to purchase_order_path(@order, redirect_params)
+      else
+        redirect_to cart_path
       end
+    else
+      @reservation = creator.reservation
+      flash.now[:error] = creator.error
+      set_windows
+      render :new
     end
-    set_windows
-    render action: "new"
   end
 
   # GET /orders/1/order_details/1/reservations/new
@@ -347,13 +313,6 @@ class ReservationsController < ApplicationController
     @order_detail.save_as_user!(session_user)
   end
 
-  def backdate_reservation_if_necessary
-    facility_ability = Ability.new(session_user, @order.facility, self)
-    if facility_ability.can?(:order_in_past, @order) && @reservation.reserve_end_at < Time.zone.now
-      @order_detail.backdate_to_complete!(@reservation.reserve_end_at)
-    end
-  end
-
   def set_windows
     @max_window = max_reservation_window
     @max_days_ago = session_user.operator_of?(@facility) ? -365 : 0
@@ -391,8 +350,6 @@ class ReservationsController < ApplicationController
     ActionController::Base.helpers
   end
 
-  private
-
   def default_reservation_mins
     @instrument.min_reserve_mins.to_i > 0 ? @instrument.min_reserve_mins : 30
   end
@@ -417,12 +374,6 @@ class ReservationsController < ApplicationController
   def duration_change_valid?
     validator = Reservations::DurationChangeValidations.new(@reservation)
     validator.valid?
-  end
-
-  def reservation_create_params
-    params[:reservation]
-      .except(:reserve_end_date, :reserve_end_hour, :reserve_end_min, :reserve_end_meridian)
-      .merge(product: @instrument)
   end
 
 end

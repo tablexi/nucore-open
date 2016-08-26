@@ -452,11 +452,14 @@ RSpec.describe ReservationsController do
       before :each do
         @params.deep_merge!(reservation: { reserve_start_date: Time.zone.now.to_date + (PriceGroupProduct::DEFAULT_RESERVATION_WINDOW + 1).days })
       end
+
       it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
         assert_redirected_to purchase_order_path(@order)
       end
+
       it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do
         expect(assigns[:reservation].errors).not_to be_empty
+        expect(flash[:error]).to include("The reservation is too far in advance")
         expect(response).to render_template(:new)
       end
     end
