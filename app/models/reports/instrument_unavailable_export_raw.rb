@@ -36,7 +36,7 @@ module Reports
 
     def default_report_hash
       {
-        type: -> (reservation) { reservation.type.sub(/Reservation\z/, "") },
+        type: -> (reservation) { reservation.class.model_name.human },
         instrument: -> (reservation) { reservation.product.name },
         start_time: :reserve_start_at,
         end_time: :reserve_end_at,
