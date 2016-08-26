@@ -146,7 +146,7 @@ class FacilityAccountsController < ApplicationController
     order_details.each do |od|
       @account_balances[od.account_id] = @account_balances[od.account_id].to_f + od.total.to_f
     end
-    @accounts = Account.find(@account_balances.keys)
+    @accounts = Account.where_ids_in(@account_balances.keys)
   end
 
   # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
