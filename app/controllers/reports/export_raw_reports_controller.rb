@@ -1,8 +1,7 @@
 module Reports
 
-  class ExportRawReportsController < ReportsController
+  class ExportRawReportsController < CsvExportController
 
-    include CsvExportController
     include StatusFilterParams
 
     private

@@ -1,6 +1,6 @@
 module Reports
 
-  module CsvExportController
+  class CsvExportController < ReportsController
 
     def export_all
       generate_report_data_csv

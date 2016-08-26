@@ -1,8 +1,6 @@
 module Reports
 
-  class InstrumentUnavailableExportRawReportsController < ReportsController
-
-    include CsvExportController
+  class InstrumentUnavailableExportRawReportsController < CsvExportController
 
     private
 
