@@ -87,32 +87,6 @@ module Reports
       }
     end
 
-    def order_detail_row(order_detail)
-      report_hash.values.map do |callable|
-        result = if callable.is_a?(Symbol)
-                   order_detail.public_send(callable)
-                 else
-                   callable.call(order_detail)
-        end
-
-        if result.is_a?(DateTime)
-          format_usa_datetime(result)
-        else
-          result
-        end
-      end
-    rescue => e
-      ["*** ERROR WHEN REPORTING ON ORDER DETAIL #{order_detail}: #{e.message} ***"]
-    end
-
-    def csv_body
-      CSV.generate do |csv|
-        report_data.each do |order_detail|
-          csv << order_detail_row(order_detail)
-        end
-      end
-    end
-
     def report_data_query
       Reports::Querier.new(
         order_status_id: @order_status_ids,

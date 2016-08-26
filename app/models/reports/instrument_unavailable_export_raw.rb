@@ -46,32 +46,6 @@ module Reports
       }
     end
 
-    def reservation_row(reservation)
-      report_hash.values.map do |callable|
-        result = if callable.is_a?(Symbol)
-                   reservation.public_send(callable)
-                 else
-                   callable.call(reservation)
-        end
-
-        if result.is_a?(DateTime)
-          format_usa_datetime(result)
-        else
-          result
-        end
-      end
-    rescue => e
-      ["*** ERROR WHEN REPORTING ON RESERVATION #{reservation.id}: #{e.message} ***"]
-    end
-
-    def csv_body
-      CSV.generate do |csv|
-        report_data.each do |reservation|
-          csv << reservation_row(reservation)
-        end
-      end
-    end
-
     def report_data_query
       querier.reservations
     end

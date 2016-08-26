@@ -55,6 +55,31 @@ module Reports
       column_headers.join(",") + "\n"
     end
 
+    def csv_body
+      CSV.generate do |csv|
+        report_data.each { |row| csv << format_row(row) }
+      end
+    end
+
+    def format_row(row)
+      report_hash.values.map do |callable|
+        result = if callable.is_a?(Symbol)
+                   row.public_send(callable)
+                 else
+                   callable.call(row)
+        end
+
+        if result.is_a?(DateTime)
+          format_usa_datetime(result)
+        else
+          result
+        end
+      end
+    rescue => e
+      ["*** ERROR WHEN REPORTING ON #{row.class} #{row.id}: #{e.message} ***"]
+    end
+
+
     def report_hash
       transformers.reduce(default_report_hash) do |result, class_name|
         class_name.constantize.new.transform(result)
