@@ -13,7 +13,7 @@ module Reports
     end
 
     def generate_report_data_csv
-      CsvReportMailer.delay.csv_report_email(email_to_address, raw_report)
+      CsvReportMailer.delay.csv_report_email(email_to_address, raw_report) # TODO: use .deliver_later instead
 
       if request.xhr?
         render nothing: true
