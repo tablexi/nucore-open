@@ -19,6 +19,10 @@ module Reports
       facility_instrument_unavailable_export_raw_reports_path(format: :csv)
     end
 
+    def export_raw_visible?
+      false
+    end
+
     def xhr_html_template
       "reports/instrument_reports/report_table"
     end

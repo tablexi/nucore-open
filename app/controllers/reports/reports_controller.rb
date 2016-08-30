@@ -15,6 +15,8 @@ module Reports
 
     delegate :reports, :format_username, to: "self.class"
 
+    helper_method :export_raw_visible?
+
     def initialize
       @active_tab = "admin_reports"
       super
@@ -33,6 +35,10 @@ module Reports
       name += ", " unless name.blank?
       name += (user.first_name || "")
       "#{name} (#{user.username})"
+    end
+
+    def export_raw_visible?
+      true
     end
 
     def xhr_html_template
