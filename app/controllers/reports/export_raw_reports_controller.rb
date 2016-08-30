@@ -17,7 +17,7 @@ module Reports
     end
 
     def success_redirect_path
-      public_send("#{action_name}_facility_general_reports_path", current_facility)
+      facility_general_reports_path(current_facility, report_by: :product)
     end
 
   end
