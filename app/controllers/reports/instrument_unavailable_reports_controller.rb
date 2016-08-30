@@ -9,7 +9,7 @@ module Reports
     end
 
     def export_csv_report_path
-      facility_export_raw_instrument_unavailable_reports_path(format: :csv)
+      facility_instrument_unavailable_export_raw_reports_path(format: :csv)
     end
 
     def xhr_html_template
