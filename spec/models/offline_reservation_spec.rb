@@ -12,7 +12,11 @@ RSpec.describe OfflineReservation do
     it "has one of the designated categories" do
       is_expected
         .to validate_inclusion_of(:category)
-        .in_array(%w(operator_unavailable out_of_order scheduled_maintenance))
+        .in_array %w(out_of_order
+                     maintenance
+                     operator_not_available
+                     instrument_not_available
+                     other)
     end
   end
 

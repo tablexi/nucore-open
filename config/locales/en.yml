@@ -516,9 +516,11 @@ en:
 
   offline_reservations:
     categories:
-      operator_unavailable: Operator unavailable
-      out_of_order: Out of order
-      scheduled_maintenance: Scheduled maintenance
+      out_of_order: Out of Order
+      maintenance: Maintenance
+      operator_not_available: Operator not Available
+      instrument_not_available: Instrument not Available
+      other: Other
 
     edit:
       update: Update the note

@@ -1,9 +1,7 @@
 module FacilityReservationsHelper
 
   def offline_category_collection
-    OfflineReservation::CATEGORIES.map do |category|
-      [reservation_category_label(category), category]
-    end
+    I18n.t("offline_reservations.categories").invert.to_a
   end
 
   def reservation_category_label(category)

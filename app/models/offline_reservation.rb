@@ -1,10 +1,6 @@
 class OfflineReservation < Reservation
 
-  CATEGORIES = %w(
-    operator_unavailable
-    out_of_order
-    scheduled_maintenance
-  ).freeze
+  CATEGORIES = I18n.t("offline_reservations.categories").keys.map(&:to_s).freeze
 
   include ActiveModel::ForbiddenAttributesProtection
 
