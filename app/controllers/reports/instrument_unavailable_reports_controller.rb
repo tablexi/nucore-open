@@ -16,11 +16,11 @@ module Reports
       true
     end
 
+    private
+
     def xhr_html_template
       "reports/instrument_unavailable_reports/report_table"
     end
-
-    private
 
     def init_report_headers
       @headers = [

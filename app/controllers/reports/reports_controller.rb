@@ -41,10 +41,6 @@ module Reports
       true
     end
 
-    def xhr_html_template
-      "reports/report_table"
-    end
-
     protected
 
     def tab_offset
@@ -56,6 +52,10 @@ module Reports
     end
 
     private
+
+    def xhr_html_template
+      "reports/report_table"
+    end
 
     def init_report_params
       @date_start = parse_usa_date(params[:date_start])
