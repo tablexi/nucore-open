@@ -27,10 +27,6 @@ module Reports
       false
     end
 
-    def xhr_html_template
-      "reports/instrument_day_reports/report_table"
-    end
-
     protected
 
     def tab_offset

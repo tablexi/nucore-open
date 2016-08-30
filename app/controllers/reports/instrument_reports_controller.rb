@@ -23,10 +23,6 @@ module Reports
       false
     end
 
-    def xhr_html_template
-      "reports/instrument_reports/report_table"
-    end
-
     private
 
     def init_report_headers
