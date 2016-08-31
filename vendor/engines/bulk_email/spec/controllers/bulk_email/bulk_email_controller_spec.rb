@@ -6,10 +6,10 @@ RSpec.describe BulkEmail::BulkEmailController do
 
   let(:facility) { facility_account.facility }
   let(:facility_account) { FactoryGirl.create(:facility_account) }
-  let!(:instrument) { FactoryGirl.create(:instrument, facility: facility, facility_account_id: facility_account.id) }
-  let!(:item) { FactoryGirl.create(:item, facility: facility, facility_account_id: facility_account.id) }
-  let!(:restricted_item) { FactoryGirl.create(:item, facility: facility, facility_account_id: facility_account.id, requires_approval: true) }
-  let!(:service) { FactoryGirl.create(:service, facility: facility, facility_account_id: facility_account.id) }
+  let!(:instrument) { FactoryGirl.create(:instrument, facility_account: facility_account) }
+  let!(:item) { FactoryGirl.create(:item, facility_account: facility_account) }
+  let!(:restricted_item) { FactoryGirl.create(:item, facility_account: facility_account, requires_approval: true) }
+  let!(:service) { FactoryGirl.create(:service, facility_account: facility_account) }
 
   before(:all) { create_users }
 
@@ -22,11 +22,11 @@ RSpec.describe BulkEmail::BulkEmailController do
     before :each do
       @action = "search"
       @method = :post
-      @params.merge!(user_types: user_types)
+      @params.merge!(bulk_email: { user_types: user_types })
     end
 
     context "testing authorization" do
-      let(:user_types) { nil }
+      let(:user_types) { [] }
 
       it_should_require_login
       it_should_allow_managers_only {}
@@ -86,7 +86,9 @@ RSpec.describe BulkEmail::BulkEmailController do
       context "when there is a hidden product" do
         let(:user_types) { %i(customers) }
 
-        let!(:hidden_product) { FactoryGirl.create(:item, :hidden, facility: facility, facility_account_id: facility_account.id) }
+        let!(:hidden_product) do
+          FactoryGirl.create(:item, :hidden, facility_account: facility_account)
+        end
 
         it "includes the hidden product" do
           do_request
@@ -98,7 +100,9 @@ RSpec.describe BulkEmail::BulkEmailController do
       context "when there is an archived product" do
         let(:user_types) { %i(customers) }
 
-        let!(:archived_product) { FactoryGirl.create(:item, :archived, facility: facility, facility_account_id: facility_account.id) }
+        let!(:archived_product) do
+          FactoryGirl.create(:item, :archived, facility_account: facility_account)
+        end
 
         it "does not load the archived product" do
           do_request

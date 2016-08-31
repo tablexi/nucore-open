@@ -23,7 +23,7 @@ module BulkEmail
       respond_to do |format|
         format.html { @users = @users.paginate(page: params[:page]) if @users }
         format.csv do
-          filename = "bulk_email_#{params[:user_types].join("-")}.csv"
+          filename = "bulk_email_#{params[:bulk_email][:user_types].join("-")}.csv"
           set_csv_headers(filename)
         end
       end
