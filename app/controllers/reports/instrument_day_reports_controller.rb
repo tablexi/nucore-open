@@ -3,6 +3,7 @@ module Reports
   class InstrumentDayReportsController < ReportsController
 
     include InstrumentReporter
+    helper_method :export_csv_report_path
     helper_method :report_data_row
 
     def self.reports
@@ -12,6 +13,18 @@ module Reports
         actual_quantity: -> (res) { Reports::InstrumentDayReport::ActualQuantity.new(res) },
         actual_hours: -> (res) { Reports::InstrumentDayReport::ActualHours.new(res) },
       )
+    end
+
+    # TODO: Currently the only "raw" instrument report type is the unavailable
+    # report which covers admin and offline reservations. If there is a need
+    # for other instrument-based raw reports, this method, along with the
+    # javascript that manages the "Export Raw" link will need to change.
+    def export_csv_report_path
+      facility_instrument_unavailable_export_raw_reports_path(format: :csv)
+    end
+
+    def export_raw_visible?
+      false
     end
 
     protected

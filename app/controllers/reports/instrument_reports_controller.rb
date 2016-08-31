@@ -2,6 +2,8 @@ module Reports
 
   class InstrumentReportsController < ReportsController
 
+    helper_method(:export_csv_report_path)
+
     include InstrumentReporter
 
     def self.reports
@@ -11,6 +13,14 @@ module Reports
         account_owner: -> (reservation) { format_username(reservation.order_detail.account.owner_user) },
         purchaser: -> (reservation) { format_username(reservation.order_detail.user) },
       )
+    end
+
+    def export_csv_report_path
+      facility_instrument_unavailable_export_raw_reports_path(format: :csv)
+    end
+
+    def export_raw_visible?
+      false
     end
 
     private

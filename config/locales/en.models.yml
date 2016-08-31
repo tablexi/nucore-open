@@ -110,6 +110,9 @@ en:
       account_user:
         one: Account User
         other: Account Users
+      admin_reservation:
+        one: Admin Reservation
+        other: Admin Reservations
       bundle:
         one: Bundle
         other: Bundles
@@ -132,7 +135,8 @@ en:
         one: Chart String
         other: Chart Strings
       offline_reservation:
-        one: Offline
+        one: Offline Reservation
+        other: Offline Reservations
       reservation:
         one: Reservation
         other: Reservations

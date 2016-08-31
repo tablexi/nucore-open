@@ -61,7 +61,7 @@
                 confirm: t("shared.confirm_message"),
                 method: :delete
 
-            %td= t(".admin")
+            %td= reservation.class.model_name.human
 
             %td
               = link_to reservation,

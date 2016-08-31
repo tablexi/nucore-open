@@ -1,6 +1,11 @@
-.updated_values{:style => 'display: none'}
-  .date_start= human_datetime(@date_start, :date_only => true)
-  .date_end= human_datetime(@date_end, :date_only => true)
+-# TODO: this is very similar to instrument_unavailable_reports/report_table
+
+.updated_values{style: "display: none"}
+  .date_start= human_datetime(@date_start, date_only: true)
+  .date_end= human_datetime(@date_end, date_only: true)
+
+.export_raw{data: { visible: export_raw_visible?.to_s } }
+
 %table.table.table-striped.table-hover
   %thead
     %tr
@@ -9,6 +14,7 @@
           %th= heading
         - else
           %th.currency= heading
-  = render :partial => 'report_rows'
+
+  = render "report_rows"
 
 = will_paginate @rows
