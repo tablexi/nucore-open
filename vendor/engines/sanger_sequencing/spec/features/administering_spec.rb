@@ -44,6 +44,25 @@ RSpec.describe "Sanger Sequencing Administration" do
           expect(page.status_code).to eq(404)
         end
       end
+
+      describe "accessing via the 'View Order Form' link" do
+        let!(:order_detail) { FactoryGirl.create(:purchased_order, product: service, account: account).order_details.first }
+        let!(:submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: order_detail) }
+        let(:external_service) { FactoryGirl.build_stubbed(:external_service) }
+        let!(:receiver) { ExternalServiceReceiver.create(external_service: external_service,
+          receiver: order_detail,
+          response_data: { show_url: sanger_sequencing_submission_path(submission) }.to_json) }
+
+        before do
+          visit facility_orders_path(facility)
+          click_link "View Order Form"
+        end
+
+        it "can view the submission" do
+          expect(page).to have_content "Submission ##{submission.id}"
+          expect(current_path).to eq(facility_sanger_sequencing_admin_submission_path(facility, submission))
+        end
+      end
     end
 
     describe "if the feature is disabled" do

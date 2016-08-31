@@ -14,6 +14,8 @@ module SangerSequencing
     before_action :prevent_after_purchase, except: [:show]
     before_action :assert_sanger_enabled_for_facility
 
+    rescue_from CanCan::AccessDenied, with: :redirect_to_admin
+
     def self.permitted_sample_attributes
       @permitted_sample_attributes ||= [:id, :customer_sample_id, :_destroy]
     end
@@ -53,6 +55,14 @@ module SangerSequencing
     end
 
     private
+
+    def redirect_to_admin(error)
+      if action_name == "show" && SangerSequencing::Ability.new(acting_user, current_facility).can?(:show, @submission)
+        redirect_to facility_sanger_sequencing_admin_submission_path(current_facility, @submission)
+      else
+        raise(error)
+      end
+    end
 
     def current_facility
       @current_facility ||= @submission.try(:facility)
