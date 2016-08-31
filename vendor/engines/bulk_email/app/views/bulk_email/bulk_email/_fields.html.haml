@@ -2,12 +2,12 @@
 
   .row
     .span3
-      = f.collection_check_boxes :search_type,
-        @search_types.to_a,
+      = f.collection_check_boxes :user_types,
+        @user_types.to_a,
         :first,
         :last,
-        selected: params[:search_type],
-        input_html: { name: "search_type" }
+        checked: params[:bulk_email][:user_types],
+        input_html: { name: "user_types" }
 
     .span4.full-width
       = f.input :products,

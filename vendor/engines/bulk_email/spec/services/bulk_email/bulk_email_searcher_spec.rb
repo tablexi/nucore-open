@@ -34,118 +34,120 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
 
   let(:account) { FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: owner)]) }
 
-  let(:params) { { user_types: [:customers], facility_id: facility.id } }
+  let(:params) do
+    { bulk_email: { user_types: [:customers] }, facility_id: facility.id }
+  end
 
   before { ignore_order_detail_account_validations }
 
-  context "search customers filtered by ordered dates" do
-    let!(:od_yesterday) do
-      place_product_order(purchaser, facility, product, account).tap do |order_detail|
-        order_detail.order.update_attributes(ordered_at: 1.day.ago)
+  context "when searching for customers" do
+    context "filtered by ordered dates" do
+      let!(:od_yesterday) do
+        place_product_order(purchaser, facility, product, account).tap do |order_detail|
+          order_detail.order.update_attributes(ordered_at: 1.day.ago)
+        end
+      end
+
+      let!(:od_tomorrow) do
+        place_product_order(purchaser2, facility, product2, account).tap do |order_detail|
+          order_detail.order.update_attributes(ordered_at: 1.day.from_now)
+        end
+      end
+
+      let!(:od_today) do
+        place_product_order(purchaser3, facility, product, account)
+      end
+
+      it_behaves_like "active/inactive users" do
+        let(:user) { purchaser }
+      end
+
+      it "returns only the one today and the one tomorrow" do
+        params[:bulk_email][:start_date] = Time.current.strftime("%m/%d/%Y")
+        expect(users).to contain_all [purchaser3, purchaser2]
+        expect(searcher.order_details).to contain_all [od_today, od_tomorrow]
+      end
+
+      it "returns only the one today and the one yesterday" do
+        params[:bulk_email][:end_date] = Time.current
+        expect(users).to contain_all [purchaser3, purchaser]
+        expect(searcher.order_details).to contain_all [od_yesterday, od_today]
+      end
+
+      it "returns only the one from today" do
+        params[:bulk_email][:start_date] = params[:bulk_email][:end_date] = Time.current.strftime("%m/%d/%Y")
+        expect(users).to eq([purchaser3])
+        expect(searcher.order_details).to eq [od_today]
       end
     end
 
-    let!(:od_tomorrow) do
-      place_product_order(purchaser2, facility, product2, account).tap do |order_detail|
-        order_detail.order.update_attributes(ordered_at: 1.day.from_now)
+    context "filtered by reserved dates" do
+      before :each do
+        # create instrument, min reserve time is 60 minutes, max is 60 minutes
+        @instrument = FactoryGirl.create(:instrument,
+                                         facility: facility,
+                                         facility_account: facility_account,
+                                         min_reserve_mins: 60,
+                                         max_reserve_mins: 60)
+
+        @reservation_yesterday = place_reservation_for_instrument(purchaser, @instrument, account, Time.current - 1.day)
+        @reservation_tomorrow = place_reservation_for_instrument(purchaser2, @instrument, account, Time.current + 1.day)
+        @reservation_today = place_reservation_for_instrument(purchaser3, @instrument, account, Time.current)
+      end
+
+      it_behaves_like "active/inactive users" do
+        let(:user) { purchaser }
+      end
+
+      it "returns only the one today and the one tomorrow" do
+        params[:bulk_email][:start_date] = Time.current.strftime("%m/%d/%Y")
+        expect(users).to contain_all [purchaser3, purchaser2]
+        expect(searcher.order_details).to contain_all [@reservation_today.order_detail, @reservation_tomorrow.order_detail]
+      end
+
+      it "returns only the one today and the one yesterday" do
+        params[:bulk_email][:end_date] = Time.current
+        expect(users).to contain_all [purchaser3, purchaser]
+        expect(searcher.order_details).to contain_all [@reservation_yesterday.order_detail, @reservation_today.order_detail]
+      end
+
+      it "returns only the one from today" do
+        params[:bulk_email][:start_date] = params[:bulk_email][:end_date] = Time.current.strftime("%m/%d/%Y")
+        expect(users).to eq([purchaser3])
+        expect(searcher.order_details).to eq([@reservation_today.order_detail])
       end
     end
 
-    let!(:od_today) do
-      place_product_order(purchaser3, facility, product, account)
-    end
+    context "filtered by products" do
+      let!(:order_details) do
+        [
+          place_product_order(purchaser, facility, product, account),
+          place_product_order(purchaser2, facility, product2, account),
+          place_product_order(purchaser3, facility, product3, account),
+        ]
+      end
 
-    it_behaves_like "active/inactive users" do
-      let(:user) { purchaser }
-    end
+      it_behaves_like "active/inactive users" do
+        let(:user) { purchaser }
+      end
 
-    it "returns only the one today and the one tomorrow" do
-      params[:start_date] = Time.zone.now
-      expect(users).to contain_all [purchaser3, purchaser2]
-      expect(searcher.order_details).to contain_all [od_today, od_tomorrow]
-    end
+      it "returns all three user details" do
+        expect(users).to contain_all [purchaser, purchaser2, purchaser3]
+        expect(searcher.order_details).to contain_all(order_details)
+      end
 
-    it "returns only the one today and the one yesterday" do
-      params[:end_date] = Time.zone.now
-      expect(users).to contain_all [purchaser3, purchaser]
-      expect(searcher.order_details).to contain_all [od_yesterday, od_today]
-    end
+      it "returns just one product" do
+        params[:products] = [product.id]
+        expect(users).to eq([purchaser])
+        expect(searcher.order_details).to contain_all [order_details.first]
+      end
 
-    it "returns only the one from today" do
-      params[:start_date] = Time.zone.now
-      params[:end_date] = Time.zone.now
-      expect(users).to eq([purchaser3])
-      expect(searcher.order_details).to eq [od_today]
-    end
-  end
-
-  context "search customers filtered by reserved dates" do
-    before :each do
-      # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument = FactoryGirl.create(:instrument,
-                                       facility: facility,
-                                       facility_account: facility_account,
-                                       min_reserve_mins: 60,
-                                       max_reserve_mins: 60)
-
-      @reservation_yesterday = place_reservation_for_instrument(purchaser, @instrument, account, Time.zone.now - 1.day)
-      @reservation_tomorrow = place_reservation_for_instrument(purchaser2, @instrument, account, Time.zone.now + 1.day)
-      @reservation_today = place_reservation_for_instrument(purchaser3, @instrument, account, Time.zone.now)
-    end
-
-    it_behaves_like "active/inactive users" do
-      let(:user) { purchaser }
-    end
-
-    it "returns only the one today and the one tomorrow" do
-      params[:start_date] = Time.zone.now
-      expect(users).to contain_all [purchaser3, purchaser2]
-      expect(searcher.order_details).to contain_all [@reservation_today.order_detail, @reservation_tomorrow.order_detail]
-    end
-
-    it "returns only the one today and the one yesterday" do
-      params[:end_date] = Time.zone.now
-      expect(users).to contain_all [purchaser3, purchaser]
-      expect(searcher.order_details).to contain_all [@reservation_yesterday.order_detail, @reservation_today.order_detail]
-    end
-
-    it "returns only the one from today" do
-      params[:start_date] = Time.zone.now
-      params[:end_date] = Time.zone.now
-      expect(users).to eq([purchaser3])
-      expect(searcher.order_details).to eq([@reservation_today.order_detail])
-    end
-  end
-
-  context "search customers filtered by products" do
-    let!(:order_details) do
-      [
-        place_product_order(purchaser, facility, product, account),
-        place_product_order(purchaser2, facility, product2, account),
-        place_product_order(purchaser3, facility, product3, account),
-      ]
-    end
-
-    it_behaves_like "active/inactive users" do
-      let(:user) { purchaser }
-    end
-
-    it "returns all three user details" do
-      expect(users).to contain_all [purchaser, purchaser2, purchaser3]
-      expect(searcher.order_details).to contain_all(order_details)
-    end
-
-    it "returns just one product" do
-      params[:products] = [product.id]
-      expect(users).to eq([purchaser])
-      expect(searcher.order_details).to contain_all [order_details.first]
-    end
-
-    it "returns two products" do
-      params[:products] = [product.id, product2.id]
-      expect(users).to contain_all [purchaser, purchaser2]
-      expect(searcher.order_details)
-        .to contain_all [order_details.first, order_details.second]
+      it "returns two products" do
+        params[:products] = [product.id, product2.id]
+        expect(users).to contain_all [purchaser, purchaser2]
+        expect(searcher.order_details)
+          .to contain_all [order_details.first, order_details.second]
+      end
     end
   end
 
@@ -164,7 +166,7 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       ]
     end
 
-    before { params.merge!(user_types: [:account_owners]) }
+    before { params[:bulk_email].merge!(user_types: [:account_owners]) }
 
     it_behaves_like "active/inactive users" do
       let(:user) { owner }
@@ -198,7 +200,7 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       ]
     end
 
-    before { params.merge!(user_types: [:customers, :account_owners]) }
+    before { params[:bulk_email].merge!(user_types: [:customers, :account_owners]) }
 
     it_behaves_like "active/inactive users" do
       let(:user) { owner }
@@ -228,11 +230,11 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       product2.update_attributes(requires_approval: true)
       # Users 1 and 2 have access to product1
       # Users 2 and 3 have access to product2
-      ProductUser.create(product: product, user: user, approved_by: owner.id, approved_at: Time.zone.now)
-      ProductUser.create(product: product, user: user2, approved_by: owner.id, approved_at: Time.zone.now)
-      ProductUser.create(product: product2, user: user2, approved_by: owner.id, approved_at: Time.zone.now)
-      ProductUser.create(product: product2, user: user3, approved_by: owner.id, approved_at: Time.zone.now)
-      params.merge!(user_types: [:authorized_users])
+      ProductUser.create(product: product, user: user, approved_by: owner.id, approved_at: Time.current)
+      ProductUser.create(product: product, user: user2, approved_by: owner.id, approved_at: Time.current)
+      ProductUser.create(product: product2, user: user2, approved_by: owner.id, approved_at: Time.current)
+      ProductUser.create(product: product2, user: user3, approved_by: owner.id, approved_at: Time.current)
+      params[:bulk_email].merge!(user_types: [:authorized_users])
     end
 
     it_behaves_like "active/inactive users"

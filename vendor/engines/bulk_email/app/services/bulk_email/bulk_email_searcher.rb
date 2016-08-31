@@ -7,7 +7,6 @@ module BulkEmail
     attr_reader :order_details, :search_fields
 
     DEFAULT_SORT = [:last_name, :first_name].freeze
-    SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users].freeze
     USER_TYPES = %i(customers authorized_users account_owners).freeze
 
     def initialize(search_fields)
@@ -16,12 +15,12 @@ module BulkEmail
 
     def user_types
       @user_types ||=
-        USER_TYPES & (search_fields[:user_types] || []).map(&:to_sym)
+        USER_TYPES & (search_fields[:bulk_email][:user_types] || []).map(&:to_sym)
     end
 
     def do_search
-      return if user_types.blank?
-      search_fields[:user_types].map do |user_type|
+      return [] if user_types.blank?
+      user_types.map do |user_type|
         public_send(:"search_#{user_type}")
       end.sum
     end
@@ -69,11 +68,11 @@ module BulkEmail
     end
 
     def start_date
-      parse_usa_date(search_fields[:start_date].to_s.tr("-", "/")) if search_fields[:start_date]
+      parse_usa_date(search_fields[:bulk_email][:start_date].to_s.tr("-", "/")) if search_fields[:bulk_email][:start_date]
     end
 
     def end_date
-      parse_usa_date(search_fields[:end_date].to_s.tr("-", "/")) if search_fields[:end_date]
+      parse_usa_date(search_fields[:bulk_email][:end_date].to_s.tr("-", "/")) if search_fields[:bulk_email][:end_date]
     end
 
   end

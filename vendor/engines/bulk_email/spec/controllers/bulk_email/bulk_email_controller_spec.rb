@@ -22,30 +22,38 @@ RSpec.describe BulkEmail::BulkEmailController do
     before :each do
       @action = "search"
       @method = :post
-      @params.merge!(search_type: :customers)
+      @params.merge!(user_types: user_types)
     end
-    it_should_require_login
-    it_should_allow_managers_only {}
+
+    context "testing authorization" do
+      let(:user_types) { nil }
+
+      it_should_require_login
+      it_should_allow_managers_only {}
+    end
 
     context "authorized" do
       before { maybe_grant_always_sign_in :director }
 
-      context "when the search_type is set" do
+      context "when the at least one user_type is set" do
+        let(:user_types) { %i(customers) }
+
         before { do_request }
 
         it { expect(assigns[:users]).not_to be_nil }
       end
 
-      context "when search_type is not set" do
-        before(:each) do
-          @params.delete(:search_type)
-          do_request
-        end
+      context "when no user_types are set" do
+        let(:user_types) { [] }
 
-        it { expect(assigns[:users]).to be_nil }
+        before { do_request }
+
+        it { expect(assigns[:users]).to be_empty }
       end
 
       context "parameter settings" do
+        let(:user_types) { %i(customers) }
+
         before(:each) do
           do_request
           expect(response).to be_success
@@ -56,9 +64,9 @@ RSpec.describe BulkEmail::BulkEmailController do
             .to eq([item, service, instrument, restricted_item].sort)
         end
 
-        it "sets search_types, in order" do
-          expect(assigns[:search_types].keys)
-            .to eq(%i(customers account_owners customers_and_account_owners authorized_users))
+        it "sets user_types, in order" do
+          expect(assigns[:user_types].keys)
+            .to eq(%i(customers authorized_users account_owners))
         end
 
         it "sets the facility_id as the id, not url_name" do
@@ -68,14 +76,16 @@ RSpec.describe BulkEmail::BulkEmailController do
         context "when where are no restricted instruments" do
           before { restricted_item.destroy }
 
-          it "does not include authorized_users as a search_type" do
+          it "does not include authorized_users as a user_type" do
             do_request
-            expect(assigns[:search_types]).not_to be_include(:authorized_users)
+            expect(assigns[:user_types]).not_to be_include(:authorized_users)
           end
         end
       end
 
       context "when there is a hidden product" do
+        let(:user_types) { %i(customers) }
+
         let!(:hidden_product) { FactoryGirl.create(:item, :hidden, facility: facility, facility_account_id: facility_account.id) }
 
         it "includes the hidden product" do
@@ -86,6 +96,8 @@ RSpec.describe BulkEmail::BulkEmailController do
       end
 
       context "when there is an archived product" do
+        let(:user_types) { %i(customers) }
+
         let!(:archived_product) { FactoryGirl.create(:item, :archived, facility: facility, facility_account_id: facility_account.id) }
 
         it "does not load the archived product" do
@@ -96,30 +108,18 @@ RSpec.describe BulkEmail::BulkEmailController do
       end
     end
 
-    context "pagination" do
-      before { maybe_grant_always_sign_in :director }
+    context "when rendering as csv" do
+      let(:user_types) { %i(customers) }
 
-      context "when rendering as html" do
-        before { do_request }
-
-        it "paginates the recipient list" do
-          expect(assigns[:users]).to be_respond_to(:per_page)
-        end
+      before(:each) do
+        maybe_grant_always_sign_in :director
+        @params.merge!(format: "csv")
+        do_request
       end
 
-      context "when rendering as csv" do
-        before { @params.merge!(format: "csv") }
-
-        it "does not paginate the recipient list" do
-          do_request
-          expect(assigns[:users]).not_to be_respond_to(:per_page)
-        end
-
-        it "sets the filename" do
-          do_request
-          expect(response.headers["Content-Disposition"])
-            .to eq('attachment; filename="bulk_email_customers.csv"')
-        end
+      it "sets the filename" do
+        expect(response.headers["Content-Disposition"])
+          .to eq('attachment; filename="bulk_email_customers.csv"')
       end
     end
   end

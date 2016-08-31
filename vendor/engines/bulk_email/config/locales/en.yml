@@ -1,7 +1,7 @@
 en:
   bulk_email:
     title: Bulk Email
-    search_type:
+    user_type:
       customers: Customers
       account_owners: Account Owners
       customers_and_account_owners: Customers and Account Owners
