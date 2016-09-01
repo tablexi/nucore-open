@@ -7,7 +7,7 @@ en:
       customers_and_account_owners: Customers and Account Owners
       authorized_users: Authorized Users
     dates:
-      label: Orders or Reservations
+      label: Order or Reservation between
       start: Starting
       end: Ending
     no_results: No users found
