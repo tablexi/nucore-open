@@ -22,7 +22,7 @@ module BulkEmail
       return [] if user_types.blank?
       user_types.map do |user_type|
         public_send(:"search_#{user_type}")
-      end.sum
+      end.sum.uniq
     end
 
     def search_customers

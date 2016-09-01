@@ -339,6 +339,24 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
     end
   end
 
+  context "when searching for customers and authorized_users" do
+    before(:each) do
+      params[:bulk_email][:user_types] = %i(authorized_users customers)
+      params[:products] = [product.id]
+    end
+
+    context "when a user is both a customer and authorized_user" do
+      before(:each) do
+        ProductUser.create(product: product, user: purchaser, approved_by: 1)
+        place_order(purchaser: purchaser, product: product, account: account)
+      end
+
+      it "returns the user only once" do
+        expect(users).to contain_exactly(purchaser)
+      end
+    end
+  end
+
   # SLOW
   # Oracle blows up if you do a WHERE IN (...) clause with more than a 1000 items
   # so let's test it.
