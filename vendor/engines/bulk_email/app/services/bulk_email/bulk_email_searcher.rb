@@ -15,7 +15,7 @@ module BulkEmail
 
     def user_types
       @user_types ||=
-        USER_TYPES & (search_fields[:bulk_email][:user_types] || []).map(&:to_sym)
+        USER_TYPES & (search_fields[:bulk_email].try(:[], :user_types) || []).map(&:to_sym)
     end
 
     def do_search

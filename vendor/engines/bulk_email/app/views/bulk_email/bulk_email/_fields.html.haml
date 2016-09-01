@@ -6,7 +6,7 @@
         @user_types.to_a,
         :first,
         :last,
-        checked: params[:bulk_email][:user_types],
+        checked: params[:bulk_email].try(:[], :user_types) || [],
         input_html: { name: "user_types" }
 
     .span4.full-width
