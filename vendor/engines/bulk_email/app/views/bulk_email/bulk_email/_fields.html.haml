@@ -18,12 +18,8 @@
     %h4.span8= t("bulk_email.dates.label")
 
   .row
-    .span3
-      = f.input :start_date,
-        input_html: { value: @search_fields[:start_date].try(:gsub, "-","/"), class: "datepicker", name: "start_date" }
-    .span3
-      = f.input :end_date,
-        input_html: { value: @search_fields[:end_date].try(:gsub, "-","/"), class: "datepicker", name: "end_date" }
+    .span3= datepicker_field_input(f, :start_date)
+    .span3= datepicker_field_input(f, :end_date)
 
   .row
     .span8

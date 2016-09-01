@@ -15,6 +15,8 @@ module BulkEmail
 
     before_action :init_search_options
 
+    helper_method :datepicker_field_input
+
     def search
       searcher = BulkEmailSearcher.new(@search_fields)
       @users = searcher.do_search
@@ -37,6 +39,11 @@ module BulkEmail
       @search_fields = params.merge(facility_id: current_facility.id)
       @user_types = user_types
       @user_types.delete(:authorized_users) unless @products.exists?(requires_approval: true)
+    end
+
+    def datepicker_field_input(form, key)
+      date = @search_fields[key].presence.try(:gsub, "-", "/") || ""
+      form.input(key, input_html: { value: date, class: "datepicker", name: key })
     end
 
     def user_types
