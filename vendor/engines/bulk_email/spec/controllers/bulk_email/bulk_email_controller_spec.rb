@@ -48,7 +48,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
         before { do_request }
 
-        it { expect(assigns[:users]).to be_empty }
+        it { expect(assigns[:users]).to be_blank }
       end
 
       context "parameter settings" do
