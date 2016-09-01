@@ -1,6 +1,5 @@
 .results_header
   .pull-right= render "export"
-  = will_paginate(@users)
   .clear
 
 %table.table.table-striped.table-hover
@@ -16,5 +15,3 @@
         %td= link_to user.full_name, facility_user_path(current_facility, user)
         %td= user.username
         %td= user.email
-
-= will_paginate(@users)
