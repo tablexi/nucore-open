@@ -78,7 +78,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
           it "does not include authorized_users as a user_type" do
             do_request
-            expect(assigns[:user_types]).not_to be_include(:authorized_users)
+            expect(assigns[:user_types]).not_to include(:authorized_users)
           end
         end
       end
@@ -93,7 +93,7 @@ RSpec.describe BulkEmail::BulkEmailController do
         it "includes the hidden product" do
           do_request
           expect(response).to be_success
-          expect(assigns[:products]).to be_include(hidden_product)
+          expect(assigns[:products]).to include(hidden_product)
         end
       end
 
@@ -107,7 +107,7 @@ RSpec.describe BulkEmail::BulkEmailController do
         it "does not load the archived product" do
           do_request
           expect(response).to be_success
-          expect(assigns[:products]).not_to be_include(archived_product)
+          expect(assigns[:products]).not_to include(archived_product)
         end
       end
     end
