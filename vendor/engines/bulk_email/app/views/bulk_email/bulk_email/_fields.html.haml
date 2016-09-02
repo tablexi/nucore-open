@@ -7,7 +7,8 @@
           = check_box_tag "bulk_email[user_types][]",
             user_type,
             user_type_selected?(user_type),
-            id: "bulk_email_user_types_#{user_type}"
+            id: "bulk_email_user_types_#{user_type}",
+            class: "bulk_email_user_type"
           = label_text
 
     .span4.full-width
