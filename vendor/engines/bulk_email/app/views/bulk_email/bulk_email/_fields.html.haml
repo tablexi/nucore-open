@@ -2,12 +2,13 @@
 
   .row
     .span3
-      = f.collection_check_boxes :user_types,
-        @user_types.to_a,
-        :first,
-        :last,
-        checked: params[:bulk_email].try(:[], :user_types) || [],
-        input_html: { name: "user_types" }
+      - @user_types.each do |user_type, label_text|
+        = label_tag(user_type) do
+          = check_box_tag "bulk_email[user_types][]",
+            user_type,
+            false,
+            id: "bulk_email_user_types_#{user_type}"
+          = label_text
 
     .span4.full-width
       = f.input :products,
