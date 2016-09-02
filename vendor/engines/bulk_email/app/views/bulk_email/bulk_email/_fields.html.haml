@@ -6,7 +6,7 @@
         = label_tag(user_type) do
           = check_box_tag "bulk_email[user_types][]",
             user_type,
-            false,
+            user_type_selected?(user_type),
             id: "bulk_email_user_types_#{user_type}"
           = label_text
 

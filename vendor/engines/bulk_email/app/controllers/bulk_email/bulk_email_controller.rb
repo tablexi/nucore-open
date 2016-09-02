@@ -16,6 +16,7 @@ module BulkEmail
     before_action :init_search_options
 
     helper_method :datepicker_field_input
+    helper_method :user_type_selected?
 
     def search
       searcher = BulkEmailSearcher.new(@search_fields)
@@ -51,6 +52,11 @@ module BulkEmail
       BulkEmailSearcher::USER_TYPES.each_with_object({}) do |user_type, hash|
         hash[user_type] = I18n.t("bulk_email.user_type.#{user_type}")
       end
+    end
+
+    def user_type_selected?(user_type)
+      return false if params[:bulk_email].blank?
+      params[:bulk_email][:user_types].include?(user_type.to_s)
     end
 
   end
