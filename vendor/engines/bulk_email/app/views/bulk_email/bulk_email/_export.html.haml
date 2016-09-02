@@ -1,6 +1,7 @@
 = form_tag facility_bulk_email_path, method: :get, id: "bulk_email_export" do
   = hidden_field_tag :format, :csv
-  = hidden_field_tag :search_type, @search_fields[:search_type]
+  - @search_fields[:bulk_email][:user_types].each do |user_type|
+    = hidden_field_tag "bulk_email[user_types][]", user_type
   = hidden_field_tag :start_date, @search_fields[:start_date]
   = hidden_field_tag :end_date, @search_fields[:end_date]
 
