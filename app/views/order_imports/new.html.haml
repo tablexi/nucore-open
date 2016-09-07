@@ -17,7 +17,7 @@
       %label
         = text("send_report_to")
         = text_field_tag :report_recipient, @current_user.email
-      = submit_tag "Import", class: ["btn", "btn-primary"]
+      = submit_tag text("submit"), class: ["btn", "btn-primary"], data: { disable_with: text("submit") }
 
 - if @order_imports.any?
   %h3= text("history.head")
