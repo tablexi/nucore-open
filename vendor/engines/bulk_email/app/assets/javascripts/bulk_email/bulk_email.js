@@ -1,11 +1,11 @@
 $(function() {
 
-  function selected_user_types() {
+  function selectedUserTypes() {
     return $('.bulk_email_user_type:checked').map(function () { return this.value });
   }
 
-  function authorized_users_selected_only() {
-    var user_types = selected_user_types();
+  function authorizedUsersSelectedOnly() {
+    var user_types = selectedUserTypes();
     return user_types.length == 1 && user_types[0] == 'authorized_users';
   }
 
@@ -13,7 +13,7 @@ $(function() {
 
     // Hide non-restricted items when we're doing an authorized_users search, since they'll
     // always return nothing
-    var isHideNonRestrictedProducts = authorized_users_selected_only();
+    var isHideNonRestrictedProducts = authorizedUsersSelectedOnly();
     $(".search_form #products option[data-restricted=false]").each(function(e) {
       $(this).prop('disabled', isHideNonRestrictedProducts);
       if (isHideNonRestrictedProducts) $(this).prop('selected', false);
