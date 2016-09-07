@@ -117,7 +117,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
       before(:each) do
         maybe_grant_always_sign_in :director
-        @params.merge!(format: "csv")
+        @params[:format] = "csv"
         do_request
       end
 

@@ -27,7 +27,7 @@ module BulkEmail
         format.html
 
         format.csv do
-          filename = "bulk_email_#{params[:bulk_email][:user_types].join("-")}.csv"
+          filename = "bulk_email_#{params[:bulk_email][:user_types].join('-')}.csv"
           set_csv_headers(filename)
         end
       end
