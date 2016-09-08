@@ -55,7 +55,7 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
                        product: product,
                        user: purchaser,
                        account: account,
-                       ordered_at: Time.current).order_details.last
+                       ordered_at: Time.current)
   end
 
   context "when searching for customers" do
@@ -91,19 +91,16 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
         let(:start_date) { usa_today }
 
         context "and the end_date is unspecified" do
-          it "returns orders from today and after" do
+          it "returns users who ordered today and after" do
             expect(users).to contain_exactly(purchaser3, purchaser2)
-            expect(searcher.order_details)
-              .to contain_exactly(od_today, od_tomorrow)
           end
         end
 
         context "and the end_date is today" do
           let(:end_date) { usa_today }
 
-          it "returns orders from today only" do
+          it "returns users who ordered today only" do
             expect(users).to eq [purchaser3]
-            expect(searcher.order_details).to eq [od_today]
           end
         end
       end
@@ -112,10 +109,8 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
         context "and the end_date is today" do
           let(:end_date) { usa_today }
 
-          it "returns orders from today and before" do
+          it "returns users who ordered today and before" do
             expect(users).to contain_exactly(purchaser3, purchaser)
-            expect(searcher.order_details)
-              .to contain_exactly(od_yesterday, od_today)
           end
         end
       end
@@ -154,19 +149,16 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
         let(:start_date) { usa_today }
 
         context "and the end_date is unspecified" do
-          it "returns reservations from today and after" do
+          it "returns users who made reservations today and after" do
             expect(users).to contain_exactly(purchaser3, purchaser2)
-            expect(searcher.order_details)
-              .to contain_exactly(od_today, od_tomorrow)
           end
         end
 
         context "and the end_date is today" do
           let(:end_date) { usa_today }
 
-          it "returns reservations from today only" do
+          it "returns users who made reservations today only" do
             expect(users).to eq [purchaser3]
-            expect(searcher.order_details).to eq [od_today]
           end
         end
       end
@@ -175,10 +167,8 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
         context "and the end_date is today" do
           let(:end_date) { usa_today }
 
-          it "returns reservations from today and before" do
+          it "returns users who made reservations today and before" do
             expect(users).to contain_exactly(purchaser3, purchaser)
-            expect(searcher.order_details)
-              .to contain_exactly(od_yesterday, od_today)
           end
         end
       end
@@ -199,20 +189,16 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
 
       it "returns all three user details" do
         expect(users).to contain_exactly(purchaser, purchaser2, purchaser3)
-        expect(searcher.order_details).to match(order_details)
       end
 
       it "returns just one product" do
         params[:products] = [product.id]
         expect(users).to eq([purchaser])
-        expect(searcher.order_details).to contain_exactly(order_details.first)
       end
 
       it "returns two products" do
         params[:products] = [product.id, product2.id]
         expect(users).to contain_exactly(purchaser, purchaser2)
-        expect(searcher.order_details)
-          .to contain_exactly(order_details.first, order_details.second)
       end
     end
   end
@@ -239,14 +225,11 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
 
     it "finds owners if no other limits" do
       expect(users).to contain_exactly(owner, owner2, owner3)
-      expect(searcher.order_details).to match(order_details)
     end
 
     it "finds owners with limited order details" do
       params[:products] = [product.id, product2.id]
       expect(users).to contain_exactly(owner, owner2)
-      expect(searcher.order_details)
-        .to contain_exactly(order_details.first, order_details.second)
     end
   end
 
@@ -273,14 +256,11 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
     it "finds owners and purchaser if no other limits" do
       expect(users)
         .to contain_exactly(owner, owner2, owner3, purchaser, purchaser2, purchaser3)
-      expect(searcher.order_details).to match(order_details)
     end
 
     it "finds owners and purchasers with limited order details" do
       params[:products] = [product.id, product2.id]
       expect(users).to contain_exactly(owner, owner2, purchaser, purchaser2)
-      expect(searcher.order_details)
-        .to contain_exactly(order_details.first, order_details.second)
     end
   end
 

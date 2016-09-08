@@ -4,7 +4,7 @@ module BulkEmail
 
     include DateHelper
 
-    attr_reader :order_details, :search_fields
+    attr_reader :search_fields
 
     DEFAULT_SORT = [:last_name, :first_name].freeze
     USER_TYPES = %i(customers authorized_users account_owners).freeze
@@ -56,11 +56,11 @@ module BulkEmail
     end
 
     def find_order_details
-      order_details = OrderDetail.for_products(search_fields[:products])
-                                 .joins(:order)
-                                 .where(orders: { facility_id: search_fields[:facility_id] })
-
-      @order_details = order_details.ordered_or_reserved_in_range(start_date, end_date)
+      OrderDetail
+        .for_products(search_fields[:products])
+        .joins(:order)
+        .where(orders: { facility_id: search_fields[:facility_id] })
+        .ordered_or_reserved_in_range(start_date, end_date)
     end
 
     def find_order_details_for_roles(roles)

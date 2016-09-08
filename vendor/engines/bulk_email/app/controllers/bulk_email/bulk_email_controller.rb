@@ -21,7 +21,6 @@ module BulkEmail
     def search
       searcher = BulkEmailSearcher.new(@search_fields)
       @users = searcher.do_search
-      @order_details = searcher.order_details
 
       respond_to do |format|
         format.html
