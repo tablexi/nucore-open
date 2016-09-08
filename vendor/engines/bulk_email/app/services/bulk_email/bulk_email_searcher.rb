@@ -25,6 +25,10 @@ module BulkEmail
       end.flatten.uniq
     end
 
+    def has_search_fields?
+      search_fields.present? && search_fields[:bulk_email].present?
+    end
+
     def search_customers
       order_details = find_order_details.joins(order: :user)
       users.find_by_sql(order_details.select("distinct(users.id), users.*")

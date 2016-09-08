@@ -17,7 +17,7 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
     end
   end
 
-  let(:searcher) { described_class.new(params) }
+  subject(:searcher) { described_class.new(params) }
 
   let(:users) { searcher.do_search }
   let(:owner) { FactoryGirl.create(:user) }
@@ -56,6 +56,17 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
                        user: purchaser,
                        account: account,
                        ordered_at: Time.current)
+  end
+
+  context "#has_search_fields?" do
+    context "when providing no search parameters" do
+      let(:params) { {} }
+      it { is_expected.not_to have_search_fields }
+    end
+
+    context "when providing search parameters" do
+      it { is_expected.to have_search_fields }
+    end
   end
 
   context "when searching for customers" do
