@@ -8,6 +8,7 @@ en:
         send_receipts: "Send receipts"
         send_report_to: "Send results to"
         download_link: "Right-click and choose 'save target' to download import template"
+        submit: Import
         instructions: |
           <p>Bulk imports are done using a CSV formatted file (from Excel, save as “CSV (Comma delimited)”). The required fields are defined in the template, downloadable below.</p>
           <p>To upload the completed CSV file, click the "Choose File" button to select the file and then click the "Import" button to add the orders to your !facility_downcase!.</p>
