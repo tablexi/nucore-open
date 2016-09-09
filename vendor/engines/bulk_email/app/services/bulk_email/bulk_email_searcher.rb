@@ -19,14 +19,13 @@ module BulkEmail
     end
 
     def do_search
-      return if user_types.blank?
       user_types.collect do |user_type|
         public_send(:"search_#{user_type}")
       end.flatten.uniq
     end
 
     def has_search_fields?
-      search_fields.present? && search_fields[:bulk_email].present?
+      search_fields.present? && search_fields[:commit].present?
     end
 
     def search_customers

@@ -64,7 +64,8 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       it { is_expected.not_to have_search_fields }
     end
 
-    context "when providing search parameters" do
+    context "when providing a 'commit' parameter" do
+      before { params[:commit] = "Submit" }
       it { is_expected.to have_search_fields }
     end
   end

@@ -19,8 +19,8 @@ module BulkEmail
     helper_method :user_type_selected?
 
     def search
-      searcher = BulkEmailSearcher.new(@search_fields)
-      @users = searcher.do_search
+      @searcher = BulkEmailSearcher.new(@search_fields)
+      @users = @searcher.do_search
 
       respond_to do |format|
         format.html

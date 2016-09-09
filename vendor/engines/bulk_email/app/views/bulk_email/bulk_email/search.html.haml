@@ -12,7 +12,7 @@
 
 = render "fields"
 
-- if @users
+- if @searcher.has_search_fields?
   - if @users.any?
     = render "results"
   - else
