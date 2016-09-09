@@ -7,6 +7,12 @@ FactoryGirl.define do
     is_hidden false
     initial_order_status_id { FactoryGirl.create(:order_status, name: "New").id }
 
+    after(:build) do |product|
+      if product.facility_account.present?
+        product.facility ||= product.facility_account.facility
+      end
+    end
+
     factory :instrument, class: Instrument do
       transient do
         no_relay false
@@ -37,6 +43,14 @@ FactoryGirl.define do
       account nil # bundles don't have accounts
       sequence(:name) { |n| "Bundle #{n}" }
       sequence(:url_name) { |n| "bundle-#{n}" }
+    end
+
+    trait :archived do
+      is_archived true
+    end
+
+    trait :hidden do
+      is_hidden true
     end
   end
 

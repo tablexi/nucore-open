@@ -4,18 +4,27 @@ module BulkEmail
 
     include DateHelper
 
-    attr_reader :order_details, :search_fields
+    attr_reader :search_fields
 
     DEFAULT_SORT = [:last_name, :first_name].freeze
-    SEARCH_TYPES = [:customers, :account_owners, :customers_and_account_owners, :authorized_users].freeze
+    USER_TYPES = %i(customers authorized_users account_owners).freeze
 
     def initialize(search_fields)
       @search_fields = search_fields
     end
 
+    def user_types
+      @user_types ||= USER_TYPES & selected_user_types
+    end
+
     def do_search
-      return unless SEARCH_TYPES.include? search_fields[:search_type].to_sym
-      public_send(:"search_#{search_fields[:search_type]}")
+      user_types.collect do |user_type|
+        public_send(:"search_#{user_type}")
+      end.flatten.uniq
+    end
+
+    def has_search_fields?
+      search_fields.present? && search_fields[:commit].present?
     end
 
     def search_customers
@@ -35,12 +44,6 @@ module BulkEmail
                                      .to_sql)
     end
 
-    def search_customers_and_account_owners
-      customers = search_customers
-      account_owners = search_account_owners
-      (customers + account_owners).uniq.sort { |x, y| x.last_name <=> y.last_name }
-    end
-
     def search_authorized_users
       result = users.joins(:product_users).uniq
       # if we don't have any products, listed get them all for the current facility
@@ -50,16 +53,21 @@ module BulkEmail
 
     private
 
+    def selected_user_types
+      return [] unless has_search_fields? && search_fields[:bulk_email].present?
+      search_fields[:bulk_email][:user_types].map(&:to_sym)
+    end
+
     def users
       User.active
     end
 
     def find_order_details
-      order_details = OrderDetail.for_products(search_fields[:products])
-                                 .joins(:order)
-                                 .where(orders: { facility_id: search_fields[:facility_id] })
-
-      @order_details = order_details.ordered_or_reserved_in_range(start_date, end_date)
+      OrderDetail
+        .for_products(search_fields[:products])
+        .joins(:order)
+        .where(orders: { facility_id: search_fields[:facility_id] })
+        .ordered_or_reserved_in_range(start_date, end_date)
     end
 
     def find_order_details_for_roles(roles)
@@ -67,11 +75,16 @@ module BulkEmail
     end
 
     def start_date
-      parse_usa_date(search_fields[:start_date].to_s.tr("-", "/")) if search_fields[:start_date]
+      parse_search_field_date(:start_date)
     end
 
     def end_date
-      parse_usa_date(search_fields[:end_date].to_s.tr("-", "/")) if search_fields[:end_date]
+      parse_search_field_date(:end_date)
+    end
+
+    def parse_search_field_date(date_field)
+      return if search_fields[date_field].blank?
+      parse_usa_date(search_fields[date_field].tr("-", "/"))
     end
 
   end

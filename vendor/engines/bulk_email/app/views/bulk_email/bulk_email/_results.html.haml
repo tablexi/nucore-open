@@ -1,17 +1,17 @@
 .results_header
-  .pull-right= render :partial => 'export'
-  = will_paginate(@users)
+  .pull-right= render "export"
   .clear
+
 %table.table.table-striped.table-hover
   %thead
     %tr
       %th= User.human_attribute_name(:name)
       %th= User.human_attribute_name(:username)
       %th= User.human_attribute_name(:email)
+
   %tbody
     - @users.each do |user|
       %tr
         %td= link_to user.full_name, facility_user_path(current_facility, user)
         %td= user.username
         %td= user.email
-= will_paginate(@users)

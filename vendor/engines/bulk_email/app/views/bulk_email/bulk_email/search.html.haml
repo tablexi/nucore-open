@@ -1,5 +1,6 @@
 = render "shared/transactions/headers"
 = javascript_include_tag "bulk_email/bulk_email.js"
+= stylesheet_link_tag "bulk_email/application.css"
 
 = content_for :h1 do
   = current_facility
@@ -11,7 +12,7 @@
 
 = render "fields"
 
-- if @users
+- if @searcher.has_search_fields?
   - if @users.any?
     = render "results"
   - else
