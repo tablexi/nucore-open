@@ -198,18 +198,26 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
         let(:user) { purchaser }
       end
 
-      it "returns all three user details" do
-        expect(users).to contain_exactly(purchaser, purchaser2, purchaser3)
+      context "when selecting no specific product" do
+        it "returns users who are customers of all products" do
+          expect(users).to contain_exactly(purchaser, purchaser2, purchaser3)
+        end
       end
 
-      it "returns just one product" do
-        params[:products] = [product.id]
-        expect(users).to eq([purchaser])
+      context "when selecting one product" do
+        before { params[:products] = [product.id] }
+
+        it "returns only the only user that purchased that product" do
+          expect(users).to eq([purchaser])
+        end
       end
 
-      it "returns two products" do
-        params[:products] = [product.id, product2.id]
-        expect(users).to contain_exactly(purchaser, purchaser2)
+      context "when selecting two products" do
+        before { params[:products] = [product.id, product2.id] }
+
+        it "returns only the users that purchased those two products" do
+          expect(users).to contain_exactly(purchaser, purchaser2)
+        end
       end
     end
   end
@@ -299,7 +307,7 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       before { params[:products] = [] }
 
       it "returns all authorized users for any instrument" do
-        expect(users).to eq(authorized_users)
+        expect(users).to match(authorized_users)
       end
     end
 
