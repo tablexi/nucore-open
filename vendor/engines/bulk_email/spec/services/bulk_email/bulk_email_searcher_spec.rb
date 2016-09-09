@@ -92,8 +92,8 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       end
 
       before(:each) do
-        params[:bulk_email][:start_date] = start_date
-        params[:bulk_email][:end_date] = end_date
+        params[:start_date] = start_date
+        params[:end_date] = end_date
       end
       let(:start_date) { nil }
       let(:end_date) { nil }
@@ -152,8 +152,8 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
       let(:end_date) { nil }
 
       before(:each) do
-        params[:bulk_email][:start_date] = start_date
-        params[:bulk_email][:end_date] = end_date
+        params[:start_date] = start_date
+        params[:end_date] = end_date
       end
 
       it_behaves_like "active/inactive users" do

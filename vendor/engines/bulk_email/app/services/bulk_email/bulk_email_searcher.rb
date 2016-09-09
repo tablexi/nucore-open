@@ -83,8 +83,8 @@ module BulkEmail
     end
 
     def parse_search_field_date(date_field)
-      return if search_fields[:bulk_email][date_field].blank?
-      parse_usa_date(search_fields[:bulk_email][date_field].tr("-", "/"))
+      return if search_fields[date_field].blank?
+      parse_usa_date(search_fields[date_field].tr("-", "/"))
     end
 
   end
