@@ -44,7 +44,7 @@ module BulkEmail
 
     def datepicker_field_input(form, key)
       date = @search_fields[key].to_s.tr("-", "/")
-      form.input(key, input_html: { value: date, class: "datepicker datepicker__data", name: key })
+      form.input(key, input_html: { value: date, class: :datepicker__data, name: key })
     end
 
     def user_types
