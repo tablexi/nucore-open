@@ -54,7 +54,7 @@ module BulkEmail
     private
 
     def selected_user_types
-      return [] unless has_search_fields?
+      return [] unless has_search_fields? && search_fields[:bulk_email].present?
       search_fields[:bulk_email][:user_types].map(&:to_sym)
     end
 
