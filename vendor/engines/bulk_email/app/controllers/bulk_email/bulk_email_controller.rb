@@ -24,7 +24,7 @@ module BulkEmail
     end
 
     def download
-      @users = User.find(params[:recipient_ids])
+      @users = User.where_ids_in(params[:recipient_ids])
       filename = "bulk_email_recipients.csv"
       set_csv_headers(filename)
     end
