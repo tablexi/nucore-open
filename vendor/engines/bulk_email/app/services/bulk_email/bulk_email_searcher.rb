@@ -14,8 +14,7 @@ module BulkEmail
     end
 
     def user_types
-      @user_types ||=
-        USER_TYPES & (search_fields[:bulk_email].try(:[], :user_types) || []).map(&:to_sym)
+      @user_types ||= USER_TYPES & selected_user_types
     end
 
     def do_search
@@ -53,6 +52,11 @@ module BulkEmail
     end
 
     private
+
+    def selected_user_types
+      return [] unless has_search_fields?
+      search_fields[:bulk_email][:user_types].map(&:to_sym)
+    end
 
     def users
       User.active

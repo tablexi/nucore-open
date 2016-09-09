@@ -37,7 +37,11 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
   let(:usa_today) { Time.current.strftime("%m/%d/%Y") }
 
   let(:params) do
-    { bulk_email: { user_types: [:customers] }, facility_id: facility.id }
+    {
+      bulk_email: { user_types: [:customers] },
+      commit: "Submit",
+      facility_id: facility.id,
+    }
   end
 
   before { ignore_order_detail_account_validations }
@@ -65,7 +69,6 @@ RSpec.describe BulkEmail::BulkEmailSearcher do
     end
 
     context "when providing a 'commit' parameter" do
-      before { params[:commit] = "Submit" }
       it { is_expected.to have_search_fields }
     end
   end
