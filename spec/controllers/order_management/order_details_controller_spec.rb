@@ -495,13 +495,37 @@ RSpec.describe OrderManagement::OrderDetailsController do
         expect(order_detail.reload.actual_total).to eq(16.00)
       end
 
-      it "returns an error when trying to set subsidy more than quantity" do
+      it "updates the price while changing accounts" do
+        @params[:order_detail] = {
+          actual_cost: "20.00",
+          actual_subsidy: "4.00",
+          account_id: new_account.id,
+        }
+        do_request
+        expect(order_detail.reload.actual_total).to eq(16.00)
+      end
+
+      it "returns an error when trying to set subsidy more than cost" do
         @params[:order_detail] = {
           actual_cost: "10.00",
           actual_subsidy: "11.00",
         }
         do_request
         expect(assigns(:order_detail).errors).to include(:actual_total)
+      end
+    end
+
+    describe "when the price policy would change" do
+      let!(:previous_price_policy) { FactoryGirl.create(:item_price_policy, product: item, price_group: price_group, unit_cost: 19, start_date: 30.days.ago, expire_date: 28.day.ago) }
+      before { order_detail.backdate_to_complete!(29.days.ago) }
+
+      it "uses the fulfillment price policy rather than now's" do
+        @params[:order_detail] = {
+          account_id: new_account.id
+        }
+        do_request
+        expect(order_detail.reload.price_policy).to eq(previous_price_policy)
+        expect(order_detail.actual_total).to eq(19)
       end
     end
 
@@ -513,6 +537,17 @@ RSpec.describe OrderManagement::OrderDetailsController do
       it "updates the quanity" do
         expect { do_request }.to change { order_detail.reload.quantity }.to(2)
       end
+
+      it "updates the price while changing quantity" do
+        @params[:order_detail] = {
+          actual_cost: "20.00",
+          actual_subsidy: "4.00",
+          quantity: 36,
+        }
+        do_request
+        expect(order_detail.reload.actual_total).to eq(16.00)
+      end
+
     end
 
     describe "adding a note" do
