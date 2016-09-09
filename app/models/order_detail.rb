@@ -468,7 +468,7 @@ class OrderDetail < ActiveRecord::Base
     end
     change_status!(OrderStatus.complete.first) do |od|
       od.fulfilled_at = event_time
-      od.assign_price_policy(event_time)
+      od.assign_price_policy
     end
   end
 
@@ -655,10 +655,9 @@ class OrderDetail < ActiveRecord::Base
     JournalRowUpdater.new(self).update
   end
 
-  def assign_estimated_price(second_account = nil, date = Time.zone.now)
+  def assign_estimated_price(date = fulfilled_at || Time.current)
     self.estimated_cost    = nil
     self.estimated_subsidy = nil
-    second_account = account unless second_account
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
@@ -667,8 +666,8 @@ class OrderDetail < ActiveRecord::Base
     assign_estimated_price_from_policy @estimated_price_policy
   end
 
-  def assign_estimated_price!(second_account = nil, date = Time.zone.now)
-    assign_estimated_price(second_account, date)
+  def assign_estimated_price!
+    assign_estimated_price(Time.current)
     save!
   end
 
@@ -682,16 +681,16 @@ class OrderDetail < ActiveRecord::Base
     self.estimated_subsidy = costs[:subsidy]
   end
 
-  def assign_price_policy(time = Time.zone.now)
+  def assign_price_policy
     clear_costs
 
     # is account valid for facility
     return unless product.facility.can_pay_with_account?(account)
-    assign_actual_price(time)
+    assign_actual_price
   end
 
-  def assign_actual_price(time = Time.zone.now)
-    pp = product.cheapest_price_policy(self, time)
+  def assign_actual_price
+    pp = product.cheapest_price_policy(self, time_for_policy_lookup)
     return unless pp
     costs = pp.calculate_cost_and_subsidy_from_order_detail(self)
     return unless costs
@@ -856,9 +855,17 @@ class OrderDetail < ActiveRecord::Base
     !product.is_a?(Instrument) || (reservation && (reservation.canceled_at || reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
   end
 
+  def time_for_policy_lookup
+    if fulfilled_at
+      fulfilled_at
+    elsif reservation.try(:canceled?)
+      Time.current
+    end
+  end
+
   def make_complete
-    assign_price_policy
     self.fulfilled_at = Time.zone.now
+    assign_price_policy
     self.reviewed_at = Time.zone.now unless SettingsHelper.has_review_period?
   end
 

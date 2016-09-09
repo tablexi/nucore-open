@@ -23,7 +23,7 @@ namespace :order_details do
       old_subsidy = od.actual_subsidy
       old_total = od.actual_total
       old_price_group = od.price_policy.try(:price_group)
-      od.assign_price_policy(od.fulfilled_at)
+      od.assign_price_policy
       puts "#{od}|#{od.order_status}|#{od.account}|#{od.user}|#{od.product}|#{od.fulfilled_at}|#{old_price_group}|#{old_cost}|#{old_subsidy}|#{old_total}|#{od.price_policy.try(:price_group)}|#{od.actual_cost}|#{od.actual_subsidy}|#{od.actual_total}|#{od.actual_total == old_total}"
     end
 

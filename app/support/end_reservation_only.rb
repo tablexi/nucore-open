@@ -23,7 +23,6 @@ class EndReservationOnly
   end
 
   def expire_reservation(od)
-    od.assign_actual_price
     od.complete!
 
     # OrderDetail#complete! sets fulfilled_at

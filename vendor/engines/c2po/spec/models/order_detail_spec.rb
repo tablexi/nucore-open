@@ -127,8 +127,8 @@ RSpec.describe OrderDetail do
 
       context "with actual costs" do
         before :each do
-          order_detail.update_attributes(actual_cost: 20, actual_subsidy: 10)
-          order_detail.save!
+          order_detail.backdate_to_complete!
+          order_detail.update_attributes!(actual_cost: 20, actual_subsidy: 10)
           original_statement.add_order_detail(order_detail)
           original_statement.save!
 
