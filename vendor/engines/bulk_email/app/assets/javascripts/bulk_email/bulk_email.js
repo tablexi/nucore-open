@@ -32,11 +32,12 @@ $(function() {
   })
 
   function showHideRecipientExportButton() {
+    $downloadButton = $('.js--bulk-email-export-button');
     if ($('.js--bulk-email-recipient').is(':checked')) {
-      $('.js--bulk-email-export-button').show();
+      $downloadButton.removeClass("disabled").prop("disabled", false)
     }
     else {
-      $('.js--bulk-email-export-button').hide();
+      $downloadButton.addClass("disabled").prop("disabled", true)
     }
   }
 
