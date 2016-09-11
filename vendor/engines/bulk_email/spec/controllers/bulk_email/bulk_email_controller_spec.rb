@@ -111,7 +111,6 @@ RSpec.describe BulkEmail::BulkEmailController do
         end
       end
     end
-
   end
 
   describe "POST #download" do
@@ -127,7 +126,8 @@ RSpec.describe BulkEmail::BulkEmailController do
     before(:each) do
       @action = "download"
       @method = :post
-      @params.merge!(format: :csv, recipient_ids: recipients.map(&:id))
+      @params[:format] = :csv
+      @params[:recipient_ids] = recipients.map(&:id)
 
       maybe_grant_always_sign_in :director
       do_request
