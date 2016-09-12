@@ -13,7 +13,7 @@ module BulkEmail
     before_action :init_current_facility
     before_action { authorize! :send_bulk_emails, current_facility }
 
-    before_action :init_search_options
+    before_action :init_search_options, only: [:search]
 
     helper_method :datepicker_field_input
     helper_method :user_type_selected?
