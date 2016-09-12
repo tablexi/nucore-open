@@ -113,7 +113,7 @@ RSpec.describe BulkEmail::BulkEmailController do
     end
   end
 
-  describe "POST #download" do
+  describe "POST #create" do
     let(:recipients) { FactoryGirl.create_list(:user, 3) }
     let(:expected_csv_content) { csv_header + "\n" + expected_csv_body + "\n" }
     let(:csv_header) { "Name,Username,Email" }
@@ -124,7 +124,7 @@ RSpec.describe BulkEmail::BulkEmailController do
     end
 
     before(:each) do
-      @action = "download"
+      @action = "create"
       @method = :post
       @params[:format] = :csv
       @params[:recipient_ids] = recipients.map(&:id)

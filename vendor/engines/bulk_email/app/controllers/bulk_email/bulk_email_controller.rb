@@ -23,7 +23,7 @@ module BulkEmail
       @users = @searcher.do_search
     end
 
-    def download
+    def create
       @users = User.where_ids_in(params[:recipient_ids])
       filename = "bulk_email_recipients.csv"
       set_csv_headers(filename)
