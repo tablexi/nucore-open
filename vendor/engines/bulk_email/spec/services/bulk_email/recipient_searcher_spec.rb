@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BulkEmail::BulkEmailSearcher do
+RSpec.describe BulkEmail::RecipientSearcher do
   shared_examples_for "active/inactive users" do
     describe "with an active user" do
       it "returns the user" do

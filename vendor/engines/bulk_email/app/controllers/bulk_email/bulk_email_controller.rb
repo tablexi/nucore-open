@@ -19,7 +19,7 @@ module BulkEmail
     helper_method :user_type_selected?
 
     def search
-      @searcher = BulkEmailSearcher.new(@search_fields)
+      @searcher = RecipientSearcher.new(@search_fields)
       @users = @searcher.do_search
     end
 
@@ -45,7 +45,7 @@ module BulkEmail
     end
 
     def user_types
-      BulkEmailSearcher::USER_TYPES.each_with_object({}) do |user_type, hash|
+      RecipientSearcher::USER_TYPES.each_with_object({}) do |user_type, hash|
         hash[user_type] = I18n.t("bulk_email.user_type.#{user_type}")
       end
     end

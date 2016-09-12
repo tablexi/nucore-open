@@ -1,6 +1,6 @@
 module BulkEmail
 
-  class BulkEmailSearcher
+  class RecipientSearcher
 
     include DateHelper
 
