@@ -11,4 +11,5 @@ en:
       start: Starting
       end: Ending
     no_results: No users found
-    export_html: Export
+    compose_mail: Compose Mail
+    export: Export

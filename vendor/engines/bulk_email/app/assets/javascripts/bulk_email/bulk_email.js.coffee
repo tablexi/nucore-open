@@ -1,43 +1,59 @@
-$ ->
-  selectedUserTypes = ->
-    $('.bulk_email_user_type:checked').map -> @.value
+class window.BulkEmailSearchForm
+  constructor: (@$form) ->
+    @_initUserTypeChangeHandler()
 
-  authorizedUsersSelectedOnly = ->
-    user_types = selectedUserTypes()
+  authorizedUsersSelectedOnly: ->
+    user_types = @selectedUserTypes()
     user_types.length == 1 && user_types[0] == 'authorized_users'
 
-  showHideNonRestrictedProducts = ->
-    # Hide non-restricted items when doing an authorized_users search
-    isHideNonRestrictedProducts = authorizedUsersSelectedOnly()
-    $('.search_form #products option[data-restricted=false]').each (e)->
-      $(this).prop('disabled', isHideNonRestrictedProducts)
-      $(this).prop('selected', false) if isHideNonRestrictedProducts
+  selectedUserTypes: -> @$userTypeCheckboxes().filter(':checked').map -> @.value
 
-    $('.search_form #products').trigger('chosen:updated')
+  toggleNonRestrictedProducts: ->
+    # Hide non-restricted items when doing an authorized_users search
+    isHideNonRestrictedProducts = @authorizedUsersSelectedOnly()
+    @$form.find('#products option[data-restricted=false]').each ->
+      $option = $(this)
+      $option.prop('disabled', isHideNonRestrictedProducts)
+      $option.prop('selected', false) if isHideNonRestrictedProducts
+
+    @$form.find('#products').trigger('chosen:updated')
 
     # Dates do not apply for authorized users search
-    $('.search_form #dates_between')
+    @$form.find('#dates_between')
       .toggleClass('disabled', isHideNonRestrictedProducts)
       .find('input')
       .prop('disabled', isHideNonRestrictedProducts)
 
-  $('.bulk_email_user_type')
-    .change(showHideNonRestrictedProducts)
-    .trigger('change')
+  $userTypeCheckboxes: -> @$form.find('.bulk_email_user_type')
 
-  $('a.submit_link').click ->
-    $(this).parents('form').submit()
-    false
+  _initUserTypeChangeHandler: ->
+    @$userTypeCheckboxes()
+      .change(=> @toggleNonRestrictedProducts())
+      .trigger('change')
 
-  showHideRecipientExportButton = ->
-    $downloadButton = $('.js--bulk-email-export-button')
-    if $('.js--bulk-email-recipient').is(':checked')
-      $downloadButton.removeClass('disabled').prop('disabled', false)
+class window.BulkEmailCreateForm
+  constructor: (@$form) ->
+    @_initFormatSetOnSubmit()
+    @_initSubmitButtonToggle()
+
+  $recipientCheckboxes: -> @$form.find('.js--bulk-email-recipient')
+  $submitButtons: -> @$form.find('.js--bulk-email-submit-button')
+
+  toggleSubmitButtons: ->
+    if @$recipientCheckboxes().is(':checked')
+      @$submitButtons().removeClass('disabled').prop('disabled', false)
     else
-      $downloadButton.addClass('disabled').prop('disabled', true)
+      @$submitButtons().addClass('disabled').prop('disabled', true)
 
-  $('.js--bulk-email-recipient')
-    .change(showHideRecipientExportButton)
-    .trigger('change')
+  _initSubmitButtonToggle: ->
+    @$form.find('.js--select_all').click => @toggleSubmitButtons()
+    @$recipientCheckboxes().change(=> @toggleSubmitButtons()).trigger('change')
 
-  $('#bulk_email_export .js--select_all').click(showHideRecipientExportButton)
+  _initFormatSetOnSubmit: ->
+    @$submitButtons().click (event) =>
+      $submitButton = $(event.target)
+      @$form.find('#format').val($submitButton.data('format'))
+
+$ ->
+  $('#bulk_email').each -> new BulkEmailSearchForm($(this))
+  $('#bulk_email_create').each -> new BulkEmailCreateForm($(this))
