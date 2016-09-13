@@ -1,0 +1,3 @@
+%p= html "bulk_email.body.greeting", recipient_name: @recipient.full_name
+%p= @custom_message
+%p= html "bulk_email.body.signoff", facility_name: @facility.name

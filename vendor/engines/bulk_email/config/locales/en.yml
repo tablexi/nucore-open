@@ -13,3 +13,6 @@ en:
     no_results: No users found
     compose_mail: Compose Mail
     export: Export
+    body:
+      greeting: Hello %{recipient_name},
+      signoff: If you have any questions, please contact %{facility_name}.
