@@ -139,4 +139,30 @@ RSpec.describe BulkEmail::BulkEmailController do
       expect(response.body).to eq(expected_csv_content)
     end
   end
+
+  describe "POST #deliver" do
+    before(:each) do
+      @action = "deliver"
+      @method = :post
+      @params[:bulk_email_delivery_form] = {
+        subject: subject_line,
+        custom_message: custom_message,
+        recipient_ids: recipients.map(&:id),
+      }
+
+      sign_in @admin
+      do_request
+    end
+
+    context "when the form is valid" do
+      let(:recipients) { FactoryGirl.create_list(:user, 3) }
+      let(:subject_line) { "Subject line" }
+      let(:custom_message) { "Custom message" }
+
+      it "submits successfully" do
+        is_expected.to redirect_to(facility_bulk_email_path)
+        expect(flash[:notice]).to include("3 email messages queued")
+      end
+    end
+  end
 end

@@ -42,7 +42,7 @@ module BulkEmail
 
       if delivery_form.valid?
         delivery_form.deliver_all!
-        flash[:notice] = "TK delivered"
+        flash[:notice] = text("bulk_email.delivery.success", count: delivery_form.recipient_ids.count)
         redirect_to facility_bulk_email_path
       else
         @delivery_form = delivery_form
