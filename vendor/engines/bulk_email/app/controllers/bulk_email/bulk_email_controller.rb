@@ -25,11 +25,37 @@ module BulkEmail
 
     def create
       @users = User.where_ids_in(params[:recipient_ids])
-      filename = "bulk_email_recipients.csv"
-      set_csv_headers(filename)
+      @delivery_form = delivery_form # TK
+
+      respond_to do |format|
+        format.csv do
+          filename = "bulk_email_recipients.csv"
+          set_csv_headers(filename)
+        end
+
+        format.html
+      end
+    end
+
+    def deliver
+      delivery_form.assign_attributes(params)
+
+      if delivery_form.valid?
+        delivery_form.deliver_all!
+        flash[:notice] = "TK delivered"
+        redirect_to facility_bulk_email_path
+      else
+        @delivery_form = delivery_form
+        @users = User.where_ids_in(delivery_form.recipient_ids)
+        render :create
+      end
     end
 
     private
+
+    def delivery_form
+      @delivery_form ||= DeliveryForm.new(current_facility)
+    end
 
     def init_search_options
       @products = current_facility.products.active_plus_hidden.order("products.name").includes(:facility)

@@ -1,0 +1,22 @@
+= render "shared/transactions/headers"
+= stylesheet_link_tag "bulk_email/application.css"
+
+= content_for :h1 do
+  = current_facility
+
+%h2= t("bulk_email.title")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "email"
+
+= simple_form_for @delivery_form, method: :post, url: facility_bulk_email_deliver_path do |f|
+  .span12
+    - recipient_options = @users.map { |user| [user.username, user.id] }.to_h
+    = select_tag "bulk_email_delivery_form[recipient_ids]",
+      options_for_select(recipient_options, recipient_options.values),
+      multiple: true,
+      class: "js--chosen"
+
+  .span12= f.input :subject
+  .span12= f.input :custom_message
+  .span12= f.submit "TK send", class: "btn btn-primary"
