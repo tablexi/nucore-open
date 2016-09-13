@@ -26,9 +26,16 @@ $(function() {
 
   $('.bulk_email_user_type').change(showHideNonRestrictedProducts).trigger('change');
 
-  $('a.submit_link').click(function() {
-    $(this).parents("form").submit();
-    return false;
-  })
+  function showHideRecipientExportButton() {
+    var $downloadButton = $('.js--bulk-email-export-button');
+    if ($('.js--bulk-email-recipient').is(':checked')) {
+      $downloadButton.removeClass("disabled").prop("disabled", false)
+    }
+    else {
+      $downloadButton.addClass("disabled").prop("disabled", true)
+    }
+  }
 
+  $('.js--bulk-email-recipient').change(showHideRecipientExportButton).trigger('change');
+  $('#bulk_email_export .js--select_all').click(showHideRecipientExportButton);
 });

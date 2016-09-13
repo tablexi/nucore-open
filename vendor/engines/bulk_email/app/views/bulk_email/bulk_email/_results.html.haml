@@ -1,17 +1,32 @@
-.results_header
-  .pull-right= render "export"
-  .clear
+= form_tag facility_bulk_email_download_path, method: :post, id: "bulk_email_export" do
+  = hidden_field_tag :format, :csv
 
-%table.table.table-striped.table-hover
-  %thead
-    %tr
-      %th= User.human_attribute_name(:name)
-      %th= User.human_attribute_name(:username)
-      %th= User.human_attribute_name(:email)
+  .results_header
+    .span1.select_all_none= select_all_link(start_none: true)
+    .span1.pull-right
+      = submit_tag t("bulk_email.export_html"),
+        class: "btn btn-primary js--bulk-email-export-button"
+    .clear
 
-  %tbody
-    - @users.each do |user|
+  %table.table.table-striped.table-hover
+    %thead
       %tr
-        %td= link_to user.full_name, facility_user_path(current_facility, user)
-        %td= user.username
-        %td= user.email
+        %th
+        %th= User.human_attribute_name(:name)
+        %th= User.human_attribute_name(:username)
+        %th= User.human_attribute_name(:email)
+
+    %tbody
+      - @users.each do |user|
+        %tr
+          %td
+            = check_box_tag "recipient_ids[]",
+              user.id,
+              true,
+              class: "toggle js--bulk-email-recipient",
+              id: "recipient_id_#{user.id}"
+
+          %td
+            = link_to user.full_name, facility_user_path(current_facility, user)
+          %td= user.username
+          %td= user.email

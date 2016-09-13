@@ -21,15 +21,12 @@ module BulkEmail
     def search
       @searcher = BulkEmailSearcher.new(@search_fields)
       @users = @searcher.do_search
+    end
 
-      respond_to do |format|
-        format.html
-
-        format.csv do
-          filename = "bulk_email_#{params[:bulk_email][:user_types].join('-')}.csv"
-          set_csv_headers(filename)
-        end
-      end
+    def download
+      @users = User.where_ids_in(params[:recipient_ids])
+      filename = "bulk_email_recipients.csv"
+      set_csv_headers(filename)
     end
 
     private
