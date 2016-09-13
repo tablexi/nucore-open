@@ -141,6 +141,9 @@ RSpec.describe BulkEmail::BulkEmailController do
   end
 
   describe "POST #deliver" do
+    let(:recipients) { FactoryGirl.create_list(:user, 3) }
+    let(:custom_message) { "Custom message" }
+
     before(:each) do
       @action = "deliver"
       @method = :post
@@ -155,13 +158,21 @@ RSpec.describe BulkEmail::BulkEmailController do
     end
 
     context "when the form is valid" do
-      let(:recipients) { FactoryGirl.create_list(:user, 3) }
       let(:subject_line) { "Subject line" }
-      let(:custom_message) { "Custom message" }
 
       it "submits successfully" do
         is_expected.to redirect_to(facility_bulk_email_path)
         expect(flash[:notice]).to include("3 email messages queued")
+      end
+    end
+
+    context "when the form is invalid" do
+      let(:subject_line) { "" }
+
+      it "redisplays the form with errors" do
+        is_expected.to render_template(:create)
+        expect(assigns[:delivery_form].errors[:subject])
+          .to include("can't be blank")
       end
     end
   end
