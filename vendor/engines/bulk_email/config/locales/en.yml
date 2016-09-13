@@ -20,3 +20,5 @@ en:
       success:
         one: "%{count} email message queued successfully."
         other: "%{count} email messages queued successfully."
+    recipients: Recipients
+    send_mail: Send Mail
