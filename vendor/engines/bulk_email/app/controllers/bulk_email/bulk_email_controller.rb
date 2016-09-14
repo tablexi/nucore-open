@@ -13,6 +13,7 @@ module BulkEmail
     before_action :authenticate_user!
     before_action :check_acting_as
     before_action :init_current_facility
+    before_action :init_delivery_form, only: [:create, :deliver]
     before_action { authorize! :send_bulk_emails, current_facility }
 
     before_action :init_search_options, only: [:search]
@@ -28,7 +29,6 @@ module BulkEmail
 
     def create
       @users = User.where_ids_in(params[:recipient_ids])
-      @delivery_form = delivery_form # TK
 
       respond_to do |format|
         format.csv do
@@ -41,15 +41,12 @@ module BulkEmail
     end
 
     def deliver
-      delivery_form.assign_attributes(params)
-
-      if delivery_form.valid?
-        delivery_form.deliver_all!
-        flash[:notice] = text("bulk_email.delivery.success", count: delivery_form.recipient_ids.count)
+      if @delivery_form.valid?
+        @delivery_form.deliver_all!
+        flash[:notice] = text("bulk_email.delivery.success", count: @delivery_form.recipient_ids.count)
         redirect_to facility_bulk_email_path
       else
-        @delivery_form = delivery_form
-        @users = User.where_ids_in(delivery_form.recipient_ids)
+        @users = User.where_ids_in(@delivery_form.recipient_ids)
         render :create
       end
     end
@@ -63,8 +60,9 @@ module BulkEmail
         multiple: true
     end
 
-    def delivery_form
-      @delivery_form ||= DeliveryForm.new(current_facility)
+    def init_delivery_form
+      @delivery_form = DeliveryForm.new(current_facility)
+      @delivery_form.assign_attributes(params) if params[:bulk_email_delivery_form].present?
     end
 
     def init_search_options
