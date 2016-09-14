@@ -13,17 +13,17 @@
   - @users.each do |user|
     = hidden_field_tag "bulk_email_delivery_form[recipient_ids][]", user.id, id: nil
 
-  .span12
+  .span8
     = label_tag text("bulk_email.recipients")
-    = @users.map(&:email).join(", ")
+    .well= @users.map(&:email).join(", ")
 
-  .span12= f.input :subject, input_html: { class: "input-xxlarge" }
+  .span8= f.input :subject, input_html: { class: "input-xxlarge" }
 
-  .span12
+  .span8
     = f.input :custom_message,
       as: :text,
       input_html: { class: "input-xxlarge", rows: 6 }
 
-  .span12
+  .span8
     = link_to text("shared.cancel"), facility_bulk_email_path, class: "btn"
     = f.submit text("bulk_email.send_mail"), class: "btn btn-primary"
