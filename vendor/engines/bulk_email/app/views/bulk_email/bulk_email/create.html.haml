@@ -15,6 +15,13 @@
       = text("bulk_email.recipients")
     = bulk_mail_recipient_input
 
-  .span12= f.input :subject
-  .span12= f.input :custom_message
-  .span12= f.submit text("bulk_email.send_mail"), class: "btn btn-primary"
+  .span12= f.input :subject, input_html: { class: "input-xxlarge" }
+
+  .span12
+    = f.input :custom_message,
+      as: :text,
+      input_html: { class: "input-xxlarge", rows: 6 }
+
+  .span12
+    = link_to text("shared.cancel"), facility_bulk_email_path, class: "btn"
+    = f.submit text("bulk_email.send_mail"), class: "btn btn-primary"
