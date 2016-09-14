@@ -3,8 +3,6 @@ module BulkEmail
   class BulkEmailController < ApplicationController
 
     include CSVHelper
-    include ActionView::Helpers::FormTagHelper
-    include ActionView::Helpers::FormOptionsHelper
 
     admin_tab :all
     layout "two_column"
@@ -19,7 +17,6 @@ module BulkEmail
     before_action :init_search_options, only: [:search]
 
     helper_method :datepicker_field_input
-    helper_method :bulk_mail_recipient_input
     helper_method :user_type_selected?
 
     def search
@@ -52,13 +49,6 @@ module BulkEmail
     end
 
     private
-
-    def bulk_mail_recipient_input
-      recipient_options = @users.map { |user| [user.username, user.id] }.to_h
-      select_tag "bulk_email_delivery_form[recipient_ids]",
-        options_for_select(recipient_options, recipient_options.values),
-        multiple: true
-    end
 
     def init_delivery_form
       @delivery_form = DeliveryForm.new(current_facility)
