@@ -516,12 +516,12 @@ RSpec.describe OrderManagement::OrderDetailsController do
     end
 
     describe "when the price policy would change" do
-      let!(:previous_price_policy) { FactoryGirl.create(:item_price_policy, product: item, price_group: price_group, unit_cost: 19, start_date: 30.days.ago, expire_date: 28.day.ago) }
+      let!(:previous_price_policy) { FactoryGirl.create(:item_price_policy, product: item, price_group: price_group, unit_cost: 19, start_date: 30.days.ago, expire_date: 28.days.ago) }
       before { order_detail.backdate_to_complete!(29.days.ago) }
 
       it "uses the fulfillment price policy rather than now's" do
         @params[:order_detail] = {
-          account_id: new_account.id
+          account_id: new_account.id,
         }
         do_request
         expect(order_detail.reload.price_policy).to eq(previous_price_policy)
