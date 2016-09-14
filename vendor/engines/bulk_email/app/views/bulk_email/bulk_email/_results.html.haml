@@ -3,14 +3,18 @@
 
   .results_header
     .span1.select_all_none= select_all_link(start_none: true)
-    .span1.pull-right
-      = submit_tag t("bulk_email.compose_mail"),
-        data: { format: :html },
-        class: "btn btn-primary js--bulk-email-submit-button js--bulk-email-compose-button"
+
+    - if current_ability.can?(:deliver, BulkEmail)
+      .span1.pull-right
+        = submit_tag t("bulk_email.compose_mail"),
+          data: { format: :html },
+          class: "btn btn-primary js--bulk-email-submit-button js--bulk-email-compose-button"
+
     .span1.pull-right
       = submit_tag t("bulk_email.export"),
         data: { format: :csv },
         class: "btn btn-primary js--bulk-email-submit-button js--bulk-email-download-csv-button"
+
     .clear
 
   %table.table.table-striped.table-hover
