@@ -22,3 +22,9 @@ en:
         other: "%{count} email messages queued successfully."
     recipients: Recipients
     send_mail: Send Mail
+
+  activemodel:
+    attributes:
+      bulk_email/delivery_form:
+        custom_message: Message
+        subject: Subject line
