@@ -12,7 +12,7 @@ class window.BulkEmailSearchForm
     # Hide non-restricted items when doing an authorized_users search
     isHideNonRestrictedProducts = @authorizedUsersSelectedOnly()
     @$form.find('#products option[data-restricted=false]').each ->
-      $option = $(this)
+      $option = $(@)
       $option.prop('disabled', isHideNonRestrictedProducts)
       $option.prop('selected', false) if isHideNonRestrictedProducts
 
@@ -55,5 +55,5 @@ class window.BulkEmailCreateForm
       @$form.find('#format').val($submitButton.data('format'))
 
 $ ->
-  $('#bulk_email').each -> new BulkEmailSearchForm($(this))
-  $('#bulk_email_create').each -> new BulkEmailCreateForm($(this))
+  $('#bulk_email').each -> new BulkEmailSearchForm($(@))
+  $('#bulk_email_create').each -> new BulkEmailCreateForm($(@))
