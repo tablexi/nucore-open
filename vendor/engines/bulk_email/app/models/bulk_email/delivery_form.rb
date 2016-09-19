@@ -19,13 +19,13 @@ module BulkEmail
       @subject = params[:bulk_email_delivery_form][:subject]
     end
 
-    def deliver_all!
-      recipients.each { |recipient| deliver!(recipient) } if valid?
+    def deliver_all
+      recipients.each { |recipient| deliver(recipient) } if valid?
     end
 
     private
 
-    def deliver!(recipient)
+    def deliver(recipient)
       Mailer.send_mail(
         recipient: recipient,
         subject: subject,

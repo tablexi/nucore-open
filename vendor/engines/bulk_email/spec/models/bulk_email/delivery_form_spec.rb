@@ -11,10 +11,10 @@ RSpec.describe BulkEmail::DeliveryForm do
     it { is_expected.to validate_presence_of(:recipient_ids) }
   end
 
-  describe "#deliver_all!" do
+  describe "#deliver_all" do
     before(:each) do
       recipients.each do |recipient|
-        expect(form).to receive(:deliver!).with(recipient)
+        expect(form).to receive(:deliver).with(recipient)
       end
 
       form.recipient_ids = recipients.map(&:id)
@@ -23,7 +23,7 @@ RSpec.describe BulkEmail::DeliveryForm do
     end
 
     it "queues mail to all recipients" do
-      form.deliver_all!
+      form.deliver_all
     end
   end
 end

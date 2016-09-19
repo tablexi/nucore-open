@@ -38,8 +38,7 @@ module BulkEmail
     end
 
     def deliver
-      if @delivery_form.valid?
-        @delivery_form.deliver_all!
+      if @delivery_form.deliver_all
         flash[:notice] = text("bulk_email.delivery.success", count: @delivery_form.recipient_ids.count)
         redirect_to facility_bulk_email_path
       else
