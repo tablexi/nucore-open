@@ -495,7 +495,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
         expect(order_detail.reload.actual_total).to eq(16.00)
       end
 
-      xit "updates the price while changing accounts" do
+      it "updates the price while changing accounts" do
+        pending "currently buggy: it uses the new account's price policy, not the params"
         @params[:order_detail] = {
           actual_cost: "20.00",
           actual_subsidy: "4.00",
@@ -531,6 +532,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
     describe "changing quantity" do
       before do
+        order_detail.backdate_to_complete!(Time.current)
         @params[:order_detail] = { quantity: 2 }
       end
 
@@ -538,7 +540,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
         expect { do_request }.to change { order_detail.reload.quantity }.to(2)
       end
 
-      xit "updates the price while changing quantity" do
+      it "updates the price while changing quantity" do
+        pending "currently buggy: it uses the price policy's calculation, not the params"
         @params[:order_detail] = {
           actual_cost: "20.00",
           actual_subsidy: "4.00",
