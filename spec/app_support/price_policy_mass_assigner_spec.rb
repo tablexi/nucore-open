@@ -95,6 +95,7 @@ RSpec.describe PricePolicyMassAssigner do
     end
 
     context "when no compatible price policies exist" do
+      let(:fulfilled_at) { 10.years.ago }
       it "assigns no price policies" do
         expect(mass_assign_price_policies.size).to eq(0)
         expect(order_detail.price_policy).to be_blank
