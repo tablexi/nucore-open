@@ -22,6 +22,7 @@ en:
         other: "%{count} email messages queued successfully."
     recipients: Recipients
     send_mail: Send Mail
+    sending: Sending...
 
   activemodel:
     attributes:
