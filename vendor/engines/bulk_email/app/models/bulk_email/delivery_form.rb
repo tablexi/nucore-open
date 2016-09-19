@@ -13,10 +13,11 @@ module BulkEmail
       @facility = facility
     end
 
-    def assign_attributes(params = {})
-      @custom_message = params[:bulk_email_delivery_form][:custom_message]
-      @recipient_ids = params[:bulk_email_delivery_form][:recipient_ids]
-      @subject = params[:bulk_email_delivery_form][:subject]
+    def assign_attributes(params)
+      params ||= {}
+      @custom_message = params[:custom_message]
+      @recipient_ids = params[:recipient_ids]
+      @subject = params[:subject]
     end
 
     def deliver_all

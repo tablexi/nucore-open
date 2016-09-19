@@ -51,7 +51,7 @@ module BulkEmail
 
     def init_delivery_form
       @delivery_form = DeliveryForm.new(current_facility)
-      @delivery_form.assign_attributes(params) if params[:bulk_email_delivery_form].present?
+      @delivery_form.assign_attributes(params[:bulk_email_delivery_form])
     end
 
     def init_search_options
