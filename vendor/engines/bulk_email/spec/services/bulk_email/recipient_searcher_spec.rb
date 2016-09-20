@@ -73,6 +73,33 @@ RSpec.describe BulkEmail::RecipientSearcher do
     end
   end
 
+  describe "#search_params_as_hidden_fields" do
+    let(:params) do
+      {
+        bulk_email: { user_types: [:customers, :account_users] },
+        commit: "Submit",
+        facility_id: facility.id,
+        start_date: "1/1/2009",
+        end_date: "12/31/2016",
+        products: [1,3,5],
+      }
+    end
+    let(:fragment) { Nokogiri::HTML(searcher.search_params_as_hidden_fields) }
+    let(:end_date_tag) { fragment.css("input[name=end_date]") }
+    let(:product_tag_values) { product_tags.map { |product_tag| product_tag.attr("value") } }
+    let(:product_tags) { fragment.css("input[name='products[]']") }
+    let(:start_date_tag) { fragment.css("input[name=start_date]") }
+    let(:user_type_tag_values) { user_type_tags.map { |user_type_tag| user_type_tag.attr("value") } }
+    let(:user_type_tags) { fragment.css("input[name='bulk_email[user_types][]']") }
+
+    it "generates an HTML fragment with hidden recipient search parameters" do
+      expect(start_date_tag.attr("value").value).to eq("1/1/2009")
+      expect(end_date_tag.attr("value").value).to eq("12/31/2016")
+      expect(product_tag_values).to match_array %w(1 3 5)
+      expect(user_type_tag_values).to match_array %w(customers account_users)
+    end
+  end
+
   context "when searching for customers" do
     context "filtered by ordered dates" do
       let!(:od_yesterday) do

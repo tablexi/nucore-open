@@ -16,6 +16,7 @@ module BulkEmail
 
     before_action :init_search_options, only: [:search]
 
+    helper_method :bulk_email_cancel_path
     helper_method :datepicker_field_input
     helper_method :user_type_selected?
 
@@ -48,6 +49,20 @@ module BulkEmail
     end
 
     private
+
+    def bulk_email_cancel_path
+      if cancel_params.present?
+        facility_bulk_email_path(cancel_params)
+      else
+        facility_bulk_email_path
+      end
+    end
+
+    def cancel_params
+      @cancel_params ||= params.select do |field, _value|
+        %w(start_date end_date bulk_email products).include?(field)
+      end
+    end
 
     def init_delivery_form
       @delivery_form = DeliveryForm.new(current_facility)
