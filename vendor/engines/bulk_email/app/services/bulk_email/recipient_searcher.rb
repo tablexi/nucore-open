@@ -34,7 +34,7 @@ module BulkEmail
         hidden_tags_for(:end_date, search_fields[:end_date]),
         hidden_tags_for("bulk_email[user_types][]", search_fields[:bulk_email][:user_types]),
         hidden_tags_for("products[]", search_fields[:products]),
-      ].flatten.join("\n").html_safe
+      ].flatten
     end
 
     def search_customers

@@ -81,10 +81,10 @@ RSpec.describe BulkEmail::RecipientSearcher do
         facility_id: facility.id,
         start_date: "1/1/2009",
         end_date: "12/31/2016",
-        products: [1,3,5],
+        products: [1, 3, 5],
       }
     end
-    let(:fragment) { Nokogiri::HTML(searcher.search_params_as_hidden_fields) }
+    let(:fragment) { Nokogiri::HTML(searcher.search_params_as_hidden_fields.join("")) }
     let(:end_date_tag) { fragment.css("input[name=end_date]") }
     let(:product_tag_values) { product_tags.map { |product_tag| product_tag.attr("value") } }
     let(:product_tags) { fragment.css("input[name='products[]']") }
