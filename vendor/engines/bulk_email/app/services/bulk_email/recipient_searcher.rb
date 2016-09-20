@@ -30,10 +30,10 @@ module BulkEmail
 
     def search_params_as_hidden_fields
       [
-        hidden_tag_for(:start_date, search_fields[:start_date]),
-        hidden_tag_for(:end_date, search_fields[:end_date]),
-        hidden_tag_collection_for("bulk_email[user_types][]", search_fields[:bulk_email][:user_types]),
-        hidden_tag_collection_for("products[]", search_fields[:products]),
+        hidden_tags_for(:start_date, search_fields[:start_date]),
+        hidden_tags_for(:end_date, search_fields[:end_date]),
+        hidden_tags_for("bulk_email[user_types][]", search_fields[:bulk_email][:user_types]),
+        hidden_tags_for("products[]", search_fields[:products]),
       ].flatten.join("\n").html_safe
     end
 
@@ -63,12 +63,8 @@ module BulkEmail
 
     private
 
-    def hidden_tag_for(key, value)
-      hidden_field_tag(key, value, id: nil) if value.present?
-    end
-
-    def hidden_tag_collection_for(key, values)
-      values.map { |value| hidden_tag_for(key, value) } if values.present?
+    def hidden_tags_for(key, values)
+      Array(values).map { |value| hidden_field_tag(key, value, id: nil) }
     end
 
     def selected_user_types
