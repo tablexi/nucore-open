@@ -148,7 +148,7 @@ RSpec.describe BulkEmail::BulkEmailController do
       @action = "deliver"
       @method = :post
       @params[:bulk_email_delivery_form] = {
-        subject: subject_line,
+        custom_subject: custom_subject,
         custom_message: custom_message,
         recipient_ids: recipients.map(&:id),
       }
@@ -158,7 +158,7 @@ RSpec.describe BulkEmail::BulkEmailController do
     end
 
     context "when the form is valid" do
-      let(:subject_line) { "Subject line" }
+      let(:custom_subject) { "Custom subject" }
 
       it "submits successfully" do
         is_expected.to redirect_to(facility_bulk_email_path)
@@ -167,11 +167,11 @@ RSpec.describe BulkEmail::BulkEmailController do
     end
 
     context "when the form is invalid" do
-      let(:subject_line) { "" }
+      let(:custom_subject) { "" }
 
       it "redisplays the form with errors" do
         is_expected.to render_template(:create)
-        expect(assigns[:delivery_form].errors[:subject])
+        expect(assigns[:delivery_form].errors[:custom_subject])
           .to include("can't be blank")
       end
     end

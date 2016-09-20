@@ -6,7 +6,7 @@ RSpec.describe BulkEmail::DeliveryForm do
   let(:facility) { FactoryGirl.build_stubbed(:facility) }
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:subject) }
+    it { is_expected.to validate_presence_of(:custom_subject) }
     it { is_expected.to validate_presence_of(:custom_message) }
     it { is_expected.to validate_presence_of(:recipient_ids) }
   end
@@ -18,7 +18,7 @@ RSpec.describe BulkEmail::DeliveryForm do
       end
 
       form.recipient_ids = recipients.map(&:id)
-      form.subject = "Subject line"
+      form.custom_subject = "Subject line"
       form.custom_message = "Custom message"
     end
 

@@ -4,10 +4,10 @@ module BulkEmail
 
     include ActiveModel::Model
 
-    attr_accessor :subject, :custom_message, :recipient_ids
+    attr_accessor :custom_subject, :custom_message, :recipient_ids
     attr_reader :facility
 
-    validates :subject, :custom_message, :recipient_ids, presence: true
+    validates :custom_subject, :custom_message, :recipient_ids, presence: true
 
     def initialize(facility)
       @facility = facility
@@ -16,8 +16,8 @@ module BulkEmail
     def assign_attributes(params)
       params ||= {}
       @custom_message = params[:custom_message]
+      @custom_subject = params[:custom_subject]
       @recipient_ids = params[:recipient_ids]
-      @subject = params[:subject]
     end
 
     def deliver_all
@@ -29,7 +29,7 @@ module BulkEmail
     def deliver(recipient)
       Mailer.send_mail(
         recipient: recipient,
-        subject: subject,
+        custom_subject: custom_subject,
         facility: facility,
         custom_message: custom_message,
       ).deliver_later
