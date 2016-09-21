@@ -144,8 +144,6 @@ class Reservation < ActiveRecord::Base
   def end_reservation!
     self.actual_end_at = Time.zone.now
     save!
-    # reservation is done, now give the best price
-    order_detail.assign_price_policy
     order_detail.complete!
   end
 

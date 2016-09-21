@@ -8,7 +8,6 @@ RSpec.describe PricePolicyMassAssigner do
       facility.facility_accounts.create(facility_account_attributes)
     end
     let(:facility_account_attributes) { attributes_for(:facility_account) }
-    let(:fulfilled_at) { nil }
     let(:item_attributes) do
       attributes_for(:item, facility_account_id: facility_account.id)
     end
@@ -87,14 +86,16 @@ RSpec.describe PricePolicyMassAssigner do
       end
 
       context "when order details are unfulfilled" do
-        it "assigns the current price policy" do
-          expect(mass_assign_price_policies).to eq [order_detail]
-          expect(order_detail.price_policy).to eq current_price_policy
+        let(:fulfilled_at) { nil }
+
+        it "does not get a price policy" do
+          expect(order_detail.price_policy).to be_blank
         end
       end
     end
 
     context "when no compatible price policies exist" do
+      let(:fulfilled_at) { 10.years.ago }
       it "assigns no price policies" do
         expect(mass_assign_price_policies.size).to eq(0)
         expect(order_detail.price_policy).to be_blank

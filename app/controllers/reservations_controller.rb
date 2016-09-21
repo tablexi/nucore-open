@@ -309,7 +309,7 @@ class ReservationsController < ApplicationController
 
   def save_reservation_and_order_detail
     @reservation.save_as_user!(session_user)
-    @order_detail.assign_estimated_price(nil, @reservation.reserve_end_at)
+    @order_detail.assign_estimated_price(@reservation.reserve_end_at)
     @order_detail.save_as_user!(session_user)
   end
 

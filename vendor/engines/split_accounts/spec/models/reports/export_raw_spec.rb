@@ -18,9 +18,6 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   let(:order_detail) do
     order_detail = base_order_detail
 
-    # prevent the order_detail from assigning different actual_cost and actual_subsidy
-    allow(order_detail).to receive(:assign_actual_price).and_return(nil)
-
     order_detail.quantity = 1
     order_detail.actual_subsidy = BigDecimal("9.99")
     order_detail.actual_cost = BigDecimal("19.99")

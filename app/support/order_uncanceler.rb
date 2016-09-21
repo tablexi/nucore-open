@@ -30,7 +30,7 @@ class OrderUncanceler
           state: "complete",
           fulfilled_at: fulfilled_at)
 
-        order_detail.assign_price_policy(fulfilled_at)
+        order_detail.assign_price_policy
         order_detail.save!
         Rails.logger.info "OrderDetail #{order_detail} was uncanceled"
         true

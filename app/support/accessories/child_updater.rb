@@ -39,7 +39,6 @@ class Accessories::ChildUpdater
     decorated_od = Accessories::Scaling.decorate(od)
     od.account = @order_detail.account
     decorated_od.update_quantity
-    od.assign_actual_price
   end
 
 end

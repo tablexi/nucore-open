@@ -16,7 +16,7 @@ RSpec.describe Accessories::ChildUpdater do
     before { allow(order_detail).to receive(:child_order_details).and_return [child_order_detail] }
 
     it "updates the child" do
-      expect(child_order_detail).to receive(:assign_actual_price)
+      expect(child_order_detail).to receive(:account=)
       expect(child_order_detail).to receive(:save)
       expect(order_detail.update_children).to eq([child_order_detail])
     end
