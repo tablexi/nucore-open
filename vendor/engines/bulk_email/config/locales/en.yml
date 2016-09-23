@@ -20,6 +20,7 @@ en:
       success:
         one: "%{count} email message queued successfully."
         other: "%{count} email messages queued successfully."
+      failure: There was an error while attempting to queue mail for delivery.
     recipients: Recipients
     send_mail: Send Mail
     sending: Sending...
