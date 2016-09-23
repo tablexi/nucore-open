@@ -59,9 +59,7 @@ module BulkEmail
     end
 
     def cancel_params
-      @cancel_params ||= params.select do |field, _value|
-        %w(start_date end_date bulk_email products).include?(field)
-      end
+      @cancel_params ||= params.slice(:start_date, :end_date, :bulk_email, :products)
     end
 
     def init_delivery_form
