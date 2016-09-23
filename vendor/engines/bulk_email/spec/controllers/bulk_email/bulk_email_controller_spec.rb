@@ -113,7 +113,7 @@ RSpec.describe BulkEmail::BulkEmailController do
     end
   end
 
-  describe "POST #download" do
+  describe "POST #create" do
     let(:recipients) { FactoryGirl.create_list(:user, 3) }
     let(:expected_csv_content) { csv_header + "\n" + expected_csv_body + "\n" }
     let(:csv_header) { "Name,Username,Email" }
@@ -124,7 +124,7 @@ RSpec.describe BulkEmail::BulkEmailController do
     end
 
     before(:each) do
-      @action = "download"
+      @action = "create"
       @method = :post
       @params[:format] = :csv
       @params[:recipient_ids] = recipients.map(&:id)
@@ -137,6 +137,43 @@ RSpec.describe BulkEmail::BulkEmailController do
       expect(response.headers["Content-Disposition"])
         .to eq('attachment; filename="bulk_email_recipients.csv"')
       expect(response.body).to eq(expected_csv_content)
+    end
+  end
+
+  describe "POST #deliver" do
+    let(:recipients) { FactoryGirl.create_list(:user, 3) }
+    let(:custom_message) { "Custom message" }
+
+    before(:each) do
+      @action = "deliver"
+      @method = :post
+      @params[:bulk_email_delivery_form] = {
+        custom_subject: custom_subject,
+        custom_message: custom_message,
+        recipient_ids: recipients.map(&:id),
+      }
+
+      sign_in @admin
+      do_request
+    end
+
+    context "when the form is valid" do
+      let(:custom_subject) { "Custom subject" }
+
+      it "submits successfully" do
+        is_expected.to redirect_to(facility_bulk_email_path)
+        expect(flash[:notice]).to include("3 email messages queued")
+      end
+    end
+
+    context "when the form is invalid" do
+      let(:custom_subject) { "" }
+
+      it "redisplays the form with errors" do
+        is_expected.to render_template(:create)
+        expect(assigns[:delivery_form].errors[:custom_subject])
+          .to include("can't be blank")
+      end
     end
   end
 end

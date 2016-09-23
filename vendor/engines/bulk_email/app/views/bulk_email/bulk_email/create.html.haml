@@ -1,0 +1,32 @@
+= render "shared/transactions/headers"
+= stylesheet_link_tag "bulk_email/application.css"
+
+= content_for :h1 do
+  = current_facility
+
+%h2= t("bulk_email.title")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "email"
+
+= simple_form_for @delivery_form, method: :post, url: facility_bulk_email_deliver_path do |f|
+  - @users.each do |user|
+    = hidden_field_tag "bulk_email_delivery_form[recipient_ids][]", user.id, id: nil
+
+  .span8
+    = label_tag text("bulk_email.recipients")
+    .well= @users.map(&:email).join(", ")
+
+  .span8= f.input :custom_subject, input_html: { class: "input-xxlarge" }
+
+  .span8
+    = f.input :custom_message,
+      as: :text,
+      input_html: { class: "input-xxlarge", rows: 6 }
+
+  .span8
+    = f.submit text("bulk_email.send_mail"),
+      class: "btn btn-primary",
+      data: { disable_with: t("bulk_email.sending") }
+
+    = link_to text("shared.cancel"), bulk_email_cancel_path

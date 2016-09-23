@@ -1,8 +1,9 @@
 module BulkEmail
 
-  class BulkEmailSearcher
+  class RecipientSearcher
 
     include DateHelper
+    include ActionView::Helpers::FormTagHelper
 
     attr_reader :search_fields
 
@@ -25,6 +26,15 @@ module BulkEmail
 
     def has_search_fields?
       search_fields.present? && search_fields[:commit].present?
+    end
+
+    def search_params_as_hidden_fields
+      [
+        hidden_tags_for(:start_date, search_fields[:start_date]),
+        hidden_tags_for(:end_date, search_fields[:end_date]),
+        hidden_tags_for("bulk_email[user_types][]", search_fields[:bulk_email][:user_types]),
+        hidden_tags_for("products[]", search_fields[:products]),
+      ].flatten
     end
 
     def search_customers
@@ -52,6 +62,10 @@ module BulkEmail
     end
 
     private
+
+    def hidden_tags_for(key, values)
+      Array(values).map { |value| hidden_field_tag(key, value, id: nil) }
+    end
 
     def selected_user_types
       return [] unless has_search_fields? && search_fields[:bulk_email].present?

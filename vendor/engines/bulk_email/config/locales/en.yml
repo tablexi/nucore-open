@@ -11,4 +11,22 @@ en:
       start: Starting
       end: Ending
     no_results: No users found
-    export_html: Export
+    compose_mail: Compose Mail
+    export: Export
+    body:
+      greeting: Hello %{recipient_name},
+      signoff: If you have any questions, please contact %{facility_name}.
+    delivery:
+      success:
+        one: "%{count} email message queued successfully."
+        other: "%{count} email messages queued successfully."
+      failure: There was an error while attempting to queue mail for delivery.
+    recipients: Recipients
+    send_mail: Send Mail
+    sending: Sending...
+
+  activemodel:
+    attributes:
+      bulk_email/delivery_form:
+        custom_message: Message
+        custom_subject: Subject line
