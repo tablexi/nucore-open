@@ -23,4 +23,21 @@
       }
     }
   }
+
+  input, textarea, select, .add-on {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    width: inherit !important;
+    height: inherit !important;
+    line-height: inherit !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+  }
 }
