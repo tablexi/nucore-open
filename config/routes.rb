@@ -89,8 +89,8 @@ Nucore::Application.routes.draw do
 
       resources :reservations, only: [:index]
       resources :users, controller: "product_users", except: [:show, :edit, :create]
-      get "/users/user_search_results", to: 'product_users#user_search_results'
-      get "update_restrictions",        to: 'product_users#update_restrictions'
+      get "/users/user_search_results", to: "product_users#user_search_results"
+      put "update_restrictions", to: "product_users#update_restrictions"
     end
 
     resources :services do
