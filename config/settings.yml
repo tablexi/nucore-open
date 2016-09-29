@@ -111,6 +111,7 @@ feature:
   my_files_on: true
   # results file notifications requires that my_files be on as well
   results_file_notifications_on: true
+  set_start_date_on: false
 
 # This may be overridden in settings.local.yml if your fork is using S3, so
 # be sure to check there for configuration
