@@ -1,6 +1,8 @@
 class OrderPurchaser
 
   attr_reader :acting_as, :order, :order_in_past, :params, :user
+  attr_accessor :backdate_to
+
   alias acting_as? acting_as
   alias order_in_past? order_in_past
 
@@ -17,6 +19,8 @@ class OrderPurchaser
 
   def purchase!
     return if order_detail_updater.update! && quantities_changed?
+
+    order.ordered_at = backdate_to if backdate_to
 
     validate_and_purchase!
     order_in_the_past! if order_in_past?

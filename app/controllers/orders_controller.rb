@@ -250,7 +250,9 @@ class OrdersController < ApplicationController
   # PUT /orders/:id/purchase
   def purchase
     @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
-    @order.ordered_at = build_order_date if ordering_on_behalf_with_date_params?
+
+    order_purchaser.backdate_to = build_order_date if ordering_on_behalf_with_date_params?
+
     @order.transaction do
       @order.assign_attributes(order_params)
       order_purchaser.purchase!
