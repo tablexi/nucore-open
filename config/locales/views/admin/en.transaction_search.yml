@@ -5,3 +5,4 @@ en:
         ordered_at: Ordered
         fulfilled_at: Fulfilled
         journal_or_statement_date: "Journaled/Statement"
+        reconciled_at: Reconciled
