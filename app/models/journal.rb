@@ -47,6 +47,7 @@ class Journal < ActiveRecord::Base
   validates_presence_of   :reference, :updated_by, on: :update
   validates_presence_of   :created_by
   validates_presence_of   :journal_date
+  validates_length_of     :reference, maximum: 50
   validate :journal_date_cannot_be_in_future, if: "journal_date.present?"
   validate :must_have_order_details, on: :create, if: :order_details_for_creation
   validate :must_not_span_fiscal_years, on: :create, if: :has_order_details_for_creation?
