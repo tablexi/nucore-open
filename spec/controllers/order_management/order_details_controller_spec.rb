@@ -24,13 +24,17 @@ RSpec.describe OrderManagement::OrderDetailsController do
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
   let(:instrument) { FactoryGirl.create(:setup_instrument, facility: facility, control_mechanism: "timer") }
-  let(:new_account) { create(:setup_account, owner: order_detail.user) }
   let(:order_detail) { reservation.order_detail }
   let(:original_account) { create(:setup_account, owner: order_detail.user) }
   let(:price_group) { facility.price_groups.find(&:is_not_global) }
   let(:base_price_group) { PriceGroup.base.first }
   let(:reservation) { create(:purchased_reservation, product: instrument) }
   let(:statement) { create(:statement, facility: facility, created_by: order_detail.user.id, account: original_account) }
+  let(:new_account) do
+    create(:setup_account, owner: order_detail.user).tap do |a|
+      AccountPriceGroupMember.create! price_group: price_group, account: a
+    end
+  end
 
   before :each do
     @authable = facility
@@ -374,7 +378,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
             AccountPriceGroupMember.create! price_group: base_price_group, account: original_account
             AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
-            AccountPriceGroupMember.create! price_group: price_group, account: new_account
             order_detail.account = original_account
             order_detail.save
             order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
@@ -405,7 +408,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
             AccountPriceGroupMember.create! price_group: base_price_group, account: original_account
             AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
             AccountPriceGroupMember.create! price_group: price_group, account: original_account
-            AccountPriceGroupMember.create! price_group: price_group, account: new_account
             order_detail.account = original_account
             order_detail.save
             order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
