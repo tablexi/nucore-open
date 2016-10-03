@@ -9,6 +9,7 @@ module BulkEmail
         products: [instrument.id],
         start_date: l(Date.today, format: :usa),
         end_date: l(7.days.from_now.to_date, format: :usa),
+        return_path: facility_instrument_schedule_path(current_facility, instrument),
       )
     end
 

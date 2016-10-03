@@ -41,7 +41,7 @@ module BulkEmail
     def deliver
       if @delivery_form.deliver_all
         flash[:notice] = text("bulk_email.delivery.success", count: @delivery_form.recipient_ids.count)
-        redirect_to facility_bulk_email_path
+        redirect_to delivery_success_path
       else
         flash[:error] = text("bulk_email.delivery.failure")
         @users = User.where_ids_in(@delivery_form.recipient_ids)
@@ -60,7 +60,11 @@ module BulkEmail
     end
 
     def cancel_params
-      @cancel_params ||= params.slice(:start_date, :end_date, :bulk_email, :products)
+      @cancel_params ||= params.slice(:start_date, :end_date, :bulk_email, :products, :return_path)
+    end
+
+    def delivery_success_path
+      params[:return_path].presence || facility_bulk_email_path
     end
 
     def init_delivery_form

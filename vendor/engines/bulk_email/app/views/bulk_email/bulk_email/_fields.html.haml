@@ -26,3 +26,6 @@
   .row
     .span8
       = f.submit text("shared.search"), class: "btn"
+      - if params[:return_path].present?
+        = link_to t("shared.cancel"), params[:return_path]
+        = hidden_field_tag "return_path", params[:return_path]
