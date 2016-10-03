@@ -558,7 +558,7 @@ RSpec.describe OrdersController do
         expect(assigns[:order].reload.ordered_at).to match_date Time.zone.now
       end
 
-      it "does not ordered_at when quantities change" do
+      it "does not set ordered_at when quantities change" do
         @order.validate_order!
         maybe_grant_always_sign_in :director
         switch_to @staff
