@@ -558,6 +558,22 @@ RSpec.describe OrdersController do
         expect(assigns[:order].reload.ordered_at).to match_date Time.zone.now
       end
 
+      it "does not set ordered_at when quantities change" do
+        @order.validate_order!
+        maybe_grant_always_sign_in :director
+        switch_to @staff
+
+        @params.merge!(
+          "quantity#{@order_detail.id}" => 5,
+          "order_date" => "09/30/2016",
+          "order_time" => { "hour" => "4", "minute" => "0", "ampm" => "PM" },
+        )
+        do_request
+
+        expect(@order.reload.state).not_to eq("purchased")
+        expect(@order.ordered_at).to be_blank
+      end
+
       context "setting status of order details" do
         before :each do
           maybe_grant_always_sign_in :director
