@@ -7,7 +7,7 @@
 %h2= t("bulk_email.title")
 
 = content_for :sidebar do
-  = render "admin/shared/sidenav_users", sidenav_tab: "email"
+  = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
 
 = simple_form_for @delivery_form, method: :post, url: facility_bulk_email_deliver_path do |f|
   - @users.each do |user|
