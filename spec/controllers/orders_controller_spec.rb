@@ -566,7 +566,7 @@ RSpec.describe OrdersController do
         @params.merge!(
           "quantity#{@order_detail.id}" => 5,
           "order_date" => "09/30/2016",
-          "order_time" => { "hour" =>"4", "minute" => "0", "ampm" =>"PM" }
+          "order_time" => { "hour" => "4", "minute" => "0", "ampm" => "PM" },
         )
         do_request
 
