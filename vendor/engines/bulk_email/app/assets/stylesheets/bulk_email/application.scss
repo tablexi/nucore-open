@@ -6,6 +6,11 @@
 
 }
 
+.bulk_email_recipient_list {
+  max-height: 100px;
+  overflow-y: scroll;
+}
+
 #bulk_email_create {
   .select_all_none {
     margin-left: 0;

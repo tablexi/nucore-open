@@ -18,7 +18,7 @@
 
   .span8
     = label_tag text("bulk_email.recipients")
-    .well= @users.map(&:email).join(", ")
+    .bulk_email_recipient_list.well= @users.map(&:email).join(", ")
 
   .span8= f.input :custom_subject, input_html: { class: "input-xxlarge" }
 
