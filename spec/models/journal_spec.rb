@@ -16,6 +16,10 @@ RSpec.describe Journal do
   let(:order) { create(:purchased_order, product: product) }
   let(:product) { create(:setup_item, facility: facility, facility_account: facility_account) }
 
+  describe "validations" do
+    it { is_expected.to validate_length_of(:reference).is_at_most(50) }
+  end
+
   context "#amount" do
     context "when its order detail quantities change" do
       let(:order_details) { order.order_details }
