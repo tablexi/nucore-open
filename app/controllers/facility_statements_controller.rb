@@ -29,6 +29,7 @@ class FacilityStatementsController < ApplicationController
   def new_with_search
     @order_details = @order_details.need_statement(@facility)
     @order_detail_action = :send_statements
+    set_default_start_date if SettingsHelper.feature_on?(:set_statement_search_start_date)
     @layout = "two_column_head"
   end
 
