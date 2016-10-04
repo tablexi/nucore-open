@@ -126,6 +126,8 @@ class OrderDetail < ActiveRecord::Base
       .where("products.type" => product_type)
   }
 
+  scope :non_canceled, -> { where.not(state: "canceled") }
+
   def self.for_facility(facility)
     for_facility_id(facility.id)
   end
