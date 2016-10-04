@@ -968,13 +968,13 @@ RSpec.describe OrderDetail do
       end
     end
 
-    describe "non_cancelled" do
-      let!(:order_detail) { create(:order_detail, order_status: OrderStatus.canceled.first, order: Order.last, product: Product.last) }
+    describe "non_canceled" do
+      let!(:order_detail) { create(:order_detail, order_status: OrderStatus.canceled.first, state: "canceled", order: Order.last, product: Product.last) }
       let!(:active_order_detail) { create(:order_detail, order_status: OrderStatus.complete.first, order: Order.last, product: Product.last) }
 
       it "should return only order details with non-cancelled status" do
-        expect(OrderDetail.non_cancelled).to include(active_order_detail)
-        expect(OrderDetail.non_cancelled).to_not include(order_detail)
+        expect(OrderDetail.non_canceled).to include(active_order_detail)
+        expect(OrderDetail.non_canceled).to_not include(order_detail)
       end
     end
   end
