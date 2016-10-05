@@ -177,6 +177,14 @@ RSpec.describe BulkEmail::BulkEmailController do
         end
       end
 
+      context "with a return_path param set to a full URL" do
+        let(:return_path) { "http://example.net/" }
+
+        it "falls back to redirecting to the bulk email path" do
+          is_expected.to redirect_to(facility_bulk_email_path)
+        end
+      end
+
       context "with a non-routable return_path param" do
         let(:return_path) { "a bad return path value" }
 

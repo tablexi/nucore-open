@@ -64,14 +64,16 @@ module BulkEmail
     end
 
     def delivery_success_path
+      return_path_from_params || facility_bulk_email_path
+    end
+
+    def return_path_from_params
       return_path = params[:return_path].presence
-      if return_path && Rails.application.routes.recognize_path(return_path)
-        return_path
-      else
-        facility_bulk_email_path
-      end
+      return_path if return_path &&
+                     return_path.starts_with?("/") &&
+                     Rails.application.routes.recognize_path(return_path)
     rescue ActionController::RoutingError
-      facility_bulk_email_path
+      nil
     end
 
     def init_delivery_form
