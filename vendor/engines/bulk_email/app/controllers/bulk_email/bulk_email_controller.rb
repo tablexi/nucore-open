@@ -68,6 +68,9 @@ module BulkEmail
     end
 
     def return_path_from_params
+      # This controller accepts an optional return_path param to redirect to
+      # after a successful mail queueup. This returns that param value if it is
+      # a valid application path, or nil if not.
       return_path = params[:return_path].presence
       return_path if return_path &&
                      return_path.starts_with?("/") &&
