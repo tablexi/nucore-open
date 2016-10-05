@@ -4,7 +4,6 @@ en:
     user_type:
       customers: Customers
       account_owners: Account Owners
-      customers_and_account_owners: Customers and Account Owners
       authorized_users: Authorized Users
     dates:
       label: Order or Reservation between
