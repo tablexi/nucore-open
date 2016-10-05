@@ -29,3 +29,6 @@
       - if params[:return_path].present?
         = link_to t("shared.cancel"), params[:return_path]
         = hidden_field_tag "return_path", params[:return_path]
+
+      - if params[:default_text].present?
+        = hidden_field_tag "default_text", params[:default_text]

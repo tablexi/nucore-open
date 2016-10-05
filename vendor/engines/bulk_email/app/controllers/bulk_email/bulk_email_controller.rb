@@ -60,7 +60,17 @@ module BulkEmail
     end
 
     def cancel_params
-      @cancel_params ||= params.slice(:start_date, :end_date, :bulk_email, :products, :return_path)
+      return @cancel_params if @cancel_params
+      @cancel_params = params.slice(:start_date,
+                                    :end_date,
+                                    :bulk_email,
+                                    :products,
+                                    :return_path,
+                                    :default_text)
+      if params[:bulk_email_delivery_form] && !params[:default_text]
+        @cancel_params[:default_text] = params[:bulk_email_delivery_form][:custom_message]
+      end
+      @cancel_params
     end
 
     def delivery_success_path

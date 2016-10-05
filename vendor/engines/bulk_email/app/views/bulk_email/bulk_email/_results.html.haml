@@ -4,6 +4,12 @@
   - if params[:return_path].present?
     = hidden_field_tag :return_path, params[:return_path]
 
+  - if params[:default_text].present?
+    = hidden_field_tag "bulk_email_delivery_form[custom_subject]",
+      params[:default_text]
+    = hidden_field_tag "bulk_email_delivery_form[custom_message]",
+      params[:default_text]
+
   .results_header
     .span1.select_all_none= select_all_link(start_none: true)
 

@@ -16,6 +16,9 @@
   - if params[:return_path].present?
     = hidden_field_tag :return_path, params[:return_path]
 
+  - if params[:bulk_email_delivery_form] && params[:bulk_email_delivery_form][:custom_message].present?
+    = hidden_field_tag :default_text, params[:bulk_email_delivery_form][:custom_message]
+
   .span8
     = label_tag text("bulk_email.recipients")
     .bulk_email_recipient_list.well= @users.map(&:email).join(", ")
