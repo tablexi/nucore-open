@@ -64,7 +64,14 @@ module BulkEmail
     end
 
     def delivery_success_path
-      params[:return_path].presence || facility_bulk_email_path
+      return_path = params[:return_path].presence
+      if return_path && Rails.application.routes.recognize_path(return_path)
+        return_path
+      else
+        facility_bulk_email_path
+      end
+    rescue ActionController::RoutingError
+      facility_bulk_email_path
     end
 
     def init_delivery_form
