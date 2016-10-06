@@ -41,7 +41,7 @@ module BulkEmail
     def deliver
       if @delivery_form.deliver_all
         flash[:notice] = text("bulk_email.delivery.success", count: @delivery_form.recipient_ids.count)
-        redirect_to facility_bulk_email_path
+        redirect_to delivery_success_path
       else
         flash[:error] = text("bulk_email.delivery.failure")
         @users = User.where_ids_in(@delivery_form.recipient_ids)
@@ -60,7 +60,23 @@ module BulkEmail
     end
 
     def cancel_params
-      @cancel_params ||= params.slice(:start_date, :end_date, :bulk_email, :products)
+      @cancel_params ||= params.slice(:start_date, :end_date, :bulk_email, :products, :return_path)
+    end
+
+    def delivery_success_path
+      return_path_from_params || facility_bulk_email_path
+    end
+
+    def return_path_from_params
+      # This controller accepts an optional return_path param to redirect to
+      # after a successful mail queueup. This returns that param value if it is
+      # a valid application path, or nil if not.
+      return_path = params[:return_path].presence
+      return_path if return_path &&
+                     return_path.starts_with?("/") &&
+                     Rails.application.routes.recognize_path(return_path)
+    rescue ActionController::RoutingError
+      nil
     end
 
     def init_delivery_form

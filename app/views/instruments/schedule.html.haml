@@ -36,6 +36,8 @@
         method: :put,
         class: "btn-add"
 
+    = render_view_hook "after_offline_toggle"
+
 - if @admin_reservations.empty?
   %p.notice= t(".no_upcoming_admin_reservations")
 

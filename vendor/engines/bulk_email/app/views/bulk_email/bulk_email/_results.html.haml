@@ -1,18 +1,20 @@
 = form_tag facility_bulk_email_path, method: :post, id: "bulk_email_create" do
   = hidden_field_tag :format, :csv
 
+  - if params[:return_path].present?
+    = hidden_field_tag :return_path, params[:return_path]
+
   .results_header
     .span1.select_all_none= select_all_link(start_none: true)
 
-    - if current_ability.can?(:deliver, BulkEmail)
-      = safe_join(@searcher.search_params_as_hidden_fields)
+    .span2.pull-right
+      - if current_ability.can?(:deliver, BulkEmail)
+        = safe_join(@searcher.search_params_as_hidden_fields)
 
-      .span1.pull-right
         = submit_tag t("bulk_email.compose_mail"),
           data: { format: :html },
           class: "btn btn-primary js--bulk-email-submit-button js--bulk-email-compose-button"
 
-    .span1.pull-right
       = submit_tag t("bulk_email.export"),
         data: { format: :csv },
         class: "btn btn-primary js--bulk-email-submit-button js--bulk-email-download-csv-button"

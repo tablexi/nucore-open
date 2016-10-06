@@ -3,7 +3,7 @@
   .row
     .span3
       - @user_types.each do |user_type, label_text|
-        = label_tag(user_type, class: "checkbox") do
+        = label_tag(nil, class: "checkbox") do
           = check_box_tag "bulk_email[user_types][]",
             user_type,
             user_type_selected?(user_type),
@@ -26,3 +26,6 @@
   .row
     .span8
       = f.submit text("shared.search"), class: "btn"
+      - if params[:return_path].present?
+        = link_to t("shared.cancel"), params[:return_path]
+        = hidden_field_tag "return_path", params[:return_path]

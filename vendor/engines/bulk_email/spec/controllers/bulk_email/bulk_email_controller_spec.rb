@@ -143,6 +143,7 @@ RSpec.describe BulkEmail::BulkEmailController do
   describe "POST #deliver" do
     let(:recipients) { FactoryGirl.create_list(:user, 3) }
     let(:custom_message) { "Custom message" }
+    let(:return_path) { nil }
 
     before(:each) do
       @action = "deliver"
@@ -152,6 +153,7 @@ RSpec.describe BulkEmail::BulkEmailController do
         custom_message: custom_message,
         recipient_ids: recipients.map(&:id),
       }
+      @params[:return_path] = return_path if return_path.present?
 
       sign_in @admin
       do_request
@@ -160,9 +162,35 @@ RSpec.describe BulkEmail::BulkEmailController do
     context "when the form is valid" do
       let(:custom_subject) { "Custom subject" }
 
-      it "submits successfully" do
-        is_expected.to redirect_to(facility_bulk_email_path)
-        expect(flash[:notice]).to include("3 email messages queued")
+      context "when no return_path param specified" do
+        it "submits successfully" do
+          is_expected.to redirect_to(facility_bulk_email_path)
+          expect(flash[:notice]).to include("3 email messages queued")
+        end
+      end
+
+      context "with a routable return_path param" do
+        let(:return_path) { facility_instruments_path(facility) }
+
+        it "redirects to the path specified in the param" do
+          is_expected.to redirect_to(return_path)
+        end
+      end
+
+      context "with a return_path param set to a full URL" do
+        let(:return_path) { "http://example.net/" }
+
+        it "falls back to redirecting to the bulk email path" do
+          is_expected.to redirect_to(facility_bulk_email_path)
+        end
+      end
+
+      context "with a non-routable return_path param" do
+        let(:return_path) { "a bad return path value" }
+
+        it "falls back to redirecting to the bulk email path" do
+          is_expected.to redirect_to(facility_bulk_email_path)
+        end
       end
     end
 

@@ -7,11 +7,14 @@
 %h2= t("bulk_email.title")
 
 = content_for :sidebar do
-  = render "admin/shared/sidenav_users", sidenav_tab: "email"
+  = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
 
 = simple_form_for @delivery_form, method: :post, url: facility_bulk_email_deliver_path do |f|
   - @users.each do |user|
     = hidden_field_tag "bulk_email_delivery_form[recipient_ids][]", user.id, id: nil
+
+  - if params[:return_path].present?
+    = hidden_field_tag :return_path, params[:return_path]
 
   .span8
     = label_tag text("bulk_email.recipients")
