@@ -23,6 +23,7 @@ Nucore::Application.routes.draw do
 
   # front-end accounts
   resources :accounts, only: [:index, :show] do
+    resources :statements, only: [:show]
     member do
       get "user_search"
       get "transactions"
