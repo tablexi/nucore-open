@@ -25,6 +25,17 @@
 
   .row
     .span8
+      = text("bulk_email.dates.select_range")
+      = date_range_selection_link :last_90_days, params, start_date: 90.days.ago
+      ,
+      = date_range_selection_link :in_the_last_year, params, start_date: 1.year.ago
+      ,
+      = date_range_selection_link :next_month, params,
+        start_date: 1.month.from_now.beginning_of_month,
+        end_date: 1.month.from_now.end_of_month
+
+  .row.bulk_email_search_actions
+    .span8
       = f.submit text("shared.search"), class: "btn"
       - if params[:return_path].present?
         = link_to t("shared.cancel"), params[:return_path]
