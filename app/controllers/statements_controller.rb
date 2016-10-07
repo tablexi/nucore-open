@@ -13,6 +13,12 @@ class StatementsController < ApplicationController
     super
   end
 
+  # GET /accounts/:id/statements
+  def index
+    @order_details = @account.order_details.has_statement.by_statemented_at
+    @date_range_field = "journal_or_statement_date"
+  end
+
   # GET /accounts/:account_id/statements/:id
   def show
     action = "show"
@@ -40,7 +46,7 @@ class StatementsController < ApplicationController
   #
   # Override CanCan's find -- it won't properly search by 'recent'
   def init_statement
-    @statement = Statement.find(params[:id])
+    @statement = @account.statements.find(params[:id])
     @facility = @statement.facility
   end
 

@@ -1,18 +1,42 @@
 = content_for :tabnav do
-  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
-= content_for :h1 do
-  = t('.h1')
+  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'statements'}
+  = content_for :h1 do
+    = t_my(Statement)
 
-- if @facilities.empty?
-  %p.notice= t('.notice')
-- else
-  %table.table.table-striped.table-hover
-    %thead
-      %tr
-        %th= Facility.model_name.human
-        %th.centered= t('.th.total')
-    %tbody
-      - @facilities.each do |facility|
+  - if @order_details.empty?
+    %p.notice= "You do not have any #{Statement.model_name.human.pluralize.downcase}."
+  - else
+    = will_paginate(@order_details) if @order_details.respond_to? :total_pages
+    %table.table.table-striped.table-hover.dense.old-table
+      %thead
         %tr
-          %td= facility
-          %td.currency= link_to number_to_currency(@account.unreconciled_total(facility)), account_facility_statement_path(@account, facility, 'recent')
+          %th= Order.model_name.human
+          %th= OrderDetail.model_name.human
+          %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
+          %th= OrderDetail.human_attribute_name("description")
+          %th= OrderDetail.human_attribute_name("user")
+          %th.currency= OrderDetail.human_attribute_name("cost")
+          %th= Statement.model_name.human
+      %tbody
+        - @order_details.each do |order_detail|
+          %tr{ class: row_class(order_detail) }
+            %td.nowrap= link_to order_detail.order.id, order_path(order_detail.order)
+            %td.nowrap= link_to order_detail.id, order_order_detail_path(order_detail.order, order_detail)
+            %td= order_detail.send(:"#{@date_range_field}").try(:strftime, "%m/%d/%Y")
+            %td.user-order-detail
+              .order-detail-description
+                = order_detail_description(order_detail)
+                - order_detail.extend PriceDisplayment
+                = "(#{order_detail.wrapped_quantity})".html_safe unless order_detail.problem?
+                - if order_detail.reservation
+                  %br
+                  %em= order_detail.reservation
+              - if order_detail.note.present?
+                .order-detail-extra.order-detail-note= "Note: #{order_detail.note}"
+            %td= order_detail.order.user.full_name
+            %td.currency
+              - order_detail.send(:extend, PriceDisplayment)
+              = order_detail.wrapped_total
+            %td
+              = link_to "Download", account_statement_path(@account, order_detail.statement, format: :pdf)
+    = will_paginate(@order_details) if @order_details.respond_to? :total_pages
