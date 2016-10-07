@@ -7,6 +7,10 @@
     display: none !important;
   }
 
+  .show-for-print {
+    display: block !important;
+  }
+
   .manage_order_detail {
     .banner-list {
       .span2 {
@@ -21,6 +25,27 @@
       .cost, .subsidy, .total {
         width: 1.5in !important;
       }
+    }
+  }
+
+  input, textarea, select, .add-on {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    width: inherit !important;
+    height: 15px !important;
+    line-height: 15px !important;
+    vertical-align: middle !important;
+    padding: 0 !important;
+  }
+
+  select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+
+    &::-ms-expand {
+      display: none;
     }
   }
 }

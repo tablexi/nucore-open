@@ -1,8 +1,10 @@
 - if order_detail.selectable_projects.any?
-  = f.input :project_id,
-    collection: order_detail.selectable_projects,
-    input_html: { class: "js--chosen", data: { placeholder: t(".placeholder") } },
-    include_blank: true
+  .hide-from-print
+    = f.input :project_id, collection: order_detail.selectable_projects, input_html: { class: "js--chosen", data: { placeholder: t(".placeholder") } }, include_blank: true
+  .show-for-print
+    - if f.object.project
+      = f.input :project_id do
+        = f.object.project.name
 
   :javascript
     ChosenActivator.activate();
