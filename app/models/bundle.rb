@@ -5,23 +5,13 @@ class Bundle < Product
 
   def products_for_group_select
     products = facility.products.where.not(type: "Bundle").order(:type, :name)
-    current_group = []
-    current_opts  = []
-    groups = []
+    groups = products.map {|x| x.class.name.pluralize}
+    options = {}
+    groups.map {|x| options[x] = []}
     products.each do |p|
-      if p.class.name != current_group[0]
-        unless current_opts.empty?
-          current_group << current_opts
-          groups << current_group
-          current_group = []
-          current_opts  = []
-        end
-        current_group << p.class.name.pluralize
-      end
-      current_opts << [p.to_s_with_status, p.id]
+      options[p.class.name.pluralize] << [p.to_s_with_status, p.id]
     end
-    groups << (current_group << current_opts) unless current_opts.empty?
-    groups
+    options
   end
 
   def products_active?
