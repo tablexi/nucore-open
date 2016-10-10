@@ -1,0 +1,20 @@
+module BulkEmail
+
+  class BodyInput < SimpleForm::Inputs::TextInput
+
+    def input(_wrapper_options)
+      readonly_text(options[:greeting]) +
+        @builder.text_area(attribute_name, input_html_options) +
+        readonly_text(options[:signoff]).html_safe
+    end
+
+    private
+
+    def readonly_text(content)
+      rows = content.count("\n") + 1
+      template.content_tag(:textarea, content, input_html_options.merge(disabled: true, rows: rows))
+    end
+
+  end
+
+end
