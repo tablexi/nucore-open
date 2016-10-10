@@ -46,7 +46,7 @@ class StatementsController < ApplicationController
   #
   # Override CanCan's find -- it won't properly search by 'recent'
   def init_statement
-    @statement = @account.statements.find(params[:id])
+    @statement = Statement.find_by(id: params[:id], account_id: @account.id)
     @facility = @statement.facility
   end
 
