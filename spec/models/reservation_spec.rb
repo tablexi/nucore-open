@@ -29,7 +29,7 @@ RSpec.describe Reservation do
   end
 
   describe "validations" do
-    it { is_expected.to validate_absence_of :category }
+    it { is_expected.to validate_inclusion_of(:category).in_array(Reservation::CATEGORIES) }
   end
 
   describe ".upcoming_offline", :timecop_freeze do
@@ -1085,6 +1085,28 @@ RSpec.describe Reservation do
   end
 
   context "basic reservation rules" do
+    context "category" do
+      before do
+        reservation.assign_category_attribute(user, { category: "maintenance" })
+      end
+
+      context "when facility operator" do
+        let(:user) { create(:user, :administrator) }
+
+        it "should assign category attribute" do
+          expect(reservation.category).to eq("maintenance")
+        end
+      end
+
+      context "when not facility operator" do
+        let(:user) { create(:user) }
+
+        it "should not assign category attribute" do
+          expect(reservation.category).to be_nil
+        end
+      end
+    end
+
     it "should not allow reservations starting before now" do
       @earlier = Date.today - 1
       @reservation = @instrument.reservations.create(reserve_start_date: @earlier, reserve_start_hour: 10,

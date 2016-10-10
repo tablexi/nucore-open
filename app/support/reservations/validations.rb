@@ -23,7 +23,7 @@ module Reservations::Validations
     validate :duration_is_interval
 
     validates :category,
-              inclusion: { in: -> (r) { r.class::CATEGORIES }, allow_blank: false },
+              inclusion: { in: -> (r) { r.class::CATEGORIES }, allow_blank: true },
               if: -> (r) { r.class.const_defined?(:CATEGORIES) }
 
     validates :category,

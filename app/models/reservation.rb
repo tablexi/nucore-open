@@ -2,6 +2,15 @@ require "date"
 
 class Reservation < ActiveRecord::Base
 
+  # Constants
+  CATEGORIES = %w(
+    maintenance
+    training
+    reserved_for_staff
+    instrument_unavailable
+    other
+  ).freeze
+
   include DateHelper
   include Reservations::DateSupport
   include Reservations::Validations
@@ -157,6 +166,10 @@ class Reservation < ActiveRecord::Base
   def assign_actuals_off_reserve
     self.actual_start_at ||= reserve_start_at
     self.actual_end_at   ||= reserve_end_at
+  end
+
+  def assign_category_attribute(user, params)
+    assign_attributes(category: params[:category]) if user.operator_of?(product.facility)
   end
 
   def save_as_user(user)

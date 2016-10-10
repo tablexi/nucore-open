@@ -80,6 +80,8 @@ class FacilityReservationsController < ApplicationController
       end
     end
 
+    @reservation.assign_category_attribute(session_user, params[:reservation])
+
     Reservation.transaction do
       begin
         @reservation.save_as_user!(session_user)
