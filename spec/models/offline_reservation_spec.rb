@@ -28,19 +28,6 @@ RSpec.describe OfflineReservation do
     it { is_expected.not_to be_end_at_required }
   end
 
-  describe "#reason_statement" do
-    before { offline_reservation.category = category }
-
-    context "when the instrument is out_of_order" do
-      let(:category) { :out_of_order }
-
-      it "translates out_of_order into a sentence" do
-        expect(offline_reservation.reason_statement)
-          .to eq("#{instrument.name} is out of order.")
-      end
-    end
-  end
-
   describe "#to_s" do
     let(:reserve_start_at) { Time.zone.local(2016, 7, 1, 12, 0) }
 

@@ -31,13 +31,4 @@ class OfflineReservation < Reservation
     end
   end
 
-  def reason_statement
-    I18n.t(
-      category,
-      scope: "offline_reservations.reason_statements",
-      default: :other,
-      product_name: product.name,
-    )
-  end
-
 end
