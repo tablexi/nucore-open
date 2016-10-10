@@ -22,7 +22,7 @@
   .row.span6
     %div
       = label_tag text("bulk_email.recipients")
-      = text_area_tag "recipients",
+      = text_area_tag nil,
         @users.map(&:email).join(", "),
         disabled: true,
         class: "input-xxlarge"
@@ -33,15 +33,15 @@
       input_html: { class: "input-xxlarge" }
 
     %div
-      = t("bulk_email.body.greeting", recipient_name: "Firstname Lastname")
       = f.input :custom_message,
-        as: :text,
+        as: "bulk_email/body",
+        greeting: t("bulk_email.body.greeting", recipient_name: "Firstname Lastname"),
+        signoff: t("bulk_email.body.signoff", facility_name: current_facility.name),
         input_html: { class: "input-xxlarge", rows: 6 }
-      = t("bulk_email.body.signoff", facility_name: current_facility.name)
 
     %div
       = f.submit text("bulk_email.send_mail"),
         class: "btn btn-primary",
         data: { disable_with: t("bulk_email.sending") }
 
-    = link_to text("shared.cancel"), bulk_email_cancel_path
+      = link_to text("shared.cancel"), bulk_email_cancel_path
