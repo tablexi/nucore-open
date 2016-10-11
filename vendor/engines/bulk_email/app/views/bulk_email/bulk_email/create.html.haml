@@ -26,14 +26,14 @@
 
     = f.input :custom_subject,
       as: "bulk_email/subject",
-      prefix: "[#{t('app_name')} #{current_facility.name}]",
+      prefix: bulk_email_content_generator.subject_prefix,
       input_html: { class: "input-xxlarge" }
 
     %div
       = f.input :custom_message,
         as: "bulk_email/body",
-        greeting: t("bulk_email.body.greeting", recipient_name: "Firstname Lastname"),
-        signoff: t("bulk_email.body.signoff", facility_name: current_facility.name),
+        greeting: bulk_email_content_generator.greeting,
+        signoff: bulk_email_content_generator.signoff,
         input_html: { class: "input-xxlarge", rows: 6 }
 
     %div

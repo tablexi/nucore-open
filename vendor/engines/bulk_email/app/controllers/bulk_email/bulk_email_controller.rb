@@ -17,6 +17,7 @@ module BulkEmail
     before_action :init_search_options, only: [:search]
 
     helper_method :bulk_email_cancel_path
+    helper_method :bulk_email_content_generator
     helper_method :datepicker_field_input
     helper_method :user_type_selected?
 
@@ -57,6 +58,15 @@ module BulkEmail
       else
         facility_bulk_email_path
       end
+    end
+
+    def bulk_email_content_generator
+      @content_generator ||=
+        if params[:subject_product_id].present?
+          ContentGenerator.new(current_facility, Product.find(params[:subject_product_id]))
+        else
+          ContentGenerator.new(current_facility)
+        end
     end
 
     def cancel_params
