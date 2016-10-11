@@ -254,16 +254,20 @@ class OrderDetail < ActiveRecord::Base
     order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? { |au| au.user_id == user.id }
   end
 
-  scope :need_statement, lambda { |facility|
+  scope :need_any_statement, -> {
     complete
       .joins(:product, :account)
-      .where("products.facility_id" => facility.id)
       .where(problem: false)
       .where("reviewed_at <= ?", Time.current)
       .where(statement_id: nil)
       .where.not(price_policy_id: nil)
       .where("accounts.type" => Account.config.statement_account_types)
       .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+  }
+
+  scope :need_statement, lambda { |facility|
+    need_any_statement
+      .where("products.facility_id" => facility.id)
   }
 
   scope :need_journal, lambda { # TODO: share common pieces with :need_statement scope
