@@ -3,9 +3,11 @@ module BulkEmail
   class BodyInput < SimpleForm::Inputs::TextInput
 
     def input(_wrapper_options)
-      readonly_text(options[:greeting]) +
-        @builder.text_area(attribute_name, input_html_options) +
-        readonly_text(options[:signoff]).html_safe
+      safe_join([
+        readonly_text(options[:greeting]),
+        @builder.text_area(attribute_name, input_html_options),
+        readonly_text(options[:signoff]),
+      ])
     end
 
     private

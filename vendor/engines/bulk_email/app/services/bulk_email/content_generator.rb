@@ -15,7 +15,7 @@ module BulkEmail
     end
 
     def wrap_text(text)
-      [ greeting, text, signoff ].join("\n\n")
+      [greeting, text, signoff].join("\n\n")
     end
 
     def greeting
