@@ -4,6 +4,9 @@
   - if params[:return_path].present?
     = hidden_field_tag :return_path, params[:return_path]
 
+  - if params[:subject_product_id].present?
+    = hidden_field_tag "subject_product_id", params[:subject_product_id]
+
   .results_header
     .span1.select_all_none= select_all_link(start_none: true)
 

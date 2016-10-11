@@ -2,12 +2,12 @@ require "rails_helper"
 
 RSpec.describe BulkEmail::ContentGenerator do
   let(:facility) { instrument.facility }
-  let(:instrument) { FactoryGirl.build(:setup_instrument) }
+  let(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
   let(:recipient) { FactoryGirl.build(:user) }
 
   describe "#greeting" do
     context "without a recipient" do
-      subject { described_class.new(facility, instrument) }
+      subject { described_class.new(facility) }
 
       it "generates a greeting with a placeholder name" do
         expect(subject.greeting).to include("Firstname Lastname")
@@ -15,10 +15,19 @@ RSpec.describe BulkEmail::ContentGenerator do
     end
 
     context "with a recipient" do
-      subject { described_class.new(facility, instrument, recipient) }
+      subject { described_class.new(facility, nil, recipient) }
 
       it "generates a greeting with a placeholder name" do
         expect(subject.greeting).to include(recipient.full_name)
+      end
+    end
+
+    context "with an offline instrument as a subject_product" do
+      subject { described_class.new(facility, instrument) }
+
+      it "includes the instrument name with a downtime reason" do
+        expect(subject.greeting)
+          .to include("#{instrument.name} is out of order")
       end
     end
   end
