@@ -68,9 +68,7 @@ class Ability
     order_details_ability(user, resource) if resource.is_a?(OrderDetail)
 
     if resource.is_a?(Facility)
-      if user.billing_administrator?
-        can :manage, [Journal, Statement]
-      end
+      can :manage, [Journal, Statement] if user.billing_administrator?
       can :complete, ExternalService
       can :create, TrainingRequest
 

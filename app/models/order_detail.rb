@@ -254,7 +254,7 @@ class OrderDetail < ActiveRecord::Base
     order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? { |au| au.user_id == user.id }
   end
 
-  scope :need_any_statement, -> {
+  scope :need_any_statement, lambda {
     complete
       .joins(:product, :account)
       .where(problem: false)
