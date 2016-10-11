@@ -853,4 +853,15 @@ RSpec.describe Instrument do
     end
   end
 
+  describe "#offline_category" do
+    context "when online" do
+      it { expect(subject.offline_category).to be_blank }
+    end
+
+    context "when offline" do
+      subject(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+
+      it { expect(subject.offline_category).to eq("out_of_order") }
+    end
+  end
 end
