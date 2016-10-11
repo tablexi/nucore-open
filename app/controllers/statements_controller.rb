@@ -15,8 +15,7 @@ class StatementsController < ApplicationController
 
   # GET /accounts/:id/statements
   def index
-    @order_details = @account.order_details.has_statement.by_statemented_at
-    @date_range_field = "journal_or_statement_date"
+    @statements = @account.statements.paginate(page: params[:page])
   end
 
   # GET /accounts/:account_id/statements/:id
