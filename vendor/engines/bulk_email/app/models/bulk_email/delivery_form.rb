@@ -4,7 +4,7 @@ module BulkEmail
 
     include ActiveModel::Model
 
-    attr_accessor :custom_subject, :custom_message, :recipient_ids
+    attr_accessor :custom_subject, :custom_message, :recipient_ids, :subject_product_id
     attr_reader :facility
 
     validates :custom_subject, :custom_message, :recipient_ids, presence: true
@@ -18,6 +18,7 @@ module BulkEmail
       @custom_message = params[:custom_message]
       @custom_subject = params[:custom_subject]
       @recipient_ids = params[:recipient_ids]
+      @subject_product_id = params[:subject_product_id]
     end
 
     def deliver_all

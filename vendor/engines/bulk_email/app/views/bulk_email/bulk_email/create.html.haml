@@ -16,6 +16,9 @@
   - if params[:return_path].present?
     = hidden_field_tag :return_path, params[:return_path]
 
+  - if params[:subject_product_id].present?
+    = hidden_field_tag :subject_product_id, params[:subject_product_id]
+
   .row.span6
     %div
       = label_tag text("bulk_email.recipients")
