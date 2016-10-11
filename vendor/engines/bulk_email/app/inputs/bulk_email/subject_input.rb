@@ -6,7 +6,7 @@ module BulkEmail
       template.content_tag(:div, class: "input-prepend") do
         template.content_tag(:span, options[:prefix], class: "add-on") +
           @builder.text_field(attribute_name, input_html_options)
-      end.html_safe
+      end
     end
 
   end
