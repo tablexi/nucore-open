@@ -50,9 +50,11 @@ RSpec.describe BulkEmail::ContentGenerator do
   describe "#wrap_text" do
     subject { described_class.new(facility, instrument, recipient) }
 
-    it "wrapps content with the greeting and signoff" do
+    it "wraps content with the greeting and signoff" do
       expect(subject.wrap_text("This is some text"))
-        .to eq("#{subject.greeting}\nThis is some text\n#{subject.signoff}")
+        .to include(subject.greeting)
+        .and include("This is some text")
+        .and include(subject.signoff)
     end
   end
 end
