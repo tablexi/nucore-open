@@ -5,11 +5,10 @@ class Bundle < Product
 
   def products_for_group_select
     products = facility.products.where.not(type: "Bundle").order(:type, :name)
-    groups = products.map {|x| x.class.name.pluralize}
     options = {}
-    groups.map {|x| options[x] = []}
-    products.each do |p|
-      options[p.class.name.pluralize] << [p.to_s_with_status, p.id]
+    products.group_by { |p| p.class.name.pluralize }.each do |cname, products|
+      options[cname] ||= []
+      products.map {|p| options[cname] << [p.to_s_with_status, p.id]}
     end
     options
   end
