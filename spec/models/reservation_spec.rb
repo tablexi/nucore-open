@@ -1087,7 +1087,7 @@ RSpec.describe Reservation do
   context "basic reservation rules" do
     context "category" do
       before do
-        reservation.assign_category_attribute(user, { category: "maintenance" })
+        reservation.assign_category_attribute(user, category: "maintenance")
       end
 
       context "when facility operator" do
