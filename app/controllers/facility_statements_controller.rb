@@ -24,7 +24,7 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements/new
   def new_with_search
-    @order_details = current_facility.cross_billing? ? @order_details.need_any_statement : @order_details.need_statement(@facility)
+    @order_details = @order_details.need_statement(@facility)
     @order_detail_action = :send_statements
     set_default_start_date if SettingsHelper.feature_on?(:set_statement_search_start_date)
     @layout = "two_column_head"
