@@ -30,5 +30,4 @@
         = link_to t("shared.cancel"), params[:return_path]
         = hidden_field_tag "return_path", params[:return_path]
 
-  - if params[:subject_product_id].present?
-    = hidden_field_tag "subject_product_id", params[:subject_product_id]
+  = hidden_field_tag "subject_product_id", params[:subject_product_id]

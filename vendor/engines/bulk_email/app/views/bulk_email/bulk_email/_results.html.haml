@@ -1,11 +1,8 @@
 = form_tag facility_bulk_email_path, method: :post, id: "bulk_email_create" do
   = hidden_field_tag :format, :csv
 
-  - if params[:return_path].present?
-    = hidden_field_tag :return_path, params[:return_path]
-
-  - if params[:subject_product_id].present?
-    = hidden_field_tag "subject_product_id", params[:subject_product_id]
+  = hidden_field_tag :return_path, params[:return_path]
+  = hidden_field_tag "subject_product_id", params[:subject_product_id]
 
   .results_header
     .span1.select_all_none= select_all_link(start_none: true)
