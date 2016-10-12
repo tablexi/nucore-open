@@ -80,8 +80,6 @@ class FacilityReservationsController < ApplicationController
       end
     end
 
-    @reservation.assign_category_attribute(session_user, params[:reservation])
-
     Reservation.transaction do
       begin
         @reservation.save_as_user!(session_user)
@@ -157,6 +155,7 @@ class FacilityReservationsController < ApplicationController
     set_windows
 
     @reservation.assign_times_from_params(params[:admin_reservation])
+    @reservation.assign_category_attribute(session_user, params[:reservation])
     @reservation.admin_note = params[:admin_reservation][:admin_note]
 
     if @reservation.save
