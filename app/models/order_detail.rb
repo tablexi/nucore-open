@@ -96,7 +96,6 @@ class OrderDetail < ActiveRecord::Base
   ## TODO validate which fields can be edited for which states
 
   scope :by_ordered_at, -> { joins(:order).order("orders.ordered_at DESC") }
-  scope :by_statemented_at, -> { joins(:statement).order("statements.created_at DESC") }
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
   scope :new_or_inprocess, lambda {
     where(state: %w(new inprocess))
@@ -283,7 +282,6 @@ class OrderDetail < ActiveRecord::Base
       .where(orders: { facility_id: facility.id })
       .where.not(statement_id: nil)
   }
-  scope :has_statement, -> { where.not(statement_id: nil) }
 
   scope :non_reservations, -> { joins(:product).where("products.type <> 'Instrument'") }
   scope :reservations, -> { joins(:product).where("products.type = 'Instrument'") }

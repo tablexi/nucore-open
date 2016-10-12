@@ -15,7 +15,7 @@ class StatementsController < ApplicationController
 
   # GET /accounts/:id/statements
   def index
-    @statements = @account.statements.paginate(page: params[:page])
+    @statements = @account.statements.uniq.paginate(page: params[:page])
   end
 
   # GET /accounts/:account_id/statements/:id
@@ -42,10 +42,8 @@ class StatementsController < ApplicationController
     @account = Account.find(params[:account_id])
   end
 
-  #
-  # Override CanCan's find -- it won't properly search by 'recent'
   def init_statement
-    @statement = Statement.find_by(id: params[:id], account_id: @account.id)
+    @statement = Statement.find_by!(id: params[:id], account_id: @account.id)
     @facility = @statement.facility
   end
 
