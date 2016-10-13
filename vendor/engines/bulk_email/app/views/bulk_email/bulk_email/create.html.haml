@@ -14,7 +14,7 @@
     = hidden_field_tag "bulk_email_delivery_form[recipient_ids][]", user.id, id: nil
 
   = hidden_field_tag :return_path, params[:return_path]
-  = hidden_field_tag :subject_product_id, params[:subject_product_id]
+  = hidden_field_tag "bulk_email_delivery_form[product_id]", params[:product_id]
 
   .row.span6
     %div

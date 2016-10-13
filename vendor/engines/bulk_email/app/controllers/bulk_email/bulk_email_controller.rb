@@ -62,8 +62,8 @@ module BulkEmail
 
     def bulk_email_content_generator
       @content_generator ||=
-        if params[:subject_product_id].present?
-          ContentGenerator.new(current_facility, Product.find(params[:subject_product_id]))
+        if params[:product_id].present?
+          ContentGenerator.new(current_facility, Product.find(params[:product_id]))
         else
           ContentGenerator.new(current_facility)
         end
@@ -75,7 +75,7 @@ module BulkEmail
                                       :bulk_email,
                                       :products,
                                       :return_path,
-                                      :subject_product_id)
+                                      :product_id)
     end
 
     def delivery_success_path
