@@ -498,7 +498,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
 
       it "updates the price while changing accounts" do
-        pending "currently buggy: it uses the new account's price policy, not the params"
         @params[:order_detail] = {
           actual_cost: "20.00",
           actual_subsidy: "4.00",
@@ -543,7 +542,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
 
       it "updates the price while changing quantity" do
-        pending "currently buggy: it uses the price policy's calculation, not the params"
         @params[:order_detail] = {
           actual_cost: "20.00",
           actual_subsidy: "4.00",
