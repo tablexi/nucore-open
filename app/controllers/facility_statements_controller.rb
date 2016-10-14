@@ -43,7 +43,7 @@ class FacilityStatementsController < ApplicationController
       params[:order_detail_ids].each do |order_detail_id|
         od = nil
         begin
-          ods = current_facility.cross_billing? ? OrderDetail.need_any_statement : OrderDetail.need_statement(current_facility)
+          ods = OrderDetail.need_statement(current_facility)
           od = ods.readonly(false).find(order_detail_id)
           to_statement[od.account] ||= []
           to_statement[od.account] << od

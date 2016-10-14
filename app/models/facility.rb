@@ -73,10 +73,6 @@ class Facility < ActiveRecord::Base
     # super
   end
 
-  def cross_billing?
-    abbreviation == "ALL"
-  end
-
   def description
     self[:description].html_safe if self[:description]
   end
