@@ -4,7 +4,7 @@ class StatementsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_account
-  before_action :init_statement
+  before_action :init_statement, only: [:show]
 
   load_and_authorize_resource
 
@@ -13,22 +13,17 @@ class StatementsController < ApplicationController
     super
   end
 
-  # GET /accounts/:account_id/facilities/:facility_id/statements/:id
+  # GET /accounts/:id/statements
+  def index
+    @statements = @account.statements.uniq.paginate(page: params[:page])
+  end
+
+  # GET /accounts/:account_id/statements/:id
   def show
     action = "show"
     @active_tab = "accounts"
 
-    case params[:id]
-    when "recent"
-      @order_details = @account.order_details.for_facility_with_price_policy(@facility)
-      @order_details = @order_details.paginate(page: params[:page])
-    when "list"
-      action = "list"
-      @statements = @statements.paginate(page: params[:page])
-    end
-
     respond_to do |format|
-      format.html { render action: action }
       format.pdf do
         @statement_pdf = StatementPdfFactory.instance(@statement, params[:show].blank?)
         render action: "show"
@@ -47,18 +42,9 @@ class StatementsController < ApplicationController
     @account = Account.find(params[:account_id])
   end
 
-  #
-  # Override CanCan's find -- it won't properly search by 'recent'
   def init_statement
-    @facility = Facility.find_by_url_name!(params[:facility_id])
-    @statements = @account.statements.where(facility_id: @facility.id)
-
-    @statement = if params[:id] =~ /\w+/i
-                   @statements.blank? ? Statement.find_by_facility_id(@facility.id) : @statements.first
-                 else
-                   @account.statements.find(params[:id])
-                 end
-    @statement = Statement.new if @statement.nil?
+    @statement = Statement.find_by!(id: params[:id], account_id: @account.id)
+    @facility = @statement.facility
   end
 
 end

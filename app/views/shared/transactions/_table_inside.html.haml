@@ -18,6 +18,8 @@
         %th= Account.human_attribute_name("owner")
       %th.currency= OrderDetail.human_attribute_name("cost")
       %th= OrderDetail.human_attribute_name("order_status")
+      - if local_assigns[:show_statements]
+        %th= Statement.model_name.human
   %tbody
     - order_details.each do |order_detail|
       %tr{ class: row_class(order_detail) }
@@ -58,4 +60,6 @@
           - order_detail.send(:extend, PriceDisplayment)
           = order_detail.wrapped_total
         %td.nowrap= order_detail.order_status
+        - if local_assigns[:show_statements]
+          %td= link_to "Download", account_statement_path(@account, order_detail.statement_id, format: :pdf) if order_detail.statement
 = will_paginate(order_details) if order_details.respond_to? :total_pages

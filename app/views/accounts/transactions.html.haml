@@ -10,4 +10,4 @@
 #header_billing.grid_9
   = render :partial => 'shared/transactions/search'
 .clearfix
-= render :partial => 'shared/transactions/table'
+= render :partial => 'shared/transactions/table', locals: { show_statements: true }

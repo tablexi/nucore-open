@@ -1,18 +1,6 @@
 = content_for :tabnav do
-  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'transactions'}
-= content_for :h1 do
-  = t('.h1')
+  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'statements'}
+  = content_for :h1 do
+    = t_my(Statement)
 
-- if @facilities.empty?
-  %p.notice= t('.notice')
-- else
-  %table.table.table-striped.table-hover
-    %thead
-      %tr
-        %th= Facility.model_name.human
-        %th.centered= t('.th.total')
-    %tbody
-      - @facilities.each do |facility|
-        %tr
-          %td= facility
-          %td.currency= link_to number_to_currency(@account.unreconciled_total(facility)), account_facility_statement_path(@account, facility, 'recent')
+  = render partial: 'shared/statements_table'

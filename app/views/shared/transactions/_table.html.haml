@@ -27,6 +27,6 @@
     .row
       .span12= yield :action_instructions
     .row
-      .span12= render :partial => 'shared/transactions/table_inside', :locals => { :order_details => order_details }
+      .span12= render partial: 'shared/transactions/table_inside', locals: { order_details: order_details, show_statements: local_assigns[:show_statements] }
 
 
