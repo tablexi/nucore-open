@@ -20,7 +20,8 @@
           %td.centered
             = "##{s.invoice_number}"
             %br
-            = link_to t("statements.pdf.download"), statement_path(s)
+            - path = local_assigns[:admin_view] ? statement_path(s) : account_statement_path(s.account, s, format: :pdf)
+            = link_to t("statements.pdf.download"), path
           %td= human_datetime(s.created_at)
           %td= s.account.notify_users.map(&:full_name).join(', ')
           - if local_assigns[:admin_view]
