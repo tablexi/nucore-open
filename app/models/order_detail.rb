@@ -427,7 +427,7 @@ class OrderDetail < ActiveRecord::Base
     new_state = new_status.state_name
     # don't try to change state if it's not a valid state or it's the same as it was before
     if OrderDetail.aasm.states.map(&:name).include?(new_state) && new_state != state.to_sym
-      raise AASM::InvalidTransition, "Event '#{new_state}' cannot transition from '#{state}'" unless send("to_#{new_state}!")
+      send("to_#{new_state}")
     end
     # don't try to change status if it's the same as before
     unless new_status == order_status
