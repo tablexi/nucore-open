@@ -1085,27 +1085,6 @@ RSpec.describe Reservation do
   end
 
   context "basic reservation rules" do
-    context "category" do
-      before do
-        reservation.assign_category_attribute(user, category: "maintenance")
-      end
-
-      context "when facility operator" do
-        let(:user) { create(:user, :administrator) }
-
-        it "should assign category attribute" do
-          expect(reservation.category).to eq("maintenance")
-        end
-      end
-
-      context "when not facility operator" do
-        let(:user) { create(:user) }
-
-        it "should not assign category attribute" do
-          expect(reservation.category).to be_nil
-        end
-      end
-    end
 
     it "should not allow reservations starting before now" do
       @earlier = Date.today - 1
