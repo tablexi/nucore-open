@@ -4,8 +4,13 @@ module FacilityReservationsHelper
     I18n.t("offline_reservations.categories").invert.to_a
   end
 
-  def reservation_category_label(category)
-    I18n.t(category.presence, scope: "offline_reservations.categories", default: "")
+  def admin_category_collection
+    I18n.t("reservations.categories").invert.to_a
+  end
+
+  def reservation_category_label(reservation)
+    scope = reservation.is_a?(OfflineReservation) ? "offline_reservations.categories" : "reservations.categories"
+    I18n.t(reservation.category.presence, scope: scope, default: "")
   end
 
   def reservation_links(reservation)

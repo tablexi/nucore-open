@@ -48,7 +48,7 @@ module Reports
         [
           res.product.name,
           res.type.to_s.sub(/Reservation\z/, ""),
-          reservation_category_label(res.category),
+          reservation_category_label(res),
         ]
       end
     end
