@@ -54,11 +54,13 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
             FactoryGirl.create(:admin_reservation,
                                product: instruments.first,
                                reserve_start_at: (date_start + 2.days).beginning_of_day,
-                               duration: 1.day)
+                               duration: 1.day,
+                               category: nil)
             FactoryGirl.create(:admin_reservation,
                                product: instruments.third,
                                reserve_start_at: (date_start + 1.day).beginning_of_day,
-                               duration: 3.days)
+                               duration: 3.days,
+                               category: nil)
             xhr(:get, :index, params)
           end
 
