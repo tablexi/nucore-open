@@ -29,7 +29,13 @@ RSpec.describe Reservation do
   end
 
   describe "validations" do
-    it { is_expected.to validate_inclusion_of(:category).in_array(AdminReservation::CATEGORIES) }
+    it { is_expected.to validate_absence_of :category }
+
+    context "when admin reservation" do
+      before { allow(reservation).to receive(:admin?).and_return(true) }
+
+      it { is_expected.not_to validate_absence_of :category }
+    end
   end
 
   describe ".upcoming_offline", :timecop_freeze do

@@ -17,4 +17,8 @@ class AdminReservation < Reservation
 
   # TODO: Move admin parts of Reservation here
 
+  def admin?
+    true
+  end
+
 end
