@@ -59,7 +59,7 @@ FactoryGirl.define do
 
   factory :admin_reservation, class: AdminReservation, parent: :reservation do
     order_detail nil
-    category { Reservation::CATEGORIES.sample }
+    category { AdminReservation::CATEGORIES.sample }
   end
 
   factory :offline_reservation, class: OfflineReservation, parent: :reservation do

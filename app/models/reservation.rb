@@ -9,14 +9,6 @@ class Reservation < ActiveRecord::Base
   include Reservations::RelaySupport
   include Reservations::MovingUp
 
-  CATEGORIES = %w(
-    maintenance
-    training
-    reserved_for_staff
-    instrument_unavailable
-    other
-  ).freeze
-
   # Associations
   #####
   belongs_to :product

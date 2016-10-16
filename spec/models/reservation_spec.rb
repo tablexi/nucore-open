@@ -29,7 +29,7 @@ RSpec.describe Reservation do
   end
 
   describe "validations" do
-    it { is_expected.to validate_inclusion_of(:category).in_array(Reservation::CATEGORIES) }
+    it { is_expected.to validate_inclusion_of(:category).in_array(AdminReservation::CATEGORIES) }
   end
 
   describe ".upcoming_offline", :timecop_freeze do

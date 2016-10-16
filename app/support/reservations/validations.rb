@@ -28,7 +28,7 @@ module Reservations::Validations
 
     validates :category,
               absence: true,
-              unless: -> (r) { r.class.const_defined?(:CATEGORIES) }
+              unless: -> (r) { r.class.const_defined?(:CATEGORIES) || r.admin? }
   end
 
   # Validation Methods
