@@ -24,7 +24,7 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements/new
   def new_with_search
-    @order_details = @order_details.need_statement(@facility)
+    @order_details = @order_details.need_any_statement.for_facility(@facility)
     @order_detail_action = :send_statements
     set_default_start_date if SettingsHelper.feature_on?(:set_statement_search_start_date)
     @layout = "two_column_head"
@@ -43,7 +43,7 @@ class FacilityStatementsController < ApplicationController
       params[:order_detail_ids].each do |order_detail_id|
         od = nil
         begin
-          ods = OrderDetail.need_statement(current_facility)
+          ods = OrderDetail.need_any_statement.for_facility(current_facility)
           od = ods.readonly(false).find(order_detail_id)
           to_statement[od.account] ||= []
           to_statement[od.account] << od
