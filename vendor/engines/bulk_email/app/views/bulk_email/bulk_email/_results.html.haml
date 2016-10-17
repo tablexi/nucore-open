@@ -7,7 +7,7 @@
   .results_header
     .span1.select_all_none= select_all_link(start_none: true)
 
-    .span2.pull-right
+    .bulk_email_buttons.span3.pull-right
       - if current_ability.can?(:deliver, BulkEmail)
         = safe_join(@searcher.search_params_as_hidden_fields)
 
