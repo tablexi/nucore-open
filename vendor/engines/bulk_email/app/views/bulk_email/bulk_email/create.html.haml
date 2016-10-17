@@ -13,23 +13,32 @@
   - @users.each do |user|
     = hidden_field_tag "bulk_email_delivery_form[recipient_ids][]", user.id, id: nil
 
-  - if params[:return_path].present?
-    = hidden_field_tag :return_path, params[:return_path]
+  = hidden_field_tag :return_path, params[:return_path]
+  = hidden_field_tag "bulk_email_delivery_form[product_id]", params[:product_id]
 
-  .span8
-    = label_tag text("bulk_email.recipients")
-    .well= @users.map(&:email).join(", ")
+  .row.span6
+    %div
+      = label_tag text("bulk_email.recipients")
+      = text_area_tag nil,
+        @users.map(&:email).join(", "),
+        disabled: true,
+        class: "input-xxlarge"
 
-  .span8= f.input :custom_subject, input_html: { class: "input-xxlarge" }
+    = f.input :custom_subject,
+      as: "bulk_email/subject",
+      prefix: bulk_email_content_generator.subject_prefix,
+      input_html: { class: "input-xlarge" }
 
-  .span8
-    = f.input :custom_message,
-      as: :text,
-      input_html: { class: "input-xxlarge", rows: 6 }
+    %div
+      = f.input :custom_message,
+        as: "bulk_email/body",
+        greeting: bulk_email_content_generator.greeting,
+        signoff: bulk_email_content_generator.signoff,
+        input_html: { class: "input-xxlarge", rows: 6 }
 
-  .span8
-    = f.submit text("bulk_email.send_mail"),
-      class: "btn btn-primary",
-      data: { disable_with: t("bulk_email.sending") }
+    %div
+      = f.submit text("bulk_email.send_mail"),
+        class: "btn btn-primary",
+        data: { disable_with: t("bulk_email.sending") }
 
-    = link_to text("shared.cancel"), bulk_email_cancel_path
+      = link_to text("shared.cancel"), bulk_email_cancel_path

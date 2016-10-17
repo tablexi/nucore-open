@@ -98,6 +98,10 @@ module Products::SchedulingSupport
     offline_reservations.current.any?
   end
 
+  def offline_category
+    current_offline_reservation.try(:category)
+  end
+
   def online!
     offline_reservations.current.update_all(reserve_end_at: Time.current)
   end
@@ -107,6 +111,10 @@ module Products::SchedulingSupport
   end
 
   private
+
+  def current_offline_reservation
+    offline_reservations.current.last
+  end
 
   def reservation_in_week(after, duration, rules, options)
     day_of_week = after.wday
