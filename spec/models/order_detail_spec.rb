@@ -727,6 +727,15 @@ RSpec.describe OrderDetail do
       end
 
     end
+
+    describe "invalid quantity" do
+      it "does not transition to complete" do
+        @order_detail.quantity = 0
+        expect { @order_detail.change_status!(OrderStatus.complete_status) }
+          .to raise_error(ActiveRecord::RecordInvalid)
+        expect(@order_detail.reload.state).to eq("new")
+      end
+    end
   end
 
   context "statement" do
