@@ -9,6 +9,11 @@ en:
       label: Order or Reservation between
       start: Starting
       end: Ending
+      select_range: Select dates
+      range:
+        last_90_days: within the last 90 days
+        in_the_last_year: in the last year
+        next_month: during the next month
     no_results: No users found
     compose_mail: Compose Mail
     export: Export
