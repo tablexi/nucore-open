@@ -12,7 +12,7 @@ module TimelineHelper
     classes << "admin" if reservation.admin?
     classes << "behalf_of" if reservation.ordered_on_behalf_of?
     classes << "in_progress" if reservation.can_switch_instrument?
-    classes << "status_#{reservation.order_detail.order_status.to_s.downcase}" if reservation.order_detail
+    classes << "status_#{display_status_class(reservation)}" if reservation.order_detail
     classes.concat spans_midnight_class(reservation.reserve_start_at, reservation.reserve_end_at)
     classes.join(" ")
   end
@@ -65,6 +65,10 @@ module TimelineHelper
 
   def public_timeline?
     @public_timeline ||= false
+  end
+
+  def display_status_class(reservation)
+    reservation.canceled_at ? "canceled" : reservation.order_detail.order_status.to_s.downcase
   end
 
 end
