@@ -528,6 +528,14 @@ en:
     new:
       mark_offline: Take instrument offline
 
+  admin_reservations:
+    categories:
+      maintenance: Maintenance
+      training: Training
+      reserved_for_staff: Reserved For Staff
+      instrument_unavailable: Instrument Unavailable
+      other: Other
+
   order_management:
     order_details:
       edit:

@@ -156,6 +156,7 @@ class FacilityReservationsController < ApplicationController
 
     @reservation.assign_times_from_params(params[:admin_reservation])
     @reservation.admin_note = params[:admin_reservation][:admin_note]
+    @reservation.category = params[:admin_reservation][:category]
 
     if @reservation.save
       flash[:notice] = "The reservation has been updated successfully."

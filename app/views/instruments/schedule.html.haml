@@ -69,7 +69,7 @@
               = link_to reservation,
                 facility_instrument_reservation_edit_admin_path(current_facility, @instrument, reservation)
 
-            %td= reservation_category_label(reservation.category)
+            %td= reservation_category_label(reservation)
             %td= reservation.admin_note
 
           - else
@@ -80,7 +80,7 @@
               %td
                 = link_to reservation,
                   edit_facility_instrument_offline_reservation_path(current_facility, @instrument, reservation)
-              %td= reservation_category_label(reservation.category)
+              %td= reservation_category_label(reservation)
               %td= reservation.admin_note
 
 %h3= t(".reservations_calendar")

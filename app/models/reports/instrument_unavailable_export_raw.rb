@@ -42,7 +42,7 @@ module Reports
         end_time: :reserve_end_at,
         total_minutes: -> (reservation) { formatted_total_minutes(reservation) },
         admin_note: :admin_note,
-        category: -> (reservation) { reservation_category_label(reservation.category) },
+        category: -> (reservation) { reservation_category_label(reservation) },
       }
     end
 

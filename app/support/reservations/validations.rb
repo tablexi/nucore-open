@@ -21,14 +21,6 @@ module Reservations::Validations
 
     validate :starts_before_ends
     validate :duration_is_interval
-
-    validates :category,
-              inclusion: { in: -> (r) { r.class::CATEGORIES }, allow_blank: false },
-              if: -> (r) { r.class.const_defined?(:CATEGORIES) }
-
-    validates :category,
-              absence: true,
-              unless: -> (r) { r.class.const_defined?(:CATEGORIES) }
   end
 
   # Validation Methods

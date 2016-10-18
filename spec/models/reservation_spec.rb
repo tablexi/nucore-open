@@ -28,10 +28,6 @@ RSpec.describe Reservation do
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
-  describe "validations" do
-    it { is_expected.to validate_absence_of :category }
-  end
-
   describe ".upcoming_offline", :timecop_freeze do
     subject { described_class.upcoming_offline(1.year.from_now) }
     let(:now) { Time.current }
@@ -1085,6 +1081,7 @@ RSpec.describe Reservation do
   end
 
   context "basic reservation rules" do
+
     it "should not allow reservations starting before now" do
       @earlier = Date.today - 1
       @reservation = @instrument.reservations.create(reserve_start_date: @earlier, reserve_start_hour: 10,

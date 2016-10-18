@@ -1,4 +1,8 @@
 - if @reservation.admin_editable?
+  - if @reservation.admin?
+    .control-group
+      = f.input :category do
+        = f.select :category, options_for_select(admin_category_collection, f.object.category), include_blank: "Select a Category"
   .datetime-block
     = f.input :reserve_start_date, input_html: { class: "datepicker" }
     .control-group
