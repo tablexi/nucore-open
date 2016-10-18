@@ -53,6 +53,8 @@ class OrderDetails::ParamUpdater
 
     assign_attributes(params)
 
+    @order_detail.manually_priced!
+
     @order_detail.transaction do
       @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation
       if order_status_id && order_status_id.to_i != @order_detail.order_status_id

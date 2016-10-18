@@ -24,7 +24,7 @@ class OrderDetail < ActiveRecord::Base
   after_validation :reset_dispute
 
   before_save :clear_statement, if: :account_id_changed?
-  before_save :reassign_price, if: ->(o) { o.account_id_changed? || o.quantity_changed? }
+  before_save :reassign_price, if: :auto_reassign_pricing?
   before_save :update_journal_row_amounts, if: :actual_cost_changed?
 
   before_save :set_problem_order
@@ -643,6 +643,16 @@ class OrderDetail < ActiveRecord::Base
       # active survey but no response
       "Please complete the online order form"
     end
+  end
+
+  def auto_reassign_pricing?
+    !@manually_priced && (account_id_changed? || quantity_changed?)
+  end
+
+  # Mark the instance as manually priced to prevent the price assignment callback
+  # from overwriting the params.
+  def manually_priced!
+    @manually_priced = true
   end
 
   def reassign_price
