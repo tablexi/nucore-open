@@ -875,7 +875,7 @@ class OrderDetail < ActiveRecord::Base
     fee = cancellation_fee
     self.actual_cost = fee
     self.actual_subsidy = 0
-    change_status!(fee > 0 ? OrderStatus.canceled.first : order_status)
+    change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
     save! if changed? # If the cancel goes from complete => complete, change status doesn't save
     true
   end
