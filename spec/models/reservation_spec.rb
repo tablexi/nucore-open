@@ -28,16 +28,6 @@ RSpec.describe Reservation do
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
-  describe "validations" do
-    it { is_expected.to validate_absence_of :category }
-
-    context "when admin reservation" do
-      before { allow(reservation).to receive(:admin?).and_return(true) }
-
-      it { is_expected.not_to validate_absence_of :category }
-    end
-  end
-
   describe ".upcoming_offline", :timecop_freeze do
     subject { described_class.upcoming_offline(1.year.from_now) }
     let(:now) { Time.current }

@@ -6,6 +6,8 @@ class OfflineReservation < Reservation
 
   validates :admin_note, presence: true
   validates :category, presence: true
+  validates :category,
+            inclusion: { in: CATEGORIES, allow_blank: false }
 
   belongs_to :product
 
