@@ -22,7 +22,7 @@ module BulkEmail
       [
         I18n.t("bulk_email.body.greeting", recipient_name: recipient_name),
         reason_statement,
-      ].compact.join("\n")
+      ].compact.join("\n\n")
     end
 
     def signoff
