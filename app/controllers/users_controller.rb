@@ -34,6 +34,7 @@ class UsersController < ApplicationController
       User
       .with_recent_orders(current_facility)
       .order(:last_name, :first_name)
+      .to_a
       .paginate(page: params[:page])
   end
 
