@@ -7,9 +7,9 @@ module SangerSequencing
     attr_reader :well_plate, :plate_mode
     delegate :samples, to: :well_plate
 
-    def initialize(well_plate, plate_mode = :default)
+    def initialize(well_plate, plate_mode)
       @well_plate = well_plate
-      @plate_mode = plate_mode
+      @plate_mode = plate_mode.presence || :default
     end
 
     def to_csv
