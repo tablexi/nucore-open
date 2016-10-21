@@ -3,9 +3,9 @@
     %tr
       %th
       %th= Statement.human_attribute_name(:invoice_number)
-      %th= t(".th.order")
+      %th= Order.model_name.human
       %th= Statement.human_attribute_name(:total_cost)
-      %th= t(".th.reconcile_note")
+      %th= Statement.human_attribute_name(:reconcile_note)
   %tbody
     - @unreconciled_details.each do |order_detail|
       %tr
