@@ -97,6 +97,12 @@ class Ability
           :update_admin,
         ], Reservation
 
+        if user.manager_of?(resource) || user.facility_senior_staff_of?(resource)
+          can :bring_online, OfflineReservation
+        else
+          cannot :manage, OfflineReservation
+        end
+
         can(:destroy, Reservation, &:admin?)
 
         can [
@@ -134,11 +140,27 @@ class Ability
 
       if user.manager_of?(resource)
         can :manage, [
-          AccountUser, Facility, FacilityAccount, Journal,
-          Statement, StoredFile, PricePolicy, InstrumentPricePolicy,
-          ItemPricePolicy, OrderStatus, PriceGroup, Reports::ReportsController,
-          ScheduleRule, ServicePricePolicy, PriceGroupProduct, ProductAccessGroup,
-          ProductAccessory, Product, BundleProduct, TrainingRequest, OrderImport
+          AccountUser,
+          BundleProduct,
+          Facility,
+          FacilityAccount,
+          InstrumentPricePolicy,
+          ItemPricePolicy,
+          Journal,
+          OrderImport,
+          OrderStatus,
+          PriceGroup,
+          PriceGroupProduct,
+          PricePolicy,
+          Product,
+          ProductAccessGroup,
+          ProductAccessory,
+          Reports::ReportsController,
+          ScheduleRule,
+          ServicePricePolicy,
+          Statement,
+          StoredFile,
+          TrainingRequest,
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
@@ -156,7 +178,14 @@ class Ability
 
       # Facility senior staff is based off of staff, but has a few more abilities
       if in_role?(user, resource, UserRole::FACILITY_SENIOR_STAFF)
-        can :manage, [ScheduleRule, ProductUser, ProductAccessGroup, StoredFile, ProductAccessory, TrainingRequest]
+        can :manage, [
+          ProductAccessGroup,
+          ProductAccessory,
+          ProductUser,
+          ScheduleRule,
+          StoredFile,
+          TrainingRequest,
+        ]
 
         # they can get to reports controller, but they're not allowed to export all
         can :manage, Reports::ReportsController

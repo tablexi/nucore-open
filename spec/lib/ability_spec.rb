@@ -122,6 +122,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
 
     context "in a single facility" do
+      it_is_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
       it { is_expected.to be_allowed_to(:manage, User) }
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.to be_allowed_to(:manage_billing, facility) }
@@ -184,6 +185,7 @@ RSpec.describe Ability do
   describe "facility administrator" do
     let(:user) { create(:user, :facility_administrator, facility: facility) }
 
+    it_is_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
     it { is_expected.to be_allowed_to(:manage, Account) }
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
@@ -221,6 +223,7 @@ RSpec.describe Ability do
       end
     end
 
+    it_is_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
     it { is_expected.to be_allowed_to(:manage, Account) }
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
     it { is_expected.to be_allowed_to(:read, Notification) }
@@ -256,6 +259,7 @@ RSpec.describe Ability do
     let(:user) { create(:user, :senior_staff, facility: facility) }
 
     it_behaves_like "it has common staff abilities"
+    it_is_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
   end
 
@@ -263,6 +267,7 @@ RSpec.describe Ability do
     let(:user) { create(:user, :staff, facility: facility) }
 
     it_behaves_like "it has common staff abilities"
+    it_is_not_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
     it { is_expected.to be_allowed_to(:create, TrainingRequest) }
     it_behaves_like "it can not manage training requests"
   end
@@ -327,6 +332,7 @@ RSpec.describe Ability do
       it { is_expected.not_to be_allowed_to(:read, Notification) }
     end
 
+    it { is_expected.not_to be_allowed_to(:manage, Reservation) }
     it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.not_to be_allowed_to(:disputed, Order) }
     it { is_expected.not_to be_allowed_to(:manage, User) }

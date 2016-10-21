@@ -14,3 +14,15 @@ RSpec::Matchers.define :be_allowed_to do |action, object|
     ability.can?(action, object)
   end
 end
+
+def it_is_allowed_to(actions, object)
+  Array(actions).each do |action|
+    it { is_expected.to be_allowed_to(action, object) }
+  end
+end
+
+def it_is_not_allowed_to(actions, object)
+  Array(actions).each do |action|
+    it { is_expected.not_to be_allowed_to(action, object) }
+  end
+end
