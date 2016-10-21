@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe BulkEmail::AbilityExtension do
   subject(:ability) { Ability.new(user, facility, stub_controller) }
-  let(:facility) { FactoryGirl.build_stubbed(:facility) }
+  let(:facility) { FactoryGirl.create(:facility) }
   let(:stub_controller) { OpenStruct.new }
 
   shared_examples_for "it may send bulk email" do
@@ -30,17 +30,17 @@ RSpec.describe BulkEmail::AbilityExtension do
 
   describe "facility administrator" do
     let(:user) { FactoryGirl.create(:user, :facility_administrator, facility: facility) }
-    it_behaves_like "it may not send bulk email"
+    it_behaves_like "it may send bulk email"
   end
 
   describe "facility director" do
     let(:user) { FactoryGirl.create(:user, :facility_director, facility: facility) }
-    it_behaves_like "it may not send bulk email"
+    it_behaves_like "it may send bulk email"
   end
 
   describe "senior staff" do
     let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
-    it_behaves_like "it may not send bulk email"
+    it_behaves_like "it may send bulk email"
   end
 
   describe "staff" do

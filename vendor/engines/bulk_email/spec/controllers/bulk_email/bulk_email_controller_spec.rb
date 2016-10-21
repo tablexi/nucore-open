@@ -29,7 +29,7 @@ RSpec.describe BulkEmail::BulkEmailController do
       let(:user_types) { [] }
 
       it_should_require_login
-      it_should_allow_managers_only {}
+      it_should_allow_managers_and_senior_staff_only {}
     end
 
     context "authorized" do
