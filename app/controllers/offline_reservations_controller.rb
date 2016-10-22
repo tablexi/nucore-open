@@ -9,7 +9,7 @@ class OfflineReservationsController < ApplicationController
   before_action :load_instrument
   before_action :load_reservation, only: %i(edit update)
 
-  load_and_authorize_resource class: Reservation
+  load_and_authorize_resource
 
   def new
     @reservation = @instrument.offline_reservations.new

@@ -1,4 +1,5 @@
-= link_to t("bulk_email.send_mail"),
-  admin_instrument_send_mail_path(@instrument),
-  method: :get,
-  class: "btn-add"
+- if current_ability.can?(:send_bulk_emails, current_facility)
+  = link_to t("bulk_email.send_mail"),
+    admin_instrument_send_mail_path(@instrument),
+    method: :get,
+    class: "btn-add"

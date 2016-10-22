@@ -9,10 +9,9 @@ module BulkEmail
     end
 
     def extend(user, resource)
-      # TODO: Add specific abilities for Bulk Email
-      #
-      # The existing ":send_bulk_emails" ability comes as a side-effect of a
-      # user having ":manage" abilities on a Facility.
+      if user.manager_of?(resource) || user.facility_senior_staff_of?(resource)
+        ability.can(:send_bulk_emails, resource)
+      end
     end
 
   end
