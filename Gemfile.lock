@@ -554,7 +554,7 @@ DEPENDENCIES
   projects (~> 0.0.1)!
   protected_attributes
   pry-byebug (~> 3.4.1)
-  pry-rails (~> 0.3.2)
+  pry-rails (~> 0.3.4)
   quiet_assets
   rails (= 4.2.7.1)
   rails-observers
