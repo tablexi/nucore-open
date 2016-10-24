@@ -16,10 +16,14 @@ module BulkEmail
     end
 
     def date_range_selection_link(translation_key, params, start_date: Date.today, end_date: Date.today)
+      start_date = format_usa_date(start_date)
+      end_date = format_usa_date(end_date)
+
       link_to(
         text(translation_key, scope: "bulk_email.dates.range"),
-        params.merge(start_date: format_usa_date(start_date),
-                     end_date: format_usa_date(end_date)),
+        params.merge(start_date: start_date, end_date: end_date),
+        class: "js--bulk-email-date-range-selector",
+        data: { start_date: start_date, end_date: end_date },
       )
     end
 
