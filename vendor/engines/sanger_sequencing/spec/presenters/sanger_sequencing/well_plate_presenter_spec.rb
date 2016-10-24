@@ -23,7 +23,7 @@ RSpec.describe SangerSequencing::WellPlatePresenter do
     let(:sample_rows) { presenter.sample_rows }
 
     describe "for a default sanger plate" do
-      let(:presenter) { described_class.new(well_plate) }
+      let(:presenter) { described_class.new(well_plate, "") }
       let(:expected_results_group) { a_kind_of(String) }
       let(:expected_instrument_protocol) { a_kind_of(String) }
       let(:expected_analysis_protocol) { a_kind_of(String) }
