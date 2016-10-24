@@ -235,10 +235,6 @@ en:
       instructions: "Please review the following orders. Check those that are paid, record any notes, and click 'Reconcile Orders'."
       owner: "Owner: %{owner}"
       balance: "Balance: %{balance}"
-      reconcile_table:
-        th:
-          order: "Order"
-          reconcile_note: "Reconcile Note"
 
   facility_users:
     title: "!Facility! Staff"
