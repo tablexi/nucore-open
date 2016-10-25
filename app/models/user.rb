@@ -50,10 +50,9 @@ class User < ActiveRecord::Base
   end
 
   def self.with_recent_orders(facility)
-    order_query = Order.recent.for_facility(facility)
-    select("DISTINCT users.*")
+    distinct
       .joins(:orders)
-      .merge(order_query)
+      .merge(Order.recent.for_facility(facility))
   end
 
   def self.sort_last_first
