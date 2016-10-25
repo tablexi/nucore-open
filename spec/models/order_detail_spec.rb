@@ -959,12 +959,24 @@ RSpec.describe OrderDetail do
           @statement = create(:statement, facility: @facility, created_by: @user.id, account: @account, created_at: 1.day.ago)
           @order_detail.to_complete!
           @order_detail2.to_complete!
-          @order_detail.update_attribute :journal_id, @journal.id
-          @order_detail2.update_attribute :statement_id, @statement.id
+          @order_detail.update_attributes(journal_id: @journal.id, fulfilled_at: 5.days.ago, reconciled_at: 4.days.ago)
+          @order_detail2.update_attributes(statement_id: @statement.id, fulfilled_at: 7.days.ago, reconciled_at: 6.days.ago)
         end
 
         it "should return nothing when searching wrong date range" do
           expect(OrderDetail.action_in_date_range(:journal_or_statement_date, 7.days.ago, 6.days.ago)).to be_empty
+        end
+
+        it "should work for fulfilled at date" do
+          expect(OrderDetail.action_in_date_range(:fulfilled_at, 4.days.ago, 2.days.ago)).to be_empty
+          expect(OrderDetail.action_in_date_range(:fulfilled_at, 6.days.ago, 3.days.ago)).to eq([@order_detail])
+          expect(OrderDetail.action_in_date_range(:fulfilled_at, 8.days.ago, 3.days.ago)).to match_array([@order_detail, @order_detail2])
+        end
+
+        it "should work for reconciled_at date" do
+          expect(OrderDetail.action_in_date_range(:reconciled_at, 2.days.ago, 1.day.ago)).to eq([])
+          expect(OrderDetail.action_in_date_range(:reconciled_at, 5.days.ago, 2.days.ago)).to eq([@order_detail])
+          expect(OrderDetail.action_in_date_range(:reconciled_at, 7.days.ago, 2.days.ago)).to match_array([@order_detail, @order_detail2])
         end
 
         it "should work for journal date" do

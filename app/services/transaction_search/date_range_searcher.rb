@@ -3,7 +3,7 @@ module TransactionSearch
   class DateRangeSearcher < BaseSearcher
 
     include DateHelper
-    FIELDS = %w(ordered_at fulfilled_at journal_or_statement_date).freeze
+    FIELDS = %w(ordered_at fulfilled_at journal_or_statement_date reconciled_at).freeze
 
     attr_reader :date_range_field
 

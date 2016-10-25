@@ -345,7 +345,7 @@ class OrderDetail < ActiveRecord::Base
     search = search.joins(:journal) if action.to_sym == :journal_date
 
     # If we're searching on fulfilled_at, ignore any order details that don't have a fulfilled date
-    search = search.where("fulfilled_at IS NOT NULL") if action.to_sym == :fulfilled_at
+    search = search.where("#{action} IS NOT NULL") if [:reconciled_at, :fulfilled_at].include?(action.to_sym)
 
     if start_date
       search = search.where("#{action} >= ?", start_date.beginning_of_day)
