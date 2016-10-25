@@ -1,6 +1,7 @@
 class window.BulkEmailSearchForm
   constructor: (@$form) ->
     @_initUserTypeChangeHandler()
+    @_initDateRangeSelectionHandlers()
 
   authorizedUsersSelectedOnly: ->
     user_types = @selectedUserTypes()
@@ -30,6 +31,13 @@ class window.BulkEmailSearchForm
     @$userTypeCheckboxes()
       .change(=> @toggleNonRestrictedProducts())
       .trigger('change')
+
+  _initDateRangeSelectionHandlers: ->
+    $(".js--bulk-email-date-range-selector").click (event) ->
+      event.preventDefault()
+      $link = $(event.target)
+      $('#bulk_email_start_date').val($link.data('startDate'))
+      $('#bulk_email_end_date').val($link.data('endDate'))
 
 class window.BulkEmailCreateForm
   constructor: (@$form) ->
