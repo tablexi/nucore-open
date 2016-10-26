@@ -15,6 +15,8 @@
 
   = hidden_field_tag :return_path, params[:return_path]
   = hidden_field_tag "bulk_email_delivery_form[product_id]", params[:product_id]
+  = hidden_field_tag "bulk_email_delivery_form[search_criteria]",
+    bulk_email_recipient_search_params.to_json
 
   .row.span6
     %div
