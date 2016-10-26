@@ -22,8 +22,15 @@ RSpec.describe BulkEmail::DeliveryForm do
       form.custom_message = "Custom message"
     end
 
+    let(:bulk_email_job) { BulkEmail::Job.last }
+
     it "queues mail to all recipients" do
-      form.deliver_all
+      expect { form.deliver_all }.to change(BulkEmail::Job, :count).by(1)
+      expect(bulk_email_job.subject).to eq(form.custom_subject)
+      expect(JSON.parse(bulk_email_job.recipients))
+        .to match_array(recipients.map(&:email))
+      expect(JSON.parse(bulk_email_job.search_criteria))
+        .to eq({}) # TODO: Store search criteria
     end
   end
 end

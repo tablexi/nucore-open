@@ -22,7 +22,12 @@ module BulkEmail
     end
 
     def deliver_all
-      recipients.each { |recipient| deliver(recipient) } if valid?
+      if valid?
+        Job.transaction do
+          recipients.each { |recipient| deliver(recipient) }
+          record_delivery
+        end
+      end
     end
 
     private
@@ -39,6 +44,14 @@ module BulkEmail
 
     def recipients
       @recipients ||= User.where_ids_in(recipient_ids)
+    end
+
+    def record_delivery
+      Job.create!(
+        subject: custom_subject,
+        recipients: recipients.map(&:email),
+        search_criteria: {}, # TODO: Store search criteria
+      )
     end
 
     def product
