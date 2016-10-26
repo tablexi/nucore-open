@@ -25,7 +25,7 @@ module BulkEmail
 
     def deliver_all
       if valid?
-        Job.transaction do
+        BulkEmail::Job.transaction do
           recipients.each { |recipient| deliver(recipient) }
           record_delivery
         end
@@ -49,7 +49,7 @@ module BulkEmail
     end
 
     def record_delivery
-      Job.create!(
+      BulkEmail::Job.create!(
         sender: sender.email,
         subject: custom_subject,
         recipients: recipients.map(&:email),
