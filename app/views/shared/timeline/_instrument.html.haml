@@ -1,4 +1,4 @@
-- unless instrument.is_hidden? && public_timeline?
+- unless instrument.is_archived? || (instrument.is_hidden? && public_timeline?)
   .timeline_instrument
     %h4
       - if public_timeline?
