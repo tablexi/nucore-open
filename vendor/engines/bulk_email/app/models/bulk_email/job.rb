@@ -4,7 +4,7 @@ module BulkEmail
 
     self.table_name = "bulk_email_jobs"
 
-    validates_presence_of :subject
+    validates :sender, :subject, presence: true
     validates_with JobJsonFieldValidator
 
     def search_criteria=(value)

@@ -100,7 +100,7 @@ module BulkEmail
     end
 
     def init_delivery_form
-      @delivery_form = DeliveryForm.new(current_facility)
+      @delivery_form = DeliveryForm.new(current_user, current_facility)
       @delivery_form.assign_attributes(params[:bulk_email_delivery_form])
     end
 

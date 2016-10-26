@@ -1,7 +1,8 @@
 FactoryGirl.define do
   factory :bulk_email_job, class: BulkEmail::Job do
     subject "Bulk Email Subject Line"
-    recipients "[1,2,3,4,5]"
+    sender "sender@example.com"
+    recipients '["r1@example.com","r2@example.net","r3@example.org"]'
     search_criteria do
       {
         bulk_email: {
