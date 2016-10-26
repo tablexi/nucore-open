@@ -4,16 +4,10 @@ module BulkEmail
 
     self.table_name = "bulk_email_jobs"
 
-    validates :sender, :subject, presence: true
-    validates_with JobJsonFieldValidator
+    serialize :recipients, Array
+    serialize :search_criteria, Hash
 
-    def search_criteria=(value)
-      if value.is_a?(Hash)
-        self.search_criteria = value.to_json
-      else
-        super
-      end
-    end
+    validates :sender, :subject, :recipients, :search_criteria, presence: true
 
   end
 

@@ -21,7 +21,7 @@ RSpec.describe BulkEmail::DeliveryForm do
       form.recipient_ids = recipients.map(&:id)
       form.custom_subject = "Subject line"
       form.custom_message = "Custom message"
-      form.search_criteria = { this: "is", a: "test" }.to_json
+      form.search_criteria = { this: "is", a: "test" }
     end
 
     let(:bulk_email_job) { BulkEmail::Job.last }
@@ -29,10 +29,8 @@ RSpec.describe BulkEmail::DeliveryForm do
     it "queues mail to all recipients" do
       expect { form.deliver_all }.to change(BulkEmail::Job, :count).by(1)
       expect(bulk_email_job.subject).to eq(form.custom_subject)
-      expect(JSON.parse(bulk_email_job.recipients))
-        .to match_array(recipients.map(&:email))
-      expect(JSON.parse(bulk_email_job.search_criteria))
-        .to match("this" => "is", "a" => "test")
+      expect(bulk_email_job.recipients).to match_array(recipients.map(&:email))
+      expect(bulk_email_job.search_criteria).to match(this: "is", a: "test")
     end
   end
 end
