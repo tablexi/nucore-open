@@ -1,0 +1,28 @@
+= content_for :tabnav do
+  = render "nav_tab", secondary_tab: "history"
+
+= content_for :h1 do
+  = current_facility
+
+%h2= t(".title")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
+
+- if @bulk_email_jobs.any?
+  %table.table.table-striped.table-hover
+    %tr
+      %th= BulkEmail::Job.human_attribute_name(:created_at)
+      %th= BulkEmail::Job.human_attribute_name(:sender)
+      %th= BulkEmail::Job.human_attribute_name(:subject)
+
+      - @bulk_email_jobs.each do |bulk_email_job|
+        %tr
+          %td= l(bulk_email_job.created_at, format: :usa)
+          %td= bulk_email_job.sender
+          %td= bulk_email_job.subject
+
+  = will_paginate(@bulk_email_jobs)
+
+- else
+  %h4= t(".no_jobs")

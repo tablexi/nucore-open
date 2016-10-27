@@ -51,6 +51,13 @@ module BulkEmail
       end
     end
 
+    def history
+      @bulk_email_jobs = current_facility
+                         .bulk_email_jobs
+                         .order(created_at: :desc)
+                         .paginate(page: params[:page])
+    end
+
     private
 
     def bulk_email_cancel_path

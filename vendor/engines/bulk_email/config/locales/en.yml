@@ -1,5 +1,12 @@
 en:
   bulk_email:
+    bulk_email:
+      history:
+        title: Bulk Email History
+        no_jobs: No bulk emails have been sent.
+      nav_tab:
+        create: Create
+        history: History
     title: Bulk Email
     user_type:
       customers: Customers
@@ -39,3 +46,10 @@ en:
       bulk_email/delivery_form:
         custom_message: Message
         custom_subject: Subject line
+
+  activerecord:
+    attributes:
+      bulk_email/job:
+        created_at: Sent
+        sender: Sender
+        subject: Subject
