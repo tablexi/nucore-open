@@ -5,12 +5,12 @@ module BulkEmail
     include ActiveModel::Model
 
     attr_accessor :custom_subject, :custom_message, :recipient_ids, :product_id, :search_criteria
-    attr_reader :facility, :sender
+    attr_reader :facility, :user
 
     validates :custom_subject, :custom_message, :recipient_ids, presence: true
 
-    def initialize(sender, facility)
-      @sender = sender
+    def initialize(user, facility)
+      @user = user
       @facility = facility
     end
 
@@ -51,7 +51,7 @@ module BulkEmail
     def record_delivery
       BulkEmail::Job.create!(
         facility: facility,
-        sender: sender.email,
+        user: user,
         subject: custom_subject,
         body: custom_message,
         recipients: recipients.map(&:email),

@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(version: 20161024213800) do
 
   create_table "bulk_email_jobs", force: :cascade do |t|
     t.integer  "facility_id",     limit: 4,     null: false
-    t.string   "sender",          limit: 255,   null: false
+    t.integer  "user_id",         limit: 4,     null: false
     t.string   "subject",         limit: 255,   null: false
     t.text     "body",            limit: 65535, null: false
     t.text     "recipients",      limit: 65535, null: false
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20161024213800) do
   end
 
   add_index "bulk_email_jobs", ["facility_id"], name: "fk_rails_37dbedd2b3", using: :btree
+  add_index "bulk_email_jobs", ["user_id"], name: "fk_rails_7cd8662ccc", using: :btree
 
   create_table "bundle_products", force: :cascade do |t|
     t.integer "bundle_product_id", limit: 4, null: false
@@ -718,6 +719,7 @@ ActiveRecord::Schema.define(version: 20161024213800) do
   add_foreign_key "account_users", "accounts", name: "fk_accounts"
   add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bulk_email_jobs", "facilities"
+  add_foreign_key "bulk_email_jobs", "users"
   add_foreign_key "bundle_products", "products", column: "bundle_product_id", name: "fk_bundle_prod_prod"
   add_foreign_key "bundle_products", "products", name: "fk_bundle_prod_bundle"
   add_foreign_key "email_events", "users"
