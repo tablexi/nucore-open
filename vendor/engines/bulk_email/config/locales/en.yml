@@ -41,13 +41,3 @@ en:
       bulk_email/delivery_form:
         custom_message: Message
         custom_subject: Subject line
-
-  activerecord:
-    errors:
-      models:
-        bulk_email/job:
-          attributes:
-            recipients:
-              must_be_array: Must be an Array
-            search_criteria:
-              must_be_hash: Must be a Hash
