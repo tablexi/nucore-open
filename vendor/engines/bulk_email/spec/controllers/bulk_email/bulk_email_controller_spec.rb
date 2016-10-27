@@ -205,4 +205,25 @@ RSpec.describe BulkEmail::BulkEmailController do
       end
     end
   end
+
+  describe "GET #history" do
+    let!(:bulk_email_jobs) do
+      FactoryGirl.create_list(:bulk_email_job, 3, facility: facility)
+    end
+
+    before(:each) do
+      @action = "history"
+      @method = :get
+
+      maybe_grant_always_sign_in :director
+      do_request
+    end
+
+    it "assigns @bulk_email_jobs, paginated" do
+      expect(assigns(:bulk_email_jobs))
+        .to match(bulk_email_jobs)
+        .and be_respond_to(:per_page)
+    end
+
+  end
 end
