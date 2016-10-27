@@ -4,7 +4,7 @@
 = content_for :h1 do
   = current_facility
 
-%h2= t(".title")
+%h2= t("bulk_email.title")
 
 = content_for :sidebar do
   = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
@@ -13,14 +13,16 @@
   %table.table.table-striped.table-hover
     %tr
       %th= BulkEmail::Job.human_attribute_name(:created_at)
-      %th= BulkEmail::Job.human_attribute_name(:sender)
+      %th= BulkEmail::Job.human_attribute_name(:user)
       %th= BulkEmail::Job.human_attribute_name(:subject)
+      %th
 
       - @bulk_email_jobs.each do |bulk_email_job|
         %tr
           %td= l(bulk_email_job.created_at, format: :usa)
-          %td= bulk_email_job.sender
+          %td= bulk_email_job.user.email
           %td= bulk_email_job.subject
+          %td= link_to t(".view"), "#"
 
   = will_paginate(@bulk_email_jobs)
 

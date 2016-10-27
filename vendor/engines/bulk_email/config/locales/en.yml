@@ -2,8 +2,8 @@ en:
   bulk_email:
     bulk_email:
       history:
-        title: Bulk Email History
         no_jobs: No bulk emails have been sent.
+        view: View details
       nav_tab:
         create: Create
         history: History
@@ -51,5 +51,5 @@ en:
     attributes:
       bulk_email/job:
         created_at: Sent
-        sender: Sender
+        user: Sender
         subject: Subject
