@@ -50,6 +50,7 @@ module BulkEmail
 
     def record_delivery
       BulkEmail::Job.create!(
+        facility: facility,
         sender: sender.email,
         subject: custom_subject,
         recipients: recipients.map(&:email),

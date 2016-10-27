@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :bulk_email_job, class: BulkEmail::Job do
+    facility
     subject "Bulk Email Subject Line"
     sender "sender@example.com"
     recipients %w(r1@example.com r2@example.net r3@example.org)

@@ -2,6 +2,7 @@ class CreateBulkEmailJobs < ActiveRecord::Migration
 
   def change
     create_table :bulk_email_jobs do |t|
+      t.references :facility, null: false, foreign_key: true
       t.string :sender, null: false
       t.string :subject, null: false
       t.text :recipients, null: false

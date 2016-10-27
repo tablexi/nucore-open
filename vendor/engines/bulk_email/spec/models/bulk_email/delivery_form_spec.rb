@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe BulkEmail::DeliveryForm do
   subject(:form) { described_class.new(sender, facility) }
-  let(:facility) { FactoryGirl.build_stubbed(:facility) }
+  let(:facility) { FactoryGirl.create(:facility) }
   let(:recipients) { FactoryGirl.create_list(:user, 3) }
   let(:sender) { FactoryGirl.build(:user) }
 
