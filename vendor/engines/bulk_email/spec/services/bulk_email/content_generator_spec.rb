@@ -27,7 +27,7 @@ RSpec.describe BulkEmail::ContentGenerator do
 
       it "includes the instrument name with a downtime reason" do
         expect(subject.greeting)
-          .to include("#{instrument.name} is out of order")
+          .to include("#{instrument.name} has been taken offline")
       end
     end
   end

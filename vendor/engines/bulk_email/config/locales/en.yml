@@ -30,11 +30,9 @@ en:
     sending: Sending...
 
     product_unavailable_reason_statements:
-      out_of_order: "%{product_name} is out of order."
-      maintenance: "%{product_name} is undergoing maintenance."
-      operator_not_available: "There is no operator available for %{product_name}."
-      instrument_not_available: "%{product_name} is not available."
-      other: "%{product_name} is not available."
+      other: |
+        %{product_name} has been taken offline.
+        You may receive additional messages regarding the status of this instrument.
 
   activemodel:
     attributes:
