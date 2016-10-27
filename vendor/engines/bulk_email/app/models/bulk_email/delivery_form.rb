@@ -53,6 +53,7 @@ module BulkEmail
         facility: facility,
         sender: sender.email,
         subject: custom_subject,
+        body: custom_message,
         recipients: recipients.map(&:email),
         search_criteria: search_criteria,
       )

@@ -29,6 +29,7 @@ RSpec.describe BulkEmail::DeliveryForm do
     it "queues mail to all recipients" do
       expect { form.deliver_all }.to change(BulkEmail::Job, :count).by(1)
       expect(bulk_email_job.subject).to eq(form.custom_subject)
+      expect(bulk_email_job.body).to eq(form.custom_message)
       expect(bulk_email_job.recipients).to match_array(recipients.map(&:email))
       expect(bulk_email_job.search_criteria).to match(this: "is", a: "test")
     end

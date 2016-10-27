@@ -5,6 +5,7 @@ class CreateBulkEmailJobs < ActiveRecord::Migration
       t.references :facility, null: false, foreign_key: true
       t.string :sender, null: false
       t.string :subject, null: false
+      t.text :body, null: false
       t.text :recipients, null: false
       t.text :search_criteria, null: false
       t.timestamps null: false

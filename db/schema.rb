@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20161024213800) do
     t.integer  "facility_id",     limit: 4,     null: false
     t.string   "sender",          limit: 255,   null: false
     t.string   "subject",         limit: 255,   null: false
+    t.text     "body",            limit: 65535, null: false
     t.text     "recipients",      limit: 65535, null: false
     t.text     "search_criteria", limit: 65535, null: false
     t.datetime "created_at",                    null: false
