@@ -30,13 +30,9 @@ en:
     sending: Sending...
 
     product_unavailable_reason_statements:
-      other: &standard_statement |
+      other: |
         %{product_name} has been taken offline.
         You may receive additional messages regarding the status of this instrument.
-      out_of_order: *standard_statement
-      maintenance: *standard_statement
-      operator_not_available: *standard_statement
-      instrument_not_available: *standard_statement
 
   activemodel:
     attributes:
