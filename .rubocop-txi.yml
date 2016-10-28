@@ -4,6 +4,7 @@ AllCops:
     - ".bundle/**/*" # Auto-generated
     - "bin/**/*"     # Auto-generated
 
+  TargetRubyVersion: 2.2
 Rails:
   Enabled: true
 
