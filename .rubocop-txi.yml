@@ -17,9 +17,10 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   Exclude:
-    # RSpec blocks may be large
-    - "spec/**/*_spec.rb"
-    - "vendor/engines/*/spec/**/*_spec.rb"
+    # Blocks in DSLs may be large
+    - "**/*.rake"
+    - "spec/**/*.rb"
+    - "vendor/engines/*/spec/**/*.rb"
 
 Metrics/LineLength:
   Max: 120
