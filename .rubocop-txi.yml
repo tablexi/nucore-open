@@ -15,6 +15,12 @@ Lint/HandleExceptions:
 Metrics/AbcSize:
   Max: 25
 
+Metrics/BlockLength:
+  Exclude:
+    # RSpec blocks may be large
+    - "spec/**/*_spec.rb"
+    - "vendor/engines/*/spec/**/*_spec.rb"
+
 Metrics/LineLength:
   Max: 120
 
