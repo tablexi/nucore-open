@@ -9,7 +9,7 @@
 = content_for :sidebar do
   = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
 
-- if @bulk_email_jobs.any?
+- if @bulk_email_jobs.present?
   %table.table.table-striped.table-hover
     %tr
       %th= BulkEmail::Job.human_attribute_name(:created_at)
@@ -22,7 +22,9 @@
           %td= l(bulk_email_job.created_at, format: :usa)
           %td= bulk_email_job.user.email
           %td= bulk_email_job.subject
-          %td= link_to t(".view"), "#"
+          %td
+            = link_to t(".view"),
+              facility_bulk_email_job_path(current_facility, bulk_email_job)
 
   = will_paginate(@bulk_email_jobs)
 

@@ -52,10 +52,14 @@ module BulkEmail
     end
 
     def history
-      @bulk_email_jobs = current_facility
-                         .bulk_email_jobs
+      @bulk_email_jobs = BulkEmail::Job
+                         .where(facility: current_facility)
                          .order(created_at: :desc)
                          .paginate(page: params[:page])
+    end
+
+    def job
+      @bulk_email_job = BulkEmail::Job.where(facility: current_facility).find(params[:id])
     end
 
     private

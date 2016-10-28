@@ -1,0 +1,19 @@
+= content_for :tabnav do
+  = render "nav_tab", secondary_tab: "history"
+
+= content_for :h1 do
+  = current_facility
+
+%h2= t("bulk_email.title")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
+
+
+= readonly_form_for :bulk_email_job do |f|
+  = f.input :user
+  = f.input :created_at
+  = f.input :recipients
+  = f.input :search_criteria
+  = f.input :subject
+  = f.input :body

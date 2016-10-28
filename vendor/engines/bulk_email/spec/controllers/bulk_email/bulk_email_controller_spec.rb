@@ -224,6 +224,20 @@ RSpec.describe BulkEmail::BulkEmailController do
         .to match(bulk_email_jobs)
         .and be_respond_to(:per_page)
     end
+  end
 
+  describe "GET #job" do
+    let(:bulk_email_job) { FactoryGirl.create(:bulk_email_job, facility: facility) }
+
+    before(:each) do
+      @action = "job"
+      @method = :get
+      @params[:id] = bulk_email_job.id
+
+      maybe_grant_always_sign_in :director
+      do_request
+    end
+
+    it { expect(assigns(:bulk_email_job)).to eq(bulk_email_job) }
   end
 end
