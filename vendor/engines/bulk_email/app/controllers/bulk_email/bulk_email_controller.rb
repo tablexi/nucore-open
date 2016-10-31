@@ -18,6 +18,7 @@ module BulkEmail
 
     helper_method :bulk_email_cancel_path
     helper_method :bulk_email_content_generator
+    helper_method :bulk_email_recipient_search_params
     helper_method :datepicker_field_input
     helper_method :user_type_selected?
 
@@ -69,13 +70,17 @@ module BulkEmail
         end
     end
 
+    def bulk_email_recipient_search_params
+      @bulk_email_recipient_search_params ||= params.slice(:start_date,
+                                                           :end_date,
+                                                           :bulk_email,
+                                                           :products,
+                                                           :product_id)
+    end
+
     def cancel_params
-      @cancel_params ||= params.slice(:start_date,
-                                      :end_date,
-                                      :bulk_email,
-                                      :products,
-                                      :return_path,
-                                      :product_id)
+      @cancel_params ||=
+        bulk_email_recipient_search_params.merge(return_path: params[:return_path])
     end
 
     def delivery_success_path
@@ -95,7 +100,7 @@ module BulkEmail
     end
 
     def init_delivery_form
-      @delivery_form = DeliveryForm.new(current_facility)
+      @delivery_form = DeliveryForm.new(current_user, current_facility)
       @delivery_form.assign_attributes(params[:bulk_email_delivery_form])
     end
 

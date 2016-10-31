@@ -4,6 +4,7 @@ AllCops:
     - ".bundle/**/*" # Auto-generated
     - "bin/**/*"     # Auto-generated
 
+  TargetRubyVersion: 2.2
 Rails:
   Enabled: true
 
@@ -13,6 +14,13 @@ Lint/HandleExceptions:
 
 Metrics/AbcSize:
   Max: 25
+
+Metrics/BlockLength:
+  Exclude:
+    # Blocks in DSLs may be large
+    - "**/*.rake"
+    - "spec/**/*.rb"
+    - "vendor/engines/*/spec/**/*.rb"
 
 Metrics/LineLength:
   Max: 120

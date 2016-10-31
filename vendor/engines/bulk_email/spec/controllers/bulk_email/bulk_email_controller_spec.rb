@@ -152,6 +152,7 @@ RSpec.describe BulkEmail::BulkEmailController do
         custom_subject: custom_subject,
         custom_message: custom_message,
         recipient_ids: recipients.map(&:id),
+        search_criteria: { this: "is", a: "test" }.to_json,
       }
       @params[:return_path] = return_path if return_path.present?
 
