@@ -7,4 +7,4 @@
       .controls
         = text_field_tag :reconciled_at, format_usa_date(Time.current), class: :datepicker__data, data: { min_date: unreconciled_order_details.map(&:journal_or_statement_date).min.iso8601, max_date: Time.current.iso8601 }
 
-  .span1.pull-right= submit_tag t("facility_journals.show.submit"), class: ["btn", "btn-primary"]
+  .span1.pull-right= submit_tag t("facility_journals.show.submit"), class: ["btn", "btn-primary"], data: { disable_with: t("facility_journals.show.submit") }
