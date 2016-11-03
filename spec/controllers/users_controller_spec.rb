@@ -179,9 +179,35 @@ RSpec.describe UsersController do
           end
 
           context "user already exists" do
+            let!(:user) { FactoryGirl.create(:user) }
             before :each do
-              @user = FactoryGirl.create(:user)
-              @params[:username] = @user.username
+              @params[:username] = user.username
+              do_request
+            end
+
+            it "flashes an error" do
+              is_expected.to set_flash
+              expect(response).to redirect_to facility_users_path
+            end
+          end
+
+          describe "user not found" do
+            before do
+              @params[:username] = "doesnotexist"
+              do_request
+            end
+
+            it "flashes an error" do
+              is_expected.to set_flash
+              expect(response).to redirect_to facility_users_path
+            end
+          end
+
+          describe "user is invalid" do
+            let(:user) { build(:user, first_name: "") }
+            before do
+              allow(controller).to receive(:username_lookup).and_return user
+              @params[:username] = user.username
               do_request
             end
 
