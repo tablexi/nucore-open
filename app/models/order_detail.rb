@@ -256,8 +256,8 @@ class OrderDetail < ActiveRecord::Base
 
   scope :need_statement, lambda { |facility|
     complete
+      .for_facility(facility)
       .joins(:product, :account)
-      .where("products.facility_id" => facility.id)
       .where(problem: false)
       .where("reviewed_at <= ?", Time.current)
       .where(statement_id: nil)

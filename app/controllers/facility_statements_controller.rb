@@ -18,11 +18,8 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements
   def index
-    @statements =
-      current_facility
-      .statements
-      .order(created_at: :desc)
-      .paginate(page: params[:page])
+    statements = current_facility.cross_facility? ? Statement.all : current_facility.statements
+    @statements = statements.order(created_at: :desc).paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/statements/new
@@ -46,7 +43,8 @@ class FacilityStatementsController < ApplicationController
       params[:order_detail_ids].each do |order_detail_id|
         od = nil
         begin
-          od = OrderDetail.need_statement(current_facility).readonly(false).find(order_detail_id)
+          ods = OrderDetail.need_statement(current_facility)
+          od = ods.readonly(false).find(order_detail_id)
           to_statement[od.account] ||= []
           to_statement[od.account] << od
         rescue => e
@@ -56,7 +54,7 @@ class FacilityStatementsController < ApplicationController
 
       @account_statements = {}
       to_statement.each do |account, order_details|
-        statement = Statement.create!(facility: current_facility, account_id: account.id, created_by: session_user.id)
+        statement = Statement.create!(facility: order_details.first.facility, account_id: account.id, created_by: session_user.id)
         order_details.each do |od|
           StatementRow.create!(statement_id: statement.id, order_detail_id: od.id)
           od.statement_id = statement.id
@@ -70,7 +68,7 @@ class FacilityStatementsController < ApplicationController
         raise ActiveRecord::Rollback
       else
         @account_statements.each do |account, statement|
-          account.notify_users.each { |u| Notifier.delay.statement(user: u, facility: current_facility, account: account, statement: statement) }
+          account.notify_users.each { |u| Notifier.delay.statement(user: u, facility: statement.facility, account: account, statement: statement) }
         end
         account_list = @account_statements.map { |a, _s| a.account_list_item }
         flash[:notice] = I18n.t("controllers.facility_statements.send_statements.success_html", accounts: account_list.join("<br/>")).html_safe

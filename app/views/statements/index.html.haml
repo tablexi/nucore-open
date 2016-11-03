@@ -1,6 +1,11 @@
 = content_for :tabnav do
-  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'statements'}
-  = content_for :h1 do
-    = t_my(Statement)
+  = render "shared/tabnav_account", secondary_tab: "statements"
 
-  = render partial: 'shared/statements_table'
+= content_for :h1 do
+  = t_my(Statement)
+
+%header.account
+  %h3= @account.account_number
+  %p= @account.description_to_s
+
+= render "shared/statements_table"
