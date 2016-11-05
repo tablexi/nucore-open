@@ -42,6 +42,7 @@ Devise.setup do |config|
   config.authentication_keys = [:username]
 
   config.case_insensitive_keys = [:username]
+  config.strip_whitespace_keys = [:username]
 
   # The realm used in Http Basic Authentication
   # config.http_authentication_realm = "Application"
