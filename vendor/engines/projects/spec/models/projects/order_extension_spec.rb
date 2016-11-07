@@ -14,7 +14,7 @@ RSpec.describe Projects::OrderExtension do
     context "when setting it to nil" do
       let(:project_id) { nil }
 
-      it "sets the project_id on its order_details to nil on #save" do
+      it "sets the project_id on its order_details to nil" do
         order.order_details.each do |order_detail|
           expect(order_detail.project_id).to be_blank
         end
@@ -23,7 +23,7 @@ RSpec.describe Projects::OrderExtension do
 
     context "when setting it to a project_id" do
       context "that is valid for the facility" do
-        it "sets this project_id on its order_details on #save" do
+        it "sets this project_id on its order_details" do
           order.order_details.each do |order_detail|
             expect(order_detail.project_id).to eq(project_id)
           end

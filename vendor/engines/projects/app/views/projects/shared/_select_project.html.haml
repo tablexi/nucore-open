@@ -2,9 +2,9 @@
   .hide-from-print
     = f.input :project_id, collection: order_detail.selectable_projects, input_html: { class: "js--chosen", data: { placeholder: t(".placeholder") } }, include_blank: true
   .show-for-print
-    - if f.object.project
+    - if order_detail.project
       = f.input :project_id do
-        = f.object.project.name
+        = order_detail.project.name
 
   :javascript
     ChosenActivator.activate();
