@@ -183,7 +183,7 @@ class UsersController < ApplicationController
 
   def username_lookup(username)
     return nil unless username.present?
-    username_database_lookup(username) || service_username_lookup(username)
+    username_database_lookup(username.strip) || service_username_lookup(username.strip)
   end
 
   def username_database_lookup(username)
