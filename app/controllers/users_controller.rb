@@ -77,7 +77,7 @@ class UsersController < ApplicationController
   def create_internal
     @user = username_lookup(params[:username])
     if @user.nil?
-      flash[:error] = I18n.t("users.search.notice1")
+      flash[:error] = text("users.search.netid_not_found")
       redirect_to facility_users_path
     elsif @user.persisted?
       flash[:error] = text("users.search.user_already_exists", username: @user.username)
@@ -85,7 +85,7 @@ class UsersController < ApplicationController
     elsif @user.save
       save_user_success
     else
-      flash[:error] = I18n.t("users.create.error")
+      flash[:error] = text("create.error", message: @user.errors.full_messages.to_sentence)
       redirect_to facility_users_path
     end
   end

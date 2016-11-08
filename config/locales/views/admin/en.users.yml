@@ -11,7 +11,7 @@ en:
   controllers:
     users:
       create:
-        error: There was an error creating the user.
+        error: There was an error creating the user. %{message}
         success: The user has been added successfully.
         add_role: |
           You may wish to [add a !facility_downcase! role](%{link}) for this user.
