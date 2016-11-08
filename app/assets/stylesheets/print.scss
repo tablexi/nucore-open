@@ -48,4 +48,14 @@
       display: none;
     }
   }
+
+  .max-width {
+    max-width: 38% !important;
+    display: inline-block !important;
+    float: left !important;
+
+    &--wide {
+      max-width: 50% !important
+    }
+  }
 }
