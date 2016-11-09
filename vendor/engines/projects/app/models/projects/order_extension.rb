@@ -5,13 +5,11 @@ module Projects
     extend ActiveSupport::Concern
 
     included do
-      before_save :assign_project_to_order_details
-      attr_accessor :project_id
+      attr_reader :project_id
     end
 
-    private
-
-    def assign_project_to_order_details
+    def project_id=(project_id)
+      @project_id = project_id
       order_details.each { |order_detail| order_detail.project_id = project_id }
     end
 
