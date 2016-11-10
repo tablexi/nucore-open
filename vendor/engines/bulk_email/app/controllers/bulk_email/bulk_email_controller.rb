@@ -45,7 +45,7 @@ module BulkEmail
         flash[:notice] = text("bulk_email.delivery.success", count: @delivery_form.recipient_ids.count)
         redirect_to delivery_success_path
       else
-        flash[:error] = text("bulk_email.delivery.failure")
+        flash.now[:error] = text("bulk_email.delivery.failure")
         @users = User.where_ids_in(@delivery_form.recipient_ids)
         render :create
       end
