@@ -47,11 +47,30 @@ module BulkEmail
       else
         flash.now[:error] = text("bulk_email.delivery.failure")
         @users = User.where_ids_in(@delivery_form.recipient_ids)
+        populate_flow_state_params
         render :create
       end
     end
 
     private
+
+    # There are several hidden parameters in the bulk email compose form that
+    # hold state on how the user got here, what product(s) the mail is about,
+    # and how the recipients were chosen. If there is a form error, these params
+    # need to be set to keep that state in the redisplayed form.
+    def populate_flow_state_params
+      return if params[:bulk_email_delivery_form].blank?
+      search_criteria = JSON.parse(params[:bulk_email_delivery_form][:search_criteria])
+      params[:product_id] ||= params[:bulk_email_delivery_form][:product_id]
+      params[:start_date] ||= search_criteria["start_date"]
+      params[:end_date] ||= search_criteria["end_date"]
+      params[:bulk_email] ||= {}
+      params[:bulk_email][:user_types] ||=
+        search_criteria["bulk_email"]["user_types"]
+      params[:products] ||= search_criteria["products"]
+      params[:recipient_ids] ||=
+        params[:bulk_email_delivery_form][:recipient_ids]
+    end
 
     def bulk_email_cancel_path
       if cancel_params.present?
