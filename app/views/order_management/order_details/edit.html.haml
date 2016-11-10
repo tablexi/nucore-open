@@ -37,7 +37,7 @@
               method: :post
 
     .row
-      .span5= account_input(f)
+      .span5.max-width= account_input(f)
 
       .span3
         - if @order_statuses
@@ -60,16 +60,16 @@
 
     .row
       - if @order_detail.reservation
-        .span5= render "reservation", f: f, reservation: @order_detail.reservation
+        .span5.max-width= render "reservation", f: f, reservation: @order_detail.reservation
       - else
-        .span5
+        .span5.max-width
           = f.input :quantity, as: :order_detail_quantity, hint_html: { class: "help-inline" }
 
-      .span5
+      .span5.max-width.max-width--wide
         = render "costs", f: f
 
     .row
-      .span5
+      .span5.max-width
         = f.input :note, input_html: { class: "note" }
         = render "reconcile_note", f: f
 
