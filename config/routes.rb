@@ -281,7 +281,7 @@ Nucore::Application.routes.draw do
 
     resources :statements, controller: "facility_statements", only: [:index, :new, :show] do
       collection do
-        post "send_statements"
+        post "create_statements"
       end
     end
 
