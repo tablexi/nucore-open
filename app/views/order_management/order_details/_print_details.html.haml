@@ -1,0 +1,38 @@
+.show-for-print
+  .banner-list
+    .row
+      %dl
+        %dt= @order_detail.class.human_attribute_name(:account)
+        %dd= @order_detail.account
+    - if @order_detail.project
+      .row
+        %dl
+          %dt= @order_detail.class.human_attribute_name(:project)
+          %dd= @order_detail.project.name
+    .row
+      = banner_label @order_detail, :order_status
+      = banner_date_label @order_detail, :reconciled_at if @order_detail.reconciled_at
+    .row
+      = banner_date_label @order_detail.reservation, :reserve_start_at, t("activerecord.attributes.reservation.reserve_start_date")
+      %dl.span2
+        %dt= t("activerecord.attributes.reservation.duration_mins")
+        %dd.timeinput= @order_detail.reservation.duration_mins
+    .row
+      = banner_date_label @order_detail.reservation, :actual_start_at, t("activerecord.attributes.reservation.actual_start_date")
+      %dl.span2
+        %dt= t("activerecord.attributes.reservation.actual_duration_mins")
+        %dd.timeinput= @order_detail.reservation.actual_duration_mins
+    .row
+      - @order_detail.send(:extend, PriceDisplayment)
+      = banner_label @order_detail, :display_cost, t("activerecord.attributes.order_detail.actual_cost")
+      = banner_label @order_detail, :display_subsidy, t("activerecord.attributes.order_detail.actual_subsidy")
+      = banner_label @order_detail, :display_total, t("activerecord.attributes.order_detail.actual_total")
+
+    .row
+      = banner_label @order_detail, :note
+      - if @order_detail.can_reconcile? || @order_detail.reconciled?
+        = banner_label @order_detail, :reconciled_note
+      - if @order_detail.complete?
+        %dl.span2
+          %dt Assigned Staff
+          = @order_detail.assigned_user ? @order_detail.assigned_user.full_name : 'Unassigned'

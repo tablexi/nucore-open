@@ -36,49 +36,52 @@
               remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail),
               method: :post
 
-    .row
-      .span5= account_input(f)
+    .hide-from-print
+      .row
+        .span5= account_input(f)
 
-      .span3
-        - if @order_statuses
-          = f.association :order_status, collection: @order_statuses, label_method: :name_with_level, include_blank: false
+        .span3
+          - if @order_statuses
+            = f.association :order_status, collection: @order_statuses, label_method: :name_with_level, include_blank: false
+          - else
+            = f.label :order_status
+            = @order_detail.order_status
+            = l(@order_detail.reconciled_at.to_date, format: :usa) if @order_detail.reconciled_at
+
+        - if @order_detail.reservation
+          .cancel-fee-option.span2
+            = label_tag "with_cancel_fee", class: "checkbox" do
+              = check_box_tag "with_cancel_fee",
+                1,
+                false,
+                data: { connect: "#order_detail_order_status_id", show_on: OrderStatus.canceled.first.id }
+              = t("facility_order_details.edit.label.with_cancel_fee")
+
+      = render_view_hook "after_order_status", f: f, order_detail: @order_detail
+
+      .row
+        - if @order_detail.reservation
+          .span5= render "reservation", f: f, reservation: @order_detail.reservation
         - else
-          = f.label :order_status
-          = @order_detail.order_status
-          = l(@order_detail.reconciled_at.to_date, format: :usa) if @order_detail.reconciled_at
+          .span5
+            = f.input :quantity, as: :order_detail_quantity, hint_html: { class: "help-inline" }
 
-      - if @order_detail.reservation
-        .cancel-fee-option.span2
-          = label_tag "with_cancel_fee", class: "checkbox" do
-            = check_box_tag "with_cancel_fee",
-              1,
-              false,
-              data: { connect: "#order_detail_order_status_id", show_on: OrderStatus.canceled.first.id }
-            = t("facility_order_details.edit.label.with_cancel_fee")
-
-    = render_view_hook "after_order_status", f: f, order_detail: @order_detail
-
-    .row
-      - if @order_detail.reservation
-        .span5= render "reservation", f: f, reservation: @order_detail.reservation
-      - else
         .span5
-          = f.input :quantity, as: :order_detail_quantity, hint_html: { class: "help-inline" }
+          = render "costs", f: f
 
-      .span5
-        = render "costs", f: f
+      .row
+        .span5
+          = f.input :note, input_html: { class: "note" }
+          = render "reconcile_note", f: f
 
-    .row
-      .span5
-        = f.input :note, input_html: { class: "note" }
-        = render "reconcile_note", f: f
+        .span4
+          = render "assigned_user", f: f
+        .span1= render "facility_orders/order_file_icon", od: @order_detail
 
-      .span4
-        = render "assigned_user", f: f
-      .span1= render "facility_orders/order_file_icon", od: @order_detail
+      - if @order_detail.dispute_at
+        .row= render "dispute", f: f
 
-    - if @order_detail.dispute_at
-      .row= render "dispute", f: f
+    = render "print_details"
 
   .modal-footer.hide-from-print
     - if modal? && SettingsHelper.feature_on?(:print_order_detail)
