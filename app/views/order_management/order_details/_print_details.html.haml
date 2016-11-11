@@ -16,12 +16,12 @@
       = banner_date_label @order_detail.reservation, :reserve_start_at, t("activerecord.attributes.reservation.reserve_start_date")
       %dl.span2
         %dt= t("activerecord.attributes.reservation.duration_mins")
-        %dd.timeinput= @order_detail.reservation.duration_mins
+        %dd.timeinput= @order_detail.reservation.try(:duration_mins)
     .row
       = banner_date_label @order_detail.reservation, :actual_start_at, t("activerecord.attributes.reservation.actual_start_date")
       %dl.span2
         %dt= t("activerecord.attributes.reservation.actual_duration_mins")
-        %dd.timeinput= @order_detail.reservation.actual_duration_mins
+        %dd.timeinput= @order_detail.reservation.try(:actual_duration_mins)
     .row
       - @order_detail.send(:extend, PriceDisplayment)
       = banner_label @order_detail, :display_cost, t("activerecord.attributes.order_detail.actual_cost")
