@@ -104,7 +104,8 @@ class UsersController < ApplicationController
     # order details for this facility
     @order_details = @user.order_details
                           .non_reservations
-                          .where("orders.facility_id = ? AND orders.ordered_at IS NOT NULL", current_facility.id)
+                          .for_facility(current_facility)
+                          .purchased
                           .order("orders.ordered_at DESC")
                           .paginate(page: params[:page])
   end
