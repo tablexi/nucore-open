@@ -9,11 +9,13 @@
 = content_for :sidebar do
   = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
 
-
 = readonly_form_for :bulk_email_job do |f|
-  = f.input :user
+  = f.input :sender
   = f.input :created_at
-  = f.input :recipients
-  = f.input :search_criteria
+  = f.input :recipient_list
+  = f.input :start_date
+  = f.input :end_date
+  = f.input :user_types
+  = f.input :products
   = f.input :subject
   = f.input :body

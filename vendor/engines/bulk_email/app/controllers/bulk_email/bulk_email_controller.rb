@@ -59,7 +59,8 @@ module BulkEmail
     end
 
     def job
-      @bulk_email_job = BulkEmail::Job.where(facility: current_facility).find(params[:id])
+      job = BulkEmail::Job.where(facility: current_facility).find(params[:id])
+      @bulk_email_job = BulkEmail::JobDecorator.new(job)
     end
 
     private
