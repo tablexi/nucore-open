@@ -54,3 +54,16 @@ en:
         created_at: Sent
         user: Sender
         subject: Subject
+
+  simple_form:
+    labels:
+      bulk_email_job:
+        sender: Sender
+        created_at: Sent
+        recipient_list: Recipients
+        start_date: Start Date
+        end_date: End Date
+        user_types: User Types
+        products: Products
+        subject: Subject Line
+        body: Mail Content
