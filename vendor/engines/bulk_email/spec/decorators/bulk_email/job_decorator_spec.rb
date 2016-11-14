@@ -60,7 +60,6 @@ RSpec.describe BulkEmail::JobDecorator do
         it { expect(job.products).to be_blank }
       end
     end
-
   end
 
   describe "#user_types" do

@@ -36,6 +36,7 @@ module BulkEmail
         .map(&:to_i)
         .uniq
     end
+
   end
 
 end
