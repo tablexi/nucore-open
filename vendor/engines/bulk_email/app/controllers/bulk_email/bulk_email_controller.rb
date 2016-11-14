@@ -61,15 +61,12 @@ module BulkEmail
     def populate_flow_state_params
       return if params[:bulk_email_delivery_form].blank?
       search_criteria = JSON.parse(params[:bulk_email_delivery_form][:search_criteria])
-      params[:product_id] ||= params[:bulk_email_delivery_form][:product_id]
-      params[:start_date] ||= search_criteria["start_date"]
-      params[:end_date] ||= search_criteria["end_date"]
-      params[:bulk_email] ||= {}
-      params[:bulk_email][:user_types] ||=
-        search_criteria["bulk_email"]["user_types"]
-      params[:products] ||= search_criteria["products"]
-      params[:recipient_ids] ||=
-        params[:bulk_email_delivery_form][:recipient_ids]
+      params[:product_id] = params[:bulk_email_delivery_form][:product_id]
+      params[:start_date] = search_criteria["start_date"]
+      params[:end_date] = search_criteria["end_date"]
+      params[:bulk_email] = { user_types: search_criteria["bulk_email"]["user_types"] }
+      params[:products] = search_criteria["products"]
+      params[:recipient_ids] = params[:bulk_email_delivery_form][:recipient_ids]
     end
 
     def bulk_email_cancel_path
