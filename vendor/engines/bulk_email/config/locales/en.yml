@@ -1,13 +1,11 @@
 en:
   bulk_email:
-    bulk_email:
-      nav_tab:
-        create: Create
-        history: History
     history:
       no_jobs: No bulk emails have been sent.
       view: View details
     job:
+      create: Create
+      history: History
       search_criteria: Search Criteria
     title: Bulk Email
     user_type:

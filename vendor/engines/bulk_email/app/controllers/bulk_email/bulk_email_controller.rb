@@ -16,9 +16,7 @@ module BulkEmail
 
     before_action :init_search_options, only: [:search]
 
-    helper_method :bulk_email_cancel_path
     helper_method :bulk_email_content_generator
-    helper_method :bulk_email_recipient_search_params
     helper_method :datepicker_field_input
     helper_method :user_type_selected?
 
@@ -51,27 +49,7 @@ module BulkEmail
       end
     end
 
-    def history
-      @bulk_email_jobs = BulkEmail::Job
-                         .where(facility: current_facility)
-                         .order(created_at: :desc)
-                         .paginate(page: params[:page])
-    end
-
-    def job
-      job = BulkEmail::Job.where(facility: current_facility).find(params[:id])
-      @bulk_email_job = BulkEmail::JobDecorator.new(job)
-    end
-
     private
-
-    def bulk_email_cancel_path
-      if cancel_params.present?
-        facility_bulk_email_path(cancel_params)
-      else
-        facility_bulk_email_path
-      end
-    end
 
     def bulk_email_content_generator
       @content_generator ||=
@@ -80,19 +58,6 @@ module BulkEmail
         else
           ContentGenerator.new(current_facility)
         end
-    end
-
-    def bulk_email_recipient_search_params
-      @bulk_email_recipient_search_params ||= params.slice(:start_date,
-                                                           :end_date,
-                                                           :bulk_email,
-                                                           :products,
-                                                           :product_id)
-    end
-
-    def cancel_params
-      @cancel_params ||=
-        bulk_email_recipient_search_params.merge(return_path: params[:return_path])
     end
 
     def delivery_success_path
