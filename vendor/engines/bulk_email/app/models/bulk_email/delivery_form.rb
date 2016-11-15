@@ -35,12 +35,16 @@ module BulkEmail
 
     private
 
+    def subject
+      "#{content_generator.subject_prefix} #{custom_subject}"
+    end
+
+    def body
+      content_generator.wrap_text(custom_message)
+    end
+
     def deliver(recipient)
-      Mailer.send_mail(
-        recipient: recipient,
-        custom_subject: "#{content_generator.subject_prefix} #{custom_subject}",
-        custom_message: content_generator.wrap_text(custom_message),
-      ).deliver_later
+      Mailer.send_mail(recipient: recipient, subject: subject, body: body).deliver_later
     end
 
     def recipients
@@ -51,8 +55,8 @@ module BulkEmail
       BulkEmail::Job.create!(
         facility: facility,
         user: user,
-        subject: "#{content_generator.subject_prefix} #{custom_subject}",
-        body: content_generator.wrap_text(custom_message),
+        subject: subject,
+        body: body,
         recipients: recipients.map(&:email),
         search_criteria: search_criteria,
       )

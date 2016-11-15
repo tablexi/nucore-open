@@ -2,10 +2,10 @@ module BulkEmail
 
   class Mailer < BaseMailer
 
-    def send_mail(recipient:, custom_subject:, custom_message:)
+    def send_mail(recipient:, subject:, body:)
       @recipient = recipient
-      @body = custom_message
-      mail(to: recipient.email, subject: custom_subject)
+      @body = body
+      mail(to: recipient.email, subject: subject)
     end
 
   end
