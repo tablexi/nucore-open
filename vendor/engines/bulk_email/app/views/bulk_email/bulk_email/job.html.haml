@@ -13,9 +13,11 @@
   = f.input :sender
   = f.input :created_at
   = f.input :recipient_list
-  = f.input :start_date
-  = f.input :end_date
-  = f.input :user_types
-  = f.input :products
   = f.input :subject
   = f.input :body
+
+  %h3= text("bulk_email.job.search_criteria")
+  = f.input :user_types
+  = f.input :products
+  = f.input :start_date
+  = f.input :end_date
