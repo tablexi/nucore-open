@@ -38,10 +38,8 @@ module BulkEmail
     def deliver(recipient)
       Mailer.send_mail(
         recipient: recipient,
-        custom_subject: custom_subject,
-        facility: facility,
-        custom_message: custom_message,
-        product: product,
+        custom_subject: "#{content_generator.subject_prefix} #{custom_subject}",
+        custom_message: content_generator.wrap_text(custom_message),
       ).deliver_later
     end
 
