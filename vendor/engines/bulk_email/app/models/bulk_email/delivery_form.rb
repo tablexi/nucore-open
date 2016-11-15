@@ -5,13 +5,14 @@ module BulkEmail
     include ActiveModel::Model
 
     attr_accessor :custom_subject, :custom_message, :recipient_ids, :product_id, :search_criteria
-    attr_reader :facility, :user
+    attr_reader :facility, :user, :content_generator
 
     validates :custom_subject, :custom_message, :recipient_ids, presence: true
 
-    def initialize(user, facility)
+    def initialize(user, facility, content_generator)
       @user = user
       @facility = facility
+      @content_generator = content_generator
     end
 
     def assign_attributes(params)
@@ -52,8 +53,8 @@ module BulkEmail
       BulkEmail::Job.create!(
         facility: facility,
         user: user,
-        subject: custom_subject,
-        body: custom_message,
+        subject: "#{content_generator.subject_prefix} #{custom_subject}",
+        body: content_generator.wrap_text(custom_message),
         recipients: recipients.map(&:email),
         search_criteria: search_criteria,
       )
