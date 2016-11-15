@@ -4,7 +4,7 @@
 = content_for :h1 do
   = current_facility
 
-%h2= t("bulk_email.title")
+%h2= text("bulk_email.title")
 
 = content_for :sidebar do
   = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
@@ -23,10 +23,10 @@
           %td= bulk_email_job.user.email
           %td= bulk_email_job.subject
           %td
-            = link_to t(".view"),
+            = link_to text("bulk_email.history.view"),
               facility_bulk_email_job_path(current_facility, bulk_email_job)
 
   = will_paginate(@bulk_email_jobs)
 
 - else
-  %h4= t(".no_jobs")
+  %h4= text("bulk_email.history.no_jobs")

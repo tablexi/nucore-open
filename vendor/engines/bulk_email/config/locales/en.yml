@@ -1,12 +1,12 @@
 en:
   bulk_email:
     bulk_email:
-      history:
-        no_jobs: No bulk emails have been sent.
-        view: View details
       nav_tab:
         create: Create
         history: History
+    history:
+      no_jobs: No bulk emails have been sent.
+      view: View details
     title: Bulk Email
     user_type:
       customers: Customers
