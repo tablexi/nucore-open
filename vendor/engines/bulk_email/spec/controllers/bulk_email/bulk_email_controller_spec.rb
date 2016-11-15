@@ -209,5 +209,4 @@ RSpec.describe BulkEmail::BulkEmailController do
       end
     end
   end
-
 end
