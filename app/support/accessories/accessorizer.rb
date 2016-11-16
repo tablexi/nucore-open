@@ -76,7 +76,6 @@ class Accessories::Accessorizer
   def assign_attributes_and_save(od, params)
     od.assign_attributes(permitted_attributes(params))
     od.update_quantity # so auto-scaled overrides the parameter
-    od.order_status_id = @order_detail.order_status_id
     od.assign_estimated_price
     od.enabled = true
 
@@ -84,6 +83,9 @@ class Accessories::Accessorizer
       od.save! # do validations before trying to backdate
       od.backdate_to_complete! @order_detail.fulfilled_at
     else
+      # Cannot do this with backdate_to_complete! because then it doesn't think
+      # the status is changing.
+      od.order_status_id = @order_detail.order_status_id
       od.save!
     end
   end
