@@ -11,7 +11,8 @@ module BulkEmail
     end
 
     def products
-      Product.where(id: selected_product_ids).pluck(:name).join(", ")
+      @products ||=
+        Product.where(id: selected_product_ids).pluck(:name).join(", ")
     end
 
     def start_date

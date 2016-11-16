@@ -18,6 +18,7 @@
 
   %h3= text("bulk_email.job.search_criteria")
   = f.input :user_types
-  = f.input :products
+  - if @bulk_email_job.products.present?
+    = f.input :products
   = f.input :start_date
   = f.input :end_date
