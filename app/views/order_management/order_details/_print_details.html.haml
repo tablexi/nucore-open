@@ -1,19 +1,15 @@
-.show-for-print
+%div.manage_order_detail
   .banner-list
     .row
       %dl
         %dt= @order_detail.class.human_attribute_name(:account)
         %dd= @order_detail.account
-    - if @order_detail.project
-      .row
-        %dl
-          %dt= @order_detail.class.human_attribute_name(:project)
-          %dd= @order_detail.project.name
+    = render_view_hook "after_account_print", order_detail: @order_detail
     .row
       = banner_label @order_detail, :order_status
       = banner_date_label @order_detail, :reconciled_at if @order_detail.reconciled_at
     .row
-      = banner_date_label @order_detail.reservation, :reserve_start_at, t("activerecord.attributes.reservation.reserve_start_date")
+      = banner_date_label @order_detail.reservation, :reserve_start_at, OrderDetail.human_attribute_name(:reserve_start_date).titleize
       %dl.span2
         %dt= t("activerecord.attributes.reservation.duration_mins")
         %dd.timeinput= @order_detail.reservation.try(:duration_mins)
@@ -23,14 +19,15 @@
         %dt= t("activerecord.attributes.reservation.actual_duration_mins")
         %dd.timeinput= @order_detail.reservation.try(:actual_duration_mins)
     .row
+      - prefix = @order_detail.actual_cost? ? "actual" : "estimated"
       - @order_detail.send(:extend, PriceDisplayment)
-      = banner_label @order_detail, :display_cost, t("activerecord.attributes.order_detail.actual_cost")
-      = banner_label @order_detail, :display_subsidy, t("activerecord.attributes.order_detail.actual_subsidy")
-      = banner_label @order_detail, :display_total, t("activerecord.attributes.order_detail.actual_total")
+      = banner_label @order_detail, :display_cost, t("activerecord.attributes.order_detail.#{prefix}_cost")
+      = banner_label @order_detail, :display_subsidy, t("activerecord.attributes.order_detail.#{prefix}_subsidy")
+      = banner_label @order_detail, :display_total, t("activerecord.attributes.order_detail.#{prefix}_total")
 
     .row
       = banner_label @order_detail, :note
-      - if @order_detail.can_reconcile? || @order_detail.reconciled?
+      - if @order_detail.reconciled_note.present?
         = banner_label @order_detail, :reconciled_note
       - if @order_detail.complete?
         %dl.span2
