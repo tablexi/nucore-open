@@ -14,7 +14,8 @@
   = f.input :created_at
   = f.input :recipient_list
   = f.input :subject
-  = f.input :body
+  = f.input :body, required: false do
+    = simple_format(@bulk_email_job.body)
 
   %h3= text("bulk_email.job.search_criteria")
   = f.input :user_types
