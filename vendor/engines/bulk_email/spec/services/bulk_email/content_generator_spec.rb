@@ -1,24 +1,23 @@
 require "rails_helper"
 
 RSpec.describe BulkEmail::ContentGenerator do
+  subject { described_class.new(facility) }
+
   let(:facility) { instrument.facility }
   let(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
   let(:recipient) { FactoryGirl.build(:user) }
 
   describe "#greeting" do
-    context "without a recipient" do
-      subject { described_class.new(facility) }
-
+    context "without a recipient name" do
       it "generates a greeting with a placeholder name" do
         expect(subject.greeting).to include("Firstname Lastname")
       end
     end
 
-    context "with a recipient" do
-      subject { described_class.new(facility, nil, recipient) }
-
+    context "with a recipient name" do
       it "generates a greeting with a placeholder name" do
-        expect(subject.greeting).to include(recipient.full_name)
+        expect(subject.greeting(recipient.full_name))
+          .to include(recipient.full_name)
       end
     end
 
@@ -33,14 +32,10 @@ RSpec.describe BulkEmail::ContentGenerator do
   end
 
   describe "#signoff" do
-    subject { described_class.new(facility) }
-
     it { expect(subject.signoff).to be_present }
   end
 
   describe "#subject_prefix" do
-    subject { described_class.new(facility) }
-
     it "includes the app and facility names" do
       expect(subject.subject_prefix)
         .to eq("[#{I18n.t('app_name')} #{facility.name}]")
@@ -48,7 +43,7 @@ RSpec.describe BulkEmail::ContentGenerator do
   end
 
   describe "#wrap_text" do
-    subject { described_class.new(facility, instrument, recipient) }
+    subject { described_class.new(facility, instrument) }
 
     it "wraps content with the greeting and signoff" do
       expect(subject.wrap_text("This is some text"))

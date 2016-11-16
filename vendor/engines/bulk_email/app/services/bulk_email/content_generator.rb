@@ -2,25 +2,26 @@ module BulkEmail
 
   class ContentGenerator
 
-    attr_reader :facility, :subject_product, :recipient
+    DEFAULT_RECIPIENT_NAME = "Firstname Lastname".freeze
 
-    def initialize(facility, subject_product = nil, recipient = nil)
+    attr_reader :facility, :subject_product
+
+    def initialize(facility, subject_product = nil)
       @facility = facility
       @subject_product = subject_product
-      @recipient = recipient
     end
 
     def subject_prefix
       "[#{I18n.t('app_name')} #{facility.name}]"
     end
 
-    def wrap_text(text)
-      [greeting, text, signoff].join("\n\n")
+    def wrap_text(text, recipient_name = nil)
+      [greeting(recipient_name), text, signoff].join("\n\n")
     end
 
-    def greeting
+    def greeting(recipient_name = nil)
       [
-        I18n.t("bulk_email.body.greeting", recipient_name: recipient_name),
+        I18n.t("bulk_email.body.greeting", recipient_name: recipient_name || DEFAULT_RECIPIENT_NAME),
         reason_statement,
       ].compact.join("\n\n")
     end
@@ -37,10 +38,6 @@ module BulkEmail
              product_name: subject_product.name,
              scope: "bulk_email.product_unavailable_reason_statements",
              default: :other)
-    end
-
-    def recipient_name
-      recipient.try(:full_name) || "Firstname Lastname"
     end
 
   end

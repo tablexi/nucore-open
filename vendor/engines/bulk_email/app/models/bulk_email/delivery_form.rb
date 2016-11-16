@@ -39,12 +39,14 @@ module BulkEmail
       "#{content_generator.subject_prefix} #{custom_subject}"
     end
 
-    def body
-      content_generator.wrap_text(custom_message)
+    def body(recipient_name = nil)
+      content_generator.wrap_text(custom_message, recipient_name)
     end
 
     def deliver(recipient)
-      Mailer.send_mail(recipient: recipient, subject: subject, body: body).deliver_later
+      Mailer
+        .send_mail(recipient: recipient, subject: subject, body: body(recipient.full_name))
+        .deliver_later
     end
 
     def recipients
