@@ -2,6 +2,9 @@
 = javascript_include_tag "bulk_email/bulk_email.js"
 = stylesheet_link_tag "bulk_email/application.css"
 
+= content_for :tabnav do
+  = render "bulk_email/nav_tab", secondary_tab: "create"
+
 = content_for :h1 do
   = current_facility
 

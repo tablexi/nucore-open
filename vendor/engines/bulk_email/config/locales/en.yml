@@ -1,5 +1,12 @@
 en:
   bulk_email:
+    history:
+      no_jobs: No bulk emails have been sent.
+      view: View details
+    job:
+      create: Create
+      history: History
+      search_criteria: Search Criteria
     title: Bulk Email
     user_type:
       customers: Customers
@@ -14,6 +21,7 @@ en:
         last_90_days: within the last 90 days
         in_the_last_year: in the last year
         next_month: during the next month
+      unset: not set
     no_results: No users found
     compose_mail: Compose Mail
     export: Export
@@ -39,3 +47,23 @@ en:
       bulk_email/delivery_form:
         custom_message: Message
         custom_subject: Subject line
+
+  activerecord:
+    attributes:
+      bulk_email/job:
+        created_at: Sent
+        user: Sender
+        subject: Subject
+
+  simple_form:
+    labels:
+      bulk_email_job:
+        sender: Sender
+        created_at: Sent
+        recipient_list: Recipients
+        start_date: Start Date
+        end_date: End Date
+        user_types: User Types
+        products: Products
+        subject: Subject Line
+        body: Mail Content

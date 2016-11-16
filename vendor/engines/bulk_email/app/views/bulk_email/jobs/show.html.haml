@@ -1,0 +1,25 @@
+= content_for :tabnav do
+  = render "bulk_email/nav_tab", secondary_tab: "history"
+
+= content_for :h1 do
+  = current_facility
+
+%h2= t("bulk_email.title")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "bulk_email"
+
+= readonly_form_for :bulk_email_job do |f|
+  = f.input :sender
+  = f.input :created_at
+  = f.input :recipient_list
+  = f.input :subject
+  = f.input :body, required: false do
+    = simple_format(@bulk_email_job.body)
+
+  %h3= text("bulk_email.job.search_criteria")
+  = f.input :user_types
+  - if @bulk_email_job.products.present?
+    = f.input :products
+  = f.input :start_date
+  = f.input :end_date

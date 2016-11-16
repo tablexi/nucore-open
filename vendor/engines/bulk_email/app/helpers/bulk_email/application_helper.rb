@@ -15,6 +15,27 @@ module BulkEmail
       )
     end
 
+    def bulk_email_cancel_params
+      @bulk_email_cancel_params ||=
+        bulk_email_recipient_search_params.merge(return_path: params[:return_path])
+    end
+
+    def bulk_email_cancel_path
+      if bulk_email_cancel_params.present?
+        facility_bulk_email_path(bulk_email_cancel_params)
+      else
+        facility_bulk_email_path
+      end
+    end
+
+    def bulk_email_recipient_search_params
+      @bulk_email_recipient_search_params ||= params.slice(:start_date,
+                                                           :end_date,
+                                                           :bulk_email,
+                                                           :products,
+                                                           :product_id)
+    end
+
     def date_range_selection_link(translation_key, params, start_date: Date.today, end_date: Date.today)
       start_date = format_usa_date(start_date)
       end_date = format_usa_date(end_date)
