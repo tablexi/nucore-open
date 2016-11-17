@@ -18,7 +18,7 @@ module Projects
                         "after_account",
                         "projects/shared/select_project"
 
-      ViewHook.add_hook "order_management.order_details.edit",
+      ViewHook.add_hook "order_management.order_details.form",
                         "after_order_status",
                         "projects/shared/select_project"
 
