@@ -2,23 +2,10 @@ module BulkEmail
 
   class Mailer < BaseMailer
 
-    def send_mail(recipient:, custom_subject:, facility:, custom_message:, product: nil)
+    def send_mail(recipient:, subject:, body:)
       @recipient = recipient
-      @facility = facility
-      @custom_subject = custom_subject
-      @product = product
-      @body = content_generator.wrap_text(custom_message)
+      @body = body
       mail(to: recipient.email, subject: subject)
-    end
-
-    def subject
-      "#{content_generator.subject_prefix} #{@custom_subject}"
-    end
-
-    private
-
-    def content_generator
-      @content_generator ||= ContentGenerator.new(@facility, @product, @recipient)
     end
 
   end
