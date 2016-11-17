@@ -25,20 +25,20 @@ module FacilityOrdersHelper
     output.join(" ").html_safe
   end
 
-  def banner_date_label(object, field)
-    banner_label(object, field) do |value|
+  def banner_date_label(object, field, label = nil)
+    banner_label(object, field, label) do |value|
       value = human_datetime value
       value = yield(value) if value && block_given?
       value
     end
   end
 
-  def banner_label(object, field)
+  def banner_label(object, field, label = nil)
     if value = object.send(:try, field)
       value = yield(value) if block_given?
 
       content_tag :dl, class: "span2" do
-        content_tag(:dt, object.class.human_attribute_name(field)) +
+        content_tag(:dt, label || object.class.human_attribute_name(field)) +
           content_tag(:dd, value)
       end
     end

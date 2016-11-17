@@ -1,0 +1,20 @@
+%div.manage_order_detail
+  .banner-list
+    .row
+      = banner_date_label @order_detail, :ordered_at
+      = banner_label @order_detail, :created_by_user
+      = banner_label @order_detail, :user
+      = banner_date_label @order_detail.reservation, :canceled_at
+      = banner_label @order_detail.reservation, :canceled_by_user
+      = banner_label @order_detail.reservation, :canceled_reason
+      = banner_date_label @order_detail, :fulfilled_at
+      = banner_date_label @order_detail, :reviewed_at
+      = banner_date_label @order_detail, :statement_date do |date|
+        - link_to date, statement_path(@order_detail.statement)
+      = banner_date_label @order_detail, :journal_date
+
+      - if @order_detail.removable_from_journal?
+        .row
+          = link_to t(".remove_from_journal"),
+            remove_from_journal_facility_order_order_detail_path(current_facility, @order, @order_detail),
+            method: :post

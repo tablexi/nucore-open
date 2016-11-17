@@ -1,0 +1,5 @@
+- if order_detail.project
+  .row
+    %dl.span8
+      %dt= order_detail.class.human_attribute_name(:project)
+      %dd= order_detail.project.name
