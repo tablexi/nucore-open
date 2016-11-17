@@ -73,13 +73,15 @@ module BulkEmail
       end
     end
 
+    def subject_product
+      product_id = params[:product_id].presence ||
+                   params[:bulk_email_delivery_form].try(:[], :product_id)
+      Product.find(product_id) if product_id.present?
+    end
+
     def bulk_email_content_generator
-      @content_generator ||=
-        if params[:product_id].present?
-          ContentGenerator.new(current_facility, Product.find(params[:product_id]))
-        else
-          ContentGenerator.new(current_facility)
-        end
+      @bulk_email_content_generator ||=
+        ContentGenerator.new(current_facility, subject_product)
     end
 
     def bulk_email_recipient_search_params
