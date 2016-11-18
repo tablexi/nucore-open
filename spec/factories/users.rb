@@ -41,7 +41,7 @@ FactoryGirl.define do
         user,
         AccountUser::ACCOUNT_ADMINISTRATOR,
         evaluator.account,
-        evaluator.administrator,
+        evaluator.administrator || user,
       )
     end
   end

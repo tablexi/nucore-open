@@ -12,7 +12,7 @@ class FacilityAccountsController < ApplicationController
 
   authorize_resource :account
 
-  before_action :check_billing_access, only: [:accounts_receivable, :show_statement]
+  before_action :check_billing_access, only: [:accounts_receivable]
 
   layout "two_column"
 
