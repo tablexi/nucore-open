@@ -145,7 +145,8 @@ RSpec.describe AccessoriesController do
         it "creates the order detail as completed if the original is" do
           order_detail.backdate_to_complete!
           do_request
-          expect(assigns(:order_details).first).to be_complete
+          expect(assigns(:order_details).first.reload).to be_complete
+          expect(assigns(:order_details).first).to be_fulfilled_at
         end
 
         context "adding a disabled accessory" do
@@ -205,7 +206,8 @@ RSpec.describe AccessoriesController do
         it "creates the order detail as completed if the original is" do
           order_detail.backdate_to_complete!
           do_request
-          expect(assigns(:order_details).first).to be_complete
+          expect(assigns(:order_details).first.reload).to be_complete
+          expect(assigns(:order_details).first).to be_fulfilled_at
         end
 
         context "adding a disabled accessory" do
