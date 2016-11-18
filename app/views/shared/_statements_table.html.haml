@@ -20,7 +20,7 @@
           %td.centered
             = "##{s.invoice_number}"
             %br
-            - path = local_assigns[:admin_view] ? statement_path(s) : account_statement_path(s.account, s, format: :pdf)
+            - path = current_facility ? statement_path(s) : account_statement_path(s.account, s, format: :pdf)
             = link_to t("statements.pdf.download"), path
           %td= human_datetime(s.created_at)
           %td= s.account.notify_users.map(&:full_name).join(', ')

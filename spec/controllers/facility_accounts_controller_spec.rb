@@ -325,19 +325,37 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
       is_expected.to render_template "show_statement_list"
     end
 
-    it "should show statement PDF" do
-      @params[:statement_id] = @statement.id
-      @params[:format] = "pdf"
-      maybe_grant_always_sign_in :director
-      do_request
-      expect(assigns(:account)).to eq(@account)
-      expect(assigns(:facility)).to eq(@authable)
-      expect(assigns(:statement)).to eq(@statement)
-      expect(response.content_type).to eq("application/pdf")
-      expect(response.body).to match(/%PDF-1.\d/)
-      is_expected.to render_template "statements/show"
-    end
+    describe "show" do
+      before do
+        @params[:statement_id] = @statement.id
+        @params[:format] = "pdf"
+      end
 
+      it "shows the statement PDF for a director" do
+        maybe_grant_always_sign_in :director
+        do_request
+        expect(assigns(:account)).to eq(@account)
+        expect(assigns(:facility)).to eq(@authable)
+        expect(assigns(:statement)).to eq(@statement)
+        expect(response.content_type).to eq("application/pdf")
+        expect(response.body).to match(/\A%PDF-1.\d+\b/)
+        is_expected.to render_template "statements/show"
+      end
+
+      it "does not allow an account admin" do
+        user = create(:user, :business_administrator, account: @account)
+        sign_in user
+        do_request
+        expect(response.code).to eq("403")
+      end
+
+      it "allows billing administrator to access the statement" do
+        user = create(:user, :billing_administrator)
+        sign_in user
+        do_request
+        expect(response).to be_success
+      end
+    end
   end
 
   context "suspension", if: SettingsHelper.feature_on?(:suspend_accounts) do
