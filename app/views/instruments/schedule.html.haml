@@ -67,7 +67,7 @@
 
             %td
               = link_to reservation,
-                facility_instrument_reservation_edit_admin_path(current_facility, @instrument, reservation)
+                facility_instrument_reservation_edit_admin_path(current_facility, reservation.product, reservation)
 
             %td= reservation_category_label(reservation)
             %td= reservation.admin_note
