@@ -2,7 +2,6 @@ en:
   views:
     facility_accounts:
       show_statement:
-        order_number: "Order #"
+        no_transactions: No transactions exist for this period.
         transaction_date: Transaction Date
-        order_status: Current Order Status
         amount: Amount
