@@ -1,9 +1,22 @@
 require "rails_helper"
 require "controller_spec_helper"
 require "transaction_search_spec_helper"
-require "support/facility_statements_shared_examples"
 
 if Account.config.statements_enabled?
+  RSpec.shared_examples "it sets up order_detail and creates statements" do
+    it "sets up order_detail and creates statements" do
+      expect(@order_detail1.reload.reviewed_at).to be < Time.zone.now
+      expect(@order_detail1.statement).to be_nil
+      expect(@order_detail1.price_policy).not_to be_nil
+      expect(@order_detail1.account.type).to eq(@account_type)
+      expect(@order_detail1.dispute_at).to be_nil
+
+      grant_and_sign_in(@user)
+      do_request
+      expect(flash[:error]).to be_nil
+      expect(response).to redirect_to action: :new
+    end
+  end
 
   RSpec.describe FacilityStatementsController do
     render_views
@@ -122,7 +135,6 @@ if Account.config.statements_enabled?
 
     context "create" do
       before :each do
-        ActionMailer::Base.deliveries.clear
         create_order_details
         @method = :post
         @action = :create
@@ -140,9 +152,8 @@ if Account.config.statements_enabled?
 
         it "sends statements" do
           grant_and_sign_in(@user)
-          do_request
 
-          expect(ActionMailer::Base.deliveries).not_to be_empty
+          expect { do_request }.to change(ActionMailer::Base.deliveries, :count).by(2)
         end
       end
 
@@ -151,9 +162,8 @@ if Account.config.statements_enabled?
 
         it "does not send statements" do
           grant_and_sign_in(@user)
-          do_request
 
-          expect(ActionMailer::Base.deliveries).to be_empty
+          expect { do_request }.not_to change(ActionMailer::Base.deliveries, :count)
         end
       end
 

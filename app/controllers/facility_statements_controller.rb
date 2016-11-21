@@ -30,19 +30,17 @@ class FacilityStatementsController < ApplicationController
     @layout = "two_column_head"
   end
 
-  # POST /facilities/:facility_id/statements/create
+  # POST /facilities/:facility_id/statements
   def create
     @statement_creator = StatementCreator.new(order_detail_ids: params[:order_detail_ids], session_user: session_user, current_facility: current_facility)
-    if @statement_creator.order_detail_ids.nil? || @statement_creator.order_detail_ids.empty?
+
+    if @statement_creator.order_detail_ids.blank?
       flash[:error] = text("no_selection")
     elsif @statement_creator.create
-      if @statement_creator.errors.any?
-        flash[:error] = text("errors_html", errors: @statement_creator.formatted_errors).html_safe
-        raise ActiveRecord::Rollback
-      else
-        @statement_creator.send_statement_emails
-        flash[:notice] = text(success_message, accounts: @statement_creator.formatted_account_list).html_safe
-      end
+      @statement_creator.send_statement_emails
+      flash[:notice] = text(success_message, accounts: @statement_creator.formatted_account_list).html_safe
+    else
+      flash[:error] = text("errors_html", errors: @statement_creator.formatted_errors).html_safe
     end
 
     redirect_to action: :new

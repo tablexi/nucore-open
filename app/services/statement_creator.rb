@@ -1,4 +1,5 @@
 class StatementCreator
+
   attr_accessor :order_detail_ids, :errors, :to_statement, :account_statements, :session_user, :current_facility
 
   def initialize(params)
@@ -13,7 +14,10 @@ class StatementCreator
     OrderDetail.transaction do
       set_order_details_to_statement
       setup_statement_from_details
+      raise ActiveRecord::Rollback if errors.any?
     end
+
+    errors.none?
   end
 
   def formatted_errors
