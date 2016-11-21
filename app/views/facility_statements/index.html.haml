@@ -2,8 +2,8 @@
   =h current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'statement_history' }
+  = render "admin/shared/sidenav_billing", sidenav_tab: "statement_history"
 
-%h2= t(".head")
+%h2= text("head")
 
-= render partial: 'shared/statements_table'
+= render partial: "shared/statements_table"

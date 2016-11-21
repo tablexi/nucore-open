@@ -1,6 +1,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 require "transaction_search_spec_helper"
+require "support/facility_statements_shared_examples"
 
 if Account.config.statements_enabled?
 
@@ -98,7 +99,7 @@ if Account.config.statements_enabled?
           expect(controller.params[:date_range]).not_to be_present
           expect(assigns[:search_options][:accounts]).to contain_all [@account, @account2]
           expect(assigns(:facility)).to eq(@authable)
-          expect(assigns(:order_detail_action)).to eq(:create_statements)
+          expect(assigns(:order_detail_action)).to eq(:create)
           expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
         end
       end
@@ -111,7 +112,7 @@ if Account.config.statements_enabled?
           expect(controller.params[:date_range][:start]).to be_present
           expect(assigns[:search_options][:accounts]).to contain_all [@account, @account2]
           expect(assigns(:facility)).to eq(@authable)
-          expect(assigns(:order_detail_action)).to eq(:create_statements)
+          expect(assigns(:order_detail_action)).to eq(:create)
           expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
         end
       end
@@ -119,12 +120,12 @@ if Account.config.statements_enabled?
       it_should_support_searching
     end
 
-    context "create_statements" do
+    context "create" do
       before :each do
         ActionMailer::Base.deliveries.clear
         create_order_details
         @method = :post
-        @action = :create_statements
+        @action = :create
         @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail3.id])
       end
 
@@ -134,39 +135,25 @@ if Account.config.statements_enabled?
 
       it_should_deny_all [:staff, :senior_staff]
 
-      context "when statement emailing is on", feature_setting: { skip_statement_emails: false } do
-        it "should create and send statements" do
-          expect(@order_detail1.reload.reviewed_at).to be < Time.zone.now
-          expect(@order_detail1.statement).to be_nil
-          expect(@order_detail1.price_policy).not_to be_nil
-          expect(@order_detail1.account.type).to eq(@account_type)
-          expect(@order_detail1.dispute_at).to be_nil
+      context "when statement emailing is on", feature_setting: { send_statement_emails: true } do
+        include_examples "it sets up order_detail and creates statements"
 
+        it "sends statements" do
           grant_and_sign_in(@user)
           do_request
+
           expect(ActionMailer::Base.deliveries).not_to be_empty
-          expect(flash[:error]).to be_nil
-          expect(assigns(:account_statements)).to have_key(@account)
-          expect(assigns(:account_statements)).to have_key(@account2)
-          expect(response).to redirect_to action: :new
         end
       end
 
-      context "when statement emailing is off", feature_setting: { skip_statement_emails: true } do
-        it "should create but not send statements" do
-          expect(@order_detail1.reload.reviewed_at).to be < Time.zone.now
-          expect(@order_detail1.statement).to be_nil
-          expect(@order_detail1.price_policy).not_to be_nil
-          expect(@order_detail1.account.type).to eq(@account_type)
-          expect(@order_detail1.dispute_at).to be_nil
+      context "when statement emailing is off", feature_setting: { send_statement_emails: false } do
+        include_examples "it sets up order_detail and creates statements"
 
+        it "does not send statements" do
           grant_and_sign_in(@user)
           do_request
+
           expect(ActionMailer::Base.deliveries).to be_empty
-          expect(flash[:error]).to be_nil
-          expect(assigns(:account_statements)).to have_key(@account)
-          expect(assigns(:account_statements)).to have_key(@account2)
-          expect(response).to redirect_to action: :new
         end
       end
 

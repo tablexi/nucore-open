@@ -138,6 +138,10 @@ class Account < ActiveRecord::Base
     [owner_user] + business_admin_users
   end
 
+  def send_notification(statement)
+    notify_users.each { |u| Notifier.delay.statement(user: u, facility: statement.facility, account: self, statement: statement) }
+  end
+
   def suspend
     update_attributes(suspended_at: Time.current)
   end
