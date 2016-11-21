@@ -1,0 +1,8 @@
+en:
+  views:
+    facility_accounts:
+      show_statement:
+        order_number: "Order #"
+        transaction_date: Transaction Date
+        order_status: Current Order Status
+        amount: Amount

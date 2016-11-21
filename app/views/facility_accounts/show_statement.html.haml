@@ -15,11 +15,11 @@
   %table.table.table-striped.table-hover.old-table
     %thead
       %tr
-        %th Order #
-        %th Transaction Date
-        %th Product
-        %th Current Order Status
-        %th.currency Amount
+        %th= text("order_number")
+        %th= text("transaction_date")
+        %th= Product.name
+        %th= text("order_status")
+        %th.currency= text("amount")
     %tbody
       - @order_details.each do |od|
         %tr{ class: row_class(od) }
