@@ -1,0 +1,7 @@
+en:
+  views:
+    facility_accounts:
+      show_statement:
+        no_transactions: No transactions exist for this period.
+        transaction_date: Transaction Date
+        amount: Amount

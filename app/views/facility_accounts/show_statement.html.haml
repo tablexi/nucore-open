@@ -10,16 +10,16 @@
 %h2= @account
 
 - if @order_details.empty?
-  %p.notice No transactions exist for this period.
+  %p.notice= text("no_transactions")
 - else
   %table.table.table-striped.table-hover.old-table
     %thead
       %tr
-        %th Order #
-        %th Transaction Date
-        %th Product
-        %th Order Status
-        %th.currency Amount
+        %th= OrderDetail.human_attribute_name(:id)
+        %th= text("transaction_date")
+        %th= Product.name
+        %th= OrderDetail.human_attribute_name(:order_status)
+        %th.currency= text("amount")
     %tbody
       - @order_details.each do |od|
         %tr{ class: row_class(od) }
