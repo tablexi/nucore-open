@@ -76,7 +76,10 @@
             %td
             %td= reservation.class.model_name.human
             %td
-              = link_to reservation, edit_facility_instrument_offline_reservation_path(current_facility, @instrument, reservation) if @instrument == reservation.product
+              - if @instrument == reservation.product
+                = link_to reservation, edit_facility_instrument_offline_reservation_path(current_facility, @instrument, reservation)
+              - else
+                = reservation
             %td= reservation_category_label(reservation)
             %td= reservation.admin_note
 
