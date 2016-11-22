@@ -18,8 +18,8 @@
         as: :reservation,
         locals: { product: instrument }
 
-      - if @display_datetime.beginning_of_day == Time.zone.now.beginning_of_day
-        .current_time{style: "left: #{datetime_left_position(@display_datetime, Time.zone.now)}"}
+      - if @display_datetime.beginning_of_day == Time.current.beginning_of_day
+        .current_time{style: "left: #{datetime_left_position(@display_datetime, Time.current)}"}
 
     - if !public_timeline? && instrument.has_real_relay?
       = render "shared/timeline/relay_switch", instrument: instrument
