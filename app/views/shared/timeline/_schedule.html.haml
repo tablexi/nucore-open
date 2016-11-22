@@ -1,6 +1,7 @@
-- if schedule.shared?
+- products = public_timeline? ? schedule.publicly_visible_products : schedule.facility_visible_products
+- if products.count > 1
   .timeline-schedule
     %h3= schedule.name
-    = render :partial => 'shared/timeline/instrument', :collection => schedule.products, :as => :instrument
+    = render partial: "shared/timeline/instrument", collection: products, as: :instrument
 - else
-  = render :partial => 'shared/timeline/instrument', :locals => { :instrument => schedule.products.first }
+  = render partial: "shared/timeline/instrument", collection: products, as: :instrument

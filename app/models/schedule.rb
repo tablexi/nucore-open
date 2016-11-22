@@ -32,6 +32,14 @@ class Schedule < ActiveRecord::Base
   # Instance methods
   # --------
 
+  def publicly_visible_products
+    products.active
+  end
+
+  def facility_visible_products
+    products.not_archived
+  end
+
   def shared?
     products.count > 1
   end
