@@ -7,4 +7,3 @@ en:
         no_orders: There are no completed orders that require statements.
       index:
         head: Statement History
-        no_statements: No statements have been sent yet

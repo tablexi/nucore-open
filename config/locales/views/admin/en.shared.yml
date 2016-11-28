@@ -1,0 +1,8 @@
+en:
+  views:
+    shared:
+      sidenav_billing:
+        statements:
+          head: "Statement History"
+      statements_table:
+        no_statements: No statements have been sent yet

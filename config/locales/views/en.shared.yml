@@ -1,6 +1,0 @@
-en:
-  views:
-    shared:
-      sidenav_billing:
-        statements:
-          head: "Send Notifications"
