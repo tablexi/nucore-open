@@ -1,0 +1,9 @@
+en:
+  views:
+    facility_statements:
+      new:
+        instructions: Please review the following payment sources. A statement will be generated for each of the payment sources and an email with a link to the statement will be sent.
+        instructions_without_email: Please review the following payment sources. A statement will be generated for each of the payment sources.
+        no_orders: There are no completed orders that require statements.
+      index:
+        head: Statement History

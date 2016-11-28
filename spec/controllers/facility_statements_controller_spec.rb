@@ -3,6 +3,20 @@ require "controller_spec_helper"
 require "transaction_search_spec_helper"
 
 if Account.config.statements_enabled?
+  RSpec.shared_examples "it sets up order_detail and creates statements" do
+    it "sets up order_detail and creates statements" do
+      expect(@order_detail1.reload.reviewed_at).to be < Time.zone.now
+      expect(@order_detail1.statement).to be_nil
+      expect(@order_detail1.price_policy).not_to be_nil
+      expect(@order_detail1.account.type).to eq(@account_type)
+      expect(@order_detail1.dispute_at).to be_nil
+
+      grant_and_sign_in(@user)
+      do_request
+      expect(flash[:error]).to be_nil
+      expect(response).to redirect_to action: :new
+    end
+  end
 
   RSpec.describe FacilityStatementsController do
     render_views
@@ -98,7 +112,7 @@ if Account.config.statements_enabled?
           expect(controller.params[:date_range]).not_to be_present
           expect(assigns[:search_options][:accounts]).to contain_all [@account, @account2]
           expect(assigns(:facility)).to eq(@authable)
-          expect(assigns(:order_detail_action)).to eq(:send_statements)
+          expect(assigns(:order_detail_action)).to eq(:create)
           expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
         end
       end
@@ -111,7 +125,7 @@ if Account.config.statements_enabled?
           expect(controller.params[:date_range][:start]).to be_present
           expect(assigns[:search_options][:accounts]).to contain_all [@account, @account2]
           expect(assigns(:facility)).to eq(@authable)
-          expect(assigns(:order_detail_action)).to eq(:send_statements)
+          expect(assigns(:order_detail_action)).to eq(:create)
           expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
         end
       end
@@ -119,11 +133,11 @@ if Account.config.statements_enabled?
       it_should_support_searching
     end
 
-    context "send_statements" do
+    context "create" do
       before :each do
         create_order_details
         @method = :post
-        @action = :send_statements
+        @action = :create
         @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail3.id])
       end
 
@@ -133,19 +147,24 @@ if Account.config.statements_enabled?
 
       it_should_deny_all [:staff, :senior_staff]
 
-      it "should create and send statements" do
-        expect(@order_detail1.reload.reviewed_at).to be < Time.zone.now
-        expect(@order_detail1.statement).to be_nil
-        expect(@order_detail1.price_policy).not_to be_nil
-        expect(@order_detail1.account.type).to eq(@account_type)
-        expect(@order_detail1.dispute_at).to be_nil
+      context "when statement emailing is on", feature_setting: { send_statement_emails: true } do
+        include_examples "it sets up order_detail and creates statements"
 
-        grant_and_sign_in(@user)
-        do_request
-        expect(flash[:error]).to be_nil
-        expect(assigns(:account_statements)).to have_key(@account)
-        expect(assigns(:account_statements)).to have_key(@account2)
-        expect(response).to redirect_to action: :new
+        it "sends statements" do
+          grant_and_sign_in(@user)
+
+          expect { do_request }.to change(ActionMailer::Base.deliveries, :count).by(2)
+        end
+      end
+
+      context "when statement emailing is off", feature_setting: { send_statement_emails: false } do
+        include_examples "it sets up order_detail and creates statements"
+
+        it "does not send statements" do
+          grant_and_sign_in(@user)
+
+          expect { do_request }.not_to change(ActionMailer::Base.deliveries, :count)
+        end
       end
 
       context "errors" do

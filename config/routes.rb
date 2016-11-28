@@ -279,11 +279,7 @@ Nucore::Application.routes.draw do
     post "movable_transactions/confirm", to: 'facilities#confirm_transactions'
     post "movable_transactions/move", to: 'facilities#move_transactions'
 
-    resources :statements, controller: "facility_statements", only: [:index, :new, :show] do
-      collection do
-        post "send_statements"
-      end
-    end
+    resources :statements, controller: "facility_statements", only: [:index, :new, :show, :create]
 
     get "general_reports/raw", to: "reports/export_raw_reports#export_all", as: "export_raw_reports"
     get "general_reports/:report_by", to: "reports/general_reports#index", as: "general_reports"

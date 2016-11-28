@@ -1,4 +1,4 @@
-= render :partial => "shared/transactions/headers"
+= render "shared/transactions/headers"
 = content_for :h1 do
   = current_facility
 
@@ -6,10 +6,13 @@
   %h2= t_create_models(Statement)
 
 = content_for :top_block do
-  = render :partial => 'shared/transactions/top', :locals => { :tab => 'statements' }
+  = render "shared/transactions/top", tab: "statements"
 - if @order_details.any?
   = content_for :action_instructions do
-    %p.notice.notice-info= t("facility_statements.new.instructions")
+    - if SettingsHelper.feature_on?(:send_statement_emails)
+      %p.notice.notice-info= text("instructions")
+    - else
+      %p.notice.notice-info= text("instructions_without_email")
 
-  = render :partial => 'shared/transactions/table'
-  = render :partial => 'shared/reconcile_footnote'
+  = render "shared/transactions/table"
+  = render "shared/reconcile_footnote"
