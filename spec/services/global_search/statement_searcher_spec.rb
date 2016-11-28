@@ -27,12 +27,17 @@ RSpec.describe GlobalSearch::StatementSearcher do
         it { is_expected.to be_empty }
       end
 
-      describe "with the ID" do
+      describe "with the invoice number" do
         let(:query) { statement.invoice_number }
         it { is_expected.to eq([statement]) }
       end
 
-      describe "with the ID and whitespace" do
+      describe "with the id only" do
+        let(:query) { statement.id }
+        it { is_expected.to eq([statement]) }
+      end
+
+      describe "with the invoice number and whitespace" do
         let(:query) { "   #{statement.invoice_number}  " }
         it { is_expected.to eq([statement]) }
       end
@@ -49,6 +54,11 @@ RSpec.describe GlobalSearch::StatementSearcher do
 
       describe "starting with a pound sign" do
         let(:query) { "##{statement.invoice_number}" }
+        it { is_expected.to eq([statement]) }
+      end
+
+      describe "id only starting with a pound sign" do
+        let(:query) { "##{statement.id}" }
         it { is_expected.to eq([statement]) }
       end
 

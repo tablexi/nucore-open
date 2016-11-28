@@ -211,6 +211,11 @@ RSpec.describe GlobalSearchController do
           expect(statement_results).to eq([statement])
         end
 
+        it "finds it by the id" do
+          get :index, search: statement.id
+          expect(statement_results).to eq([statement])
+        end
+
         it "does not find it by the wrong invoice number" do
           get :index, search: "0-123"
           expect(statement_results).to be_empty
