@@ -10,7 +10,16 @@ module GlobalSearch
 
     def search
       return [] unless Account.config.statements_enabled?
-      Array(Statement.find_by_invoice_number(query.sub(/\A#/, ""))) # Remove leading hash signs to support searching like "#123-456"
+      Array(Statement.send(search_method, parsed_query))
+    end
+
+    # Remove leading hash signs to support searching like "#123-456"
+    def parsed_query
+      query.sub(/\A#/, "")
+    end
+
+    def search_method
+      query.include?("-") ? :find_by_invoice_number : :find_by_statement_id
     end
 
     def restrict(statements)
