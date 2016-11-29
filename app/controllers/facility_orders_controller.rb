@@ -102,7 +102,7 @@ class FacilityOrdersController < ApplicationController
     @order = build_merge_order if merge?(product)
 
     begin
-      details = @order.add product, quantity
+      details = @order.add product, quantity, created_by: current_user.id
       notifications = false
       details.each do |d|
         d.set_default_status!
