@@ -30,6 +30,9 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :account_users
 
   scope :active, -> { where("expires_at > ?", Time.current).where(suspended_at: nil) }
+  scope :administered_by, lambda { |user|
+    for_user(user).where("account_users.user_role" => AccountUser.admin_user_roles)
+  }
   scope :global_account_types, -> { where(accounts: { type: config.global_account_types }) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
