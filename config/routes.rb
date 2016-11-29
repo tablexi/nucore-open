@@ -46,9 +46,6 @@ Nucore::Application.routes.draw do
     end
   end
 
-  # transaction searches
-  get "/transactions", to: 'transaction_history#my_history', as: "transaction_history"
-
   resources :facilities, except: [:delete], path: I18n.t("facilities_downcase") do
     collection do
       get "list"
