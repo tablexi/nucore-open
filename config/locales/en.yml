@@ -93,6 +93,7 @@ en:
     create: Create
     confirm_message: Are you sure?
     delete: Delete
+    dispute: Dispute
     edit: Edit
     not_applicable: N/A
     remove: Remove
@@ -1120,6 +1121,10 @@ en:
         Visit <a href="%{link}">here</a> to give them access.
       link: "Visit here to give them access: %{link}"
       subject: "%{facility} - User Requested Training"
+
+  transactions:
+    in_review: Transactions in Review
+    recently_reviewed: Recently Reviewed
 
   activerecord:
     errors:

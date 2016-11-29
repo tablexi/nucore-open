@@ -346,6 +346,8 @@ Nucore::Application.routes.draw do
     end
   end
 
+  resources :transactions, only: [:index]
+
   # reservations
   get "reservations", to: 'reservations#list', as: "reservations"
   get "reservations(/:status)", to: 'reservations#list', as: "reservations_status"
