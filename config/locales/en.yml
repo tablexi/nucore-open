@@ -635,12 +635,6 @@ en:
         instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
       td:
         total: Estimated Totals
-      th:
-        product: Product
-        quantity: Quantity
-        cost: Estimated Price
-        adjust: Estimated Adjustment
-        extend: Estimated Total
     receipt:
       crumbs:
         orders: "My Orders"

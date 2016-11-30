@@ -3,12 +3,12 @@
     %thead
       %tr
         %th
-        %th= t(".th.product")
-        %th.centered= t(".th.quantity")
-        %th.currency= t(".th.cost")
-        - if order.has_subsidies?
-          %th.currency= t(".th.adjust")
-        %th.currency= t(".th.extend")
+        %th= OrderDetail.human_attribute_name(:product)
+        %th.centered= OrderDetail.human_attribute_name(:quantity)
+        %th.currency= OrderDetail.human_attribute_name(:estimated_cost)
+        - if @order.has_subsidies?
+          %th.currency= OrderDetail.human_attribute_name(:estimated_subsidy)
+        %th.currency= OrderDetail.human_attribute_name(:estimated_total)
 
     %tbody
       - grouped_order_details.each do |order_details|

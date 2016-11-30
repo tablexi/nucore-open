@@ -5,12 +5,12 @@
       %thead
         %tr
           %th
-          %th= t('orders.show.th.product')
-          %th.centered= t('orders.show.th.quantity')
-          %th.currency= t('orders.show.th.cost')
+          %th= OrderDetail.human_attribute_name(:product)
+          %th.centered= OrderDetail.human_attribute_name(:quantity)
+          %th.currency= OrderDetail.human_attribute_name(:estimated_cost)
           - if @order.has_subsidies?
-            %th.currency= t('orders.show.th.adjust')
-          %th.currency= t('orders.show.th.extend')
+            %th.currency= OrderDetail.human_attribute_name(:estimated_subsidy)
+          %th.currency= OrderDetail.human_attribute_name(:estimated_total)
 
       %tbody
         - @merge_orders.each do |order|

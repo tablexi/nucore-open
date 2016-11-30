@@ -21,7 +21,7 @@ class Order < ActiveRecord::Base
   end
 
   def self.carts
-    where(ordered_at: nil)
+    where(ordered_at: nil, merge_with_order_id: nil)
   end
 
   def self.for_facility(facility)
