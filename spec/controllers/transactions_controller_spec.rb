@@ -9,10 +9,12 @@ RSpec.describe TransactionsController do
   describe "GET #index" do
     before(:each) do
       sign_in user
-      get :index, params
+      get action, params
     end
 
-    it_behaves_like TransactionSearch
+    let(:action) { :index }
+
+    it_behaves_like TransactionSearch, :fulfilled_at
 
     context "when the user owns multiple accounts" do
       let!(:accounts) do

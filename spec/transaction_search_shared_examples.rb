@@ -1,7 +1,5 @@
-RSpec.shared_examples_for TransactionSearch do
+RSpec.shared_examples_for TransactionSearch do |date_range_field|
   context "when searching" do
-    let(:action) { :index }
-    let(:date_range_field) { :fulfilled_at }
     let(:date_string) { "2001-01-01" }
     let(:datetime) { Time.zone.parse(date_string) }
 
