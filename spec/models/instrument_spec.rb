@@ -127,31 +127,6 @@ RSpec.describe Instrument do
       end
     end
 
-    describe "#schedule_sharing?" do
-      let!(:instrument1) { FactoryGirl.create(:setup_instrument) }
-      let!(:instrument2) { FactoryGirl.create(:setup_instrument, facility: facility, schedule: schedule2) }
-
-      context "when the instruments use different schedules" do
-        let(:schedule2) { nil }
-
-        it "does not consider the instruments to be sharing", :aggregate_failures do
-          expect(instrument1).not_to be_schedule_sharing
-          expect(instrument2).not_to be_schedule_sharing
-          expect(instrument1.schedule).not_to eq(instrument2.schedule)
-        end
-      end
-
-      context "when the instruments use the same schedule" do
-        let(:schedule2) { instrument1.schedule }
-
-        it "considers the instruments to be sharing", :aggregate_failures do
-          expect(instrument1).to be_schedule_sharing
-          expect(instrument2).to be_schedule_sharing
-          expect(instrument1.schedule).to eq(instrument2.schedule)
-        end
-      end
-    end
-
     describe "name updating" do
       before :each do
         @instrument = setup_instrument(schedule: nil)
