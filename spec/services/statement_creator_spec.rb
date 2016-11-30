@@ -7,7 +7,7 @@ RSpec.describe StatementCreator do
     FactoryGirl.create(
       :nufs_account,
       account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: user)],
-      type: "CreditCardAccount",
+      type: Account.config.statement_account_types.first,
     )
   end
   let(:order_detail_1) { place_and_complete_item_order(user, facility, account, true) }
