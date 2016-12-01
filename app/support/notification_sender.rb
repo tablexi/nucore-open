@@ -48,10 +48,8 @@ class NotificationSender
   end
 
   def find_accounts_to_notify
-    # TODO: Poor man's multi-item `pluck`. Fix in Rails 4
-    ActiveRecord::Base.connection.select_all(order_details.select(["order_details.account_id", "products.facility_id"])).each do |od|
-      @account_ids_to_notify << [od["account_id"], od["facility_id"]]
-    end
+    @account_ids_to_notify =
+      order_details.pluck("order_details.account_id", "products.facility_id").to_set
   end
 
   def mark_order_details_as_reviewed
