@@ -20,3 +20,6 @@
 
     %h2= text("transactions.recently_reviewed")
     = render "shared/transactions/table", order_details: @recently_reviewed
+
+- if @order_details.none? && @recently_reviewed.none?
+  = text("transactions.none")
