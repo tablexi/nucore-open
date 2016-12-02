@@ -93,8 +93,8 @@ RSpec.describe FacilityNotificationsController do
           maybe_grant_always_sign_in(:admin)
         end
 
-        it "sends emails to the two accounts" do
-          expect { do_request }.to change { Notifier.deliveries.count }.by(2)
+        it "sends one email for the two accounts" do
+          expect { do_request }.to change { Notifier.deliveries.count }.by(1)
         end
 
         it "should display the account list if less than 10 accounts" do

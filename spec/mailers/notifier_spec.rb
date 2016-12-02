@@ -61,4 +61,31 @@ RSpec.describe Notifier do
       end
     end
   end
+
+  describe ".review_orders" do
+    let(:accounts) do
+      FactoryGirl.create_list(:setup_account, 2, owner: user, facility_id: facility.id)
+    end
+    let(:account_ids) { accounts.map(&:id) }
+    let(:email_html) { email.html_part.to_s.gsub(/&nbsp;/, " ") } # Markdown changes some whitespace to &nbsp;
+    let(:email_text) { email.text_part.to_s }
+
+    before(:each) do
+      Notifier.review_orders(user_id: user.id,
+                             facility_id: facility.id,
+                             account_ids: account_ids).deliver_now
+    end
+
+    it "generates a review_orders notification", :aggregate_failures do
+      expect(email.to).to eq [user.email]
+      expect(email.subject).to include("Orders For Review")
+
+      [email_html, email_text].each do |email_content|
+        expect(email_content)
+          .to include("/transactions/in_review")
+          .and include(accounts.first.description)
+          .and include(accounts.last.description)
+      end
+    end
+  end
 end
