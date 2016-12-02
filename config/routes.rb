@@ -346,7 +346,9 @@ Nucore::Application.routes.draw do
     end
   end
 
-  resources :transactions, only: [:index]
+  namespace :transactions do
+    get :in_review
+  end
 
   # reservations
   get "reservations", to: 'reservations#list', as: "reservations"

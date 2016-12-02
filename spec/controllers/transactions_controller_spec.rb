@@ -6,13 +6,13 @@ RSpec.describe TransactionsController do
   let(:product) { FactoryGirl.create(:setup_item, :with_facility_account) }
   let(:user) { FactoryGirl.create(:user) }
 
-  describe "GET #index" do
+  describe "GET #in_review" do
     before(:each) do
       sign_in user
       get action, params
     end
 
-    let(:action) { :index }
+    let(:action) { :in_review }
 
     it_behaves_like TransactionSearch, :fulfilled_at
 

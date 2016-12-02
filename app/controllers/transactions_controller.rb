@@ -11,7 +11,7 @@ class TransactionsController < ApplicationController
     super
   end
 
-  def index_with_search
+  def in_review_with_search
     @recently_reviewed = administered_order_details.recently_reviewed.paginate(page: params[:page])
     @order_details = administered_order_details.all_in_review
     @extra_date_column = :reviewed_at
