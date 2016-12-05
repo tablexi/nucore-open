@@ -21,7 +21,7 @@ gem "devise_ldap_authenticatable", "~> 0.8.5"
 gem "cancancan",        "1.10"
 
 ## models
-gem "aasm",             "~> 4.10.1"
+gem "aasm", "~> 4.11.1"
 gem "paperclip",        "~> 4.2.0"
 gem "vestal_versions",  "1.2.4.3", github: "elzoiddy/vestal_versions"
 gem "awesome_nested_set", "3.0.3"
@@ -89,10 +89,10 @@ group :development, :test do
   gem "factory_girl_rails", "~> 4.5.0"
   gem "guard-rspec", require: false
   gem "guard-teaspoon", require: false
-  gem "pry-rails",         "~> 0.3.2"
-  gem "pry-byebug",        "~> 2.0.0"
+  gem "pry-rails", "~> 0.3.4"
+  gem "pry-byebug", "~> 3.4.1"
   gem "quiet_assets"
-  gem "rspec-rails",       "~> 3.5.1"
+  gem "rspec-rails", "~> 3.5.2"
   gem "rspec-activejob"
   gem "shoulda-matchers",  "~> 2.8.0", require: false
   gem "rspec-collection_matchers"
