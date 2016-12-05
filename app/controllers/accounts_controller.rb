@@ -62,13 +62,8 @@ class AccountsController < ApplicationController
     @account
   end
 
-  def administered_accounts
-    Account.administered_by(current_user)
-  end
-
   def administered_order_details
-    @administered_order_details ||=
-      OrderDetail.where(account_id: administered_accounts)
+    @administered_order_details ||= current_user.administered_order_details
   end
 
 end
