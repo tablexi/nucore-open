@@ -817,6 +817,10 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
+    index:
+      transaction_in_review:
+        one: You have one transaction in review
+        other: You have %{count} transactions in review
     member_table:
       add_access: Add Access
       remove_access: Remove Access

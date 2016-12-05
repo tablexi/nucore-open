@@ -17,6 +17,7 @@ class AccountsController < ApplicationController
   # GET /accounts
   def index
     @account_users = session_user.account_users
+    @administered_order_details_in_review = administered_order_details.all_in_review
   end
 
   # GET /accounts/1
@@ -59,6 +60,15 @@ class AccountsController < ApplicationController
 
   def ability_resource
     @account
+  end
+
+  def administered_accounts
+    Account.administered_by(current_user)
+  end
+
+  def administered_order_details
+    @administered_order_details ||=
+      OrderDetail.where(account_id: administered_accounts)
   end
 
 end

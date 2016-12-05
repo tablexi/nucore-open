@@ -4,6 +4,10 @@
 - if @account_users.empty?
   %p.notice= "You do not have any #{Account.model_name.human.pluralize.downcase}."
 - else
+  - if @administered_order_details_in_review.any?
+    = link_to t(".transaction_in_review", count: @administered_order_details_in_review.count),
+      transactions_in_review_path
+
   %table.table.table-striped.table-hover
     %thead
       %tr
