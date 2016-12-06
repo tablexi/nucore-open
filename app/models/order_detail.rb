@@ -461,11 +461,11 @@ class OrderDetail < ActiveRecord::Base
     update(state: "complete", order_status: OrderStatus.complete_status)
   end
 
-  def backdate_to_complete!(event_time = Time.zone.now, set_actuals = true)
+  def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation
       raise NUCore::PurchaseException.new(t_model_error(Reservation, "cannot_be_completed_in_future")) if reservation.reserve_end_at > event_time
-      reservation.assign_actuals_off_reserve if set_actuals
+      reservation.assign_actuals_off_reserve unless reservation.product.reservation_only?
       reservation.save!
     end
     change_status!(OrderStatus.complete.first) do |od|

@@ -75,7 +75,7 @@ class ReservationCreator
   def backdate_reservation_if_necessary(session_user)
     facility_ability = Ability.new(session_user, @order.facility, self)
     if facility_ability.can?(:order_in_past, @order) && @reservation.reserve_end_at < Time.zone.now
-      @order_detail.backdate_to_complete!(@reservation.reserve_end_at, false)
+      @order_detail.backdate_to_complete!(@reservation.reserve_end_at)
     end
   end
 
