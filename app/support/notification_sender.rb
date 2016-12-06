@@ -8,7 +8,7 @@ class NotificationSender
   end
 
   def perform
-    @account_ids_to_notify = Set.new
+    @account_ids_to_notify = []
     @orders_notified = []
     @errors = []
 
@@ -49,7 +49,7 @@ class NotificationSender
 
   def find_accounts_to_notify
     @account_ids_to_notify =
-      order_details.pluck("order_details.account_id", "products.facility_id").to_set
+      order_details.distinct.pluck("order_details.account_id", "products.facility_id")
   end
 
   def mark_order_details_as_reviewed
