@@ -144,6 +144,10 @@ class User < ActiveRecord::Base
     acts
   end
 
+  def administered_order_details
+    OrderDetail.where(account_id: Account.administered_by(self))
+  end
+
   def full_name
     if first_name.nil? && last_name.nil?
       username

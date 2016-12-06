@@ -93,6 +93,7 @@ en:
     create: Create
     confirm_message: Are you sure?
     delete: Delete
+    dispute: Dispute
     edit: Edit
     not_applicable: N/A
     remove: Remove
@@ -816,6 +817,10 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
+    index:
+      transaction_in_review:
+        one: You have one transaction in review
+        other: You have %{count} transactions in review
     member_table:
       add_access: Add Access
       remove_access: Remove Access
@@ -1120,6 +1125,11 @@ en:
         Visit <a href="%{link}">here</a> to give them access.
       link: "Visit here to give them access: %{link}"
       subject: "%{facility} - User Requested Training"
+
+  transactions:
+    in_review: Transactions in Review
+    none: You have no transactions in review, or any recently reviewed.
+    recently_reviewed: Recently Reviewed
 
   activerecord:
     errors:

@@ -17,6 +17,7 @@ class AccountsController < ApplicationController
   # GET /accounts
   def index
     @account_users = session_user.account_users
+    @administered_order_details_in_review = current_user.administered_order_details.all_in_review
   end
 
   # GET /accounts/1
