@@ -74,18 +74,20 @@ class NotificationSender
   class AccountNotifier
 
     def notify_accounts(accounts_to_notify)
-      notifications = {}
-      accounts_to_notify.each do |account_id, facility_id|
-        user_ids = AccountUser.where(account_id: account_id, user_role: ["Business Administrator", "Owner"]).pluck(:user_id)
-        user_ids.each do |user_id|
-          notifications[user_id] ||= { facility_id => [] }
-          notifications[user_id][facility_id] << account_id
-        end
-      end
-
-      notifications.each do |user_id, facility_ids|
+      notifications_hash(accounts_to_notify).each do |user_id, facility_ids|
         facility_ids.each do |facility_id, account_ids|
           Notifier.review_orders(user_id: user_id, facility_id: facility_id, account_ids: account_ids).deliver_now
+        end
+      end
+    end
+
+    private
+
+    def notifications_hash(accounts_to_notify)
+      accounts_to_notify.each_with_object({}) do |(account_id, facility_id), notifications|
+        Account.find(account_id).administrators.each do |administrator|
+          notifications[administrator.id] ||= { facility_id => [] }
+          notifications[administrator.id][facility_id] << account_id
         end
       end
     end
