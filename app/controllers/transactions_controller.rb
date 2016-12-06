@@ -12,20 +12,14 @@ class TransactionsController < ApplicationController
   end
 
   def in_review_with_search
-    @recently_reviewed = administered_order_details.recently_reviewed.paginate(page: params[:page])
-    @order_details = administered_order_details.all_in_review
+    @recently_reviewed = current_user.administered_order_details.recently_reviewed.paginate(page: params[:page])
+    @order_details = current_user.administered_order_details.all_in_review
     @extra_date_column = :reviewed_at
     @order_detail_link = {
       text: text("shared.dispute"),
       display?: proc { |order_detail| order_detail.can_dispute? },
       proc: proc { |order_detail| order_order_detail_path(order_detail.order, order_detail) },
     }
-  end
-
-  private
-
-  def administered_order_details
-    @administered_order_details ||= current_user.administered_order_details
   end
 
 end
