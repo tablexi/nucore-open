@@ -287,80 +287,61 @@ RSpec.describe ReservationsController do
     end
   end
 
-  def setup_past_reservation
-    @method = :post
-    @action = :create
-    @order = @guest.orders.create(FactoryGirl.attributes_for(:order, created_by: @admin.id, account: @account))
-    @order.add(@instrument, 1)
-    @order_detail = @order.order_details.first
-    @price_policy_past = create(:instrument_price_policy, product: @instrument, price_group_id: @price_group.id, start_date: 7.days.ago, expire_date: 1.day.ago, usage_rate: 120, charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage])
-    @params = {
-      order_id: @order.id,
-      order_detail_id: @order_detail.id,
-      order_account: @account.id,
-      reservation: {
-        reserve_start_date: format_usa_date(Time.zone.now.to_date - 5.days),
-        reserve_start_hour: "9",
-        reserve_start_min: "0",
-        reserve_start_meridian: "am",
-        duration_value: "60",
-        duration_unit: "minutes",
-      },
-    }
-  end
-
   context "creating a reservation in the past" do
-    context "when instrument is reservation only" do
-      before :each do
-        setup_past_reservation
-      end
-
-      it_should_allow_all facility_operators, "should redirect" do
-        assert_redirected_to purchase_order_path(@order)
-      end
-
-      it_should_allow_all facility_operators, "and not have errors" do
-        expect(assigns[:reservation].errors).to be_empty
-      end
-
-      it_should_allow_all facility_operators, "and not assign actuals" do
-        expect(assigns[:reservation].actual_start_at).to be_nil
-        expect(assigns[:reservation].actual_end_at).to be_nil
-      end
-
-      it_should_allow_all facility_operators, "to still be new" do
-        expect(assigns[:reservation].order_detail.reload.state).to eq("new")
-      end
-
-      it_should_allow_all facility_operators, "and isn't a problem" do
-        expect(assigns[:reservation].order_detail.reload).not_to be_problem_order
-      end
-
-      it_should_allow_all [:guest], "to receive an error they are trying to reserve in the past" do
-        expect(assigns[:reservation].errors).not_to be_empty
-        expect(response).to render_template(:new)
-      end
-
-      it_should_allow_all facility_operators, "not set a price policy" do
-        expect(assigns[:reservation].order_detail.reload.price_policy).to be_nil
-      end
-
-      it_should_allow_all facility_operators, "set the right estimated price" do
-        expect(assigns[:reservation].order_detail.reload.estimated_cost).to eq(120)
-      end
+    before :each do
+      @method = :post
+      @action = :create
+      @order = @guest.orders.create(FactoryGirl.attributes_for(:order, created_by: @admin.id, account: @account))
+      @order.add(@instrument, 1)
+      @order_detail = @order.order_details.first
+      @price_policy_past = create(:instrument_price_policy, product: @instrument, price_group_id: @price_group.id, start_date: 7.days.ago, expire_date: 1.day.ago, usage_rate: 120, charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage])
+      @params = {
+        order_id: @order.id,
+        order_detail_id: @order_detail.id,
+        order_account: @account.id,
+        reservation: {
+          reserve_start_date: format_usa_date(Time.zone.now.to_date - 5.days),
+          reserve_start_hour: "9",
+          reserve_start_min: "0",
+          reserve_start_meridian: "am",
+          duration_value: "60",
+          duration_unit: "minutes",
+        },
+      }
     end
 
-    context "when reservation is not reservation only" do
-      before :each do
-        allow(@instrument).to receive(:control_mechanism).and_return Relay::CONTROL_MECHANISMS[:timer]
-        setup_past_reservation
-        do_request
-      end
+    it_should_allow_all facility_operators, "should redirect" do
+      assert_redirected_to purchase_order_path(@order)
+    end
 
-      it_should_allow_all facility_operators, "and assign actuals" do
-        expect(assigns[:reservation].actual_start_at).not_to be_nil
-        expect(assigns[:reservation].actual_end_at).not_to be_nil
-      end
+    it_should_allow_all facility_operators, "and not have errors" do
+      expect(assigns[:reservation].errors).to be_empty
+    end
+
+    it_should_allow_all facility_operators, "and not assign actuals" do
+      expect(assigns[:reservation].actual_start_at).to be_nil
+      expect(assigns[:reservation].actual_end_at).to be_nil
+    end
+
+    it_should_allow_all facility_operators, "to still be new" do
+      expect(assigns[:reservation].order_detail.reload.state).to eq("new")
+    end
+
+    it_should_allow_all facility_operators, "and isn't a problem" do
+      expect(assigns[:reservation].order_detail.reload).not_to be_problem_order
+    end
+
+    it_should_allow_all [:guest], "to receive an error they are trying to reserve in the past" do
+      expect(assigns[:reservation].errors).not_to be_empty
+      expect(response).to render_template(:new)
+    end
+
+    it_should_allow_all facility_operators, "not set a price policy" do
+      expect(assigns[:reservation].order_detail.reload.price_policy).to be_nil
+    end
+
+    it_should_allow_all facility_operators, "set the right estimated price" do
+      expect(assigns[:reservation].order_detail.reload.estimated_cost).to eq(120)
     end
   end
 
