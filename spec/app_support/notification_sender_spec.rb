@@ -38,14 +38,13 @@ RSpec.describe NotificationSender, :aggregate_failures do
             expect(Notifier)
               .to receive(:review_orders)
               .with(user_id: user.id,
-                    facility_id: facility.id,
                     account_ids: AccountUser.where(user_id: user.id).pluck(:account_id))
               .once
               .and_return(delivery)
           end
 
           expect(notification_sender.perform).to be_truthy
-          expect(notification_sender.account_ids_notified).to match(account_ids)
+          expect(notification_sender.account_ids_to_notify).to match_array(account_ids)
           expect(order_details.map(&:reload)).to be_all(&:reviewed_at?)
         end
 

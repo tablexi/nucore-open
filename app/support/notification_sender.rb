@@ -7,8 +7,17 @@ class NotificationSender
     @order_detail_ids = order_detail_ids
   end
 
+  def init_account_ids_to_notify
+    @account_ids_to_notify =
+      if SettingsHelper.has_review_period?
+        order_details.distinct.pluck(:account_id)
+      else
+        []
+      end
+  end
+
   def perform
-    @account_ids_to_notify = []
+    init_account_ids_to_notify
     @orders_notified = []
     @errors = []
 
@@ -17,7 +26,6 @@ class NotificationSender
 
       raise ActiveRecord::Rollback if @errors.any?
 
-      find_accounts_to_notify if SettingsHelper.has_review_period?
       mark_order_details_as_reviewed
       notify_accounts
     end
@@ -25,16 +33,12 @@ class NotificationSender
     @errors.none?
   end
 
-  def account_ids_notified
-    @account_ids_to_notify.map(&:first)
+  def accounts_notified_size
+    account_ids_to_notify.count
   end
 
   def accounts_notified
-    Account.find(account_ids_notified)
-  end
-
-  def accounts_notified_size
-    account_ids_to_notify.count
+    Account.where(id: account_ids_to_notify)
   end
 
   private
@@ -45,11 +49,6 @@ class NotificationSender
     order_details_not_found.each do |order_detail_id|
       @errors << I18n.t("controllers.facility_notifications.send_notifications.order_error", order_detail_id: order_detail_id)
     end
-  end
-
-  def find_accounts_to_notify
-    @account_ids_to_notify =
-      order_details.distinct.pluck("order_details.account_id", "products.facility_id")
   end
 
   def mark_order_details_as_reviewed
@@ -63,31 +62,25 @@ class NotificationSender
                                   .includes(:product, :order, :price_policy, :reservation)
   end
 
-  def account
-    Account.find(@accounts_to_notify.map(&:first)).map(&:account_list_item)
-  end
-
   def reviewed_at
     @reviewed_at ||= Time.zone.now + Settings.billing.review_period
   end
 
   class AccountNotifier
 
-    def notify_accounts(accounts_to_notify)
-      notifications_hash(accounts_to_notify).each do |user_id, facility_ids|
-        facility_ids.each do |facility_id, account_ids|
-          Notifier.review_orders(user_id: user_id, facility_id: facility_id, account_ids: account_ids).deliver_now
-        end
+    def notify_accounts(account_ids_to_notify)
+      notifications_hash(account_ids_to_notify).each do |user_id, account_ids|
+        Notifier.review_orders(user_id: user_id, account_ids: account_ids).deliver_now
       end
     end
 
     private
 
-    def notifications_hash(accounts_to_notify)
-      accounts_to_notify.each_with_object({}) do |(account_id, facility_id), notifications|
+    def notifications_hash(account_ids_to_notify)
+      account_ids_to_notify.each_with_object({}) do |account_id, notifications|
         Account.find(account_id).administrators.each do |administrator|
-          notifications[administrator.id] ||= { facility_id => [] }
-          notifications[administrator.id][facility_id] << account_id
+          notifications[administrator.id] ||= []
+          notifications[administrator.id] << account_id
         end
       end
     end
@@ -95,7 +88,7 @@ class NotificationSender
   end
 
   def notify_accounts
-    AccountNotifier.new.delay.notify_accounts(@account_ids_to_notify)
+    AccountNotifier.new.delay.notify_accounts(account_ids_to_notify)
   end
 
 end
