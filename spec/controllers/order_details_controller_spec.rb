@@ -1,10 +1,13 @@
 require "rails_helper"
 
 RSpec.describe OrderDetailsController do
+  let(:facility) { order.facility }
   let(:order) { order_detail.order }
   let(:order_detail) { reservation.order_detail }
   let(:reservation) { create(:purchased_reservation) }
   let(:account) { order_detail.account }
+  let(:price_policy) { product.price_policies.first }
+  let(:product) { order_detail.product }
   let(:user) { order_detail.user }
 
   describe "#dispute" do
@@ -126,6 +129,25 @@ RSpec.describe OrderDetailsController do
 
           it { expect(order_detail.reload).not_to be_canceled }
           it { expect(response.code).to eq("403") }
+        end
+
+        context "and I am a facility operator" do
+          let(:user) do
+            FactoryGirl.create(:user, :facility_director, facility: facility)
+          end
+
+          context "and a cancellation fee applies" do
+            before do
+              price_policy.update_attribute(:cancellation_cost, 12)
+              product.update_attribute(:min_cancel_hours, 9999)
+              put :cancel, order_id: order.id, id: order_detail.id
+            end
+
+            it "cancels the reservation with fee, considering the order 'complete'", :aggregate_failures do
+              expect(order_detail.reload).to be_complete
+              expect(order_detail.actual_cost).to eq(12)
+            end
+          end
         end
 
         context "and I am just a purchaser on the account" do

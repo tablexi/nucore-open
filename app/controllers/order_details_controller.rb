@@ -34,7 +34,7 @@ class OrderDetailsController < ApplicationController
     # handle reservation cancellation
     if @order_detail.reservation && @order_detail.reservation.can_cancel?
       @order_detail.transaction do
-        if @order_detail.cancel_reservation(session_user)
+        if cancel_with_fee(@order_detail)
           flash[:notice] = "The reservation has been canceled successfully." # TODO: I18n
         else
           flash[:error] = "An error was encountered while canceling the order." # TODO: I18n
@@ -71,6 +71,15 @@ class OrderDetailsController < ApplicationController
   end
 
   private
+
+  def cancel_with_fee(order_detail)
+    if order_detail.user != session_user && current_ability.can?(:cancel, order_detail)
+      # When this is an operator who is not the ordering user; admin cancel with fee:
+      order_detail.cancel_reservation(session_user, OrderStatus.canceled_status, true, true)
+    else
+      order_detail.cancel_reservation(session_user)
+    end
+  end
 
   def prevent_edit_based_on_state
     unless order_editable?
