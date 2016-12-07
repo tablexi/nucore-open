@@ -7,16 +7,16 @@ class AccountUser < ActiveRecord::Base
   ACCOUNT_OWNER = "Owner".freeze
   ACCOUNT_ADMINISTRATOR = "Business Administrator".freeze
 
-  scope :administrators, lambda {
-    User.where(id: where(user_role: admin_user_roles).select(:user_id))
-  }
-
   def self.read_only_user_roles
     [ACCOUNT_PURCHASER]
   end
 
   def self.admin_user_roles
     [ACCOUNT_OWNER, ACCOUNT_ADMINISTRATOR]
+  end
+
+  def self.administrators
+    User.where(id: where(user_role: admin_user_roles).select(:user_id))
   end
 
   def self.user_roles
