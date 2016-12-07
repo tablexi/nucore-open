@@ -23,7 +23,7 @@ class ReservationUserActionPresenter
 
     if can_switch_instrument?
       actions << switch_actions
-    elsif startable_now?
+    elsif ordered_by_current_user? && startable_now?
       actions << move_link
     end
 
@@ -51,6 +51,10 @@ class ReservationUserActionPresenter
 
   def edit_reservation_path
     current_facility ? edit_facility_order_order_detail_reservation_path(current_facility, order, order_detail, reservation) : edit_order_order_detail_reservation_path(order, order_detail, reservation)
+  end
+
+  def ordered_by_current_user?
+    reservation.user == controller.current_user
   end
 
   def view_reservation_path

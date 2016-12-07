@@ -3,11 +3,13 @@ require "rails_helper"
 RSpec.describe ReservationUserActionPresenter do
   include Rails.application.routes.url_helpers
 
+  let(:administrator) { build_stubbed(:user, :administrator) }
   let(:facility) { build_stubbed(:facility) }
-  let(:order) { build_stubbed(:order, facility: facility) }
+  let(:order) { build_stubbed(:order, facility: facility, user: user) }
   let(:order_detail) { build_stubbed(:order_detail, order: order) }
   let(:reservation) { build_stubbed(:reservation, order_detail: order_detail) }
   let(:template) { double("template") }
+  let(:user) { build_stubbed(:user) }
 
   subject(:presenter) { described_class.new(template, reservation) }
 
@@ -212,11 +214,24 @@ RSpec.describe ReservationUserActionPresenter do
 
       before do
         expect(reservation).to receive(:can_switch_instrument?).and_return false
-        expect(reservation).to receive(:startable_now?).and_return true
+        allow(reservation).to receive(:startable_now?).and_return true
+        allow(template).to receive(:current_user).and_return current_user
       end
 
-      it "includes the move link" do
-        expect(text).to include link
+      context "when the current user is the orderer" do
+        let(:current_user) { order.user }
+
+        it "includes the move 'Begin Now' link" do
+          expect(text).to include link
+        end
+      end
+
+      context "when the current user is not the orderer" do
+        let(:current_user) { administrator }
+
+        it "does not include the move 'Begin Now' link" do
+          expect(text).not_to include(link)
+        end
       end
     end
 
