@@ -41,7 +41,7 @@ class OrderDetailsController < ApplicationController
           raise ActiveRecord::Rollback
         end
       end
-      redirect_to(reservations_path)
+      redirect_to cancellation_success_path(@order_detail)
     else
       raise ActiveRecord::RecordNotFound
     end
@@ -72,13 +72,25 @@ class OrderDetailsController < ApplicationController
 
   private
 
+  def cancellation_success_path(order_detail)
+    if operator_cancellation?(order_detail)
+      facility_user_reservations_path(order_detail.facility, order_detail.user)
+    else
+      reservations_path
+    end
+  end
+
   def cancel_with_fee(order_detail)
-    if order_detail.user != session_user && current_ability.can?(:cancel, order_detail)
+    if operator_cancellation?(order_detail)
       # When this is an operator who is not the ordering user; admin cancel with fee:
       order_detail.cancel_reservation(session_user, OrderStatus.canceled_status, true, true)
     else
       order_detail.cancel_reservation(session_user)
     end
+  end
+
+  def operator_cancellation?(order_detail)
+    order_detail.user != session_user && current_ability.can?(:cancel, order_detail)
   end
 
   def prevent_edit_based_on_state

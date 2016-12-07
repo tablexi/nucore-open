@@ -144,6 +144,8 @@ RSpec.describe OrderDetailsController do
             end
 
             it "cancels the reservation with fee, considering the order 'complete'", :aggregate_failures do
+              expect(response)
+                .to redirect_to(facility_user_reservations_path(facility, order_detail.user))
               expect(order_detail.reload).to be_complete
               expect(order_detail.actual_cost).to eq(12)
             end
@@ -156,7 +158,10 @@ RSpec.describe OrderDetailsController do
             put :cancel, order_id: order.id, id: order_detail.id
           end
 
-          it { expect(order_detail.reload).to be_canceled }
+          it "cancels the order", :aggregate_failures do
+            expect(response).to redirect_to(reservations_path)
+            expect(order_detail.reload).to be_canceled
+          end
         end
 
         context "and the reservation is not cancelable" do
