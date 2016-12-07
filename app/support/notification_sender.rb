@@ -38,7 +38,7 @@ class NotificationSender
   end
 
   def accounts_notified
-    Account.where(id: account_ids_to_notify)
+    Account.where_ids_in(account_ids_to_notify)
   end
 
   private
