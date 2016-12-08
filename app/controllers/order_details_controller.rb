@@ -83,7 +83,7 @@ class OrderDetailsController < ApplicationController
   def cancel_with_fee(order_detail)
     if operator_cancellation?(order_detail)
       # When this is an operator who is not the ordering user; admin cancel with fee:
-      order_detail.cancel_reservation(session_user, OrderStatus.canceled_status, true, true)
+      order_detail.cancel_reservation(session_user, admin: true, admin_with_cancel_fee: true)
     else
       order_detail.cancel_reservation(session_user)
     end
