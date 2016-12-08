@@ -112,7 +112,7 @@ FactoryGirl.define do
       product.reload
     end
 
-    trait :not_reservation_only do
+    trait :timer do
       transient do
         no_relay false
       end

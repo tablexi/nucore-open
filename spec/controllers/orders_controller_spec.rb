@@ -697,7 +697,8 @@ RSpec.describe OrdersController do
 
         context "for a non reservation-only instrument" do
           before :each do
-            @instrument = FactoryGirl.create(:instrument,
+            @instrument = FactoryGirl.create(:setup_instrument,
+                                             :timer,
                                              facility: @authable,
                                              facility_account: @facility_account)
             setup_past_reservation
@@ -705,7 +706,7 @@ RSpec.describe OrdersController do
 
           it "sets the order_detail states to completed because it's in the past" do
             do_request
-            assigns[:order].order_details.all? { |od| expect(od.state).to eq("complete") }
+            expect(assigns[:order].order_details).to all(be_complete)
           end
 
           it "sets the order_detail fulfilment dates to the order time" do
@@ -735,7 +736,7 @@ RSpec.describe OrdersController do
             end
 
             it "is able to set order_detail states to canceled" do
-              assigns[:order].order_details.all? { |od| expect(od.state).to eq("canceled") }
+              expect(assigns[:order].order_details).to all(be_canceled)
             end
 
             it "sets the canceled time on the reservation" do
