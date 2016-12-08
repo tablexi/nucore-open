@@ -59,7 +59,7 @@
           - if reservation.admin_removable?
             %td
               = link_to t("shared.remove"),
-                facility_instrument_reservation_path(current_facility, reservation.product, reservation),
+                facility_instrument_reservation_path(current_facility, @instrument, reservation),
                 confirm: t("shared.confirm_message"),
                 method: :delete
 
@@ -67,7 +67,7 @@
 
             %td
               = link_to reservation,
-                facility_instrument_reservation_edit_admin_path(current_facility, reservation.product, reservation)
+                facility_instrument_reservation_edit_admin_path(current_facility, @instrument, reservation)
 
             %td= reservation_category_label(reservation)
             %td= reservation.admin_note
