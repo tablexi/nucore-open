@@ -193,6 +193,7 @@ RSpec.describe FacilityOrdersController do
 
       it_should_allow :director, "to add an item to existing order directly" do
         assert_no_merge_order @order, @product
+        expect(@order.order_details.last.created_by_user).to eq(@director)
       end
 
       context "with instrument" do
