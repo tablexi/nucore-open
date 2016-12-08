@@ -20,7 +20,7 @@ class AvailableAccountsFinder
 
   def available_accounts
     available_accounts = @user.accounts.for_facility(@facility).active
-    available_accounts = available_accounts & @current_user.accounts.for_facility(@facility).active if @current_user
+    available_accounts &= @current_user.accounts.for_facility(@facility).active if @current_user
     available_accounts
   end
 
