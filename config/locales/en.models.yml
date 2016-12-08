@@ -147,7 +147,7 @@ en:
         one: Order Detail
         other: Order Details
       order_status:
-        one: Order Status
+        one: Current Order Status
         other: Order Statuses
       price_group:
         one: Price Group
