@@ -1,45 +1,63 @@
 require "rails_helper"
 
 RSpec.describe NotificationSender, :aggregate_failures do
-  let(:user) { create(:user) }
+  subject(:notification_sender) { described_class.new(facility, order_detail_ids) }
 
-  let(:facility) { create(:facility) }
+  let(:accounts) do
+    account_owners.map do |user|
+      FactoryGirl.create_list(:setup_account, 2, owner: user, facility_id: facility.id)
+    end.flatten
+  end
+  let(:account_ids) { accounts.map(&:id) }
+  let(:delivery) { OpenStruct.new(deliver_now: true) }
+  let(:facility) { item.facility }
+  let(:item) { FactoryGirl.create(:setup_item, :with_facility_account) }
+  let!(:order_details) do
+    accounts.map do |account|
+      FactoryGirl.create(:account_user, :purchaser, user_id: purchaser.id, account_id: account.id)
+      Array.new(3) { place_product_order(purchaser, facility, item, account) }
+    end.flatten
+  end
+  let(:order_detail_ids) { order_details.map(&:id) }
+  let(:price_policy) { item.price_policies.first }
+  let(:account_owners) { FactoryGirl.create_list(:user, 2) }
+  let(:purchaser) { FactoryGirl.create(:user) }
 
-  let(:facility_account) do
-    facility.facility_accounts.create(attributes_for(:facility_account))
+  before(:each) do
+    # This feature only gets used when there is a review period, so go ahead and enable it.
+    allow(SettingsHelper).to receive(:has_review_period?).and_return true
+
+    OrderDetail.update_all(state: "complete", price_policy_id: price_policy.id)
   end
 
-  let(:item) do
-    facility
-      .items
-      .create(attributes_for(:item, facility_account_id: facility_account.id))
-  end
+  describe "#perform" do
+    context "when multiple users administer multiple accounts" do
+      context "and multiple accounts have complete orders" do
+        it "notifies each user once while setting order_details to reviewed" do
+          account_owners.each do |user|
+            expect(Notifier)
+              .to receive(:review_orders)
+              .with(user_id: user.id,
+                    account_ids: AccountUser.where(user_id: user.id).pluck(:account_id))
+              .once
+              .and_return(delivery)
+          end
 
-  let(:account) { create(:setup_account, owner: user, facility_id: facility.id) }
-  let(:ids) { order_details.map(&:id) }
-  let(:action) { described_class.new(facility, ids) }
+          expect(notification_sender.perform).to be_truthy
+          expect(notification_sender.account_ids_to_notify).to match_array(account_ids)
+          expect(order_details.map(&:reload)).to be_all(&:reviewed_at?)
+        end
 
-  # This feature only gets used when there is a review period, so go ahead and enable it.
-  before { allow(SettingsHelper).to receive(:has_review_period?).and_return true }
+      end
 
-  describe "with a reasonable sized group" do
-    let!(:order_details) { Array.new(5) { place_product_order(user, facility, item, account) } }
+      context "when an order_detail ID is invalid" do
+        let(:order_detail_ids) { [-1, order_details.first.id] }
 
-    before { OrderDetail.update_all(state: "complete", price_policy_id: item.price_policies.first.id) }
-
-    it "notifies the appropriate accounts and sets the order details to reviewed" do
-      expect(action.perform).to be_truthy
-      expect(action.account_ids_notified).to eq([account.id])
-      expect(order_details).to be_all { |od| od.reload.reviewed_at? }
-    end
-
-    describe "with an id that does not exist" do
-      let(:ids) { [-1, order_details.first.id] }
-
-      it "has an error for the id" do
-        expect(action.perform).to be_falsey
-        expect(action.errors.first).to include("-1")
-        expect(order_details.first.reload).not_to be_reviewed
+        it "errors while not setting the valid ID as reviewed" do
+          expect(notification_sender.perform).to be_falsey
+          expect(notification_sender.errors.first).to include("-1")
+          expect(order_details.first.reload).not_to be_reviewed
+        end
       end
     end
   end

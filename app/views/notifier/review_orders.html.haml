@@ -1,1 +1,1 @@
-= html("body_html", facility: @facility.to_s, account: @account.to_s, login_url: transactions_in_review_account_url(@account, facilities: [@facility.id]))
+= html "body_html", accounts: @accounts, login_url: transactions_in_review_url
