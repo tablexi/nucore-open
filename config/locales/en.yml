@@ -254,7 +254,7 @@ en:
       th:
         amount: Amount
         order_number: "Order #"
-        order_status: Current Order Status
+        order_status: Order Status
         product: Product
         transaction_date: Transaction Date
       unassigned: Unassigned
