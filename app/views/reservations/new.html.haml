@@ -55,7 +55,9 @@
 
     - url_after_action = facility_path(@instrument.facility)
     %li
-    - if @order_detail.bundled?
+    - if @order.to_be_merged?
+      = link_to t("shared.cancel"), facility_order_path(@instrument.facility, @order.merge_order)
+    - elsif @order_detail.bundled?
       = link_to t("shared.cancel"), url_after_action
     - else
       = link_to t("shared.cancel"),
