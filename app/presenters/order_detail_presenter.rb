@@ -49,6 +49,12 @@ class OrderDetailPresenter < SimpleDelegator
     survey_completed? ? external_service_receiver.show_url : ""
   end
 
+  def wrapped_total
+    return @wrapped_total if @wrapped_total
+    __getobj__.send(:extend, PriceDisplayment)
+    @wrapped_total = __getobj__.reload.wrapped_total
+  end
+
   private
 
   def format_as_currency(value)
