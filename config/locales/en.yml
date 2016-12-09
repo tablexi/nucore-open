@@ -1013,8 +1013,9 @@ en:
       label:
         id: "NetID"
         have_id: "Does the new user have a NetID?"
-
-
+    reservations:
+      head: "%{name} Reservations"
+      none: "%{name} has not placed any reservations."
 
     search:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
