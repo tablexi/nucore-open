@@ -21,6 +21,10 @@ class OrderDetailPresenter < SimpleDelegator
     end.join(" &mdash; ").html_safe
   end
 
+  def description_as_html_with_facility_prefix
+    "#{facility.abbreviation} / #{description_as_html}".html_safe
+  end
+
   def edit_reservation_path
     edit_facility_order_order_detail_reservation_path(facility, order, id, reservation)
   end

@@ -54,6 +54,17 @@ RSpec.describe OrderDetailPresenter do
     end
   end
 
+  describe "#description_as_html_with_facility_prefix" do
+    subject { presented.description_as_html_with_facility_prefix }
+
+    include_context "order with a reservation"
+
+    before { facility.abbreviation = "ABC" }
+
+    it { is_expected.to eq("ABC / #{presented.description_as_html}") }
+    it { is_expected.to be_html_safe }
+  end
+
   describe "#edit_reservation_path" do
     subject { presented.edit_reservation_path }
 
