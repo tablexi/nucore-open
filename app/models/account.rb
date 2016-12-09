@@ -46,6 +46,8 @@ class Account < ActiveRecord::Base
     end
   end
 
+  delegate :administrators, to: :account_users
+
   # The @@config class variable stores account configuration details via a
   # seperate `AccountConfig` class. This way downstream repositories can use
   # customized account configurations. Also the `Account` model stays as thin

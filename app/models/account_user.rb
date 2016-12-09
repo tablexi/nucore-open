@@ -15,6 +15,10 @@ class AccountUser < ActiveRecord::Base
     [ACCOUNT_OWNER, ACCOUNT_ADMINISTRATOR]
   end
 
+  def self.administrators
+    User.where(id: where(user_role: admin_user_roles).select(:user_id))
+  end
+
   def self.user_roles
     admin_user_roles + read_only_user_roles
   end

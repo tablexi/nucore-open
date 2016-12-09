@@ -71,7 +71,7 @@ RSpec.describe FacilityNotificationsController do
 
     it_should_allow_managers_only :redirect do
       expect(assigns(:errors)).to be_empty
-      expect(assigns(:accounts_to_notify).to_a).to eq([[@account.id, @authable.id]])
+      expect(assigns(:accounts_to_notify)).to contain_exactly(@account.id)
       expect([@order_detail1, @order_detail2]).to be_all { |od| od.reload.reviewed_at > 6.days.from_now }
 
       expect(Notifier.deliveries.count).to eq(1)
@@ -85,7 +85,7 @@ RSpec.describe FacilityNotificationsController do
       it_should_allow_managers_only :redirect do
         expect(assigns(:errors)).to be_empty
         expect([@order_detail1, @order_detail2, @order_detail3]).to be_all { |od| od.reload.reviewed_at? }
-        expect(assigns(:accounts_to_notify).to_a).to eq([[@account.id, @authable.id], [@account2.id, @authable.id]])
+        expect(assigns(:accounts_to_notify)).to contain_exactly(@account.id, @account2.id)
       end
 
       context "while signed in" do
@@ -93,8 +93,8 @@ RSpec.describe FacilityNotificationsController do
           maybe_grant_always_sign_in(:admin)
         end
 
-        it "sends emails to the two accounts" do
-          expect { do_request }.to change { Notifier.deliveries.count }.by(2)
+        it "sends one email for the two accounts" do
+          expect { do_request }.to change { Notifier.deliveries.count }.by(1)
         end
 
         it "should display the account list if less than 10 accounts" do
