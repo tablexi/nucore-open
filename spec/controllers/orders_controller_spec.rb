@@ -667,42 +667,36 @@ RSpec.describe OrdersController do
       end
 
       context "backdating a reservation" do
+        let(:reservation) { place_reservation_for_instrument(@staff, instrument, @account, 3.days.ago) }
+        let(:submitted_date) { 2.days.ago.change(hour: 14, min: 27) }
+
         def setup_past_reservation
-          @instrument_pp = create :instrument_price_policy, price_group: @price_group, start_date: 7.days.ago, expire_date: 1.day.from_now, product: @instrument
-          define_open_account(@instrument.account, @account.account_number)
-          @reservation = place_reservation_for_instrument(@staff, @instrument, @account, 3.days.ago)
-          expect(@reservation).not_to be_nil
-          @params[:id] = @reservation.order_detail.order.id
+          @instrument_pp = create :instrument_price_policy, price_group: @price_group, start_date: 7.days.ago, expire_date: 1.day.from_now, product: instrument
+          define_open_account(instrument.account, @account.account_number)
+          expect(reservation).not_to be_nil
+          @params[:id] = reservation.order_detail.order.id
           maybe_grant_always_sign_in :director
           switch_to @staff
           @params[:order_date] = format_usa_date(2.days.ago)
           @params[:order_time] = { hour: "2", minute: "27", ampm: "PM" }
-          @submitted_date = 2.days.ago.change(hour: 14, min: 27)
         end
 
         context "for a reservation-only instrument" do
-          before :each do
-            @instrument = FactoryGirl.create(:setup_instrument,
-                                             facility: @authable,
-                                             facility_account: @facility_account)
-            setup_past_reservation
-          end
+          let(:instrument) { FactoryGirl.create(:setup_instrument, facility: facility, facility_account: @facility_account) }
+
+          before { setup_past_reservation }
 
           it "does not set the actual times to the completed reservation times" do
             do_request
-            expect(@reservation.reload.actual_start_at).to be_nil
-            expect(@reservation.actual_end_at).to be_nil
+            expect(reservation.reload.actual_start_at).to be_nil
+            expect(reservation.actual_end_at).to be_nil
           end
         end
 
         context "for a non reservation-only instrument" do
-          before :each do
-            @instrument = FactoryGirl.create(:setup_instrument,
-                                             :timer,
-                                             facility: @authable,
-                                             facility_account: @facility_account)
-            setup_past_reservation
-          end
+          let(:instrument) { FactoryGirl.create(:setup_instrument, :timer, facility: @authable, facility_account: @facility_account) }
+
+          before { setup_past_reservation }
 
           it "sets the order_detail states to completed because it's in the past" do
             do_request
@@ -713,14 +707,14 @@ RSpec.describe OrdersController do
             do_request
             assigns[:order].order_details.all? do |od|
               expect(od.fulfilled_at).not_to be_nil
-              expect(od.fulfilled_at).to match_date @reservation.reserve_end_at
+              expect(od.fulfilled_at).to match_date reservation.reserve_end_at
             end
           end
 
           it "sets the actual times to the completed reservation times" do
             do_request
-            expect(@reservation.reload.actual_start_at).to match_date @reservation.reserve_start_at
-            expect(@reservation.actual_end_at).to match_date(@reservation.reserve_start_at + 60.minutes)
+            expect(reservation.reload.actual_start_at).to match_date reservation.reserve_start_at
+            expect(reservation.actual_end_at).to match_date(reservation.reserve_start_at + 60.minutes)
           end
 
           it "assigns a price policy and cost" do
@@ -741,7 +735,7 @@ RSpec.describe OrdersController do
 
             it "sets the canceled time on the reservation" do
               assigns[:order].order_details.all? { |od| expect(od.reservation.canceled_at).not_to be_nil }
-              expect(@reservation.reload.canceled_at).not_to be_nil
+              expect(reservation.reload.canceled_at).not_to be_nil
               # Should this match the date put in the form, or the date when the action took place
               # @reservation.canceled_at.should match_date @submitted_date
             end
