@@ -95,7 +95,10 @@ FactoryGirl.define do
   end
 
   factory :purchased_reservation, parent: :validated_reservation do
-    after(:create) do |reservation|
+    transient { user nil }
+
+    after(:create) do |reservation, evaluator|
+      reservation.order.update_attribute(:user_id, evaluator.user.id) if evaluator.user
       reservation.order.purchase!
     end
 
