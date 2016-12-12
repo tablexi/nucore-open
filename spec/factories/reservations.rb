@@ -55,6 +55,14 @@ FactoryGirl.define do
     trait :tomorrow do
       reserve_start_at { 1.day.from_now }
     end
+
+    # :daily sets each reservation to 10am, one day after the previous.
+    # Use when creating lists so reservations don't overlap.
+    trait :daily do
+      sequence(:reserve_start_at) do |n|
+        Date.today.beginning_of_day + 10.hours + n.days
+      end
+    end
   end
 
   factory :admin_reservation, class: AdminReservation, parent: :reservation do
