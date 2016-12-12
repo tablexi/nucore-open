@@ -413,6 +413,23 @@ RSpec.describe Reservation do
             context "there is no following reservation" do
               it_behaves_like "a customer is allowed to edit"
             end
+
+            context "the instrument has a reservation lock window" do
+              before :each do
+                @current_time = Time.zone.now
+                instrument.update_attribute(:lock_window, 12)
+                reservation.reload
+              end
+
+              context "within the grace period" do
+                before do
+                  reservation.assign_attributes(reserve_start_at: @current_time + 5.minutes, actual_start_at: @current_time)
+                  reservation.save(validate: false)
+                end
+
+                it_behaves_like "a customer is allowed to edit"
+              end
+            end
           end
 
           context "the reservation has not yet begun" do
