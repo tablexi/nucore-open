@@ -415,15 +415,16 @@ RSpec.describe Reservation do
             end
 
             context "the instrument has a reservation lock window" do
+              let(:current_time) { Time.zone.now }
+
               before :each do
-                @current_time = Time.zone.now
                 instrument.update_attribute(:lock_window, 12)
                 reservation.reload
               end
 
               context "within the grace period" do
                 before do
-                  reservation.assign_attributes(reserve_start_at: @current_time + 5.minutes, actual_start_at: @current_time)
+                  reservation.assign_attributes(reserve_start_at: current_time + 5.minutes, actual_start_at: current_time)
                   reservation.save(validate: false)
                 end
 
