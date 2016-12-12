@@ -25,14 +25,12 @@
 
     %tbody
       - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
+        - reservation_presenter = ReservationUserActionPresenter.new(controller, order_detail.reservation)
+
         %tr
           %td.centered= link_to order_detail, order_detail.show_order_path
-          %td.centered
-            - if order_detail.reservation
-              = reservation_actions(order_detail.reservation)
-          %td
-            - if order_detail.reservation
-              = reservation_view_edit_link(order_detail.reservation)
+          %td.centered= reservation_presenter.user_actions if order_detail.reservation
+          %td= reservation_presenter.view_edit_link if order_detail.reservation
 
           %td.user-order-detail.order-detail-description
             = link_to order_detail.description_as_html_with_facility_prefix,
