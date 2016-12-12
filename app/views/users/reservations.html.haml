@@ -29,7 +29,21 @@
 
         %tr
           %td.centered= link_to order_detail, order_detail.show_order_path
-          %td.centered= reservation_presenter.user_actions if order_detail.reservation
+
+          %td.centered
+            - if order_detail.reservation.try(:can_cancel?)
+              - fee = reservation_presenter.send(:with_cancelation_now) { order_detail.cancellation_fee }
+              - if fee > 0
+                = link_to text("reservations.delete.link"),
+                  cancel_order_order_detail_path(order_detail.order, order_detail),
+                  method: :put,
+                  data: { confirm: text("reservations.delete.confirm_with_fee", fee: number_to_currency(fee)) }
+              - else
+                = link_to text("reservations.delete.link"),
+                  cancel_order_order_detail_path(order_detail.order, order_detail),
+                  method: :put,
+                  data: { confirm: text("reservations.delete.confirm") }
+
           %td= reservation_presenter.view_edit_link if order_detail.reservation
 
           %td.user-order-detail.order-detail-description
