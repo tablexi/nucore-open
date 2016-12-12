@@ -138,7 +138,10 @@ Nucore::Application.routes.draw do
         end
         get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
-        get "reservations", to: 'users#reservations'
+        resources :reservations, only: [:index], controller: "facility_user_reservations"  do
+          put "cancel"
+        end
+        put "cancel_reservation", to: "users#cancel_reservation"
         get "accounts",     to: 'users#accounts'
         get "access_list",  to: 'users#access_list'
         post "access_list/approvals", to: 'users#access_list_approvals'
@@ -147,7 +150,9 @@ Nucore::Application.routes.draw do
       resources :users, except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } do
         get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
-        get "reservations", to: 'users#reservations'
+        resources :reservations, only: [:index], controller: "facility_user_reservations" do
+          put "cancel"
+        end
         get "accounts",     to: 'users#accounts'
         get "access_list",  to: 'users#access_list'
         post "access_list/approvals", to: 'users#access_list_approvals'
