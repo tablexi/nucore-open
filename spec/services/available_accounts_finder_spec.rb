@@ -40,7 +40,7 @@ RSpec.describe AvailableAccountsFinder do
       before { FactoryGirl.create(:account_user, :business_administrator, user: user, account: other_chartstring) }
 
       describe "for any facility" do
-        it { is_expected.to match_array([chartstring, other_chartstring]) }
+        it { is_expected.to contain_exactly(chartstring, other_chartstring) }
       end
     end
   end

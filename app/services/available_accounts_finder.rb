@@ -8,20 +8,11 @@ class AvailableAccountsFinder
   end
 
   def accounts
-    accounts = available_accounts
-    if @current_account && !accounts.include?(@current_account)
-      accounts += [@current_account]
-    end
+    accounts = @user.accounts.for_facility(@facility).active
+    accounts &= @current_user.accounts.for_facility(@facility).active if @current_user
+    accounts += [@current_account] if @current_account && !accounts.include?(@current_account)
     accounts
   end
   alias to_a accounts
-
-  private
-
-  def available_accounts
-    available_accounts = @user.accounts.for_facility(@facility).active
-    available_accounts &= @current_user.accounts.for_facility(@facility).active if @current_user
-    available_accounts
-  end
 
 end
