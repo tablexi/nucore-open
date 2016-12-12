@@ -32,7 +32,7 @@
 
           %td.centered
             - if order_detail.reservation.try(:can_cancel?)
-              - fee = reservation_presenter.send(:with_cancelation_now) { order_detail.cancellation_fee }
+              - fee = CancellationFeeCalculator.new(order_detail.reservation).fee
               - if fee > 0
                 = link_to text("reservations.delete.link"),
                   cancel_order_order_detail_path(order_detail.order, order_detail),
