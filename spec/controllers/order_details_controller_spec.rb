@@ -131,27 +131,6 @@ RSpec.describe OrderDetailsController do
           it { expect(response.code).to eq("403") }
         end
 
-        context "and I am a facility operator" do # TODO: operators should not use this action
-          let(:user) do
-            FactoryGirl.create(:user, :facility_director, facility: facility)
-          end
-
-          context "and a cancellation fee applies" do
-            before do
-              price_policy.update_attribute(:cancellation_cost, 12)
-              product.update_attribute(:min_cancel_hours, 9999)
-              put :cancel, order_id: order.id, id: order_detail.id
-            end
-
-            it "cancels the reservation with fee, considering the order 'complete'", :aggregate_failures do
-              expect(response)
-                .to redirect_to(facility_user_reservations_path(facility, order_detail.user))
-              expect(order_detail.reload).to be_complete
-              expect(order_detail.actual_cost).to eq(12)
-            end
-          end
-        end
-
         context "and I am just a purchaser on the account" do
           before do
             account.account_users.update_all(user_role: AccountUser::ACCOUNT_PURCHASER)
