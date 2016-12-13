@@ -131,7 +131,7 @@ RSpec.describe OrderDetailsController do
           it { expect(response.code).to eq("403") }
         end
 
-        context "and I am a facility operator" do
+        context "and I am a facility operator" do # TODO: operators should not use this action
           let(:user) do
             FactoryGirl.create(:user, :facility_director, facility: facility)
           end
