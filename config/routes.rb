@@ -141,7 +141,6 @@ Nucore::Application.routes.draw do
         resources :reservations, only: [:index], controller: "facility_user_reservations"  do
           put "cancel"
         end
-        put "cancel_reservation", to: "users#cancel_reservation"
         get "accounts",     to: 'users#accounts'
         get "access_list",  to: 'users#access_list'
         post "access_list/approvals", to: 'users#access_list_approvals'
