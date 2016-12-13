@@ -30,6 +30,19 @@ RSpec.describe AvailableAccountsFinder do
         is_expected.to eq([chartstring])
       end
     end
+
+    context "with a different current user" do
+      subject(:accounts) { described_class.new(user, facility, current: current, current_user: current_user).accounts }
+
+      let(:current_user) { FactoryGirl.create(:user) }
+      let!(:other_chartstring) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: current_user) }
+
+      before { FactoryGirl.create(:account_user, :business_administrator, user: user, account: other_chartstring) }
+
+      describe "for any facility" do
+        it { is_expected.to contain_exactly(chartstring, other_chartstring) }
+      end
+    end
   end
 
   describe "with an expired account" do
