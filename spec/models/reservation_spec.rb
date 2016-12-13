@@ -395,8 +395,7 @@ RSpec.describe Reservation do
 
           context "the reservation has begun" do
             before :each do
-              reservation.assign_attributes(reserve_start_at: 3.hours.ago, actual_start_at: 3.hours.ago)
-              reservation.save(validate: false)
+              reservation.update_columns(reserve_start_at: 3.hours.ago, actual_start_at: 3.hours.ago)
             end
 
             context "there is a following reservation" do
@@ -424,8 +423,7 @@ RSpec.describe Reservation do
 
               context "within the grace period" do
                 before do
-                  reservation.assign_attributes(reserve_start_at: current_time + 5.minutes, actual_start_at: current_time)
-                  reservation.save(validate: false)
+                  reservation.update_columns(reserve_start_at: current_time + 5.minutes, actual_start_at: current_time)
                 end
 
                 it_behaves_like "a customer is allowed to edit"
