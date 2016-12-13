@@ -25,8 +25,6 @@
 
     %tbody
       - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
-        - reservation_presenter = ReservationUserActionPresenter.new(controller, order_detail.reservation)
-
         %tr
           %td.centered= link_to order_detail, order_detail.show_order_path
 
@@ -40,7 +38,7 @@
                 method: :put,
                 data: { confirm: confirm_text }
 
-          %td= reservation_presenter.view_edit_link if order_detail.reservation
+          %td= order_detail.reservation
 
           %td.user-order-detail.order-detail-description
             = link_to order_detail.description_as_html_with_facility_prefix,

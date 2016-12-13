@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe ReservationUserActionPresenter do
   include Rails.application.routes.url_helpers
 
-  let(:administrator) { build_stubbed(:user, :administrator) }
   let(:facility) { build_stubbed(:facility) }
   let(:order) { build_stubbed(:order, facility: facility, user: user) }
   let(:order_detail) { build_stubbed(:order_detail, order: order) }
@@ -25,46 +24,6 @@ RSpec.describe ReservationUserActionPresenter do
 
   context '#view_edit_link' do
     let(:link) { double "link" }
-
-    context "when in a current facility" do
-      before :each do
-        allow(template).to receive(:current_facility).and_return facility
-      end
-
-      context "when the user can edit" do
-        let(:path) do
-          edit_facility_order_order_detail_reservation_path(
-            facility,
-            order,
-            order_detail,
-            reservation,
-          )
-        end
-
-        it "returns an edit link" do
-          expect(reservation).to receive(:can_customer_edit?).and_return true
-          expect(presenter).to receive(:link_to).with(reservation, path).and_return link
-          expect(presenter.view_edit_link).to eq link
-        end
-      end
-
-      context "when the user cannot edit" do
-        let(:path) do
-          facility_order_order_detail_reservation_path(
-            facility,
-            order,
-            order_detail,
-            reservation,
-          )
-        end
-
-        it "returns a view link" do
-          expect(reservation).to receive(:can_customer_edit?).and_return false
-          expect(presenter).to receive(:link_to).with(reservation, path).and_return link
-          expect(presenter.view_edit_link).to eq link
-        end
-      end
-    end
 
     context "when not in a current facility" do
       before { allow(template).to receive(:current_facility).and_return nil }
