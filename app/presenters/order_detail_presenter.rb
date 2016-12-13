@@ -56,7 +56,7 @@ class OrderDetailPresenter < SimpleDelegator
   def wrapped_total
     return @wrapped_total if @wrapped_total
     __getobj__.send(:extend, PriceDisplayment)
-    @wrapped_total = __getobj__.reload.wrapped_total
+    @wrapped_total = __getobj__.wrapped_total
   end
 
   private
