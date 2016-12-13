@@ -13,8 +13,8 @@ class FacilityUserReservationsController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/reservations
   def index
     @order_details = user_order_details
-                     .where("orders.ordered_at IS NOT NULL")
-                     .order("orders.ordered_at DESC")
+                     .purchased
+                     .by_ordered_at
                      .paginate(page: params[:page])
   end
 
@@ -46,7 +46,7 @@ class FacilityUserReservationsController < ApplicationController
 
   def user_order_details
     @user_order_details ||=
-      @user.order_details.reservations.where("orders.facility_id" => current_facility.id)
+      @user.order_details.reservations.for_facility(current_facility)
   end
 
 end
