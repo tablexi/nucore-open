@@ -11,15 +11,11 @@ class CancellationFeeCalculator
   private
 
   def calculated_fee
-    if @calculated_fee.blank?
-
-      # This is wrapped in a transaction and rolled back because
-      # #cancellation_fee can reassign price policies and costs.
-      @reservation.class.transaction do
-        @reservation.canceled_at = Time.current
-        @calculated_fee = @reservation.order_detail.cancellation_fee
-        raise ActiveRecord::Rollback
-      end
+    unless defined?(@calculated_fee)
+      original_canceled_at = @reservation.canceled_at
+      @reservation.canceled_at = Time.current
+      @calculated_fee = @reservation.order_detail.cancellation_fee
+      @reservation.canceled_at = original_canceled_at
     end
 
     @calculated_fee
