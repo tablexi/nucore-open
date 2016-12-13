@@ -27,6 +27,16 @@ Metrics/LineLength:
 
 Metrics/MethodLength:
   Max: 20
+  Exclude:
+    - "lib/ability.rb"
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "lib/ability.rb"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - "lib/ability.rb"
 
 Rails/HttpPositionalArguments:
   Exclude:
