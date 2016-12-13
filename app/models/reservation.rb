@@ -236,7 +236,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def outside_lock_window?
-    before_lock_window? || Time.zone.now >= reserve_start_at
+    before_lock_window? || Time.zone.now >= reserve_start_at || in_grace_period?
   end
 
   def admin_editable?
