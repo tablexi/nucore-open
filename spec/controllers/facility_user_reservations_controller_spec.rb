@@ -14,7 +14,6 @@ RSpec.describe FacilityUserReservationsController do
       FactoryGirl.create_list(:purchased_reservation, 3, :daily, product: instrument, user: user)
     end
 
-
     context "when not logged in" do
       before { get :index, facility_id: facility.url_name, user_id: user.id }
 

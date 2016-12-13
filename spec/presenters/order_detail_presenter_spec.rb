@@ -198,6 +198,6 @@ RSpec.describe OrderDetailPresenter do
 
     before { product.price_policies.update_all(unit_cost: "12.34") }
 
-    it { is_expected.to match(%r(\A<span .+>\$12\.34</span>\z)) }
+    it { is_expected.to match(%r{\A<span .+>\$12\.34</span>\z}) }
   end
 end
