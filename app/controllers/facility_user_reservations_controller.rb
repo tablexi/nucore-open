@@ -21,7 +21,7 @@ class FacilityUserReservationsController < ApplicationController
   # PUT /facilities/:facility_id/users/:user_id/reservations/:reservation_id/cancel
   def cancel
     order_detail = user_order_details.find(params[:reservation_id])
-    raise ActiveRecord::RecordNotFound unless order_detail.reservation.can_cancel?
+    raise ActiveRecord::RecordNotFound unless order_detail.reservation.try(:can_cancel?)
     order_detail.transaction do
       if cancel_with_fee(order_detail)
         flash[:notice] = text("cancel.success")
