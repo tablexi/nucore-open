@@ -694,7 +694,7 @@ RSpec.describe OrdersController do
         end
 
         context "for a non reservation-only instrument" do
-          let(:instrument) { FactoryGirl.create(:setup_instrument, :timer, facility: @authable, facility_account: @facility_account) }
+          let(:instrument) { FactoryGirl.create(:setup_instrument, :timer, facility: facility, facility_account: @facility_account) }
 
           before { setup_past_reservation }
 
@@ -736,8 +736,6 @@ RSpec.describe OrdersController do
             it "sets the canceled time on the reservation" do
               assigns[:order].order_details.all? { |od| expect(od.reservation.canceled_at).not_to be_nil }
               expect(reservation.reload.canceled_at).not_to be_nil
-              # Should this match the date put in the form, or the date when the action took place
-              # @reservation.canceled_at.should match_date @submitted_date
             end
           end
         end
