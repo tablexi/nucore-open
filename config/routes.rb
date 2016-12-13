@@ -138,7 +138,7 @@ Nucore::Application.routes.draw do
         end
         get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
-        resources :reservations, only: [:index], controller: "facility_user_reservations"  do
+        resources :reservations, only: [:index], controller: "facility_user_reservations" do
           put "cancel"
         end
         get "accounts",     to: 'users#accounts'
