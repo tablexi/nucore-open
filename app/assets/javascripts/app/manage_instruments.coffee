@@ -10,3 +10,13 @@ $ ->
       else
         $(this).addClass 'interval-error'
 
+  $('#instrument_auto_cancel_mins').change ->
+    $warning_node = $(".js--auto_cancel_mins-zero-warning")
+    minutes = $(this).val() || 0
+
+    if minutes > 0
+      $warning_node.hide()
+    else
+      $warning_node.show()
+
+  $('#instrument_auto_cancel_mins').change()

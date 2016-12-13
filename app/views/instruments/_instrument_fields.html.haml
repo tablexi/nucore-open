@@ -63,6 +63,10 @@
     label: text("instruments.instrument_fields.reservation.label.auto_cancel"),
     hint: text("instruments.instrument_fields.reservation.instruct.auto_cancel")
 
+  %p.js--auto_cancel_mins-zero-warning
+    %i.icon-warning-sign
+    = text("instruments.instrument_fields.reservation.warning.auto_cancel_mins.zero")
+
   = f.input :lock_window,
     label: text("instruments.instrument_fields.reservation.label.lock_window"),
     hint: text("instruments.instrument_fields.reservation.instruct.lock_window")
