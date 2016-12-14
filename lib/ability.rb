@@ -52,8 +52,6 @@ class Ability
         can :manage, [Account, AccountUser, User]
         cannot :switch_to, User
       end
-
-      cannot [:suspend, :unsuspend], Account
     end
 
     if user.billing_administrator?
