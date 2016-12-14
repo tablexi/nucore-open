@@ -1087,8 +1087,9 @@ en:
           cancel_hours: "Minimum length of time before a reservation begins that a user may cancel a reservation without invoking the reservation cost"
           auto_cancel: |
             The number of minutes the system will wait before automatically
-            canceling an unstarted reservation. When blank or set to 0, the
-            system will not cancel unstarted reservations.
+            canceling an unstarted reservation.
+            This field should be blank for instruments managed by reservation only.
+            When blank or set to 0, the system will not cancel unstarted reservations.
           lock_window: "Window of time within which a customer may no longer move their reservation. Cancellations are permitted but may invoke a fee."
         label:
           restrict: "Reservation Restrictions"
