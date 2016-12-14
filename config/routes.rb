@@ -139,7 +139,9 @@ Nucore::Application.routes.draw do
         get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
         resources :reservations, only: [:index], controller: "facility_user_reservations" do
-          put "cancel"
+          member do
+            put "cancel"
+          end
         end
         get "accounts",     to: 'users#accounts'
         get "access_list",  to: 'users#access_list'
@@ -150,7 +152,9 @@ Nucore::Application.routes.draw do
         get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
         resources :reservations, only: [:index], controller: "facility_user_reservations" do
-          put "cancel"
+          member do
+            put "cancel"
+          end
         end
         get "accounts",     to: 'users#accounts'
         get "access_list",  to: 'users#access_list'

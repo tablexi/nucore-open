@@ -6,7 +6,7 @@ class FacilityUserReservationsController < ApplicationController
   before_action :check_acting_as
   before_action :load_user
 
-  load_and_authorize_resource class: Reservation
+  load_and_authorize_resource class: "OrderDetail"
 
   layout "two_column"
 
@@ -18,9 +18,9 @@ class FacilityUserReservationsController < ApplicationController
                      .paginate(page: params[:page])
   end
 
-  # PUT /facilities/:facility_id/users/:user_id/reservations/:reservation_id/cancel
+  # PUT /facilities/:facility_id/users/:user_id/reservations/:id/cancel
   def cancel
-    order_detail = user_order_details.find(params[:reservation_id])
+    order_detail = user_order_details.find(params[:id])
     raise ActiveRecord::RecordNotFound unless order_detail.reservation.try(:can_cancel?)
     order_detail.transaction do
       if cancel_with_fee(order_detail)

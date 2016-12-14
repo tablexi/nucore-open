@@ -48,7 +48,7 @@ RSpec.describe FacilityUserReservationsController do
           put :cancel,
               facility_id: facility.url_name,
               user_id: user.id,
-              reservation_id: order_detail.id
+              id: order_detail.id
         end
 
         it "cancels the reservation with fee, considering the order 'complete'", :aggregate_failures do
