@@ -29,6 +29,7 @@ class Ability
       end
 
       cannot(:switch_to, User) { |target_user| !target_user.active? }
+      ability_extender.extend(user, resource)
       return
     end
 
