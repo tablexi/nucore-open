@@ -318,6 +318,11 @@ RSpec.describe ReservationsController do
       expect(assigns[:reservation].errors).to be_empty
     end
 
+    it_should_allow_all facility_operators, "and not assign actuals" do
+      expect(assigns[:reservation].actual_start_at).to be_nil
+      expect(assigns[:reservation].actual_end_at).to be_nil
+    end
+
     it_should_allow_all facility_operators, "to still be new" do
       expect(assigns[:reservation].order_detail.reload.state).to eq("new")
     end
@@ -421,6 +426,11 @@ RSpec.describe ReservationsController do
           expect(assigns(:reservation).errors).to be_empty
           expect(assigns(:order_detail).state).to eq("complete")
           expect(response).to redirect_to facility_order_path(@authable, @merge_to_order)
+        end
+
+        it_should_allow_all facility_operators, "and not assign actuals" do
+          expect(assigns[:reservation].actual_start_at).to be_nil
+          expect(assigns[:reservation].actual_end_at).to be_nil
         end
 
         context "and there is no price policy" do

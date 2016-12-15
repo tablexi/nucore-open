@@ -112,6 +112,20 @@ FactoryGirl.define do
       product.reload
     end
 
+    trait :timer do
+      transient do
+        no_relay false
+      end
+
+      min_reserve_mins 60
+      max_reserve_mins 120
+      reserve_interval 1
+
+      after(:create) do |inst, evaluator|
+        inst.relay = FactoryGirl.create(:relay_dummy, instrument: inst) unless evaluator.no_relay
+      end
+    end
+
     trait :always_available do
       after(:create) do |product|
         product.schedule_rules.destroy_all
