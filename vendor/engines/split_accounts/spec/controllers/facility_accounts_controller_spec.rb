@@ -138,16 +138,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     let(:user) { FactoryGirl.create(:user, :account_manager) }
     let(:facility) { Facility.cross_facility }
     include_examples "allows editing"
-
-    describe "show" do
-      let(:split_account) { FactoryGirl.create(:split_account) }
-
-      before { get :show, facility_id: facility.url_name, id: split_account.id }
-
-      it "does not show the suspend buttons" do
-        expect(response.body).not_to include("Suspend")
-      end
-    end
+    include_examples "allows suspending"
   end
 
   describe "as a staff member" do

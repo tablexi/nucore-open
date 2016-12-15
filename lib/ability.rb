@@ -29,6 +29,7 @@ class Ability
       end
 
       cannot(:switch_to, User) { |target_user| !target_user.active? }
+      ability_extender.extend(user, resource)
       return
     end
 
@@ -52,8 +53,6 @@ class Ability
         can :manage, [Account, AccountUser, User]
         cannot :switch_to, User
       end
-
-      cannot [:suspend, :unsuspend], Account
     end
 
     if user.billing_administrator?
