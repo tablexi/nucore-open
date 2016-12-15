@@ -480,6 +480,7 @@ ActiveRecord::Schema.define(version: 20170112204251) do
     t.integer  "lock_window",               limit: 4,     default: 0,     null: false
     t.text     "training_request_contacts", limit: 65535
     t.boolean  "note_available_to_users",                 default: false, null: false
+    t.integer  "cutoff_time",               limit: 4,     default: 0,     null: false
   end
 
   add_index "products", ["facility_account_id"], name: "fk_facility_accounts", using: :btree

@@ -19,6 +19,7 @@ module Reservations::Validations
       end
     end
 
+    validate :starts_before_cutoff, unless: :admin?, on: [:create, :update]
     validate :starts_before_ends
     validate :duration_is_interval
   end
@@ -31,6 +32,12 @@ module Reservations::Validations
     end
     if actual_start_at && actual_end_at
       errors.add("actual_end_date", "must be after the actual start time") if actual_end_at <= actual_start_at
+    end
+  end
+
+  def starts_before_cutoff
+    if product.cutoff_time && reserve_start_at && in_the_future? && reserve_start_at_changed?
+      errors.add("reserve_start_at", "must be before the cutoff time for this instrument") if reserve_start_at < Time.now + product.cutoff_time.hours
     end
   end
 

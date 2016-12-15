@@ -1102,6 +1102,7 @@ en:
             This field should be blank for instruments managed by reservation only.
             When blank or set to 0, the system will not cancel unstarted reservations.
           lock_window: "Window of time within which a customer may no longer move their reservation. Cancellations are permitted but may invoke a fee."
+          cutoff_time: "Minimum amount of hours before reservation instrument can be reserved."
         label:
           restrict: "Reservation Restrictions"
           reserve_interval: "Interval (minutes)"
@@ -1110,6 +1111,7 @@ en:
           cancel_hours: "Cancelation Minimum (hours)"
           auto_cancel: "Automatic Cancelation (minutes)"
           lock_window: "Reservation Lock Window (hours)"
+          cutoff_time: "Cutoff Time (hours)"
         warning:
           auto_cancel_mins:
             zero: Automatic cancellation will be disabled for this instrument
