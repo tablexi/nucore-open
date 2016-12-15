@@ -1,20 +1,27 @@
 - content_for :head_content do
-  = javascript_include_tag 'power_relay'
+  = javascript_include_tag "power_relay"
 
-= f.input :show_details, :as => :boolean, :label => false, :inline_label => t('instruments.instrument_fields.show_details')
+= f.input :show_details,
+  as: :boolean,
+  label: false,
+  inline_label: text("instruments.instrument_fields.show_details")
 
 - if f.object.new_record?
-  = f.association :schedule, collection: current_facility.schedules.active.ordered, include_blank: t('instruments.instrument_fields.schedule.unshared')
+  = f.association :schedule,
+    collection: current_facility.schedules.active.ordered,
+    include_blank: text("instruments.instrument_fields.schedule.unshared")
 - else
   = f.input :schedule, as: :readonly, value_method: :display_name, hint: false
 
--# - selection = @instrument.control_mechanism || :manual
-= f.input :control_mechanism, collection: options_for_control_mechanism, include_blank: false, selected: @instrument.control_mechanism || :manual
+= f.input :control_mechanism,
+  collection: options_for_control_mechanism,
+  include_blank: false,
+  selected: @instrument.control_mechanism || :manual
 
 - # TODO
 .well#power-relay
-  %h3= t('instruments.instrument_fields.relay.label.relay')
-  %p= t 'instruments.instrument_fields.relay.intro'
+  %h3= text("instruments.instrument_fields.relay.label.relay")
+  %p= text("instruments.instrument_fields.relay.intro")
 
   = f.simple_fields_for :relay, @instrument.relay || @instrument.build_relay do |rf|
     = rf.input :type, collection: options_for_relay, include_blank: false
@@ -24,15 +31,42 @@
     = rf.input :password, as: :string
     = rf.input :auto_logout do
       = rf.check_box :auto_logout
-      = t('instruments.instrument_fields.relay.label.auto_logout_1')
-      = rf.input :auto_logout_minutes, label: false, error: false, wrapper_html: { class: 'input-inline' } , input_html: { style: 'width: 38px' }
-      = t('instruments.instrument_fields.relay.label.auto_logout_2')
+      = text("instruments.instrument_fields.relay.label.auto_logout_1")
+      = rf.input :auto_logout_minutes,
+        label: false,
+        error: false,
+        wrapper_html: { class: "input-inline" },
+        input_html: { style: "width: 38px" }
+      = text("instruments.instrument_fields.relay.label.auto_logout_2")
 
 .well
-  %h3= t('instruments.instrument_fields.reservation.label.restrict')
-  = f.input :reserve_interval, :collection => Instrument::RESERVE_INTERVALS, :label => t('instruments.instrument_fields.reservation.label.reserve_interval'), :hint => t('instruments.instrument_fields.reservation.instruct.reserve_interval')
-  = f.input :min_reserve_mins, :label => t('instruments.instrument_fields.reservation.label.min_reserve'), :hint => t('instruments.instrument_fields.reservation.instruct.min_reserve')
-  = f.input :max_reserve_mins, :label => t('instruments.instrument_fields.reservation.label.max_reserve'), :hint => t('instruments.instrument_fields.reservation.instruct.max_reserve')
-  = f.input :min_cancel_hours, :label => t('instruments.instrument_fields.reservation.label.cancel_hours'), :hint => t('instruments.instrument_fields.reservation.instruct.cancel_hours')
-  = f.input :auto_cancel_mins, :label => t('instruments.instrument_fields.reservation.label.auto_cancel'),  :hint => t('instruments.instrument_fields.reservation.instruct.auto_cancel')
-  = f.input :lock_window, label: t('instruments.instrument_fields.reservation.label.lock_window'), hint: t('instruments.instrument_fields.reservation.instruct.lock_window')
+  %h3= text("instruments.instrument_fields.reservation.label.restrict")
+
+  = f.input :reserve_interval,
+    collection: Instrument::RESERVE_INTERVALS,
+    label: text("instruments.instrument_fields.reservation.label.reserve_interval"),
+    hint: text("instruments.instrument_fields.reservation.instruct.reserve_interval")
+
+  = f.input :min_reserve_mins,
+    label: text("instruments.instrument_fields.reservation.label.min_reserve"),
+    hint: text("instruments.instrument_fields.reservation.instruct.min_reserve")
+
+  = f.input :max_reserve_mins,
+    label: text("instruments.instrument_fields.reservation.label.max_reserve"),
+    hint: text("instruments.instrument_fields.reservation.instruct.max_reserve")
+
+  = f.input :min_cancel_hours,
+    label: text("instruments.instrument_fields.reservation.label.cancel_hours"),
+    hint: text("instruments.instrument_fields.reservation.instruct.cancel_hours")
+
+  = f.input :auto_cancel_mins,
+    label: text("instruments.instrument_fields.reservation.label.auto_cancel"),
+    hint: text("instruments.instrument_fields.reservation.instruct.auto_cancel")
+
+  %p.js--auto_cancel_mins-zero-warning
+    %i.icon-warning-sign
+    = text("instruments.instrument_fields.reservation.warning.auto_cancel_mins.zero")
+
+  = f.input :lock_window,
+    label: text("instruments.instrument_fields.reservation.label.lock_window"),
+    hint: text("instruments.instrument_fields.reservation.instruct.lock_window")
