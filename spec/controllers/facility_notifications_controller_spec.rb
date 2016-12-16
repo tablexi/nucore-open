@@ -187,7 +187,7 @@ RSpec.describe FacilityNotificationsController do
     it_should_404_for_zero_day_review
 
     it "should update" do
-      Timecop.freeze do
+      travel(0) do
         @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
         do_request
         expect(flash[:error]).to be_nil

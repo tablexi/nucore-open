@@ -1223,7 +1223,7 @@ RSpec.describe ReservationsController do
         before :each do
           @reservation.update_attribute(:actual_start_at, @start)
           @params[:switch] = "off"
-          Timecop.travel(2.seconds.from_now)
+          travel(2.seconds)
           expect(@reservation.order_detail.price_policy).to be_nil
         end
 

@@ -71,11 +71,13 @@ RSpec.configure do |config|
     @epg.save(validate: false)
 
     # now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
-    Timecop.return
+    travel_back
     now = (SettingsHelper.fiscal_year_beginning(Date.today) + 1.year + 10.days).change(hour: 9, min: 30)
     # puts "travelling to #{now}"
-    Timecop.travel(now)
+    travel_to(now)
   end
+
+  config.after(:all) { travel_back }
 
   # rspec-rails 3 will no longer automatically infer an example group's spec type
   # from the file location. You can explicitly opt-in to the feature using this

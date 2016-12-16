@@ -252,9 +252,7 @@ RSpec.describe User do
     end
 
     describe "with a previously deactivated user", :timecop_freeze do
-      before do
-        Timecop.travel(10.minutes.ago) { user.deactivate }
-      end
+      before { travel(-10.minutes) { user.deactivate } }
 
       it "does not change the time" do
         expect { user.deactivate }.not_to change(user, :deactivated_at)

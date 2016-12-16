@@ -1,5 +1,4 @@
 require "rails_helper"
-require "timecop"
 
 RSpec.describe OrderDetail do
   let(:account) { @account }
@@ -475,7 +474,7 @@ RSpec.describe OrderDetail do
                order_detail: order_detail_without_price_policy,
               )
 
-        Timecop.travel(2.days.from_now) do
+        travel(2.days) do
           order_details.each do |order_detail|
             order_detail.change_status!(OrderStatus.find_by_name("In Process"))
             order_detail.change_status!(OrderStatus.find_by_name("Complete"))
@@ -546,7 +545,7 @@ RSpec.describe OrderDetail do
       context "with no price policy" do
         before :each do
           product.price_policies.destroy_all
-          Timecop.travel(2.days.from_now) do
+          travel(2.days) do
             order_detail.change_status!(OrderStatus.find_by_name("In Process"))
             order_detail.change_status!(OrderStatus.find_by_name("Complete"))
             order_detail.reload
@@ -1232,11 +1231,11 @@ RSpec.describe OrderDetail do
         context "when after the time when the cancellation fee applies" do
           before :each do
             @current_time = Time.now
-            Timecop.freeze(3.hours.from_now)
+            travel(3.hours)
             reservation.update_attribute(:canceled_at, Time.zone.now)
           end
 
-          after { Timecop.freeze(@current_time) }
+          after { travel_to(@current_time) }
 
           it_behaves_like "it charges a cancellation fee"
         end

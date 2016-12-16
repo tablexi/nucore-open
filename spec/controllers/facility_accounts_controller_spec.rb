@@ -304,7 +304,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
 
       2.times do
         @statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: @account)
-        Timecop.travel(1.second.from_now) # need different timestamp on statement
+        travel_to(1.second.from_now) # need different timestamp on statement
       end
 
       @params = { facility_id: facility.url_name, account_id: @account.id, statement_id: "" }

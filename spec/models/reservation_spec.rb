@@ -275,7 +275,7 @@ RSpec.describe Reservation do
   it "allows starting of a reservation, whose duration is equal to the max duration, within the grace period" do
     reservation.product.update_attribute :max_reserve_mins, reservation.duration_mins
 
-    Timecop.freeze(reservation.reserve_start_at - 2.minutes) do # in grace period
+    travel_to(reservation.reserve_start_at - 2.minutes) do # in grace period
       expect { reservation.start_reservation! }.to_not raise_error
       expect(reservation.errors).to be_empty
     end
@@ -451,13 +451,11 @@ RSpec.describe Reservation do
                 reservation.reload
               end
 
-              after { Timecop.freeze(@current_time) }
+              after { travel_to(@current_time) }
 
               context "before the lock window begins" do
                 before :each do
-                  Timecop.freeze(
-                    reservation.reserve_start_at - (window_hours + 2).hours,
-                  )
+                  travel_to(reservation.reserve_start_at - (window_hours + 2).hours)
                 end
 
                 it_behaves_like "a customer is allowed to edit"
@@ -465,9 +463,7 @@ RSpec.describe Reservation do
 
               context "after the lock window has begun" do
                 before :each do
-                  Timecop.freeze(
-                    reservation.reserve_start_at - (window_hours - 2).hours,
-                  )
+                  travel_to(reservation.reserve_start_at - (window_hours - 2).hours)
                 end
 
                 it_behaves_like "a customer is not allowed to edit"
@@ -607,7 +603,7 @@ RSpec.describe Reservation do
         expect(human_date(@reservation1.reserve_start_at)).to eq(human_date(@morning + 1.day))
 
         earliest = nil
-        Timecop.freeze(@morning) { earliest = @reservation1.earliest_possible }
+        travel_to(@morning) { earliest = @reservation1.earliest_possible }
         expect(human_date(earliest.reserve_start_at)).to eq(human_date(@morning))
 
         new_min = 0
@@ -624,7 +620,7 @@ RSpec.describe Reservation do
       it "should not be moveable if the reservation is in the grace period" do
         @instrument.update_attributes(reserve_interval: 1)
         @reservation1.duration_mins = 1
-        Timecop.freeze(@reservation1.reserve_start_at - 4.minutes) do
+        travel_to(@reservation1.reserve_start_at - 4.minutes) do
           expect(@reservation1).to_not be_startable_now
         end
       end
@@ -645,7 +641,7 @@ RSpec.describe Reservation do
 
       it "should update the reservation to the earliest available" do
         # if earliest= and move_to_earliest span a second, the test fails
-        Timecop.freeze do
+        travel(0) do
           earliest = @reservation1.earliest_possible
           expect(@reservation1.reserve_start_at).not_to eq(earliest.reserve_start_at)
           expect(@reservation1.reserve_end_at).not_to eq(earliest.reserve_end_at)
@@ -682,7 +678,7 @@ RSpec.describe Reservation do
         it "should not be able to move to a schedule rule the user is not part of" do
           @reservation1.update_attributes!(reserve_start_at: tomorrow_noon, reserve_end_at: tomorrow_noon + 30.minutes)
           # 4:45pm today will be in the restricted schedule rule
-          Timecop.travel(Time.zone.now.change(hour: 16, min: 45, sec: 0)) do
+          travel_to(Time.current.change(hour: 16, min: 45, sec: 0)) do
             expect(@reservation1.earliest_possible.reserve_start_at).to eq(1.day.from_now.change(hour: 9, min: 0, sec: 0))
           end
         end

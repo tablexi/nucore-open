@@ -322,7 +322,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
                                           reserve_end_at: 23.hours.ago,
                                           actual_start_at: nil,
                                           actual_end_at: nil)
-            Timecop.travel(7.days.from_now) do
+            travel(7.days) do
               order_detail.change_status!(OrderStatus.find_by_name!("Complete"))
             end
             @params[:with_cancel_fee] = "1"
