@@ -37,7 +37,7 @@ RSpec.describe TransactionsController do
         let(:reviewed_at) { 1.day.from_now }
 
         it "sets order_details to orders in review from all owned accounts", :aggregate_failures do
-          expect(assigns(:order_details)).to match(order_details)
+          expect(assigns(:order_details)).to match_array(order_details)
           expect(assigns(:recently_reviewed)).to be_empty
         end
       end
