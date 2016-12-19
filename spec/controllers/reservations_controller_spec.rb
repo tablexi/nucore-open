@@ -164,8 +164,7 @@ RSpec.describe ReservationsController do
       let(:reservation2) do
         FactoryGirl.create(:purchased_reservation,
                            product: instrument2,
-                           reserve_start_at: reservation1.reserve_end_at, # Immediately after reservation1
-                           reserve_end_at: reservation1.reserve_end_at + 1.hour)
+                           reserve_start_at: reservation1.reserve_end_at) # Immediately after reservation1
       end
       let(:reservations) { [reservation1, reservation2] }
 
@@ -235,7 +234,7 @@ RSpec.describe ReservationsController do
 
         it "should have a message for todays reservations" do
           @upcoming.update_attributes(reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
-          tomorrow_reservation = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: 1.day.from_now, reserve_end_at: 1.day.from_now + 1.hour)
+          tomorrow_reservation = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: 1.day.from_now)
           tomorrow_reservation.order_detail.order.update_attributes(user: @staff)
           do_request
           expect(response.body).to include I18n.t("reservations.notices.upcoming", reservation: @upcoming)

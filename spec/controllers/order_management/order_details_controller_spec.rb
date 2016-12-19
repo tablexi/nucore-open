@@ -248,7 +248,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
             before :each do
               @other_reservation = FactoryGirl.create(:purchased_reservation,
                                                       reserve_start_at: @new_reserve_start,
-                                                      reserve_end_at: @new_reserve_start + 1.hour,
                                                       product: instrument)
               @old_start_time = reservation.reserve_start_at
               do_request
@@ -319,7 +318,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
         context "with a cancellation fee and was completed" do
           before :each do
             reservation.update_attributes(reserve_start_at: 24.hours.ago,
-                                          reserve_end_at: 23.hours.ago,
                                           actual_start_at: nil,
                                           actual_end_at: nil)
             travel(7.days) do

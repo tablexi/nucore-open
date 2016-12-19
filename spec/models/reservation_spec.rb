@@ -42,8 +42,7 @@ RSpec.describe Reservation do
             let!(:reservation) do
               FactoryGirl.create(:purchased_reservation,
                                  product: instrument,
-                                 reserve_start_at: now,
-                                 reserve_end_at: 1.hour.from_now)
+                                 reserve_start_at: now)
             end
 
             it { is_expected.to eq [reservation] }
@@ -53,8 +52,7 @@ RSpec.describe Reservation do
             let!(:reservation) do
               FactoryGirl.create(:setup_reservation,
                                  product: instrument,
-                                 reserve_start_at: now,
-                                 reserve_end_at: 1.hour.from_now)
+                                 reserve_start_at: now)
             end
 
             it { is_expected.to be_blank }
@@ -66,8 +64,7 @@ RSpec.describe Reservation do
             FactoryGirl.create(:purchased_reservation,
                                :inprocess,
                                product: instrument,
-                               reserve_start_at: now,
-                               reserve_end_at: 1.hour.from_now)
+                               reserve_start_at: now)
           end
 
           it { is_expected.to eq [reservation] }
