@@ -348,7 +348,7 @@ RSpec.describe Product do
         @price_policy_pg1_2 = TestPricePolicy.create!(price_group: @price_group,
                                                       product: @product,
                                                       start_date: Time.zone.now - 4.days,
-                                                      expire_date: Time.zone.now - 4.days,
+                                                      expire_date: Time.zone.now - 3.days,
                                                       can_purchase: false)
 
         @price_policy_pg2_1 = TestPricePolicy.create!(price_group: @price_group2,
