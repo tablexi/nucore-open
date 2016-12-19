@@ -272,10 +272,11 @@ RSpec.describe Reservation do
   it "allows starting of a reservation, whose duration is equal to the max duration, within the grace period" do
     reservation.product.update_attribute :max_reserve_mins, reservation.duration_mins
 
-    travel_to(reservation.reserve_start_at - 2.minutes) do # in grace period
-      expect { reservation.start_reservation! }.to_not raise_error
-      expect(reservation.errors).to be_empty
-    end
+    current_time = Time.current
+    travel_to(reservation.reserve_start_at - 2.minutes) # in grace period
+    expect { reservation.start_reservation! }.to_not raise_error
+    expect(reservation.errors).to be_empty
+    travel_to(current_time)
   end
 
   context "create using virtual attributes" do
@@ -600,7 +601,9 @@ RSpec.describe Reservation do
         expect(human_date(@reservation1.reserve_start_at)).to eq(human_date(@morning + 1.day))
 
         earliest = nil
+        current_time = Time.current
         travel_to(@morning) { earliest = @reservation1.earliest_possible }
+        travel_to(current_time)
         expect(human_date(earliest.reserve_start_at)).to eq(human_date(@morning))
 
         new_min = 0
@@ -617,9 +620,11 @@ RSpec.describe Reservation do
       it "should not be moveable if the reservation is in the grace period" do
         @instrument.update_attributes(reserve_interval: 1)
         @reservation1.duration_mins = 1
+        current_time = Time.current
         travel_to(@reservation1.reserve_start_at - 4.minutes) do
           expect(@reservation1).to_not be_startable_now
         end
+        travel_to(current_time)
       end
 
       it "should not be moveable if the reservation is canceled" do
@@ -674,10 +679,12 @@ RSpec.describe Reservation do
 
         it "should not be able to move to a schedule rule the user is not part of" do
           @reservation1.update_attributes!(reserve_start_at: tomorrow_noon, reserve_end_at: tomorrow_noon + 30.minutes)
+          current_time = Time.current
           # 4:45pm today will be in the restricted schedule rule
           travel_to(Time.current.change(hour: 16, min: 45, sec: 0)) do
             expect(@reservation1.earliest_possible.reserve_start_at).to eq(1.day.from_now.change(hour: 9, min: 0, sec: 0))
           end
+          travel_to(current_time)
         end
       end
     end

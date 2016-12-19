@@ -320,9 +320,14 @@ RSpec.describe OrderManagement::OrderDetailsController do
             reservation.update_attributes(reserve_start_at: 24.hours.ago,
                                           actual_start_at: nil,
                                           actual_end_at: nil)
+
+            # Store "now" as the travel() block restores to "real" time after:
+            now = Time.current
             travel(7.days) do
-              order_detail.change_status!(OrderStatus.find_by_name!("Complete"))
+              order_detail.change_status!(OrderStatus.complete_status)
             end
+            travel_to(now)
+
             @params[:with_cancel_fee] = "1"
             do_request
           end
