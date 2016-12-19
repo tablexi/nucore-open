@@ -1233,7 +1233,7 @@ RSpec.describe ReservationsController do
           expect(assigns(:instrument)).to eq(@instrument)
           expect(assigns(:reservation)).to eq(@reservation)
           expect(assigns(:reservation).order_detail.price_policy).not_to be_nil
-          expect(assigns(:reservation).actual_end_at).to be < Time.zone.now
+          expect(assigns(:reservation).actual_end_at).to be <= Time.zone.now
           expect(assigns(:reservation)).to be_complete
           expect(assigns(:instrument).instrument_statuses.size).to eq(1)
           expect(assigns(:instrument).instrument_statuses[0].is_on).to eq(false)
