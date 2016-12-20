@@ -474,13 +474,14 @@ RSpec.describe OrderDetail do
                order_detail: order_detail_without_price_policy,
               )
 
-        travel(2.days) do
-          order_details.each do |order_detail|
-            order_detail.change_status!(OrderStatus.find_by_name("In Process"))
-            order_detail.change_status!(OrderStatus.find_by_name("Complete"))
-            order_detail.reload
-          end
+        current_time = Time.current
+        travel(2.days)
+        order_details.each do |order_detail|
+          order_detail.change_status!(OrderStatus.find_by_name("In Process"))
+          order_detail.change_status!(OrderStatus.find_by_name("Complete"))
+          order_detail.reload
         end
+        travel_to(current_time)
       end
 
       context "with an order_detail for an instrument" do
@@ -545,11 +546,12 @@ RSpec.describe OrderDetail do
       context "with no price policy" do
         before :each do
           product.price_policies.destroy_all
-          travel(2.days) do
-            order_detail.change_status!(OrderStatus.find_by_name("In Process"))
-            order_detail.change_status!(OrderStatus.find_by_name("Complete"))
-            order_detail.reload
-          end
+          current_time = Time.current
+          travel(2.days)
+          order_detail.change_status!(OrderStatus.find_by_name("In Process"))
+          order_detail.change_status!(OrderStatus.find_by_name("Complete"))
+          order_detail.reload
+          travel_to(current_time)
         end
 
         it_behaves_like "it is a problem order"
