@@ -103,11 +103,12 @@ RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
 
   config.around(:each, :timecop_freeze) do |example|
+    current_time = Time.current
     # freeze time to specific time by defining let(:now)
     time = defined?(now) ? now : Time.current
-    travel_to(time) do
-      example.call
-    end
+    travel_to(time)
+    example.call
+    travel_to(current_time)
   end
 
   # Setting this config option `false` removes rspec-core's monkey patching of the
