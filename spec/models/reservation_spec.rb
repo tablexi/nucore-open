@@ -1029,7 +1029,13 @@ RSpec.describe Reservation do
     end
 
     context "with a running reservation" do
-      let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: 1.hour.ago, reserve_end_at: Time.current, actual_start_at: 1.hour.ago }
+      let!(:running) do
+        start_time = 1.hour.ago - 1.second
+        FactoryGirl.create(:setup_reservation,
+                           product: instrument,
+                           reserve_start_at: start_time,
+                           actual_start_at: start_time)
+      end
 
       before do
         order = running.order_detail.order
