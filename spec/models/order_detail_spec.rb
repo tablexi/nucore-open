@@ -844,7 +844,7 @@ RSpec.describe OrderDetail do
         Settings.billing.review_period = 0.days
       end
 
-      it "should set reviewed_at to now", :timecop_freeze do
+      it "should set reviewed_at to now", :time_travel do
         @order_detail.to_complete
         expect(@order_detail.reviewed_at).to eq(Time.zone.now)
       end

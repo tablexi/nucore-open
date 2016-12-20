@@ -165,7 +165,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
     end
   end
 
-  describe "with a reservation", :timecop_freeze do
+  describe "with a reservation", :time_travel do
     let(:instrument) { FactoryGirl.create(:setup_instrument, :always_available, facility: facility) }
     let(:now) { Time.zone.parse("2016-02-01 10:30") }
     let(:reservation) do

@@ -609,7 +609,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
     end
 
-    describe "reconciling", :timecop_freeze do
+    describe "reconciling", :time_travel do
       before do
         order_detail.change_status!(OrderStatus.complete.first)
         order_detail.update_attributes(reviewed_at: 1.day.ago)

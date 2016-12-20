@@ -1106,7 +1106,7 @@ RSpec.describe ReservationsController do
       end
     end
 
-    context "switch_instrument", :timecop_freeze do
+    context "switch_instrument", :time_travel do
       before :each do
         @method = :get
         @action = :switch_instrument

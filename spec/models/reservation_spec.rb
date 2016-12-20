@@ -28,7 +28,7 @@ RSpec.describe Reservation do
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
-  describe ".upcoming_offline", :timecop_freeze do
+  describe ".upcoming_offline", :time_travel do
     subject { described_class.upcoming_offline(1.year.from_now) }
     let(:now) { Time.current }
 
@@ -1010,7 +1010,7 @@ RSpec.describe Reservation do
     assert @reservation.valid?
   end
 
-  it "allows starting of an instrument even though another reservation is running but over end time", :timecop_freeze do
+  it "allows starting of an instrument even though another reservation is running but over end time", :time_travel do
     now = Time.zone.now
     next_hour = now + 1.hour
     hour_ago = now - 1.hour
@@ -1023,7 +1023,7 @@ RSpec.describe Reservation do
   end
 
   describe '#start_reservation!' do
-    it "sets actual start time", :timecop_freeze do
+    it "sets actual start time", :time_travel do
       reservation.start_reservation!
       expect(reservation.actual_start_at).to eq(Time.current)
     end

@@ -117,7 +117,7 @@ RSpec.describe Journal do
     end
   end
 
-  describe "cutoff date validations", :timecop_freeze do
+  describe "cutoff date validations", :time_travel do
     let(:now) { Time.zone.parse("2016-02-03") }
 
     context "no cutoff dates" do

@@ -102,7 +102,7 @@ RSpec.configure do |config|
 
   config.include ActiveSupport::Testing::TimeHelpers
 
-  config.around(:each, :timecop_freeze) do |example|
+  config.around(:each, :time_travel) do |example|
     current_time = Time.current
     # freeze time to specific time by defining let(:now)
     time = defined?(now) ? now : Time.current

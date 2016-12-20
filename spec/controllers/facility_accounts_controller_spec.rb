@@ -296,7 +296,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
 
   end
 
-  context "show_statement", :timecop_freeze, if: Account.config.statements_enabled? do
+  context "show_statement", :time_travel, if: Account.config.statements_enabled? do
 
     before :each do
       @method = :get

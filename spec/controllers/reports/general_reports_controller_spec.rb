@@ -15,7 +15,7 @@ RSpec.describe Reports::GeneralReportsController do
                      { report_by: :price_group, index: 4, report_on_label: "Price Group", report_on: proc { |od| od.price_policy ? od.price_policy.price_group.name : "Unassigned" } },
                    ])
 
-  describe "time parameters", :timecop_freeze do
+  describe "time parameters", :time_travel do
     let(:now) { Time.zone.parse("2014-03-06 12:00") }
 
     before do
