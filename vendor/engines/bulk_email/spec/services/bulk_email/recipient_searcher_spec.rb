@@ -103,19 +103,15 @@ RSpec.describe BulkEmail::RecipientSearcher do
   context "when searching for customers" do
     context "filtered by ordered dates" do
       let!(:od_yesterday) do
-        current_time = Time.current
-        travel(-1.day)
-        od = place_order(purchaser: purchaser, product: product, account: account)
-        travel_to(current_time)
-        od
+        travel_and_return(-1.day) do
+          place_order(purchaser: purchaser, product: product, account: account)
+        end
       end
 
       let!(:od_tomorrow) do
-        current_time = Time.current
-        travel(1.day)
-        od = place_order(purchaser: purchaser2, product: product2, account: account)
-        travel_to(current_time)
-        od
+        travel_and_return(1.day) do
+          place_order(purchaser: purchaser2, product: product2, account: account)
+        end
       end
 
       let!(:od_today) do
