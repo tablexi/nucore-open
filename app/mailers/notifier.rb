@@ -36,7 +36,7 @@ class Notifier < ActionMailer::Base
 
   def order_notification(order, recipient)
     @order = order
-    send_nucore_mail recipient, text("views.notifier.order_notification.subject"), "order_receipt"
+    send_nucore_mail recipient, text("views.notifier.order_notification.subject"), template_name: "order_receipt", reply: @order.facility.email
   end
 
   # Custom order forms send out a confirmation email when filled out by a
@@ -45,7 +45,7 @@ class Notifier < ActionMailer::Base
     @user = args[:user]
     @order = args[:order]
     @greeting = text("views.notifier.order_receipt.intro")
-    send_nucore_mail args[:user].email, text("views.notifier.order_receipt.subject")
+    send_nucore_mail args[:user].email, text("views.notifier.order_receipt.subject"), reply: @order.facility.email
   end
 
   def review_orders(args)
@@ -63,7 +63,7 @@ class Notifier < ActionMailer::Base
     @account = args[:account]
     @statement = args[:statement]
     attach_statement_pdf
-    send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
+    send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility), reply: @facility.email
   end
 
   def order_detail_status_change(order_detail, old_status, new_status, to)
@@ -71,7 +71,7 @@ class Notifier < ActionMailer::Base
     @old_status = old_status
     @new_status = new_status
     template = "order_status_changed_to_#{new_status.downcase_name}"
-    send_nucore_mail to, t("views.notifier.#{template}.subject", order_detail: order_detail, user: order_detail.order.user, product: order_detail.product), template
+    send_nucore_mail to, t("views.notifier.#{template}.subject", order_detail: order_detail, user: order_detail.order.user, product: order_detail.product), template_name: template, reply: order_detail.facility.email
   end
 
   private
@@ -87,8 +87,8 @@ class Notifier < ActionMailer::Base
     @statement_pdf ||= StatementPdfFactory.instance(@statement)
   end
 
-  def send_nucore_mail(to, subject, template_name = nil)
-    mail(subject: subject, to: to, template_name: template_name)
+  def send_nucore_mail(to, subject, options = {})
+    mail(subject: subject, to: to, template_name: options[:template_name], reply_to: options[:reply])
   end
 
 end
