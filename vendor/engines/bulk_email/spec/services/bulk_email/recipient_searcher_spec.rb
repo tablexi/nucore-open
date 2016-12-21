@@ -103,7 +103,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
   context "when searching for customers" do
     context "filtered by ordered dates" do
       let!(:od_yesterday) do
-        travel_and_return(-1.day) do
+        travel_and_return(-1.days) do
           place_order(purchaser: purchaser, product: product, account: account)
         end
       end

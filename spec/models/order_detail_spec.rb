@@ -476,8 +476,8 @@ RSpec.describe OrderDetail do
 
         travel_and_return(2.days) do
           order_details.each do |order_detail|
-            order_detail.change_status!(OrderStatus.find_by_name("In Process"))
-            order_detail.change_status!(OrderStatus.find_by_name("Complete"))
+            order_detail.change_status!(OrderStatus.in_process_status)
+            order_detail.change_status!(OrderStatus.complete_status)
             order_detail.reload
           end
         end
@@ -547,8 +547,8 @@ RSpec.describe OrderDetail do
           product.price_policies.destroy_all
 
           travel_and_return(2.days) do
-            order_detail.change_status!(OrderStatus.find_by_name("In Process"))
-            order_detail.change_status!(OrderStatus.find_by_name("Complete"))
+            order_detail.change_status!(OrderStatus.in_process_status)
+            order_detail.change_status!(OrderStatus.complete_status)
             order_detail.reload
           end
         end
@@ -1355,8 +1355,8 @@ RSpec.describe OrderDetail do
         @order_details = Array.new(3) do
           order_detail = order.order_details.create(attributes_for(:order_detail)
             .update(product_id: item.id, account_id: account.id, journal_id: journal.id))
-          order_detail.change_status!(OrderStatus.find_by_name("In Process"))
-          order_detail.change_status!(OrderStatus.find_by_name("Complete"))
+          order_detail.change_status!(OrderStatus.in_process_status)
+          order_detail.change_status!(OrderStatus.complete_status)
           order_detail.reload
         end
       end
