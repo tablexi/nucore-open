@@ -150,7 +150,6 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
     @reservation = FactoryGirl.create(:reservation,
                                       product: @product,
                                       reserve_start_at: 1.hour.from_now,
-                                      reserve_end_at: 2.hours.from_now,
                                       order_detail: @order_detail)
     @order_detail.reload
   end
