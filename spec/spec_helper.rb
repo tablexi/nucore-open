@@ -105,12 +105,12 @@ RSpec.configure do |config|
   config.include TimeTravelHelpers
 
   config.around(:each, :time_travel) do |example|
-    current_time = Time.current
-    # freeze time to specific time by defining let(:now)
-    time = defined?(now) ? now : Time.current
-    travel_to(time)
-    example.call
-    travel_to(current_time)
+    if defined?(now)
+      # Travel to a specific time if the spec defines let(:now)
+      travel_to_and_return(now) { example.call }
+    else
+      example.call
+    end
   end
 
   # Setting this config option `false` removes rspec-core's monkey patching of the
