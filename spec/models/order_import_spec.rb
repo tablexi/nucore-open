@@ -18,7 +18,7 @@ def nucore_format_date(date)
   date.strftime("%m/%d/%Y")
 end
 
-RSpec.describe OrderImport, :timecop_freeze do
+RSpec.describe OrderImport, :time_travel do
   let(:now) { fiscal_year_beginning + 5.days }
 
   subject(:order_import) do

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EndReservationOnly, :timecop_freeze do
+RSpec.describe EndReservationOnly, :time_travel do
   let(:now) { Time.zone.now.change(hour: 9, min: 31) }
 
   let(:action) { described_class.new }

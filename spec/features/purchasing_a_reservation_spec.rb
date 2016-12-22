@@ -31,7 +31,7 @@ RSpec.describe "Purchasing a reservation" do
     end
   end
 
-  describe "attempting to order in the past", :timecop_freeze do
+  describe "attempting to order in the past", :time_travel do
     let(:now) { Time.zone.local(2016, 8, 20, 11, 0) }
 
     before do

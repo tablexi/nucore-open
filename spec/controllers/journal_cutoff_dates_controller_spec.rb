@@ -27,7 +27,7 @@ RSpec.describe JournalCutoffDatesController do
     before { sign_in user }
 
     describe "#new" do
-      describe "default dates", :timecop_freeze do
+      describe "default dates", :time_travel do
         let(:now) { Time.zone.parse("2016-02-02") }
         let(:time_setting) { "14:30" }
         before { allow(Settings).to receive_message_chain(:financial, :default_journal_cutoff_time).and_return(time_setting) }

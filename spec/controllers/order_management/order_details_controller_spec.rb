@@ -248,7 +248,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
             before :each do
               @other_reservation = FactoryGirl.create(:purchased_reservation,
                                                       reserve_start_at: @new_reserve_start,
-                                                      reserve_end_at: @new_reserve_start + 1.hour,
                                                       product: instrument)
               @old_start_time = reservation.reserve_start_at
               do_request
@@ -319,12 +318,13 @@ RSpec.describe OrderManagement::OrderDetailsController do
         context "with a cancellation fee and was completed" do
           before :each do
             reservation.update_attributes(reserve_start_at: 24.hours.ago,
-                                          reserve_end_at: 23.hours.ago,
                                           actual_start_at: nil,
                                           actual_end_at: nil)
-            Timecop.travel(7.days.from_now) do
-              order_detail.change_status!(OrderStatus.find_by_name!("Complete"))
+
+            travel_and_return(7.days) do
+              order_detail.change_status!(OrderStatus.complete_status)
             end
+
             @params[:with_cancel_fee] = "1"
             do_request
           end
@@ -606,7 +606,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
     end
 
-    describe "reconciling", :timecop_freeze do
+    describe "reconciling", :time_travel do
       before do
         order_detail.change_status!(OrderStatus.complete.first)
         order_detail.update_attributes(reviewed_at: 1.day.ago)

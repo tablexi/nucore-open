@@ -187,14 +187,12 @@ RSpec.describe FacilityNotificationsController do
     it_should_404_for_zero_day_review
 
     it "should update" do
-      Timecop.freeze do
-        @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
-        do_request
-        expect(flash[:error]).to be_nil
-        expect(assigns(:order_details_updated)).to eq([@order_detail1, @order_detail3])
-        expect(@order_detail1.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
-        expect(@order_detail3.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
-      end
+      @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
+      do_request
+      expect(flash[:error]).to be_nil
+      expect(assigns(:order_details_updated)).to eq([@order_detail1, @order_detail3])
+      expect(@order_detail1.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
+      expect(@order_detail3.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
     end
 
     it "should display an error for no orders" do

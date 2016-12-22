@@ -36,8 +36,8 @@ RSpec.describe Product do
       it "should create map to default price groups" do
         expect(PriceGroupProduct.where(product_id: @item.id).count)
           .to eq PriceGroup.globals.count
-        expect(PriceGroupProduct.find_by_product_id_and_price_group_id(@item.id, PriceGroup.base.first.id)).not_to be_nil
-        expect(PriceGroupProduct.find_by_product_id_and_price_group_id(@item.id, PriceGroup.external.first.id)).not_to be_nil
+        expect(PriceGroupProduct.find_by(product_id: @item.id, price_group_id: PriceGroup.base.first.id)).not_to be_nil
+        expect(PriceGroupProduct.find_by(product_id: @item.id, price_group_id: PriceGroup.external.first.id)).not_to be_nil
       end
 
       it "should give correct initial order status" do
@@ -340,31 +340,30 @@ RSpec.describe Product do
       end
 
       it "should not be purchasable if there are no current policies, and most recent for each group cannot can_purchase" do
-        @price_policy_pg1_1 = TestPricePolicy.create!(price_group: @price_group,
-                                                      product: @product,
-                                                      start_date: Time.zone.now - 7.days,
-                                                      expire_date: Time.zone.now - 5.days,
-                                                      can_purchase: false)
-        @price_policy_pg1_2 = TestPricePolicy.create!(price_group: @price_group,
-                                                      product: @product,
-                                                      start_date: Time.zone.now - 4.days,
-                                                      expire_date: Time.zone.now - 4.days,
-                                                      can_purchase: false)
+        TestPricePolicy.create!(price_group: @price_group,
+                                product: @product,
+                                start_date: 7.days.ago,
+                                expire_date: 5.days.ago,
+                                can_purchase: false)
+        TestPricePolicy.create!(price_group: @price_group,
+                                product: @product,
+                                start_date: 4.days.ago,
+                                expire_date: 3.days.ago,
+                                can_purchase: false)
 
-        @price_policy_pg2_1 = TestPricePolicy.create!(price_group: @price_group2,
-                                                      product: @product,
-                                                      start_date: Time.zone.now - 7.days,
-                                                      expire_date: Time.zone.now - 5.days,
-                                                      can_purchase: false)
-        @price_policy_pg2_2 = TestPricePolicy.create!(price_group: @price_group2,
-                                                      product: @product,
-                                                      start_date: Time.zone.now - 5.days,
-                                                      expire_date: Time.zone.now - 4.days,
-                                                      can_purchase: false)
+        TestPricePolicy.create!(price_group: @price_group2,
+                                product: @product,
+                                start_date: 7.days.ago,
+                                expire_date: 5.days.ago,
+                                can_purchase: false)
+        TestPricePolicy.create!(price_group: @price_group2,
+                                product: @product,
+                                start_date: 5.days.ago,
+                                expire_date: 4.days.ago,
+                                can_purchase: false)
         FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group2)
         @user_price_group_ids = @user.reload.price_groups.map(&:id)
         expect(@product).not_to be_can_purchase(@user_price_group_ids)
-
       end
     end
 

@@ -397,7 +397,7 @@ RSpec.describe FacilityReservationsController do
         @instrument_pp.reload.restrict_purchase = false
         @now = @reservation.reserve_start_at + 3.hours
         maybe_grant_always_sign_in :director
-        Timecop.freeze(@now) { @order_detail.to_complete! }
+        travel_to(@now) { @order_detail.to_complete! }
       end
 
       context "update actuals" do
@@ -412,7 +412,7 @@ RSpec.describe FacilityReservationsController do
         end
 
         it "should update the actuals and assign a price policy if there is none" do
-          Timecop.freeze(@now) do
+          travel_to(@now) do
             do_request
             expect(assigns(:order)).to eq(@order)
             expect(assigns(:order_detail)).to eq(@order_detail)
@@ -443,7 +443,7 @@ RSpec.describe FacilityReservationsController do
         end
 
         it "should update the actual cost" do
-          Timecop.freeze(@now) do
+          travel_to(@now) do
             do_request
             expect(assigns(:reservation).actual_start_at).to  eq(@reservation_attrs[:actual_start_at])
             expect(assigns(:reservation).actual_end_at).to    eq(@reservation_attrs[:actual_end_at])

@@ -19,12 +19,12 @@ RSpec.describe EmailEvent do
       end
 
       it "does not yield on second invocation if before the wait time" do
-        Timecop.travel(1.hour.from_now)
+        travel(1.hour)
         expect { |b| described_class.notify(user, "key", wait: 2.hours, &b) }.not_to yield_control
       end
 
       it "yields on second invocation after the wait time" do
-        Timecop.travel(3.hours.from_now)
+        travel(3.hours)
         expect { |b| described_class.notify(user, "key", wait: 2.hours, &b) }.to yield_control
       end
 

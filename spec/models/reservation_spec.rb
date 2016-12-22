@@ -28,7 +28,7 @@ RSpec.describe Reservation do
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
-  describe ".upcoming_offline", :timecop_freeze do
+  describe ".upcoming_offline", :time_travel do
     subject { described_class.upcoming_offline(1.year.from_now) }
     let(:now) { Time.current }
 
@@ -42,8 +42,7 @@ RSpec.describe Reservation do
             let!(:reservation) do
               FactoryGirl.create(:purchased_reservation,
                                  product: instrument,
-                                 reserve_start_at: now,
-                                 reserve_end_at: 1.hour.from_now)
+                                 reserve_start_at: now)
             end
 
             it { is_expected.to eq [reservation] }
@@ -53,8 +52,7 @@ RSpec.describe Reservation do
             let!(:reservation) do
               FactoryGirl.create(:setup_reservation,
                                  product: instrument,
-                                 reserve_start_at: now,
-                                 reserve_end_at: 1.hour.from_now)
+                                 reserve_start_at: now)
             end
 
             it { is_expected.to be_blank }
@@ -66,8 +64,7 @@ RSpec.describe Reservation do
             FactoryGirl.create(:purchased_reservation,
                                :inprocess,
                                product: instrument,
-                               reserve_start_at: now,
-                               reserve_end_at: 1.hour.from_now)
+                               reserve_start_at: now)
           end
 
           it { is_expected.to eq [reservation] }
@@ -275,7 +272,7 @@ RSpec.describe Reservation do
   it "allows starting of a reservation, whose duration is equal to the max duration, within the grace period" do
     reservation.product.update_attribute :max_reserve_mins, reservation.duration_mins
 
-    Timecop.freeze(reservation.reserve_start_at - 2.minutes) do # in grace period
+    travel_to_and_return(reservation.reserve_start_at - 2.minutes) do # in grace period
       expect { reservation.start_reservation! }.to_not raise_error
       expect(reservation.errors).to be_empty
     end
@@ -451,13 +448,11 @@ RSpec.describe Reservation do
                 reservation.reload
               end
 
-              after { Timecop.freeze(@current_time) }
+              after { travel_to(@current_time) }
 
               context "before the lock window begins" do
                 before :each do
-                  Timecop.freeze(
-                    reservation.reserve_start_at - (window_hours + 2).hours,
-                  )
+                  travel_to(reservation.reserve_start_at - (window_hours + 2).hours)
                 end
 
                 it_behaves_like "a customer is allowed to edit"
@@ -465,9 +460,7 @@ RSpec.describe Reservation do
 
               context "after the lock window has begun" do
                 before :each do
-                  Timecop.freeze(
-                    reservation.reserve_start_at - (window_hours - 2).hours,
-                  )
+                  travel_to(reservation.reserve_start_at - (window_hours - 2).hours)
                 end
 
                 it_behaves_like "a customer is not allowed to edit"
@@ -607,7 +600,9 @@ RSpec.describe Reservation do
         expect(human_date(@reservation1.reserve_start_at)).to eq(human_date(@morning + 1.day))
 
         earliest = nil
-        Timecop.freeze(@morning) { earliest = @reservation1.earliest_possible }
+        travel_to_and_return(@morning) do
+          earliest = @reservation1.earliest_possible
+        end
         expect(human_date(earliest.reserve_start_at)).to eq(human_date(@morning))
 
         new_min = 0
@@ -624,7 +619,7 @@ RSpec.describe Reservation do
       it "should not be moveable if the reservation is in the grace period" do
         @instrument.update_attributes(reserve_interval: 1)
         @reservation1.duration_mins = 1
-        Timecop.freeze(@reservation1.reserve_start_at - 4.minutes) do
+        travel_to_and_return(@reservation1.reserve_start_at - 4.minutes) do
           expect(@reservation1).to_not be_startable_now
         end
       end
@@ -645,14 +640,12 @@ RSpec.describe Reservation do
 
       it "should update the reservation to the earliest available" do
         # if earliest= and move_to_earliest span a second, the test fails
-        Timecop.freeze do
-          earliest = @reservation1.earliest_possible
-          expect(@reservation1.reserve_start_at).not_to eq(earliest.reserve_start_at)
-          expect(@reservation1.reserve_end_at).not_to eq(earliest.reserve_end_at)
-          expect(@reservation1.move_to_earliest).to be true
-          expect(@reservation1.reserve_start_at.change(sec: 0).to_i).to eq(earliest.reserve_start_at.change(sec: 0).to_i)
-          expect(@reservation1.reserve_end_at.change(sec: 0).to_i).to eq(earliest.reserve_end_at.change(sec: 0).to_i)
-        end
+        earliest = @reservation1.earliest_possible
+        expect(@reservation1.reserve_start_at).not_to eq(earliest.reserve_start_at)
+        expect(@reservation1.reserve_end_at).not_to eq(earliest.reserve_end_at)
+        expect(@reservation1.move_to_earliest).to be true
+        expect(@reservation1.reserve_start_at.change(sec: 0).to_i).to eq(earliest.reserve_start_at.change(sec: 0).to_i)
+        expect(@reservation1.reserve_end_at.change(sec: 0).to_i).to eq(earliest.reserve_end_at.change(sec: 0).to_i)
       end
 
       it "should be able to move to now, but overlapping the current" do
@@ -682,7 +675,7 @@ RSpec.describe Reservation do
         it "should not be able to move to a schedule rule the user is not part of" do
           @reservation1.update_attributes!(reserve_start_at: tomorrow_noon, reserve_end_at: tomorrow_noon + 30.minutes)
           # 4:45pm today will be in the restricted schedule rule
-          Timecop.travel(Time.zone.now.change(hour: 16, min: 45, sec: 0)) do
+          travel_to_and_return(Time.current.change(hour: 16, min: 45, sec: 0)) do
             expect(@reservation1.earliest_possible.reserve_start_at).to eq(1.day.from_now.change(hour: 9, min: 0, sec: 0))
           end
         end
@@ -1010,7 +1003,7 @@ RSpec.describe Reservation do
     assert @reservation.valid?
   end
 
-  it "allows starting of an instrument even though another reservation is running but over end time", :timecop_freeze do
+  it "allows starting of an instrument even though another reservation is running but over end time", :time_travel do
     now = Time.zone.now
     next_hour = now + 1.hour
     hour_ago = now - 1.hour
@@ -1023,13 +1016,19 @@ RSpec.describe Reservation do
   end
 
   describe '#start_reservation!' do
-    it "sets actual start time", :timecop_freeze do
+    it "sets actual start time", :time_travel do
       reservation.start_reservation!
       expect(reservation.actual_start_at).to eq(Time.current)
     end
 
     context "with a running reservation" do
-      let!(:running) { create :setup_reservation, product: instrument, reserve_start_at: 1.hour.ago, reserve_end_at: Time.current, actual_start_at: 1.hour.ago }
+      let!(:running) do
+        start_time = 1.hour.ago - 1.second
+        FactoryGirl.create(:setup_reservation,
+                           product: instrument,
+                           reserve_start_at: start_time,
+                           actual_start_at: start_time)
+      end
 
       before do
         order = running.order_detail.order
@@ -1115,8 +1114,8 @@ RSpec.describe Reservation do
         @instrument.schedule_rules.destroy_all
         @instrument.schedule_rules.reload
         @instrument.update_attribute :reserve_interval, 15
-        @rule_9_to_5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 9, end_hour: 17))
-        @rule_5_to_7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 17, end_hour: 19))
+        @rule_9to5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 9, end_hour: 17))
+        @rule_5to7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 17, end_hour: 19))
       end
 
       it "allows a reservation within the schedule rules" do
@@ -1159,7 +1158,7 @@ RSpec.describe Reservation do
           @order_detail = FactoryGirl.create(:order_detail, order: @order, product: @instrument)
           # @instrument.update_attributes(:requires_approval => true)
 
-          @restriction_level = @rule_5_to_7.product_access_groups.create(FactoryGirl.attributes_for(:product_access_group, product: @instrument))
+          @restriction_level = @rule_5to7.product_access_groups.create(FactoryGirl.attributes_for(:product_access_group, product: @instrument))
           @instrument.reload
           @reservation = Reservation.new(reserve_start_date: Date.today + 1,
                                          reserve_start_hour: 6,

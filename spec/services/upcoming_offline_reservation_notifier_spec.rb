@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe UpcomingOfflineReservationNotifier do
   subject { described_class.new }
 
-  describe "#notify", :timecop_freeze do
+  describe "#notify", :time_travel do
     let(:now) { Date.today.beginning_of_day + 30.minutes }
 
     context "when an instrument is offline" do

@@ -164,8 +164,7 @@ RSpec.describe ReservationsController do
       let(:reservation2) do
         FactoryGirl.create(:purchased_reservation,
                            product: instrument2,
-                           reserve_start_at: reservation1.reserve_end_at, # Immediately after reservation1
-                           reserve_end_at: reservation1.reserve_end_at + 1.hour)
+                           reserve_start_at: reservation1.reserve_end_at) # Immediately after reservation1
       end
       let(:reservations) { [reservation1, reservation2] }
 
@@ -235,7 +234,7 @@ RSpec.describe ReservationsController do
 
         it "should have a message for todays reservations" do
           @upcoming.update_attributes(reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
-          tomorrow_reservation = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: 1.day.from_now, reserve_end_at: 1.day.from_now + 1.hour)
+          tomorrow_reservation = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: 1.day.from_now)
           tomorrow_reservation.order_detail.order.update_attributes(user: @staff)
           do_request
           expect(response.body).to include I18n.t("reservations.notices.upcoming", reservation: @upcoming)
@@ -1107,7 +1106,7 @@ RSpec.describe ReservationsController do
       end
     end
 
-    context "switch_instrument", :timecop_freeze do
+    context "switch_instrument", :time_travel do
       before :each do
         @method = :get
         @action = :switch_instrument
@@ -1223,7 +1222,7 @@ RSpec.describe ReservationsController do
         before :each do
           @reservation.update_attribute(:actual_start_at, @start)
           @params[:switch] = "off"
-          Timecop.travel(2.seconds.from_now)
+          travel(2.seconds)
           expect(@reservation.order_detail.price_policy).to be_nil
         end
 
@@ -1233,7 +1232,7 @@ RSpec.describe ReservationsController do
           expect(assigns(:instrument)).to eq(@instrument)
           expect(assigns(:reservation)).to eq(@reservation)
           expect(assigns(:reservation).order_detail.price_policy).not_to be_nil
-          expect(assigns(:reservation).actual_end_at).to be < Time.zone.now
+          expect(assigns(:reservation).actual_end_at).to be <= Time.zone.now
           expect(assigns(:reservation)).to be_complete
           expect(assigns(:instrument).instrument_statuses.size).to eq(1)
           expect(assigns(:instrument).instrument_statuses[0].is_on).to eq(false)
