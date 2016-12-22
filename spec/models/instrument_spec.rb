@@ -718,7 +718,7 @@ RSpec.describe Instrument do
         context "but it was canceled" do
           let(:user) { FactoryGirl.build :user }
           before :each do
-            travel(-60.minutes) do
+            travel_to(60.minutes.ago) do
               reservation.order_detail.update_order_status! user, OrderStatus.canceled.first
               expect(reservation).to be_canceled
             end
