@@ -249,7 +249,7 @@ RSpec.describe Reports::GeneralReportsController do
 
   def assert_report_init(_label)
     expect(response).to be_success
-    expect(assigns(:total_quantity)).to be_instance_of Fixnum # rubocop:disable Lint/UnifiedInteger
+    expect(assigns(:total_quantity)).to be_kind_of(Integer)
 
     rows = assigns(:rows)
     ods = OrderDetail.all.to_a
