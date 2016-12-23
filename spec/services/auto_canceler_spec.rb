@@ -1,10 +1,8 @@
 require "rails_helper"
 
-RSpec.describe AutoCanceler do
-  before :each do
-    # Need to travel later in the day so that previous reservations can be made in the day
-    travel_to(Time.zone.parse("#{Date.today} 12:30:00"))
-  end
+RSpec.describe AutoCanceler, :time_travel do
+  # Need to travel later in the day so that previous reservations can be made in the day
+  let(:now) { Time.zone.parse("#{Date.today} 12:30:00") }
 
   after :each do
     travel_back

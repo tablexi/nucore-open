@@ -148,7 +148,7 @@ RSpec.describe PricePolicy do
     end
     it "should truncate the old policy" do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
-      travel_to(@today) do
+      travel_to_and_return(@today) do
         @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
         @pp2 = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
         expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
@@ -161,7 +161,7 @@ RSpec.describe PricePolicy do
     it "should not truncate any other policies" do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
 
-      travel_to(@today) do
+      travel_to_and_return(@today) do
         @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
         @pp3 = FactoryGirl.create(:item_price_policy, product: @item2, price_group: @price_group, start_date: @today, expire_date: @today + 30.days)
         @pp2 = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
