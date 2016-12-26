@@ -82,7 +82,6 @@ class InstrumentsController < ProductsCommonController
   def schedule
     @admin_reservations =
       @instrument
-      .schedule
       .reservations
       .non_user
       .ends_in_the_future
