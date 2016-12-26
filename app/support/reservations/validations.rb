@@ -19,7 +19,7 @@ module Reservations::Validations
       end
     end
 
-    validate :starts_before_cutoff, unless: :admin?, on: [:create, :update]
+    validate :starts_before_cutoff, if: :requires_cutoff_validation?, unless: :admin?, on: [:create, :update]
     validate :starts_before_ends
     validate :duration_is_interval
   end
@@ -36,9 +36,7 @@ module Reservations::Validations
   end
 
   def starts_before_cutoff
-    if product.cutoff_time && reserve_start_at && in_the_future? && reserve_start_at_changed?
-      errors.add("reserve_start_at", "must be before the cutoff time for this instrument") if reserve_start_at < Time.now + product.cutoff_time.hours
-    end
+    errors.add(:reserve_start_at, :after_cutoff) if reserve_start_at < product.cutoff_hours.hours.from_now
   end
 
   def duration_is_interval
@@ -181,6 +179,10 @@ module Reservations::Validations
   end
 
   private
+
+  def requires_cutoff_validation?
+    product.cutoff_hours && reserve_start_at && in_the_future? && reserve_start_at_changed?
+  end
 
   def default_reservation_window
     product.price_group_products.map(&:reservation_window).min

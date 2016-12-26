@@ -28,19 +28,24 @@ RSpec.describe Reservations::Validations do
   describe "starts_before_cutoff" do
     context "when there is a cutoff" do
       before :each do
-        reservation.product.update_attribute(:cutoff_time, 2)
+        reservation.product.update_attribute(:cutoff_hours, 2)
       end
 
       context "when reservation is after the cutoff" do
-        before { reservation.assign_attributes(reserve_start_at: Time.now + 3.hours, reserve_end_at: Time.now + 4.hours) }
+        let(:reservation) { build :setup_reservation, reserve_start_at: Time.now + 3.hours }
 
         it { is_expected.to be_valid }
       end
 
       context "when reservation is before the cutoff" do
-        before { reservation.assign_attributes(reserve_start_at: Time.now + 1.hour, reserve_end_at: Time.now + 2.hours) }
+        let(:reservation) { build :setup_reservation, reserve_start_at: Time.now + 1.hour }
 
         it { is_expected.not_to be_valid }
+
+        it "returns the right errors" do
+          reservation.valid?
+          expect(reservation.errors).to be_added(:reserve_start_at, :after_cutoff)
+        end
       end
     end
   end
