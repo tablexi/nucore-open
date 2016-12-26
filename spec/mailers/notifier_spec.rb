@@ -12,6 +12,14 @@ RSpec.describe Notifier do
 
     let(:recipient) { "orders@example.net" }
 
+    context "when product has a contact email" do
+      let(:product) { create(:setup_instrument, facility: facility, contact_email: "test@example.com") }
+
+      it "generates and order notification with product reply to" do
+        expect(email.reply_to).to eq [product.contact_email]
+      end
+    end
+
     it "generates an order notification", :aggregate_failures do
       expect(email.to).to eq [recipient]
       expect(email.reply_to).to eq [facility.email]
