@@ -32,13 +32,13 @@ RSpec.describe Reservations::Validations do
       end
 
       context "when reservation is after the cutoff" do
-        let(:reservation) { build :setup_reservation, reserve_start_at: Time.now + 3.hours }
+        let(:reservation) { build :setup_reservation, reserve_start_at: Time.zone.now + 3.hours }
 
         it { is_expected.to be_valid }
       end
 
       context "when reservation is before the cutoff" do
-        let(:reservation) { build :setup_reservation, reserve_start_at: Time.now + 1.hour }
+        let(:reservation) { build :setup_reservation, reserve_start_at: Time.zone.now + 1.hour }
 
         it { is_expected.not_to be_valid }
 
