@@ -532,15 +532,10 @@ RSpec.describe InstrumentsController do
         end
 
         it "should show the primary instrument's reservations" do
-          expect(assigns(:admin_reservations)).to include admin_reservation
-        end
-
-        it "should show the instrument's other admin reservation" do
-          expect(assigns(:admin_reservations)).to include admin_reservation2
+          expect(assigns(:admin_reservations)).to eq([admin_reservation2, admin_reservation])
         end
 
         it "should_allow_operators_only" do
-          expect(assigns(:admin_reservations)).to eq([admin_reservation2, admin_reservation])
           is_expected.to render_template "schedule"
         end
       end
