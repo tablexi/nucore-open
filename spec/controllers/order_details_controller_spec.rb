@@ -1,10 +1,13 @@
 require "rails_helper"
 
 RSpec.describe OrderDetailsController do
+  let(:facility) { order.facility }
   let(:order) { order_detail.order }
   let(:order_detail) { reservation.order_detail }
   let(:reservation) { create(:purchased_reservation) }
   let(:account) { order_detail.account }
+  let(:price_policy) { product.price_policies.first }
+  let(:product) { order_detail.product }
   let(:user) { order_detail.user }
 
   describe "#dispute" do
@@ -134,7 +137,10 @@ RSpec.describe OrderDetailsController do
             put :cancel, order_id: order.id, id: order_detail.id
           end
 
-          it { expect(order_detail.reload).to be_canceled }
+          it "cancels the order", :aggregate_failures do
+            expect(response).to redirect_to(reservations_path)
+            expect(order_detail.reload).to be_canceled
+          end
         end
 
         context "and the reservation is not cancelable" do

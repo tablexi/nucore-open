@@ -32,11 +32,7 @@ class ReservationUserActionPresenter
   end
 
   def view_edit_link
-    if can_customer_edit?
-      link_to reservation, edit_reservation_path
-    else
-      link_to reservation, view_reservation_path
-    end
+    link_to reservation, view_edit_path
   end
 
   private
@@ -49,12 +45,12 @@ class ReservationUserActionPresenter
     link_to I18n.t("product_accessories.pick_accessories.title"), reservation_pick_accessories_path(reservation), class: "has_accessories persistent"
   end
 
-  def edit_reservation_path
-    current_facility ? edit_facility_order_order_detail_reservation_path(current_facility, order, order_detail, reservation) : edit_order_order_detail_reservation_path(order, order_detail, reservation)
-  end
-
-  def view_reservation_path
-    current_facility ? facility_order_order_detail_reservation_path(current_facility, order, order_detail, reservation) : order_order_detail_reservation_path(order, order_detail, reservation)
+  def view_edit_path
+    if can_customer_edit?
+      edit_order_order_detail_reservation_path(order, order_detail, reservation)
+    else
+      order_order_detail_reservation_path(order, order_detail, reservation)
+    end
   end
 
   def switch_actions

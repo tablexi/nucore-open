@@ -22,7 +22,7 @@ class AutoCanceler
   end
 
   def cancel_reservation(res)
-    res.order_detail.cancel_reservation admin, OrderStatus.canceled.first, true, true
+    res.order_detail.cancel_reservation(admin, admin: true, admin_with_cancel_fee: true)
     res.update_attribute :canceled_reason, "auto canceled by system"
   rescue => e
     puts "Could not auto cancel reservation #{res.id}! #{e.message}\n#{e.backtrace.join("\n")}"

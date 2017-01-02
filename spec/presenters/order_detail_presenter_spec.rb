@@ -54,6 +54,17 @@ RSpec.describe OrderDetailPresenter do
     end
   end
 
+  describe "#description_as_html_with_facility_prefix" do
+    subject { presented.description_as_html_with_facility_prefix }
+
+    include_context "order with a reservation"
+
+    before { facility.abbreviation = "ABC" }
+
+    it { is_expected.to eq("ABC / #{presented.description_as_html}") }
+    it { is_expected.to be_html_safe }
+  end
+
   describe "#edit_reservation_path" do
     subject { presented.edit_reservation_path }
 
@@ -177,5 +188,16 @@ RSpec.describe OrderDetailPresenter do
 
       it { is_expected.to eq("") }
     end
+  end
+
+  describe "#wrapped_total" do
+    subject { presented.wrapped_total }
+    let(:order) { FactoryGirl.create(:setup_order, product: product) }
+    let(:order_detail) { order.order_details.first }
+    let(:product) { FactoryGirl.create(:setup_item) }
+
+    before { product.price_policies.update_all(unit_cost: "12.34") }
+
+    it { is_expected.to match(%r{\A<span .+>\$12\.34</span>\z}) }
   end
 end

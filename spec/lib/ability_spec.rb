@@ -53,7 +53,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
     it { is_expected.not_to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:batch_update, Order) }
-    it { is_expected.not_to be_allowed_to(:batch_update, Reservation) }
+    it_is_not_allowed_to([:batch_update, :cancel, :index], Reservation)
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
@@ -192,7 +192,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.to be_allowed_to(:disputed, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Order) }
-    it { is_expected.to be_allowed_to(:batch_update, Reservation) }
+    it_is_allowed_to([:batch_update, :cancel, :index], Reservation)
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.to be_allowed_to(:manage, PriceGroup) }
 
@@ -231,7 +231,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:disputed, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it { is_expected.to be_allowed_to(:manage, PriceGroup) }
-    it { is_expected.to be_allowed_to(:batch_update, Reservation) }
+    it_is_allowed_to([:batch_update, :cancel, :index], Reservation)
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:manage_accounts, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:manage_billing, Facility.cross_facility) }
@@ -245,7 +245,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage, Account) }
     it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.to be_allowed_to(:batch_update, Order) }
-    it { is_expected.to be_allowed_to(:batch_update, Reservation) }
+    it_is_allowed_to([:batch_update, :cancel, :index], Reservation)
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.to be_allowed_to(:read, UserPriceGroupMember) }
@@ -279,6 +279,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:create, TrainingRequest) }
     it_behaves_like "it can not manage training requests"
     it { is_expected.not_to be_allowed_to(:switch_to, user) }
+    it_is_not_allowed_to([:cancel, :index], Reservation)
 
     %i(sample_result template_result).each do |file_type|
       describe "downloading a #{file_type}" do

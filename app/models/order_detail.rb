@@ -444,7 +444,10 @@ class OrderDetail < ActiveRecord::Base
     options = { admin: false, apply_cancel_fee: false }.merge(options_args)
 
     if reservation && order_status.root_canceled?
-      cancel_reservation(updated_by, order_status, options[:admin], options[:apply_cancel_fee])
+      cancel_reservation(updated_by,
+                         order_status: order_status,
+                         admin: options[:admin],
+                         admin_with_cancel_fee: options[:apply_cancel_fee])
     else
       clear_statement if order_status.root_canceled?
       change_status! order_status, &block
@@ -741,11 +744,11 @@ class OrderDetail < ActiveRecord::Base
     dispute_at.present? && !canceled?
   end
 
-  def cancel_reservation(canceled_by, order_status = OrderStatus.canceled.first, admin_cancellation = false, admin_with_cancel_fee = false)
+  def cancel_reservation(canceled_by, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
     res = reservation
     res.canceled_by = canceled_by.id
 
-    if admin_cancellation
+    if admin
       res.canceled_at = Time.zone.now
       return false unless res.save
 

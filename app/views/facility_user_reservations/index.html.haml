@@ -1,0 +1,64 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "users"
+
+= content_for :tabnav do
+  = render "admin/shared/tabnav_users", secondary_tab: "reservations"
+
+%h1= text("users.reservations.head", name: @user.full_name)
+
+- if @order_details.blank?
+  %p.notice= text("users.reservations.none", name: @user.full_name)
+
+- else
+  %table.table.table-striped.table-hover.old-table
+    %thead
+      %tr
+        %th.centered= OrderDetail.human_attribute_name(:id)
+        %th.centered= text("users.reservations.actions")
+        %th= text("users.reservations.timespan")
+        %th= OrderDetail.human_attribute_name(:product)
+        %th.centered= OrderDetail.human_attribute_name(:status)
+        %th.currency= OrderDetail.human_attribute_name(:actual_total)
+
+    %tbody
+      - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
+        %tr
+          %td.centered= link_to order_detail, order_detail.show_order_path
+
+          %td.centered
+            - if order_detail.reservation.try(:can_cancel?)
+              - fee = CancellationFeeCalculator.new(order_detail.reservation).fee
+              - confirm_text = fee > 0 ? text("reservations.delete.confirm_with_fee", fee: number_to_currency(fee)) : text("reservations.delete.confirm")
+
+              = link_to text("reservations.delete.link"),
+                cancel_facility_user_reservation_path(current_facility, @user, order_detail),
+                method: :put,
+                data: { confirm: confirm_text }
+
+          %td= order_detail.reservation
+
+          %td.user-order-detail.order-detail-description
+            = link_to order_detail.description_as_html_with_facility_prefix,
+              facility_instrument_path(order_detail.facility, order_detail.product)
+
+            - if order_detail.product.offline?
+              = tooltip_icon "icon-warning-sign icon-large",
+                text("instruments.offline.note")
+
+            - if order_detail.note.present?
+              .order-detail-extra.order-detail-note
+                = text("order_details.note", note: order_detail.note)
+
+          %td.centered= order_detail.order_status.name
+          %td.currency= order_detail.wrapped_total
+
+  %p.footnote
+    %span.estimated_cost= text("users.reservations.estimated_cost.color")
+    = text("users.reservations.estimated_cost.note")
+    %span.actual_cost= text("users.reservations.actual_cost.color")
+    = text("users.reservations.actual_cost.note")
+
+  = will_paginate(@order_details)

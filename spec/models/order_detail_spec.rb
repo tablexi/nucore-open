@@ -1134,7 +1134,7 @@ RSpec.describe OrderDetail do
 
         context "when waiving the cancellation fee" do
           before :each do
-            order_detail.cancel_reservation(user, OrderStatus.canceled.first, true, false)
+            order_detail.cancel_reservation(user, admin: true)
             order_detail.reload
             @reservation.reload
           end
@@ -1146,7 +1146,7 @@ RSpec.describe OrderDetail do
           include_context "instrument minimum cancel hours"
 
           before :each do
-            order_detail.cancel_reservation(user, OrderStatus.canceled.first, true, true)
+            order_detail.cancel_reservation(user, admin: true, admin_with_cancel_fee: true)
             order_detail.reload
             @reservation.reload
           end
@@ -1188,7 +1188,7 @@ RSpec.describe OrderDetail do
 
       context "as admin" do
         before :each do
-          order_detail.cancel_reservation(user, OrderStatus.canceled.first, true, true)
+          order_detail.cancel_reservation(user, admin: true, admin_with_cancel_fee: true)
         end
 
         it_should_behave_like "a cancellation without fees"
@@ -1196,7 +1196,7 @@ RSpec.describe OrderDetail do
 
       context "as user" do
         before :each do
-          order_detail.cancel_reservation(user, OrderStatus.canceled.first, false, true)
+          order_detail.cancel_reservation(user, admin: false, admin_with_cancel_fee: true)
         end
 
         it_should_behave_like "a cancellation without fees"

@@ -719,6 +719,7 @@ en:
       can_reconcile:
         alert: This order can be reconciled
         badge: Can Reconcile
+    note: "Note: %{note}"
 
   product_accessories:
     pick_accessories:
@@ -1013,8 +1014,19 @@ en:
       label:
         id: "NetID"
         have_id: "Does the new user have a NetID?"
-
-
+    reservations:
+      actions: Actions
+      actual_cost:
+        color: Green
+        note: |
+          totals are final.
+          Pricing will be assigned to transactions with unassigned totals.
+      estimated_cost:
+        color: Orange
+        note: totals are estimates.
+      head: "%{name} Reservations"
+      none: "%{name} has not placed any reservations."
+      timespan: Reserved For
 
     search:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."

@@ -86,6 +86,7 @@ class Ability
           :administer,
           :assign_price_policies_to_problem_orders,
           :batch_update,
+          :cancel,
           :create,
           :edit,
           :edit_admin,

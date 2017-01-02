@@ -21,6 +21,10 @@ class OrderDetailPresenter < SimpleDelegator
     end.join(" &mdash; ").html_safe
   end
 
+  def description_as_html_with_facility_prefix
+    "#{facility.abbreviation} / #{description_as_html}".html_safe
+  end
+
   def edit_reservation_path
     edit_facility_order_order_detail_reservation_path(facility, order, id, reservation)
   end
@@ -47,6 +51,12 @@ class OrderDetailPresenter < SimpleDelegator
 
   def survey_url
     survey_completed? ? external_service_receiver.show_url : ""
+  end
+
+  def wrapped_total
+    return @wrapped_total if @wrapped_total
+    __getobj__.send(:extend, PriceDisplayment)
+    @wrapped_total = __getobj__.wrapped_total
   end
 
   private
