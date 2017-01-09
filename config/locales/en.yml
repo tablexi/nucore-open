@@ -200,6 +200,7 @@ en:
         account: "Payment Source"
         owner: "Owner"
         total: "Unreconciled Total (actual + estimated)"
+        expiration: Expiration Date
     accounts:
       th:
         access: "Access Level"
