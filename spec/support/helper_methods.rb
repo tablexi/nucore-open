@@ -70,6 +70,7 @@ def place_product_order(ordered_by, facility, product, account = nil, purchased 
   @item_pp.reload.restrict_purchase = false
   od_attrs = { product_id: product.id }
   od_attrs[:account_id] = account.id if account
+  od_attrs[:created_by] = @order.created_by
   @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(od_attrs))
 
   @order_detail.set_default_status! if purchased
