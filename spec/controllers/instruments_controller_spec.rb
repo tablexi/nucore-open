@@ -512,21 +512,17 @@ RSpec.describe InstrumentsController do
       end
 
       describe "schedule sharing" do
-        let(:instrument2) do
-          FactoryGirl.create(:setup_instrument, facility: @authable,
-                                                schedule: @instrument.schedule)
-        end
         let(:admin_reservation) do
           FactoryGirl.create(
             :admin_reservation,
-            product: instrument2,
+            product: @instrument,
             reserve_start_at: 2.days.from_now,
           )
         end
         let(:admin_reservation2) do
           FactoryGirl.create(
             :admin_reservation,
-            product: instrument2,
+            product: @instrument,
             reserve_start_at: 1.day.from_now,
           )
         end
@@ -535,16 +531,11 @@ RSpec.describe InstrumentsController do
           do_request
         end
 
-        it "should show the primary instrument's admin reservation" do
-          expect(assigns(:admin_reservations)).to include admin_reservation
-        end
-
-        it "should show the second instrument's admin reservation" do
-          expect(assigns(:admin_reservations)).to include admin_reservation2
+        it "should show the primary instrument's reservations" do
+          expect(assigns(:admin_reservations)).to eq([admin_reservation2, admin_reservation])
         end
 
         it "should_allow_operators_only" do
-          expect(assigns(:admin_reservations)).to eq([admin_reservation2, admin_reservation])
           is_expected.to render_template "schedule"
         end
       end
