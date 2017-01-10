@@ -32,6 +32,12 @@ class PricePolicy < ActiveRecord::Base
     current_for_date(Time.zone.now)
   end
 
+  def self.current_and_newest
+    # TODO: Fix bug that causes this to be neccessary (in truncate_existing_policies)
+    # This method returns the newest price policy for when price policies accidentally overlap.
+    current.group_by(&:price_group_id).map { |_, policies| policies.sort { |x,y| y.id <=> x.id }.first }
+  end
+
   def self.current_for_date(date)
     where("start_date <= :now AND expire_date > :now", now: date)
   end
