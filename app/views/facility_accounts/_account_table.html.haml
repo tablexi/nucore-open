@@ -7,7 +7,7 @@
       %tr
         %th= t(".th.account")
         %th= t(".th.owner")
-        %th= t(".th.expiration")
+        %th= Account.human_attribute_name(:expires_at)
     %tbody
       - @accounts.each do |account|
         %tr
