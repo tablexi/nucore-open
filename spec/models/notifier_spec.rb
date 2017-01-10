@@ -22,19 +22,5 @@ RSpec.describe Notifier do
         end
       end
     end
-
-    context "for a service" do
-      let(:user) { FactoryGirl.create(:user) }
-      let(:facility) { FactoryGirl.create(:facility) }
-      let(:order_detail) { place_and_complete_service_order(user, facility) }
-
-      before do
-        Notifier.order_detail_status_change(order_detail, nil, OrderStatus.find_or_create_by(name: "Approved"), "to@example.org").deliver_now
-      end
-
-      it "should render proper email body for service" do
-        expect(ActionMailer::Base.deliveries.last.body.encoded).to include("The following service item has been approved.")
-      end
-    end
   end
 end
