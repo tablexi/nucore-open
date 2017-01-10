@@ -13,7 +13,9 @@ class AutoCanceler
   def cancelable_reservations
     @cancelable_reservations ||= Reservation
                                  .joins(:product, order_detail: :order)
-                                 .where(actual_start_at: nil, actual_end_at: nil, canceled_at: nil)
+                                 .not_started
+                                 .not_ended
+                                 .not_canceled
                                  .where("auto_cancel_mins IS NOT NULL AND auto_cancel_mins > 0")
                                  .where(order_details: { state: %w(new inprocess) })
                                  .where(time_condition, now: Time.current)
