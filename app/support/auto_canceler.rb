@@ -2,9 +2,6 @@ class AutoCanceler
 
   AdminStruct = Struct.new(:id)
 
-  def initialize
-  end
-
   def cancel_reservations
     return if cancelable_reservations.none?
     cancelable_reservations.each do |res|
@@ -30,18 +27,20 @@ class AutoCanceler
 
   private
 
-  def build_sql
-    time_condition = if NUCore::Database.oracle?
-                       <<-CONDITION
+  def time_condition
+    if NUCore::Database.oracle?
+      <<-CONDITION
         (EXTRACT(MINUTE FROM (:now - reserve_start_at)) +
          EXTRACT(HOUR FROM (:now - reserve_start_at))*60 +
          EXTRACT(DAY FROM (:now - reserve_start_at))*24*60) >= auto_cancel_mins
       CONDITION
-                     else
-                       " TIMESTAMPDIFF(MINUTE, reserve_start_at, :now) >= auto_cancel_mins"
-                     end
+    else
+      " TIMESTAMPDIFF(MINUTE, reserve_start_at, :now) >= auto_cancel_mins"
+    end
+  end
 
-    where = <<-SQL
+  def build_sql
+    <<-SQL
         actual_start_at IS NULL
       AND
         actual_end_at IS NULL
