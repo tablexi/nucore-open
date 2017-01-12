@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161024213800) do
+ActiveRecord::Schema.define(version: 20170112204251) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -88,9 +88,9 @@ ActiveRecord::Schema.define(version: 20161024213800) do
   add_index "bundle_products", ["product_id"], name: "fk_bundle_prod_bundle", using: :btree
 
   create_table "delayed_jobs", force: :cascade do |t|
-    t.integer  "priority",   limit: 4,     default: 0, null: false
-    t.integer  "attempts",   limit: 4,     default: 0, null: false
-    t.text     "handler",    limit: 65535,             null: false
+    t.integer  "priority",   limit: 4,          default: 0, null: false
+    t.integer  "attempts",   limit: 4,          default: 0, null: false
+    t.text     "handler",    limit: 4294967295,             null: false
     t.text     "last_error", limit: 65535
     t.datetime "run_at"
     t.datetime "locked_at"
