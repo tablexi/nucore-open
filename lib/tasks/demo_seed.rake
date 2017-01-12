@@ -45,7 +45,7 @@ namespace :demo do
         NucsDepartment.find_or_create_by!(value: cs[:department])
         NucsAccount.find_or_create_by!(value: cs[:account]) if cs[:account]
         NucsProjectActivity.find_or_create_by!(project: cs[:project], activity: cs[:activity])
-        NucsGl066.find_or_create_by!(fund: cs[:fund], department: cs[:department], account: cs[:account])
+        NucsGl066.find_or_create_by!(cs)
       end
     end
 
@@ -298,12 +298,12 @@ namespace :demo do
     end
 
     # create a second nufsaccount for split accounts
-    nufsaccount2 = NufsAccount.find_by_account_number("111-2222222-44444444-01")
+    nufsaccount2 = NufsAccount.find_by_account_number("123-1234567-12345678-01")
 
     unless nufsaccount2
-      nufsaccount2 = NufsAccount.create!(account_number: "111-2222222-44444444-01",
+      nufsaccount2 = NufsAccount.create!(account_number: "123-1234567-12345678-01",
                                          description: "Paul PI's Other Chart String",
-                                         expires_at: Time.zone.now + 1.year,
+                                         expires_at: 1.year.from_now,
                                          created_by: user_director.id,
                                          account_users_attributes: [
                                            { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
