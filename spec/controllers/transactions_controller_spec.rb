@@ -7,6 +7,8 @@ RSpec.describe TransactionsController do
   let(:user) { FactoryGirl.create(:user) }
 
   describe "GET #in_review" do
+    before(:all) { Settings.billing.review_period = 7.days }
+
     before(:each) do
       sign_in user
       get action, params
