@@ -8,7 +8,6 @@ RSpec.describe FacilityNotificationsController do
   render_views
 
   before :each do
-    Settings.billing.review_period = 7.days
     @authable = FactoryGirl.create(:facility)
     @user = FactoryGirl.create(:user)
     @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
@@ -22,42 +21,44 @@ RSpec.describe FacilityNotificationsController do
     @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
   end
-  after :each do
-    Settings.reload!
-  end
-  def self.it_should_404_for_zero_day_review
-    it "should 404 for zero day review" do
-      Settings.billing.review_period = 0.days
-      sign_in @admin
-      do_request
-      expect(response.code).to eq("404")
+
+  shared_examples_for "zero-day review period" do
+    context "with no review period", billing_review_period: 0.days do
+      before(:each) do
+        sign_in @admin
+        do_request
+      end
+
+      it { expect(response.code).to eq("404") }
     end
   end
 
-  context "index" do
+  describe "GET #index" do
     before :each do
       @method = :get
       @action = :index
     end
-    it_should_deny_all [:staff, :senior_staff]
-    it_should_404_for_zero_day_review
 
-    it_should_allow_managers_only do
-      expect(assigns(:order_details) - [@order_detail1, @order_detail2, @order_detail3]).to be_empty
-      expect(assigns(:order_detail_action)).to eq(:send_notifications)
-      is_expected.not_to set_flash
-    end
+    context "with a 1 week review period", billing_review_period: 7.days do
+      it_should_deny_all [:staff, :senior_staff]
 
-    context "searching" do
-      before :each do
-        @user = @admin
+      it_should_allow_managers_only do
+        expect(assigns(:order_details) - [@order_detail1, @order_detail2, @order_detail3]).to be_empty
+        expect(assigns(:order_detail_action)).to eq(:send_notifications)
+        is_expected.not_to set_flash
       end
-      it_should_support_searching
+
+      context "searching" do
+        before { @user = @admin }
+
+        it_should_support_searching
+      end
     end
 
+    include_examples "zero-day review period"
   end
 
-  context "send_notifications" do
+  describe "POST #send_notifications" do
     before :each do
       Notifier.deliveries.clear
       @method = :post
@@ -65,91 +66,97 @@ RSpec.describe FacilityNotificationsController do
       @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail2.id])
     end
 
-    it_should_404_for_zero_day_review
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_managers_only :redirect do
-      expect(assigns(:errors)).to be_empty
-      expect(assigns(:accounts_to_notify)).to contain_exactly(@account.id)
-      expect([@order_detail1, @order_detail2]).to be_all { |od| od.reload.reviewed_at > 6.days.from_now }
-
-      expect(Notifier.deliveries.count).to eq(1)
-    end
-
-    context "multiple accounts" do
-      before :each do
-        @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail2.id, @order_detail3.id])
-      end
+    context "with a 1 week review period", billing_review_period: 7.days do
+      it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_managers_only :redirect do
         expect(assigns(:errors)).to be_empty
-        expect([@order_detail1, @order_detail2, @order_detail3]).to be_all { |od| od.reload.reviewed_at? }
-        expect(assigns(:accounts_to_notify)).to contain_exactly(@account.id, @account2.id)
+        expect(assigns(:accounts_to_notify)).to contain_exactly(@account.id)
+        expect([@order_detail1, @order_detail2]).to be_all { |od| od.reload.reviewed_at > 6.days.from_now }
+
+        expect(Notifier.deliveries.count).to eq(1)
       end
 
-      context "while signed in" do
+      context "multiple accounts" do
         before :each do
+          @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail2.id, @order_detail3.id])
+        end
+
+        it_should_allow_managers_only :redirect do
+          expect(assigns(:errors)).to be_empty
+          expect([@order_detail1, @order_detail2, @order_detail3]).to be_all { |od| od.reload.reviewed_at? }
+          expect(assigns(:accounts_to_notify)).to contain_exactly(@account.id, @account2.id)
+        end
+
+        context "while signed in" do
+          before(:each) { maybe_grant_always_sign_in(:admin) }
+
+          let(:order_details) do
+            @accounts.map do |account|
+              place_and_complete_item_order(@user, @authable, account)
+            end
+          end
+
+          it "sends one email for the two accounts" do
+            expect { do_request }.to change { Notifier.deliveries.count }.by(1)
+          end
+
+          context "with fewer than 10 accounts" do
+            it "displays the account list" do
+              @accounts = FactoryGirl.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
+              @params = { facility_id: @authable.url_name }
+
+              @params[:order_detail_ids] = order_details.map(&:id)
+              do_request
+              is_expected.to set_flash
+              expect(@accounts).to be_all do |account|
+                flash[:notice].include? account.account_number
+              end
+            end
+          end
+
+          context "with more than 10 accounts" do
+            it "displays a count of accounts" do
+              @accounts = FactoryGirl.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
+              @params = { facility_id: @authable.url_name }
+
+              @params[:order_detail_ids] = order_details.map(&:id)
+              do_request
+              is_expected.to set_flash
+              expect(flash[:notice]).to include("11 accounts")
+            end
+          end
+        end
+      end
+
+      context "errors" do
+        before(:each) do
           maybe_grant_always_sign_in(:admin)
-        end
-
-        it "sends one email for the two accounts" do
-          expect { do_request }.to change { Notifier.deliveries.count }.by(1)
-        end
-
-        it "should display the account list if less than 10 accounts" do
-          @accounts = FactoryGirl.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
-          @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-          @params = { facility_id: @authable.url_name }
-
-          @order_details = @accounts.map do |account|
-            place_and_complete_item_order(@user, @authable, account)
-          end
-
-          @params[:order_detail_ids] = @order_details.map(&:id)
+          @params[:order_detail_ids] = order_detail_ids
           do_request
-          is_expected.to set_flash
-          expect(@accounts).to be_all { |account| flash[:notice].include? account.account_number }
         end
 
-        it "should display a count if more than 10 accounts notified" do
-          @accounts = FactoryGirl.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
-          @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-          @params = { facility_id: @authable.url_name }
+        context "with an empty order_detail IDs parameter" do
+          let(:order_detail_ids) { nil }
 
-          @order_details = @accounts.map do |account|
-            place_and_complete_item_order(@user, @authable, account)
+          it "errors with a redirect" do
+            expect(flash[:error]).to include("No orders selected")
+            expect(response).to be_redirect
           end
+        end
 
-          @params[:order_detail_ids] = @order_details.map(&:id)
+        context "with a parameter for a nonexistent order_detail ID" do
+          let(:order_detail_ids) { [0] }
 
-          do_request
-
-          is_expected.to set_flash
-          expect(flash[:notice]).to include("11 accounts")
+          it { expect(flash[:error]).to match(/Order 0 .+ not found/) }
         end
       end
     end
 
-    context "errors" do
-      before { maybe_grant_always_sign_in(:admin) }
-
-      it "should display an error for no orders" do
-        @params[:order_detail_ids] = nil
-        do_request
-        expect(flash[:error]).not_to be_nil
-        expect(response).to be_redirect
-      end
-
-      it "should return an error message for order not found in list" do
-        @params[:order_detail_ids] = [0]
-        do_request
-        expect(flash[:error]).to include("0")
-      end
-    end
+    include_examples "zero-day review period"
   end
 
-  context "in review" do
+  describe "GET #in_review" do
     before :each do
       @method = :get
       @action = :in_review
@@ -159,21 +166,23 @@ RSpec.describe FacilityNotificationsController do
       @order_detail3.save!
     end
 
-    it_should_deny_all [:staff, :senior_staff]
-    it_should_404_for_zero_day_review
+    context "with a 1 week review period", billing_review_period: 7.days do
+      it_should_deny_all [:staff, :senior_staff]
 
-    it_should_allow_managers_only do
-      expect(assigns(:order_details) - [@order_detail1, @order_detail3]).to be_empty
-      expect(assigns(:order_detail_action)).to eq(:mark_as_reviewed)
-      is_expected.not_to set_flash
-    end
-
-    context "searching" do
-      before :each do
-        @user = @admin
+      it_should_allow_managers_only do
+        expect(assigns(:order_details) - [@order_detail1, @order_detail3]).to be_empty
+        expect(assigns(:order_detail_action)).to eq(:mark_as_reviewed)
+        is_expected.not_to set_flash
       end
-      it_should_support_searching
+
+      context "searching" do
+        before { @user = @admin }
+
+        it_should_support_searching
+      end
     end
+
+    include_examples "zero-day review period"
   end
 
   context "mark as reviewed" do
@@ -183,22 +192,24 @@ RSpec.describe FacilityNotificationsController do
       maybe_grant_always_sign_in(:admin)
     end
 
-    it_should_deny_all [:staff, :senior_staff]
-    it_should_404_for_zero_day_review
+    context "with a 1 week review period", billing_review_period: 7.days do
+      it_should_deny_all [:staff, :senior_staff]
 
-    it "should update" do
-      @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
-      do_request
-      expect(flash[:error]).to be_nil
-      expect(assigns(:order_details_updated)).to eq([@order_detail1, @order_detail3])
-      expect(@order_detail1.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
-      expect(@order_detail3.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
+      it "updates" do
+        @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
+        do_request
+        expect(flash[:error]).to be_nil
+        expect(assigns(:order_details_updated)).to eq([@order_detail1, @order_detail3])
+        expect(@order_detail1.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
+        expect(@order_detail3.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
+      end
+
+      it "displays an error for no orders" do
+        do_request
+        expect(flash[:error]).to include("No orders")
+      end
     end
 
-    it "should display an error for no orders" do
-      do_request
-      expect(flash[:error]).not_to be_nil
-    end
+    include_examples "zero-day review period"
   end
-
 end
