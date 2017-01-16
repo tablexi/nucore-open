@@ -17,6 +17,7 @@ en:
         total: Total
       order_status_changed_to_approved:
         subject: "Order #%{order_detail} has been approved"
+        header: "The following order has been approved."
       order_status_changed_to_pending_approval:
         subject: "%{user} has placed an order for %{product}. Please approve."
       review_orders:
