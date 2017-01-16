@@ -45,7 +45,7 @@ namespace :demo do
         NucsDepartment.find_or_create_by!(value: cs[:department])
         NucsAccount.find_or_create_by!(value: cs[:account]) if cs[:account]
         NucsProjectActivity.find_or_create_by!(project: cs[:project], activity: cs[:activity])
-        NucsGl066.find_or_create_by!(fund: cs[:fund], department: cs[:department], account: cs[:account])
+        NucsGl066.find_or_create_by!(cs)
       end
     end
 
@@ -215,7 +215,7 @@ namespace :demo do
     end
     UserRole.grant(user_admin, UserRole::ADMINISTRATOR)
 
-    user_pi = User.find_by_username("ppi123@example.com")
+    user_pi = User.find_by(username: "ppi123@example.com")
     unless user_pi
       user_pi = User.new(username: "ppi123@example.com",
                          email: "ppi123@example.com",
@@ -225,7 +225,7 @@ namespace :demo do
       user_pi.save!
     end
 
-    user_student = User.find_by_username("sst123@example.com")
+    user_student = User.find_by(username: "sst123@example.com")
     unless user_student
       user_student = User.new(username: "sst123@example.com",
                               email: "sst123@example.com",
@@ -235,7 +235,7 @@ namespace :demo do
       user_student.save!
     end
 
-    user_staff = User.find_by_username("ast123@example.com")
+    user_staff = User.find_by(username: "ast123@example.com")
     unless user_staff
       user_staff = User.new(username: "ast123@example.com",
                             email: "ast123@example.com",
@@ -246,7 +246,7 @@ namespace :demo do
     end
     UserRole.grant(user_staff, UserRole::FACILITY_STAFF, facility)
 
-    user_director = User.find_by_username("ddi123@example.com")
+    user_director = User.find_by(username: "ddi123@example.com")
     unless user_director
       user_director = User.new(username: "ddi123@example.com",
                                email: "ddi123@example.com",
@@ -257,7 +257,7 @@ namespace :demo do
     end
 
     if SettingsHelper.feature_on?(:billing_administrator)
-      user_billing_administrator = User.find_by_email("bba123@example.com")
+      user_billing_administrator = User.find_by(email: "bba123@example.com")
 
       if user_billing_administrator.blank?
         user_billing_administrator =
@@ -283,38 +283,55 @@ namespace :demo do
 
     # account creation / setup
     # see FacilityAccountsController#create
+
+    account_owner_attributes = {
+      user_id: user_pi.id,
+      user_role: "Owner",
+      created_by: user_director.id,
+    }
+    account_purchaser_attributes = {
+      user_id: user_student.id,
+      user_role: "Purchaser",
+      created_by: user_director.id,
+    }
+    account_users_attributes = [
+      account_owner_attributes,
+      account_purchaser_attributes,
+    ]
+    nufs_account_attributes = {
+      expires_at: 1.year.from_now,
+      created_by: user_director.id,
+      account_users_attributes: account_users_attributes,
+    }
+
     nufsaccount = NufsAccount.find_by(account_number: "111-2222222-33333333-01")
 
     unless nufsaccount
-      nufsaccount = NufsAccount.create!(account_number: "111-2222222-33333333-01",
-                                        description: "Paul PI's Chart String",
-                                        expires_at: Time.zone.now + 1.year,
-                                        created_by: user_director.id,
-                                        account_users_attributes: [
-                                          { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                          { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                        ])
+      nufsaccount = NufsAccount.create!(
+        nufs_account_attributes.merge(
+          account_number: "111-2222222-33333333-01",
+          description: "Paul PI's Chart String",
+        ),
+      )
       nufsaccount.set_expires_at
     end
 
     # create a second nufsaccount for split accounts
-    nufsaccount2 = NufsAccount.find_by_account_number("111-2222222-44444444-01")
+    nufsaccount2 = NufsAccount.find_by(account_number: "123-1234567-12345678-01")
 
     unless nufsaccount2
-      nufsaccount2 = NufsAccount.create!(account_number: "111-2222222-44444444-01",
-                                         description: "Paul PI's Other Chart String",
-                                         expires_at: Time.zone.now + 1.year,
-                                         created_by: user_director.id,
-                                         account_users_attributes: [
-                                           { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                           { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                         ])
+      nufsaccount2 = NufsAccount.create!(
+        nufs_account_attributes.merge(
+          account_number: "123-1234567-12345678-01",
+          description: "Paul PI's Other Chart String",
+        ),
+      )
       nufsaccount2.set_expires_at
     end
 
     # create split account if the feature is enabled
     if SettingsHelper.feature_on?(:split_accounts)
-      split_account = SplitAccounts::SplitAccount.find_by_account_number("111-2222222-55555555-01")
+      split_account = SplitAccounts::SplitAccount.find_by(account_number: "111-2222222-55555555-01")
       unless split_account
 
         params = {
@@ -354,7 +371,7 @@ namespace :demo do
     other_affiliate = Affiliate.find_or_create_by!(name: "Other")
 
     if EngineManager.engine_loaded? :c2po
-      ccaccount = CreditCardAccount.find_by_account_number("xxxx-xxxx-xxxx-xxxx")
+      ccaccount = CreditCardAccount.find_by(account_number: "xxxx-xxxx-xxxx-xxxx")
 
       unless ccaccount
         ccaccount = CreditCardAccount.create!(account_number: "xxxx-xxxx-xxxx-xxxx",
@@ -367,13 +384,10 @@ namespace :demo do
                                               affiliate_id: other_affiliate.id,
                                               affiliate_other: "Some Affiliate",
                                               facility_id: facility.id,
-                                              account_users_attributes: [
-                                                { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                                { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                              ])
+                                              account_users_attributes: account_users_attributes)
       end
 
-      poaccount = PurchaseOrderAccount.find_by_account_number("12345")
+      poaccount = PurchaseOrderAccount.find_by(account_number: "12345")
 
       unless poaccount
         poaccount = PurchaseOrderAccount.create!(account_number: "12345",
@@ -384,10 +398,7 @@ namespace :demo do
                                                  affiliate_id: other_affiliate.id,
                                                  affiliate_other: "Some Affiliate",
                                                  remittance_information: "Billing Dept\nEdward External\n1702 E Research Dr\nAuburn, AL 36830",
-                                                 account_users_attributes: [
-                                                   { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                                   { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                                 ])
+                                                 account_users_attributes: account_users_attributes)
       end
     end
 
