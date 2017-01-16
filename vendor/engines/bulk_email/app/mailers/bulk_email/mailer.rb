@@ -2,10 +2,12 @@ module BulkEmail
 
   class Mailer < BaseMailer
 
-    def send_mail(recipient:, subject:, body:)
+    def send_mail(recipient:, subject:, body:, reply_to: nil)
       @recipient = recipient
       @body = body
-      mail(to: recipient.email, subject: subject)
+      options = { to: recipient.email, subject: subject }
+      options[:reply_to] = reply_to if reply_to.present?
+      mail(options)
     end
 
   end
