@@ -197,11 +197,12 @@ class OrderDetail < ActiveRecord::Base
       .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   }
 
-  def self.all_in_review
-    where(state: "complete")
-      .where("order_details.reviewed_at > ?", Time.zone.now)
+  scope :all_in_review, lambda {
+    joins(:order)
+      .where(state: "complete")
+      .where("order_details.reviewed_at > ?", Time.current)
       .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
-  end
+  }
 
   def self.recently_reviewed
     where(state: %w(complete reconciled))
