@@ -89,62 +89,66 @@ RSpec.describe FacilityNotificationsController do
         end
 
         context "while signed in" do
-          before :each do
-            maybe_grant_always_sign_in(:admin)
+          before(:each) { maybe_grant_always_sign_in(:admin) }
+
+          let(:order_details) do
+            @accounts.map do |account|
+              place_and_complete_item_order(@user, @authable, account)
+            end
           end
 
           it "sends one email for the two accounts" do
             expect { do_request }.to change { Notifier.deliveries.count }.by(1)
           end
 
-          it "should display the account list if less than 10 accounts" do
-            @accounts = FactoryGirl.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
-            @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-            @params = { facility_id: @authable.url_name }
+          context "with fewer than 10 accounts" do
+            it "displays the account list" do
+              @accounts = FactoryGirl.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
+              @params = { facility_id: @authable.url_name }
 
-            @order_details = @accounts.map do |account|
-              place_and_complete_item_order(@user, @authable, account)
+              @params[:order_detail_ids] = order_details.map(&:id)
+              do_request
+              is_expected.to set_flash
+              expect(@accounts).to be_all do |account|
+                flash[:notice].include? account.account_number
+              end
             end
-
-            @params[:order_detail_ids] = @order_details.map(&:id)
-            do_request
-            is_expected.to set_flash
-            expect(@accounts).to be_all { |account| flash[:notice].include? account.account_number }
           end
 
-          it "should display a count if more than 10 accounts notified" do
-            @accounts = FactoryGirl.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
-            @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-            @params = { facility_id: @authable.url_name }
+          context "with more than 10 accounts" do
+            it "displays a count of accounts" do
+              @accounts = FactoryGirl.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
+              @params = { facility_id: @authable.url_name }
 
-            @order_details = @accounts.map do |account|
-              place_and_complete_item_order(@user, @authable, account)
+              @params[:order_detail_ids] = order_details.map(&:id)
+              do_request
+              is_expected.to set_flash
+              expect(flash[:notice]).to include("11 accounts")
             end
-
-            @params[:order_detail_ids] = @order_details.map(&:id)
-
-            do_request
-
-            is_expected.to set_flash
-            expect(flash[:notice]).to include("11 accounts")
           end
         end
       end
 
       context "errors" do
-        before { maybe_grant_always_sign_in(:admin) }
-
-        it "should display an error for no orders" do
-          @params[:order_detail_ids] = nil
+        before(:each) do
+          maybe_grant_always_sign_in(:admin)
+          @params[:order_detail_ids] = order_detail_ids
           do_request
-          expect(flash[:error]).not_to be_nil
-          expect(response).to be_redirect
         end
 
-        it "should return an error message for order not found in list" do
-          @params[:order_detail_ids] = [0]
-          do_request
-          expect(flash[:error]).to include("0")
+        context "with an empty order_detail IDs parameter" do
+          let(:order_detail_ids) { nil }
+
+          it "errors with a redirect" do
+            expect(flash[:error]).to include("No orders selected")
+            expect(response).to be_redirect
+          end
+        end
+
+        context "with a parameter for a nonexistent order_detail ID" do
+          let(:order_detail_ids) { [0] }
+
+          it { expect(flash[:error]).to match(/Order 0 .+ not found/) }
         end
       end
     end
