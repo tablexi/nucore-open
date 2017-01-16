@@ -7,14 +7,13 @@
       %tr
         %th= t(".th.account")
         %th= t(".th.owner")
-        %th.currency= t(".th.total")
+        %th= Account.human_attribute_name(:expires_at)
     %tbody
       - @accounts.each do |account|
         %tr
           %td= payment_source_link_or_text(account)
           %td= account.owner_user.full_name if account.owner_user
-          %td.currency
-            = number_to_currency(account.unreconciled_total(current_facility))
+          %td= human_date(account.expires_at)
 
   - if params[:search_term].present?
     = will_paginate(@accounts, class: "ajax_links",

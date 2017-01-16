@@ -193,13 +193,12 @@ en:
         affiliate: "Affiliate Name"
         remit: "Bill To"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
-    account_balances:
+    account_table:
       notice: "No payment sources found."
       foot: "* Includes transactions for which the user has not been sent a statement or that are in the user review period."
       th:
         account: "Payment Source"
         owner: "Owner"
-        total: "Unreconciled Total (actual + estimated)"
     accounts:
       th:
         access: "Access Level"

@@ -31,7 +31,7 @@ module DateHelper
   end
 
   def human_date(date)
-    "#{Date::MONTHNAMES[date.mon]} #{date.day}, #{date.year}"
+    date.strftime("%B %e, %Y")
   end
 
   def human_datetime(datetime, args = {})
