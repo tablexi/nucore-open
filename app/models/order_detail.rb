@@ -183,13 +183,6 @@ class OrderDetail < ActiveRecord::Base
       .not_disputed
   }
 
-  def self.all_need_notification # TODO: is use need_notification instead?
-    where(state: "complete")
-      .where(reviewed_at: nil)
-      .with_price_policy
-      .not_disputed
-  end
-
   def self.all_movable
     where(journal_id: nil)
       .where("order_details.state NOT IN('canceled', 'reconciled')")

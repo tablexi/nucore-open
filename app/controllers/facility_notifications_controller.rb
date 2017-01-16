@@ -24,7 +24,7 @@ class FacilityNotificationsController < ApplicationController
 
   # GET /facilities/notifications
   def index_with_search
-    @order_details = @order_details.all_need_notification
+    @order_details = @order_details.need_notification
     @order_detail_action = :send_notifications
   end
 
