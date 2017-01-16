@@ -49,6 +49,19 @@ RSpec.configure do |config|
     end
   end
 
+  config.around(:each) do |example|
+    if example.metadata[:billing_review_period]
+      original_review_period = Settings.billing.review_period
+      Settings.billing.review_period = example.metadata[:billing_review_period]
+
+      example.run
+
+      Settings.billing.review_period = original_review_period
+    else
+      example.run
+    end
+  end
+
   config.before(:all) do
     # users are not created within transactions, so delete them all here before running tests
     UserRole.delete_all

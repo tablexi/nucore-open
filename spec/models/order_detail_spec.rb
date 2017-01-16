@@ -825,30 +825,15 @@ RSpec.describe OrderDetail do
     end
   end
 
-  context "review period" do
-    after :each do
-      Settings.reload!
+  describe "#reviewed_at" do
+    before { order_detail.to_complete! }
+
+    context "with a 1 week review period", billing_review_period: 7.days do
+      it { expect(order_detail).not_to be_reviewed_at }
     end
 
-    context "7 day" do
-      before :each do
-        Settings.billing.review_period = 7.days
-      end
-
-      it "should not have a reviewed time" do
-        @order_detail.to_complete
-        expect(@order_detail.reviewed_at).to be_nil
-      end
-    end
-    context "zero day" do
-      before :each do
-        Settings.billing.review_period = 0.days
-      end
-
-      it "should set reviewed_at to now", :time_travel do
-        @order_detail.to_complete
-        expect(@order_detail.reviewed_at).to eq(Time.zone.now)
-      end
+    context "with no review period", billing_review_period: 0.days do
+      it { expect(order_detail.reviewed_at).to eq(Time.current) }
     end
   end
 

@@ -607,18 +607,18 @@ RSpec.describe OrdersController do
             assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq("complete") }
           end
 
-          it "sets order_detail states to reviewed_at if there is zero review period" do
-            Settings.billing.review_period = 0.days
-            do_request
-            assigns[:order].reload.order_details.all? { |od| expect(od.reviewed_at).not_to be_nil }
-            Settings.reload!
+          context "with no review period", billing_review_period: 0.days do
+            before { do_request }
+            let(:order_details) { assigns[:order].reload.order_details }
+
+            it { expect(order_details).to all be_reviewed_at }
           end
 
-          it "leaves order_detail reviewed_at as nil if there is a review period" do
-            Settings.billing.review_period = 7.days
-            do_request
-            assigns[:order].reload.order_details.all? { |od| expect(od.reviewed_at).to be_nil }
-            Settings.reload!
+          context "with a 1 week review period", billing_review_period: 7.days do
+            before { do_request }
+            let(:order_details) { assigns[:order].reload.order_details }
+
+            it { expect(order_details).not_to include(be_reviewed_at) }
           end
 
           it "sets the order_detail fulfilled dates to the order time" do
