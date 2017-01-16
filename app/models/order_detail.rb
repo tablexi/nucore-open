@@ -162,27 +162,26 @@ class OrderDetail < ActiveRecord::Base
     pending.joins(:reservation).merge(Reservation.not_canceled)
   end
 
+  scope :with_price_policy, -> { where.not(price_policy_id: nil) }
+
   scope :for_facility_with_price_policy, lambda { |facility|
     joins(:order)
       .order(fulfilled_at: :desc)
-      .where("orders.facility_id" => facility.id)
-      .where.not(price_policy_id: nil)
+      .where(orders: { facility_id: facility.id })
+      .with_price_policy
+  }
+
+  scope :not_disputed, lambda {
+    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   }
 
   scope :need_notification, lambda {
     joins(:product)
       .where(state: "complete")
       .where(reviewed_at: nil)
-      .where.not(price_policy_id: nil)
-      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .with_price_policy
+      .not_disputed
   }
-
-  def self.all_need_notification # TODO: is use need_notification instead?
-    where(state: "complete")
-      .where(reviewed_at: nil)
-      .where("price_policy_id IS NOT NULL")
-      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
-  end
 
   def self.all_movable
     where(journal_id: nil)
@@ -194,19 +193,20 @@ class OrderDetail < ActiveRecord::Base
       .where(products: { facility_id: facility.id })
       .where(state: "complete")
       .where("order_details.reviewed_at > ?", Time.zone.now)
-      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .not_disputed
   }
 
-  def self.all_in_review
-    where(state: "complete")
-      .where("order_details.reviewed_at > ?", Time.zone.now)
-      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
-  end
+  scope :all_in_review, lambda {
+    joins(:order)
+      .where(state: "complete")
+      .where("order_details.reviewed_at > ?", Time.current)
+      .not_disputed
+  }
 
   def self.recently_reviewed
     where(state: %w(complete reconciled))
       .where("order_details.reviewed_at < ?", Time.zone.now)
-      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .not_disputed
       .order(:reviewed_at).reverse_order
   end
 
@@ -261,9 +261,9 @@ class OrderDetail < ActiveRecord::Base
       .where(problem: false)
       .where("reviewed_at <= ?", Time.current)
       .where(statement_id: nil)
-      .where.not(price_policy_id: nil)
+      .with_price_policy
       .where("accounts.type" => Account.config.statement_account_types)
-      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .not_disputed
   }
 
   scope :need_journal, lambda { # TODO: share common pieces with :need_statement scope
@@ -273,8 +273,8 @@ class OrderDetail < ActiveRecord::Base
       .where("reviewed_at <= ?", Time.current)
       .where("accounts.type" => Account.config.journal_account_types)
       .where(journal_id: nil)
-      .where.not(price_policy_id: nil)
-      .where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+      .with_price_policy
+      .not_disputed
   }
 
   scope :statemented, lambda { |facility|
