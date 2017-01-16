@@ -16,9 +16,10 @@ en:
         outro: "All prices are estimates. Actual cost is assigned when the order is complete."
         total: Total
       order_status_changed_to_approved:
-        subject: "Reservation #%{order_detail} has been approved"
+        subject: "Order #%{order_detail} has been approved"
+        header: "The following order has been approved."
       order_status_changed_to_pending_approval:
-        subject: "%{user} has made a reservation for %{product}. Please approve."
+        subject: "%{user} has placed an order for %{product}. Please approve."
       review_orders:
         subject: "!app_name! Orders For Review"
         body: |
