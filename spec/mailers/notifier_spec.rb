@@ -12,17 +12,8 @@ RSpec.describe Notifier do
 
     let(:recipient) { "orders@example.net" }
 
-    context "when product has a contact email" do
-      let(:product) { create(:setup_instrument, facility: facility, contact_email: "test@example.com") }
-
-      it "generates and order notification with product reply to" do
-        expect(email.reply_to).to eq [product.contact_email]
-      end
-    end
-
     it "generates an order notification", :aggregate_failures do
       expect(email.to).to eq [recipient]
-      expect(email.reply_to).to eq [facility.email]
       expect(email.subject).to include("Order Notification")
       expect(email.html_part.to_s).to match(/Ordered By.+#{user.full_name}/m)
       expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
@@ -43,7 +34,6 @@ RSpec.describe Notifier do
 
     it "generates a receipt", :aggregate_failures do
       expect(email.to).to eq [user.email]
-      expect(email.reply_to).to eq [facility.email]
       expect(email.subject).to include("Order Receipt")
       expect(email.html_part.to_s).to match(/Ordered By.+#{user.full_name}/m)
       expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
