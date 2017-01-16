@@ -298,15 +298,21 @@ namespace :demo do
       account_owner_attributes,
       account_purchaser_attributes,
     ]
+    nufs_account_attributes = {
+      expires_at: 1.year.from_now,
+      created_by: user_director.id,
+      account_users_attributes: account_users_attributes,
+    }
 
     nufsaccount = NufsAccount.find_by(account_number: "111-2222222-33333333-01")
 
     unless nufsaccount
-      nufsaccount = NufsAccount.create!(account_number: "111-2222222-33333333-01",
-                                        description: "Paul PI's Chart String",
-                                        expires_at: 1.year.from_now,
-                                        created_by: user_director.id,
-                                        account_users_attributes: account_users_attributes)
+      nufsaccount = NufsAccount.create!(
+        nufs_account_attributes.merge(
+          account_number: "111-2222222-33333333-01",
+          description: "Paul PI's Chart String",
+        ),
+      )
       nufsaccount.set_expires_at
     end
 
@@ -314,11 +320,12 @@ namespace :demo do
     nufsaccount2 = NufsAccount.find_by(account_number: "123-1234567-12345678-01")
 
     unless nufsaccount2
-      nufsaccount2 = NufsAccount.create!(account_number: "123-1234567-12345678-01",
-                                         description: "Paul PI's Other Chart String",
-                                         expires_at: 1.year.from_now,
-                                         created_by: user_director.id,
-                                         account_users_attributes: account_users_attributes)
+      nufsaccount2 = NufsAccount.create!(
+        nufs_account_attributes.merge(
+          account_number: "123-1234567-12345678-01",
+          description: "Paul PI's Other Chart String",
+        ),
+      )
       nufsaccount2.set_expires_at
     end
 
