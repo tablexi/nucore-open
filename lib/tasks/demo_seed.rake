@@ -283,17 +283,30 @@ namespace :demo do
 
     # account creation / setup
     # see FacilityAccountsController#create
+
+    account_owner_attributes = {
+      user_id: user_pi.id,
+      user_role: "Owner",
+      created_by: user_director.id,
+    }
+    account_purchaser_attributes = {
+      user_id: user_student.id,
+      user_role: "Purchaser",
+      created_by: user_director.id,
+    }
+    account_users_attributes = [
+      account_owner_attributes,
+      account_purchaser_attributes,
+    ]
+
     nufsaccount = NufsAccount.find_by(account_number: "111-2222222-33333333-01")
 
     unless nufsaccount
       nufsaccount = NufsAccount.create!(account_number: "111-2222222-33333333-01",
                                         description: "Paul PI's Chart String",
-                                        expires_at: Time.zone.now + 1.year,
+                                        expires_at: 1.year.from_now,
                                         created_by: user_director.id,
-                                        account_users_attributes: [
-                                          { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                          { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                        ])
+                                        account_users_attributes: account_users_attributes)
       nufsaccount.set_expires_at
     end
 
@@ -305,10 +318,7 @@ namespace :demo do
                                          description: "Paul PI's Other Chart String",
                                          expires_at: 1.year.from_now,
                                          created_by: user_director.id,
-                                         account_users_attributes: [
-                                           { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                           { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                         ])
+                                         account_users_attributes: account_users_attributes)
       nufsaccount2.set_expires_at
     end
 
@@ -367,10 +377,7 @@ namespace :demo do
                                               affiliate_id: other_affiliate.id,
                                               affiliate_other: "Some Affiliate",
                                               facility_id: facility.id,
-                                              account_users_attributes: [
-                                                { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                                { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                              ])
+                                              account_users_attributes: account_users_attributes)
       end
 
       poaccount = PurchaseOrderAccount.find_by(account_number: "12345")
@@ -384,10 +391,7 @@ namespace :demo do
                                                  affiliate_id: other_affiliate.id,
                                                  affiliate_other: "Some Affiliate",
                                                  remittance_information: "Billing Dept\nEdward External\n1702 E Research Dr\nAuburn, AL 36830",
-                                                 account_users_attributes: [
-                                                   { user_id: user_pi.id, user_role: "Owner", created_by: user_director.id },
-                                                   { user_id: user_student.id, user_role: "Purchaser", created_by: user_director.id },
-                                                 ])
+                                                 account_users_attributes: account_users_attributes)
       end
     end
 
