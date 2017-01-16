@@ -215,7 +215,7 @@ namespace :demo do
     end
     UserRole.grant(user_admin, UserRole::ADMINISTRATOR)
 
-    user_pi = User.find_by_username("ppi123@example.com")
+    user_pi = User.find_by(username: "ppi123@example.com")
     unless user_pi
       user_pi = User.new(username: "ppi123@example.com",
                          email: "ppi123@example.com",
@@ -225,7 +225,7 @@ namespace :demo do
       user_pi.save!
     end
 
-    user_student = User.find_by_username("sst123@example.com")
+    user_student = User.find_by(username: "sst123@example.com")
     unless user_student
       user_student = User.new(username: "sst123@example.com",
                               email: "sst123@example.com",
@@ -235,7 +235,7 @@ namespace :demo do
       user_student.save!
     end
 
-    user_staff = User.find_by_username("ast123@example.com")
+    user_staff = User.find_by(username: "ast123@example.com")
     unless user_staff
       user_staff = User.new(username: "ast123@example.com",
                             email: "ast123@example.com",
@@ -246,7 +246,7 @@ namespace :demo do
     end
     UserRole.grant(user_staff, UserRole::FACILITY_STAFF, facility)
 
-    user_director = User.find_by_username("ddi123@example.com")
+    user_director = User.find_by(username: "ddi123@example.com")
     unless user_director
       user_director = User.new(username: "ddi123@example.com",
                                email: "ddi123@example.com",
@@ -257,7 +257,7 @@ namespace :demo do
     end
 
     if SettingsHelper.feature_on?(:billing_administrator)
-      user_billing_administrator = User.find_by_email("bba123@example.com")
+      user_billing_administrator = User.find_by(email: "bba123@example.com")
 
       if user_billing_administrator.blank?
         user_billing_administrator =
@@ -298,7 +298,7 @@ namespace :demo do
     end
 
     # create a second nufsaccount for split accounts
-    nufsaccount2 = NufsAccount.find_by_account_number("123-1234567-12345678-01")
+    nufsaccount2 = NufsAccount.find_by(account_number: "123-1234567-12345678-01")
 
     unless nufsaccount2
       nufsaccount2 = NufsAccount.create!(account_number: "123-1234567-12345678-01",
@@ -314,7 +314,7 @@ namespace :demo do
 
     # create split account if the feature is enabled
     if SettingsHelper.feature_on?(:split_accounts)
-      split_account = SplitAccounts::SplitAccount.find_by_account_number("111-2222222-55555555-01")
+      split_account = SplitAccounts::SplitAccount.find_by(account_number: "111-2222222-55555555-01")
       unless split_account
 
         params = {
@@ -354,7 +354,7 @@ namespace :demo do
     other_affiliate = Affiliate.find_or_create_by!(name: "Other")
 
     if EngineManager.engine_loaded? :c2po
-      ccaccount = CreditCardAccount.find_by_account_number("xxxx-xxxx-xxxx-xxxx")
+      ccaccount = CreditCardAccount.find_by(account_number: "xxxx-xxxx-xxxx-xxxx")
 
       unless ccaccount
         ccaccount = CreditCardAccount.create!(account_number: "xxxx-xxxx-xxxx-xxxx",
@@ -373,7 +373,7 @@ namespace :demo do
                                               ])
       end
 
-      poaccount = PurchaseOrderAccount.find_by_account_number("12345")
+      poaccount = PurchaseOrderAccount.find_by(account_number: "12345")
 
       unless poaccount
         poaccount = PurchaseOrderAccount.create!(account_number: "12345",
