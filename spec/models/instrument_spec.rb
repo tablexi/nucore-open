@@ -488,6 +488,15 @@ RSpec.describe Instrument do
       assert_equal 45, @next_reservation.reserve_start_at.min
     end
 
+    it "should find next available reservation with cutoff hours" do
+      expect(@rule.instrument.update_attribute :cutoff_hours, 10).to be true
+
+      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
+      assert_equal (Time.zone.now + 1.day).day, @next_reservation.reserve_start_at.day
+      assert_equal 9, @next_reservation.reserve_start_at.hour
+      assert_equal 0, @next_reservation.reserve_start_at.min
+    end
+
     it "should find next available reservation with pending reservations" do
       # add reservation for tomorrow morning at 9 am
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
