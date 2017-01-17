@@ -41,7 +41,7 @@ RSpec.describe PricePolicy do
         :instrument_price_policy,
         start_date: (price_policy.start_date + 1.day).beginning_of_day,
         product: price_policy.product,
-        price_group: price_policy.price_group
+        price_group: price_policy.price_group,
       )
     end
 
