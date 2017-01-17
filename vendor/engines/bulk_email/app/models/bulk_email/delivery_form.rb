@@ -44,7 +44,7 @@ module BulkEmail
     end
 
     def reply_to
-      facility.email
+      product.try(:contact_email).presence || facility.email
     end
 
     def deliver(recipient)
