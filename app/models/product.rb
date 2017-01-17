@@ -184,7 +184,7 @@ class Product < ActiveRecord::Base
   def cheapest_price_policy(order_detail, date = Time.zone.now)
     groups = order_detail.price_groups
     return nil if groups.empty?
-    price_policies = current_price_policies(date).to_a.delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
+    price_policies = current_price_policies(date).newest.to_a.delete_if { |pp| pp.restrict_purchase? || groups.exclude?(pp.price_group) }
 
     # provide a predictable ordering of price groups so that equal unit costs
     # are always handled the same way. Put the base group at the front of the
