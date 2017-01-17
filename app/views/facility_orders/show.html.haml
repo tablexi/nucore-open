@@ -1,6 +1,7 @@
 - content_for :h1 do
   = current_facility
-%h2= "Order ##{@order.id}"
+
+%h2= "#{Order.model_name.human} ##{@order.id}"
 
 .container.banner-list
   .row
@@ -8,16 +9,16 @@
     = banner_label @order, :user
     = banner_label @order, :created_by_user
     - if @merge_orders.blank?
-      .pull-right= render :partial => 'send_receipt'
+      .pull-right= render "send_receipt"
 
-= render :partial => 'merge_order'
+= render "merge_order"
 
 %table.order-list.table.table-striped.table-hover#order-management
   %thead
     %tr
-      %th{:colspan => 4}
-      %th{:colspan => 2}= OrderDetail.human_attribute_name(:quantity)
-      %th{:colspan => 3} Pricing
+      %th{colspan: 4}
+      %th{colspan: 2}= OrderDetail.human_attribute_name(:quantity)
+      %th{colspan: 3} Pricing
     %tr
       %th.order-id= OrderDetail.human_attribute_name(:id)
       %th.badges Status
@@ -29,12 +30,15 @@
       %th.currency Subsidy
       %th.currency Total
       %th.badges
+
   %tbody
     - @order_details.each do |od|
       - od.send(:extend, PriceDisplayment)
-      %tr{:class => [od.parent_order_detail_id ? 'child' : 'parent', "status-#{od.order_status.root.name.underscore}", flash[:updated_order_details].try(:include?, od.id) ? 'updated-order-detail' : ''] }
+      %tr{class: [od.parent_order_detail_id ? "child" : "parent", "status-#{od.order_status.root.name.underscore}", flash[:updated_order_details].try(:include?, od.id) ? "updated-order-detail" : ""] }
         %td.order-id
-          = link_to od, manage_order_detail_path(od), :class => 'manage-order-detail'
+          = link_to od,
+            manage_order_detail_path(od),
+            class: "manage-order-detail"
         %td.badges
           = status_badge(od)
         %td.product
@@ -42,10 +46,10 @@
           = "<br/>#{od.reservation}".html_safe if od.reservation
         %td.action
           - if od.add_accessories?
-            = link_to new_facility_order_order_detail_accessory_path(current_facility, @order, od), :class => ['has_accessories', 'persistent'] do
-              = tooltip_icon 'icon-plus-sign-alt', t('product_accessories.pick_accessories.title')
-          = render :partial => 'order_file_icon', :locals => { :od => od }
-          = render :partial => 'result_file_icon', :locals => { :od => od }
+            = link_to new_facility_order_order_detail_accessory_path(current_facility, @order, od), class: ["has_accessories", "persistent"] do
+              = tooltip_icon "icon-plus-sign-alt", t("product_accessories.pick_accessories.title")
+          = render "order_file_icon", od: od
+          = render "result_file_icon", od: od
 
         %td.currency.timeinput= od.reservation.try(:duration_mins)
         - if od.reservation.try(:actual_duration_mins)
@@ -67,15 +71,16 @@
       %td
       %td
       %td.currency
-        %strong= number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.cost }
+        %strong
+          = number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.cost }
       %td.currency
-        %strong= number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.subsidy }
+        %strong
+          = number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.subsidy }
       %td.currency
-        %strong= number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.total }
+        %strong
+          = number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.total }
       %td
 
-= render :partial => 'merge_order_form'
+= render "merge_order_form"
 
-#order-detail-modal.modal.hide.fade{ :data => { :backdrop => 'static' } }
-
-
+#order-detail-modal.modal.hide.fade{ data: { backdrop: "static" } }
