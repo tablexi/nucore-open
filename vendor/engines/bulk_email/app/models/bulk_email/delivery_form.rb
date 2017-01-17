@@ -43,9 +43,13 @@ module BulkEmail
       content_generator.wrap_text(custom_message, recipient_name)
     end
 
+    def reply_to
+      product.try(:contact_email).presence || facility.email
+    end
+
     def deliver(recipient)
       Mailer
-        .send_mail(recipient: recipient, subject: subject, body: body(recipient.full_name))
+        .send_mail(recipient: recipient, subject: subject, body: body(recipient.full_name), reply_to: reply_to)
         .deliver_later
     end
 
