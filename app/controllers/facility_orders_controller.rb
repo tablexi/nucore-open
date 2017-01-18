@@ -63,13 +63,15 @@ class FacilityOrdersController < ApplicationController
   # PUT/PATCH /facilities/:facility_id/orders/:id
   def update
     product = current_facility.products.find(params[:product_add])
-    original_order = @order
     quantity = params[:product_add_quantity].to_i
 
     if quantity <= 0
       flash[:notice] = I18n.t "controllers.facility_orders.update.zero_quantity"
     else
-      order_appender = OrderAppender.new(product, quantity, original_order, current_user)
+      order_appender = OrderAppender.new(product: product,
+                                         quantity: quantity,
+                                         original_order: @order,
+                                         user: current_user)
       begin
         if order_appender.add!
           flash[:error] = I18n.t "controllers.facility_orders.update.notices", product: product.name
@@ -82,7 +84,7 @@ class FacilityOrdersController < ApplicationController
       end
     end
 
-    redirect_to facility_order_path(current_facility, original_order)
+    redirect_to facility_order_path(current_facility, @order)
   end
 
   protected

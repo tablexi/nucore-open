@@ -2,7 +2,7 @@ class OrderAppender
 
   attr_reader :product, :quantity, :original_order, :user
 
-  def initialize(product, quantity, original_order, user)
+  def initialize(product:, quantity:, original_order:, user:)
     @product = product
     @quantity = quantity
     @original_order = original_order
