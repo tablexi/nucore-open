@@ -163,7 +163,7 @@ RSpec.describe FacilityOrdersController do
     end
 
     it_should_allow_operators_only :redirect, "to send a receipt" do
-      expect(flash[:notice]).to be_present
+      expect(flash[:notice]).to include("sent successfully")
       expect(ActionMailer::Base.deliveries.size).to eq(1)
       mail = ActionMailer::Base.deliveries.first
       expect(mail.subject).to include("Order Receipt")
@@ -354,9 +354,9 @@ RSpec.describe FacilityOrdersController do
       end
 
       if order.to_be_merged?
-        expect(flash[:error]).to be_present
+        expect(flash[:error]).to include("needs your attention")
       else
-        expect(flash[:notice]).to be_present
+        expect(flash[:notice]).to include("successfully added to this order")
       end
 
       assert_redirected_to facility_order_path(@authable, order.to_be_merged? ? order.merge_order : order)
