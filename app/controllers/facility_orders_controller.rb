@@ -60,8 +60,9 @@ class FacilityOrdersController < ApplicationController
     end
   end
 
+  # PUT/PATCH /facilities/:facility_id/orders/:id
   def update
-    product = Product.find(params[:product_add].to_i)
+    product = current_facility.products.find(params[:product_add])
     original_order = @order
     quantity = params[:product_add_quantity].to_i
 
