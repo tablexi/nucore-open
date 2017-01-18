@@ -69,7 +69,11 @@ class FacilityOrdersController < ApplicationController
     if quantity <= 0
       flash[:notice] = I18n.t "controllers.facility_orders.update.zero_quantity"
     else
-      add_to_order(product, quantity, original_order)
+      if OrderAppender.new(product, quantity, original_order, current_user).add!
+        flash[:error] = I18n.t "controllers.facility_orders.update.notices", product: product.name
+      else
+        flash[:notice] = I18n.t "controllers.facility_orders.update.success", product: product.name
+      end
     end
 
     redirect_to facility_order_path(current_facility, original_order)
@@ -89,50 +93,6 @@ class FacilityOrdersController < ApplicationController
 
   def batch_updater
     @batch_updater ||= OrderDetailBatchUpdater.new(params[:order_detail_ids], current_facility, session_user, params)
-  end
-
-  def merge?(product)
-    products = product.is_a?(Bundle) ? product.products : [product]
-
-    products.any? do |p|
-      p.is_a?(Instrument) || (p.is_a?(Service) && (p.active_survey? || p.active_template?))
-    end
-  end
-
-  def add_to_order(product, quantity, original_order)
-    @order = build_merge_order if merge?(product)
-
-    begin
-      details = @order.add product, quantity, created_by: current_user.id
-      notifications = false
-      details.each do |d|
-        d.set_default_status!
-        if @order.to_be_merged? && !d.valid_for_purchase?
-          notifications = true
-          MergeNotification.create_for! current_user, d
-        end
-      end
-
-      if notifications
-        flash[:error] = I18n.t "controllers.facility_orders.update.notices", product: product.name
-      else
-        flash[:notice] = I18n.t "controllers.facility_orders.update.success", product: product.name
-      end
-    rescue => e
-      Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-      @order.destroy if @order != original_order
-      flash[:error] = I18n.t "controllers.facility_orders.update.error", product: product.name
-    end
-  end
-
-  def build_merge_order
-    Order.create!(
-      merge_with_order_id: @order.id,
-      facility_id: @order.facility_id,
-      account_id: @order.account_id,
-      user_id: @order.user_id,
-      created_by: current_user.id,
-    )
   end
 
   def load_order
