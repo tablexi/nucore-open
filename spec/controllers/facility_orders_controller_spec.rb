@@ -4,6 +4,7 @@ require "controller_spec_helper"
 RSpec.describe FacilityOrdersController do
   let(:account) { @account }
   let(:facility) { @authable }
+  let(:facility_account) { @facility_account }
   let(:product) { @product }
 
   render_views
@@ -171,159 +172,169 @@ RSpec.describe FacilityOrdersController do
     end
   end
 
-  context '#update' do
-    before :each do
+  describe "PUT #update" do
+    let(:order) { @order }
+
+    before do
       @method = :put
       @action = :update
-      @params.merge!(id: @order.id,
-                     product_add: @product.id,
-                     product_add_quantity: 0)
+      @params.merge!(id: order.id, product_add: product.id)
     end
 
-    it_should_allow_operators_only :redirect, "to submit product quantity 0 and get failure notice" do
-      expect(flash[:notice]).to be_present
-      assert_redirected_to facility_order_path(@authable, @order)
+    context "with a product_add_quantity of 0" do
+      before { @params[:product_add_quantity] = 0 }
+
+      it_should_allow_operators_only :redirect, "to get a failure notice" do
+        expect(flash[:notice]).to include("enter a quantity")
+        expect(response).to redirect_to(facility_order_path(facility, order))
+      end
     end
 
-    context "with quantity" do
-      before :each do
+    context "with a product_add_quantity of 1" do
+      before do
         @params[:product_add_quantity] = 1
-        @order.order_details.each(&:destroy)
+        order.order_details.each(&:destroy)
       end
 
       it_should_allow :director, "to add an item to existing order directly" do
-        assert_no_merge_order @order, @product
-        expect(@order.order_details.last.created_by_user).to eq(@director)
+        assert_no_merge_order(order, product)
+        expect(order.order_details.last.created_by_user).to eq(@director)
       end
 
-      context "with instrument" do
-        before :each do
-          @instrument = FactoryGirl.create(:instrument,
-                                           facility: @authable,
-                                           facility_account: @facility_account,
-                                           min_reserve_mins: 60,
-                                           max_reserve_mins: 60)
-          @params[:product_add] = @instrument.id
-        end
+      context "when adding an instrument" do
+        let(:instrument) { FactoryGirl.create(:instrument, facility_account: facility_account) }
+
+        before { @params[:product_add] = instrument.id }
 
         it_should_allow :director, "to add an instrument to existing order via merge" do
-          assert_merge_order @order, @instrument
+          assert_merge_order order, instrument
         end
       end
 
-      context "with service" do
-        before :each do
-          @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
-          @params[:product_add] = @service.id
+      context "when adding a service" do
+        let(:service) { FactoryGirl.create(:service, facility_account: facility_account) }
+
+        before do
+          allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
+          allow_any_instance_of(Service).to receive(:active_survey?).and_return(active_survey?)
+          allow_any_instance_of(Service).to receive(:active_template?).and_return(active_template?)
+          @params[:product_add] = service.id
         end
 
-        context "with active survey" do
-          before :each do
-            allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
-            allow_any_instance_of(Service).to receive(:active_template?).and_return(false)
-            allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
-          end
-
+        shared_examples_for "directors may add via merge" do
           it_should_allow :director, "to add a service to existing order via merge" do
-            assert_merge_order @order, @service
+            assert_merge_order(order, service)
           end
         end
 
-        context "with active template" do
-          before :each do
-            allow_any_instance_of(Service).to receive(:active_survey?).and_return(false)
-            allow_any_instance_of(Service).to receive(:active_template?).and_return(true)
-            allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
+        context "with an active survey" do
+          let(:active_survey?) { true }
+
+          context "with an active template" do
+            let(:active_template?) { true }
+
+            it_behaves_like "directors may add via merge"
           end
 
-          it_should_allow :director, "to add an service to existing order via merge" do
-            assert_merge_order @order, @service
+          context "without an active template" do
+            let(:active_template?) { false }
+
+            it_behaves_like "directors may add via merge"
           end
         end
 
-        context "with nothing active" do
-          before :each do
-            allow_any_instance_of(Service).to receive(:active_survey?).and_return(false)
-            allow_any_instance_of(Service).to receive(:active_template?).and_return(false)
+        context "without an active survey" do
+          let(:active_survey?) { false }
+
+          context "with an active template" do
+            let(:active_template?) { true }
+
+            it_behaves_like "directors may add via merge"
           end
 
-          it_should_allow :director, "to add an service to existing order directly" do
-            assert_no_merge_order @order, @service
+          context "without an active template" do
+            let(:active_template?) { false }
+
+            it_should_allow :director, "to add an service to existing order directly" do
+              assert_no_merge_order(order, service)
+            end
           end
         end
       end
 
-      context "with bundle" do
-        before :each do
-          @bundle = @authable.bundles.create(FactoryGirl.attributes_for(:bundle, facility_account_id: @facility_account.id))
-          @params[:product_add] = @bundle.id
-          BundleProduct.create!(bundle: @bundle, product: @product, quantity: 1)
+      context "when adding a bundle" do
+        let(:bundle) do
+          FactoryGirl.create(:bundle, bundle_products: bundle_products, facility_account: facility_account)
+        end
+        let(:bundle_products) { [product, additional_product] }
+        let(:additional_product) do
+          FactoryGirl.create(bundled_product_type, facility_account: facility_account)
         end
 
-        context "has items" do
-          before :each do
-            item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
-            BundleProduct.create!(bundle: @bundle, product: item, quantity: 1)
-          end
+        before { @params[:product_add] = bundle.id }
+
+        context "containing an item" do
+          let(:bundled_product_type) { :item }
 
           it_should_allow :director, "to add an item to existing order directly" do
-            assert_no_merge_order @order, @bundle, 2
+            assert_no_merge_order(order, bundle, 2)
           end
         end
 
-        context "has instrument" do
-          before :each do
-            @instrument = FactoryGirl.create(:instrument,
-                                             facility: @authable,
-                                             facility_account: @facility_account,
-                                             min_reserve_mins: 60,
-                                             max_reserve_mins: 60)
-            BundleProduct.create!(bundle: @bundle, product: @instrument, quantity: 1)
-          end
+        context "containing an instrument" do
+          let(:bundled_product_type) { :instrument }
 
           it_should_allow :director, "to add an instrument to existing order via merge" do
-            assert_merge_order @order, @bundle, 1, 1
+            assert_merge_order(order, bundle, 1, 1)
           end
         end
 
-        context "has service" do
-          before :each do
-            @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
-            BundleProduct.create!(bundle: @bundle, product: @service, quantity: 1)
+        context "containing a service" do
+          let(:bundled_product_type) { :service }
+
+          before do
+            allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
+            allow_any_instance_of(Service).to receive(:active_survey?).and_return(active_survey?)
+            allow_any_instance_of(Service).to receive(:active_template?).and_return(active_template?)
           end
 
-          context "with active survey" do
-            before :each do
-              allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
-              allow_any_instance_of(Service).to receive(:active_template?).and_return(false)
-              allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
-            end
-
-            it_should_allow :director, "to add a bundle to existing order via merge" do
-              assert_merge_order @order, @bundle, 1, 1
+          shared_examples_for "directors may add via merge" do
+            it_should_allow :director, "to add a service to existing order via merge" do
+              assert_merge_order(order, bundle, 1, 1)
             end
           end
 
-          context "with active template" do
-            before :each do
-              allow_any_instance_of(Service).to receive(:active_survey?).and_return(false)
-              allow_any_instance_of(Service).to receive(:active_template?).and_return(true)
-              allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
+          context "with an active survey" do
+            let(:active_survey?) { true }
+
+            context "with an active template" do
+              let(:active_template?) { true }
+
+              it_behaves_like "directors may add via merge"
             end
 
-            it_should_allow :director, "to add a bundle to existing order via merge" do
-              assert_merge_order @order, @bundle, 1, 1
+            context "without an active template" do
+              let(:active_template?) { false }
+
+              it_behaves_like "directors may add via merge"
             end
           end
 
-          context "with nothing active" do
-            before :each do
-              allow_any_instance_of(Service).to receive(:active_survey?).and_return(false)
-              allow_any_instance_of(Service).to receive(:active_template?).and_return(false)
+          context "without an active survey" do
+            let(:active_survey?) { false }
+
+            context "with an active template" do
+              let(:active_template?) { true }
+
+              it_behaves_like "directors may add via merge"
             end
 
-            it_should_allow :director, "to add a bundle to existing order directly" do
-              assert_no_merge_order @order, @bundle, 2
+            context "without an active template" do
+              let(:active_template?) { false }
+
+              it_should_allow :director, "to add an service to existing order directly" do
+                assert_no_merge_order(order, bundle, 2)
+              end
             end
           end
         end

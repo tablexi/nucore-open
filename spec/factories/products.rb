@@ -40,9 +40,19 @@ FactoryGirl.define do
     end
 
     factory :bundle, class: Bundle do
+      transient do
+        bundle_products []
+      end
+
       account nil # bundles don't have accounts
       sequence(:name) { |n| "Bundle #{n}" }
       sequence(:url_name) { |n| "bundle-#{n}" }
+
+      after(:create) do |bundle, evaluator|
+        evaluator.bundle_products.each do |product|
+          BundleProduct.create!(bundle: bundle, product: product, quantity: 1)
+        end
+      end
     end
 
     trait :archived do
