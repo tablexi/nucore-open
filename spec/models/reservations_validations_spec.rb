@@ -46,6 +46,16 @@ RSpec.describe Reservations::Validations do
           reservation.valid?
           expect(reservation.errors).to be_added(:reserve_start_at, :after_cutoff)
         end
+
+        context "when an admin made the reservation" do
+          let(:admin_user) { create(:user, :administrator) }
+
+          before do
+            reservation.order_detail.update_attribute(:created_by_user, admin_user)
+          end
+
+          it { is_expected.to be_valid }
+        end
       end
     end
   end

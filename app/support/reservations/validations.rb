@@ -19,7 +19,7 @@ module Reservations::Validations
       end
     end
 
-    validate :starts_before_cutoff, if: :requires_cutoff_validation?, unless: :admin?, on: [:create, :update]
+    validate :starts_before_cutoff, if: :requires_cutoff_validation?, unless: :admin_or_created_by_admin?, on: [:create, :update]
     validate :starts_before_ends
     validate :duration_is_interval
   end
@@ -179,6 +179,10 @@ module Reservations::Validations
   end
 
   private
+
+  def admin_or_created_by_admin?
+    admin? || order_detail.created_by_user.administrator?
+  end
 
   def requires_cutoff_validation?
     product.cutoff_hours && reserve_start_at && in_the_future? && reserve_start_at_changed?
