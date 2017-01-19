@@ -63,7 +63,7 @@ RSpec.describe FacilityOrdersController do
 
     context "when no compatible price policies exist" do
       before :each do
-        ItemPricePolicy.all.each(&:destroy)
+        ItemPricePolicy.destroy_all
         do_request
       end
 
@@ -193,7 +193,7 @@ RSpec.describe FacilityOrdersController do
     context "with a product_add_quantity of 1" do
       before do
         @params[:product_add_quantity] = 1
-        order.order_details.each(&:destroy)
+        order.order_details.destroy_all
       end
 
       it_should_allow :director, "to add an item to existing order directly" do
