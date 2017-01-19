@@ -1,12 +1,14 @@
 -# TODO: app/views/accounts/transactions_in_review.html.haml is similar
 
+- if @order_details.blank?
+  - flash.now[:alert] = text("transactions.none_recently_reviewed")
+
 = render "shared/transactions/headers"
 
 - content_for :h1 do
   = text("transactions.in_review")
 
-- if @order_details.any?
-  #header_billing.grid_9= render "shared/transactions/search"
+#header_billing.grid_9= render "shared/transactions/search"
 
 .clearfix
 
