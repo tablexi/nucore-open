@@ -8,15 +8,19 @@
 
       = text_field_tag :note,
         nil,
-        placeholder: OrderDetail.human_attribute_name(:note)
+        placeholder: OrderDetail.human_attribute_name(:note),
+        class: "string optional"
 
       = text_field_tag :fulfilled_at,
         nil,
-        placeholder: OrderDetail.human_attribute_name(:fulfilled_at)
+        placeholder: OrderDetail.human_attribute_name(:fulfilled_at),
+        class: "datepicker__data string optional"
 
       = select_tag :order_status_id,
         options_for_select(OrderStatus.for_facility(current_facility).pluck(:name, :id)),
-        prompt: OrderDetail.human_attribute_name(:order_status)
+        include_blank: true,
+        class: "js--chosen optional",
+        data: { placeholder: OrderDetail.human_attribute_name(:order_status) }
 
       %br
       = submit_tag "Add To Order", class: "btn btn-primary", id: :product_add_btn
