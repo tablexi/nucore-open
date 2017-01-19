@@ -203,11 +203,38 @@ RSpec.describe FacilityOrdersController do
 
       context "when adding an instrument" do
         let(:instrument) { FactoryGirl.create(:instrument, facility_account: facility_account) }
+        let(:merge_order) { Order.find_by(merge_with_order_id: order.id) }
+        let(:order_detail) { merge_order.order_details.last }
 
         before { @params[:product_add] = instrument.id }
 
         it_should_allow :director, "to add an instrument to existing order via merge" do
-          assert_merge_order order, instrument
+          assert_merge_order(order, instrument)
+        end
+
+        context "when setting a note" do
+          before { @params[:note] = "This is a note" }
+
+          it_should_allow :director, "to add an instrument to existing order via merge" do
+            expect(order_detail.note).to eq("This is a note")
+          end
+        end
+
+        context "when setting fulfilled_at" do
+          before { @params[:fulfilled_at] = "10/11/2016" }
+
+          it_should_allow :director, "to add an instrument to existing order via merge" do
+            expect(order_detail.fulfilled_at.to_date)
+              .to match_date(Date.new(2016, 10, 11))
+          end
+        end
+
+        context "when setting an order status" do
+          before { @params[:order_status_id] = OrderStatus.in_process_status.id }
+
+          it_should_allow :director, "to add an instrument to existing order via merge" do
+            expect(order_detail.order_status).to eq(OrderStatus.in_process_status)
+          end
         end
       end
 

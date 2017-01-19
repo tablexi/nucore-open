@@ -71,7 +71,10 @@ class FacilityOrdersController < ApplicationController
       order_appender = OrderAppender.new(product: product,
                                          quantity: quantity,
                                          original_order: @order,
-                                         user: current_user)
+                                         user: current_user,
+                                         note: params[:note].presence,
+                                         fulfilled_at: parse_usa_date(params[:fulfilled_at]),
+                                         order_status_id: params[:order_status_id].presence)
       begin
         if order_appender.add!
           flash[:error] = I18n.t "controllers.facility_orders.update.notices", product: product.name

@@ -2,7 +2,21 @@
   .well
     = form_for [current_facility, @order], method: :put do |f|
       = text_field_tag :product_add_quantity, 1
+
       = select_tag :product_add,
         options_for_select(current_facility.products.active_plus_hidden.pluck(:name, :id))
+
+      = text_field_tag :note,
+        nil,
+        placeholder: OrderDetail.human_attribute_name(:note)
+
+      = text_field_tag :fulfilled_at,
+        nil,
+        placeholder: OrderDetail.human_attribute_name(:fulfilled_at)
+
+      = select_tag :order_status_id,
+        options_for_select(OrderStatus.for_facility(current_facility).pluck(:name, :id)),
+        prompt: OrderDetail.human_attribute_name(:order_status)
+
       %br
       = submit_tag "Add To Order", class: "btn btn-primary", id: :product_add_btn
