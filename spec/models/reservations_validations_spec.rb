@@ -48,7 +48,7 @@ RSpec.describe Reservations::Validations do
         end
 
         context "when an admin made the reservation" do
-          let(:admin_user) { create(:user, :administrator) }
+          let(:admin_user) { create(:user, :facility_administrator, facility: reservation.product.facility) }
 
           before do
             reservation.order_detail.update_attribute(:created_by_user, admin_user)
