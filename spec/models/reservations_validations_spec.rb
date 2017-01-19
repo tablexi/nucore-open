@@ -44,7 +44,7 @@ RSpec.describe Reservations::Validations do
 
         it "returns the right errors" do
           reservation.valid?
-          expect(reservation.errors).to be_added(:reserve_start_at, :after_cutoff)
+          expect(reservation.errors).to be_added(:reserve_start_at, :after_cutoff, hours: 2)
         end
 
         context "when an admin made the reservation" do
