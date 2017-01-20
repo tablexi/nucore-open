@@ -26,7 +26,7 @@ RSpec.describe User do
   it { is_expected.to be_valid }
 
   context "when user has email address with apostrophe" do
-    subject(:user) { create(:user, email: "o'niel@example.com" ) }
+    subject(:user) { create(:user, email: "o'niel@example.com") }
 
     it { is_expected.to be_valid }
   end
