@@ -181,7 +181,7 @@ module Reservations::Validations
   private
 
   def admin_or_ordered_by_staff?
-    admin? || order_detail.created_by_user.operable_facilities.include?(facility)
+    admin? || order_detail.try(:created_by_user) && order_detail.created_by_user.operable_facilities.include?(facility)
   end
 
   def requires_cutoff_validation?
