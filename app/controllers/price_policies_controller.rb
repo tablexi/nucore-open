@@ -23,7 +23,7 @@ class PricePoliciesController < ApplicationController
 
   # GET /facilities/:facility_id/{product_type}/:product_id/price_policies
   def index
-    @current_price_policies = @product.price_policies.current
+    @current_price_policies = @product.price_policies.current_and_newest
     @current_start_date = @current_price_policies.first.try(:start_date)
     @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
     @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
