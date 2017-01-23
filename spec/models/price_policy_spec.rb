@@ -39,7 +39,7 @@ RSpec.describe PricePolicy do
       FactoryGirl.create(
         :instrument_price_policy,
         start_date: Time.zone.now,
-        expire_date: Time.zone.now + 1.day
+        expire_date: Time.zone.now + 1.day,
       )
     end
     let!(:overlapping_price_policy) do
