@@ -10,7 +10,7 @@
 - if @order_details.any?
   .grid_12= render "shared/transactions/table", order_details: @order_details
 - else
-  %p.notice= text("transactions.none_recently_reviewed")
+  %p.notice= text("transactions.none_in_review_found")
 
 - if @recently_reviewed.any?
   .grid_12
