@@ -119,6 +119,39 @@ RSpec.describe Product do
       end
     end
 
+    context "with overlapping price policies" do
+      let!(:order) { FactoryGirl.create(:setup_order, product: product) }
+      let!(:order_detail) { order.order_details.first }
+      let!(:price_policy) do
+        FactoryGirl.create(
+          :instrument_price_policy,
+          product: product,
+          price_group: order_detail.user.price_groups.first,
+          start_date: Time.zone.now,
+          expire_date: Time.zone.now + 1.day,
+          usage_rate: 8 / 60.0,
+        )
+      end
+      let!(:overlapping_price_policy) do
+        FactoryGirl.create(
+          :instrument_price_policy,
+          start_date: 1.day.ago.beginning_of_day,
+          product: product,
+          price_group: price_policy.price_group,
+          usage_rate: 10 / 60.0,
+        )
+      end
+
+      it "has two overlapping policies" do
+        policies = price_policy.product.price_policies
+        expect(policies.current.count).to be > policies.current_and_newest.count
+      end
+
+      it "returns the newest cheapest policy" do
+        expect(product.cheapest_price_policy(order_detail)).to eq(overlapping_price_policy)
+      end
+    end
+
     context "email" do
       before :each do
         @facility = FactoryGirl.create(:facility, email: "facility@example.com")

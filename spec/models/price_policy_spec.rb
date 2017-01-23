@@ -35,20 +35,20 @@ RSpec.describe PricePolicy do
   end
 
   context "current and newest" do
-    let(:price_policy) { FactoryGirl.create(:instrument_price_policy) }
-    let(:overlapping_price_policy) do
+    let!(:price_policy) do
       FactoryGirl.create(
         :instrument_price_policy,
-        start_date: (price_policy.start_date + 1.day).beginning_of_day,
+        start_date: Time.zone.now,
+        expire_date: Time.zone.now + 1.day
+      )
+    end
+    let!(:overlapping_price_policy) do
+      FactoryGirl.create(
+        :instrument_price_policy,
+        start_date: 1.day.ago.beginning_of_day,
         product: price_policy.product,
         price_group: price_policy.price_group,
       )
-    end
-
-    before { overlapping_price_policy.update_attributes(start_date: 1.day.ago.beginning_of_day) }
-
-    it "saves updated price policy" do
-      expect(overlapping_price_policy).to be_valid
     end
 
     it "has two overlapping policies" do

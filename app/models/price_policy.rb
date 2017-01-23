@@ -33,13 +33,13 @@ class PricePolicy < ActiveRecord::Base
   end
 
   def self.current_and_newest
-    # TODO: Fix bug that causes this to be neccessary (in truncate_existing_policies)
+    # TODO: Fix bug that allows overlapping price policies (in truncate_existing_policies)
     # This method returns the newest price policy for when price policies accidentally overlap.
     current.newest
   end
 
   def self.newest
-    ids = group(:price_group_id).maximum(:id).collect(&:last)
+    ids = group(:price_group_id).maximum(:id).values
     where(id: ids)
   end
 
