@@ -97,8 +97,8 @@ ActiveRecord::Schema.define(version: 20170130213649) do
     t.datetime "failed_at"
     t.string   "locked_by",  limit: 255
     t.string   "queue",      limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
@@ -266,7 +266,7 @@ ActiveRecord::Schema.define(version: 20170130213649) do
     t.string   "state",                   limit: 50
     t.integer  "group_id",                limit: 4
     t.integer  "bundle_product_id",       limit: 4
-    t.string   "note",                    limit: 100
+    t.string   "note",                    limit: 255
     t.datetime "fulfilled_at"
     t.datetime "reviewed_at"
     t.integer  "statement_id",            limit: 4
