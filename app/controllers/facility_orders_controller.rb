@@ -66,7 +66,7 @@ class FacilityOrdersController < ApplicationController
     quantity = params[:product_add_quantity].to_i
 
     if quantity <= 0
-      flash[:notice] = I18n.t "controllers.facility_orders.update.zero_quantity"
+      flash[:notice] = text("update.zero_quantity")
     else
       order_appender = OrderAppender.new(product: product,
                                          quantity: quantity,
@@ -77,13 +77,13 @@ class FacilityOrdersController < ApplicationController
                                          order_status_id: params[:order_status_id].presence)
       begin
         if order_appender.add!
-          flash[:error] = I18n.t "controllers.facility_orders.update.notices", product: product.name
+          flash[:error] = text("update.notices", product: product.name)
         else
-          flash[:notice] = I18n.t "controllers.facility_orders.update.success", product: product.name
+          flash[:notice] = text("update.success", product: product.name)
         end
       rescue => e
         Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-        flash[:error] = I18n.t "controllers.facility_orders.update.error", product: product.name
+        flash[:error] = text("update.error", product: product.name)
       end
     end
 
