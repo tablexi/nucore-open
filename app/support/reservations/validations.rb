@@ -19,7 +19,6 @@ module Reservations::Validations
       end
     end
 
-    validate :starts_before_cutoff, if: :requires_cutoff_validation?, unless: :admin_or_ordered_by_staff?, on: [:create, :update]
     validate :starts_before_ends
     validate :duration_is_interval
   end
@@ -36,7 +35,7 @@ module Reservations::Validations
   end
 
   def starts_before_cutoff
-    errors.add(:reserve_start_at, :after_cutoff, hours: product.cutoff_hours) if reserve_start_at < product.cutoff_hours.hours.from_now
+    errors.add(:reserve_start_at, :after_cutoff, hours: product.cutoff_hours) if starts_before_cutoff?
   end
 
   def duration_is_interval
@@ -138,6 +137,7 @@ module Reservations::Validations
     perform_validations(options)
     in_window
     in_the_future
+    starts_before_cutoff if requires_cutoff_validation?
     return false if errors.any?
     save
   end
@@ -180,8 +180,9 @@ module Reservations::Validations
 
   private
 
-  def admin_or_ordered_by_staff?
-    admin? || order_detail.try(:created_by_user) && order_detail.created_by_user.operable_facilities.include?(facility)
+  def starts_before_cutoff?
+    return false if admin?
+    reserve_start_at < product.cutoff_hours.hours.from_now
   end
 
   def requires_cutoff_validation?

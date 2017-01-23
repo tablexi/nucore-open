@@ -33,28 +33,29 @@ RSpec.describe Reservations::Validations do
 
       context "when reservation is after the cutoff" do
         let(:reservation) { build :setup_reservation, reserve_start_at: Time.zone.now + 3.hours }
+        let(:user) { reservation.order_detail.created_by_user }
 
-        it { is_expected.to be_valid }
+        it "saves the reservation" do
+          expect(reservation.save_as_user(user)).to eq(true)
+        end
       end
 
       context "when reservation is before the cutoff" do
         let(:reservation) { build :setup_reservation, reserve_start_at: Time.zone.now + 1.hour }
-
-        it { is_expected.not_to be_valid }
+        let(:user) { reservation.order_detail.created_by_user }
 
         it "returns the right errors" do
-          reservation.valid?
+          reservation.save_as_user(user)
+          expect(reservation.persisted?).to eq(false)
           expect(reservation.errors).to be_added(:reserve_start_at, :after_cutoff, hours: 2)
         end
 
         context "when an admin made the reservation" do
-          let(:admin_user) { create(:user, :facility_administrator, facility: reservation.product.facility) }
+          let(:user) { create(:user, :facility_administrator, facility: reservation.product.facility) }
 
-          before do
-            reservation.order_detail.update_attribute(:created_by_user, admin_user)
+          it "saves the reservation" do
+            expect(reservation.save_as_user(user)).to eq(true)
           end
-
-          it { is_expected.to be_valid }
         end
       end
     end
