@@ -1,7 +1,7 @@
 class OrderAppender
 
-  attr_reader :fulfilled_at, :note, :order_status_id, :original_order, :product,
-              :quantity, :user
+  attr_reader :fulfilled_at, :note, :order_details, :order_status_id,
+              :original_order, :product, :quantity, :user
 
   def initialize(product:, quantity:, original_order:, user:, note: nil, fulfilled_at: nil, order_status_id: nil)
     @product = product
@@ -11,6 +11,7 @@ class OrderAppender
     @note = note
     @fulfilled_at = fulfilled_at
     @order_status_id = order_status_id
+    @order_details = add_order_details
   end
 
   def add!
@@ -34,12 +35,8 @@ class OrderAppender
 
   private
 
-  def order
-    @order ||= merge? ? build_merge_order : original_order
-  end
-
-  def order_details
-    @order_details ||= order.add(product, quantity, created_by: user.id)
+  def add_order_details
+    order.add(product, quantity, created_by: user.id)
   end
 
   def build_merge_order
@@ -57,6 +54,10 @@ class OrderAppender
       product.is_a?(Instrument) ||
         (product.is_a?(Service) && (product.active_survey? || product.active_template?))
     end
+  end
+
+  def order
+    @order ||= merge? ? build_merge_order : original_order
   end
 
   def order_status
