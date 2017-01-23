@@ -1,8 +1,5 @@
 -# TODO: app/views/accounts/transactions_in_review.html.haml is similar
 
-- if @order_details.blank?
-  - flash.now[:alert] = text("transactions.none_recently_reviewed")
-
 = render "shared/transactions/headers"
 
 - content_for :h1 do
@@ -14,6 +11,8 @@
 
 - if @order_details.any?
   .grid_12= render "shared/transactions/table", order_details: @order_details
+- else
+  %p.notice= text("transactions.none_recently_reviewed")
 
 - if @recently_reviewed.any?
   .grid_12
