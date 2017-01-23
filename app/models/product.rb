@@ -222,6 +222,10 @@ class Product < ActiveRecord::Base
     product_users.find_by_user_id(user.id)
   end
 
+  def mergeable?
+    false
+  end
+
   def offline?
     false
   end
