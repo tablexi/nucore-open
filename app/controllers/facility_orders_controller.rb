@@ -68,15 +68,8 @@ class FacilityOrdersController < ApplicationController
     if quantity <= 0
       flash[:notice] = text("update.zero_quantity")
     else
-      order_appender = OrderAppender.new(product: product,
-                                         quantity: quantity,
-                                         original_order: @order,
-                                         user: current_user,
-                                         note: params[:note].presence,
-                                         fulfilled_at: parse_usa_date(params[:fulfilled_at]),
-                                         order_status_id: params[:order_status_id].presence)
       begin
-        if order_appender.add!
+        if order_appender.add!(product, quantity, params)
           flash[:error] = text("update.notices", product: product.name)
         else
           flash[:notice] = text("update.success", product: product.name)
@@ -112,6 +105,10 @@ class FacilityOrdersController < ApplicationController
 
   def load_merge_orders
     @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id)
+  end
+
+  def order_appender
+    @order_appender ||= OrderAppender.new(@order, current_user)
   end
 
 end

@@ -1,26 +1,29 @@
 class OrderAppender
 
-  attr_reader :fulfilled_at, :note, :order_details, :order_status_id,
-              :original_order, :product, :quantity, :user
+  include DateHelper
 
-  def initialize(product:, quantity:, original_order:, user:, note: nil, fulfilled_at: nil, order_status_id: nil)
-    @product = product
-    @quantity = quantity
+  attr_reader :original_order, :user
+
+  def initialize(original_order, user)
     @original_order = original_order
     @user = user
-    @note = note
-    @fulfilled_at = fulfilled_at
-    @order_status_id = order_status_id
-    @order_details = add_order_details
   end
 
-  def add!
+  def add!(product, quantity, params)
+    products = product.is_a?(Bundle) ? product.products : [product]
+
+    note = params[:note].presence
+    fulfilled_at = parse_usa_date(params[:fulfilled_at])
+    order_status = load_order_status(params[:order_status_id].presence, product.facility)
+    order = products.any?(&:mergeable?) ? build_merge_order : original_order
+    order_details = order.add(product, quantity, created_by: user.id)
+
     notifications = false
     order_details.each do |order_detail|
       order_detail.note = note if note.present?
       order_detail.fulfilled_at = fulfilled_at if fulfilled_at.present?
       order_detail.set_default_status!
-      order_detail.change_status!(order_status) if order_status_id.present?
+      order_detail.change_status!(order_status) if order_status.present?
       if order.to_be_merged? && !order_detail.valid_for_purchase?
         notifications = true
         MergeNotification.create_for!(user, order_detail)
@@ -35,10 +38,6 @@ class OrderAppender
 
   private
 
-  def add_order_details
-    order.add(product, quantity, created_by: user.id)
-  end
-
   def build_merge_order
     Order.create!(
       merge_with_order_id: original_order.id,
@@ -49,24 +48,8 @@ class OrderAppender
     )
   end
 
-  def merge?
-    products.any? do |product|
-      product.is_a?(Instrument) ||
-        (product.is_a?(Service) && (product.active_survey? || product.active_template?))
-    end
-  end
-
-  def order
-    @order ||= merge? ? build_merge_order : original_order
-  end
-
-  def order_status
-    @order_status ||=
-      OrderStatus.for_facility(product.facility).find(order_status_id)
-  end
-
-  def products
-    @products ||= product.is_a?(Bundle) ? product.products : [product]
+  def load_order_status(order_status_id, facility)
+    OrderStatus.for_facility(facility).find(order_status_id) if order_status_id
   end
 
 end
