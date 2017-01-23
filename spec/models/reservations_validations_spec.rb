@@ -36,7 +36,7 @@ RSpec.describe Reservations::Validations do
         let(:user) { reservation.order_detail.created_by_user }
 
         it "saves the reservation" do
-          expect(reservation.save_as_user(user)).to eq(true)
+          expect(reservation.save_as_user(user)).to be(true)
         end
       end
 
@@ -44,8 +44,8 @@ RSpec.describe Reservations::Validations do
         let(:reservation) { build :setup_reservation, reserve_start_at: Time.zone.now + 1.hour }
         let(:user) { reservation.order_detail.created_by_user }
 
-        it "returns the right errors" do
-          reservation.save_as_user(user)
+        it "does not save reservation" do
+          expect(reservation.save_as_user(user)).to be(false)
           expect(reservation.persisted?).to eq(false)
           expect(reservation.errors).to be_added(:reserve_start_at, :after_cutoff, hours: 2)
         end
@@ -54,7 +54,7 @@ RSpec.describe Reservations::Validations do
           let(:user) { create(:user, :facility_administrator, facility: reservation.product.facility) }
 
           it "saves the reservation" do
-            expect(reservation.save_as_user(user)).to eq(true)
+            expect(reservation.save_as_user(user)).to be(true)
           end
         end
       end
