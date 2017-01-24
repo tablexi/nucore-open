@@ -1146,7 +1146,7 @@ en:
 
   transactions:
     in_review: Transactions in Review
-    none: You have no transactions in review, or any recently reviewed.
+    none_in_review_found: No transactions in review were found.
     recently_reviewed: Recently Reviewed
 
   activerecord:

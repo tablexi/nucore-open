@@ -1,21 +1,7 @@
-= render :partial => "shared/transactions/headers"
-- content_for :h1 do
-  Transactions in Review
-= content_for :tabnav do
-  %h2= @account.account_number
-  %p= @account.description_to_s
-  %h3= @facility.name if @facility
-#header_billing.grid_9
-  = render :partial => 'shared/transactions/search'
+- if @account.present?
+  = content_for :tabnav do
+    %h2= @account.account_number
+    %p= @account.description_to_s
+    %h3= @facility.name if @facility
 
-.clearfix
-
-.grid_12
-  = render :partial => 'shared/transactions/table', :locals => { :order_details => @order_details }
-
-- if @recently_reviewed.any?
-  .grid_12
-    - @order_detail_link = nil
-    - @extra_date_column_header = :reviewed_at_past
-    %h2 Recently Reviewed
-    = render :partial => 'shared/transactions/table', :locals => { :order_details => @recently_reviewed }
+= render "shared/transactions/in_review"

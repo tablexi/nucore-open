@@ -1,0 +1,21 @@
+= render "shared/transactions/headers"
+
+- content_for :h1 do
+  = text("transactions.in_review")
+
+#header_billing.grid_9= render "shared/transactions/search"
+
+.clearfix
+
+- if @order_details.any?
+  .grid_12= render "shared/transactions/table", order_details: @order_details
+- else
+  %p.notice= text("transactions.none_in_review_found")
+
+- if @recently_reviewed.any?
+  .grid_12
+    - @order_detail_link = nil
+    - @extra_date_column_header = :reviewed_at_past
+
+    %h2= text("transactions.recently_reviewed")
+    = render "shared/transactions/table", order_details: @recently_reviewed
