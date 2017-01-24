@@ -42,6 +42,10 @@ class OrderStatus < ActiveRecord::Base
     reconciled.first
   end
 
+  def self.add_to_order_statuses(facility)
+    non_protected_statuses(facility) - canceled
+  end
+
   def editable?
     !!facility
   end

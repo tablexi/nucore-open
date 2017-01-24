@@ -221,11 +221,39 @@ RSpec.describe FacilityOrdersController do
         end
 
         context "when setting fulfilled_at" do
-          before { @params[:fulfilled_at] = "10/11/2016" }
+          before { @params[:fulfilled_at] = fulfilled_at.strftime("%m/%d/%Y") }
 
-          it_should_allow :director, "to add an instrument to existing order via merge" do
-            expect(order_detail.fulfilled_at.to_date)
-              .to match_date(Date.new(2016, 10, 11))
+          context "to today" do
+            let(:fulfilled_at) { Date.today }
+
+            it_should_allow :director, "to add an instrument to existing order via merge" do
+              expect(order_detail.fulfilled_at)
+                .to eq(fulfilled_at.beginning_of_day + 12.hours)
+            end
+          end
+
+          context "to a date in the future" do
+            let(:fulfilled_at) { 1.day.from_now }
+
+            it_should_allow :director, "to add an instrument to existing order via merge" do
+              expect(order_detail.fulfilled_at).to be_blank
+            end
+          end
+
+          context "to a date before the start of this fiscal year" do
+            let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning - 1.day }
+
+            it_should_allow :director, "to add an instrument to existing order via merge" do
+              expect(order_detail.fulfilled_at).to be_blank
+            end
+          end
+
+          context "to a date during this fiscal year" do
+            let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning + 1.day }
+
+            it_should_allow :director, "to add an instrument to existing order via merge" do
+              expect(order_detail.fulfilled_at).to eq(fulfilled_at.beginning_of_day + 12.hours)
+            end
           end
         end
 

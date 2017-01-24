@@ -13,7 +13,7 @@ class OrderAppender
     products = product.is_a?(Bundle) ? product.products : [product]
 
     note = params[:note].presence
-    fulfilled_at = parse_usa_date(params[:fulfilled_at])
+    fulfilled_at = parse_fulfilled_at(params[:fulfilled_at])
     order_status = load_order_status(params[:order_status_id].presence, product.facility)
     order = products.any?(&:mergeable?) ? build_merge_order : original_order
     order_details = order.add(product, quantity, created_by: user.id)
@@ -48,8 +48,19 @@ class OrderAppender
     )
   end
 
+  def parse_fulfilled_at(fulfilled_at_time)
+    fulfilled_date = parse_usa_date(fulfilled_at_time).try(:to_date)
+    fulfilled_date.beginning_of_day + 12.hours if valid_fulfilled_at?(fulfilled_date)
+  end
+
   def load_order_status(order_status_id, facility)
     OrderStatus.for_facility(facility).find(order_status_id) if order_status_id
+  end
+
+  def valid_fulfilled_at?(date)
+    date.present? &&
+      date >= SettingsHelper.fiscal_year_beginning.to_date &&
+      date <= Date.today
   end
 
 end
