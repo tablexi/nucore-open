@@ -32,7 +32,7 @@ RSpec.describe Reservations::Validations do
       end
 
       context "when reservation is after the cutoff" do
-        let(:reservation) { build :setup_reservation, reserve_start_at: Time.zone.now + 3.hours }
+        let(:reservation) { build :setup_reservation, reserve_start_at: 3.hours.from_now }
         let(:user) { reservation.order_detail.created_by_user }
 
         it "saves the reservation" do
