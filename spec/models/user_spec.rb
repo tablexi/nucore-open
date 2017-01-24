@@ -25,6 +25,12 @@ RSpec.describe User do
 
   it { is_expected.to be_valid }
 
+  context "when user has email address with apostrophe" do
+    subject(:user) { build(:user, email: "o'niel@example.com") }
+
+    it { is_expected.to be_valid }
+  end
+
   describe "Default #price_groups" do
     # Only run if we're using the default implementation
     if User.new.method(:price_groups).owner == User::Overridable
