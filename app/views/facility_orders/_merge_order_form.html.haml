@@ -20,10 +20,8 @@
       %br
 
       = label_tag :note, OrderDetail.human_attribute_name(:note)
-      = text_field_tag :note,
+      = text_area_tag :note,
         nil,
-        maxlength: 100,
-        size: 100,
-        class: "string optional"
+        class: "string optional wide"
 
       = submit_tag "Add To Order", class: "btn btn-primary", id: :product_add_btn
