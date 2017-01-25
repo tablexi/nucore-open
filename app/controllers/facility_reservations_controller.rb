@@ -141,7 +141,7 @@ class FacilityReservationsController < ApplicationController
   # GET /facilities/:facility_id/instruments/:instrument_id/reservations/:id/edit_admin
   def edit_admin
     @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
-    @reservation = @instrument.reservations.find(params[:reservation_id])
+    @reservation = Reservation.where(product_id: @instrument.schedule.products.map(&:id)).find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
     set_windows
     render layout: "two_column"
@@ -150,7 +150,7 @@ class FacilityReservationsController < ApplicationController
   # PUT /facilities/:facility_id/instruments/:instrument_id/reservations/:id
   def update_admin
     @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
-    @reservation = @instrument.reservations.find(params[:reservation_id])
+    @reservation = Reservation.where(product_id: @instrument.schedule.products.map(&:id)).find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
     set_windows
 
@@ -185,7 +185,7 @@ class FacilityReservationsController < ApplicationController
   # DELETE  /facilities/:facility_id/instruments/:instrument_id/reservations/:id
   def destroy
     @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
-    @reservation = @instrument.reservations.find(params[:id])
+    @reservation = Reservation.where(product_id: @instrument.schedule.products.map(&:id)).find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
 
     @reservation.destroy

@@ -18,7 +18,7 @@
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'reservations'}
 
-%h2= @instrument
+%h2= @reservation.product
 
 = simple_form_for([@instrument, @reservation], :url => facility_instrument_reservation_update_admin_path) do |f|
   = f.error_messages
