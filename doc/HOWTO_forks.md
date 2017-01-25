@@ -10,12 +10,16 @@ _While in your fork's directory_
 
 `git remote add upstream git@github.com:tablexi/nucore-open.git` (You should only need to do this once.)
 
+Create a new branch with the name `latest_from_open_YYYYMMDD` (reflecting the current date).
+
 Whenever you want to bring the latest changes from open/master into your branch:
 
 ```
 git fetch upstream
 git merge upstream/master
 ```
+
+Push up your new branch, and run [this shell script](https://gist.github.com/drench/5bec9926fc4c3591ad73f5cb51dc8ec5) which generates a helpful description you can copy/paste into your PR; it contains the commit messages and links to the merged branches since the last merge from open.
 
 # Bringing changes on your fork into Open
 
