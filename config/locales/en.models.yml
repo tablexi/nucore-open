@@ -76,6 +76,8 @@ en:
             base:
               conflict: The reservation conflicts with another reservation.
               conflict_in_cart: The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue.
+            reserve_start_at:
+              after_cutoff: must be at least %{hours} hours in the future.
         stored_file:
           attributes:
             name:

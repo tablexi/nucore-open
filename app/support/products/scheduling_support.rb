@@ -155,7 +155,7 @@ module Products::SchedulingSupport
     attr_accessor :time, :rule, :day_start, :day_end, :options
 
     def initialize(time, rule, options = {})
-      self.time = time
+      self.time = rule.instrument.cutoff_hours > 0 ? [time, rule.instrument.cutoff_hours.hours.from_now].max : time
       self.rule = rule
       self.day_start = Time.zone.local(time.year, time.month, time.day, rule.start_hour, rule.start_min, 0)
       self.day_end   = Time.zone.local(time.year, time.month, time.day, rule.end_hour, rule.end_min, 0)

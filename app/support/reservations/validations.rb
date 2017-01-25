@@ -34,6 +34,10 @@ module Reservations::Validations
     end
   end
 
+  def starts_before_cutoff
+    errors.add(:reserve_start_at, :after_cutoff, hours: product.cutoff_hours) if starts_before_cutoff?
+  end
+
   def duration_is_interval
     return unless product.reserve_interval && reserve_end_at && reserve_start_at
     diff = ((reserve_end_at - reserve_start_at) / 60).to_i
@@ -133,6 +137,7 @@ module Reservations::Validations
     perform_validations(options)
     in_window
     in_the_future
+    starts_before_cutoff if requires_cutoff_validation?
     return false if errors.any?
     save
   end
@@ -174,6 +179,15 @@ module Reservations::Validations
   end
 
   private
+
+  def starts_before_cutoff?
+    return false if admin?
+    reserve_start_at < product.cutoff_hours.hours.from_now
+  end
+
+  def requires_cutoff_validation?
+    product.cutoff_hours && reserve_start_at && in_the_future? && reserve_start_at_changed?
+  end
 
   def default_reservation_window
     product.price_group_products.map(&:reservation_window).min
