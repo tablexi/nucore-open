@@ -220,39 +220,87 @@ RSpec.describe FacilityOrdersController do
           end
         end
 
-        context "when setting fulfilled_at" do
-          before { @params[:fulfilled_at] = fulfilled_at.strftime("%m/%d/%Y") }
+        context "when setting an order status" do
+          before { @params[:order_status_id] = OrderStatus.in_process_status.id }
 
-          context "to today" do
+          it_should_allow :director, "to add an instrument to existing order via merge" do
+            expect(order_detail.order_status).to eq(OrderStatus.in_process_status)
+          end
+        end
+      end
+
+      context "when adding an item" do
+        let(:item) { FactoryGirl.create(:item, facility_account: facility_account) }
+        let(:order_detail) { order.order_details.last }
+
+        before { @params[:product_add] = item.id }
+
+        it_should_allow :director, "to add an item to existing order directly" do
+          assert_no_merge_order(order, item, 1)
+        end
+
+        context "when setting a note" do
+          before { @params[:note] = "This is a note" }
+
+          it_should_allow :director, "to add an item to existing order with a note" do
+            expect(order_detail.note).to eq("This is a note")
+          end
+        end
+
+        context "when setting the order status to 'Complete'" do
+          let(:complete_status) { OrderStatus.complete_status }
+          before { @params[:order_status_id] = complete_status.id.to_s }
+
+          context "and setting fulfilled_at" do
+            before { @params[:fulfilled_at] = fulfilled_at.strftime("%m/%d/%Y") }
+
+            context "to today" do
+              let(:fulfilled_at) { Date.today }
+
+              it_should_allow :director, "to add an item to existing order with fulfilled_at set" do
+                expect(order_detail.order_status).to eq(complete_status)
+                expect(order_detail.fulfilled_at)
+                  .to eq(fulfilled_at.beginning_of_day + 12.hours)
+              end
+            end
+
+            context "to a date in the future" do
+              let(:fulfilled_at) { 1.day.from_now }
+
+              it_should_allow :director, "to add an item to existing order with fulfilled_at set to now" do
+                expect(order_detail.order_status).to eq(complete_status)
+                expect(order_detail.fulfilled_at).to eq(Time.current)
+              end
+            end
+
+            context "to a date before the start of this fiscal year" do
+              let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning - 1.day }
+
+              it_should_allow :director, "to add an item to existing order with fulfilled_at set to now" do
+                expect(order_detail.order_status).to eq(complete_status)
+                expect(order_detail.fulfilled_at).to eq(Time.current)
+              end
+            end
+
+            context "to a date during this fiscal year" do
+              let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning + 1.day }
+
+              it_should_allow :director, "to add an item to existing order with fulfilled_at set" do
+                expect(order_detail.order_status).to eq(complete_status)
+                expect(order_detail.fulfilled_at).to eq(fulfilled_at.beginning_of_day + 12.hours)
+              end
+            end
+          end
+        end
+
+        context "when not setting an order status" do
+          context "and setting fulfilled_at" do
+            before { @params[:fulfilled_at] = fulfilled_at.strftime("%m/%d/%Y") }
             let(:fulfilled_at) { Date.today }
 
-            it_should_allow :director, "to add an instrument to existing order via merge" do
-              expect(order_detail.fulfilled_at)
-                .to eq(fulfilled_at.beginning_of_day + 12.hours)
-            end
-          end
-
-          context "to a date in the future" do
-            let(:fulfilled_at) { 1.day.from_now }
-
-            it_should_allow :director, "to add an instrument to existing order via merge" do
+            it_should_allow :director, "to add an item to existing order with status and fulfilled_at set to defaults" do
+              expect(order_detail.order_status).to eq(item.initial_order_status)
               expect(order_detail.fulfilled_at).to be_blank
-            end
-          end
-
-          context "to a date before the start of this fiscal year" do
-            let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning - 1.day }
-
-            it_should_allow :director, "to add an instrument to existing order via merge" do
-              expect(order_detail.fulfilled_at).to be_blank
-            end
-          end
-
-          context "to a date during this fiscal year" do
-            let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning + 1.day }
-
-            it_should_allow :director, "to add an instrument to existing order via merge" do
-              expect(order_detail.fulfilled_at).to eq(fulfilled_at.beginning_of_day + 12.hours)
             end
           end
         end
@@ -260,7 +308,7 @@ RSpec.describe FacilityOrdersController do
         context "when setting an order status" do
           before { @params[:order_status_id] = OrderStatus.in_process_status.id }
 
-          it_should_allow :director, "to add an instrument to existing order via merge" do
+          it_should_allow :director, "to add an item to existing order via merge" do
             expect(order_detail.order_status).to eq(OrderStatus.in_process_status)
           end
         end
@@ -310,7 +358,7 @@ RSpec.describe FacilityOrdersController do
           context "without an active template" do
             let(:active_template?) { false }
 
-            it_should_allow :director, "to add an service to existing order directly" do
+            it_should_allow :director, "to add a service to existing order directly" do
               assert_no_merge_order(order, service)
             end
           end
@@ -387,7 +435,7 @@ RSpec.describe FacilityOrdersController do
             context "without an active template" do
               let(:active_template?) { false }
 
-              it_should_allow :director, "to add an service to existing order directly" do
+              it_should_allow :director, "to add a service to existing order directly" do
                 assert_no_merge_order(order, bundle, 2)
               end
             end

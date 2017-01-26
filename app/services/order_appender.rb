@@ -21,9 +21,11 @@ class OrderAppender
     notifications = false
     order_details.each do |order_detail|
       order_detail.note = note if note.present?
-      order_detail.fulfilled_at = fulfilled_at if fulfilled_at.present?
       order_detail.set_default_status!
       order_detail.change_status!(order_status) if order_status.present?
+      if fulfilled_at.present? && order_status == OrderStatus.complete_status
+        order_detail.update_attribute(:fulfilled_at, fulfilled_at)
+      end
       if order.to_be_merged? && !order_detail.valid_for_purchase?
         notifications = true
         MergeNotification.create_for!(user, order_detail)
