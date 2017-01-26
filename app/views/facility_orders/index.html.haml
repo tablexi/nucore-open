@@ -19,7 +19,8 @@
           %th.order_num_width.centered= 'Order Detail'
           %th.ordered_on_width= sortable 'date', 'Ordered On'
           %th User Name
-          %th{ :colspan => 2 }== Quantity / #{sortable 'product'}
+          %th Quantity
+          %th.order-note= sortable 'product'
           %th= sortable 'assigned_to'
           %th= sortable 'status'
           %th.currency Price

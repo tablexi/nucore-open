@@ -1,6 +1,6 @@
 - unless defined?(show_reservation)
   - show_reservation = true
-%td.user-order-detail{ colspan: 2 }
+%td.user-order-detail.order-note
   .order-detail-description
     = order_detail_description(od)
     - if show_reservation && od.reservation
@@ -16,4 +16,6 @@
     .order-detail-extra
       = link_to t("order_details.show.link.view.order_file"), facility_template_result_path(stored_file)
   - if od.note.present?
-    .order-detail-extra.order-detail-note= "Note: #{truncate(od.note, length: 100, separator: ' ')}"
+    .order-detail-extra.order-detail-note
+      = link_to "See Note", "#", class: "js--toggleNote"
+      .js--note= od.note
