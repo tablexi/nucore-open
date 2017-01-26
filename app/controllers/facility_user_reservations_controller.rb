@@ -21,9 +21,9 @@ class FacilityUserReservationsController < ApplicationController
   # PUT /facilities/:facility_id/users/:user_id/reservations/:id/cancel
   def cancel
     order_detail = user_order_details.find(params[:id])
-    raise ActiveRecord::RecordNotFound unless order_detail.reservation.try(:can_cancel?)
+    raise ActiveRecord::RecordNotFound if not_customer_cancelable?(order_detail.reservation)
     order_detail.transaction do
-      if cancel_with_fee(order_detail)
+      if order_detail.reservation.canceled_at? || cancel_with_fee(order_detail)
         flash[:notice] = text("cancel.success")
       else
         flash[:error] = text("cancel.error")
@@ -42,6 +42,10 @@ class FacilityUserReservationsController < ApplicationController
 
   def load_user
     @user = User.find(params[:user_id])
+  end
+
+  def not_customer_cancelable?(reservation)
+    reservation.present? && !reservation.canceled_at? && !reservation.can_cancel?
   end
 
   def user_order_details
