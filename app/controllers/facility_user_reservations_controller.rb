@@ -18,9 +18,9 @@ class FacilityUserReservationsController < ApplicationController
                      .paginate(page: params[:page])
   end
 
-  # PUT /facilities/:facility_id/users/:user_id/reservations/:id/cancel
+  # PUT /facilities/:facility_id/users/:user_id/reservations/:order_detail_id/cancel
   def cancel
-    order_detail = user_order_details.find(params[:id])
+    order_detail = user_order_details.find(params[:order_detail_id])
     raise ActiveRecord::RecordNotFound if not_customer_cancelable?(order_detail.reservation)
     order_detail.transaction do
       if order_detail.reservation.canceled_at? || cancel_with_fee(order_detail)
