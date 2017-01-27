@@ -24,4 +24,6 @@
         nil,
         class: "string optional wide"
 
-      = submit_tag "Add To Order", class: "btn btn-primary", id: :product_add_btn
+      = submit_tag text("admin.shared.add_to", model: @order.class),
+        class: "btn btn-primary",
+        id: :product_add_btn
