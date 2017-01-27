@@ -24,7 +24,7 @@ class FacilityUserReservationsController < ApplicationController
     reservation = @order_detail.reservation
     raise ActiveRecord::RecordNotFound if reservation.blank?
 
-    unless reservation.canceled_at?
+    unless reservation.canceled?
       raise ActiveRecord::RecordNotFound unless reservation.can_cancel?
 
       @order_detail.transaction do
