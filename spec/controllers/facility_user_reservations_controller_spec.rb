@@ -40,22 +40,41 @@ RSpec.describe FacilityUserReservationsController do
     end
 
     shared_examples_for "it can cancel the reservation" do
-      context "when a cancellation fee applies" do
-        before(:each) do
-          sign_in(operator)
-          price_policies.update_all(cancellation_cost: 12)
+      def execute_cancel_request
+        sign_in(operator)
+        put :cancel,
+            facility_id: facility.url_name,
+            user_id: user.id,
+            order_detail_id: order_detail.id
+      end
 
-          put :cancel,
-              facility_id: facility.url_name,
-              user_id: user.id,
-              id: order_detail.id
+      context "when a cancellation fee applies" do
+        before do
+          price_policies.update_all(cancellation_cost: 12)
+          execute_cancel_request
         end
 
         it "cancels the reservation with fee, considering the order 'complete'", :aggregate_failures do
           expect(response)
             .to redirect_to(facility_user_reservations_path(facility, user))
+          expect(flash[:error]).to be_blank
+          expect(flash[:notice]).to include("canceled successfully")
           expect(order_detail.reload).to be_complete
           expect(order_detail.actual_cost).to eq(12)
+        end
+      end
+
+      context "when the reservation has already been canceled" do
+        before do
+          reservation.update_attribute(:canceled_at, 1.second.ago)
+          execute_cancel_request
+        end
+
+        it "behaves as it does when initially canceled", :aggregate_failures do
+          expect(response)
+            .to redirect_to(facility_user_reservations_path(facility, user))
+          expect(flash[:error]).to be_blank
+          expect(flash[:notice]).to include("canceled successfully")
         end
       end
     end
