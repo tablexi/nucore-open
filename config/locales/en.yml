@@ -1014,6 +1014,8 @@ en:
       label:
         id: "NetID"
         have_id: "Does the new user have a NetID?"
+    orders:
+      none: "%{name} has not placed any orders."
     reservations:
       actions: Actions
       actual_cost:
