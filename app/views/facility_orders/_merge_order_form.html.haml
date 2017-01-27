@@ -1,6 +1,6 @@
 - if @merge_orders.blank?
   .well
-    = form_for [current_facility, @order], method: :put do |f|
+    = simple_form_for [current_facility, @order], method: :put, html: { class: "js--edit-order" } do |f|
       = text_field_tag :product_add_quantity, 1
 
       = select_tag :product_add,

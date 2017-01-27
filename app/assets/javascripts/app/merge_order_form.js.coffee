@@ -13,4 +13,4 @@ class window.MergeOrderForm
         @$fulfilled_at.hide()
 
 $ ->
-  new MergeOrderForm($("form.edit_order"))
+  $(".js--edit-order").each -> new MergeOrderForm($(this))
