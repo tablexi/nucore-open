@@ -23,27 +23,23 @@ class FacilityUserReservationsController < ApplicationController
   def cancel
     reservation = @order_detail.reservation
     raise ActiveRecord::RecordNotFound if reservation.blank?
-
     unless reservation.canceled?
       raise ActiveRecord::RecordNotFound unless reservation.can_cancel?
-
-      @order_detail.transaction do
-        unless cancel_with_fee
-          flash[:error] = text("cancel.error")
-          raise ActiveRecord::Rollback
-        end
-      end
+      cancel_with_fee!
     end
-
     flash[:notice] = text("cancel.success")
     redirect_to facility_user_reservations_path(current_facility, @user)
   end
 
   private
 
-  def cancel_with_fee
-    @order_detail
-      .cancel_reservation(session_user, admin: true, admin_with_cancel_fee: true)
+  def cancel_with_fee!
+    @order_detail.transaction do
+      unless @order_detail.cancel_reservation(session_user, admin: true, admin_with_cancel_fee: true)
+        flash[:error] = text("cancel.error")
+        raise ActiveRecord::Rollback
+      end
+    end
   end
 
   def load_user
