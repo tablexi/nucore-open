@@ -154,12 +154,6 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, Order) }
     it { is_expected.to be_allowed_to(:manage, Reservation) }
 
-    it "cannot administer resources" do
-      is_expected.not_to be_allowed_to(:administer, Order)
-      is_expected.not_to be_allowed_to(:administer, OrderDetail)
-      is_expected.not_to be_allowed_to(:administer, Reservation)
-    end
-
     context "in a single facility" do
       it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
       it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
@@ -174,6 +168,8 @@ RSpec.describe Ability do
         it { is_expected.to be_allowed_to(action, facility) }
       end
       it { is_expected.to be_allowed_to(:manage, User) }
+      it { is_expected.to be_allowed_to(:administer, Order) }
+      it { is_expected.to be_allowed_to(:administer, Reservation) }
     end
 
     context "in no facility" do
