@@ -14,7 +14,7 @@
       = text_field_tag :fulfilled_at,
         nil,
         placeholder: OrderDetail.human_attribute_name(:fulfilled_at),
-        data: { "min-date": SettingsHelper.fiscal_year_beginning.iso8601, "max-date": Date.today.iso8601 },
+        data: { min_date: SettingsHelper.fiscal_year_beginning.iso8601, max_date: Date.today.iso8601 },
         class: "datepicker__data string optional"
 
       %br
