@@ -60,18 +60,27 @@ class FacilityOrdersController < ApplicationController
     end
   end
 
+  # PUT/PATCH /facilities/:facility_id/orders/:id
   def update
-    product = Product.find(params[:product_add].to_i)
-    original_order = @order
+    product = current_facility.products.find(params[:product_add])
     quantity = params[:product_add_quantity].to_i
 
     if quantity <= 0
-      flash[:notice] = I18n.t "controllers.facility_orders.update.zero_quantity"
+      flash[:notice] = text("update.zero_quantity")
     else
-      add_to_order(product, quantity, original_order)
+      begin
+        if order_appender.add!(product, quantity, params)
+          flash[:error] = text("update.notices", product: product.name)
+        else
+          flash[:notice] = text("update.success", product: product.name)
+        end
+      rescue => e
+        Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+        flash[:error] = text("update.error", product: product.name)
+      end
     end
 
-    redirect_to facility_order_path(current_facility, original_order)
+    redirect_to facility_order_path(current_facility, @order)
   end
 
   protected
@@ -90,56 +99,16 @@ class FacilityOrdersController < ApplicationController
     @batch_updater ||= OrderDetailBatchUpdater.new(params[:order_detail_ids], current_facility, session_user, params)
   end
 
-  def merge?(product)
-    products = product.is_a?(Bundle) ? product.products : [product]
-
-    products.any? do |p|
-      p.is_a?(Instrument) || (p.is_a?(Service) && (p.active_survey? || p.active_template?))
-    end
-  end
-
-  def add_to_order(product, quantity, original_order)
-    @order = build_merge_order if merge?(product)
-
-    begin
-      details = @order.add product, quantity, created_by: current_user.id
-      notifications = false
-      details.each do |d|
-        d.set_default_status!
-        if @order.to_be_merged? && !d.valid_for_purchase?
-          notifications = true
-          MergeNotification.create_for! current_user, d
-        end
-      end
-
-      if notifications
-        flash[:error] = I18n.t "controllers.facility_orders.update.notices", product: product.name
-      else
-        flash[:notice] = I18n.t "controllers.facility_orders.update.success", product: product.name
-      end
-    rescue => e
-      Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-      @order.destroy if @order != original_order
-      flash[:error] = I18n.t "controllers.facility_orders.update.error", product: product.name
-    end
-  end
-
-  def build_merge_order
-    Order.create!(
-      merge_with_order_id: @order.id,
-      facility_id: @order.facility_id,
-      account_id: @order.account_id,
-      user_id: @order.user_id,
-      created_by: current_user.id,
-    )
-  end
-
   def load_order
     @order = current_facility.orders.find params[:id]
   end
 
   def load_merge_orders
     @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id)
+  end
+
+  def order_appender
+    @order_appender ||= OrderAppender.new(@order, current_user)
   end
 
 end

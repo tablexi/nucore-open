@@ -1,7 +1,29 @@
 - if @merge_orders.blank?
   .well
-    = form_for [current_facility, @order], :method => :put do |f|
+    = simple_form_for [current_facility, @order], method: :put, html: { class: "js--edit-order" } do |f|
       = text_field_tag :product_add_quantity, 1
-      = select_tag :product_add, options_for_select(current_facility.products.active_plus_hidden.collect{|p| [ p.name, p.id ]})
+
+      = select_tag :product_add,
+        options_for_select(current_facility.products.active_plus_hidden.pluck(:name, :id))
+
+      = label_tag :order_status_id, OrderDetail.human_attribute_name(:order_status)
+      = select_tag :order_status_id,
+        options_for_select(OrderStatus.add_to_order_statuses(current_facility).map { |s| [s.name_with_level, s.id] }),
+        class: "js--chosen optional"
+
+      = text_field_tag :fulfilled_at,
+        nil,
+        placeholder: OrderDetail.human_attribute_name(:fulfilled_at),
+        data: { min_date: SettingsHelper.fiscal_year_beginning.iso8601, max_date: Date.today.iso8601 },
+        class: "datepicker__data string optional"
+
       %br
-      = submit_tag 'Add To Order', :class => 'btn btn-primary', :id => :product_add_btn
+
+      = label_tag :note, OrderDetail.human_attribute_name(:note)
+      = text_area_tag :note,
+        nil,
+        class: "string optional wide"
+
+      = submit_tag text("admin.shared.add_to", model: @order.class),
+        class: "btn btn-primary",
+        id: :product_add_btn

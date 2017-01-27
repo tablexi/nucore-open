@@ -33,6 +33,7 @@ en:
   admin:
     shared:
       add: "Add %{model}"
+      add_to: "Add To %{model}"
       edit: "Edit %{model}"
       tabnav_users:
         details: "Details"

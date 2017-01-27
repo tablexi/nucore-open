@@ -54,6 +54,10 @@ class Instrument < Product
     days = price_group_products.collect(&:reservation_window).max.to_i
   end
 
+  def mergeable?
+    true
+  end
+
   def restriction_levels_for(user)
     product_access_groups.joins(:product_users).where(product_users: { user_id: user.id })
   end

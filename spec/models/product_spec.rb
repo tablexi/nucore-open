@@ -551,6 +551,62 @@ RSpec.describe Product do
     end
   end
 
+  describe "#mergeable?" do
+    context "when it's a Bundle" do
+      subject { FactoryGirl.build(:bundle) }
+
+      it { is_expected.not_to be_mergeable }
+    end
+
+    context "when it's an Item" do
+      subject { FactoryGirl.build(:item) }
+
+      it { is_expected.not_to be_mergeable }
+    end
+
+    context "when it's an Instrument" do
+      subject { FactoryGirl.build(:instrument) }
+
+      it { is_expected.to be_mergeable }
+    end
+
+    context "when it's a Service" do
+      subject { FactoryGirl.build(:service) }
+
+      context "with an active survey" do
+        before { allow(subject).to receive(:active_survey?).and_return(true) }
+
+        context "with an active template" do
+          before { allow(subject).to receive(:active_template?).and_return(true) }
+
+          it { is_expected.to be_mergeable }
+        end
+
+        context "without an active template" do
+          before { allow(subject).to receive(:active_template?).and_return(false) }
+
+          it { is_expected.to be_mergeable }
+        end
+      end
+
+      context "without an active survey" do
+        before { allow(subject).to receive(:active_survey?).and_return(false) }
+
+        context "with an active template" do
+          before { allow(subject).to receive(:active_template?).and_return(true) }
+
+          it { is_expected.to be_mergeable }
+        end
+
+        context "without an active template" do
+          before { allow(subject).to receive(:active_template?).and_return(false) }
+
+          it { is_expected.not_to be_mergeable }
+        end
+      end
+    end
+  end
+
   describe "#offline?" do
     it { is_expected.not_to be_offline }
   end
