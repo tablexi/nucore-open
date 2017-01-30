@@ -98,6 +98,15 @@ RSpec.describe BulkEmail::BulkEmailController do
         let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
         it_behaves_like "it can search for recipients"
       end
+
+      context "when logged in as a billing administrator" do
+        let(:user) { FactoryGirl.create(:user, :billing_administrator) }
+
+        context "in a cross-facility context" do
+          let(:facility) { Facility.cross_facility }
+          it_behaves_like "it can search for recipients"
+        end
+      end
     end
   end
 
