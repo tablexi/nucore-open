@@ -993,8 +993,6 @@ en:
     access_list:
       head: "%{name} Access List"
       no_products: "%{name} does not have any available products."
-      th:
-        approval_received: "Approved?"
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
