@@ -1,10 +1,12 @@
 $ ->
-  hiddenText = "See Note"
-  openText = "Hide Note"
+  hiddenText = "More"
+  openText = "Less"
 
   $('.js--toggleNote').on 'click', (e) ->
     e.preventDefault()
-    $(this).next(".js--note").toggle()
+    $parent = $(this).parent()
     text = $(this).text()
+    $parent.find(".js--note").toggle()
+    $parent.find(".js--truncatedNote").toggle()
     $(this).text if text == hiddenText then openText else hiddenText
     return

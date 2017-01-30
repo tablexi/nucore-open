@@ -17,5 +17,6 @@
       = link_to t("order_details.show.link.view.order_file"), facility_template_result_path(stored_file)
   - if od.note.present?
     .order-detail-extra.order-detail-note
-      = link_to "See Note", "#", class: "js--toggleNote"
       .js--note= od.note
+      .js--truncatedNote= truncate(od.note, length: 100, separator: " ", omission: "... ")
+      = link_to "More", "#", class: "js--toggleNote" if od.note.size > 100
