@@ -1,5 +1,4 @@
 require "rails_helper"
-require "controller_spec_helper"
 
 RSpec.describe BulkEmail::BulkEmailController do
   render_views
@@ -11,11 +10,12 @@ RSpec.describe BulkEmail::BulkEmailController do
   let!(:restricted_item) { FactoryGirl.create(:item, facility_account: facility_account, requires_approval: true) }
   let!(:service) { FactoryGirl.create(:service, facility_account: facility_account) }
 
-  before(:all) { create_users }
-
   before(:each) do
-    @authable = facility # controller_spec_helper requires @authable
     @params = { facility_id: facility.url_name }
+  end
+
+  def do_request
+    method(@method).call(@action, @params)
   end
 
   describe "POST #search" do
@@ -25,90 +25,114 @@ RSpec.describe BulkEmail::BulkEmailController do
       @params.merge!(bulk_email: { user_types: user_types })
     end
 
-    context "testing authorization" do
+    context "when not logged in" do
       let(:user_types) { [] }
 
-      it_should_require_login
-      it_should_allow_managers_and_senior_staff_only {}
+      before { do_request }
+
+      it { is_expected.to redirect_to(new_user_session_url) }
+
     end
 
-    context "authorized" do
-      before { maybe_grant_always_sign_in :director }
+    context "when logged in" do
+      let(:user_types) { [] }
 
-      context "when the at least one user_type is set" do
-        let(:user_types) { %i(customers) }
-
-        before { do_request }
-
-        it { expect(assigns[:users]).not_to be_nil }
+      before do
+        sign_in user
+        do_request
       end
 
-      context "when no user_types are set" do
-        let(:user_types) { [] }
+      shared_examples_for "it can search for recipients" do
+        context "when at least one user_type is set" do
+          let(:user_types) { %i(customers) }
 
-        before { do_request }
+          before { do_request }
 
-        it { expect(assigns[:users]).to be_blank }
-      end
-
-      context "parameter settings" do
-        let(:user_types) { %i(customers) }
-
-        before(:each) do
-          do_request
-          expect(response).to be_success
+          it { expect(assigns[:users]).not_to be_nil }
         end
 
-        it "sets products, in order" do
-          expect(assigns[:products])
-            .to eq([item, service, instrument, restricted_item].sort)
+        context "when no user_types are set" do
+          let(:user_types) { [] }
+
+          before { do_request }
+
+          it { expect(assigns[:users]).to be_blank }
         end
 
-        it "sets user_types, in order" do
-          expect(assigns[:user_types].keys)
-            .to eq(%i(customers authorized_users account_owners))
-        end
+        context "parameter settings" do
+          let(:user_types) { %i(customers) }
 
-        it "sets the facility_id as the id, not url_name" do
-          expect(assigns[:search_fields][:facility_id]).to eq(facility.id)
-        end
-
-        context "when where are no restricted instruments" do
-          before { restricted_item.destroy }
-
-          it "does not include authorized_users as a user_type" do
+          before(:each) do
             do_request
-            expect(assigns[:user_types]).not_to include(:authorized_users)
+            expect(response).to be_success
+          end
+
+          it "sets products, in order" do
+            expect(assigns[:products])
+              .to eq([item, service, instrument, restricted_item].sort)
+          end
+
+          it "sets user_types, in order" do
+            expect(assigns[:user_types].keys)
+              .to eq(%i(customers authorized_users account_owners))
+          end
+
+          it "sets the facility_id as the id, not url_name" do
+            expect(assigns[:search_fields][:facility_id]).to eq(facility.id)
+          end
+
+          context "when where are no restricted instruments" do
+            before { restricted_item.destroy }
+
+            it "does not include authorized_users as a user_type" do
+              do_request
+              expect(assigns[:user_types]).not_to include(:authorized_users)
+            end
+          end
+        end
+
+        context "when there is a hidden product" do
+          let(:user_types) { %i(customers) }
+
+          let!(:hidden_product) do
+            FactoryGirl.create(:item, :hidden, facility_account: facility_account)
+          end
+
+          it "includes the hidden product" do
+            do_request
+            expect(response).to be_success
+            expect(assigns[:products]).to include(hidden_product)
+          end
+        end
+
+        context "when there is an archived product" do
+          let(:user_types) { %i(customers) }
+
+          let!(:archived_product) do
+            FactoryGirl.create(:item, :archived, facility_account: facility_account)
+          end
+
+          it "does not load the archived product" do
+            do_request
+            expect(response).to be_success
+            expect(assigns[:products]).not_to include(archived_product)
           end
         end
       end
 
-      context "when there is a hidden product" do
-        let(:user_types) { %i(customers) }
-
-        let!(:hidden_product) do
-          FactoryGirl.create(:item, :hidden, facility_account: facility_account)
-        end
-
-        it "includes the hidden product" do
-          do_request
-          expect(response).to be_success
-          expect(assigns[:products]).to include(hidden_product)
-        end
+      context "as an unprivileged user" do
+        let(:user) { FactoryGirl.create(:user) }
+        it { is_expected.to render_template("403") }
       end
 
-      context "when there is an archived product" do
-        let(:user_types) { %i(customers) }
+      context "when logged in as facility staff" do
+        let(:user) { FactoryGirl.create(:user, :staff, facility: facility) }
+        it { is_expected.to render_template("403") }
+      end
 
-        let!(:archived_product) do
-          FactoryGirl.create(:item, :archived, facility_account: facility_account)
-        end
-
-        it "does not load the archived product" do
-          do_request
-          expect(response).to be_success
-          expect(assigns[:products]).not_to include(archived_product)
-        end
+      context "when logged in as senior facility staff" do
+        let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
+        it_behaves_like "it can search for recipients"
       end
     end
   end
@@ -122,6 +146,7 @@ RSpec.describe BulkEmail::BulkEmailController do
         [user.full_name, user.username, user.email].join(",")
       end.join("\n")
     end
+    let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
 
     before(:each) do
       @action = "create"
@@ -129,7 +154,7 @@ RSpec.describe BulkEmail::BulkEmailController do
       @params[:format] = :csv
       @params[:recipient_ids] = recipients.map(&:id)
 
-      maybe_grant_always_sign_in :director
+      sign_in user
       do_request
     end
 
@@ -144,6 +169,7 @@ RSpec.describe BulkEmail::BulkEmailController do
     let(:recipients) { FactoryGirl.create_list(:user, 3) }
     let(:custom_message) { "Custom message" }
     let(:return_path) { nil }
+    let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
 
     before(:each) do
       @action = "deliver"
@@ -160,7 +186,7 @@ RSpec.describe BulkEmail::BulkEmailController do
       }
       @params[:return_path] = return_path if return_path.present?
 
-      sign_in @admin
+      sign_in user
       do_request
     end
 
