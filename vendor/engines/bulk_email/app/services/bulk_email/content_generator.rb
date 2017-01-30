@@ -20,7 +20,7 @@ module BulkEmail
     end
 
     def wrap_text(text, recipient_name = nil)
-      [greeting(recipient_name), text, signoff].join("\n\n")
+      [greeting(recipient_name), text, signoff].compact.join("\n\n")
     end
 
     def greeting(recipient_name = nil)
@@ -31,7 +31,9 @@ module BulkEmail
     end
 
     def signoff
-      I18n.t("bulk_email.body.signoff", facility_name: facility.name)
+      if facility.single_facility?
+        I18n.t("bulk_email.body.signoff", facility_name: facility.name)
+      end
     end
 
     private

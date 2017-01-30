@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170112204251) do
+ActiveRecord::Schema.define(version: 20170130213649) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 20170112204251) do
   end
 
   create_table "bulk_email_jobs", force: :cascade do |t|
-    t.integer  "facility_id",     limit: 4,     null: false
+    t.integer  "facility_id",     limit: 4
     t.integer  "user_id",         limit: 4,     null: false
     t.string   "subject",         limit: 255,   null: false
     t.text     "body",            limit: 65535, null: false

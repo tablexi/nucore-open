@@ -10,8 +10,7 @@ module BulkEmail
     serialize :recipients, Array
     serialize :search_criteria, Hash
 
-    validates :facility_id,
-              :user_id,
+    validates :user_id,
               :subject,
               :body,
               :recipients,

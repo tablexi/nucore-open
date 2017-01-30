@@ -32,7 +32,15 @@ RSpec.describe BulkEmail::ContentGenerator do
   end
 
   describe "#signoff" do
-    it { expect(subject.signoff).to be_present }
+    context "when in a single-facility context" do
+      it { expect(subject.signoff).to be_present }
+    end
+
+    context "when in a cross-facility context" do
+      let(:facility) { Facility.cross_facility }
+
+      it { expect(subject.signoff).to be_blank }
+    end
   end
 
   describe "#subject_prefix" do
