@@ -36,9 +36,19 @@ RSpec.describe BulkEmail::ContentGenerator do
   end
 
   describe "#subject_prefix" do
-    it "includes the app and facility names" do
-      expect(subject.subject_prefix)
-        .to eq("[#{I18n.t('app_name')} #{facility.name}]")
+    context "when in a single-facility context" do
+      it "includes the app and facility names" do
+        expect(subject.subject_prefix)
+          .to eq("[#{I18n.t('app_name')} #{facility.name}]")
+      end
+    end
+
+    context "when in a cross-facility context" do
+      let(:facility) { Facility.cross_facility }
+
+      it "includes only the app name" do
+        expect(subject.subject_prefix).to eq("[#{I18n.t('app_name')}]")
+      end
     end
   end
 
