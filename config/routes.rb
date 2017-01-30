@@ -131,7 +131,7 @@ Nucore::Application.routes.draw do
 
     ### Feature Toggle Create Users ###
     if SettingsHelper.feature_on?(:create_users)
-      resources :users, except: [:edit, :update] do
+      resources :users do
         collection do
           get "new_external"
           post "search"
@@ -148,7 +148,7 @@ Nucore::Application.routes.draw do
         post "access_list/approvals", to: 'users#access_list_approvals'
       end
     else
-      resources :users, except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } do
+      resources :users, except: [:new, :create], constraints: { id: /\d+/ } do
         get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
         resources :reservations, only: [:index], param: :order_detail_id, controller: "facility_user_reservations" do

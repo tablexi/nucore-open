@@ -142,6 +142,13 @@ class UsersController < ApplicationController
   def email
   end
 
+  def edit
+    @user = User.find(params[:id])
+  end
+
+  def update
+  end
+
   private
 
   def update_access_list_approvals
