@@ -71,7 +71,7 @@ module BulkEmail
     def product_ids_from_params
       # if we don't have any products, get all for the facility
       search_fields[:products].presence ||
-        Facility.find(search_fields[:facility_id]).products.map(&:id)
+        Facility.find(search_fields[:facility_id]).products.pluck(:id)
     end
 
     def selected_user_types
