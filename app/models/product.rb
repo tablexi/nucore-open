@@ -52,7 +52,7 @@ class Product < ActiveRecord::Base
     where("products.id NOT IN (?)", exclusion_list)
   end
 
-  scope :for_facility, lambda {|facility|
+  scope :for_facility, lambda { |facility|
     return self.class.none if facility.blank?
     return where(facility_id: facility.id) if facility.single_facility?
     return all if facility.cross_facility?

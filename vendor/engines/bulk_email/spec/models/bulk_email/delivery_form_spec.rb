@@ -59,6 +59,5 @@ RSpec.describe BulkEmail::DeliveryForm do
 
       it_behaves_like "it delivers mail"
     end
-
   end
 end

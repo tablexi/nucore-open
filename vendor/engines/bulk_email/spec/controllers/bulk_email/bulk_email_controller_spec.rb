@@ -144,15 +144,15 @@ RSpec.describe BulkEmail::BulkEmailController do
 
     let(:params) do
       super().merge(bulk_email_delivery_form: {
-        custom_subject: custom_subject,
-        custom_message: custom_message,
-        recipient_ids: recipients.map(&:id),
-        search_criteria: {
-          start_date: "12/31/1999",
-          end_date: "1/1/2016",
-          bulk_email: { user_types: ["customers"], products: [1] },
-        }.to_json,
-      })
+                      custom_subject: custom_subject,
+                      custom_message: custom_message,
+                      recipient_ids: recipients.map(&:id),
+                      search_criteria: {
+                        start_date: "12/31/1999",
+                        end_date: "1/1/2016",
+                        bulk_email: { user_types: ["customers"], products: [1] },
+                      }.to_json,
+                    })
     end
 
     before do
