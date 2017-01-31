@@ -119,6 +119,9 @@ en:
       create:
         no_selection: "You must select a payment source before reserving"
         success: "The reservation was successfully created."
+      order_detail_removed: |
+        The instrument order has been removed from your cart.
+        Please add it again to make a reservation.
       update:
         failure: The reservation cannot be updated.
 
