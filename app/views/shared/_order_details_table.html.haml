@@ -1,37 +1,34 @@
 %table.table.table-striped.table-hover.old-table
   %thead
     %tr
-      %th.centered Order #
-      %th Ordered On
-      %th Quantity
-      %th Product
-      %th.centered Status
-      %th.currency Total
+      %th.centered= OrderDetail.human_attribute_name(:id)
+      %th= OrderDetail.human_attribute_name(:ordered_at)
+      %th= OrderDetail.human_attribute_name(:quantity)
+      %th= OrderDetail.human_attribute_name(:product)
+      %th.centered= OrderDetail.human_attribute_name(:status)
+      %th.currency= OrderDetail.human_attribute_name(:actual_total)
   %tbody
     - @order_details.each do |od|
-      - order = od.order
+      - order_detail = OrderDetailPresenter.new(od)
       %tr
-        %td.centered= link_to od, current_facility ? facility_order_path(current_facility, order) : order_order_detail_path(order, od)
-        %td=h human_datetime(order.ordered_at)
-        %td.centered=h od.quantity
+        %td.centered
+          = link_to order_detail,
+            current_facility ? order_detail.show_order_path : order_order_detail_path(order_detail.order, order_detail)
+        %td= order_detail.ordered_at
+        %td.centered= order_detail.quantity
         %td
           %ul.unstyled
-            %li
-              - product_name = order_detail_description(od)
-              = "#{h od.product.facility.abbreviation} / #{product_name}".html_safe
-            - unless od.note.blank?
+            %li= order_detail.description_as_html_with_facility_prefix
+            - if order_detail.note.present?
               %li
-                %i=h "Note: #{od.note}"
-        %td.centered=h od.order_status.try(:name)
-        %td.currency
-          - od.send(:extend, PriceDisplayment)
-          = od.wrapped_total
+                %i= "Note: #{order_detail.note}"
+        %td.centered= order_detail.order_status.try(:name)
+        %td.currency= order_detail.wrapped_total
 
 %p.footnote
-  %span.estimated_cost
-    Orange
-  totals are estimates.
-  %span.actual_cost
-    Green
-  totals are final. Pricing will be assigned to transactions with unassigned totals.
+  %span.estimated_cost= text("users.reservations.estimated_cost.color")
+  = text("users.reservations.estimated_cost.note")
+  %span.actual_cost= text("users.reservations.actual_cost.color")
+  = text("users.reservations.actual_cost.note")
+
 = will_paginate(@order_details)

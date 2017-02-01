@@ -43,7 +43,7 @@
           %td.user-order-detail.order-detail-description
             - if current_facility.try(:single_facility?)
               = link_to order_detail.description_as_html_with_facility_prefix,
-                facility_instrument_path(order_detail.facility, order_detail.product)
+                facility_instrument_schedule_path(order_detail.facility, order_detail.product)
             - else
               = order_detail.description_as_html_with_facility_prefix
 
