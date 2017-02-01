@@ -49,8 +49,9 @@
               %em= order_detail.reservation
           - if order_detail.note.present?
             .order-detail-extra.order-detail-note
-              = link_to "See Note", "#", class: "js--toggleNote"
               .js--note= order_detail.note
+              .js--truncatedNote= truncate(order_detail.note, length: 100, separator: " ", omission: "... ")
+              = link_to text("note.more"), "#", class: "js--toggleNote" if order_detail.note.size > 100
 
 
         %td= order_detail.order.user.full_name

@@ -5,3 +5,11 @@ en:
         warning: |
           Changing the Payment Source could result in adjusted pricing. If you are
           concerned about this or receive incorrect pricing, please contact the !facility_downcase!.
+    shared:
+      order_detail_cell:
+        note:
+          more: More
+      transactions:
+        table_inside:
+          note:
+            more: More
