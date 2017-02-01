@@ -13,7 +13,7 @@
       %tr
         %td.centered
           = link_to order_detail,
-            current_facility ? order_detail.show_order_path : order_order_detail_path(order_detail.order, order_detail)
+            current_facility ? order_detail.show_order_path : order_detail.show_order_detail_path
         %td= order_detail.ordered_at
         %td.centered= order_detail.quantity
         %td
