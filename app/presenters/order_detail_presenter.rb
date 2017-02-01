@@ -41,6 +41,10 @@ class OrderDetailPresenter < SimpleDelegator
     reconcile_warning? ? "reconcile-warning" : ""
   end
 
+  def show_order_detail_path
+    order_order_detail_path(order, self)
+  end
+
   def show_order_path
     facility_order_path(facility, order)
   end
