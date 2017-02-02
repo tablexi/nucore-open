@@ -53,10 +53,13 @@ class Product < ActiveRecord::Base
   end
 
   scope :for_facility, lambda { |facility|
-    return self.class.none if facility.blank?
-    return where(facility_id: facility.id) if facility.single_facility?
-    return all if facility.cross_facility?
-    self.class.none
+    if facility.blank?
+      self.class.none
+    elsif facility.single_facility?
+      where(facility_id: facility.id)
+    else # cross-facility
+      all
+    end
   }
 
   def self.requiring_approval
