@@ -104,7 +104,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
         context "in a cross-facility context" do
           let(:facility) { Facility.cross_facility }
-          it_behaves_like "it can search for recipients"
+          it { is_expected.to render_template("403") }
         end
       end
     end
