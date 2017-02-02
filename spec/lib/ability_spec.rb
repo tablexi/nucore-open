@@ -169,8 +169,8 @@ RSpec.describe Ability do
       end
       it { is_expected.to be_allowed_to(:manage, User) }
       it { is_expected.to be_allowed_to(:administer, Order) }
-      it { is_expected.to be_allowed_to(:administer, Product) }
       it { is_expected.to be_allowed_to(:administer, Reservation) }
+      it { is_expected.not_to be_allowed_to(:administer, Product) }
     end
 
     context "in no facility" do
