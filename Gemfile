@@ -18,7 +18,7 @@ end
 gem "devise",           "~> 3.5.10"
 gem "devise-encryptable", "~> 0.2.0"
 gem "devise_ldap_authenticatable", "~> 0.8.5"
-gem "cancancan",        "1.10"
+gem "cancancan", "1.15"
 
 ## models
 gem "aasm", "~> 4.11.1"

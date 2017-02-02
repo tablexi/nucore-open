@@ -24,11 +24,11 @@ class Ability
           cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
         end
         unless user.account_manager?
-          cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
+          cannot :manage, [User, UserPresenter] unless resource.is_a?(Facility) && resource.single_facility?
         end
       end
 
-      cannot(:switch_to, User) { |target_user| !target_user.active? }
+      cannot(:switch_to, [User, UserPresenter]) { |target_user| !target_user.active? }
       ability_extender.extend(user, resource)
       return
     end
@@ -50,8 +50,8 @@ class Ability
       can [:manage_accounts, :manage_users], Facility.cross_facility
 
       if resource.blank? || resource == Facility.cross_facility
-        can :manage, [Account, AccountUser, User]
-        cannot :switch_to, User
+        can :manage, [Account, AccountUser, User, UserPresenter]
+        cannot :switch_to, [User, UserPresenter]
       end
     end
 
@@ -125,10 +125,10 @@ class Ability
           fileupload.file_type == "sample_result"
         end
 
-        can [:administer], User
+        can [:administer], [User, UserPresenter]
         if controller.is_a?(UsersController) || controller.is_a?(SearchController)
-          can :manage, User
-          cannot(:switch_to, User) { |target_user| !target_user.active? }
+          can :manage, [User, UserPresenter]
+          cannot(:switch_to, [User, UserPresenter]) { |target_user| !target_user.active? }
         end
 
         can [:list, :show], Facility
@@ -164,7 +164,7 @@ class Ability
           TrainingRequest,
         ]
 
-        can :manage, User if controller.is_a?(FacilityUsersController)
+        can :manage, [User, UserPresenter] if controller.is_a?(FacilityUsersController)
         cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
 
         # A facility admin can manage an account if it has no facility (i.e. it's a chart string) or the account
