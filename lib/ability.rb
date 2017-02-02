@@ -56,7 +56,8 @@ class Ability
     end
 
     if user.billing_administrator?
-      can :manage, [Account, Journal, Order, OrderDetail, Reservation]
+      can :manage, [Account, Journal, OrderDetail]
+      can :show, Order
       can :manage, [Reservation, User] if resource == Facility.cross_facility
       can [:manage_billing, :manage_users], Facility.cross_facility
       can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?

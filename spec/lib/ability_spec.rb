@@ -151,14 +151,14 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, Account) }
     it { is_expected.to be_allowed_to(:manage, Journal) }
     it { is_expected.to be_allowed_to(:manage, OrderDetail) }
-    it { is_expected.to be_allowed_to(:manage, Order) }
-    it { is_expected.to be_allowed_to(:manage, Reservation) }
 
     context "in a single facility" do
       it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
       it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
+      it { is_expected.to be_allowed_to(:show, Order) }
       it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
       it { is_expected.not_to be_allowed_to(:transactions, facility) }
+      it { is_expected.not_to be_allowed_to(:manage, Reservation) }
     end
 
     context "in cross-facility" do
@@ -168,7 +168,7 @@ RSpec.describe Ability do
         it { is_expected.to be_allowed_to(action, facility) }
       end
       it { is_expected.to be_allowed_to(:manage, User) }
-      it { is_expected.to be_allowed_to(:administer, Order) }
+      it { is_expected.to be_allowed_to(:show, Order) }
       it { is_expected.to be_allowed_to(:administer, Reservation) }
       it { is_expected.not_to be_allowed_to(:administer, Product) }
     end
