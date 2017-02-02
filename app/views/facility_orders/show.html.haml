@@ -81,6 +81,7 @@
           = number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.total }
       %td
 
-= render "merge_order_form"
+- if current_ability.can?(:update, Order)
+  = render "merge_order_form"
 
 #order-detail-modal.modal.hide.fade{ data: { backdrop: "static" } }
