@@ -27,6 +27,21 @@ RSpec.describe ReservationsController do
     create(:account_price_group_member, account: @account, price_group: @price_group)
   end
 
+  shared_examples_for "it can handle having its order_detail removed" do
+    context "when the order_detail has been removed" do
+      before do
+        @order.order_details.destroy_all
+        sign_in @purchaser
+        do_request
+      end
+
+      it "redirects to the facility's landing page with an error message", :aggregate_failures do
+        expect(flash[:error]).to include("has been removed from your cart")
+        expect(response).to redirect_to(facility_path(facility))
+      end
+    end
+  end
+
   describe "GET #index" do
     before(:each) do
       allow(order).to receive(:cart_valid?).and_return(true)
@@ -344,7 +359,7 @@ RSpec.describe ReservationsController do
     end
   end
 
-  context "create" do
+  describe "POST #create" do
     before :each do
       @method = :post
       @action = :create
@@ -371,6 +386,8 @@ RSpec.describe ReservationsController do
       is_expected.to set_flash
       assert_redirected_to purchase_order_path(@order)
     end
+
+    it_behaves_like "it can handle having its order_detail removed"
 
     context "notifications when acting as" do
       before :each do
@@ -576,7 +593,7 @@ RSpec.describe ReservationsController do
     end
   end
 
-  context "new" do
+  describe "GET #new" do
     before :each do
       @method = :get
       @action = :new
@@ -607,6 +624,8 @@ RSpec.describe ReservationsController do
       expect(assigns[:max_date]).to eq((Time.zone.now + PriceGroupProduct::DEFAULT_RESERVATION_WINDOW.days).strftime("%Y%m%d"))
       expect(assigns[:min_date]).to eq(Time.zone.now.strftime("%Y%m%d"))
     end
+
+    it_behaves_like "it can handle having its order_detail removed"
 
     describe "default reservation time" do
       before :each do
