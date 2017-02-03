@@ -21,7 +21,7 @@
         %th= t(".th.email")
         %th= t(".th.roles")
     %tbody
-      - @users.each do |user|
+      - UserPresenter.wrap(@users).each do |user|
         %tr
           %td.centered
             - if current_user.id != user.id
