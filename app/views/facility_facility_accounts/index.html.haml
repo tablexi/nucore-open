@@ -12,7 +12,7 @@
   %li= link_to t("admin.shared.add", model: FacilityAccount.model_name.human), new_facility_facility_account_path, :class => "btn-add"
 
 - if @accounts.empty?
-  %p.notice= t(".notice")
+  %p.notice= text(".notice")
 - else
   %table.table.table-striped.table-hover
     %thead
