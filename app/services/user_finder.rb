@@ -16,7 +16,7 @@ class UserFinder
   end
 
   def result
-    [UserPresenter.wrap(users), relation.count]
+    [users, relation.count]
   end
 
   private
