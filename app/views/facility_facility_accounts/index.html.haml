@@ -6,7 +6,7 @@
 
 %h2= FacilityAccount.model_name.human(count: 2)
 
-%p= text(".main")
+%p= text("main")
 
 %ul.inline
   %li
@@ -14,7 +14,7 @@
       new_facility_facility_account_path, class: "btn-add"
 
 - if @accounts.empty?
-  %p.notice= text(".notice")
+  %p.notice= text("notice")
 
 - else
   %table.table.table-striped.table-hover
@@ -31,4 +31,4 @@
           %td
             = account
             - unless account.is_active?
-              = text(".inactive")
+              = text("inactive")
