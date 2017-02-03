@@ -3,7 +3,7 @@ class GlobalUserRolesController < GlobalSettingsController
   before_action :load_user, only: [:destroy, :edit, :update]
 
   def index
-    @users = UserPresenter.wrap(User.with_global_roles)
+    @users = User.with_global_roles
   end
 
   def destroy
@@ -15,8 +15,6 @@ class GlobalUserRolesController < GlobalSettingsController
     if @user == current_user
       flash[:error] = translate("self_not_allowed", action: "change")
       redirect_to global_user_roles_url
-    else
-      @user = UserPresenter.new(@user)
     end
   end
 

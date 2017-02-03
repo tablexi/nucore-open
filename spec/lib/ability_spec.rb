@@ -39,7 +39,6 @@ RSpec.describe Ability do
 
     it { is_expected.to be_allowed_to(:switch_to, active_user) }
     it { is_expected.not_to be_allowed_to(:switch_to, deactivated_user) }
-    it { is_expected.not_to be_allowed_to(:switch_to, UserPresenter.new(deactivated_user)) }
   end
 
   describe "account manager" do

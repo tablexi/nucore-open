@@ -16,6 +16,6 @@
               = link_to t(".order_for"),
                 facility_user_switch_to_path(current_facility, user)
         %td
-          = render "search/#{@search_type || "manage_user"}_link", user: user
+          = render "search/#{@search_type || "manage_user"}_link", user: UserPresenter.new(user)
         %td= user.username
         %td= user.email
