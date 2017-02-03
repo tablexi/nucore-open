@@ -54,7 +54,7 @@ class Product < ActiveRecord::Base
 
   scope :for_facility, lambda { |facility|
     if facility.blank?
-      self.class.none
+      none
     elsif facility.single_facility?
       where(facility_id: facility.id)
     else # cross-facility
