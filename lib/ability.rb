@@ -19,6 +19,7 @@ class Ability
         can :manage, UserPriceGroupMember if resource.admin_editable?
         can :manage, AccountPriceGroupMember
       else
+        can([:edit, :update], User) { |target_user| target_user.external? }
         can :manage, :all
         unless user.billing_administrator?
           cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
@@ -130,6 +131,7 @@ class Ability
 
         can [:administer], User
         if controller.is_a?(UsersController) || controller.is_a?(SearchController)
+          can([:edit, :update], User) { |target_user| target_user.external? }
           can :manage, User
           cannot(:switch_to, User) { |target_user| !target_user.active? }
         end

@@ -142,11 +142,21 @@ class UsersController < ApplicationController
   def email
   end
 
+  # GET /facilities/:facility_id/users/:id/edit
   def edit
     @user = User.find(params[:id])
   end
 
+  # PUT /facilities/:facility_id/users/:id
   def update
+    @user = User.find(params[:id])
+    if @user.update_attributes(params[:user])
+      flash[:notice] = text("update.success")
+      redirect_to facility_user_path(current_facility, @user)
+    else
+      flash[:error] = text("update.error", message: @user.errors.full_messages.to_sentence)
+      render action: "edit"
+    end
   end
 
   private
