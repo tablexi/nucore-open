@@ -167,6 +167,7 @@ RSpec.describe Ability do
         it { is_expected.to be_allowed_to(action, facility) }
       end
       it { is_expected.to be_allowed_to(:manage, User) }
+      it { is_expected.not_to be_allowed_to(:switch_to, User) }
       it { is_expected.to be_allowed_to(:show, Order) }
       it { is_expected.to be_allowed_to(:administer, Reservation) }
       it { is_expected.not_to be_allowed_to(:administer, Product) }
@@ -177,6 +178,7 @@ RSpec.describe Ability do
 
       it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
       it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
+      it { is_expected.not_to be_allowed_to(:switch_to, User) }
     end
   end
 

@@ -1,8 +1,11 @@
-- order_for = local_assigns[:order_for]
+- search_type = @search_type.presence || "manage_user"
+- can_switch_any = users.any? { |user| current_ability.can?(:switch_to, user) }
+- show_order_for_links = search_type == "manage_user" && can_switch_any
+
 %table.table.table-striped.table-hover
   %thead
     %tr
-      - if order_for
+      - if show_order_for_links
         %th
       %th= t(".name")
       %th= t(".username")
@@ -10,12 +13,12 @@
   %tbody
     - users.each do |user|
       %tr
-        - if order_for
+        - if show_order_for_links
           %td.centered
             - if current_ability.can?(:switch_to, user)
               = link_to t(".order_for"),
                 facility_user_switch_to_path(current_facility, user)
         %td
-          = render "search/#{@search_type || "manage_user"}_link", user: UserPresenter.new(user)
+          = render "search/#{search_type}_link", user: UserPresenter.new(user)
         %td= user.username
         %td= user.email
