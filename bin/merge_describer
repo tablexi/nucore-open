@@ -1,0 +1,13 @@
+#!/bin/sh
+git log develop.. | egrep '\(#\d+\)$' | while read LINE; do
+  pr=$(echo $LINE | sed -E 's/^.+\(#//' | sed -E 's/\)$//')
+  desc=$(echo $LINE | sed -E 's/ *\(#[0-9]+\)$//')
+  echo "$pr\t$desc"
+done | sort -n |
+
+while read LINE; do
+  pr=$(echo $LINE | cut -d' ' -f1)
+  desc=$(echo $LINE | cut -d' ' -f2-)
+  echo '*' https://github.com/tablexi/nucore-open/pull/$pr
+  echo $desc
+done
