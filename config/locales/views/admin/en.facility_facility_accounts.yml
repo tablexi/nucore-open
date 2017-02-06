@@ -18,4 +18,3 @@ en:
         success: "%{model} was successfully created"
       update:
         success: "%{model} was successfully updated."
-
