@@ -8,11 +8,11 @@
   = render "admin/shared/tabnav_users", secondary_tab: "access_list"
 
 %h1
-  = t(".head", name: @user.full_name)
+  = text("users.access_list.head", name: @user.full_name)
   %small= mail_to @user.email
 
 - if @products_by_type.blank?
-  %p.notice= t(".no_products", name: @user.full_name)
+  %p.notice= text("users.access_list.no_products", name: @user.full_name)
 
 - else
   = form_for :user, url: facility_user_access_list_approvals_path(@facility, @user) do |form|
@@ -35,10 +35,12 @@
                   product.can_be_used_by?(@user)
               %td.product-column
                 - if training_requested_for?(product)
-                  %span.label.label-important= t(".training_requested")
+                  %span.label.label-important
+                    = text("users.access_list.training_requested")
                 = link_to product, [product.facility, product, :users]
               %td.scheduling-group-column
                 - if product.has_access_list?
                   = scheduling_group_select(product, @user)
 
-    = submit_tag t(".update_approvals.submit"), class: ["btn", "btn-primary"]
+    = submit_tag text("users.access_list.update_approvals.submit"),
+      class: ["btn", "btn-primary"]
