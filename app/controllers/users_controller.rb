@@ -18,7 +18,8 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, except: [:password_reset]
   before_action :check_acting_as
 
-  load_and_authorize_resource except: [:password, :password_reset], id_param: :user_id
+  load_and_authorize_resource except: [:password, :password_reset, :edit, :update], id_param: :user_id
+  load_and_authorize_resource only: [:edit, :update], id_param: :id
 
   layout "two_column"
 
