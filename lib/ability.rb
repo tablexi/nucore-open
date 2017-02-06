@@ -131,7 +131,7 @@ class Ability
         end
 
         can [:administer], User
-        can([:edit, :update], User) { |target_user| target_user.external? }
+        can([:edit, :update], User, &:external?)
 
         if controller.is_a?(UsersController) || controller.is_a?(SearchController)
           can :manage, User

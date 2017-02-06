@@ -47,7 +47,7 @@ RSpec.describe UsersController do
   end
 
   describe "GET #edit" do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryGirl.create(:user, :external) }
 
     before(:each) do
       @method = :get
@@ -61,7 +61,7 @@ RSpec.describe UsersController do
   end
 
   describe "PUT #update" do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryGirl.create(:user, :external) }
 
     before(:each) do
       @method = :put

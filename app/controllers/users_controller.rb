@@ -151,7 +151,7 @@ class UsersController < ApplicationController
   # PUT /facilities/:facility_id/users/:id
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(params[:user])
+    if @user.update_attributes(edit_user_params)
       flash[:notice] = text("update.success")
       redirect_to facility_user_path(current_facility, @user)
     else
@@ -161,6 +161,10 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def edit_user_params
+    params.require(:user).permit(:email, :first_name, :last_name)
+  end
 
   def update_access_list_approvals
     if update_approvals.grants_changed?
