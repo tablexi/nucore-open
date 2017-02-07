@@ -152,8 +152,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, OrderDetail) }
 
     context "in a single facility" do
-      it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
-      it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
+      it_is_allowed_to([:manage_billing, :manage_users], Facility.cross_facility)
       it_is_allowed_to([:send_receipt, :show], Order)
       it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
       it { is_expected.not_to be_allowed_to(:transactions, facility) }
@@ -167,7 +166,7 @@ RSpec.describe Ability do
         it { is_expected.to be_allowed_to(action, facility) }
       end
       it { is_expected.to be_allowed_to(:manage, User) }
-      it { is_expected.not_to be_allowed_to(:switch_to, User) }
+      it_is_not_allowed_to([:switch_to], User)
       it { is_expected.to be_allowed_to(:show, Order) }
       it { is_expected.to be_allowed_to(:administer, Reservation) }
       it { is_expected.not_to be_allowed_to(:administer, Product) }
@@ -176,9 +175,8 @@ RSpec.describe Ability do
     context "in no facility" do
       let(:facility) { nil }
 
-      it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
-      it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
-      it { is_expected.not_to be_allowed_to(:switch_to, User) }
+      it_is_allowed_to([:manage_billing, :manage_users], Facility.cross_facility)
+      it_is_not_allowed_to([:switch_to], User)
     end
   end
 
