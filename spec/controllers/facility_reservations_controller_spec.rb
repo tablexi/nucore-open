@@ -1,5 +1,6 @@
 require "rails_helper"
 require "controller_spec_helper"
+require "order_detail_batch_update_shared_examples"
 
 RSpec.describe FacilityReservationsController do
   include DateHelper
@@ -92,14 +93,7 @@ RSpec.describe FacilityReservationsController do
     end
   end
 
-  context '#batch_update' do
-    before :each do
-      @method = :post
-      @action = :batch_update
-    end
-
-    it_should_allow_operators_only :redirect
-  end
+  it_behaves_like "it supports order_detail POST #batch_update"
 
   describe "POST #create" do
     let(:admin_reservation_params) do

@@ -3,6 +3,7 @@ class OrderDetailBatchUpdater
   # TODO: Extracted from the OrderDetail model almost as-is and needs refactoring
 
   attr_accessor :facility, :msg_hash, :msg_type, :order_detail_ids, :user, :params
+  attr_reader :newly_assigned_order_details
 
   # returns a hash of :notice (and/or?) :error
   # these should be shown to the user as an appropriate flash message
@@ -54,6 +55,8 @@ class OrderDetailBatchUpdater
   end
 
   def update!
+    @newly_assigned_order_details = []
+
     unless order_detail_ids.present?
       msg_hash[:error] = "No #{msg_type} selected"
       return msg_hash
@@ -121,6 +124,9 @@ class OrderDetailBatchUpdater
   def update_all(attribute, value)
     order_details.each do |order_detail|
       order_detail.public_send("#{attribute}=", value)
+      if order_detail.assigned_user_id_changed? && order_detail.assigned_user_id.present?
+        @newly_assigned_order_details << order_detail
+      end
     end
   end
 

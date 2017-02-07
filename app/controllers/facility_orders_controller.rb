@@ -41,6 +41,10 @@ class FacilityOrdersController < ApplicationController
 
     msg_hash = batch_updater.update!
 
+    OrderAssignmentMailer
+      .notify_assigned_user(batch_updater.newly_assigned_order_details)
+      .deliver_later
+
     # add flash messages if necessary
     flash.merge!(msg_hash) if msg_hash
   end
