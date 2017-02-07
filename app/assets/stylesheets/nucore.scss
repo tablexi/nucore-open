@@ -212,6 +212,10 @@ form.compact { margin: 0 }
 td.order-note,
 th.order-note {
   width: 20%;
+
+  &.order-note--wide {
+    width: 40%;
+  }
 }
 
 .js--note {

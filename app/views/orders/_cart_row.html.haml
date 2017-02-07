@@ -7,7 +7,8 @@
     - if show_note_input_to_user?(order_detail)
       %label.inline.cart__noteField{ for: "note#{order_detail.id}" }
         Note:
-        = text_field_tag("note#{order_detail.id}", order_detail.note, maxlength: 100, size: 100 )
+        %br
+        = text_area_tag("note#{order_detail.id}", order_detail.note, rows: 3 )
 
     - if order_detail.product.is_a?(Instrument)
       %td
