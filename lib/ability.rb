@@ -62,7 +62,7 @@ class Ability
         can :manage, [Reservation, User]
         cannot [:create, :switch_to], User
       end
-      can [:manage_billing, :manage_users], Facility.cross_facility
+      can :manage_billing, Facility.cross_facility
       can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
     end
 
