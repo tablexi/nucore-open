@@ -1,0 +1,5 @@
+%p= html "body.html",
+  number: @order_detail,
+  url: manage_facility_order_order_detail_url(@order_detail.facility, @order_detail.order, @order_detail),
+  facility_name: @order_detail.facility,
+  facility_url: facility_url(@order_detail.facility)

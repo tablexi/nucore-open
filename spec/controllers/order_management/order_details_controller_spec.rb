@@ -565,11 +565,17 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
           before do
             @params[:order_detail] = { assigned_user_id: staff_user.id.to_s }
-            do_request
           end
 
           it "updates the assigned user" do
-            expect(order_detail.reload.assigned_user).to eq(staff_user)
+            expect { do_request }
+              .to change { order_detail.reload.assigned_user }
+              .to(staff_user)
+          end
+
+          it "sends a notification to the assigned user" do
+            expect { do_request }
+              .to change(ActionMailer::Base.deliveries, :count).by(1)
           end
         end
 

@@ -1,5 +1,7 @@
 class OrderDetails::ParamUpdater
 
+  attr_reader :newly_assigned_user
+
   def self.permitted_attributes
     @permitted_attributes ||=
       [
@@ -52,6 +54,7 @@ class OrderDetails::ParamUpdater
     order_status_id = params.delete :order_status_id
 
     assign_attributes(params)
+    @newly_assigned_user = @order_detail.assigned_user_id_changed? && @order_detail.assigned_user.presence
 
     @order_detail.manually_priced!
 

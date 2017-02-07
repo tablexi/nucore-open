@@ -28,6 +28,9 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
     if updater.update_attributes(params[:order_detail])
       flash[:notice] = "The order was successfully updated."
+      if updater.newly_assigned_user.present?
+        OrderAssignmentMailer.notify_assigned_user(@order_detail).deliver_later
+      end
       if @order_detail.updated_children.any?
         flash[:notice] << " Auto-scaled accessories have been updated as well."
         flash[:updated_order_details] = @order_detail.updated_children.map &:id

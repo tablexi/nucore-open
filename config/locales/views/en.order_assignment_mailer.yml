@@ -1,0 +1,19 @@
+en:
+  views:
+    order_assignment_mailer:
+      notify_assigned_user:
+        subject: "!app_name! Order Assignment Notice"
+        body:
+          html: |
+            You have been assigned to an order:
+
+            [Order %{number}](%{url})
+
+            Please contact [%{facility_name}](%{facility_url}) for more information.
+
+          text: |
+            You have been assigned to an order.
+
+            Order %{number}: %{url}
+
+            Please contact %{facility_name} for more information.
