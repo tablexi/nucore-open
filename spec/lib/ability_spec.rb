@@ -17,19 +17,11 @@ RSpec.describe Ability do
 
   shared_examples_for "it can edit users" do
     context "when user is external" do
-      let(:facility_user) { create(:user, :external) }
-
-      %i(edit update).each do |action|
-        it { is_expected.to be_allowed_to(action, facility_user) }
-      end
+      it_is_allowed_to([:edit, :update], FactoryGirl.create(:user, :external))
     end
 
     context "when user is internal" do
-      let(:facility_user) { create(:user) }
-
-      %i(edit update).each do |action|
-        it { is_expected.not_to be_allowed_to(action, facility_user) }
-      end
+      it_is_not_allowed_to([:edit, :update], FactoryGirl.create(:user))
     end
   end
 
@@ -218,7 +210,6 @@ RSpec.describe Ability do
 
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"
-    it_behaves_like "it can edit users"
   end
 
   describe "facility director" do
@@ -259,7 +250,6 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"
-    it_behaves_like "it can edit users"
   end
 
   shared_examples_for "it has common staff abilities" do

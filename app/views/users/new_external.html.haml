@@ -1,29 +1,12 @@
 = content_for :head_content do
-  :javascript
-    $(document).ready(function() {
-      $("input#user_email").keyup(function(e) {
-        $("input#user_username").val(this.value);
-      });
-
-      $("input#user_email").change(function(e) {
-        $("input#user_username").val(this.value);
-      });
-    });
+  = render "form_head"
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :sidebar do
   = render "admin/shared/sidenav_users", sidenav_tab: "users"
 
-%h2= t(".head")
+%h2= text("users.new_external.head")
 %p= text("users.new_external.main")
-= simple_form_for(@user, url: facility_users_path, method: :post) do |f|
-  .form-inputs
-    = f.input :first_name
-    = f.input :last_name
-    = f.input :email
-    = f.input :username, :readonly => true
-    = f.button :submit, text("shared.create"), class: ["btn", "btn-primary"]
-    &nbsp;
-    = link_to text("shared.cancel"), facility_users_path
+= render "form", url: facility_users_path, button_text: text("shared.create")
