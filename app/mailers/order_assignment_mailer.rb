@@ -1,8 +1,10 @@
 class OrderAssignmentMailer < BaseMailer
 
-  def notify_assigned_user(order_detail)
-    @order_detail = order_detail
-    @user = @order_detail.assigned_user
+  def notify_assigned_user(order_details)
+    return if order_details.blank?
+
+    @order_details = Array(order_details)
+    @user = @order_details.first.assigned_user
 
     mail(to: @user.email, subject: subject)
   end
