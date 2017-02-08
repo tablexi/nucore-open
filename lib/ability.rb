@@ -60,6 +60,7 @@ class Ability
       can [:send_receipt, :show], Order
       if resource == Facility.cross_facility
         can :manage, [Reservation, User]
+        cannot [:edit, :update], Reservation
         cannot [:create, :switch_to], User
       end
       can :manage_billing, Facility.cross_facility

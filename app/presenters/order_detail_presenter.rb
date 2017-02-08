@@ -49,10 +49,6 @@ class OrderDetailPresenter < SimpleDelegator
     facility_order_path(facility, order)
   end
 
-  def show_reservation_path
-    facility_order_order_detail_reservation_path(facility, order, id, reservation)
-  end
-
   def survey_url
     survey_completed? ? external_service_receiver.show_url : ""
   end

@@ -171,6 +171,7 @@ RSpec.describe Ability do
       it_is_not_allowed_to([:create, :switch_to], User)
       it { is_expected.to be_allowed_to(:show, Order) }
       it { is_expected.to be_allowed_to(:administer, Reservation) }
+      it_is_not_allowed_to([:edit, :update], Reservation)
       it { is_expected.not_to be_allowed_to(:administer, Product) }
     end
 

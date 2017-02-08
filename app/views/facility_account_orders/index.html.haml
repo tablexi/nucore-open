@@ -32,16 +32,14 @@
           %td= order_detail.ordered_at
           %td
             %ul
+              - reservation = order_detail.reservation
               %li= order_detail.description_as_html
-              - if order_detail.reservation.present?
-                - if order_detail.reservation_admin_editable?
-                  %li.indented
-                    = link_to order_detail.reservation,
-                      order_detail.edit_reservation_path
-                - else
-                  %li.indented
-                    = link_to order_detail.reservation,
-                      order_detail.show_reservation_path
+              - if reservation.present?
+                %li.indented
+                  - if order_detail.reservation_admin_editable? && current_ability.can?(:edit, reservation)
+                    = link_to reservation, order_detail.edit_reservation_path
+                  - else
+                    = reservation
 
               - if order_detail.survey_completed?
                 %li.indented
