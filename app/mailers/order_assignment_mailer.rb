@@ -6,13 +6,13 @@ class OrderAssignmentMailer < BaseMailer
     @order_details = Array(order_details)
     @user = @order_details.first.assigned_user
 
-    mail(to: @user.email, subject: subject)
+    mail(to: @user.email, subject: text("notify_assigned_user.subject"))
   end
 
-  private
+  protected
 
-  def subject
-    text("views.order_assignment_mailer.notify_assigned_user.subject")
+  def translation_scope
+    "views.order_assignment_mailer"
   end
 
 end
