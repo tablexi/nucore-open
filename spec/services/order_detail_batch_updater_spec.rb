@@ -112,9 +112,18 @@ RSpec.describe OrderDetailBatchUpdater do
               .to(user.id)
           end
 
-          it "sends the assignee one notification" do
-            expect { updater.update! }
-              .to change(ActionMailer::Base.deliveries, :count).by(1)
+          context "when the assignment notifications are on", feature_setting: { order_assignment_notifications: true } do
+            it "sends the assignee one notification" do
+              expect { updater.update! }
+                .to change(ActionMailer::Base.deliveries, :count).by(1)
+            end
+          end
+
+          context "when the assignment notifications are off", feature_setting: { order_assignment_notifications: false } do
+            it "sends no notifications" do
+              expect { updater.update! }
+                .not_to change(ActionMailer::Base.deliveries, :count)
+            end
           end
 
           it "returns a successful update note" do
