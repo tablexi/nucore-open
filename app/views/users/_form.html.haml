@@ -1,4 +1,4 @@
-= simple_form_for(@user, url: url) do |f|
+= simple_form_for [current_facility, @user] do |f|
   .form-inputs
     = f.input :first_name
     = f.input :last_name
