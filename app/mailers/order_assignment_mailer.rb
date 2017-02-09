@@ -5,6 +5,7 @@ class OrderAssignmentMailer < BaseMailer
     return if @order_details.blank?
 
     @user = @order_details.first.assigned_user
+    return if @user.blank?
 
     mail(to: @user.email, subject: text("notify_assigned_user.subject"))
   end

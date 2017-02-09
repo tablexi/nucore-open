@@ -84,6 +84,10 @@ class OrderDetailBatchUpdater
       end
     end
 
+    OrderAssignmentMailer
+      .notify_assigned_user(@newly_assigned_order_details)
+      .deliver_later
+
     msg_hash
   end
 
