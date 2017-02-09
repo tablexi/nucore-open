@@ -3,7 +3,6 @@ class OrderDetailBatchUpdater
   # TODO: Extracted from the OrderDetail model almost as-is and needs refactoring
 
   attr_accessor :facility, :msg_hash, :msg_type, :order_detail_ids, :user, :params
-  attr_reader :newly_assigned_order_details
 
   # returns a hash of :notice (and/or?) :error
   # these should be shown to the user as an appropriate flash message
@@ -55,8 +54,6 @@ class OrderDetailBatchUpdater
   end
 
   def update!
-    @newly_assigned_order_details = []
-
     unless order_detail_ids.present?
       msg_hash[:error] = "No #{msg_type} selected"
       return msg_hash
@@ -76,7 +73,9 @@ class OrderDetailBatchUpdater
       end
 
       begin
+        newly_assigned_order_details = select_newly_assigned(order_details)
         order_details.all?(&:save!)
+        notify_newly_assigned_users(newly_assigned_order_details)
         msg_hash[:notice] = "The #{msg_type} were successfully updated"
       rescue
         msg_hash[:error] = "There was an error updating the selected #{msg_type}"
@@ -84,9 +83,6 @@ class OrderDetailBatchUpdater
       end
     end
 
-    OrderAssignmentMailer
-      .notify_assigned_user(@newly_assigned_order_details)
-      .deliver_later
 
     msg_hash
   end
@@ -101,6 +97,10 @@ class OrderDetailBatchUpdater
     @changes = true
   end
 
+  def notify_newly_assigned_users(order_details)
+    OrderAssignmentMailer.notify_assigned_user(order_details).deliver_later
+  end
+
   def order_details
     @order_details ||=
       facility.order_details.batch_updatable.where(id: order_detail_ids)
@@ -108,6 +108,12 @@ class OrderDetailBatchUpdater
 
   def order_status
     @order_status ||= OrderStatus.find(params[:order_status_id])
+  end
+
+  def select_newly_assigned(order_details)
+    order_details.select do |order_detail|
+      order_detail.assigned_user_id_changed? && order_detail.assigned_user_id.present?
+    end
   end
 
   def update_order_details_from_params
@@ -128,9 +134,6 @@ class OrderDetailBatchUpdater
   def update_all(attribute, value)
     order_details.each do |order_detail|
       order_detail.public_send("#{attribute}=", value)
-      if order_detail.assigned_user_id_changed? && order_detail.assigned_user_id.present?
-        @newly_assigned_order_details << order_detail
-      end
     end
   end
 
