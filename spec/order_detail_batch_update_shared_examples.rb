@@ -26,7 +26,7 @@ RSpec.shared_examples_for "it supports order_detail POST #batch_update" do
           .to(Array.new(3) { assignee.id })
       end
 
-      it "the assignee receives one notification" do
+      it "sends the assignee one notification" do
         expect { do_request }
           .to change(ActionMailer::Base.deliveries, :count).by(1)
       end
