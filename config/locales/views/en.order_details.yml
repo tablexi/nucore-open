@@ -9,3 +9,4 @@ en:
       order_detail_note:
         note:
           more: More
+          full: "Note: %{note}"

@@ -17,4 +17,4 @@
       = link_to t("order_details.show.link.view.order_file"), facility_template_result_path(stored_file)
   - if od.note.present?
     .order-detail-extra.order-detail-note
-      = render partial: "shared/order_detail_note", locals: { order_detail: od }
+      = render "shared/order_detail_note", order_detail: od

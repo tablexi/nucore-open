@@ -49,7 +49,7 @@
               %em= order_detail.reservation
           - if order_detail.note.present?
             .order-detail-extra.order-detail-note
-              = render partial: "shared/order_detail_note", locals: { order_detail: order_detail }
+              = render "shared/order_detail_note", order_detail: order_detail
 
 
         %td= order_detail.order.user.full_name

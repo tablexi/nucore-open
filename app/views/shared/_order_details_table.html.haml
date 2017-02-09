@@ -21,7 +21,7 @@
             %li= order_detail.description_as_html_with_facility_prefix
             - if order_detail.note.present?
               %li
-                = render partial: "shared/order_detail_note", locals: { order_detail: order_detail }
+                = render "shared/order_detail_note", order_detail: order_detail
         %td.centered= order_detail.order_status.try(:name)
         %td.currency= order_detail.wrapped_total
 

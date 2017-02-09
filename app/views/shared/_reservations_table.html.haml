@@ -26,7 +26,7 @@
               = tooltip_icon "icon-warning-sign icon-large", t("instruments.offline.note")
             - if od.note.present?
               .order-detail-extra.order-detail-note
-                = render partial: "shared/order_detail_note", locals: { order_detail: od }
+                = render "shared/order_detail_note", order_detail: od
 
         %td.centered=h od.order_status.name
         %td.currency
