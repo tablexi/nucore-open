@@ -83,7 +83,6 @@ class OrderDetailBatchUpdater
       end
     end
 
-
     msg_hash
   end
 

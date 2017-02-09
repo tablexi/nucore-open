@@ -258,7 +258,6 @@ RSpec.describe OrderManagement::OrderDetailsController do
                 expect(assigns(:order_detail).reservation).to be_changed
               end
 
-
               it "renders an error", :aggregate_failures do
                 expect(flash[:error]).to be_present
                 expect(response).to render_template(:edit)
