@@ -74,6 +74,8 @@ class FacilityOrdersController < ApplicationController
         else
           flash[:notice] = text("update.success", product: product.name)
         end
+      rescue AASM::InvalidTransition
+        flash[:error] = invalid_transition_message(product, params[:order_status_id])
       rescue => e
         Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
         flash[:error] = text("update.error", product: product.name)
@@ -97,6 +99,12 @@ class FacilityOrdersController < ApplicationController
 
   def batch_updater
     @batch_updater ||= OrderDetailBatchUpdater.new(params[:order_detail_ids], current_facility, session_user, params)
+  end
+
+  def invalid_transition_message(product, order_status_id)
+    text("update.invalid_status",
+         product: product,
+         status: OrderStatus.find(order_status_id))
   end
 
   def load_order
