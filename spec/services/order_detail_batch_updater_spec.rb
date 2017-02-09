@@ -103,13 +103,18 @@ RSpec.describe OrderDetailBatchUpdater do
         end
 
         context "and the assigned_user_id parameter is a new value" do
-          let(:assigned_user_id) { "1" }
+          let(:assigned_user_id) { user.id.to_s }
 
           it "updates assigned_user_id to the new value" do
             expect { updater.update! }
               .to change { order_detail.reload.assigned_user_id }
               .from(nil)
-              .to(1)
+              .to(user.id)
+          end
+
+          it "sends the assignee one notification" do
+            expect { updater.update! }
+              .to change(ActionMailer::Base.deliveries, :count).by(1)
           end
 
           it "returns a successful update note" do
