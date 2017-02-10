@@ -4,13 +4,10 @@ class Affiliate < ActiveRecord::Base
   validates_uniqueness_of :name
 
   scope :destroyable, -> { where.not(id: self.OTHER.id) }
+  scope :by_name, -> { order(:name) }
 
   def self.OTHER
     @@other ||= find_or_create_by(name: "Other")
-  end
-
-  def self.ordered_by_name
-    order(:name)
   end
 
   before_destroy :destroyable?
