@@ -30,30 +30,10 @@
             = link_to order_detail.description, order_detail.show_order_path
 
           %td= order_detail.ordered_at
-          %td
-            %ul
-              - reservation = order_detail.reservation
-              %li= order_detail.description_as_html
-              - if reservation.present?
-                %li.indented
-                  - if order_detail.reservation_admin_editable? && current_ability.can?(:edit, reservation)
-                    = link_to reservation, order_detail.edit_reservation_path
-                  - else
-                    = reservation
 
-              - if order_detail.survey_completed?
-                %li.indented
-                  = link_to t(".label.view_order.form"),
-                    order_detail.survey_url, target: "_blank"
-
-              - if order_detail.stored_files_template_result.present?
-                - order_detail.stored_files_template_result.each do |stored_file|
-                  %li.indented
-                    = link_to t(".label.view_order.file"), stored_file.download_url
-
-              - if order_detail.note.present?
-                %li
-                  %i= t(".note", text: order_detail.note)
+          = render "shared/order_detail_cell",
+            od: order_detail,
+            show_reservation: order_detail.reservation.present?
 
           %td= order_detail.order_status
           %td.currency

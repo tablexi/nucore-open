@@ -245,12 +245,7 @@ en:
   facility_account_orders:
     index:
       h3: Purchased Orders
-      label:
-        view_order:
-          file: View Order File
-          form: View Order Form
       no_orders: No transactions exist for this period.
-      note: "Note: %{text}"
       th:
         amount: Amount
         order_number: "Order #"
