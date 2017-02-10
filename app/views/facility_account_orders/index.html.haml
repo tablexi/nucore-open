@@ -24,25 +24,29 @@
         %th.currency= t(".th.amount")
 
     %tbody
-      - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
-        %tr{class: order_detail.row_class}
+      - @order_details.each do |order_detail|
+        - od = OrderDetailPresenter.new(order_detail)
+        %tr{class: od.row_class}
           %td
-            = link_to order_detail.description, order_detail.show_order_path
+            - if current_ability.can?(:show, order_detail)
+              = link_to od.description, od.show_order_path
+            - else
+              = od.description
 
-          %td= order_detail.ordered_at
+          %td= od.ordered_at
 
           = render "shared/order_detail_cell",
-            od: order_detail,
-            show_reservation: order_detail.reservation.present?
+            od: od,
+            show_reservation: od.reservation.present?
 
-          %td= order_detail.order_status
+          %td= od.order_status
           %td.currency
-            - if order_detail.cost_estimated?
-              %span.estimated_cost= order_detail.estimated_total
-            - elsif order_detail.price_policy.blank?
+            - if od.cost_estimated?
+              %span.estimated_cost= od.estimated_total
+            - elsif od.price_policy.blank?
               = t(".unassigned")
             - else
-              %span.actual_cost= order_detail.actual_total
+              %span.actual_cost= od.actual_total
       %tr
         %td.centered{colspan: 5}= will_paginate(@order_details)
 
