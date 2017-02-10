@@ -11,7 +11,8 @@
   %thead
     %tr
       %th
-      %th{width: "100%"}= text("affiliates.th")
+      %th= Affiliate.model_name.human
+      %th= Affiliate.human_attribute_name(:subaffiliates_enabled)
   %tbody
     - Affiliate.destroyable.each do |affiliate|
       %tr
@@ -19,3 +20,4 @@
         %td.indented_lots
           = affiliate.name
           %span.indented (#{edit_affiliate_link(affiliate)})
+        %td= text(affiliate.subaffiliates_enabled?.to_s, scope: "boolean")

@@ -172,6 +172,8 @@ en:
         other: Users
     # Model Attributes
     attributes:
+      affiliate:
+        subaffiliates_enabled: Allows subaffiliates
       schedule_rule:
         start_time: Start Time
         end_time: End Time
