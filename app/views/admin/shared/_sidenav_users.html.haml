@@ -1,5 +1,5 @@
 %ul.sidebar-nav
-  - if current_ability.can?(:administer, User)
+  - if current_ability.can?(:index, User)
     = tab t("activerecord.models.user", count: 2), facility_users_path, (sidenav_tab == "users")
 
   = render_view_hook "after_facility_users", sidenav_tab: sidenav_tab
