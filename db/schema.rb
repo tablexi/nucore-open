@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170112204251) do
+ActiveRecord::Schema.define(version: 20170210214106) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -49,9 +49,10 @@ ActiveRecord::Schema.define(version: 20170112204251) do
   add_index "accounts", ["facility_id"], name: "fk_account_facility_id", using: :btree
 
   create_table "affiliates", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "name",                  limit: 255
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
+    t.boolean  "subaffiliates_enabled",             default: false, null: false
   end
 
   create_table "budgeted_chart_strings", force: :cascade do |t|
