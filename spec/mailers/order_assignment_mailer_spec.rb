@@ -23,10 +23,10 @@ RSpec.describe OrderAssignmentMailer do
         expect(email.subject).to include("Order Assignment Notice")
         expect(email.html_part.to_s)
           .to include(order_detail.to_s)
-          .and include("assigned this&nbsp;order")
+          .and include("assigned this")
         expect(email.text_part.to_s)
           .to include(order_detail.to_s)
-          .and include("assigned this order")
+          .and include("assigned this")
       end
     end
 
@@ -41,8 +41,8 @@ RSpec.describe OrderAssignmentMailer do
       it "generates an order assignment notification", :aggregate_failures do
         expect(email.to).to eq [assigned_user.email]
         expect(email.subject).to include("Order Assignment Notice")
-        expect(email.html_part.to_s).to include("assigned these&nbsp;orders")
-        expect(email.text_part.to_s).to include("assigned these orders")
+        expect(email.html_part.to_s).to include("assigned these")
+        expect(email.text_part.to_s).to include("assigned these")
         order_details.each do |order_detail|
           expect(email.html_part.to_s).to include(order_detail.to_s)
           expect(email.text_part.to_s).to include(order_detail.to_s)
