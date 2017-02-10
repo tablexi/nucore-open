@@ -72,7 +72,8 @@ en:
 
   affiliates:
     add: Add Affiliate
-    edit: Edit
+    edit: Edit Affiliate
+    new: New Affiliate
     remove:
       confirm: "Really remove affiliate %{name}?"
       label: Remove
