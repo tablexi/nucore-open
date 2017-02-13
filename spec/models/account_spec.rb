@@ -58,6 +58,46 @@ RSpec.describe Account do
     # end
   end
 
+  describe "#affiliate_to_s" do
+    subject { account.affiliate_to_s }
+
+    before do
+      account.update_attributes(
+        affiliate_id: affiliate.try(:id),
+        affiliate_other: affiliate_other,
+      )
+    end
+
+    context "when it has no affiliate" do
+      let(:affiliate) { nil }
+      let(:affiliate_other) { nil }
+
+      it { is_expected.to be_blank }
+    end
+
+    context "when it has an affiliate" do
+      let(:affiliate) { Affiliate.create!(name: "Affiliate") }
+      let(:affiliate_other) { nil }
+
+      it { is_expected.to eq("Affiliate") }
+
+      context "and the affiliate is 'Other'" do
+        let(:affiliate) { Affiliate.OTHER }
+        let(:affiliate_other) { "External" }
+
+        it { is_expected.to eq("Other: External") }
+      end
+
+      context "and it has a subaffiliate" do
+        before { affiliate.update_attribute(:subaffiliates_enabled, true) }
+
+        let(:affiliate_other) { "Subcategory" }
+
+        it { is_expected.to eq("Affiliate: Subcategory") }
+      end
+    end
+  end
+
   describe "#owner_user_name" do
     context "when the account has an owner" do
       it { expect(account.owner_user_name).to eq(user.name) }
