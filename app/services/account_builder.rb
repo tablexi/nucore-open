@@ -166,7 +166,7 @@ class AccountBuilder
   def set_affiliate
     if affiliate.present?
       account.affiliate_id = affiliate.id
-      unless affiliate == Affiliate.OTHER
+      unless affiliate == Affiliate.OTHER || affiliate.subaffiliates_enabled?
         account.affiliate_other = nil
       end
     else
