@@ -194,6 +194,7 @@ en:
         affiliate: "Affiliate Name"
         remit: "Bill To"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
+        subaffiliate: "Affiliate Category"
     account_table:
       notice: "No payment sources found."
       foot: "* Includes transactions for which the user has not been sent a statement or that are in the user review period."
