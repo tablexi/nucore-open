@@ -868,6 +868,11 @@ en:
     transactions:
       no_orders: There are no orders in this !facility_downcase!
 
+  nufs_account:
+    account_fields:
+      label:
+        account_number:
+          account_number: Account Number
 
   price_policies:
     adjustment: Adjustment
