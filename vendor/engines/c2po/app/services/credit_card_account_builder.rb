@@ -11,6 +11,7 @@ class CreditCardAccountBuilder < AccountBuilder
       :description,
       :affiliate_id,
       :affiliate_other,
+      :subaffiliate,
       :remittance_information,
       :expiration_month,
       :expiration_year,
@@ -24,6 +25,7 @@ class CreditCardAccountBuilder < AccountBuilder
       :description,
       :affiliate_id,
       :affiliate_other,
+      :subaffiliate,
       :remittance_information,
     ]
   end

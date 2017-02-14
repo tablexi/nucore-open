@@ -21,6 +21,7 @@ RSpec.describe CreditCardAccountBuilder, type: :service do
         description: "A Credit Card",
         affiliate_id: affiliate.try(:id),
         affiliate_other: affiliate_other,
+        subaffiliate: subaffiliate,
         remittance_information: "Bill To goes here",
       }
     )
