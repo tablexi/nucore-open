@@ -166,13 +166,12 @@ class AccountBuilder
   def set_affiliate
     if affiliate.present?
       account.affiliate_id = affiliate.id
-      if affiliate == Affiliate.OTHER
-        account.affiliate_other = account_params[:affiliate_other]
-      elsif affiliate.subaffiliates_enabled?
-        account.affiliate_other = account_params[:subaffiliate]
-      else
-        account.affiliate_other = nil
-      end
+      account.affiliate_other =
+        if affiliate == Affiliate.OTHER
+          account_params[:affiliate_other]
+        elsif affiliate.subaffiliates_enabled?
+          account_params[:subaffiliate]
+        end
     else
       account.affiliate_id = account.affiliate_other = nil
     end

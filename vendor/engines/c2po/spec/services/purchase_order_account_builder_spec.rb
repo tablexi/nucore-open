@@ -21,7 +21,7 @@ RSpec.describe PurchaseOrderAccountBuilder, type: :service do
         subaffiliate: subaffiliate,
         remittance_information: "Bill To goes here",
         formatted_expires_at: I18n.l(1.year.from_now.to_date, format: :usa),
-      }
+      },
     )
   end
 end

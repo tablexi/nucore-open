@@ -23,7 +23,7 @@ RSpec.describe CreditCardAccountBuilder, type: :service do
         affiliate_other: affiliate_other,
         subaffiliate: subaffiliate,
         remittance_information: "Bill To goes here",
-      }
+      },
     )
   end
 
