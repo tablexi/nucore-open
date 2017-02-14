@@ -14,7 +14,7 @@ class NotifierPreview < ActionMailer::Preview
       user: User.first,
       facility: statement.facility,
       account: statement.account,
-      statement: statement
+      statement: statement,
     )
   end
 

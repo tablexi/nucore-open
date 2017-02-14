@@ -23,11 +23,15 @@ en:
       review_orders:
         subject: "!app_name! Orders For Review"
         body: |
-          New transactions have been posted to %{accounts}.
+          New transactions from %{facility} have been posted to the following payment sources:
 
-          Please log in to review these charges.
+          %{accounts}
+
+          Please log in to !app_name! and review these charges.
         body_html: |
-          New transactions have been posted to %{accounts}.
+          New transactions from %{facility} have been posted to the following payment sources:
+
+          %{accounts}
 
           Please log in to [!app_name!](%{login_url}) and review these charges.
       statement:
