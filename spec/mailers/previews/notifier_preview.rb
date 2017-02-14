@@ -8,4 +8,14 @@ class NotifierPreview < ActionMailer::Preview
     )
   end
 
+  def statement
+    statement = Statement.first
+    Notifier.statement(
+      user: User.first,
+      facility: statement.facility,
+      account: statement.account,
+      statement: statement
+    )
+  end
+
 end
