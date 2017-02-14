@@ -103,7 +103,7 @@ RSpec.describe Notifier do
 
     it "generates a review_orders notification", :aggregate_failures do
       expect(email.to).to eq [user.email]
-      expect(email.subject).to include("Orders For Review")
+      expect(email.subject).to include("Orders For Review: #{facility.abbreviation}")
 
       [email_html, email_text].each do |email_content|
         expect(email_content)

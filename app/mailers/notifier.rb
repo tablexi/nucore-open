@@ -50,9 +50,9 @@ class Notifier < ActionMailer::Base
 
   def review_orders(args)
     @user = User.find(args[:user_id])
-    @accounts = Account.find(args[:account_ids]).map(&:account_list_item).to_sentence
+    @accounts = Account.find(args[:account_ids]).map { |a| "#{a.account_list_item}, #{a.owner.user.full_name}" }.join("\n\n")
     @facility = Facility.find(args[:facility_id])
-    send_nucore_mail @user.email, text("views.notifier.review_orders.subject")
+    send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation)
   end
 
   # Billing sends out the statement for the month. Appropriate users get
