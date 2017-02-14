@@ -55,7 +55,7 @@ RSpec.describe UsersController do
       @params[:id] = user.id
     end
 
-    it_should_allow_operators_only do
+    it_should_allow_admin_only do
       expect(assigns[:user]).to eq(user)
     end
   end
@@ -70,7 +70,7 @@ RSpec.describe UsersController do
       @params[:user] = { first_name: "New", last_name: "Name" }
     end
 
-    it_should_allow_operators_only(:found) do
+    it_should_allow_admin_only(:found) do
       expect(user.reload.first_name).to eq("New")
       expect(response).to redirect_to facility_user_path(facility, user)
     end
@@ -80,7 +80,7 @@ RSpec.describe UsersController do
         @params[:user] = { email: "test@example.com", username: "newusername" }
       end
 
-      it_should_allow_operators_only(:found) do
+      it_should_allow_admin_only(:found) do
         expect(user.reload.first_name).to eq(user.first_name)
       end
     end
