@@ -154,17 +154,12 @@ RSpec.describe OrderDetailPresenter do
     it { is_expected.to eq("/#{facilities_route}/#{facility.url_name}/orders/#{order.id}") }
   end
 
-  describe "#show_reservation_path" do
-    subject { presented.show_reservation_path }
+  describe "#show_order_detail_path" do
+    subject { presented.show_order_detail_path }
 
     include_context "order with a reservation"
 
-    let(:expected_path) do
-      "/#{facilities_route}/#{facility.url_name}/orders/#{order.id}/order_details/"\
-      "#{order_detail.id}/reservations/#{reservation.id}"
-    end
-
-    it { is_expected.to eq(expected_path) }
+    it { is_expected.to eq("/orders/#{order.id}/order_details/#{order_detail.id}") }
   end
 
   describe "#survey_url" do

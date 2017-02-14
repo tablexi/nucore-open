@@ -104,7 +104,7 @@ module BulkEmail
     end
 
     def init_search_options
-      @products = current_facility.products.active_plus_hidden.order("products.name").includes(:facility)
+      @products = Product.for_facility(current_facility).active_plus_hidden.order("products.name").includes(:facility)
       @search_options = { products: @products }
       @search_fields = params.merge(facility_id: current_facility.id)
       @user_types = user_types

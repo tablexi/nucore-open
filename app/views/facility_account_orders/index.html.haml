@@ -24,47 +24,29 @@
         %th.currency= t(".th.amount")
 
     %tbody
-      - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
-        %tr{class: order_detail.row_class}
+      - @order_details.each do |order_detail|
+        - od = OrderDetailPresenter.new(order_detail)
+        %tr{class: od.row_class}
           %td
-            = link_to order_detail.description, order_detail.show_order_path
+            - if current_ability.can?(:show, order_detail)
+              = link_to od.description, od.show_order_path
+            - else
+              = od.description
 
-          %td= order_detail.ordered_at
-          %td
-            %ul
-              %li= order_detail.description_as_html
-              - if order_detail.reservation.present?
-                - if order_detail.reservation_admin_editable?
-                  %li.indented
-                    = link_to order_detail.reservation,
-                      order_detail.edit_reservation_path
-                - else
-                  %li.indented
-                    = link_to order_detail.reservation,
-                      order_detail.show_reservation_path
+          %td= od.ordered_at
 
-              - if order_detail.survey_completed?
-                %li.indented
-                  = link_to t(".label.view_order.form"),
-                    order_detail.survey_url, target: "_blank"
+          = render "shared/order_detail_cell",
+            od: od,
+            show_reservation: od.reservation.present?
 
-              - if order_detail.stored_files_template_result.present?
-                - order_detail.stored_files_template_result.each do |stored_file|
-                  %li.indented
-                    = link_to t(".label.view_order.file"), stored_file.download_url
-
-              - if order_detail.note.present?
-                %li
-                  %i= t(".note", text: order_detail.note)
-
-          %td= order_detail.order_status
+          %td= od.order_status
           %td.currency
-            - if order_detail.cost_estimated?
-              %span.estimated_cost= order_detail.estimated_total
-            - elsif order_detail.price_policy.blank?
+            - if od.cost_estimated?
+              %span.estimated_cost= od.estimated_total
+            - elsif od.price_policy.blank?
               = t(".unassigned")
             - else
-              %span.actual_cost= order_detail.actual_total
+              %span.actual_cost= od.actual_total
       %tr
         %td.centered{colspan: 5}= will_paginate(@order_details)
 

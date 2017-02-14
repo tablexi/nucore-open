@@ -245,12 +245,7 @@ en:
   facility_account_orders:
     index:
       h3: Purchased Orders
-      label:
-        view_order:
-          file: View Order File
-          form: View Order Form
       no_orders: No transactions exist for this period.
-      note: "Note: %{text}"
       th:
         amount: Amount
         order_number: "Order #"
@@ -993,8 +988,6 @@ en:
     access_list:
       head: "%{name} Access List"
       no_products: "%{name} does not have any available products."
-      th:
-        approval_received: "Approved?"
       training_requested: Training Requested
       update_approvals:
         submit: "Update Access List"
@@ -1014,6 +1007,8 @@ en:
       label:
         id: "NetID"
         have_id: "Does the new user have a NetID?"
+    orders:
+      none: "%{name} has not placed any orders."
     reservations:
       actions: Actions
       actual_cost:

@@ -150,20 +150,13 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, Account) }
     it { is_expected.to be_allowed_to(:manage, Journal) }
     it { is_expected.to be_allowed_to(:manage, OrderDetail) }
-    it { is_expected.to be_allowed_to(:manage, Order) }
-    it { is_expected.to be_allowed_to(:manage, Reservation) }
-
-    it "cannot administer resources" do
-      is_expected.not_to be_allowed_to(:administer, Order)
-      is_expected.not_to be_allowed_to(:administer, OrderDetail)
-      is_expected.not_to be_allowed_to(:administer, Reservation)
-      is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility)
-    end
 
     context "in a single facility" do
-      it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
+      it { is_expected.not_to be_allowed_to(:manage_users, facility) }
+      it_is_allowed_to([:send_receipt, :show], Order)
       it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
       it { is_expected.not_to be_allowed_to(:transactions, facility) }
+      it { is_expected.not_to be_allowed_to(:manage, Reservation) }
     end
 
     context "in cross-facility" do
@@ -172,12 +165,20 @@ RSpec.describe Ability do
       %i(disputed_orders manage_billing movable_transactions transactions).each do |action|
         it { is_expected.to be_allowed_to(action, facility) }
       end
+      it { is_expected.not_to be_allowed_to(:manage_users, facility) }
+      it_is_allowed_to([:accounts, :index, :orders, :show], User)
+      it_is_not_allowed_to([:create, :switch_to], User)
+      it { is_expected.to be_allowed_to(:show, Order) }
+      it_is_not_allowed_to([:edit, :update], Reservation)
+      it { is_expected.not_to be_allowed_to(:administer, Product) }
     end
 
     context "in no facility" do
       let(:facility) { nil }
 
       it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
+      it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
+      it_is_not_allowed_to([:create, :switch_to], User)
     end
   end
 
