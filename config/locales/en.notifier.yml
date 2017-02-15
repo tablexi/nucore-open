@@ -22,18 +22,9 @@ en:
         subject: "%{user} has placed an order for %{product}. Please approve."
       review_orders:
         subject: "!app_name! Orders For Review: %{abbreviation}"
-        body: |
-          New transactions from %{facility} have been posted to the following payment sources:
-
-          %{accounts}
-
-          Please log in to !app_name! and review these charges.
-        body_html: |
-          New transactions from %{facility} have been posted to the following payment sources:
-
-          %{accounts}
-
-          Please log in to [!app_name!](%{login_url}) and review these charges.
+        body_intro: "New transactions from %{facility} have been posted to the following payment sources:"
+        body_text_outro: "Please log in to !app_name! and review these charges."
+        body_html_outro: "Please log in to [!app_name!](%{login_url}) and review these charges."
       statement:
         subject: "!app_name! Statement"
         body: |
