@@ -116,7 +116,7 @@ RSpec.describe Accessories::Accessorizer do
       end
 
       context "updating" do
-        let(:child_order_detail) { build_stubbed :order_detail, product: quantity_accessory, order: order, quantity: 1 }
+        let(:child_order_detail) { build(:order_detail, product: quantity_accessory, order: order, quantity: 1) }
 
         it "updates the attributes" do
           results = accessorizer.update_attributes(params).order_details

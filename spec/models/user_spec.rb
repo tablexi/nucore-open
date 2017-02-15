@@ -280,7 +280,7 @@ RSpec.describe User do
     let!(:facility_director) { create(:user, :facility_director, facility: facility) }
     let!(:staff) { create(:user, :staff, facility: facility) }
     let!(:normal_user) { create(:user) }
-    let!(:other_facilitly_director) { create(:user, :facility_director, facility: build_stubbed(:facility)) }
+    let!(:other_facilitly_director) { create(:user, :facility_director, facility: create(:facility)) }
     let!(:facility_admin_and_director) do
       create(:user, :facility_director, :facility_administrator, facility: facility)
     end

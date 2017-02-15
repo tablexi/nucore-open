@@ -12,7 +12,7 @@ RSpec.describe Accessories::ChildUpdater do
   end
 
   describe "update_children" do
-    let(:child_order_detail) { build_stubbed :order_detail, order: order }
+    let(:child_order_detail) { build(:order_detail, order: order) }
     before { allow(order_detail).to receive(:child_order_details).and_return [child_order_detail] }
 
     it "updates the child" do
