@@ -9,9 +9,10 @@ Welcome to NUcore! This guide will help you get a development environment up and
 1. You write code on a Mac.
 2. You have a running Oracle or MySQL instance with two brand new databases.
 3. You have the following installed:
-    * [Ruby 2.1](http://www.ruby-lang.org/en)
+    * [Ruby 2.2](http://www.ruby-lang.org/en)
     * [Bundler](http://gembundler.com)
     * [Git](http://git-scm.com)
+    * [PhantomJS] (http://phantomjs.org/)
 
 ### Spin it up
 
