@@ -97,7 +97,7 @@ RSpec.describe Notifier do
 
     before(:each) do
       Notifier.review_orders(user_id: user.id,
-                             facility_id: facility.id,
+                             facility: facility,
                              account_ids: account_ids).deliver_now
     end
 
