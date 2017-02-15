@@ -51,7 +51,7 @@ class Notifier < ActionMailer::Base
   def review_orders(args)
     @user = User.find(args[:user_id])
     @accounts = Account.find(args[:account_ids]).map { |a| "#{a.account_list_item}, #{a.owner.user.full_name}" }.join("\n\n")
-    @facility = Facility.find(args[:facility_id])
+    @facility = args[:facility]
     send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation)
   end
 

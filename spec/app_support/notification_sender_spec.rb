@@ -39,7 +39,7 @@ RSpec.describe NotificationSender, :aggregate_failures do
               .to receive(:review_orders)
               .with(user_id: user.id,
                     account_ids: match_array(AccountUser.where(user_id: user.id).pluck(:account_id)),
-                    facility_id: facility.id)
+                    facility: facility)
               .once
               .and_return(delivery)
           end
