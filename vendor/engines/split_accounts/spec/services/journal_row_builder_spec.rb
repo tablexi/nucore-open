@@ -14,7 +14,7 @@ RSpec.describe JournalRowBuilder, :enable_split_accounts, type: :service do
 
   let(:journal) { build_stubbed(:journal, facility: facility) }
   let(:account) { build_stubbed(:split_account, splits: splits) }
-  let(:user) { build_stubbed(:user) }
+  let(:user) { FactoryGirl.create(:user) }
   let(:order) { create(:order, facility: facility, user: user, created_by: user.id) }
   let(:order_details) do
     [

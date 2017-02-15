@@ -5,7 +5,7 @@ RSpec.describe GlobalSearch::StatementSearcher do
   describe "#results" do
     subject(:results) { described_class.new(user, facility, query).results }
 
-    let(:creator) { FactoryGirl.build_stubbed(:user) }
+    let(:creator) { FactoryGirl.create(:user) }
     let(:facility) { nil }
     let!(:statement) { FactoryGirl.create(:statement, created_by_user: creator) }
 
@@ -84,7 +84,7 @@ RSpec.describe GlobalSearch::StatementSearcher do
         end
 
         describe "as a facility admin for another facility" do
-          let(:other_facility) { FactoryGirl.build_stubbed(:facility) }
+          let(:other_facility) { FactoryGirl.create(:facility) }
           let(:user) { FactoryGirl.create(:user, :facility_administrator, facility: other_facility) }
           it { is_expected.to be_empty }
         end
