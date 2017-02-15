@@ -31,7 +31,7 @@ gem "rails-observers"
 ## views
 gem "bootstrap-sass",   "~> 2.3.2"
 gem "haml",             "~> 4.0.5"
-gem "will_paginate",    "~> 3.0.5"
+gem "will_paginate", "~> 3.1.5"
 gem "dynamic_form",     "~> 1.1.4"
 gem "ckeditor", "~> 4.1.6"
 gem "jquery-rails"
