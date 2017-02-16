@@ -5,16 +5,17 @@ module BulkEmail
     def send_mail(recipient:, subject:, body:, reply_to: nil, facility:)
       @recipient = recipient
       @body = body
-      options = { from: sender(facility), to: recipient.email, subject: subject }
+      @facility = facility
+      options = { from: sender, to: recipient.email, subject: subject }
       options[:reply_to] = reply_to if reply_to.present?
       mail(options)
     end
 
-    def sender(facility)
-      if facility.try(:single_facility?)
-        "#{facility.name} <#{Settings.email.from}>"
+    def sender
+      if @facility.try(:single_facility?)
+        "#{@facility.name} <#{default_params[:from]}>"
       else
-        Settings.email.from
+        default_params[:from]
       end
     end
 
