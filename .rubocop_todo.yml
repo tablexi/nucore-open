@@ -51,11 +51,6 @@ Lint/EndAlignment:
     - 'vendor/engines/sanger_sequencing/app/controllers/sanger_sequencing/admin/batches_controller.rb'
     - 'vendor/engines/sanger_sequencing/app/models/sanger_sequencing/well_plate.rb'
 
-# Offense count: 1
-Lint/Eval:
-  Exclude:
-    - 'app/controllers/file_uploads_controller.rb'
-
 # Offense count: 4
 Lint/HandleExceptions:
   Exclude:
@@ -235,6 +230,11 @@ Rails/TimeZone:
 # Include: app/models/**/*.rb
 Rails/Validation:
   Enabled: false
+
+# Offense count: 1
+Security/Eval:
+  Exclude:
+    - 'app/controllers/file_uploads_controller.rb'
 
 # Offense count: 15
 Style/AccessorMethodName:
