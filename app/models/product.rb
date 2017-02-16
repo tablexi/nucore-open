@@ -52,6 +52,16 @@ class Product < ActiveRecord::Base
     where("products.id NOT IN (?)", exclusion_list)
   end
 
+  scope :for_facility, lambda { |facility|
+    if facility.blank?
+      none
+    elsif facility.single_facility?
+      where(facility_id: facility.id)
+    else # cross-facility
+      all
+    end
+  }
+
   def self.requiring_approval
     where(requires_approval: true)
   end

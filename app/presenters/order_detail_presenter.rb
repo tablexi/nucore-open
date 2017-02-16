@@ -41,12 +41,12 @@ class OrderDetailPresenter < SimpleDelegator
     reconcile_warning? ? "reconcile-warning" : ""
   end
 
-  def show_order_path
-    facility_order_path(facility, order)
+  def show_order_detail_path
+    order_order_detail_path(order, self)
   end
 
-  def show_reservation_path
-    facility_order_order_detail_reservation_path(facility, order, id, reservation)
+  def show_order_path
+    facility_order_path(facility, order)
   end
 
   def survey_url

@@ -25,18 +25,39 @@ RSpec.describe BulkEmail::DeliveryForm do
       form.search_criteria = { this: "is", a: "test" }
 
       allow(content_generator).to receive(:greeting).and_return("Greeting")
-      allow(content_generator).to receive(:signoff).and_return("Signoff")
+      allow(content_generator).to receive(:signoff).and_return(signoff)
       allow(content_generator).to receive(:subject_prefix).and_return("Prefix")
     end
 
     let(:bulk_email_job) { BulkEmail::Job.last }
 
-    it "queues mail to all recipients", :aggregate_failures do
-      expect { form.deliver_all }.to change(BulkEmail::Job, :count).by(1)
-      expect(bulk_email_job.subject).to eq("Prefix #{form.custom_subject}")
-      expect(bulk_email_job.body).to eq("Greeting\n\n#{form.custom_message}\n\nSignoff")
-      expect(bulk_email_job.recipients).to match_array(recipients.map(&:email))
-      expect(bulk_email_job.search_criteria).to match(this: "is", a: "test")
+    shared_examples_for "it delivers mail" do
+      it "queues mail to all recipients", :aggregate_failures do
+        expect { form.deliver_all }.to change(BulkEmail::Job, :count).by(1)
+        expect(bulk_email_job.subject).to eq("Prefix #{form.custom_subject}")
+        expect(bulk_email_job.body).to eq(expected_body)
+        expect(bulk_email_job.recipients).to match_array(recipients.map(&:email))
+        expect(bulk_email_job.search_criteria).to match(this: "is", a: "test")
+      end
+    end
+
+    context "when in a single-facility context" do
+      let(:expected_body) { "Greeting\n\nCustom message\n\n#{signoff}" }
+      let(:signoff) { "If you have any questions, etc." }
+
+      it_behaves_like "it delivers mail"
+    end
+
+    context "when in a cross-facility context" do
+      let(:expected_body) { "Greeting\n\nCustom message" }
+      let(:facility) { Facility.cross_facility }
+      let(:signoff) { nil }
+
+      before do
+        allow(content_generator).to receive(:signoff).and_return(nil)
+      end
+
+      it_behaves_like "it delivers mail"
     end
   end
 end

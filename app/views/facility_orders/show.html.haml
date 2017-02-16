@@ -8,7 +8,7 @@
     = banner_date_label @order, :ordered_at
     = banner_label @order, :user
     = banner_label @order, :created_by_user
-    - if @merge_orders.blank?
+    - if @merge_orders.blank? && current_ability.can?(:send_receipt, @order)
       .pull-right= render "send_receipt"
 
 = render "merge_order"
@@ -81,6 +81,7 @@
           = number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.total }
       %td
 
-= render "merge_order_form"
+- if current_ability.can?(:update, Order)
+  = render "merge_order_form"
 
 #order-detail-modal.modal.hide.fade{ data: { backdrop: "static" } }

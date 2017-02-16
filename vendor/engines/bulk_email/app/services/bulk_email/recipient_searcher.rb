@@ -55,16 +55,23 @@ module BulkEmail
     end
 
     def search_authorized_users
-      result = users.joins(:product_users).uniq
-      # if we don't have any products, listed get them all for the current facility
-      product_ids = search_fields[:products].presence || Facility.find(search_fields[:facility_id]).products.map(&:id)
-      result.where(product_users: { product_id: product_ids }).reorder(*self.class::DEFAULT_SORT)
+      users
+        .joins(:product_users)
+        .uniq
+        .where(product_users: { product_id: product_ids_from_params })
+        .reorder(*self.class::DEFAULT_SORT)
     end
 
     private
 
     def hidden_tags_for(key, values)
       Array(values).map { |value| hidden_field_tag(key, value, id: nil) }
+    end
+
+    def product_ids_from_params
+      # if we don't have any products, get all for the facility
+      search_fields[:products].presence ||
+        Facility.find(search_fields[:facility_id]).products.pluck(:id)
     end
 
     def selected_user_types
@@ -79,8 +86,7 @@ module BulkEmail
     def find_order_details
       OrderDetail
         .for_products(search_fields[:products])
-        .joins(:order)
-        .where(orders: { facility_id: search_fields[:facility_id] })
+        .for_facility_id(search_fields[:facility_id].presence)
         .ordered_or_reserved_in_range(start_date, end_date)
     end
 

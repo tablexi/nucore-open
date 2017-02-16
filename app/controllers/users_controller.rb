@@ -124,7 +124,7 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/access_list
   def access_list
     @facility = current_facility
-    @products_by_type = @facility.products_requiring_approval_by_type
+    @products_by_type = Product.for_facility(@facility).requiring_approval_by_type
     @training_requested_product_ids = @user.training_requests.pluck(:product_id)
   end
 
@@ -158,7 +158,7 @@ class UsersController < ApplicationController
 
   def update_approvals
     @update_approvals ||= ProductApprover.new(
-      current_facility.products_requiring_approval,
+      Product.for_facility(current_facility).requiring_approval,
       @user,
       session_user,
     ).update_approvals(approved_products_from_params, params[:product_access_group])

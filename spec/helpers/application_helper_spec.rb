@@ -11,7 +11,8 @@ RSpec.describe ApplicationHelper do
     before(:each) do
       allow(current_ability)
         .to receive(:can?)
-          .with(:manage_users, current_facility) { can_manage_users? }
+        .with(:create, User)
+        .and_return(can_manage_users?)
     end
 
     context "when the user can :manage_users for the current facility" do

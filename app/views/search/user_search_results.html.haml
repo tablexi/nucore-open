@@ -6,10 +6,7 @@
     %p.alert.alert-info= t(".no_users_found")
   - else
     %h3= t(".select_existing_user")
-    - if @search_type == "manage_user"
-      = render "results_table", order_for: true, users: @users
-    - else
-      = render "results_table", users: @users
+    = render "results_table", users: @users
 
     - if @count > @limit
       %p.notice= t(".more_users_alert", count: @count - @limit)

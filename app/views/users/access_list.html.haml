@@ -1,18 +1,19 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :sidebar do
-  = render partial: 'admin/shared/sidenav_users', locals: { sidenav_tab: 'users' }
+  = render "admin/shared/sidenav_users", sidenav_tab: "users"
 
 = content_for :tabnav do
-  = render partial: 'admin/shared/tabnav_users', locals: { secondary_tab: 'access_list' }
+  = render "admin/shared/tabnav_users", secondary_tab: "access_list"
 
 %h1
-  = t(:head, scope: 'users.access_list', name: @user.full_name)
+  = text("users.access_list.head", name: @user.full_name)
   %small= mail_to @user.email
 
 - if @products_by_type.blank?
-  %p.notice= t('.no_products', name: @user.full_name)
+  %p.notice= text("users.access_list.no_products", name: @user.full_name)
+
 - else
   = form_for :user, url: facility_user_access_list_approvals_path(@facility, @user) do |form|
     - @products_by_type.each_pair do |product_type, products|
@@ -21,17 +22,25 @@
       %table.table.table-striped.table-hover
         %thead
           %tr
-            %th.approval-column= t('.th.approval_received')
+            %th.approval-column= Product.human_attribute_name(:can_be_used_by?)
             %th.product-column= Product.model_name.human
             %th.scheduling-group-column= ProductAccessGroup.model_name.human
+
         %tbody
           - products.each do |product|
             %tr.js--access-list-row
               %td.approval-column.approval-checkbox
-                = check_box_tag "approved_products[]", product.id, product.can_be_used_by?(@user)
+                = check_box_tag "approved_products[]",
+                  product.id,
+                  product.can_be_used_by?(@user)
               %td.product-column
                 - if training_requested_for?(product)
-                  %span.label.label-important= t(:training_requested, scope: 'users.access_list')
+                  %span.label.label-important
+                    = text("users.access_list.training_requested")
                 = link_to product, [product.facility, product, :users]
-              %td.scheduling-group-column= scheduling_group_select(product, @user) if product.has_access_list?
-    = submit_tag t('.update_approvals.submit'), class: ['btn', 'btn-primary']
+              %td.scheduling-group-column
+                - if product.has_access_list?
+                  = scheduling_group_select(product, @user)
+
+    = submit_tag text("users.access_list.update_approvals.submit"),
+      class: ["btn", "btn-primary"]

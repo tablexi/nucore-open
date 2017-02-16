@@ -50,7 +50,6 @@ class Facility < ActiveRecord::Base
             if: -> { SettingsHelper.feature_on?(:limit_short_description) }
 
   delegate :in_dispute, to: :order_details, prefix: true
-  delegate :requiring_approval, :requiring_approval_by_type, to: :products, prefix: true
 
   scope :active, -> { where(is_active: true) }
   scope :sorted, -> { order(:name) }

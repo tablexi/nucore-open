@@ -199,6 +199,7 @@ en:
         revenue_account: Revenue Account
         is_active: "Is Active?"
       product:
+        can_be_used_by?: Approved?
         url: URL
         url_name: URL Name
         requires_approval: Requires Approval?

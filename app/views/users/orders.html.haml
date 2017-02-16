@@ -1,14 +1,16 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
+  = render "admin/shared/sidenav_users", sidenav_tab: "users"
   
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_users', :locals => {:secondary_tab => 'orders'}
+  = render "admin/shared/tabnav_users", secondary_tab: "orders"
  
-%h1 #{@user.full_name} Orders 
+%h1 #{@user.full_name} #{Order.model_name.human(count: @order_details.count)}
+
 - if @order_details.empty?
-  %p.notice #{@user.full_name} has not placed any orders.
+  %p.notice= text("users.orders.none", name: @user.full_name)
+
 - else
-  =render :partial => 'shared/order_details_table', :locals => { :order_details => @order_details }
+  = render "shared/order_details_table", order_details: @order_details

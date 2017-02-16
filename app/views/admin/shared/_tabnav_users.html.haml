@@ -3,17 +3,17 @@
     facility_user_path(current_facility, @user),
     secondary_tab == "details"
 
-  - if current_ability.can?(:administer, Order)
+  - if current_ability.can?(:show, Order)
     = tab t(".orders"),
       facility_user_orders_path(current_facility, @user),
       secondary_tab == "orders"
 
-  - if current_ability.can?(:administer, Reservation)
+  - if current_ability.can?(:index, OrderDetail) # The controller authorizes against OrderDetail, not Reservation
     = tab t(".reservations"),
       facility_user_reservations_path(current_facility, @user),
       secondary_tab == "reservations"
 
-  - if current_ability.can?(:manage, Account)
+  - if SettingsHelper.feature_on?(:manage_payment_sources_with_users) && current_ability.can?(:manage, Account)
     = tab t(".accounts"),
       facility_user_accounts_path(current_facility, @user),
       secondary_tab == "accounts"
