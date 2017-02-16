@@ -165,13 +165,6 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, OrderDetail) }
     it_is_not_allowed_to([:edit, :update], FactoryGirl.create(:user))
 
-    it "cannot administer resources" do
-      is_expected.not_to be_allowed_to(:administer, Order)
-      is_expected.not_to be_allowed_to(:administer, OrderDetail)
-      is_expected.not_to be_allowed_to(:administer, Reservation)
-      is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility)
-    end
-
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_users, facility) }
       it_is_allowed_to([:send_receipt, :show], Order)
