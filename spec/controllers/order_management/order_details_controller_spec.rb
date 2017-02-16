@@ -194,432 +194,478 @@ RSpec.describe OrderManagement::OrderDetailsController do
     end
   end
 
-  describe "update reservation" do
-    before :each do
+  describe "PUT #update" do
+    before do
       @action = :update
       @method = :put
-      @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
+      @params = {
+        facility_id: facility.url_name,
+        order_id: order_detail.order_id,
+        id: order_detail.id,
+      }
     end
 
-    context "authentication" do
+    describe "for a reservation" do
       it_should_allow_operators_only(:redirect) {}
-    end
 
-    context "while signed in" do
-      before :each do
-        sign_in @admin
-      end
+      context "when signed in as an administrator" do
+        before { sign_in @admin }
 
-      describe "updating reservation times" do
-        before :each do
-          instrument.price_policies.first.update_attributes(
-            usage_rate: 120,
-            usage_subsidy: 60,
-            charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
-          )
-        end
-
-        context "reserve times on incomplete order" do
-          before :each do
-            instrument.update_attributes(min_reserve_mins: 1)
-            @new_reserve_start = reservation.reserve_start_at + 1.hour
-            @params[:order_detail] = {
-              reservation: reservation_params(@new_reserve_start).merge(duration_mins: 30),
-            }
+        describe "updating reservation times" do
+          before do
+            instrument.price_policies.first.update_attributes(
+              usage_rate: 120,
+              usage_subsidy: 60,
+              charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
+            )
           end
 
-          context "does not conflict with another reservation" do
-            before :each do
+          context "reserve times on incomplete order" do
+            let(:new_reserve_start) { reservation.reserve_start_at + 1.hour }
+
+            before do
+              instrument.update_attributes(min_reserve_mins: 1)
+              @params[:order_detail] = {
+                reservation: reservation_params(new_reserve_start).merge(duration_mins: 30),
+              }
+            end
+
+            context "does not conflict with another reservation" do
+              before { do_request }
+
+              it "updates the reservation", :aggregate_failures do
+                expect(reservation.reload.reserve_start_at)
+                  .to eq(new_reserve_start)
+                expect(reservation.reserve_end_at)
+                  .to eq(new_reserve_start + 30.minutes)
+              end
+
+              it "updates the estimated cost", :aggregate_failures do
+                expect(order_detail.reload.estimated_cost).to eq(60)
+                expect(order_detail.estimated_subsidy).to eq(30)
+              end
+            end
+
+            context "it conflicts with another reservation" do
+              before do
+                FactoryGirl.create(:purchased_reservation,
+                                   reserve_start_at: new_reserve_start,
+                                   product: instrument)
+                do_request
+              end
+
+              it "does not save the reservation" do
+                expect(assigns(:order_detail).reservation).to be_changed
+              end
+
+              it "renders an error", :aggregate_failures do
+                expect(flash[:error]).to be_present
+                expect(response).to render_template(:edit)
+                expect(response.code).to eq("406")
+              end
+            end
+          end
+
+          context "and it is a restricted instrument" do
+            before do
+              instrument.update_attributes(requires_approval: true, min_reserve_mins: 10)
+              @params[:order_detail] = {
+                reservation: reservation_params(reservation.reserve_start_at).merge(duration_mins: 30),
+              }
               do_request
             end
 
-            it "updates the reservation" do
-              expect(reservation.reload.reserve_start_at).to eq(@new_reserve_start)
-              expect(reservation.reserve_end_at).to eq(@new_reserve_start + 30.minutes)
-            end
-
-            it "updates the estimated cost" do
-              expect(order_detail.reload.estimated_cost).to eq(60)
-              expect(order_detail.estimated_subsidy).to eq(30)
-            end
-          end
-
-          context "it conflicts with another reservation" do
-            before :each do
-              @other_reservation = FactoryGirl.create(:purchased_reservation,
-                                                      reserve_start_at: @new_reserve_start,
-                                                      product: instrument)
-              @old_start_time = reservation.reserve_start_at
-              do_request
-            end
-
-            it "does not save the reservation" do
-              expect(assigns(:order_detail).reservation).to be_changed
-            end
-
-            it "sets the flash" do
-              expect(flash[:error]).to be_present
-            end
-
-            it "renders error" do
-              expect(response).to render_template(:edit)
-              expect(response.code).to eq("406")
+            it "allows editing", :aggregate_failures do
+              expect(assigns(:order_detail)).to_not be_changed
+              expect(assigns(:order_detail).reservation).to_not be_changed
+              expect(flash[:error]).to be_blank
             end
           end
         end
 
-        context "and it is a restricted instrument" do
-          before :each do
-            instrument.update_attributes(requires_approval: true, min_reserve_mins: 10)
+        describe "canceling an order" do
+          before do
+            instrument.update_attributes!(min_cancel_hours: 72)
+            instrument.price_policies.first.update_attributes(
+              cancellation_cost: 100,
+              charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
+            )
+
             @params[:order_detail] = {
-              reservation: reservation_params(reservation.reserve_start_at).merge(duration_mins: 30),
+              order_status_id: OrderStatus.canceled_status.id.to_s,
             }
           end
 
-          it "should allow editing" do
-            do_request
-            expect(assigns(:order_detail)).to_not be_changed
-            expect(assigns(:order_detail).reservation).to_not be_changed
-            expect(flash[:error]).to be_blank
-          end
-        end
-
-      end
-
-      describe "canceling an order" do
-        before :each do
-          instrument.update_attributes!(min_cancel_hours: 72)
-          instrument.price_policies.first.update_attributes(
-            cancellation_cost: 100,
-            charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
-          )
-
-          @params[:order_detail] = {
-            order_status_id: OrderStatus.canceled.first.id.to_s,
-          }
-        end
-
-        context "with cancellation fee" do
-          before :each do
-            @params[:with_cancel_fee] = "1"
-            do_request
-          end
-
-          it "cancels the order detail and reservation" do
-            expect(assigns(:order_detail).order_status.name).to eq("Complete")
-            expect(assigns(:order_detail).reservation).to be_canceled
-          end
-
-          it "assigns the cancellation fee" do
-            expect(assigns(:order_detail).actual_total).to eq(100)
-          end
-        end
-
-        context "with a cancellation fee and was completed" do
-          before :each do
-            reservation.update_attributes(reserve_start_at: 24.hours.ago,
-                                          actual_start_at: nil,
-                                          actual_end_at: nil)
-
-            travel_and_return(7.days) do
-              order_detail.change_status!(OrderStatus.complete_status)
-            end
-
-            @params[:with_cancel_fee] = "1"
-            do_request
-          end
-
-          it "cancels the order detail and reservation" do
-            expect(assigns(:order_detail).order_status.name).to eq("Complete")
-            expect(assigns(:order_detail).reservation).to be_canceled
-          end
-
-          it "assigns the cancellation fee" do
-            expect(assigns(:order_detail).actual_total).to eq(100)
-          end
-
-          it "assigns a price policy" do
-            expect(assigns(:order_detail).price_policy).to be
-          end
-        end
-
-        context "without cancellation fee" do
-          before :each do
-            do_request
-          end
-
-          it "cancels the order detail and reservation" do
-            expect(assigns(:order_detail).order_status.name).to eq("Canceled")
-            expect(assigns(:order_detail).reservation).to be_canceled
-          end
-
-          it "does not assign the cancellation fee" do
-            expect(assigns(:order_detail).actual_total.to_i).to eq(0)
-          end
-        end
-      end
-
-      context "across fiscal year/price policy expiration lines" do
-        let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
-        let(:order_detail) { reservation.order_detail }
-
-        before :each do
-          @action = :update
-          @method = :put
-          @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
-        end
-
-        before :each do
-          order_detail.product.price_policies.first.update_attributes!(start_date: order_detail.fulfilled_at - 1.hour, expire_date: 1.hour.ago)
-        end
-
-        context "changing account" do
-          before :each do
-            AccountPriceGroupMember.create! price_group: base_price_group, account: original_account
-            AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
-            AccountPriceGroupMember.create! price_group: price_group, account: original_account
-            order_detail.account = original_account
-            order_detail.save
-            order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
-
-            @params[:order_detail] = { account_id: new_account.id }
-          end
-
-          it "has no errors" do
-            do_request
-            expect(assigns(:order_detail).errors).to be_empty
-          end
-
-          it "updates the account" do
-            expect { do_request }.to change { order_detail.reload.account }
-              .from(original_account).to(new_account)
-          end
-
-          it "should still have a price policy" do
-            expect { do_request }
-              .to_not change { order_detail.reload.price_policy.present? }
-          end
-
-          it_behaves_like "it was removed from its statement"
-        end
-
-        context "canceling" do
-          before :each do
-            AccountPriceGroupMember.create! price_group: base_price_group, account: original_account
-            AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
-            AccountPriceGroupMember.create! price_group: price_group, account: original_account
-            order_detail.account = original_account
-            order_detail.save
-            order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
-
-            @params[:order_detail] = { order_status_id: OrderStatus.canceled.first.id.to_s }
-          end
-
-          context "with a cancellation fee" do
-            before :each do
+          context "with cancellation fee" do
+            before do
               @params[:with_cancel_fee] = "1"
-              instrument.update_attributes!(min_cancel_hours: 72)
-              instrument.price_policies.first.update_attributes(
-                cancellation_cost: 100,
-                charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
-              )
-            end
-
-            it "should cancel" do
               do_request
-              expect(order_detail.reload).to be_complete
             end
 
-            it "should still have a price policy" do
+            it "cancels the order detail and reservation" do
+              expect(assigns(:order_detail).order_status.name).to eq("Complete")
+              expect(assigns(:order_detail).reservation).to be_canceled
+            end
+
+            it "assigns the cancellation fee" do
+              expect(assigns(:order_detail).actual_total).to eq(100)
+            end
+          end
+
+          context "with a cancellation fee and was completed" do
+            before :each do
+              reservation.update_attributes(reserve_start_at: 24.hours.ago,
+                                            actual_start_at: nil,
+                                            actual_end_at: nil)
+
+              travel_and_return(7.days) do
+                order_detail.change_status!(OrderStatus.complete_status)
+              end
+
+              @params[:with_cancel_fee] = "1"
+              do_request
+            end
+
+            it "cancels the order detail and reservation", :aggregate_failures do
+              expect(assigns(:order_detail)).to be_complete
+              expect(assigns(:order_detail).reservation).to be_canceled
+            end
+
+            it "assigns the cancellation fee" do
+              expect(assigns(:order_detail).actual_total).to eq(100)
+            end
+
+            it "assigns a price policy" do
+              expect(assigns(:order_detail).price_policy).to be_present
+            end
+          end
+
+          context "without cancellation fee" do
+            before { do_request }
+
+            it "cancels the order detail and reservation", :aggregate_failures do
+              expect(assigns(:order_detail)).to be_canceled
+              expect(assigns(:order_detail).reservation).to be_canceled
+            end
+
+            it "does not assign the cancellation fee" do
+              expect(assigns(:order_detail).actual_total.to_i).to eq(0)
+            end
+          end
+        end
+
+        context "across fiscal year/price policy expiration lines" do
+          let(:first_price_policy) { order_detail.product.price_policies.first }
+          let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
+          let(:order_detail) { reservation.order_detail }
+
+          before do
+            first_price_policy
+              .update_attributes!(start_date: order_detail.fulfilled_at - 1.hour, expire_date: 1.hour.ago)
+          end
+
+          context "changing account" do
+            before do
+              AccountPriceGroupMember.create! price_group: base_price_group, account: original_account
+              AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
+              AccountPriceGroupMember.create! price_group: price_group, account: original_account
+              order_detail.account = original_account
+              order_detail.save
+              order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
+
+              @params[:order_detail] = { account_id: new_account.id }
+            end
+
+            it "has no errors" do
+              do_request
+              expect(assigns(:order_detail).errors).to be_empty
+            end
+
+            it "updates the account" do
+              expect { do_request }.to change { order_detail.reload.account }
+                .from(original_account).to(new_account)
+            end
+
+            it "still has a price policy" do
               expect { do_request }
                 .to_not change { order_detail.reload.price_policy.present? }
             end
 
-            it "should be priced at the price policy" do
-              original_actual_total = order_detail.actual_total
-              expect { do_request }
-                .to change { order_detail.reload.actual_total }
-                .from(original_actual_total).to(100)
-            end
-
-            it "should remain on its statement" do
-              expect { do_request }.to_not change { order_detail.reload.statement }
-            end
-          end
-
-          context "without a cancellation fee" do
-            it "should cancel" do
-              do_request
-              expect(order_detail.reload).to be_canceled
-            end
-
-            it "should no longer have a price policy" do
-              original_price_policy = order_detail.price_policy
-              expect { do_request }
-                .to change { order_detail.reload.price_policy }
-                .from(original_price_policy).to(nil)
-            end
-
-            it "should not have a price" do
-              do_request
-              expect(order_detail.reload.actual_total).to be_nil
-            end
-
             it_behaves_like "it was removed from its statement"
           end
+
+          context "canceling" do
+            before do
+              AccountPriceGroupMember.create! price_group: base_price_group, account: original_account
+              AccountPriceGroupMember.create! price_group: base_price_group, account: new_account
+              AccountPriceGroupMember.create! price_group: price_group, account: original_account
+              order_detail.account = original_account
+              order_detail.save
+              order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
+
+              @params[:order_detail] = {
+                order_status_id: OrderStatus.canceled_status.id.to_s,
+              }
+            end
+
+            context "with a cancellation fee" do
+              before do
+                @params[:with_cancel_fee] = "1"
+                instrument.update_attributes!(min_cancel_hours: 72)
+                instrument.price_policies.first.update_attributes(
+                  cancellation_cost: 100,
+                  charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage],
+                )
+              end
+
+              it "cancels" do
+                do_request
+                expect(order_detail.reload).to be_complete
+              end
+
+              it "still has a price policy" do
+                expect { do_request }
+                  .to_not change { order_detail.reload.price_policy.present? }
+              end
+
+              it "is priced according to the price policy" do
+                original_actual_total = order_detail.actual_total
+                expect { do_request }
+                  .to change { order_detail.reload.actual_total }
+                  .from(original_actual_total).to(100)
+              end
+
+              it "remains on its statement" do
+                expect { do_request }
+                  .to_not change { order_detail.reload.statement }
+              end
+            end
+
+            context "without a cancellation fee" do
+              it "cancels" do
+                do_request
+                expect(order_detail.reload).to be_canceled
+              end
+
+              it "longer has a price policy" do
+                original_price_policy = order_detail.price_policy
+                expect { do_request }
+                  .to change { order_detail.reload.price_policy }
+                  .from(original_price_policy).to(nil)
+              end
+
+              it "no longer has a price" do
+                do_request
+                expect(order_detail.reload.actual_total).to be_nil
+              end
+
+              it_behaves_like "it was removed from its statement"
+            end
+          end
         end
       end
     end
-  end
 
-  describe "updating item" do
-    let(:order) { FactoryGirl.create(:purchased_order, product: item) }
-    let(:order_detail) { order.order_details.first }
+    describe "for a purchased item" do
+      let(:order) { FactoryGirl.create(:purchased_order, product: item) }
+      let(:order_detail) { order.order_details.first }
 
-    before :each do
-      sign_in @admin
-      @action = :update
-      @method = :put
-      @params = { facility_id: facility.url_name, order_id: order_detail.order_id, id: order_detail.id }
-    end
+      it_should_allow_operators_only(:redirect) {}
 
-    describe "updating pricing" do
-      before :each do
-        order_detail.change_status!(OrderStatus.complete.first)
-      end
+      context "when signed in as an administrator" do
+        before { sign_in @admin }
 
-      it "updates the price manually" do
-        @params[:order_detail] = {
-          actual_cost: "20.00",
-          actual_subsidy: "4.00",
-        }
-        do_request
-        expect(order_detail.reload.actual_total).to eq(16.00)
-      end
+        describe "updating pricing" do
+          before { order_detail.change_status!(OrderStatus.complete_status) }
 
-      it "updates the price while changing accounts" do
-        @params[:order_detail] = {
-          actual_cost: "20.00",
-          actual_subsidy: "4.00",
-          account_id: new_account.id,
-        }
-        do_request
-        expect(order_detail.reload.actual_total).to eq(16.00)
-      end
+          it "updates the price manually" do
+            @params[:order_detail] = {
+              actual_cost: "20.00",
+              actual_subsidy: "4.00",
+            }
+            do_request
+            expect(order_detail.reload.actual_total).to eq(16.00)
+          end
 
-      it "returns an error when trying to set subsidy more than cost" do
-        @params[:order_detail] = {
-          actual_cost: "10.00",
-          actual_subsidy: "11.00",
-        }
-        do_request
-        expect(assigns(:order_detail).errors).to include(:actual_total)
-      end
-    end
+          it "updates the price while changing accounts" do
+            @params[:order_detail] = {
+              actual_cost: "20.00",
+              actual_subsidy: "4.00",
+              account_id: new_account.id,
+            }
+            do_request
+            expect(order_detail.reload.actual_total).to eq(16.00)
+          end
 
-    describe "when the price policy would change" do
-      let!(:previous_price_policy) { FactoryGirl.create(:item_price_policy, product: item, price_group: price_group, unit_cost: 19, start_date: 30.days.ago, expire_date: 28.days.ago) }
-      before { order_detail.backdate_to_complete!(29.days.ago) }
-
-      it "uses the fulfillment price policy rather than now's" do
-        @params[:order_detail] = {
-          account_id: new_account.id,
-        }
-        do_request
-        expect(order_detail.reload.price_policy).to eq(previous_price_policy)
-        expect(order_detail.actual_total).to eq(19)
-      end
-    end
-
-    describe "changing quantity" do
-      before do
-        order_detail.backdate_to_complete!(Time.current)
-        @params[:order_detail] = { quantity: 2 }
-      end
-
-      it "updates the quanity" do
-        expect { do_request }.to change { order_detail.reload.quantity }.to(2)
-      end
-
-      it "updates the price while changing quantity" do
-        @params[:order_detail] = {
-          actual_cost: "20.00",
-          actual_subsidy: "4.00",
-          quantity: 36,
-        }
-        do_request
-        expect(order_detail.reload.actual_total).to eq(16.00)
-      end
-
-    end
-
-    describe "adding a note" do
-      it "updates the note" do
-        @params[:order_detail] = { note: "A note" }
-        do_request
-        expect(order_detail.reload.note).to eq("A note")
-      end
-    end
-
-    describe "assigning to a user" do
-      it "updates the assigned user" do
-        @params[:order_detail] = { assigned_user_id: @staff.id }
-        do_request
-        expect(order_detail.reload.assigned_user).to eq(@staff)
-      end
-    end
-
-    describe "resolving dispute" do
-      before :each do
-        order_detail.change_status!(OrderStatus.complete.first)
-        order_detail.update_attributes(reviewed_at: Time.zone.now, dispute_at: Time.zone.now, dispute_reason: "silly reason")
-        @params[:order_detail] = {}
-      end
-
-      context "checked" do
-        before :each do
-          @params[:order_detail][:resolve_dispute] = "1"
+          it "returns an error when trying to set subsidy more than cost" do
+            @params[:order_detail] = {
+              actual_cost: "10.00",
+              actual_subsidy: "11.00",
+            }
+            do_request
+            expect(assigns(:order_detail).errors).to include(:actual_total)
+          end
         end
 
-        it "resolves the dispute if checked and noted" do
-          @params[:order_detail][:dispute_resolved_reason] = "dispute resolved"
-          do_request
-          expect(assigns(:order_detail).dispute_resolved_at).to be
-          expect(order_detail.reload.dispute_resolved_at).to be
-          expect(order_detail.dispute_resolved_reason).to eq("dispute resolved")
+        describe "when the price policy would change" do
+          let!(:previous_price_policy) do
+            FactoryGirl.create(:item_price_policy,
+                               product: item,
+                               price_group: price_group,
+                               unit_cost: 19,
+                               start_date: 30.days.ago,
+                               expire_date: 28.days.ago,
+                              )
+          end
+          before { order_detail.backdate_to_complete!(29.days.ago) }
+
+          it "uses the fulfillment price policy rather than now's", :aggregate_failures do
+            @params[:order_detail] = {
+              account_id: new_account.id,
+            }
+            do_request
+            expect(order_detail.reload.price_policy).to eq(previous_price_policy)
+            expect(order_detail.actual_total).to eq(19)
+          end
         end
 
-        it "errors if checked and not noted" do
-          @params[:order_detail][:dispute_resolved_reason] = ""
-          do_request
-          expect(response).to render_template(:edit)
-          expect(assigns(:order_detail).errors).to include(:dispute_resolved_reason)
-          expect(assigns(:order_detail).dispute_resolved_at).to be_nil
+        describe "changing quantity" do
+          before do
+            order_detail.backdate_to_complete!(Time.current)
+            @params[:order_detail] = { quantity: 2 }
+          end
+
+          it "updates the quantity" do
+            expect { do_request }
+              .to change { order_detail.reload.quantity }.to(2)
+          end
+
+          it "updates the price while changing quantity" do
+            @params[:order_detail] = {
+              actual_cost: "20.00",
+              actual_subsidy: "4.00",
+              quantity: 36,
+            }
+            do_request
+            expect(order_detail.reload.actual_total).to eq(16.00)
+          end
         end
-      end
 
-      it "does not resolve if not checked" do
-        @params[:order_detail][:resolve_dispute] = "0"
-        do_request
-        expect(assigns(:order_detail).dispute_resolved_at).to be_nil
-        expect(order_detail.reload.dispute_resolved_at).to be_nil
-      end
-    end
+        describe "when adding a note" do
+          it "updates the note" do
+            @params[:order_detail] = { note: "A note" }
+            do_request
+            expect(order_detail.reload.note).to eq("A note")
+          end
+        end
 
-    describe "reconciling", :time_travel do
-      before do
-        order_detail.change_status!(OrderStatus.complete.first)
-        order_detail.update_attributes(reviewed_at: 1.day.ago)
-        @params[:order_detail] = { order_status_id: OrderStatus.reconciled_status.id }
-      end
+        describe "assigning to a user" do
+          let(:staff_user) { FactoryGirl.create(:user, :staff, facility: facility) }
 
-      it "make the order reconciled" do
-        expect { do_request }.to change { order_detail.reload.state }.to("reconciled")
-        expect(order_detail.order_status).to eq(OrderStatus.reconciled_status)
-      end
+          before do
+            @params[:order_detail] = { assigned_user_id: staff_user.id.to_s }
+          end
 
-      it "sets the reconciled_at to now" do
-        expect { do_request }.to change { order_detail.reload.reconciled_at }.to(Time.current.change(usec: 0))
+          it "updates the assigned user" do
+            expect { do_request }
+              .to change { order_detail.reload.assigned_user }
+              .to(staff_user)
+          end
+
+          context "when assignment notifications are on", feature_setting: { order_assignment_notifications: true } do
+            it "sends a notification to the assigned user" do
+              expect { do_request }
+                .to change(ActionMailer::Base.deliveries, :count).by(1)
+            end
+          end
+
+          context "when assignment notifications are off", feature_setting: { order_assignment_notifications: false } do
+            it "sends no notifications" do
+              expect { do_request }
+                .not_to change(ActionMailer::Base.deliveries, :count)
+            end
+          end
+        end
+
+        describe "resolving dispute" do
+          before do
+            order_detail.change_status!(OrderStatus.complete_status)
+            order_detail.update_attributes(
+              reviewed_at: Time.zone.now,
+              dispute_at: Time.zone.now,
+              dispute_reason: "silly reason",
+            )
+            @params[:order_detail] = {}
+          end
+
+          context "when resolve_dispute is checked" do
+            before do
+              @params[:order_detail].merge!(
+                resolve_dispute: "1",
+                dispute_resolved_reason: dispute_resolved_reason,
+              )
+              do_request
+            end
+
+            context "with a resolved dispute reason" do
+              let(:dispute_resolved_reason) { "dispute resolved" }
+
+              it "resolves the dispute", :aggregate_failures do
+                expect(assigns(:order_detail).dispute_resolved_at).to be_present
+                expect(order_detail.reload.dispute_resolved_at).to be_present
+                expect(order_detail.dispute_resolved_reason)
+                  .to eq(dispute_resolved_reason)
+              end
+            end
+
+            context "without a resolved dispute reason" do
+              let(:dispute_resolved_reason) { "" }
+
+              it "renders the edit template with errors", :aggregate_failures do
+                expect(response).to render_template(:edit)
+                expect(assigns(:order_detail).errors)
+                  .to include(:dispute_resolved_reason)
+                expect(assigns(:order_detail).dispute_resolved_at).to be_nil
+              end
+            end
+          end
+
+          context "when resolve_dispute is unchecked" do
+            before do
+              @params[:order_detail][:resolve_dispute] = "0"
+              do_request
+            end
+
+            it "does not resolve the dispute", :aggregate_failures do
+              expect(assigns(:order_detail).dispute_resolved_at).to be_nil
+              expect(order_detail.reload.dispute_resolved_at).to be_nil
+            end
+          end
+        end
+
+        describe "reconciling", :time_travel do
+          before do
+            order_detail.change_status!(OrderStatus.complete_status)
+            order_detail.update_attributes(reviewed_at: 1.day.ago)
+            @params[:order_detail] = {
+              order_status_id: OrderStatus.reconciled_status.id,
+            }
+          end
+
+          it "make the order reconciled", :aggregate_failures do
+            expect { do_request }
+              .to change { order_detail.reload.state }
+              .to("reconciled")
+            expect(order_detail.order_status)
+              .to eq(OrderStatus.reconciled_status)
+          end
+
+          it "sets reconciled_at to now" do
+            expect { do_request }
+              .to change { order_detail.reload.reconciled_at }
+              .to(Time.current.change(usec: 0))
+          end
+        end
       end
     end
   end

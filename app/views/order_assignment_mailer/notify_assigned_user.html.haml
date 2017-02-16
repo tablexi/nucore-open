@@ -1,0 +1,18 @@
+%p
+  - if @order_details.count == 1
+    = html "greeting.singular"
+  - else
+    = html "greeting.plural"
+
+- facility = @order_details.first.facility
+
+%ul
+  - @order_details.each do |order_detail|
+    %li
+      = link_to order_detail,
+        manage_facility_order_order_detail_url(facility, order_detail.order, order_detail)
+
+%p
+  = html "salutation.html",
+    facility_name: facility.to_s,
+    facility_url: facility_url(facility)
