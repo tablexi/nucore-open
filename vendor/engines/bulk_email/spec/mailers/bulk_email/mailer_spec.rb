@@ -9,7 +9,6 @@ RSpec.describe BulkEmail::Mailer do
     let(:reply_to) { "reply@example.com" }
     let(:args) { { body: body, subject: custom_subject, recipient: recipient, facility: nil } }
 
-
     before do
       described_class.send_mail(args).deliver_now
     end
