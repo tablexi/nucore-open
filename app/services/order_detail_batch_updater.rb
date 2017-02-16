@@ -73,7 +73,9 @@ class OrderDetailBatchUpdater
       end
 
       begin
+        newly_assigned_order_details = select_newly_assigned(order_details)
         order_details.all?(&:save!)
+        notify_newly_assigned_users(newly_assigned_order_details)
         msg_hash[:notice] = "The #{msg_type} were successfully updated"
       rescue
         msg_hash[:error] = "There was an error updating the selected #{msg_type}"
@@ -94,6 +96,11 @@ class OrderDetailBatchUpdater
     @changes = true
   end
 
+  def notify_newly_assigned_users(order_details)
+    return unless SettingsHelper.feature_on?(:order_assignment_notifications)
+    OrderAssignmentMailer.notify_assigned_user(order_details).deliver_later
+  end
+
   def order_details
     @order_details ||=
       facility.order_details.batch_updatable.where(id: order_detail_ids)
@@ -101,6 +108,12 @@ class OrderDetailBatchUpdater
 
   def order_status
     @order_status ||= OrderStatus.find(params[:order_status_id])
+  end
+
+  def select_newly_assigned(order_details)
+    order_details.select do |order_detail|
+      order_detail.assigned_user_id_changed? && order_detail.assigned_user_id.present?
+    end
   end
 
   def update_order_details_from_params

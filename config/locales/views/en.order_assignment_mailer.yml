@@ -1,0 +1,12 @@
+en:
+  views:
+    order_assignment_mailer:
+      notify_assigned_user:
+        subject: "!app_name! Order Assignment Notice"
+        greeting:
+          singular: "You have been assigned this order:"
+          plural: "You have been assigned these orders:"
+        salutation:
+          html: |
+            Please contact [%{facility_name}](%{facility_url}) for more information.
+          text: Please contact %{facility_name} for more information.
