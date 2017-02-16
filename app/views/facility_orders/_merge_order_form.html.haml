@@ -20,6 +20,7 @@
       = label_tag :note, OrderDetail.human_attribute_name(:note)
       = text_area_tag :note,
         nil,
+        maxlength: 1000,
         class: "string optional wide"
 
       %br
