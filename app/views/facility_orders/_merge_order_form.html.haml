@@ -18,9 +18,8 @@
         class: "datepicker__data string optional"
 
       = label_tag :note, OrderDetail.human_attribute_name(:note)
-      = text_field_tag :note,
+      = text_area_tag :note,
         nil,
-        maxlength: 100,
         class: "string optional wide"
 
       %br
