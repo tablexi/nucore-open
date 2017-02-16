@@ -162,10 +162,9 @@ RSpec.describe Ability do
     context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
-      %i(disputed_orders manage_billing movable_transactions transactions).each do |action|
+      %i(disputed_orders manage_billing manage_users movable_transactions transactions).each do |action|
         it { is_expected.to be_allowed_to(action, facility) }
       end
-      it { is_expected.not_to be_allowed_to(:manage_users, facility) }
       it_is_allowed_to([:accounts, :index, :orders, :show], User)
       it_is_not_allowed_to([:create, :switch_to], User)
       it { is_expected.to be_allowed_to(:show, Order) }
@@ -176,8 +175,7 @@ RSpec.describe Ability do
     context "in no facility" do
       let(:facility) { nil }
 
-      it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
-      it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
+      it_is_allowed_to([:manage_billing, :manage_users], Facility.cross_facility)
       it_is_not_allowed_to([:create, :switch_to], User)
     end
   end
