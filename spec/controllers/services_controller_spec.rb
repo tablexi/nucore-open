@@ -215,7 +215,7 @@ RSpec.describe ServicesController do
 
     it_should_allow_operators_only do
       expect(response).to be_success
-      expect(response).to render_template("services/manage")
+      expect(response).to render_template("manage")
     end
   end
 end

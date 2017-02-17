@@ -1,0 +1,13 @@
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product", secondary_tab: "details"
+
+%h2= @product
+= readonly_form_for @product.class.name.underscore do |f|
+  = render "admin/shared/product_manage", f: f
+- if session_user.manager_of?(current_facility)
+  %ul.inline
+    %li= link_to "Edit", [:edit, current_facility, @product], class: "btn"
