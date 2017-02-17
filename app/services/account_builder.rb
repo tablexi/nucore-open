@@ -167,7 +167,7 @@ class AccountBuilder
     if affiliate.present?
       account.affiliate_id = affiliate.id
       account.affiliate_other =
-        if affiliate == Affiliate.OTHER
+        if affiliate.other?
           account_params[:affiliate_other]
         elsif affiliate.subaffiliates_enabled?
           account_params[:subaffiliate]

@@ -16,16 +16,17 @@ module AffiliateAccountHelper
 
       it { is_expected.to validate_presence_of(:affiliate_id) }
 
-      it "should require affiliate_other if affiliate is other" do
+      it "requires affiliate_other if affiliate is 'Other'" do
         @affiliate_account.affiliate = Affiliate.OTHER
         @affiliate_account.affiliate_other = nil
         assert !@affiliate_account.save
-        expect(@affiliate_account).to validate_length_of(:affiliate_other).is_at_least(1)
+        expect(@affiliate_account)
+          .to validate_length_of(:affiliate_other).is_at_least(1)
       end
 
-      it "should not require affiliate_other if affiliate is not other" do
+      it "does not require affiliate_other if affiliate is not 'Other'" do
         expect(@affiliate_account.affiliate).to be_present
-        expect(@affiliate_account.affiliate).not_to eq(Affiliate.OTHER)
+        expect(@affiliate_account.affiliate).not_to be_other
         expect(@affiliate_account).to be_valid
         expect(@affiliate_account).not_to be_new_record
       end

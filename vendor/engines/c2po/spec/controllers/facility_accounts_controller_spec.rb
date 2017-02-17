@@ -61,7 +61,7 @@ RSpec.describe FacilityAccountsController do
 
       it_should_allow :director, "to change affiliate to other" do
         expect(assigns(:account)).to eq(@account)
-        expect(assigns(:account).affiliate).to eq(Affiliate.OTHER)
+        expect(assigns(:account).affiliate).to be_other
         expect(assigns(:account).affiliate_other).to eq(@params[:purchase_order_account][:affiliate_other])
         is_expected.to set_flash
         assert_redirected_to facility_account_url

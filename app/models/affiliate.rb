@@ -16,4 +16,8 @@ class Affiliate < ActiveRecord::Base
     self != self.class.OTHER
   end
 
+  def other?
+    self == self.class.OTHER
+  end
+
 end

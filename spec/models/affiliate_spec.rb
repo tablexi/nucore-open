@@ -20,4 +20,18 @@ RSpec.describe Affiliate do
     expect(affiliate).to be_destroyed
   end
 
+  describe "#other?" do
+    context "when it is the 'Other' affiliate" do
+      subject(:affiliate) { Affiliate.OTHER }
+
+      it { is_expected.to be_other }
+    end
+
+    context "with it is not the 'Other' affiliate" do
+      subject(:affiliate) { Affiliate.new(name: "aff2") }
+
+      it { is_expected.not_to be_other }
+    end
+  end
+
 end

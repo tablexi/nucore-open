@@ -270,7 +270,7 @@ class Account < ActiveRecord::Base
 
   def affiliate_to_s
     return "" unless affiliate
-    if affiliate == Affiliate.OTHER || affiliate.subaffiliates_enabled?
+    if affiliate.subaffiliates_enabled?
       "#{affiliate.name}: #{affiliate_other}"
     else
       affiliate.name
