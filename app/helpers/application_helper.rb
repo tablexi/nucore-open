@@ -65,4 +65,11 @@ module ApplicationHelper
     session_user.facilities
   end
 
+  def render_if_exists(partial, options = {})
+    # The third argument `true` checks for partials (prefixed with _)
+    if lookup_context.template_exists?(partial, lookup_context.prefixes, true)
+      render partial, options
+    end
+  end
+
 end

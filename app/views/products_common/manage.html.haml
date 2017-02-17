@@ -8,6 +8,7 @@
 %h2= @product
 = readonly_form_for @product.class.name.underscore do |f|
   = render "admin/shared/product_manage", f: f
-- if session_user.manager_of?(current_facility)
+  = render_if_exists "#{@product.class.name.underscore}_manage_fields", f: f
+- if can? :edit, @product
   %ul.inline
     %li= link_to "Edit", [:edit, current_facility, @product], class: "btn"
