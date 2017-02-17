@@ -1,4 +1,6 @@
 require "rails_helper"
+require "account_builder_shared_examples"
+
 
 RSpec.describe PurchaseOrderAccountBuilder, type: :service do
   let(:options) do
