@@ -7,7 +7,7 @@ class Affiliate < ActiveRecord::Base
   scope :by_name, -> { order(:name) }
 
   def self.OTHER
-    @@other ||= find_or_create_by(name: "Other")
+    @@other ||= find_or_create_by(name: "Other", subaffiliates_enabled: true)
   end
 
   before_destroy :destroyable?
