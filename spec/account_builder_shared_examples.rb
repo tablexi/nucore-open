@@ -7,7 +7,6 @@ RSpec.shared_examples_for "AccountBuilder#build" do
   context "when the affiliate_id param is set" do
     let(:affiliate) { Affiliate.create!(name: "New Affiliate") }
     let(:affiliate_other) { "" }
-    let(:subaffiliate) { "" }
 
     it "sets the affiliate", :aggregate_failures do
       expect(account.affiliate).to eq(affiliate)
@@ -31,7 +30,7 @@ RSpec.shared_examples_for "AccountBuilder#build" do
       before { affiliate.update_attribute(:subaffiliates_enabled, true) }
 
       context "and the affiliate_other param is set" do
-        let(:subaffiliate) { "Affiliate Category" }
+        let(:affiliate_other) { "Affiliate Category" }
 
         it "sets affiliate_other", :aggregate_failures do
           expect(account.affiliate).to eq(affiliate)
@@ -44,7 +43,6 @@ RSpec.shared_examples_for "AccountBuilder#build" do
   context "when the affiliate_id param is not set" do
     let(:affiliate) { nil }
     let(:affiliate_other) { "" }
-    let(:subaffiliate) { "" }
 
     it "does not set the affiliate", :aggregate_failures do
       expect(account.affiliate).to be_blank
