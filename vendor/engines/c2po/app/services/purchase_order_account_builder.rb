@@ -12,7 +12,6 @@ class PurchaseOrderAccountBuilder < AccountBuilder
       :affiliate_id,
       :affiliate_other,
       :remittance_information,
-      :subaffiliate,
       :formatted_expires_at,
     ]
   end
@@ -25,7 +24,6 @@ class PurchaseOrderAccountBuilder < AccountBuilder
       :affiliate_id,
       :affiliate_other,
       :remittance_information,
-      :subaffiliate,
       :formatted_expires_at,
     ]
   end

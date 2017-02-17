@@ -18,7 +18,6 @@ RSpec.describe PurchaseOrderAccountBuilder, type: :service do
         description: "A Purchase Order",
         affiliate_id: affiliate.try(:id),
         affiliate_other: affiliate_other,
-        subaffiliate: subaffiliate,
         remittance_information: "Bill To goes here",
         formatted_expires_at: I18n.l(1.year.from_now.to_date, format: :usa),
       },
