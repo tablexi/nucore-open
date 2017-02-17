@@ -131,7 +131,7 @@ Nucore::Application.routes.draw do
 
     ### Feature Toggle Create Users ###
     if SettingsHelper.feature_on?(:create_users)
-      resources :users, except: [:edit, :update] do
+      resources :users do
         collection do
           get "new_external"
           post "search"

@@ -77,6 +77,14 @@ class User < ActiveRecord::Base
     username.casecmp(email.downcase).zero?
   end
 
+  def internal?
+    !external?
+  end
+
+  def admin_editable?
+    external?
+  end
+
   def password_updatable?
     external?
   end

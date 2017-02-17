@@ -1,0 +1,9 @@
+= simple_form_for [current_facility, @user] do |f|
+  .form-inputs
+    = f.input :first_name
+    = f.input :last_name
+    = f.input :email
+    = f.input :username, readonly: true
+    = f.button :submit, button_text, class: ["btn", "btn-primary"]
+    &nbsp;
+    = link_to text("shared.cancel"), facility_users_path

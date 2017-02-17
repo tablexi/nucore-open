@@ -15,6 +15,16 @@ RSpec.describe Ability do
     end
   end
 
+  shared_examples_for "it can edit users" do
+    context "when user is external" do
+      it_is_allowed_to([:edit, :update], FactoryGirl.create(:user, :external))
+    end
+
+    context "when user is internal" do
+      it_is_not_allowed_to([:edit, :update], FactoryGirl.create(:user))
+    end
+  end
+
   shared_examples_for "it can destroy admistrative reservations" do
     let(:order) { build_stubbed(:order) }
     let(:order_detail) { build_stubbed(:order_detail, order: order) }
@@ -53,6 +63,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:batch_update, Order) }
     it_is_not_allowed_to([:batch_update, :cancel, :index], Reservation)
+    it_is_not_allowed_to([:edit, :update], FactoryGirl.create(:user))
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
@@ -127,6 +138,8 @@ RSpec.describe Ability do
       it { is_expected.to be_allowed_to(:manage_billing, facility) }
       it { is_expected.to be_allowed_to(:batch_update, Order) }
       it { is_expected.to be_allowed_to(:batch_update, Reservation) }
+
+      it_behaves_like "it can edit users"
     end
 
     context "in cross-facility" do
@@ -150,6 +163,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, Account) }
     it { is_expected.to be_allowed_to(:manage, Journal) }
     it { is_expected.to be_allowed_to(:manage, OrderDetail) }
+    it_is_not_allowed_to([:edit, :update], FactoryGirl.create(:user))
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_users, facility) }
@@ -209,6 +223,7 @@ RSpec.describe Ability do
     it_is_allowed_to([:batch_update, :cancel, :index], Reservation)
     it { is_expected.to be_allowed_to(:administer, User) }
     it { is_expected.to be_allowed_to(:manage, PriceGroup) }
+    it_is_not_allowed_to([:edit, :update], FactoryGirl.create(:user))
 
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"

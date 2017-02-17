@@ -14,3 +14,7 @@
   = f.input :email
   = f.input :last_sign_in_at, :default_value => 'none'
   = f.input :deactivated_at unless f.object.active?
+
+- if can? :edit, @user
+  %ul.inline
+    %li= link_to text("shared.edit"), edit_facility_user_path(current_facility, @user), class: "btn"
