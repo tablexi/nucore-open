@@ -1,0 +1,12 @@
+<%= text @order_details.count == 1 ? "greeting.singular" : "greeting.plural" %>
+
+<%=
+  facility = @order_details.first.facility
+
+  @order_details.map do |order_detail|
+    url = manage_facility_order_order_detail_url(facility, order_detail.order, order_detail)
+    "Order #{order_detail}: #{url}"
+  end.join("\n")
+%>
+
+<%= text "salutation.text", facility_name: @order_details.first.facility.to_s %>

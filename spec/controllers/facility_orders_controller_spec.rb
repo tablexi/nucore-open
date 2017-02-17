@@ -1,5 +1,6 @@
 require "rails_helper"
 require "controller_spec_helper"
+require "order_detail_batch_update_shared_examples"
 
 RSpec.describe FacilityOrdersController do
   let(:account) { @account }
@@ -74,14 +75,7 @@ RSpec.describe FacilityOrdersController do
     end
   end
 
-  context '#batch_update' do
-    before :each do
-      @method = :post
-      @action = :batch_update
-    end
-
-    it_should_allow_operators_only :redirect
-  end
+  it_behaves_like "it supports order_detail POST #batch_update"
 
   context '#disputed' do
     before :each do
@@ -221,10 +215,32 @@ RSpec.describe FacilityOrdersController do
         end
 
         context "when setting an order status" do
-          before { @params[:order_status_id] = OrderStatus.in_process_status.id }
+          before { @params[:order_status_id] = order_status.id.to_s }
 
-          it_should_allow :director, "to add an instrument to existing order via merge" do
-            expect(order_detail.order_status).to eq(OrderStatus.in_process_status)
+          context "of 'In Process'" do
+            let(:order_status) { OrderStatus.in_process_status }
+
+            it_should_allow :director, "to add an instrument to existing order via merge" do
+              expect(order_detail.order_status).to eq(OrderStatus.in_process_status)
+            end
+          end
+
+          context "of 'Complete'" do
+            let(:order_status) { OrderStatus.complete_status }
+            let(:director) do
+              FactoryGirl.create(:user, :facility_director, facility: facility)
+            end
+
+            before do
+              sign_in director
+              put @action, @params
+            end
+
+            it "errors due to an invalid transition", :aggregate_failures do
+              expect(merge_order).to be_nil
+              expect(flash[:error])
+                .to include("may not be set initially to an order status of Complete")
+            end
           end
         end
       end

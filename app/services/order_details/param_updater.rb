@@ -52,6 +52,7 @@ class OrderDetails::ParamUpdater
     order_status_id = params.delete :order_status_id
 
     assign_attributes(params)
+    user_newly_assigned = @order_detail.assigned_user_id_changed? && @order_detail.assigned_user.present?
 
     @order_detail.manually_priced!
 
@@ -65,6 +66,11 @@ class OrderDetails::ParamUpdater
     end
 
     merge_reservation_errors if @order_detail.reservation
+
+    if user_newly_assigned && SettingsHelper.feature_on?(:order_assignment_notifications)
+      OrderAssignmentMailer.notify_assigned_user(@order_detail).deliver_later
+    end
+
     is_order_detail_clean
   end
 

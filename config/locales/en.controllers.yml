@@ -66,6 +66,8 @@ en:
         error: "An error was encountered while adding the product %{product}."
         success: "%{product} was successfully added to this order."
         notices: "%{product} needs your attention before it is added to the order."
+        invalid_status: |
+          %{product} may not be set initially to an order status of %{status}.
 
     facility_order_details:
       edit:
