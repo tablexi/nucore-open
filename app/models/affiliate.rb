@@ -19,4 +19,5 @@ class Affiliate < ActiveRecord::Base
   def other?
     self == self.class.OTHER
   end
+
 end
