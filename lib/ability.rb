@@ -61,7 +61,8 @@ class Ability
       if resource == Facility.cross_facility
         can [:accounts, :index, :orders, :show], User
       end
-      can [:manage_billing, :manage_users], Facility.cross_facility
+      can :manage_users, Facility.cross_facility if SettingsHelper.feature_on?(:billing_administrator_users_tab)
+      can :manage_billing, Facility.cross_facility
       can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
     end
 

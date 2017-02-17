@@ -162,7 +162,15 @@ RSpec.describe Ability do
     context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
-      %i(disputed_orders manage_billing manage_users movable_transactions transactions).each do |action|
+      context "with the users tab active", feature_setting: { billing_administrator_users_tab: true } do
+        it { is_expected.to be_allowed_to(:manage_users, facility) }
+      end
+
+      context "with the users tab inactive", feature_setting: { billing_administrator_users_tab: false } do
+        it { is_expected.not_to be_allowed_to(:manage_users, facility) }
+      end
+
+      %i(disputed_orders manage_billing movable_transactions transactions).each do |action|
         it { is_expected.to be_allowed_to(action, facility) }
       end
       it_is_allowed_to([:accounts, :index, :orders, :show], User)
@@ -175,7 +183,15 @@ RSpec.describe Ability do
     context "in no facility" do
       let(:facility) { nil }
 
-      it_is_allowed_to([:manage_billing, :manage_users], Facility.cross_facility)
+      context "with the users tab active", feature_setting: { billing_administrator_users_tab: true } do
+        it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
+      end
+
+      context "with the users tab inactive", feature_setting: { billing_administrator_users_tab: false } do
+        it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
+      end
+
+      it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
       it_is_not_allowed_to([:create, :switch_to], User)
     end
   end
