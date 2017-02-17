@@ -53,7 +53,7 @@ It's difficult to see a salient change amidst a lot of stylistic updates, so if 
 run rubocop or do another large stylistic update, give it a separate commit, or even
 its own PR if the changes are significant enough.
 
-Views are not rubocoped, nor are Rails-specific cops inside of engines, so try to
+Views are not Rubocopped, nor are Rails-specific cops inside of engines, so try to
 follow the same style guidelines.
 
 * Use Ruby 1.9 hash syntax
@@ -78,7 +78,7 @@ changes upstream.
 
 The best method is to isolate your feature inside of an engine in `vendor/engines`. When
 necessary, create a hook point where you need it within the open-source branch and hook
-into that with your engine. Try to avoid overriding entire views (like happens in
+into that with your engine. Try to avoid overriding entire views (as happens in
 the `c2po` engine). Then a change to the default view might need to happen in
 multiple places. See the following section for more information.
 
@@ -126,7 +126,7 @@ _We should consider `optional` groups in Bundler 1.10 to see if this helps_
 ## Commits
 
 Good commit messages vastly improve the history of the project. Tools like `git log`,
-`git blame`, and `git bisect` are much easier to use when each commit is a discreet
+`git blame`, and `git bisect` are much easier to use when each commit is a discrete
 piece of work. Each commit to master should result in a green build.
 
 When merging Pull Requests, we prefer to use Github's "Squash and Merge" green button.
