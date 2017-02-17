@@ -23,4 +23,6 @@ RSpec.describe PurchaseOrderAccountBuilder, type: :service do
       },
     )
   end
+
+  it_behaves_like "AccountBuilder#build"
 end

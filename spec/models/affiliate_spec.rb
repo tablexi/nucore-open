@@ -5,8 +5,9 @@ RSpec.describe Affiliate do
   it { is_expected.to validate_uniqueness_of(:name) }
   it { is_expected.to validate_presence_of(:name) }
 
-  it "maintains 'Other' as a constant" do
+  it "maintains 'Other' as a constant", :aggregate_failures do
     expect(Affiliate.OTHER).to eq(Affiliate.find_by(name: "Other"))
+    expect(Affiliate.OTHER).to be_subaffiliates_enabled
   end
 
   it "does not allow OTHER to be destroyed" do
@@ -33,5 +34,4 @@ RSpec.describe Affiliate do
       it { is_expected.not_to be_other }
     end
   end
-
 end

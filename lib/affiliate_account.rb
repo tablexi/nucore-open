@@ -5,7 +5,7 @@ module AffiliateAccount
     base.validates_presence_of :affiliate_id
     base.validates_length_of :affiliate_other,
                              minimum: 1,
-                             if: proc { |cc| cc.affiliate.try(:other?) }
+                             if: proc { |cc| cc.affiliate.try(:subaffiliates_enabled?) }
   end
 
 end

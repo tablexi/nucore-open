@@ -7,17 +7,16 @@ class Affiliate < ActiveRecord::Base
   scope :by_name, -> { order(:name) }
 
   def self.OTHER
-    @@other ||= find_or_create_by(name: "Other", subaffiliates_enabled: true)
+    @@other ||= find_or_create_by(name: "Other") { |a| a.subaffiliates_enabled = true }
   end
 
   before_destroy :destroyable?
 
   def destroyable?
-    self != self.class.OTHER
+    !other?
   end
 
   def other?
     self == self.class.OTHER
   end
-
 end
