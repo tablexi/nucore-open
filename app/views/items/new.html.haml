@@ -10,7 +10,7 @@
 
 = simple_form_for([current_facility, @product]) do |f|
   = f.error_messages
-  .form-imputs
+  .form-inputs
     = render "admin/products/details_fields", f: f
   %ul.inline
     %li= f.submit text("shared.create"), class: ["btn", "btn-primary"]
