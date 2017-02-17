@@ -110,51 +110,6 @@ RSpec.describe Account do
     end
   end
 
-  describe "#subaffiliate=" do
-    context "when it has an affiliate" do
-      let(:affiliate) { Affiliate.create!(name: "Affiliate") }
-      before { account.update_attribute(:affiliate_id, affiliate.id) }
-
-      context "and subaffiliates are active" do
-        before { affiliate.update_attribute(:subaffiliates_enabled, true) }
-
-        it "sets affiliate_other" do
-          expect { account.subaffiliate = "Text" }
-            .to change { account.affiliate_other }.to("Text")
-        end
-      end
-
-      context "and subaffiliates are inactive" do
-        it "does not set affiliate_other" do
-          expect { account.subaffiliate = "Text" }
-            .not_to change { account.affiliate_other }
-        end
-      end
-    end
-  end
-
-  describe "#subaffiliate" do
-    context "when it has an affiliate" do
-      let(:affiliate) { Affiliate.create!(name: "Affiliate") }
-      before do
-        account.update_attributes(
-          affiliate_id: affiliate.id,
-          affiliate_other: "Text",
-        )
-      end
-
-      context "and a subaffiliates are active" do
-        before { affiliate.update_attribute(:subaffiliates_enabled, true) }
-
-        it { expect(account.subaffiliate).to eq("Text") }
-      end
-
-      context "and subaffiliates are inactive" do
-        it { expect(account.subaffiliate).to be_blank }
-      end
-    end
-  end
-
   context '#unreconciled_total' do
     context "without unreconciled order_details" do
       it "should total 0" do

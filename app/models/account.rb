@@ -277,16 +277,6 @@ class Account < ActiveRecord::Base
     end
   end
 
-  def subaffiliate=(label)
-    if affiliate && affiliate.subaffiliates_enabled?
-      self.affiliate_other = label
-    end
-  end
-
-  def subaffiliate
-    affiliate_other if affiliate && affiliate.subaffiliates_enabled?
-  end
-
   def description_to_s
     if suspended?
       "#{description} (#{display_status.upcase})"
