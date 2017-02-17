@@ -191,10 +191,9 @@ en:
         payment_type: "Payment Source Type"
         account_number:
           account_number: "Payment Source Number"
-        affiliate: "Affiliate Name"
+        affiliate: "Affiliate Category"
         remit: "Bill To"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
-        subaffiliate: "Affiliate Category"
     account_table:
       notice: "No payment sources found."
       foot: "* Includes transactions for which the user has not been sent a statement or that are in the user review period."
