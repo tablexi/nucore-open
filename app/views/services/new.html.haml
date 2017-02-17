@@ -2,14 +2,16 @@
 
 = content_for :h1 do
   = current_facility
-= content_for :sidebar do
-  = render "admin/shared/sidenav_product", sidenav_tab: "services"
 
-%h2= text("admin.shared.add", model: Service.model_name.human)
-= simple_form_for([current_facility, @service]) do |f|
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
+
+%h2= text("admin.shared.add", model: @product.class.model_name.human)
+
+= simple_form_for([current_facility, @product]) do |f|
   = f.error_messages
-  %ul.form
+  .form-inputs
     = render "admin/products/details_fields", f: f
   %ul.inline
-    %li= f.submit text("shared.create"), class: "btn"
-    %li= link_to text("shared.cancel"), facility_services_path
+    %li= f.submit text("shared.create"), class: ["btn", "btn-primary"]
+    %li= link_to text("shared.cancel"), [current_facility, @product]
