@@ -11,7 +11,7 @@
         %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column_header || @extra_date_column)
       - if current_facility.blank? || cross_facility?
         %th= Facility.model_name.human
-      %th= OrderDetail.human_attribute_name("description")
+      %th.order-note= OrderDetail.human_attribute_name("description")
       %th.nowrap= OrderDetail.human_attribute_name("user")
       - unless @account
         %th= Account.model_name.human
@@ -39,7 +39,7 @@
         - if current_facility.blank? || cross_facility?
 
           %td= order_detail.order.facility
-        %td.user-order-detail
+        %td.user-order-detail.order-note
           .order-detail-description
             = order_detail_description(order_detail)
             - order_detail.extend PriceDisplayment
@@ -48,7 +48,8 @@
               %br
               %em= order_detail.reservation
           - if order_detail.note.present?
-            .order-detail-extra.order-detail-note= "Note: #{order_detail.note}"
+            .order-detail-extra.order-detail-note
+              = render "shared/order_detail_note", order_detail: order_detail
 
 
         %td= order_detail.order.user.full_name

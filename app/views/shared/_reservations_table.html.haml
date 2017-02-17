@@ -4,7 +4,7 @@
       %th.centered Order #
       %th.centered Actions
       %th Reserved For
-      %th Product
+      %th.order-note.order-note--wide Product
       %th.centered Status
       %th.currency Total
   %tbody
@@ -18,14 +18,15 @@
           = reservation_actions(res)
         %td
           = reservation_view_edit_link(res)
-        %td.user-order-detail
+        %td.user-order-detail.order-note.order-note--wide
           .order-detail-description
             - product_name = order_detail_description(od)
             = link_to "#{od.product.facility.abbreviation} / #{product_name}".html_safe, facility_instrument_path(od.product.facility, od.product)
             - if od.product.offline?
               = tooltip_icon "icon-warning-sign icon-large", t("instruments.offline.note")
             - if od.note.present?
-              .order-detail-extra.order-detail-note= "Note: #{od.note}"
+              .order-detail-extra.order-detail-note
+                = render "shared/order_detail_note", order_detail: od
 
         %td.centered=h od.order_status.name
         %td.currency

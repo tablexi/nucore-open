@@ -1,0 +1,3 @@
+%i.js--note= text("note.full", note: order_detail.note)
+%i.js--truncatedNote= truncate("Note: #{order_detail.note}", length: 100, separator: " ", omission: "... ")
+= link_to text("note.more"), "#", class: "js--toggleNote" if order_detail.note.size > 100
