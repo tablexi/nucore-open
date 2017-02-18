@@ -44,6 +44,10 @@ class Product < ActiveRecord::Base
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
 
+  def self.types
+    @product_types ||= [Instrument, Item, Service, Bundle]
+  end
+
   def self.non_instruments
     where("products.type <> 'Instrument'")
   end

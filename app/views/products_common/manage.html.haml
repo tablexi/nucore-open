@@ -7,7 +7,26 @@
 
 %h2= @product
 = readonly_form_for @product.class.name.underscore, @product do |f|
-  = render "admin/shared/product_manage", f: f
+  = f.input :url_name, input_html: { value: link_to(polymorphic_url([current_facility, @product]), [current_facility, @product]) }
+
+  - if SettingsHelper::feature_on? :product_specific_contacts
+    = f.input :email
+
+  = f.input :description, input_html: { class: "wysiwyg" }
+
+  - unless @product.is_a?(Bundle)
+    - if SettingsHelper.feature_on? :recharge_accounts
+      = f.input :facility_account,
+        input_html: { value: @product.facility_account.account_number + (@product.facility_account.is_active? ? "" : " (inactive)") }
+
+    = f.input :initial_order_status
+    = f.input :requires_approval
+    - if SettingsHelper.feature_on?(:training_requests) && f.object.training_request_contacts?
+      = f.input :training_request_contacts
+  = f.input :is_archived
+  = f.input :is_hidden
+  = f.input :note_available_to_users
+
   = render_if_exists "#{@product.class.name.underscore}_manage_fields", f: f
 - if can? :edit, @product
   %ul.inline

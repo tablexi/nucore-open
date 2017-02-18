@@ -117,15 +117,6 @@ en:
         problem: Problem
         actual_start: Actual Start Date
 
-    product_manage:
-      label:
-        url: "URL Name"
-        description: "Description"
-        deposit: "Recharge Chart String"
-        initial_status: "Initial Order Status"
-        requires_approval: "Requires Approval?"
-        inactive: "Is Inactive?"
-        hidden: "Is Hidden?"
     purchase: Purchase
     sidenav_admin:
       overview: "Overview"
