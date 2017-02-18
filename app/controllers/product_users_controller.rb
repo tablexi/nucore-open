@@ -30,7 +30,7 @@ class ProductUsersController < ApplicationController
         .paginate(page: params[:page])
     else
       @product_users = nil
-      flash.now[:notice] = "This #{@product.class.name.downcase} does not require user authorization"
+      flash.now[:notice] = "This #{@product.class.model_name.human.downcase} does not require user authorization"
     end
   end
 
@@ -42,11 +42,11 @@ class ProductUsersController < ApplicationController
     return unless params[:user]
     product_user = ProductUserCreator.create(user: User.find(params[:user]), product: @product, approver: session_user)
     if product_user.persisted?
-      flash[:notice] = "The user has been successfully authorized for this #{@product.class.name.downcase}"
+      flash[:notice] = "The user has been successfully authorized for this #{@product.class.model_name.human.downcase}"
     else
       flash[:error] = product_user.errors.full_messages.to_sentence
     end
-    redirect_to(send("facility_#{@product.class.name.downcase}_users_url", current_facility, @product))
+    redirect_to(send("facility_#{@product.class.name.underscore}_users_url", current_facility, @product))
   end
 
   # DELETE /facilities/:facility_id/bundles/bundle_id/users/:id
@@ -58,12 +58,12 @@ class ProductUsersController < ApplicationController
     product_user.destroy
 
     if product_user.destroyed?
-      flash[:notice] = "The user has been successfully removed from this #{@product.class.name.downcase}"
+      flash[:notice] = "The user has been successfully removed from this #{@product.class.model_name.human.downcase}"
     else
-      flash[:error]  = "An error was encountered while attempting to remove the user from this #{@product.class.name.downcase}"
+      flash[:error]  = "An error was encountered while attempting to remove the user from this #{@product.class.name.underscore}"
     end
 
-    redirect_to(send("facility_#{@product.class.name.downcase}_users_url", current_facility, @product))
+    redirect_to(send("facility_#{@product.class.name.underscore}_users_url", current_facility, @product))
   end
 
   # /facilities/:facility_id/services/:service_id/users/user_search_results
@@ -84,7 +84,7 @@ class ProductUsersController < ApplicationController
 
   # PUT /facilities/:facility_id/instruments/:instrument_id/update_restrictions
   def update_restrictions
-    product_param_name = @product.class.name.underscore.downcase
+    product_param_name = @product.class.name.underscore.underscore
     unless params[product_param_name]
       redirect_to send("facility_#{product_param_name}_users_url", current_facility, @product)
       return
@@ -98,9 +98,17 @@ class ProductUsersController < ApplicationController
     redirect_to send("facility_#{product_param_name}_users_url", current_facility, @product)
   end
 
+  private
+
   def init_product
-    @product = current_facility.products.find_by_url_name!(params[:instrument_id] || params[:service_id] || params[:item_id])
-    @product_user = ProductUser.first # for CanCan auth
+    @product = current_facility.products
+                               .find_by!(url_name: product_id)
+    @product_user = @product.product_users.build # for CanCan auth
+  end
+
+  def product_id
+    key = params.except(:facility_id).keys.find { |k| k =~ /_id\z/ }
+    params[key]
   end
 
 end

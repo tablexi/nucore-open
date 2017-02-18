@@ -1,19 +1,21 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render partial: "admin/shared/sidenav_product", locals: {sidenav_tab: @product.class.name.pluralize.downcase}
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
 = content_for :tabnav do
-  = render partial: "admin/shared/tabnav_product", locals: {secondary_tab: "users"}
+  = render "admin/shared/tabnav_product", secondary_tab: "users"
+
+%h2= @product
 
 %fieldset
   = form_tag user_search_results_path, id: "ajax_form", method: :get do
     = label_tag :search_term, t(".label.search_term")
     %br
     = text_field_tag :search_term, nil, size: 30, class: "search-query"
-    = submit_tag "Search", class: "btn"
+    = submit_tag text("shared.search"), class: "btn"
     = hidden_field_tag :facility_id, current_facility.id
     = hidden_field_tag :product_id, @product.id
     = hidden_field_tag :search_type, "user_product_approval"
     = hidden_field_tag :create_link, "true"
-%br
+
 #result
