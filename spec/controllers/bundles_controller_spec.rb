@@ -182,8 +182,8 @@ RSpec.describe BundlesController do
     it_should_require_login
 
     it_should_allow_managers_only do
-      expect(assigns(:bundle)).to be_kind_of Bundle
-      expect(assigns(:bundle)).to be_new_record
+      expect(assigns(:product)).to be_kind_of Bundle
+      expect(assigns(:product)).to be_new_record
       is_expected.to render_template("new")
     end
   end
@@ -213,12 +213,12 @@ RSpec.describe BundlesController do
     it_should_require_login
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:bundle)).to be_kind_of Bundle
-      expect(assigns(:bundle).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
-      expect(assigns(:bundle).requires_approval).to eq(false)
-      expect(assigns(:bundle)).to be_persisted
+      expect(assigns(:product)).to be_kind_of Bundle
+      expect(assigns(:product).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
+      expect(assigns(:product).requires_approval).to eq(false)
+      expect(assigns(:product)).to be_persisted
       is_expected.to set_flash
-      assert_redirected_to [:manage, @authable, assigns(:bundle)]
+      assert_redirected_to [:manage, @authable, assigns(:product)]
     end
   end
 
@@ -243,7 +243,7 @@ RSpec.describe BundlesController do
   end
 
   def assert_init_bundle
-    expect(assigns(:bundle)).to_not be_nil
-    expect(assigns(:bundle)).to eq(@bundle)
+    expect(assigns(:product)).to_not be_nil
+    expect(assigns(:product)).to eq(@bundle)
   end
 end

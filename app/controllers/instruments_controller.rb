@@ -18,9 +18,9 @@ class InstrumentsController < ProductsCommonController
     login_required = false
 
     # does the product have active price policies and schedule rules?
-    unless @instrument.available_for_purchase?
+    unless @product.available_for_purchase?
       add_to_cart = false
-      flash[:notice] = text(".not_available", instrument: @instrument)
+      flash[:notice] = text(".not_available", instrument: @product)
     end
 
     # is user logged in?
@@ -29,25 +29,25 @@ class InstrumentsController < ProductsCommonController
       add_to_cart = false
     end
 
-    if add_to_cart && !@instrument.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@instrument)
+    if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
       if SettingsHelper.feature_on?(:training_requests)
-        if TrainingRequest.submitted?(current_user, @instrument)
-          flash[:notice] = text("controllers.products_common.already_requested_access", product: @instrument)
+        if TrainingRequest.submitted?(current_user, @product)
+          flash[:notice] = text("controllers.products_common.already_requested_access", product: @product)
           return redirect_to facility_path(current_facility)
         else
-          return redirect_to new_facility_product_training_request_path(current_facility, @instrument)
+          return redirect_to new_facility_product_training_request_path(current_facility, @product)
         end
       else
         add_to_cart = false
         flash[:notice] = html(".requires_approval",
-                              email: @instrument.email,
-                              facility: @instrument.facility,
-                              instrument: @instrument)
+                              email: @product.email,
+                              facility: @product.facility,
+                              instrument: @product)
       end
     end
 
     # does the user have a valid payment source for purchasing this reservation?
-    if add_to_cart && acting_user.accounts_for_product(@instrument).blank?
+    if add_to_cart && acting_user.accounts_for_product(@product).blank?
       add_to_cart = false
       flash[:notice] = text(".no_accounts")
     end
@@ -55,11 +55,11 @@ class InstrumentsController < ProductsCommonController
     # does the product have any price policies for any of the groups the user is a member of?
     if add_to_cart && !acting_user_can_purchase?
       add_to_cart = false
-      flash[:notice] = text(".no_price_groups", instrument_name: @instrument.to_s)
+      flash[:notice] = text(".no_price_groups", instrument_name: @product.to_s)
     end
 
     # when ordering on behalf of, does the staff have permissions for this facility?
-    if add_to_cart && acting_as? && !session_user.operator_of?(@instrument.facility)
+    if add_to_cart && acting_as? && !session_user.operator_of?(@product.facility)
       add_to_cart = false
       flash[:notice] = text(".not_authorized_to_order_on_behalf")
     end
@@ -74,14 +74,14 @@ class InstrumentsController < ProductsCommonController
 
     redirect_to add_order_path(
       acting_user.cart(session_user),
-      order: { order_details: [{ product_id: @instrument.id, quantity: 1 }] },
+      order: { order_details: [{ product_id: @product.id, quantity: 1 }] },
     )
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/schedule
   def schedule
     @admin_reservations =
-      @instrument
+      @product
       .reservations
       .non_user
       .ends_in_the_future
@@ -101,9 +101,9 @@ class InstrumentsController < ProductsCommonController
   # GET /facilities/:facility_id/instruments/:instrument_id/status
   def instrument_status
     begin
-      @relay = @instrument.relay
+      @relay = @product.relay
       status = Rails.env.test? ? true : @relay.get_status
-      @status = @instrument.instrument_statuses.create!(is_on: status)
+      @status = @product.instrument_statuses.create!(is_on: status)
     rescue => e
       logger.error e
       raise ActiveRecord::RecordNotFound
@@ -146,17 +146,17 @@ class InstrumentsController < ProductsCommonController
     raise ActiveRecord::RecordNotFound unless params[:switch] && (params[:switch] == "on" || params[:switch] == "off")
 
     begin
-      relay = @instrument.relay
+      relay = @product.relay
       status = true
 
       if SettingsHelper.relays_enabled_for_admin?
         status = (params[:switch] == "on" ? relay.activate : relay.deactivate)
       end
 
-      @status = @instrument.instrument_statuses.create!(is_on: status)
+      @status = @product.instrument_statuses.create!(is_on: status)
     rescue => e
       logger.error "ERROR: #{e.message}"
-      @status = InstrumentStatus.new(instrument: @instrument, error_message: e.message)
+      @status = InstrumentStatus.new(instrument: @product, error_message: e.message)
       # raise ActiveRecord::RecordNotFound
     end
     respond_to do |format|
@@ -174,7 +174,7 @@ class InstrumentsController < ProductsCommonController
   private
 
   def acting_user_can_purchase?
-    @instrument.can_purchase?(acting_user_price_group_ids)
+    @product.can_purchase?(acting_user_price_group_ids)
   end
 
   def acting_user_price_group_ids

@@ -3,27 +3,27 @@
   = javascript_include_tag 'instruments.js'
 
 :javascript
-  var events_path = "#{facility_instrument_reservations_path(current_facility, @instrument, :format => 'js')}";
-  var minTime         = #{@instrument.first_available_hour};
-  var maxTime         = #{@instrument.last_available_hour+1};
+  var events_path = "#{facility_instrument_reservations_path(current_facility, @product, :format => 'js')}";
+  var minTime         = #{@product.first_available_hour};
+  var maxTime         = #{@product.last_available_hour+1};
 
 = content_for :breadcrumb do
   %ul.breadcrumb
     %li= link_to 'Home', facilities_path
     %li &raquo;
-    %li= link_to @instrument.facility, facility_path(@instrument.facility)
+    %li= link_to @product.facility, facility_path(@product.facility)
     %li &raquo;
-    %li #{@instrument} #{t('.title')}
+    %li #{@product} #{t('.title')}
 
 = content_for :h1 do
   = current_facility
   - button_text = current_user ? t('.place_reservation') : "#{t('pages.login')} & #{t('.place_reservation')}"
-  = link_to button_text, facility_instrument_path(current_facility, @instrument), :class => ['btn', 'btn-primary', 'pull-right']
+  = link_to button_text, facility_instrument_path(current_facility, @product), :class => ['btn', 'btn-primary', 'pull-right']
 
 
-%h2 #{@instrument} #{t('.title')}
+%h2 #{@product} #{t('.title')}
 
-- if @instrument.offline?
+- if @product.offline?
   %p.alert.alert-danger= text("instruments.offline.notice")
 
 #overlay

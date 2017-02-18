@@ -98,15 +98,12 @@ class ProductsCommonController < ApplicationController
   # GET /services/new
   def new
     @product = current_facility_products.new(account: Settings.accounts.product_default)
-    save_product_into_object_name_instance
   end
 
   # POST /services
   def create
     @product = current_facility_products.new(product_params)
     @product.initial_order_status_id = OrderStatus.default_order_status.id
-
-    save_product_into_object_name_instance
 
     if @product.save
       flash[:notice] = "#{@product.class.name} was successfully created."

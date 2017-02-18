@@ -12,10 +12,10 @@
   = render "admin/shared/tabnav_product", secondary_tab: "reservations"
 
 :javascript
-  var events_path = "#{facility_instrument_reservations_path(current_facility, @instrument, format: 'js', with_details: true, all: true)}";
+  var events_path = "#{facility_instrument_reservations_path(current_facility, @product, format: 'js', with_details: true, all: true)}";
   var withDetails = true;
 
-%h2= @instrument
+%h2= @product
 
 %h3= t(".administrative_reservations")
 
@@ -25,14 +25,14 @@
     class: "btn-add"
 
   - if current_ability.can?(:create, OfflineReservation)
-    - if @instrument.online?
+    - if @product.online?
       = link_to t(".mark_instrument_offline"),
-        new_facility_instrument_offline_reservation_path(current_facility, @instrument),
+        new_facility_instrument_offline_reservation_path(current_facility, @product),
         class: "btn-add"
 
     - else
       = link_to t(".bring_instrument_online"),
-        facility_instrument_bring_online_path(current_facility, @instrument),
+        facility_instrument_bring_online_path(current_facility, @product),
         method: :put,
         class: "btn-add"
 
@@ -42,7 +42,7 @@
   %p.notice= t(".no_upcoming_admin_reservations")
 
 - else
-  - if @instrument.offline?
+  - if @product.offline?
     %p.alert.alert-danger= t(".instrument_is_offline")
 
   %table.table.table-striped.table-hover
@@ -59,7 +59,7 @@
           - if reservation.admin_removable?
             %td
               = link_to t("shared.remove"),
-                facility_instrument_reservation_path(current_facility, @instrument, reservation),
+                facility_instrument_reservation_path(current_facility, @product, reservation),
                 confirm: t("shared.confirm_message"),
                 method: :delete
 
@@ -67,7 +67,7 @@
 
             %td
               = link_to reservation,
-                facility_instrument_reservation_edit_admin_path(current_facility, @instrument, reservation)
+                facility_instrument_reservation_edit_admin_path(current_facility, @product, reservation)
 
             %td= reservation_category_label(reservation)
             %td= reservation.admin_note
@@ -76,7 +76,7 @@
             %td
             %td= reservation.class.model_name.human
             %td
-              = link_to reservation, edit_facility_instrument_offline_reservation_path(current_facility, @instrument, reservation)
+              = link_to reservation, edit_facility_instrument_offline_reservation_path(current_facility, @product, reservation)
             %td= reservation_category_label(reservation)
             %td= reservation.admin_note
 
