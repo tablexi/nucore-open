@@ -12,7 +12,7 @@ class PricePoliciesController < ApplicationController
   before_action :set_expire_date_from_params, only: [:create, :update]
   before_action :set_max_expire_date, only: [:edit, :update]
 
-  load_and_authorize_resource
+  load_and_authorize_resource instance_name: :price_policy
 
   layout "two_column"
 
@@ -90,41 +90,29 @@ class PricePoliciesController < ApplicationController
   end
 
   def facility_product_price_policies_path
-    method("facility_#{product_var}_price_policies_path")
-      .call(current_facility, @product)
+    [current_facility, @product, PricePolicy]
   end
 
   # Override CanCan's find -- it won't properly search by zoned date
   def init_price_policy
     @start_date = start_date_from_params
 
-    instance_variable_set(
-      "@#{model_name.underscore}",
-      instance_variable_get("@#{product_var}")
-        .price_policies
-        .for_date(@start_date)
-        .first,
-    )
+    @price_policy = @product
+      .price_policies
+      .for_date(@start_date)
+      .first
   end
 
   def init_product
-    @product = current_facility.method(product_var.pluralize)
-                               .call
-                               .find_by_url_name!(params["#{product_var}_id".to_sym])
-    instance_variable_set("@#{product_var}", @product)
-  end
-
-  def model_name
-    self.class.name.gsub(/Controller\z/, "").singularize
+    id_param = params.except(:facility_id).keys.detect { |k| k =~ /_id\z/ }
+    clazz = id_param.sub(/_id\z/, "").camelize
+    @product = current_facility.products(clazz)
+                               .find_by!(url_name: params[id_param])
   end
 
   def new_start_date
     # If there are active policies, start tomorrow. If none, start today
     Date.today + (active_policies? ? 1 : 0)
-  end
-
-  def product_var
-    @product_var ||= model_name.gsub(/PricePolicy\z/, "").downcase
   end
 
   def flash_remove_active_policy_warning_and_redirect

@@ -1,0 +1,19 @@
+en:
+  views:
+    price_policies:
+      index:
+        description: Pricing rules determine the specific rate applied to each price group.
+        add: Add Pricing Rules
+        none: You must add current pricing rules before you may bill for this item.
+        current: Current Pricing Rules
+        upcoming: Upcoming Pricing Rules
+        past: Past Pricing Rules
+        dates: "Effective: %{start}, Expires: %{expires}"
+        charges_for: "Charges for %{charge_for}"
+      edit:
+        instructional_text: |
+          All users must be charged the same base rate. You may define adjustments
+          to this rate for individual internal price groups.
+        edit: Edit Pricing Rules
+        save: Save Rules
+

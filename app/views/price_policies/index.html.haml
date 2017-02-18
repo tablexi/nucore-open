@@ -1,46 +1,53 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => @product.class.name.pluralize.downcase }
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'pricing_rules'}
+  = render "admin/shared/tabnav_product", secondary_tab: "pricing_rules"
 
 %h2= @product
 
-%p Pricing rules determine the specific rate applied to each price group.
+%p= text("description")
 
 - if session_user.manager_of?(current_facility)
   %ul.inline
-    %li= link_to 'Add Pricing Rules', new_price_policy_path(@product), :class => 'btn-add'
+    %li= link_to text("add"), [:new, current_facility, @product, :price_policy], class: "btn-add"
 
 - if @current_price_policies.empty?
-  %p.notice You must add current pricing rules before you may bill for this item.
+  %p.notice= text("none")
 
 - else
-  %h3 Current Pricing Rules
+  %h3= text("current")
   - policy = @current_price_policies.first
-  %h4= "Effective: #{human_date(@current_start_date)}, Expires: #{human_date(policy.expire_date)}"
+  %h4= text("dates", start: human_date(@current_start_date), expires: human_date(policy.expire_date))
   - if policy.charge_for.present?
-    %p.charge-for Charges for #{policy.charge_for}
-  = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument/' : ''}table", :locals => { :price_policies => @current_price_policies, :url_date => @current_start_date.strftime("%Y-%m-%d") }
+    %p.charge-for= text("charges_for", charge_for: policy.charge_for)
+  = render "price_policies/#{@product.is_a?(Instrument) ? 'instrument/' : ''}table",
+    price_policies: @current_price_policies,
+    url_date: @current_start_date.strftime("%Y-%m-%d")
+
   = price_policy_errors(@product)
 
 - if @next_price_policies_by_date.present?
-  %h3 Upcoming Pricing Rules
+  %h3= text("upcoming")
   - @next_price_policies_by_date.each do |date, rules|
     - policy = rules.first
-    %h4= "Effective: #{human_date(date)}, Expires: #{human_date(policy.expire_date)}"
+    %h4= text("dates", start: human_date(date), expires: human_date(policy.expire_date))
     - if policy.charge_for.present?
-      %p.charge-for Charges for #{policy.charge_for}
-    = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument/' : ''}table", :locals => { :price_policies => rules, :url_date => date.strftime("%Y-%m-%d") }
+      %p.charge-for= text("charges_for", charge_for: policy.charge_for)
+    = render "price_policies/#{@product.is_a?(Instrument) ? 'instrument/' : ''}table",
+      price_policies: rules,
+      url_date: date.strftime("%Y-%m-%d")
 
 - if @past_price_policies_by_date.present?
   %h3
     = link_to '#past', data: { toggle: "collapse" } do
       %i.icon-folder-open
-      Past Pricing Rules
+      = text("past")
   #past.collapse
     - @past_price_policies_by_date.each do |date, rules|
       - policy = rules.first
-      %h4= "Effective: #{human_date(date)}, Expires: #{human_date(policy.expire_date)}"
-      = render :partial => "price_policies/#{@product.is_a?(Instrument) ? 'instrument/' : ''}table", :locals => { :price_policies => rules, :url_date => date.strftime("%Y-%m-%d") }
+      %h4= text("dates", start: human_date(date), expires: human_date(policy.expire_date))
+      = render "price_policies/#{@product.is_a?(Instrument) ? 'instrument/' : ''}table",
+        price_policies: rules,
+        url_date: date.strftime("%Y-%m-%d")

@@ -10,8 +10,8 @@ class ProductsCommonController < ApplicationController
 
   include TranslationHelper
 
-  load_resource except: [:show, :manage, :index]
-  authorize_resource except: [:show, :manage]
+  load_resource except: [:show, :manage, :index], instance_name: :product
+  authorize_resource except: [:show, :manage], instance_name: :product
 
   layout "two_column"
 
@@ -169,9 +169,8 @@ class ProductsCommonController < ApplicationController
     !(@product.is_archived? || (@product.is_hidden? && !is_operator))
   end
 
-  # The equivalent of calling current_facility.services or current_facility.items
   def current_facility_products
-    current_facility.public_send(:"#{plural_object_name}").alphabetized
+    product_class.where(facility: current_facility).alphabetized
   end
 
   def price_policy_available_for_product?
@@ -182,11 +181,6 @@ class ProductsCommonController < ApplicationController
   # Dynamically get the proper object from the database based on the controller name
   def init_product
     @product = current_facility_products.find_by_url_name!(params[:"#{singular_object_name}_id"] || params[:id])
-    save_product_into_object_name_instance
-  end
-
-  def save_product_into_object_name_instance
-    instance_variable_set("@#{singular_object_name}", @product)
   end
 
   def product_class
