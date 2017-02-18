@@ -195,7 +195,7 @@ GEM
     docile (1.1.5)
     dynamic_form (1.1.4)
     erubis (2.7.0)
-    eventmachine (1.2.0.1)
+    eventmachine (1.2.2)
     exception_notification (4.0.1)
       actionmailer (>= 3.0.4)
       activesupport (>= 3.0.4)
