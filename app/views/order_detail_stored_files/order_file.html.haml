@@ -13,7 +13,7 @@
 
 %h2=h @order_detail.product
 
-= form_for(@file, :url => order_order_detail_upload_order_file_path, :html => { :multipart => true, :method => :post }) do |f|
+= form_for(@file, url: order_order_detail_upload_order_file_path, html: { multipart: true, method: :post }) do |f|
   = f.error_messages
   %table.table.table-striped.table-hover
     %tbody
