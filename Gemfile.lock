@@ -46,6 +46,11 @@ PATH
       rails (~> 4.0)
 
 PATH
+  remote: vendor/engines/secure_rooms
+  specs:
+    secure_rooms (0.0.1)
+
+PATH
   remote: vendor/engines/split_accounts
   specs:
     split_accounts (0.0.1)
@@ -566,6 +571,7 @@ DEPENDENCIES
   rubyzip
   sanger_sequencing (~> 0.0.1)!
   sass-rails (~> 5.0.6)
+  secure_rooms!
   shoulda-matchers (~> 2.8.0)
   simple_form (~> 3.3.1)
   single_test (= 0.4.0)
