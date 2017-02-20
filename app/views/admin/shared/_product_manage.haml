@@ -1,4 +1,4 @@
-= f.input :url_name, input_html: { value: link_to(url_for([current_facility, @product, only_path: false]), [current_facility, @product]) }
+= f.input :url_name, input_html: { value: link_to(polymorphic_url([current_facility, @product]), [current_facility, @product]) }
 
 - if SettingsHelper::feature_on? :product_specific_contacts
   = f.input :email

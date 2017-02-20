@@ -45,7 +45,7 @@ RSpec.describe ItemsController do
     it_should_allow_operators_only do |_user|
       expect(assigns[:item]).to eq(@item)
       expect(response).to be_success
-      expect(response).to render_template("items/manage")
+      expect(response).to render_template("manage")
     end
   end
 

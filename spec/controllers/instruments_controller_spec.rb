@@ -69,7 +69,7 @@ RSpec.describe InstrumentsController do
     end
 
     it_should_allow_operators_only do |_user|
-      expect(response).to render_template("instruments/manage")
+      expect(response).to render_template("manage")
     end
   end
 
