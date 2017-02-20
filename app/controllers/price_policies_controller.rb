@@ -98,13 +98,13 @@ class PricePoliciesController < ApplicationController
     @start_date = start_date_from_params
 
     @price_policy = @product
-      .price_policies
-      .for_date(@start_date)
-      .first
+                    .price_policies
+                    .for_date(@start_date)
+                    .first
   end
 
   def init_product
-    id_param = params.except(:facility_id).keys.detect { |k| k =~ /_id\z/ }
+    id_param = params.except(:facility_id).keys.detect { |k| k.end_with?("_id") }
     clazz = id_param.sub(/_id\z/, "").camelize
     @product = current_facility.products(clazz)
                                .find_by!(url_name: params[id_param])
