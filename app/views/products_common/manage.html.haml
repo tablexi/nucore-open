@@ -6,7 +6,7 @@
   = render "admin/shared/tabnav_product", secondary_tab: "details"
 
 %h2= @product
-= readonly_form_for @product.class.name.underscore do |f|
+= readonly_form_for @product.class.name.underscore, @product do |f|
   = render "admin/shared/product_manage", f: f
   = render_if_exists "#{@product.class.name.underscore}_manage_fields", f: f
 - if can? :edit, @product

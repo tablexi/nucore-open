@@ -19,7 +19,7 @@
             - else
               %p
                 = link_to t("shared.edit"),
-                  edit_price_policy_path(price_policy, url_date)
+                   [:edit, current_facility, @product, :price_policy, id: url_date]
               %p
                 = link_to t("shared.remove"),
                   price_policy_path(price_policy, url_date),

@@ -1,6 +1,6 @@
 = f.input :show_details, label: t("instruments.instrument_fields.show_details")
 
-= f.input :schedule, input_html: { value: @instrument.schedule.display_name }, hint: false
+= f.input :schedule, input_html: { value: @product.schedule.display_name }, hint: false
 
 = render "relay_manage", f: f
 

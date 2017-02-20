@@ -867,10 +867,6 @@ en:
   price_policies:
     adjustment: Adjustment
     amount: Amount
-    edit:
-      head: Edit Pricing Rules
-      cancel: Cancel
-      save: Save Rules
     instrument:
       price_policy_fields:
         price_group: Price Group
@@ -879,10 +875,6 @@ en:
         rate_per_hour: Rate Per Hour
         minimum_cost: Minimum Cost
         reservation_cost: Reservation Cost
-    instructional_text:
-      common: |
-        All users must be charged the same base rate. You may define adjustments
-        to this rate for individual internal price groups.
     price_policy_fields:
       price_group: Price Group
       type: Type
