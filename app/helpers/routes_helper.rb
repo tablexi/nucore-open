@@ -28,7 +28,7 @@ module RoutesHelper
       file.product,
       :download_product_file,
       file_type: file.file_type,
-      id: file
+      id: file,
     ]
   end
 

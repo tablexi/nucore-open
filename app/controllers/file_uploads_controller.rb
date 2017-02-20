@@ -76,12 +76,12 @@ class FileUploadsController < ApplicationController
 
   # GET /facilities/1/services/3/files/survey_upload
   def product_survey
-    @file     = product.stored_files.new(file_type: "template")
+    @file = product.stored_files.new(file_type: "template")
     @survey = ExternalServiceManager.survey_service.new
   end
 
   def create_product_survey
-    @product = current_facility.services.find_by_url_name!(params[:product_id])
+    @product = current_facility.services.find_by!(url_name: params[:product_id])
 
     if params[:stored_file]
       create_product_survey_from_file
@@ -124,8 +124,8 @@ class FileUploadsController < ApplicationController
       id_param = params.except(:facility_id).keys.detect { |k| k.end_with?("_id") }
       clazz = id_param.sub(/_id\z/, "").camelize
       @product = current_facility
-        .products(clazz)
-        .find_by!(url_name: params[id_param])
+                 .products(clazz)
+                 .find_by!(url_name: params[id_param])
     end
   end
 
