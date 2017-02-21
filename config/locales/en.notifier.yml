@@ -21,19 +21,36 @@ en:
       order_status_changed_to_pending_approval:
         subject: "%{user} has placed an order for %{product}. Please approve."
       review_orders:
-        subject: "!app_name! Orders For Review"
-        body: |
-          New transactions have been posted to %{accounts}.
-
-          Please log in to review these charges.
-        body_html: |
-          New transactions have been posted to %{accounts}.
-
-          Please log in to [!app_name!](%{login_url}) and review these charges.
+        subject: "!app_name! Orders For Review: %{abbreviation}"
+        body_intro: "New transactions from %{facility} have been posted to the following payment sources:"
+        body_text_outro: "Please log in to !app_name! and review these charges."
+        body_html_outro: "Please log in to [!app_name!](%{login_url}) and review these charges."
       statement:
         subject: "!app_name! Statement"
-        body: "A new statement from %{facility} has been created for your payment source, \"%{account}\"."
-        body_html: "A new statement from %{facility} has been created for your payment source, \"%{account}\"."
+        body: |
+          Thank you for using %{facility}.
+
+          Your invoice for payment source %{account} is attached and may also be viewed online after logging into !app_name!: %{app_url}
+
+          If you have any questions, please do not hesitate to contact us at %{facility_mailto}.
+
+          We look forward to serving you throughout the year.
+
+          Sincerely,
+
+          %{facility}
+        body_html: |
+          Thank you for using %{facility}.
+
+          Your invoice for payment source %{account} is attached and may also be viewed online after logging into [!app_name!](%{app_url}).
+
+          If you have any questions, please do not hesitate to contact us at [%{facility_mailto}](mailto:%{facility_mailto}).
+
+          We look forward to serving you throughout the year.
+
+          Sincerely,
+
+          %{facility}
       user_update:
         subject: "!app_name! User Updated"
         body: |
