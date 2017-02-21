@@ -254,6 +254,17 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           end
         end
 
+        it "should not allow same start date as assigned effective price policy" do
+          @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @director))
+          @order    = @director.orders.create(FactoryGirl.attributes_for(:order, created_by: @director.id))
+          @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @product.id, account_id: @account.id, price_policy: @price_policy))
+
+          @params[:start_date] = @price_policy.start_date
+          do_request
+          expect(assigns[:price_policies]).to be_empty
+          expect(response).to redirect_to facility_product_price_policies_path(@authable, @product)
+        end
+
         it "should reject everything if the expiration date spans into the next fiscal year" do
           @params[:expire_date] = (PricePolicy.generate_expire_date(@start_date) + 1.day).to_s
           do_request

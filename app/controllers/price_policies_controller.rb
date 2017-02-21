@@ -8,7 +8,8 @@ class PricePoliciesController < ApplicationController
   before_action :init_current_facility
   before_action :init_product
   before_action :init_price_policy, except: [:index, :new]
-  before_action :build_price_policies!, only: [:create, :edit, :update]
+  before_action :build_price_policies!, only: [:create, :update]
+  before_action :build_price_policies_for_edit!, only: :edit
   before_action :set_expire_date_from_params, only: [:create, :update]
   before_action :set_max_expire_date, only: [:edit, :update]
 
@@ -74,8 +75,17 @@ class PricePoliciesController < ApplicationController
     @product.price_policies.current.any?
   end
 
+  def build_price_policies
+    @price_policies ||= PricePolicyBuilder.get(@product, @start_date)
+  end
+
   def build_price_policies!
-    @price_policies = PricePolicyBuilder.get(@product, @start_date)
+    build_price_policies
+    redirect_to facility_product_price_policies_path, alert: I18n.t("controllers.price_policies.errors.same_start_date") if @price_policies.blank?
+  end
+
+  def build_price_policies_for_edit!
+    build_price_policies
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
   end
 
