@@ -5,8 +5,8 @@ RSpec.describe FileUploadsController do
   render_views
 
   it "routes", :aggregate_failures do
-    expect(get: "/#{facilities_route}/alpha/services/1/files/upload").to route_to(controller: "file_uploads", action: "upload", facility_id: "alpha", product: "services", product_id: "1")
-    expect(post: "/#{facilities_route}/alpha/services/1/files").to route_to(controller: "file_uploads", action: "create", facility_id: "alpha", product: "services", product_id: "1")
+    expect(get: "/#{facilities_route}/alpha/services/1/files").to route_to(controller: "file_uploads", action: "index", facility_id: "alpha", service_id: "1")
+    expect(post: "/#{facilities_route}/alpha/services/1/files").to route_to(controller: "file_uploads", action: "create", facility_id: "alpha", service_id: "1")
   end
 
   before(:all) { create_users }
@@ -18,15 +18,14 @@ RSpec.describe FileUploadsController do
     assert @service.valid?
   end
 
-  context "upload info" do
+  context "index" do
 
     before :each do
       @method = :get
-      @action = :upload
+      @action = :index
       @params = {
         facility_id: @authable.url_name,
-        product: "services",
-        product_id: @service.url_name,
+        service_id: @service.url_name,
         file_type: "info",
       }
     end
@@ -34,18 +33,16 @@ RSpec.describe FileUploadsController do
     it_should_allow_operators_only do
       expect(response).to be_success
     end
-
   end
 
-  context "create info" do
+  context "create" do
 
     before(:each) do
       @method = :post
       @action = :create
       @params = {
         facility_id: @authable.url_name,
-        product: "services",
-        product_id: @service.url_name,
+        service_id: @service.url_name,
         stored_file: {
           name: "File 1",
           file_type: "info",
@@ -56,7 +53,7 @@ RSpec.describe FileUploadsController do
 
     it_should_allow_managers_and_senior_staff_only :redirect do
       expect(assigns[:product]).to eq(@service)
-      expect(response).to redirect_to(upload_product_file_path(@authable, @service.parameterize, @service, file_type: "info"))
+      expect(response).to redirect_to([@authable, @service, :file_uploads, file_type: "info"])
       expect(@service.reload.stored_files.size).to eq(1)
       expect(@service.reload.stored_files.collect(&:name)).to eq(["File 1"])
     end
@@ -65,16 +62,16 @@ RSpec.describe FileUploadsController do
       @params[:stored_file][:file] = ""
       sign_in @admin
       do_request
-      is_expected.to render_template("upload")
+      is_expected.to render_template("index")
     end
 
   end
 
-  context "uploader_create" do
+  context "upload_sample_results" do
 
     before :each do
       @method = :post
-      @action = :uploader_create
+      @action = :upload_sample_results
       create_order_detail
       @params = {
         facility_id: @authable.url_name,
@@ -117,7 +114,7 @@ RSpec.describe FileUploadsController do
     before :each do
       @method = :get
       @action = :product_survey
-      @params = { facility_id: @authable.url_name, product: @service.id, product_id: @service.url_name }
+      @params = { facility_id: @authable.url_name, product: "services", product_id: @service.url_name }
     end
 
     it_should_allow_managers_and_senior_staff_only do
@@ -138,9 +135,9 @@ RSpec.describe FileUploadsController do
       @survey_param = ExternalServiceManager.survey_service.name.underscore.to_sym
       @ext_service_location = "http://remote.surveysystem.com/surveys"
       @params = {
-        :facility_id => @authable.url_name,
-        :product => @service.id,
-        :product_id => @service.url_name,
+        facility_id: @authable.url_name,
+        product: "services",
+        product_id: @service.url_name,
         @survey_param => {
           location: @ext_service_location,
         },
@@ -182,8 +179,7 @@ RSpec.describe FileUploadsController do
 
       @params = {
         facility_id: @authable.url_name,
-        product: "services",
-        product_id: @service.url_name,
+        service_id: @service.url_name,
         id: @file_upload.id,
       }
     end

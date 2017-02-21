@@ -929,7 +929,7 @@ en:
         main: "Downloadable Order Forms are templates to be filled in by the user and submitted when ordering.  Uploading a new template will replace any existing Downloadable Order Forms."
         notice: "No Downloadable Order Forms have been uploaded."
         confirm: "Are you sure you wish to remove this file?"
-    upload:
+    index:
       confirm_delete: Are you sure you wish to remove this file?
       documentation_note: |
         If provided, documentation will be available for download from the
