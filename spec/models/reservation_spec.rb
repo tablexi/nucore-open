@@ -1458,17 +1458,39 @@ RSpec.describe Reservation do
       end
     end
 
-    context "when the instrument has cutoff_hours set to 1" do
-      before { instrument.update_attributes(cutoff_hours: 1) }
+    context "when the instrument has cutoff_hours set" do
+      let(:instrument) { reservation.product }
 
-      context "when the reservation is started", :time_travel do
-        let(:now) { reservation.reserve_start_at }
+      context "when the reservation end_time is within cutoff_hours from now" do
+        before do
+          instrument.update_attributes(cutoff_hours: 2)
+          reservation.update_attributes(reserve_end_at: reservation.reserve_start_at + 1.hour)
+        end
 
-        before { reservation.start_reservation! }
+        context "when the reservation is started", :time_travel do
+          let(:now) { reservation.reserve_start_at }
 
-        it {
-          binding.pry
-          expect(reservation.next_duration_available?).to be_truthy }
+          before { reservation.start_reservation! }
+
+          it {
+            expect(reservation.next_duration_available?).to be_truthy }
+        end
+      end
+
+      context "when the reservation end_time is past cutoff_hours from now" do
+        before do
+          instrument.update_attributes(cutoff_hours: 2, max_reserve_mins: 240)
+          reservation.update_attributes(reserve_end_at: reservation.reserve_start_at + 3.hours)
+        end
+
+        context "when the reservation is started", :time_travel do
+          let(:now) { reservation.reserve_start_at }
+
+          before { reservation.start_reservation! }
+
+          it {
+            expect(reservation.next_duration_available?).to be_truthy }
+        end
       end
     end
   end

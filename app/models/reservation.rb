@@ -221,7 +221,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def next_duration_available?
-    next_available = product.next_available_reservation(reserve_end_at)
+    next_available = product.next_available_reservation(after: reserve_end_at, options: { ignore_cutoff: true })
 
     return false unless next_available
 
