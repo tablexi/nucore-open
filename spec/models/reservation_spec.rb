@@ -1457,6 +1457,20 @@ RSpec.describe Reservation do
         expect(reservation.next_duration_available?).to eq(false)
       end
     end
+
+    context "when the instrument has cutoff_hours set to 1" do
+      before { instrument.update_attributes(cutoff_hours: 1) }
+
+      context "when the reservation is started", :time_travel do
+        let(:now) { reservation.reserve_start_at }
+
+        before { reservation.start_reservation! }
+
+        it {
+          binding.pry
+          expect(reservation.next_duration_available?).to be_truthy }
+      end
+    end
   end
 
   describe "#duration_mins" do
