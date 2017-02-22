@@ -262,7 +262,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           @params[:start_date] = @price_policy.start_date
           do_request
           expect(assigns[:price_policies]).to be_empty
-          expect(response).to redirect_to facility_product_price_policies_path(@authable, @product)
+          expect(response).to redirect_to [@authable, @product, PricePolicy]
         end
 
         it "should reject everything if the expiration date spans into the next fiscal year" do
