@@ -5,4 +5,8 @@ Rails.application.routes.draw do
       resources :price_policies, controller: "secure_room_price_policies", except: :show
     end
   end
+
+  namespace :secure_rooms_api do
+    post '/scan', to: 'base#scan'
+  end
 end

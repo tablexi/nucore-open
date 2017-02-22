@@ -89,6 +89,11 @@ api:
   basic_auth_name: <%= SecureRandom.hex %>
   basic_auth_password: <%= SecureRandom.hex %>
 
+# You should change this if you want to be able to access the SecureRooms API
+secure_rooms_api:
+  basic_auth_name: <%= SecureRandom.hex %>
+  basic_auth_password: <%= SecureRandom.hex %>
+
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
