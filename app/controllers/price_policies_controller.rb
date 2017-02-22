@@ -62,11 +62,15 @@ class PricePoliciesController < ApplicationController
     return flash_remove_active_policy_warning_and_redirect if @start_date <= Date.today
 
     if PricePolicyUpdater.destroy_all_for_product!(@product, @start_date)
-      flash[:notice] = I18n.t("controllers.price_policies.destroy.success")
+      flash[:notice] = text("destroy.success")
     else
-      flash[:error] = I18n.t("controllers.price_policies.destroy.failure")
+      flash[:error] = text("destroy.failure")
     end
     redirect_to facility_product_price_policies_path
+  end
+
+  def translation_scope
+    "controllers.price_policies"
   end
 
   private
@@ -81,7 +85,10 @@ class PricePoliciesController < ApplicationController
 
   def build_price_policies!
     build_price_policies
-    redirect_to facility_product_price_policies_path, alert: I18n.t("controllers.price_policies.errors.same_start_date") if @price_policies.blank?
+    if @price_policies.blank?
+      redirect_to facility_product_price_policies_path,
+        alert: text("errors.same_start_date")
+    end
   end
 
   def build_price_policies_for_edit!
@@ -91,10 +98,10 @@ class PricePoliciesController < ApplicationController
 
   def create_or_update(action)
     if update_policies_from_params!
-      flash[:notice] = I18n.t("controllers.price_policies.#{action}.success")
+      flash[:notice] = text("#{action}.success")
       redirect_to facility_product_price_policies_path
     else
-      flash[:error] = I18n.t("controllers.price_policies.errors.save")
+      flash[:error] = text("errors.save")
       render "price_policies/#{action}"
     end
   end
@@ -127,7 +134,7 @@ class PricePoliciesController < ApplicationController
 
   def flash_remove_active_policy_warning_and_redirect
     flash[:error] =
-      I18n.t("controllers.price_policies.errors.remove_active_policy")
+      text("errors.remove_active_policy")
     redirect_to facility_product_price_policies_path
   end
 
