@@ -87,7 +87,7 @@ class PricePoliciesController < ApplicationController
     build_price_policies
     if @price_policies.blank?
       redirect_to facility_product_price_policies_path,
-        alert: text("errors.same_start_date")
+                  alert: text("errors.same_start_date")
     end
   end
 
