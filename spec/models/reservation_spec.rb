@@ -1425,19 +1425,27 @@ RSpec.describe Reservation do
   end
 
   describe "#next_duration_available?" do
-    subject(:reservation) { create(:purchased_reservation) }
+    subject(:reservation) do
+      FactoryGirl.build(:purchased_reservation,
+                         :running,
+                         product: instrument)
+    end
+
+    before { reservation.save! }
 
     it "has an available next duration" do
       expect(reservation.next_duration_available?).to eq(true)
     end
 
     context "with another reservation following" do
-      before do
-        create(:purchased_reservation,
-               reserve_start_at: reservation.reserve_end_at,
-               reserve_end_at: reservation.reserve_end_at + 1.hour,
-               product: reservation.product)
+      let(:other_reservation) do
+        FactoryGirl.build(:purchased_reservation,
+                           reserve_start_at: reservation.reserve_end_at,
+                           reserve_end_at: reservation.reserve_end_at + 1.hour,
+                           product: reservation.product)
       end
+
+      before { other_reservation.save! }
 
       it "has no available next duration" do
         expect(reservation.next_duration_available?).to eq(false)
@@ -1459,15 +1467,12 @@ RSpec.describe Reservation do
     end
 
     context "when the instrument has cutoff_hours set" do
-      let(:instrument) { reservation.product }
-
       context "when the reservation end_time is within cutoff_hours from now" do
         before do
           instrument.update_attributes(cutoff_hours: 2)
-          reservation.update_attributes(reserve_end_at: reservation.reserve_start_at + 1.hour)
         end
 
-        context "when the reservation is started", :time_travel do
+        context "when the reservation is started" do
           let(:now) { reservation.reserve_start_at }
 
           before { reservation.start_reservation! }
@@ -1482,7 +1487,7 @@ RSpec.describe Reservation do
           reservation.update_attributes(reserve_end_at: reservation.reserve_start_at + 3.hours)
         end
 
-        context "when the reservation is started", :time_travel do
+        context "when the reservation is started" do
           let(:now) { reservation.reserve_start_at }
 
           before { reservation.start_reservation! }
