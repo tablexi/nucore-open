@@ -1348,7 +1348,7 @@ RSpec.describe Reservation do
         .to contain_all [@today_reservation, @spans_day_reservation]
     end
 
-    it "returns a reservation that spands days when looking up the later date" do
+    it "returns a reservation that spans days when looking up the later date" do
       expect(Reservation.for_date(Time.zone.now + 1.day))
         .to contain_all [@tomorrow_reservation, @spans_day_reservation]
     end

@@ -152,8 +152,7 @@ module Products::SchedulingSupport
 
   class ReservationFinder
 
-    attr_accessor :rule, :day_start, :day_end, :options
-    attr_reader :start_time
+    attr_reader :rule, :day_start, :day_end, :options, :start_time
 
     def initialize(time, rule, options = {})
       @options    = options
@@ -164,37 +163,36 @@ module Products::SchedulingSupport
     end
 
     def next_reservation(reserver, duration)
-      magic_time = start_time
+      next_time = start_time
 
-      while magic_time < day_end
-        reservation = reserver.reservations.new(reserve_start_at: magic_time, reserve_end_at: magic_time + duration)
+      while next_time < day_end
+        reservation = reserver.reservations.new(reserve_start_at: next_time, reserve_end_at: next_time + duration)
 
         conflict = reservation.conflicting_reservation(exclude: options[:exclude])
         return reservation if conflict.nil?
 
-        magic_time = conflict.reserve_end_at
+        next_time = conflict.reserve_end_at
       end
     end
 
     private
 
-    def adjust_time
-      # we can't start before the rules say we can
-      @start_time = day_start if @start_time < day_start
-
-      # check for conflicts with rule interval/duration time and adjust to next interval if necessary
-      duration_mins = rule.instrument.reserve_interval.to_i
-      @start_time += (duration_mins - @start_time.min % duration_mins).minutes unless @start_time.min % duration_mins == 0
-    end
-
     def set_start_time(time)
-      if options[:ignore_cutoff]
-        @start_time = time
+      if !options[:ignore_cutoff] && rule.instrument.cutoff_hours > 0
+        # handle cutoff hours if needed
+        start_time = [time, day_start, rule.instrument.cutoff_hours.hours.from_now].max
       else
-        @start_time = rule.instrument.cutoff_hours > 0 ? [time, rule.instrument.cutoff_hours.hours.from_now].max : time
+        # pick the later of provided time and rule's start-of-day
+        start_time = [time, day_start].max
       end
-        adjust_time
-        @start_time
+
+      # ensure reservation start times abide by instrument's reserve_interval (i.e. 5 min increments)
+      reserve_interval = rule.instrument.reserve_interval.to_i
+      if start_time.min % reserve_interval != 0
+        start_time += (reserve_interval - start_time.min % reserve_interval).minutes
+      end
+
+      start_time
     end
 
   end
