@@ -368,7 +368,7 @@ namespace :demo do
       end
     end
 
-    other_affiliate = Affiliate.find_or_create_by!(name: "Other")
+    other_affiliate = Affiliate.OTHER
 
     if EngineManager.engine_loaded? :c2po
       ccaccount = CreditCardAccount.find_by(account_number: "xxxx-xxxx-xxxx-xxxx")

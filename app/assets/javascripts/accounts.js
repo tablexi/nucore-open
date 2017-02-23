@@ -4,7 +4,7 @@ $(function(){
   // Toggle affiliate
   // ---------------------------------------------------------------------------
   function toggleAffiliate() {
-    $(".js--affiliate_other").toggle($(".js--affiliate:visible option:selected").text() == "Other")
+    $(".js--affiliate_other").toggle($(".js--affiliate:visible option:selected").data("subaffiliatesEnabled") || false)
   }
 
   $(".js--affiliate").change(function() {

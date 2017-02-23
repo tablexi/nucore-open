@@ -3,7 +3,9 @@ module AffiliateAccount
 
   def self.included(base)
     base.validates_presence_of :affiliate_id
-    base.validates_length_of :affiliate_other, minimum: 1, if: proc { |cc| cc.affiliate == Affiliate.OTHER }
+    base.validates_length_of :affiliate_other,
+                             minimum: 1,
+                             if: proc { |cc| cc.affiliate.try(:subaffiliates_enabled?) }
   end
 
 end

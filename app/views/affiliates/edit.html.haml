@@ -1,7 +1,9 @@
 = content_for :h1 do
-  Global Settings
-= content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_global', :locals => { :sidenav_tab => 'affiliates' }
+  = text("pages.global_settings")
 
-%h2 Edit Affiliates
-= render :partial => 'form'
+= content_for :sidebar do
+  = render "admin/shared/sidenav_global", sidenav_tab: "affiliates"
+
+%h2= text("affiliates.edit")
+
+= render "form"

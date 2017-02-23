@@ -1,21 +1,23 @@
 = content_for :h1 do
-  = t("pages.global_settings")
+  = text("pages.global_settings")
 
 = content_for :sidebar do
   = render "admin/shared/sidenav_global", sidenav_tab: "affiliates"
 
-%h2= t("pages.affiliates")
-= link_to t("affiliates.add"), new_affiliate_path, class: "btn-add"
+%h2= text("pages.affiliates")
+= link_to text("affiliates.add"), new_affiliate_path, class: "btn-add"
 
 %table.table.table-striped.table-hover
   %thead
     %tr
       %th
-      %th{width: "100%"}= t("affiliates.th")
+      %th= Affiliate.model_name.human
+      %th= Affiliate.human_attribute_name(:subaffiliates_enabled)
   %tbody
-    - Affiliate.all.select(&:destroyable?).each do |affiliate|
+    - Affiliate.destroyable.each do |affiliate|
       %tr
         %td= delete_affiliate_link(affiliate)
         %td.indented_lots
           = affiliate.name
           %span.indented (#{edit_affiliate_link(affiliate)})
+        %td= text(affiliate.subaffiliates_enabled?.to_s, scope: "boolean")

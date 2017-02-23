@@ -269,10 +269,12 @@ class Account < ActiveRecord::Base
   end
 
   def affiliate_to_s
-    return unless affiliate
-    affiliate_name = affiliate.name
-    affiliate_name += ": #{affiliate_other}" if affiliate == Affiliate.OTHER
-    affiliate_name
+    return "" unless affiliate
+    if affiliate.subaffiliates_enabled?
+      "#{affiliate.name}: #{affiliate_other}"
+    else
+      affiliate.name
+    end
   end
 
   def description_to_s

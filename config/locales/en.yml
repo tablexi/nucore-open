@@ -72,11 +72,11 @@ en:
 
   affiliates:
     add: Add Affiliate
-    edit: Edit
+    edit: Edit Affiliate
+    new: New Affiliate
     remove:
       confirm: "Really remove affiliate %{name}?"
       label: Remove
-    th: Affiliate
 
   bundle_products:
     new:
@@ -191,7 +191,7 @@ en:
         payment_type: "Payment Source Type"
         account_number:
           account_number: "Payment Source Number"
-        affiliate: "Affiliate Name"
+        affiliate: "Affiliate Category"
         remit: "Bill To"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
     account_table:
@@ -863,6 +863,11 @@ en:
     transactions:
       no_orders: There are no orders in this !facility_downcase!
 
+  nufs_account:
+    account_fields:
+      label:
+        account_number:
+          account_number: Account Number
 
   price_policies:
     adjustment: Adjustment

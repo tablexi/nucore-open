@@ -12,7 +12,7 @@ OrderStatus.create(name: "Canceled")
 OrderStatus.create(name: "Complete")
 OrderStatus.create(name: "Reconciled")
 
-Affiliate.find_or_create_by(name: "Other")
+Affiliate.OTHER
 
 # TODO revisit in Rails 4. If you run `rake db:reset db:create db:migrate db:seed` as one step,
 # it fails on not recognizing `is_internal`

@@ -1,4 +1,10 @@
-= f.association :affiliate, collection: Affiliate.ordered_by_name, input_html: { class: "js--affiliate" }, include_blank: true, required: true
+= f.association :affiliate,
+  collection: select_affiliate_options,
+  input_html: { class: "js--affiliate" },
+  include_blank: true,
+  required: true
 
 .js--affiliate_other
-  = f.input :affiliate_other, required: true, label: t('facility_accounts.account_fields.label.affiliate')
+  = f.input :affiliate_other,
+    required: true,
+    label: text("facility_accounts.account_fields.label.affiliate")

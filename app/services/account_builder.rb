@@ -131,7 +131,7 @@ class AccountBuilder
     end
   end
 
-  # Creates a new acocunt object given an account type.
+  # Creates a new account object given an account type.
   # Should throw a NameError exception if the account_type object doesn't exist.
   def new_account
     @account = account_type.constantize.new
@@ -164,13 +164,11 @@ class AccountBuilder
   # param is present, and the affiliate exists. Also ensure affiliate_other
   # gets wiped out if the affiliate_id does not point to `Other`.
   def set_affiliate
-    if account.class.using_affiliate? && account_params.key?(:affiliate_id)
-      affiliate = Affiliate.find_by_id(account_params[:affiliate_id])
-      account.affiliate_id = affiliate.try(:id)
-      account.affiliate_other = nil if affiliate.try(:id) != Affiliate.OTHER.id
+    if affiliate.present?
+      account.affiliate_id = affiliate.id
+      account.affiliate_other = affiliate.subaffiliates_enabled? ? account_params[:affiliate_other] : nil
     else
-      account.affiliate_id = nil
-      account.affiliate_other = nil
+      account.affiliate_id = account.affiliate_other = nil
     end
     account
   end
@@ -191,6 +189,15 @@ class AccountBuilder
   def set_updated_by
     account.updated_by = current_user.id
     account
+  end
+
+  private
+
+  def affiliate
+    @affiliate ||=
+      if account.class.using_affiliate? && account_params.key?(:affiliate_id)
+        Affiliate.find_by(id: account_params[:affiliate_id])
+      end
   end
 
 end

@@ -75,7 +75,7 @@ RSpec.configure do |config|
     @os_reconciled = OrderStatus.find_or_create_by(name: "Reconciled")
 
     # initialize affiliates
-    Affiliate.find_or_create_by(name: "Other")
+    Affiliate.OTHER
 
     # initialize price groups
     @nupg = PriceGroup.find_or_create_by(name: Settings.price_group.name.base, is_internal: true, display_order: 1)
