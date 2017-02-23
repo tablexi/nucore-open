@@ -8,7 +8,8 @@ class PricePoliciesController < ApplicationController
   before_action :init_current_facility
   before_action :init_product
   before_action :init_price_policy, except: [:index, :new]
-  before_action :build_price_policies!, only: [:create, :edit, :update]
+  before_action :build_price_policies!, only: [:create, :update]
+  before_action :build_price_policies_for_edit!, only: :edit
   before_action :set_expire_date_from_params, only: [:create, :update]
   before_action :set_max_expire_date, only: [:edit, :update]
 
@@ -61,11 +62,15 @@ class PricePoliciesController < ApplicationController
     return flash_remove_active_policy_warning_and_redirect if @start_date <= Date.today
 
     if PricePolicyUpdater.destroy_all_for_product!(@product, @start_date)
-      flash[:notice] = I18n.t("controllers.price_policies.destroy.success")
+      flash[:notice] = text("destroy.success")
     else
-      flash[:error] = I18n.t("controllers.price_policies.destroy.failure")
+      flash[:error] = text("destroy.failure")
     end
     redirect_to facility_product_price_policies_path
+  end
+
+  def translation_scope
+    "controllers.price_policies"
   end
 
   private
@@ -74,17 +79,29 @@ class PricePoliciesController < ApplicationController
     @product.price_policies.current.any?
   end
 
+  def build_price_policies
+    @price_policies ||= PricePolicyBuilder.get(@product, @start_date)
+  end
+
   def build_price_policies!
-    @price_policies = PricePolicyBuilder.get(@product, @start_date)
+    build_price_policies
+    if @price_policies.blank?
+      redirect_to facility_product_price_policies_path,
+                  alert: text("errors.same_start_date")
+    end
+  end
+
+  def build_price_policies_for_edit!
+    build_price_policies
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
   end
 
   def create_or_update(action)
     if update_policies_from_params!
-      flash[:notice] = I18n.t("controllers.price_policies.#{action}.success")
+      flash[:notice] = text("#{action}.success")
       redirect_to facility_product_price_policies_path
     else
-      flash[:error] = I18n.t("controllers.price_policies.errors.save")
+      flash[:error] = text("errors.save")
       render "price_policies/#{action}"
     end
   end
@@ -117,7 +134,7 @@ class PricePoliciesController < ApplicationController
 
   def flash_remove_active_policy_warning_and_redirect
     flash[:error] =
-      I18n.t("controllers.price_policies.errors.remove_active_policy")
+      text("errors.remove_active_policy")
     redirect_to facility_product_price_policies_path
   end
 
