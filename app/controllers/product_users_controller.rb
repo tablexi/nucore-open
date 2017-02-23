@@ -84,7 +84,7 @@ class ProductUsersController < ApplicationController
 
   # PUT /facilities/:facility_id/instruments/:instrument_id/update_restrictions
   def update_restrictions
-    product_param_name = @product.class.name.underscore.underscore
+    product_param_name = @product.class.name.underscore
     unless params[product_param_name]
       redirect_to action: :index
       return
