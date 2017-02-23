@@ -7,6 +7,6 @@ Rails.application.routes.draw do
   end
 
   namespace :secure_rooms_api do
-    post '/scan', to: 'base#scan'
+    post '/scan', to: 'scans#scan'
   end
 end

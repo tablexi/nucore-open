@@ -1,4 +1,4 @@
-class SecureRoomsApi::BaseController < ApplicationController
+class SecureRoomsApi::ScansController < ApplicationController
 
   http_basic_authenticate_with(
     name: Settings.secure_rooms_api.basic_auth_name,
@@ -11,7 +11,7 @@ class SecureRoomsApi::BaseController < ApplicationController
       reason: "I only know how to deny right now.",
     }
 
-    render json: response_json, status: :ok
+    render json: response_json, status: :forbidden
   end
 
 end
