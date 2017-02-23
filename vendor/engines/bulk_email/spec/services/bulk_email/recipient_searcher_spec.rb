@@ -338,7 +338,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
       before { params[:products] = [] }
 
       it "returns all authorized users for any instrument" do
-        expect(users).to match(authorized_users)
+        expect(users).to match_array(authorized_users)
       end
     end
 
@@ -364,7 +364,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
       before { params[:products] = [product.id, product2.id] }
 
       it "returns only the users for both products and no more" do
-        expect(users).to match(authorized_users)
+        expect(users).to match_array(authorized_users)
       end
     end
   end
