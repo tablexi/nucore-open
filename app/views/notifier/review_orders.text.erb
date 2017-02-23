@@ -1,3 +1,9 @@
-<%= text("views.notifier.review_orders.body", accounts: raw(@accounts), smart: false) %>
+<%= text "body_intro", facility: @facility, smart: false %>
+
+<% @accounts.each do |account| %>
+  <%= "#{account.account_list_item}, #{account.owner.user.full_name}" %>
+<% end %>
+
+<%= text "body_text_outro", login_url: transactions_in_review_url, smart: false %>
 
 <%= transactions_in_review_url %>

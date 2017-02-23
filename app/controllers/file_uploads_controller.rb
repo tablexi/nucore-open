@@ -6,7 +6,7 @@ class FileUploadsController < ApplicationController
   before_action       :init_current_facility
   skip_before_action  :verify_authenticity_token, only: :create
 
-  load_and_authorize_resource class: StoredFile, except: [:download, :uploader_create]
+  load_and_authorize_resource class: StoredFile, except: [:download, :upload_sample_results]
 
   layout "two_column"
 
@@ -15,22 +15,18 @@ class FileUploadsController < ApplicationController
     super
   end
 
-  # GET /facilities/1/services/3/files/upload?type=info
-  # GET /facilities/1/services/3/files/upload?type=template
-  # GET /facilities/1/services/3/files/upload?type=template_result
-  def upload
-    @klass   = params[:product]
-    @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
-    @file    = @product.stored_files.new(file_type: params[:file_type])
+  # GET /facilities/1/services/3/files?file_type=info
+  # GET /facilities/1/services/3/files?file_type=template
+  # GET /facilities/1/services/3/files?file_type=template_result
+  def index
+    @file = product.stored_files.new(file_type: params[:file_type])
+    @files = @product.stored_files.where(file_type: @file.file_type || params[:file_type])
   end
 
   # GET /facilities/:facility_id/:product/:product_id/files/:file_type/:id
   def download
     redirect_to(
-      current_facility
-        .products
-        .where(type: params[:product].capitalize.singularize)
-        .find_by_url_name!(params[:product_id]) # TODO: update to #find_by for Rails 4
+      product
         .stored_files
         .where(file_type: params[:file_type])
         .find(params[:id])
@@ -40,32 +36,28 @@ class FileUploadsController < ApplicationController
 
   # POST /facilities/1/services/3/files
   def create
-    @klass   = params[:product]
-    @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
-
-    @file = @product.stored_files.new(params[:stored_file].merge(created_by: session_user.id))
+    @file = product.stored_files.new(params[:stored_file].merge(created_by: session_user.id))
+    @files = @product.stored_files.where(file_type: @file.file_type || params[:file_type])
 
     if @file.save
       flash[:notice] = "File uploaded"
-      redirect_to(upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type)) && return
+      redirect_to [current_facility, @product, :file_uploads, file_type: @file.file_type]
+    else
+      render :index
     end
-    render :upload
   end
 
-  # POST /facilities/:facility_id/:product/:product_id/uploader_files
-  def uploader_create
-    @klass    = params[:product]
-    @product  = current_facility.send(@klass).find_by_url_name!(params[:product_id])
-
+  # POST /facilities/:facility_id/:product/:product_id/upload_sample_results
+  def upload_sample_results
     options = { file: params[:qqfile],
                 name: params[:qqfilename].presence || params[:qqfile].original_filename,
                 file_type: params[:file_type],
                 order_detail: OrderDetail.find(params[:order_detail_id]),
-                product: @product,
+                product: product,
                 created_by: current_user.id }
 
-    @upload = @product.stored_files.new(options)
-    authorize! :uploader_create, @upload
+    @upload = product.stored_files.new(options)
+    authorize! :upload_sample_results, @upload
 
     if @upload.save
       ResultsFileNotifier.new(@upload).notify if @upload.sample_result?
@@ -84,13 +76,12 @@ class FileUploadsController < ApplicationController
 
   # GET /facilities/1/services/3/files/survey_upload
   def product_survey
-    @product  = current_facility.services.find_by_url_name!(params[:product_id])
-    @file     = @product.stored_files.new(file_type: "template")
+    @file = product.stored_files.new(file_type: "template")
     @survey = ExternalServiceManager.survey_service.new
   end
 
   def create_product_survey
-    @product = current_facility.services.find_by_url_name!(params[:product_id])
+    @product = current_facility.services.find_by!(url_name: params[:product_id])
 
     if params[:stored_file]
       create_product_survey_from_file
@@ -101,9 +92,7 @@ class FileUploadsController < ApplicationController
   end
 
   def destroy
-    @klass   = params[:product]
-    @product = current_facility.send(@klass).find_by_url_name!(params[:product_id])
-    @file    = @product.stored_files.find(params[:id])
+    @file = product.stored_files.find(params[:id])
 
     if @product.stored_files.destroy(@file)
       flash[:notice] = "The file was deleted successfully"
@@ -119,17 +108,26 @@ class FileUploadsController < ApplicationController
     elsif @file.file_type == "template"
       redirect_to(@return_to || product_survey_path(current_facility, @product.parameterize, @product))
     else
-      redirect_to(@return_to || upload_product_file_path(current_facility, @product.parameterize, @product, file_type: @file.file_type))
+      redirect_to(@return_to || [current_facility, @product, :file_uploads, file_type: @file.file_type])
     end
   end
 
-  protected
-
-  def manage_path(_facility, _product)
-    eval("manage_facility_#{@klass.singularize}_path(current_facility, @product)")
-  end
-
   private
+
+  def product
+    if params[:product]
+      # Use the older route behavior
+      # TODO: Remove this once all the necessary routes are removed (see routes.rb:355)
+      klass = params[:product]
+      @product = current_facility.send(klass).find_by!(url_name: params[:product_id])
+    else
+      id_param = params.except(:facility_id).keys.detect { |k| k.end_with?("_id") }
+      clazz = id_param.sub(/_id\z/, "").camelize
+      @product = current_facility
+                 .products(clazz)
+                 .find_by!(url_name: params[id_param])
+    end
+  end
 
   def create_product_survey_from_file
     @file = @product.stored_files.new(params[:stored_file].merge(created_by: session_user.id, name: "Order Form Template"))

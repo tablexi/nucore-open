@@ -1,0 +1,18 @@
+= render "shared/headers/ckeditor"
+
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
+
+%h2= text("admin.shared.add", model: @product.class.model_name.human)
+
+= simple_form_for([current_facility, @product]) do |f|
+  = f.error_messages
+  .form-inputs
+    = render "admin/products/details_fields", f: f
+    = render_if_exists "#{@product.class.name.underscore}_fields", f: f
+  %ul.inline
+    %li= f.submit text("shared.create"), class: ["btn", "btn-primary"]
+    %li= link_to text("shared.cancel"), [current_facility, @product]

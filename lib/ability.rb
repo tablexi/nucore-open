@@ -20,11 +20,13 @@ class Ability
         can :manage, AccountPriceGroupMember
       else
         can :manage, :all
+        cannot([:edit, :update], User) { |target_user| !target_user.admin_editable? }
         unless user.billing_administrator?
           cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
         end
         unless user.account_manager?
           cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
+          cannot([:edit, :update], User) { |target_user| !target_user.admin_editable? }
         end
       end
 
@@ -61,6 +63,7 @@ class Ability
       if resource == Facility.cross_facility
         can [:accounts, :index, :orders, :show], User
       end
+      can :manage_users, Facility.cross_facility if SettingsHelper.feature_on?(:billing_administrator_users_tab)
       can :manage_billing, Facility.cross_facility
       can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
     end
@@ -124,13 +127,16 @@ class Ability
 
         can [:administer, :index, :view_details, :schedule, :show], Product
 
-        can [:upload, :uploader_create, :destroy], StoredFile do |fileupload|
+        can [:index], StoredFile
+        can [:upload_sample_results, :destroy], StoredFile do |fileupload|
           fileupload.file_type == "sample_result"
         end
 
         can [:administer], User
+
         if controller.is_a?(UsersController) || controller.is_a?(SearchController)
           can :manage, User
+          cannot([:edit, :update], User)
           cannot(:switch_to, User) { |target_user| !target_user.active? }
         end
 
@@ -168,6 +174,7 @@ class Ability
         ]
 
         can :manage, User if controller.is_a?(FacilityUsersController)
+        cannot([:edit, :update], User)
         cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
 
         # A facility admin can manage an account if it has no facility (i.e. it's a chart string) or the account

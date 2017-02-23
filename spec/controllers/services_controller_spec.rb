@@ -44,15 +44,15 @@ RSpec.describe ServicesController do
 
     it "should allow public access" do
       do_request
-      expect(assigns[:service]).to eq(@service)
+      expect(assigns[:product]).to eq(@service)
       expect(response).to be_success
-      expect(response).to render_template("services/show")
+      expect(response).to render_template("show")
     end
 
     it_should_allow_all facility_users do
-      expect(assigns[:service]).to eq(@service)
+      expect(assigns[:product]).to eq(@service)
       expect(response).to be_success
-      expect(response).to render_template("services/show")
+      expect(response).to render_template("show")
     end
 
     it "should fail without a valid account" do
@@ -127,7 +127,7 @@ RSpec.describe ServicesController do
         sign_in @admin
         do_request
         expect(response).to be_success
-        expect(assigns[:service]).to eq(@service)
+        expect(assigns[:product]).to eq(@service)
       end
     end
   end
@@ -139,8 +139,8 @@ RSpec.describe ServicesController do
     end
 
     it_should_allow_managers_only do
-      expect(assigns(:service)).to be_kind_of Service
-      expect(assigns(:service).facility).to eq(@authable)
+      expect(assigns(:product)).to be_kind_of Service
+      expect(assigns(:product).facility).to eq(@authable)
     end
   end
 
@@ -164,17 +164,17 @@ RSpec.describe ServicesController do
     end
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:service)).to be_kind_of Service
-      expect(assigns(:service).facility).to eq(@authable)
+      expect(assigns(:product)).to be_kind_of Service
+      expect(assigns(:product).facility).to eq(@authable)
       is_expected.to set_flash
-      assert_redirected_to [:manage, @authable, assigns(:service)]
+      assert_redirected_to [:manage, @authable, assigns(:product)]
     end
 
     it "does not raise error on blank url name" do
       sign_in @admin
       @params[:service][:url_name] = ""
       do_request
-      expect(assigns(:service)).to be_invalid
+      expect(assigns(:product)).to be_invalid
     end
   end
 
@@ -186,9 +186,9 @@ RSpec.describe ServicesController do
     end
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:service)).to be_kind_of Service
+      expect(assigns(:product)).to be_kind_of Service
       is_expected.to set_flash
-      assert_redirected_to manage_facility_service_url(@authable, assigns(:service))
+      assert_redirected_to manage_facility_service_url(@authable, assigns(:product))
     end
   end
 
@@ -200,7 +200,7 @@ RSpec.describe ServicesController do
     end
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:service)).to eq(@service)
+      expect(assigns(:product)).to eq(@service)
       should_be_destroyed @service
       assert_redirected_to facility_services_url
     end
@@ -215,7 +215,7 @@ RSpec.describe ServicesController do
 
     it_should_allow_operators_only do
       expect(response).to be_success
-      expect(response).to render_template("services/manage")
+      expect(response).to render_template("manage")
     end
   end
 end

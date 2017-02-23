@@ -73,9 +73,7 @@ RSpec.describe PricePoliciesHelper do
     end
   end
 
-  describe "#edit_price_policy_path"
   describe "#format_date"
-  describe "#new_price_policy_path"
   describe "#price_policies_path"
   describe "#price_policy_path"
 end

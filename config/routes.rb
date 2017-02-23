@@ -64,11 +64,14 @@ Nucore::Application.routes.draw do
 
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
-    resources :instruments do
-      member do
-        get "manage"
-      end
+    concern :facility_product do
+      get :manage, on: :member
+      resources :users, controller: "product_users", except: [:show, :edit, :create]
+      resources :file_uploads, path: "files", only: [:index, :create, :destroy]
+      get "/files/:file_type/:id", to: 'file_uploads#download', as: "download_product_file"
+    end
 
+    resources :instruments, concerns: :facility_product do
       get "public_schedule", to: 'instruments#public_schedule'
       get "schedule",        to: 'instruments#schedule'
       get "status",          to: 'instruments#instrument_status'
@@ -86,36 +89,22 @@ Nucore::Application.routes.draw do
       end
 
       resources :reservations, only: [:index]
-      resources :users, controller: "product_users", except: [:show, :edit, :create]
-      get "/users/user_search_results", to: "product_users#user_search_results"
       put "update_restrictions", to: "product_users#update_restrictions"
     end
 
-    resources :services do
-      member do
-        get "manage"
-      end
+    resources :services, concerns: :facility_product do
       resources :price_policies, controller: "service_price_policies", except: [:show]
-      resources :users, controller: "product_users", except: [:show, :edit, :create]
-      get "/users/user_search_results", to: 'product_users#user_search_results'
     end
 
-    resources :items do
-      member do
-        get "manage"
-      end
+    resources :items, concerns: :facility_product do
       resources :price_policies, controller: "item_price_policies", except: [:show]
-      resources :users, controller: "product_users", except: [:show, :edit, :create]
-      get "/users/user_search_results", to: 'product_users#user_search_results'
     end
 
     resources :bundles do
-      member do
-        get "manage"
-      end
-      resources :users, controller: "product_users", except: [:show, :edit, :create]
-      get "/users/user_search_results", to: 'product_users#user_search_results'
+      get :manage, on: :member
       resources :bundle_products, controller: "bundle_products", except: [:show]
+      resources :file_uploads, path: "files", only: [:new, :create, :destroy]
+      get "/files/:file_type/:id", to: 'file_uploads#download', as: "download_product_file"
     end
 
     resources :price_group_products, only: [:edit, :update]
@@ -131,7 +120,7 @@ Nucore::Application.routes.draw do
 
     ### Feature Toggle Create Users ###
     if SettingsHelper.feature_on?(:create_users)
-      resources :users, except: [:edit, :update] do
+      resources :users do
         collection do
           get "new_external"
           post "search"
@@ -365,13 +354,10 @@ Nucore::Application.routes.draw do
   resources :my_files, only: [:index] if SettingsHelper.feature_on?(:my_files)
 
   # file upload routes
-  get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/upload",                                   to: 'file_uploads#upload',                as: "upload_product_file"
-  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files",                                          to: 'file_uploads#create',                as: "add_product_file"
-  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/uploader_files",                                 to: 'file_uploads#uploader_create',       as: "add_uploader_file"
-  delete "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:id",                                      to: 'file_uploads#destroy',               as: "remove_product_file"
-  get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/:file_type/:id",                           to: 'file_uploads#download',              as: "download_product_file"
-  get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/product_survey",                           to: 'file_uploads#product_survey',        as: "product_survey"
-  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/create_product_survey",                    to: 'file_uploads#create_product_survey', as: "create_product_survey"
+  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/sample_results", to: 'file_uploads#upload_sample_results', as: "add_uploader_file"
+  get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/product_survey", to: 'file_uploads#product_survey', as: "product_survey"
+  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/create_product_survey", to: 'file_uploads#create_product_survey', as: "create_product_survey"
+
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
   put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
   get "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete", to: "surveys#complete", as: "complete_survey"

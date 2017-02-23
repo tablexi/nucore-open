@@ -22,14 +22,14 @@ module RoutesHelper
     facility_account_statement_path(statement.facility, statement.account_id, statement, format: :pdf)
   end
 
-  def product_file_path(product_info_file)
-    download_product_file_path(
-      product_info_file.product.facility,
-      product_info_file.product.type.pluralize.downcase,
-      product_info_file.product,
-      product_info_file.file_type,
-      product_info_file,
-    )
+  def product_file_path(file)
+    [
+      file.product.facility,
+      file.product,
+      :download_product_file,
+      file_type: file.file_type,
+      id: file,
+    ]
   end
 
   def stored_file_path(file)

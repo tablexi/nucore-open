@@ -4,19 +4,19 @@
     %li &raquo;
     %li= link_to current_facility, current_facility
     %li &raquo;
-    %li= product.name
+    %li= @product.name
 
 = content_for :h1 do
-  = product.name
+  = @product.name
 
 .wysiwyg.pull-left
-  = product.description
+  = @product.description
   - if @login_required
     = link_to 'Login', new_user_session_path, :class => 'btn'
   - elsif @add_to_cart
-    = link_to 'Add to cart', add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => product.id, :quantity => 1}] }), :method => :put, :class => 'btn'
+    = link_to 'Add to cart', add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => @product.id, :quantity => 1}] }), :method => :put, :class => 'btn'
 
-- docs = product.stored_files.info
+- docs = @product.stored_files.info
 - unless docs.empty?
   .well.pull-right.span4
     %h3 Documentation

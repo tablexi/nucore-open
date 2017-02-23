@@ -16,14 +16,14 @@
 = f.input :control_mechanism,
   collection: options_for_control_mechanism,
   include_blank: false,
-  selected: @instrument.control_mechanism || :manual
+  selected: @product.control_mechanism || :manual
 
 - # TODO
 .well#power-relay
   %h3= text("instruments.instrument_fields.relay.label.relay")
   %p= text("instruments.instrument_fields.relay.intro")
 
-  = f.simple_fields_for :relay, @instrument.relay || @instrument.build_relay do |rf|
+  = f.simple_fields_for :relay, @product.relay || @product.build_relay do |rf|
     = rf.input :type, collection: options_for_relay, include_blank: false
     = rf.input :ip
     = rf.input :port

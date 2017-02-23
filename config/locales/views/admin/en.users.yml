@@ -7,6 +7,10 @@ en:
           Active users are users which have placed an order or had an order placed
           on their behalf at this !facility_downcase! in the last year.
         no_users: There are no active users for this !facility_downcase!.
+      edit:
+        head: Edit %{user}
+        subhead: You may use this to edit external users. The email address and username must match.
+        update: Update
 
   controllers:
     users:
@@ -15,3 +19,6 @@ en:
         success: The user has been added successfully.
         add_role: |
           You may wish to [add a !facility_downcase! role](%{link}) for this user.
+      update:
+        error: There was an error updating the user. %{message}
+        success: The user has been updated successfully.

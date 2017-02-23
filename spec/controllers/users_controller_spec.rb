@@ -46,6 +46,46 @@ RSpec.describe UsersController do
 
   end
 
+  describe "GET #edit" do
+    let(:user) { FactoryGirl.create(:user, :external) }
+
+    before(:each) do
+      @method = :get
+      @action = :edit
+      @params[:id] = user.id
+    end
+
+    it_should_allow_admin_only do
+      expect(assigns[:user]).to eq(user)
+    end
+  end
+
+  describe "PUT #update" do
+    let(:user) { FactoryGirl.create(:user, :external) }
+
+    before(:each) do
+      @method = :put
+      @action = :update
+      @params[:id] = user.id
+      @params[:user] = { first_name: "New", last_name: "Name" }
+    end
+
+    it_should_allow_admin_only(:found) do
+      expect(user.reload.first_name).to eq("New")
+      expect(response).to redirect_to facility_user_path(facility, user)
+    end
+
+    context "with bad params" do
+      before(:each) do
+        @params[:user] = { email: "test@example.com", username: "newusername" }
+      end
+
+      it_should_allow_admin_only(:found) do
+        expect(user.reload.first_name).to eq(user.first_name)
+      end
+    end
+  end
+
   describe "GET #access_list" do
     let(:facility) { FactoryGirl.create(:setup_facility) }
     let(:user) { FactoryGirl.create(:user) }

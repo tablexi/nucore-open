@@ -68,9 +68,9 @@ class NotificationSender
 
   class AccountNotifier
 
-    def notify_accounts(account_ids_to_notify)
+    def notify_accounts(account_ids_to_notify, facility)
       notifications_hash(account_ids_to_notify).each do |user_id, account_ids|
-        Notifier.review_orders(user_id: user_id, account_ids: account_ids).deliver_now
+        Notifier.review_orders(user_id: user_id, account_ids: account_ids, facility: facility).deliver_now
       end
     end
 
@@ -91,7 +91,7 @@ class NotificationSender
   end
 
   def notify_accounts
-    AccountNotifier.new.delay.notify_accounts(account_ids_to_notify)
+    AccountNotifier.new.delay.notify_accounts(account_ids_to_notify, current_facility)
   end
 
 end

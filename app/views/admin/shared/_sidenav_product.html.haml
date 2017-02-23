@@ -1,8 +1,8 @@
 %ul.sidebar-nav
-  = tab "#{Instrument.model_name.human.pluralize} (#{current_facility.instruments.count})", facility_instruments_path(current_facility), sidenav_tab == Instrument.model_name.plural
-  = tab "#{Service.model_name.human.pluralize} (#{current_facility.services.count})", facility_services_path(current_facility), sidenav_tab == Service.model_name.plural
-  = tab "#{Item.model_name.human.pluralize} (#{current_facility.items.count})", facility_items_path(current_facility), sidenav_tab == Item.model_name.plural
-  = tab "#{Bundle.model_name.human.pluralize} (#{current_facility.bundles.count})", facility_bundles_path(current_facility), sidenav_tab == Bundle.model_name.plural
+  - [Instrument, Service, Item, Bundle].each do |product_type|
+    = tab "#{product_type.model_name.human(count: 2)} (#{current_facility.products(product_type).count})",
+      [current_facility, product_type],
+      sidenav_tab == product_type.model_name.plural
 
   - if SettingsHelper.feature_on?(:training_requests) && current_ability.can?(:index, TrainingRequest)
     %li.divider

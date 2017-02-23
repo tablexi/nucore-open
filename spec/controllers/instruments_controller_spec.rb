@@ -53,7 +53,7 @@ RSpec.describe InstrumentsController do
 
     it "should set the instrument" do
       do_request
-      expect(assigns[:instrument]).to eq(@instrument)
+      expect(assigns[:product]).to eq(@instrument)
     end
 
     it "should not have html tags in title" do
@@ -69,7 +69,7 @@ RSpec.describe InstrumentsController do
     end
 
     it_should_allow_operators_only do |_user|
-      expect(response).to render_template("instruments/manage")
+      expect(response).to render_template("manage")
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe InstrumentsController do
     end
 
     it_should_allow :guest, "but not add to cart" do
-      expect(assigns[:instrument]).to eq(instrument)
+      expect(assigns[:product]).to eq(instrument)
       assert_redirected_to facility_path(facility)
     end
 
@@ -130,13 +130,13 @@ RSpec.describe InstrumentsController do
 
       it "requires sign in" do
         do_request
-        expect(assigns[:instrument]).to eq(instrument)
+        expect(assigns(:product)).to eq(instrument)
         expect(session[:requested_params]).to be_present
         assert_redirected_to new_user_session_path
       end
 
       it_should_allow_all(facility_operators) do
-        expect(assigns[:instrument]).to eq(instrument)
+        expect(assigns(:product)).to eq(instrument)
         assert_redirected_to(
           add_order_path(
             Order.all.last,
@@ -220,7 +220,7 @@ RSpec.describe InstrumentsController do
         end
 
         it "shows the page if acting as a user" do
-          expect(assigns[:instrument]).to eq(instrument)
+          expect(assigns[:product]).to eq(instrument)
           expect(assigns[:add_to_cart]).to be true
           expect(response).to be_redirect
         end
@@ -235,9 +235,9 @@ RSpec.describe InstrumentsController do
     end
 
     it_should_allow_managers_only do
-      expect(assigns(:instrument)).to be_kind_of Instrument
-      expect(assigns(:instrument)).to be_new_record
-      expect(assigns(:instrument).facility).to eq(@authable)
+      expect(assigns(:product)).to be_kind_of Instrument
+      expect(assigns(:product)).to be_new_record
+      expect(assigns(:product).facility).to eq(@authable)
       is_expected.to render_template "new"
     end
   end
@@ -266,7 +266,7 @@ RSpec.describe InstrumentsController do
     end
 
     it_should_allow_managers_only :redirect do
-      assert_successful_creation { expect(assigns(:instrument).relay).to be_nil }
+      assert_successful_creation { expect(assigns(:product).relay).to be_nil }
     end
 
     context "with relay" do
@@ -285,7 +285,7 @@ RSpec.describe InstrumentsController do
 
       it_should_allow :director, "to create a relay" do
         assert_successful_creation do
-          relay = assigns(:instrument).relay
+          relay = assigns(:product).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
           expect(relay.port).to eq(@params[:instrument][:relay_attributes][:port])
@@ -308,8 +308,8 @@ RSpec.describe InstrumentsController do
         context "and the relay is taken by a different instrument" do
           it "does not allow the relay to be used again" do
             do_request
-            expect(assigns(:instrument)).to_not be_persisted
-            expect(assigns(:instrument).errors).to include(:relay)
+            expect(assigns(:product)).to_not be_persisted
+            expect(assigns(:product).errors).to include(:relay)
           end
         end
 
@@ -317,8 +317,8 @@ RSpec.describe InstrumentsController do
           it "allows creation" do
             @params[:instrument][:schedule_id] = instrument2.schedule_id
             do_request
-            expect(assigns(:instrument)).to be_persisted
-            expect(assigns(:instrument).relay).to be_persisted
+            expect(assigns(:product)).to be_persisted
+            expect(assigns(:product).relay).to be_persisted
           end
         end
       end
@@ -334,7 +334,7 @@ RSpec.describe InstrumentsController do
 
       it_should_allow :director, "to create a timer" do
         assert_successful_creation do
-          relay = assigns(:instrument).relay
+          relay = assigns(:product).relay
           expect(relay).to be_a Relay
           expect(relay.type).to eq(RelayDummy.name)
         end
@@ -358,7 +358,7 @@ RSpec.describe InstrumentsController do
 
         it "should be the newest schedule" do
           do_request
-          expect(assigns(:instrument).schedule).to eq(Schedule.last)
+          expect(assigns(:product).schedule).to eq(Schedule.last)
         end
       end
 
@@ -369,7 +369,7 @@ RSpec.describe InstrumentsController do
 
         it "should use the existing schedule" do
           do_request
-          expect(assigns(:instrument).schedule).to eq(@schedule)
+          expect(assigns(:product).schedule).to eq(@schedule)
         end
       end
     end
@@ -381,19 +381,19 @@ RSpec.describe InstrumentsController do
       end
 
       it_should_allow :director, "and fail when no name is given" do
-        expect(assigns(:instrument)).to be_kind_of Instrument
-        expect(assigns(:instrument).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
+        expect(assigns(:product)).to be_kind_of Instrument
+        expect(assigns(:product).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
         is_expected.to render_template "new"
       end
 
     end
 
     def assert_successful_creation
-      expect(assigns(:instrument)).to be_kind_of Instrument
-      expect(assigns(:instrument).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
+      expect(assigns(:product)).to be_kind_of Instrument
+      expect(assigns(:product).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
       yield
       is_expected.to set_flash
-      assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
+      assert_redirected_to manage_facility_instrument_url(@authable, assigns(:product))
     end
   end
 
@@ -417,7 +417,7 @@ RSpec.describe InstrumentsController do
       end
 
       it_should_allow_managers_only :redirect do
-        assert_successful_update { expect(assigns(:instrument).reload.relay).to be_nil }
+        assert_successful_update { expect(assigns(:product).reload.relay).to be_nil }
       end
     end
 
@@ -437,7 +437,7 @@ RSpec.describe InstrumentsController do
 
       it_should_allow :director, "to create a relay" do
         assert_successful_update do
-          relay = assigns(:instrument).relay
+          relay = assigns(:product).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
           expect(relay.port).to eq(@params[:instrument][:relay_attributes][:port])
@@ -457,7 +457,7 @@ RSpec.describe InstrumentsController do
 
       it_should_allow :director, "to create a timer" do
         assert_successful_update do
-          relay = assigns(:instrument).relay
+          relay = assigns(:product).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to be_nil
           expect(relay.port).to be_nil
@@ -469,10 +469,10 @@ RSpec.describe InstrumentsController do
     end
 
     def assert_successful_update
-      expect(assigns(:instrument)).to eq(@instrument)
+      expect(assigns(:product)).to eq(@instrument)
       yield
       is_expected.to set_flash
-      assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
+      assert_redirected_to manage_facility_instrument_url(@authable, assigns(:product))
     end
   end
 
@@ -483,13 +483,12 @@ RSpec.describe InstrumentsController do
     end
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:instrument)).to be_kind_of Instrument
-      # assert_redirected_to manage_facility_instrument_url(@authable, assigns(:instrument))
+      expect(assigns(:product)).to be_kind_of Instrument
       assert_redirected_to facility_instruments_url
       dead = false
 
       begin
-        Instrument.find(assigns(:instrument).id)
+        Instrument.find(assigns(:product).id)
       rescue
         dead = true
       end

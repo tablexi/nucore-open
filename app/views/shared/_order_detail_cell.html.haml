@@ -1,6 +1,6 @@
 - unless defined?(show_reservation)
   - show_reservation = true
-%td.user-order-detail
+%td.user-order-detail.order-note
   .order-detail-description
     = order_detail_description(od)
     - if show_reservation && od.reservation
@@ -16,4 +16,5 @@
     .order-detail-extra
       = link_to t("order_details.show.link.view.order_file"), facility_template_result_path(stored_file)
   - if od.note.present?
-    .order-detail-extra.order-detail-note= "Note: #{od.note}"
+    .order-detail-extra.order-detail-note
+      = render "shared/order_detail_note", order_detail: od

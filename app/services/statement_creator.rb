@@ -27,7 +27,7 @@ class StatementCreator
   def send_statement_emails
     if SettingsHelper.feature_on?(:send_statement_emails)
       account_statements.each do |account, statement|
-        account.notify_users.each { |u| Notifier.delay.statement(user: u, facility: statement.facility, account: account, statement: statement) }
+        account.notify_users.each { |u| Notifier.statement(user: u, facility: statement.facility, account: account, statement: statement).deliver_later }
       end
     end
   end

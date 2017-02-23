@@ -98,8 +98,8 @@ ActiveRecord::Schema.define(version: 20170210214106) do
     t.datetime "failed_at"
     t.string   "locked_by",  limit: 255
     t.string   "queue",      limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
@@ -244,16 +244,16 @@ ActiveRecord::Schema.define(version: 20170210214106) do
   add_index "notifications", ["user_id"], name: "index_notifications_on_user_id", using: :btree
 
   create_table "order_details", force: :cascade do |t|
-    t.integer  "order_id",                limit: 4,                                            null: false
+    t.integer  "order_id",                limit: 4,                                              null: false
     t.integer  "parent_order_detail_id",  limit: 4
-    t.integer  "product_id",              limit: 4,                                            null: false
-    t.integer  "quantity",                limit: 4,                                            null: false
+    t.integer  "product_id",              limit: 4,                                              null: false
+    t.integer  "quantity",                limit: 4,                                              null: false
     t.integer  "price_policy_id",         limit: 4
-    t.decimal  "actual_cost",                         precision: 10, scale: 2
-    t.decimal  "actual_subsidy",                      precision: 10, scale: 2
+    t.decimal  "actual_cost",                           precision: 10, scale: 2
+    t.decimal  "actual_subsidy",                        precision: 10, scale: 2
     t.integer  "assigned_user_id",        limit: 4
-    t.decimal  "estimated_cost",                      precision: 10, scale: 2
-    t.decimal  "estimated_subsidy",                   precision: 10, scale: 2
+    t.decimal  "estimated_cost",                        precision: 10, scale: 2
+    t.decimal  "estimated_subsidy",                     precision: 10, scale: 2
     t.integer  "response_set_id",         limit: 4
     t.integer  "account_id",              limit: 4
     t.datetime "dispute_at"
@@ -267,17 +267,17 @@ ActiveRecord::Schema.define(version: 20170210214106) do
     t.string   "state",                   limit: 50
     t.integer  "group_id",                limit: 4
     t.integer  "bundle_product_id",       limit: 4
-    t.string   "note",                    limit: 100
     t.datetime "fulfilled_at"
     t.datetime "reviewed_at"
     t.integer  "statement_id",            limit: 4
     t.integer  "journal_id",              limit: 4
     t.string   "reconciled_note",         limit: 255
-    t.integer  "created_by",              limit: 4,                                            null: false
+    t.integer  "created_by",              limit: 4,                                              null: false
     t.integer  "product_accessory_id",    limit: 4
-    t.boolean  "problem",                                                      default: false, null: false
+    t.boolean  "problem",                                                        default: false, null: false
     t.datetime "reconciled_at"
     t.integer  "project_id",              limit: 4
+    t.text     "note",                    limit: 65535
   end
 
   add_index "order_details", ["account_id"], name: "fk_od_accounts", using: :btree

@@ -19,7 +19,7 @@
           %th= sortable 'reserved_by'
           %th{:colspan => 2}= sortable 'date', 'Reserved On'
           %th{:colspan => 2}= sortable "reserve_range", 'Reserved For'
-          %th= sortable 'product_name', 'Product'
+          %th.order-note= sortable 'product_name', 'Product'
           %th= sortable 'assigned_to', 'Assigned To'
           %th= sortable 'status', 'Status'
           %th.currency Price

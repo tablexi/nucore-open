@@ -386,7 +386,7 @@ RSpec.describe OrderRowImporter do
       include_context "valid row values"
 
       context "it is too long" do
-        let(:notes) { "a" * 101 }
+        let(:notes) { "a" * 1001 }
 
         it_behaves_like "an order was not created"
         it_behaves_like "it has an error message", "Note is too long"

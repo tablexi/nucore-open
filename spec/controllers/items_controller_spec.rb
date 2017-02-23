@@ -43,9 +43,9 @@ RSpec.describe ItemsController do
     end
 
     it_should_allow_operators_only do |_user|
-      expect(assigns[:item]).to eq(@item)
+      expect(assigns[:product]).to eq(@item)
       expect(response).to be_success
-      expect(response).to render_template("items/manage")
+      expect(response).to render_template("manage")
     end
   end
 
@@ -54,9 +54,9 @@ RSpec.describe ItemsController do
       @method = :get
       @action = :show
       @block = proc do
-        expect(assigns[:item]).to eq(@item)
+        expect(assigns[:product]).to eq(@item)
         expect(response).to be_success
-        expect(response).to render_template("items/show")
+        expect(response).to render_template("show")
       end
     end
 
@@ -139,7 +139,7 @@ RSpec.describe ItemsController do
         sign_in @admin
         do_request
         expect(response).to be_success
-        expect(assigns[:item]).to eq(@item)
+        expect(assigns[:product]).to eq(@item)
       end
     end
   end
@@ -151,7 +151,7 @@ RSpec.describe ItemsController do
     end
 
     it_should_allow_managers_only do
-      expect(assigns(:item)).to be_kind_of Item
+      expect(assigns(:product)).to be_kind_of Item
       is_expected.to render_template "new"
     end
   end
@@ -175,9 +175,9 @@ RSpec.describe ItemsController do
     end
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:item)).to be_kind_of Item
+      expect(assigns(:product)).to be_kind_of Item
       is_expected.to set_flash
-      assert_redirected_to [:manage, @authable, assigns(:item)]
+      assert_redirected_to [:manage, @authable, assigns(:product)]
     end
   end
 
@@ -189,10 +189,10 @@ RSpec.describe ItemsController do
     end
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:item)).to be_kind_of Item
-      expect(assigns(:item)).to eq(@item)
+      expect(assigns(:product)).to be_kind_of Item
+      expect(assigns(:product)).to eq(@item)
       is_expected.to set_flash
-      assert_redirected_to manage_facility_item_url(@authable, assigns(:item))
+      assert_redirected_to manage_facility_item_url(@authable, assigns(:product))
     end
   end
 
@@ -203,7 +203,7 @@ RSpec.describe ItemsController do
     end
 
     it_should_allow_managers_only :redirect do
-      expect(assigns(:item)).to be_kind_of Item
+      expect(assigns(:product)).to be_kind_of Item
       should_be_destroyed @item
       assert_redirected_to facility_items_url
     end

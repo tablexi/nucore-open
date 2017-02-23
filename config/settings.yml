@@ -93,6 +93,7 @@ api:
 # For these settings use SettingsHelper#feature_on?
 feature:
   billing_administrator_on: true
+  billing_administrator_users_tab_on: true
   create_users_on: true
   netids_on: true
   limit_short_description_on: true

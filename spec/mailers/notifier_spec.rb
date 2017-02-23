@@ -62,6 +62,31 @@ RSpec.describe Notifier do
     end
   end
 
+  if EngineManager.engine_loaded?(:c2po)
+    describe ".statement" do
+      let(:account) { FactoryGirl.build_stubbed(:purchase_order_account) }
+      let(:statement) { FactoryGirl.build_stubbed(:statement, facility: facility, account: account) }
+      let(:email_html) { email.html_part.to_s.gsub(/&nbsp;/, " ") } # Markdown changes some whitespace to &nbsp;
+      let(:email_text) { email.text_part.to_s }
+
+      before do
+        Notifier.statement(
+          user: user,
+          facility: facility,
+          account: account,
+          statement: statement,
+        ).deliver_now
+      end
+
+      it "generatees a statement email", :aggregate_failures do
+        expect(email.to).to eq [user.email]
+        expect(email.subject).to include("Statement")
+        expect(email_html).to include(statement.account.to_s)
+        expect(email_text).to include(statement.account.to_s)
+      end
+    end
+  end
+
   describe ".review_orders" do
     let(:accounts) do
       FactoryGirl.create_list(:setup_account, 2, owner: user, facility_id: facility.id)
@@ -72,13 +97,13 @@ RSpec.describe Notifier do
 
     before(:each) do
       Notifier.review_orders(user_id: user.id,
-                             facility_id: facility.id,
+                             facility: facility,
                              account_ids: account_ids).deliver_now
     end
 
     it "generates a review_orders notification", :aggregate_failures do
       expect(email.to).to eq [user.email]
-      expect(email.subject).to include("Orders For Review")
+      expect(email.subject).to include("Orders For Review: #{facility.abbreviation}")
 
       [email_html, email_text].each do |email_content|
         expect(email_content)
