@@ -55,8 +55,8 @@ RSpec.describe UsersController do
       @params[:id] = user.id
     end
 
-    it_should_allow_admin_only do
-      expect(assigns[:user]).to eq(user)
+    context "when create_users is active", feature_setting: { create_users: true } do
+      it_should_allow_admin_only { expect(assigns[:user]).to eq(user) }
     end
   end
 
@@ -70,18 +70,20 @@ RSpec.describe UsersController do
       @params[:user] = { first_name: "New", last_name: "Name" }
     end
 
-    it_should_allow_admin_only(:found) do
-      expect(user.reload.first_name).to eq("New")
-      expect(response).to redirect_to facility_user_path(facility, user)
-    end
-
-    context "with bad params" do
-      before(:each) do
-        @params[:user] = { email: "test@example.com", username: "newusername" }
+    context "when create_users is active", feature_setting: { create_users: true } do
+      it_should_allow_admin_only(:found) do
+        expect(user.reload.first_name).to eq("New")
+        expect(response).to redirect_to facility_user_path(facility, user)
       end
 
-      it_should_allow_admin_only(:found) do
-        expect(user.reload.first_name).to eq(user.first_name)
+      context "with bad params" do
+        before(:each) do
+          @params[:user] = { email: "test@example.com", username: "newusername" }
+        end
+
+        it_should_allow_admin_only(:found) do
+          expect(user.reload.first_name).to eq(user.first_name)
+        end
       end
     end
   end
@@ -305,8 +307,10 @@ RSpec.describe UsersController do
 
     context "disabled" do
       include_context "feature disabled", :create_users
-      it "doesn't route route" do
+      it "doesn't route route", :aggregate_failures do
         expect(get: "/#{facilities_route}/url_name/users/new").not_to be_routable
+        expect(get: "/#{facilities_route}/url_name/users/edit").not_to be_routable
+        expect(put: "/#{facilities_route}/url_name/users/update").not_to be_routable
         expect(post: "/#{facilities_route}/url_name/users").not_to be_routable
         expect(get: "/#{facilities_route}/url_name/users/new_external").not_to be_routable
         expect(post: "/#{facilities_route}/url_name/users/search").not_to be_routable
