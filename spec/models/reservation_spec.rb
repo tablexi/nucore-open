@@ -1472,8 +1472,7 @@ RSpec.describe Reservation do
 
           before { reservation.start_reservation! }
 
-          it {
-            expect(reservation.next_duration_available?).to be_truthy }
+          it { expect(reservation.next_duration_available?).to be_truthy }
         end
       end
 
@@ -1488,8 +1487,7 @@ RSpec.describe Reservation do
 
           before { reservation.start_reservation! }
 
-          it {
-            expect(reservation.next_duration_available?).to be_truthy }
+          it { expect(reservation.next_duration_available?).to be_truthy }
         end
       end
     end
