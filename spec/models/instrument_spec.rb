@@ -444,16 +444,16 @@ RSpec.describe Instrument do
 
     it "should find next available reservation with 60 minute interval rule, without any pending reservations" do
       # find next reservation after 12 am at 9 am
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
+      @next_reservation = @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 9, @next_reservation.reserve_start_at.hour
       # find next reservation after 9:01 am today at 10 am today
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day + 9.hours + 1.minute)
+      @next_reservation = @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day + 9.hours + 1.minute)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 10, @next_reservation.reserve_start_at.hour
       assert_equal 0, @next_reservation.reserve_start_at.min
       # find next reservation after 4:01 pm today at 9 am tomorrow
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day + 16.hours + 1.minute)
+      @next_reservation = @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day + 16.hours + 1.minute)
       assert_equal (Time.zone.now + 1.day).day, @next_reservation.reserve_start_at.day
       assert_equal 9, @next_reservation.reserve_start_at.hour
       assert_equal 0, @next_reservation.reserve_start_at.min
@@ -464,32 +464,32 @@ RSpec.describe Instrument do
       res_end = res_start + 10.days
       reservation = @instrument.reservations.create reserve_start_at: res_start, reserve_end_at: res_end
       expect(reservation).to be_valid
-      next_reservation = @instrument.next_available_reservation res_start
+      next_reservation = @instrument.next_available_reservation(after: res_start)
       expect(next_reservation.reserve_start_at).to be > res_end
-      expect(next_reservation.reserve_start_at).to eq @instrument.next_available_reservation(res_end).reserve_start_at
+      expect(next_reservation.reserve_start_at).to eq @instrument.next_available_reservation(after: res_end).reserve_start_at
     end
 
     it "should find next available reservation with 5 minute interval rule, without any pending reservations" do
       expect(@rule.instrument.update_attribute :reserve_interval, 5).to be true
       # find next reservation after 12 am at 9 am
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day)
+      @next_reservation = @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 9, @next_reservation.reserve_start_at.hour
       assert_equal 0, @next_reservation.reserve_start_at.min
       # find next reservation after 9:01 am today at 9:05 am today
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day + 9.hours + 1.minute)
+      @next_reservation = @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day + 9.hours + 1.minute)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 9, @next_reservation.reserve_start_at.hour
       assert_equal 5, @next_reservation.reserve_start_at.min
       # find next reservation after 3:45 pm today at 3:45 pm today
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day + 15.hours + 45.minutes)
+      @next_reservation = @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day + 15.hours + 45.minutes)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
       assert_equal 15, @next_reservation.reserve_start_at.hour
       assert_equal 45, @next_reservation.reserve_start_at.min
     end
 
     context "with cutoff hours" do
-      let(:next_reservation) { @instrument.next_available_reservation(after = Time.zone.now.beginning_of_day) }
+      let(:next_reservation) { @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day) }
 
       before { @rule.instrument.update_attribute :cutoff_hours, 10 }
 
@@ -509,7 +509,7 @@ RSpec.describe Instrument do
                                                       split_times: true)
       assert @reservation1.valid?
       # find next reservation after 12 am tomorrow at 10 am tomorrow
-      @next_reservation = @instrument.next_available_reservation(after = Time.zone.now.end_of_day + 1.second)
+      @next_reservation = @instrument.next_available_reservation(after: Time.zone.now.end_of_day + 1.second)
       assert_equal (Time.zone.now + 1.day).day, @next_reservation.reserve_start_at.day
       assert_equal 10, @next_reservation.reserve_start_at.hour
     end

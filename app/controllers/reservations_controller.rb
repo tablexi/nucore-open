@@ -128,7 +128,7 @@ class ReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
 
     options = current_user.can_override_restrictions?(@instrument) ? {} : { user: acting_user }
-    next_available = @instrument.next_available_reservation(1.minute.from_now, default_reservation_mins.minutes, options)
+    next_available = @instrument.next_available_reservation(after: 1.minute.from_now, duration: default_reservation_mins.minutes, options: options)
     @reservation = next_available || default_reservation
     @reservation.round_reservation_times
     unless @instrument.can_be_used_by?(@order_detail.user)
