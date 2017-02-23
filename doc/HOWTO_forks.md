@@ -12,7 +12,6 @@ You should only need to do these once:
 
 ```
 git remote add upstream git@github.com:tablexi/nucore-open.git
-chmod +x ./bin/merge_describer
 ```
 
 Create a new branch with the name `latest_from_open_YYYYMMDD` (reflecting the current date).
@@ -24,7 +23,7 @@ git fetch upstream
 git merge upstream/master
 ```
 
-Push up your new branch, and run ```bin/merge_describer``` which generates a helpful description you can copy/paste into your PR; it contains the commit messages and links to the merged branches since the last merge from open.
+Push up your new branch, and run `bin/merge_describer` which generates a helpful description you can copy/paste into your PR; it contains the commit messages and links to the merged branches since the last merge from open.
 
 # Bringing changes on your fork into Open
 
