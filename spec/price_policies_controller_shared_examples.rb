@@ -245,7 +245,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           is_expected.to redirect_to price_policy_index_path
         end
 
-        it "creates a new price policy for a group that has no fields, but cant purchase" do
+        it "creates a new price policy for a group that has no fields, but cannot purchase" do
           last_price_group = @authable.price_groups.last
           @params.delete :"price_policy_#{last_price_group.id}"
           do_request

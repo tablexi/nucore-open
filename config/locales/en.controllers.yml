@@ -144,7 +144,7 @@ en:
       errors:
         remove_active_policy: "Sorry, but you cannot remove an active price policy. If you really want to do so move the start date to the future and try again."
         save: There was an error saving the policy
-        same_start_date: "Sorry, but you cannot start a policy the same date as an active policy that has already been applied to an order"
+        same_start_date: "You have chosen a start date that matches an active policy with existing orders. Please choose another start date."
       new:
         success: Price Rules were successfully created.
 
