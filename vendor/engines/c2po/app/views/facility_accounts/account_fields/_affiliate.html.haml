@@ -1,7 +1,5 @@
-- affiliates = Affiliate.by_name.map { |a| [a.name, a.id, { data: { subaffiliates_enabled: a.subaffiliates_enabled? } } ] }
-
 = f.association :affiliate,
-  collection: affiliates,
+  collection: select_affiliate_options,
   input_html: { class: "js--affiliate" },
   include_blank: true,
   required: true
@@ -10,4 +8,3 @@
   = f.input :affiliate_other,
     required: true,
     label: text("facility_accounts.account_fields.label.affiliate")
-
