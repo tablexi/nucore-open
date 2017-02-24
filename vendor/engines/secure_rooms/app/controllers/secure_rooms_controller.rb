@@ -1,0 +1,3 @@
+class SecureRoomsController < ProductsCommonController
+
+end

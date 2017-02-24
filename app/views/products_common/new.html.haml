@@ -11,7 +11,7 @@
 = simple_form_for([current_facility, @product]) do |f|
   = f.error_messages
   .form-inputs
-    = render "admin/products/details_fields", f: f
+    = render "details_fields", f: f
     = render_if_exists "#{@product.class.name.underscore}_fields", f: f
   %ul.inline
     %li= f.submit text("shared.create"), class: ["btn", "btn-primary"]

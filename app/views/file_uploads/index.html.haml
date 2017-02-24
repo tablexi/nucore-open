@@ -13,7 +13,7 @@
 %p= t(".documentation_note")
 
 - if can? :create, @file
-  = simple_form_for(@file, url: [current_facility, @product, :file_uploads, id: @file]) do |f|
+  = simple_form_for(@file, url: [current_facility, @product, :file_uploads, id: @file], html: { multipart: true }) do |f|
     = f.error_messages
     = f.hidden_field :file_type
 

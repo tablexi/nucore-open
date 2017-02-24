@@ -3,7 +3,7 @@
 
 = content_for :sidebar do
   = render "admin/shared/sidenav_product",
-    sidenav_tab: @product.class.name.pluralize.downcase
+    sidenav_tab: @product.class.name.pluralize.underscore
 
 = content_for :tabnav do
   = render "admin/shared/tabnav_product", secondary_tab: "users"
@@ -11,10 +11,10 @@
 %h2= @product
 %h3= t(".approved_users")
 
-%p= t(".approval_explanation", product_type: @product.class.name.downcase)
+%p= t(".approval_explanation", product_type: @product.model_name.human.downcase)
 
 = link_to t(".add_approved_user"),
-  public_send("new_facility_#{@product.class.name.downcase}_user_path", current_facility, @product),
+  [:new, current_facility, @product, :user],
   class: "btn-add"
 
 - @show_levels = @product.respond_to?(:product_access_groups) && @product.product_access_groups.any?
@@ -39,9 +39,9 @@
           %tr
             %td.centered
               = link_to t("shared.remove"),
-                public_send("facility_#{@product.class.name.downcase}_user_path", current_facility, @product, user),
+                [current_facility, @product, user],
                 method: :delete,
-                data: { confirm: t(".confirm_removal", product_type: @product.class.name.downcase) }
+                data: { confirm: t(".confirm_removal", product_type: @product.model_name.human.downcase) }
 
             %td
               = link_to "#{user.last_name}, #{user.first_name}", [current_facility, user]

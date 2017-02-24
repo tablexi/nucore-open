@@ -1,0 +1,11 @@
+en:
+  activerecord:
+    models:
+      secure_room:
+        one: Secure Room
+        other: Secure Rooms
+  views:
+    admin:
+      secure_rooms:
+        index:
+          description: This is a restricted room

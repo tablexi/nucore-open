@@ -1,4 +1,4 @@
 -# TODO: I18n confirmation
 = link_to user.last_first_name,
-  public_send("new_facility_#{@product.class.name.downcase}_user_path", @facility, @product, user: user.id),
-  data: { confirm: "Are you sure you wish to authorize this user to order this #{@product.class.name.downcase}?" }
+  [:new, @facility, @product, :user, user: user],
+  data: { confirm: "Are you sure you wish to authorize this user to order this #{@product.class.model_name.human.downcase}?" }

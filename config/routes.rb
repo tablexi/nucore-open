@@ -1,3 +1,5 @@
+require "facility_product_routing_concern"
+
 Nucore::Application.routes.draw do
   get "/users/sign_in.pdf" => redirect("/users/sign_in")
   devise_for :users
@@ -64,14 +66,8 @@ Nucore::Application.routes.draw do
 
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
-    concern :facility_product do
-      get :manage, on: :member
-      resources :users, controller: "product_users", except: [:show, :edit, :create]
-      resources :file_uploads, path: "files", only: [:index, :create, :destroy]
-      get "/files/:file_type/:id", to: 'file_uploads#download', as: "download_product_file"
-    end
-
-    resources :instruments, concerns: :facility_product do
+    resources :instruments do
+      facility_product_routing_concern
       get "public_schedule", to: 'instruments#public_schedule'
       get "schedule",        to: 'instruments#schedule'
       get "status",          to: 'instruments#instrument_status'
@@ -92,11 +88,13 @@ Nucore::Application.routes.draw do
       put "update_restrictions", to: "product_users#update_restrictions"
     end
 
-    resources :services, concerns: :facility_product do
+    resources :services do
+      facility_product_routing_concern
       resources :price_policies, controller: "service_price_policies", except: [:show]
     end
 
-    resources :items, concerns: :facility_product do
+    resources :items do
+      facility_product_routing_concern
       resources :price_policies, controller: "item_price_policies", except: [:show]
     end
 
@@ -223,7 +221,6 @@ Nucore::Application.routes.draw do
       collection do
         get "search"
         get "search_results", via: [:get, :post]
-
       end
 
       if SettingsHelper.feature_on?(:suspend_accounts)

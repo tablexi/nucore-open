@@ -148,6 +148,18 @@ en:
       new:
         success: Price Rules were successfully created.
 
+    product_users:
+      new:
+        success: The user has been successfully authorized for this %{model}
+      index:
+        not_required: This %{model} does not require user authorization
+      destroy:
+        success: The user has been successfully removed from this %{model}
+        failure: An error was encountered while attempting to remove the user from this %{model}
+      update_restrictions:
+        success: "The users' scheduling groups have been updated."
+
+
     orders:
       purchase:
         future_dating_error: "Order dates in the future are not allowed"

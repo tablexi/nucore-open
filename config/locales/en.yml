@@ -117,15 +117,6 @@ en:
         problem: Problem
         actual_start: Actual Start Date
 
-    product_manage:
-      label:
-        url: "URL Name"
-        description: "Description"
-        deposit: "Recharge Chart String"
-        initial_status: "Initial Order Status"
-        requires_approval: "Requires Approval?"
-        inactive: "Is Inactive?"
-        hidden: "Is Hidden?"
     purchase: Purchase
     sidenav_admin:
       overview: "Overview"
@@ -757,8 +748,6 @@ en:
     new:
       label:
         search_term: "Search by name, NetID, or username"
-    update_restrictions:
-      notice: "The users' scheduling groups have been updated."
 
   user_price_group_members:
     new:

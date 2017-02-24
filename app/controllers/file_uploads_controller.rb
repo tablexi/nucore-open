@@ -4,6 +4,7 @@ class FileUploadsController < ApplicationController
   before_action       :authenticate_user!
   before_action       :check_acting_as
   before_action       :init_current_facility
+  before_action       :init_product
   skip_before_action  :verify_authenticity_token, only: :create
 
   load_and_authorize_resource class: StoredFile, except: [:download, :upload_sample_results]
@@ -19,14 +20,14 @@ class FileUploadsController < ApplicationController
   # GET /facilities/1/services/3/files?file_type=template
   # GET /facilities/1/services/3/files?file_type=template_result
   def index
-    @file = product.stored_files.new(file_type: params[:file_type])
+    @file = @product.stored_files.new(file_type: params[:file_type])
     @files = @product.stored_files.where(file_type: @file.file_type || params[:file_type])
   end
 
   # GET /facilities/:facility_id/:product/:product_id/files/:file_type/:id
   def download
     redirect_to(
-      product
+      @product
         .stored_files
         .where(file_type: params[:file_type])
         .find(params[:id])
@@ -36,7 +37,7 @@ class FileUploadsController < ApplicationController
 
   # POST /facilities/1/services/3/files
   def create
-    @file = product.stored_files.new(params[:stored_file].merge(created_by: session_user.id))
+    @file = @product.stored_files.new(params[:stored_file].merge(created_by: session_user.id))
     @files = @product.stored_files.where(file_type: @file.file_type || params[:file_type])
 
     if @file.save
@@ -53,10 +54,10 @@ class FileUploadsController < ApplicationController
                 name: params[:qqfilename].presence || params[:qqfile].original_filename,
                 file_type: params[:file_type],
                 order_detail: OrderDetail.find(params[:order_detail_id]),
-                product: product,
+                product: @product,
                 created_by: current_user.id }
 
-    @upload = product.stored_files.new(options)
+    @upload = @product.stored_files.new(options)
     authorize! :upload_sample_results, @upload
 
     if @upload.save
@@ -76,13 +77,11 @@ class FileUploadsController < ApplicationController
 
   # GET /facilities/1/services/3/files/survey_upload
   def product_survey
-    @file = product.stored_files.new(file_type: "template")
+    @file = @product.stored_files.new(file_type: "template")
     @survey = ExternalServiceManager.survey_service.new
   end
 
   def create_product_survey
-    @product = current_facility.services.find_by!(url_name: params[:product_id])
-
     if params[:stored_file]
       create_product_survey_from_file
     else
@@ -92,7 +91,7 @@ class FileUploadsController < ApplicationController
   end
 
   def destroy
-    @file = product.stored_files.find(params[:id])
+    @file = @product.stored_files.find(params[:id])
 
     if @product.stored_files.destroy(@file)
       flash[:notice] = "The file was deleted successfully"
@@ -114,7 +113,7 @@ class FileUploadsController < ApplicationController
 
   private
 
-  def product
+  def init_product
     if params[:product]
       # Use the older route behavior
       # TODO: Remove this once all the necessary routes are removed (see routes.rb:355)

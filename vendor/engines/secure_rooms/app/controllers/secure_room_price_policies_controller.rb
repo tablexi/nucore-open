@@ -1,0 +1,2 @@
+class SecureRoomPricePoliciesController < PricePoliciesController
+end
