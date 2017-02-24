@@ -152,18 +152,18 @@ module Products::SchedulingSupport
 
   class ReservationFinder
 
-    attr_reader :rule, :day_start, :day_end, :options, :start_time
+    attr_reader :rule, :day_start, :day_end, :options
 
     def initialize(time, rule, options = {})
-      @options    = options
+      @time       = time
       @rule       = rule
+      @options    = options
       @day_start  = Time.zone.local(time.year, time.month, time.day, rule.start_hour, rule.start_min, 0)
       @day_end    = Time.zone.local(time.year, time.month, time.day, rule.end_hour, rule.end_min, 0)
-      @start_time = set_start_time(time)
     end
 
     def next_reservation(reserver, duration)
-      next_time = start_time
+      next_time = earliest_nice_start_time
 
       while next_time < day_end
         reservation = reserver.reservations.new(reserve_start_at: next_time, reserve_end_at: next_time + duration)
@@ -177,21 +177,25 @@ module Products::SchedulingSupport
 
     private
 
-    def set_start_time(time)
-      if !options[:ignore_cutoff] && rule.instrument.cutoff_hours > 0
-        # handle cutoff hours if needed
-        start_time = [time, day_start, rule.instrument.cutoff_hours.hours.from_now].max
-      else
-        # pick the later of provided time and rule's start-of-day
-        start_time = [time, day_start].max
-      end
+    def earliest_nice_start_time
+      start_time = earliest_possible_start_time
 
       # ensure reservation start times abide by instrument's reserve_interval (i.e. 5 min increments)
       reserve_interval = rule.instrument.reserve_interval.to_i
       if start_time.min % reserve_interval != 0
         start_time += (reserve_interval - start_time.min % reserve_interval).minutes
       end
+      start_time
+    end
 
+    def earliest_possible_start_time
+      if !options[:ignore_cutoff] && rule.instrument.cutoff_hours > 0
+        # handle cutoff hours if needed
+        start_time = [@time, day_start, rule.instrument.cutoff_hours.hours.from_now].max
+      else
+        # pick the later of provided time and rule's start-of-day
+        start_time = [@time, day_start].max
+      end
       start_time
     end
 
