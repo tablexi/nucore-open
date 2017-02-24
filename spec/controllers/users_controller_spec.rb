@@ -46,7 +46,7 @@ RSpec.describe UsersController do
 
   end
 
-  describe "GET #edit" do
+  describe "GET #edit", feature_setting: { create_users: true } do
     let(:user) { FactoryGirl.create(:user, :external) }
 
     before(:each) do
@@ -55,12 +55,10 @@ RSpec.describe UsersController do
       @params[:id] = user.id
     end
 
-    context "when create_users is active", feature_setting: { create_users: true } do
-      it_should_allow_admin_only { expect(assigns[:user]).to eq(user) }
-    end
+    it_should_allow_admin_only { expect(assigns[:user]).to eq(user) }
   end
 
-  describe "PUT #update" do
+  describe "PUT #update", feature_setting: { create_users: true } do
     let(:user) { FactoryGirl.create(:user, :external) }
 
     before(:each) do
@@ -70,20 +68,18 @@ RSpec.describe UsersController do
       @params[:user] = { first_name: "New", last_name: "Name" }
     end
 
-    context "when create_users is active", feature_setting: { create_users: true } do
-      it_should_allow_admin_only(:found) do
-        expect(user.reload.first_name).to eq("New")
-        expect(response).to redirect_to facility_user_path(facility, user)
+    it_should_allow_admin_only(:found) do
+      expect(user.reload.first_name).to eq("New")
+      expect(response).to redirect_to facility_user_path(facility, user)
+    end
+
+    context "with bad params" do
+      before(:each) do
+        @params[:user] = { email: "test@example.com", username: "newusername" }
       end
 
-      context "with bad params" do
-        before(:each) do
-          @params[:user] = { email: "test@example.com", username: "newusername" }
-        end
-
-        it_should_allow_admin_only(:found) do
-          expect(user.reload.first_name).to eq(user.first_name)
-        end
+      it_should_allow_admin_only(:found) do
+        expect(user.reload.first_name).to eq(user.first_name)
       end
     end
   end
