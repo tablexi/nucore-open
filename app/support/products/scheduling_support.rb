@@ -151,54 +151,56 @@ module Products::SchedulingSupport
   end
 
   class ReservationFinder
-
-    attr_reader :rule, :day_start, :day_end, :options
-
     def initialize(time, rule, options = {})
       @time       = time
       @rule       = rule
       @options    = options
-      @day_start  = Time.zone.local(time.year, time.month, time.day, rule.start_hour, rule.start_min, 0)
-      @day_end    = Time.zone.local(time.year, time.month, time.day, rule.end_hour, rule.end_min, 0)
     end
 
     def next_reservation(reserver, duration)
-      next_time = earliest_nice_start_time
-
-      while next_time < day_end
-        reservation = reserver.reservations.new(reserve_start_at: next_time, reserve_end_at: next_time + duration)
-
-        conflict = reservation.conflicting_reservation(exclude: options[:exclude])
-        return reservation if conflict.nil?
-
-        next_time = conflict.reserve_end_at
-      end
+      next_time = next_reserval_interval_start(earliest_possible_start(@time))
+      non_conflicting_reservation(next_time, reserver, duration)
     end
 
     private
 
-    def earliest_nice_start_time
-      start_time = earliest_possible_start_time
-
-      # ensure reservation start times abide by instrument's reserve_interval (i.e. 5 min increments)
-      reserve_interval = rule.instrument.reserve_interval.to_i
-      if start_time.min % reserve_interval != 0
-        start_time += (reserve_interval - start_time.min % reserve_interval).minutes
-      end
-      start_time
-    end
-
-    def earliest_possible_start_time
-      if !options[:ignore_cutoff] && rule.instrument.cutoff_hours > 0
-        # handle cutoff hours if needed
-        start_time = [@time, day_start, rule.instrument.cutoff_hours.hours.from_now].max
+    def earliest_possible_start(time)
+      if @options[:ignore_cutoff] || @rule.instrument.cutoff_hours <= 0
+        # pick the later of provided time and @rule's start-of-day
+        [time, day_start].max
       else
-        # pick the later of provided time and rule's start-of-day
-        start_time = [@time, day_start].max
+        # handle cutoff hours if needed
+        [time, day_start, @rule.instrument.cutoff_hours.hours.from_now].max
       end
-      start_time
     end
 
-  end
+    def next_reserval_interval_start(time)
+      # ensure reservation start times abide by instrument's reserve_interval (i.e. 5 min increments)
+      reserve_interval = @rule.instrument.reserve_interval.to_i
+      if time.min % reserve_interval == 0
+        time
+      else
+        time + (reserve_interval - time.min % reserve_interval).minutes
+      end
+    end
 
+    def non_conflicting_reservation(time, reserver, duration)
+      while time < day_end
+        reservation = reserver.reservations.new(reserve_start_at: time, reserve_end_at: time + duration)
+
+        conflict = reservation.conflicting_reservation(exclude: @options[:exclude])
+        return reservation if conflict.nil?
+
+        time = conflict.reserve_end_at
+      end
+    end
+
+    def day_start
+      Time.zone.local(@time.year, @time.month, @time.day, @rule.start_hour, @rule.start_min, 0)
+    end
+
+    def day_end
+      Time.zone.local(@time.year, @time.month, @time.day, @rule.end_hour, @rule.end_min, 0)
+    end
+  end
 end
