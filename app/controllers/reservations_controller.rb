@@ -304,17 +304,19 @@ class ReservationsController < ApplicationController
 
   # TODO: you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
   def invalid_for_update?
-    if current_user.administrator? && @reservation.admin_editable?
-      can_edit = true
-    elsif @reservation.can_customer_edit?
-      can_edit = true
-    else
-      can_edit = false
-    end
-
     params[:id].to_i != @reservation.id ||
       @reservation.actual_end_at ||
-      !can_edit
+      !editable_by_current_user?
+  end
+
+  def editable_by_current_user?
+    if current_user.administrator? && @reservation.admin_editable?
+      true
+    elsif @reservation.can_customer_edit?
+      true
+    else
+      false
+    end
   end
 
   def save_reservation_and_order_detail
