@@ -1427,8 +1427,8 @@ RSpec.describe Reservation do
   describe "#extendable?" do
     subject(:reservation) do
       FactoryGirl.build(:purchased_reservation,
-                         :running,
-                         product: instrument)
+                        :running,
+                        product: instrument)
     end
 
     before do
@@ -1443,9 +1443,9 @@ RSpec.describe Reservation do
     context "with another reservation following" do
       let(:other_reservation) do
         FactoryGirl.build(:purchased_reservation,
-                           reserve_start_at: reservation.reserve_end_at,
-                           reserve_end_at: reservation.reserve_end_at + 1.hour,
-                           product: reservation.product)
+                          reserve_start_at: reservation.reserve_end_at,
+                          reserve_end_at: reservation.reserve_end_at + 1.hour,
+                          product: reservation.product)
       end
 
       before do
@@ -1497,9 +1497,9 @@ RSpec.describe Reservation do
       context "with another reservation following" do
         let(:other_reservation) do
           FactoryGirl.build(:purchased_reservation,
-                             reserve_start_at: reservation.reserve_end_at,
-                             reserve_end_at: reservation.reserve_end_at + 1.hour,
-                             product: reservation.product)
+                            reserve_start_at: reservation.reserve_end_at,
+                            reserve_end_at: reservation.reserve_end_at + 1.hour,
+                            product: reservation.product)
         end
 
         before do
