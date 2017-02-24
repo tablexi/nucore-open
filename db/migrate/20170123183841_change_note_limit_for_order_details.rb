@@ -2,7 +2,7 @@ class ChangeNoteLimitForOrderDetails < ActiveRecord::Migration
 
   def up
     add_column :order_details, :temp_note, :text
-    OrderDetail.all.each { |od| od.update_attribute(:temp_note, od.note) }
+    execute("UPDATE order_details SET temp_note = note")
     remove_column :order_details, :note
     rename_column :order_details, :temp_note, :note
   end
