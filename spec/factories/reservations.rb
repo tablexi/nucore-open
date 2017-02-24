@@ -98,7 +98,7 @@ FactoryGirl.define do
     transient { user nil }
 
     after(:create) do |reservation, evaluator|
-      reservation.order.update_attribute(user_id: evaluator.user.id) if evaluator.user
+      reservation.order.update_attribute(:user_id, evaluator.user.id) if evaluator.user
       reservation.order.purchase!
     end
 
