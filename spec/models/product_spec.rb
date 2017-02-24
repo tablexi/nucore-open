@@ -126,7 +126,7 @@ RSpec.describe Product do
         FactoryGirl.create(
           :instrument_price_policy,
           product: product,
-          price_group: order_detail.user.price_groups.first,
+          price_group: product.price_groups.last,
           start_date: Time.zone.now,
           expire_date: Time.zone.now + 1.day,
           usage_rate: 8 / 60.0,
