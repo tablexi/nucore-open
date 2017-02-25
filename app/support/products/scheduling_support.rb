@@ -52,12 +52,12 @@ module Products::SchedulingSupport
 
   def first_available_hour
     return 0 unless schedule_rules.any?
-    schedule_rules.min { |a, b| a.start_hour <=> b.start_hour }.start_hour
+    schedule_rules.min_by(&:start_hour).start_hour
   end
 
   def last_available_hour
     return 23 unless schedule_rules.any?
-    max_rule = schedule_rules.max { |a, b| a.hour_floor <=> b.hour_floor }
+    max_rule = schedule_rules.max_by(&:hour_floor)
     max_rule.end_min == 0 ? max_rule.end_hour - 1 : max_rule.end_hour
   end
 
@@ -74,12 +74,12 @@ module Products::SchedulingSupport
   end
 
   # find the next available reservation based on schedule rules and existing reservations
-  def next_available_reservation(after = Time.zone.now, duration = 1.minute, options = {})
-    rules = rules_for_day after.wday, options[:user]
+  def next_available_reservation(after: Time.zone.now, duration: 1.minute, options: {})
+    rules = rules_for_day(after.wday, options[:user])
     # if the user has no schedule rules, there will be no time that they can
     # move the reservation to
     return nil unless rules.any?
-    reservation_in_week after, duration, rules, options
+    reservation_in_week(after, duration, rules, options)
   end
 
   def available_schedule_rules(user)
@@ -120,7 +120,7 @@ module Products::SchedulingSupport
 
       rules.each do |rule|
         finder = ReservationFinder.new(after, rule, options)
-        reservation = finder.next_reservation self, duration
+        reservation = finder.next_reservation(self, duration)
         return reservation if reservation
       end
 
@@ -152,37 +152,56 @@ module Products::SchedulingSupport
 
   class ReservationFinder
 
-    attr_accessor :time, :rule, :day_start, :day_end, :options
-
     def initialize(time, rule, options = {})
-      self.time = rule.instrument.cutoff_hours > 0 ? [time, rule.instrument.cutoff_hours.hours.from_now].max : time
-      self.rule = rule
-      self.day_start = Time.zone.local(time.year, time.month, time.day, rule.start_hour, rule.start_min, 0)
-      self.day_end   = Time.zone.local(time.year, time.month, time.day, rule.end_hour, rule.end_min, 0)
-      self.options   = options
-      adjust_time
-    end
-
-    def adjust_time
-      # we can't start before the rules say we can
-      self.time = day_start if time < day_start
-
-      # check for conflicts with rule interval/duration time and adjust to next interval if necessary
-      duration_mins = rule.instrument.reserve_interval.to_i
-      self.time += (duration_mins - time.min % duration_mins).minutes unless time.min % duration_mins == 0
+      @time       = time
+      @rule       = rule
+      @options    = options
     end
 
     def next_reservation(reserver, duration)
-      start_time = time
+      next_time = next_reserval_interval_start(earliest_possible_start(@time))
+      non_conflicting_reservation(next_time, reserver, duration)
+    end
 
-      while start_time < day_end
-        reservation = reserver.reservations.new(reserve_start_at: start_time, reserve_end_at: start_time + duration)
+    private
 
-        conflict = reservation.conflicting_reservation(exclude: options[:exclude])
+    def earliest_possible_start(time)
+      if @options[:ignore_cutoff] || @rule.instrument.cutoff_hours <= 0
+        # pick the later of provided time and @rule's start-of-day
+        [time, day_start].max
+      else
+        # handle cutoff hours if needed
+        [time, day_start, @rule.instrument.cutoff_hours.hours.from_now].max
+      end
+    end
+
+    def next_reserval_interval_start(time)
+      # ensure reservation start times abide by instrument's reserve_interval (i.e. 5 min increments)
+      reserve_interval = @rule.instrument.reserve_interval.to_i
+      if (time.min % reserve_interval).zero?
+        time
+      else
+        time + (reserve_interval - time.min % reserve_interval).minutes
+      end
+    end
+
+    def non_conflicting_reservation(time, reserver, duration)
+      while time < day_end
+        reservation = reserver.reservations.new(reserve_start_at: time, reserve_end_at: time + duration)
+
+        conflict = reservation.conflicting_reservation(exclude: @options[:exclude])
         return reservation if conflict.nil?
 
-        start_time = conflict.reserve_end_at
+        time = conflict.reserve_end_at
       end
+    end
+
+    def day_start
+      Time.zone.local(@time.year, @time.month, @time.day, @rule.start_hour, @rule.start_min, 0)
+    end
+
+    def day_end
+      Time.zone.local(@time.year, @time.month, @time.day, @rule.end_hour, @rule.end_min, 0)
     end
 
   end

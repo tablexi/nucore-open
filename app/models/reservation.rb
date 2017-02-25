@@ -217,11 +217,11 @@ class Reservation < ActiveRecord::Base
   end
 
   def reserve_end_at_editable?
-    outside_lock_window? && Time.zone.now <= reserve_end_at && next_duration_available? && actual_end_at.blank?
+    outside_lock_window? && Time.zone.now <= reserve_end_at && extendable? && actual_end_at.blank?
   end
 
-  def next_duration_available?
-    next_available = product.next_available_reservation(reserve_end_at)
+  def extendable?
+    next_available = product.next_available_reservation(after: reserve_end_at, options: { ignore_cutoff: true })
 
     return false unless next_available
 

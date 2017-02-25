@@ -1348,7 +1348,7 @@ RSpec.describe Reservation do
         .to contain_all [@today_reservation, @spans_day_reservation]
     end
 
-    it "returns a reservation that spands days when looking up the later date" do
+    it "returns a reservation that spans days when looking up the later date" do
       expect(Reservation.for_date(Time.zone.now + 1.day))
         .to contain_all [@tomorrow_reservation, @spans_day_reservation]
     end
@@ -1424,23 +1424,37 @@ RSpec.describe Reservation do
     end
   end
 
-  describe "#next_duration_available?" do
-    subject(:reservation) { create(:purchased_reservation) }
+  describe "#extendable?" do
+    subject(:reservation) do
+      FactoryGirl.build(:purchased_reservation,
+                        :running,
+                        product: instrument)
+    end
+
+    before do
+      reservation.save!
+      reservation.order.update_attribute(:state, "purchased")
+    end
 
     it "has an available next duration" do
-      expect(reservation.next_duration_available?).to eq(true)
+      expect(reservation).to be_extendable
     end
 
     context "with another reservation following" do
+      let(:other_reservation) do
+        FactoryGirl.build(:purchased_reservation,
+                          reserve_start_at: reservation.reserve_end_at,
+                          reserve_end_at: reservation.reserve_end_at + 1.hour,
+                          product: reservation.product)
+      end
+
       before do
-        create(:purchased_reservation,
-               reserve_start_at: reservation.reserve_end_at,
-               reserve_end_at: reservation.reserve_end_at + 1.hour,
-               product: reservation.product)
+        other_reservation.save!
+        other_reservation.order.update_attribute(:state, "purchased")
       end
 
       it "has no available next duration" do
-        expect(reservation.next_duration_available?).to eq(false)
+        expect(reservation).not_to be_extendable
       end
     end
 
@@ -1454,7 +1468,48 @@ RSpec.describe Reservation do
       end
 
       it "has no available next duration" do
-        expect(reservation.next_duration_available?).to eq(false)
+        expect(reservation).not_to be_extendable
+      end
+    end
+
+    context "when the instrument has cutoff_hours set" do
+      before do
+        instrument.update_attributes(cutoff_hours: 2, max_reserve_mins: 240)
+      end
+
+      context "when the reservation end_time is within cutoff_hours from now" do
+
+        context "when the reservation is started" do
+          it { expect(reservation).to be_extendable }
+        end
+      end
+
+      context "when the reservation end_time is past cutoff_hours from now" do
+        before do
+          reservation.update_attributes(reserve_end_at: reservation.reserve_start_at + 3.hours)
+        end
+
+        context "when the reservation is started" do
+          it { expect(reservation).to be_extendable }
+        end
+      end
+
+      context "with another reservation following" do
+        let(:other_reservation) do
+          FactoryGirl.build(:purchased_reservation,
+                            reserve_start_at: reservation.reserve_end_at,
+                            reserve_end_at: reservation.reserve_end_at + 1.hour,
+                            product: reservation.product)
+        end
+
+        before do
+          other_reservation.save!
+          other_reservation.order.update_attribute(:state, "purchased")
+        end
+
+        it "has no available next duration" do
+          expect(reservation).not_to be_extendable
+        end
       end
     end
   end
