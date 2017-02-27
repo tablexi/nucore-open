@@ -443,7 +443,7 @@ GEM
     simplecov-html (0.10.0)
     single_test (0.4.0)
     slop (3.6.0)
-    spreadsheet (1.1.2)
+    spreadsheet (1.1.4)
       ruby-ole (>= 1.0)
     spring (2.0.1)
       activesupport (>= 4.2)
@@ -577,7 +577,7 @@ DEPENDENCIES
   simple_form (~> 3.3.1)
   single_test (= 0.4.0)
   split_accounts (~> 0.0.1)!
-  spreadsheet (~> 1.1.2)
+  spreadsheet (~> 1.1.4)
   spring
   spring-commands-rspec
   synaccess_connect (= 0.2.2)!
