@@ -34,6 +34,29 @@ module NUCore
       end
     end
 
+    # Oracle has problems with doing `DISTINCT *` on a table that contains
+    # a CLOB (i.e. text) column.
+    # See https://github.com/rsim/oracle-enhanced/issues/112
+    module ClobSafeDistinct
+
+      extend ActiveSupport::Concern
+
+      module ClassMethods
+
+        def clob_safe_distinct
+          if NUCore::Database.oracle?
+            # `select` instead of `pluck` results in a subquery rather than
+            # two queries.
+            where(id: distinct.select(:id))
+          else
+            distinct
+          end
+        end
+
+      end
+
+    end
+
     module WhereIdsIn
 
       extend ActiveSupport::Concern
