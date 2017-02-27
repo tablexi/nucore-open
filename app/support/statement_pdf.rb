@@ -74,6 +74,9 @@ class StatementPdf
 
     pdf.text @facility.to_s, size: 20, font_style: :bold
     pdf.text "Invoice ##{@statement.invoice_number}"
+    pdf.text "Account: #{@account}"
+    pdf.text "Owner: #{@account.owner.user}"
+    pdf.move_down(10)
   end
 
   def generate_order_detail_rows(pdf)
