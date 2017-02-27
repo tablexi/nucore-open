@@ -15,16 +15,6 @@ RSpec.describe Ability do
     end
   end
 
-  shared_examples_for "it can edit users" do
-    context "when user is external" do
-      it_is_allowed_to([:edit, :update], FactoryGirl.create(:user, :external))
-    end
-
-    context "when user is internal" do
-      it_is_not_allowed_to([:edit, :update], FactoryGirl.create(:user))
-    end
-  end
-
   shared_examples_for "it can destroy admistrative reservations" do
     let(:order) { build_stubbed(:order) }
     let(:order_detail) { build_stubbed(:order_detail, order: order) }
@@ -132,6 +122,8 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
 
     context "in a single facility" do
+      let(:internal_user) { FactoryGirl.create(:user) }
+      let(:external_user) { FactoryGirl.create(:user, :external) }
       it_is_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
       it { is_expected.to be_allowed_to(:manage, User) }
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
@@ -139,7 +131,29 @@ RSpec.describe Ability do
       it { is_expected.to be_allowed_to(:batch_update, Order) }
       it { is_expected.to be_allowed_to(:batch_update, Reservation) }
 
-      it_behaves_like "it can edit users"
+      context "when create_users feature is on", feature_setting: { create_users: true } do
+        context "when user is external" do
+          it { is_expected.to be_allowed_to(:edit, external_user) }
+          it { is_expected.to be_allowed_to(:update, external_user) }
+        end
+
+        context "when user is internal" do
+          it { is_expected.not_to be_allowed_to(:edit, internal_user) }
+          it { is_expected.not_to be_allowed_to(:update, internal_user) }
+        end
+      end
+
+      context "when create_users feature is off", feature_setting: { create_users: false } do
+        context "when user is external" do
+          it { is_expected.not_to be_allowed_to(:edit, external_user) }
+          it { is_expected.not_to be_allowed_to(:update, external_user) }
+        end
+
+        context "when user is internal" do
+          it { is_expected.not_to be_allowed_to(:edit, internal_user) }
+          it { is_expected.not_to be_allowed_to(:update, internal_user) }
+        end
+      end
     end
 
     context "in cross-facility" do
