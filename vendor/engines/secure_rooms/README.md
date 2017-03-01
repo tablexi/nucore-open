@@ -37,6 +37,12 @@ The door security hardware communicates through an API with the following endpoi
         reason:   "I only know how to deny right now." }
       ```
 
+  In addition, sending identifiers that do not map to existing records will generate a not found:
+
+  **Not Found:** One of the input identifiers does not match an existing record.
+
+  * **Code:** 404 Not Found
+
 * **Planned Responses:**
 
   **Access Granted Immediately:** We can infer the cardholder's payment method, so they are cleared immediately.

@@ -7,11 +7,44 @@ RSpec.describe SecureRoomsApi::ScansController do
       password = Settings.secure_rooms_api.basic_auth_password
       encoded_auth_credentials = ActionController::HttpAuthentication::Basic.encode_credentials(name, password)
       request.env['HTTP_AUTHORIZATION'] = encoded_auth_credentials
-      post :scan
+
+      post :scan,
+           card_id: card_number,
+           controller_id: control_device_id,
+           reader_id: card_reader_id
     end
 
-    it "denies entry until we add logic" do
-      expect(response).to have_http_status(:forbidden)
+    subject { response }
+
+    let(:card_reader) { create :card_reader }
+    let(:card_user) { create :user, card_number: '123456' }
+
+    let(:card_reader_id) { card_reader.id }
+    let(:control_device_id) { card_reader.control_device.id }
+    let(:card_number) { card_user.card_number }
+
+    describe "initial deny response" do
+      it { is_expected.to have_http_status(:forbidden) }
+    end
+
+    describe "not found responses" do
+      context "when card does not exist" do
+        let(:card_number) { nil }
+
+        it { is_expected.to have_http_status(:not_found) }
+      end
+
+      context "when card reader does not exist" do
+        let(:card_reader_id) { nil }
+
+        it { is_expected.to have_http_status(:not_found) }
+      end
+
+      context "when control device does not exist" do
+        let(:control_device_id) { nil }
+
+        it { is_expected.to have_http_status(:not_found) }
+      end
     end
   end
 end

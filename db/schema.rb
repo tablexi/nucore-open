@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170210214106) do
+ActiveRecord::Schema.define(version: 20170301120659) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -87,6 +87,19 @@ ActiveRecord::Schema.define(version: 20170210214106) do
 
   add_index "bundle_products", ["bundle_product_id"], name: "fk_bundle_prod_prod", using: :btree
   add_index "bundle_products", ["product_id"], name: "fk_bundle_prod_bundle", using: :btree
+
+  create_table "card_readers", force: :cascade do |t|
+    t.integer  "control_device_id", limit: 4, null: false
+    t.boolean  "entrance",                    null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  create_table "control_devices", force: :cascade do |t|
+    t.integer  "secure_room_id", limit: 4, null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   limit: 4,          default: 0, null: false
@@ -688,6 +701,7 @@ ActiveRecord::Schema.define(version: 20170210214106) do
     t.datetime "reset_password_sent_at"
     t.integer  "uid",                    limit: 4
     t.datetime "deactivated_at"
+    t.string   "card_number",            limit: 255
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
