@@ -167,6 +167,14 @@ if Account.config.statements_enabled?
         end
       end
 
+      context "with multiple payment sources" do
+        it "should display properly formatted flash message" do
+          sign_in(@user)
+          do_request
+          expect(flash[:notice]).to match(/Notifications sent successfully to:<br\/>.*account description<br\/.*/)
+        end
+      end
+
       context "errors" do
         it "should display an error for no orders" do
           @params[:order_detail_ids] = nil
