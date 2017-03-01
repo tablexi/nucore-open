@@ -21,7 +21,7 @@ class StatementCreator
   end
 
   def formatted_errors
-    errors.join("<br/>")
+    errors.join("<br/>").html_safe
   end
 
   def send_statement_emails
@@ -37,7 +37,7 @@ class StatementCreator
   end
 
   def formatted_account_list
-    account_list.join("<br/>")
+    account_list.join("<br/>").html_safe
   end
 
   private
