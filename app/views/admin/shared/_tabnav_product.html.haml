@@ -15,7 +15,11 @@
   - if @product.is_a?(Instrument)
     = tab "Restrictions", edit_facility_price_group_product_path(current_facility, @product), (secondary_tab == "restrictions")
     = tab "Reservations", facility_instrument_schedule_path(current_facility, @product), (secondary_tab == "reservations")
-  = tab "Docs", [current_facility, @product, :file_uploads, file_type: "info"], (secondary_tab == "documentation")
+
+  = tab "Docs",
+    [current_facility, @product, :file_uploads, file_type: "info"],
+    (secondary_tab == "documentation")
+
   - if @product.is_a?(Service)
     = tab "Order Forms", product_survey_path(current_facility, @product.parameterize, @product.url_name), (secondary_tab == "surveys")
   - if @product.respond_to?(:reservations)
