@@ -83,6 +83,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
   end
 
   def authorize_order_detail
+    session[:requested_params] = request.path if request.get? && !request.xhr? && !user_signed_in?
     authorize! :update, @order_detail
   end
 
