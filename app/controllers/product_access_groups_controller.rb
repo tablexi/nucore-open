@@ -2,12 +2,13 @@ class ProductAccessGroupsController < ApplicationController
 
   before_action :authenticate_user!
   before_action :init_current_facility
-  before_action :init_current_product
 
   admin_tab :all
   load_and_authorize_resource :facility, find_by: :url_name
   load_and_authorize_resource :instrument, through: :facility, find_by: :url_name
   load_and_authorize_resource :product_access_group, through: :instrument
+
+  before_action :init_current_product
 
   layout "two_column"
 
