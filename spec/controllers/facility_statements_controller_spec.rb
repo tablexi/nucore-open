@@ -168,10 +168,10 @@ if Account.config.statements_enabled?
       end
 
       context "with multiple payment sources" do
-        it "should display properly formatted flash message" do
+        it "displays properly formatted flash message" do
           sign_in(@user)
           do_request
-          expect(flash[:notice]).to match(%r{Notifications sent successfully to:<br\/>.*account description<br\/.*})
+          expect(flash[:notice]).to match(%r{Notifications sent successfully to:<br/>.*account description<br/.*})
         end
       end
 
