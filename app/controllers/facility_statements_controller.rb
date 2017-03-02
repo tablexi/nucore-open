@@ -38,9 +38,9 @@ class FacilityStatementsController < ApplicationController
       flash[:error] = text("no_selection")
     elsif @statement_creator.create
       @statement_creator.send_statement_emails
-      flash[:notice] = text(success_message, accounts: @statement_creator.formatted_account_list).html_safe
+      flash[:notice] = text(success_message, accounts: @statement_creator.formatted_account_list)
     else
-      flash[:error] = text("errors_html", errors: @statement_creator.formatted_errors).html_safe
+      flash[:error] = text("errors_html", errors: @statement_creator.formatted_errors)
     end
 
     redirect_to action: :new
