@@ -16,6 +16,7 @@ class ProductAccessGroupsController < ApplicationController
   end
 
   def index
+    @product = @instrument # required for tabnav_product
   end
 
   def edit

@@ -20,6 +20,7 @@ class ScheduleRulesController < ApplicationController
     @start_at       = Time.zone.at(params[:start].to_i)
     @end_at         = Time.zone.at(params[:end].to_i)
     @schedule_rules = @instrument.schedule_rules
+    @product        = @instrument # required for tabnav_product
 
     respond_to do |format|
       format.html # index.html.erb
