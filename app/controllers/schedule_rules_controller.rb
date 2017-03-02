@@ -5,6 +5,7 @@ class ScheduleRulesController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
   before_action :init_instrument
+  before_action :init_current_product
 
   load_and_authorize_resource
 
@@ -20,7 +21,6 @@ class ScheduleRulesController < ApplicationController
     @start_at       = Time.zone.at(params[:start].to_i)
     @end_at         = Time.zone.at(params[:end].to_i)
     @schedule_rules = @instrument.schedule_rules
-    @product        = @instrument # required for tabnav_product
 
     respond_to do |format|
       format.html # index.html.erb
@@ -84,8 +84,15 @@ class ScheduleRulesController < ApplicationController
     end
   end
 
+  private
+
   def init_instrument
     @instrument = current_facility.instruments.find_by_url_name!(params[:instrument_id])
+  end
+
+  def init_current_product
+    # required for tabnav_product
+    @product = @instrument
   end
 
 end

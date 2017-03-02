@@ -2,6 +2,7 @@ class ProductAccessGroupsController < ApplicationController
 
   before_action :authenticate_user!
   before_action :init_current_facility
+  before_action :init_current_product
 
   admin_tab :all
   load_and_authorize_resource :facility, find_by: :url_name
@@ -16,7 +17,6 @@ class ProductAccessGroupsController < ApplicationController
   end
 
   def index
-    @product = @instrument # required for tabnav_product
   end
 
   def edit
@@ -52,6 +52,13 @@ class ProductAccessGroupsController < ApplicationController
       flash[:error] = "There was an error deleting the #{ProductAccessGroup.model_name.human}"
       redirect_to edit_facility_instrument_product_access_groups_path(@facility, @instrument, @product_access_group)
     end
+  end
+
+  private
+
+  def init_current_product
+    # required for tabnav_product
+    @product = @instrument
   end
 
 end
