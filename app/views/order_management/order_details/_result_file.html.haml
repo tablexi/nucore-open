@@ -1,5 +1,9 @@
 %li
   = link_to result_file.name, facility_sample_result_path(result_file)
   = human_datetime(result_file.created_at)
-  = link_to remove_product_file_path(current_facility, @order_detail.product.parameterize, @order_detail.product, result_file, return_to: facility_order_path(current_facility, @order)), method: :delete, data: { :confirm => 'Are you sure?' }, remote: request.xhr?, class: 'remove-file' do
+  = link_to [current_facility, @order_detail.product, :file_upload, id: result_file, return_to: facility_order_path(current_facility, @order)],
+    method: :delete,
+    data: { confirm: "Are you sure?" },
+    remote: request.xhr?,
+    class: "remove-file" do
     %i.icon-remove
