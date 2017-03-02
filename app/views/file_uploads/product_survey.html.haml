@@ -99,7 +99,7 @@
           %tr
             %td
               = link_to text("shared.delete"),
-                [current_facility, @product, :remove_product_file, id: stored_file],
+                [current_facility, @product, :file_upload, id: stored_file],
                 method: :delete,
                 data: { confirm: t(".download_form.confirm") }
 
