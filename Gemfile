@@ -55,10 +55,7 @@ gem "delayed_job_active_record", "~> 4.0.1"
 gem "fog-aws"
 gem "rake"
 gem "spreadsheet", "~> 1.1.4"
-gem "exception_notification", "~> 4.0.1"
 gem "daemons", "1.1.9"
-gem "lograge"
-gem "logstash-event"
 
 ## custom
 gem "bulk_email", path: "vendor/engines/bulk_email"
@@ -82,9 +79,6 @@ group :development, :deployment do
   gem "capistrano-rails",   require: false
   gem "capistrano-rvm",     require: false
   gem "capistrano-bundler", require: false
-  gem "eye-patch",          require: false
-  gem "whenever",           require: false
-  gem "unicorn",            require: false
 end
 
 group :development, :test do
@@ -124,6 +118,12 @@ group :assets do
 end
 
 group :stage, :production do
+  gem "eye-patch", require: false
+  gem "exception_notification", "~> 4.0.1"
+  gem "lograge"
+  gem "logstash-event"
   gem "oj", "~> 2.12.14"
   gem "rollbar"
+  gem "unicorn", require: false
+  gem "whenever", require: false
 end
