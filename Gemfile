@@ -29,6 +29,10 @@ gem "nokogiri",         "~> 1.6.1"
 gem "rails-observers"
 
 ## views
+gem "sass-rails", "~> 5.0.6"
+gem "coffee-rails", "~> 4.1.1"
+gem "uglifier",     "~> 2.7.2"
+gem "therubyracer"
 gem "bootstrap-sass",   "~> 2.3.2"
 gem "haml",             "~> 4.0.5"
 gem "will_paginate", "~> 3.1.5"
@@ -108,13 +112,6 @@ group :test do
   gem "capybara"
   gem "capybara-email"
   gem "poltergeist"
-end
-
-group :assets do
-  gem "sass-rails", "~> 5.0.6"
-  gem "coffee-rails", "~> 4.1.1"
-  gem "uglifier",     "~> 2.7.2"
-  gem "therubyracer"
 end
 
 group :stage, :production do
