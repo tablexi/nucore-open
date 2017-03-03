@@ -15,6 +15,9 @@ class Product < ActiveRecord::Base
   has_many   :price_policies
   has_many   :training_requests, dependent: :destroy
 
+  # Allow us to use `product.hidden?`
+  alias_attribute :hidden, :is_hidden
+
   validates_presence_of :name, :type
   validate_url_name :url_name, :facility_id
   validates_numericality_of(

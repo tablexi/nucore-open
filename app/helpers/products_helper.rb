@@ -39,12 +39,10 @@ module ProductsHelper
   end
 
   def product_url_hint(product)
-    product_url_name = product.try(:url_name).presence || "url-name"
-
     public_send(
       "facility_#{product.class.name.underscore}_url",
       current_facility.url_name,
-      product_url_name,
+      "URL_NAME".html_safe,
     )
   end
 

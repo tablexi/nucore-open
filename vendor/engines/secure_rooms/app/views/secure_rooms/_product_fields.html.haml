@@ -1,0 +1,4 @@
+= render "admin/products/meta_fields", f: f
+= render "admin/products/account_fields", f: f
+
+= f.input :is_archived, as: :boolean, label: false, inline_label: text("views.admin.products.product_fields.hints.is_archived")

@@ -21,6 +21,10 @@ RSpec.describe "Creating a SecureRoom" do
 
     fill_in "secure_room[description]", with: "Some description"
     click_button "Save"
-    expect(SecureRoom.last.description).to eq("Some description")
+
+    room = SecureRoom.last
+    expect(room).to be_requires_approval
+    expect(room).to be_hidden
+    expect(room.description).to eq("Some description")
   end
 end

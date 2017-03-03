@@ -1,0 +1,5 @@
+- if SettingsHelper.feature_on? :recharge_accounts
+  = f.input :facility_account_id, collection: current_facility.facility_accounts.active.collect {|fa| [ fa, fa.id ] }, hint: text("hints.deposit_account"), include_blank: false, label: FacilityAccount.model_name.human
+  %p= link_to text("deposit_account.add"), :facility_facility_accounts
+- if SettingsHelper.feature_on? :expense_accounts
+  = f.input :account, hint: text("hints.account")
