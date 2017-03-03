@@ -10,6 +10,7 @@ dependencies:
 
 test:
   pre:
+    - cp config/secrets.yml.template config/secrets.yml
     - bundle exec rake db:reset
   override:
     - bundle exec rspec --format RspecJunitFormatter --out $CIRCLE_TEST_REPORTS/rspec.xml --format progress:
