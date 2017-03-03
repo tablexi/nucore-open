@@ -1,17 +1,17 @@
 module SecureRooms
 
-  class IndalaNumbersController < ApplicationController
+  class CardNumbersController < ApplicationController
 
     include TextHelpers::Translation
 
+    admin_tab :all
     customer_tab :password
-    admin_tab     :all
 
     layout "two_column"
 
     before_action :init_current_facility
     before_action :authenticate_user!
-    before_action :custom_authorize
+    before_action :load_and_authorize_user_with_card_number
     before_action :check_acting_as
 
     def initialize
@@ -20,11 +20,9 @@ module SecureRooms
     end
 
     def edit
-      @user = User.find(params[:id])
     end
 
     def update
-      @user = User.find(params[:id])
       if @user.update_attributes(update_user_params)
         flash[:notice] = text("controllers.users.update.success")
         redirect_to facility_user_path(current_facility, @user)
@@ -35,18 +33,21 @@ module SecureRooms
     end
 
     # During rendering, we want to use the Ability as if we were using the
-    # UsersController within which this IndalaNumber form is placed.
+    # UsersController within which this card number form is placed.
     def current_ability
-      Ability.new(current_user, current_facility, UsersController.new)
+      ::Ability.new(current_user, current_facility, UsersController.new)
     end
 
-    private def update_user_params
-      params.require(:user).permit(:indala_number)
+    private
+
+    def update_user_params
+      params.require(:user).permit(:card_number)
     end
 
-    private def custom_authorize
-      ability = SecureRooms::IndalaAbility.new(current_user, current_facility)
-      head :not_authorized unless ability.can? :edit, User
+    def load_and_authorize_user_with_card_number
+      @user = User.find(params[:user_id])
+      ability = SecureRooms::CardNumberAbility.new(current_user, current_facility)
+      raise CanCan::AccessDenied unless ability.can? :edit, User
     end
 
   end
