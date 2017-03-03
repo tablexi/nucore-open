@@ -122,3 +122,8 @@ group :assets do
   gem "uglifier",     "~> 2.7.2"
   gem "therubyracer"
 end
+
+group :stage, :production do
+  gem "oj", "~> 2.12.14"
+  gem "rollbar"
+end
