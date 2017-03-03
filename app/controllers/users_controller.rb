@@ -163,7 +163,7 @@ class UsersController < ApplicationController
   private
 
   def edit_user_params
-    params.require(:user).permit(:email, :first_name, :last_name, :indala_number)
+    params.require(:user).permit(:email, :first_name, :last_name)
   end
 
   def update_access_list_approvals
