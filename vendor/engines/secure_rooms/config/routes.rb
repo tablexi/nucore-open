@@ -5,7 +5,7 @@ Rails.application.routes.draw do
       resources :price_policies, controller: "secure_room_price_policies", except: :show
     end
 
-    resources :users do
+    resources :users, only: [] do
       get :"card_number/edit", to: "secure_rooms/card_numbers#edit"
       patch :"card_number/update", to: "secure_rooms/card_numbers#update"
     end
