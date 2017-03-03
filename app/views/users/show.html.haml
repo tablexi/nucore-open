@@ -12,9 +12,10 @@
 = readonly_form_for :user do |f|
   = f.input :full_name
   = f.input :email
+  = render_view_hook "inside_user_form", f: f
   = f.input :last_sign_in_at, :default_value => 'none'
   = f.input :deactivated_at unless f.object.active?
 
-- if can? :edit, @user
+- if can?(:edit, @user) || can?(:update_indala_number, @user)
   %ul.inline
     %li= link_to text("shared.edit"), edit_facility_user_path(current_facility, @user), class: "btn"
