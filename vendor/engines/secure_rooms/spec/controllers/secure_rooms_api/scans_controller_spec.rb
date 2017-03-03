@@ -15,4 +15,3 @@ RSpec.describe SecureRoomsApi::ScansController do
     end
   end
 end
-
