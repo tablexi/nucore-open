@@ -10,7 +10,7 @@ module SecureRooms
 
       ViewHook.add_hook "users.show",
                         "additional_user_fields",
-                        "secure_rooms/shared/indala_form_field"
+                        "secure_rooms/shared/card_number_form_field"
     end
 
     initializer :append_migrations do |app|

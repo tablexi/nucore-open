@@ -688,7 +688,7 @@ ActiveRecord::Schema.define(version: 20170220203130) do
     t.datetime "reset_password_sent_at"
     t.integer  "uid",                    limit: 4
     t.datetime "deactivated_at"
-    t.string   "indala_number",          limit: 255
+    t.string   "card_number",            limit: 255
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
