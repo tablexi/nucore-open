@@ -11,7 +11,7 @@ RSpec.describe SecureRoomsApi::ScansController do
     end
 
     it "denies entry until we add logic" do
-      expect(response).to be_forbidden
+      expect(response.code).to eq "403"
     end
   end
 end
