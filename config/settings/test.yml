@@ -1,2 +1,7 @@
 devise:
   secret_key: override-me-in-settings.local.yml
+
+# You should change this if you want to be able to access the SecureRooms API
+secure_rooms_api:
+  basic_auth_name: 51f5953d88c4c397eaf9bc11439887bf
+  basic_auth_password: 4a2100348322d5c3c0bf52979450f7de
