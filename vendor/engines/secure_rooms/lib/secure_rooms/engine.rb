@@ -5,16 +5,11 @@ module SecureRooms
     isolate_namespace SecureRooms
 
     config.to_prepare do
-      ::AbilityExtensionManager.extensions << "SecureRooms::AbilityExtension"
       bundle_index = Product.types.index(Bundle) || -1
       Product.types.insert(bundle_index, SecureRoom)
 
-      ViewHook.add_hook "users.form",
-                        "inside_user_form",
-                        "secure_rooms/shared/indala_form_field"
-
       ViewHook.add_hook "users.show",
-                        "inside_user_form",
+                        "additional_user_fields",
                         "secure_rooms/shared/indala_form_field"
     end
 

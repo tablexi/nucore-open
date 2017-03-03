@@ -4,5 +4,7 @@ Rails.application.routes.draw do
       facility_product_routing_concern
       resources :price_policies, controller: "secure_room_price_policies", except: :show
     end
+
+    resources :indala_numbers, controller: "secure_rooms/indala_numbers", only: [:edit, :update]
   end
 end

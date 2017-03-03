@@ -66,7 +66,6 @@ RSpec.describe UsersController do
       @action = :update
       @params[:id] = user.id
       @params[:user] = { first_name: "New", last_name: "Name" }
-      @params[:indala_number] = "123456"
     end
 
     it_should_allow_admin_only(:found) do
@@ -81,7 +80,6 @@ RSpec.describe UsersController do
 
       it_should_allow_admin_only(:found) do
         expect(user.reload.first_name).to eq(user.first_name)
-        expect(user.reload.indala_number).to eq("123456")
       end
     end
   end

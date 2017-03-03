@@ -1,0 +1,17 @@
+= content_for :head_content do
+  = render "users/form_head"
+
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_users", sidenav_tab: "users"
+
+%h2= text("views.users.edit.head", user: @user.full_name)
+%p= text("views.users.edit.subhead")
+= simple_form_for [current_facility, @user], url: facility_indala_number_path(current_facility, @user) do |f|
+  .form-inputs
+    = f.input :indala_number
+    = f.button :submit, text("shared.update"), class: ["btn", "btn-primary"]
+    &nbsp;
+    = link_to text("shared.cancel"), facility_users_path
