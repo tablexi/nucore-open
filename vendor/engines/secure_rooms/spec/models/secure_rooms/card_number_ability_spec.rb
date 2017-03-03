@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SecureRooms::CardNumberAbility do
   subject(:ability) { described_class.new(current_user, facility) }
-  let(:card_user) { FactoryGirl.create(:user) }
+  let(:card_user) { FactoryGirl.build(:user) }
   let(:facility) { FactoryGirl.create(:facility) }
 
   describe "administrator" do
