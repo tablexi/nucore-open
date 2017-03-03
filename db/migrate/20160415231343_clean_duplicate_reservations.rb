@@ -13,7 +13,11 @@ class CleanDuplicateReservations < ActiveRecord::Migration
       Reservation.where(order_detail_id: order_detail_id).last.destroy
     end
     if NUCore::Database.oracle?
-      remove_index :reservations, :order_detail_id
+      begin
+        remove_index :reservations, :order_detail_id
+      rescue
+        # this index might not exist; unsure why
+      end
     end
     add_index :reservations, :order_detail_id, unique: true, name: "res_od_uniq_fk"
   end
