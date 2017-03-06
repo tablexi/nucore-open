@@ -5,7 +5,7 @@
   = render "admin/shared/sidenav_users", sidenav_tab: "users"
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_users', :locals => {:secondary_tab => 'details'}
+  = render partial: "admin/shared/tabnav_users", :locals => {:secondary_tab => "details"}
 
 %h2= text("views.users.edit.head", user: @user.full_name)
 = simple_form_for [current_facility, @user], url: facility_user_card_number_update_path(current_facility, @user) do |f|

@@ -8,7 +8,7 @@
   = render "admin/shared/sidenav_users", sidenav_tab: "users"
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_users', :locals => {:secondary_tab => 'details'}
+  = render partial: "admin/shared/tabnav_users", :locals => {:secondary_tab => "details"}
 
 %h2= text("head", user: @user.full_name)
 %p= text("subhead")

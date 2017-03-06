@@ -2,8 +2,6 @@ module SecureRooms
 
   class CardNumbersController < ApplicationController
 
-    include TextHelpers::Translation
-
     admin_tab :all
     customer_tab :password
 
@@ -23,11 +21,11 @@ module SecureRooms
 
     def update
       if @user.update_attributes(update_user_params)
-        flash[:notice] = text("controllers.users.update.success")
+        flash[:notice] = text("success")
         redirect_to facility_user_path(current_facility, @user)
       else
-        flash[:error] = text("controllers.users.update.error", message: @user.errors.full_messages.to_sentence)
-        render action: :edit
+        flash[:error] = text("error", message: @user.errors.full_messages.to_sentence)
+        render :edit
       end
     end
 
@@ -35,6 +33,12 @@ module SecureRooms
     # UsersController within which this card number form is placed.
     def current_ability
       ::Ability.new(current_user, current_facility, UsersController.new)
+    end
+
+    protected
+
+    def translation_scope
+      "controllers.users.update"
     end
 
     private
@@ -46,7 +50,7 @@ module SecureRooms
     def load_and_authorize_user_with_card_number
       @user = User.find(params[:user_id])
       ability = SecureRooms::CardNumberAbility.new(current_user, current_facility)
-      raise CanCan::AccessDenied unless ability.can? :edit, User
+      raise CanCan::AccessDenied unless ability.can? :edit, @user
     end
 
   end
