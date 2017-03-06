@@ -12,10 +12,22 @@ environment, please follow [the instructions for how to install the Oracle drive
 Make sure you have the `activerecord-oracle_enhanced-adapter` and `ruby-oci8` gems
 enabled.
 
+- `cp config/database.yml.oracle.template config/database.yml`
+
+Update your database.yml to look like this:
+
 ```
-cp config/database.yml.oracle.template config/database.yml
+development:
+  adapter: oracle_enhanced
+  database: oracle.local/xe
+  username: nucores_development
+  password: testing
+  encoding: utf8
+```
+
+```
 docker run -d -p 1521:1521 --name nucore_db wnameless/oracle-xe-11g
-# @ait, it sometimes takes a few minutes to come up
+# wait, it sometimes takes a few minutes to come up
 # "ORA-01033: ORACLE initialization or shutdown in progress" means wait.
 docker/oracle/setup.sh
 # demo:seed is optional
