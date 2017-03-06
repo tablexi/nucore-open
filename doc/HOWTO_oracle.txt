@@ -38,15 +38,6 @@ export OCI_DIR=$ORACLE_HOME
 
 source ~/.profile
 
-########################################
-If you're using tcsh:
-# Add to (tcsh) ~/.tcshrc
-setenv NLS_LANG "AMERICAN_AMERICA.UTF8"
-setenv ORACLE_HOME /opt/oracle/instantclient
-setenv OCI_DIR=$ORACLE_HOME
-
-source ~/.tcshrc
-
 #########################################
 # sqlplus in path
 sudo ln -s /opt/oracle/instantclient/sqlplus /usr/local/bin/sqlplus
@@ -69,19 +60,4 @@ Enter user-name:
 
 ^D out of that and carry on.
 
-################################################################################
-# ruby-oci8 and activerecord-oracle_enhanced adapter
-################################################################################
-# Instructions sourced from:
-# http://blog.rayapps.com/2009/09/06/how-to-setup-ruby-and-oracle-instant-client-on-snow-leopard/
-
-*** As of Instant client 11.2, you should not need to do anything special ***
-
-# configure database.yml in your rails project
-development:
-  adapter: oracle_enhanced
-  database: oracle.local/xe
-  username: nucores_development
-  password: testing
-  encoding: utf8
-
+`cp config/database.yml.oracle.template config/database.yml`
