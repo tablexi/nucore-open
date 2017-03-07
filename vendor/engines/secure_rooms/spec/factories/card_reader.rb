@@ -1,6 +1,5 @@
 FactoryGirl.define do
-  factory :card_reader, class: CardReader do
+  factory :card_reader do
     control_device
-    entrance true
   end
 end

@@ -1,9 +1,6 @@
 FactoryGirl.define do
-  factory :secure_room, class: SecureRoom do
-    sequence(:name) { |n| "user #{n}" }
-    sequence(:url_name) { |n| "user-#{n}" }
-    sequence(:account)
-    sequence(:contact_email) { |n| "user#{n}@example.com" }
-    facility
+  factory :secure_room, class: SecureRoom, parent: :setup_product do
+    sequence(:name) { |n| "Room #{n}" }
+    sequence(:url_name) { |n| "Room#{n}" }
   end
 end

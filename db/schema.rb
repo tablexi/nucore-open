@@ -90,16 +90,19 @@ ActiveRecord::Schema.define(version: 20170301120659) do
 
   create_table "card_readers", force: :cascade do |t|
     t.integer  "control_device_id", limit: 4, null: false
-    t.boolean  "entrance",                    null: false
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
   end
 
+  add_index "card_readers", ["control_device_id"], name: "fk_rails_e426b84246", using: :btree
+
   create_table "control_devices", force: :cascade do |t|
-    t.integer  "secure_room_id", limit: 4, null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.integer  "product_id", limit: 4, null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
+
+  add_index "control_devices", ["product_id"], name: "fk_rails_701222290b", using: :btree
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   limit: 4,          default: 0, null: false
@@ -738,6 +741,8 @@ ActiveRecord::Schema.define(version: 20170301120659) do
   add_foreign_key "bulk_email_jobs", "users"
   add_foreign_key "bundle_products", "products", column: "bundle_product_id", name: "fk_bundle_prod_prod"
   add_foreign_key "bundle_products", "products", name: "fk_bundle_prod_bundle"
+  add_foreign_key "card_readers", "control_devices"
+  add_foreign_key "control_devices", "products"
   add_foreign_key "email_events", "users"
   add_foreign_key "facility_accounts", "facilities", name: "fk_facilities"
   add_foreign_key "instrument_statuses", "products", column: "instrument_id", name: "fk_int_stats_product"

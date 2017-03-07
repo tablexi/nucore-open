@@ -42,6 +42,12 @@ The door security hardware communicates through an API with the following endpoi
   **Not Found:** One of the input identifiers does not match an existing record.
 
   * **Code:** 404 Not Found
+  * **Response:**
+
+      ```
+      { response: "deny",
+        reason:   <Error Message stating missing record> }
+      ```
 
 * **Planned Responses:**
 

@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :control_device, class: ControlDevice do
+  factory :control_device do
     secure_room
   end
 end

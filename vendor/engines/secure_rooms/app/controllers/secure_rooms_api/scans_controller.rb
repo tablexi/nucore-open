@@ -5,6 +5,8 @@ class SecureRoomsApi::ScansController < ApplicationController
     password: Settings.secure_rooms_api.basic_auth_password,
   )
 
+  rescue_from ActiveRecord::RecordNotFound, with: :report_missing_ids
+
   before_action :load_models
 
   def scan
@@ -19,7 +21,18 @@ class SecureRoomsApi::ScansController < ApplicationController
   def load_models
     @user = User.find_by!(card_number: params[:card_id])
     @control_device = ControlDevice.find(params[:controller_id])
-    @card_reader = CardReader.find(params[:reader_id])
+    @card_reader = CardReader.where(id: @control_device).find(params[:reader_id])
+  end
+
+  private
+
+  def report_missing_ids(error)
+    response_json = {
+      response: "deny",
+      reason: error.message,
+    }
+
+    render json: response_json, status: :not_found
   end
 
 end

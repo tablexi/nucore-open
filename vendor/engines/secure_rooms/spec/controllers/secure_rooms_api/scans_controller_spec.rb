@@ -27,23 +27,34 @@ RSpec.describe SecureRoomsApi::ScansController do
       it { is_expected.to have_http_status(:forbidden) }
     end
 
-    describe "not found responses" do
+    describe "not found response" do
+      subject { response }
+
       context "when card does not exist" do
         let(:card_number) { nil }
 
         it { is_expected.to have_http_status(:not_found) }
+        it "is expected to contain the corresponding reason" do
+          expect(response.body).to match("Couldn't find User")
+        end
       end
 
       context "when card reader does not exist" do
         let(:card_reader_id) { nil }
 
         it { is_expected.to have_http_status(:not_found) }
+        it "is expected to contain the corresponding reason" do
+          expect(response.body).to match("Couldn't find CardReader")
+        end
       end
 
       context "when control device does not exist" do
         let(:control_device_id) { nil }
 
         it { is_expected.to have_http_status(:not_found) }
+        it "is expected to contain the corresponding reason" do
+          expect(response.body).to match("Couldn't find ControlDevice")
+        end
       end
     end
   end
