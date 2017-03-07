@@ -4,10 +4,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery-ui/widgets/datepicker
-//= require jquery-ui/widgets/draggable
-//= require jquery-ui/widgets/droppable
 //= require jquery-ui/widgets/tabs
-//= require jquery-ui/widgets/dialog
 //= require jquery-ui/effect
 //= require nested_form_fields
 //= require bootstrap
