@@ -691,6 +691,7 @@ ActiveRecord::Schema.define(version: 20170220203130) do
     t.string   "card_number",            limit: 255
   end
 
+  add_index "users", ["card_number"], name: "index_users_on_card_number", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["uid"], name: "index_users_on_uid", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
