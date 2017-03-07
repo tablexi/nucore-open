@@ -607,16 +607,20 @@ ActiveRecord::Schema.define(version: 20170301120659) do
   add_index "schedules", ["facility_id"], name: "i_schedules_facility_id", using: :btree
 
   create_table "secure_rooms_card_readers", force: :cascade do |t|
-    t.integer  "control_device_id", limit: 4, null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.integer  "secure_rooms_control_device_id", limit: 4, null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
   end
+
+  add_index "secure_rooms_card_readers", ["secure_rooms_control_device_id"], name: "fk_rails_2cf9fb4784", using: :btree
 
   create_table "secure_rooms_control_devices", force: :cascade do |t|
     t.integer  "product_id", limit: 4, null: false
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
   end
+
+  add_index "secure_rooms_control_devices", ["product_id"], name: "fk_rails_7b8609c586", using: :btree
 
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false
@@ -770,7 +774,7 @@ ActiveRecord::Schema.define(version: 20170301120659) do
   add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
   add_foreign_key "schedule_rules", "products", column: "instrument_id"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
-  add_foreign_key "secure_rooms_card_readers", "control_devices"
+  add_foreign_key "secure_rooms_card_readers", "secure_rooms_control_devices"
   add_foreign_key "secure_rooms_control_devices", "products"
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
   add_foreign_key "stored_files", "order_details", name: "fk_files_od"

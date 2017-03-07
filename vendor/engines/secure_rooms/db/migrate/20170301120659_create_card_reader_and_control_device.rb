@@ -9,8 +9,8 @@ class CreateCardReaderAndControlDevice < ActiveRecord::Migration
     end
 
     create_table :secure_rooms_card_readers do |t|
-      t.references :control_device, null: false
-      t.foreign_key :control_devices
+      t.references :secure_rooms_control_device, null: false
+      t.foreign_key :secure_rooms_control_devices
 
       t.timestamps null: false
     end
