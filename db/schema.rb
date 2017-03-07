@@ -88,22 +88,6 @@ ActiveRecord::Schema.define(version: 20170301120659) do
   add_index "bundle_products", ["bundle_product_id"], name: "fk_bundle_prod_prod", using: :btree
   add_index "bundle_products", ["product_id"], name: "fk_bundle_prod_bundle", using: :btree
 
-  create_table "card_readers", force: :cascade do |t|
-    t.integer  "control_device_id", limit: 4, null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-  end
-
-  add_index "card_readers", ["control_device_id"], name: "fk_rails_e426b84246", using: :btree
-
-  create_table "control_devices", force: :cascade do |t|
-    t.integer  "product_id", limit: 4, null: false
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-  end
-
-  add_index "control_devices", ["product_id"], name: "fk_rails_701222290b", using: :btree
-
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   limit: 4,          default: 0, null: false
     t.integer  "attempts",   limit: 4,          default: 0, null: false
@@ -622,6 +606,18 @@ ActiveRecord::Schema.define(version: 20170301120659) do
 
   add_index "schedules", ["facility_id"], name: "i_schedules_facility_id", using: :btree
 
+  create_table "secure_rooms_card_readers", force: :cascade do |t|
+    t.integer  "control_device_id", limit: 4, null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  create_table "secure_rooms_control_devices", force: :cascade do |t|
+    t.integer  "product_id", limit: 4, null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false
     t.integer "subaccount_id",           limit: 4,                         null: false
@@ -741,8 +737,6 @@ ActiveRecord::Schema.define(version: 20170301120659) do
   add_foreign_key "bulk_email_jobs", "users"
   add_foreign_key "bundle_products", "products", column: "bundle_product_id", name: "fk_bundle_prod_prod"
   add_foreign_key "bundle_products", "products", name: "fk_bundle_prod_bundle"
-  add_foreign_key "card_readers", "control_devices"
-  add_foreign_key "control_devices", "products"
   add_foreign_key "email_events", "users"
   add_foreign_key "facility_accounts", "facilities", name: "fk_facilities"
   add_foreign_key "instrument_statuses", "products", column: "instrument_id", name: "fk_int_stats_product"
@@ -776,6 +770,8 @@ ActiveRecord::Schema.define(version: 20170301120659) do
   add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
   add_foreign_key "schedule_rules", "products", column: "instrument_id"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
+  add_foreign_key "secure_rooms_card_readers", "control_devices"
+  add_foreign_key "secure_rooms_control_devices", "products"
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
   add_foreign_key "stored_files", "order_details", name: "fk_files_od"
   add_foreign_key "stored_files", "products", name: "fk_files_product"

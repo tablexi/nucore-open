@@ -44,7 +44,7 @@ RSpec.describe SecureRoomsApi::ScansController do
 
         it { is_expected.to have_http_status(:not_found) }
         it "is expected to contain the corresponding reason" do
-          expect(response.body).to match("Couldn't find CardReader")
+          expect(response.body).to match("Couldn't find SecureRooms::CardReader")
         end
       end
 
@@ -53,7 +53,7 @@ RSpec.describe SecureRoomsApi::ScansController do
 
         it { is_expected.to have_http_status(:not_found) }
         it "is expected to contain the corresponding reason" do
-          expect(response.body).to match("Couldn't find ControlDevice")
+          expect(response.body).to match("Couldn't find SecureRooms::ControlDevice")
         end
       end
     end
