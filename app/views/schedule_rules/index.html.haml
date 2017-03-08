@@ -28,6 +28,8 @@
         %th Start Time
         %th End Time
         %th.currency Discount (%)
+        - if @product.product_access_groups.to_a.any?
+          %th Scheduling Groups
     %tbody
       - @schedule_rules.each do |schedule_rule|
         %tr{:class => cycle('odd', 'even')}
@@ -39,7 +41,9 @@
           %td= schedule_rule.days_string
           %td= human_time(Time.zone.parse(schedule_rule.start_time))
           %td= human_time(Time.zone.parse(schedule_rule.end_time))
-          %td.currency=h sprintf '%.2f', schedule_rule.discount_percent
+          %td.currency= number_to_percentage(schedule_rule.discount_percent, strip_insignificant_zeros: true)
+          - if @product.product_access_groups.any?
+            %td= schedule_rule.product_access_groups.join(", ")
 - else
   %br
   %p.notice No Schedule Rules exist yet.

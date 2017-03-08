@@ -23,8 +23,10 @@ class ScheduleRulesController < ApplicationController
     @schedule_rules = @instrument.schedule_rules
 
     respond_to do |format|
-      format.html # index.html.erb
-      format.js { render json: @schedule_rules.map(&:as_calendar_object).flatten }
+      format.html # index.html.haml
+      format.js do
+        render json: ScheduleRuleCalendarPresenter.to_json(@schedule_rules)
+      end
     end
   end
 

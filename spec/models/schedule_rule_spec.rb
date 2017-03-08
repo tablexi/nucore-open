@@ -223,16 +223,16 @@ RSpec.describe ScheduleRule do
                                        facility: @facility,
                                        facility_account: @facility_account)
       # create rule every day from 9 am to 5 pm
-      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, discount_percent: 5))
       assert @rule.valid?
 
       # find past sunday, and build calendar object
-      @sunday   = ScheduleRule.sunday_last
+      @sunday = Time.current.beginning_of_week(:sunday).to_date
       @calendar = @rule.as_calendar_object
 
       # each title should be the same
       @calendar.each do |hash|
-        expect(hash["title"]).to eq("Interval: #{@instrument.reserve_interval} minute")
+        expect(hash["title"]).to eq("Discount: 5%")
         expect(hash["allDay"]).to eq(false)
       end
 
@@ -297,7 +297,7 @@ RSpec.describe ScheduleRule do
       assert @rule2.valid?
 
       # find past tuesday, and build calendar objects
-      @tuesday    = ScheduleRule.sunday_last + 2.days
+      @tuesday = Time.current.beginning_of_week(:sunday).to_date + 2
 
       # times should be tue 1 am - 3 am
       @calendar1  = @rule1.as_calendar_object
@@ -357,7 +357,7 @@ RSpec.describe ScheduleRule do
       assert @rule2.valid?
 
       # find past tuesday, and build calendar objects
-      @tuesday    = ScheduleRule.sunday_last + 2.days
+      @tuesday = Time.current.beginning_of_week(:sunday).to_date + 2
       @wednesday  = @tuesday + 1.day
 
       # times should be tue 9 pm - 12 am
@@ -386,8 +386,8 @@ RSpec.describe ScheduleRule do
       assert @rule.valid?
 
       # set start_date as wednesday
-      @wednesday  = ScheduleRule.sunday_last + 3.days
-      @calendar   = @rule.as_calendar_object(start_date: @wednesday)
+      @wednesday = Time.current.beginning_of_week(:sunday).to_date + 3
+      @calendar = @rule.as_calendar_object(start_date: @wednesday)
 
       # should start on wednesday
       expect(@calendar.size).to eq(7)

@@ -121,7 +121,7 @@ class ScheduleRule < ActiveRecord::Base
 
   # build weekly calendar object
   def as_calendar_object(options = {})
-    CalendarObjectBuilder.new(self, options).generate
+    ScheduleRuleCalendarPresenter.new(self, options).to_json
   end
 
   def discount_for(start_at, end_at)
@@ -194,11 +194,6 @@ class ScheduleRule < ActiveRecord::Base
     end
 
     not_rules
-  end
-
-  def self.sunday_last
-    today = Time.zone.now
-    (today - today.wday.days).to_date
   end
 
   # If we're at, say, 4:00, return 3. If we're at 4:01, return 4.
