@@ -29,8 +29,7 @@ RSpec.describe ProductAccessGroupsController do
       @method = :get
     end
     it_should_allow_operators_only :success, "see index" do
-      expect(assigns[:facility]).to eq(@authable)
-      expect(assigns[:instrument]).to eq(@instrument)
+      expect(assigns[:product]).to eq(@instrument)
       expect(assigns[:product_access_groups]).to eq([@level, @level2])
     end
   end
@@ -41,8 +40,7 @@ RSpec.describe ProductAccessGroupsController do
       @method = :get
     end
     it_should_allow_managers_and_senior_staff_only :success, "do new" do
-      expect(assigns[:facility]).to eq(@authable)
-      expect(assigns[:instrument]).to eq(@instrument)
+      expect(assigns[:product]).to eq(@instrument)
       expect(assigns[:product_access_group]).to be_new_record
       expect(response).to render_template :new
     end
@@ -58,8 +56,8 @@ RSpec.describe ProductAccessGroupsController do
         @params.merge!(product_access_group: FactoryGirl.attributes_for(:product_access_group))
       end
       it_should_allow_managers_and_senior_staff_only :redirect, "do create" do
-        expect(assigns[:facility]).to eq(@authable)
-        expect(assigns[:instrument]).to eq(@instrument)
+
+        expect(assigns[:product]).to eq(@instrument)
         expect(assigns[:product_access_group]).not_to be_new_record
         expect(flash[:notice]).not_to be_nil
         expect(response).to redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
@@ -70,8 +68,8 @@ RSpec.describe ProductAccessGroupsController do
         @params.merge!(product_access_group: FactoryGirl.attributes_for(:product_access_group, name: ""))
       end
       it_should_allow_managers_and_senior_staff_only :success, "do create" do
-        expect(assigns[:facility]).to eq(@authable)
-        expect(assigns[:instrument]).to eq(@instrument)
+
+        expect(assigns[:product]).to eq(@instrument)
         expect(assigns[:product_access_group]).to be_new_record
         expect(assigns[:product_access_group].errors).not_to be_empty
         expect(response).to render_template :new
@@ -87,8 +85,7 @@ RSpec.describe ProductAccessGroupsController do
       @params.merge!(id: @product_access_group.id)
     end
     it_should_allow_managers_and_senior_staff_only :success, "do edit" do
-      expect(assigns[:facility]).to eq(@authable)
-      expect(assigns[:instrument]).to eq(@instrument)
+      expect(assigns[:product]).to eq(@instrument)
       expect(assigns[:product_access_group]).to eq(@product_access_group)
       expect(response).to render_template :edit
     end
@@ -105,8 +102,8 @@ RSpec.describe ProductAccessGroupsController do
         @params.merge!(product_access_group: { name: "new name" })
       end
       it_should_allow_managers_and_senior_staff_only :redirect, "do update" do
-        expect(assigns[:facility]).to eq(@authable)
-        expect(assigns[:instrument]).to eq(@instrument)
+
+        expect(assigns[:product]).to eq(@instrument)
         expect(assigns[:product_access_group]).to eq(@product_access_group)
         expect(assigns[:product_access_group].name).to eq("new name")
         expect(flash[:notice]).not_to be_nil
@@ -118,8 +115,8 @@ RSpec.describe ProductAccessGroupsController do
         @params.merge!(product_access_group: { name: "" })
       end
       it_should_allow_managers_and_senior_staff_only :success, "do update" do
-        expect(assigns[:facility]).to eq(@authable)
-        expect(assigns[:instrument]).to eq(@instrument)
+
+        expect(assigns[:product]).to eq(@instrument)
         expect(assigns[:product_access_group]).to eq(@product_access_group)
         expect(assigns[:product_access_group].errors).not_to be_empty
         expect(response).to render_template :edit
