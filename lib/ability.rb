@@ -146,7 +146,6 @@ class Ability
 
         can [:list, :show], Facility
         can :act_as, Facility
-
         can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
         can [:instrument_status, :instrument_statuses, :switch], Instrument
         can :edit, [PriceGroupProduct]

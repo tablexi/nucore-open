@@ -1,139 +1,121 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-RSpec.describe ScheduleRulesController do
+RSpec.describe ScheduleRulesController, :aggregate_failures do
   render_views
 
-  let(:facility) { @authable }
+  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)) }
+  let(:product) { FactoryGirl.create(:instrument, facility: facility, facility_account_id: facility_account.id) }
+  let(:senior_staff) { create(:user, :senior_staff, facility: facility) }
 
-  before(:all) { create_users }
+  let(:product_params) { { facility_id: facility.url_name, instrument_id: product.url_name } }
 
-  before(:each) do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group = FactoryGirl.create(:price_group, facility: facility)
-    @instrument       = FactoryGirl.create(:instrument, facility: @authable, facility_account_id: @facility_account.id)
-    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
-    expect(@price_policy).to be_valid
-    @params = { facility_id: @authable.url_name, instrument_id: @instrument.url_name }
-  end
+  describe "index" do
+    let(:staff) { create(:user, :staff, facility: facility) }
 
-  context "index" do
-
-    before :each do
-      @method = :get
-      @action = :index
+    before do
+      sign_in staff
+      get :index, product_params
     end
 
-    it_should_allow_operators_only do |_user|
-      expect(assigns[:instrument]).to eq(@instrument)
+    it "sets the product and renders" do
+      expect(assigns(:product)).to eq(product)
       expect(response).to be_success
       expect(response).to render_template("schedule_rules/index")
     end
-
   end
 
-  context "new" do
-
-    before :each do
-      @method = :get
-      @action = :new
+  describe "new" do
+    before do
+      sign_in senior_staff
+      get :new, product_params
     end
 
-    it_should_allow_managers_and_senior_staff_only do
-      expect(assigns[:instrument]).to eq(@instrument)
+    it "sets the product and renders" do
+      expect(assigns(:product)).to eq(product)
       expect(response).to be_success
       expect(response).to render_template("schedule_rules/new")
     end
 
+    it "sets the defaults to 9-5" do
+      expect(assigns(:schedule_rule).start_hour).to eq(9)
+      expect(assigns(:schedule_rule).start_min).to eq(0)
+      expect(assigns(:schedule_rule).end_hour).to eq(17)
+      expect(assigns(:schedule_rule).end_min).to eq(0)
+    end
   end
 
-  context "create" do
-
-    before :each do
-      @method = :post
-      @action = :create
-      @params.merge!(
-        schedule_rule: FactoryGirl.attributes_for(:schedule_rule, instrument_id: @instrument.id),
-      )
+  describe "create" do
+    def do_request
+      sign_in senior_staff
+      post :create, product_params.merge(schedule_rule: rule_params)
     end
 
-    it_should_allow_managers_and_senior_staff_only :redirect do
-      expect(assigns(:schedule_rule)).to be_kind_of ScheduleRule
-      is_expected.to set_flash
-      assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
+    let(:rule_params) { FactoryGirl.attributes_for(:schedule_rule, instrument_id: product.id) }
+
+    it "creates the schedule rule and redirects to index" do
+      expect { do_request }.to change(ScheduleRule, :count).by(1)
+      expect(response).to redirect_to facility_instrument_schedule_rules_url(facility, product)
     end
 
     context "with restriction levels" do
-      before :each do
-        @restriction_levels = []
-        3.times do
-          @restriction_levels << FactoryGirl.create(:product_access_group, product_id: @instrument.id)
-        end
-        sign_in(@admin)
-      end
+      let!(:restriction_levels) { FactoryGirl.create_list(:product_access_group, 3, product_id: product.id) }
 
       it "should come out with no restriction levels" do
         do_request
-        expect(assigns[:schedule_rule].product_access_groups).to be_empty
+        expect(assigns(:schedule_rule).product_access_groups).to be_empty
       end
 
-      it "should store restriction_rules" do
-        @params.deep_merge!(schedule_rule: { product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id] })
-        do_request
-        expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
-        expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)
-      end
+      describe "with the groups in the request" do
+        let(:rule_params) do
+          super().merge(product_access_group_ids: [restriction_levels[0].id, restriction_levels[2].id])
+        end
 
+        it "should store restriction_rules" do
+          do_request
+          expect(assigns(:schedule_rule).product_access_groups).to contain_exactly(restriction_levels[0], restriction_levels[2])
+        end
+      end
     end
-
   end
 
-  context "needs schedule rule" do
+  describe "with an existing ScheduleRule" do
+    let(:rule) { product.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule)) }
 
-    before :each do
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-      @params.merge!(id: @rule.id)
-    end
-
-    context "edit" do
-
-      before :each do
-        @method = :get
-        @action = :edit
+    describe "edit" do
+      before do
+        sign_in senior_staff
+        get :edit, product_params.merge(id: rule.id)
       end
 
-      it_should_allow_managers_and_senior_staff_only do
-        expect(assigns(:schedule_rule)).to eq(@rule)
+      it "assigns the schedule rule and renders" do
+        expect(assigns(:schedule_rule)).to eq(rule)
         is_expected.to render_template "edit"
       end
-
     end
 
-    context "update" do
-
-      before :each do
-        @method = :put
-        @action = :update
-        @params.merge!(
-          schedule_rule: FactoryGirl.attributes_for(:schedule_rule),
+    describe "update" do
+      let(:rule_params) { FactoryGirl.attributes_for(:schedule_rule, :weekend) }
+      def do_request
+        sign_in senior_staff
+        put :update, product_params.merge(
+          id: rule.id,
+          schedule_rule: rule_params,
         )
       end
 
-      it_should_allow_managers_and_senior_staff_only :redirect do
-        expect(assigns(:schedule_rule)).to eq(@rule)
-        is_expected.to set_flash
-        assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
+      it "updates the rule" do
+        expect { do_request }.to change { rule.reload.on_mon }.to be(false)
+      end
+
+      it "redirects to the index" do
+        do_request
+        expect(response).to redirect_to facility_instrument_schedule_rules_url(facility, product)
       end
 
       context "restriction levels" do
-        before :each do
-          @restriction_levels = []
-          3.times do
-            @restriction_levels << FactoryGirl.create(:product_access_group, product_id: @instrument.id)
-          end
-          sign_in(@admin)
-        end
+        let!(:restriction_levels) { FactoryGirl.create_list(:product_access_group, 3, product_id: product.id) }
 
         it "should come out with no restriction levels" do
           do_request
@@ -141,38 +123,40 @@ RSpec.describe ScheduleRulesController do
         end
 
         it "should come out with no restriction levels if it had them before" do
-          @rule.product_access_groups = @restriction_levels
-          @rule.save!
+          rule.product_access_groups = restriction_levels
+          rule.save!
           do_request
           expect(assigns[:schedule_rule].product_access_groups).to be_empty
         end
 
-        it "should store restriction_rules" do
-          @params.deep_merge!(schedule_rule: { product_access_group_ids: [@restriction_levels[0].id, @restriction_levels[2].id] })
-          do_request
-          expect(assigns[:schedule_rule].product_access_groups).to contain_all [@restriction_levels[0], @restriction_levels[2]]
-          expect(assigns[:schedule_rule].product_access_groups.size).to eq(2)
+        describe "submitting an update" do
+          let(:rule_params) do
+            super().merge(product_access_group_ids: [restriction_levels[0].id, restriction_levels[2].id])
+          end
+
+          it "should store the updated restriction_rules" do
+            do_request
+            expect(assigns[:schedule_rule].product_access_groups).to contain_exactly(restriction_levels[0], restriction_levels[2])
+          end
         end
-
       end
-
     end
 
     context "destroy" do
-
-      before :each do
-        @method = :delete
-        @action = :destroy
+      def do_request
+        sign_in senior_staff
+        delete :destroy, product_params.merge(id: rule.id)
       end
 
-      it_should_allow_managers_and_senior_staff_only :redirect do
-        expect(assigns(:schedule_rule)).to eq(@rule)
-        should_be_destroyed @rule
-        assert_redirected_to facility_instrument_schedule_rules_url(@authable, @instrument)
+      it "destroys the object" do
+        rule # make sure it's created
+        expect { do_request }.to change(ScheduleRule, :count).by(-1)
       end
 
+      it "redirects to the index view" do
+        do_request
+        expect(response).to redirect_to facility_instrument_schedule_rules_url(facility, product)
+      end
     end
-
   end
-
 end
