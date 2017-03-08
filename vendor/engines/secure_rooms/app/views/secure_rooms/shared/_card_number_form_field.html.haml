@@ -1,0 +1,5 @@
+.control-group
+  %label.control-label
+    = User.human_attribute_name(:card_number)
+    = link_to text("shared.update"), facility_user_card_number_edit_path(current_facility, @user), class: "normal-weight"
+  .controls= @user.card_number

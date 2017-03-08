@@ -4,6 +4,11 @@ Rails.application.routes.draw do
       facility_product_routing_concern
       resources :price_policies, controller: "secure_room_price_policies", except: :show
     end
+
+    resources :users, only: [] do
+      get :"card_number/edit", to: "secure_rooms/card_numbers#edit"
+      patch :"card_number/update", to: "secure_rooms/card_numbers#update"
+    end
   end
 
   namespace :secure_rooms_api do

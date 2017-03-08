@@ -14,6 +14,7 @@
   = f.input :email
   = f.input :last_sign_in_at, :default_value => 'none'
   = f.input :deactivated_at unless f.object.active?
+  = render_view_hook "additional_user_fields", f: f
 
 - if can? :edit, @user
   %ul.inline
