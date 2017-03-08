@@ -7,11 +7,6 @@ RSpec.describe SecureRoomsApi::ScansController do
       password = Settings.secure_rooms_api.basic_auth_password
       encoded_auth_credentials = ActionController::HttpAuthentication::Basic.encode_credentials(name, password)
       request.env['HTTP_AUTHORIZATION'] = encoded_auth_credentials
-
-      post :scan,
-           card_id: card_user.card_number,
-           reader_id: card_reader.card_reader_number,
-           controller_id: card_reader.control_device_number
     end
 
     subject { response }
@@ -20,10 +15,37 @@ RSpec.describe SecureRoomsApi::ScansController do
     let(:card_user) { create :user, card_number: "123456" }
 
     describe "initial deny response" do
+      before do
+        post :scan,
+             card_id: card_user.card_number,
+             reader_id: card_reader.card_reader_number,
+             controller_id: card_reader.control_device_number
+      end
+
       it { is_expected.to have_http_status(:forbidden) }
     end
 
+    describe "returning a list of accounts" do
+      before do
+        create_list :account, 3, :with_account_owner, owner: card_user
+
+        post :scan,
+             card_id: card_user.card_number,
+             reader_id: card_reader.card_reader_number,
+             controller_id: card_reader.control_device_number
+      end
+
+      it { is_expected.to have_http_status(:multiple_choices) }
+    end
+
     describe "not found response" do
+      before do
+        post :scan,
+             card_id: card_user.card_number,
+             reader_id: card_reader.card_reader_number,
+             controller_id: card_reader.control_device_number
+      end
+
       context "when card does not exist" do
         let(:card_user) { build :user }
 

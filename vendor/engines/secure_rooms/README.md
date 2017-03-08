@@ -25,7 +25,7 @@ The door security hardware communicates through an API with the following endpoi
 
 * **Current Responses:**
 
-  There are three expected types of response from a properly formatted request. Currently only one is implemented:
+  There are three expected types of response from a properly formatted request. The following are implemented:
 
   **Access Denied:** The cardholder is not currently allowed to access the SecureRoom, and they are rejected.
 
@@ -35,6 +35,16 @@ The door security hardware communicates through an API with the following endpoi
       ```
       { response: "deny",
         reason:   "I only know how to deny right now." }
+      ```
+
+  **Must Select Account:** The cardholder has multiple payment methods and must select which they would like to use.
+
+  * **Code:** 300 Multiple Choices
+  * **Response:**
+
+      ```
+      { response:  "select_account",
+        accounts:  [<list of all account model attributes>] }
       ```
 
   In addition, sending identifiers that do not map to existing records will generate a not found:
@@ -58,15 +68,4 @@ The door security hardware communicates through an API with the following endpoi
 
       ```
       { response: "grant" }
-      ```
-
-  **Must Select Account:** The cardholder has multiple payment methods and must select which they would like to use.
-
-  * **Code:** 300 Multiple Choices
-  * **Response:**
-
-      ```
-      { response:  "select_account",
-        tablet_id: <integer id>,
-        accounts:  [<list of account data TBD>] }
       ```
