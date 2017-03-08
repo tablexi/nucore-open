@@ -20,8 +20,10 @@ class SecureRoomsApi::ScansController < ApplicationController
 
   def load_models
     @user = User.find_by!(card_number: params[:card_id])
-    @control_device = SecureRooms::ControlDevice.find(params[:controller_id])
-    @card_reader = SecureRooms::CardReader.where(id: @control_device).find(params[:reader_id])
+    @card_reader = SecureRooms::CardReader.find_by!(
+      card_reader_number: params[:reader_id],
+      control_device_number: params[:controller_id],
+    )
   end
 
   private

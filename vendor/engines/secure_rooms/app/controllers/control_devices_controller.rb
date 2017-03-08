@@ -1,3 +1,0 @@
-class ControlDevicesController < ApplicationController
-
-end
