@@ -4,6 +4,9 @@ en:
       secure_room:
         one: Secure Room
         other: Secure Rooms
+      secure_rooms/card_reader:
+        one: Card Reader
+        other: Card Readers
 
     attributes:
       user:
@@ -14,3 +17,12 @@ en:
       secure_rooms:
         index:
           description: This is a restricted room
+
+        card_readers:
+          index:
+            description: "Card Readers associated with this room"
+            none: "There are no associated Card Readers"
+          new:
+            title: Add Card Reader
+          edit:
+            title: Edit Card Reader

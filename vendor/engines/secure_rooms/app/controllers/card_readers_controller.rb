@@ -1,3 +1,0 @@
-class CardReadersController < ApplicationController
-
-end

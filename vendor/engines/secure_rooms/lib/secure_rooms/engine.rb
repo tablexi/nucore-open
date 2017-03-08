@@ -11,12 +11,10 @@ module SecureRooms
       ViewHook.add_hook "users.show",
                         "additional_user_fields",
                         "secure_rooms/shared/card_number_form_field"
-    end
 
-    initializer :append_migrations do |app|
-      config.paths["db/migrate"].expanded.each do |expanded_path|
-        app.config.paths["db/migrate"] << expanded_path
-      end
+      ViewHook.add_hook "admin.shared.tabnav_product",
+                        "additional_tabs",
+                        "secure_rooms/shared/tabnav_secure_room"
     end
 
     initializer :append_migrations do |app|
