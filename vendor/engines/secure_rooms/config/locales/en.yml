@@ -4,6 +4,11 @@ en:
       secure_room:
         one: Secure Room
         other: Secure Rooms
+
+    attributes:
+      user:
+        card_number: Card Number
+
   views:
     admin:
       secure_rooms:

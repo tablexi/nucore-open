@@ -19,17 +19,18 @@ sudo mkdir -p /opt/oracle/
 cd /opt/oracle
 
 sudo mv ~/Downloads/instantclient-* /opt/oracle
-sudo unzip instantclient-basic-macos.x64-11.2.0.3.0.zip
-sudo unzip instantclient-sdk-macos.x64-11.2.0.3.0.zip
-sudo unzip instantclient-sqlplus-macos.x64-11.2.0.3.0.zip
+sudo unzip instantclient-basic-macos.x64-12.1.0.2.0.zip
+sudo unzip instantclient-sdk-macos.x64-12.1.0.2.0.zip
+sudo unzip instantclient-sqlplus-macos.x64-12.1.0.2.0.zip
 
-sudo ln -s instantclient_11_2 instantclient
+sudo ln -s instantclient_12_1 instantclient
 
 cd instantclient
-sudo ln -s libclntsh.dylib.11.1 libclntsh.dylib
-sudo ln -s libocci.dylib.11.1   libocci.dylib
+sudo ln -s libclntsh.dylib.12.1 libclntsh.dylib
+sudo ln -s libocci.dylib.12.1   libocci.dylib
 
 ########################################
+If you're using bash:
 # Add to (bash) ~/.profile
 export NLS_LANG="AMERICAN_AMERICA.AL32UTF8"
 export ORACLE_HOME=/opt/oracle/instantclient
@@ -37,73 +38,26 @@ export OCI_DIR=$ORACLE_HOME
 
 source ~/.profile
 
-########################################
-# Add to (tcsh) ~/.tcshrc
-setenv NLS_LANG "AMERICAN_AMERICA.UTF8"
-setenv ORACLE_HOME /opt/oracle/instantclient
-setenv OCI_DIR=$ORACLE_HOME
-
-source ~/.tcshrc
-
 #########################################
-# El Capitan
-
-In El Capitan, DYLD_* environment variables are unset by default for security reasons.
-
-The scripts here allow instantclient to work without the DYLD_ variables
-https://github.com/kubo/fix_oralib_osx
-
-```
-cd $ORACLE_HOME
-curl -O https://raw.githubusercontent.com/kubo/fix_oralib_osx/master/fix_oralib.rb
-ruby fix_oralib.rb
-```
-
 # sqlplus in path
 sudo ln -s /opt/oracle/instantclient/sqlplus /usr/local/bin/sqlplus
 
 # test it
 # sqlplus myuser/mypassword@//myserver:1521/mydatabase.mydomain.com
 
+You will see an output like this:
+```
+SQL*Plus: Release 12.1.0.2.0 Production on Fri Mar 3 13:48:51 2017
 
-################################################################################
-# ruby-oci8 and activerecord-oracle_enhanced adapter
-################################################################################
-# Instructions sourced from:
-# http://blog.rayapps.com/2009/09/06/how-to-setup-ruby-and-oracle-instant-client-on-snow-leopard/
+Copyright (c) 1982, 2016, Oracle.  All rights reserved.
 
-*** As of Instant client 11.2, you should not need to do anything special ***
-
-# configure database.yml in your rails project
-development:
-  adapter: oracle_enhanced
-  database: oracle.local/xe
-  username: nucores_development
-  password: testing
-  encoding: utf8
+ERROR:
+ORA-12154: TNS:could not resolve the connect identifier specified
 
 
-# Other untested techniques...
-# Choose one of the methods at the bottom of this page: http://wiki.github.com/rsim/oracle-enhanced/troubleshooting
+Enter user-name:
+```
 
-# ------------------------------------------------------------------------------
-# Configuring environment variables for GUI launched Eclipse/RadRails, etc.
-# ------------------------------------------------------------------------------
-# Sourced from:
-# http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html#//apple_ref/doc/uid/20002093-BCIJIJBH
-# http://developer.apple.com/mac/library/qa/qa2001/qa1255.html
-# http://developer.apple.com/mac/library/qa/qa2001/qa1067.html
+^D out of that and carry on.
 
-# emacs ~/.MacOSX/environment.plist, then login again
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>ORACLE_HOME</key>
-  <string>/opt/oracle/instantclient</string>
-  <key>OCI_DIR</key>
-  <string>/opt/oracle/instantclient</string>
-  <key>NLS_LANG</key>
-  <string>AMERICAN_AMERICA.AL32UTF8</string>
-</dict>
-</plist>
+`cp config/database.yml.oracle.template config/database.yml`
