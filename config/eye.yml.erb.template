@@ -1,13 +1,13 @@
-<%% app_root = "/home/nucore/nucore.stage.tablexi.com/current" %>
-<%% rails_env = ENV["RAILS_ENV"] %>
+<% app_root = "/home/nucore/nucore.stage.tablexi.com/current" %>
+<% rails_env = ENV["RAILS_ENV"] %>
 ---
 name: <%= @app_name.underscore.camelize %> (<%%= rails_env %>)
 
 config:
-  logger: <%%= app_root %>/log/eye.log
+  logger: <%= app_root %>/log/eye.log
 
 application:
-  working_dir: <%%= app_root %>
+  working_dir: <%= app_root %>
   stop_on_delete: true
 
 triggers:
@@ -30,7 +30,7 @@ processes:
   - name: unicorn
     config:
       pid_file: tmp/pids/unicorn.pid
-      start_command: bundle exec unicorn -E deployment -Dc config/unicorn/<%%= rails_env %>.rb
+      start_command: bundle exec unicorn -E deployment -Dc config/unicorn/<%= rails_env %>.rb
       restart_command: "kill -USR2 {PID}"
       start_timeout: 15 seconds
       start_grace: 15 seconds

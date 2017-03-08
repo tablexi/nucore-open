@@ -1,4 +1,4 @@
-worker_processes 4
+worker_processes 2
 listen "/tmp/unicorn-nucore.stage.tablexi.com.socket", backlog: 64
 preload_app true
 
