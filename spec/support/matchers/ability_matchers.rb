@@ -29,6 +29,6 @@ def it_is_not_allowed_to(actions, object = nil)
     it "is not allowed to #{action}" do
       target = object || yield
       expect(subject).not_to be_allowed_to(action, target)
-   end
+    end
   end
 end

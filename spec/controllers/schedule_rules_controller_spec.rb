@@ -52,7 +52,7 @@ RSpec.describe ScheduleRulesController, :aggregate_failures do
       post :create, product_params.merge(schedule_rule: rule_params)
     end
 
-    let(:rule_params) { FactoryGirl.attributes_for(:schedule_rule, instrument_id: product.id) }
+    let(:rule_params) { FactoryGirl.attributes_for(:schedule_rule, product_id: product.id) }
 
     it "creates the schedule rule and redirects to index" do
       expect { do_request }.to change(ScheduleRule, :count).by(1)

@@ -1,7 +1,8 @@
 class SecureRoom < Product
 
+  include Products::ScheduleRuleSupport
+
   has_many :card_readers, class_name: SecureRooms::CardReader
-  has_many :schedule_rules, foreign_key: :product_id, inverse_of: :product
 
   before_validation :set_secure_room_defaults, on: :create
 

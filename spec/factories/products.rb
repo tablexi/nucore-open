@@ -117,7 +117,7 @@ FactoryGirl.define do
     schedule { create :schedule, facility: facility }
 
     after(:create) do |product|
-      create :schedule_rule, instrument: product
+      create :schedule_rule, product: product
       create :instrument_price_policy, price_group: product.facility.price_groups.last, usage_rate: 1, product: product
       product.reload
     end
@@ -139,7 +139,7 @@ FactoryGirl.define do
     trait :always_available do
       after(:create) do |product|
         product.schedule_rules.destroy_all
-        create(:all_day_schedule_rule, instrument: product)
+        create(:all_day_schedule_rule, product: product)
         product.reload
       end
     end
