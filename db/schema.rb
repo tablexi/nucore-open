@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170220203130) do
+ActiveRecord::Schema.define(version: 20170301120659) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -606,6 +606,16 @@ ActiveRecord::Schema.define(version: 20170220203130) do
 
   add_index "schedules", ["facility_id"], name: "i_schedules_facility_id", using: :btree
 
+  create_table "secure_rooms_card_readers", force: :cascade do |t|
+    t.integer  "product_id",            limit: 4,   null: false
+    t.string   "card_reader_number",    limit: 255
+    t.string   "control_device_number", limit: 255
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
+
+  add_index "secure_rooms_card_readers", ["product_id"], name: "index_secure_rooms_card_readers_on_product_id", using: :btree
+
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false
     t.integer "subaccount_id",           limit: 4,                         null: false
@@ -759,6 +769,7 @@ ActiveRecord::Schema.define(version: 20170220203130) do
   add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
   add_foreign_key "schedule_rules", "products", column: "instrument_id"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
+  add_foreign_key "secure_rooms_card_readers", "products"
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
   add_foreign_key "stored_files", "order_details", name: "fk_files_od"
   add_foreign_key "stored_files", "products", name: "fk_files_product"
