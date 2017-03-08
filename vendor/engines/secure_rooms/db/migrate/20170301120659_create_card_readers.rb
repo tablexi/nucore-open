@@ -10,6 +10,8 @@ class CreateCardReaders < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+
+    add_index :secure_rooms_card_readers, :product_id
   end
 
 end

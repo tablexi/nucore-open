@@ -614,7 +614,7 @@ ActiveRecord::Schema.define(version: 20170301120659) do
     t.datetime "updated_at",                        null: false
   end
 
-  add_index "secure_rooms_card_readers", ["product_id"], name: "fk_rails_9153fc5378", using: :btree
+  add_index "secure_rooms_card_readers", ["product_id"], name: "index_secure_rooms_card_readers_on_product_id", using: :btree
 
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false
