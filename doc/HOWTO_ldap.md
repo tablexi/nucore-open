@@ -1,4 +1,4 @@
-# HOWTO Configure LDAP For NUcore
+# HOWTO Configure NUcore for LDAP Authentication
 
 ## Enabling LDAP Authentication On NUcore
 

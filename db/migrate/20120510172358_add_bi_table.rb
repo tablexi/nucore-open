@@ -5,7 +5,7 @@ class AddBiTable < ActiveRecord::Migration
       create_table :bi_netids do |t|
         t.string :netid, null: false
         t.references :facility, null: false
-        t.foreign_key :facility
+        t.foreign_key :facilities
       end
 
       add_index :bi_netids, :netid

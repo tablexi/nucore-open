@@ -53,7 +53,7 @@ namespace :demo do
     pgnu = pgex = nil
 
     Settings.price_group.name.to_hash.each do |k, v|
-      price_group = PriceGroup.find_or_create_by!(name: v) do |pg|
+      price_group = PriceGroup.find_or_initialize_by(name: v) do |pg|
         pg.is_internal = (k == :base || k == :cancer_center)
         pg.display_order = order
       end
