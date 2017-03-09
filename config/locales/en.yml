@@ -182,7 +182,8 @@ en:
         payment_type: "Payment Source Type"
         account_number:
           account_number: "Payment Source Number"
-        affiliate: "Affiliate Category"
+        affiliate_display_name: "Affiliate/Category"
+        affiliate: "Name" # used for labeling affiliate_other field in forms
         remit: "Bill To"
         all_instruct: "Enter a text description to help you and the user identify this payment source."
     account_table:
