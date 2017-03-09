@@ -50,7 +50,8 @@ RSpec.describe SecureRoomsApi::ScansController do
     describe "positive responses" do
       context "with multiple accounts" do
         before do
-          create_list :account, 3, :with_account_owner, owner: card_user
+          accounts = create_list(:account, 3, :with_account_owner, owner: card_user)
+          expect_any_instance_of(User).to receive(:accounts_for_product).and_return(accounts)
 
           post :scan,
                card_number: card_user.card_number,
@@ -61,6 +62,7 @@ RSpec.describe SecureRoomsApi::ScansController do
         it { is_expected.to have_http_status(:multiple_choices) }
         it "is expected to contain a list of accounts" do
           expect(JSON.parse(response.body)).to include("accounts")
+          expect(JSON.parse(response.body)["accounts"].size).to eq 3
         end
       end
     end

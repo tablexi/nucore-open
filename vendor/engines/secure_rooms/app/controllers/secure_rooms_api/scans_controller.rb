@@ -10,8 +10,7 @@ class SecureRoomsApi::ScansController < ApplicationController
   before_action :load_models
 
   def scan
-    # TODO: update to accounts_for_product
-    user_accounts = @user.accounts
+    user_accounts = @user.accounts_for_product(@card_reader.secure_room)
 
     if user_accounts.present?
       if user_accounts.many?
