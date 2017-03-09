@@ -13,17 +13,25 @@ class SecureRoomsApi::ScansController < ApplicationController
     # TODO: update to accounts_for_product
     user_accounts = @user.accounts
 
-    if user_accounts.many?
-      response_status = :multiple_choices
+    if user_accounts.present?
+      if user_accounts.many?
+        response_status = :multiple_choices
+      else
+        response_status = :ok
+      end
+
+      # TODO: needs a legitimage tablet_identifier once tablet exists
       response_json = {
-        response:  "select_account",
-        accounts:  user_accounts,
+        response: "select_account",
+        tablet_identifier: "abc123",
+        name: @user.full_name,
+        accounts: SecureRooms::AccountPresenter.wrap(user_accounts),
       }
     else
       response_status = :forbidden
       response_json = {
         response: "deny",
-        reason: "I only know how to deny right now.",
+        reason: "No accounts found",
       }
     end
 
@@ -31,10 +39,10 @@ class SecureRoomsApi::ScansController < ApplicationController
   end
 
   def load_models
-    @user = User.find_by!(card_number: params[:card_id])
+    @user = User.find_by!(card_number: params[:card_number])
     @card_reader = SecureRooms::CardReader.find_by!(
-      card_reader_number: params[:reader_id],
-      control_device_number: params[:controller_id],
+      card_reader_number: params[:reader_identifier],
+      control_device_number: params[:controller_identifier],
     )
   end
 
