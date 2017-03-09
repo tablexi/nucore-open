@@ -13,7 +13,7 @@
       facility_user_reservations_path(current_facility, @user),
       secondary_tab == "reservations"
 
-  - if SettingsHelper.feature_on?(:manage_payment_sources_with_users) && current_ability.can?(:manage, Account)
+  - if current_ability.can?(:manage, Account)
     = tab t(".accounts"),
       facility_user_accounts_path(current_facility, @user),
       secondary_tab == "accounts"
