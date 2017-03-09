@@ -135,6 +135,7 @@ class ApplicationController < ActionController::Base
     if current_user
       render "/403", status: 403, layout: "application"
     else
+      store_location_for(:user, request.fullpath)
       redirect_to new_user_session_path
     end
   end

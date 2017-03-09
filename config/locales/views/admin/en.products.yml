@@ -10,23 +10,26 @@ en:
             active: "No active %{models} exist for this !facility_downcase!."
             inactive: "No inactive %{models} exist for this !facility_downcase!."
           header: "%{model} Name"
-
-        details_fields:
+        meta_fields:
           hints:
             name: "Name of the %{field} as displayed to the end user"
             contact_email: "If left blank, email will default to the !facility_downcase!'s email address (%{facility_email})."
             description: "Description as it will appear on the product page"
+        account_fields:
+          hints:
             deposit_account: "Revenue account to which fees will be deposited"
             account: "Expense account from which fees will be withdrawn; must be open on purchaser's Chart String"
+          deposit_account:
+            label: "Recharge Chart String and Account"
+            add: "Add Chart String"
+        product_fields:
+          hints:
             requires_approval: "Restrict access to approved users"
             initial_order_status: "Default status for new orders"
             is_archived: "Inactivate the product, disallowing purchase and viewing"
             is_hidden: "Hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
             training_request_contacts: Comma separated list of email addresses to be notified when a training request is placed.
             note_available_to_users: Users may submit a note when purchasing
-          deposit_account:
-            label: "Recharge Chart String and Account"
-            add: "Add Chart String"
 
 
       services:

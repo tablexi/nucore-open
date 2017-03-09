@@ -1,0 +1,12 @@
+= simple_form_for([current_facility, @product]) do |f|
+  = f.error_messages
+  .form-inputs
+    = render "product_fields", f: f
+    = render_if_exists "#{@product.class.name.underscore}_fields", f: f
+  %ul.inline
+    - if @product.new_record?
+      %li= f.submit text("shared.create"), class: ["btn", "btn-primary"]
+      %li= link_to text("shared.cancel"), [current_facility, @product]
+    - else
+      %li= f.submit text("shared.save"), class: ["btn", "btn-primary"]
+      %li= link_to text("shared.cancel"), [:manage, current_facility, @product]
