@@ -3,11 +3,8 @@
 
 //= require jquery
 //= require jquery_ujs
-//= require jquery-ui/datepicker
-//= require jquery-ui/draggable
-//= require jquery-ui/droppable
-//= require jquery-ui/tabs
-//= require jquery-ui/dialog
+//= require jquery-ui/widgets/datepicker
+//= require jquery-ui/widgets/tabs
 //= require jquery-ui/effect
 //= require nested_form_fields
 //= require bootstrap
