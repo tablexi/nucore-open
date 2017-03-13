@@ -8,7 +8,7 @@ require "capistrano/deploy"
 require "capistrano/rvm"
 require "capistrano/rails"
 require "eye/patch/capistrano3"
-# require "rollbar/capistrano3"
+require "rollbar/capistrano3"
 require "whenever/capistrano"
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined

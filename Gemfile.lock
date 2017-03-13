@@ -338,6 +338,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     numerizer (0.1.1)
+    oj (2.12.14)
     orm_adapter (0.5.0)
     paperclip (4.2.4)
       activemodel (>= 3.2.0)
@@ -419,6 +420,8 @@ GEM
     ref (2.0.0)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
+    rollbar (2.14.0)
+      multi_json
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -595,6 +598,7 @@ DEPENDENCIES
   mysql2 (~> 0.3.20)
   nested_form_fields
   nokogiri (~> 1.6.1)
+  oj (~> 2.12.14)
   paperclip (~> 4.2.0)
   poltergeist
   prawn (= 0.12)
@@ -608,6 +612,7 @@ DEPENDENCIES
   rails-observers
   rails_config (= 0.3.3)
   rake
+  rollbar
   rspec-activejob
   rspec-collection_matchers
   rspec-rails (~> 3.5.2)
@@ -640,4 +645,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.5)
 
 BUNDLED WITH
-   1.14.4
+   1.14.5
