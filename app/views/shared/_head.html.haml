@@ -1,4 +1,5 @@
 %meta{ "http-equiv" => "content-type", "content" => "text/html; charset=UTF-8" }
+%meta{ "name" => "viewport", "content" => "width=device-width, initial-scale=1, maximum-scale=1" }
 - # use gsub to strip out html tags in the title to prevent html from showing #62643
 = render partial: "/shared/title", locals: { title: yield(:h1).gsub(/<[^>]*>/, " ") }
 = stylesheet_link_tag "application", media: :all
