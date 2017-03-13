@@ -7,6 +7,8 @@ machine:
 dependencies:
   bundler:
     without: [oracle]
+  pre:
+    - cp config/secrets.yml.template config/secrets.yml
 
 test:
   pre:
