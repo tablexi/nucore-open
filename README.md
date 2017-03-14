@@ -7,12 +7,12 @@ Open source version of Northwestern University Core Facility Management Software
 Welcome to NUcore! This guide will help you get a development environment up and running. It makes a few assumptions:
 
 1. You write code on a Mac.
-2. You have a running Oracle or MySQL instance with two brand new databases.
+2. You have a running Oracle or MySQL instance with two brand new databases. (Oracle setup instructions [here](doc/HOWTO_oracle.txt).)
 3. You have the following installed:
     * [Ruby 2.2](http://www.ruby-lang.org/en)
     * [Bundler](http://gembundler.com)
     * [Git](http://git-scm.com)
-    * [PhantomJS] (http://phantomjs.org/)
+    * [PhantomJS](http://phantomjs.org/)
 
 ### Spin it up
 
@@ -28,6 +28,7 @@ Welcome to NUcore! This guide will help you get a development environment up and
     cd nucore
     bundle install --without oracle
     ```
+    - Note: `ruby-oci8` gem installation will fail unless Oracle is set up first.
 
 3. Configure your databases
 
