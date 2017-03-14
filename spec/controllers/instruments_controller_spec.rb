@@ -131,7 +131,6 @@ RSpec.describe InstrumentsController do
       it "requires sign in" do
         do_request
         expect(assigns(:product)).to eq(instrument)
-        expect(session[:requested_params]).to be_present
         assert_redirected_to new_user_session_path
       end
 
