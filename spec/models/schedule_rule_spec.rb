@@ -82,7 +82,7 @@ RSpec.describe ScheduleRule do
       @instrument = FactoryGirl.create(:instrument,
                                        facility: @facility,
                                        facility_account: @facility_account)
-      @options ={ start_hour: 0, start_min: 0, end_hour: 24, end_min: 1 }
+      @options = { start_hour: 0, start_min: 0, end_hour: 24, end_min: 1 }
       @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
       assert @rule.invalid?
       assert_equal ["End time is invalid"], @rule.errors[:base]
