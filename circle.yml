@@ -24,3 +24,9 @@ test:
       --suppress-log
       --format junit > $CIRCLE_TEST_REPORTS/teaspoon.xml
     - bundle exec report_coverage
+
+deployment:
+  staging:
+    branch: master
+    commands:
+      - bundle exec cap staging deploy
