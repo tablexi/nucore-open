@@ -22,9 +22,6 @@ engines:
       - javascript
   rubocop:
     enabled: true
-    checks:
-      Rubocop/Style/EmptyMethod:
-        enabled: false
 ratings:
   paths:
   - "app/**"
