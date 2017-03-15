@@ -13,11 +13,7 @@ class SecureRoomsApi::ScansController < ApplicationController
     user_accounts = @user.accounts_for_product(@card_reader.secure_room)
 
     if user_accounts.present?
-      if user_accounts.many?
-        response_status = :multiple_choices
-      else
-        response_status = :ok
-      end
+      response_status = user_accounts.many? ? :multiple_choices : :ok
 
       # TODO: needs a legitimage tablet_identifier once tablet exists
       response_json = {
