@@ -145,12 +145,6 @@ class ApplicationController < ActionController::Base
     render "/acting_error", status: 403, layout: "application"
   end
 
-  #
-  # Customize Devise redirect after login
-  def after_sign_in_path_for(resource)
-    session[:requested_params] || super
-  end
-
   def after_sign_out_path_for(_)
     if current_facility.present?
       facility_path(current_facility)
@@ -177,7 +171,7 @@ class ApplicationController < ActionController::Base
   end
 
   def store_fullpath_in_session
-    session[:requested_params] = request.fullpath
+    store_location_for(:user, request.fullpath) unless current_user
   end
 
   def current_ability
