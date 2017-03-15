@@ -17,7 +17,7 @@ module SecureRooms
                         "secure_rooms/shared/tabnav_users"
     end
 
-    initializer "secure_rooms.action_controller" do |app|
+    initializer "secure_rooms.action_controller" do
       ActiveSupport.on_load :action_controller do
         helper SecureRooms::SecureRoomsHelper
       end
