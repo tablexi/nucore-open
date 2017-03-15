@@ -1,0 +1,4 @@
+- if secure_room_ability.can? :edit, @user
+  = tab text("title"),
+    facility_user_card_number_edit_path(current_facility, @user),
+    secondary_tab == "card_number"
