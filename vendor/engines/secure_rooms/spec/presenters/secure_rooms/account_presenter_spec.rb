@@ -24,7 +24,7 @@ RSpec.describe SecureRooms::AccountPresenter do
         it { is_expected.to include("account_number") }
         it { is_expected.to include("expiration_month") }
         it { is_expected.to include("expiration_year") }
-        it { is_expected.to include("name") }
+        it { is_expected.to include("owner_name") }
       end
     end
   end

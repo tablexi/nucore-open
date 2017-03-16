@@ -14,7 +14,7 @@ module SecureRooms
         account_number: account_number,
         expiration_month: expiration_month,
         expiration_year: expiration_year,
-        name: owner_user_name,
+        owner_name: owner_user_name,
       }.to_json
     end
 
