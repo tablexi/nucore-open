@@ -1,13 +1,19 @@
 .navbar.navbar-static-top
   .navbar-inner
     .container
-      .row
-        .span12
-          = link_to app_name, :root, class: "brand"
+      = link_to app_name, :root, class: "brand"
+      - if session_user.nil?
+        %ul.nav.pull-right.hide-from-print
+          %li= link_to t("pages.login"), :new_user_session
+      - else
+        %a.btn.btn-navbar{"data-target" => ".nav-collapse", "data-toggle" => "collapse"}
+          %span.icon-bar
+          %span.icon-bar
+          %span.icon-bar
+        / Everything you want hidden at 979px or less, place within here
+        .nav-collapse.collapse
           %ul.nav.pull-right.hide-from-print
-            - if session_user.nil?
-              %li= link_to t("pages.login"), :new_user_session
-            - elsif acting_as?
+            - if acting_as?
               %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"
               %li= link_to "#{t('pages.cart')} (#{current_cart.order_details.sum(:quantity)})", :cart
             - else
@@ -20,3 +26,5 @@
               %li.divider-vertical
               = render "shared/message_summary"
               %li= link_to t('pages.logout'), sign_out_user_path
+          .hidden-with-nav
+            = render :partial => '/shared/nav/nav_links'
