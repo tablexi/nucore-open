@@ -10,19 +10,34 @@ class SecureRoomsApi::ScansController < ApplicationController
   before_action :load_models
 
   def scan
-    response_json = {
-      response: "deny",
-      reason: "I only know how to deny right now.",
-    }
+    user_accounts = @user.accounts_for_product(@card_reader.secure_room)
 
-    render json: response_json, status: :forbidden
+    if user_accounts.present?
+      response_status = user_accounts.many? ? :multiple_choices : :ok
+
+      # TODO: needs a legitimage tablet_identifier once tablet exists
+      response_json = {
+        response: "select_account",
+        tablet_identifier: "abc123",
+        name: @user.full_name,
+        accounts: SecureRooms::AccountPresenter.wrap(user_accounts),
+      }
+    else
+      response_status = :forbidden
+      response_json = {
+        response: "deny",
+        reason: "No accounts found",
+      }
+    end
+
+    render json: response_json, status: response_status
   end
 
   def load_models
-    @user = User.find_by!(card_number: params[:card_id])
+    @user = User.find_by!(card_number: params[:card_number])
     @card_reader = SecureRooms::CardReader.find_by!(
-      card_reader_number: params[:reader_id],
-      control_device_number: params[:controller_id],
+      card_reader_number: params[:reader_identifier],
+      control_device_number: params[:controller_identifier],
     )
   end
 

@@ -18,14 +18,14 @@ The door security hardware communicates through an API with the following endpoi
 
 * **Data Params**
 
-  * `card_id=[integer]`
-  * `controller_id=[integer]`
-  * `reader_id=[integer]`
+  * `card_number=[integer]`
+  * `controller_identifier=[integer]`
+  * `reader_identifier=[integer]`
   * `some_sort_of_account_id`
 
 * **Current Responses:**
 
-  There are three expected types of response from a properly formatted request. Currently only one is implemented:
+  There are three expected types of response from a properly formatted request.
 
   **Access Denied:** The cardholder is not currently allowed to access the SecureRoom, and they are rejected.
 
@@ -34,7 +34,31 @@ The door security hardware communicates through an API with the following endpoi
 
       ```
       { response: "deny",
-        reason:   "I only know how to deny right now." }
+        reason:   "No accounts found." }
+      ```
+
+  **Access Granted:** We can infer the cardholder's payment method, so they are cleared immediately.
+
+  * **Code:** 200 OK
+  * **Body:**
+
+      ```
+      { response: "grant",
+        tablet_identifier: <id of associated tablet>,
+        name: "Full Nameofuser",
+        accounts:  [<list with one set of account model attributes>] }
+      ```
+
+  **Must Select Account:** The cardholder has multiple payment methods and must select which they would like to use.
+
+  * **Code:** 300 Multiple Choices
+  * **Response:**
+
+      ```
+      { response:  "select_account",
+        tablet_identifier: <id of associated tablet>,
+        name: "Full Nameofuser",
+        accounts:  [<list of all account model attributes>] }
       ```
 
   In addition, sending identifiers that do not map to existing records will generate a not found:
@@ -47,26 +71,4 @@ The door security hardware communicates through an API with the following endpoi
       ```
       { response: "deny",
         reason:   <Error Message stating missing record> }
-      ```
-
-* **Planned Responses:**
-
-  **Access Granted Immediately:** We can infer the cardholder's payment method, so they are cleared immediately.
-
-  * **Code:** 200 OK
-  * **Body:**
-
-      ```
-      { response: "grant" }
-      ```
-
-  **Must Select Account:** The cardholder has multiple payment methods and must select which they would like to use.
-
-  * **Code:** 300 Multiple Choices
-  * **Response:**
-
-      ```
-      { response:  "select_account",
-        tablet_id: <integer id>,
-        accounts:  [<list of account data TBD>] }
       ```
