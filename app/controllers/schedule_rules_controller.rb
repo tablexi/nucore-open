@@ -5,6 +5,7 @@ class ScheduleRulesController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
   before_action :init_product
+  before_action :init_schedule_rule, only: [:edit, :update, :destroy]
 
   load_and_authorize_resource
 
@@ -40,14 +41,9 @@ class ScheduleRulesController < ApplicationController
     )
   end
 
-  # GET /schedule_rules/1/edit
-  def edit
-    @schedule_rule  = @product.schedule_rules.find(params[:id])
-  end
-
   # POST /schedule_rules
   def create
-    @schedule_rule  = @product.schedule_rules.new(params[:schedule_rule])
+    @schedule_rule = @product.schedule_rules.new(schedule_rule_params)
 
     if @schedule_rule.save
       flash[:notice] = text("create")
@@ -57,14 +53,17 @@ class ScheduleRulesController < ApplicationController
     end
   end
 
+  # GET /schedule_rules/1/edit
+  def edit
+  end
+
   # PUT /schedule_rules/1
   def update
-    @schedule_rule = @product.schedule_rules.find(params[:id])
-
-    # if there are no boxes checked, remove them all
+    # if there are no boxes checked, the empty array will mark the
+    # existing ones for destruction
     params[:schedule_rule][:product_access_group_ids] ||= []
 
-    if @schedule_rule.update_attributes(params[:schedule_rule])
+    if @schedule_rule.update_attributes(schedule_rule_params)
       flash[:notice] = text("update")
       redirect_to action: :index
     else
@@ -74,7 +73,6 @@ class ScheduleRulesController < ApplicationController
 
   # DELETE /schedule_rules/1
   def destroy
-    @schedule_rule = @product.schedule_rules.find(params[:id])
     @schedule_rule.destroy
 
     flash[:notice] = text("destroy")
@@ -83,8 +81,18 @@ class ScheduleRulesController < ApplicationController
 
   private
 
+  def schedule_rule_params
+    params.require(:schedule_rule).permit(:discount_percent, :start_hour, :start_min, :end_hour, :end_min,
+                                          :on_sun, :on_mon, :on_tue, :on_wed, :on_thu, :on_fri, :on_sat,
+                                          product_access_group_ids: [])
+  end
+
   def init_product
     @product = current_facility.products.find_by!(url_name: product_id)
+  end
+
+  def init_schedule_rule
+    @schedule_rule = @product.schedule_rules.find(params[:id])
   end
 
   def product_id
