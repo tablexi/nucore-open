@@ -1,5 +1,5 @@
-- unless session_user.nil?
+- if session_user
   .navbar.navbar-static-top.hide-from-print.visible-with-nav
     .navbar-inner
       .container
-        = render :partial => '/shared/nav/nav_links'
+        = render "/shared/nav/nav_links"

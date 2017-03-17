@@ -10,7 +10,7 @@
           %span.icon-bar
           %span.icon-bar
           %span.icon-bar
-        / Everything you want hidden at 979px or less, place within here
+        -# Everything you want hidden at 979px or less, place within here
         .nav-collapse.collapse
           %ul.nav.pull-right.hide-from-print
             - if acting_as?
@@ -27,4 +27,4 @@
               = render "shared/message_summary"
               %li= link_to t('pages.logout'), sign_out_user_path
           .hidden-with-nav
-            = render :partial => '/shared/nav/nav_links'
+            = render "/shared/nav/nav_links"
