@@ -1,4 +1,5 @@
 %ul.nav
+  %li.hidden-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
   - navigation_links.each do |link|
     %li{class: link.tab_class(controller), id: link.tab_id }
       - if link.subnav.present?
