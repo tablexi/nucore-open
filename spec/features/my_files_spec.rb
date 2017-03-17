@@ -18,7 +18,7 @@ RSpec.describe "Visiting my files", feature_setting: { my_files: true } do
   before do
     login_as user
     visit root_path
-    click_link "My Files"
+    click_link("My Files", match: :first)
   end
 
   it "has my files" do
