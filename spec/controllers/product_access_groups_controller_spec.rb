@@ -1,141 +1,159 @@
 require "rails_helper"
-require "controller_spec_helper"
 
 RSpec.describe ProductAccessGroupsController do
   render_views
-  before :all do
-    create_users
-  end
 
-  before :each do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @instrument       = FactoryGirl.create(:instrument,
-                                           facility: @authable,
-                                           facility_account: @facility_account)
-    @params = { instrument_id: @instrument.url_name, facility_id: @authable.url_name }
-  end
+  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)) }
+  let(:product) { FactoryGirl.create(:instrument, facility: facility, facility_account: facility_account)}
+  let(:senior_staff) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
+  let(:params) { { instrument_id: product.url_name, facility_id: facility.url_name } }
 
   context "index" do
-    before :each do
-      @level = FactoryGirl.create(:product_access_group, product: @instrument)
-      @level2 = FactoryGirl.create(:product_access_group, product: @instrument)
-      @instrument2 = FactoryGirl.create(:instrument,
-                                        facility: @authable,
-                                        facility_account: @facility_account)
-      @level3 = FactoryGirl.create(:product_access_group, product: @instrument2)
+    let(:staff) { FactoryGirl.create(:user, :staff, facility: facility) }
 
-      @action = :index
-      @method = :get
+    let(:product2) { FactoryGirl.create(:instrument, facility: facility, facility_account: facility_account) }
+    let!(:product_groups) { FactoryGirl.create_list(:product_access_group, 2, product: product) }
+    let!(:other_product_group) { FactoryGirl.create(:product_access_group, product: product2) }
+
+    before :each do
+      sign_in staff
+      get :index, params
     end
-    it_should_allow_operators_only :success, "see index" do
-      expect(assigns[:product]).to eq(@instrument)
-      expect(assigns[:product_access_groups]).to eq([@level, @level2])
+
+    it "succeeds and renders" do
+      expect(response).to be_success
+      expect(response).to render_template(:index)
+    end
+
+    it "assigns the product and access groups" do
+      expect(assigns[:product]).to eq(product)
+      expect(assigns[:product_access_groups]).to eq(product_groups)
     end
   end
 
   context "new" do
     before :each do
-      @action = :new
-      @method = :get
+      sign_in senior_staff
+      get :new, params
     end
-    it_should_allow_managers_and_senior_staff_only :success, "do new" do
-      expect(assigns[:product]).to eq(@instrument)
+
+    it "succeeds and renders" do
+      expect(response).to be_success
+      expect(response).to render_template(:new)
+    end
+
+    it "assigns the product and group" do
+      expect(assigns[:product]).to eq(product)
       expect(assigns[:product_access_group]).to be_new_record
-      expect(response).to render_template :new
     end
   end
 
   context "create" do
-    before :each do
-      @action = :create
-      @method = :post
+    before do
+      sign_in senior_staff
     end
+
     context "correct info" do
-      before :each do
-        @params.merge!(product_access_group: FactoryGirl.attributes_for(:product_access_group))
+      before do
+        post :create, params.merge(product_access_group: FactoryGirl.attributes_for(:product_access_group))
       end
-      it_should_allow_managers_and_senior_staff_only :redirect, "do create" do
 
-        expect(assigns[:product]).to eq(@instrument)
-        expect(assigns[:product_access_group]).not_to be_new_record
-        expect(flash[:notice]).not_to be_nil
-        expect(response).to redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
+      it "creates and assigns the new record" do
+        expect(assigns[:product]).to eq(product)
+        expect(assigns[:product_access_group]).to be_persisted
+      end
+
+      it "redirects with a flash" do
+        expect(flash[:notice]).to be_present
+        expect(response).to redirect_to(facility_instrument_product_access_groups_path(facility, product))
       end
     end
-    context "missing data" do
-      before :each do
-        @params.merge!(product_access_group: FactoryGirl.attributes_for(:product_access_group, name: ""))
-      end
-      it_should_allow_managers_and_senior_staff_only :success, "do create" do
 
-        expect(assigns[:product]).to eq(@instrument)
+    context "missing data" do
+      before do
+        post :create, params.merge(product_access_group: FactoryGirl.attributes_for(:product_access_group, name: ""))
+      end
+
+      it "should assign, but not persist the record" do
+        expect(assigns[:product]).to eq(product)
         expect(assigns[:product_access_group]).to be_new_record
-        expect(assigns[:product_access_group].errors).not_to be_empty
-        expect(response).to render_template :new
+        expect(assigns[:product_access_group].errors).to be_present
+      end
+
+      it "renders the new template" do
+        expect(response).to render_template(:new)
       end
     end
   end
 
   context "edit" do
-    before :each do
-      @action = :edit
-      @method = :get
-      @product_access_group = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
-      @params.merge!(id: @product_access_group.id)
+    let!(:product_access_group) { FactoryGirl.create(:product_access_group, product: product) }
+
+    before do
+      sign_in senior_staff
+      get :edit, params.merge(id: product_access_group.id)
     end
-    it_should_allow_managers_and_senior_staff_only :success, "do edit" do
-      expect(assigns[:product]).to eq(@instrument)
-      expect(assigns[:product_access_group]).to eq(@product_access_group)
+
+    it "assigns the variables and renders the edit template" do
+      expect(assigns[:product]).to eq(product)
+      expect(assigns[:product_access_group]).to eq(product_access_group)
       expect(response).to render_template :edit
     end
   end
+
   context "update" do
+    let(:product_access_group) { FactoryGirl.create(:product_access_group, product: product) }
+
     before :each do
-      @action = :update
-      @method = :post
-      @product_access_group = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
-      @params.merge!(id: @product_access_group.id)
+      sign_in senior_staff
     end
+
     context "correct info" do
-      before :each do
-        @params.merge!(product_access_group: { name: "new name" })
+      before do
+        post :update, params.merge(id: product_access_group.id, product_access_group: { name: "new name" })
       end
-      it_should_allow_managers_and_senior_staff_only :redirect, "do update" do
 
-        expect(assigns[:product]).to eq(@instrument)
-        expect(assigns[:product_access_group]).to eq(@product_access_group)
-        expect(assigns[:product_access_group].name).to eq("new name")
-        expect(flash[:notice]).not_to be_nil
-        expect(response).to redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
+      it "assigns and updates the access group" do
+        expect(assigns[:product]).to eq(product)
+        expect(assigns[:product_access_group]).to eq(product_access_group)
+        expect(product_access_group.reload.name).to eq("new name")
+      end
+
+      it "sets the flash and redirects" do
+        expect(flash[:notice]).to be_present
+        expect(response).to redirect_to(facility_instrument_product_access_groups_path(facility, product))
       end
     end
-    context "missing data" do
-      before :each do
-        @params.merge!(product_access_group: { name: "" })
-      end
-      it_should_allow_managers_and_senior_staff_only :success, "do update" do
 
-        expect(assigns[:product]).to eq(@instrument)
-        expect(assigns[:product_access_group]).to eq(@product_access_group)
-        expect(assigns[:product_access_group].errors).not_to be_empty
+    context "missing data" do
+      before do
+        post :update, params.merge(id: product_access_group.id, product_access_group: { name: "" })
+      end
+
+      it "assigns, but does not update the access group" do
+        expect(assigns[:product]).to eq(product)
+        expect(assigns[:product_access_group]).to eq(product_access_group)
+        expect(assigns[:product_access_group].errors).to be_present
         expect(response).to render_template :edit
       end
     end
   end
 
   context "destroy" do
+    let(:product_access_group) { FactoryGirl.create(:product_access_group, product: product) }
     before :each do
-      @method = :delete
-      @action = :destroy
-      @product_access_group = FactoryGirl.create(:product_access_group, product: @instrument)
-      @params.merge!(id: @product_access_group.id)
+      sign_in senior_staff
+      delete :destroy, params.merge(id: product_access_group.id)
     end
-    it_should_allow_managers_and_senior_staff_only :redirect, "do delete" do
+
+    it "destroys the record" do
       expect(assigns[:product_access_group]).to be_destroyed
-      expect(flash[:notice]).not_to be_nil
-      expect(response).to redirect_to(facility_instrument_product_access_groups_path(@authable, @instrument))
+    end
+
+    it "sets the flash and redirects" do
+      expect(flash[:notice]).to be_present
+      expect(response).to redirect_to(facility_instrument_product_access_groups_path(facility, product))
     end
   end
-
 end
