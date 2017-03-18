@@ -7,11 +7,8 @@ module Products::ScheduleRuleSupport
   end
 
   def can_purchase?(group_ids = nil)
-    if schedule_rules.empty?
-      false
-    else
-      super
-    end
+    return false if schedule_rules.empty?
+    super
   end
 
   def first_available_hour

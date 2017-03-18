@@ -100,7 +100,8 @@ class ScheduleRulesController < ApplicationController
   end
 
   def product_key
-    params.except(:facility_id).keys.find { |k| k.end_with?("_id") }
+    valid_ids = Product.types.map { |t| "#{t.model_name.param_key}_id" }
+    params.keys.find { |k| k.in?(valid_ids) }
   end
 
 end
