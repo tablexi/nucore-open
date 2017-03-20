@@ -9,7 +9,7 @@ RSpec.describe "User's Card Number" do
     before do
       login_as staff_user
       visit facility_user_path(facility, card_user)
-      click_link "Update"
+      click_link "Secure Room Access"
       fill_in "Card Number", with: "123456"
       click_button "Update"
     end
