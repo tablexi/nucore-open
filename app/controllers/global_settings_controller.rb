@@ -11,4 +11,8 @@ class GlobalSettingsController < ApplicationController
     super
   end
 
+  def admin_tab?
+    true
+  end
+
 end
