@@ -56,8 +56,8 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
       expect(response).to redirect_to [facility, product, :schedule_rules]
     end
 
-    context "with restriction levels" do
-      let!(:restriction_levels) { FactoryGirl.create_list(:product_access_group, 3, product_id: product.id) }
+    context "with product access groups" do
+      let!(:product_access_groups) { FactoryGirl.create_list(:product_access_group, 3, product_id: product.id) }
 
       it "should come out with no restriction levels" do
         do_request
@@ -66,12 +66,12 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
 
       describe "with the groups in the request" do
         let(:rule_params) do
-          super().merge(product_access_group_ids: [restriction_levels[0].id, restriction_levels[2].id])
+          super().merge(product_access_group_ids: [product_access_groups[0].id, product_access_groups[2].id])
         end
 
         it "should store restriction_rules" do
           do_request
-          expect(assigns(:schedule_rule).product_access_groups).to contain_exactly(restriction_levels[0], restriction_levels[2])
+          expect(assigns(:schedule_rule).product_access_groups).to contain_exactly(product_access_groups[0], product_access_groups[2])
         end
       end
     end
@@ -111,8 +111,8 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
         expect(response).to redirect_to [facility, product, :schedule_rules]
       end
 
-      context "restriction levels" do
-        let!(:restriction_levels) { FactoryGirl.create_list(:product_access_group, 3, product_id: product.id) }
+      context "with product access groups" do
+        let!(:product_access_groups) { FactoryGirl.create_list(:product_access_group, 3, product_id: product.id) }
 
         it "should come out with no restriction levels" do
           do_request
@@ -120,7 +120,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
         end
 
         it "should come out with no restriction levels if it had them before" do
-          rule.product_access_groups = restriction_levels
+          rule.product_access_groups = product_access_groups
           rule.save!
           do_request
           expect(assigns[:schedule_rule].product_access_groups).to be_empty
@@ -128,12 +128,12 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
 
         describe "submitting an update" do
           let(:rule_params) do
-            super().merge(product_access_group_ids: [restriction_levels[0].id, restriction_levels[2].id])
+            super().merge(product_access_group_ids: [product_access_groups[0].id, product_access_groups[2].id])
           end
 
           it "should store the updated restriction_rules" do
             do_request
-            expect(assigns[:schedule_rule].product_access_groups).to contain_exactly(restriction_levels[0], restriction_levels[2])
+            expect(assigns[:schedule_rule].product_access_groups).to contain_exactly(product_access_groups[0], product_access_groups[2])
           end
         end
       end
