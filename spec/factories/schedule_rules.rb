@@ -13,7 +13,7 @@ FactoryGirl.define do
     on_fri true
     on_sat true
 
-    factory :weekend_schedule_rule do
+    trait :weekend do
       on_sun true
       on_mon false
       on_tue false
@@ -21,6 +21,10 @@ FactoryGirl.define do
       on_thu false
       on_fri false
       on_sat true
+    end
+
+    factory :weekend_schedule_rule do
+      weekend
     end
 
     factory :all_day_schedule_rule do

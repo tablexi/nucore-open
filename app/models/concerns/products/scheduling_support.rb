@@ -4,7 +4,6 @@ module Products::SchedulingSupport
 
   included do
     belongs_to :schedule, inverse_of: :products
-    has_many :schedule_rules
     has_many :reservations, foreign_key: "product_id"
 
     delegate :reservations, to: :schedule, prefix: true
@@ -42,25 +41,6 @@ module Products::SchedulingSupport
     schedule.reservations.active
   end
 
-  def can_purchase?(group_ids = nil)
-    if schedule_rules.empty?
-      false
-    else
-      super
-    end
-  end
-
-  def first_available_hour
-    return 0 unless schedule_rules.any?
-    schedule_rules.min_by(&:start_hour).start_hour
-  end
-
-  def last_available_hour
-    return 23 unless schedule_rules.any?
-    max_rule = schedule_rules.max_by(&:hour_floor)
-    max_rule.end_min == 0 ? max_rule.end_hour - 1 : max_rule.end_hour
-  end
-
   def available?(time = Time.zone.now)
     # zero and nil should default to 1 minute
     reservation_length = [min_reserve_mins.to_i, reserve_interval.to_i].max
@@ -80,14 +60,6 @@ module Products::SchedulingSupport
     # move the reservation to
     return nil unless rules.any?
     reservation_in_week(after, duration, rules, options)
-  end
-
-  def available_schedule_rules(user)
-    if requires_approval? && user
-      schedule_rules.available_to_user user
-    else
-      schedule_rules
-    end
   end
 
   def offline?
@@ -133,7 +105,6 @@ module Products::SchedulingSupport
     reservation_in_week after, duration, rules, options
   end
 
-  #
   # find rules for day of week, sort by start hour
   def rules_for_day(day_of_week, user)
     rules = available_schedule_rules(user).select { |r| r.send("on_#{Date::ABBR_DAYNAMES[day_of_week].downcase}".to_sym) }
@@ -166,18 +137,18 @@ module Products::SchedulingSupport
     private
 
     def earliest_possible_start(time)
-      if @options[:ignore_cutoff] || @rule.instrument.cutoff_hours <= 0
+      if @options[:ignore_cutoff] || @rule.product.cutoff_hours <= 0
         # pick the later of provided time and @rule's start-of-day
         [time, day_start].max
       else
         # handle cutoff hours if needed
-        [time, day_start, @rule.instrument.cutoff_hours.hours.from_now].max
+        [time, day_start, @rule.product.cutoff_hours.hours.from_now].max
       end
     end
 
     def next_reserval_interval_start(time)
       # ensure reservation start times abide by instrument's reserve_interval (i.e. 5 min increments)
-      reserve_interval = @rule.instrument.reserve_interval.to_i
+      reserve_interval = @rule.product.reserve_interval.to_i
       if (time.min % reserve_interval).zero?
         time
       else

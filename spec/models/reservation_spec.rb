@@ -609,7 +609,7 @@ RSpec.describe Reservation do
 
         (@morning.min..60).each do |min|
           new_min = min == 60 ? 0 : min
-          expect(earliest.reserve_start_at.min).to(eq(new_min)) && break if new_min % @rule.instrument.reserve_interval == 0
+          expect(earliest.reserve_start_at.min).to(eq(new_min)) && break if new_min % @rule.product.reserve_interval == 0
         end
 
         expect(earliest.reserve_start_at.hour).to eq(new_min == 0 ? @morning.hour + 1 : @morning.hour)
