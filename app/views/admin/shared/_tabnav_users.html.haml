@@ -22,3 +22,5 @@
     = tab t(".access_list"),
       facility_user_access_list_path(current_facility, @user),
       secondary_tab == "access_list"
+
+  = render_view_hook "after", secondary_tab: secondary_tab
