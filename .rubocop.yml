@@ -12,3 +12,6 @@ inherit_from:
 # Metrics/CyclomaticComplexity:
 #   Enabled: false # We've got nasty methods!
 #
+
+Style/EmptyMethod:
+  Enabled: false

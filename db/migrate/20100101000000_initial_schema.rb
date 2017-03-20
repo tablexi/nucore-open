@@ -97,10 +97,6 @@ class InitialSchema < ActiveRecord::Migration
 
     add_index "products", %w(relay_ip relay_port), unique: true
 
-    create_table "roles" do |t|
-      t.string "name"
-    end
-
     create_table "schedule_rules" do |t|
       t.integer "instrument_id",    precision: 38, scale: 0, null: false
       t.decimal "discount_percent", precision: 10, scale: 2, default: 0.0, null: false

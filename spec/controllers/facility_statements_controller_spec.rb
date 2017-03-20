@@ -171,7 +171,7 @@ if Account.config.statements_enabled?
         it "displays properly formatted flash message" do
           sign_in(@user)
           do_request
-          expect(flash[:notice]).to match(%r{Notifications sent successfully to:<br/>.*account description<br/.*})
+          expect(flash[:notice]).to start_with("Notifications sent successfully to:<br/>#{@account.account_list_item}<br/")
         end
       end
 

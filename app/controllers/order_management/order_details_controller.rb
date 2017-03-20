@@ -2,6 +2,8 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
   include OrderDetailFileDownload
 
+  before_action :authenticate_user!
+
   load_resource :facility, find_by: :url_name
   load_resource :order, through: :facility
   load_resource :order_detail, through: :order
