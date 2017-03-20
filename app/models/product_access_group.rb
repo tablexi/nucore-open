@@ -10,4 +10,8 @@ class ProductAccessGroup < ActiveRecord::Base
   validates :product, presence: true
   validates :name, presence: true, uniqueness: { scope: :product_id }
 
+  def to_s
+    name
+  end
+
 end
