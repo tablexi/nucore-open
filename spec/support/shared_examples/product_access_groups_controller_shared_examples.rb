@@ -3,7 +3,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
   let(:facility) { FactoryGirl.create(:facility) }
   let(:facility_account) { facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)) }
-  let(:product) { FactoryGirl.create(product_sym, facility: facility, facility_account: facility_account)}
+  let(:product) { FactoryGirl.create(product_sym, facility: facility, facility_account: facility_account) }
   let(:senior_staff) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
   let(:params) { { facility_id: facility.url_name, :"#{product_sym}_id" => product.url_name } }
 
