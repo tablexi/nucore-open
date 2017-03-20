@@ -470,7 +470,7 @@ RSpec.describe Instrument do
     end
 
     it "should find next available reservation with 5 minute interval rule, without any pending reservations" do
-      expect(@rule.instrument.update_attribute :reserve_interval, 5).to be true
+      expect(@rule.product.update_attribute :reserve_interval, 5).to be true
       # find next reservation after 12 am at 9 am
       @next_reservation = @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day)
       assert_equal Time.zone.now.day, @next_reservation.reserve_start_at.day
@@ -491,7 +491,7 @@ RSpec.describe Instrument do
     context "with cutoff hours" do
       let(:next_reservation) { @instrument.next_available_reservation(after: Time.zone.now.beginning_of_day) }
 
-      before { @rule.instrument.update_attribute :cutoff_hours, 10 }
+      before { @rule.product.update_attribute :cutoff_hours, 10 }
 
       it "finds the next available reservation with cutoff hours" do
         assert_equal (Time.zone.now + 1.day).day, next_reservation.reserve_start_at.day
@@ -611,7 +611,7 @@ RSpec.describe Instrument do
     end
 
     it "should be purchasable if there are schedule rules" do
-      @schedule_rule = FactoryGirl.create(:schedule_rule, instrument: @instrument)
+      @schedule_rule = FactoryGirl.create(:schedule_rule, product: @instrument)
       expect(@instrument.reload).to be_can_purchase(price_policy_ids)
     end
 
@@ -621,7 +621,7 @@ RSpec.describe Instrument do
 
     context "with schedule rules" do
       before :each do
-        @schedule_rule = FactoryGirl.create(:schedule_rule, instrument: @instrument)
+        @schedule_rule = FactoryGirl.create(:schedule_rule, product: @instrument)
         @instrument.reload
       end
       it "should be purchasable if there are schedule rules" do

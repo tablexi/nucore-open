@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301120659) do
+ActiveRecord::Schema.define(version: 20170308030632) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -580,7 +580,7 @@ ActiveRecord::Schema.define(version: 20170301120659) do
   add_index "sanger_sequencing_submissions", ["order_detail_id"], name: "index_sanger_sequencing_submissions_on_order_detail_id", using: :btree
 
   create_table "schedule_rules", force: :cascade do |t|
-    t.integer "instrument_id",    limit: 4,                                        null: false
+    t.integer "product_id",       limit: 4,                                        null: false
     t.decimal "discount_percent",           precision: 10, scale: 2, default: 0.0, null: false
     t.integer "start_hour",       limit: 4,                                        null: false
     t.integer "start_min",        limit: 4,                                        null: false
@@ -595,7 +595,7 @@ ActiveRecord::Schema.define(version: 20170301120659) do
     t.boolean "on_sat",                                                            null: false
   end
 
-  add_index "schedule_rules", ["instrument_id"], name: "fk_rails_6966bf4c0d", using: :btree
+  add_index "schedule_rules", ["product_id"], name: "fk_rails_6966bf4c0d", using: :btree
 
   create_table "schedules", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -767,7 +767,7 @@ ActiveRecord::Schema.define(version: 20170301120659) do
   add_foreign_key "sanger_sequencing_batches", "facilities"
   add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id", on_delete: :cascade
   add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
-  add_foreign_key "schedule_rules", "products", column: "instrument_id"
+  add_foreign_key "schedule_rules", "products"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
   add_foreign_key "secure_rooms_card_readers", "products"
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"

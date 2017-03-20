@@ -449,7 +449,7 @@ RSpec.describe OrderDetail do
         instrument_without_actuals.relay.destroy
 
         instruments.each do |instrument|
-          create(:schedule_rule, instrument: instrument)
+          create(:schedule_rule, product: instrument)
           instrument.reload
         end
 

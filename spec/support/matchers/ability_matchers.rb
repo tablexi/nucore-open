@@ -15,14 +15,20 @@ RSpec::Matchers.define :be_allowed_to do |action, object|
   end
 end
 
-def it_is_allowed_to(actions, object)
+def it_is_allowed_to(actions, object = nil)
   Array(actions).each do |action|
-    it { is_expected.to be_allowed_to(action, object) }
+    it "is allowed to #{action}" do
+      target = object || yield
+      expect(subject).to be_allowed_to(action, object)
+    end
   end
 end
 
-def it_is_not_allowed_to(actions, object)
+def it_is_not_allowed_to(actions, object = nil)
   Array(actions).each do |action|
-    it { is_expected.not_to be_allowed_to(action, object) }
+    it "is not allowed to #{action}" do
+      target = object || yield
+      expect(subject).not_to be_allowed_to(action, target)
+    end
   end
 end

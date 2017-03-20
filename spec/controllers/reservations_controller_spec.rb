@@ -1031,7 +1031,7 @@ RSpec.describe ReservationsController do
         # remove all scheduling rules/constraints to allow for the creation of a long reservation
         @instrument.schedule_rules.destroy_all
         @instrument.update_attributes max_reserve_mins: nil
-        FactoryGirl.create(:all_day_schedule_rule, instrument: @instrument)
+        FactoryGirl.create(:all_day_schedule_rule, product: @instrument)
 
         @reservation = @instrument.reservations.create!(
           reserve_start_at: Time.zone.now + 1.day,

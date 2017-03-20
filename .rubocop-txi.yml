@@ -42,7 +42,7 @@ Rails/HttpPositionalArguments:
   Exclude:
     # This cop should be enabled for Rails 5
     - "spec/*_spec_helper.rb"
-    - "spec/controllers/**/*.rb"
+    - "spec/**/*.rb"
     - "vendor/engines/*/spec/controllers/**/*.rb"
 
 Style/ClassAndModuleChildren:
