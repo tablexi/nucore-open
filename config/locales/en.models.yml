@@ -179,6 +179,7 @@ en:
         end_time: End Time
         duration_mins: Appointments Start Every
         product_access_groups: "Restricted to only these groups:"
+        discount_percent: Discount
       user:
         username: Username
         password: Password
