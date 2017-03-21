@@ -11,7 +11,7 @@ RSpec.describe ScheduleRule do
     @instrument = FactoryGirl.create(:instrument,
                                      facility: @facility,
                                      facility_account: @facility_account)
-    @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+    @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     expect(@rule).to be_valid
   end
 
@@ -71,8 +71,8 @@ RSpec.describe ScheduleRule do
       @instrument = FactoryGirl.create(:instrument,
                                        facility: @facility,
                                        facility_account: @facility_account)
-      @options    = Hash[start_hour: 0, start_min: 0, end_hour: 24, end_min: 0]
-      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
+      @options = { start_hour: 0, start_min: 0, end_hour: 24, end_min: 0 }
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
       assert @rule.valid?
     end
 
@@ -82,8 +82,8 @@ RSpec.describe ScheduleRule do
       @instrument = FactoryGirl.create(:instrument,
                                        facility: @facility,
                                        facility_account: @facility_account)
-      @options    = Hash[start_hour: 0, start_min: 0, end_hour: 24, end_min: 1]
-      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
+      @options = { start_hour: 0, start_min: 0, end_hour: 24, end_min: 1 }
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(@options))
       assert @rule.invalid?
       assert_equal ["End time is invalid"], @rule.errors[:base]
     end
@@ -94,7 +94,7 @@ RSpec.describe ScheduleRule do
       @instrument = FactoryGirl.create(:instrument,
                                        facility: @facility,
                                        facility_account: @facility_account)
-      @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
       expect(@rule.includes_datetime(DateTime.new(1981, 9, 15, 12, 0, 0))).to eq(true)
     end
 
@@ -104,7 +104,7 @@ RSpec.describe ScheduleRule do
       @instrument = FactoryGirl.create(:instrument,
                                        facility: @facility,
                                        facility_account: @facility_account)
-      @rule       = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
       expect(@rule.includes_datetime(DateTime.new(1981, 9, 15, 3, 0, 0))).to eq(false)
     end
   end
@@ -116,42 +116,42 @@ RSpec.describe ScheduleRule do
                                      facility: @facility,
                                      facility_account: @facility_account)
     # create rule every day from 9 am to 5 pm
-    @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+    @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
 
     # not allow rule from 9 am to 5 pm
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 9, end_hour: 17)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 9, end_hour: 17)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 9 am to 10 am
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(end_hour: 10)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(end_hour: 10)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 10 am to 11 am
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 10, end_hour: 11)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 10, end_hour: 11)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 3 pm to 5 pm
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 15, end_hour: 17)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 15, end_hour: 17)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 7 am to 10 am
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 7, end_hour: 10)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 7, end_hour: 10)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 4 pm to 10 pm
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 16, end_hour: 22)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 16, end_hour: 22)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
 
     # not allow rule from 8 am to 8 pm
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 8, end_hour: 20)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 8, end_hour: 20)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.errors[:base]
   end
 
@@ -162,35 +162,35 @@ RSpec.describe ScheduleRule do
                                      facility: @facility,
                                      facility_account: @facility_account)
     # create rule every day from 9 am to 5 pm
-    @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+    @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
 
     # allow rule from 7 am to 9 am
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 7, end_hour: 9)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 7, end_hour: 9)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.valid?
 
     # allow rule from 5 pm to 12am
-    @options    = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 17, end_hour: 24)
-    @rule1      = @instrument.schedule_rules.create(@options)
+    @options = FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 17, end_hour: 24)
+    @rule1 = @instrument.schedule_rules.create(@options)
     assert @rule1.valid?
   end
 
   # it "should not conflict with existing reservation" do
-  #   @facility   = FactoryGirl.create(:facility)
+  #   @facility = FactoryGirl.create(:facility)
   #   @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
   #   @instrument = @facility.instruments.create(FactoryGirl.attributes_for(:instrument, :facility_account_id => @facility_account.id))
   #   # create rule every day from 9 am to 5 pm
-  #   @rule1      = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+  #   @rule1 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
   #   assert @rule1.valid?
   #
   #   # start/end at the exact same time
-  #   @rule2      = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
+  #   @rule2 = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
   #   @rule2.should_not be_valid
   #
   #   # start/end one hour before valid rule, but times overlap
   #   @rule2.start_hour = @rule2.start_hour - 1
-  #   @rule2.end_hour   = @rule2.end_hour - 1
+  #   @rule2.end_hour = @rule2.end_hour - 1
   #   @rule2.should_not be_valid
   # end
 
@@ -201,7 +201,7 @@ RSpec.describe ScheduleRule do
                                      facility: @facility,
                                      facility_account: @facility_account)
     # create rule every day from 9 am to 5 pm
-    @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+    @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
     assert @rule.valid?
 
     @rule.start_hour = 9
@@ -223,16 +223,16 @@ RSpec.describe ScheduleRule do
                                        facility: @facility,
                                        facility_account: @facility_account)
       # create rule every day from 9 am to 5 pm
-      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, discount_percent: 5))
       assert @rule.valid?
 
       # find past sunday, and build calendar object
-      @sunday   = ScheduleRule.sunday_last
+      @sunday = Time.current.beginning_of_week(:sunday).to_date
       @calendar = @rule.as_calendar_object
 
       # each title should be the same
       @calendar.each do |hash|
-        expect(hash["title"]).to eq("Interval: #{@instrument.reserve_interval} minute")
+        expect(hash["title"]).to eq("Discount: 5%")
         expect(hash["allDay"]).to eq(false)
       end
 
@@ -253,7 +253,7 @@ RSpec.describe ScheduleRule do
       # even times should be 12 am to 9 am
       # odd times should be 5 pm to 12 pm
       even = (0..@not_available.size).select(&:even?)
-      odd  = (0..@not_available.size).select(&:odd?)
+      odd = (0..@not_available.size).select(&:odd?)
 
       even.collect { |i| @not_calendar.values_at(i) }.flatten.compact.each_with_index do |hash, i|
         expect(Time.zone.parse(hash["start"])).to eq(Time.zone.parse((@sunday + i.days).to_s))
@@ -297,10 +297,10 @@ RSpec.describe ScheduleRule do
       assert @rule2.valid?
 
       # find past tuesday, and build calendar objects
-      @tuesday    = ScheduleRule.sunday_last + 2.days
+      @tuesday = Time.current.beginning_of_week(:sunday).to_date + 2
 
       # times should be tue 1 am - 3 am
-      @calendar1  = @rule1.as_calendar_object
+      @calendar1 = @rule1.as_calendar_object
       @calendar1.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 1.hour)
         expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 3.hours)
@@ -316,7 +316,7 @@ RSpec.describe ScheduleRule do
       # build not available rules from the available rules collection, 3 for tue and 1 each for rest of days
       @not_available = ScheduleRule.unavailable([@rule1, @rule2])
       expect(@not_available.size).to eq(9)
-      @not_calendar  = @not_available.collect(&:as_calendar_object).flatten
+      @not_calendar = @not_available.collect(&:as_calendar_object).flatten
 
       # rules for tuesday should be 12am-1am, 3am-7am, 9pm-12pm
       @tuesday_times = @not_calendar.select { |hash| Time.zone.parse(hash["start"]).to_date == @tuesday }.collect do |hash|
@@ -357,11 +357,11 @@ RSpec.describe ScheduleRule do
       assert @rule2.valid?
 
       # find past tuesday, and build calendar objects
-      @tuesday    = ScheduleRule.sunday_last + 2.days
-      @wednesday  = @tuesday + 1.day
+      @tuesday = Time.current.beginning_of_week(:sunday).to_date + 2
+      @wednesday = @tuesday + 1
 
       # times should be tue 9 pm - 12 am
-      @calendar1  = @rule1.as_calendar_object
+      @calendar1 = @rule1.as_calendar_object
       @calendar1.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 21.hours)
         expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 24.hours)
@@ -382,12 +382,12 @@ RSpec.describe ScheduleRule do
                                        facility: @facility,
                                        facility_account: @facility_account)
       # create rule every day from 9 am to 5 pm
-      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       assert @rule.valid?
 
       # set start_date as wednesday
-      @wednesday  = ScheduleRule.sunday_last + 3.days
-      @calendar   = @rule.as_calendar_object(start_date: @wednesday)
+      @wednesday = Time.current.beginning_of_week(:sunday).to_date + 3
+      @calendar = @rule.as_calendar_object(start_date: @wednesday)
 
       # should start on wednesday
       expect(@calendar.size).to eq(7)
@@ -403,7 +403,7 @@ RSpec.describe ScheduleRule do
                                        facility: @facility,
                                        facility_account: @facility_account,
                                        requires_approval: true)
-      @rule       = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
       @user = FactoryGirl.create(:user)
     end
 

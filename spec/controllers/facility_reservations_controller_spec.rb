@@ -21,7 +21,7 @@ RSpec.describe FacilityReservationsController do
                                   facility_account: @facility_account,
                                   facility: @authable,
                                  )
-    @schedule_rule = FactoryGirl.create(:schedule_rule, instrument: @product)
+    @schedule_rule = FactoryGirl.create(:schedule_rule, product: @product)
     @product.reload
     @account = create_nufs_account_with_owner :director
     @order = FactoryGirl.create(:order,

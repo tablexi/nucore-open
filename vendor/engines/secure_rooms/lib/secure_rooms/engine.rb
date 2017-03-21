@@ -15,6 +15,16 @@ module SecureRooms
       ViewHook.add_hook "admin.shared.tabnav_product",
                         "additional_tabs",
                         "secure_rooms/shared/tabnav_secure_room"
+
+      ViewHook.add_hook "admin.shared.tabnav_users",
+                        "after",
+                        "secure_rooms/shared/tabnav_users"
+    end
+
+    initializer "secure_rooms.action_controller" do
+      ActiveSupport.on_load :action_controller do
+        helper SecureRooms::SecureRoomsHelper
+      end
     end
 
     initializer :append_migrations do |app|

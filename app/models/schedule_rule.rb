@@ -1,13 +1,13 @@
 class ScheduleRule < ActiveRecord::Base
 
-  belongs_to :instrument
+  belongs_to :product
 
   # oracle has a maximum table name length of 30, so we have to abbreviate it down
   has_and_belongs_to_many :product_access_groups, join_table: "product_access_schedule_rules"
 
   attr_accessor :unavailable # virtual attribute
 
-  validates_presence_of :instrument_id
+  validates_presence_of :product_id
   validates_numericality_of :discount_percent, greater_than_or_equal_to: 0, less_than: 100
   validates_numericality_of :start_hour, :end_hour, only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 24
   validates_numericality_of :start_min,  :end_min, only_integer: true, greater_than_or_equal_to: 0, less_than: 60
@@ -16,21 +16,21 @@ class ScheduleRule < ActiveRecord::Base
 
   def self.available_to_user(user)
     where(product_users: { user_id: user.id })
-      .joins(instrument: :product_users).
-      # instrument doesn't have any restrictions at all, or has one that matches the product_user
+      .joins(product: :product_users).
+      # product doesn't have any restrictions at all, or has one that matches the product_user
       where("(not EXISTS (SELECT * FROM product_access_schedule_rules WHERE product_access_schedule_rules.schedule_rule_id = schedule_rules.id)
      OR (exists (select * from product_access_schedule_rules
          where product_access_schedule_rules.product_access_group_id = product_users.product_access_group_id
          and product_access_schedule_rules.schedule_rule_id = schedule_rules.id)))")
   end
 
-  def self.unavailable_for_date(instrument, day)
-    rules = where(instrument_id: instrument.id)
+  def self.unavailable_for_date(product, day)
+    rules = where(product_id: product.id)
     rules = unavailable(rules)
     rules = rules.select { |item| item.public_send(:"on_#{day.strftime("%a").downcase}?") }
     rules.each_with_object([]) do |rule, reservations|
       reservations << Reservation.new(
-        product: instrument,
+        product: product,
         reserve_start_at: day.change(hour: rule.start_hour, min: rule.start_min),
         reserve_end_at: day.change(hour: rule.end_hour, min: rule.end_min),
         blackout: true,
@@ -55,8 +55,8 @@ class ScheduleRule < ActiveRecord::Base
   end
 
   def no_overlap_with_existing_rules
-    return if instrument.blank?
-    rules = instrument.schedule_rules.reject { |r| r.id == id } # select all rules except self
+    return if product.blank?
+    rules = product.schedule_rules.reject { |r| r.id == id } # select all rules except self
     Date::ABBR_DAYNAMES.each do |day|
       # skip unless this rule occurs on this day
       next unless send("on_#{day.downcase}?")
@@ -121,7 +121,7 @@ class ScheduleRule < ActiveRecord::Base
 
   # build weekly calendar object
   def as_calendar_object(options = {})
-    CalendarObjectBuilder.new(self, options).generate
+    ScheduleRuleCalendarPresenter.new(self, options).to_json
   end
 
   def discount_for(start_at, end_at)
@@ -194,11 +194,6 @@ class ScheduleRule < ActiveRecord::Base
     end
 
     not_rules
-  end
-
-  def self.sunday_last
-    today = Time.zone.now
-    (today - today.wday.days).to_date
   end
 
   # If we're at, say, 4:00, return 3. If we're at 4:01, return 4.

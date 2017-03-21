@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       facility_product_routing_concern
       resources :price_policies, controller: "secure_room_price_policies", except: :show
       resources :card_readers, controller: "secure_rooms/card_readers", except: :show
+      resources :schedule_rules, except: [:show]
     end
 
     resources :users, only: [] do

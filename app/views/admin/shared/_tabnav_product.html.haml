@@ -1,8 +1,8 @@
 - return nil if @product.nil? || @product.id.nil?
 %ul.nav.nav-tabs
   = tab "Details", [:manage, current_facility, @product], (secondary_tab == "details")
-  - if @product.is_a?(Instrument)
-    = tab "Scheduling", facility_instrument_schedule_rules_path(current_facility, @product), (secondary_tab == "schedule_rules")
+  - if @product.respond_to?(:schedule_rules)
+    = tab "Scheduling", [current_facility, @product, ScheduleRule], (secondary_tab == "schedule_rules")
   - if @product.requires_approval?
     = tab "Access List", [current_facility, @product, :users], (secondary_tab == "users")
   - if @product.requires_approval? && @product.is_a?(Instrument)

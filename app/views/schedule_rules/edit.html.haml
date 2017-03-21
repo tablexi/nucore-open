@@ -1,17 +1,16 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'schedule_rules'}
+  = render "admin/shared/tabnav_product", secondary_tab: "schedule_rules"
 
-%h2= @instrument
+%h2= @product
 %h3 Editing Schedule Rule
 
-#schedule_rule_form
-  = simple_form_for([current_facility, @instrument, @schedule_rule]) do |f|
-    = f.error_messages
-    = render :partial => 'schedule_rule_fields', :locals => {:f => f }
-    %ul.inline
-      %li= f.submit 'Update', :class => 'btn'
-      %li= link_to 'Cancel', facility_instrument_schedule_rules_path
+= simple_form_for([current_facility, @product, @schedule_rule]) do |f|
+  = f.error_messages
+  = render "schedule_rule_fields", f: f
+  %ul.inline
+    %li= f.submit "Update", :class => "btn btn-primary"
+    %li= link_to "Cancel", [current_facility, @product, ScheduleRule]

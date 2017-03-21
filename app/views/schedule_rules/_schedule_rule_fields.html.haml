@@ -2,24 +2,24 @@
   %h4 Effective Days of Week
   %ul.inline
     - ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].each do |day|
-      %li= f.input "on_#{day.downcase}", :label => day
+      %li= f.input "on_#{day.downcase}", label: day
 
 .well
   = f.hint :end_time
   %ul.inline
     %li
       = f.label :start_time
-      = time_select24(f, :start, :minute_step => @instrument.reserve_interval)
+      = time_select24(f, :start, minute_step: @product.reserve_interval)
   %ul.inline
     %li
       = f.label :end_time
-      = time_select24(f, :end, :hours => (0..24), :minute_step => @instrument.reserve_interval)
+      = time_select24(f, :end, hours: (0..24), minute_step: @product.reserve_interval)
 
-= f.input :discount_percent, :label => false, :hint => false do
+= f.input :discount_percent, label: false, hint: false do
   = f.label :discount_percent
   = f.hint :discount_percent
-  = f.number_field :discount_percent, :size => 4
+  = f.number_field :discount_percent, size: 4
   = "%"
 
-- if @instrument.product_access_groups.any?
-  = f.association :product_access_groups, :as => :check_boxes, :collection => @instrument.product_access_groups, :wrapper_html => { :class => 'inline-checkbox-list'}
+- if @product.respond_to?(:product_access_groups) && @product.product_access_groups.any?
+  = f.association :product_access_groups, as: :check_boxes, collection: @product.product_access_groups, wrapper_html: { class: "inline-checkbox-list" }

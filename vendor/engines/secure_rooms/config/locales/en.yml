@@ -32,7 +32,7 @@ en:
     admin:
       secure_rooms:
         index:
-          description: This is a restricted room
+          description: Secure Rooms are rooms controlled by card readers.
 
         card_readers:
           index:
@@ -42,3 +42,12 @@ en:
             title: Add Card Reader
           edit:
             title: Edit Card Reader
+
+    secure_rooms:
+      card_numbers:
+        edit:
+          instructions: |
+            TODO: Instructions on how to find your card number
+      shared:
+        tabnav_users:
+          title: Secure Room Access

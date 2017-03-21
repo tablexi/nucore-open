@@ -1,25 +1,25 @@
 = content_for :head_content do
-  = javascript_include_tag 'calendar/fullcalendar.min.js', 'schedule_rules.js'
+  = javascript_include_tag "calendar/fullcalendar.min.js", "schedule_rules.js"
   :javascript
-    var events_path = "#{facility_instrument_schedule_rules_path(:format => 'js')}";
+    var events_path = "#{url_for(:format => 'js')}";
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
 
 = content_for :tabnav do
-  = render 'admin/shared/tabnav_product', secondary_tab: 'schedule_rules'
+  = render "admin/shared/tabnav_product", secondary_tab: "schedule_rules"
 
-%h2= @instrument
+%h2= @product
 
 %p You may define one or more non-overlapping schedule rules.  Schedule rules define how and when an instrument is available for reservation.
 
-- if can? :add, ScheduleRule
-  = link_to 'Add Schedule Rule', new_facility_instrument_schedule_rule_path, :class => 'btn-add'
+- if can? :create, ScheduleRule
+  %p= link_to "Add Schedule Rule", [:new, current_facility, @product, :schedule_rule], class: "btn-add"
 
-- if !@schedule_rules.blank?
+- if @schedule_rules.any?
   %table.table.table-striped.table-hover
     %thead
       %tr
@@ -28,18 +28,26 @@
         %th Start Time
         %th End Time
         %th.currency Discount (%)
+        - if @product.product_access_groups.to_a.any?
+          %th Scheduling Groups
     %tbody
       - @schedule_rules.each do |schedule_rule|
-        %tr{:class => cycle('odd', 'even')}
+        %tr{:class => cycle("odd", "even")}
           %td.centered
-            - if can? :edit, ScheduleRule
-              = link_to 'Edit', edit_facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule)
+            - if can? :edit, schedule_rule
+              = link_to "Edit",
+                [:edit, current_facility, @product, schedule_rule]
               %br
-              = link_to 'Remove', facility_instrument_schedule_rule_path(current_facility, @instrument, schedule_rule), :confirm => 'Are you sure?', :method => :delete
+              = link_to "Remove",
+                [current_facility, @product, schedule_rule],
+                data: { confirm: "Are you sure?" },
+                method: :delete
           %td= schedule_rule.days_string
           %td= human_time(Time.zone.parse(schedule_rule.start_time))
           %td= human_time(Time.zone.parse(schedule_rule.end_time))
-          %td.currency=h sprintf '%.2f', schedule_rule.discount_percent
+          %td.currency= number_to_percentage(schedule_rule.discount_percent, strip_insignificant_zeros: true)
+          - if @product.product_access_groups.any?
+            %td= schedule_rule.product_access_groups.join(", ")
 - else
   %br
   %p.notice No Schedule Rules exist yet.
