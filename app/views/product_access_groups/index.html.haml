@@ -2,9 +2,9 @@
 
 %h3= ProductAccessGroup.model_name.human
 
-- if can? :add, ProductAccessGroup
+- if can? :create, ProductAccessGroup
   %p= link_to t(".add_button", group: ProductAccessGroup.model_name.human),
-    new_facility_instrument_product_access_group_path(@facility, @instrument),
+    [:new, current_facility, @product, :product_access_group],
     class: ["btn", "btn-add"]
 
 %table.table.table-striped.table-hover
@@ -20,14 +20,14 @@
         %td
           - if can?(:delete, level)
             = link_to t("shared.remove"),
-              facility_instrument_product_access_group_path(@facility, @instrument, level),
+              [current_facility, @product, level],
               method: :delete,
               data: { confirm: t("shared.confirm_message") }
 
         - if can?(:edit, level)
           %td
             = link_to level.name,
-              edit_facility_instrument_product_access_group_path(@facility, @instrument, level)
+              [:edit, current_facility, @product, level]
         - else
           %td= level.name
 
