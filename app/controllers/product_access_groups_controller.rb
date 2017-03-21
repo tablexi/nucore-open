@@ -1,14 +1,9 @@
 class ProductAccessGroupsController < ApplicationController
 
-  before_action :authenticate_user!
-  before_action :init_current_facility
-
+  include BelongsToProductController
   admin_tab :all
-  load_and_authorize_resource :facility, find_by: :url_name
-  load_and_authorize_resource :instrument, through: :facility, find_by: :url_name
-  load_and_authorize_resource :product_access_group, through: :instrument
 
-  before_action :init_current_product
+  load_and_authorize_resource :product_access_group, through: :product
 
   layout "two_column"
 
@@ -29,17 +24,17 @@ class ProductAccessGroupsController < ApplicationController
   def update
     if @product_access_group.update_attributes(params[:product_access_group])
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was successfully updated"
-      redirect_to facility_instrument_product_access_groups_path(@facility, @instrument)
+      redirect_to [current_facility, @product, ProductAccessGroup]
     else
       render action: :edit
     end
   end
 
   def create
-    @product_access_group = @instrument.product_access_groups.new(params[:product_access_group])
+    @product_access_group = @product.product_access_groups.new(params[:product_access_group])
     if @product_access_group.save
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was successfully created"
-      redirect_to facility_instrument_product_access_groups_path(@facility, @instrument)
+      redirect_to [current_facility, @product, ProductAccessGroup]
     else
       render action: :new
     end
@@ -48,18 +43,11 @@ class ProductAccessGroupsController < ApplicationController
   def destroy
     if @product_access_group.destroy
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was deleted"
-      redirect_to facility_instrument_product_access_groups_path(@facility, @instrument)
+      redirect_to [current_facility, @product, ProductAccessGroup]
     else
       flash[:error] = "There was an error deleting the #{ProductAccessGroup.model_name.human}"
-      redirect_to edit_facility_instrument_product_access_groups_path(@facility, @instrument, @product_access_group)
+      redirect_to [:edit, current_facility, @product, ProductAccessGroup]
     end
-  end
-
-  private
-
-  def init_current_product
-    # required for tabnav_product
-    @product = @instrument
   end
 
 end

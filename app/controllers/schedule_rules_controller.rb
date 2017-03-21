@@ -1,14 +1,11 @@
 class ScheduleRulesController < ApplicationController
 
-  admin_tab     :all
-  before_action :authenticate_user!
-  before_action :check_acting_as
-  before_action :init_current_facility
-  before_action :init_product
+  include BelongsToProductController
+
   before_action :init_schedule_rule, only: [:edit, :update, :destroy]
+  authorize_resource
 
-  load_and_authorize_resource
-
+  admin_tab :all
   layout "two_column"
 
   def initialize
@@ -87,21 +84,8 @@ class ScheduleRulesController < ApplicationController
                                           product_access_group_ids: [])
   end
 
-  def init_product
-    @product = current_facility.products.find_by!(url_name: product_id)
-  end
-
   def init_schedule_rule
     @schedule_rule = @product.schedule_rules.find(params[:id])
-  end
-
-  def product_id
-    params[product_key]
-  end
-
-  def product_key
-    valid_ids = Product.types.map { |t| "#{t.model_name.param_key}_id" }
-    params.keys.find { |k| k.in?(valid_ids) }
   end
 
 end

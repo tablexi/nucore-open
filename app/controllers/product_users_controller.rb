@@ -1,16 +1,14 @@
 class ProductUsersController < ApplicationController
 
+  include SearchHelper
+  include BelongsToProductController
+
   admin_tab :index, :new
-  before_action :authenticate_user!
-  before_action :check_acting_as
-  before_action :init_current_facility
-  before_action :init_product
+  before_action :init_product_user
 
   load_and_authorize_resource
 
   layout "two_column"
-
-  include SearchHelper
 
   def initialize
     @active_tab = "admin_products"
@@ -104,15 +102,8 @@ class ProductUsersController < ApplicationController
     @product.class.model_name.human.downcase
   end
 
-  def init_product
-    @product = current_facility.products
-                               .find_by!(url_name: product_id)
+  def init_product_user
     @product_user = @product.product_users.build # for CanCan auth
-  end
-
-  def product_id
-    key = params.except(:facility_id).keys.find { |k| k.end_with?("_id") }
-    params[key]
   end
 
 end
