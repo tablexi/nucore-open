@@ -17,9 +17,9 @@
   %table.table.table-striped.table-hover.product_list
     %thead
       %tr
-        %th= "Description"
-        %th= "Card Reader Number"
-        %th= "Control Device Number"
+        %th= SecureRooms::CardReader.human_attribute_name(:description)
+        %th= SecureRooms::CardReader.human_attribute_name(:card_reader_number)
+        %th= SecureRooms::CardReader.human_attribute_name(:control_device_number)
         %th
         %th
     %tbody
@@ -32,6 +32,6 @@
           %td
             = card_reader.control_device_number
           %td
-            = link_to "Edit", edit_facility_secure_room_card_reader_path(current_facility, @product, card_reader)
+            = link_to text("shared.edit"), edit_facility_secure_room_card_reader_path(current_facility, @product, card_reader)
           %td
-            = link_to "Remove", facility_secure_room_card_reader_path(current_facility, @product, card_reader), data: { confirm: "Are you sure?" }, method: :delete
+            = link_to text("shared.remove"), facility_secure_room_card_reader_path(current_facility, @product, card_reader), data: { confirm: "Are you sure?" }, method: :delete

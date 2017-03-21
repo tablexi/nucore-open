@@ -8,8 +8,4 @@
 %h2= @product
 %h3= text("views.admin.secure_rooms.card_readers.new.title")
 
-= simple_form_for @card_reader, url: facility_secure_room_card_readers_path(current_facility, @product) do |f|
-  = f.input :description
-  = f.input :card_reader_number
-  = f.input :control_device_number
-  = f.submit
+= render "form"

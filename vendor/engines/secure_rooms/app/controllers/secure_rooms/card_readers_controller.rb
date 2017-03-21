@@ -3,15 +3,14 @@ module SecureRooms
   class CardReadersController < ApplicationController
 
     admin_tab :all
-    customer_tab :password
 
     layout "two_column"
 
+    before_action :authenticate_user!
+    before_action :check_acting_as
     before_action :init_current_facility
     before_action :init_product
     before_action :load_card_reader, except: [:index]
-    before_action :authenticate_user!
-    before_action :check_acting_as
 
     def initialize
       @active_tab = "secure_rooms"
@@ -22,25 +21,45 @@ module SecureRooms
       @card_readers = @product.card_readers
     end
 
-    def new; end
+    def new
+    end
 
-    def edit; end
+    def edit
+    end
 
     def create
-      @card_reader.assign_attributes(card_reader_params)
-      return render :new unless @card_reader.save
-      redirect_to facility_secure_room_card_readers_path(current_facility, @product)
+      if @card_reader.update_attributes(card_reader_params)
+        flash[:notice] = text("create.success")
+        redirect_to facility_secure_room_card_readers_path(current_facility, @product)
+      else
+        flash.now[:error] = text("create.error", message: @user.errors.full_messages.to_sentence)
+        render :new
+      end
     end
 
     def update
-      @card_reader.assign_attributes(card_reader_params)
-      return render :edit unless @card_reader.save
-      redirect_to facility_secure_room_card_readers_path(current_facility, @product)
+      if @card_reader.update_attributes(card_reader_params)
+        flash[:notice] = text("update.success")
+        redirect_to facility_secure_room_card_readers_path(current_facility, @product)
+      else
+        flash.now[:error] = text("update.error", message: @user.errors.full_messages.to_sentence)
+        render :edit
+      end
     end
 
     def destroy
-      @card_reader.destroy!
+      if @card_reader.destroy
+        flash[:notice] = text("destroy.success")
+      else
+        flash[:error] = text("destroy.error", message: @user.errors.full_messages.to_sentence)
+      end
       redirect_to facility_secure_room_card_readers_path(current_facility, @product)
+    end
+
+    protected
+
+    def translation_scope
+      "controllers.secure_rooms/card_readers"
     end
 
     private

@@ -11,6 +11,22 @@ en:
     attributes:
       user:
         card_number: Card Number
+      secure_rooms/card_reader:
+        description: Description
+        card_reader_number: Card Reader Number
+        control_device_number: Control Device Number
+
+  controllers:
+    secure_rooms/card_readers:
+      create:
+        success: "Card Reader created successfully"
+        failure: "Could not create: %{errors}"
+      update:
+        success: "Card Reader updated successfully"
+        failure: "Could not update: %{errors}"
+      destroy:
+        success: "Card Reader destroyed successfully"
+        failure: "Could not destroy: %{errors}"
 
   views:
     admin:
