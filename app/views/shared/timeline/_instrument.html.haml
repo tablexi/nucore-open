@@ -10,7 +10,6 @@
     - if instrument.offline?
       = tooltip_icon "icon-warning-sign icon-large", t("instruments.offline.note")
 
-  -# Add .reschedulable to enable drag/drop
   .timeline
     .unit_container
       = render partial: "shared/timeline/reservation",
