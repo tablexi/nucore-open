@@ -20,13 +20,21 @@ class Product < ActiveRecord::Base
 
   validates_presence_of :name, :type
   validate_url_name :url_name, :facility_id
-  validates_numericality_of(
-    :account,
-    only_integer: true,
-    greater_than_or_equal_to: 0,
-    less_than_or_equal_to: 99_999,
-    if: :account_required,
-  ) if SettingsHelper.feature_on? :expense_accounts
+  if SettingsHelper.feature_on? :expense_accounts
+    validates(
+      :account,
+      presence: true,
+      numericality: {
+        only_integer: true,
+        greater_than_or_equal_to: 0,
+        less_than_or_equal_to: 99_999,
+      },
+      if: :requires_account?,
+    )
+  end
+  if SettingsHelper.feature_on? :recharge_accounts
+    validates :facility_account_id, presence: true, if: :requires_account?
+  end
 
   # Use lambda so we can dynamically enable/disable in specs
   validate if: -> { SettingsHelper.feature_on?(:product_specific_contacts) } do
@@ -267,7 +275,7 @@ class Product < ActiveRecord::Base
 
   private
 
-  def account_required
+  def requires_account?
     true
   end
 
