@@ -12,7 +12,7 @@ RSpec.describe Product do
 
     class TestProduct < Product
 
-      def account_required
+      def requires_account?
         false
       end
 
