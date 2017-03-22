@@ -1,5 +1,6 @@
 - if SettingsHelper.feature_on? :recharge_accounts
-  -# include_blank: false is ignored if you use required: true
+  -# Use `label_text` to add * marking the field as required because
+  -# `include_blank: false` gets ignored if you use `required: true`
   = f.input :facility_account_id,
     label: FacilityAccount.model_name.human,
     label_text: -> (label, _required, _) { "* #{label}" },
