@@ -615,7 +615,7 @@ ActiveRecord::Schema.define(version: 20170316090613) do
     t.string   "description",           limit: 255
   end
 
-  add_index "secure_rooms_card_readers", ["card_reader_number", "control_device_number"], name: "index_identifying_numbers", unique: true, using: :btree
+  add_index "secure_rooms_card_readers", ["card_reader_number", "control_device_number"], name: "i_secure_room_reader_ids", unique: true, using: :btree
 
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false
