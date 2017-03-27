@@ -34,4 +34,4 @@
           %td
             = link_to text("shared.edit"), edit_facility_secure_room_card_reader_path(current_facility, @product, card_reader)
           %td
-            = link_to text("shared.remove"), facility_secure_room_card_reader_path(current_facility, @product, card_reader), data: { confirm: "Are you sure?" }, method: :delete
+            = link_to text("shared.remove"), facility_secure_room_card_reader_path(current_facility, @product, card_reader), data: { confirm: text("shared.confirm_message") }, method: :delete

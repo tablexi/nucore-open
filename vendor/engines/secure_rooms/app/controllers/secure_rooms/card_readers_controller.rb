@@ -32,7 +32,7 @@ module SecureRooms
         flash[:notice] = text("create.success")
         redirect_to facility_secure_room_card_readers_path(current_facility, @product)
       else
-        flash.now[:error] = text("create.error")
+        flash.now[:error] = text("create.failure")
         render :new
       end
     end
@@ -42,7 +42,7 @@ module SecureRooms
         flash[:notice] = text("update.success")
         redirect_to facility_secure_room_card_readers_path(current_facility, @product)
       else
-        flash.now[:error] = text("update.error")
+        flash.now[:error] = text("update.failure")
         render :edit
       end
     end
@@ -51,15 +51,9 @@ module SecureRooms
       if @card_reader.destroy
         flash[:notice] = text("destroy.success")
       else
-        flash[:error] = text("destroy.error")
+        flash[:error] = text("destroy.failure")
       end
       redirect_to facility_secure_room_card_readers_path(current_facility, @product)
-    end
-
-    protected
-
-    def translation_scope
-      "controllers.secure_rooms/card_readers"
     end
 
     private

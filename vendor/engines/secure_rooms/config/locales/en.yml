@@ -20,13 +20,13 @@ en:
     secure_rooms/card_readers:
       create:
         success: "Card Reader created successfully"
-        failure: "Could not create: %{errors}"
+        failure: "Could not create Card Reader"
       update:
         success: "Card Reader updated successfully"
-        failure: "Could not update: %{errors}"
+        failure: "Could not update Card Reader"
       destroy:
         success: "Card Reader destroyed successfully"
-        failure: "Could not destroy: %{errors}"
+        failure: "Could not destroy Card Reader"
 
   views:
     admin:
