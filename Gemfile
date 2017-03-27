@@ -73,10 +73,10 @@ gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
 
 group :development do
   gem "coffeelint"
+  gem "haml_lint", github: "brigade/haml-lint", ref: "1384ec"
   gem "letter_opener"
   gem "rubocop", require: false
   gem "web-console"
-  gem "haml_lint", github: "brigade/haml-lint", ref: "1384ec"
 end
 
 group :development, :deployment do
