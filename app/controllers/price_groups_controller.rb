@@ -61,7 +61,8 @@ class PriceGroupsController < ApplicationController
   end
 
   # GET /price_groups/:id/edit
-  def edit; end
+  def edit
+  end
 
   # POST /price_groups
   def create
