@@ -19,7 +19,8 @@ module SecureRooms
       super
     end
 
-    def edit; end
+    def edit
+    end
 
     def update
       if @user.update_attributes(update_user_params)
