@@ -76,6 +76,7 @@ group :development do
   gem "letter_opener"
   gem "rubocop", require: false
   gem "web-console"
+  gem "haml_lint", github: "brigade/haml-lint", ref: "1384ec"
 end
 
 group :development, :deployment do
