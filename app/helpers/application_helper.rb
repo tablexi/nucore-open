@@ -72,4 +72,8 @@ module ApplicationHelper
     end
   end
 
+  def responsive?
+    SettingsHelper.feature_on?(:responsive) && !admin_tab?
+  end
+
 end

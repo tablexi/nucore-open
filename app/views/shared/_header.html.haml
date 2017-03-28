@@ -12,7 +12,7 @@
           %span.icon-bar
         -# collapsed at < 979px
         .nav-collapse.collapse.hide-from-print
-          - if SettingsHelper.feature_on?(:responsive)
+          - if responsive?
             -# .hidden-with-nav is hidden > 979px
             .hidden-with-nav
               = render "/shared/nav/nav_links"
@@ -31,7 +31,7 @@
               %li.divider-vertical
               = render "shared/message_summary"
               %li= link_to t('pages.logout'), sign_out_user_path
-              - if !acting_as? && current_user
+              - if responsive? && !acting_as? && current_user
                 = form_tag global_search_path, class: "navbar-search pull-right hidden-with-nav" do
                   = text_field_tag :search, nil, placeholder: t("global_search.search"), class: "search-query span2"
 
