@@ -1,5 +1,6 @@
 %ul.nav
   - if SettingsHelper.feature_on?(:responsive)
+    -# .hidden-with-nav is hidden > 979px
     %li.hidden-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
   - navigation_links.each do |link|
     %li{class: link.tab_class(controller), id: link.tab_id }
@@ -15,10 +16,12 @@
         = link.to_html
 
 - if !acting_as? && current_user
-  = form_tag global_search_path, class: "navbar-search pull-right" do
+  -# .visible-with-nav is visible > 979px
+  = form_tag global_search_path, class: "navbar-search pull-right visible-with-nav" do
     = text_field_tag :search, nil, placeholder: t("global_search.search"), class: "search-query span2"
 
-%ul.nav.pull-right
+-# trailing "<" enables use of .nav-collapse .nav:empty in boostrap-responsive-overrides.scss
+%ul.nav.pull-right<
   = render "shared/nav/manage_facilities"
   - global_navigation_links.each do |link|
     %li{class: link.tab_class(controller)}= link.to_html

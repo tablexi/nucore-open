@@ -2,25 +2,37 @@
 
 /* 979px - 980px is where nav-collapse gets triggered */
 @media (max-width: 979px) {
-  .navbar .container {
-    width: auto;
-    padding: 0 20px;
-  }
-
   .hidden-with-nav {
     display: inherit !important;
   }
   .visible-with-nav {
     display: none !important;
   }
-  .navbar .nav > .active > a, .navbar .sidebar-nav > .active > a {
-    padding: 10px;
-    &:hover, &:focus {
-      padding: 10px;
+
+  .navbar .brand {
+    margin-left: 0;
+  }
+  .navbar .btn-navbar {
+    margin-right: 10px;
+  }
+
+  .nav-collapse .nav {
+    margin: 0;
+    border-top: 1px solid #ddd;
+    &:empty {
+      border-top: 0;
     }
   }
-  body {
-    background-color: red;
+  header .nav-collapse .nav > li > a, header .nav-collapse .nav > li.navbar-text {
+    padding-left: 10px;
+  }
+  .nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+    border-radius: 0;
+  }
+  .nav-collapse .navbar-form, .nav-collapse .navbar-search {
+    margin: 0;
+    padding: 10px 10px 0 10px;
+    border-bottom: 0;
   }
 }
 
@@ -30,8 +42,5 @@
   }
   .hidden-with-nav {
     display: none !important;
-  }
-  body {
-    background-color: green;
   }
 }
