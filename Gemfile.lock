@@ -1,16 +1,4 @@
 GIT
-  remote: git@github.com:brigade/haml-lint.git
-  revision: 1384ec26f4ca1c11a60801091d2a4dca3e49f180
-  ref: 1384ec
-  specs:
-    haml_lint (0.23.2)
-      haml (>= 4.0, < 5.1)
-      rainbow
-      rake (>= 10, < 13)
-      rubocop (>= 0.47.0)
-      sysexits (~> 1.1)
-
-GIT
   remote: git@github.com:elzoiddy/vestal_versions.git
   revision: 1905429b80303875c261370a16b086a3d6a88b25
   specs:
@@ -295,6 +283,12 @@ GEM
       teaspoon (>= 0.8.0)
     haml (4.0.7)
       tilt
+    haml_lint (0.24.0)
+      haml (>= 4.0, < 5.1)
+      rainbow
+      rake (>= 10, < 13)
+      rubocop (>= 0.47.0)
+      sysexits (~> 1.1)
     hashery (2.1.2)
     hitimes (1.2.4)
     i18n (0.8.1)
@@ -603,7 +597,7 @@ DEPENDENCIES
   guard-rspec
   guard-teaspoon
   haml (~> 4.0.5)
-  haml_lint!
+  haml_lint (~> 0.24.0)
   jquery-rails
   jquery-ui-rails (~> 6.0.1)
   letter_opener
