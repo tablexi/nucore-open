@@ -12,8 +12,9 @@
           %span.icon-bar
         -# Everything you want hidden at 979px or less, place within here
         .nav-collapse.collapse
-          .hidden-with-nav
-            = render "/shared/nav/nav_links"
+          - if SettingsHelper.feature_on?(:responsive)
+            .hidden-with-nav
+              = render "/shared/nav/nav_links"
           %ul.nav.pull-right.hide-from-print
             - if acting_as?
               %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"

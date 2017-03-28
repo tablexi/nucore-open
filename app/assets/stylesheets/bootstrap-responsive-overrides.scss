@@ -19,6 +19,9 @@
       padding: 10px;
     }
   }
+  body {
+    background-color: red;
+  }
 }
 
 @media (min-width: 980px) {
@@ -27,5 +30,8 @@
   }
   .hidden-with-nav {
     display: none !important;
+  }
+  body {
+    background-color: green;
   }
 }
