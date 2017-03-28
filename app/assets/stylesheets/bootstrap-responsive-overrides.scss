@@ -1,0 +1,41 @@
+/* Bootstrap overrides go here. This is included after bootstrap. */
+
+/* 979px - 980px is where nav-collapse gets triggered */
+@media (max-width: 979px) {
+  .hidden-with-nav {
+    display: inherit !important;
+  }
+  .visible-with-nav {
+    display: none !important;
+  }
+
+  .nav-collapse .nav {
+    margin: 0;
+    border-top: 1px solid #ddd;
+    &:empty {
+      border-top: 0;
+    }
+  }
+  header .navbar .nav > li > a, .nav-collapse .dropdown-menu a {
+    padding: 10px;
+    border-radius: 0;
+  }
+  header .navbar .nav > li.navbar-text {
+    padding: 10px;
+    line-height: 20px;
+  }
+  .nav-collapse .navbar-form, .nav-collapse .navbar-search {
+    margin: 0;
+    padding: 10px 10px 0 10px;
+    border-bottom: 0;
+  }
+}
+
+@media (min-width: 980px) {
+  .visible-with-nav {
+    display: inherit !important;
+  }
+  .hidden-with-nav {
+    display: none !important;
+  }
+}
