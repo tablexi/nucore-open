@@ -6,12 +6,12 @@
         %ul.nav.pull-right.hide-from-print
           %li= link_to t("pages.login"), :new_user_session
       - else
-        %a.btn.btn-navbar{"data-target" => ".nav-collapse", "data-toggle" => "collapse"}
+        %a.btn.btn-navbar.hide-from-print{"data-target" => ".nav-collapse", "data-toggle" => "collapse"}
           %span.icon-bar
           %span.icon-bar
           %span.icon-bar
         -# collapsed at < 979px
-        .nav-collapse.collapse
+        .nav-collapse.collapse.hide-from-print
           - if SettingsHelper.feature_on?(:responsive)
             -# .hidden-with-nav is hidden > 979px
             .hidden-with-nav
