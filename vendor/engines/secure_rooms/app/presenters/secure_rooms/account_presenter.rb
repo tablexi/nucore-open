@@ -3,7 +3,7 @@ module SecureRooms
   class AccountPresenter < SimpleDelegator
 
     def self.wrap(accounts)
-      accounts.map { |account| new(account) }
+      Array(accounts).map { |account| new(account) }
     end
 
     def to_json
