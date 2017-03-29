@@ -9,6 +9,14 @@
   width:920px;
 }
 
+.timeline-wrapper {
+  overflow-x: scroll;
+}
+
+.timeline-schedule, .timeline-single {
+  display: inline-block;
+}
+
 .timeline-schedule {
   @include gradient-horizontal(#FFF, #EEE);
   border-radius: 0 10px 10px 0;
@@ -160,14 +168,11 @@ body .unit {
 }
 
 .timeline_instrument {
-  margin: 15px 0 22px -10px;
+  margin: 15px 0 22px;
 
   h4 {
     padding-bottom: 7px;
   }
-}
-.timeline-schedule h3 {
-  margin-left: -10px;
 }
 
 .timeline_options {

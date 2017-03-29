@@ -18,6 +18,6 @@
       = link_to "&raquo;".html_safe,
         facility_public_timeline_path(current_facility, date: format_usa_date(@display_datetime + 1.day)), id: "reservation_right"
 
-.clear
-.span10.offset1
-  = render partial: "shared/timeline/schedule", collection: @schedules, as: :schedule
+.row
+  .span10.offset1.timeline-wrapper
+    = render partial: "shared/timeline/schedule", collection: @schedules, as: :schedule
