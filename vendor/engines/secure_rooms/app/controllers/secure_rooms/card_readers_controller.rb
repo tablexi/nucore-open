@@ -8,6 +8,7 @@ module SecureRooms
 
     before_action :authenticate_user!
     before_action :check_acting_as
+    before_action :authorize_card_reader
     before_action :init_current_facility
     before_action :init_product
     before_action :load_card_reader, except: [:index]
@@ -57,6 +58,10 @@ module SecureRooms
     end
 
     private
+
+    def authorize_card_reader
+      authorize! :manage, CardReader
+    end
 
     def init_product
       @product = current_facility.products(SecureRoom).find_by!(url_name: params[:secure_room_id])

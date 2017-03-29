@@ -5,6 +5,8 @@ module SecureRooms
     isolate_namespace SecureRooms
 
     config.to_prepare do
+      ::AbilityExtensionManager.extensions << "SecureRooms::AbilityExtension"
+
       bundle_index = Product.types.index(Bundle) || -1
       Product.types.insert(bundle_index, SecureRoom)
 

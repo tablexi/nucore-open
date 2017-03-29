@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Managing CardReaders" do
   let(:facility) { create(:setup_facility) }
   let(:secure_room) { create(:secure_room, facility: facility) }
-  let(:facility_staff) { create(:user, :staff, facility: facility) }
+  let(:facility_staff) { create(:user, :senior_staff, facility: facility) }
   before { login_as facility_staff }
 
   it "can create a card reader" do
