@@ -1,21 +1,23 @@
-.datetime-block
-  - start_disabled = start_time_disabled?(f.object)
-  = f.input :reserve_start_date, input_html: { class: "datepicker", disabled: start_disabled }
-  .control-group
-    .controls
-      .string.optional.control-label &nbsp;
-      = time_select f, :reserve_start, { minute_step: @instrument.reserve_interval }, disabled: start_disabled
-
-  = f.input :duration_mins,
-    input_html: { value: f.object.duration_mins || default_duration, class: "timeinput", disabled: end_time_disabled?(f.object) }
-
-  - if f.object.actual_start_at?
-    .datetime-block
-      .started-at= "Started: #{l(f.object.actual_start_at, format: :usa)}"
-
-.datetime-block
-  = f.input :reserve_end_date, input_html: { class: "datepicker" }
-  .control-group
-    .controls
-      .string.optional.control-label &nbsp;
-      = time_select f, :reserve_end, { minute_step: @instrument.reserve_interval }
+- start_disabled = start_time_disabled?(f.object)
+.well
+  .container
+    .row
+      .span7
+        = label_tag :reservation_reserve_start_date, "Reserve Start", class: "string optional control-label"
+        .row
+          .span3
+            = text_field_tag "reservation[reserve_start_date]", f.object.reserve_start_date, class: "datepicker string optional span3"
+            - if f.object.actual_start_at?
+              .started-at= "Started: #{l(f.object.actual_start_at, format: :usa)}"
+          .span4
+            = time_select f, :reserve_start, { minute_step: @instrument.reserve_interval }, disabled: start_disabled
+      .span5
+        = f.input :duration_mins, input_html: { value: f.object.duration_mins || default_duration, class: "timeinput", disabled: end_time_disabled?(f.object) }
+    .row
+      .span7
+        = label_tag :reservation_reserve_end_date, "Reserve End", class: "string optional control-label"
+        .row
+          .span3
+            = text_field_tag "reservation[reserve_end_date]", f.object.reserve_end_date, class: "datepicker string optional span3"
+          .span4
+            = time_select f, :reserve_end, { minute_step: @instrument.reserve_interval }

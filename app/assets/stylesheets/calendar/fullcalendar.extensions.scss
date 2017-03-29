@@ -45,5 +45,38 @@
 	padding:10px 0;
 }
 
+#calendar .fc-header-left, #calendar .fc-header-right,  {
+  width: 50%;
+  vertical-align: bottom;
+}
 
+#calendar .fc-header-center {
+  width: 0;
+}
 
+#calendar .fc-header-title {
+  width: 100%;
+  vertical-align: bottom;
+}
+
+#calendar .fc-header-title h2 {
+  font-size: 18px;
+  line-height: 1em;
+  margin-bottom: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#calendar .fc-header .fc-button {
+  margin-bottom: 0;
+  vertical-align: bottom;
+}
+
+#calendar .fc-header {
+  table-layout: fixed;
+}
+
+#calendar .fc-agenda .fc-agenda-axis {
+  width: 3em;
+}
