@@ -3,6 +3,8 @@ class OrderPurchaser
   attr_reader :acting_as, :order, :order_in_past, :params, :user
   attr_accessor :backdate_to
 
+  cattr_accessor(:additional_validations) { [] }
+
   alias acting_as? acting_as
   alias order_in_past? order_in_past
 
@@ -69,9 +71,27 @@ class OrderPurchaser
   end
 
   def validate_and_purchase!
-    unless order.validate_order! && order.purchase!
-      # Empty because validate_order! and purchase! don't give useful error messages
-      raise NUCore::PurchaseException.new("")
+    validate_order!
+    do_additional_validations!
+    purchase_order!
+  end
+
+  def validate_order!
+    # Empty because validate_order! and purchase! don't give useful error messages
+    raise NUCore::PurchaseException.new("") unless order.validate_order!
+  end
+
+  def purchase_order!
+    # Empty because validate_order! and purchase! don't give useful error messages
+    raise NUCore::PurchaseException.new("") unless order.purchase!
+  end
+
+  def do_additional_validations!
+    additional_validations.each do |validator_class|
+      validator = validator_class.new(@order)
+      unless validator.valid?
+        raise NUCore::PurchaseException.new(validator.error_message)
+      end
     end
   end
 
