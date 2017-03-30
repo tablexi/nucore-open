@@ -4,16 +4,44 @@ en:
       secure_room:
         one: Secure Room
         other: Secure Rooms
+      secure_rooms/card_reader:
+        one: Card Reader
+        other: Card Readers
 
     attributes:
       user:
         card_number: Card Number
+      secure_rooms/card_reader:
+        description: Description
+        card_reader_number: Card Reader Number
+        control_device_number: Control Device Number
+
+  controllers:
+    secure_rooms/card_readers:
+      create:
+        success: "Card Reader created successfully"
+        failure: "Could not create Card Reader"
+      update:
+        success: "Card Reader updated successfully"
+        failure: "Could not update Card Reader"
+      destroy:
+        success: "Card Reader destroyed successfully"
+        failure: "Could not destroy Card Reader"
 
   views:
     admin:
       secure_rooms:
         index:
           description: Secure Rooms are rooms controlled by card readers.
+
+        card_readers:
+          index:
+            description: "Card Readers associated with this room"
+            none: "There are no associated Card Readers"
+          new:
+            title: Add Card Reader
+          edit:
+            title: Edit Card Reader
 
     secure_rooms:
       card_numbers:
@@ -23,3 +51,5 @@ en:
       shared:
         tabnav_users:
           title: Secure Room Access
+        tabnav_secure_room:
+          title: Card Readers

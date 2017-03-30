@@ -281,7 +281,15 @@ class OrdersController < ApplicationController
     flash[:error] = I18n.t("orders.purchase.error")
     flash[:error] += " #{e.message}" if e.message
     @order.reload.invalidate!
-    redirect_to order_path(@order)
+
+    if single_reservation?
+      # with additional validations (see OrderPurchaser), we discard the existing reservation
+      # and redirect to new. otherwise it takes us out of the normal reservation purchase flow
+      @order.order_details.first.reservation.destroy
+      redirect_to new_order_order_detail_reservation_path(@order, @order.order_details.first)
+    else
+      redirect_to order_path(@order)
+    end
   end
 
   # GET /orders/1/receipt
