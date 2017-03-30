@@ -8,10 +8,9 @@ module SecureRooms
 
     before_action :authenticate_user!
     before_action :check_acting_as
-    before_action :authorize_card_reader
     before_action :init_current_facility
     before_action :init_product
-    before_action :load_card_reader, except: [:index]
+    load_and_authorize_resource through: :product
 
     def initialize
       @active_tab = "secure_rooms"
@@ -59,17 +58,8 @@ module SecureRooms
 
     private
 
-    def authorize_card_reader
-      authorize! :manage, CardReader
-    end
-
     def init_product
       @product = current_facility.products(SecureRoom).find_by!(url_name: params[:secure_room_id])
-    end
-
-    def load_card_reader
-      scope = @product.card_readers
-      @card_reader = params[:id] ? scope.find(params[:id]) : scope.build
     end
 
     def card_reader_params
