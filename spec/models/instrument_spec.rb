@@ -363,12 +363,11 @@ RSpec.describe Instrument do
       assert_equal [@reservation2], @instrument.reservations.upcoming(@start + 1.hour)
     end
 
-    it "should allow 1 hour reservations between 9 and 5, using duration_value, duration_unit virtual attribute" do
+    it "should allow 1 hour reservations between 9 and 5, using duration_mins" do
       # 9 am - 10 am
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
       @reservation1 = @instrument.reservations.create(reserve_start_at: @start,
-                                                      duration_value: 60,
-                                                      duration_unit: "minutes",
+                                                      duration_mins: 60,
                                                       split_times: true)
       assert @reservation1.valid?
       assert_equal 60, @reservation1.reload.duration_mins
@@ -396,8 +395,7 @@ RSpec.describe Instrument do
                                                       reserve_start_hour: "9",
                                                       reserve_start_min: "30",
                                                       reserve_start_meridian: "am",
-                                                      duration_value: "60",
-                                                      duration_unit: "minutes",
+                                                      duration_mins: "60",
                                                       split_times: true)
       expect(@reservation2.errors[:base]).not_to be_empty
       # not allow 9:30 am - 11:30 am
@@ -504,8 +502,7 @@ RSpec.describe Instrument do
       # add reservation for tomorrow morning at 9 am
       @start        = Time.zone.now.end_of_day + 1.second + 9.hours
       @reservation1 = @instrument.reservations.create(reserve_start_at: @start,
-                                                      duration_value: 60,
-                                                      duration_unit: "minutes",
+                                                      duration_mins: 60,
                                                       split_times: true)
       assert @reservation1.valid?
       # find next reservation after 12 am tomorrow at 10 am tomorrow
