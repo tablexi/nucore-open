@@ -2,10 +2,10 @@ module SecureRooms
 
   module AccessRules
 
-    class SelectedAccountRule
+    class SelectedAccountRule < BaseRule
 
-      def self.call(_user, _card_reader, _accounts, selected)
-        return :ok if selected.present?
+      def self.condition(_user, _card_reader, _accounts, selected)
+        :ok if selected.present?
       end
 
     end

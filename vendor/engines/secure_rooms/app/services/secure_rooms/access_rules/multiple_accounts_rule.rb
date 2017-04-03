@@ -2,10 +2,10 @@ module SecureRooms
 
   module AccessRules
 
-    class MultipleAccountsRule
+    class MultipleAccountsRule < BaseRule
 
-      def self.call(_user, _card_reader, accounts, selected)
-        return :multiple_choices if accounts.present? && selected.blank?
+      def self.condition(_user, _card_reader, accounts, selected)
+        :multiple_choices if accounts.present? && selected.blank?
       end
 
     end

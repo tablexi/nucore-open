@@ -2,9 +2,9 @@ module SecureRooms
 
   module AccessRules
 
-    class DefaultRestrictionRule
+    class DefaultRestrictionRule < BaseRule
 
-      def self.call(_user, _card_reader, _accounts, _selected)
+      def self.condition(_user, _card_reader, _accounts, _selected)
         :forbidden
       end
 
