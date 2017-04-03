@@ -9,13 +9,13 @@ RSpec.describe SecureRooms::AccessRules::MultipleAccountsRule, type: :service do
       nil,
     )
   end
-  let(:card_user) { create :user }
-  let(:card_reader) { create :card_reader }
+  let(:card_user) { build :user }
+  let(:card_reader) { build :card_reader }
 
   subject(:response) { result }
 
   context "user has accounts for this product" do
-    let(:accounts) { create_list(:account, 3, :with_account_owner, owner: card_user) }
+    let(:accounts) { build_list(:account, 3, :with_account_owner, owner: card_user) }
 
     it { is_expected.to have_status(:multiple_choices) }
   end

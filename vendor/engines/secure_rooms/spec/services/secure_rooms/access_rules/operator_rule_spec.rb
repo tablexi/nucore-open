@@ -9,7 +9,7 @@ RSpec.describe SecureRooms::AccessRules::OperatorRule, type: :service do
       nil,
     )
   end
-  let(:card_reader) { create :card_reader }
+  let(:card_reader) { build :card_reader }
 
   subject(:response) { result }
 
@@ -20,7 +20,7 @@ RSpec.describe SecureRooms::AccessRules::OperatorRule, type: :service do
   end
 
   context "user is not an operator" do
-    let(:card_user) { create :user }
+    let(:card_user) { build :user }
 
     it { is_expected.to be_pass }
   end
