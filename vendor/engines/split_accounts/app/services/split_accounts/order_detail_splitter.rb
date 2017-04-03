@@ -46,11 +46,14 @@ module SplitAccounts
 
     def build_split_order_detail(split)
       split_order_detail = SplitOrderDetailDecorator.new(order_detail.dup)
-      split_order_detail.id = order_detail.id # dup does not copy over IDs
       split_order_detail.split = split
       split_order_detail.account = split.subaccount
       order_detail_attribute_splitter.split(order_detail, split_order_detail, split)
       build_split_reservation(split_order_detail, split) if split_reservations?
+
+      # `dup` does not copy over ID. This assignment needs to happen after the
+      # reservation is set, otherwise ActiveRecord will delete the original reservation.
+      split_order_detail.id = order_detail.id
 
       split_order_detail
     end
@@ -63,6 +66,9 @@ module SplitAccounts
       return unless order_detail.reservation
       split_reservation = SplitReservationDecorator.new(order_detail.reservation.dup)
       reservation_attribute_splitter.split(order_detail.reservation, split_reservation, split)
+      # Warning: if `id` is set on the order_detail when this assignment happens,
+      # ActiveRecord will delete the original reservation. This was a change in
+      # behavior between Rails 4.1 and 4.2.
       split_order_detail.reservation = split_reservation
     end
 
