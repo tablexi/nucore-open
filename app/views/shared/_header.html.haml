@@ -1,13 +1,24 @@
 .navbar.navbar-static-top
   .navbar-inner
     .container
-      .row
-        .span12
-          = link_to app_name, :root, class: "brand"
+      = link_to app_name, :root, class: "brand"
+      - if session_user.nil?
+        %ul.nav.pull-right.hide-from-print
+          %li= link_to t("pages.login"), :new_user_session
+      - else
+        - if responsive?
+          %a.btn.btn-navbar.hide-from-print{"data-target" => ".nav-collapse", "data-toggle" => "collapse"}
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+        -# collapsed at < 979px
+        .hide-from-print{class: ("nav-collapse collapse" if responsive?)}
+          - if responsive?
+            -# .hidden-with-nav is hidden > 979px
+            .hidden-with-nav
+              = render "/shared/nav/nav_links"
           %ul.nav.pull-right.hide-from-print
-            - if session_user.nil?
-              %li= link_to t("pages.login"), :new_user_session
-            - elsif acting_as?
+            - if acting_as?
               %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"
               %li= link_to "#{t('pages.cart')} (#{current_cart.order_details.sum(:quantity)})", :cart
             - else
@@ -16,7 +27,13 @@
               - if current_user.password_updatable? && SettingsHelper.feature_on?(:password_update)
                 %li= link_to t("user_password.edit.head"), :edit_current_password
                 %li.divider-vertical
-              %li= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
+              -# .visible-with-nav is visible > 979px
+              %li.visible-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
               %li.divider-vertical
               = render "shared/message_summary"
               %li= link_to t('pages.logout'), sign_out_user_path
+              - if responsive? && !acting_as? && current_user
+                = form_tag global_search_path, class: "navbar-search pull-right hidden-with-nav" do
+                  = text_field_tag :search, nil, placeholder: t("global_search.search"), class: "search-query span2"
+
+

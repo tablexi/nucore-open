@@ -10,7 +10,6 @@ class Instrument < Product
   # -------
 
   has_many :instrument_price_policies, foreign_key: "product_id"
-  has_many :product_access_groups, foreign_key: "product_id"
   has_many :admin_reservations, foreign_key: "product_id"
   has_many :offline_reservations, foreign_key: "product_id"
 
@@ -19,7 +18,6 @@ class Instrument < Product
 
   validates :initial_order_status_id, presence: true
   validates :reserve_interval, inclusion: { in: RESERVE_INTERVALS }
-  validates :facility_account_id, presence: true if SettingsHelper.feature_on? :recharge_accounts
   validates :min_reserve_mins,
             :max_reserve_mins,
             :auto_cancel_mins,

@@ -2,4 +2,4 @@
 
 %ul.inline
   %li= f.submit :class => ['btn', 'btn-primary']
-  %li= link_to 'Cancel', facility_instrument_product_access_groups_path(@facility, @instrument)
+  %li= link_to 'Cancel', [current_facility, @product, ProductAccessGroup]

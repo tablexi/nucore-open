@@ -29,7 +29,7 @@ class Bundle < Product
 
   private
 
-  def account_required
+  def requires_account?
     false
   end
 

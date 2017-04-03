@@ -1,0 +1,11 @@
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: "secure_rooms"
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product", secondary_tab: "card_readers"
+
+%h2= @product
+%h3= text("views.admin.secure_rooms.card_readers.edit.title")
+
+= render "form"

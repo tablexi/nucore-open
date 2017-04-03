@@ -3,12 +3,13 @@ require "devise_ldap_authenticatable/strategy"
 
 ActiveRecord::Base.class_eval do
   def self.validate_url_name(attr_name, scope = nil)
-    validates_length_of attr_name, in: 3..50
-    validates_format_of attr_name, with: /\A[\w-]+\z/, message: "may contain letters, digits, dashes and underscores only"
+    validates attr_name, presence: true
+    validates attr_name, length: { in: 3..50 }
+    validates attr_name, format: { with: /\A[\w-]+\z/, message: "may contain letters, digits, dashes and underscores only" }
     if scope.present?
-      validates_uniqueness_of attr_name, scope: scope, case_sensitive: false
+      validates attr_name, uniqueness: { scope: scope, case_sensitive: false }
     else
-      validates_uniqueness_of attr_name, case_sensitive: false
+      validates attr_name, uniqueness: { case_sensitive: false }
     end
   end
 end

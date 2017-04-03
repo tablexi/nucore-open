@@ -4,6 +4,7 @@ module Products::ScheduleRuleSupport
 
   included do
     has_many :schedule_rules, foreign_key: :product_id, inverse_of: :product
+    has_many :product_access_groups, foreign_key: :product_id, inverse_of: :product
   end
 
   def can_purchase?(group_ids = nil)

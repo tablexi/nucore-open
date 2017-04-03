@@ -10,7 +10,8 @@ RSpec.describe OrdersController do
 
   class DummyNotifier
 
-    def deliver; end
+    def deliver
+    end
 
   end
 

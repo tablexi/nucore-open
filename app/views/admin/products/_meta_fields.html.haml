@@ -3,6 +3,8 @@
 = f.input :url_name, hint: product_url_hint(f.object), as: :string
 
 - if SettingsHelper.feature_on? :product_specific_contacts
-  = f.input :contact_email, hint: text(".hints.contact_email", facility_email: current_facility.email)
+  = f.input :contact_email,
+    hint: text(".hints.contact_email", facility_email: current_facility.email),
+    required: current_facility.email.blank?
 
 = f.text_area :description, class: "editor", hint: text(".hints.description")

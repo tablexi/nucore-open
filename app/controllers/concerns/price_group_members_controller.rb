@@ -14,7 +14,8 @@ module PriceGroupMembersController
     load_and_authorize_resource
   end
 
-  def new; end
+  def new
+  end
 
   def initialize
     @active_tab = "admin_facility"

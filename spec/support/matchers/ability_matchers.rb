@@ -19,7 +19,7 @@ def it_is_allowed_to(actions, object = nil)
   Array(actions).each do |action|
     it "is allowed to #{action}" do
       target = object || yield
-      expect(subject).to be_allowed_to(action, object)
+      expect(subject).to be_allowed_to(action, target)
     end
   end
 end

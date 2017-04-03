@@ -167,11 +167,19 @@ if Account.config.statements_enabled?
         end
       end
 
-      context "with multiple payment sources" do
+      context "with multiple payment sources", feature_setting: { send_statement_emails: true } do
         it "displays properly formatted flash message" do
           sign_in(@user)
           do_request
-          expect(flash[:notice]).to start_with("Notifications sent successfully to:<br/>#{@account.account_list_item}<br/")
+          expect(flash[:notice]).to start_with("Notifications sent successfully to:<br/>#{@account.account_list_item}<br")
+        end
+      end
+
+      context "with multiple payment sources", feature_setting: { send_statement_emails: false } do
+        it "displays properly formatted flash message" do
+          sign_in(@user)
+          do_request
+          expect(flash[:notice]).to start_with("Statements made successfully for:<br/>#{@account.account_list_item}<br")
         end
       end
 
