@@ -1,11 +1,4 @@
 en:
-  services:
-    secure_rooms/scan_authorizer:
-      errors:
-        no_accounts: "No Accounts Found"
-        card_not_found: "User's Card not recognized"
-        reader_not_found: "CardReader not recognized"
-
   activerecord:
     models:
       secure_room:
