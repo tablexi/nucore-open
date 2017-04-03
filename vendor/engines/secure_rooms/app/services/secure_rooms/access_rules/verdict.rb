@@ -4,27 +4,19 @@ module SecureRooms
 
     class Verdict
 
-      attr_accessor :response, :reason
+      attr_accessor :status, :reason
 
-      def initialize(response, reason = nil)
-        @response = response
+      def initialize(status, reason = nil)
+        @status = status
         @reason = reason
       end
 
       def pass?
-        response == :pass
+        status == :pass
       end
 
-      def ok?
-        response == :ok
-      end
-
-      def forbidden?
-        response == :forbidden
-      end
-
-      def multiple_choices?
-        response == :multiple_choices
+      def has_status?(status_symbol)
+        status == status_symbol
       end
 
     end

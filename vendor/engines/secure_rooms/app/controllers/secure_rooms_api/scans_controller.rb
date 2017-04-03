@@ -11,23 +11,24 @@ class SecureRoomsApi::ScansController < ApplicationController
     accounts = @user.accounts_for_product(@card_reader.secure_room)
     selected_account = accounts.find { |account| account.id == params[:account_identifier] }
 
-    access_result = SecureRooms::CheckAccess.new.authorize(
+    access_verdict = SecureRooms::CheckAccess.new.authorize(
       @user,
       @card_reader,
       accounts,
       selected_account,
     )
 
-    render json: build_json(accounts), status: access_result.response
+    render json: build_json(access_verdict, accounts), status: access_verdict.status
   end
 
   private
 
-  def build_json(accounts)
+  def build_json(access_verdict, accounts)
     {
       # TODO: (#140895375) return actual tablet_identifier
       tablet_identifier: "abc123",
       name: @user.full_name,
+      reason: access_verdict.reason,
       accounts: SecureRooms::AccountPresenter.wrap(accounts),
     }
   end
