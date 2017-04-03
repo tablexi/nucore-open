@@ -4,8 +4,7 @@ module SecureRooms
 
     DEFAULT_RULES = [
       AccessRules::OperatorRule,
-      AccessRules::SelectedAccountRule,
-      AccessRules::MultipleAccountsRule,
+      AccessRules::AccountSelectionRule,
       AccessRules::DefaultRestrictionRule,
     ].freeze
 

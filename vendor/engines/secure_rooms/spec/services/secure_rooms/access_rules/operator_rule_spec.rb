@@ -16,7 +16,7 @@ RSpec.describe SecureRooms::AccessRules::OperatorRule, type: :service do
   context "user is facility operator" do
     let(:card_user) { create :user, :facility_administrator, facility: card_reader.secure_room.facility }
 
-    it { is_expected.to have_status(:ok) }
+    it { is_expected.to have_result_code(:grant) }
   end
 
   context "user is not an operator" do

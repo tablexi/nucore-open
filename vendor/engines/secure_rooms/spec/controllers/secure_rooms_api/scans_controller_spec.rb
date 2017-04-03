@@ -31,18 +31,12 @@ RSpec.describe SecureRoomsApi::ScansController do
           let(:card_user) { build :user }
 
           it { is_expected.to have_http_status(:not_found) }
-          xit "is expected to contain the corresponding reason" do
-            expect(response.body).to match("User")
-          end
         end
 
         context "when card reader does not exist" do
           let(:card_reader) { build :card_reader }
 
           it { is_expected.to have_http_status(:not_found) }
-          xit "is expected to contain the corresponding reason" do
-            expect(response.body).to match("CardReader")
-          end
         end
       end
     end

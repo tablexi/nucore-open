@@ -18,7 +18,7 @@ class SecureRoomsApi::ScansController < ApplicationController
       selected_account,
     )
 
-    render json: build_json(access_verdict, accounts), status: access_verdict.status
+    render json: build_json(access_verdict, accounts), status: access_verdict.http_status
   end
 
   private
