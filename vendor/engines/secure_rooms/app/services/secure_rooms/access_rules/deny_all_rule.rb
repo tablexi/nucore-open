@@ -2,7 +2,7 @@ module SecureRooms
 
   module AccessRules
 
-    class DefaultRestrictionRule < BaseRule
+    class DenyAllRule < BaseRule
 
       def evaluate
         deny!("Failed in #{self.class.name}")

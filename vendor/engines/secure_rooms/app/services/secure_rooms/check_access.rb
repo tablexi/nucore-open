@@ -5,7 +5,7 @@ module SecureRooms
     DEFAULT_RULES = [
       AccessRules::OperatorRule,
       AccessRules::AccountSelectionRule,
-      AccessRules::DefaultRestrictionRule,
+      AccessRules::DenyAllRule,
     ].freeze
 
     def initialize(rules = DEFAULT_RULES)
