@@ -7,6 +7,8 @@ module SecureRooms
     validates :product_id, :card_reader_number, :control_device_number, presence: true
     validates :card_reader_number, uniqueness: { scope: :control_device_number }
 
+    delegate :facility, to: :secure_room
+
   end
 
 end
