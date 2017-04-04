@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
-  subject(:result) do
-    described_class.call(
+  let(:rule) do
+    described_class.new(
       card_user,
       card_reader.secure_room,
       accounts,
@@ -13,6 +13,8 @@ RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
   let(:card_reader) { build :card_reader }
   let(:accounts) { build_list(:account, 3, :with_account_owner, owner: card_user) }
   let(:selected_account) { accounts.first }
+
+  subject(:result) { rule.call }
 
   context "selected account was found" do
     it { is_expected.to have_result_code(:grant) }

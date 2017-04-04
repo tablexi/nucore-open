@@ -10,7 +10,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
     let(:rules) { [SecureRooms::AccessRules::DefaultRestrictionRule] }
 
     it "calls the rule" do
-      expect(SecureRooms::AccessRules::DefaultRestrictionRule).to receive(:condition)
+      expect_any_instance_of(SecureRooms::AccessRules::DefaultRestrictionRule).to receive(:evaluate)
       check_access.authorize(card_user, card_reader)
     end
   end

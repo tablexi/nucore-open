@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe SecureRooms::AccessRules::OperatorRule, type: :service do
-  let(:result) do
-    described_class.call(
+  let(:rule) do
+    described_class.new(
       card_user,
       card_reader.secure_room,
       [],
@@ -11,7 +11,7 @@ RSpec.describe SecureRooms::AccessRules::OperatorRule, type: :service do
   end
   let(:card_reader) { build :card_reader }
 
-  subject(:response) { result }
+  subject(:response) { rule.call }
 
   context "user is facility operator" do
     let(:card_user) { create :user, :facility_administrator, facility: card_reader.secure_room.facility }

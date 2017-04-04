@@ -4,8 +4,8 @@ module SecureRooms
 
     class DefaultRestrictionRule < BaseRule
 
-      def self.condition(_user, _card_reader, _accounts, _selected)
-        Verdict.new(:deny, "Failed in #{name}")
+      def evaluate
+        deny!("Failed in #{self.class.name}")
       end
 
     end

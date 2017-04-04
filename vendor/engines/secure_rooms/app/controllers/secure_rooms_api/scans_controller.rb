@@ -18,20 +18,10 @@ class SecureRoomsApi::ScansController < ApplicationController
       selected_account,
     )
 
-    render json: build_json(access_verdict, accounts), status: access_verdict.http_status
+    render SecureRooms::ScanResponsePresenter.new(@user, access_verdict, accounts).response
   end
 
   private
-
-  def build_json(access_verdict, accounts)
-    {
-      # TODO: (#140895375) return actual tablet_identifier
-      tablet_identifier: "abc123",
-      name: @user.full_name,
-      reason: access_verdict.reason,
-      accounts: SecureRooms::AccountPresenter.wrap(accounts),
-    }
-  end
 
   def load_user_and_reader
     @user = User.find_by!(card_number: params[:card_number])

@@ -4,8 +4,8 @@ module SecureRooms
 
     class OperatorRule < BaseRule
 
-      def self.condition(user, card_reader, _accounts, _selected)
-        Verdict.new(:grant) if user.operator_of?(card_reader.facility)
+      def evaluate
+        grant! if @user.operator_of?(@card_reader.facility)
       end
 
     end
