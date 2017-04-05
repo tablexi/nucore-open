@@ -4,7 +4,7 @@ RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
   let(:rule) do
     described_class.new(
       card_user,
-      card_reader.secure_room,
+      card_reader,
       accounts,
       selected_account,
     )
@@ -24,12 +24,5 @@ RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
     let(:selected_account) { nil }
 
     it { is_expected.to have_result_code(:pending) }
-  end
-
-  context "no possible accounts exist" do
-    let(:selected_account) { nil }
-    let(:accounts) { nil }
-
-    it { is_expected.to be_pass }
   end
 end

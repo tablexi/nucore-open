@@ -43,20 +43,32 @@ RSpec.describe SecureRoomsApi::ScansController do
 
     describe "positive responses" do
       context "with multiple accounts" do
+        let(:accounts) { create_list(:account, 3, :with_account_owner, owner: card_user) }
+
         before do
-          accounts = create_list(:account, 3, :with_account_owner, owner: card_user)
           allow_any_instance_of(User).to receive(:accounts_for_product).and_return(accounts)
 
           post :scan,
                card_number: card_user.card_number,
                reader_identifier: card_reader.card_reader_number,
-               controller_identifier: card_reader.control_device_number
+               controller_identifier: card_reader.control_device_number,
+               account_identifier: account_identifier
         end
 
-        it { is_expected.to have_http_status(:multiple_choices) }
-        it "is expected to contain a list of accounts" do
-          expect(JSON.parse(response.body)).to include("accounts")
-          expect(JSON.parse(response.body)["accounts"].size).to eq 3
+        context "with account id requested" do
+          let(:account_identifier) { accounts.last.id }
+
+          it { is_expected.to have_http_status(:ok) }
+        end
+
+        context "with no selection" do
+          let(:account_identifier) { nil }
+
+          it { is_expected.to have_http_status(:multiple_choices) }
+          it "is expected to contain a list of accounts" do
+            expect(JSON.parse(response.body)).to include("accounts")
+            expect(JSON.parse(response.body)["accounts"].size).to eq 3
+          end
         end
       end
     end
