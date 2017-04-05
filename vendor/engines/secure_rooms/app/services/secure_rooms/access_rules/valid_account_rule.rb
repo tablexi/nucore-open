@@ -5,9 +5,7 @@ module SecureRooms
     class ValidAccountRule < BaseRule
 
       def evaluate
-        if @accounts.blank?
-          deny! "User has no valid accounts for this Product"
-        end
+        deny! "User has no valid accounts for this Product" if @accounts.blank?
       end
 
     end
