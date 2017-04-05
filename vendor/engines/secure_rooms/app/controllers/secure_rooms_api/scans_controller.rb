@@ -19,7 +19,7 @@ class SecureRoomsApi::ScansController < ApplicationController
       selected_account,
     )
 
-    render SecureRooms::ScanResponsePresenter.new(@user, access_verdict, accounts).response
+    render SecureRooms::ScanResponsePresenter.new(@user, @card_reader, access_verdict, accounts).response
   end
 
   private

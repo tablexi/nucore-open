@@ -20,6 +20,7 @@ en:
         human_direction:
           "true": In
           "false": Out
+        tablet_token: Tablet Token
 
   controllers:
     secure_rooms/card_readers:

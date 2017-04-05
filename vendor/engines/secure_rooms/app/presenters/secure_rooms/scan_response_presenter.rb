@@ -2,8 +2,9 @@ module SecureRooms
 
   class ScanResponsePresenter
 
-    def initialize(user, access_verdict, accounts)
+    def initialize(user, card_reader, access_verdict, accounts)
       @user = user
+      @card_reader = card_reader
       @access_verdict = access_verdict
       @accounts = accounts
     end
@@ -12,8 +13,7 @@ module SecureRooms
       {
         status: status_for_code(@access_verdict.result_code),
         json: {
-          # TODO: (#140895375) return actual tablet_identifier
-          tablet_identifier: "abc123",
+          tablet_identifier: @card_reader.tablet_token,
           name: @user.full_name,
           response: @access_verdict.result_code,
           reason: @access_verdict.reason,

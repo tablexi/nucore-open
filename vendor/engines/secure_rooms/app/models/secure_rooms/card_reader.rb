@@ -4,12 +4,14 @@ module SecureRooms
 
     belongs_to :secure_room, foreign_key: :product_id
 
-    validates :product_id, :card_reader_number, :control_device_number, presence: true
-    validates :card_reader_number, uniqueness: { scope: :control_device_number }
-
     delegate :facility, to: :secure_room
 
     alias_attribute :ingress, :direction_in
+
+    validates :product_id, :card_reader_number, :control_device_number, presence: true
+    validates :card_reader_number, uniqueness: { scope: :control_device_number }
+
+    before_create :set_tablet_token
 
     def egress?
       !ingress?
@@ -27,6 +29,10 @@ module SecureRooms
 
     def attribute_translation_scope
       "#{self.class.i18n_scope}.attributes.#{model_name.i18n_key}"
+    end
+
+    def set_tablet_token
+      self.tablet_token ||= ("A".."Z").to_a.sample(12).join
     end
 
   end
