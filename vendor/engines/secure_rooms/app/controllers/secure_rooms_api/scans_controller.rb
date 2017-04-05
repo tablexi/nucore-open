@@ -8,18 +8,17 @@ class SecureRoomsApi::ScansController < ApplicationController
   before_action :load_user_and_reader
 
   def scan
-    accounts = @user.accounts_for_product(@card_reader.secure_room)
     requested_id = params[:account_identifier].to_i
-    selected_account = accounts.find { |account| account.id == requested_id }
 
-    access_verdict = SecureRooms::CheckAccess.new.authorize(
+    access_manager = SecureRooms::AccessManager.new(@user, @card_reader, requested_id)
+    access_manager.process
+
+    render SecureRooms::ScanResponsePresenter.new(
       @user,
       @card_reader,
-      accounts: accounts,
-      selected_account: selected_account,
-    )
-
-    render SecureRooms::ScanResponsePresenter.new(@user, @card_reader, access_verdict, accounts).response
+      access_manager.verdict,
+      access_manager.accounts,
+    ).response
   end
 
   private
