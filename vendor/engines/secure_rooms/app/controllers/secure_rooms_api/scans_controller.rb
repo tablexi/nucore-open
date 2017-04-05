@@ -9,7 +9,8 @@ class SecureRoomsApi::ScansController < ApplicationController
 
   def scan
     accounts = @user.accounts_for_product(@card_reader.secure_room)
-    selected_account = accounts.find { |account| account.id == params[:account_identifier] }
+    requested_id = params[:account_identifier].to_i
+    selected_account = accounts.find { |account| account.id == requested_id }
 
     access_verdict = SecureRooms::CheckAccess.new.authorize(
       @user,
