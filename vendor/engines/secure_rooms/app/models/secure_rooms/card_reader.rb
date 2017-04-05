@@ -10,6 +10,7 @@ module SecureRooms
 
     validates :product_id, :card_reader_number, :control_device_number, presence: true
     validates :card_reader_number, uniqueness: { scope: :control_device_number }
+    validates :tablet_token, uniqueness: true
 
     before_create :set_tablet_token
 
@@ -32,7 +33,13 @@ module SecureRooms
     end
 
     def set_tablet_token
-      self.tablet_token ||= ("A".."Z").to_a.sample(12).join
+      return if tablet_token.present?
+
+      # Generate random tokens until it finds one that doesn't already exist
+      self.tablet_token = loop do
+        token = ("A".."Z").to_a.sample(12).join
+        break token if self.class.find_by(tablet_token: token).blank?
+      end
     end
 
   end

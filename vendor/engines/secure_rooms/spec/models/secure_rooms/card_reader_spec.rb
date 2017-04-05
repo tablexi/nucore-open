@@ -10,6 +10,7 @@ RSpec.describe SecureRooms::CardReader do
     subject { described_class.new(secure_room: product) }
 
     it { is_expected.to validate_uniqueness_of(:card_reader_number).scoped_to(:control_device_number) }
+    it { is_expected.to validate_uniqueness_of(:tablet_token) }
   end
 
   describe "direction_in" do
