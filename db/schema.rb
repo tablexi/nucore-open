@@ -619,6 +619,7 @@ ActiveRecord::Schema.define(version: 20170405182534) do
 
   add_index "secure_rooms_card_readers", ["card_reader_number", "control_device_number"], name: "i_secure_room_reader_ids", unique: true, using: :btree
   add_index "secure_rooms_card_readers", ["product_id"], name: "index_secure_rooms_card_readers_on_product_id", using: :btree
+  add_index "secure_rooms_card_readers", ["tablet_token"], name: "index_secure_rooms_card_readers_on_tablet_token", unique: true, using: :btree
 
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false
