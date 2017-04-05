@@ -20,9 +20,12 @@ RSpec.describe "Managing CardReaders" do
     )
 
     expect(current_path).to eq(facility_secure_room_card_readers_path(facility, secure_room))
-    expect(page).to have_content("New Reader Description")
-    expect(page).to have_content("New Reader Number")
-    expect(page).to have_content("New Device Number")
+    within(".secure_rooms_card_reader") do
+      expect(page).to have_content("New Reader Description")
+      expect(page).to have_content("New Reader Number")
+      expect(page).to have_content("New Device Number")
+      expect(page).to have_content("In")
+    end
   end
 
   context "with existing card reader" do
@@ -34,12 +37,16 @@ RSpec.describe "Managing CardReaders" do
       fill_in "card_reader[description]", with: "Edited Reader Description"
       fill_in "card_reader[card_reader_number]", with: "Edited Reader Number"
       fill_in "card_reader[control_device_number]", with: "Edited Device Number"
+      select "Out", from: "Direction"
       click_button "Update Card Reader"
 
       expect(current_path).to eq(facility_secure_room_card_readers_path(facility, secure_room))
-      expect(page).to have_content("Edited Reader Description")
-      expect(page).to have_content("Edited Reader Number")
-      expect(page).to have_content("Edited Device Number")
+      within(".secure_rooms_card_reader") do
+        expect(page).to have_content("Edited Reader Description")
+        expect(page).to have_content("Edited Reader Number")
+        expect(page).to have_content("Edited Device Number")
+        expect(page).to have_content("Out")
+      end
     end
 
     it "can remove a card reader" do

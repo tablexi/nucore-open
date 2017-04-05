@@ -15,6 +15,11 @@ en:
         description: Description
         card_reader_number: Card Reader Number
         control_device_number: Control Device Number
+        direction: Direction
+        direction_in: Direction
+        human_direction:
+          "true": In
+          "false": Out
 
   controllers:
     secure_rooms/card_readers:

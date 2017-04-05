@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170316090613) do
+ActiveRecord::Schema.define(version: 20170405172045) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -607,15 +607,17 @@ ActiveRecord::Schema.define(version: 20170316090613) do
   add_index "schedules", ["facility_id"], name: "i_schedules_facility_id", using: :btree
 
   create_table "secure_rooms_card_readers", force: :cascade do |t|
-    t.integer  "product_id",            limit: 4,   null: false
+    t.integer  "product_id",            limit: 4,                  null: false
     t.string   "card_reader_number",    limit: 255
     t.string   "control_device_number", limit: 255
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
     t.string   "description",           limit: 255
+    t.boolean  "direction_in",                      default: true, null: false
   end
 
   add_index "secure_rooms_card_readers", ["card_reader_number", "control_device_number"], name: "i_secure_room_reader_ids", unique: true, using: :btree
+  add_index "secure_rooms_card_readers", ["product_id"], name: "index_secure_rooms_card_readers_on_product_id", using: :btree
 
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false
