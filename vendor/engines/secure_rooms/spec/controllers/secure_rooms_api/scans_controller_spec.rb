@@ -46,6 +46,8 @@ RSpec.describe SecureRoomsApi::ScansController do
         let(:accounts) { create_list(:account, 3, :with_account_owner, owner: card_user) }
 
         before do
+          card_reader.secure_room.update(requires_approval: false)
+
           allow_any_instance_of(User).to receive(:accounts_for_product).and_return(accounts)
 
           post :scan,
