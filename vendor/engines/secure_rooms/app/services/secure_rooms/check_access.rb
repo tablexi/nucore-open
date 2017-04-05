@@ -6,6 +6,7 @@ module SecureRooms
       AccessRules::OperatorRule,
       AccessRules::ArchivedProductRule,
       AccessRules::RequiresApprovalRule,
+      AccessRules::ScheduleRule,
       AccessRules::AccountSelectionRule,
       AccessRules::DenyAllRule,
     ].freeze

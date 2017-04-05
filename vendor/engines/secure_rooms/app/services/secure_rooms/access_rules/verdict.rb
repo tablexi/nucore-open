@@ -12,7 +12,15 @@ module SecureRooms
       end
 
       def pass?
-        @result_code == :pass
+        has_result_code?(:pass)
+      end
+
+      def denied?
+        has_result_code?(:deny)
+      end
+
+      def granted?
+        has_result_code?(:grant)
       end
 
       def has_result_code?(code)
