@@ -10,6 +10,7 @@ RSpec.describe SecureRooms::CardReader do
     subject { described_class.new(secure_room: product) }
 
     it { is_expected.to validate_uniqueness_of(:card_reader_number).scoped_to(:control_device_number) }
+    it { is_expected.to validate_uniqueness_of(:tablet_token) }
   end
 
   describe "direction_in" do
@@ -29,6 +30,20 @@ RSpec.describe SecureRooms::CardReader do
       it "has 'Out' for direction" do
         expect(subject.direction).to eq("Out")
       end
+    end
+  end
+
+  describe "tablet_token" do
+    it "sets a token on create" do
+      reader = build(:card_reader)
+      expect(reader.tablet_token).to be_blank
+      reader.save
+      expect(reader.tablet_token).to match(/\A[A-Z]{12}\z/)
+    end
+
+    it "does not change the token later" do
+      reader = create(:card_reader)
+      expect { reader.save }.not_to change(reader, :tablet_token)
     end
   end
 end
