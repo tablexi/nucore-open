@@ -5,8 +5,6 @@ RSpec.describe SecureRooms::AccessRules::RequiresApprovalRule, type: :service do
     described_class.new(
       card_user,
       card_reader,
-      [],
-      nil,
     )
   end
   let(:card_user) { create :user }

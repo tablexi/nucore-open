@@ -4,18 +4,21 @@ module SecureRooms
 
     class BaseRule
 
-      def initialize(user, card_reader, accounts, selected)
+      attr_reader :user, :card_reader, :params
+
+      delegate :secure_room, to: :card_reader
+
+      def initialize(user, card_reader, params = {})
         @user = user
         @card_reader = card_reader
-        @accounts = accounts
-        @selected = selected
+        @params = params
       end
 
       def call
         evaluate || pass
       end
 
-      def evaluate(_user, _card_reader, _accounts, _selected)
+      def evaluate
         raise NotImplementedError
       end
 

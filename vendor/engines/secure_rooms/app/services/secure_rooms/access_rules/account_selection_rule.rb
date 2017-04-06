@@ -5,15 +5,25 @@ module SecureRooms
     class AccountSelectionRule < BaseRule
 
       def evaluate
-        if @accounts.blank?
+        if accounts.blank?
           deny! "User has no valid accounts for this Product"
-        elsif @selected.present?
+        elsif selected_account.present?
           grant!
-        elsif @accounts.present? && @accounts.one?
+        elsif accounts.present? && accounts.one?
           grant!
-        elsif @accounts.present? && @selected.blank?
+        elsif accounts.present? && selected_account.blank?
           pending! "Must select Account"
         end
+      end
+
+      private
+
+      def accounts
+        params[:accounts]
+      end
+
+      def selected_account
+        params[:selected_account]
       end
 
     end

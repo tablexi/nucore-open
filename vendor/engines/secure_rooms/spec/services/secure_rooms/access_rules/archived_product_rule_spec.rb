@@ -5,8 +5,6 @@ RSpec.describe SecureRooms::AccessRules::ArchivedProductRule, type: :service do
     described_class.new(
       card_user,
       card_reader,
-      [],
-      nil,
     )
   end
   let(:card_user) { build :user }

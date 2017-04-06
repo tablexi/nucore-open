@@ -11,7 +11,8 @@ RSpec.describe SecureRoomsApi::ScansController do
 
     subject { response }
 
-    let(:card_reader) { create(:card_reader, tablet_token: "TABLETID") }
+    let(:secure_room) { create(:secure_room, :with_schedule_rule) }
+    let(:card_reader) { create(:card_reader, tablet_token: "TABLETID", secure_room: secure_room) }
     let(:user) { create(:user, card_number: "123456") }
 
     describe "negative responses" do
