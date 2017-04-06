@@ -22,18 +22,18 @@ RSpec.describe SecureRooms::AccessRules::ScheduleRule do
     let!(:schedule_rule) { secure_room.schedule_rules.create(attributes_for(:schedule_rule)) }
 
     describe "and it is inside the rule" do
-      let(:now) { Time.new(2017, 4, 5, 12, 00) }
+      let(:now) { Time.zone.local(2017, 4, 5, 12, 0) }
 
       it { is_expected.to be_pass }
     end
 
     describe "and it is outside the rule" do
-      let(:now) { Time.new(2017, 4, 5, 19, 00) }
+      let(:now) { Time.zone.local(2017, 4, 5, 19, 0) }
     end
 
     describe "and there are scheduling groups" do
       let!(:schedule_group) { create(:product_access_group, product: secure_room, schedule_rules: [schedule_rule]) }
-      let(:now) { Time.new(2017, 4, 5, 12, 00) }
+      let(:now) { Time.zone.local(2017, 4, 5, 12, 0) }
 
       describe "the user is not part of the group" do
         it { is_expected.to be_denied }
