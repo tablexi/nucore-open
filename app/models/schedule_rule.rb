@@ -130,7 +130,7 @@ class ScheduleRule < ActiveRecord::Base
   end
 
   def on_day?(datetime)
-    public_send(%(on_#{datetime.strftime("%a").downcase}?))
+    public_send(%(on_#{datetime.strftime('%a').downcase}?))
   end
 
   def cover?(dt)
