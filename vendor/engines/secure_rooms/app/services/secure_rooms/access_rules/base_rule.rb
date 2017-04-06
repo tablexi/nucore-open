@@ -4,15 +4,14 @@ module SecureRooms
 
     class BaseRule
 
-      attr_reader :user, :card_reader, :accounts, :selected_account
+      attr_reader :user, :card_reader, :params
 
       delegate :secure_room, to: :card_reader
 
-      def initialize(user, card_reader, accounts = [], selected_account = nil)
+      def initialize(user, card_reader, params = {})
         @user = user
         @card_reader = card_reader
-        @accounts = accounts
-        @selected_account = selected_account
+        @params = params
       end
 
       def call

@@ -16,6 +16,16 @@ module SecureRooms
         end
       end
 
+      private
+
+      def accounts
+        params[:accounts]
+      end
+
+      def selected_account
+        params[:selected_account]
+      end
+
     end
 
   end

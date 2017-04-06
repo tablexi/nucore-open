@@ -15,8 +15,8 @@ class SecureRoomsApi::ScansController < ApplicationController
     access_verdict = SecureRooms::CheckAccess.new.authorize(
       @user,
       @card_reader,
-      accounts,
-      selected_account,
+      accounts: accounts,
+      selected_account: selected_account,
     )
 
     render SecureRooms::ScanResponsePresenter.new(@user, @card_reader, access_verdict, accounts).response

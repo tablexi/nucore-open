@@ -15,9 +15,9 @@ module SecureRooms
       @rules = rules
     end
 
-    def authorize(user, card_reader, accounts = [], selected = nil)
+    def authorize(user, card_reader, params = {})
       answer = @rules.each do |rule|
-        result = rule.new(user, card_reader, accounts, selected).call
+        result = rule.new(user, card_reader, params).call
         break result unless result.pass?
       end
     end

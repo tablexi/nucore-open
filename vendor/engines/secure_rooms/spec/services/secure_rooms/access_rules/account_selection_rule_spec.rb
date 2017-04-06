@@ -5,8 +5,8 @@ RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
     described_class.new(
       card_user,
       card_reader,
-      accounts,
-      selected_account,
+      accounts: accounts,
+      selected_account: selected_account,
     )
   end
   let(:card_user) { build :user }
