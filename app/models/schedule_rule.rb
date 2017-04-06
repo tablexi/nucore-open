@@ -27,7 +27,7 @@ class ScheduleRule < ActiveRecord::Base
   def self.unavailable_for_date(product, day)
     rules = where(product_id: product.id)
     rules = unavailable(rules)
-    rules = rules.select { |item| item.public_send(:"on_#{day.strftime("%a").downcase}?") }
+    rules = rules.select { |rule| rule.on_day?(day) }
     rules.each_with_object([]) do |rule, reservations|
       reservations << Reservation.new(
         product: product,
@@ -35,6 +35,21 @@ class ScheduleRule < ActiveRecord::Base
         reserve_end_at: day.change(hour: rule.end_hour, min: rule.end_min),
         blackout: true,
       )
+    end
+  end
+
+  # Use this on an ActiveRecord::Relation. Is every minute within the range covered
+  # by one of the rules?
+  def self.cover?(start_at, end_at = start_at)
+    rule_set = all.to_a
+
+    # Time Ranges aren't iterable, so fake it by creating an array of each minute
+    # beween the two times. If start_at == end_at, the result will be one element.
+    minutes = (end_at - start_at) / 60
+    each_minute_in_range = 0.upto(minutes).collect { |n| start_at.advance(minutes: n) }
+
+    each_minute_in_range.all? do |time|
+      rule_set.any? { |rule| rule.cover? time }
     end
   end
 
@@ -114,9 +129,15 @@ class ScheduleRule < ActiveRecord::Base
     "#{end_hour}:#{sprintf '%02d', end_min}"
   end
 
-  def includes_datetime(dt)
+  def on_day?(datetime)
+    public_send(%(on_#{datetime.strftime("%a").downcase}?))
+  end
+
+  def cover?(dt)
+    return false unless on_day?(dt)
+
     dt_int = dt.hour * 100 + dt.min
-    send("on_#{dt.strftime('%a').downcase}?") && dt_int >= start_time_int && dt_int <= end_time_int
+    dt_int >= start_time_int && dt_int <= end_time_int
   end
 
   # build weekly calendar object
@@ -134,7 +155,7 @@ class ScheduleRule < ActiveRecord::Base
     duration = (end_at - start_at) / 60
     # TODO: rewrite to be more efficient; don't iterate over every minute
     while start_at < end_at
-      if start_at.hour * 100 + start_at.min >= start_time_int && start_at.hour * 100 + start_at.min < end_time_int && send("on_#{start_at.strftime('%a').downcase}?")
+      if start_at.hour * 100 + start_at.min >= start_time_int && start_at.hour * 100 + start_at.min < end_time_int && on_day?(start_at)
         overlap += 1
       end
       start_at += 60
