@@ -1,9 +1,10 @@
 require "rails_helper"
 
 RSpec.describe SecureRooms::AccessRules::ScheduleRule do
-  let(:user) { build(:user) }
+  let(:user) { build_stubbed(:user) }
   let(:secure_room) { create(:secure_room) }
   let(:card_reader) { build(:card_reader, secure_room: secure_room) }
+  let!(:product_user) { ProductUser.create!(product: secure_room, user_id: user.id, approved_by: 0) }
 
   subject(:result) do
     described_class.new(
@@ -28,6 +29,23 @@ RSpec.describe SecureRooms::AccessRules::ScheduleRule do
 
     describe "and it is outside the rule" do
       let(:now) { Time.new(2017, 4, 5, 19, 00) }
+    end
+
+    describe "and there are scheduling groups" do
+      let!(:schedule_group) { create(:product_access_group, product: secure_room, schedule_rules: [schedule_rule]) }
+      let(:now) { Time.new(2017, 4, 5, 12, 00) }
+
+      describe "the user is not part of the group" do
+        it { is_expected.to be_denied }
+      end
+
+      describe "and the user is part of the group" do
+        before do
+          product_user.update(product_access_group: schedule_group)
+        end
+
+        it { is_expected.to be_pass }
+      end
     end
   end
 end
