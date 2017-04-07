@@ -73,6 +73,7 @@ gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
 
 group :development do
   gem "coffeelint"
+  gem "haml_lint", "~>0.24.0"
   gem "letter_opener"
   gem "rubocop", require: false
   gem "web-console"

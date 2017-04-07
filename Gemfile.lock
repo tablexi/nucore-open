@@ -283,6 +283,12 @@ GEM
       teaspoon (>= 0.8.0)
     haml (4.0.7)
       tilt
+    haml_lint (0.24.0)
+      haml (>= 4.0, < 5.1)
+      rainbow
+      rake (>= 10, < 13)
+      rubocop (>= 0.47.0)
+      sysexits (~> 1.1)
     hashery (2.1.2)
     hitimes (1.2.4)
     i18n (0.8.1)
@@ -501,6 +507,7 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     state_machine (1.2.0)
+    sysexits (1.2.0)
     teaspoon (1.1.5)
       railties (>= 3.2.5, < 6)
     teaspoon-jasmine (2.3.4)
@@ -590,6 +597,7 @@ DEPENDENCIES
   guard-rspec
   guard-teaspoon
   haml (~> 4.0.5)
+  haml_lint (~> 0.24.0)
   jquery-rails
   jquery-ui-rails (~> 6.0.1)
   letter_opener
