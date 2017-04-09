@@ -21,7 +21,7 @@ The door security hardware communicates through an API with the following endpoi
   * `card_number=[integer]`
   * `controller_identifier=[integer]`
   * `reader_identifier=[integer]`
-  * `some_sort_of_account_id`
+  * `account_identifier=[integer]`
 
 * **Current Responses:**
 
@@ -34,7 +34,9 @@ The door security hardware communicates through an API with the following endpoi
 
       ```
       { response: "deny",
-        reason:   "No accounts found." }
+        tablet_identifier: <id of associated tablet>,
+        name: "Full Nameofuser",
+        reason:   "Reason for denial in a human-readable string" }
       ```
 
   **Access Granted:** We can infer the cardholder's payment method, so they are cleared immediately.
@@ -55,7 +57,7 @@ The door security hardware communicates through an API with the following endpoi
   * **Response:**
 
       ```
-      { response:  "select_account",
+      { response:  "pending",
         tablet_identifier: <id of associated tablet>,
         name: "Full Nameofuser",
         accounts:  [<list of all account model attributes>] }
@@ -66,9 +68,4 @@ The door security hardware communicates through an API with the following endpoi
   **Not Found:** One of the input identifiers does not match an existing record.
 
   * **Code:** 404 Not Found
-  * **Response:**
 
-      ```
-      { response: "deny",
-        reason:   <Error Message stating missing record> }
-      ```
