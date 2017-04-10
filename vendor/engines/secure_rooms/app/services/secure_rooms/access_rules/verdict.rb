@@ -4,11 +4,14 @@ module SecureRooms
 
     class Verdict
 
-      attr_accessor :reason, :result_code
+      attr_reader :reason, :user, :card_reader, :result_code, :accounts
 
-      def initialize(result_code, reason = nil)
+      def initialize(result_code, user, card_reader, options = {})
         @result_code = result_code
-        @reason = reason
+        @user = user
+        @card_reader = card_reader
+        @reason = options[:reason]
+        @accounts = options[:accounts]
       end
 
       def pass?

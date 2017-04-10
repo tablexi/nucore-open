@@ -5,7 +5,7 @@ module SecureRooms
     class DenyAllRule < BaseRule
 
       def evaluate
-        deny!("Failed in #{self.class.name}")
+        deny!(reason: "Failed in #{self.class.name}")
       end
 
     end

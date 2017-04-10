@@ -23,19 +23,19 @@ module SecureRooms
       end
 
       def pass
-        Verdict.new(:pass)
+        Verdict.new(:pass, @user, @card_reader)
       end
 
-      def grant!
-        Verdict.new(:grant)
+      def grant!(options = {})
+        Verdict.new(:grant, @user, @card_reader, options)
       end
 
-      def pending!(reason)
-        Verdict.new(:pending, reason: reason)
+      def pending!(options = {})
+        Verdict.new(:pending, @user, @card_reader, options)
       end
 
-      def deny!(reason)
-        Verdict.new(:deny, reason: reason)
+      def deny!(options = {})
+        Verdict.new(:deny, @user, @card_reader, options)
       end
 
     end

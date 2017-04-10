@@ -5,7 +5,7 @@ module SecureRooms
     class ArchivedProductRule < BaseRule
 
       def evaluate
-        deny! "Product is archived" if secure_room.is_archived?
+        deny!(reason: "Product is archived") if secure_room.is_archived?
       end
 
     end

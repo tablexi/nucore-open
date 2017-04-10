@@ -7,7 +7,9 @@ module SecureRooms
 
     # TODO: We aren't certain if events will be used only for scan events with
     #       CardReader/User present, so there aren't yet validations.
-    validates :occurred_at, presence: true
+    validates :occurred_at, :outcome, presence: true
+
+    delegate :direction, to: :card_reader
 
   end
 

@@ -5,25 +5,24 @@ module SecureRooms
     class AccountSelectionRule < BaseRule
 
       def evaluate
+        accounts = user.accounts_for_product(card_reader.secure_room)
+        selected_account = accounts.find { |account| account.id == requested_account_id }
+
         if accounts.blank?
-          deny! "User has no valid accounts for this Product"
+          deny!(reason: "User has no valid accounts for this Product")
         elsif selected_account.present?
-          grant!
+          grant!(accounts: accounts)
         elsif accounts.present? && accounts.one?
-          grant!
+          grant!(accounts: accounts)
         elsif accounts.present? && selected_account.blank?
-          pending! "Must select Account"
+          pending!(reason: "Must select Account", accounts: accounts)
         end
       end
 
       private
 
-      def accounts
-        params[:accounts]
-      end
-
-      def selected_account
-        params[:selected_account]
+      def requested_account_id
+        params[:requested_account_id]
       end
 
     end
