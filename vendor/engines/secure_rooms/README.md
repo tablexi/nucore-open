@@ -36,7 +36,7 @@ The door security hardware communicates through an API with the following endpoi
       { response: "deny",
         tablet_identifier: <id of associated tablet>,
         name: "Full Nameofuser",
-        reason:   "Reason for denial in a human-readable string" }
+        reason: "Reason for denial in a human-readable string" }
       ```
 
   **Access Granted:** We can infer the cardholder's payment method, so they are cleared immediately.
@@ -48,7 +48,7 @@ The door security hardware communicates through an API with the following endpoi
       { response: "grant",
         tablet_identifier: <id of associated tablet>,
         name: "Full Nameofuser",
-        accounts:  [<list with one set of account model attributes>] }
+        accounts: [<list with one set of account model attributes>] }
       ```
 
   **Must Select Account:** The cardholder has multiple payment methods and must select which they would like to use.
@@ -57,10 +57,10 @@ The door security hardware communicates through an API with the following endpoi
   * **Response:**
 
       ```
-      { response:  "pending",
+      { response: "pending",
         tablet_identifier: <id of associated tablet>,
         name: "Full Nameofuser",
-        accounts:  [<list of all account model attributes>] }
+        accounts: [<list of all account model attributes>] }
       ```
 
   In addition, sending identifiers that do not map to existing records will generate a not found:
