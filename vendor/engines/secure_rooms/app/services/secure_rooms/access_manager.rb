@@ -2,18 +2,12 @@ module SecureRooms
 
   class AccessManager
 
-    attr_reader :verdict
-
-    def initialize(verdict)
-      @verdict = verdict
-    end
-
-    def process
+    def self.process(verdict)
       create_event(verdict)
     end
 
     # TODO: Extract
-    def create_event(verdict)
+    def self.create_event(verdict)
       Event.create!(
         occurred_at: Time.current,
         card_reader: verdict.card_reader,

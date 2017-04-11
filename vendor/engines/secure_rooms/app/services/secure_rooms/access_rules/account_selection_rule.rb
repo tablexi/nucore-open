@@ -22,7 +22,7 @@ module SecureRooms
       private
 
       def requested_account_id
-        params[:requested_account_id]
+        params[:requested_account_id].to_i
       end
 
     end

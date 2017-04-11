@@ -5,12 +5,12 @@ RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
     described_class.new(
       card_user,
       card_reader,
-      requested_account_id: requested_account_id,
+      requested_account_id: account_identifier,
     )
   end
   let(:card_user) { build :user }
   let(:card_reader) { build :card_reader }
-  let(:requested_account_id) { nil }
+  let(:account_identifier) { nil }
 
   subject(:result) { rule.call }
 
@@ -26,7 +26,7 @@ RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
     end
 
     context "selected account was found" do
-      let(:requested_account_id) { accounts.first.id }
+      let(:account_identifier) { accounts.first.id.to_s }
 
       it { is_expected.to have_result_code(:grant) }
     end
