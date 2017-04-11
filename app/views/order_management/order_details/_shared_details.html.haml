@@ -8,7 +8,8 @@
       = banner_label @order_detail.reservation, :canceled_by_user
       = banner_label @order_detail.reservation, :canceled_reason
       = banner_date_label @order_detail, :fulfilled_at
-      = banner_date_label @order_detail, :reviewed_at
+      - if SettingsHelper.has_review_period?
+        = banner_date_label @order_detail, :reviewed_at
       = banner_date_label @order_detail, :statement_date do |date|
         - link_to date, statement_path(@order_detail.statement)
       = banner_date_label @order_detail, :journal_date
