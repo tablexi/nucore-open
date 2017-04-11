@@ -11,13 +11,13 @@ RSpec.describe SecureRooms::AccessRules::EgressRule, type: :service do
 
   subject(:response) { rule.call }
 
-  context "card reader allows exit from the room" do
+  context "egress card reader allows exit from the room" do
     let(:card_reader) { build :card_reader, ingress: false }
 
     it { is_expected.to have_result_code(:grant) }
   end
 
-  context "card reader allows entrance to the room" do
+  context "ingress card reader entrance passes to next rule" do
     let(:card_reader) { build :card_reader, ingress: true }
 
     it { is_expected.to have_result_code(:pass) }
