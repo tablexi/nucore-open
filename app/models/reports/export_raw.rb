@@ -88,7 +88,7 @@ module Reports
       if SettingsHelper.has_review_period?
         hash
       else
-        hash.delete_if { |k, _v| k == :reviewed_at }
+        hash.except(:reviewed_at, :disputed_at, :dispute_reason, :dispute_resolved_at, :dispute_resolved_reason)
       end
     end
 
