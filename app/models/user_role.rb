@@ -74,4 +74,10 @@ class UserRole < ActiveRecord::Base
     !facility_role?
   end
 
+  # Supports a single item or an array of symbols (:account_manager), strings
+  # both underscored ("billing_administrator") and title cased ("Facility Staff).
+  def in?(roles)
+    role.in? Array(roles).map(&:to_s).map(&:titleize)
+  end
+
 end
