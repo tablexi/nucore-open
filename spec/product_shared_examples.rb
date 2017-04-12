@@ -2,11 +2,12 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   let(:account) { create(:setup_account) }
 
   before :each do
-    # clear out default price groups so they don't get in the way
-    PriceGroup.all.each(&:delete)
     @product_type = product_type
 
     @user = FactoryGirl.create(:user)
+    # clear out default price groups so they don't get in the way
+    UserPriceGroupMember.delete_all
+    PriceGroup.delete_all
     @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
     @price_group = FactoryGirl.create(:price_group, facility: @facility)
@@ -123,11 +124,12 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
   let(:user) { @user }
 
   before :each do
-    # clear out default price groups so they don't get in the way
-    PriceGroup.all.each(&:delete)
     @product_type = product_type
 
     @user = FactoryGirl.create(:user)
+    # clear out default price groups so they don't get in the way
+    UserPriceGroupMember.delete_all
+    PriceGroup.delete_all
     @facility = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
     @price_group = FactoryGirl.create(:price_group, facility: @facility)
