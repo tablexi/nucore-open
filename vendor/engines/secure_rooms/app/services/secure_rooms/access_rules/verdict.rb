@@ -8,12 +8,17 @@ module SecureRooms
 
       attr_reader :reason, :user, :card_reader, :result_code, :accounts
 
-      def initialize(result_code, reason, user, card_reader, options = {})
-        @result_code = result_code
+      def initialize(user, card_reader)
         @user = user
         @card_reader = card_reader
+        @result_code = :pass
+      end
+
+      def decide!(result_code, reason, options = {})
+        @result_code = result_code
         @reason = translate_reason(reason)
         @accounts = options[:accounts]
+        self
       end
 
       def pass?
