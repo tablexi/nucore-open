@@ -1,17 +1,5 @@
 class User < ActiveRecord::Base
 
-  # module Overridable
-
-  #   #
-  #   def price_groups
-  #     groups = price_group_members.collect(&:price_group)
-  #     # check internal/external membership
-  #     groups << (username =~ /@/ ? PriceGroup.external : PriceGroup.base)
-  #     groups.flatten.uniq
-  #   end
-
-  # end
-
   include ::Users::Roles
   include NUCore::Database::WhereIdsIn
 
@@ -22,7 +10,7 @@ class User < ActiveRecord::Base
   has_many :account_users, -> { where(deleted_at: nil) }
   has_many :orders
   has_many :order_details, through: :orders
-  has_many :price_group_members
+  has_many :price_group_members, class_name: "UserPriceGroupMember"
   has_many :price_groups, -> { uniq }, through: :price_group_members
   has_many :product_users
   has_many :notifications
@@ -215,6 +203,13 @@ class User < ActiveRecord::Base
 
   def self.active
     where(deactivated_at: nil)
+  end
+
+  def create_default_price_group!
+    return unless SettingsHelper.feature_on?(:user_based_price_groups)
+
+    price_group = (username =~ /@/ ? PriceGroup.external : PriceGroup.base)
+    self.price_group_members.create!(price_group: price_group)
   end
 
 end

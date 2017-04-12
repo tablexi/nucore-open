@@ -7,17 +7,12 @@ FactoryGirl.define do
     sequence(:last_name, &:to_s)
     sequence(:email) { |n| "user#{n}@example.com" }
 
-    transient do
-      price_group { PriceGroup.base }
-    end
-
     after(:create) do |user, evaluator|
-      UserPriceGroupMember.create!(user: user, price_group: evaluator.price_group)
+      user.create_default_price_group!
     end
 
     trait :external do
       username { email }
-      price_group { PriceGroup.external }
     end
 
     trait :account_manager do
