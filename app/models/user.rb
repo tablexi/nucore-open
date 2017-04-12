@@ -1,18 +1,17 @@
 class User < ActiveRecord::Base
 
-  module Overridable
+  # module Overridable
 
-    #
-    def price_groups
-      groups = price_group_members.collect(&:price_group)
-      # check internal/external membership
-      groups << (username =~ /@/ ? PriceGroup.external : PriceGroup.base)
-      groups.flatten.uniq
-    end
+  #   #
+  #   def price_groups
+  #     groups = price_group_members.collect(&:price_group)
+  #     # check internal/external membership
+  #     groups << (username =~ /@/ ? PriceGroup.external : PriceGroup.base)
+  #     groups.flatten.uniq
+  #   end
 
-  end
+  # end
 
-  include Overridable
   include ::Users::Roles
   include NUCore::Database::WhereIdsIn
 
@@ -24,6 +23,7 @@ class User < ActiveRecord::Base
   has_many :orders
   has_many :order_details, through: :orders
   has_many :price_group_members
+  has_many :price_groups, -> { uniq }, through: :price_group_members
   has_many :product_users
   has_many :notifications
   has_many :products, through: :product_users
