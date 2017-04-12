@@ -14,9 +14,8 @@ RSpec.describe SecureRooms::AccessManager, type: :service do
 
   describe "#process" do
     it "creates an Event" do
-      expect {
-        described_class.process(verdict)
-      }.to change { SecureRooms::Event.count }.by(1)
+      expect { described_class.process(verdict) }
+        .to change(SecureRooms::Event, :count).by(1)
     end
   end
 end

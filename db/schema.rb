@@ -622,17 +622,16 @@ ActiveRecord::Schema.define(version: 20170406162317) do
   add_index "secure_rooms_card_readers", ["tablet_token"], name: "index_secure_rooms_card_readers_on_tablet_token", unique: true, using: :btree
 
   create_table "secure_rooms_events", force: :cascade do |t|
-    t.integer  "card_reader_id", limit: 4
-    t.integer  "product_id",     limit: 4
-    t.integer  "user_id",        limit: 4
+    t.integer  "card_reader_id",  limit: 4
+    t.integer  "user_id",         limit: 4
     t.datetime "occurred_at"
-    t.string   "outcome",        limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "outcome",         limit: 255
+    t.string   "outcome_details", limit: 255
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   add_index "secure_rooms_events", ["card_reader_id"], name: "index_secure_rooms_events_on_card_reader_id", using: :btree
-  add_index "secure_rooms_events", ["product_id"], name: "index_secure_rooms_events_on_product_id", using: :btree
   add_index "secure_rooms_events", ["user_id"], name: "index_secure_rooms_events_on_user_id", using: :btree
 
   create_table "splits", force: :cascade do |t|

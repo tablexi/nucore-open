@@ -2,18 +2,26 @@ module SecureRooms
 
   class AccessManager
 
-    def self.process(verdict)
-      create_event(verdict)
+    attr_reader :verdict
+
+    delegate :user, :card_reader, :reason, :result_code, :accounts, to: :verdict
+
+    def initialize(verdict)
+      @verdict = verdict
     end
 
-    # TODO: Extract
-    def self.create_event(verdict)
+    def self.process(verdict)
+      new(verdict).create_event
+    end
+
+    # TODO: Extract and/or update how this fits in once Occupancy is added
+    def create_event
       Event.create!(
         occurred_at: Time.current,
-        card_reader: verdict.card_reader,
-        user: verdict.user,
-        # TODO: store a useful way of tracking the outcome
-        outcome: verdict,
+        card_reader: card_reader,
+        user: user,
+        outcome: result_code,
+        outcome_details: reason,
       )
     end
 
