@@ -71,7 +71,7 @@ class User < ActiveRecord::Base
   end
 
   def password_updatable?
-    authenticated_locally?
+    email_user?
   end
 
   def update_password_confirm_current(params)
