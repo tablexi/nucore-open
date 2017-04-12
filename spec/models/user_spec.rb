@@ -84,14 +84,14 @@ RSpec.describe User do
 
   it { is_expected.to be_respond_to(:ldap_attributes) }
 
-  it "is not an external user when the username and email differ" do
+  it "is not an email user when the username and email differ" do
     expect(user.username).not_to eq(user.email)
-    expect(user).not_to be_external
+    expect(user).not_to be_email_user
   end
 
-  it "is an external user when the username is the same as the email" do
+  it "is an email user when the username is the same as the email" do
     user.username = user.email
-    expect(user).to be_external
+    expect(user).to be_email_user
   end
 
   describe ".with_global_roles" do

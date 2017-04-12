@@ -61,21 +61,17 @@ class User < ActiveRecord::Base
   end
 
   #
-  # Returns true if this user is external to organization, false othewise
-  def external?
+  # Returns true if this user uses Devise's authenticatable module
+  def email_user?
     username.casecmp(email.downcase).zero?
   end
 
-  def internal?
-    !external?
-  end
-
   def admin_editable?
-    external?
+    email_user?
   end
 
   def password_updatable?
-    external?
+    authenticated_locally?
   end
 
   def update_password_confirm_current(params)
@@ -208,8 +204,8 @@ class User < ActiveRecord::Base
   def create_default_price_group!
     return unless SettingsHelper.feature_on?(:user_based_price_groups)
 
-    price_group = (username =~ /@/ ? PriceGroup.external : PriceGroup.base)
-    self.price_group_members.create!(price_group: price_group)
+    price_group = email_user? ? PriceGroup.external : PriceGroup.base
+    price_group_members.create!(price_group: price_group)
   end
 
 end
