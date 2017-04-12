@@ -9,13 +9,13 @@ module SecureRooms
         selected_account = accounts.find { |account| account.id == requested_account_id }
 
         if accounts.blank?
-          deny!(reason: :no_accounts)
+          deny!(:no_accounts)
         elsif selected_account.present?
-          grant!(accounts: accounts)
+          grant!(:selected_account, accounts: accounts)
         elsif accounts.present? && accounts.one?
-          grant!(accounts: accounts)
+          grant!(:only_account, accounts: accounts)
         elsif accounts.present? && selected_account.blank?
-          pending!(reason: :selection_needed, accounts: accounts)
+          pending!(:selection_needed, accounts: accounts)
         end
       end
 

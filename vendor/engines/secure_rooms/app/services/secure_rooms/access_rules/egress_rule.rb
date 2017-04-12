@@ -5,7 +5,7 @@ module SecureRooms
     class EgressRule < BaseRule
 
       def evaluate
-        grant! if card_reader.egress?
+        grant!(:egress) if card_reader.egress?
       end
 
     end

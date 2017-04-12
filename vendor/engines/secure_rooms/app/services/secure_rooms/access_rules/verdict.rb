@@ -8,11 +8,11 @@ module SecureRooms
 
       attr_reader :reason, :user, :card_reader, :result_code, :accounts
 
-      def initialize(result_code, user, card_reader, options = {})
+      def initialize(result_code, reason, user, card_reader, options = {})
         @result_code = result_code
         @user = user
         @card_reader = card_reader
-        @reason = translate_reason(options[:reason])
+        @reason = translate_reason(reason)
         @accounts = options[:accounts]
       end
 
@@ -39,7 +39,7 @@ module SecureRooms
       private
 
       def translate_reason(key)
-        return text(key) if key.present?
+        text(key) if key.present?
       end
 
     end

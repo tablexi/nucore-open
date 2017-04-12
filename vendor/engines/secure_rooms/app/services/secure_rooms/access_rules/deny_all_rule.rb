@@ -5,7 +5,7 @@ module SecureRooms
     class DenyAllRule < BaseRule
 
       def evaluate
-        deny!(reason: :rules_failed)
+        deny!(:rules_failed)
       end
 
     end

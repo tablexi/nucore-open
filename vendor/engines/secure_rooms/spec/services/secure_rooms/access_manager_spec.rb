@@ -7,7 +7,7 @@ RSpec.describe SecureRooms::AccessManager, type: :service do
   let(:account) { build :account }
 
   let(:verdict) do
-    SecureRooms::AccessRules::Verdict.new(:deny, user, card_reader)
+    SecureRooms::AccessRules::Verdict.new(:deny, :no_accounts, user, card_reader)
   end
 
   before { allow_any_instance_of(User).to receive(:accounts_for_product).and_return(accounts) }

@@ -1,10 +1,15 @@
 en:
   secure_rooms/access_rules:
     reasons:
+      passed: "All rules passed"
+      selected_account: "Account selected"
+      only_account: "Only one valid Account exists"
+      egress: "Exiting SecureRoom"
+      operator: "User is an operator of this room"
       archived: "Product is archived"
-      no_access: "User is not on the access list"
-      no_rules: "No schedule rules configured"
-      outside_rules: "Outside of schedule rules"
+      not_on_access_list: "User is not on the access list"
+      no_schedule: "No schedule rules configured"
+      outside_schedule: "Outside of schedule rules"
       not_in_group: "User not in schedule group"
       no_accounts: "User has no valid accounts for this Product"
       selection_needed: "Must select Account"
