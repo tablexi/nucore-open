@@ -6,7 +6,7 @@ RSpec.describe "Placing an item order" do
   let(:facility) { product.facility }
   let!(:price_policy) do
     FactoryGirl.create(:item_price_policy,
-                       price_group: PriceGroup.base.first, product: product,
+                       price_group: PriceGroup.base, product: product,
                        unit_cost: 33.25)
   end
   let!(:account_price_group_member) do

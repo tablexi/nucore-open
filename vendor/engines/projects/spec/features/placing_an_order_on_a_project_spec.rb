@@ -7,7 +7,7 @@ RSpec.describe "Placing an order with a project" do
   let(:facility_admin) { FactoryGirl.create(:user, :facility_administrator, facility: facility) }
   let!(:price_policy) do
     FactoryGirl.create(:item_price_policy,
-                       price_group: PriceGroup.base.first, product: product,
+                       price_group: PriceGroup.base, product: product,
                        unit_cost: 33.25)
   end
   let!(:account_price_group_member) do

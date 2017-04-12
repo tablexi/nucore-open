@@ -2,10 +2,11 @@ class User < ActiveRecord::Base
 
   module Overridable
 
+    #
     def price_groups
       groups = price_group_members.collect(&:price_group)
       # check internal/external membership
-      groups << (username =~ /@/ ? PriceGroup.external.first : PriceGroup.base.first)
+      groups << (username =~ /@/ ? PriceGroup.external : PriceGroup.base)
       groups.flatten.uniq
     end
 
