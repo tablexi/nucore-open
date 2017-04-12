@@ -143,7 +143,7 @@ namespace :demo do
     @instrument    = instrument
     @bundle        = bundle
 
-    sr = ScheduleRule.find_or_create_by!(instrument_id: instrument.id) do |schedule_rule|
+    sr = ScheduleRule.find_or_create_by!(product: instrument) do |schedule_rule|
       schedule_rule.discount_percent = 0
       schedule_rule.start_hour = 8
       schedule_rule.start_min = 0
