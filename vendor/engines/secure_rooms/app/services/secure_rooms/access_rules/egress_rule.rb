@@ -2,10 +2,10 @@ module SecureRooms
 
   module AccessRules
 
-    class DenyAllRule < BaseRule
+    class EgressRule < BaseRule
 
       def evaluate
-        deny!(:rules_failed)
+        grant!(:egress) if card_reader.egress?
       end
 
     end

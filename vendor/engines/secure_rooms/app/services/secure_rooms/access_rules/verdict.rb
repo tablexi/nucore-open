@@ -4,11 +4,16 @@ module SecureRooms
 
     class Verdict
 
-      attr_accessor :reason, :result_code
+      include TextHelpers::Translation
 
-      def initialize(result_code, reason = nil)
+      attr_reader :reason, :user, :card_reader, :result_code, :accounts
+
+      def initialize(result_code, reason, user, card_reader, options = {})
         @result_code = result_code
-        @reason = reason
+        @user = user
+        @card_reader = card_reader
+        @reason = translate_reason(reason)
+        @accounts = options[:accounts]
       end
 
       def pass?
@@ -25,6 +30,16 @@ module SecureRooms
 
       def has_result_code?(code)
         @result_code == code
+      end
+
+      def translation_scope
+        "secure_rooms/access_rules.reasons"
+      end
+
+      private
+
+      def translate_reason(key)
+        text(key) if key.present?
       end
 
     end

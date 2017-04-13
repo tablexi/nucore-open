@@ -5,7 +5,7 @@ module SecureRooms
     class OperatorRule < BaseRule
 
       def evaluate
-        grant! if user.operator_of?(card_reader.facility)
+        grant!(:operator) if user.operator_of?(card_reader.facility)
       end
 
     end
