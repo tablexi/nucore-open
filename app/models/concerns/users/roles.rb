@@ -9,8 +9,7 @@ module Users
     # Each returns true if #user_roles has the role for any facility.
     UserRole.global_roles.each do |role|
       define_method(role.gsub(/\s/, "_").downcase + "?") do
-        roles = user_roles.collect(&:role)
-        roles.include?(role)
+        user_roles.collect(&:role).include?(role)
       end
     end
 
