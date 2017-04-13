@@ -122,6 +122,12 @@ feature:
   send_statement_emails_on: true
   responsive_on: false
 
+split_accounts:
+  # Roles are allowed to create Split Accounts
+  create_roles:
+    - administrator
+    # - account_manager
+
 # This may be overridden in settings.local.yml if your fork is using S3, so
 # be sure to check there for configuration
 paperclip:

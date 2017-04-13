@@ -110,4 +110,28 @@ RSpec.describe UserRole do
       end
     end
   end
+
+  describe "#in?" do
+    subject(:user_role) { described_class.new(role: "Facility Manager") }
+
+    describe "a single symbol" do
+      it { is_expected.to be_in(:facility_manager) }
+      it { is_expected.not_to be_in(:administrator) }
+    end
+
+    describe "a lower case string" do
+      it { is_expected.to be_in("facility_manager") }
+      it { is_expected.not_to be_in("administrator") }
+    end
+
+    describe "upper case strings" do
+      it { is_expected.to be_in(["Administrator", "Facility Manager"]) }
+      it { is_expected.not_to be_in(["Administrator", "Facility Staff"]) }
+    end
+
+    describe "an array of mixed" do
+      it { is_expected.to be_in(["Administrator", :facility_manager]) }
+      it { is_expected.to be_in([:administrator, "Facility Manager"]) }
+    end
+  end
 end
