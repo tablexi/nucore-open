@@ -114,8 +114,7 @@ RSpec.describe UsersController do
   end
 
   context "creating users" do
-    context "enabled" do
-      include_context "feature enabled", :create_users
+    context "enabled", feature_setting: { create_users: true } do
 
       it "routes", :aggregate_failures do
         expect(get: "/#{facilities_route}/url_name/users/new").to route_to(controller: "users", action: "new", facility_id: "url_name")
@@ -301,8 +300,7 @@ RSpec.describe UsersController do
       end
     end
 
-    context "disabled" do
-      include_context "feature disabled", :create_users
+    context "disabled", feature_setting: { create_users: false } do
       it "doesn't route route", :aggregate_failures do
         expect(get: "/#{facilities_route}/url_name/users/new").not_to be_routable
         expect(get: "/#{facilities_route}/url_name/users/edit").not_to be_routable
