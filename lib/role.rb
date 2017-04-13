@@ -57,30 +57,13 @@ module Role
     !operator_of?(product.facility)
   end
 
-  #
-  # Account management roles
-  #
-
+  # Creates methods #purchaser_of?, #owner_of?, etc.
+  # Each takes an +Account+ as an argument.
+  # Each returns true if #account_users has the user_role for the given account.
   AccountUser.user_roles.each do |role|
-    #
-    # Creates methods #purchaser?, #owner?, etc.
-    # Each returns true if #account_users has the user_role for any account.
-    define_method(role.gsub(/\s/, "_").downcase + "?") do
-      roles = account_users.collect(&:user_role)
-      roles.include?(role)
-    end
-
-    #
-    # Creates methods #purchaser_of?, #owner_of?, etc.
-    # Each takes an +Account+ as an argument.
-    # Each returns true if #account_users has the user_role for the given account.
     define_method(role.gsub(/\s/, "_").downcase + "_of?") do |account|
       account_users.find { |au| au.account == account && au.user_role == role }.present?
     end
-  end
-
-  def account_administrator?
-    owner? || business_administrator?
   end
 
   def account_administrator_of?(account)
