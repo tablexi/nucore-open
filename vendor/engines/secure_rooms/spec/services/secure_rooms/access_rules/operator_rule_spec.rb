@@ -17,8 +17,14 @@ RSpec.describe SecureRooms::AccessRules::OperatorRule, type: :service do
     it { is_expected.to have_result_code(:grant) }
   end
 
+  context "user is a global admin" do
+    let(:card_user) { create :user, :administrator }
+
+    it { is_expected.to have_result_code(:pass) }
+  end
+
   context "user is not an operator" do
-    let(:card_user) { build :user }
+    let(:card_user) { create :user }
 
     it { is_expected.to have_result_code(:pass) }
   end
