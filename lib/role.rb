@@ -1,61 +1,41 @@
-#
 # There are many roles that can be assigned to users.
 # Mix this module into the +User+ class to include
 # convenience methods for testing the role status of users.
 module Role
 
-  #
-  # Facility management roles
-  #
-
-  UserRole.valid_roles.each do |role|
-    #
-    # Creates methods #administrator?, #facility_staff?, etc.
-    # Each returns true if #user_roles has the role for any facility.
-    if role != UserRole::BILLING_ADMINISTRATOR
-      define_method(role.gsub(/\s/, "_").downcase + "?") do
-        roles = user_roles.collect(&:role)
-        roles.include?(role)
-      end
-    end
-
-    #
-    # Creates methods #administrator_of?, #facility_staff_of?, etc.
-    # Each takes a +Facility+ as an argument.
-    # Each returns true if #user_roles has the role for the given facility.
-    define_method(role.gsub(/\s/, "_").downcase + "_of?") do |facility|
-      is = false
-      user_roles.each { |ur| (is = true) && break if ur.facility == facility && ur.role == role }
-      is
-    end
-
-    # Creates method #operable_facilities
-    # returns relation of facilities for which this user is staff, a director, or an admin
-    define_method(:operable_facilities) do
-      if try(:administrator?)
-        Facility.sorted
-      else
-        facilities.sorted.where("user_roles.role IN(?)", UserRole.facility_roles)
-      end
-    end
-
-    #
-    # Creates method #manageable_facilities
-    # returns relation of facilities for which this user is a director or admin
-    define_method(:manageable_facilities) do
-      if try(:administrator?) || try(:billing_administrator?)
-        Facility.sorted
-      else
-        facilities.sorted.where("user_roles.role IN (?)", UserRole.facility_management_roles)
-      end
+  # Creates methods #administrator?, #facility_staff?, etc.
+  # Each returns true if #user_roles has the role for any facility.
+  UserRole.global_roles.each do |role|
+    define_method(role.gsub(/\s/, "_").downcase + "?") do
+      roles = user_roles.collect(&:role)
+      roles.include?(role)
     end
   end
 
-  def billing_administrator?
-    if SettingsHelper.feature_on?(:billing_administrator)
-      user_roles.where(role: UserRole::BILLING_ADMINISTRATOR).any?
+  # Creates methods #administrator_of?, #facility_staff_of?, etc.
+  # Each takes a +Facility+ as an argument.
+  # Each returns true if #user_roles has the role for the given facility.
+  UserRole.facility_roles.each do |role|
+    define_method(role.gsub(/\s/, "_").downcase + "_of?") do |facility|
+      user_roles.find { |r| r.facility == facility && r.role == role }.present?
+    end
+  end
+
+  # Returns relation of facilities for which this user is staff, a director, or an admin
+  def operable_facilities
+    if try(:administrator?)
+      Facility.sorted
     else
-      false
+      facilities.sorted.where(user_roles: { role: UserRole.facility_roles})
+    end
+  end
+
+  # Returns relation of facilities for which this user is a director or admin
+  def manageable_facilities
+    if try(:administrator?) || try(:billing_administrator?)
+      Facility.sorted
+    else
+      facilities.sorted.where(user_roles: { role: UserRole.facility_management_roles })
     end
   end
 
@@ -95,9 +75,7 @@ module Role
     # Each takes an +Account+ as an argument.
     # Each returns true if #account_users has the user_role for the given account.
     define_method(role.gsub(/\s/, "_").downcase + "_of?") do |account|
-      is = false
-      account_users.each { |au| (is = true) && break if au.account == account && au.user_role == role }
-      is
+      account_users.find { |au| au.account == account && au.user_role == role }.present?
     end
   end
 
