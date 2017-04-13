@@ -12,28 +12,30 @@ module SecureRooms
         @user = user
         @card_reader = card_reader
         @params = params
-        @verdict = Verdict.new(@user, @card_reader)
       end
 
       def call
-        evaluate
-        @verdict
+        evaluate || pass
       end
 
       def evaluate
         raise NotImplementedError
       end
 
+      def pass
+        Verdict.new(:pass, :passed, @user, @card_reader)
+      end
+
       def grant!(reason, options = {})
-        @verdict.decide!(:grant, reason, options)
+        Verdict.new(:grant, reason, @user, @card_reader, options)
       end
 
       def pending!(reason, options = {})
-        @verdict.decide!(:pending, reason, options)
+        Verdict.new(:pending, reason, @user, @card_reader, options)
       end
 
       def deny!(reason, options = {})
-        @verdict.decide!(:deny, reason, options)
+        Verdict.new(:deny, reason, @user, @card_reader, options)
       end
 
     end

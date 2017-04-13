@@ -1,6 +1,7 @@
 en:
   secure_rooms/access_rules:
     reasons:
+      passed: "All rules passed"
       selected_account: "Account selected"
       only_account: "Only one valid Account exists"
       egress: "Exiting SecureRoom"
