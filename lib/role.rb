@@ -23,7 +23,7 @@ module Role
 
   # Returns relation of facilities for which this user is staff, a director, or an admin
   def operable_facilities
-    if try(:administrator?)
+    if administrator?
       Facility.sorted
     else
       facilities.sorted.where(user_roles: { role: UserRole.facility_roles})
@@ -32,7 +32,7 @@ module Role
 
   # Returns relation of facilities for which this user is a director or admin
   def manageable_facilities
-    if try(:administrator?) || try(:billing_administrator?)
+    if administrator? || billing_administrator?
       Facility.sorted
     else
       facilities.sorted.where(user_roles: { role: UserRole.facility_management_roles })
@@ -68,11 +68,6 @@ module Role
 
   def account_administrator_of?(account)
     owner_of?(account) || business_administrator_of?(account)
-  end
-
-  # where is this used? do we need it?
-  def name
-    to_s
   end
 
 end

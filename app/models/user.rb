@@ -175,6 +175,7 @@ class User < ActiveRecord::Base
   def to_s
     full_name + deactivated_string
   end
+  alias_method :name, :to_s
 
   def deactivated_string
     if active?
