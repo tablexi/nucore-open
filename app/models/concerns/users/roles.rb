@@ -27,7 +27,7 @@ module Users
       if administrator?
         Facility.sorted
       else
-        facilities.sorted.where(user_roles: { role: UserRole.facility_roles})
+        facilities.sorted.where(user_roles: { role: UserRole.facility_roles })
       end
     end
 
