@@ -231,11 +231,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
       policy.calculate_cost_and_subsidy reservation
     end
 
-    it 'returns #estimate_cost_and_subsidy' do
-      expect(policy).to receive(:estimate_cost_and_subsidy).with reservation.reserve_start_at, reservation.reserve_end_at
-      policy.calculate_reservation reservation
-    end
-
     %w(usage overage).each do |charge_for|
       it "returns nil if actual_start_at is missing and we are charging by #{charge_for}" do
         policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[charge_for.to_sym]
