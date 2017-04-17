@@ -103,7 +103,7 @@ module InstrumentPricePolicyCalculations
   end
 
   def calculate_subsidy_for_cost(cost)
-    usage_subsidy.present? ? (cost * usage_subsidy / usage_rate) : 0
+    usage_subsidy.present? ? (cost * subsidy_ratio) : 0
   end
 
   def strip_seconds(datetime)

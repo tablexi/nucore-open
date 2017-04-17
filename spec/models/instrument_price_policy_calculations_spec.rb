@@ -10,16 +10,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
   let(:duration) { (end_at - start_at) / 60 }
   let(:reservation) { create :setup_reservation, product: policy.product }
 
-  let :old_policy do
-    create :old_instrument_price_policy, policy.attributes.merge(
-      "usage_mins" => 1,
-      "reservation_mins" => 1,
-      "overage_mins" => 1,
-      "reservation_rate" => policy.usage_rate,
-      "overage_rate" => policy.usage_rate,
-    )
-  end
-
   it 'uses the given order detail to #calculate_cost_and_subsidy' do
     fake_order_detail = double "OrderDetail", reservation: double("Reservation")
     expect(policy).to receive(:calculate_cost_and_subsidy).with fake_order_detail.reservation
@@ -55,15 +45,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
 
       it "calculates a discount based on the given time and configured schedule rules" do
         expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.889
-      end
-
-      it "estimates the same as the old instrument price policy" do
-        new_estimate = policy.estimate_cost_and_subsidy start_at, end_at
-        old_policy.usage_rate = 0
-        old_estimate = old_policy.estimate_cost_and_subsidy start_at, end_at
-
-        expect(new_estimate[:cost].round 4).to eq old_estimate[:cost].round(4)
-        expect(new_estimate[:subsidy].round 4).to eq old_estimate[:subsidy].round(4)
       end
     end
 
@@ -257,15 +238,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
       allow(policy).to receive(:free?).and_return true
       allow(policy).to receive(:minimum_cost).and_return nil
       expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: 0, subsidy: 0)
-    end
-
-    it "calculates reservation costs same as the old policy" do
-      old_policy.product.control_mechanism = Relay::CONTROL_MECHANISMS[:manual]
-      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
-      new_costs = policy.calculate_cost_and_subsidy reservation
-      old_costs = old_policy.calculate_cost_and_subsidy reservation
-      expect(new_costs).to_not be_nil
-      expect(new_costs).to eq old_costs
     end
 
     it "charges for at least 1 minute of time" do

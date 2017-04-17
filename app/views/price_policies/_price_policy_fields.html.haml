@@ -3,14 +3,16 @@
 
 = render "price_policies/dates", f: f
 
+- price_policy = @price_policies.first
+
 %table.table.table-striped.table-hover.price-policy-table
   %thead
     %tr
-      %th= t(".price_group")
-      %th= t(".type")
-      %th= t(".can_purchase")
-      %th.centered= t(".unit_cost")
-      %th.centered= t(".unit_adjustment")
+      %th= PriceGroup.model_name.human
+      %th= price_policy.class.human_attribute_name(:type)
+      %th= price_policy.class.human_attribute_name(:can_purchase)
+      %th.centered= price_policy.class.human_attribute_name(:unit_cost)
+      %th.centered= price_policy.class.human_attribute_name(:unit_adjustment)
   %tbody
     - @price_policies.each do |price_policy|
       - price_group = price_policy.price_group

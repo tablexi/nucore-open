@@ -4,6 +4,11 @@ module PricePolicies
 
     extend ActiveSupport::Concern
 
+    included do
+      validates :unit_cost, presence: true, numericality: { greater_than_or_equal_to: 0 }
+      validates :unit_subsidy, numericality: { allow_blank: true, greater_than_or_equal_to: 0 }
+    end
+
     def calculate_cost_and_subsidy_from_order_detail(order_detail)
       calculate_cost_and_subsidy(order_detail.quantity)
     end
