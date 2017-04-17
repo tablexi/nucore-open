@@ -649,11 +649,11 @@ ActiveRecord::Schema.define(version: 20170409125104) do
     t.datetime "updated_at",               null: false
   end
 
-  add_index "secure_rooms_occupancies", ["account_id"], name: "fk_rails_75ebdba1ca", using: :btree
-  add_index "secure_rooms_occupancies", ["entry_event_id"], name: "fk_rails_eb85e7026f", using: :btree
-  add_index "secure_rooms_occupancies", ["exit_event_id"], name: "fk_rails_94eb785759", using: :btree
-  add_index "secure_rooms_occupancies", ["product_id"], name: "fk_rails_9195aec23b", using: :btree
-  add_index "secure_rooms_occupancies", ["user_id"], name: "fk_rails_d1c865d1b5", using: :btree
+  add_index "secure_rooms_occupancies", ["account_id"], name: "index_secure_rooms_occupancies_on_account_id", using: :btree
+  add_index "secure_rooms_occupancies", ["entry_event_id"], name: "index_secure_rooms_occupancies_on_entry_event_id", using: :btree
+  add_index "secure_rooms_occupancies", ["exit_event_id"], name: "index_secure_rooms_occupancies_on_exit_event_id", using: :btree
+  add_index "secure_rooms_occupancies", ["product_id"], name: "index_secure_rooms_occupancies_on_product_id", using: :btree
+  add_index "secure_rooms_occupancies", ["user_id"], name: "index_secure_rooms_occupancies_on_user_id", using: :btree
 
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false

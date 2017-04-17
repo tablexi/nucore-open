@@ -33,6 +33,8 @@ module SecureRooms
         existing_occupancy || new_occupancy
       end
 
+      private
+
       def existing_occupancy
         @existing_occupancy ||= Occupancy.current.find_by(
           user: event.user,
