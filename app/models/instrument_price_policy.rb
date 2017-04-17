@@ -20,20 +20,11 @@ class InstrumentPricePolicy < PricePolicy
             :usage_mins,
             inclusion: [nil]
 
-  validate :subsidy_less_than_rate?, unless: :restrict_purchase?
-
-  before_save :set_subsidy
   after_create :ensure_reservation_window
 
   def reservation_window
     pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
     pgp.try(:reservation_window) || 0
-  end
-
-  def subsidy_less_than_rate?
-    if usage_subsidy && usage_rate && usage_subsidy > usage_rate
-      errors.add :usage_subsidy, :subsidy_greater_than_cost
-    end
   end
 
   def has_rate?
@@ -42,10 +33,6 @@ class InstrumentPricePolicy < PricePolicy
 
   def has_minimum_cost?
     minimum_cost && minimum_cost > -1
-  end
-
-  def has_subsidy?
-    usage_subsidy && usage_subsidy > 0
   end
 
   def free?
@@ -86,8 +73,12 @@ class InstrumentPricePolicy < PricePolicy
 
   private
 
-  def set_subsidy
-    self.usage_subsidy ||= 0 if usage_rate
+  def rate_field
+    :usage_rate
+  end
+
+  def subsidy_field
+    :usage_subsidy
   end
 
   def ensure_reservation_window

@@ -7,9 +7,13 @@ class PricePolicy < ActiveRecord::Base
   has_many :order_details
 
   validates_presence_of :start_date, :price_group_id, :type
-  validate :start_date_is_unique, unless: ->(o) { o.start_date.nil? }
+  validate :start_date_is_unique, if: :start_date?
 
-  validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy,
+    :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost,
+    numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+
+  validate :subsidy_less_than_rate, unless: :restrict_purchase?
 
   validates_each :expire_date do |record, _attr, value|
     unless value.blank?
@@ -21,8 +25,18 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
+  before_save :set_default_subsidy
   before_create :set_expire_date
   before_create :truncate_existing_policies
+
+  def has_subsidy?
+    self[subsidy_field].to_f > 0
+  end
+
+  def set_default_subsidy
+    self[subsidy_field] ||= 0 if self[rate_field]
+  end
+
 
   def self.for_date(start_date)
     where("start_date >= ? AND start_date <= ?", start_date.beginning_of_day, start_date.end_of_day)
@@ -195,13 +209,12 @@ class PricePolicy < ActiveRecord::Base
     !expired? && !assigned_to_order?
   end
 
-  #  def self.active(product)
-  #    policies = product.send("#{product.class.name.downcase}_price_policies")
-  #    max      = nil
-  #    policies.each { |p|
-  #      max = p if p.start_date <= Time.zone.now && (max.nil? || p.start_date > max.start_date)
-  #    }
-  #    max
-  #  end?
+  private
+
+  def subsidy_less_than_rate
+    if self[rate_field] && self[subsidy_field] && self[subsidy_field] > self[rate_field]
+      errors.add subsidy_field, :subsidy_greater_than_cost
+    end
+  end
 
 end

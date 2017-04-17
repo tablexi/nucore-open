@@ -27,6 +27,13 @@ class OldInstrumentPricePolicy < PricePolicy
     @@intervals
   end
 
+  def rate_field
+    :usage_rate
+  end
+  def subsidy_field
+    :usage_subsidy
+  end
+
   def has_usage_or_reservation_rate?
     errors.add(:base, "You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
   end

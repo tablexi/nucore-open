@@ -7,19 +7,6 @@ module PricePolicySupport
   module QuantityPolicy
 
     extend ActiveSupport::Concern
-    included do
-      validates_numericality_of :unit_cost, unless: :restrict_purchase
-      validate :subsidy_more_than_cost?, unless: ->(pp) { pp.unit_cost.nil? || pp.unit_subsidy.nil? }
-      before_save { |o| o.unit_subsidy = 0 if o.unit_subsidy.nil? && !o.unit_cost.nil? }
-    end
-
-    def subsidy_more_than_cost?
-      errors.add("unit_subsidy", "cannot be greater than the Unit cost") if unit_subsidy > unit_cost
-    end
-
-    def has_subsidy?
-      unit_subsidy && unit_subsidy > 0
-    end
 
     def calculate_cost_and_subsidy_from_order_detail(order_detail)
       calculate_cost_and_subsidy(order_detail.quantity)
@@ -43,6 +30,16 @@ module PricePolicySupport
 
     def unit_total
       unit_cost - unit_subsidy
+    end
+
+    private
+
+    def rate_field
+      :unit_cost
+    end
+
+    def subsidy_field
+      :unit_subsidy
     end
 
   end
