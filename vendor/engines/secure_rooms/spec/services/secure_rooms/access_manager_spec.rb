@@ -8,7 +8,6 @@ RSpec.describe SecureRooms::AccessManager, type: :service do
     SecureRooms::AccessRules::Verdict.new(:deny, :no_accounts, user, card_reader)
   end
 
-  # TODO: Expand coverage
   describe "#process" do
     it "calls each AccessHandler" do
       expect(SecureRooms::AccessHandlers::EventHandler).to receive(:process)
