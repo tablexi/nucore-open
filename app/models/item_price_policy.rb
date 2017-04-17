@@ -1,5 +1,5 @@
 class ItemPricePolicy < PricePolicy
 
-  include PricePolicySupport::QuantityPolicy
+  include PricePolicies::Quantity
 
 end

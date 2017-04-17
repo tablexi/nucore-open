@@ -1,10 +1,6 @@
-module PricePolicySupport
+module PricePolicies
 
-  # TODO: Refactor out of InstrumentPricePolicy into here
-  module ReservationPolicy
-  end
-
-  module QuantityPolicy
+  module Quantity
 
     extend ActiveSupport::Concern
 
@@ -22,10 +18,10 @@ module PricePolicySupport
 
     def estimate_cost_and_subsidy(qty = 1)
       return nil if restrict_purchase?
-      costs = {}
-      costs[:cost]    = unit_cost * qty
-      costs[:subsidy] = unit_subsidy * qty
-      costs
+      {
+        cost: unit_cost * qty,
+        subsidy: unit_subsidy * qty
+      }
     end
 
     def unit_total
