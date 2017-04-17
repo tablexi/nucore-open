@@ -8,14 +8,10 @@ module SecureRooms
     belongs_to :entry_event, class_name: SecureRooms::Event
     belongs_to :exit_event, class_name: SecureRooms::Event
 
-    validates :product_id, :user_id, presence: true
-
-    def mark_oprhaned!
-      update!(orphan: Time.current)
-    end
+    validates :secure_room, :user, presence: true
 
     def self.valid
-      where.not(orphan: nil)
+      where(orphaned_at: nil)
     end
 
     def self.current
@@ -23,8 +19,15 @@ module SecureRooms
     end
 
     def self.recent
-      # Either 24h or 10pax
       valid.where.not(exit_event_id: nil).limit(10)
+    end
+
+    def mark_orphaned!
+      update!(orphaned_at: Time.current)
+    end
+
+    def orphan?
+      orphaned_at?
     end
 
   end

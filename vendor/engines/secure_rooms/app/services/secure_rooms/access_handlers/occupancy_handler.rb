@@ -15,24 +15,20 @@ module SecureRooms
       end
 
       def process
-        event_attribute =
-          if entering?
-            { entry_event: event }
-          else
-            { exit_event: event }
-          end
-
         if current_occupant? && exiting?
-          existing_occupancy.update!(event_attribute)
+          existing_occupancy.update!(exit_event: event)
         elsif new_occupant? && entering?
-          new_occupancy.update!(event_attribute)
+          new_occupancy.update!(entry_event: event)
+        else
+          # TODO: Add error cases
+          raise NotImplementedError
         end
 
         existing_occupancy || new_occupancy
       end
 
       def existing_occupancy
-        # TODO: clean up scope
+        # TODO: clean up scope (find_or_create?)
         @existing_occupancy ||= event.secure_room.occupancies.current.where(user: event.user).first
       end
 

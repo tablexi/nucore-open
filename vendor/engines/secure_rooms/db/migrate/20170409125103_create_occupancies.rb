@@ -11,16 +11,17 @@ class CreateOccupancies < ActiveRecord::Migration
       t.references :exit_event
       t.datetime :exit_at
 
-      t.datetime :orphan
+      t.datetime :orphaned_at
 
       t.timestamps null: false
     end
 
-    add_index :secure_rooms_occupancies, :product_id
-    add_index :secure_rooms_occupancies, :user_id
-    add_index :secure_rooms_occupancies, :account_id
-    add_index :secure_rooms_occupancies, :entry_event_id
-    add_index :secure_rooms_occupancies, :exit_event_id
+    add_foreign_key :secure_rooms_occupancies, :products
+    add_foreign_key :secure_rooms_occupancies, :users
+    add_foreign_key :secure_rooms_occupancies, :accounts
+
+    add_foreign_key :secure_rooms_occupancies, :secure_rooms_events, column: :entry_event_id
+    add_foreign_key :secure_rooms_occupancies, :secure_rooms_events, column: :exit_event_id
   end
 
 end
