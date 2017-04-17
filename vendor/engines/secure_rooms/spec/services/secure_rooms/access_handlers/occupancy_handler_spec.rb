@@ -29,8 +29,9 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
           expect(occupancy.user).to eq event.user
         end
 
-        it "sets the exit_event" do
+        it "sets the exit_event and timestamp" do
           expect(occupancy.exit_event).to eq event
+          expect(occupancy.exit_at).to be_present
         end
       end
     end
@@ -48,6 +49,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
 
         it "sets the entry_event" do
           expect(occupancy.entry_event).to eq event
+          expect(occupancy.entry_at).to be_present
         end
       end
     end

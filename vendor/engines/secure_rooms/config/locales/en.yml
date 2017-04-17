@@ -37,6 +37,14 @@ en:
           "true": In
           "false": Out
         tablet_token: Tablet Token
+      secure_rooms/event:
+        occurred_at: Occurred At
+        outcome: Outcome
+        outcome_details: Outcome Details
+      secure_rooms/occupancy:
+        entry_at: Time of Entry
+        exit_at: Time of Exit
+        orphaned_at: Time Marked as Orphaned
 
   controllers:
     secure_rooms/card_readers:
@@ -65,6 +73,11 @@ en:
           edit:
             title: Edit Card Reader
 
+        occupancies:
+          index:
+            description: "Current occupants of this room"
+            none: "The room is currently vacant"
+
     secure_rooms:
       card_numbers:
         edit:
@@ -74,4 +87,5 @@ en:
         tabnav_users:
           title: Secure Room Access
         tabnav_secure_room:
-          title: Card Readers
+          card_readers_title: Card Readers
+          occupancies_title: Occupancies

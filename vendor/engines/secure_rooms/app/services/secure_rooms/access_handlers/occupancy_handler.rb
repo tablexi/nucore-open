@@ -16,9 +16,15 @@ module SecureRooms
 
       def process
         if current_occupant? && exiting?
-          existing_occupancy.update!(exit_event: event)
+          existing_occupancy.update!(
+            exit_event: event,
+            exit_at: Time.current,
+          )
         elsif new_occupant? && entering?
-          new_occupancy.update!(entry_event: event)
+          new_occupancy.update!(
+            entry_event: event,
+            entry_at: Time.current,
+          )
         else
           # TODO: Add error cases
           raise NotImplementedError
