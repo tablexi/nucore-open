@@ -4,8 +4,6 @@ RSpec.describe SecureRooms::AccessHandlers::EventHandler, type: :service do
   let(:user) { create :user }
   let(:card_reader) { create :card_reader }
 
-  subject(:event) { described_class.process(verdict) }
-
   describe "#process" do
     context "with access denial verdict" do
       let(:verdict) do
@@ -13,13 +11,17 @@ RSpec.describe SecureRooms::AccessHandlers::EventHandler, type: :service do
       end
 
       it "creates an Event" do
-        expect { event }
+        expect { described_class.process(verdict) }
           .to change(SecureRooms::Event, :count).by(1)
       end
 
-      it "stores the user and reader" do
-        expect(event.card_reader).to eq card_reader
-        expect(event.user).to eq user
+      describe "resulting Event" do
+        subject(:event) { described_class.process(verdict) }
+
+        it "stores the user and reader" do
+          expect(event.card_reader).to eq card_reader
+          expect(event.user).to eq user
+        end
       end
     end
 
@@ -38,8 +40,12 @@ RSpec.describe SecureRooms::AccessHandlers::EventHandler, type: :service do
         )
       end
 
-      it "stores the account used" do
-        expect(event.account).to eq selected_account
+      describe "resulting Event" do
+        subject(:event) { described_class.process(verdict) }
+
+        it "stores the account used" do
+          expect(event.account).to eq selected_account
+        end
       end
     end
   end
