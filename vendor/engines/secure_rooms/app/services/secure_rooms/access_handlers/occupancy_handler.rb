@@ -28,8 +28,10 @@ module SecureRooms
       end
 
       def existing_occupancy
-        # TODO: clean up scope (find_or_create?)
-        @existing_occupancy ||= event.secure_room.occupancies.current.where(user: event.user).first
+        @existing_occupancy ||= Occupancy.current.find_by(
+          user: event.user,
+          secure_room: event.secure_room,
+        )
       end
 
       def new_occupancy
