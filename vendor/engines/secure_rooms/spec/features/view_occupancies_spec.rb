@@ -19,6 +19,7 @@ RSpec.describe "Viewing Occupancies" do
     let!(:active_occupancy) { create(:occupancy, :active, secure_room: secure_room) }
     let!(:orphan_occupancy) { create(:occupancy, :orphan, secure_room: secure_room) }
     let!(:complete_occupancy) { create(:occupancy, :complete, secure_room: secure_room) }
+    let!(:remote_occupancy) { create(:occupancy, :active) }
 
     it "can view only the current Occupancies" do
       visit facility_secure_room_occupancies_path(facility, secure_room)
@@ -29,6 +30,7 @@ RSpec.describe "Viewing Occupancies" do
         expect(page).to have_content(active_occupancy.entry_at)
         expect(page).not_to have_content(orphan_occupancy.user.username)
         expect(page).not_to have_content(complete_occupancy.user.username)
+        expect(page).not_to have_content(remote_occupancy.user.username)
       end
     end
   end
