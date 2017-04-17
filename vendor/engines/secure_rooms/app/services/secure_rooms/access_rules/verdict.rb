@@ -13,6 +13,7 @@ module SecureRooms
         @user = user
         @card_reader = card_reader
         @reason = translate_reason(reason)
+        @selected_account = options[:selected_account]
         @accounts = options[:accounts]
       end
 

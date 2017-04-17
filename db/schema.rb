@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170406162317) do
+ActiveRecord::Schema.define(version: 20170409125104) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -622,17 +622,37 @@ ActiveRecord::Schema.define(version: 20170406162317) do
   add_index "secure_rooms_card_readers", ["tablet_token"], name: "index_secure_rooms_card_readers_on_tablet_token", unique: true, using: :btree
 
   create_table "secure_rooms_events", force: :cascade do |t|
-    t.integer  "card_reader_id",  limit: 4
-    t.integer  "user_id",         limit: 4
+    t.integer  "card_reader_id",  limit: 4,   null: false
+    t.integer  "user_id",         limit: 4,   null: false
     t.datetime "occurred_at"
     t.string   "outcome",         limit: 255
     t.string   "outcome_details", limit: 255
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
+    t.integer  "account_id",      limit: 4
   end
 
   add_index "secure_rooms_events", ["card_reader_id"], name: "index_secure_rooms_events_on_card_reader_id", using: :btree
   add_index "secure_rooms_events", ["user_id"], name: "index_secure_rooms_events_on_user_id", using: :btree
+
+  create_table "secure_rooms_occupancies", force: :cascade do |t|
+    t.integer  "product_id",     limit: 4, null: false
+    t.integer  "user_id",        limit: 4, null: false
+    t.integer  "account_id",     limit: 4
+    t.integer  "entry_event_id", limit: 4
+    t.datetime "entry_at"
+    t.integer  "exit_event_id",  limit: 4
+    t.datetime "exit_at"
+    t.datetime "orphan"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "secure_rooms_occupancies", ["account_id"], name: "index_secure_rooms_occupancies_on_account_id", using: :btree
+  add_index "secure_rooms_occupancies", ["entry_event_id"], name: "index_secure_rooms_occupancies_on_entry_event_id", using: :btree
+  add_index "secure_rooms_occupancies", ["exit_event_id"], name: "index_secure_rooms_occupancies_on_exit_event_id", using: :btree
+  add_index "secure_rooms_occupancies", ["product_id"], name: "index_secure_rooms_occupancies_on_product_id", using: :btree
+  add_index "secure_rooms_occupancies", ["user_id"], name: "index_secure_rooms_occupancies_on_user_id", using: :btree
 
   create_table "splits", force: :cascade do |t|
     t.integer "parent_split_account_id", limit: 4,                         null: false
