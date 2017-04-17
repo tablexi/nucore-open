@@ -29,15 +29,6 @@ class PricePolicy < ActiveRecord::Base
   before_create :set_expire_date
   before_create :truncate_existing_policies
 
-  def has_subsidy?
-    self[subsidy_field].to_f > 0
-  end
-
-  def set_default_subsidy
-    self[subsidy_field] ||= 0 if self[rate_field]
-  end
-
-
   def self.for_date(start_date)
     where("start_date >= ? AND start_date <= ?", start_date.beginning_of_day, start_date.end_of_day)
   end
@@ -108,18 +99,16 @@ class PricePolicy < ActiveRecord::Base
            .map &:to_date
   end
 
-  def truncate_existing_policies
-    logger.debug("Truncating existing policies")
-    existing_policies = PricePolicy.current.where(type: self.class.name,
-                                                  price_group_id: price_group_id,
-                                                  product_id: product_id)
+  #
+  # Given a +PricePolicy+ or +Date+ determine the next
+  # appropriate expiration date.
+  def self.generate_expire_date(price_policy_or_date)
+    start_date = price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
+    SettingsHelper.fiscal_year_end(start_date)
+  end
 
-    existing_policies = existing_policies.where("id != ?", id) unless id.nil?
-
-    existing_policies.each do |policy|
-      policy.expire_date = (start_date - 1.day).end_of_day
-      policy.save
-    end
+  def has_subsidy?
+    self[subsidy_field].to_f > 0
   end
 
   def product_type
@@ -180,6 +169,16 @@ class PricePolicy < ActiveRecord::Base
     expire_date <= Time.zone.now
   end
 
+  def editable?
+    !expired? && !assigned_to_order?
+  end
+
+  private
+
+  def set_expire_date
+    self.expire_date ||= self.class.generate_expire_date(self)
+  end
+
   def start_date_is_unique # TODO: Refactor
     type          = self.class.name.downcase.gsub(/pricepolicy$/, "")
     price_group   = self.price_group
@@ -193,28 +192,30 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
-  #
-  # Given a +PricePolicy+ or +Date+ determine the next
-  # appropriate expiration date.
-  def self.generate_expire_date(price_policy_or_date)
-    start_date = price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
-    SettingsHelper.fiscal_year_end(start_date)
+  def set_default_subsidy
+    self[subsidy_field] ||= 0 if self[rate_field]
   end
-
-  def set_expire_date
-    self.expire_date = self.class.generate_expire_date(self) unless expire_date
-  end
-
-  def editable?
-    !expired? && !assigned_to_order?
-  end
-
-  private
 
   def subsidy_less_than_rate
+    return unless defined?(rate_field)
     if self[rate_field] && self[subsidy_field] && self[subsidy_field] > self[rate_field]
       errors.add subsidy_field, :subsidy_greater_than_cost
     end
   end
+
+  def truncate_existing_policies
+    logger.debug("Truncating existing policies")
+    existing_policies = PricePolicy.current.where(type: self.class.name,
+                                                  price_group_id: price_group_id,
+                                                  product_id: product_id)
+
+    existing_policies = existing_policies.where("id != ?", id) unless id.nil?
+
+    existing_policies.each do |policy|
+      policy.expire_date = (start_date - 1.day).end_of_day
+      policy.save
+    end
+  end
+
 
 end
