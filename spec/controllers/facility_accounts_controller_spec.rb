@@ -349,7 +349,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
 
         it "shows the statements list" do
           expect(assigns(:statements)).to match_array(statements)
-          is_expected.to render_template "show_statement_list"
+          is_expected.to render_template("statements")
         end
       end
 
@@ -363,7 +363,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         it "shows the statements list" do
           expect(assigns(:account)).to eq(account)
           expect(assigns(:statements)).to match_array(statements + [other_facility_statement])
-          is_expected.to render_template "show_statement_list"
+          is_expected.to render_template("statements")
         end
       end
     end

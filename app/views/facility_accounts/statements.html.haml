@@ -1,8 +1,7 @@
-= content_for :sidebar do
-  = render "admin/shared/sidenav_users", sidenav_tab: "accounts"
-
 = content_for :tabnav do
   = render "admin/shared/tabnav_payment_method", secondary_tab: "statements"
+
+= render "facility_accounts/sidebar"
 
 = content_for :h1 do
   = current_facility
@@ -14,8 +13,6 @@
     %thead
       %tr
         %th
-        - if current_facility.cross_facility?
-          %th= Facility.model_name.human
         %th= t(".th.sent_at")
         %th= t(".th.sent_by")
         %th.currency= t(".th.orders")
@@ -23,8 +20,6 @@
       - StatementPresenter.wrap(@statements).each do |statement|
         %tr
           %td.centered= link_to t(".download"), statement.download_path
-          - if current_facility.cross_facility?
-            %td= statement.facility
           %td= statement.sent_at
           %td= statement.sent_by
           %td.currency= statement.order_count

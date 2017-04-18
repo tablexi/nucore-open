@@ -211,7 +211,7 @@ en:
         bill_to: "Bill To"
       link:
         edit: "Edit"
-    show_statement_list:
+    statements:
       download: Download
       notice: "No statements have been sent for this payment source."
       th:
