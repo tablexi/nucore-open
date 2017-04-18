@@ -9,13 +9,13 @@
 
 %h2= @account
 
-- if @statements.empty?
-  %p.notice= t(".notice")
-- else
+- if @statements.any?
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th
+        - if current_facility.cross_facility?
+          %th= Facility.model_name.human
         %th= t(".th.sent_at")
         %th= t(".th.sent_by")
         %th.currency= t(".th.orders")
@@ -23,7 +23,11 @@
       - StatementPresenter.wrap(@statements).each do |statement|
         %tr
           %td.centered= link_to t(".download"), statement.download_path
+          - if current_facility.cross_facility?
+            %td= statement.facility
           %td= statement.sent_at
           %td= statement.sent_by
           %td.currency= statement.order_count
   = will_paginate(@statements)
+- else
+  %p.notice= t(".notice")

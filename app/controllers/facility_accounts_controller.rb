@@ -149,27 +149,25 @@ class FacilityAccountsController < ApplicationController
     @accounts = Account.where_ids_in(@account_balances.keys)
   end
 
-  # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
-  def show_statement
-    @facility = current_facility
+  # GET /facilities/:facility_id/accounts/:account_id/statements
 
-    if params[:statement_id] == "list"
-      action = "show_statement_list"
-      @statements =
-        current_facility
-        .statements
+  def statements
+    @statements =
+      Statement.for_facility(current_facility)
         .where(account_id: @account.id)
         .paginate(page: params[:page])
-    else
-      action = "show_statement"
-      @statement = Statement.find(params[:statement_id])
-      @order_details = @statement.order_details.paginate(page: params[:page])
-    end
 
-    respond_to do |format|
-      format.html { render action: action }
-      format.pdf { render_statement_pdf }
-    end
+    render :show_statement_list
+  end
+
+  # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
+  def show_statement
+    @statement = Statement.for_facility(current_facility)
+        .where(account: @account)
+        .find(params[:statement_id])
+
+    @statement_pdf = StatementPdfFactory.instance(@statement, true)
+    render "statements/show"
   end
 
   private
@@ -186,11 +184,6 @@ class FacilityAccountsController < ApplicationController
     else
       available_account_types.first
     end
-  end
-
-  def render_statement_pdf
-    @statement_pdf = StatementPdfFactory.instance(@statement, params[:show].blank?)
-    render template: "/statements/show"
   end
 
   def init_account
