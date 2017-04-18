@@ -2,17 +2,19 @@ require "rails_helper"
 require "controller_spec_helper"
 
 RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: true } do
-  let(:facility) { @authable }
+  let(:facility) { FactoryGirl.create(:facility) }
+  let(:account) { create_nufs_account_with_owner }
+  let(:admin) { @admin }
 
   render_views
 
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
+    @authable = facility
     @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
     @item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
-    @account = create_nufs_account_with_owner
+    @account = account
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
     @order = FactoryGirl.create(:order, user: @purchaser, created_by: @purchaser.id, facility: @authable)
@@ -296,54 +298,31 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
 
   end
 
-  context "show_statement", :time_travel, if: Account.config.statements_enabled? do
+  context "with statements", :time_travel, if: Account.config.statements_enabled? do
+    let!(:statements) { FactoryGirl.create_list(:statement, 2, facility_id: facility.id, created_by: admin.id, account: account) }
 
-    before :each do
-      @method = :get
-      @action = :show_statement
-
-      2.times do
-        @statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: @account)
-        travel_to(1.second.from_now) # need different timestamp on statement
+    describe "show_statement" do
+      before :each do
+        @method = :get
+        @action = :show_statement
+        @params = { facility_id: facility.url_name, account_id: account.id, statement_id: statements.first.id, format: "pdf" }
       end
 
-      @params = { facility_id: facility.url_name, account_id: @account.id, statement_id: "" }
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it "should show statements list" do
-      @params[:statement_id] = "list"
-      maybe_grant_always_sign_in :director
-      do_request
-      expect(assigns(:account)).to eq(@account)
-      expect(assigns(:facility)).to eq(@authable)
-      expect(assigns(:statements)).to be_kind_of(ActiveRecord::Relation)
-      expect(assigns(:statements).count).to eq(2)
-      is_expected.to render_template "show_statement_list"
-    end
-
-    describe "show" do
-      before do
-        @params[:statement_id] = @statement.id
-        @params[:format] = "pdf"
-      end
+      it_should_deny_all [:staff, :senior_staff]
 
       it "shows the statement PDF for a director" do
         maybe_grant_always_sign_in :director
         do_request
         expect(assigns(:account)).to eq(@account)
-        expect(assigns(:facility)).to eq(@authable)
-        expect(assigns(:statement)).to eq(@statement)
+        expect(controller.current_facility).to eq(facility)
+        expect(assigns(:statement)).to eq(statements.first)
         expect(response.content_type).to eq("application/pdf")
         expect(response.body).to match(/\A%PDF-1.\d+\b/)
         is_expected.to render_template "statements/show"
       end
 
       it "does not allow an account admin" do
-        user = create(:user, :business_administrator, account: @account)
+        user = create(:user, :business_administrator, account: account)
         sign_in user
         do_request
         expect(response.code).to eq("403")
@@ -354,6 +333,38 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         sign_in user
         do_request
         expect(response).to be_success
+      end
+    end
+
+    describe "statements" do
+      let!(:other_facility_statement) { FactoryGirl.create(:statement, created_by: admin.id, account: account) }
+
+      describe "a single facility" do
+        let(:director) { FactoryGirl.create(:user, :facility_director, facility: facility) }
+
+        before do
+          sign_in director
+          get :statements, facility_id: facility.url_name, account_id: account.id
+        end
+
+        it "shows the statements list" do
+          expect(assigns(:statements)).to match_array(statements)
+          is_expected.to render_template "show_statement_list"
+        end
+      end
+
+      describe "cross facility" do
+        let(:account_manager) { FactoryGirl.create(:user, :account_manager) }
+        before do
+          sign_in account_manager
+          get :statements, facility_id: "all", account_id: account.id
+        end
+
+        it "shows the statements list" do
+          expect(assigns(:account)).to eq(account)
+          expect(assigns(:statements)).to match_array(statements + [other_facility_statement])
+          is_expected.to render_template "show_statement_list"
+        end
       end
     end
   end

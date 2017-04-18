@@ -150,11 +150,9 @@ class FacilityAccountsController < ApplicationController
   end
 
   # GET /facilities/:facility_id/accounts/:account_id/statements
-
   def statements
-    @statements =
-      Statement.for_facility(current_facility)
-        .where(account_id: @account.id)
+    @statements = Statement.for_facility(current_facility)
+        .where(account: @account)
         .paginate(page: params[:page])
 
     render :show_statement_list
