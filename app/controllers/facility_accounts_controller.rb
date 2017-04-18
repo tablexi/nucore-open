@@ -152,15 +152,15 @@ class FacilityAccountsController < ApplicationController
   # GET /facilities/:facility_id/accounts/:account_id/statements
   def statements
     @statements = Statement.for_facility(current_facility)
-        .where(account: @account)
-        .paginate(page: params[:page])
+                           .where(account: @account)
+                           .paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
   def show_statement
     @statement = Statement.for_facility(current_facility)
-        .where(account: @account)
-        .find(params[:statement_id])
+                          .where(account: @account)
+                          .find(params[:statement_id])
 
     respond_to do |format|
       format.pdf do
