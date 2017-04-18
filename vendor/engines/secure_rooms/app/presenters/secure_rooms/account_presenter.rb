@@ -1,21 +1,33 @@
 module SecureRooms
 
-  class AccountPresenter < SimpleDelegator
+  class AccountPresenter
+
+    include ActiveModel::Serializers::JSON
+
+    attr_reader :account
 
     def self.wrap(accounts)
       Array(accounts).map { |account| new(account) }
     end
 
-    def to_json
-      {
-        id: id,
-        type: type,
-        description: description,
-        account_number: account_number,
-        expiration_month: expiration_month,
-        expiration_year: expiration_year,
-        owner_name: owner_user_name,
-      }.to_json
+    def initialize(account)
+      @account = account
+    end
+
+    private
+
+    delegate :id, :type, :description, :account_number, :expiration_month, :expiration_year, to: :account
+
+    def attribute_names
+      %w(id type description account_number expiration_month expiration_year owner_name)
+    end
+
+    def attributes
+      @attributes ||= attribute_names.map { |attr| [attr, nil] }.to_h
+    end
+
+    def owner_name
+      account.owner_user_name
     end
 
   end
