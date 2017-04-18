@@ -5,7 +5,7 @@ module PricePolicies
     extend ActiveSupport::Concern
 
     included do
-      validates :unit_cost, presence: true, numericality: { greater_than_or_equal_to: 0 }
+      validates :unit_cost, presence: true, numericality: { greater_than_or_equal_to: 0 }, unless: :restrict_purchase?
       validates :unit_subsidy, numericality: { allow_blank: true, greater_than_or_equal_to: 0 }
     end
 
