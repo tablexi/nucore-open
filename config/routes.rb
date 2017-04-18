@@ -232,7 +232,7 @@ Nucore::Application.routes.draw do
 
       if Account.config.statements_enabled?
         get "/statements", to: 'facility_accounts#statements', as: :statements
-        get "/statements/:statement_id", to: "facility_accounts#show_statement", as: :statement, constraints: proc { |req| req.format == :pdf }
+        get "/statements/:statement_id", to: "facility_accounts#show_statement", as: :statement
       end
 
       # Dynamically add routes like credit_cards and purchase_orders

@@ -154,8 +154,6 @@ class FacilityAccountsController < ApplicationController
     @statements = Statement.for_facility(current_facility)
         .where(account: @account)
         .paginate(page: params[:page])
-
-    render :show_statement_list
   end
 
   # GET /facilities/:facility_id/accounts/:account_id/statements/:statement_id
@@ -164,8 +162,12 @@ class FacilityAccountsController < ApplicationController
         .where(account: @account)
         .find(params[:statement_id])
 
-    @statement_pdf = StatementPdfFactory.instance(@statement, true)
-    render "statements/show"
+    respond_to do |format|
+      format.pdf do
+        @statement_pdf = StatementPdfFactory.instance(@statement, download: true)
+        render "statements/show"
+      end
+    end
   end
 
   private
