@@ -179,11 +179,11 @@ class PricePolicy < ActiveRecord::Base
     type          = self.class.name.downcase.gsub(/pricepolicy$/, "")
     price_group   = self.price_group
     unless product.nil? || price_group.nil?
-      if id.nil?
-        pp = PricePolicy.find_by(price_group_id: price_group.id, product_id: product.id, start_date: start_date)
-      else
-        pp = PricePolicy.where(price_group_id: price_group.id, product_id: product.id, start_date: start_date).where.not(id: id).first
-      end
+      pp = if id.nil?
+             PricePolicy.find_by(price_group_id: price_group.id, product_id: product.id, start_date: start_date)
+           else
+             PricePolicy.where(price_group_id: price_group.id, product_id: product.id, start_date: start_date).where.not(id: id).first
+           end
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
     end
   end
@@ -212,6 +212,5 @@ class PricePolicy < ActiveRecord::Base
       policy.save
     end
   end
-
 
 end

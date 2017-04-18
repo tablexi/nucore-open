@@ -66,6 +66,7 @@ module PricePolicies
     def subsidy_field
       :usage_subsidy
     end
+
   end
 
 end

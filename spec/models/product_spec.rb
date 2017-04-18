@@ -234,9 +234,11 @@ RSpec.describe Product do
 
     context "can_purchase?" do
       class TestPricePolicy < PricePolicy
+
         def rate_field
           :unit_cost
         end
+
       end
 
       before :each do

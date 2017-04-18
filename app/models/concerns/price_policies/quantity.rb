@@ -25,7 +25,7 @@ module PricePolicies
       return nil if restrict_purchase?
       {
         cost: unit_cost * qty,
-        subsidy: unit_subsidy * qty
+        subsidy: unit_subsidy * qty,
       }
     end
 
