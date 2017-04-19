@@ -1,17 +1,14 @@
-= content_for :sidebar do
-  = render "admin/shared/sidenav_users", sidenav_tab: "accounts"
-
 = content_for :tabnav do
   = render "admin/shared/tabnav_payment_method", secondary_tab: "statements"
+
+= render "facility_accounts/sidebar"
 
 = content_for :h1 do
   = current_facility
 
 %h2= @account
 
-- if @statements.empty?
-  %p.notice= t(".notice")
-- else
+- if @statements.any?
   %table.table.table-striped.table-hover
     %thead
       %tr
@@ -27,3 +24,5 @@
           %td= statement.sent_by
           %td.currency= statement.order_count
   = will_paginate(@statements)
+- else
+  %p.notice= t(".notice")
