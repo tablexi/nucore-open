@@ -632,7 +632,7 @@ ActiveRecord::Schema.define(version: 20170409125104) do
     t.integer  "account_id",      limit: 4
   end
 
-  add_index "secure_rooms_events", ["account_id"], name: "fk_rails_a9da8518f4", using: :btree
+  add_index "secure_rooms_events", ["account_id"], name: "index_secure_rooms_events_on_account_id", using: :btree
   add_index "secure_rooms_events", ["card_reader_id"], name: "index_secure_rooms_events_on_card_reader_id", using: :btree
   add_index "secure_rooms_events", ["user_id"], name: "index_secure_rooms_events_on_user_id", using: :btree
 

@@ -9,9 +9,7 @@
 
 %p= text("views.admin.secure_rooms.occupancies.index.description")
 
-- if @occupancies.empty?
-  %p.notice= text("views.admin.secure_rooms.occupancies.index.none")
-- else
+- if @occupancies.present?
   %table.table.table-striped.table-hover.product_list
     %thead
       %tr
@@ -22,3 +20,5 @@
         %tr[occupancy]
           %td= occupancy.user.username
           %td= occupancy.entry_at
+- else
+  %p.notice= text("views.admin.secure_rooms.occupancies.index.none")
