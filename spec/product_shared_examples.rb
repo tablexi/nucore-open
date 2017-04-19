@@ -1,5 +1,6 @@
 RSpec.shared_examples_for "NonReservationProduct" do |product_type|
-  let(:account) { create(:setup_account) }
+  let(:account) { create(:setup_account, owner: user) }
+  let(:user) { @user }
 
   before :each do
     @product_type = product_type
