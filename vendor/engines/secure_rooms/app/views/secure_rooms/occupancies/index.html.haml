@@ -1,0 +1,24 @@
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: "secure_rooms"
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product", secondary_tab: "occupancies"
+
+%h2= @product
+
+%p= text("views.admin.secure_rooms.occupancies.index.description")
+
+- if @occupancies.present?
+  %table.table.table-striped.table-hover.product_list
+    %thead
+      %tr
+        %th= User.human_attribute_name(:username)
+        %th= SecureRooms::Occupancy.human_attribute_name(:entry_at)
+    %tbody
+      - @occupancies.each do |occupancy|
+        %tr[occupancy]
+          %td= occupancy.user.username
+          %td= occupancy.entry_at
+- else
+  %p.notice= text("views.admin.secure_rooms.occupancies.index.none")
