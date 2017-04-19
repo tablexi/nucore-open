@@ -1,8 +1,10 @@
 %h3= Order.model_name.human(count: 2)
 
-%table.table.table-striped.table-hover
+%table.table.table-striped.table-hover.responsive-table
   %thead
     %tr
+      -# Please note if you change a header that headers are duplicated
+      -# in the .resposive-header div of the cell below
       %th= "#{Order.model_name.human} #"
       %th.nowrap= OrderDetail.human_attribute_name(:ordered_at)
       %th= Facility.model_name.human
@@ -13,15 +15,27 @@
   %tbody
     - results.each do |order_detail|
       %tr{class: row_class(order_detail)}
-        %td.nowrap= order_detail_result_link order_detail
-        %td= format_usa_date(order_detail.ordered_at)
-        %td= order_detail.order.facility
+        %td.nowrap
+          .responsive-header= "#{Order.model_name.human} #"
+          = order_detail_result_link order_detail
         %td
+          .responsive-header= OrderDetail.human_attribute_name(:ordered_at)
+          = format_usa_date(order_detail.ordered_at)
+        %td
+          .responsive-header= Facility.model_name.human
+          = order_detail.order.facility
+        %td
+          .responsive-header= OrderDetail.human_attribute_name("description")
           = order_detail_description(order_detail)
           %br
           %em= order_detail.reservation
-        %td= order_detail.order.user.full_name
+        %td
+          .responsive-header= OrderDetail.human_attribute_name("user")
+          = order_detail.order.user.full_name
         %td.currency
+          .responsive-header= OrderDetail.human_attribute_name("cost")
           - order_detail.send(:extend, PriceDisplayment)
           = order_detail.wrapped_total
-        %td.nowrap= order_detail.order_status
+        %td.nowrap
+          .responsive-header= OrderDetail.human_attribute_name("order_status")
+          = order_detail.order_status
