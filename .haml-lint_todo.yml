@@ -267,7 +267,6 @@ linters:
       - "app/views/product_accessories/index.html.haml"
       - "app/views/reservations/edit.html.haml"
       - "app/views/shared/_login_button.html.haml"
-      - "app/views/shared/_reservations_table.html.haml"
       - "app/views/shared/_statements_table.html.haml"
       - "app/views/shared/transactions/_table_inside.html.haml"
       - "app/views/statements/list.html.haml"
@@ -370,7 +369,6 @@ linters:
       - "app/views/price_policies/instrument/_rate_calculation.html.haml"
       - "app/views/price_policies/instrument/_table.html.haml"
       - "app/views/reservations/_reservation_fields.html.haml"
-      - "app/views/reservations/list.html.haml"
       - "app/views/shared/_acting_as.html.haml"
       - "app/views/shared/_header.html.haml"
       - "vendor/engines/projects/app/views/projects/projects/show.html.haml"
@@ -383,7 +381,6 @@ linters:
       - "app/views/facility_orders/show.html.haml"
       - "app/views/price_policies/index.html.haml"
       - "app/views/reports/report.html.haml"
-      - "app/views/reservations/list.html.haml"
       - "app/views/shared/transactions/_in_review.html.haml"
       - "vendor/engines/bulk_email/app/views/bulk_email/bulk_email/_fields.html.haml"
 
