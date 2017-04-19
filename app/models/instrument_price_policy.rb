@@ -12,16 +12,6 @@ class InstrumentPricePolicy < PricePolicy
   validates :cancellation_cost, numericality: { allow_blank: true, greater_than_or_equal_to: 0 }
   validates :charge_for, inclusion: CHARGE_FOR.values
 
-  # Deprecated attributes used by OldPricePolicy
-  validates :reservation_rate,
-            :reservation_subsidy,
-            :overage_rate,
-            :overage_subsidy,
-            :reservation_mins,
-            :overage_mins,
-            :usage_mins,
-            inclusion: [nil]
-
   after_create :ensure_reservation_window
 
   def reservation_window
