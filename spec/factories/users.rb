@@ -7,7 +7,7 @@ FactoryGirl.define do
     sequence(:last_name, &:to_s)
     sequence(:email) { |n| "user#{n}@example.com" }
 
-    after(:create) do |user, evaluator|
+    after(:create) do |user, _|
       user.create_default_price_group!
     end
 
