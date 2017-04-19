@@ -11,7 +11,11 @@ class CreateCardReaders < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :secure_rooms_card_readers, :product_id
+    if NUCore::Database.oracle?
+      add_index :secure_rooms_card_readers, :product_id, name: "index_card_readers_on_prod_id"
+    else
+      add_index :secure_rooms_card_readers, :product_id
+    end
   end
 
 end
