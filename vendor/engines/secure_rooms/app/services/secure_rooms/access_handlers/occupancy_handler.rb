@@ -27,7 +27,7 @@ module SecureRooms
           )
         else
           # TODO: Add error cases
-          raise NotImplementedError
+          Rails.logger.warn "Encountered Double-Scan Situation"
         end
 
         existing_occupancy || new_occupancy
