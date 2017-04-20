@@ -16,24 +16,35 @@ module SecureRooms
 
       def process
         if current_occupant? && exiting?
-          existing_occupancy.update!(
-            exit_event: event,
-            exit_at: Time.current,
-          )
+          associate_exit_to(existing_occupancy)
         elsif new_occupant? && entering?
-          new_occupancy.update!(
-            entry_event: event,
-            entry_at: Time.current,
-          )
-        else
-          # TODO: Add error cases
-          Rails.logger.warn "Encountered Double-Scan Situation"
+          associate_entry_to(new_occupancy)
+        elsif new_occupant? && exiting?
+          new_occupancy.mark_orphaned!
+          associate_exit_to(new_occupancy)
+        elsif current_occupant? && entering?
+          existing_occupancy.mark_orphaned!
+          associate_entry_to(new_occupancy)
         end
-
-        existing_occupancy || new_occupancy
       end
 
       private
+
+      def associate_entry_to(occupancy)
+        occupancy.update!(
+          entry_event: event,
+          entry_at: Time.current,
+        )
+        occupancy
+      end
+
+      def associate_exit_to(occupancy)
+        occupancy.update!(
+          exit_event: event,
+          exit_at: Time.current,
+        )
+        occupancy
+      end
 
       def existing_occupancy
         @existing_occupancy ||= Occupancy.current.find_by(

@@ -77,6 +77,7 @@ en:
           index:
             description: "Current occupants of this room"
             none: "The room is currently vacant"
+            problem: "Occupants missing scan data"
 
     secure_rooms:
       card_numbers:

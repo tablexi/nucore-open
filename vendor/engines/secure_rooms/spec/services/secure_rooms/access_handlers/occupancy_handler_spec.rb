@@ -53,5 +53,57 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
         end
       end
     end
+
+    context "new_occupant? && exiting?" do
+      let(:card_reader) { create :card_reader, ingress: false }
+
+      it "creates an Occupancy" do
+        expect { described_class.process(event) }
+          .to change(SecureRooms::Occupancy, :count).by(1)
+      end
+
+      describe "resulting Occupancy" do
+        subject(:occupancy) { described_class.process(event) }
+
+        it "sets the exit_event" do
+          expect(occupancy.exit_event).to eq event
+          expect(occupancy.exit_at).to be_present
+        end
+
+        it "sets orphan status" do
+          expect(occupancy).to be_orphan
+        end
+      end
+    end
+
+    context "current_occupant? && entering?" do
+      let(:card_reader) { create :card_reader, ingress: true }
+
+      let!(:existing_occupancy) do
+        create(
+          :occupancy,
+          entry_event: event,
+          secure_room: card_reader.secure_room,
+          user: event.user,
+        )
+      end
+
+      it "creates an Occupancy" do
+        expect { described_class.process(event) }
+          .to change(SecureRooms::Occupancy, :count).by(1)
+      end
+
+      describe "resulting Occupancies" do
+        subject(:occupancy) { described_class.process(event) }
+
+        it "sets the entry_event" do
+          expect(existing_occupancy).not_to be_orphan
+          occupancy = described_class.process(event)
+          expect(occupancy.entry_event).to eq event
+          expect(occupancy.entry_at).to be_present
+          expect(existing_occupancy.reload).to be_orphan
+        end
+      end
+    end
   end
 end

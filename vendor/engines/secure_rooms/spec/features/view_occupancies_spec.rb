@@ -32,6 +32,10 @@ RSpec.describe "Viewing Occupancies" do
         expect(page).not_to have_content(complete_occupancy.user.username)
         expect(page).not_to have_content(remote_occupancy.user.username)
       end
+
+      within(".secure_rooms_problem_occupancy") do
+        expect(page).to have_content(orphan_occupancy.user.username)
+      end
     end
   end
 end
