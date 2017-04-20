@@ -9,6 +9,7 @@ class OrderDetails::ParamUpdater
         :dispute_resolved_reason,
         :quantity,
         :note,
+        :fulfilled_at,
         reservation: [
           :reserve_start_date,
           :reserve_start_hour,
@@ -33,6 +34,7 @@ class OrderDetails::ParamUpdater
   def assign_attributes(params)
     params = ActionController::Parameters.new(params.try(:dup))
     params.delete(:quantity) unless params[:quantity].to_s =~ /\A\d+\z/
+    params[:fulfilled_at] = ValidFulfilledAtDate.parse(params[:fulfilled_at])
 
     assign_self_and_reservation_attributes(permitted_params(params))
     # this will overwrite the prices, so if we got cost/subsidy as parameters,
@@ -96,8 +98,9 @@ class OrderDetails::ParamUpdater
   end
 
   def change_order_status(order_status_id, apply_cancel_fee)
+    status = OrderStatus.find(order_status_id)
     @order_detail.update_order_status! @editing_user,
-                                       OrderStatus.find(order_status_id),
+                                       status,
                                        admin: true,
                                        apply_cancel_fee: apply_cancel_fee
     true
