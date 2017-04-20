@@ -20,7 +20,7 @@
             &nbsp;
         .span2
           .submit
-            = submit_tag @order_detail_action.to_s.titleize, class: ['btn', 'btn-primary']
+            = submit_tag text(@order_detail_action, scope: "admin.transaction_search.actions"), class: ['btn', 'btn-primary']
       .row
         .span12= render "shared/transactions/table_inside", order_details: order_details
   - else

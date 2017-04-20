@@ -3,11 +3,8 @@
 - content_for :h1 do
   = current_facility
 - content_for :h2 do
-  %h2
-    - if @order_detail_action
-      = @order_detail_action.to_s.titleize
-    - else
-      Transaction History
+  %h2= text(:history, scope: "admin.transaction_search.actions")
+
 = content_for :top_block do
   = render "shared/transactions/top", tab: "transactions"
 = render partial: "shared/transactions/table"
