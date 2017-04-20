@@ -18,5 +18,6 @@ Rails.application.routes.draw do
 
   namespace :secure_rooms_api do
     post '/scan', to: 'scans#scan'
+    resources :events, only: :create
   end
 end
