@@ -26,7 +26,7 @@ module SecureRooms
           existing_occupancy.mark_orphaned!
           new_occupancy.associate_entry!(event)
         else
-          raise NotImplementedError.new("Encountered unexpected scan context")
+          raise NotImplementedError, "Encountered unexpected scan context"
         end
       end
 
