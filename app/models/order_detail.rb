@@ -440,9 +440,9 @@ class OrderDetail < ActiveRecord::Base
   end
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
-  def update_order_status!(updated_by, order_status, options_args = {}, &block)
+  def update_order_status!(updated_by, order_status, options = {}, &block)
     @order_status_updated_by = updated_by
-    options = { admin: false, apply_cancel_fee: false }.merge(options_args)
+    options.reverse_merge!(admin: false, apply_cancel_fee: false)
 
     if reservation && order_status.root_canceled?
       cancel_reservation(updated_by,
@@ -865,6 +865,13 @@ class OrderDetail < ActiveRecord::Base
     journal.present? && account.class.using_journal? && can_reconcile?
   end
 
+  # This value will be used when marking the order complete. Any other time, it
+  # will have no effect. This is to protect `fulfilled_at` from being written
+  # to when it shouldn't be. It should be a USA formatted date string.
+  def manual_fulfilled_at=(string)
+    @manual_fulfilled_at = ValidFulfilledAtDate.parse(string)
+  end
+
   private
 
   def has_completed_reservation?
@@ -880,7 +887,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def make_complete
-    self.fulfilled_at = Time.zone.now
+    # Don't update fulfilled_at if it was manually set.
+    self.fulfilled_at = @manual_fulfilled_at || Time.current
     assign_price_policy
     self.reviewed_at = Time.zone.now unless SettingsHelper.has_review_period?
   end
