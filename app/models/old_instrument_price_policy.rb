@@ -19,7 +19,7 @@ class OldInstrumentPricePolicy < PricePolicy
 
   # Make sure we have a default reservation window for this price group and product
   after_create do |o|
-    pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(o.price_group.id, o.product.id)
+    pgp = PriceGroupProduct.find_by(price_group_id: o.price_group.id, product_id: o.product.id)
     PriceGroupProduct.create(price_group: o.price_group, product: o.product, reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW) unless pgp
   end
 
@@ -27,12 +27,20 @@ class OldInstrumentPricePolicy < PricePolicy
     @@intervals
   end
 
+  def rate_field
+    :usage_rate
+  end
+
+  def subsidy_field
+    :usage_subsidy
+  end
+
   def has_usage_or_reservation_rate?
     errors.add(:base, "You must enter a reservation rate or usage rate for all price groups") if usage_rate.nil? && reservation_rate.nil?
   end
 
   def reservation_window
-    pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
+    pgp = PriceGroupProduct.find_by(price_group_id: price_group.id, product_id: product.id)
     pgp ? pgp.reservation_window : 0
   end
 

@@ -219,6 +219,13 @@ en:
         is_internal: Is Internal?
       price_policy:
         cancellation_cost: Reservation cost
+        type: Type
+        can_purchase: Can Purchase?
+        minimum_cost: Minimum Cost
+        hourly_usage_rate: Rate Per Hour
+        cancellation_cost: Reservation Cost
+        unit_cost: Unit Cost
+        unit_adjustment: Unit Adjustment
       user_role:
         username: User
       order:

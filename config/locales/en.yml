@@ -862,20 +862,6 @@ en:
   price_policies:
     adjustment: Adjustment
     amount: Amount
-    instrument:
-      price_policy_fields:
-        price_group: Price Group
-        type: Type
-        can_purchase: Can Purchase?
-        rate_per_hour: Rate Per Hour
-        minimum_cost: Minimum Cost
-        reservation_cost: Reservation Cost
-    price_policy_fields:
-      price_group: Price Group
-      type: Type
-      can_purchase: Can Purchase?
-      unit_cost: Unit Cost
-      unit_adjustment: Unit Adjustment
     problem: There is a problem with this price policy.
     errors:
       none_exist_for_date: No valid price policies exists for that date.

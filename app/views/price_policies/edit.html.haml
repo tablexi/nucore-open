@@ -13,9 +13,10 @@
 
 = modelless_form_for url: price_policy_path(@product, params[:id]), method: :put do |f|
   - @price_policies.each do |price_policy|
-    - @price_policy = price_policy
-    = error_messages_for :price_policy
-  = render "price_policies/#{@product.is_a?(Instrument) ? 'instrument/' : ''}price_policy_fields", f: f
+    = error_messages_for price_policy
+
+  = render "price_policy_fields", f: f
+
   %ul.inline
     %li= submit_tag text("save"), class: "btn btn-primary"
     %li= link_to text("shared.cancel"), price_policies_path
