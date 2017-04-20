@@ -1,14 +1,14 @@
-- clazz = price_policies.first.class
+- price_policy = price_policies.first
 
 %table.table
   %thead
     %tr
       %th.actions{rowspan: 2}
-      %th{rowspan: 2}= "#{PriceGroup.model_name.human} (#{clazz.human_attribute_name(:type)}"
-      %th.currency{colspan: 2}= clazz.human_attribute_name(:hourly_usage_rate)
-      %th.currency{rowspan: 2}= clazz.human_attribute_name(:minimum_cost)
+      %th{rowspan: 2}= "#{PriceGroup.model_name.human} (#{price_policy.class.human_attribute_name(:type)}"
+      %th.currency{colspan: 2}= price_policy.class.human_attribute_name(:hourly_usage_rate)
+      %th.currency{rowspan: 2}= price_policy.class.human_attribute_name(:minimum_cost)
       - if local_assigns[:cancellation] != false
-        %th.currency{rowspan: 2}= clazz.human_attribute_name(:cancellation_cost)
+        %th.currency{rowspan: 2}= price_policy.class.human_attribute_name(:cancellation_cost)
   %tbody
     - price_policies_to_show = price_policies.select { |pp| pp.can_purchase? }
     - price_policies_to_show.each do |price_policy|
