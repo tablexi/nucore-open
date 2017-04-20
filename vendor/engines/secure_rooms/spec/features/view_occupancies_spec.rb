@@ -27,7 +27,7 @@ RSpec.describe "Viewing Occupancies" do
       expect(current_path).to eq(facility_secure_room_occupancies_path(facility, secure_room))
       within(".secure_rooms_occupancy") do
         expect(page).to have_content(active_occupancy.user.username)
-        expect(page).to have_content(active_occupancy.entry_at)
+        expect(page).to have_content(I18n.l(active_occupancy.entry_at, format: :usa))
         expect(page).not_to have_content(orphan_occupancy.user.username)
         expect(page).not_to have_content(complete_occupancy.user.username)
         expect(page).not_to have_content(remote_occupancy.user.username)
