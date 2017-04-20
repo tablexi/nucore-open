@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe SecureRoomsApi::EventsController do
-
   before do
     name = Settings.secure_rooms_api.basic_auth_name
     password = Settings.secure_rooms_api.basic_auth_password
@@ -41,6 +40,5 @@ RSpec.describe SecureRoomsApi::EventsController do
 
       it { is_expected.to have_http_status(:unauthorized) }
     end
-
   end
 end
