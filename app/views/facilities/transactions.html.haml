@@ -1,4 +1,5 @@
-= render :partial => "shared/transactions/headers"
+= render "shared/transactions/headers"
+
 - content_for :h1 do
   = current_facility
 - content_for :h2 do
@@ -8,5 +9,5 @@
     - else
       Transaction History
 = content_for :top_block do
-  = render :partial => 'shared/transactions/top', :locals => { :tab => "transactions" }
-= render :partial => 'shared/transactions/table'
+  = render "shared/transactions/top", tab: "transactions"
+= render partial: "shared/transactions/table"
