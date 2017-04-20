@@ -16,35 +16,21 @@ module SecureRooms
 
       def process
         if current_occupant? && exiting?
-          associate_exit_to(existing_occupancy)
+          existing_occupancy.associate_exit!(event)
         elsif new_occupant? && entering?
-          associate_entry_to(new_occupancy)
+          new_occupancy.associate_entry!(event)
         elsif new_occupant? && exiting?
           new_occupancy.mark_orphaned!
-          associate_exit_to(new_occupancy)
+          new_occupancy.associate_exit!(event)
         elsif current_occupant? && entering?
           existing_occupancy.mark_orphaned!
-          associate_entry_to(new_occupancy)
+          new_occupancy.associate_entry!(event)
+        else
+          raise NotImplementedError.new("Encountered unexpected scan context")
         end
       end
 
       private
-
-      def associate_entry_to(occupancy)
-        occupancy.update!(
-          entry_event: event,
-          entry_at: Time.current,
-        )
-        occupancy
-      end
-
-      def associate_exit_to(occupancy)
-        occupancy.update!(
-          exit_event: event,
-          exit_at: Time.current,
-        )
-        occupancy
-      end
 
       def existing_occupancy
         @existing_occupancy ||= Occupancy.current.find_by(

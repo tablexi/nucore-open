@@ -19,7 +19,7 @@
       - @occupancies.each do |occupancy|
         %tr[occupancy]
           %td= occupancy.user.username
-          %td= occupancy.entry_at
+          %td= human_datetime(occupancy.entry_at)
 - else
   %p.notice= text("views.admin.secure_rooms.occupancies.index.none")
 
@@ -37,6 +37,6 @@
       - @problem_occupancies.each do |occupancy|
         %tr.secure_rooms_problem_occupancy{id: "secure_rooms_problem_occupancy_#{occupancy.id}"}
           %td= occupancy.user.username
-          %td= occupancy.entry_at
-          %td= occupancy.exit_at
-          %td= occupancy.orphaned_at
+          %td= human_datetime(occupancy.entry_at)
+          %td= human_datetime(occupancy.exit_at)
+          %td= human_datetime(occupancy.orphaned_at)
