@@ -1,41 +1,42 @@
 %h3= Order.model_name.human(count: 2)
 
+- headers = ["#{Order.model_name.human} #",
+              OrderDetail.human_attribute_name(:ordered_at),
+              Facility.model_name.human,
+              OrderDetail.human_attribute_name("description"),
+              OrderDetail.human_attribute_name("user"),
+              OrderDetail.human_attribute_name("cost"),
+              OrderDetail.human_attribute_name("order_status")]
+
 %table.table.table-striped.table-hover.responsive-table
   %thead
     %tr
-      -# Please note if you change a header that headers are duplicated
-      -# in the .resposive-header div of the cell below
-      %th= "#{Order.model_name.human} #"
-      %th.nowrap= OrderDetail.human_attribute_name(:ordered_at)
-      %th= Facility.model_name.human
-      %th= OrderDetail.human_attribute_name("description")
-      %th.nowrap= OrderDetail.human_attribute_name("user")
-      %th= OrderDetail.human_attribute_name("cost")
-      %th= OrderDetail.human_attribute_name("order_status")
+      - headers.each do |header|
+        %th= header
   %tbody
     - results.each do |order_detail|
       %tr{class: row_class(order_detail)}
         %td.nowrap
-          .responsive-header= "#{Order.model_name.human} #"
+          .responsive-header= headers[0]
           = order_detail_result_link order_detail
         %td
-          .responsive-header= OrderDetail.human_attribute_name(:ordered_at)
+          .responsive-header= headers[1]
           = format_usa_date(order_detail.ordered_at)
         %td
-          .responsive-header= Facility.model_name.human
+          .responsive-header= headers[2]
           = order_detail.order.facility
         %td
-          .responsive-header= OrderDetail.human_attribute_name("description")
+          .responsive-header= headers[3]
           = order_detail_description(order_detail)
           %br
           %em= order_detail.reservation
         %td
-          .responsive-header= OrderDetail.human_attribute_name("user")
+          .responsive-header= headers[4]
           = order_detail.order.user.full_name
         %td.currency
-          .responsive-header= OrderDetail.human_attribute_name("cost")
+          .responsive-header= headers[5]
           - order_detail.send(:extend, PriceDisplayment)
           = order_detail.wrapped_total
         %td.nowrap
-          .responsive-header= OrderDetail.human_attribute_name("order_status")
+          .responsive-header= headers[6]
           = order_detail.order_status
