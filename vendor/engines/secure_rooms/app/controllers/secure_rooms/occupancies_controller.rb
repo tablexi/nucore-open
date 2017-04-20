@@ -19,6 +19,7 @@ module SecureRooms
 
     def index
       @occupancies = @product.occupancies.current
+      @problem_occupancies = @product.occupancies.orphaned
     end
 
     private

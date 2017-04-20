@@ -14,6 +14,10 @@ module SecureRooms
       where(orphaned_at: nil)
     end
 
+    def self.orphaned
+      where.not(orphaned_at: nil)
+    end
+
     def self.current
       valid.where(exit_event_id: nil).where.not(entry_event_id: nil)
     end
@@ -28,6 +32,22 @@ module SecureRooms
 
     def orphan?
       orphaned_at?
+    end
+
+    def associate_entry!(event)
+      update!(
+        entry_event: event,
+        entry_at: Time.current,
+      )
+      self
+    end
+
+    def associate_exit!(event)
+      update!(
+        exit_event: event,
+        exit_at: Time.current,
+      )
+      self
     end
 
   end
