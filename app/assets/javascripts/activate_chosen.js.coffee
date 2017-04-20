@@ -6,4 +6,3 @@ class window.ChosenActivator
 $ ->
   ChosenActivator.activate()
   AjaxModal.on_show(ChosenActivator.activate)
-

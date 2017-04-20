@@ -1,7 +1,7 @@
 class ValidFulfilledAtDate
+
   include DateHelper
 
-  # Returns nil if the date is invalid
   def self.parse(string)
     new(string).to_time
   end
@@ -10,13 +10,10 @@ class ValidFulfilledAtDate
     @string = string
   end
 
+  # Returns nil if the date is invalid
   def to_time
     time = parse_usa_date(@string).try(:to_date)
-    if valid_fulfilled_at?(time)
-      time.beginning_of_day + 12.hours
-    else
-      nil
-    end
+    time.beginning_of_day + 12.hours if valid_fulfilled_at?(time)
   end
 
   private

@@ -1,8 +1,8 @@
 class window.DatePickerData
   @activate: ->
     # This will set up a datepicker based on data attributes
-    # Make sure you call `to_s` or `iso8601` on any dates you set in the views to
-    # ensure the proper format.
+    # Make sure you call `to_s` or `iso8601` on any dates you set in the views
+    # to ensure the proper format.
     $picker = $(".datepicker__data")
 
     $picker.datepicker(
@@ -13,4 +13,3 @@ class window.DatePickerData
 $ ->
   DatePickerData.activate()
   AjaxModal.on_show(DatePickerData.activate)
-
