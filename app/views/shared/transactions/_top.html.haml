@@ -1,10 +1,10 @@
 .row#header_billing
   .span3
     #sidebar
-      = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => tab }
+      = render "admin/shared/sidenav_billing", sidenav_tab: tab
   - if @empty_orders
     .span9
       %p.alert.alert-info= text("#{controller_name}.#{action_name}.no_orders")
   - else
     .span9
-      = render :partial => 'shared/transactions/search'
+      = render "shared/transactions/search"
