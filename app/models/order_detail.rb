@@ -56,6 +56,7 @@ class OrderDetail < ActiveRecord::Base
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
   delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
+  delegate :canceled_at, to: :time_data
 
   delegate :in_cart?, :facility, :ordered_at, :user, to: :order
   delegate :price_group, to: :price_policy, allow_nil: true
@@ -843,10 +844,15 @@ class OrderDetail < ActiveRecord::Base
     @manual_fulfilled_at = ValidFulfilledAtDate.parse(string)
   end
 
+  def time_data
+    @time_data ||= TimeData.for(self)
+  end
+
   private
 
   def has_completed_reservation?
-    !product.is_a?(Instrument) || (reservation && (reservation.canceled_at || reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
+    return true unless time_data
+    canceled_at || time_data.actual_end_at || time_data.reserve_end_at < Time.current
   end
 
   def time_for_policy_lookup
