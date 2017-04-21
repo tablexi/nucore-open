@@ -617,7 +617,6 @@ en:
         account: "Payment Source"
         owner: "Owner"
     form:
-      confirm: "Are you sure you wish to place this order?"
       foot:
         all: "All prices are estimates. Actual cost is assigned when the order is complete."
         instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
