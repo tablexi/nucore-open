@@ -29,6 +29,48 @@
     padding: 10px 10px 0 10px;
     border-bottom: 0;
   }
+
+  // Responsive table behvavior inspired by
+  // https://css-tricks.com/responsive-data-tables/
+  .js--responsive_table {
+
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+
+    thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    tr { border: 1px solid #ccc; }
+
+    td {
+      border: none;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      padding-left: 35%;
+
+      .responsive-header {
+        display: block;
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 30%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+      }
+
+    }
+
+    th.currency, td.currency {
+      text-align: left;
+    }
+
+  }
+
 }
 
 @media (min-width: 980px) {
