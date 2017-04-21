@@ -31,8 +31,8 @@ RSpec.describe "Creating a SecureRoom" do
   describe "price policies", :js do
     let!(:global_price_group) { create(:price_group, :global) }
     let!(:facility_price_group) { PriceGroup.find_by(facility_id: facility.id) }
-    let(:base_price_group) { PriceGroup.base.first }
-    let(:external_price_group) { PriceGroup.external.first }
+    let(:base_price_group) { PriceGroup.base }
+    let(:external_price_group) { PriceGroup.external }
     let(:secure_room) { create(:secure_room, facility: facility) }
 
     before do
