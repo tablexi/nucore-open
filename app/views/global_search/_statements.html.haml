@@ -1,24 +1,20 @@
 %h3= Statement.model_name.human(count: 2)
 
-- headers = [Statement.human_attribute_name(:invoice_number),
-             Statement.human_attribute_name(:created_at),
-             Facility.model_name.human,
-             Account.model_name.human,
-             Statement.human_attribute_name(:sent_to),
-             "# of #{Order.model_name.human.pluralize}",
-             Statement.human_attribute_name(:total_cost),
-             Statement.human_attribute_name(:status)]
-
-%table.table.table-striped.table-hover.responsive-table
+%table.table.table-striped.table-hover.js--responsive_table
   %thead
     %tr
-      - headers.each do |header|
-        %th= header
+      %th= Statement.human_attribute_name(:invoice_number)
+      %th= Statement.human_attribute_name(:created_at)
+      %th= Facility.model_name.human
+      %th= Account.model_name.human
+      %th= Statement.human_attribute_name(:sent_to)
+      %th= "# of #{Order.model_name.human.pluralize}"
+      %th= Statement.human_attribute_name(:total_cost)
+      %th= Statement.human_attribute_name(:status)
   %tbody
     - results.each do |statement|
       %tr
         %td.centered
-          .responsive-header= headers[0]
           = "##{statement.invoice_number}"
           %br
           - if Ability.new(current_user, statement.facility).can? :show, statement
@@ -26,23 +22,16 @@
           - else
             = link_to t("statements.pdf.download"), account_facility_statement_path(statement.account, statement.facility, statement, format: :pdf)
         %td
-          .responsive-header= headers[1]
           = human_datetime(statement.created_at)
         %td
-          .responsive-header= headers[2]
           = statement.facility
         %td
-          .responsive-header= headers[3]
           = statement.account
         %td
-          .responsive-header= headers[4]
           = statement.account.notify_users.map(&:full_name).join(', ')
         %td.currency
-          .responsive-header= headers[5]
           = statement.order_details.count
         %td.currency
-          .responsive-header= headers[6]
           = number_to_currency(statement.total_cost)
         %td
-          .responsive-header= headers[7]
           = t("statements.reconciled.#{statement.reconciled?}")
