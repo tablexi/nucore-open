@@ -2,3 +2,10 @@ en:
   controllers:
     reservations:
       acting_as_not_on_approval_list: The user you are ordering for is not on the authorized list for this instrument.
+  views:
+    reservations:
+      list:
+        none: "You have not made any reservations."
+      my_table:
+        actions: Actions
+        reservation: Reservation (Edit/Extend)
