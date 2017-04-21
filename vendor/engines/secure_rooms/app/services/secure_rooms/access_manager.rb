@@ -5,6 +5,7 @@ module SecureRooms
     PROCESSING_CHAIN = [
       SecureRooms::AccessHandlers::EventHandler,
       SecureRooms::AccessHandlers::OccupancyHandler,
+      SecureRooms::AccessHandlers::OrderHandler,
     ].freeze
 
     def self.process(verdict)

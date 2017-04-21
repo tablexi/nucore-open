@@ -10,6 +10,8 @@ module SecureRooms
 
     validates :secure_room, :user, presence: true
 
+    delegate :facility, to: :secure_room
+
     def self.valid
       where(orphaned_at: nil)
     end
@@ -32,6 +34,10 @@ module SecureRooms
 
     def orphan?
       orphaned_at?
+    end
+
+    def orderable?
+      account_id?
     end
 
     def associate_entry!(event)
