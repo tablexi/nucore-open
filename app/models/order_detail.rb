@@ -874,13 +874,15 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def time_data
-    @time_data ||= TimeData.for(self)
+    @time_data ||= product.time_data_for(self)
   end
 
   private
 
   def has_completed_reservation?
-    return true unless time_data
+    return true unless product.timed?
+    return false unless time_data
+
     canceled_at || time_data.actual_end_at || time_data.reserve_end_at < Time.current
   end
 

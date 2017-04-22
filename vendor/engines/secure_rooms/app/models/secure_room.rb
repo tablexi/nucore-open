@@ -8,6 +8,10 @@ class SecureRoom < Product
 
   before_validation :set_secure_room_defaults, on: :create
 
+  def time_data_for(order_detail)
+    order_detail.occupancy
+  end
+
   private
 
   def set_secure_room_defaults
