@@ -83,10 +83,10 @@ module PriceDisplayment
   end
 
   def build_quantity_presenter
-    if reservation.try(:actual_duration_mins) && reservation.actual_duration_mins > 0
-      TimeQuantityDisplay.new(reservation.actual_duration_mins)
-    elsif reservation.try(:duration_mins)
-      TimeQuantityDisplay.new(reservation.duration_mins)
+    if time_data.try(:actual_duration_mins) && time_data.actual_duration_mins > 0
+      TimeQuantityDisplay.new(time_data.actual_duration_mins)
+    elsif time_data.try(:duration_mins)
+      TimeQuantityDisplay.new(time_data.duration_mins)
     elsif quantity_as_time?
       TimeQuantityDisplay.new(quantity)
     else

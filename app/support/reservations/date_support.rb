@@ -61,7 +61,7 @@ module Reservations::DateSupport
     if @duration_mins
       @duration_mins.to_i
     elsif reserve_end_at && reserve_start_at
-      duration_with_seconds_stripped(reserve_start_at, reserve_end_at)
+      TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
     else
       0
     end
@@ -72,7 +72,7 @@ module Reservations::DateSupport
       @actual_duration_mins.to_i
     elsif actual_start_at
       end_at = actual_end_at || base_time
-      [duration_with_seconds_stripped(actual_start_at, end_at), 1].max
+      [TimeRange.new(actual_start_at, end_at).duration_mins, 1].max
     else
       0
     end
@@ -208,10 +208,6 @@ module Reservations::DateSupport
     elsif @actual_duration_mins && actual_start_at
       self.actual_end_at = actual_start_at + @actual_duration_mins.to_i.minutes
     end
-  end
-
-  def duration_with_seconds_stripped(start_time, end_time)
-    ((end_time.change(sec: 0) - start_time.change(sec: 0)) / 60).to_i
   end
 
 end

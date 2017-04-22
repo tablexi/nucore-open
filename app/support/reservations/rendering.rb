@@ -11,32 +11,20 @@ module Reservations::Rendering
 
   def to_s
     return super unless reserve_start_at && reserve_end_at
-    range = range_to_s(display_start_at, display_end_at)
+    range = TimeRange.new(display_start_at, display_end_at).to_s
     range += " (Canceled)" if canceled_at.present?
     range
   end
 
   def reserve_to_s
-    range_to_s(reserve_start_at, reserve_end_at)
-  end
-
-  def range_to_s(start_at, end_at)
-    if start_at.day == end_at.day
-      "#{I18n.l(start_at)} - #{I18n.l(end_at, format: :timeonly)}"
-    else
-      "#{I18n.l(start_at)} - #{I18n.l(end_at)}"
-    end
+    TimeRange.new(reserve_start_at, reserve_end_at).to_s
   end
 
   def actuals_string
     if actual_start_at.blank? && actual_end_at.blank?
       "No actual times recorded"
-    elsif !started?
-      "??? - #{I18n.l(actual_end_at)} "
-    elsif actual_end_at.blank?
-      "#{I18n.l(actual_start_at)} - ???"
     else
-      range_to_s(actual_start_at, actual_end_at)
+      TimeRange.new(actual_start_at, actual_end_at).to_s
     end
   end
 
