@@ -105,16 +105,6 @@ class OrderDetail < ActiveRecord::Base
       .references(:order)
   }
 
-  scope :facility_recent, lambda {|facility|
-    joins("LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id")
-      .where(
-        "(order_details.statement_id IS NULL OR order_details.reviewed_at > :reviewed_at) AND orders.facility_id = :facility_id",
-        reviewed_at: Time.zone.now,
-        facility_id: facility.id,
-      )
-      .order("order_details.created_at DESC")
-  }
-
   scope :for_product_type, lambda { |product_type|
     joins("LEFT JOIN products ON products.id = order_details.product_id")
       .where("products.type" => product_type)
