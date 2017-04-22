@@ -59,14 +59,6 @@ class Facility < ActiveRecord::Base
       new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL")
   end
 
-  def self.ids_from_urls(urls)
-    where("url_name in (?)", urls).select(:id).map(&:id)
-  end
-
-  def self.urls_from_ids(ids)
-    where("id in (?)", ids).select(:url_name).map(&:url_name)
-  end
-
   def products(type = nil)
     if type
       super.where(type: type)
