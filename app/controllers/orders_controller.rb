@@ -313,7 +313,7 @@ class OrdersController < ApplicationController
     when "pending"
       @order_details = @order_details.pending
     when "all"
-      @order_details = @order_details.ordered
+      @order_details = @order_details.purchased
     else
       redirect_to orders_status_path(status: "pending")
       return
