@@ -148,13 +148,6 @@ class OrderDetail < ActiveRecord::Base
 
   scope :with_price_policy, -> { where.not(price_policy_id: nil) }
 
-  scope :for_facility_with_price_policy, lambda { |facility|
-    joins(:order)
-      .order(fulfilled_at: :desc)
-      .where(orders: { facility_id: facility.id })
-      .with_price_policy
-  }
-
   scope :not_disputed, lambda {
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
   }
