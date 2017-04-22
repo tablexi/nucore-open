@@ -925,12 +925,6 @@ RSpec.describe OrderDetail do
         expect(ods.first).to eq(@order_detail)
       end
 
-      it "should give finalized order details of given facility only" do
-        ods = OrderDetail.finalized(@facility)
-        expect(ods.size).to eq(1)
-        expect(ods.first).to eq(@order_detail)
-      end
-
     end
 
     describe "action_in_date_range" do

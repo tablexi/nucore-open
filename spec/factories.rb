@@ -9,14 +9,6 @@ FactoryGirl.define do
     sequence(:name) { |n| "Level #{n}" }
   end
 
-  factory :payment_account_transaction do
-    description "fake trans"
-    transaction_amount -12.34
-    finalized_at { Time.zone.now }
-    reference "abc123xyz"
-    is_in_dispute false
-  end
-
   factory :statement_row do
     amount 5
   end

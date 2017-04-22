@@ -115,13 +115,6 @@ class OrderDetail < ActiveRecord::Base
       .order("order_details.created_at DESC")
   }
 
-  scope :finalized, lambda { |facility|
-    joins(:order)
-      .where("orders.facility_id" => facility.id)
-      .where("reviewed_at < ?", Time.current)
-      .order(created_at: :desc)
-  }
-
   scope :for_product_type, lambda { |product_type|
     joins("LEFT JOIN products ON products.id = order_details.product_id")
       .where("products.type" => product_type)
