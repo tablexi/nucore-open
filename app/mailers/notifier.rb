@@ -12,7 +12,6 @@ class Notifier < ActionMailer::Base
   # Who created the account.  How to update.
   def new_user(args)
     @user = args[:user]
-    @password = args[:password]
     send_nucore_mail args[:user].email, text("views.notifier.new_user.subject")
   end
 

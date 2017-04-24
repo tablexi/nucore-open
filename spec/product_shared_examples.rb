@@ -17,39 +17,36 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   let(:price_group3) { FactoryGirl.create(:price_group, facility: facility) }
   let(:price_group4) { FactoryGirl.create(:price_group, facility: facility) }
 
-  let!(:user_price_group_member) { FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group) }
-  let!(:user_price_group_member2) { FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group2) }
-  let!(:account_price_group_member) { FactoryGirl.create(:account_price_group_member, account: order.account, price_group: price_group) }
-  let!(:account_price_group_member2) { FactoryGirl.create(:account_price_group_member, account: order.account, price_group: price_group2) }
-
   let!(:pp_g1) { make_price_policy(unit_cost: 22, price_group: price_group) }
   let!(:pp_g2) { make_price_policy(unit_cost: 23, price_group: price_group2) }
   let!(:pp_g3) { make_price_policy(unit_cost: 5, price_group: price_group3) }
   let!(:pp_g4) { make_price_policy(unit_cost: 4, price_group: price_group4) }
 
+  let!(:account_price_group_member) { FactoryGirl.create(:account_price_group_member, account: order.account, price_group: price_group) }
+  let!(:account_price_group_member2) { FactoryGirl.create(:account_price_group_member, account: order.account, price_group: price_group2) }
+
   context '#cheapest_price_policy' do
     context "current policies" do
+      it "should find the cheapest price policy" do
+        expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
+      end
+
       context "with user-based price groups enabled", feature_setting: { user_based_price_groups: true } do
-        it "should find the cheapest price policy of the policies user is a member of" do
-          expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
-        end
-        it "should find the cheapest price policy if the user is in all groups" do
+        it "should find the cheapest price policy including groups that belong to the user" do
           FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group3)
           FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group4)
 
           expect(product.cheapest_price_policy(order_detail)).to eq(pp_g4)
         end
-
-        it "should find the cheapest price policy if the user is in one group, but the account is in another" do
-          nufs_account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
-          AccountPriceGroupMember.create!(price_group: price_group3, account: nufs_account)
-          order_detail.update_attributes(account: nufs_account)
-
-          expect(product.cheapest_price_policy(order_detail)).to eq(pp_g3)
-        end
       end
 
       context "without user-based price groups enabled", feature_setting: { user_based_price_groups: false } do
+        it "should ignore cheaper price policies that belong to the user but not the account" do
+          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group3)
+          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group4)
+
+          expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
+        end
       end
 
       it "should use the base rate when that is the cheapest and others have equal unit_cost" do
@@ -134,8 +131,10 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
   let(:price_group3) { FactoryGirl.create(:price_group, facility: facility) }
   let(:price_group4) { FactoryGirl.create(:price_group, facility: facility) }
 
-  let!(:user_price_group_member) { FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group) }
-  let!(:user_price_group_member2) { FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group2) }
+  let!(:pp_g1) { make_price_policy(usage_rate: 22, price_group: price_group) }
+  let!(:pp_g2) { make_price_policy(usage_rate: 23, price_group: price_group2) }
+  let!(:pp_g3) { make_price_policy(usage_rate: 5, price_group: price_group3) }
+  let!(:pp_g4) { make_price_policy(usage_rate: 4, price_group: price_group4) }
 
   let!(:schedule_rule) { product.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule)) }
 
@@ -149,32 +148,26 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
                        order_detail: order_detail)
   end
 
-  let!(:pp_g1) { make_price_policy(usage_rate: 22, price_group: price_group) }
-  let!(:pp_g2) { make_price_policy(usage_rate: 23, price_group: price_group2) }
-  let!(:pp_g3) { make_price_policy(usage_rate: 5, price_group: price_group3) }
-  let!(:pp_g4) { make_price_policy(usage_rate: 4, price_group: price_group4) }
-
   context '#cheapest_price_policy' do
     context "current policies" do
+      it "should find the cheapest price policy" do
+        expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
+      end
       context "with user-based price groups enabled", feature_setting: { user_based_price_groups: true } do
-        it "should find the cheapest price policy of the policies user is a member of" do
-          expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
-        end
-        it "should find the cheapest price policy if the user is in all groups" do
+        it "should find the cheapest price policy including groups that belong to the user" do
           FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group3)
           FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group4)
           expect(product.cheapest_price_policy(order_detail)).to eq(pp_g4)
         end
-
-        it "should find the cheapest price policy if the user is in one group, but the account is in another" do
-          nufs_account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
-          AccountPriceGroupMember.create!(price_group: price_group3, account: nufs_account)
-          order_detail.update_attributes(account: nufs_account)
-          expect(product.cheapest_price_policy(order_detail)).to eq(pp_g3)
-        end
       end
 
       context "without user-based price groups enabled", feature_setting: { user_based_price_groups: false } do
+        it "should ignore cheaper price policies that belong to the user but not the account" do
+          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group3)
+          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group4)
+
+          expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
+        end
       end
 
       context "with an expired price policy" do
