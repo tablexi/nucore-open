@@ -17,11 +17,13 @@ module SecureRooms
       def process
         return unless occupancy.account_id?
 
-        create_order
-        create_order_detail
+        ActiveRecord::Base.transaction do
+          create_order
+          create_order_detail
 
-        order.validate_order!
-        order.purchase!
+          order.validate_order!
+          order.purchase!
+        end
 
         order
       end
