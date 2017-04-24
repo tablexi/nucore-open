@@ -205,7 +205,7 @@ class User < ActiveRecord::Base
     return unless SettingsHelper.feature_on?(:user_based_price_groups)
 
     price_group = email_user? ? PriceGroup.external : PriceGroup.base
-    price_group_members.create!(price_group: price_group)
+    price_group_members.find_or_create_by!(price_group: price_group)
   end
 
 end

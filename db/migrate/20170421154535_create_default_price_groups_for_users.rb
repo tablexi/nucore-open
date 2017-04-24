@@ -6,6 +6,6 @@ class CreateDefaultPriceGroupsForUsers < ActiveRecord::Migration
     end
   end
   def down
-    raise ActiveRecord::IrreversibleMigration
+    PriceGroupMember.where(price_group: [PriceGroup.base, PriceGroup.external]).delete_all
   end
 end
