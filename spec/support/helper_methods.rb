@@ -133,8 +133,7 @@ def place_reservation_for_instrument(ordered_by, instrument, account, reserve_st
   res_attrs = {
     reserve_start_at: reserve_start,
     order_detail: order_detail,
-    duration_value: 60,
-    duration_unit: "minutes",
+    duration_mins: 60,
     split_times: true,
   }
 
@@ -171,8 +170,7 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
   res_attrs = {
     reserve_start_at: reserve_start,
     order_detail: order_detail,
-    duration_value: 60,
-    duration_unit: "minutes",
+    duration_mins: 60,
     split_times: true,
   }
   order_detail.update_attributes!(product: @instrument)
@@ -182,7 +180,7 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
 
   # If reserve_end_at is unset, derive it from reserve_start_at + duration:
   res_attrs[:reserve_end_at] ||=
-    reserve_start + res_attrs[:duration_value].public_send(res_attrs[:duration_unit])
+    reserve_start + res_attrs[:duration_mins].minutes
 
   @reservation = @instrument.reservations.build(res_attrs)
   @reservation.save(validate: false)

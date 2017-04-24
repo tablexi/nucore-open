@@ -240,8 +240,7 @@ RSpec.describe Order do
                                                      reserve_start_hour: 9,
                                                      reserve_start_min: 00,
                                                      reserve_start_meridian: "am",
-                                                     duration_value: 60,
-                                                     duration_unit: "minutes",
+                                                     duration_mins: 60,
                                                      order_detail: @order_detail,
                                                      split_times: true)
       expect(@order.validate_order!).to be true
