@@ -4,8 +4,12 @@ module SecureRooms
 
     isolate_namespace SecureRooms
 
+    config.autoload_paths << File.join(File.dirname(__FILE__), "../../lib")
+
     config.to_prepare do
       ::AbilityExtensionManager.extensions << "SecureRooms::AbilityExtension"
+
+      OrderDetail.send :include, SecureRooms::OrderDetailExtension
 
       bundle_index = Product.types.index(Bundle) || -1
       Product.types.insert(bundle_index, SecureRoom)
