@@ -647,7 +647,6 @@ ActiveRecord::Schema.define(version: 20170421142844) do
     t.datetime "orphaned_at"
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
-    t.integer  "order_id",        limit: 4
     t.integer  "order_detail_id", limit: 4
   end
 
@@ -655,7 +654,6 @@ ActiveRecord::Schema.define(version: 20170421142844) do
   add_index "secure_rooms_occupancies", ["entry_event_id"], name: "index_secure_rooms_occupancies_on_entry_event_id", using: :btree
   add_index "secure_rooms_occupancies", ["exit_event_id"], name: "index_secure_rooms_occupancies_on_exit_event_id", using: :btree
   add_index "secure_rooms_occupancies", ["order_detail_id"], name: "index_secure_rooms_occupancies_on_order_detail_id", using: :btree
-  add_index "secure_rooms_occupancies", ["order_id"], name: "index_secure_rooms_occupancies_on_order_id", using: :btree
   add_index "secure_rooms_occupancies", ["product_id"], name: "index_secure_rooms_occupancies_on_product_id", using: :btree
   add_index "secure_rooms_occupancies", ["user_id"], name: "index_secure_rooms_occupancies_on_user_id", using: :btree
 
@@ -816,7 +814,6 @@ ActiveRecord::Schema.define(version: 20170421142844) do
   add_foreign_key "secure_rooms_events", "accounts"
   add_foreign_key "secure_rooms_occupancies", "accounts"
   add_foreign_key "secure_rooms_occupancies", "order_details"
-  add_foreign_key "secure_rooms_occupancies", "orders"
   add_foreign_key "secure_rooms_occupancies", "products"
   add_foreign_key "secure_rooms_occupancies", "secure_rooms_events", column: "entry_event_id"
   add_foreign_key "secure_rooms_occupancies", "secure_rooms_events", column: "exit_event_id"
