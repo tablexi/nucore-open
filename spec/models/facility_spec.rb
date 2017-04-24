@@ -102,24 +102,6 @@ RSpec.describe Facility do
     end
   end
 
-  context "when looking up ids or urls" do
-    let!(:facilities) { create_list(:facility, 3) }
-
-    describe ".ids_from_urls" do
-      it "returns the expected ids" do
-        expect(Facility.ids_from_urls(facilities.map(&:url_name)))
-          .to match_array(facilities.map(&:id))
-      end
-    end
-
-    describe ".urls_from_ids" do
-      it "returns the expected url_names" do
-        expect(Facility.urls_from_ids(facilities.map(&:id)))
-          .to match_array(facilities.map(&:url_name))
-      end
-    end
-  end
-
   describe "#order_statuses" do
     let(:facility) { FactoryGirl.create(:facility) }
     let(:other_facility) { FactoryGirl.create(:facility) }

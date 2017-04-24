@@ -28,7 +28,7 @@
 
   %p.footnote= t(".foot.all")
 
-  - if order.instrument_order_details.count > 0
+  - if order.order_details.any? { |od| od.product.is_a?(Instrument) }
     %p.footnote= t(".foot.instrument")
 
   - if order.order_details.size > 0
