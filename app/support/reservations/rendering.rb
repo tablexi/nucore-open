@@ -26,5 +26,4 @@ module Reservations::Rendering
     Reservations::CalendarPresenter.new(self)
   end
 
-
 end

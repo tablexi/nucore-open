@@ -53,8 +53,18 @@ module SecureRooms
       self
     end
 
+    def actual_duration_mins
+      range.duration_mins
+    end
+
     def to_s
-      TimeRange.new(entry_at, exit_at).to_s
+      range.to_s
+    end
+
+    private
+
+    def range
+      TimeRange.new(entry_at, exit_at)
     end
 
   end
