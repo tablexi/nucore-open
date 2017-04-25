@@ -48,6 +48,7 @@ RSpec.describe SecureRoomsApi::ScansController do
 
         before do
           card_reader.secure_room.update(requires_approval: false)
+          allow_any_instance_of(Product).to receive(:can_purchase_order_detail?).and_return(true)
 
           allow_any_instance_of(User).to receive(:accounts_for_product).and_return(accounts)
 

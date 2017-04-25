@@ -29,6 +29,9 @@ RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
       let(:account_identifier) { accounts.first.id.to_s }
 
       it { is_expected.to have_result_code(:grant) }
+      it "stores the selected account" do
+        expect(result.selected_account).to eq accounts.first
+      end
     end
 
     context "selected account is empty but accounts exist" do
