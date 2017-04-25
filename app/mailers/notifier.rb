@@ -10,9 +10,9 @@ class Notifier < ActionMailer::Base
 
   # Welcome user, login credentials.  CC to PI and Department Admin.
   # Who created the account.  How to update.
-  def new_user(args)
-    @user = args[:user]
-    send_nucore_mail args[:user].email, text("views.notifier.new_user.subject")
+  def new_user(user:)
+    @user = user
+    send_nucore_mail @user.email, text("views.notifier.new_user.subject")
   end
 
   # Changes to the user affecting the PI or department will alert their
