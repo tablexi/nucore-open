@@ -105,23 +105,6 @@ class OrderDetail < ActiveRecord::Base
       .references(:order)
   }
 
-  scope :facility_recent, lambda {|facility|
-    joins("LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id")
-      .where(
-        "(order_details.statement_id IS NULL OR order_details.reviewed_at > :reviewed_at) AND orders.facility_id = :facility_id",
-        reviewed_at: Time.zone.now,
-        facility_id: facility.id,
-      )
-      .order("order_details.created_at DESC")
-  }
-
-  scope :finalized, lambda { |facility|
-    joins(:order)
-      .where("orders.facility_id" => facility.id)
-      .where("reviewed_at < ?", Time.current)
-      .order(created_at: :desc)
-  }
-
   scope :for_product_type, lambda { |product_type|
     joins("LEFT JOIN products ON products.id = order_details.product_id")
       .where("products.type" => product_type)
@@ -164,13 +147,6 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :with_price_policy, -> { where.not(price_policy_id: nil) }
-
-  scope :for_facility_with_price_policy, lambda { |facility|
-    joins(:order)
-      .order(fulfilled_at: :desc)
-      .where(orders: { facility_id: facility.id })
-      .with_price_policy
-  }
 
   scope :not_disputed, lambda {
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
@@ -288,13 +264,8 @@ class OrderDetail < ActiveRecord::Base
   scope :reservations, -> { joins(:product).where("products.type = 'Instrument'") }
 
   scope :purchased, -> { joins(:order).merge(Order.purchased) }
-  class << self
 
-    alias ordered purchased # TODO: deprecate .ordered in favor of .purchased
-
-  end
-
-  scope :pending, -> { joins(:order).where(state: %w(new inprocess)).ordered }
+  scope :pending, -> { joins(:order).where(state: %w(new inprocess)).purchased }
   scope :confirmed_reservations, -> { reservations.joins(:order).includes(:reservation).purchased }
 
   scope :upcoming_reservations, lambda {

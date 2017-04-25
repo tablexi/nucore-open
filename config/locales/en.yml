@@ -617,7 +617,6 @@ en:
         account: "Payment Source"
         owner: "Owner"
     form:
-      confirm: "Are you sure you wish to place this order?"
       foot:
         all: "All prices are estimates. Actual cost is assigned when the order is complete."
         instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
@@ -848,7 +847,7 @@ en:
         placeholder: "Select a chart string"
         explanation: "All chart strings listed above are available to reassign to at least one of the selected transactions below."
       head: "Move Transactions"
-      submit: "Reassign chart string"
+      submit: "Reassign Chart String"
 
     transactions:
       no_orders: There are no orders in this !facility_downcase!

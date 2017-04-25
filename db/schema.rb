@@ -391,26 +391,20 @@ ActiveRecord::Schema.define(version: 20170421142844) do
   add_index "price_groups", ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name", unique: true, using: :btree
 
   create_table "price_policies", force: :cascade do |t|
-    t.string   "type",                limit: 50,                                           null: false
-    t.integer  "product_id",          limit: 4
-    t.integer  "price_group_id",      limit: 4,                                            null: false
-    t.boolean  "can_purchase",                                             default: false, null: false
-    t.datetime "start_date",                                                               null: false
-    t.decimal  "unit_cost",                       precision: 10, scale: 2
-    t.decimal  "unit_subsidy",                    precision: 10, scale: 2
-    t.decimal  "usage_rate",                      precision: 12, scale: 4
-    t.integer  "usage_mins",          limit: 4
-    t.decimal  "reservation_rate",                precision: 12, scale: 4
-    t.integer  "reservation_mins",    limit: 4
-    t.decimal  "overage_rate",                    precision: 12, scale: 4
-    t.integer  "overage_mins",        limit: 4
-    t.decimal  "minimum_cost",                    precision: 10, scale: 2
-    t.decimal  "cancellation_cost",               precision: 10, scale: 2
-    t.decimal  "usage_subsidy",                   precision: 12, scale: 4
-    t.decimal  "reservation_subsidy",             precision: 10, scale: 2
-    t.decimal  "overage_subsidy",                 precision: 10, scale: 2
-    t.datetime "expire_date",                                                              null: false
-    t.string   "charge_for",          limit: 255
+    t.string   "type",              limit: 50,                                           null: false
+    t.integer  "product_id",        limit: 4
+    t.integer  "price_group_id",    limit: 4,                                            null: false
+    t.boolean  "can_purchase",                                           default: false, null: false
+    t.datetime "start_date",                                                             null: false
+    t.decimal  "unit_cost",                     precision: 10, scale: 2
+    t.decimal  "unit_subsidy",                  precision: 10, scale: 2
+    t.decimal  "usage_rate",                    precision: 12, scale: 4
+    t.decimal  "minimum_cost",                  precision: 10, scale: 2
+    t.decimal  "cancellation_cost",             precision: 10, scale: 2
+    t.decimal  "usage_subsidy",                 precision: 12, scale: 4
+    t.datetime "expire_date",                                                            null: false
+    t.string   "charge_for",        limit: 255
+    t.string   "legacy_rates",      limit: 255
   end
 
   add_index "price_policies", ["price_group_id"], name: "fk_rails_74aa223960", using: :btree
