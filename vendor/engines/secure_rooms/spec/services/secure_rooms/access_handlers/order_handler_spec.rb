@@ -2,18 +2,19 @@ require "rails_helper"
 
 RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
   let(:user) { create :user }
-  let(:card_reader) { create :card_reader }
+  let(:secure_room) { create :secure_room }
+  let(:card_reader) { create :card_reader, secure_room: secure_room }
   let(:account) { create :account, :with_account_owner, owner: user }
 
   describe "#process" do
     context "with an orderable occupancy" do
       before do
-        card_reader.secure_room.update(requires_approval: false)
+        secure_room.update(requires_approval: false)
         allow_any_instance_of(Product).to receive(:can_purchase_order_detail?).and_return(true)
       end
 
       let(:occupancy) do
-        create(:occupancy, :active, user: user, secure_room: card_reader.secure_room, account: account)
+        create(:occupancy, :active, user: user, secure_room: secure_room, account: account)
       end
 
       it "creates an order" do
@@ -56,6 +57,47 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
           expect(order_detail.product).to eq card_reader.secure_room
           expect(order_detail.occupancy).to eq occupancy
           expect(order_detail.created_by_user).to eq user
+        end
+      end
+
+      # TODO: Clean me up pls
+      context "when completing the occupancy" do
+        let(:occupancy) do
+          create(
+            :occupancy,
+            :complete,
+            user: user,
+            secure_room: secure_room,
+            account: account,
+          )
+        end
+
+        it "sets ordered_at" do
+          order = Order.create!(
+            account: occupancy.account,
+            user: occupancy.user,
+            facility: occupancy.facility,
+            created_by_user: occupancy.user,
+          )
+
+          order_detail = order.order_details.create!(
+            account: occupancy.account,
+            product: occupancy.secure_room,
+            occupancy: occupancy,
+            created_by_user: occupancy.user,
+            quantity: 1,
+          )
+
+          order.validate_order!
+          order.purchase!
+
+          order_detail = described_class.process(occupancy).order_details.first
+
+          expect(order_detail).to be_complete
+          expect(order_detail.fulfilled_at).to be_present
+
+          # TODO: expect price_policy to be_present
+          # TODO: expect price to be_present
         end
       end
     end

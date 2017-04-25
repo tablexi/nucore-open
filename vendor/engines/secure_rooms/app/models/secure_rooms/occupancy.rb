@@ -37,6 +37,10 @@ module SecureRooms
       orphaned_at?
     end
 
+    def complete?
+      entry_at && exit_at
+    end
+
     def associate_entry!(event)
       update!(
         entry_event: event,
