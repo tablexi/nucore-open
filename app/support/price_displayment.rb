@@ -83,9 +83,9 @@ module PriceDisplayment
   end
 
   def build_quantity_presenter
-    if time_data.try(:actual_duration_mins) && time_data.actual_duration_mins > 0
+    if time_data.respond_to?(:actual_duration_mins) && time_data.actual_duration_mins.to_i > 0
       TimeQuantityDisplay.new(time_data.actual_duration_mins)
-    elsif time_data.try(:duration_mins)
+    elsif time_data.respond_to?(:duration_mins)
       TimeQuantityDisplay.new(time_data.duration_mins)
     elsif quantity_as_time?
       TimeQuantityDisplay.new(quantity)
