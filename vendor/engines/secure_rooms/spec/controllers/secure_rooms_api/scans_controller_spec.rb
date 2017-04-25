@@ -6,7 +6,7 @@ RSpec.describe SecureRoomsApi::ScansController do
       name = Settings.secure_rooms_api.basic_auth_name
       password = Settings.secure_rooms_api.basic_auth_password
       encoded_auth_credentials = ActionController::HttpAuthentication::Basic.encode_credentials(name, password)
-      request.env['HTTP_AUTHORIZATION'] = encoded_auth_credentials
+      request.env["HTTP_AUTHORIZATION"] = encoded_auth_credentials
     end
 
     subject { response }

@@ -6,3 +6,10 @@ en:
         fulfilled_at: Fulfilled
         journal_or_statement_date: "Journaled/Statement"
         reconciled_at: Reconciled
+      actions:
+        reassign_chart_strings: Reassign Chart Strings
+        send_notifications: Send Notifications
+        mark_as_reviewed: Mark as Reviewed
+        create: Create
+        history: Transaction History
+

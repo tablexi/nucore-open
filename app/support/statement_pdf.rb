@@ -16,11 +16,11 @@ class StatementPdf
     if download?
       DEFAULT_OPTIONS.merge(filename: filename, force_download: true)
     else
-      DEFAULT_OPTIONS
+      DEFAULT_OPTIONS.dup
     end
   end
 
-  def initialize(statement, download = false)
+  def initialize(statement, download: false)
     @statement = statement
     @account = statement.account
     @facility = statement.facility

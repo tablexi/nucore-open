@@ -209,15 +209,10 @@ class Account < ActiveRecord::Base
     end
   end
 
+  # TODO: Only used in demo:seeds
   def self.need_statements(facility)
     # find details that are complete, not yet statemented, priced, and not in dispute
     details = OrderDetail.need_statement(facility)
-    find(details.collect(&:account_id).uniq || [])
-  end
-
-  def self.need_notification(facility)
-    # find details that are complete, not yet notified, priced, and not in dispute
-    details = OrderDetail.for_facility(facility).need_notification
     find(details.collect(&:account_id).uniq || [])
   end
 

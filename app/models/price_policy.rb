@@ -7,9 +7,9 @@ class PricePolicy < ActiveRecord::Base
   has_many :order_details
 
   validates_presence_of :start_date, :price_group_id, :type
-  validate :start_date_is_unique, unless: ->(o) { o.start_date.nil? }
+  validate :start_date_is_unique, if: :start_date?
 
-  validates :unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validate :subsidy_less_than_rate, unless: :restrict_purchase?
 
   validates_each :expire_date do |record, _attr, value|
     unless value.blank?
@@ -21,6 +21,7 @@ class PricePolicy < ActiveRecord::Base
     end
   end
 
+  before_save :set_default_subsidy
   before_create :set_expire_date
   before_create :truncate_existing_policies
 
@@ -94,18 +95,16 @@ class PricePolicy < ActiveRecord::Base
            .map &:to_date
   end
 
-  def truncate_existing_policies
-    logger.debug("Truncating existing policies")
-    existing_policies = PricePolicy.current.where(type: self.class.name,
-                                                  price_group_id: price_group_id,
-                                                  product_id: product_id)
+  #
+  # Given a +PricePolicy+ or +Date+ determine the next
+  # appropriate expiration date.
+  def self.generate_expire_date(price_policy_or_date)
+    start_date = price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
+    SettingsHelper.fiscal_year_end(start_date)
+  end
 
-    existing_policies = existing_policies.where("id != ?", id) unless id.nil?
-
-    existing_policies.each do |policy|
-      policy.expire_date = (start_date - 1.day).end_of_day
-      policy.save
-    end
+  def has_subsidy?
+    self[subsidy_field].to_f > 0
   end
 
   def product_type
@@ -166,42 +165,52 @@ class PricePolicy < ActiveRecord::Base
     expire_date <= Time.zone.now
   end
 
-  def start_date_is_unique # TODO: Refactor
-    type          = self.class.name.downcase.gsub(/pricepolicy$/, "")
-    price_group   = self.price_group
-    unless product.nil? || price_group.nil?
-      if id.nil?
-        pp = PricePolicy.find_by(price_group_id: price_group.id, product_id: product.id, start_date: start_date)
-      else
-        pp = PricePolicy.where(price_group_id: price_group.id, product_id: product.id, start_date: start_date).where.not(id: id).first
-      end
-      errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
-    end
-  end
-
-  #
-  # Given a +PricePolicy+ or +Date+ determine the next
-  # appropriate expiration date.
-  def self.generate_expire_date(price_policy_or_date)
-    start_date = price_policy_or_date.is_a?(PricePolicy) ? price_policy_or_date.start_date : price_policy_or_date
-    SettingsHelper.fiscal_year_end(start_date)
-  end
-
-  def set_expire_date
-    self.expire_date = self.class.generate_expire_date(self) unless expire_date
-  end
-
   def editable?
     !expired? && !assigned_to_order?
   end
 
-  #  def self.active(product)
-  #    policies = product.send("#{product.class.name.downcase}_price_policies")
-  #    max      = nil
-  #    policies.each { |p|
-  #      max = p if p.start_date <= Time.zone.now && (max.nil? || p.start_date > max.start_date)
-  #    }
-  #    max
-  #  end?
+  private
+
+  def set_expire_date
+    self.expire_date ||= self.class.generate_expire_date(self)
+  end
+
+  def start_date_is_unique # TODO: Refactor
+    type          = self.class.name.downcase.gsub(/pricepolicy$/, "")
+    price_group   = self.price_group
+    unless product.nil? || price_group.nil?
+      pp = if id.nil?
+             PricePolicy.find_by(price_group_id: price_group.id, product_id: product.id, start_date: start_date)
+           else
+             PricePolicy.where(price_group_id: price_group.id, product_id: product.id, start_date: start_date).where.not(id: id).first
+           end
+      errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
+    end
+  end
+
+  def set_default_subsidy
+    self[subsidy_field] ||= 0 if self[rate_field]
+  end
+
+  def subsidy_less_than_rate
+    return unless defined?(rate_field)
+    if self[rate_field] && self[subsidy_field] && self[subsidy_field] > self[rate_field]
+      errors.add subsidy_field, :subsidy_greater_than_cost
+    end
+  end
+
+  def truncate_existing_policies
+    logger.debug("Truncating existing policies")
+    existing_policies = PricePolicy.current.where(type: self.class.name,
+                                                  price_group_id: price_group_id,
+                                                  product_id: product_id)
+
+    existing_policies = existing_policies.where("id != ?", id) unless id.nil?
+
+    existing_policies.each do |policy|
+      policy.expire_date = (start_date - 1.day).end_of_day
+      policy.save
+    end
+  end
 
 end

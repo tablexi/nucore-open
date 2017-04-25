@@ -3,4 +3,6 @@ class window.ChosenActivator
     $(".js--chosen").not(".optional").chosen()
     $(".js--chosen.optional").chosen(allow_single_deselect: true)
 
-$ -> ChosenActivator.activate()
+$ ->
+  ChosenActivator.activate()
+  AjaxModal.on_show(ChosenActivator.activate)

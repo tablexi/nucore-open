@@ -8,15 +8,14 @@
         reservations_status_path(status: status),
         (@status == status)
 
-- if @order_details.empty?
-  %p.notice
-    = "You have not made any #{Reservation.model_name.human.pluralize.downcase}."
+- if @order_details.any?
+  = render "my_table", order_details: @order_details
 - else
-  = render "shared/reservations_table", order_details: @order_details
+  %p.notice= text("none")
 
 - if session[:reservation_ended]
   - session.delete(:reservation_ended)
-  #logout_modal.modal.hide.fade
+  .modal.hide.fade#logout_modal
     .modal-body= t("reservations.logout.body")
     .modal-footer
       = link_to t("reservations.logout.cancel"), reservations_path, class: "btn"

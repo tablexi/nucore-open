@@ -285,7 +285,7 @@ class OrdersController < ApplicationController
     if single_reservation?
       # with additional validations (see OrderPurchaser), we discard the existing reservation
       # and redirect to new. otherwise it takes us out of the normal reservation purchase flow
-      @order.order_details.first.reservation.destroy
+      @order.order_details.first.reservation.destroy if @order.order_details.first.reservation
       redirect_to new_order_order_detail_reservation_path(@order, @order.order_details.first)
     else
       redirect_to order_path(@order)
@@ -313,7 +313,7 @@ class OrdersController < ApplicationController
     when "pending"
       @order_details = @order_details.pending
     when "all"
-      @order_details = @order_details.ordered
+      @order_details = @order_details.purchased
     else
       redirect_to orders_status_path(status: "pending")
       return

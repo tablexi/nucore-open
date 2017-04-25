@@ -59,7 +59,7 @@ module TransactionSearch
   end
 
   def init_order_details
-    @order_details = OrderDetail.ordered
+    @order_details = OrderDetail.purchased
 
     if current_facility
       @order_details = @order_details.for_facility(current_facility)

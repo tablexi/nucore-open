@@ -643,6 +643,55 @@ RSpec.describe OrderManagement::OrderDetailsController do
           end
         end
 
+        describe "marking as complete", :timecop_freeze do
+          describe "without a fulfillment date" do
+            before do
+              @params[:order_detail] = {
+                order_status_id: OrderStatus.complete_status.id.to_s,
+              }
+              do_request
+            end
+
+            it "marks as now" do
+              expect(assigns(:order_detail).fulfilled_at).to eq(Time.current)
+            end
+          end
+
+          describe "with a fulfillment date" do
+            before do
+              @params[:order_detail] = {
+                order_status_id: OrderStatus.complete_status.id.to_s,
+                fulfilled_at: I18n.l(fulfilled_at.to_date, format: :usa),
+              }
+              do_request
+            end
+
+            describe "of yesterday" do
+              let(:fulfilled_at) { 1.day.ago }
+
+              it "sets the date to noon of that day" do
+                expect(assigns(:order_detail).fulfilled_at).to eq(1.day.ago.to_date + 12.hours)
+              end
+            end
+
+            describe "of tomorrow" do
+              let(:fulfilled_at) { 1.day.from_now }
+
+              it "sets the time to now" do
+                expect(assigns(:order_detail).fulfilled_at).to eq(Time.current)
+              end
+            end
+
+            describe "of before the fiscal year" do
+              let(:fulfilled_at) { 1.year.ago }
+
+              it "sets the time to now" do
+                expect(assigns(:order_detail).fulfilled_at).to eq(Time.current)
+              end
+            end
+          end
+        end
+
         describe "reconciling", :time_travel do
           before do
             order_detail.change_status!(OrderStatus.complete_status)

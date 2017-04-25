@@ -5,11 +5,3 @@
     - if order_detail.project
       = f.input :project_id do
         = order_detail.project.name
-
-  :javascript
-    $(function() {
-      // Give the browser just enough time to set the width of the select before
-      // activating Chosen. Otherwise, it will sometimes appear as 0-width.
-      loadChosen = function() { ChosenActivator.activate(); }
-      setTimeout(loadChosen, 25);
-    });
