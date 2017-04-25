@@ -40,14 +40,6 @@ RSpec.describe InstrumentOfflineReservationCanceler do
           end
         end
 
-        context "when the instrument normally imposes a reservation cost" do
-          before { price_policy.update(reservation_rate: 10) }
-
-          it "does not charge the user" do
-            expect(order_detail.reload.actual_cost).to be_blank
-          end
-        end
-
         it "sends a cancellation notification to the user" do
           expect(OfflineCancellationMailer)
             .to have_received(:send_notification)
