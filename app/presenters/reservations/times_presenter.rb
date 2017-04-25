@@ -1,10 +1,6 @@
-module TimeData
+module Reservations
 
-  class InstrumentPresenter < BasePresenter
-
-    def initialize(order_detail)
-      super(order_detail.reservation)
-    end
+  class TimesPresenter < DelegateClass(Reservation)
 
     def to_s
       return unless present? # some reservations might not exist for the order_detail

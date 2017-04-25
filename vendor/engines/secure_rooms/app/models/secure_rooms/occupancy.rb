@@ -53,6 +53,10 @@ module SecureRooms
       self
     end
 
+    def to_s
+      TimeRange.new(entry_at, exit_at).to_s
+    end
+
   end
 
 end
