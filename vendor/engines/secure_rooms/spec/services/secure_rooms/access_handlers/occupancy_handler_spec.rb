@@ -35,6 +35,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
       let!(:existing_occupancy) do
         create(
           :occupancy,
+          :active,
           entry_event: event,
           secure_room: card_reader.secure_room,
           user: event.user,

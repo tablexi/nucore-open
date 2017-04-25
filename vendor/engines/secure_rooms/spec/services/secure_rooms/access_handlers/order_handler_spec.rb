@@ -60,7 +60,6 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
         end
       end
 
-      # TODO: Clean me up pls
       context "when completing the occupancy" do
         let(:occupancy) do
           create(
@@ -72,32 +71,20 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
           )
         end
 
-        it "sets ordered_at" do
-          order = Order.create!(
-            account: occupancy.account,
-            user: occupancy.user,
-            facility: occupancy.facility,
-            created_by_user: occupancy.user,
-          )
+        describe "order_detail" do
+          subject(:order_detail) { described_class.process(occupancy).order_details.first }
 
-          order_detail = order.order_details.create!(
-            account: occupancy.account,
-            product: occupancy.secure_room,
-            occupancy: occupancy,
-            created_by_user: occupancy.user,
-            quantity: 1,
-          )
+          it { is_expected.to be_complete }
+          it { is_expected.to be_fulfilled_at }
 
-          order.validate_order!
-          order.purchase!
+          # TODO: only correct until the subsequent price specs are activated
+          it { is_expected.to be_problem }
 
-          order_detail = described_class.process(occupancy).order_details.first
-
-          expect(order_detail).to be_complete
-          expect(order_detail.fulfilled_at).to be_present
-
-          # TODO: expect price_policy to be_present
-          # TODO: expect price to be_present
+          xit "has price information" do
+            # TODO: expand once activated
+            expect(order_detail.price_policy).to be_present
+            expect(order_detail.price).to be_present
+          end
         end
       end
     end
