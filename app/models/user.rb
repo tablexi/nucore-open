@@ -1,5 +1,14 @@
 class User < ActiveRecord::Base
 
+  module Overridable
+
+    def default_price_group
+      email_user? ? PriceGroup.external : PriceGroup.base
+    end
+
+  end
+
+  include Overridable
   include ::Users::Roles
   include NUCore::Database::WhereIdsIn
 
@@ -204,8 +213,7 @@ class User < ActiveRecord::Base
   def create_default_price_group!
     return unless SettingsHelper.feature_on?(:user_based_price_groups)
 
-    price_group = email_user? ? PriceGroup.external : PriceGroup.base
-    price_group_members.find_or_create_by!(price_group: price_group)
+    price_group_members.find_or_create_by!(price_group: default_price_group)
   end
 
 end
