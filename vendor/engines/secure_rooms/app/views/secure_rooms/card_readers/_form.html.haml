@@ -1,0 +1,6 @@
+= simple_form_for [current_facility, @product, @card_reader] do |f|
+  = f.input :description
+  = f.input :card_reader_number
+  = f.input :control_device_number
+  = f.input :direction_in, collection: @card_reader.direction_options, include_blank: false
+  = f.submit class: "btn btn-primary"

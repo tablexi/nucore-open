@@ -1,6 +1,6 @@
 %h3= Statement.model_name.human(count: 2)
 
-%table.table.table-striped.table-hover
+%table.table.table-striped.table-hover.js--responsive_table
   %thead
     %tr
       %th= Statement.human_attribute_name(:invoice_number)
@@ -8,8 +8,8 @@
       %th= Facility.model_name.human
       %th= Account.model_name.human
       %th= Statement.human_attribute_name(:sent_to)
-      %th.currency # of #{Order.model_name.human.pluralize}
-      %th.currency= Statement.human_attribute_name(:total_cost)
+      %th= "# of #{Order.model_name.human.pluralize}"
+      %th= Statement.human_attribute_name(:total_cost)
       %th= Statement.human_attribute_name(:status)
   %tbody
     - results.each do |statement|
@@ -21,11 +21,17 @@
             = link_to t("statements.pdf.download"), statement_path(statement)
           - else
             = link_to t("statements.pdf.download"), account_facility_statement_path(statement.account, statement.facility, statement, format: :pdf)
-        %td= human_datetime(statement.created_at)
-        %td= statement.facility
-        %td= statement.account
-        %td= statement.account.notify_users.map(&:full_name).join(', ')
-        %td.currency= statement.order_details.count
-        %td.currency= number_to_currency(statement.total_cost)
-        %td= t("statements.reconciled.#{statement.reconciled?}")
-
+        %td
+          = human_datetime(statement.created_at)
+        %td
+          = statement.facility
+        %td
+          = statement.account
+        %td
+          = statement.account.notify_users.map(&:full_name).join(', ')
+        %td.currency
+          = statement.order_details.count
+        %td.currency
+          = number_to_currency(statement.total_cost)
+        %td
+          = t("statements.reconciled.#{statement.reconciled?}")

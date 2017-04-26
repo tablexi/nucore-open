@@ -5,11 +5,10 @@ module Reservations::DateSupport
   extend ActiveSupport::Concern
 
   included do
-    attr_writer :duration_mins, :duration_value, :duration_unit,
+    attr_writer :duration_mins, :actual_duration_mins,
                 :reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
                 :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
-                :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
-                :actual_duration_mins
+                :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian
 
     # Use only in tests to make creation a little easier
     attr_accessor :split_times
@@ -56,22 +55,6 @@ module Reservations::DateSupport
 
   def reserve_end_date
     date_field(:reserve_end)
-  end
-
-  def duration_value
-    return nil unless reserve_end_at && reserve_start_at
-
-    unless @duration_value
-      # default to minutes
-      @duration_value = (reserve_end_at - reserve_start_at) / 60
-      @duration_unit  = "minutes"
-    end
-    @duration_value.to_i
-  end
-
-  def duration_unit
-    # default to minutes
-    @duration_unit ||= "minutes"
   end
 
   def duration_mins
@@ -179,7 +162,7 @@ module Reservations::DateSupport
     self.reserve_start_at = nil
     self.reserve_end_at   = nil
     reserve_attrs = params.slice(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
-                                 :duration_value, :duration_unit, :duration_mins,
+                                 :duration_mins,
                                  :reserve_start_at, :reserve_end_at)
     assign_attributes reserve_attrs
   end
@@ -204,19 +187,10 @@ module Reservations::DateSupport
     end
   end
 
-  # set reserve_end_at based on duration_value, duration_unit virtual attribute
+  # set reserve_end_at based on duration_mins
   def set_reserve_end_at
     return if reserve_end_at.present? || reserve_start_at.blank?
-    unless @duration_mins
-      case @duration_unit
-      when "minutes", "minute"
-        @duration_mins = @duration_value.to_i
-      when "hours", "hour"
-        @duration_mins = @duration_value.to_i * 60
-      else
-        @duration_mins = 0
-      end
-    end
+
     self.reserve_end_at = reserve_start_at + @duration_mins.to_i.minutes
   end
 

@@ -1,19 +1,83 @@
 en:
+  secure_rooms/access_rules:
+    reasons:
+      passed: "All rules passed"
+      selected_account: "Account selected"
+      only_account: "Only one valid Account exists"
+      egress: "Exiting SecureRoom"
+      operator: "User is an operator of this room"
+      archived: "Product is archived"
+      not_on_access_list: "User is not on the access list"
+      no_schedule: "No schedule rules configured"
+      outside_schedule: "Outside of schedule rules"
+      not_in_group: "User not in schedule group"
+      no_accounts: "User has no valid accounts for this Product"
+      selection_needed: "Must select Account"
+      rules_failed: "No rule generated a verdict"
+
   activerecord:
     models:
       secure_room:
         one: Secure Room
         other: Secure Rooms
+      secure_rooms/card_reader:
+        one: Card Reader
+        other: Card Readers
 
     attributes:
       user:
         card_number: Card Number
+      secure_rooms/card_reader:
+        description: Description
+        card_reader_number: Card Reader Number
+        control_device_number: Control Device Number
+        direction: Direction
+        direction_in: Direction
+        human_direction:
+          "true": In
+          "false": Out
+        tablet_token: Tablet Token
+      secure_rooms/event:
+        occurred_at: Occurred At
+        outcome: Outcome
+        outcome_details: Outcome Details
+      secure_rooms/occupancy:
+        entry_at: Time of Entry
+        exit_at: Time of Exit
+        orphaned_at: Time Marked as Orphaned
+
+  controllers:
+    secure_rooms/card_readers:
+      create:
+        success: "Card Reader created successfully"
+        failure: "Could not create Card Reader"
+      update:
+        success: "Card Reader updated successfully"
+        failure: "Could not update Card Reader"
+      destroy:
+        success: "Card Reader destroyed successfully"
+        failure: "Could not destroy Card Reader"
 
   views:
     admin:
       secure_rooms:
         index:
           description: Secure Rooms are rooms controlled by card readers.
+
+        card_readers:
+          index:
+            description: "Card Readers associated with this room"
+            none: "There are no associated Card Readers"
+          new:
+            title: Add Card Reader
+          edit:
+            title: Edit Card Reader
+
+        occupancies:
+          index:
+            description: "Current occupants of this room"
+            none: "The room is currently vacant"
+            problem: "Occupants missing scan data"
 
     secure_rooms:
       card_numbers:
@@ -23,3 +87,6 @@ en:
       shared:
         tabnav_users:
           title: Secure Room Access
+        tabnav_secure_room:
+          card_readers_title: Card Readers
+          occupancies_title: Occupancies

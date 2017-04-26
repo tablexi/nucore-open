@@ -211,7 +211,7 @@ en:
         bill_to: "Bill To"
       link:
         edit: "Edit"
-    show_statement_list:
+    statements:
       download: Download
       notice: "No statements have been sent for this payment source."
       th:
@@ -617,7 +617,6 @@ en:
         account: "Payment Source"
         owner: "Owner"
     form:
-      confirm: "Are you sure you wish to place this order?"
       foot:
         all: "All prices are estimates. Actual cost is assigned when the order is complete."
         instrument: "* Instrument pricing is estimated; the final price may vary based on actual time used."
@@ -732,20 +731,6 @@ en:
       quantity: Quantity
 
   product_users:
-    index:
-      add_approved_user: Add Approved User
-      approval_explanation: |
-        This %{product_type} requires a user to be approved before they may
-        purchase the %{product_type}.
-      approved_users: Approved Users
-      confirm_removal: |
-        Are you sure you wish to remove this user from this %{product_type}?
-      no_users_approved: No users are currently approved.
-      th:
-        name: Name
-        user_name: User Name
-        email: Email
-      update: Update %{plural_label}
     new:
       label:
         search_term: "Search by name, NetID, or username"
@@ -848,7 +833,7 @@ en:
         placeholder: "Select a chart string"
         explanation: "All chart strings listed above are available to reassign to at least one of the selected transactions below."
       head: "Move Transactions"
-      submit: "Reassign chart string"
+      submit: "Reassign Chart String"
 
     transactions:
       no_orders: There are no orders in this !facility_downcase!
@@ -862,20 +847,6 @@ en:
   price_policies:
     adjustment: Adjustment
     amount: Amount
-    instrument:
-      price_policy_fields:
-        price_group: Price Group
-        type: Type
-        can_purchase: Can Purchase?
-        rate_per_hour: Rate Per Hour
-        minimum_cost: Minimum Cost
-        reservation_cost: Reservation Cost
-    price_policy_fields:
-      price_group: Price Group
-      type: Type
-      can_purchase: Can Purchase?
-      unit_cost: Unit Cost
-      unit_adjustment: Unit Adjustment
     problem: There is a problem with this price policy.
     errors:
       none_exist_for_date: No valid price policies exists for that date.

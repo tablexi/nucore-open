@@ -30,7 +30,7 @@ module Reports
     private
 
     def default_report_hash
-      {
+      hash = {
         facility: :facility,
         order: :to_s,
         ordered_at: -> (od) { od.order.ordered_at },
@@ -85,6 +85,11 @@ module Reports
         reconciled_note: :reconciled_note,
         reconciled_at: :reconciled_at,
       }
+      if SettingsHelper.has_review_period?
+        hash
+      else
+        hash.except(:reviewed_at, :disputed_at, :dispute_reason, :dispute_resolved_at, :dispute_resolved_reason)
+      end
     end
 
     def report_data_query

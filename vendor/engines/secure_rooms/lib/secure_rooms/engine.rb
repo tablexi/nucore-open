@@ -5,12 +5,20 @@ module SecureRooms
     isolate_namespace SecureRooms
 
     config.to_prepare do
+      ::AbilityExtensionManager.extensions << "SecureRooms::AbilityExtension"
+
+      OrderDetail.send :include, SecureRooms::OrderDetailExtension
+
       bundle_index = Product.types.index(Bundle) || -1
       Product.types.insert(bundle_index, SecureRoom)
 
       ViewHook.add_hook "users.show",
                         "additional_user_fields",
                         "secure_rooms/shared/card_number_form_field"
+
+      ViewHook.add_hook "admin.shared.tabnav_product",
+                        "additional_tabs",
+                        "secure_rooms/shared/tabnav_secure_room"
 
       ViewHook.add_hook "admin.shared.tabnav_users",
                         "after",

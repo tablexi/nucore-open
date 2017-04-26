@@ -105,23 +105,6 @@ class OrderDetail < ActiveRecord::Base
       .references(:order)
   }
 
-  scope :facility_recent, lambda {|facility|
-    joins("LEFT JOIN statements on statements.id=statement_id INNER JOIN orders on orders.id=order_id")
-      .where(
-        "(order_details.statement_id IS NULL OR order_details.reviewed_at > :reviewed_at) AND orders.facility_id = :facility_id",
-        reviewed_at: Time.zone.now,
-        facility_id: facility.id,
-      )
-      .order("order_details.created_at DESC")
-  }
-
-  scope :finalized, lambda { |facility|
-    joins(:order)
-      .where("orders.facility_id" => facility.id)
-      .where("reviewed_at < ?", Time.current)
-      .order(created_at: :desc)
-  }
-
   scope :for_product_type, lambda { |product_type|
     joins("LEFT JOIN products ON products.id = order_details.product_id")
       .where("products.type" => product_type)
@@ -164,13 +147,6 @@ class OrderDetail < ActiveRecord::Base
   end
 
   scope :with_price_policy, -> { where.not(price_policy_id: nil) }
-
-  scope :for_facility_with_price_policy, lambda { |facility|
-    joins(:order)
-      .order(fulfilled_at: :desc)
-      .where(orders: { facility_id: facility.id })
-      .with_price_policy
-  }
 
   scope :not_disputed, lambda {
     where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
@@ -288,13 +264,8 @@ class OrderDetail < ActiveRecord::Base
   scope :reservations, -> { joins(:product).where("products.type = 'Instrument'") }
 
   scope :purchased, -> { joins(:order).merge(Order.purchased) }
-  class << self
 
-    alias ordered purchased # TODO: deprecate .ordered in favor of .purchased
-
-  end
-
-  scope :pending, -> { joins(:order).where(state: %w(new inprocess)).ordered }
+  scope :pending, -> { joins(:order).where(state: %w(new inprocess)).purchased }
   scope :confirmed_reservations, -> { reservations.joins(:order).includes(:reservation).purchased }
 
   scope :upcoming_reservations, lambda {
@@ -440,9 +411,9 @@ class OrderDetail < ActiveRecord::Base
   end
 
   # This method is a replacement for change_status! that also will cancel the associated reservation when necessary
-  def update_order_status!(updated_by, order_status, options_args = {}, &block)
+  def update_order_status!(updated_by, order_status, options = {}, &block)
     @order_status_updated_by = updated_by
-    options = { admin: false, apply_cancel_fee: false }.merge(options_args)
+    options.reverse_merge!(admin: false, apply_cancel_fee: false)
 
     if reservation && order_status.root_canceled?
       cancel_reservation(updated_by,
@@ -865,6 +836,13 @@ class OrderDetail < ActiveRecord::Base
     journal.present? && account.class.using_journal? && can_reconcile?
   end
 
+  # This value will be used when marking the order complete. Any other time, it
+  # will have no effect. This is to protect `fulfilled_at` from being written
+  # to when it shouldn't be. It should be a USA formatted date string.
+  def manual_fulfilled_at=(string)
+    @manual_fulfilled_at = ValidFulfilledAtDate.parse(string)
+  end
+
   private
 
   def has_completed_reservation?
@@ -880,7 +858,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def make_complete
-    self.fulfilled_at = Time.zone.now
+    # Don't update fulfilled_at if it was manually set.
+    self.fulfilled_at = @manual_fulfilled_at || Time.current
     assign_price_policy
     self.reviewed_at = Time.zone.now unless SettingsHelper.has_review_period?
   end

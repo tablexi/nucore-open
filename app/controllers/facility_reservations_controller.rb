@@ -113,7 +113,7 @@ class FacilityReservationsController < ApplicationController
   def new
     @instrument   = current_facility.instruments.find_by_url_name!(params[:instrument_id])
     @reservation = @instrument.next_available_reservation ||
-                   @instrument.admin_reservations.build(duration_value: @instrument.min_reserve_mins, duration_unit: "minutes")
+                   @instrument.admin_reservations.build(duration_mins: @instrument.min_reserve_mins)
     @reservation = @reservation.becomes(AdminReservation)
     @reservation.round_reservation_times
     set_windows

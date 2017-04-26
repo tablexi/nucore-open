@@ -36,6 +36,14 @@ class Statement < ActiveRecord::Base
     find_by(id: id, account_id: account_id)
   end
 
+  def self.for_facility(facility)
+    if facility.single_facility?
+      where(facility: facility)
+    else
+      all
+    end
+  end
+
   def invoice_date
     created_at.to_date
   end

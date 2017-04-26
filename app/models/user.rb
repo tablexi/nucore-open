@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   end
 
   include Overridable
-  include Role
+  include ::Users::Roles
   include NUCore::Database::WhereIdsIn
 
   # ldap_authenticatable is included via a to_prepare hook if ldap is enabled
@@ -175,6 +175,7 @@ class User < ActiveRecord::Base
   def to_s
     full_name + deactivated_string
   end
+  alias name to_s
 
   def deactivated_string
     if active?

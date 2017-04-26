@@ -5,6 +5,8 @@ engines:
     enabled: true
   csslint:
     enabled: true
+    exclude_paths:
+      - "vendor/assets"
   coffeelint:
     enabled: true
   duplication:

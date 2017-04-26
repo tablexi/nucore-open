@@ -1,55 +1,31 @@
-class SecureRoomsApi::ScansController < ApplicationController
+module SecureRoomsApi
 
-  http_basic_authenticate_with(
-    name: Settings.secure_rooms_api.basic_auth_name,
-    password: Settings.secure_rooms_api.basic_auth_password,
-  )
+  class ScansController < SecureRoomsApi::ApiController
 
-  rescue_from ActiveRecord::RecordNotFound, with: :report_missing_ids
+    before_action :load_user_and_reader
 
-  before_action :load_models
+    def scan
+      verdict = SecureRooms::CheckAccess.new.authorize(
+        @user,
+        @card_reader,
+        requested_account_id: params[:account_identifier],
+      )
 
-  def scan
-    user_accounts = @user.accounts_for_product(@card_reader.secure_room)
+      SecureRooms::AccessManager.process(verdict)
 
-    if user_accounts.present?
-      response_status = user_accounts.many? ? :multiple_choices : :ok
-
-      # TODO: needs a legitimage tablet_identifier once tablet exists
-      response_json = {
-        response: "select_account",
-        tablet_identifier: "abc123",
-        name: @user.full_name,
-        accounts: SecureRooms::AccountPresenter.wrap(user_accounts),
-      }
-    else
-      response_status = :forbidden
-      response_json = {
-        response: "deny",
-        reason: "No accounts found",
-      }
+      render SecureRooms::ScanResponsePresenter.present(verdict)
     end
 
-    render json: response_json, status: response_status
-  end
+    private
 
-  def load_models
-    @user = User.find_by!(card_number: params[:card_number])
-    @card_reader = SecureRooms::CardReader.find_by!(
-      card_reader_number: params[:reader_identifier],
-      control_device_number: params[:controller_identifier],
-    )
-  end
+    def load_user_and_reader
+      @user = User.find_by!(card_number: params[:card_number])
+      @card_reader = SecureRooms::CardReader.find_by!(
+        card_reader_number: params[:reader_identifier],
+        control_device_number: params[:controller_identifier],
+      )
+    end
 
-  private
-
-  def report_missing_ids(error)
-    response_json = {
-      response: "deny",
-      reason: error.message,
-    }
-
-    render json: response_json, status: :not_found
   end
 
 end

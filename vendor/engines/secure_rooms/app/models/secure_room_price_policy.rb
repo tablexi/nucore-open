@@ -1,5 +1,5 @@
 class SecureRoomPricePolicy < PricePolicy
 
-  include PricePolicySupport::QuantityPolicy
+  include PricePolicies::Usage
 
 end

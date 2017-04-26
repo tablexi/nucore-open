@@ -4,6 +4,10 @@ require_relative "../split_accounts_spec_helper"
 RSpec.describe FacilityAccountsController, :enable_split_accounts do
   render_views
 
+  before do
+    allow(Settings).to receive_message_chain(:split_accounts, :create_roles).and_return :administrator
+  end
+
   let(:facility) { FactoryGirl.create(:setup_facility) }
   before { sign_in user }
 

@@ -144,6 +144,8 @@ class Ability
           cannot(:switch_to, User) { |target_user| !target_user.active? }
         end
 
+        can :index, User if controller.is_a?(FacilityUserReservationsController)
+
         can [:list, :show], Facility
         can :act_as, Facility
         can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]

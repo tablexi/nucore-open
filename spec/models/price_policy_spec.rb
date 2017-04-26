@@ -18,22 +18,6 @@ RSpec.describe PricePolicy do
     @item             = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
   end
 
-  [:unit_cost, :unit_subsidy, :usage_rate, :usage_subsidy, :reservation_rate, :overage_rate, :overage_subsidy, :minimum_cost].each do |rate|
-    it { is_expected.to validate_numericality_of(rate) }
-    it { is_expected.not_to allow_value(-10).for(rate) }
-  end
-
-  it "should not create using factory" do
-    # putting inside begin/rescue as some PricePolicy validation functions throw exception if type is nil
-    begin
-      @pp = PricePolicy.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id))
-      expect(@pp).not_to be_valid
-      expect(@pp.errors[:type]).not_to be_nil
-    rescue
-      true
-    end
-  end
-
   context "current and newest" do
     let!(:price_policy) do
       FactoryGirl.create(

@@ -115,18 +115,6 @@ class Order < ActiveRecord::Base
   #####
   # END acts_as_state_machine
 
-  def instrument_order_details
-    order_details.for_product_type("Instrument")
-  end
-
-  def service_order_details
-    order_details.for_product_type("Service")
-  end
-
-  def item_order_details
-    order_details.for_product_type("Item")
-  end
-
   def add(product, quantity = 1, attributes = {})
     adder = Orders::ItemAdder.new(self)
     ods = adder.add(product, quantity, attributes)

@@ -1,27 +1,3 @@
-RSpec.shared_context "feature enabled" do |feature|
-  before(:all) do
-    SettingsHelper.enable_feature(feature)
-    Nucore::Application.reload_routes!
-  end
-
-  after(:all) do
-    Settings.reload!
-    Nucore::Application.reload_routes!
-  end
-end
-
-RSpec.shared_context "feature disabled" do |feature|
-  before(:all) do
-    SettingsHelper.enable_feature(feature, false)
-    Nucore::Application.reload_routes!
-  end
-
-  after(:all) do
-    Settings.reload!
-    Nucore::Application.reload_routes!
-  end
-end
-
 #
 # Call this method in a before(:all) block at the top of your +describe+
 def create_users
