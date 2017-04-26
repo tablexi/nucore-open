@@ -53,7 +53,14 @@ Welcome to NUcore! This guide will help you get a development environment up and
     rake demo:seed
     ```
 
-6. Configure your file storage
+6. Configure your secrets
+  ```
+  cp config/secrets.yml.template config/secrets.yml
+  rake secret
+  ```
+  - Paste the output from `rake secret` into development/secret_key_base
+
+7. Configure your file storage
 
     By default, files are stored on the local filesystem. If you wish to use
     Amazon's S3 instead, create a local settings override file such as
@@ -72,13 +79,13 @@ Welcome to NUcore! This guide will help you get a development environment up and
       path: ":class/:attachment/:id_partition/:style/:safe_filename"
     ```
 
-7. Start your server
+8. Start your server
 
     ```
     bin/rails s
     ```
 
-8. Log in
+9. Log in
 
     Visit http://localhost:3000
 
@@ -92,9 +99,9 @@ Welcome to NUcore! This guide will help you get a development environment up and
     | ast123@example.com | Facility Staff |
     | ddi123@example.com | Facility Director |
 
-9. Play around! You're running NUcore!
+10. Play around! You're running NUcore!
 
-10. Run `delayed_job` to support in-browser email previews.
+11. Run `delayed_job` to support in-browser email previews.
 
     Run delayed jobs indefinitely in the background:
     ```
