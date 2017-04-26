@@ -135,6 +135,11 @@ class Reservation < ActiveRecord::Base
     true
   end
 
+  # Is there enough information to move an associated order to complete/problem?
+  def order_completable?
+    actual_end_at || reserve_end_at < Time.current
+  end
+
   def start_reservation!
     product.schedule.products.map(&:started_reservations).flatten.each(&:complete!)
     self.actual_start_at = Time.zone.now
@@ -275,6 +280,7 @@ class Reservation < ActiveRecord::Base
   def requires_but_missing_actuals?
     !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO: refactor?
   end
+  alias problem? requires_but_missing_actuals?
 
   def locked?
     !(admin_editable? || can_edit_actuals?)

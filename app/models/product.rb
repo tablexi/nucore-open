@@ -100,14 +100,25 @@ class Product < ActiveRecord::Base
   end
   after_create :set_default_pricing
 
-  # expected to be overridden in subclasses
-  def time_data_for(_order_detail)
-    nil
+  class NullTimeData
+
+    def problem?
+      false
+    end
+
+    def order_completable?
+      true
+    end
+
+    # Gives us both `blank?` and `present?`
+    def blank?
+      true
+    end
   end
 
-  def timed?
-    # If the method has been overridden, we assume it is a timed product
-    method(:time_data_for).owner != Product
+  # expected to be overridden in subclasses
+  def time_data_for(order_detail)
+    NullTimeData.new
   end
 
   def initial_order_status

@@ -44,7 +44,7 @@
             = order_detail_description(order_detail)
             - order_detail.extend PriceDisplayment
             = "(#{order_detail.wrapped_quantity})".html_safe unless order_detail.problem?
-            - if order_detail.time_data
+            - if order_detail.time_data.present?
               %br
               %em= order_detail.time_data
           - if order_detail.note.present?
