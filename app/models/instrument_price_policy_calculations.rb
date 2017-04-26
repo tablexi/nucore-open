@@ -41,31 +41,31 @@ module InstrumentPricePolicyCalculations
     PricePolicies::TimeBasedPriceCalculator.new(self).calculate_discount(start_at, end_at)
   end
 
-  private
-
+  # TODO: Make private after moving enough specs to TimeBasedPriceCalculator
   def calculate_for_time(start_at, end_at)
     PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at)
   end
+
+  private
 
   # CHARGE_FOR[:reservation] uses reserve start and end time for calculation
   def calculate_reservation(reservation)
     calculate_for_time(reservation.reserve_start_at, reservation.reserve_end_at)
   end
 
-  # Usage rate uses the actual start/end times for calculation
+  # CHARGE_FOR[:usage] uses the actual start/end times for calculation
   def calculate_usage(reservation)
     return unless reservation.actual_start_at && reservation.actual_end_at
     calculate_for_time(reservation.actual_start_at, reservation.actual_end_at)
   end
 
-  # Overage charges for all the time that was initially reserved, plus any actual
-  # time used beyond the scheduled end time.
+  # CHARGE_FOR[:overage] charges for all the time that was initially reserved,
+  # plus any actual time used beyond the scheduled end time.
   def calculate_overage(reservation)
     return unless reservation.actual_start_at && reservation.actual_end_at
     end_at = [reservation.reserve_end_at, reservation.actual_end_at].max
     calculate_for_time(reservation.reserve_start_at, end_at)
   end
-
 
   def calculate_cancellation_costs(reservation)
     if cancellation_penalty?(reservation)
