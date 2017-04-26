@@ -1,4 +1,5 @@
 class TimeRange
+
   attr_reader :start_at, :end_at
 
   def initialize(start_at, end_at)
@@ -38,4 +39,5 @@ class TimeRange
   def l(time, *options)
     time ? I18n.l(time, *options) : "???"
   end
+
 end

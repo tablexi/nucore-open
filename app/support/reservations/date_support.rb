@@ -72,7 +72,7 @@ module Reservations::DateSupport
       @actual_duration_mins.to_i
     elsif actual_start_at
       end_at = actual_end_at || base_time
-      [TimeRange.new(actual_start_at, end_at).duration_mins, 1].max
+      TimeRange.new(actual_start_at, end_at).duration_mins
     else
       0
     end
