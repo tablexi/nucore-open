@@ -11,7 +11,14 @@ class TimeRange
   end
 
   def duration_mins
-    ((end_at.change(sec: 0) - start_at.change(sec: 0)) / 60).to_i
+    # For the sake of charging, NU asked for us to strip seconds from
+    # calculations so that displayed time ranges and prices always lined up.
+    # e.g. 4:17-4:18 should get priced at one minute, even if the actual time
+    # was slightly longer than a minute: 4:17.5 and 4:18.7.
+    minutes = ((end_at.change(sec: 0) - start_at.change(sec: 0)) / 60).to_i
+    # After we've stripped the seconds, we should still charge at least one minute.
+    # E.g. you start and end a reservation within 15 seconds.
+    [minutes, 1].max
   end
 
   private
