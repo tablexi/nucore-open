@@ -32,7 +32,7 @@ module PricePolicies
       costs = { cost: duration_mins * usage_rate * discount }
 
       if costs[:cost] < minimum_cost.to_f
-        { cost: minimum_cost, subsidy: minimum_cost_subsidy.to_f }
+        { cost: minimum_cost, subsidy: minimum_cost_subsidy }
       else
         costs.merge(subsidy: duration_mins * usage_subsidy * discount)
       end

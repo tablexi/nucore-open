@@ -14,15 +14,11 @@ module InstrumentPricePolicyCalculations
 
     return if end_at <= start_at
 
-    return { cost: minimum_cost.to_f, subsidy: 0 } if usage_rate.to_f == 0
-
     calculate_for_time(start_at, end_at)
   end
 
   def calculate_cost_and_subsidy(reservation)
     return calculate_cancellation_costs(reservation) if reservation.canceled_at
-
-    return { cost: minimum_cost.to_f, subsidy: 0 } if usage_rate.to_f == 0
 
     case charge_for
     when InstrumentPricePolicy::CHARGE_FOR[:reservation]

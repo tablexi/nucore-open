@@ -52,6 +52,7 @@ module PricePolicies
     private
 
     def subsidy_ratio
+      return 0 if usage_rate.zero?
       usage_subsidy / usage_rate
     end
 
