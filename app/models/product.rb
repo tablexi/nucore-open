@@ -101,7 +101,7 @@ class Product < ActiveRecord::Base
   after_create :set_default_pricing
 
   # expected to be overridden in subclasses
-  def time_data_for(order_detail)
+  def time_data_for(_order_detail)
     nil
   end
 
