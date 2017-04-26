@@ -235,17 +235,19 @@ RSpec.describe InstrumentPricePolicyCalculations do
       end
     end
 
-    it 'returns minimum cost if instrument is #free?' do
-      allow(policy).to receive(:free?).and_return true
-      min_cost = 10
-      allow(policy).to receive(:minimum_cost).and_return min_cost
-      expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: min_cost, subsidy: 0)
+    describe "with a minimum cost, and no usage rate" do
+      let(:options) { { usage_rate: 0, minimum_cost: 10 } }
+      it 'returns minimum cost if instrument is #free?' do
+        expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: 10, subsidy: 0)
+      end
     end
 
-    it 'returns 0 if instrument is #free? and there is no minimum_cost' do
-      allow(policy).to receive(:free?).and_return true
-      allow(policy).to receive(:minimum_cost).and_return nil
-      expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: 0, subsidy: 0)
+    describe "without a minimum cost or a usage rate" do
+      let(:options) { { usage_rate: 0, minimum_cost: 0 } }
+
+      it 'returns 0' do
+        expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: 0, subsidy: 0)
+      end
     end
 
     it "charges for at least 1 minute of time" do
