@@ -23,9 +23,8 @@
 = simple_form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
 
-  .row
-    .well.span12
-      = render partial: 'reservation_fields', locals: { f: f }
+  = render "reservation_fields", f: f
+
   %ul.inline
     %li= f.submit 'Save', class: 'btn'
     - if @order.purchased?
