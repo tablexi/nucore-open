@@ -32,6 +32,10 @@ RSpec.describe User do
   end
 
   describe "#create_default_price_group!", feature_setting: { user_based_price_groups: true } do
+    before do
+      expect(User).to receive(:default_price_group_finder).and_return(Users::DefaultPriceGroupSelector.new)
+    end
+
     # factory uses create_default_price_group!
     it "default has the base price group" do
       expect(user.price_groups).to eq [PriceGroup.base]

@@ -1,14 +1,5 @@
 class User < ActiveRecord::Base
 
-  module Overridable
-
-    def default_price_group
-      email_user? ? PriceGroup.external : PriceGroup.base
-    end
-
-  end
-
-  include Overridable
   include ::Users::Roles
   include NUCore::Database::WhereIdsIn
 
@@ -40,6 +31,8 @@ class User < ActiveRecord::Base
   #
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
+
+  cattr_accessor(:default_price_group_finder) { ::Users::DefaultPriceGroupSelector.new }
 
   # Scopes
 
@@ -208,6 +201,10 @@ class User < ActiveRecord::Base
 
   def self.active
     where(deactivated_at: nil)
+  end
+
+  def default_price_group
+    self.class.default_price_group_finder.call(self)
   end
 
   def create_default_price_group!
