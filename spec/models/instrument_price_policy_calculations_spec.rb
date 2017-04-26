@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe InstrumentPricePolicyCalculations do
 
-  subject(:policy) { build :instrument_price_policy }
+  subject(:policy) { build :instrument_price_policy, options }
+  let(:options) { {} }
 
   let(:now) { Time.zone.now }
   let(:start_at) { Time.zone.parse "2013-12-13 09:00" }
@@ -16,14 +17,105 @@ RSpec.describe InstrumentPricePolicyCalculations do
     policy.calculate_cost_and_subsidy_from_order_detail fake_order_detail
   end
 
-  it "calculates cost based on the given duration and discount" do
-    policy.usage_rate = 5
-    expect(policy.calculate_cost(120, 0.15).round 2).to eq 1.5
+
+  # it "calculates cost based on the given duration and discount" do
+  #   policy.usage_rate = 5
+  #   expect(policy.calculate_cost(120, 0.15).round 2).to eq 1.5
+  # end
+
+  # it "calculates subsidy based on the given duration and discount" do
+  #   policy.usage_subsidy = 5
+  #   expect(policy.calculate_subsidy(120, 0.15).round 2).to eq 1.5
+  # end
+
+  describe "estimating cost and subsidy from an order detail" do
+    it 'uses the given order detail to #estimate_cost_and_subsidy' do
+      fake_reservation = double "Reservation", reserve_start_at: now, reserve_end_at: now + 1.hour
+      fake_order_detail = double "OrderDetail", reservation: fake_reservation
+      expect(policy).to receive(:estimate_cost_and_subsidy).with fake_reservation.reserve_start_at, fake_reservation.reserve_end_at
+      policy.estimate_cost_and_subsidy_from_order_detail fake_order_detail
+    end
+
+    it "returns nil if the given order detail does not have a reservation" do
+      fake_order_detail = double "OrderDetail", reservation: nil
+      expect(policy.estimate_cost_and_subsidy_from_order_detail fake_order_detail).to be_nil
+    end
   end
 
-  it "calculates subsidy based on the given duration and discount" do
-    policy.usage_subsidy = 5
-    expect(policy.calculate_subsidy(120, 0.15).round 2).to eq 1.5
+  describe "estimating cost and subsidy" do
+    let(:costs) { policy.estimate_cost_and_subsidy start_at, end_at }
+
+    it "returns nil if purchase is restricted" do
+      allow(policy).to receive(:restrict_purchase?).and_return true
+      expect(costs).to be_nil
+    end
+
+    it "returns nil if purchase if end_at is before start_at" do
+      expect(policy.estimate_cost_and_subsidy(end_at, start_at)).to be_nil
+    end
+
+    it "returns nil if purchase if end_at equals start_at" do
+      expect(policy.estimate_cost_and_subsidy(start_at, start_at)).to be_nil
+    end
+
+    describe "no usage rate or minimum cost" do
+      let(:options) { { usage_rate: 0, usage_subsidy: 0, minimum_cost: 0 } }
+
+      it "estimates zero cost" do
+        expect(costs[:cost]).to eq 0
+        expect(costs[:subsidy]).to eq 0
+      end
+    end
+
+    describe "no usage rate, but there is a minumum cost" do
+      let(:options) { { usage_rate: 0, usage_subsidy: 0, minimum_cost: 10 } }
+      it "estimates the minimum cost" do
+        expect(costs[:cost]).to eq 10
+        expect(costs[:subsidy]).to eq 0
+      end
+    end
+
+    # it "gives the calculated cost and subsidy" do
+      # discount = 0.999
+      # expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
+      # cost = 5.00
+      # expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
+      # subsidy = 1.00
+      # expect(policy).to receive(:calculate_subsidy).with(duration, discount).and_return subsidy
+      # results = policy.estimate_cost_and_subsidy start_at, end_at
+      # expect(results[:cost]).to eq cost
+      # expect(results[:subsidy]).to eq subsidy
+    # end
+
+    # xit "gives the minimum cost with subsidies" do
+    #   discount = 0
+    #   duration = 61.0
+    #   end_at = start_at + duration.minutes
+    #   policy.minimum_cost = 60.0
+    #   expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
+    #   cost = 60.0
+    #   expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
+    #   subsidy = 12.20
+    #   expect(policy).to receive(:calculate_subsidy).with(duration, discount).and_return subsidy
+    #   results = policy.estimate_cost_and_subsidy start_at, end_at
+    #   expect(results[:cost]).to eq cost
+    #   expect(results[:subsidy]).to eq subsidy
+    # end
+
+    # xit "gives the minimum cost without subsidies" do
+    #   discount = 0
+    #   duration = 15.0
+    #   end_at = start_at + duration.minutes
+    #   policy.minimum_cost = 60.0
+    #   expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
+    #   cost = 15.0
+    #   expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
+    #   subsidy = 0.0
+    #   expect(policy).to receive(:calculate_subsidy_for_cost).with(policy.minimum_cost).and_return subsidy
+    #   results = policy.estimate_cost_and_subsidy start_at, end_at
+    #   expect(results[:cost]).to eq policy.minimum_cost
+    #   expect(results[:subsidy]).to eq subsidy
+    # end
   end
 
   describe "calculating with two effective schedule rules, one discounting one not" do
@@ -43,8 +135,11 @@ RSpec.describe InstrumentPricePolicyCalculations do
                                                        end_hour: 24)
       end
 
-      it "calculates a discount based on the given time and configured schedule rules" do
-        expect(policy.calculate_discount(start_at, end_at).round 3).to eq 0.889
+      it "discounts on one policy" do
+        policy.usage_rate = 10
+        friday_evening = Time.zone.parse("2017-04-21 23:00")
+        saturday_morning = Time.zone.parse("2017-04-22 1:00")
+        expect(policy.estimate_cost_and_subsidy(friday_evening, saturday_morning)).to eq(cost: 17.5035, subsidy: 0)
       end
     end
 
@@ -80,93 +175,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
           expect(costs[:subsidy]).to eq 20.00
         end
       end
-    end
-  end
-
-  describe "estimating cost and subsidy from an order detail" do
-    it 'uses the given order detail to #estimate_cost_and_subsidy' do
-      fake_reservation = double "Reservation", reserve_start_at: now, reserve_end_at: now + 1.hour
-      fake_order_detail = double "OrderDetail", reservation: fake_reservation
-      expect(policy).to receive(:estimate_cost_and_subsidy).with fake_reservation.reserve_start_at, fake_reservation.reserve_end_at
-      policy.estimate_cost_and_subsidy_from_order_detail fake_order_detail
-    end
-
-    it "returns nil if the given order detail does not have a reservation" do
-      fake_order_detail = double "OrderDetail", reservation: nil
-      expect(policy.estimate_cost_and_subsidy_from_order_detail fake_order_detail).to be_nil
-    end
-  end
-
-  describe "estimating cost and subsidy" do
-    it "returns nil if purchase is restricted" do
-      allow(policy).to receive(:restrict_purchase?).and_return true
-      expect(policy.estimate_cost_and_subsidy(start_at, end_at)).to be_nil
-    end
-
-    it "returns nil if purchase if end_at is before start_at" do
-      expect(policy.estimate_cost_and_subsidy(end_at, start_at)).to be_nil
-    end
-
-    it "returns nil if purchase if end_at equals start_at" do
-      expect(policy.estimate_cost_and_subsidy(start_at, start_at)).to be_nil
-    end
-
-    it "gives a zero cost and subsidy if instrument is free to use and there is no minimum cost" do
-      allow(policy).to receive(:free?).and_return true
-      allow(policy).to receive(:minimum_cost).and_return nil
-      costs = policy.estimate_cost_and_subsidy start_at, end_at
-      expect(costs[:cost]).to eq 0
-      expect(costs[:subsidy]).to eq 0
-    end
-
-    it "gives minimum cost and zero subsidy if instrument is free to use and there is a minimum cost" do
-      allow(policy).to receive(:free?).and_return true
-      allow(policy).to receive(:minimum_cost).and_return 10
-      costs = policy.estimate_cost_and_subsidy start_at, end_at
-      expect(costs[:cost]).to eq 10
-      expect(costs[:subsidy]).to eq 0
-    end
-
-    it "gives the calculated cost and subsidy" do
-      discount = 0.999
-      expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
-      cost = 5.00
-      expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
-      subsidy = 1.00
-      expect(policy).to receive(:calculate_subsidy).with(duration, discount).and_return subsidy
-      results = policy.estimate_cost_and_subsidy start_at, end_at
-      expect(results[:cost]).to eq cost
-      expect(results[:subsidy]).to eq subsidy
-    end
-
-    it "gives the minimum cost with subsidies" do
-      discount = 0
-      duration = 61.0
-      end_at = start_at + duration.minutes
-      policy.minimum_cost = 60.0
-      expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
-      cost = 60.0
-      expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
-      subsidy = 12.20
-      expect(policy).to receive(:calculate_subsidy).with(duration, discount).and_return subsidy
-      results = policy.estimate_cost_and_subsidy start_at, end_at
-      expect(results[:cost]).to eq cost
-      expect(results[:subsidy]).to eq subsidy
-    end
-
-    it "gives the minimum cost without subsidies" do
-      discount = 0
-      duration = 15.0
-      end_at = start_at + duration.minutes
-      policy.minimum_cost = 60.0
-      expect(policy).to receive(:calculate_discount).with(start_at, end_at).and_return discount
-      cost = 15.0
-      expect(policy).to receive(:calculate_cost).with(duration, discount).and_return cost
-      subsidy = 0.0
-      expect(policy).to receive(:calculate_subsidy_for_cost).with(policy.minimum_cost).and_return subsidy
-      results = policy.estimate_cost_and_subsidy start_at, end_at
-      expect(results[:cost]).to eq policy.minimum_cost
-      expect(results[:subsidy]).to eq subsidy
     end
   end
 
@@ -334,32 +342,27 @@ RSpec.describe InstrumentPricePolicyCalculations do
   end
 
   describe "determining whether or not a cancellation should be penalized" do
+    let(:options) { { usage_rate: 3.0, cancellation_cost: 5.0 } }
     before(:each) { allow(policy.product).to receive(:min_cancel_hours).and_return 3 }
 
-    it "returns true when the cancellation fee applies" do
-      reservation = double reserve_start_at: now + 30.minutes, canceled_at: now
-      expect(policy.cancellation_penalty?(reservation)).to be true
+    describe "when it's inside the minimum cancelation window" do
+      let(:reservation) { double reserve_start_at: now + 30.minutes, canceled_at: now }
+
+      specify { expect(policy).to be_cancellation_penalty(reservation) }
+
+      it "charges the cancellation cost" do
+        expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 5.0, subsidy: 0)
+      end
     end
 
-    it "returns false when the cancellation fee does not apply" do
-      reservation = double reserve_start_at: now + 4.hours, canceled_at: now
-      expect(policy.cancellation_penalty?(reservation)).to be false
-    end
-  end
+    describe "when it's outside the minimum calcellation window" do
+      let(:reservation) { double reserve_start_at: now + 4.hours, canceled_at: now }
 
-  describe "calculating cancellation costs" do
-    let(:reservation) { double "Reservation" }
+      specify { expect(policy).not_to be_cancellation_penalty(reservation) }
 
-    it "returns the cancellation cost if penalty applies" do
-      allow(policy).to receive(:cancellation_penalty?).and_return true
-      allow(policy).to receive(:cancellation_cost).and_return 5.0
-      expect(policy.calculate_cancellation_costs(reservation)).to eq(cost: policy.cancellation_cost, subsidy: 0)
-    end
-
-    it "returns nil if penalty applies" do
-      allow(policy).to receive(:cancellation_penalty?).and_return false
-      expect(policy.calculate_cancellation_costs(reservation)).to be_nil
+      it "does not charge the cancelation cost" do
+        expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
+      end
     end
   end
-
 end
