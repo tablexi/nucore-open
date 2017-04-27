@@ -10,11 +10,11 @@ $navCollapseColor: #777;
   .visible-with-nav {
     display: none !important;
   }
-
   .nav-collapse {
     background-color: $navCollapseBackgroundColor;
+    position: relative;
+    top: 10px;
   }
-
   .nav-collapse .nav {
     margin: 0;
     border-top: 1px solid #ddd;
@@ -25,7 +25,16 @@ $navCollapseColor: #777;
   header .navbar .nav > li > a, .nav-collapse .dropdown-menu a {
     padding: 10px;
     border-radius: 0;
+  }
+  /* this selector has to override specificity of bootstrap-responsive's
+      `header .navbar .nav > li > a` and `!important` as well as target
+      only the .nav-collapse links
+  */
+  header .navbar .nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
     color: $navCollapseColor !important;
+    &:hover {
+      color: $navCollapseColor !important;
+    }
   }
   header .navbar .nav > li.navbar-text {
     padding: 10px;
