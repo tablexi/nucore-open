@@ -50,8 +50,7 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
       end
 
       it "should use the base rate when that is the cheapest and others have equal unit_cost" do
-        base_pg = PriceGroup.new(FactoryGirl.attributes_for(:price_group, name: Settings.price_group.name.base, is_internal: true, display_order: 1))
-        base_pg.save(validate: false)
+        base_pg = PriceGroup.base
         base_pp = make_price_policy(unit_cost: 1, price_group: base_pg)
 
         [base_pg, price_group3, price_group4].each do |pg|
