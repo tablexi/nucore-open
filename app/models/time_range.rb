@@ -25,19 +25,19 @@ class TimeRange
   private
 
   def start_string
-    l(start_at)
+    localize(start_at)
   end
 
   def end_string
     if start_at && end_at && start_at.day == end_at.day
-      l(end_at, format: :timeonly)
+      localize(end_at, format: :timeonly)
     else
-      l(end_at)
+      localize(end_at)
     end
   end
 
-  def l(time, *options)
-    time ? I18n.l(time, *options) : "???"
+  def localize(time, *options)
+    time ? I18n.localize(time, *options) : "???"
   end
 
 end
