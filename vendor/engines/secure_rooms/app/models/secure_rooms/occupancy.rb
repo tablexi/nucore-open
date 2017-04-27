@@ -12,6 +12,7 @@ module SecureRooms
     validates :secure_room, :user, presence: true
 
     delegate :facility, to: :secure_room
+    delegate :to_s, to: :range
 
     def self.valid
       where(orphaned_at: nil)
@@ -51,6 +52,16 @@ module SecureRooms
         exit_at: Time.current,
       )
       self
+    end
+
+    def actual_duration_mins
+      range.duration_mins
+    end
+
+    private
+
+    def range
+      TimeRange.new(entry_at, exit_at)
     end
 
   end

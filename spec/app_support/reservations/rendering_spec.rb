@@ -45,7 +45,7 @@ RSpec.describe Reservations::Rendering do
 
         it "uses '???' for the start time and formats the end time" do
           expect(reservation.actuals_string)
-            .to eq("??? - Mon, 06/01/2015 9:15 AM ") # NOTE trailing space
+            .to eq("??? - Mon, 06/01/2015 9:15 AM")
         end
       end
 
@@ -172,28 +172,6 @@ RSpec.describe Reservations::Rendering do
         it "returns blank" do
           expect(reservation.display_end_at).to be_blank
         end
-      end
-    end
-  end
-
-  describe "#range_to_s" do
-    let(:result) { reservation.range_to_s(start_at, end_at) }
-    let(:start_at) { Time.zone.local(2015, 6, 1, 13, 14, 15) }
-
-    context "when the reservation is within a single day" do
-      let(:end_at) { start_at + 1.hour }
-
-      it "displays the end time without the date" do
-        expect(result).to eq("Mon, 06/01/2015 1:14 PM - 2:14 PM")
-      end
-    end
-
-    context "when the reservation spans more than one day" do
-      let(:end_at) { start_at + 30.hours }
-
-      it "displays the end time with the date" do
-        expect(result)
-          .to eq("Mon, 06/01/2015 1:14 PM - Tue, 06/02/2015 7:14 PM")
       end
     end
   end
