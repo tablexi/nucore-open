@@ -841,7 +841,13 @@ class OrderDetail < ActiveRecord::Base
   # will have no effect. This is to protect `fulfilled_at` from being written
   # to when it shouldn't be. It should be a USA formatted date string.
   def manual_fulfilled_at=(string)
-    @manual_fulfilled_at = ValidFulfilledAtDate.parse(string)
+    @manual_fulfilled_at = ValidFulfilledAtDate.new(string)
+  end
+
+  validate do
+    if @manual_fulfilled_at && @manual_fulfilled_at.invalid?
+      errors.add(:fulfilled_at, @manual_fulfilled_at.error)
+    end
   end
 
   def time_data
@@ -867,7 +873,7 @@ class OrderDetail < ActiveRecord::Base
 
   def make_complete
     # Don't update fulfilled_at if it was manually set.
-    self.fulfilled_at = @manual_fulfilled_at || Time.current
+    self.fulfilled_at = @manual_fulfilled_at.presence || Time.current
     assign_price_policy
     self.reviewed_at = Time.zone.now unless SettingsHelper.has_review_period?
   end

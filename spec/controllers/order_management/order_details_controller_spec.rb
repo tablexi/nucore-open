@@ -653,7 +653,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
             end
 
             it "marks as now" do
-              expect(assigns(:order_detail).fulfilled_at).to eq(Time.current)
+              expect(order_detail.reload.fulfilled_at).to match_date(Time.current)
             end
           end
 
@@ -670,23 +670,25 @@ RSpec.describe OrderManagement::OrderDetailsController do
               let(:fulfilled_at) { 1.day.ago }
 
               it "sets the date to noon of that day" do
-                expect(assigns(:order_detail).fulfilled_at).to eq(1.day.ago.to_date + 12.hours)
+                expect(order_detail.reload.fulfilled_at).to eq(1.day.ago.to_date + 12.hours)
               end
             end
 
             describe "of tomorrow" do
               let(:fulfilled_at) { 1.day.from_now }
 
-              it "sets the time to now" do
-                expect(assigns(:order_detail).fulfilled_at).to eq(Time.current)
+              it "does not persist and errors" do
+                expect(assigns(:order_detail)).to be_changed
+                expect(assigns(:order_detail).errors).to include(:fulfilled_at)
               end
             end
 
-            describe "of before the fiscal year" do
-              let(:fulfilled_at) { 1.year.ago }
+            describe "of before the previous fiscal year" do
+              let(:fulfilled_at) { 3.years.ago }
 
-              it "sets the time to now" do
-                expect(assigns(:order_detail).fulfilled_at).to eq(Time.current)
+              it "does not persist and errors" do
+                expect(assigns(:order_detail)).to be_changed
+                expect(assigns(:order_detail).errors).to include(:fulfilled_at)
               end
             end
           end
