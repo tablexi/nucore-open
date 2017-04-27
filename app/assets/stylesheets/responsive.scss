@@ -1,4 +1,6 @@
 /* Bootstrap overrides go here. This is included after bootstrap. */
+$navCollapseBackgroundColor: #f7f7f7;
+$navCollapseColor: #777;
 
 /* 979px - 980px is where nav-collapse gets triggered */
 @media (max-width: 979px) {
@@ -8,7 +10,11 @@
   .visible-with-nav {
     display: none !important;
   }
-
+  .nav-collapse {
+    background-color: $navCollapseBackgroundColor;
+    position: relative;
+    top: 10px;
+  }
   .nav-collapse .nav {
     margin: 0;
     border-top: 1px solid #ddd;
@@ -20,13 +26,24 @@
     padding: 10px;
     border-radius: 0;
   }
+  /* this selector has to override specificity of bootstrap-responsive's
+      `header .navbar .nav > li > a` and `!important` as well as target
+      only the .nav-collapse links
+  */
+  header .navbar .nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+    color: $navCollapseColor !important;
+    &:hover {
+      color: $navCollapseColor !important;
+    }
+  }
   header .navbar .nav > li.navbar-text {
     padding: 10px;
     line-height: 20px;
+    color: $navCollapseColor !important;
   }
   .nav-collapse .navbar-form, .nav-collapse .navbar-search {
     margin: 0;
-    padding: 10px 10px 0 10px;
+    padding: 10px;
     border-bottom: 0;
   }
 
