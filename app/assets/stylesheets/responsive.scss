@@ -46,6 +46,9 @@ $navCollapseColor: #777;
     padding: 10px;
     border-bottom: 0;
   }
+  .timeline-wrapper {
+    overflow-x: scroll;
+  }
 
   // Responsive table behvavior inspired by
   // https://css-tricks.com/responsive-data-tables/
@@ -87,7 +90,6 @@ $navCollapseColor: #777;
     }
 
   }
-
 }
 
 @media (min-width: 980px) {
@@ -98,3 +100,4 @@ $navCollapseColor: #777;
     display: none !important;
   }
 }
+
