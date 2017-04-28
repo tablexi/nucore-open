@@ -846,7 +846,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def time_data
-    @time_data ||= if product.respond_to?(:time_data_for)
+    if product.respond_to?(:time_data_for)
       product.time_data_for(self) || TimeData::RequiredTimeData.new
     else
       TimeData::NullTimeData.new

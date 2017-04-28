@@ -29,7 +29,7 @@ class Reservation < ActiveRecord::Base
   # Delegations
   #####
   delegate :note, :note=, :ordered_on_behalf_of?, :complete?, :account, :order,
-           :problem?, :complete!, to: :order_detail, allow_nil: true
+    :complete!, to: :order_detail, allow_nil: true
 
   delegate :account, :in_cart?, :user, to: :order, allow_nil: true
   delegate :facility, to: :product, allow_nil: true
@@ -141,7 +141,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def start_reservation!
-    product.schedule.products.map(&:started_reservations).flatten.each(&:complete!)
+    product.schedule.products.flat_map(&:started_reservations).each(&:complete!)
     self.actual_start_at = Time.zone.now
     save!
   end
