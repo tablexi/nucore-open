@@ -26,7 +26,7 @@ RSpec.describe OfflineReservationsController do
 
       it "becomes a problem reservation" do
         expect { post :create, params }
-          .to change { reservation.reload.problem? }
+          .to change { reservation.order_detail.reload.problem? }
           .from(false)
           .to(true)
       end

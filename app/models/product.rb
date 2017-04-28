@@ -100,16 +100,6 @@ class Product < ActiveRecord::Base
   end
   after_create :set_default_pricing
 
-  # expected to be overridden in subclasses
-  def time_data_for(_order_detail)
-    nil
-  end
-
-  def timed?
-    # If the method has been overridden, we assume it is a timed product
-    method(:time_data_for).owner != Product
-  end
-
   def initial_order_status
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
