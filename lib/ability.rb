@@ -25,9 +25,7 @@ class Ability
         end
         unless user.account_manager?
           cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
-          if SettingsHelper.feature_on?(:create_users)
-            cannot([:edit, :update], User) { |target_user| !target_user.admin_editable? }
-          else
+          if SettingsHelper.feature_off?(:create_users)
             cannot([:edit, :update], User)
           end
         end
