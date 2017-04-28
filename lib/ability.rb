@@ -20,7 +20,6 @@ class Ability
         can :manage, AccountPriceGroupMember
       else
         can :manage, :all
-        cannot([:edit, :update], User) { |target_user| !target_user.admin_editable? }
         unless user.billing_administrator?
           cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
         end
