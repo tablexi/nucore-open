@@ -44,6 +44,10 @@ class Instrument < Product
   # Instance methods
   # -------
 
+  def time_data_for(order_detail)
+    order_detail.reservation
+  end
+
   # calculate the last possible reservation date based on all current price policies associated with this instrument
   def last_reserve_date
     (Time.zone.now.to_date + max_reservation_window.days).to_date

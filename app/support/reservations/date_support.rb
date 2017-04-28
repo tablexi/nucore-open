@@ -5,11 +5,10 @@ module Reservations::DateSupport
   extend ActiveSupport::Concern
 
   included do
-    attr_writer :duration_mins, :duration_value, :duration_unit,
+    attr_writer :duration_mins, :actual_duration_mins,
                 :reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
                 :actual_start_date, :actual_start_hour, :actual_start_min, :actual_start_meridian,
-                :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian,
-                :actual_duration_mins
+                :actual_end_date, :actual_end_hour, :actual_end_min, :actual_end_meridian
 
     # Use only in tests to make creation a little easier
     attr_accessor :split_times
@@ -58,27 +57,11 @@ module Reservations::DateSupport
     date_field(:reserve_end)
   end
 
-  def duration_value
-    return nil unless reserve_end_at && reserve_start_at
-
-    unless @duration_value
-      # default to minutes
-      @duration_value = (reserve_end_at - reserve_start_at) / 60
-      @duration_unit  = "minutes"
-    end
-    @duration_value.to_i
-  end
-
-  def duration_unit
-    # default to minutes
-    @duration_unit ||= "minutes"
-  end
-
   def duration_mins
     if @duration_mins
       @duration_mins.to_i
     elsif reserve_end_at && reserve_start_at
-      duration_with_seconds_stripped(reserve_start_at, reserve_end_at)
+      TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
     else
       0
     end
@@ -89,7 +72,7 @@ module Reservations::DateSupport
       @actual_duration_mins.to_i
     elsif actual_start_at
       end_at = actual_end_at || base_time
-      [duration_with_seconds_stripped(actual_start_at, end_at), 1].max
+      TimeRange.new(actual_start_at, end_at).duration_mins
     else
       0
     end
@@ -179,7 +162,7 @@ module Reservations::DateSupport
     self.reserve_start_at = nil
     self.reserve_end_at   = nil
     reserve_attrs = params.slice(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian,
-                                 :duration_value, :duration_unit, :duration_mins,
+                                 :duration_mins,
                                  :reserve_start_at, :reserve_end_at)
     assign_attributes reserve_attrs
   end
@@ -204,19 +187,10 @@ module Reservations::DateSupport
     end
   end
 
-  # set reserve_end_at based on duration_value, duration_unit virtual attribute
+  # set reserve_end_at based on duration_mins
   def set_reserve_end_at
     return if reserve_end_at.present? || reserve_start_at.blank?
-    unless @duration_mins
-      case @duration_unit
-      when "minutes", "minute"
-        @duration_mins = @duration_value.to_i
-      when "hours", "hour"
-        @duration_mins = @duration_value.to_i * 60
-      else
-        @duration_mins = 0
-      end
-    end
+
     self.reserve_end_at = reserve_start_at + @duration_mins.to_i.minutes
   end
 
@@ -234,10 +208,6 @@ module Reservations::DateSupport
     elsif @actual_duration_mins && actual_start_at
       self.actual_end_at = actual_start_at + @actual_duration_mins.to_i.minutes
     end
-  end
-
-  def duration_with_seconds_stripped(start_time, end_time)
-    ((end_time.change(sec: 0) - start_time.change(sec: 0)) / 60).to_i
   end
 
 end

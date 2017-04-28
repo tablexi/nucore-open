@@ -19,6 +19,8 @@ class window.AjaxModal
       $modal.data('modalObject', self)
       self.reload()
 
+  @on_show: (fn) ->
+    $("body").on "modal:loaded", ".modal", fn
 
   form_prepare: =>
     self = this

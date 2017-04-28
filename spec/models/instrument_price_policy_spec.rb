@@ -9,11 +9,6 @@ RSpec.describe InstrumentPricePolicy do
     it { is_expected.to allow_value(nil).for attr.to_sym }
   end
 
-  %w(reservation_rate reservation_subsidy overage_rate overage_subsidy reservation_mins overage_mins usage_mins).each do |attr|
-    it { is_expected.not_to allow_value(5.0).for attr.to_sym }
-    it { is_expected.to allow_value(nil).for attr.to_sym }
-  end
-
   it { is_expected.to validate_inclusion_of(:charge_for).in_array described_class::CHARGE_FOR.values }
 
   it "converts the given hourly usage_rate to a per minute rate" do

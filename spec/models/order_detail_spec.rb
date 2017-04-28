@@ -852,12 +852,6 @@ RSpec.describe OrderDetail do
       @order_detail2 = @order2.order_details.create(attributes_for(:order_detail).update(product_id: @item2.id, account_id: @account2.id))
     end
 
-    it "should give recent order details of given facility only" do
-      ods = OrderDetail.facility_recent(@facility)
-      expect(ods.size).to eq(1)
-      expect(ods.first).to eq(@order_detail)
-    end
-
     it "should give all order details for a facility" do
       ods = OrderDetail.for_facility(@facility)
       expect(ods.size).to eq(1)
@@ -910,7 +904,6 @@ RSpec.describe OrderDetail do
     end
 
     context "needs statement" do
-
       before :each do
         @statement = Statement.create(facility: @facility, created_by: 1, account: @account)
         @order_detail.update_attributes(statement: @statement, reviewed_at: (Time.zone.now - 1.day))
@@ -921,16 +914,8 @@ RSpec.describe OrderDetail do
 
       it "should give all order details with statements for a facility" do
         ods = OrderDetail.statemented(@facility)
-        expect(ods.size).to eq(1)
-        expect(ods.first).to eq(@order_detail)
+        expect(ods).to eq([@order_detail])
       end
-
-      it "should give finalized order details of given facility only" do
-        ods = OrderDetail.finalized(@facility)
-        expect(ods.size).to eq(1)
-        expect(ods.first).to eq(@order_detail)
-      end
-
     end
 
     describe "action_in_date_range" do

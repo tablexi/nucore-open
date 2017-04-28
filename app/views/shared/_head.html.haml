@@ -11,6 +11,7 @@
 :javascript
   var ROOT_PATH = "#{root_path}";
   var FACILITY_PATH = "#{current_facility ? facility_path(current_facility) : ""}";
+  var IS_RESPONSIVE = #{responsive?};
 = yield :head_content
 = render partial: "/shared/google"
 = render_view_hook "head"

@@ -131,4 +131,27 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
       expect(results.map(&:actual_end_at)).to all(eq(start_at + 45.minutes))
     end
   end
+
+  # Fix for #135513 - Reservations were getting deleted when Export Raw was run.
+  describe "a real order detail" do
+    let(:user) { create(:user) }
+    let(:subaccount_1) { create(:nufs_account, :with_account_owner, owner: user) }
+    let(:subaccount_2) { create(:nufs_account, :with_account_owner, owner: user) }
+
+    let(:split_account) do
+      create(:split_account, owner: user).tap do |split_account|
+        split_account.splits.create percent: 50, apply_remainder: true, subaccount: subaccount_1
+        split_account.splits.create percent: 50, apply_remainder: false, subaccount: subaccount_2
+      end
+    end
+
+    let(:reservation) { create(:completed_reservation, user: user) }
+    let(:order_detail) { reservation.order_detail }
+
+    it "does not do anything to the reservation" do
+      order_detail.update_attributes!(account: split_account)
+      described_class.new(order_detail, split_reservations: true).split
+      expect(reservation.reload).to be_persisted
+    end
+  end
 end

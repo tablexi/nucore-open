@@ -51,7 +51,10 @@ class OrderDetails::ParamUpdater
     # when necessary
     order_status_id = params.delete :order_status_id
 
+    @order_detail.manual_fulfilled_at = params[:fulfilled_at]
+
     assign_attributes(params)
+
     user_newly_assigned = @order_detail.assigned_user_id_changed? && @order_detail.assigned_user.present?
 
     @order_detail.manually_priced!
@@ -96,8 +99,9 @@ class OrderDetails::ParamUpdater
   end
 
   def change_order_status(order_status_id, apply_cancel_fee)
+    status = OrderStatus.find(order_status_id)
     @order_detail.update_order_status! @editing_user,
-                                       OrderStatus.find(order_status_id),
+                                       status,
                                        admin: true,
                                        apply_cancel_fee: apply_cancel_fee
     true

@@ -65,10 +65,11 @@
 .manage_order_detail {
   .order_detail_order_status {
     float: left;
+    margin-right: 1em;
   }
 
   .cancel-fee-option {
-    margin-top: 1.5em;
+    float: left;
   }
 
   .copy_actual_from_reservation {

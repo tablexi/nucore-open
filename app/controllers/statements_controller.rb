@@ -25,7 +25,7 @@ class StatementsController < ApplicationController
 
     respond_to do |format|
       format.pdf do
-        @statement_pdf = StatementPdfFactory.instance(@statement, params[:show].blank?)
+        @statement_pdf = StatementPdfFactory.instance(@statement, download: true)
         render action: "show"
       end
     end

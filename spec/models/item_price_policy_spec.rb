@@ -17,7 +17,10 @@ RSpec.describe ItemPricePolicy do
   end
 
   context "validations" do
-    it { is_expected.to validate_numericality_of :unit_cost }
+    it { is_expected.to validate_presence_of(:unit_cost) }
+    it { is_expected.to validate_numericality_of(:unit_cost).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:unit_subsidy).is_greater_than_or_equal_to(0) }
+
     it "should not allow a subsidy more than cost" do
       pp = FactoryGirl.build(:item_price_policy, unit_subsidy: 10, unit_cost: 5)
       expect(pp).not_to be_valid

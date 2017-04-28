@@ -22,7 +22,7 @@ module GlobalSearch
                    OrderDetail.where("order_details.id = :id OR order_details.order_id = :id", id: query)
       end
 
-      relation ? relation.joins(:order).ordered : []
+      relation ? relation.joins(:order).purchased : []
     end
 
     def search_full(query)

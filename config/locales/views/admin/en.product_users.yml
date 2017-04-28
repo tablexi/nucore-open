@@ -1,0 +1,15 @@
+en:
+  views:
+    product_users:
+      index:
+        header: Approved Users
+        add: Add Approved User
+        explanation: |
+          This %{product_type} requires a user to be approved before they may
+          purchase the %{product_type}.
+        none: No users are currently approved.
+        update: Update %{plural_label}
+      table:
+        confirm_removal: |
+          Are you sure you wish to remove this user from this %{product_type}?
+

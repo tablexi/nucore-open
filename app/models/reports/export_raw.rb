@@ -30,7 +30,7 @@ module Reports
     private
 
     def default_report_hash
-      {
+      hash = {
         facility: :facility,
         order: :to_s,
         ordered_at: -> (od) { od.order.ordered_at },
@@ -69,9 +69,9 @@ module Reports
         reservation_start_time: -> (od) { od.reservation.reserve_start_at if od.reservation },
         reservation_end_time: -> (od) { od.reservation.reserve_end_at if od.reservation },
         reservation_minutes: -> (od) { od.reservation.duration_mins if od.reservation },
-        actual_start_time: -> (od) { od.reservation.actual_start_at if od.reservation },
-        actual_end_time: -> (od) { od.reservation.actual_end_at if od.reservation },
-        actual_minutes: -> (od) { od.reservation.actual_duration_mins if od.reservation },
+        actual_start_time: -> (od) { od.time_data.actual_start_at if od.time_data },
+        actual_end_time: -> (od) { od.time_data.actual_end_at if od.time_data },
+        actual_minutes: -> (od) { od.time_data.actual_duration_mins if od.time_data },
         canceled_at: -> (od) { od.reservation.canceled_at if od.reservation },
         canceled_by: -> (od) { canceled_by_name(od.reservation) if od.reservation },
         note: :note,
@@ -85,6 +85,11 @@ module Reports
         reconciled_note: :reconciled_note,
         reconciled_at: :reconciled_at,
       }
+      if SettingsHelper.has_review_period?
+        hash
+      else
+        hash.except(:reviewed_at, :disputed_at, :dispute_reason, :dispute_resolved_at, :dispute_resolved_reason)
+      end
     end
 
     def report_data_query

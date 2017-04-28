@@ -29,10 +29,7 @@
 = simple_form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
   = render "account_field", f: f unless @order_detail.bundled?
-
-  .row
-    .well.span12
-      = render "reservation_fields", f: f
+  = render "reservation_fields", f: f
 
   - if acting_as?
     .row

@@ -1,4 +1,20 @@
 en:
+  secure_rooms/access_rules:
+    reasons:
+      passed: "All rules passed"
+      selected_account: "Account selected"
+      only_account: "Only one valid Account exists"
+      egress: "Exiting SecureRoom"
+      operator: "User is an operator of this room"
+      archived: "Product is archived"
+      not_on_access_list: "User is not on the access list"
+      no_schedule: "No schedule rules configured"
+      outside_schedule: "Outside of schedule rules"
+      not_in_group: "User not in schedule group"
+      no_accounts: "User has no valid accounts for this Product"
+      selection_needed: "Must select Account"
+      rules_failed: "No rule generated a verdict"
+
   activerecord:
     models:
       secure_room:
@@ -15,6 +31,20 @@ en:
         description: Description
         card_reader_number: Card Reader Number
         control_device_number: Control Device Number
+        direction: Direction
+        direction_in: Direction
+        human_direction:
+          "true": In
+          "false": Out
+        tablet_token: Tablet Token
+      secure_rooms/event:
+        occurred_at: Occurred At
+        outcome: Outcome
+        outcome_details: Outcome Details
+      secure_rooms/occupancy:
+        entry_at: Time of Entry
+        exit_at: Time of Exit
+        orphaned_at: Time Marked as Orphaned
 
   controllers:
     secure_rooms/card_readers:
@@ -43,6 +73,12 @@ en:
           edit:
             title: Edit Card Reader
 
+        occupancies:
+          index:
+            description: "Current occupants of this room"
+            none: "The room is currently vacant"
+            problem: "Occupants missing scan data"
+
     secure_rooms:
       card_numbers:
         edit:
@@ -52,4 +88,5 @@ en:
         tabnav_users:
           title: Secure Room Access
         tabnav_secure_room:
-          title: Card Readers
+          card_readers_title: Card Readers
+          occupancies_title: Occupancies

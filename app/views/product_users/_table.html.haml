@@ -1,0 +1,30 @@
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th
+      %th= User.human_attribute_name(:name)
+      %th= User.human_attribute_name(:username)
+      %th= User.human_attribute_name(:email)
+      - if local_assigns[:f]
+        %th= ProductAccessGroup.model_name.human
+  %tbody
+    - @product_users.each do |product_user|
+      - user = product_user.user
+      %tr
+        %td.centered
+          = link_to t("shared.remove"),
+            [current_facility, @product, user],
+            method: :delete,
+            data: { confirm: text("confirm_removal", product_type: @product.model_name.human.downcase) }
+
+        %td
+          = link_to "#{user.last_name}, #{user.first_name}", [current_facility, user]
+
+        %td= user.username
+        %td= user.email
+        - if local_assigns[:f]
+          %td
+            = f.fields_for :product_users, product_user, index: product_user.id do |pu|
+              = pu.select :product_access_group_id,
+                options_from_collection_for_select(@product.product_access_groups, "id", "name", product_user.product_access_group_id),
+                include_blank: true

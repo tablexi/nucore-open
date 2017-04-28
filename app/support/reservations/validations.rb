@@ -117,19 +117,7 @@ module Reservations::Validations
               product.available_schedule_rules(order_detail.order.user)
             end
 
-    mins  = (end_at - start_at) / 60
-    (0..mins).each do |n|
-      dt    = start_at.advance(minutes: n)
-      found = false
-      rules.each do |s|
-        if s.includes_datetime(dt)
-          found = true
-          break
-        end
-      end
-      return false unless found
-    end
-    true
+    rules.cover?(start_at, end_at)
   end
 
   # Extended validation methods

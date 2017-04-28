@@ -35,10 +35,8 @@ $baseFontSize: 12px;
 @import "calendar/fullcalendar.extensions";
 @import "clockpunch";
 
-// Must import each individually because the jquery-ui-rails gem is in CSS, not SASS
-@import "jquery-ui/core";
-@import "jquery-ui/datepicker";
-@import "jquery-ui/dialog";
-@import "jquery-ui/draggable";
-@import "jquery-ui/tabs";
-@import "jquery-ui/theme"
+
+// This uses a theme in vendor/engines because it looks better in the context
+// of NUcore than the default theme.
+// See vendor/engines/stylesheets/jquery-ui.theme.md for instructions on updating the theme.
+@import "jquery-ui-smoothness";
