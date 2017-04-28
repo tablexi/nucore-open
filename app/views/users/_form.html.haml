@@ -1,9 +1,10 @@
 = simple_form_for [current_facility, @user] do |f|
   .form-inputs
-    = f.input :first_name
-    = f.input :last_name
-    = f.input :email
+    = f.input :first_name, readonly: !@user.admin_editable?
+    = f.input :last_name, readonly: !@user.admin_editable?
+    = f.input :email, readonly: !@user.admin_editable?
     = f.input :username, readonly: true
+    = f.input :internal?, label: 'Internal Pricing', as: :select, default: false
     = f.button :submit, button_text, class: ["btn", "btn-primary"]
     &nbsp;
     = link_to text("shared.cancel"), facility_users_path
