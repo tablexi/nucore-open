@@ -845,8 +845,41 @@ class OrderDetail < ActiveRecord::Base
     @manual_fulfilled_at = ValidFulfilledAtDate.parse(string)
   end
 
+  class NullTimeData
+
+    def problem?
+      false
+    end
+
+    def order_completable?
+      true
+    end
+
+    # Gives us both `blank?` and `present?`
+    def blank?
+      true
+    end
+  end
+
+  class TimeDataRequired
+
+    def order_completable?
+      false
+    end
+
+    def blank?
+      true
+    end
+
+  end
+
   def time_data
-    @time_data ||= product.time_data_for(self)
+    return @time_data if @time_data
+    @time_data = if product.respond_to?(:time_data_for)
+      product.time_data_for(self) || TimeDataRequired.new
+    else
+      NullTimeData.new
+    end
   end
 
   private

@@ -100,27 +100,6 @@ class Product < ActiveRecord::Base
   end
   after_create :set_default_pricing
 
-  class NullTimeData
-
-    def problem?
-      false
-    end
-
-    def order_completable?
-      true
-    end
-
-    # Gives us both `blank?` and `present?`
-    def blank?
-      true
-    end
-  end
-
-  # expected to be overridden in subclasses
-  def time_data_for(order_detail)
-    NullTimeData.new
-  end
-
   def initial_order_status
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
