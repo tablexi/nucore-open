@@ -14,7 +14,9 @@
       = text_field_tag :fulfilled_at,
         nil,
         placeholder: OrderDetail.human_attribute_name(:fulfilled_at),
-        data: { min_date: SettingsHelper.fiscal_year_beginning.iso8601, max_date: Date.today.iso8601, complete_target: "#order_status_id" },
+        data: { min_date: ValidFulfilledAtDate.min.iso8601,
+           max_date: ValidFulfilledAtDate.max.iso8601,
+           complete_target: "#order_status_id" },
         class: "datepicker__data string optional js--showOnCompleteStatus"
 
       = label_tag :note, OrderDetail.human_attribute_name(:note)

@@ -274,6 +274,7 @@ RSpec.describe FacilityOrdersController do
               let(:fulfilled_at) { Date.today }
 
               it_should_allow :director, "to add an item to existing order with fulfilled_at set" do
+                expect(order.order_details).to be_one
                 expect(order_detail.order_status).to eq(complete_status)
                 expect(order_detail.fulfilled_at)
                   .to eq(fulfilled_at.beginning_of_day + 12.hours)
@@ -283,18 +284,18 @@ RSpec.describe FacilityOrdersController do
             context "to a date in the future" do
               let(:fulfilled_at) { 1.day.from_now }
 
-              it_should_allow :director, "to add an item to existing order with fulfilled_at set to now" do
-                expect(order_detail.order_status).to eq(complete_status)
-                expect(order_detail.fulfilled_at).to eq(Time.current)
+              it_should_allow :director, "it should not save" do
+                expect(order_detail).to be_blank
+                expect(flash[:error]).to include "cannot be in the future"
               end
             end
 
-            context "to a date before the start of this fiscal year" do
-              let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning - 1.day }
+            context "to a date before the start of the previous fiscal year" do
+              let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning - 1.year - 1.day }
 
               it_should_allow :director, "to add an item to existing order with fulfilled_at set to now" do
-                expect(order_detail.order_status).to eq(complete_status)
-                expect(order_detail.fulfilled_at).to eq(Time.current)
+                expect(order_detail).to be_blank
+                expect(flash[:error]).to include("fiscal year")
               end
             end
 

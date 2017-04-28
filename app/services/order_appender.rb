@@ -10,26 +10,25 @@ class OrderAppender
   end
 
   def add!(product, quantity, params)
-    products = product.is_a?(Bundle) ? product.products : [product]
+    OrderDetail.transaction do
+      products = product.is_a?(Bundle) ? product.products : [product]
 
-    note = params[:note].presence
-    order_status = load_order_status(params[:order_status_id].presence, product.facility)
-    order = products.any?(&:mergeable?) ? build_merge_order : original_order
-    notifications = false
+      note = params[:note].presence
+      order_status = load_order_status(params[:order_status_id].presence, product.facility)
+      order = products.any?(&:mergeable?) ? build_merge_order : original_order
+      notifications = false
 
-    order.add(product, quantity, created_by: user.id).each do |order_detail|
-      update_order_detail!(order_detail, note: note, order_status: order_status, fulfilled_at: params[:fulfilled_at])
+      order.add(product, quantity, created_by: user.id).each do |order_detail|
+        update_order_detail!(order_detail, note: note, order_status: order_status, fulfilled_at: params[:fulfilled_at])
 
-      if order.to_be_merged? && !order_detail.valid_for_purchase?
-        notifications = true
-        MergeNotification.create_for!(user, order_detail)
+        if order.to_be_merged? && !order_detail.valid_for_purchase?
+          notifications = true
+          MergeNotification.create_for!(user, order_detail)
+        end
       end
-    end
 
-    notifications
-  rescue => e
-    order.destroy if order != original_order
-    raise e
+      notifications
+    end
   end
 
   private
