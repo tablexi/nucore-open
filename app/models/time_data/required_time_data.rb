@@ -6,11 +6,12 @@ module TimeData
       false
     end
 
-    def blank?
+    def problem?
       true
     end
 
-    def problem?
+    # Gives us both `blank?` and `present?`
+    def blank?
       true
     end
 

@@ -2,12 +2,12 @@ module TimeData
 
   class NullTimeData
 
-    def problem?
-      false
-    end
-
     def order_completable?
       true
+    end
+
+    def problem?
+      false
     end
 
     # Gives us both `blank?` and `present?`
