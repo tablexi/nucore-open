@@ -4,4 +4,5 @@
     %h3= schedule.name
     = render partial: "shared/timeline/instrument", collection: products, as: :instrument
 - else
-  = render partial: "shared/timeline/instrument", collection: products, as: :instrument
+  .timeline-single
+    = render partial: "shared/timeline/instrument", collection: products, as: :instrument
