@@ -9,8 +9,13 @@
   width: 945px;
 }
 
+.timeline-wrapper {
+  text-align: center;
+}
+
 .timeline-schedule, .timeline-single {
   display: inline-block;
+  text-align: left;
 }
 
 .timeline-schedule {
