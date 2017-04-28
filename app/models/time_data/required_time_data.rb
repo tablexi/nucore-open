@@ -10,6 +10,10 @@ module TimeData
       true
     end
 
+    def problem?
+      true
+    end
+
   end
 
 end
