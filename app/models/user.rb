@@ -210,10 +210,10 @@ class User < ActiveRecord::Base
   def update_price_group!(params)
     if params[:internal] == "true"
       price_group_members.find_by(price_group: PriceGroup.external).try(:destroy)
-      price_group_members.create(price_group: PriceGroup.base)
+      price_group_members.find_or_create_by(price_group: PriceGroup.base)
     else
       price_group_members.find_by(price_group: PriceGroup.base).try(:destroy)
-      price_group_members.create(price_group: PriceGroup.external)
+      price_group_members.find_or_create_by(price_group: PriceGroup.external)
     end
   end
 
