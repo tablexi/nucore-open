@@ -12,4 +12,5 @@
 
 %h2= text("head", user: @user.full_name)
 %p= text("subhead")
-= render "form", button_text: text("shared.update")
+- @is_edit = true
+= render "form", button_text: text("shared.update"), locals: @is_edit
