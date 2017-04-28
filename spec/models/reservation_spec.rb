@@ -1022,7 +1022,7 @@ RSpec.describe Reservation do
       end
 
       it "sets the orders as a problem order" do
-        expect(running.reload).to be_problem
+        expect(running.reload.order_detail).to be_problem
       end
 
       it "does not set actual_end_at" do
@@ -1050,7 +1050,7 @@ RSpec.describe Reservation do
       end
 
       it "sets the orders as a problem order" do
-        expect(running.reload).to be_problem
+        expect(running.reload.order_detail).to be_problem
       end
 
       it "does not set actual_end_at" do
