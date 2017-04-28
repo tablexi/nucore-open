@@ -29,7 +29,7 @@ class Reservation < ActiveRecord::Base
   # Delegations
   #####
   delegate :note, :note=, :ordered_on_behalf_of?, :complete?, :account, :order,
-    :complete!, to: :order_detail, allow_nil: true
+           :complete!, to: :order_detail, allow_nil: true
 
   delegate :account, :in_cart?, :user, to: :order, allow_nil: true
   delegate :facility, to: :product, allow_nil: true
