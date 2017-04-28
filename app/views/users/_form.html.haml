@@ -4,7 +4,7 @@
     = f.input :last_name, readonly: local_assigns[:edit] && !user.admin_editable?
     = f.input :email, readonly: local_assigns[:edit] && !user.admin_editable?
     = f.input :username, readonly: true
-    - if local_assigns[:edit]
+    - if local_assigns[:edit] && current_user.administrator?
       = f.input :internal?, label: 'Internal Pricing', as: :select, default: false
     = f.button :submit, button_text, class: ["btn", "btn-primary"]
     &nbsp;

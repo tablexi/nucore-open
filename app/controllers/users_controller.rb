@@ -151,7 +151,7 @@ class UsersController < ApplicationController
   # PUT /facilities/:facility_id/users/:id
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(edit_user_params) && @user.update_price_group!(price_group_params)
+    if @user.update_attributes(edit_user_params) && @user.update_price_group(price_group_params)
       flash[:notice] = text("update.success")
       redirect_to facility_user_path(current_facility, @user)
     else
