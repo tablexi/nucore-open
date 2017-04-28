@@ -2,7 +2,7 @@ module TimeData
 
   class NullTimeData
 
-    def problem?
+    def completion_problem?
       false
     end
 

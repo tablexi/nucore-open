@@ -10,7 +10,7 @@ module TimeData
       true
     end
 
-    def problem?
+    def completion_problem?
       true
     end
 
