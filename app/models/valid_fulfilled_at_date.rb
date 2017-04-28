@@ -3,11 +3,12 @@ class ValidFulfilledAtDate
   include ActiveModel::Validations
   include DateHelper
 
-  def initialize(string)
-    @string = string
-  end
+  validate :valid_format
+  validate :not_in_future, if: :to_time
+  validate :recent, if: :to_time
 
   def self.min
+    # Beginning of previous fiscal year
     SettingsHelper.fiscal_year_beginning(1.year.ago)
   end
 
@@ -15,9 +16,9 @@ class ValidFulfilledAtDate
     Time.current
   end
 
-  validate :valid_format
-  validate :not_in_future, if: :to_time
-  validate :recent, if: :to_time
+  def initialize(string)
+    @string = string
+  end
 
   def error
     errors[:base].first
@@ -32,10 +33,10 @@ class ValidFulfilledAtDate
     time = parse_usa_date(@string).try(:to_date)
     time.beginning_of_day + 12.hours if time.present?
   end
+  alias presence to_time
   # This allows us to set `fulfilled_at = ValidFulfilledAtDate.new("XX/XX/XXXX")`
   # and ActiveRecord will treat it like a time.
   alias in_time_zone to_time
-  alias presence to_time
 
   private
 

@@ -92,6 +92,7 @@ class OrderDetail < ActiveRecord::Base
   # were being triggered on orders where the orderer had been removed from the account.
   validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
   validates_length_of :note, maximum: 1000, allow_blank: true, allow_nil: true
+  validate :valid_manual_fulfilled_at
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility
@@ -844,7 +845,7 @@ class OrderDetail < ActiveRecord::Base
     @manual_fulfilled_at = ValidFulfilledAtDate.new(string)
   end
 
-  validate do
+  def valid_manual_fulfilled_at
     if @manual_fulfilled_at && @manual_fulfilled_at.invalid?
       errors.add(:fulfilled_at, @manual_fulfilled_at.error)
     end
