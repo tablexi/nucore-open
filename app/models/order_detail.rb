@@ -30,7 +30,7 @@ class OrderDetail < ActiveRecord::Base
 
   before_save :set_problem_order
   def set_problem_order
-    self.problem = complete? && (price_policy.blank? || time_data.completion_problem?)
+    self.problem = complete? && (price_policy.blank? || time_data.problem?)
     update_fulfilled_at_on_resolve if time_data.present?
     true # problem might be false; we need the callback chain to continue
   end
