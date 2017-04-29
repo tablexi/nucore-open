@@ -5,19 +5,19 @@ module PricePolicies
     attr_reader :price_policy
 
     delegate :usage_rate, :usage_subsidy, :minimum_cost, :minimum_cost_subsidy,
-      :product, to: :price_policy
+             :product, to: :price_policy
 
     def initialize(price_policy)
       @price_policy = price_policy
     end
 
     def calculate(start_at, end_at)
+      return if start_at > end_at
       duration_mins = TimeRange.new(start_at, end_at).duration_mins
       discount = calculate_discount(start_at, end_at)
       cost_and_subsidy(duration_mins, discount)
     end
 
-    # TODO: Make private
     def calculate_discount(start_at, end_at)
       discount = product.schedule_rules.to_a.sum do |sr|
         sr.discount_for(start_at, end_at)

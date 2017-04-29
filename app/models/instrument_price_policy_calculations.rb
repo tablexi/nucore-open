@@ -36,16 +36,6 @@ module InstrumentPricePolicyCalculations
     minutes_canceled_before.minutes <= product.min_cancel_hours.hours
   end
 
-  # TODO: Move specs to TimeBasedPriceCalculator
-  def calculate_discount(start_at, end_at)
-    PricePolicies::TimeBasedPriceCalculator.new(self).calculate_discount(start_at, end_at)
-  end
-
-  # TODO: Make private after moving enough specs to TimeBasedPriceCalculator
-  def calculate_for_time(start_at, end_at)
-    PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at)
-  end
-
   private
 
   # CHARGE_FOR[:reservation] uses reserve start and end time for calculation
@@ -65,6 +55,10 @@ module InstrumentPricePolicyCalculations
     return unless reservation.actual_start_at && reservation.actual_end_at
     end_at = [reservation.reserve_end_at, reservation.actual_end_at].max
     calculate_for_time(reservation.reserve_start_at, end_at)
+  end
+
+  def calculate_for_time(start_at, end_at)
+    PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at)
   end
 
   def calculate_cancellation_costs(reservation)
