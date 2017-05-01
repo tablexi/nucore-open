@@ -208,7 +208,7 @@ class Reservation < ActiveRecord::Base
       .none?
   end
 
-  delegate :canceled?, to: :order_detail
+  delegate :canceled?, to: :order_detail, allow_nil: true
 
   # can the CUSTOMER cancel the order
   def can_cancel?
