@@ -4,7 +4,7 @@ module SecureRooms
 
     class OrderHandler
 
-      attr_reader :occupancy
+      attr_reader :order, :order_detail, :occupancy
 
       def self.process(occupancy)
         new(occupancy).process
@@ -17,7 +17,7 @@ module SecureRooms
       def process
         return unless occupancy.account_id?
 
-        create_order unless occupancy.order_detail_id?
+        find_or_create_order
         fulfill_order if occupancy.complete?
 
         order
@@ -25,16 +25,25 @@ module SecureRooms
 
       private
 
+      def find_or_create_order
+        if occupancy.order_detail_id?
+          @order = order_detail.order
+          @order_detail = occupancy.order_detail
+        else
+          create_order
+        end
+      end
+
+      def fulfill_order
+        order_detail.update_order_status! occupancy.user, OrderStatus.complete.first
+      end
+
       def create_order
         ActiveRecord::Base.transaction do
           create_order_and_detail
           order.validate_order!
           order.purchase!
         end
-      end
-
-      def fulfill_order
-        order_detail.update_order_status! occupancy.user, OrderStatus.complete.first
       end
 
       def create_order_and_detail
@@ -51,14 +60,6 @@ module SecureRooms
           created_by_user: occupancy.user,
           quantity: 1,
         )
-      end
-
-      def order
-        @order ||= order_detail.order
-      end
-
-      def order_detail
-        @order_detail ||= occupancy.order_detail
       end
 
     end
