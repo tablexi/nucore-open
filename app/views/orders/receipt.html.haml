@@ -20,7 +20,7 @@
   = f.input :user
   = f.input :created_by_user
 
-%table.table.table-striped.table-hover.old-table
+%table.table.table-striped.table-hover.old-table.js--responsive_table
   %thead
     %tr
       %th.centered= OrderDetail.human_attribute_name(:id)
@@ -47,10 +47,13 @@
         - if @order.has_subsidies?
           %td.currency= order_detail.wrapped_subsidy
         %td.currency=order_detail.wrapped_total
+  %tfoot
     %tr
       - colspan = @order.has_subsidies? ? 5 : 4
-      %td{colspan: colspan}
+      %td.hide-on-mobile{colspan: colspan}
         %strong= t('.total')
-      %td.currency= number_to_currency(@order_details.sum { |d| d.total || 0 })
+      %td.currency
+        .responsive-header Total
+        = number_to_currency(@order_details.sum { |d| d.total || 0 })
 
 = render :partial => '/price_display_footnote'
