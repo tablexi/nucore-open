@@ -30,7 +30,7 @@ class OrderDetail < ActiveRecord::Base
 
   before_save :set_problem_order
   def set_problem_order
-    self.problem = complete? && (price_policy.blank? || time_data.problem?)
+    self.problem = complete? && problem_description_key.present?
     update_fulfilled_at_on_resolve if time_data.present?
     true # problem might be false; we need the callback chain to continue
   end
@@ -55,7 +55,6 @@ class OrderDetail < ActiveRecord::Base
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
-  delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
   # TODO: Refactor this from Reservation into OrderDetail
   delegate :canceled_at, to: :reservation, allow_nil: true
 
@@ -924,6 +923,10 @@ class OrderDetail < ActiveRecord::Base
   def set_reconciled_at
     # Do not override it if it has been set by something already (e.g. journaling)
     self.reconciled_at ||= Time.current
+  end
+
+  def problem_description_key
+    time_data.problem_description_key || (:price_policy_missing if price_policy.blank?)
   end
 
 end

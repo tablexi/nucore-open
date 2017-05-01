@@ -58,6 +58,14 @@ module SecureRooms
       range.duration_mins
     end
 
+    def problem_description_key
+      if entry_at.blank?
+        :missing_entry
+      elsif exit_at.blank?
+        :missing_exit
+      end
+    end
+
     private
 
     def range

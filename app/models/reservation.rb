@@ -282,6 +282,10 @@ class Reservation < ActiveRecord::Base
   end
   alias problem? requires_but_missing_actuals?
 
+  def problem_description_key
+    :actual_usage_missing if requires_but_missing_actuals?
+  end
+
   def locked?
     !(admin_editable? || can_edit_actuals?)
   end
