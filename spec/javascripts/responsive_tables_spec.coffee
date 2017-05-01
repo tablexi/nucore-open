@@ -16,9 +16,11 @@ describe "Responsive table support", ->
     $(".table").addClass("js--responsive_table")
     responsiveTable = new ResponsiveTable
     responsiveTable.respond()
-    expect($("td .responsive-header").size()).toEqual(2)
+    expect($("td .responsive-header").size()).toEqual(4)
     expect($("td .responsive-header").eq(0).text()).toEqual("Invoice Number")
     expect($("td .responsive-header").eq(1).text()).toEqual("Facility")
+    expect($("td .responsive-header").eq(2).text()).toEqual("Invoice Number")
+    expect($("td .responsive-header").eq(3).text()).toEqual("Facility")
 
   it "ignores a table if the global variable is false", ->
     window.IS_RESPONSIVE = false
