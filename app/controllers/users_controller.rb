@@ -167,7 +167,7 @@ class UsersController < ApplicationController
   end
 
   def price_group_params
-    params.require(:user).permit(:internal)
+    params.require(:user).permit(:internal) if current_user.administrator?
   end
 
   def update_access_list_approvals

@@ -20,7 +20,7 @@
     = f.input :email, readonly: !@user.admin_editable?
     = f.input :username, readonly: true
     - if current_user.administrator?
-      = f.input :internal?, label: 'Internal Pricing', as: :select, default: false
+      = f.input :internal?, label: text(".internal"), as: :select, default: false
     = f.button :submit, text("shared.update"), class: ["btn", "btn-primary"]
     &nbsp;
     = link_to text("shared.cancel"), facility_users_path
