@@ -5,9 +5,10 @@ class window.ResponsiveTable
     $(".js--responsive_table").each (index, table) ->
       $table = $(table)
       $th = $table.find("thead th")
-      $table.find("tbody tr td").prepend (index) ->
-        $("<div>").addClass("responsive-header")
-                  .text($th.eq(index).text())
+      $table.find("tbody tr").each (index, row) ->
+        $(row).find("td").prepend (index) ->
+          $("<div>").addClass("responsive-header")
+                    .text($th.eq(index).text())
 
 $ ->
   (new ResponsiveTable).respond()
