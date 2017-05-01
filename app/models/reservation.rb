@@ -14,7 +14,8 @@ class Reservation < ActiveRecord::Base
   belongs_to :product
   belongs_to :order_detail, inverse_of: :reservation
   has_one :order, through: :order_detail
-  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
+  # belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
+  delegate :canceled_at, to: :order_detail, allow_nil: true
 
   ## Virtual attributes
   #####
@@ -204,13 +205,11 @@ class Reservation < ActiveRecord::Base
       .none?
   end
 
-  def canceled?
-    canceled_at.present?
-  end
+  delegate :canceled?, to: :order_detail
 
   # can the CUSTOMER cancel the order
   def can_cancel?
-    canceled_at.nil? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
+    !canceled? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
   end
 
   def can_customer_edit?

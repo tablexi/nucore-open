@@ -51,6 +51,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :order_status
   belongs_to :account
   belongs_to :bundle, foreign_key: "bundle_product_id"
+  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
   has_one    :reservation, dependent: :destroy, inverse_of: :order_detail
   has_one    :external_service_receiver, as: :receiver, dependent: :destroy
   has_many   :journal_rows, inverse_of: :order_detail
@@ -61,7 +62,7 @@ class OrderDetail < ActiveRecord::Base
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
   # TODO: Refactor this from Reservation into OrderDetail
-  delegate :canceled_at, to: :reservation, allow_nil: true
+  # delegate :canceled_at, to: :reservation, allow_nil: true
 
   delegate :in_cart?, :facility, :ordered_at, :user, to: :order
   delegate :price_group, to: :price_policy, allow_nil: true
@@ -392,6 +393,10 @@ class OrderDetail < ActiveRecord::Base
     event :to_canceled do
       transitions to: :canceled, from: CANCELABLE_STATES, guard: :cancelable?
     end
+  end
+
+  def canceled?
+    canceled_at.present?
   end
 
   # block will be called after the transition, but before the save
