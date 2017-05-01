@@ -14,8 +14,6 @@ class Reservation < ActiveRecord::Base
   belongs_to :product
   belongs_to :order_detail, inverse_of: :reservation
   has_one :order, through: :order_detail
-  # belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
-  delegate :canceled_at, to: :order_detail, allow_nil: true
 
   ## Virtual attributes
   #####
@@ -36,6 +34,11 @@ class Reservation < ActiveRecord::Base
   delegate :facility, to: :product, allow_nil: true
   delegate :lock_window, to: :product, prefix: true
   delegate :owner, to: :account, allow_nil: true
+
+  delegate :canceled_at, to: :order_detail, allow_nil: true
+  delegate :canceled_by, to: :order_detail, allow_nil: true
+  delegate :canceled_reason, to: :order_detail, allow_nil: true
+
 
   ## AR Hooks
   after_update :auto_save_order_detail, if: :order_detail
