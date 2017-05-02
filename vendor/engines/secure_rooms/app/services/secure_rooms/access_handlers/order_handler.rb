@@ -15,14 +15,16 @@ module SecureRooms
       end
 
       def process
-        return unless occupancy.account_id?
+        return if occupancy.skip_order?
 
         ActiveRecord::Base.transaction do
           create_order
           create_order_detail
 
-          order.validate_order!
-          order.purchase!
+          if occupancy.account_id?
+            order.validate_order!
+            order.purchase!
+          end
         end
 
         order

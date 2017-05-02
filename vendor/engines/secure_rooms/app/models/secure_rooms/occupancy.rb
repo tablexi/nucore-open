@@ -13,6 +13,7 @@ module SecureRooms
 
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range
+    delegate :skip_order?, to: :entry_event, allow_nil: true
 
     def self.valid
       where(orphaned_at: nil)

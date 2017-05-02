@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170421142844) do
+ActiveRecord::Schema.define(version: 20170502125201) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -624,6 +624,7 @@ ActiveRecord::Schema.define(version: 20170421142844) do
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
     t.integer  "account_id",      limit: 4
+    t.boolean  "skip_order"
   end
 
   add_index "secure_rooms_events", ["account_id"], name: "index_secure_rooms_events_on_account_id", using: :btree
