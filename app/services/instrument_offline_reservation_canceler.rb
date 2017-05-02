@@ -18,7 +18,7 @@ class InstrumentOfflineReservationCanceler
 
   def cancel_reservation(reservation)
     reservation.order_detail.cancel_reservation(admin_user, admin: true)
-    reservation.update_attribute(:canceled_reason, "The instrument was offline")
+    reservation.order_detail.update_attributes(canceled_reason: "The instrument was offline")
   end
 
 end

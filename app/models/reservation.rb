@@ -36,9 +36,13 @@ class Reservation < ActiveRecord::Base
   delegate :owner, to: :account, allow_nil: true
 
   delegate :canceled_at, to: :order_detail, allow_nil: true
+  delegate :canceled_at=, to: :order_detail, allow_nil: true
   delegate :canceled_by, to: :order_detail, allow_nil: true
+  delegate :canceled_by=, to: :order_detail, allow_nil: true
   delegate :canceled_reason, to: :order_detail, allow_nil: true
+  delegate :canceled_reason=, to: :order_detail, allow_nil: true
 
+  delegate :canceled?, to: :order_detail, allow_nil: true
 
   ## AR Hooks
   after_update :auto_save_order_detail, if: :order_detail
@@ -60,11 +64,15 @@ class Reservation < ActiveRecord::Base
   }
 
   def self.joins_order
-    joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
+    joins_order_details
       .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
   end
 
-  scope :not_canceled, -> { where(canceled_at: nil) }
+  def self.joins_order_details
+    joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
+  end
+
+  scope :not_canceled, -> { joins_order_details.where(order_details: { canceled_at: nil }) } # dubious
   scope :not_started, -> { where(actual_start_at: nil) }
   scope :not_ended, -> { where(actual_end_at: nil) }
 
@@ -208,15 +216,13 @@ class Reservation < ActiveRecord::Base
       .none?
   end
 
-  delegate :canceled?, to: :order_detail, allow_nil: true
-
   # can the CUSTOMER cancel the order
   def can_cancel?
-    !canceled? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
+    canceled_at.blank? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
   end
 
   def can_customer_edit?
-    !canceled? && !complete? && (reserve_start_at_editable? || reserve_end_at_editable?)
+    canceled_at.blank? && !complete? && (reserve_start_at_editable? || reserve_end_at_editable?)
   end
 
   def reserve_start_at_editable?

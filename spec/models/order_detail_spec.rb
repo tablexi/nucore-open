@@ -208,7 +208,7 @@ RSpec.describe OrderDetail do
     is_expected.not_to allow_value(nil).for(:product_id)
   end
 
-  it "should have a order" do
+  it "should have an order" do
     is_expected.not_to allow_value(nil).for(:order_id)
   end
 
@@ -769,7 +769,7 @@ RSpec.describe OrderDetail do
     expect(desc).to match(/#{@order_detail.order.id}/)
   end
 
-  context "is_in_dispute?" do
+  context "#in_dispute?" do
     it "should be in dispute" do
       @order_detail.dispute_at = Time.zone.now
       @order_detail.dispute_resolved_at = nil

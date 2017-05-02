@@ -395,7 +395,7 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
-  def canceled?
+  def canceled? # name conflict with AASM
     canceled_at.present?
   end
 
@@ -714,20 +714,17 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def in_dispute?
-    dispute_at && dispute_resolved_at.nil? && !canceled?
-  end
-
-  def disputed?
-    dispute_at.present? && !canceled?
+    dispute_at && dispute_resolved_at.nil? && state != "canceled"
   end
 
   def cancel_reservation(canceled_by, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
+    # TODO: refactor more better
     res = reservation
-    res.canceled_by = canceled_by.id
+    self.canceled_by = canceled_by.id
 
     if admin
-      res.canceled_at = Time.zone.now
-      return false unless res.save
+      self.canceled_at = Time.zone.now
+      return false unless self.save
 
       if admin_with_cancel_fee
         clear_statement if cancellation_fee == 0
@@ -738,8 +735,8 @@ class OrderDetail < ActiveRecord::Base
       end
     else
       return false unless res && res.can_cancel?
-      res.canceled_at = Time.zone.now # must set canceled_at after calling #can_cancel?
-      return false unless res.save
+      self.canceled_at = Time.zone.now # must set canceled_at after calling #can_cancel?
+      return false unless self.save
       clear_statement if cancellation_fee == 0
       cancel_with_fee order_status
     end

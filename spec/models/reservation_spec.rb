@@ -308,20 +308,30 @@ RSpec.describe Reservation do
   end
 
   describe "#canceled?" do
+    # TODO: move to order_detail_spec
+    let(:price_group) { create(:price_group, facility: facility) }
+    let!(:instrument_pp) { FactoryGirl.create(:instrument_price_policy, product: instrument, price_group: price_group) }
+    let(:user) { FactoryGirl.create(:user) }
+    let(:account) { FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
+    let!(:account_price_group_memeber) { create(:account_price_group_member, account: account, price_group: price_group) }
+    let(:order) { user.orders.create(attributes_for(:order, created_by: user.id, account: account, facility: facility)) }
+    let!(:order_detail) { FactoryGirl.create(:order_detail, order: order, product_id: instrument.id, account: account, quantity: 1) }
+
     subject(:reservation) do
       instrument.reservations.create(reserve_start_date: (Date.today + 1.day).to_s,
                                      reserve_start_hour: "10",
                                      reserve_start_min: "0",
                                      reserve_start_meridian: "am",
                                      duration_mins: "120",
-                                     split_times: true)
+                                     split_times: true,
+                                     order_detail_id: order_detail.id)
     end
 
     it { is_expected.to be_valid }
     it { is_expected.not_to be_canceled }
 
     context "when canceled_at is set" do
-      before { reservation.canceled_at = Time.current }
+      before { order_detail.update_attributes(canceled_at: Time.current) }
       it { is_expected.to be_canceled }
     end
   end

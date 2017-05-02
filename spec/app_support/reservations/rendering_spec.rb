@@ -199,6 +199,7 @@ RSpec.describe Reservations::Rendering do
 
       context "and the reservation is canceled" do
         let(:canceled_at) { 4.hours.ago }
+        before { expect(reservation).to receive(:canceled_at).and_return(canceled_at) }
 
         it "returns the formatted range with '(Canceled)' appended" do
           expect(reservation.to_s)

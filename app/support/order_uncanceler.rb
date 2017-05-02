@@ -6,7 +6,7 @@ class OrderUncanceler
   end
 
   def uncancel_to_complete(order_detail)
-    unless order_detail.canceled?
+    unless order_detail.state == "canceled"
       Rails.logger.info "OrderDetail #{order_detail} was not in canceled state"
       return
     end
@@ -18,14 +18,14 @@ class OrderUncanceler
         if order_detail.reservation
           fulfilled_at = order_detail.reservation.reserve_end_at
           order_detail.reservation.update_attributes!(
-            canceled_by: nil,
-            canceled_at: nil,
-            canceled_reason: nil,
             actual_start_at: order_detail.reservation.reserve_start_at,
             actual_end_at: order_detail.reservation.reserve_end_at)
         end
 
         order_detail.update_attributes!(
+          canceled_by: nil,
+          canceled_at: nil,
+          canceled_reason: nil,
           order_status: @complete_status,
           state: "complete",
           fulfilled_at: fulfilled_at)
