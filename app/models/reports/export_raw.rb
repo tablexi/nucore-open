@@ -72,8 +72,8 @@ module Reports
         actual_start_time: -> (od) { od.time_data.actual_start_at if od.time_data.present? },
         actual_end_time: -> (od) { od.time_data.actual_end_at if od.time_data.present? },
         actual_minutes: -> (od) { od.time_data.actual_duration_mins if od.time_data.present? },
-        canceled_at: -> (od) { od.reservation.canceled_at if od.reservation },
-        canceled_by: -> (od) { canceled_by_name(od.reservation) if od.reservation },
+        canceled_at: -> (od) { od.canceled_at },
+        canceled_by: -> (od) { canceled_by_name(od) },
         note: :note,
         disputed_at: :dispute_at,
         dispute_reason: :dispute_reason,
@@ -112,11 +112,11 @@ module Reports
       end
     end
 
-    def canceled_by_name(reservation)
-      if reservation.canceled_by == 0
+    def canceled_by_name(order_detail)
+      if order_detail.canceled_by == 0
         I18n.t("reports.fields.auto_cancel_name")
       else
-        reservation.canceled_by_user.try(:full_name)
+        order_detail.canceled_by_user.try(:full_name)
       end
     end
 
