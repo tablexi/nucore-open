@@ -83,6 +83,10 @@ $navCollapseColor: #777;
         font-weight: bold;
       }
 
+      &.order-note.order-note--wide {
+        width: auto;
+      }
+
     }
 
     th.currency, td.currency {
@@ -100,4 +104,3 @@ $navCollapseColor: #777;
     display: none !important;
   }
 }
-
