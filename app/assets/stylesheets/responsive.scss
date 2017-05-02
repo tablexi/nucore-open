@@ -58,6 +58,10 @@ $navCollapseColor: #777;
       display: block;
     }
 
+    td.hide-on-mobile {
+      display: none;
+    }
+
     thead tr {
       position: absolute;
       top: -9999px;
@@ -65,6 +69,10 @@ $navCollapseColor: #777;
     }
 
     tr { border: 1px solid #ccc; }
+
+    .first-in-bundle {
+      border-top: 3px solid black;
+    }
 
     td {
       border: none;
@@ -100,4 +108,3 @@ $navCollapseColor: #777;
     display: none !important;
   }
 }
-

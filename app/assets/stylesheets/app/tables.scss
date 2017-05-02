@@ -14,3 +14,13 @@ table {
     }
   }
 }
+
+table {
+  .first-in-bundle {
+    border-top: 3px solid black;
+  }
+}
+
+tfoot.cart {
+  border-top: 3px solid black;
+}
