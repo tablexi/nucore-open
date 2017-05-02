@@ -35,3 +35,5 @@ public/images/bg-search-form.pxm
 # Ignore RSpec's persistence file:
 spec/examples.txt
 .DS_Store
+.tags
+.tags1
