@@ -42,7 +42,10 @@ class Reservation < ActiveRecord::Base
   delegate :canceled_reason, to: :order_detail, allow_nil: true
   delegate :canceled_reason=, to: :order_detail, allow_nil: true
 
-  delegate :canceled?, to: :order_detail, allow_nil: true
+  def canceled?
+    return nil unless order_detail
+    order_detail.is_canceled?
+  end
 
   ## AR Hooks
   after_update :auto_save_order_detail, if: :order_detail
@@ -214,11 +217,11 @@ class Reservation < ActiveRecord::Base
 
   # can the CUSTOMER cancel the order
   def can_cancel?
-    canceled_at.blank? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
+    canceled? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
   end
 
   def can_customer_edit?
-    canceled_at.blank? && !complete? && (reserve_start_at_editable? || reserve_end_at_editable?)
+    canceled? && !complete? && (reserve_start_at_editable? || reserve_end_at_editable?)
   end
 
   def reserve_start_at_editable?

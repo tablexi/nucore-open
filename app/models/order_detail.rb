@@ -395,7 +395,7 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
-  def canceled? # name conflict with AASM
+  def is_canceled? # non-standard name to avoid conflict with AASM
     canceled_at.present?
   end
 
