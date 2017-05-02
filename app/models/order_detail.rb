@@ -717,6 +717,11 @@ class OrderDetail < ActiveRecord::Base
     dispute_at && dispute_resolved_at.nil? && state != "canceled"
   end
 
+  def disputed?
+    # only used in specs
+    dispute_at.present? && state != "canceled"
+  end
+
   def cancel_reservation(canceled_by, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
     # TODO: refactor more better
     res = reservation

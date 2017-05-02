@@ -64,15 +64,11 @@ class Reservation < ActiveRecord::Base
   }
 
   def self.joins_order
-    joins_order_details
+    joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
       .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
   end
 
-  def self.joins_order_details
-    joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
-  end
-
-  scope :not_canceled, -> { joins_order_details.where(order_details: { canceled_at: nil }) } # dubious
+  scope :not_canceled, -> { where(order_details: { canceled_at: nil }) } # dubious
   scope :not_started, -> { where(actual_start_at: nil) }
   scope :not_ended, -> { where(actual_end_at: nil) }
 
