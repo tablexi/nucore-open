@@ -58,6 +58,10 @@ $navCollapseColor: #777;
       display: block;
     }
 
+    td.hide-on-mobile {
+      display: none;
+    }
+
     thead tr {
       position: absolute;
       top: -9999px;
