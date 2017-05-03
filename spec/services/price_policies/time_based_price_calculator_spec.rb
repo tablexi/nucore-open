@@ -193,5 +193,4 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
 
   end
 
-
 end
