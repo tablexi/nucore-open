@@ -53,7 +53,7 @@
       %td.hide-on-mobile{colspan: colspan}
         %strong= t('.total')
       %td.currency
-        .responsive-header Total
+        .responsive-header= t('.total')
         = number_to_currency(@order_details.sum { |d| d.total || 0 })
 
 = render :partial => '/price_display_footnote'
