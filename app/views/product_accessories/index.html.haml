@@ -1,39 +1,37 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => {:sidenav_tab => @product.class.name.downcase.pluralize}
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.downcase.pluralize
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'accessories'}
+  = render "admin/shared/tabnav_product", secondary_tab: "accessories"
 
-%h2=h @product
+%h2= @product
 
-%p= t('product_accessories.index.description')
+%p= t("product_accessories.index.description")
 
 - if can? :edit, ProductAccessory
   - if @available_accessories.count > 0
-    = simple_form_for @product_accessory, :url => facility_product_product_accessories_path(current_facility, @product, @product_accessory), :defaults => { :required => false } do |f|
+    = simple_form_for @product_accessory, url: facility_product_product_accessories_path(current_facility, @product, @product_accessory), defaults: { required: false } do |f|
       %ul.inline
-        %li= f.association :accessory, :collection => @available_accessories, :include_blank => false
-        %li= f.input :scaling_type, :collection => ProductAccessory.scaling_types, :label_method => Proc.new { |t| t("product_accessories.type.#{t}") }, :include_blank => false
-        %li= f.submit t('.add'), :class => ['btn', 'btn-primary', 'btn-inline']
+        %li= f.association :accessory, collection: @available_accessories, include_blank: false, label: ProductAccessory.model_name.human
+        %li= f.input :scaling_type, collection: ProductAccessory.scaling_types, label_method: ->(type) { t(type, scope: "product_accessories.type.") }, include_blank: false
+        %li= f.submit t(".add"), class: ["btn", "btn-primary", "btn-inline"]
 
-
-- if @product_accessories.empty?
-  %p.notice= t('.no_accessories')
-- else
+- if @product_accessories.any?
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th.actions
-        %th Accessory
-        %th Scaling Type
+        %th= ProductAccessory.model_name.human
+        %th= ProductAccessory.human_attribute_name(:scaling_type)
     %tbody
       - @product_accessories.each do |pa|
         - accessory = pa.accessory
         %tr
-          %td.centered= link_to 'Remove', facility_product_product_accessory_path(current_facility, @product, pa), :method => :delete if can? :delete, pa
-          %td= link_to accessory.to_s_with_status, send("manage_facility_#{accessory.class.name.downcase}_path", current_facility, accessory)
-          %td.centered= t("product_accessories.type.#{pa.scaling_type}")
-
+          %td.centered= link_to text("shared.remove"), facility_product_product_accessory_path(current_facility, @product, pa), method: :delete if can? :delete, pa
+          %td= link_to accessory.to_s_with_status, [:manage, current_facility, accessory]
+          %td.centered= t(pa.scaling_type, scope: "product_accessories.type")
+- else
+  %p.notice= t(".no_accessories")
