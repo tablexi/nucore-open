@@ -33,6 +33,7 @@ module SecureRooms
 
     def mark_orphaned!
       update!(orphaned_at: Time.current)
+      order_detail.update_order_status!(user, OrderStatus.complete.first) if order_detail.present?
     end
 
     def orphan?
@@ -53,6 +54,10 @@ module SecureRooms
         exit_at: Time.current,
       )
       self
+    end
+
+    def order_completable?
+      orphaned_at? || (entry_at? && exit_at?)
     end
 
     def actual_duration_mins

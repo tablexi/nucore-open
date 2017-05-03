@@ -30,14 +30,28 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
     end
   end
 
+  shared_examples_for "a problem order" do
+    it "sets up a problem order" do
+      expect(occupancy.order_detail).to be_complete
+      expect(occupancy.order_detail).to be_problem
+    end
+  end
+
   describe "#process" do
     context "current_occupant?" do
+      let(:order) do
+        create :order, user: event.user, created_by: event.user_id
+      end
+      let(:order_detail) do
+        create :order_detail, order: order, product: card_reader.secure_room
+      end
       let!(:existing_occupancy) do
         create(
           :occupancy,
           entry_event: event,
           secure_room: card_reader.secure_room,
           user: event.user,
+          order_detail: order_detail,
         )
       end
 
@@ -64,9 +78,12 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
           it_should_behave_like "the entry occupancy"
         end
 
-        it_should_behave_like "an orphaned occupancy" do
-          before { described_class.process(event) }
+        describe "the existing occupancy" do
           subject(:occupancy) { existing_occupancy.reload }
+          before { described_class.process(event) }
+
+          it_should_behave_like "a problem order"
+          it_should_behave_like "an orphaned occupancy"
         end
       end
     end
