@@ -20,5 +20,6 @@ class window.ResponsiveTable
     header = $(@table.find("thead th").eq(index))
     header.data("mobile-header") || header.text()
 
+
 $ ->
   ResponsiveTable.respond()
