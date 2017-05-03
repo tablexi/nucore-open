@@ -1,7 +1,7 @@
 = content_for :h1 do
   = text("header")
 
-%table.table.table-striped
+%table.table.table-striped.js--responsive_table
   %thead
     %th= StoredFile.human_attribute_name(:file_type)
     %th= StoredFile.human_attribute_name(:file_file_name)
