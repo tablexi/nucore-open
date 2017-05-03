@@ -9,3 +9,4 @@ en:
       my_table:
         actions: Actions
         reservation: "Reservation (Edit/Extend)"
+        short_reservation: "Reservation"
