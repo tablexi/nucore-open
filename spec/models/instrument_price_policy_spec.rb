@@ -153,18 +153,6 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-  describe '#free?' do
-    it "is free if the usage rate is 0" do
-      policy.usage_rate = 0
-      expect(policy).to be_free
-    end
-
-    it "is not free if the usage rate is greater than 0" do
-      policy.usage_rate = 5.0
-      expect(policy).to_not be_free
-    end
-  end
-
   describe "hourly rates" do
     it "gives the hourly version of the usage rate" do
       expect(policy.hourly_usage_rate).to eq policy.usage_rate * 60
