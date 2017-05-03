@@ -15,6 +15,9 @@ en:
       selection_needed: "Must select Account"
       rules_failed: "No rule generated a verdict"
 
+  pages:
+    admin_occupancies: Occupancies
+
   activerecord:
     models:
       secure_room:
