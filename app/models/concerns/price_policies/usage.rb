@@ -17,10 +17,6 @@ module PricePolicies
       minimum_cost && minimum_cost > -1
     end
 
-    def free?
-      usage_rate.to_f == 0
-    end
-
     def usage_rate=(hourly_rate)
       super
       self[:usage_rate] /= 60.0 if self[:usage_rate].respond_to? :/
@@ -56,6 +52,7 @@ module PricePolicies
     private
 
     def subsidy_ratio
+      return 0 if usage_rate.zero?
       usage_subsidy / usage_rate
     end
 
