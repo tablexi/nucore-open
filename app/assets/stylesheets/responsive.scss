@@ -71,6 +71,8 @@ $navCollapseColor: #777;
       border-bottom: 1px solid #eee;
       position: relative;
       padding-left: 35%;
+      text-overflow: ellipsis;
+      overflow: hidden;
 
       .responsive-header {
         display: block;
@@ -100,4 +102,3 @@ $navCollapseColor: #777;
     display: none !important;
   }
 }
-
