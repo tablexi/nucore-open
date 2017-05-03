@@ -59,12 +59,13 @@ class Product < ActiveRecord::Base
     @product_types ||= [Instrument, Item, Service, Bundle]
   end
 
-  def self.non_instruments
-    where("products.type <> 'Instrument'")
+  # Products that can be used as accessories
+  def self.accessorizable
+    where(type: [Item, Service])
   end
 
-  def self.exclude(exclusion_list)
-    where("products.id NOT IN (?)", exclusion_list)
+  def self.exclude(products)
+    where.not(id: products)
   end
 
   scope :for_facility, lambda { |facility|
