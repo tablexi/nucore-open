@@ -59,11 +59,12 @@
 
 .row
   .span12
-    %table.table.table-striped.table-hover.old-table.old-table
+    %table.table.table-striped.table-hover.old-table.old-table.js--responsive_table
       %thead
         %tr
           %th.centered= t('.th.action')
-          %th{:colspan => 2}= t('.th.quantity')
+          %th= t('.th.quantity')
+          %th= t('.th.product')
           %th= t('.th.status')
           %th.currency= t('.th.cost')
           - if @order_detail.has_subsidies?
@@ -79,6 +80,8 @@
                 = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => end_reservation_class(res)
               - elsif res.can_cancel?
                 = link_to t('.link.reservation.cancel'), "#"
+            - else
+              &nbsp;
           %td.centered=h @order_detail.wrapped_quantity
           %td.user-order-detail
             .order-detail-description= order_detail_description(@order_detail)
