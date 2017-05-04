@@ -23,11 +23,11 @@ module SecureRooms
     end
 
     def self.current
-      valid.where(exit_event_id: nil).where.not(entry_event_id: nil)
+      valid.where(exit_at: nil).where.not(entry_at: nil)
     end
 
     def self.recent
-      valid.where.not(exit_event_id: nil).limit(10)
+      valid.where.not(exit_at: nil).limit(10)
     end
 
     def mark_orphaned!
@@ -36,6 +36,10 @@ module SecureRooms
 
     def orphan?
       orphaned_at?
+    end
+
+    def complete?
+      entry_at && exit_at
     end
 
     def associate_entry!(event)
@@ -52,6 +56,10 @@ module SecureRooms
         exit_at: Time.current,
       )
       self
+    end
+
+    def order_completable?
+      orphaned_at? || (entry_at? && exit_at?)
     end
 
     def actual_duration_mins
