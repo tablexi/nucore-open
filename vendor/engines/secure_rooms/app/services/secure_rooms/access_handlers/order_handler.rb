@@ -16,7 +16,7 @@ module SecureRooms
 
       def process
         find_or_create_order
-        complete_order if occupancy.order_completable?
+        occupancy.attempt_order_complete!
 
         order
       end
@@ -30,10 +30,6 @@ module SecureRooms
         else
           create_order
         end
-      end
-
-      def complete_order
-        order_detail.complete!
       end
 
       def create_order

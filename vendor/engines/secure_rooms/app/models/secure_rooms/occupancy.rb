@@ -32,6 +32,10 @@ module SecureRooms
 
     def mark_orphaned!
       update!(orphaned_at: Time.current)
+      attempt_order_complete!
+    end
+
+    def attempt_order_complete!
       order_detail.complete! if order_completable?
     end
 
