@@ -6,7 +6,7 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
   let(:account) { create :account, :with_account_owner, owner: user }
 
   describe "#process" do
-    context "with an orderable occupancy" do
+    context "with an occupancy" do
       before do
         card_reader.secure_room.update(requires_approval: false)
         allow_any_instance_of(Product).to receive(:can_purchase_order_detail?).and_return(true)
@@ -73,18 +73,6 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
       it "does not attempt to purchase the order without an account" do
         order = described_class.process(occupancy)
         expect(order).to be_new
-      end
-    end
-
-    context "when an order is not required" do
-      let(:event) { create(:event, user: user, card_reader: card_reader, skip_order: true) }
-      let(:occupancy) do
-        create(:occupancy, :active, user: user, secure_room: card_reader.secure_room, entry_event: event)
-      end
-
-      it "does not create an order" do
-        expect { described_class.process(occupancy) }
-          .to change(Order, :count).by(0)
       end
     end
   end

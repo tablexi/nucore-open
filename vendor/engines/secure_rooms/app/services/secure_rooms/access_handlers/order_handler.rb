@@ -15,8 +15,6 @@ module SecureRooms
       end
 
       def process
-        return if occupancy.skip_order?
-
         ActiveRecord::Base.transaction do
           create_order
           create_order_detail

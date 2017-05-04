@@ -13,7 +13,6 @@ module SecureRooms
         :result_code,
         :selected_account,
         :accounts,
-        :skip_order,
       )
 
       def initialize(result_code, reason, user, card_reader, options = {})
@@ -23,7 +22,6 @@ module SecureRooms
         @reason = translate_reason(reason)
         @selected_account = options[:selected_account]
         @accounts = options[:accounts]
-        @skip_order = options[:skip_order]
       end
 
       def pass?

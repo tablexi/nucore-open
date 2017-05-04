@@ -13,7 +13,6 @@ module SecureRooms
 
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range
-    delegate :skip_order?, to: :entry_event, allow_nil: true
 
     def self.valid
       where(orphaned_at: nil)
@@ -33,7 +32,7 @@ module SecureRooms
 
     def mark_orphaned!
       update!(orphaned_at: Time.current)
-      order_detail.update_order_status!(user, OrderStatus.complete.first) if order_detail.present?
+      order_detail.complete! if order_detail.present?
     end
 
     def orphan?

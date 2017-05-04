@@ -10,7 +10,6 @@ module SecureRooms
           card_reader: verdict.card_reader,
           user: verdict.user,
           account: verdict.selected_account,
-          skip_order: verdict.skip_order,
           outcome: verdict.result_code,
           outcome_details: verdict.reason,
         )
