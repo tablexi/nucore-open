@@ -2,6 +2,7 @@
   %table.table.table-striped.table-hover.js--cart#cart.js--responsive_table
     %thead
       %tr
+        %th &nbsp;
         %th= OrderDetail.human_attribute_name(:product)
         %th.centered= OrderDetail.human_attribute_name(:quantity)
         %th.currency= OrderDetail.human_attribute_name(:estimated_cost)

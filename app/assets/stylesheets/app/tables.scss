@@ -17,10 +17,10 @@ table {
 
 table {
   .first-in-bundle {
-    border-top: 3px solid black;
+    border-top: 3px solid $navbarActiveBorderColor;
   }
 }
 
 tfoot.cart {
-  border-top: 3px solid black;
+  border-top: 3px solid $navbarActiveBorderColor;
 }
