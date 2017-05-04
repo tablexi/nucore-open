@@ -2,11 +2,20 @@
 
 .timeline {
   background: image-url('timeline.png') no-repeat;
-  display:block;
-  height:44px;
-  position:relative;
-  margin-top:8px;
-  width:920px;
+  display: block;
+  height: 44px;
+  position: relative;
+  margin-top: 8px;
+  width: 945px;
+}
+
+.timeline-wrapper {
+  text-align: center;
+}
+
+.timeline-schedule, .timeline-single {
+  display: inline-block;
+  text-align: left;
 }
 
 .timeline-schedule {
@@ -160,14 +169,11 @@ body .unit {
 }
 
 .timeline_instrument {
-  margin: 15px 0 22px -10px;
+  margin: 15px 0 22px;
 
   h4 {
     padding-bottom: 7px;
   }
-}
-.timeline-schedule h3 {
-  margin-left: -10px;
 }
 
 .timeline_options {
@@ -191,13 +197,13 @@ body .unit {
 .relay_checkbox {
   float: right;
   position: relative;
-  right: -12px;
+  right: 10px;
 }
 
 .toggle_switch {
   position: relative;
   width: 60px;
-  height:20px;
+  height: 20px;
   overflow: hidden;
   cursor: pointer;
   z-index: 0;
@@ -259,9 +265,9 @@ body .unit {
 }
 
 #reservation_date_container {
-  overflow:hidden;
-  margin:0 auto;
-  width:325px;
+  overflow: hidden;
+  margin: 0 auto;
+  width: 300px;
 }
 
 #reservation_date_container #reservation_left, #reservation_date_container #reservation_date, #reservation_date_container #reservation_right {
@@ -269,10 +275,10 @@ body .unit {
 }
 
 #reservation_date_container #reservation_left, #reservation_date_container #reservation_right {
-  display:block;
-  height:20px;
-  text-indent:-9999px;
-  width:20px;
+  display: block;
+  height: 20px;
+  text-indent: -9999px;
+  width: 20px;
 }
 
 #reservation_date_container #reservation_left {
@@ -284,7 +290,7 @@ body .unit {
 }
 
  #reservation_date_container #reservation_date {
-   font-size:18px;
-   text-align:center;
-   width:280px;
+   font-size: 18px;
+   text-align: center;
+   width: 255px;
  }

@@ -64,22 +64,6 @@ class ProductUsersController < ApplicationController
     redirect_to action: :index
   end
 
-  # /facilities/:facility_id/services/:service_id/users/user_search_results
-  def user_search_results
-    @limit = 25
-
-    term = generate_multipart_like_search_term(params[:search_term])
-    if params[:search_term].length > 0
-      @users = User
-        .where("LOWER(first_name) LIKE :term OR LOWER(last_name) LIKE :term OR LOWER(username) LIKE :term OR LOWER(CONCAT(first_name, last_name)) LIKE :term", term: term)
-        .order(:last_name, :first_name)
-        .limit(@limit)
-      @count = @users.count
-    end
-
-    render layout: false
-  end
-
   # PUT /facilities/:facility_id/instruments/:instrument_id/update_restrictions
   def update_restrictions
     product_param_name = @product.class.name.underscore

@@ -30,8 +30,8 @@ class OrderDetail < ActiveRecord::Base
 
   before_save :set_problem_order
   def set_problem_order
-    self.problem = !!(complete? && (price_policy.nil? || reservation.try(:requires_but_missing_actuals?)))
-    update_fulfilled_at_on_resolve if reservation.present?
+    self.problem = complete? && (price_policy.blank? || time_data.problem?)
+    update_fulfilled_at_on_resolve if time_data.present?
     true # problem might be false; we need the callback chain to continue
   end
 
@@ -56,6 +56,8 @@ class OrderDetail < ActiveRecord::Base
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
   delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
+  # TODO: Refactor this from Reservation into OrderDetail
+  delegate :canceled_at, to: :reservation, allow_nil: true
 
   delegate :in_cart?, :facility, :ordered_at, :user, to: :order
   delegate :price_group, to: :price_policy, allow_nil: true
@@ -382,7 +384,7 @@ class OrderDetail < ActiveRecord::Base
     end
 
     event :to_complete do
-      transitions to: :complete, from: [:new, :inprocess], guard: :has_completed_reservation?
+      transitions to: :complete, from: [:new, :inprocess], guard: :time_data_completeable?
     end
 
     event :to_reconciled do
@@ -843,10 +845,19 @@ class OrderDetail < ActiveRecord::Base
     @manual_fulfilled_at = ValidFulfilledAtDate.parse(string)
   end
 
+  def time_data
+    if product.respond_to?(:time_data_for)
+      product.time_data_for(self) || TimeData::RequiredTimeData.new
+    else
+      TimeData::NullTimeData.new
+    end
+  end
+
   private
 
-  def has_completed_reservation?
-    !product.is_a?(Instrument) || (reservation && (reservation.canceled_at || reservation.actual_end_at || reservation.reserve_end_at < Time.zone.now))
+  # Is there enough information to move an associated order to complete/problem?
+  def time_data_completeable?
+    canceled_at.present? || time_data.order_completable?
   end
 
   def time_for_policy_lookup

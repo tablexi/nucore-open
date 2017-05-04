@@ -680,7 +680,8 @@ en:
         dispute: "Dispute Purchase"
       th:
         action: "Action"
-        quantity: "Quantity/Product"
+        quantity: "Quantity"
+        product: "Product"
         status: "Status"
         cost: "Cost"
         adjust: "Adjustment"
@@ -731,20 +732,6 @@ en:
       quantity: Quantity
 
   product_users:
-    index:
-      add_approved_user: Add Approved User
-      approval_explanation: |
-        This %{product_type} requires a user to be approved before they may
-        purchase the %{product_type}.
-      approved_users: Approved Users
-      confirm_removal: |
-        Are you sure you wish to remove this user from this %{product_type}?
-      no_users_approved: No users are currently approved.
-      th:
-        name: Name
-        user_name: User Name
-        email: Email
-      update: Update %{plural_label}
     new:
       label:
         search_term: "Search by name, NetID, or username"
