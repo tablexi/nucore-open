@@ -28,7 +28,9 @@
         %td.centered= order_detail.quantity
         %td= order_detail_description(order_detail)
         %td= order_detail.account
-        - if order_detail.problem?
-          %td.centered= "#{t order_detail.problem_description_key} #{link_to "Update", manage_order_detail_path(order_detail), class: "manage-order-detail"}".html_safe
+        %td.centered
+          = text(order_detail.problem_description_key)
+          = link_to text("shared.update"), manage_order_detail_path(order_detail), class: "manage-order-detail"
+
 = will_paginate(@order_details)
 = render partial: "shared/reconcile_footnote"

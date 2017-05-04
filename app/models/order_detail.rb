@@ -926,7 +926,10 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def problem_description_key
-    time_data.problem_description_key || (:price_policy_missing if price_policy.blank?)
+    time_data_problem_key = time_data.problem_description_key
+    price_policy_problem_key = :price_policy_missing if price_policy.blank?
+
+    time_data_problem_key || price_policy_problem_key
   end
 
 end

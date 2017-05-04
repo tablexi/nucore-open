@@ -6,10 +6,6 @@ module TimeData
       true
     end
 
-    def problem?
-      false
-    end
-
     def problem_description_key
     end
 

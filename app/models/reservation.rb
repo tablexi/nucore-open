@@ -280,7 +280,6 @@ class Reservation < ActiveRecord::Base
   def requires_but_missing_actuals?
     !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO: refactor?
   end
-  alias problem? requires_but_missing_actuals?
 
   def problem_description_key
     :actual_usage_missing if requires_but_missing_actuals?

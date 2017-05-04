@@ -6,10 +6,6 @@ module TimeData
       false
     end
 
-    def problem?
-      true
-    end
-
     def problem_description_key
       :actual_usage_missing
     end
