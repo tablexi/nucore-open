@@ -48,6 +48,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
       let!(:existing_occupancy) do
         create(
           :occupancy,
+          :active,
           entry_event: event,
           secure_room: card_reader.secure_room,
           user: event.user,
@@ -82,7 +83,6 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
           subject(:occupancy) { existing_occupancy.reload }
           before { described_class.process(event) }
 
-          it_should_behave_like "a problem order"
           it_should_behave_like "an orphaned occupancy"
         end
       end

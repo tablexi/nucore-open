@@ -8,23 +8,27 @@ describe "Responsive table support", ->
     loadFixtures("normal_table.html")
 
   it "ignores a normal table", ->
-    responsiveTable = new ResponsiveTable
-    responsiveTable.respond()
+    ResponsiveTable.respond()
     expect($(".table")).not.toContainElement(".responsive-header")
 
   it "responds to a responsive table if reponsive", ->
     $(".table").addClass("js--responsive_table")
-    responsiveTable = new ResponsiveTable
-    responsiveTable.respond()
+    ResponsiveTable.respond()
     expect($("td .responsive-header").size()).toEqual(4)
-    expect($("td .responsive-header").eq(0).text()).toEqual("Invoice Number")
+    expect($("td .responsive-header").eq(0).text()).toEqual("Invoice #")
     expect($("td .responsive-header").eq(1).text()).toEqual("Facility")
-    expect($("td .responsive-header").eq(2).text()).toEqual("Invoice Number")
+    expect($("td .responsive-header").eq(2).text()).toEqual("Invoice #")
     expect($("td .responsive-header").eq(3).text()).toEqual("Facility")
 
   it "ignores a table if the global variable is false", ->
     window.IS_RESPONSIVE = false
     $(".table").addClass("js--responsive_table")
-    responsiveTable = new ResponsiveTable
-    responsiveTable.respond()
+    ResponsiveTable.respond()
     expect($(".table")).not.toContainElement(".responsive-header")
+
+  it "inserts a space if the table cell is empty, for spacing", ->
+    $(".table").addClass("js--responsive_table")
+    expected = $("td").eq(2).clone().append("Invoice #&nbsp;").text()
+    ResponsiveTable.respond()
+    expect($("td").eq(2).text()).toEqual(expected)
+    expect($("td").eq(3).text()).toEqual("FacilitySmall Hadron Collider")

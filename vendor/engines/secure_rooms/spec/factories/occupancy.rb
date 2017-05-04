@@ -4,19 +4,25 @@ FactoryGirl.define do
     user
 
     trait :active do
-      association :entry_event, factory: :event
-      entry_at { entry_event.occurred_at }
+      with_entry
     end
 
     trait :orphan do
-      association :entry_event, factory: :event
-      entry_at { entry_event.occurred_at }
+      with_entry
       orphaned_at { Time.current }
     end
 
     trait :complete do
+      with_entry
+      with_exit
+    end
+
+    trait :with_entry do
       association :entry_event, factory: :event
       entry_at { entry_event.occurred_at }
+    end
+
+    trait :with_exit do
       association :exit_event, factory: :event
       exit_at { exit_event.occurred_at }
     end
