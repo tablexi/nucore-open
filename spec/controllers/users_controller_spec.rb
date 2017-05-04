@@ -59,27 +59,31 @@ RSpec.describe UsersController do
   end
 
   describe "PUT #update", feature_setting: { create_users: true } do
-    let(:user) { FactoryGirl.create(:user, :external) }
+    let(:user) { FactoryGirl.create(:user, :external, first_name: "Old") }
 
     before(:each) do
       @method = :put
       @action = :update
       @params[:id] = user.id
-      @params[:user] = { first_name: "New", last_name: "Name" }
+      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "newemail@example.com" }
     end
 
     it_should_allow_admin_only(:found) do
       expect(user.reload.first_name).to eq("New")
+      expect(user.last_name).to eq("Name")
+      expect(user.email).to eq("newemail@example.com")
+      expect(user.username).to eq("newemail@example.com")
       expect(response).to redirect_to facility_user_path(facility, user)
     end
 
-    context "with bad params" do
+    context "with not permitted params" do
       before(:each) do
-        @params[:user] = { email: "test@example.com", username: "newusername" }
+        @params[:user] = { uid: "somevalue" }
       end
 
       it_should_allow_admin_only(:found) do
-        expect(user.reload.first_name).to eq(user.first_name)
+        expect(user.reload.first_name).to eq("Old")
+        expect(user.uid).to be_blank
       end
     end
   end

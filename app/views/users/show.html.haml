@@ -11,6 +11,7 @@
 
 = readonly_form_for :user do |f|
   = f.input :full_name
+  = f.input :username
   = f.input :email
   = f.input :last_sign_in_at, :default_value => 'none'
   = f.input :deactivated_at unless f.object.active?
