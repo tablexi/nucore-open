@@ -32,19 +32,10 @@ module SecureRooms
 
     def mark_orphaned!
       update!(orphaned_at: Time.current)
-      attempt_order_complete!
-    end
-
-    def attempt_order_complete!
-      order_detail.complete! if order_completable?
     end
 
     def orphan?
       orphaned_at?
-    end
-
-    def complete?
-      orphaned_at? || (entry_at && exit_at)
     end
 
     def associate_entry!(event)
@@ -64,7 +55,8 @@ module SecureRooms
     end
 
     def order_completable?
-      order_detail_id? && account_id? && complete?
+      activity_finalized = orphaned_at? || (entry_at && exit_at)
+      order_detail_id? && account_id? && activity_finalized
     end
 
     def actual_duration_mins

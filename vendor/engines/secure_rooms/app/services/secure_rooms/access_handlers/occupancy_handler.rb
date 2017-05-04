@@ -23,7 +23,7 @@ module SecureRooms
           new_occupancy.mark_orphaned!
           new_occupancy.associate_exit!(event)
         elsif current_occupant? && entering?
-          existing_occupancy.mark_orphaned!
+          complete_existing_occupancy!
           new_occupancy.associate_entry!(event)
         else
           raise NotImplementedError, "Encountered unexpected scan context"
@@ -45,6 +45,13 @@ module SecureRooms
           user: event.user,
           account: event.account,
         )
+      end
+
+      def complete_existing_occupancy!
+        existing_occupancy.mark_orphaned!
+        if existing_occupancy.order_completable?
+          existing_occupancy.order_detail.complete!
+        end
       end
 
       def current_occupant?
