@@ -35,7 +35,7 @@ module SecureRooms
       end
 
       def fulfill_order
-        order_detail.update_order_status! occupancy.user, OrderStatus.complete.first
+        order_detail.complete!
       end
 
       def create_order

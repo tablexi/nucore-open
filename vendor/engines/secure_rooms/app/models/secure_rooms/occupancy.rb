@@ -58,6 +58,10 @@ module SecureRooms
       self
     end
 
+    def order_completable?
+      orphaned_at? || (entry_at? && exit_at?)
+    end
+
     def actual_duration_mins
       range.duration_mins
     end
