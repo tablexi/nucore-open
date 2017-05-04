@@ -45,6 +45,9 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
       let(:order_detail) do
         create :order_detail, order: order, product: card_reader.secure_room
       end
+      let(:account) do
+        create :account, :with_account_owner, owner: event.user
+      end
       let!(:existing_occupancy) do
         create(
           :occupancy,
@@ -53,6 +56,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
           secure_room: card_reader.secure_room,
           user: event.user,
           order_detail: order_detail,
+          account: account,
         )
       end
 
@@ -84,6 +88,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
           before { described_class.process(event) }
 
           it_should_behave_like "an orphaned occupancy"
+          it_should_behave_like "a problem order"
         end
       end
     end

@@ -7,7 +7,7 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
   let(:account) { create :account, :with_account_owner, owner: user }
 
   describe "#process" do
-    context "with an occupancy" do
+    context "with an orderable occupancy" do
       before do
         secure_room.update(requires_approval: false)
         allow_any_instance_of(Product).to receive(:can_purchase_order_detail?).and_return(true)
