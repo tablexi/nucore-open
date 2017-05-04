@@ -14,6 +14,9 @@ en:
       no_accounts: "User has no valid accounts for this Product"
       selection_needed: "Must select Account"
       rules_failed: "No rule generated a verdict"
+  secure_rooms/occupancy:
+    missing_entry: Missing Entry Event
+    missing_exit: Missing Exit Event
 
   activerecord:
     models:

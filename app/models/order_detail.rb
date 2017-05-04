@@ -8,6 +8,7 @@ class OrderDetail < ActiveRecord::Base
   include OrderDetail::Accessorized
   include NUCore::Database::WhereIdsIn
   include NUCore::Database::ClobSafeDistinct
+  include TextHelpers::Translation
 
   versioned
 
@@ -30,7 +31,7 @@ class OrderDetail < ActiveRecord::Base
 
   before_save :set_problem_order
   def set_problem_order
-    self.problem = complete? && problem_description_key.present?
+    self.problem = complete? && problem_description.present?
     update_fulfilled_at_on_resolve if time_data.present?
     true # problem might be false; we need the callback chain to continue
   end
@@ -852,6 +853,17 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
+  def translation_scope
+    "activerecord.models.order_detail"
+  end
+
+  def problem_description
+    time_data_problem = time_data.problem_description
+    price_policy_problem = text(:price_policy_missing) if price_policy.blank?
+
+    time_data_problem || price_policy_problem
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
@@ -923,13 +935,6 @@ class OrderDetail < ActiveRecord::Base
   def set_reconciled_at
     # Do not override it if it has been set by something already (e.g. journaling)
     self.reconciled_at ||= Time.current
-  end
-
-  def problem_description_key
-    time_data_problem_key = time_data.problem_description_key
-    price_policy_problem_key = :price_policy_missing if price_policy.blank?
-
-    time_data_problem_key || price_policy_problem_key
   end
 
 end

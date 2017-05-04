@@ -6,7 +6,7 @@ module TimeData
       true
     end
 
-    def problem_description_key
+    def problem_description
     end
 
     # Gives us both `blank?` and `present?`

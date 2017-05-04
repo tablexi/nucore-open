@@ -8,6 +8,7 @@ class Reservation < ActiveRecord::Base
   include Reservations::Rendering
   include Reservations::RelaySupport
   include Reservations::MovingUp
+  include TextHelpers::Translation
 
   # Associations
   #####
@@ -281,8 +282,12 @@ class Reservation < ActiveRecord::Base
     !!(!canceled? && product.control_mechanism != Relay::CONTROL_MECHANISMS[:manual] && !has_actuals?) # TODO: refactor?
   end
 
-  def problem_description_key
-    :actual_usage_missing if requires_but_missing_actuals?
+  def problem_description
+    text(:actual_usage_missing) if requires_but_missing_actuals?
+  end
+
+  def translation_scope
+    "activerecord.models.reservation"
   end
 
   def locked?

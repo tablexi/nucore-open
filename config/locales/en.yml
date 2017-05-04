@@ -110,10 +110,6 @@ en:
       logo_file: "logo.jpg"
     problem_order_details:
       assign_price_policies: Assign Price Policies
-      actual_usage_missing: Actual Usage Missing
-      price_policy_missing: Price Policy Missing
-      missing_entry: Missing Entry Event
-      missing_exit: Missing Exit Event
       th:
         quantity_and_product: "Quantity / Product"
         problem: Problem
@@ -1108,6 +1104,15 @@ en:
     recently_reviewed: Recently Reviewed
 
   activerecord:
+    models:
+      order_detail:
+        price_policy_missing: Price Policy Missing
+      reservation:
+        actual_usage_missing: Actual Usage Missing
+      time_data:
+        required_time_data:
+          actual_usage_missing: Actual Usage Missing
+
     errors:
       models:
         journal:
