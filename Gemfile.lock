@@ -159,6 +159,7 @@ GEM
       timers (>= 4.1.1)
     celluloid-supervision (0.20.6)
       timers (>= 4.1.1)
+    choice (0.2.0)
     chosen-rails (1.5.2)
       coffee-rails (>= 3.2)
       railties (>= 3.0)
@@ -405,6 +406,11 @@ GEM
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6)
       rails-deprecated_sanitizer (>= 1.0.1)
+    rails-erd (1.5.0)
+      activerecord (>= 3.2)
+      activesupport (>= 3.2)
+      choice (~> 0.2.0)
+      ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
     rails-observers (0.1.2)
@@ -463,6 +469,7 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
+    ruby-graphviz (1.2.3)
     ruby-oci8 (2.2.2)
     ruby-ole (1.2.12)
     ruby-progressbar (1.8.1)
@@ -617,6 +624,7 @@ DEPENDENCIES
   pry-rails (~> 0.3.4)
   quiet_assets
   rails (= 4.2.7.1)
+  rails-erd
   rails-observers
   rails_config (= 0.3.3)
   rake
@@ -653,4 +661,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.5)
 
 BUNDLED WITH
-   1.14.5
+   1.14.6

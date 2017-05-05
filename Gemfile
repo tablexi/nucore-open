@@ -77,6 +77,7 @@ group :development do
   gem "letter_opener"
   gem "rubocop", require: false
   gem "web-console"
+  gem "rails-erd"
 end
 
 group :development, :deployment do
