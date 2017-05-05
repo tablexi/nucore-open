@@ -69,7 +69,7 @@ module SecureRooms
     end
 
     def translation_scope
-      "secure_rooms/occupancy"
+      "activerecord.models.secure_rooms/occupancy"
     end
 
     private

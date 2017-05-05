@@ -1104,15 +1104,6 @@ en:
     recently_reviewed: Recently Reviewed
 
   activerecord:
-    models:
-      order_detail:
-        price_policy_missing: Price Policy Missing
-      reservation:
-        actual_usage_missing: Actual Usage Missing
-      time_data:
-        required_time_data:
-          actual_usage_missing: Actual Usage Missing
-
     errors:
       models:
         journal:

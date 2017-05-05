@@ -1496,5 +1496,11 @@ RSpec.describe Reservation do
 
       it { is_expected.to eq reservation.text(:actual_usage_missing) }
     end
+
+    context "usage exists" do
+      before { expect(reservation).to receive(:requires_but_missing_actuals?).and_return(false) }
+
+      it { is_expected.to be_blank }
+    end
   end
 end
