@@ -9,7 +9,8 @@
         = render "warnings"
 
     .row
-      .span5= account_input(f)
+      .span5.js--pricingUpdate
+        = account_input(f)
 
       .span5
         - if @order_statuses
@@ -41,10 +42,10 @@
     = render_view_hook "after_order_status", f: f, order_detail: @order_detail
 
     .row
-      - if @order_detail.reservation
-        .span5= render "reservation", f: f, reservation: @order_detail.reservation
+      - if @order_detail.time_data.present?
+        .span5= render "order_management/order_details/#{@order_detail.time_data.class.name.underscore}", f: f
       - else
-        .span5
+        .span5.js--pricingUpdate
           = f.input :quantity, as: :order_detail_quantity, hint_html: { class: "help-inline" }
 
       .span5

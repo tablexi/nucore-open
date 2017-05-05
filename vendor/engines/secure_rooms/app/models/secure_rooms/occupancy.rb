@@ -2,6 +2,12 @@ module SecureRooms
 
   class Occupancy < ActiveRecord::Base
 
+    include TextHelpers::Translation
+    include DateTimeInput::Model
+
+    date_time_inputable :entry_at
+    date_time_inputable :exit_at
+
     belongs_to :secure_room, foreign_key: :product_id
     belongs_to :user
     belongs_to :account
