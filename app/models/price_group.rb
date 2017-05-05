@@ -20,9 +20,17 @@ class PriceGroup < ActiveRecord::Base
   scope :for_facility, -> (facility) { where(facility_id: [nil, facility.id]) }
   scope :globals, -> { where(facility_id: nil) }
 
-  scope :base, -> { globals.where(name: Settings.price_group.name.base) }
-  scope :external, -> { globals.where(name: Settings.price_group.name.external) }
-  scope :cancer_center, -> { globals.where(name: Settings.price_group.name.cancer_center) }
+  def self.base
+    globals.find_by(name: Settings.price_group.name.base)
+  end
+
+  def self.external
+    globals.find_by(name: Settings.price_group.name.external)
+  end
+
+  def self.cancer_center
+    globals.find_by(name: Settings.price_group.name.cancer_center)
+  end
 
   def is_not_global
     !global?

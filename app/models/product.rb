@@ -215,7 +215,7 @@ class Product < ActiveRecord::Base
     # are always handled the same way. Put the base group at the front of the
     # price policy array so that it takes precedence over all others that have
     # equal unit cost. See task #49823.
-    base_ndx = price_policies.index { |pp| pp.price_group == PriceGroup.base.first }
+    base_ndx = price_policies.index { |pp| pp.price_group == PriceGroup.base }
     base = price_policies.delete_at base_ndx if base_ndx
     price_policies.sort! { |pp1, pp2| pp1.price_group.name <=> pp2.price_group.name }
     price_policies.unshift base if base

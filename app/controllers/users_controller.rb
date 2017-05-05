@@ -67,9 +67,8 @@ class UsersController < ApplicationController
     @user.password = generate_new_password
 
     if @user.save
-      # send email
-      Notifier.delay.new_user(user: @user, password: @user.password)
-      redirect_to facility_users_path(user: @user.id)
+      @user.create_default_price_group!
+      save_user_success
     else
       render(action: "new_external") && return
     end
@@ -84,6 +83,7 @@ class UsersController < ApplicationController
       flash[:error] = text("users.search.user_already_exists", username: @user.username)
       redirect_to facility_users_path
     elsif @user.save
+      @user.create_default_price_group!
       save_user_success
     else
       flash[:error] = text("create.error", message: @user.errors.full_messages.to_sentence)
@@ -151,7 +151,7 @@ class UsersController < ApplicationController
   # PUT /facilities/:facility_id/users/:id
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes(edit_user_params)
+    if @user.update_attributes(edit_user_params) && @user.update_price_group(price_group_params)
       flash[:notice] = text("update.success")
       redirect_to facility_user_path(current_facility, @user)
     else
@@ -163,7 +163,11 @@ class UsersController < ApplicationController
   private
 
   def edit_user_params
-    params.require(:user).permit(:email, :first_name, :last_name)
+    params.require(:user).permit(:email, :first_name, :last_name) if @user.admin_editable?
+  end
+
+  def price_group_params
+    params.require(:user).permit(:internal)
   end
 
   def update_access_list_approvals
@@ -214,7 +218,7 @@ class UsersController < ApplicationController
       add_role = html("create.add_role", link: facility_facility_user_map_user_path(current_facility, @user), inline: true)
       flash[:notice].safe_concat(add_role)
     end
-    Notifier.delay.new_user(user: @user, password: nil)
+    Notifier.delay.new_user(user: @user)
     redirect_to facility_users_path(user: @user.id)
   end
 

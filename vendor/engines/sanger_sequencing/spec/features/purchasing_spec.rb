@@ -6,7 +6,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
   let(:facility) { FactoryGirl.create(:setup_facility, sanger_sequencing_enabled: true) }
   let!(:service) { FactoryGirl.create(:setup_service, facility: facility) }
   let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
-  let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base.first, product: service) }
+  let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base, product: service) }
   let(:user) { FactoryGirl.create(:user) }
   let(:external_service) { create(:external_service, location: new_sanger_sequencing_submission_path) }
   let!(:sanger_order_form) { create(:external_service_passer, external_service: external_service, active: true, passer: service) }

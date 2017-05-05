@@ -262,7 +262,7 @@ end
 def setup_user_for_purchase(user, price_group)
   @account          = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
   @pg_member        = FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group)
-  create(:account_price_group_member, account: @account, price_group: PriceGroup.base.first)
+  create(:account_price_group_member, account: @account, price_group: PriceGroup.base)
 end
 
 # If you changed Settings anywhere in your spec, include this as
@@ -301,7 +301,7 @@ def setup_order_detail(order, product, statement = nil)
   )
 end
 
-def add_account_for_user(user_sym, product, price_group = PriceGroup.base.first)
+def add_account_for_user(user_sym, product, price_group = PriceGroup.base)
   nufs_account = create_nufs_account_with_owner(user_sym)
   define_open_account(product.account, nufs_account.account_number)
   create(:account_price_group_member, account: nufs_account, price_group: price_group)

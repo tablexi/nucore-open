@@ -3,5 +3,5 @@ RSpec.shared_context "Setup Sanger Service" do
   let!(:service) { FactoryGirl.create(:setup_service, facility: facility) }
   let(:purchaser) { FactoryGirl.create(:user) }
   let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: purchaser) }
-  let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base.first, product: service) }
+  let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base, product: service) }
 end

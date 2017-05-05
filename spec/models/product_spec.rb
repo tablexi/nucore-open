@@ -36,8 +36,8 @@ RSpec.describe Product do
       it "should create map to default price groups" do
         expect(PriceGroupProduct.where(product_id: @item.id).count)
           .to eq PriceGroup.globals.count
-        expect(PriceGroupProduct.find_by(product_id: @item.id, price_group_id: PriceGroup.base.first.id)).not_to be_nil
-        expect(PriceGroupProduct.find_by(product_id: @item.id, price_group_id: PriceGroup.external.first.id)).not_to be_nil
+        expect(PriceGroupProduct.find_by(product_id: @item.id, price_group_id: PriceGroup.base.id)).not_to be_nil
+        expect(PriceGroupProduct.find_by(product_id: @item.id, price_group_id: PriceGroup.external.id)).not_to be_nil
       end
 
       it "should give correct initial order status" do

@@ -8,8 +8,19 @@
   = render "admin/shared/sidenav_users", sidenav_tab: "users"
 
 = content_for :tabnav do
-  = render partial: "admin/shared/tabnav_users", :locals => {:secondary_tab => "details"}
+  = render partial: "admin/shared/tabnav_users", locals: { secondary_tab: "details" }
 
 %h2= text("head", user: @user.full_name)
 %p= text("subhead")
-= render "form", button_text: text("shared.update")
+
+= simple_form_for [current_facility, @user] do |f|
+  .form-inputs
+    = f.input :first_name, readonly: !@user.admin_editable?
+    = f.input :last_name, readonly: !@user.admin_editable?
+    = f.input :email, readonly: !@user.admin_editable?
+    = f.input :username, readonly: true
+    - if current_user.administrator?
+      = f.input :internal?, label: 'Internal Pricing', as: :select, default: false
+    = f.button :submit, text("shared.update"), class: ["btn", "btn-primary"]
+    &nbsp;
+    = link_to text("shared.cancel"), facility_users_path

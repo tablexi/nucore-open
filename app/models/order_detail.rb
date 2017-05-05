@@ -502,7 +502,7 @@ class OrderDetail < ActiveRecord::Base
   def price_groups
     groups = user.price_groups
     groups += account.price_groups if account
-    groups.compact.uniq
+    groups.uniq
   end
 
   # set the object's response_set

@@ -4,7 +4,7 @@ RSpec.describe "Visiting my files", feature_setting: { my_files: true } do
   let(:facility) { FactoryGirl.create(:setup_facility) }
   let!(:service) { FactoryGirl.create(:setup_service, facility: facility) }
   let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
-  let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base.first, product: service) }
+  let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base, product: service) }
   let(:user) { FactoryGirl.create(:user) }
 
   let!(:account_price_group_member) do
