@@ -49,9 +49,7 @@ module SecureRooms
 
       def complete_existing_occupancy!
         existing_occupancy.mark_orphaned!
-        if existing_occupancy.order_completable?
-          existing_occupancy.order_detail.complete!
-        end
+        OrderHandler.process(existing_occupancy)
       end
 
       def current_occupant?

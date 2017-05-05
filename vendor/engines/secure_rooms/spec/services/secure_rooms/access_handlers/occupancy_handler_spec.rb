@@ -31,7 +31,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
   end
 
   shared_examples_for "a problem order" do
-    it "sets up a problem order" do
+    it "results in a problem order" do
       expect(occupancy.order_detail).to be_complete
       expect(occupancy.order_detail).to be_problem
     end
@@ -39,15 +39,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
 
   describe "#process" do
     context "current_occupant?" do
-      let(:order) do
-        create :order, user: event.user, created_by: event.user_id
-      end
-      let(:order_detail) do
-        create :order_detail, order: order, product: card_reader.secure_room
-      end
-      let(:account) do
-        create :account, :with_account_owner, owner: event.user
-      end
+      let(:account) { create :account, :with_account_owner, owner: event.user }
       let!(:existing_occupancy) do
         create(
           :occupancy,
@@ -55,7 +47,6 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
           entry_event: event,
           secure_room: card_reader.secure_room,
           user: event.user,
-          order_detail: order_detail,
           account: account,
         )
       end
@@ -75,6 +66,9 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
 
       context "entering" do
         let(:card_reader) { create :card_reader, ingress: true }
+
+        # orders need to be "purchased" but we don't care about the details
+        before { allow_any_instance_of(OrderDetail).to receive(:valid_for_purchase?).and_return(true) }
 
         describe "the new occupancy" do
           subject(:occupancy) { described_class.process(event) }

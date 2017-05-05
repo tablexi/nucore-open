@@ -25,8 +25,8 @@ module SecureRooms
 
       def find_or_create_order
         if occupancy.order_detail_id?
-          @order = order_detail.order
           @order_detail = occupancy.order_detail
+          @order = order_detail.order
         else
           create_order
         end
