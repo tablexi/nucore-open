@@ -38,10 +38,6 @@ module SecureRooms
       orphaned_at?
     end
 
-    def complete?
-      entry_at && exit_at
-    end
-
     def associate_entry!(event)
       update!(
         entry_event: event,
@@ -59,7 +55,8 @@ module SecureRooms
     end
 
     def order_completable?
-      orphaned_at? || (entry_at? && exit_at?)
+      activity_finalized = orphaned_at? || (entry_at && exit_at)
+      order_detail_id? && account_id? && activity_finalized
     end
 
     def actual_duration_mins

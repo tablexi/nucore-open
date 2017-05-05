@@ -94,9 +94,14 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
         create(:occupancy, :active, user: user, secure_room: card_reader.secure_room)
       end
 
-      it "skips order creation" do
+      it "creates an order" do
         expect { described_class.process(occupancy) }
-          .to change(Order, :count).by(0)
+          .to change(Order, :count).by(1)
+      end
+
+      it "does not attempt to purchase the order without an account" do
+        order = described_class.process(occupancy)
+        expect(order).to be_new
       end
     end
   end

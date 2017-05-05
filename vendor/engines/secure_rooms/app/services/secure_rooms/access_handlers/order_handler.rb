@@ -15,10 +15,8 @@ module SecureRooms
       end
 
       def process
-        return unless occupancy.account_id?
-
         find_or_create_order
-        fulfill_order if occupancy.complete?
+        complete_order
 
         order
       end
@@ -27,22 +25,26 @@ module SecureRooms
 
       def find_or_create_order
         if occupancy.order_detail_id?
-          @order = order_detail.order
           @order_detail = occupancy.order_detail
+          @order = order_detail.order
         else
           create_order
         end
       end
 
-      def fulfill_order
-        order_detail.complete!
+      def complete_order
+        order_detail.complete! if occupancy.order_completable?
       end
 
       def create_order
         ActiveRecord::Base.transaction do
           create_order_and_detail
-          order.validate_order!
-          order.purchase!
+          # TODO: This avoids an exception but results in un-purchased order on
+          # problem occupancy, which may not appear in the problem-order scope
+          if occupancy.account_id?
+            order.validate_order!
+            order.purchase!
+          end
         end
       end
 
