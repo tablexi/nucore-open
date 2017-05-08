@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe SecureRoomPricePolicy do
-
   describe "#calculate_cost_and_subsidy_from_order_detail" do
     let(:product) { build_stubbed(:secure_room, schedule_rules: [schedule_rule]) }
     let(:schedule_rule) { build_stubbed(:schedule_rule, :all_day) }
@@ -34,5 +33,4 @@ RSpec.describe SecureRoomPricePolicy do
       it { is_expected.to be_blank }
     end
   end
-
 end
