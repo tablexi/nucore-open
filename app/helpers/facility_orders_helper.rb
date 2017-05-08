@@ -20,7 +20,7 @@ module FacilityOrdersHelper
     output = build_warnings(notices[:warnings])
     output += build_notices(notices[:notices])
 
-    output.join(" ").html_safe
+    safe_join(output)
   end
 
   def banner_date_label(object, field, label = nil)
