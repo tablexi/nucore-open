@@ -1,9 +1,9 @@
-%table.table.table-striped.table-hover.old-table
+%table.table.table-striped.table-hover.old-table.js--responsive_table
   %thead
     %tr
       %th.centered= OrderDetail.human_attribute_name(:id)
       %th.centered= text("actions")
-      %th= text("reservation")
+      %th{data: {"mobile-header" => text("short_reservation")}}= text("reservation")
       %th.order-note.order-note--wide= OrderDetail.human_attribute_name(:product)
       %th.centered= OrderDetail.human_attribute_name(:status)
       %th.currency= OrderDetail.human_attribute_name(:unassigned_total)
@@ -16,6 +16,7 @@
         - next unless res
         %td.centered
           = reservation_actions(res)
+          &nbsp;
         %td
           = reservation_view_edit_link(res)
         %td.user-order-detail.order-note.order-note--wide

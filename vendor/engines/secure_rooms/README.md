@@ -11,6 +11,16 @@ line is enabled in `Gemfile`.
 ## SecureRoom API
 The door security hardware communicates through an API with the following endpoints:
 
+#### Testing
+
+To test these URLs without access to the door hardware: Use the following command, updating identifiers and URL as necessary:
+
+```
+curl -XPOST -H "Content-type: application/json" \
+-d '{"card_number":"****","reader_identifier":"****","controller_identifier":"****","account_identifier":"****"}' \
+http://username:password@example.com/secure_rooms_api/scan
+```
+
 #### Cardholder Scans at a Room Entrance
 
 * **Method/URL**

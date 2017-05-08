@@ -678,7 +678,8 @@ en:
         dispute: "Dispute Purchase"
       th:
         action: "Action"
-        quantity: "Quantity/Product"
+        quantity: "Quantity"
+        product: "Product"
         status: "Status"
         cost: "Cost"
         adjust: "Adjustment"

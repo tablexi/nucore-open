@@ -6,7 +6,14 @@ module SecureRooms
 
       include TextHelpers::Translation
 
-      attr_reader :reason, :user, :card_reader, :result_code, :selected_account, :accounts
+      attr_reader(
+        :reason,
+        :user,
+        :card_reader,
+        :result_code,
+        :selected_account,
+        :accounts,
+      )
 
       def initialize(result_code, reason, user, card_reader, options = {})
         @result_code = result_code
