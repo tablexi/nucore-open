@@ -1,5 +1,5 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :tabnav do
-  = render :partial => 'secure_rooms/shared/tabnav_occupancy'
+  = render "secure_rooms/shared/tabnav_occupancy"

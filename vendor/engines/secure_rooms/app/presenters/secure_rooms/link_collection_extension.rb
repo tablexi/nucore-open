@@ -10,7 +10,7 @@ module SecureRooms
     end
 
     def admin_occupancies
-      if single_facility? && SecureRoom.exists?
+      if single_facility? && SecureRoom.for_facility(facility).exists?
         NavTab::Link.new(
           tab: :admin_occupancies,
           url: facility_occupancies_path(facility),
