@@ -74,13 +74,12 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
         describe "order_detail" do
           subject(:order_detail) { described_class.process(occupancy).order_details.first }
 
-          before do
-            SecureRoomPricePolicy.create(
+          let(:price_group) { PriceGroup.first }
+          let!(:price_policy) do
+            create(
+              :secure_room_price_policy,
               product: secure_room,
-              start_date: 1.day.ago,
-              price_group: PriceGroup.first,
-              can_purchase: true,
-              usage_rate: 100,
+              price_group: price_group,
             )
           end
 
