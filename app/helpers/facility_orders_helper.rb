@@ -9,7 +9,7 @@ module FacilityOrdersHelper
     notices << "can_reconcile" if order_detail.can_reconcile_journaled?
     notices << "in_open_journal" if order_detail.in_open_journal?
 
-    warnings = [order_detail.problem_description]
+    warnings = Array(order_detail.problem_description)
 
     { warnings: warnings, notices: notices }
   end
