@@ -74,16 +74,22 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
         describe "order_detail" do
           subject(:order_detail) { described_class.process(occupancy).order_details.first }
 
+          let(:price_group) { PriceGroup.first }
+          let!(:price_policy) do
+            create(
+              :secure_room_price_policy,
+              product: secure_room,
+              price_group: price_group,
+            )
+          end
+
           it { is_expected.to be_complete }
           it { is_expected.to be_fulfilled_at }
+          it { is_expected.not_to be_problem }
 
-          # TODO: only correct until the subsequent price specs are activated
-          it { is_expected.to be_problem }
-
-          xit "has price information" do
-            # TODO: expand once activated
+          it "has price information" do
             expect(order_detail.price_policy).to be_present
-            expect(order_detail.price).to be_present
+            expect(order_detail.cost).to be_present
           end
         end
       end

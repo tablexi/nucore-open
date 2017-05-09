@@ -2,6 +2,8 @@ module SecureRooms
 
   class Occupancy < ActiveRecord::Base
 
+    include TextHelpers::Translation
+
     belongs_to :secure_room, foreign_key: :product_id
     belongs_to :user
     belongs_to :account
@@ -61,6 +63,18 @@ module SecureRooms
 
     def actual_duration_mins
       range.duration_mins
+    end
+
+    def problem_description
+      if entry_at.blank?
+        text(:missing_entry)
+      elsif exit_at.blank?
+        text(:missing_exit)
+      end
+    end
+
+    def translation_scope
+      "activerecord.models.secure_rooms/occupancy"
     end
 
     private

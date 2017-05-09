@@ -109,9 +109,7 @@ en:
       logo_alt: "Northwestern Logo"
       logo_file: "logo.jpg"
     problem_order_details:
-      actual_usage_missing: Actual Usage Missing
       assign_price_policies: Assign Price Policies
-      price_policy_missing: Price Policy Missing
       th:
         quantity_and_product: "Quantity / Product"
         problem: Problem

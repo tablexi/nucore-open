@@ -23,6 +23,11 @@ en:
       secure_rooms/card_reader:
         one: Card Reader
         other: Card Readers
+      secure_rooms/occupancy:
+        one: Occupancy
+        other: Occupancies
+        missing_entry: Missing Entry Event
+        missing_exit: Missing Exit Event
 
     attributes:
       user:
