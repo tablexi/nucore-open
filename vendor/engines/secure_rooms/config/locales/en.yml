@@ -18,6 +18,11 @@ en:
   pages:
     admin_occupancies: Occupancies
 
+  secure_rooms:
+    facility_occupancies:
+      table_controls:
+        update_occupancies: Update Occupancies
+
   activerecord:
     models:
       secure_room:

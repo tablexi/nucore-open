@@ -3,3 +3,37 @@
 
 = content_for :tabnav do
   = render "secure_rooms/shared/tabnav_occupancy"
+
+- if @order_details.empty?
+  %p.notice There are no "In Process" occupancies.
+- else
+  = form_tag(batch_update_facility_occupancies_path, :method => :post) do
+
+    %table.table.table-striped.table-hover.occupancies.old-table
+      = render partial: 'table_controls'
+      %thead
+        %tr
+          %th
+          %th{} Order
+          %th Order Detail
+          %th= sortable 'entry_at', 'Entry At'
+          %th= sortable 'user', 'User'
+          %th.order-note= sortable 'product_name', 'Product'
+          %th Payment Source
+      %tbody
+        - @order_details.each do |od|
+          - order = od.order
+          - occ = od.occupancy
+          %tr
+            %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
+            %td.centered= link_to od.order_id, facility_order_path(current_facility, order)
+            %td.centered= link_to od.id, manage_order_detail_path(od), :class => 'manage-order-detail'
+            %td= human_datetime(occ.entry_at)
+            %td=h od.user.nil? ? '' : od.user.full_name
+            = render :partial => 'shared/order_detail_cell', :locals => { :od => od, :show_occupancy => false }
+            %td= od.account
+
+      = render partial: 'table_controls'
+
+  = will_paginate(@order_details)
+  = render :partial => '/price_display_footnote', :locals => { :admin => true }
