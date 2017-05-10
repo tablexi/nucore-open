@@ -34,8 +34,9 @@ class ValidFulfilledAtDate
     time.beginning_of_day + 12.hours if time.present?
   end
   alias presence to_time
-  # This allows us to set `fulfilled_at = ValidFulfilledAtDate.new("XX/XX/XXXX")`
-  # and ActiveRecord will treat it like a time.
+  # `in_time_zone` allows us to set something like
+  # `record.fulfilled_at = ValidFulfilledAtDate.new("XX/XX/XXXX")`
+  # and ActiveRecord will treat it like a normal date/time.
   alias in_time_zone to_time
 
   private

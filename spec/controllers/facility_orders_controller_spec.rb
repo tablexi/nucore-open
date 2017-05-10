@@ -293,7 +293,7 @@ RSpec.describe FacilityOrdersController do
             context "to a date before the start of the previous fiscal year" do
               let(:fulfilled_at) { SettingsHelper.fiscal_year_beginning - 1.year - 1.day }
 
-              it_should_allow :director, "to add an item to existing order with fulfilled_at set to now" do
+              it_should_allow :director, "it should not save" do
                 expect(order_detail).to be_blank
                 expect(flash[:error]).to include("fiscal year")
               end
