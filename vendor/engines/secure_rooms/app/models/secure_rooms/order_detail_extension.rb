@@ -6,6 +6,8 @@ module SecureRooms
 
     included do
       has_one :occupancy, dependent: :destroy, inverse_of: :order_detail, class_name: SecureRooms::Occupancy
+
+      scope :occupancies, -> { joins(:product).where(products: { type: SecureRoom }) }
     end
 
   end

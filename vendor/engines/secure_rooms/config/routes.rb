@@ -14,6 +14,8 @@ Rails.application.routes.draw do
       get :"card_number/edit", to: "secure_rooms/card_numbers#edit"
       patch :"card_number/update", to: "secure_rooms/card_numbers#update"
     end
+
+    resources :occupancies, controller: "secure_rooms/facility_occupancies", only: :index
   end
 
   namespace :secure_rooms_api do
