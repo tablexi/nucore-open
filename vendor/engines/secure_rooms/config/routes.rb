@@ -17,7 +17,9 @@ Rails.application.routes.draw do
 
     resources :occupancies, controller: "secure_rooms/facility_occupancies", only: :index do
       collection do
+        post "assign_price_policies_to_problem_orders"
         post "batch_update"
+        get "show_problems"
       end
     end
   end

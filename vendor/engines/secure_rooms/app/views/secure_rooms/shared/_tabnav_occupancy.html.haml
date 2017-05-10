@@ -1,3 +1,4 @@
 %ul.nav.nav-tabs
   = tab "In Progress", facility_occupancies_path
-
+  - if current_ability.can?(:show_problems, SecureRooms::Occupancy)
+    = display_tab "Problem Occupancies", show_problems_facility_occupancies_path, action: :show_problems

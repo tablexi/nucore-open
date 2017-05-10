@@ -36,6 +36,12 @@ module SecureRooms
       @order_details = @order_details.paginate(page: params[:page])
     end
 
+    protected
+
+    def show_problems_path
+      show_problems_facility_occupancies_path
+    end
+
     private
 
     def new_or_in_process_orders(order_by_clause = "secure_rooms_occupancies.entry_at")
@@ -48,6 +54,13 @@ module SecureRooms
                       )
                       .where("secure_rooms_occupancies.id IS NOT NULL")
                       .order(order_by_clause)
+    end
+
+    def problem_order_details
+      current_facility
+        .problem_occupancy_order_details
+        .joins(:occupancy)
+        .order("secure_rooms_occupancies.entry_at DESC")
     end
 
     def sort_column

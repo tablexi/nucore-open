@@ -1,0 +1,13 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :tabnav do
+  = render partial: "secure_rooms/shared/tabnav_occupancy",
+    locals: { secondary_tab: "problem" }
+
+- if @order_details.empty?
+  %p.notice= t(".no_problem_occupancies")
+- else
+  %p.notice= t(".instructions")
+  = render partial: "shared/problem_order_details",
+    locals: { assign_price_policies_path: assign_price_policies_to_problem_orders_facility_occupancies_path }

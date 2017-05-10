@@ -22,6 +22,12 @@ en:
     facility_occupancies:
       table_controls:
         update_occupancies: Update Occupancies
+      show_problems:
+        instructions: |
+          The occupancy line items below are complete and either do not have a
+          price policy or are occupancies without usage information.
+          Each will need to be corrected.
+        no_problem_occupancies: There are no problem occupancies.
 
   activerecord:
     models:
