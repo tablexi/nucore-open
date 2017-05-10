@@ -50,10 +50,7 @@ class JournalCutoffDatesController < ApplicationController
   end
 
   def journal_cutoff_date_params
-    params.require(:journal_cutoff_date).permit(:cutoff_date, cutoff_date_time: [:hour, :minute, :ampm]).tap do |params|
-      # If we don't do this, we will interpret 1/10 as October 1.
-      params[:cutoff_date] = parse_usa_date(params[:cutoff_date]) if params[:cutoff_date].is_a?(String)
-    end
+    params.require(:journal_cutoff_date).permit(cutoff_date: [:date, :hour, :minute, :ampm])
   end
 
 end
