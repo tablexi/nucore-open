@@ -9,7 +9,10 @@ module FacilityOrdersHelper
     notices << "can_reconcile" if order_detail.can_reconcile_journaled?
     notices << "in_open_journal" if order_detail.in_open_journal?
 
-    warnings = Array(order_detail.problem_description)
+    # TODO: Share translation key between badges and notices
+    warnings = []
+    warnings << "missing_actuals" if order_detail.complete? && order_detail.reservation.try(:requires_but_missing_actuals?)
+    warnings << "missing_price_policy" if order_detail.missing_price_policy? && !order_detail.reservation.try(:requires_but_missing_actuals?)
 
     { warnings: warnings, notices: notices }
   end
@@ -17,7 +20,8 @@ module FacilityOrdersHelper
   def order_detail_badges(order_detail)
     notices = order_detail_notices(order_detail)
 
-    output = build_warnings(notices[:warnings])
+    # TODO: Share translation key between badges and notices
+    output = build_warning_badges(Array(order_detail.problem_description))
     output += build_notices(notices[:notices])
 
     safe_join(output)
@@ -50,7 +54,7 @@ module FacilityOrdersHelper
     end
   end
 
-  def build_warnings(warnings)
+  def build_warning_badges(warnings)
     warnings.map do |warning|
       content_tag(:span, warning, class: ["label", "label-important"])
     end
