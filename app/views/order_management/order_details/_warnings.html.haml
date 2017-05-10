@@ -2,7 +2,7 @@
 - if notices[:warnings].any?
   .alert.alert-error
     - notices[:warnings].each do |warning|
-      = t("order_details.notices.#{warning}.alert")
+      = warning
 
 - if notices[:notices].any?
   .alert.alert-info
