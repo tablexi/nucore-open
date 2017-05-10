@@ -5,7 +5,7 @@ module SecureRooms
     extend ActiveSupport::Concern
 
     included do
-      insert_index = tab_methods.index(:admin_products) || -1
+      insert_index = tab_methods.index(:admin_billing) || -1
       tab_methods.insert(insert_index, :admin_occupancies)
     end
 
