@@ -6,7 +6,7 @@ class StatementRow < ActiveRecord::Base
   validates_presence_of :order_detail_id, :statement_id
 
   before_destroy { @parent_statement = statement }
-  
+
   after_destroy do
     if @parent_statement.statement_rows.reload.empty?
       @parent_statement.order_details.each do |order_detail|
