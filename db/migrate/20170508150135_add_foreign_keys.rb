@@ -10,6 +10,9 @@ class AddForeignKeys < ActiveRecord::Migration
     # The dartmouth database violates this one
     add_foreign_key :account_users, :users
 
+    add_foreign_key :journal_rows, :accounts
+    add_foreign_key :journal_rows, :journals
+    add_foreign_key :journal_rows, :order_details
     add_foreign_key :order_details, :users, column: :assigned_user_id
     add_foreign_key :order_details, :journals
     add_foreign_key :order_details, :order_statuses
@@ -42,8 +45,5 @@ class AddForeignKeys < ActiveRecord::Migration
 
     add_foreign_key :user_roles, :users
 
-    # this is already null: false in the dartmouth database
-    # it also fails a lot of tests 
-    # change_column :journal_rows, :order_detail_id, :integer, null: false
   end
 end

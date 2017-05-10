@@ -75,9 +75,9 @@ group :development do
   gem "coffeelint"
   gem "haml_lint", "~>0.24.0"
   gem "letter_opener"
+  gem "rails-erd"
   gem "rubocop", require: false
   gem "web-console"
-  gem "rails-erd"
 end
 
 group :development, :deployment do
