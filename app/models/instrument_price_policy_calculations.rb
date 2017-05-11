@@ -18,7 +18,7 @@ module InstrumentPricePolicyCalculations
   end
 
   def calculate_cost_and_subsidy(reservation)
-    return calculate_cancellation_costs(reservation) if reservation.order_detail.is_canceled?
+    return calculate_cancellation_costs(reservation) if reservation.canceled?
 
     case charge_for
     when InstrumentPricePolicy::CHARGE_FOR[:reservation]
