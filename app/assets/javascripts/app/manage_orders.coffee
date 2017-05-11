@@ -43,11 +43,12 @@ class OrderDetailManagement
     $('[name="order_detail[reservation][actual_duration_mins]_display"]').val(newval).trigger('change')
 
   initPriceUpdating: ->
-    self = this
-    # _display is excluded to prevent the displayed input for durations from triggering.
-    # We want only the underlying quantity/mins input to trigger it.
-    @$element.find('.js--pricingUpdate input:not([name$=_display]), .js--pricingUpdate select').bind "change keyup", (evt) ->
-      self.updatePricing(evt) if @.value.length > 0
+    # _display is excluded to prevent the displayed input for durations from
+    # triggering. We want only the underlying quantity/mins input to trigger it.
+    @$element
+      .find('.js--pricingUpdate input:not([name$=_display]),.js--pricingUpdate select')
+      .bind "change keyup", (evt) =>
+        @updatePricing(evt) if $(evt.target).val().length > 0
 
   updatePricing: (e) ->
     self = this

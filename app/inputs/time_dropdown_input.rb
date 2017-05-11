@@ -36,7 +36,7 @@ class TimeDropdownInput < SimpleForm::Inputs::Base
 
   def minute_options
     step = options[:minute_step] || 1
-    (0..59).step(step).map { |d| ["%02d" % d, d] }
+    (0..59).step(step).map { |d| [format("%02d", d), d] }
   end
 
 end
