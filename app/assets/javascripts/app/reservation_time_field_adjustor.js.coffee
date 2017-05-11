@@ -29,7 +29,7 @@ class window.DateTimeSelectionWidgetGroup
     )
 
 class window.ReservationTimeFieldAdjustor
-  constructor: (@$form, @opts, @reserveInterval) ->
+  constructor: (@$form, @opts, @reserveInterval = 1) ->
     @reserveStart = DateTimeSelectionWidgetGroup.fromFields(
       @$form,
       @opts["start"]...,
@@ -55,6 +55,7 @@ class window.ReservationTimeFieldAdjustor
 
   _durationChangeCallback: =>
     durationMinutes = @durationField.val()
+
     if durationMinutes % @reserveInterval == 0
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime().addMinutes(durationMinutes))
@@ -80,8 +81,19 @@ $ ->
   # reserveInterval is not set on admin reservation pages, and we don't need these handlers there
   if reserveInterval?
     $("form.new_reservation, form.edit_reservation").each (i, elem) ->
-      new ReservationTimeFieldAdjustor($(elem),
-        "start": ["reservation[reserve_start_date]", "reservation[reserve_start_hour]", "reservation[reserve_start_min]", "reservation[reserve_start_meridian]"]
-        "end": ["reservation[reserve_end_date]", "reservation[reserve_end_hour]", "reservation[reserve_end_min]", "reservation[reserve_end_meridian]"]
+      new ReservationTimeFieldAdjustor(
+        $(elem),
+        "start": [
+          "reservation[reserve_start_date]",
+          "reservation[reserve_start_hour]",
+          "reservation[reserve_start_min]",
+          "reservation[reserve_start_meridian]"
+        ]
+        "end": [
+          "reservation[reserve_end_date]",
+          "reservation[reserve_end_hour]",
+          "reservation[reserve_end_min]",
+          "reservation[reserve_end_meridian]"
+        ]
         "duration": "reservation[duration_mins]"
       reserveInterval)

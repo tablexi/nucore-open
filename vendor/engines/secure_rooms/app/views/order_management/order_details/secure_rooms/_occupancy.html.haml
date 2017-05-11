@@ -1,4 +1,26 @@
-.datetime-block.js--pricingUpdate
+.datetime-block.js--timeFieldAdjustor
   = f.simple_fields_for :occupancy_attributes, f.object.time_data do |of|
-    = of.input :entry_at, as: :time_dropdown
-    = of.input :exit_at, as: :time_dropdown
+    = of.input :entry_at, as: :time_dropdown, wrapper_html: { class: "js--pricingUpdate" }
+
+    = of.input :actual_duration_mins, input_html: { class: "timeinput" }
+
+    = of.input :exit_at, as: :time_dropdown, wrapper_html: { class: "js--pricingUpdate" }
+
+:coffeescript
+  $ ->
+    new ReservationTimeFieldAdjustor(
+      $(".js--timeFieldAdjustor"),
+      "start": [
+        "order_detail[occupancy_attributes][entry_at][date]",
+        "order_detail[occupancy_attributes][entry_at][hour]",
+        "order_detail[occupancy_attributes][entry_at][minute]",
+        "order_detail[occupancy_attributes][entry_at][ampm]"
+      ]
+      "end": [
+        "order_detail[occupancy_attributes][exit_at][date]",
+        "order_detail[occupancy_attributes][exit_at][hour]",
+        "order_detail[occupancy_attributes][exit_at][minute]",
+        "order_detail[occupancy_attributes][exit_at][ampm]"
+      ]
+      "duration": "order_detail[occupancy_attributes][actual_duration_mins]"
+    )
