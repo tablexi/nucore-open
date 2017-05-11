@@ -68,7 +68,7 @@ module TimelineHelper
   end
 
   def display_status_class(reservation)
-    reservation.canceled_at ? "canceled" : reservation.order_detail.order_status.to_s.downcase
+    reservation.order_detail.canceled_at ? "canceled" : reservation.order_detail.order_status.to_s.downcase
   end
 
 end

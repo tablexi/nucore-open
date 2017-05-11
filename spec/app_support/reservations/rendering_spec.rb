@@ -8,7 +8,6 @@ RSpec.describe Reservations::Rendering do
       reserve_end_at: reserve_end_at,
       actual_start_at: actual_start_at,
       actual_end_at: actual_end_at,
-      canceled_at: canceled_at,
     )
   end
 
@@ -198,6 +197,7 @@ RSpec.describe Reservations::Rendering do
       end
 
       context "and the reservation is canceled" do
+        # TODO: fix this
         let(:canceled_at) { 4.hours.ago }
         before { expect(reservation).to receive(:canceled_at).and_return(canceled_at) }
 

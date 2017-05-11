@@ -380,13 +380,13 @@ RSpec.describe Reservation do
       end
 
       context "the reservation has been canceled" do
-        before { reservation.update_attribute(:canceled_at, 1.hour.ago) }
+        before { reservation.order_detail.update_attributes(canceled_at: 1.hour.ago) }
 
         it_behaves_like "a customer is not allowed to edit"
       end
 
       context "the reservation has not been canceled" do
-        before { reservation.update_attribute(:canceled_at, nil) }
+        before { reservation.order_detail.update_attributes(canceled_at: nil) }
 
         context "it is complete" do
           before :each do
@@ -631,7 +631,7 @@ RSpec.describe Reservation do
 
       it "should not be moveable if the reservation is canceled" do
         expect(@reservation1).to be_startable_now
-        @reservation1.canceled_at = Time.zone.now
+        @reservation1.order_detail.update_attributes(canceled_at: Time.zone.now)
         expect(@reservation1).not_to be_startable_now
       end
 

@@ -734,9 +734,9 @@ RSpec.describe OrdersController do
               expect(assigns[:order].order_details).to all(be_canceled)
             end
 
-            it "sets the canceled time on the reservation" do
-              assigns[:order].order_details.all? { |od| expect(od.reservation.canceled_at).not_to be_nil }
-              expect(reservation.reload.canceled_at).not_to be_nil
+            it "sets the canceled time on the order_detail" do
+              assigns[:order].order_details.all? { |od| expect(od.canceled_at).not_to be_nil }
+              expect(reservation.order_detail.reload.canceled_at).not_to be_nil
             end
           end
         end

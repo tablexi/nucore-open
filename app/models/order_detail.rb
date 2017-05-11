@@ -473,7 +473,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def has_uncanceled_reservation?
-    reservation.present? && reservation.canceled_at.blank?
+    reservation.present? && !is_canceled?
   end
 
   def cancelable?

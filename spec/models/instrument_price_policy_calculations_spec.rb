@@ -141,7 +141,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     end
 
     it 'returns #calculate_cancellation_costs if the reservation was canceled' do
-      expect(reservation).to receive(:canceled_at).and_return Time.zone.now
+      expect(reservation.order_detail).to receive(:canceled_at).and_return Time.zone.now
       expect(policy).to receive(:calculate_cancellation_costs).with reservation
       expect(policy).to_not receive :calculate_overage
       expect(policy).to_not receive :calculate_reservation
@@ -303,6 +303,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
 
   describe "determining whether or not a cancellation should be penalized" do
     let(:options) { { usage_rate: 3.0, cancellation_cost: 5.0 } }
+
     before(:each) { allow(policy.product).to receive(:min_cancel_hours).and_return 3 }
 
     describe "when it's inside the minimum cancelation window" do

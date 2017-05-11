@@ -312,9 +312,9 @@ en:
         actuals_string: Actual Usage
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
-        canceled_by_user: Canceled By
-        canceled_by: Canceled By
-        canceled_at: Canceled At
+        canceled_by_user: Canceled By #
+        canceled_by: Canceled By #
+        canceled_at: Canceled At #
         type: Type
       statement:
         id: "Invoice #"

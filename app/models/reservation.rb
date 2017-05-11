@@ -103,7 +103,8 @@ class Reservation < ActiveRecord::Base
     # Eliminate by letting Rails filter by #reserve_end_at
     joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
       .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
-      .where(canceled_at: nil, "orders.state" => [nil, "purchased"])
+      .not_canceled
+      .where("orders.state" => [nil, "purchased"])
       .order(reserve_end_at: :asc)
       .to_a
       .delete_if { |reservation| reservation.reserve_end_at < t }
