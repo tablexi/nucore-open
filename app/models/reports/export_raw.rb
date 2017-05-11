@@ -113,7 +113,7 @@ module Reports
     end
 
     def canceled_by_name(order_detail)
-      if order_detail.canceled_by.zero?
+      if order_detail.canceled_by.try(:zero?)
         I18n.t("reports.fields.auto_cancel_name")
       else
         order_detail.canceled_by_user.try(:full_name)
