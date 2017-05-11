@@ -214,7 +214,7 @@ class UsersController < ApplicationController
       add_role = html("create.add_role", link: facility_facility_user_map_user_path(current_facility, @user), inline: true)
       flash[:notice].safe_concat(add_role)
     end
-    Notifier.delay.new_user(user: @user)
+    Notifier.new_user(user: @user, password: @user.password).deliver_later
     redirect_to facility_users_path(user: @user.id)
   end
 
