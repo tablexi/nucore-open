@@ -106,14 +106,15 @@ module NUCore
       def self.included(base)
         base.extend ClassMethods
       end
+
       module ClassMethods
 
         def order_by_asc_nulls_first(field)
-          NUCore::Database.oracle? ? order("#{field} asc nulls first") : order(field)
+          NUCore::Database.oracle? ? order("#{sanitize_sql(field)} asc nulls first") : order(field)
         end
 
         def order_by_desc_nulls_first(field)
-          NUCore::Database.oracle? ? order("#{field} desc nulls first") : order("-#{field}")
+          NUCore::Database.oracle? ? order("#{sanitize_sql(field)} desc nulls first") : order("-#{sanitize_sql(field)}")
         end
 
       end
