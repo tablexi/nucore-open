@@ -1,7 +1,7 @@
 = text(".intro", first_name: @user.first_name, last_name: @user.last_name, login_url: new_user_session_url)
 
 = "#{User.human_attribute_name(:username)}: #{@user.username}"
-- if @user.password
-  = "#{User.human_attribute_name(:password)}: #{@user.password}"
+- if @password
+  = "#{User.human_attribute_name(:password)}: #{@password}"
 - else
   = text(".no_password")
