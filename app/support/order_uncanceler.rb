@@ -6,7 +6,7 @@ class OrderUncanceler
   end
 
   def uncancel_to_complete(order_detail)
-    unless order_detail.state == "canceled"
+    unless order_detail.canceled?
       Rails.logger.info "OrderDetail #{order_detail} was not in canceled state"
       return
     end

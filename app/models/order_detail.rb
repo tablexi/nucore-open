@@ -61,8 +61,7 @@ class OrderDetail < ActiveRecord::Base
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
-  # TODO: Refactor this from Reservation into OrderDetail
-  # delegate :canceled_at, to: :reservation, allow_nil: true
+  delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
   delegate :in_cart?, :facility, :ordered_at, :user, to: :order
   delegate :price_group, to: :price_policy, allow_nil: true
@@ -716,12 +715,12 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def in_dispute?
-    dispute_at && dispute_resolved_at.nil? && state != "canceled"
+    dispute_at && dispute_resolved_at.nil? && !canceled?
   end
 
   def disputed?
     # only used in specs
-    dispute_at.present? && state != "canceled"
+    dispute_at.present? && !canceled?
   end
 
   def cancel_reservation(canceled_by, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
