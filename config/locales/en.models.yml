@@ -142,14 +142,12 @@ en:
       reservation:
         one: Reservation
         other: Reservations
-        missing_actuals: Actual Usage Missing
       order:
         one: Order
         other: Orders
       order_detail:
         one: Order Detail
         other: Order Details
-        missing_price_policy: Price Policy Missing
       order_status:
         one: Current Order Status
         other: Order Statuses
@@ -166,9 +164,6 @@ en:
       statement:
         one: Statement
         other: Statements
-      time_data:
-        required_time_data:
-          missing_actuals: Actual Usage Missing
       training_request:
         one: Training Request
         other: Training Requests
