@@ -37,8 +37,8 @@ class Reservation < ActiveRecord::Base
 
   # delegate :canceled_at, to: :order_detail, allow_nil: true
   # delegate :canceled_at=, to: :order_detail, allow_nil: true
-  delegate :canceled_by, to: :order_detail, allow_nil: true
-  delegate :canceled_by=, to: :order_detail, allow_nil: true
+  # delegate :canceled_by, to: :order_detail, allow_nil: true
+  # delegate :canceled_by=, to: :order_detail, allow_nil: true
   delegate :canceled_reason, to: :order_detail, allow_nil: true
   delegate :canceled_reason=, to: :order_detail, allow_nil: true
 
