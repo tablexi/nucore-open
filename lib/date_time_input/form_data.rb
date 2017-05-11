@@ -7,19 +7,34 @@ module DateTimeInput
     end
 
     def self.from_param(param)
+      from_param!(param)
+    rescue ArgumentError
+      new(nil)
+    end
+
+    def self.from_param!(param)
       return new(param) if param.is_a?(Time)
       param = param.with_indifferent_access
 
       str = param[:date]
       format = "%m/%d/%Y"
 
-      if %w(hour minute ampm).all? { |k| param.key? k }
+      if check_time_param!(param)
         str += " #{param[:hour]}:#{param[:minute].to_s.rjust(2, '0')} #{param[:ampm]}"
         format += " %H:%M %p"
       end
 
-      parsed_time = Time.strptime(str, format) rescue ArgumentError
-      new(parsed_time)
+      new(Time.strptime(str, format))
+    end
+
+    def self.check_time_param!(param)
+      if %w(hour minute ampm).all? { |k| param.key? k }
+        true
+      elsif %w(hour minute ampm).none? { |k| param.key? k }
+        false
+      else
+        raise ArgumentError, "Must have all or none of [:hour, :minute, :ampm] keys"
+      end
     end
 
     def date
