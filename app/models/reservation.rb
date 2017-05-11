@@ -8,7 +8,6 @@ class Reservation < ActiveRecord::Base
   include Reservations::Rendering
   include Reservations::RelaySupport
   include Reservations::MovingUp
-  include TextHelpers::Translation
 
   # Associations
   #####
@@ -284,10 +283,6 @@ class Reservation < ActiveRecord::Base
 
   def problem_description_key
     :missing_actuals if requires_but_missing_actuals?
-  end
-
-  def translation_scope
-    "activerecord.models.reservation"
   end
 
   def locked?
