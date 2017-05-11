@@ -20,6 +20,9 @@ module SecureRooms
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range
 
+    alias_attribute :actual_start_at, :entry_at
+    alias_attribute :actual_end_at, :exit_at
+
     def self.valid
       where(orphaned_at: nil)
     end
