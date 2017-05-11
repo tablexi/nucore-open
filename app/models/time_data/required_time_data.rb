@@ -8,8 +8,8 @@ module TimeData
       false
     end
 
-    def problem_description
-      text(:missing_actuals)
+    def problem_description_key
+      :missing_actuals
     end
 
     def translation_scope
