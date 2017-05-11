@@ -93,6 +93,7 @@ class OrderDetail < ActiveRecord::Base
   # were being triggered on orders where the orderer had been removed from the account.
   validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
   validates_length_of :note, maximum: 1000, allow_blank: true, allow_nil: true
+  validate :valid_manual_fulfilled_at
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility
@@ -842,7 +843,13 @@ class OrderDetail < ActiveRecord::Base
   # will have no effect. This is to protect `fulfilled_at` from being written
   # to when it shouldn't be. It should be a USA formatted date string.
   def manual_fulfilled_at=(string)
-    @manual_fulfilled_at = ValidFulfilledAtDate.parse(string)
+    @manual_fulfilled_at = ValidFulfilledAtDate.new(string)
+  end
+
+  def valid_manual_fulfilled_at
+    if @manual_fulfilled_at && @manual_fulfilled_at.invalid?
+      errors.add(:fulfilled_at, @manual_fulfilled_at.error)
+    end
   end
 
   def time_data
@@ -881,7 +888,7 @@ class OrderDetail < ActiveRecord::Base
 
   def make_complete
     # Don't update fulfilled_at if it was manually set.
-    self.fulfilled_at = @manual_fulfilled_at || Time.current
+    self.fulfilled_at = @manual_fulfilled_at.presence || Time.current
     assign_price_policy
     self.reviewed_at = Time.zone.now unless SettingsHelper.has_review_period?
   end

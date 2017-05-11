@@ -16,6 +16,10 @@ en:
               blank: No orders were selected to reconcile
             reconciled_at:
               blank: Reconciliation Date is required before orders can be reconciled
+        valid_fulfilled_at_date:
+          in_future: cannot be in the future
+          too_far_in_past: cannot be before the previous fiscal year
+
 
   activerecord:
     errors:
