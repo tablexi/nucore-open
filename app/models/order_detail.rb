@@ -859,7 +859,7 @@ class OrderDetail < ActiveRecord::Base
 
   def problem_description
     time_data_problem = time_data.problem_description
-    price_policy_problem = text(:price_policy_missing) if price_policy.blank?
+    price_policy_problem = text(:missing_price_policy) if price_policy.blank?
 
     time_data_problem || price_policy_problem
   end

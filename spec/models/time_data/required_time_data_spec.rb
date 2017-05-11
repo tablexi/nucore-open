@@ -6,6 +6,6 @@ RSpec.describe TimeData::RequiredTimeData, type: :model do
   describe "#problem_description" do
     subject(:problem_description) { required_time_data.problem_description }
 
-    it { is_expected.to eq required_time_data.text(:actual_usage_missing) }
+    it { is_expected.to eq required_time_data.text(:missing_actuals) }
   end
 end

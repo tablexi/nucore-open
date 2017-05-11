@@ -1494,7 +1494,7 @@ RSpec.describe Reservation do
     context "requires_but_missing_actuals?" do
       before { expect(reservation).to receive(:requires_but_missing_actuals?).and_return(true) }
 
-      it { is_expected.to eq reservation.text(:actual_usage_missing) }
+      it { is_expected.to eq reservation.text(:missing_actuals) }
     end
 
     context "usage exists" do

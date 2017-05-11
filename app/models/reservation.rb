@@ -283,7 +283,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def problem_description
-    text(:actual_usage_missing) if requires_but_missing_actuals?
+    text(:missing_actuals) if requires_but_missing_actuals?
   end
 
   def translation_scope

@@ -9,7 +9,7 @@ module TimeData
     end
 
     def problem_description
-      text(:actual_usage_missing)
+      text(:missing_actuals)
     end
 
     def translation_scope
