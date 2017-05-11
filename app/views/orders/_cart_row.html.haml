@@ -1,8 +1,8 @@
 %tr{class: order_detail_iteration.first? ? "first-in-bundle" : ""}
   %td
     - if order_detail_iteration.first?
+      = link_to text("shared.remove"), remove_order_path(@order, order_detail), method: :put
       %strong
-        [#{link_to text("shared.remove"), remove_order_path(@order, order_detail), method: :put}]
         - if order_detail.bundle
           = order_detail.bundle
   %td
