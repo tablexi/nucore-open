@@ -9,7 +9,7 @@ module FacilityOrdersHelper
     notices << "can_reconcile" if order_detail.can_reconcile_journaled?
     notices << "in_open_journal" if order_detail.in_open_journal?
 
-    warnings = Array(order_detail.problem_description)
+    warnings = Array(order_detail.problem_description_key)
 
     { warnings: warnings, notices: notices }
   end
@@ -17,8 +17,8 @@ module FacilityOrdersHelper
   def order_detail_badges(order_detail)
     notices = order_detail_notices(order_detail)
 
-    output = build_warnings(notices[:warnings])
-    output += build_notices(notices[:notices])
+    output = build_badges(notices[:notices], "label-info")
+    output += build_badges(notices[:warnings], "label-important")
 
     safe_join(output)
   end
@@ -44,15 +44,9 @@ module FacilityOrdersHelper
 
   private
 
-  def build_notices(notices)
+  def build_badges(notices, label_class)
     notices.map do |notice|
-      content_tag(:span, t("order_details.notices.#{notice}.badge"), class: ["label", "label-info"])
-    end
-  end
-
-  def build_warnings(warnings)
-    warnings.map do |warning|
-      content_tag(:span, warning, class: ["label", "label-important"])
+      content_tag(:span, t("order_details.notices.#{notice}.badge"), class: ["label", label_class])
     end
   end
 
