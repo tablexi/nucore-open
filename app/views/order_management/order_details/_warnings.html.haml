@@ -2,7 +2,8 @@
 - if notices[:warnings].any?
   .alert.alert-error
     - notices[:warnings].each do |warning|
-      = t("order_details.notices.#{warning}.alert")
+      -# TODO: Should be getting fixed in another PR
+      = t("order_details.notices.#{warning}.alert", default: "FIXME: #{warning}")
 
 - if notices[:notices].any?
   .alert.alert-info
