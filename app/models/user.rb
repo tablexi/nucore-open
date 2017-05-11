@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   has_many :account_users, -> { where(deleted_at: nil) }
   has_many :orders
   has_many :order_details, through: :orders
-  has_many :price_group_members, class_name: "UserPriceGroupMember"
+  has_many :price_group_members, class_name: "UserPriceGroupMember", dependent: :destroy
   has_many :price_groups, -> { SettingsHelper.feature_on?(:user_based_price_groups) ? uniq : none }, through: :price_group_members
   has_many :product_users
   has_many :notifications
