@@ -1,6 +1,7 @@
 /* Bootstrap overrides go here. This is included after bootstrap. */
 $navCollapseBackgroundColor: #f7f7f7;
 $navCollapseColor: #777;
+$navbarActiveBorderColor: #aaa;
 
 /* 979px - 980px is where nav-collapse gets triggered */
 @media (max-width: 979px) {
@@ -69,6 +70,10 @@ $navCollapseColor: #777;
     }
 
     tr { border: 1px solid #ccc; }
+
+    .first-in-bundle {
+      border-top: 3px solid $navbarActiveBorderColor;
+    }
 
     td {
       border: none;
