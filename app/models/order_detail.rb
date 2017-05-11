@@ -219,7 +219,7 @@ class OrderDetail < ActiveRecord::Base
 
   def in_review?
     # check in the database if self.id is in the scope
-    self.class.in_review.find_by_id(id) ? true : false
+    self.class.in_review.find_by(id: id) ? true : false
     # this would work without hitting the database again, but duplicates the functionality of the scope
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
   end
@@ -287,9 +287,11 @@ class OrderDetail < ActiveRecord::Base
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
   scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
   scope :for_owners, lambda { |owners|
-    joins(:account)
-      .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
-      .where("account_users.user_id in (?)", owners) unless owners.blank?
+    unless owners.blank?
+      joins(:account)
+        .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
+        .where("account_users.user_id in (?)", owners)
+    end
   }
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
@@ -304,11 +306,11 @@ class OrderDetail < ActiveRecord::Base
     search
   }
 
-  scope :fulfilled_in_date_range, lambda {|start_date, end_date|
+  scope :fulfilled_in_date_range, lambda { |start_date, end_date|
     action_in_date_range :fulfilled_at, start_date, end_date
   }
 
-  scope :action_in_date_range, lambda {|action, start_date, end_date|
+  scope :action_in_date_range, lambda { |action, start_date, end_date|
     valid = TransactionSearch::DateRangeSearcher::FIELDS.map(&:to_sym) + [:journal_date]
     raise ArgumentError.new("Invalid action: #{action}. Must be one of: #{valid}") unless valid.include? action.to_sym
     logger.debug("searching #{action} between #{start_date} and #{end_date}")
@@ -729,7 +731,7 @@ class OrderDetail < ActiveRecord::Base
 
     if admin
       self.canceled_at = Time.zone.now
-      return false unless self.save
+      return false unless save
 
       if admin_with_cancel_fee
         clear_statement if cancellation_fee == 0
@@ -741,7 +743,7 @@ class OrderDetail < ActiveRecord::Base
     else
       return false unless res && res.can_cancel?
       self.canceled_at = Time.zone.now # must set canceled_at after calling #can_cancel?
-      return false unless self.save
+      return false unless save
       clear_statement if cancellation_fee == 0
       cancel_with_fee order_status
     end

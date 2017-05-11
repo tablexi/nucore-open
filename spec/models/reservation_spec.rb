@@ -11,7 +11,7 @@ RSpec.describe Reservation do
       reserve_start_meridian: "am",
       duration_mins: 60,
       split_times: true,
-      order_detail: order_detail
+      order_detail: order_detail,
     )
   end
 
