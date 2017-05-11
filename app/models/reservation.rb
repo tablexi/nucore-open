@@ -217,11 +217,11 @@ class Reservation < ActiveRecord::Base
 
   # can the CUSTOMER cancel the order
   def can_cancel?
-    canceled? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
+    !canceled? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
   end
 
   def can_customer_edit?
-    canceled? && !complete? && (reserve_start_at_editable? || reserve_end_at_editable?)
+    !canceled? && !complete? && (reserve_start_at_editable? || reserve_end_at_editable?)
   end
 
   def reserve_start_at_editable?

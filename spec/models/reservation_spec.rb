@@ -11,6 +11,7 @@ RSpec.describe Reservation do
       reserve_start_meridian: "am",
       duration_mins: 60,
       split_times: true,
+      order_detail: order_detail
     )
   end
 
@@ -19,6 +20,8 @@ RSpec.describe Reservation do
     facility.facility_accounts.create(attributes_for(:facility_account))
   end
   let(:instrument) { @instrument }
+  let(:order) { FactoryGirl.create(:setup_order, product: instrument) }
+  let(:order_detail) { FactoryGirl.create(:order_detail, account: order.account, order: order, product: instrument) }
 
   before(:each) do
     @instrument = create(:instrument, facility_account_id: facility_account.id, facility: facility, reserve_interval: 15)
@@ -123,8 +126,8 @@ RSpec.describe Reservation do
   end
 
   describe "#can_cancel?" do
-    context "when the reservation has a canceled_at timestamp" do
-      before { allow(reservation).to receive(:canceled_at).and_return(1.day.ago) }
+    context "when the reservation is already canceled" do
+      before { allow(reservation).to receive(:canceled?).and_return(true) }
 
       it { is_expected.not_to be_can_cancel }
     end
