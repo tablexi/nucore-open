@@ -286,7 +286,7 @@ class OrderDetail < ActiveRecord::Base
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
   scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
   scope :for_owners, lambda { |owners|
-    unless owners.blank?
+    if owners.present?
       joins(:account)
         .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
         .where("account_users.user_id in (?)", owners)
@@ -724,7 +724,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cancel_reservation(canceled_by, canceled_reason: nil, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
-    self.canceled_by_user = canceled_by
+    self.canceled_by = canceled_by.id
     self.canceled_reason = canceled_reason
 
     if admin
