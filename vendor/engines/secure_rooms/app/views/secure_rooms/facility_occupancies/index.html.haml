@@ -12,12 +12,12 @@
       %thead
         %tr
           %th
-          %th{} Order
-          %th Order Detail
-          %th= sortable 'entry_at', 'Entry At'
-          %th= sortable 'user_name', 'User'
-          %th.order-note= sortable 'product_name', 'Product'
-          %th= sortable 'payment_source', "Payment Source"
+          %th= Order.model_name.human
+          %th= OrderDetail.model_name.human
+          %th= sortable 'entry_at', SecureRooms::Occupancy.human_attribute_name(:entry_at)
+          %th= sortable 'user_name', User.model_name.human
+          %th.order-note= sortable 'product_name', SecureRoom.model_name.human
+          %th= sortable 'payment_source', Account.model_name.human
       %tbody
         - @order_details.each do |od|
           - order = od.order

@@ -15,7 +15,7 @@ module SecureRooms
 
     SORTING_CLAUSES = {
       "entry_at" => "secure_rooms_occupancies.entry_at",
-      "user_name" => "users.username",
+      "user_name" => "users.last_name",
       "product_name" => "products.name",
       "payment_source" => "accounts.description",
     }.freeze
@@ -41,6 +41,7 @@ module SecureRooms
       current_facility
         .order_details
         .new_or_inprocess
+        .occupancies
         .includes(
           { order: :user },
           :order_status,
