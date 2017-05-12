@@ -2,7 +2,6 @@ module SecureRooms
 
   class Occupancy < ActiveRecord::Base
 
-    include TextHelpers::Translation
     include DateTimeInput::Model
 
     date_time_inputable :entry_at
