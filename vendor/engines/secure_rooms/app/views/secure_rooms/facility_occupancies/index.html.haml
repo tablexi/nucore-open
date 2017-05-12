@@ -4,9 +4,7 @@
 = content_for :tabnav do
   = render "secure_rooms/shared/tabnav_occupancy"
 
-- if @order_details.empty?
-  %p.notice There are no "In Process" occupancies.
-- else
+- if @order_details.present?
   = form_tag(batch_update_facility_occupancies_path, :method => :post) do
 
     %table.table.table-striped.table-hover.occupancies.old-table
@@ -37,3 +35,5 @@
 
   = will_paginate(@order_details)
   = render :partial => '/price_display_footnote', :locals => { :admin => true }
+- else
+  %p.notice There are no "In Process" occupancies.

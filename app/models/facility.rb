@@ -129,11 +129,11 @@ class Facility < ActiveRecord::Base
     complete_problem_order_details.reservations
   end
 
-  private
-
   def complete_problem_order_details
     order_details.problem_orders.complete
   end
+
+  private
 
   def set_journal_mask
     f = Facility.all.order(journal_mask: :desc).first

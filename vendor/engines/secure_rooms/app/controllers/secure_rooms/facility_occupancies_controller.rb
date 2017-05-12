@@ -58,7 +58,7 @@ module SecureRooms
 
     def problem_order_details
       current_facility
-        .problem_occupancy_order_details
+        .complete_problem_order_details
         .joins(:occupancy)
         .order("secure_rooms_occupancies.entry_at DESC")
     end

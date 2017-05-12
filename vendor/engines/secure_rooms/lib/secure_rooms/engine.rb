@@ -8,7 +8,6 @@ module SecureRooms
       ::AbilityExtensionManager.extensions << "SecureRooms::AbilityExtension"
 
       NavTab::LinkCollection.send :include, SecureRooms::LinkCollectionExtension
-      Facility.send :include, SecureRooms::FacilityExtension
       OrderDetail.send :include, SecureRooms::OrderDetailExtension
 
       bundle_index = Product.types.index(Bundle) || -1
