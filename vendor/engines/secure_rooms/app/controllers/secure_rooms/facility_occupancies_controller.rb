@@ -15,7 +15,7 @@ module SecureRooms
 
     SORTING_CLAUSES = {
       "entry_at" => "secure_rooms_occupancies.entry_at",
-      "user_name" => "users.last_name",
+      "user_name" => ["users.last_name", "users.first_name"],
       "product_name" => "products.name",
       "payment_source" => "accounts.description",
     }.freeze
@@ -59,8 +59,10 @@ module SecureRooms
     end
 
     def sanitize_sort_params
-      sort_clause = SORTING_CLAUSES[sort_column]
-      @order_by_clause = [sort_clause, sort_direction].join(" ")
+      sort_clauses = Array(SORTING_CLAUSES[sort_column])
+      @order_by_clause = sort_clauses.map do |clause|
+        [clause, sort_direction].join(" ")
+      end.join(", ")
     end
 
     def sort_column
@@ -68,7 +70,7 @@ module SecureRooms
     end
 
     def sort_direction
-      (params[:dir] || "") =~ /asc/i ? "asc" : "desc"
+      String(params[:dir]) =~ /asc/i ? "asc" : "desc"
     end
 
   end

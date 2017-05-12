@@ -14,7 +14,7 @@ module SecureRooms
         ability.can [
           :index,
           :show_problems,
-          :assign_price_policies_to_problem_orders
+          :assign_price_policies_to_problem_orders,
         ], Occupancy
       end
     end
