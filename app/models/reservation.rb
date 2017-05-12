@@ -35,13 +35,6 @@ class Reservation < ActiveRecord::Base
   delegate :lock_window, to: :product, prefix: true
   delegate :owner, to: :account, allow_nil: true
 
-  # delegate :canceled_at, to: :order_detail, allow_nil: true
-  # delegate :canceled_at=, to: :order_detail, allow_nil: true
-  # delegate :canceled_by, to: :order_detail, allow_nil: true
-  # delegate :canceled_by=, to: :order_detail, allow_nil: true
-  # delegate :canceled_reason, to: :order_detail, allow_nil: true
-  # delegate :canceled_reason=, to: :order_detail, allow_nil: true
-
   def canceled?
     return nil unless order_detail
     order_detail.is_canceled?

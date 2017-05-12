@@ -72,7 +72,7 @@ module Reports
         actual_start_time: ->(od) { od.time_data.actual_start_at if od.time_data.present? },
         actual_end_time: ->(od) { od.time_data.actual_end_at if od.time_data.present? },
         actual_minutes: ->(od) { od.time_data.actual_duration_mins if od.time_data.present? },
-        canceled_at: ->(od) { od.canceled_at },
+        canceled_at: :canceled_at,
         canceled_by: ->(od) { canceled_by_name(od) },
         note: :note,
         disputed_at: :dispute_at,

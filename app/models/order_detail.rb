@@ -218,7 +218,7 @@ class OrderDetail < ActiveRecord::Base
 
   def in_review?
     # check in the database if self.id is in the scope
-    self.class.in_review.find_by(id: id) ? true : false
+    self.class.in_review.exists?(id: id)
     # this would work without hitting the database again, but duplicates the functionality of the scope
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
   end
@@ -723,14 +723,12 @@ class OrderDetail < ActiveRecord::Base
     dispute_at.present? && !canceled?
   end
 
-  def cancel_reservation(canceled_by, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
-    # TODO: refactor more better
-    res = reservation
-    self.canceled_by = canceled_by.id
+  def cancel_reservation(canceled_by, canceled_reason: nil, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
+    self.canceled_by_user = canceled_by
+    self.canceled_reason = canceled_reason
 
     if admin
-      self.canceled_at = Time.zone.now
-      return false unless save
+      return false unless update_attributes(canceled_at: Time.current)
 
       if admin_with_cancel_fee
         clear_statement if cancellation_fee == 0
@@ -740,9 +738,9 @@ class OrderDetail < ActiveRecord::Base
         change_status! order_status
       end
     else
-      return false unless res && res.can_cancel?
-      self.canceled_at = Time.zone.now # must set canceled_at after calling #can_cancel?
-      return false unless save
+      return false unless reservation && reservation.can_cancel?
+      # must set canceled_at after calling #can_cancel?
+      return false unless update_attributes(canceled_at: Time.current)
       clear_statement if cancellation_fee == 0
       cancel_with_fee order_status
     end

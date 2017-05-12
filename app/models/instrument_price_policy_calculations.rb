@@ -61,13 +61,6 @@ module InstrumentPricePolicyCalculations
     PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at)
   end
 
-  def cancellation_penalty?(reservation)
-    return false unless product.min_cancel_hours
-    res_start_at = strip_seconds reservation.reserve_start_at
-    canceled_at = strip_seconds reservation.order_detail.canceled_at
-    res_start_at - canceled_at <= product.min_cancel_hours.hours
-  end
-
   def calculate_cancellation_costs(reservation)
     if cancellation_penalty?(reservation)
       { cost: cancellation_cost, subsidy: 0 }

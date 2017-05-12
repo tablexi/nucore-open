@@ -12,13 +12,13 @@ RSpec.describe OrderUncanceler do
     it "should not uncancel a not-canceled order" do
       uncanceler.uncancel_to_complete(order_detail)
       expect(order_detail).not_to be_changed
-      expect(order_detail.state).not_to eq "canceled"
+      expect(order_detail).not_to be_canceled
     end
 
     context "with a canceled order" do
       before :each do
         order_detail.update_order_status!(order.user, cancel_status)
-        expect(order_detail.state).to eq "canceled"
+        expect(order_detail).to be_canceled
         uncanceler.uncancel_to_complete(order_detail)
       end
 
@@ -48,7 +48,7 @@ RSpec.describe OrderUncanceler do
     context "and the reservation is canceled" do
       before :each do
         order_detail.update_order_status!(order_detail.user, cancel_status, admin: true)
-        expect(order_detail.state).to eq "canceled"
+        expect(order_detail).to be_canceled
         uncanceler.uncancel_to_complete(order_detail)
       end
 

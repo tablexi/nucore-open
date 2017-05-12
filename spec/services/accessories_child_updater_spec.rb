@@ -63,7 +63,7 @@ RSpec.describe Accessories::ChildUpdater do
       end
 
       it "moves the child to canceled" do
-        expect(child_order_detail.state).to eq "canceled"
+        expect(child_order_detail).to be_canceled
       end
     end
 
@@ -74,7 +74,7 @@ RSpec.describe Accessories::ChildUpdater do
       end
 
       it "does not move the child" do
-        expect(child_order_detail.state).to eq "canceled"
+        expect(child_order_detail).to be_canceled
       end
     end
   end
