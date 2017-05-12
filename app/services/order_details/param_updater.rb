@@ -58,7 +58,6 @@ class OrderDetails::ParamUpdater
     user_newly_assigned = @order_detail.assigned_user_id_changed? && @order_detail.assigned_user.present?
 
     @order_detail.manually_priced!
-
     @order_detail.transaction do
       @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation
       if order_status_id && order_status_id.to_i != @order_detail.order_status_id
@@ -68,7 +67,7 @@ class OrderDetails::ParamUpdater
       end
     end
 
-    merge_reservation_errors if @order_detail.reservation
+    merge_time_data_errors if @order_detail.time_data
 
     if user_newly_assigned && SettingsHelper.feature_on?(:order_assignment_notifications)
       OrderAssignmentMailer.notify_assigned_user(@order_detail).deliver_later
@@ -90,7 +89,10 @@ class OrderDetails::ParamUpdater
   def assign_self_and_reservation_attributes(params)
     reservation_attrs = params.delete :reservation
     @order_detail.assign_attributes(params)
-    @order_detail.reservation.assign_times_from_params reservation_attrs if @order_detail.reservation && reservation_attrs
+
+    if @order_detail.time_data.is_a?(Reservation)
+      @order_detail.reservation.assign_times_from_params reservation_attrs if reservation_attrs
+    end
   end
 
   def assign_policy_and_prices
@@ -110,14 +112,15 @@ class OrderDetails::ParamUpdater
     # returns nil
   end
 
-  def merge_reservation_errors
-    @order_detail.reservation.errors.each do |_error, message|
-      @order_detail.errors.add("reservation.base", message)
+  def merge_time_data_errors
+    return unless @order_detail.time_data.present?
+    @order_detail.time_data.errors.each do |_error, message|
+      @order_detail.errors.add("time_data.base", message)
     end
   end
 
   def is_order_detail_clean
-    @order_detail.errors.none? && (@order_detail.reservation.nil? || @order_detail.reservation.errors.none?)
+    @order_detail.errors.none?
   end
 
 end

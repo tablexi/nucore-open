@@ -2,6 +2,11 @@ module SecureRooms
 
   class Occupancy < ActiveRecord::Base
 
+    include DateTimeInput::Model
+
+    date_time_inputable :entry_at
+    date_time_inputable :exit_at
+
     belongs_to :secure_room, foreign_key: :product_id
     belongs_to :user
     belongs_to :account
@@ -13,6 +18,9 @@ module SecureRooms
 
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range
+
+    alias_attribute :actual_start_at, :entry_at
+    alias_attribute :actual_end_at, :exit_at
 
     def self.valid
       where(orphaned_at: nil)

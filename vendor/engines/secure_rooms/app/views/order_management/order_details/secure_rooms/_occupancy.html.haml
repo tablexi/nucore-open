@@ -1,0 +1,4 @@
+.datetime-block.js--pricingUpdate
+  = f.simple_fields_for :occupancy_attributes, f.object.time_data do |of|
+    = of.input :entry_at, as: :time_dropdown
+    = of.input :exit_at, as: :time_dropdown

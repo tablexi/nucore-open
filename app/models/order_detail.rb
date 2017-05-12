@@ -935,7 +935,7 @@ class OrderDetail < ActiveRecord::Base
 
   def update_fulfilled_at_on_resolve
     if problem_changed? && !problem_order?
-      self.fulfilled_at = reservation.reserve_end_at
+      self.fulfilled_at = time_data.actual_end_at
     end
   end
 
