@@ -15,9 +15,9 @@
           %th{} Order
           %th Order Detail
           %th= sortable 'entry_at', 'Entry At'
-          %th= sortable 'user', 'User'
+          %th= sortable 'user_name', 'User'
           %th.order-note= sortable 'product_name', 'Product'
-          %th Payment Source
+          %th= sortable 'payment_source', "Payment Source"
       %tbody
         - @order_details.each do |od|
           - order = od.order

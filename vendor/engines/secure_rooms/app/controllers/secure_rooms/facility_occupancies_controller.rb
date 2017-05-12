@@ -9,19 +9,16 @@ module SecureRooms
     before_action :authenticate_user!
     before_action :check_acting_as
     before_action :init_current_facility
+    before_action :sanitize_sort_params, only: :index
 
     load_and_authorize_resource class: Occupancy
 
-    ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
-      "date" => "secure_rooms_occupancies.entry_at",
-      "reserve_range" => "CONCAT(secure_rooms_occupancies.entry_at, secure_rooms_occupancies.exit_at)",
-      "product_name"  => "products.name",
-      "status"        => "order_statuses.name",
-      "assigned_to"   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
-      "reserved_by"   => "#{User.table_name}.first_name, #{User.table_name}.last_name",
+    SORTING_CLAUSES = {
+      "entry_at" => "secure_rooms_occupancies.entry_at",
+      "user_name" => "users.username",
+      "product_name" => "products.name",
+      "payment_source" => "accounts.description",
     }.freeze
-
-    helper_method :sort_column, :sort_direction
 
     def initialize
       super
@@ -29,11 +26,7 @@ module SecureRooms
     end
 
     def index
-      real_sort_clause = ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN[sort_column] || sort_column
-      order_by_clause = [real_sort_clause, sort_direction].join(" ")
-
-      @order_details = new_or_in_process_orders(order_by_clause)
-      @order_details = @order_details.paginate(page: params[:page])
+      @order_details = new_or_in_process_orders.order(@order_by_clause).paginate(page: params[:page])
     end
 
     protected
@@ -44,27 +37,33 @@ module SecureRooms
 
     private
 
-    def new_or_in_process_orders(order_by_clause = "secure_rooms_occupancies.entry_at")
-      current_facility.order_details.new_or_inprocess.occupancies
-                      .includes(
-                        { order: :user },
-                        :order_status,
-                        :occupancy,
-                        :assigned_user,
-                      )
-                      .where("secure_rooms_occupancies.id IS NOT NULL")
-                      .order(order_by_clause)
+    def new_or_in_process_orders
+      current_facility
+        .order_details
+        .new_or_inprocess
+        .includes(
+          { order: :user },
+          :order_status,
+          :product,
+          :account,
+          :occupancy,
+        )
     end
 
     def problem_order_details
       current_facility
         .complete_problem_order_details
         .joins(:occupancy)
-        .order("secure_rooms_occupancies.entry_at DESC")
+        .merge(SecureRooms::Occupancy.order(entry_at: :desc))
+    end
+
+    def sanitize_sort_params
+      sort_clause = SORTING_CLAUSES[sort_column]
+      @order_by_clause = [sort_clause, sort_direction].join(" ")
     end
 
     def sort_column
-      params[:sort] || "date"
+      params[:sort] || "entry_at"
     end
 
     def sort_direction
