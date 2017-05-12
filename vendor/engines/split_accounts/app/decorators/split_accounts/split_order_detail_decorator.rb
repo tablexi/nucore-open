@@ -14,6 +14,14 @@ module SplitAccounts
       @quantity_override = BigDecimal(value.to_s)
     end
 
+    def time_data
+      @time_data || super
+    end
+
+    def time_data=(time_data)
+      @time_data = time_data
+    end
+
     # Let it pretend to be a real OrderDetail
     def is_a?(klass)
       __getobj__.class.object_id == klass.object_id

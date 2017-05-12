@@ -9,7 +9,11 @@ module SplitAccounts
     end
 
     def actual_duration_mins
-      __getobj__.instance_variable_get(:@actual_duration_mins)
+      @actual_duration_mins || super
+    end
+
+    def actual_duration_mins=(duration_mins)
+      @actual_duration_mins = duration_mins
     end
 
     # Let it pretend to be a real Reservation

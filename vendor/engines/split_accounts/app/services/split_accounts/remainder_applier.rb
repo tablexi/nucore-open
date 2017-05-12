@@ -22,7 +22,7 @@ module SplitAccounts
     end
 
     def apply_remainder(attribute)
-      total_value = original.public_send(attribute)
+      total_value = original.try(attribute)
       return if total_value.blank?
 
       remainder = total_value - floored_total(attribute)

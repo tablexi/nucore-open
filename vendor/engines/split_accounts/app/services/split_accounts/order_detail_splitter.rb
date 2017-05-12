@@ -36,7 +36,7 @@ module SplitAccounts
       )
     end
 
-    def reservation_attribute_splitter
+    def time_data_splitter
       AttributeSplitter.new(
         :duration_mins,
         :actual_duration_mins,
@@ -58,18 +58,19 @@ module SplitAccounts
       split_order_detail
     end
 
+    # TODO: Where is this option used?
     def split_reservations?
       @split_reservations.present?
     end
 
     def build_split_reservation(split_order_detail, split)
-      return unless order_detail.reservation
-      split_reservation = SplitReservationDecorator.new(order_detail.reservation.dup)
-      reservation_attribute_splitter.split(order_detail.reservation, split_reservation, split)
+      return unless order_detail.time_data.present?
+      split_time_data = SplitReservationDecorator.new(order_detail.time_data.dup)
+      time_data_splitter.split(order_detail.time_data, split_time_data, split)
       # Warning: if `id` is set on the order_detail when this assignment happens,
       # ActiveRecord will delete the original reservation. This was a change in
       # behavior between Rails 4.1 and 4.2.
-      split_order_detail.reservation = split_reservation
+      split_order_detail.time_data = split_time_data
     end
 
     def apply_order_detail_remainders
@@ -78,9 +79,9 @@ module SplitAccounts
     end
 
     def apply_reservation_remainders
-      return unless order_detail.reservation
-      applier = RemainderApplier.new(order_detail.reservation, split_order_details.map(&:reservation), splits)
-      applier.apply_remainders(reservation_attribute_splitter)
+      return unless order_detail.time_data.present?
+      applier = RemainderApplier.new(order_detail.time_data, split_order_details.map(&:time_data), splits)
+      applier.apply_remainders(time_data_splitter)
     end
 
   end
