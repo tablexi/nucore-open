@@ -7,19 +7,21 @@ module SplitAccounts
 
     attr_accessor :order_detail, :account, :splits, :split_order_details
 
-    def initialize(order_detail, split_reservations: false)
+    # By default, for performance reasons, we won't also split timedata
+    # (reservations/occupancies).
+    def initialize(order_detail, split_time_data: false)
       @order_detail = order_detail
       @account = order_detail.account
       @splits = account.splits
       @split_order_details = []
-      @split_reservations = split_reservations
+      @split_time_data = split_time_data
     end
 
     def split
       @split_order_details = splits.map { |split| build_split_order_detail(split) }
 
       apply_order_detail_remainders
-      apply_reservation_remainders if split_reservations?
+      apply_reservation_remainders if split_time_data?
 
       split_order_details
     end
@@ -49,7 +51,7 @@ module SplitAccounts
       split_order_detail.split = split
       split_order_detail.account = split.subaccount
       order_detail_attribute_splitter.split(order_detail, split_order_detail, split)
-      build_split_reservation(split_order_detail, split) if split_reservations?
+      build_split_reservation(split_order_detail, split) if split_time_data?
 
       # `dup` does not copy over ID. This assignment needs to happen after the
       # reservation is set, otherwise ActiveRecord will delete the original reservation.
@@ -58,9 +60,8 @@ module SplitAccounts
       split_order_detail
     end
 
-    # TODO: Where is this option used?
-    def split_reservations?
-      @split_reservations.present?
+    def split_time_data?
+      @split_time_data.present?
     end
 
     def build_split_reservation(split_order_detail, split)

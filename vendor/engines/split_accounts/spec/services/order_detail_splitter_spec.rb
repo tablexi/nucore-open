@@ -103,7 +103,7 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
                                   reserve_end_at: start_at + 30.minutes, actual_start_at: start_at,
                                   actual_end_at: start_at + 45.minutes)
     end
-    let(:results) { described_class.new(order_detail, split_reservations: true).split.map(&:reservation) }
+    let(:results) { described_class.new(order_detail, split_time_data: true).split.map(&:reservation) }
 
     it "splits the reservation minutes" do
       expect(results.map(&:duration_mins)).to eq([10.02, 9.99, 9.99])
