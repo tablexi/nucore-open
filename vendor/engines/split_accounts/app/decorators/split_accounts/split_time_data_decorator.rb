@@ -1,6 +1,6 @@
 module SplitAccounts
 
-  class SplitReservationDecorator < SimpleDelegator
+  class SplitTimeDataDecorator < SimpleDelegator
 
     attr_accessor :quantity
 
