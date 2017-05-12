@@ -68,7 +68,7 @@ module Reports
         actual_total: -> (od) { as_currency(od.actual_total) },
         reservation_start_time: -> (od) { od.reservation.reserve_start_at if od.reservation },
         reservation_end_time: -> (od) { od.reservation.reserve_end_at if od.reservation },
-        reservation_minutes: -> (od) { od.reservation.duration_mins if od.reservation },
+        reservation_minutes: -> (od) { od.time_data.duration_mins if od.time_data.present? },
         actual_start_time: -> (od) { od.time_data.actual_start_at if od.time_data.present? },
         actual_end_time: -> (od) { od.time_data.actual_end_at if od.time_data.present? },
         actual_minutes: -> (od) { od.time_data.actual_duration_mins if od.time_data.present? },
@@ -100,7 +100,7 @@ module Reports
         date_range_start: date_start,
         date_range_end: date_end,
         includes: [:reservation, :statement],
-        transformer_options: { reservations: true },
+        transformer_options: { time_data: true },
       ).perform
     end
 
