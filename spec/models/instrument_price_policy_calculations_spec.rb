@@ -313,6 +313,8 @@ RSpec.describe InstrumentPricePolicyCalculations do
       specify { expect(policy).to be_cancellation_penalty(reservation) }
 
       it "charges the cancellation cost" do
+        expect(reservation).to receive(:canceled?).and_return(true)
+
         expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 5.0, subsidy: 0)
       end
     end
@@ -324,6 +326,8 @@ RSpec.describe InstrumentPricePolicyCalculations do
       specify { expect(policy).not_to be_cancellation_penalty(reservation) }
 
       it "does not charge the cancelation cost" do
+        expect(reservation).to receive(:canceled?).and_return(true)
+
         expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
       end
     end

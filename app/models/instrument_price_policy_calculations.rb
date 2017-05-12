@@ -32,7 +32,7 @@ module InstrumentPricePolicyCalculations
 
   def cancellation_penalty?(reservation)
     return false unless product.min_cancel_hours
-    minutes_canceled_before = TimeRange.new(reservation.canceled_at, reservation.reserve_start_at).duration_mins
+    minutes_canceled_before = TimeRange.new(reservation.order_detail.canceled_at, reservation.reserve_start_at).duration_mins
     minutes_canceled_before.minutes <= product.min_cancel_hours.hours
   end
 
