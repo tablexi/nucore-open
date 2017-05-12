@@ -8,7 +8,7 @@
   = form_tag(batch_update_facility_occupancies_path, method: :post) do
 
     %table.table.table-striped.table-hover.occupancies.old-table
-      = render partial: "table_controls"
+      = render "table_controls"
       %thead
         %tr
           %th
@@ -31,7 +31,7 @@
             = render partial: "shared/order_detail_cell", locals: { od: od, show_occupancy: false }
             %td= od.account
 
-      = render partial: "table_controls"
+      = render "table_controls"
 
   = will_paginate(@order_details)
   = render "/price_display_footnote", locals: { admin: true }
