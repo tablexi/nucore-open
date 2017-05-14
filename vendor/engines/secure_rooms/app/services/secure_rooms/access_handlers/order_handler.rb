@@ -15,6 +15,8 @@ module SecureRooms
       end
 
       def process
+        return unless occupancy.present?
+
         find_or_create_order
         complete_order
 
