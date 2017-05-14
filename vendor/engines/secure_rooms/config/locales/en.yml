@@ -104,8 +104,11 @@ en:
           instructions: |
             TODO: Instructions on how to find your card number
       shared:
-        tabnav_users:
-          title: Secure Room Access
+        tabnav_occupancy:
+          in_progress: In Progress
+          problem: Problem Occupancies
         tabnav_secure_room:
           card_readers_title: Card Readers
           occupancies_title: Occupancies
+        tabnav_users:
+          title: Secure Room Access

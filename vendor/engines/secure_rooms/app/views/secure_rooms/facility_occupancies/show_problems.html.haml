@@ -2,12 +2,11 @@
   = current_facility
 
 = content_for :tabnav do
-  = render partial: "secure_rooms/shared/tabnav_occupancy",
-    locals: { secondary_tab: "problem" }
+  = render "secure_rooms/shared/tabnav_occupancy", secondary_tab: "problem"
 
-- if @order_details.empty?
-  %p.notice= t(".no_problem_occupancies")
-- else
+- if @order_details.present?
   %p.notice= t(".instructions")
-  = render partial: "shared/problem_order_details",
-    locals: { assign_price_policies_path: assign_price_policies_to_problem_orders_facility_occupancies_path }
+  = render "shared/problem_order_details", assign_price_policies_path: assign_price_policies_to_problem_orders_facility_occupancies_path
+
+- else
+  %p.notice= t(".no_problem_occupancies")
