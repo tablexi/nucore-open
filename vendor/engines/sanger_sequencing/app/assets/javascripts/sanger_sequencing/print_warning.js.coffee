@@ -17,8 +17,12 @@ class @PrintWarning
   mediaQuery: -> window.matchMedia("print")
 
   onPrintAction: ->
-    $(".js--print-warning").text("Even if you have printed the order, this order is not submitted. Please click Save Submission and move to the next step.")
-    alert "This order is not submitted. Please click Save Submission and move to the next step before printing your sample sheet."
+    $(".js--print-warning").text(
+      "Even if you have printed the order, this order is not submitted.
+      Please click Save Submission and move to the next step.")
+    alert("This order is not submitted.
+      Please click Save Submission and move to the next step before
+      printing your sample sheet.")
 
 $ ->
   new PrintWarning().initListener()
