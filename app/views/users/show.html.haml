@@ -2,10 +2,10 @@
   =h current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_users', :locals => { :sidenav_tab => 'users' }
+  = render partial: "admin/shared/sidenav_users", locals: { sidenav_tab: "users" }
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_users', :locals => {:secondary_tab => 'details'}
+  = render partial: "admin/shared/tabnav_users", locals: { secondary_tab: "details" }
 
 %h1= @user
 
@@ -13,7 +13,8 @@
   = f.input :full_name
   = f.input :username
   = f.input :email
-  = f.input :last_sign_in_at, :default_value => 'none'
+  = f.input :last_sign_in_at, default_value: "none"
+  = f.input :internal?, label: text("views.users.edit.internal")
   = f.input :deactivated_at unless f.object.active?
   = render_view_hook "additional_user_fields", f: f
 

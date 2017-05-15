@@ -36,6 +36,10 @@ module SettingsHelper
     Settings.feature.try(:"#{feature}_on")
   end
 
+  def self.feature_off?(feature)
+    !feature_on?(feature)
+  end
+
   #
   # Used to turn on an off a feature. Most useful for tests:
   # [_feature_]

@@ -20,15 +20,12 @@ class Ability
         can :manage, AccountPriceGroupMember
       else
         can :manage, :all
-        cannot([:edit, :update], User) { |target_user| !target_user.admin_editable? }
         unless user.billing_administrator?
           cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
         end
         unless user.account_manager?
           cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
-          if SettingsHelper.feature_on?(:create_users)
-            cannot([:edit, :update], User) { |target_user| !target_user.admin_editable? }
-          else
+          if SettingsHelper.feature_off?(:create_users)
             cannot([:edit, :update], User)
           end
         end
@@ -58,6 +55,9 @@ class Ability
       if resource.blank? || resource == Facility.cross_facility
         can :manage, [Account, AccountUser, User]
         cannot :switch_to, User
+        if SettingsHelper.feature_off?(:create_users)
+          cannot([:edit, :update], User)
+        end
       end
     end
 

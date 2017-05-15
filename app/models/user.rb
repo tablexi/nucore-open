@@ -203,6 +203,22 @@ class User < ActiveRecord::Base
     where(deactivated_at: nil)
   end
 
+  def internal?
+    price_groups.include?(PriceGroup.base)
+  end
+
+  def update_price_group(params)
+    if params[:internal] == "true"
+      price_group_members.find_by(price_group: PriceGroup.external).try(:destroy)
+      price_group_members.find_or_create_by(price_group: PriceGroup.base)
+    elsif params[:internal] == "false"
+      price_group_members.find_by(price_group: PriceGroup.base).try(:destroy)
+      price_group_members.find_or_create_by(price_group: PriceGroup.external)
+    else
+      true
+    end
+  end
+
   def default_price_group
     self.class.default_price_group_finder.call(self)
   end

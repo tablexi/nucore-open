@@ -11,6 +11,7 @@ en:
         head: Edit %{user}
         subhead: You may use this to edit external users. The email address and username must match.
         update: Update
+        internal: Internal Pricing
 
   controllers:
     users:
