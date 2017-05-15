@@ -3,7 +3,7 @@ class Account < ActiveRecord::Base
   module Overridable
 
     def price_groups
-      (price_group_members.collect(&:price_group) + (owner_user ? owner_user.price_groups : [])).flatten.uniq
+      (price_group_members.collect(&:price_group) + (owner_user ? owner_user.price_groups : [])).uniq
     end
 
   end

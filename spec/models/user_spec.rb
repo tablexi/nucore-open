@@ -31,24 +31,18 @@ RSpec.describe User do
     it { is_expected.to be_valid }
   end
 
-  describe "Default #price_groups" do
-    # Only run if we're using the default implementation
-    if User.new.method(:price_groups).owner == User::Overridable
-      context "when the username does not contain an '@' symbol" do
-        before { expect(user.username).not_to include("@") }
+  describe "#create_default_price_group!", feature_setting: { user_based_price_groups: true } do
+    before do
+      expect(User).to receive(:default_price_group_finder).and_return(Users::DefaultPriceGroupSelector.new)
+    end
 
-        it "belongs to the NU price group" do
-          expect(user.price_groups.include?(@nupg)).to eq(true)
-        end
-      end
-
-      context "when the username contains an '@' symbol" do
-        subject(:user) { create(:user, username: "ext@example.net") }
-
-        it "belongs to the External price group" do
-          expect(user.price_groups.include?(@epg)).to eq(true)
-        end
-      end
+    # factory uses create_default_price_group!
+    it "default has the base price group" do
+      expect(user.price_groups).to eq [PriceGroup.base]
+    end
+    it "external user has external price group" do
+      external_user = FactoryGirl.create(:user, :external)
+      expect(external_user.price_groups).to eq [PriceGroup.external]
     end
   end
 
@@ -94,14 +88,14 @@ RSpec.describe User do
 
   it { is_expected.to be_respond_to(:ldap_attributes) }
 
-  it "is not an external user when the username and email differ" do
+  it "is not an email user when the username and email differ" do
     expect(user.username).not_to eq(user.email)
-    expect(user).not_to be_external
+    expect(user).not_to be_email_user
   end
 
-  it "is an external user when the username is the same as the email" do
+  it "is an email user when the username is the same as the email" do
     user.username = user.email
-    expect(user).to be_external
+    expect(user).to be_email_user
   end
 
   describe ".with_global_roles" do

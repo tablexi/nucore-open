@@ -638,9 +638,6 @@ RSpec.describe Instrument do
       end
 
       context "with current price polices, but not for user" do
-        before :each do
-          @user.price_group_members.delete(@price_group_member)
-        end
         it "should be set up right" do
           expect(@instrument.price_policies.current).not_to be_empty
           expect(@user.price_groups).not_to include @price_group
@@ -667,7 +664,6 @@ RSpec.describe Instrument do
 
       context "with expired price policies, but not for user" do
         before :each do
-          @user.price_group_members.delete(@price_group_member)
           @price_policy.update_attributes(start_date: 10.days.ago, expire_date: 1.day.ago)
         end
 

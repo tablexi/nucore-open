@@ -27,7 +27,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
   let(:order_detail) { reservation.order_detail }
   let(:original_account) { create(:setup_account, owner: order_detail.user) }
   let(:price_group) { facility.price_groups.find(&:is_not_global) }
-  let(:base_price_group) { PriceGroup.base.first }
+  let(:base_price_group) { PriceGroup.base }
   let(:reservation) { create(:purchased_reservation, product: instrument) }
   let(:statement) { create(:statement, facility: facility, created_by: order_detail.user.id, account: original_account) }
   let(:new_account) do
