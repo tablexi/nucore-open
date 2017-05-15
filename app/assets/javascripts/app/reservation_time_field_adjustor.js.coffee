@@ -40,42 +40,53 @@ class window.ReservationTimeFieldAdjustor
       @opts["end"]...,
     )
 
-    @durationField = @$form.find("[name=\"#{@opts["duration"]}\"]")
+    @durationFieldSelector = "[name=\"#{@opts["duration"]}\"]"
 
     @addListeners()
+
+  durationField: ->
+    @$form.find(@durationFieldSelector)
 
   addListeners: ->
     @reserveStart.change(@_reserveStartChangeCallback)
     @reserveEnd.change(@_reserveEndChangeCallback)
-    @durationField.change(@_durationChangeCallback)
+    # Trying to bind directly to the element can cause timeing problems
+    @$form.on "change", @durationFieldSelector, @_durationChangeCallback
 
   # in minutes
   calculateDuration: ->
     (@reserveEnd.getDateTime() - @reserveStart.getDateTime()) / 60 / 1000
 
   _durationChangeCallback: =>
-    durationMinutes = @durationField.val()
+    durationMinutes = @durationField().val()
 
     if durationMinutes % @reserveInterval == 0
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime().addMinutes(durationMinutes))
+      @_changed()
 
   _reserveEndChangeCallback: =>
     if @calculateDuration() >= 0
-      @durationField.val(@calculateDuration()).trigger("change")
+      @durationField().val(@calculateDuration())
+      @_changed()
     else
       # If the duration ends up negative, i.e. end is before start,
       # set the end to the start time plus the duration specified in the box
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime()
-          .addMinutes(@durationField.val()))
+          .addMinutes(@durationField().val()))
 
   _reserveStartChangeCallback: =>
-    duration = @durationField.val()
+    duration = @durationField().val()
     # Changing the start time will leave the duration alone, but change the
     # end time to X minutes after the start time
     endTime = @reserveStart.getDateTime().addMinutes(duration)
+
     @reserveEnd.setDateTime(endTime)
+    @_changed()
+
+  _changed: =>
+    @$form.trigger("order_management.times_changed")
 
 $ ->
   # reserveInterval is not set on admin reservation pages, and we don't need these handlers there
