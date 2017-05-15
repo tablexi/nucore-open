@@ -20,6 +20,7 @@ RSpec.describe "Viewing Occupancies" do
 
     before do
       # Allow purchase of order
+      # TODO: Update when new factories are merged in
       allow_any_instance_of(Order).to receive(:cart_valid?).and_return(true)
       allow_any_instance_of(OrderDetail).to receive(:account_usable_by_order_owner?).and_return(true)
     end
