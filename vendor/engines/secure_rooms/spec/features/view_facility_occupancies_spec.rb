@@ -11,7 +11,7 @@ RSpec.describe "Viewing Occupancies" do
       visit facility_occupancies_path(facility)
 
       expect(current_path).to eq(facility_occupancies_path(facility))
-      expect(page).to have_content('There are no "In Process" occupancies.')
+      expect(page).to have_content("There are no \"In Process\" occupancies.")
     end
   end
 

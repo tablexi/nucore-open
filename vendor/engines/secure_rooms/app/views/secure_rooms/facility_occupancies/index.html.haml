@@ -34,6 +34,6 @@
       = render "table_controls"
 
   = will_paginate(@order_details)
-  = render "/price_display_footnote", locals: { admin: true }
+  = render "/price_display_footnote"
 - else
-  %p.notice There are no "In Process" occupancies.
+  %p.notice= text("no_occupancies")

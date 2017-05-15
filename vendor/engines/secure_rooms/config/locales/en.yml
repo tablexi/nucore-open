@@ -103,6 +103,9 @@ en:
         edit:
           instructions: |
             TODO: Instructions on how to find your card number
+      facility_occupancies:
+        index:
+          no_occupancies: There are no \"In Process\" occupancies.
       shared:
         tabnav_occupancy:
           in_progress: In Progress
