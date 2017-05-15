@@ -28,8 +28,8 @@ module SecureRoomsApi
       )
     end
 
-    def render_not_found
-      render json: { error: :not_found }, status: 404
+    def render_not_found(exception)
+      render json: { error: exception.message }, status: 404
     end
 
   end
