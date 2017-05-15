@@ -15,7 +15,7 @@ module SecureRooms
       end
 
       def process
-        return unless event.successful?
+        return unless event.success?
 
         if current_occupant? && exiting?
           existing_occupancy.associate_exit!(event)

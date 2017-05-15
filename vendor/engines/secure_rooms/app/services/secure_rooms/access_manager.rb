@@ -11,6 +11,7 @@ module SecureRooms
     def self.process(verdict)
       PROCESSING_CHAIN.inject(verdict) do |result, handler|
         result = handler.process(result)
+        result || break
       end
     end
 

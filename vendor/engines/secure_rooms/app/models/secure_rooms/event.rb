@@ -11,7 +11,7 @@ module SecureRooms
 
     delegate :direction, :secure_room, :ingress?, :egress?, to: :card_reader
 
-    def successful?
+    def success?
       outcome == "grant"
     end
 
