@@ -469,7 +469,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def has_uncanceled_reservation?
-    reservation.present? && !is_canceled?
+    reservation.present? && !canceled_at?
   end
 
   def cancelable?
