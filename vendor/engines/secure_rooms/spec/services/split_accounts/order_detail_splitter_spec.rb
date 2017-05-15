@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe SplitAccounts::OrderDetailSplitter do
-
   describe "order_details with occupancies" do
     let(:subaccount_1) { build_stubbed(:nufs_account) }
     let(:subaccount_2) { build_stubbed(:nufs_account) }
@@ -75,5 +74,4 @@ RSpec.describe SplitAccounts::OrderDetailSplitter do
       expect(occupancy.reload).to be_persisted
     end
   end
-
 end
