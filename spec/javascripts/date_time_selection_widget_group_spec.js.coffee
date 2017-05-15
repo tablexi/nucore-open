@@ -15,10 +15,9 @@ describe "DateTimeSelectionWidgetGroup", ->
     $hour = $("input[name=hour]", fixture.el)
     $minute = $("input[name=minute]", fixture.el)
     $meridian = $("input[name=meridian]", fixture.el)
-    reserveInterval = 15
 
     @subject = new DateTimeSelectionWidgetGroup(
-      $date, $hour, $minute, $meridian, reserveInterval
+      $date, $hour, $minute, $meridian
     )
 
   describe "#getDateTime", ->
@@ -129,13 +128,6 @@ describe "DateTimeSelectionWidgetGroup", ->
         expect($("input[name=date]", fixture.el).val()).toEqual("3/2/2016")
         expect($("input[name=hour]", fixture.el).val()).toEqual("12")
         expect($("input[name=meridian]", fixture.el).val()).toEqual("AM")
-
-    describe "when the time is not aligned to the reserveInterval", ->
-      beforeEach -> @subject.setDateTime(new Date(2016, 2, 2, 13, 39))
-
-      it "rounds down to the previous valid interval", ->
-        expect(@subject.getDateTime()).toEqual(new Date(2016, 2, 2, 13, 30))
-        expect($("input[name=minute]", fixture.el).val()).toEqual("30")
 
   xdescribe "#change", ->
     it "TODO: needs tests"

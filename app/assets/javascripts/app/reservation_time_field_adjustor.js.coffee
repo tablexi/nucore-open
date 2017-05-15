@@ -49,19 +49,19 @@ class window.ReservationTimeFieldAdjustor
     @reserveEnd.change(@_reserveEndChangeCallback)
     @durationField.change(@_durationChangeCallback)
 
+  # in minutes
+  calculateDuration: ->
+    (@reserveEnd.getDateTime() - @reserveStart.getDateTime()) / 60 / 1000
+
   _durationChangeCallback: =>
     durationMinutes = @durationField.val()
     if durationMinutes % @reserveInterval == 0
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime().addMinutes(durationMinutes))
 
-  _getDuration: -> @reserveEnd.getDateTime() - @reserveStart.getDateTime()
-
   _reserveEndChangeCallback: =>
-    duration = @_getDuration() / 60 / 1000
-
-    if duration >= 0
-      @durationField.val(duration).trigger("change")
+    if @calculateDuration() >= 0
+      @durationField.val(@calculateDuration()).trigger("change")
     else
       # If the duration ends up negative, i.e. end is before start,
       # set the end to the start time plus the duration specified in the box
