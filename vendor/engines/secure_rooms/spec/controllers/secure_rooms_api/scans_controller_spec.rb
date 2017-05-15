@@ -32,12 +32,18 @@ RSpec.describe SecureRoomsApi::ScansController do
           let(:user) { build(:user) }
 
           it { is_expected.to have_http_status(:not_found) }
+          it "responds with JSON" do
+            expect(response.content_type).to eq("application/json")
+          end
         end
 
         context "when card reader does not exist" do
           let(:card_reader) { build(:card_reader) }
 
           it { is_expected.to have_http_status(:not_found) }
+          it "responds with JSON" do
+            expect(response.content_type).to eq("application/json")
+          end
         end
       end
     end
