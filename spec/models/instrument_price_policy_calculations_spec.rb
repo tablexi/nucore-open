@@ -141,7 +141,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     end
 
     it 'returns #calculate_cancellation_costs if the reservation was canceled' do
-      expect(reservation.order_detail).to receive(:canceled_at).and_return Time.zone.now
+      expect(reservation.order_detail).to receive(:canceled_at?).and_return true
       expect(policy).to receive(:calculate_cancellation_costs).with reservation
       expect(policy).to_not receive :calculate_overage
       expect(policy).to_not receive :calculate_reservation
