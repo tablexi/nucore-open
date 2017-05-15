@@ -138,8 +138,8 @@ RSpec.describe Ability do
         end
 
         context "when user is internal" do
-          it { is_expected.not_to be_allowed_to(:edit, internal_user) }
-          it { is_expected.not_to be_allowed_to(:update, internal_user) }
+          it { is_expected.to be_allowed_to(:edit, internal_user) }
+          it { is_expected.to be_allowed_to(:update, internal_user) }
         end
       end
 

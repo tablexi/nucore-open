@@ -76,6 +76,8 @@ class FacilityOrdersController < ApplicationController
         end
       rescue AASM::InvalidTransition
         flash[:error] = invalid_transition_message(product, params[:order_status_id])
+      rescue ActiveRecord::RecordInvalid => e
+        flash[:error] = e.record.errors.full_messages.to_sentence
       rescue => e
         Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
         flash[:error] = text("update.error", product: product.name)

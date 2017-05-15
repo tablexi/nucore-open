@@ -1,17 +1,5 @@
 class User < ActiveRecord::Base
 
-  module Overridable
-
-    def price_groups
-      groups = price_group_members.collect(&:price_group)
-      # check internal/external membership
-      groups << (username =~ /@/ ? PriceGroup.external.first : PriceGroup.base.first)
-      groups.flatten.uniq
-    end
-
-  end
-
-  include Overridable
   include ::Users::Roles
   include NUCore::Database::WhereIdsIn
 
@@ -22,7 +10,8 @@ class User < ActiveRecord::Base
   has_many :account_users, -> { where(deleted_at: nil) }
   has_many :orders
   has_many :order_details, through: :orders
-  has_many :price_group_members
+  has_many :price_group_members, class_name: "UserPriceGroupMember", dependent: :destroy
+  has_many :price_groups, -> { SettingsHelper.feature_on?(:user_based_price_groups) ? uniq : none }, through: :price_group_members
   has_many :product_users
   has_many :notifications
   has_many :products, through: :product_users
@@ -42,6 +31,8 @@ class User < ActiveRecord::Base
   #
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
+
+  cattr_accessor(:default_price_group_finder) { ::Users::DefaultPriceGroupSelector.new }
 
   # Scopes
 
@@ -72,21 +63,17 @@ class User < ActiveRecord::Base
   end
 
   #
-  # Returns true if this user is external to organization, false othewise
-  def external?
+  # Returns true if this user uses Devise's authenticatable module
+  def email_user?
     username.casecmp(email.downcase).zero?
   end
 
-  def internal?
-    !external?
-  end
-
   def admin_editable?
-    external?
+    email_user?
   end
 
   def password_updatable?
-    external?
+    email_user?
   end
 
   def update_password_confirm_current(params)
@@ -214,6 +201,32 @@ class User < ActiveRecord::Base
 
   def self.active
     where(deactivated_at: nil)
+  end
+
+  def internal?
+    price_groups.include?(PriceGroup.base)
+  end
+
+  def update_price_group(params)
+    if params[:internal] == "true"
+      price_group_members.find_by(price_group: PriceGroup.external).try(:destroy)
+      price_group_members.find_or_create_by(price_group: PriceGroup.base)
+    elsif params[:internal] == "false"
+      price_group_members.find_by(price_group: PriceGroup.base).try(:destroy)
+      price_group_members.find_or_create_by(price_group: PriceGroup.external)
+    else
+      true
+    end
+  end
+
+  def default_price_group
+    self.class.default_price_group_finder.call(self)
+  end
+
+  def create_default_price_group!
+    return unless SettingsHelper.feature_on?(:user_based_price_groups)
+
+    price_group_members.find_or_create_by!(price_group: default_price_group)
   end
 
 end

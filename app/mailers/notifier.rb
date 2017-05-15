@@ -8,12 +8,11 @@ class Notifier < ActionMailer::Base
 
   default from: Settings.email.from, content_type: "multipart/alternative"
 
-  # Welcome user, login credentials.  CC to PI and Department Admin.
-  # Who created the account.  How to update.
-  def new_user(args)
-    @user = args[:user]
-    @password = args[:password]
-    send_nucore_mail args[:user].email, text("views.notifier.new_user.subject")
+  # Welcome user, login credentials
+  def new_user(user:, password:)
+    @user = user
+    @password = password
+    send_nucore_mail @user.email, text("views.notifier.new_user.subject")
   end
 
   # Changes to the user affecting the PI or department will alert their

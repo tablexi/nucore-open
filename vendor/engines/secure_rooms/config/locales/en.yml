@@ -64,6 +64,7 @@ en:
         entry_at: Time of Entry
         exit_at: Time of Exit
         orphaned_at: Time Marked as Orphaned
+        actual_duration_mins: Duration
 
   controllers:
     secure_rooms/card_readers:

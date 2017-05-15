@@ -2,7 +2,10 @@ module SecureRooms
 
   class Occupancy < ActiveRecord::Base
 
-    include TextHelpers::Translation
+    include DateTimeInput::Model
+
+    date_time_inputable :entry_at
+    date_time_inputable :exit_at
 
     belongs_to :secure_room, foreign_key: :product_id
     belongs_to :user
@@ -15,6 +18,9 @@ module SecureRooms
 
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range
+
+    alias_attribute :actual_start_at, :entry_at
+    alias_attribute :actual_end_at, :exit_at
 
     def self.valid
       where(orphaned_at: nil)
@@ -65,16 +71,12 @@ module SecureRooms
       range.duration_mins
     end
 
-    def problem_description
+    def problem_description_key
       if entry_at.blank?
-        text(:missing_entry)
+        :missing_entry
       elsif exit_at.blank?
-        text(:missing_exit)
+        :missing_exit
       end
-    end
-
-    def translation_scope
-      "activerecord.models.secure_rooms/occupancy"
     end
 
     private

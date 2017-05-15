@@ -62,7 +62,7 @@ RSpec.describe JournalCutoffDatesController do
 
     describe "#create" do
       def do_request
-        post :create, journal_cutoff_date: { cutoff_date: cutoff_date }
+        post :create, journal_cutoff_date: { cutoff_date: { date: cutoff_date, hour: "3", minute: "15", ampm: "PM" } }
       end
 
       describe "success" do
@@ -71,7 +71,7 @@ RSpec.describe JournalCutoffDatesController do
 
           it "interprets month/day correctly" do
             do_request
-            expect(JournalCutoffDate.last.cutoff_date).to eq(Time.zone.parse("2016-06-10"))
+            expect(JournalCutoffDate.last.cutoff_date).to eq(Time.zone.parse("2016-06-10 15:15"))
           end
         end
       end
@@ -91,17 +91,17 @@ RSpec.describe JournalCutoffDatesController do
     end
 
     describe "#update" do
-      let!(:journal_cutoff_date) { JournalCutoffDate.create(cutoff_date: 1.month.from_now) }
+      let!(:journal_cutoff_date) { JournalCutoffDate.create(cutoff_date: Time.zone.parse("2016-06-10 15:15")) }
 
       def do_request
-        put :update, id: journal_cutoff_date.id, journal_cutoff_date: { cutoff_date: new_cutoff_date }
+        put :update, id: journal_cutoff_date.id, journal_cutoff_date: { cutoff_date: { date: new_cutoff_date } }
       end
 
       describe "success" do
-        let(:new_cutoff_date) { 2.months.from_now.change(usec: 0) }
+        let(:new_cutoff_date) { "07/10/2016" }
 
         it "updates the model" do
-          expect { do_request }.to change { journal_cutoff_date.reload.cutoff_date }.to(new_cutoff_date)
+          expect { do_request }.to change { journal_cutoff_date.reload.cutoff_date }.to(Time.zone.parse("2016-07-10"))
         end
       end
 

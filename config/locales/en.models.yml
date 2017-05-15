@@ -16,6 +16,10 @@ en:
               blank: No orders were selected to reconcile
             reconciled_at:
               blank: Reconciliation Date is required before orders can be reconciled
+        valid_fulfilled_at_date:
+          in_future: cannot be in the future
+          too_far_in_past: cannot be before the previous fiscal year
+
 
   activerecord:
     errors:
@@ -142,14 +146,12 @@ en:
       reservation:
         one: Reservation
         other: Reservations
-        actual_usage_missing: Actual Usage Missing
       order:
         one: Order
         other: Orders
       order_detail:
         one: Order Detail
         other: Order Details
-        price_policy_missing: Price Policy Missing
       order_status:
         one: Current Order Status
         other: Order Statuses
@@ -160,15 +162,15 @@ en:
         one: Product
         other: Products
       product_access_group: Scheduling Group
+      product_accessory:
+        one: Accessory
+        other: Accessories
       service:
         one: Service
         other: Services
       statement:
         one: Statement
         other: Statements
-      time_data:
-        required_time_data:
-          actual_usage_missing: Actual Usage Missing
       training_request:
         one: Training Request
         other: Training Requests
@@ -215,6 +217,8 @@ en:
         is_hidden: Is Hidden?
         facility_account: Recharge Chart String
         training_request_contacts: Training Request Contacts
+      product_accessory:
+        scaling_type: Scaling Type
       instrument:
         min_reserve_mins: Minimum Reservation Minutes
         max_reserve_mins: Maximum Reservation Minutes

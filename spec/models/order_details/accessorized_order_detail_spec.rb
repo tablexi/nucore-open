@@ -4,7 +4,7 @@ RSpec.describe OrderDetail do
   let(:instrument) { FactoryGirl.create(:instrument_with_accessory, :timer) }
   let(:accessory) { instrument.accessories.first }
   let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
-  let(:order_detail) { reservation.order_detail }
+  let(:order_detail) { reservation.order_detail.tap { |od| od.update(note: "original") } }
   let(:accessorizer) { Accessories::Accessorizer.new(order_detail) }
 
   before :each do
@@ -164,6 +164,23 @@ RSpec.describe OrderDetail do
 
     it "makes the order detail a problem order" do
       expect(accessory_order_detail).to be_problem_order
+    end
+  end
+
+  describe "sorting" do
+    let(:order) { order_detail.order }
+    let(:order_details) { order.order_details }
+    let!(:interim_order_detail) { order.add(accessory, 1, note: "interim") }
+    let!(:accessory_order_detail) { accessorizer.add_accessory(accessory, note: "accessory") }
+
+    # Ensure
+    it "builds the details in the right order" do
+      expect(order_details.order(:id).pluck(:note)).to eq(%w(original interim accessory))
+      expect(order_details.order(:id).pluck(:parent_order_detail_id)).to eq([nil, nil, order_detail.id])
+    end
+
+    it "puts the parent together with its child with the parent before the child" do
+      expect(order_details.ordered_by_parents.pluck(:note)).to eq(%w(original accessory interim))
     end
   end
 end

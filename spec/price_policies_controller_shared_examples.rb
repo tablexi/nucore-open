@@ -10,7 +10,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
 
     # Delete the default price groups since they get in the way of testing
-    PriceGroup.all.each(&:delete)
+    UserPriceGroupMember.delete_all
+    PriceGroup.delete_all
 
     @price_group = FactoryGirl.create(:price_group, facility: facility)
     @price_group2 = FactoryGirl.create(:price_group, facility: facility)

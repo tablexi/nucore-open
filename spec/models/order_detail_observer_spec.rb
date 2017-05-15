@@ -69,7 +69,7 @@ RSpec.describe OrderDetailObserver do
       @user     = FactoryGirl.create(:user)
       @item     = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
       expect(@item).to be_valid
-      FactoryGirl.create :item_price_policy, product: @item, price_group: PriceGroup.base.first
+      FactoryGirl.create :item_price_policy, product: @item, price_group: PriceGroup.base
       @account = add_account_for_user(:user, @item)
       @order = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
