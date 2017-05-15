@@ -4,5 +4,9 @@ FactoryGirl.define do
     card_reader
     user
     outcome :deny
+
+    trait :successful do
+      outcome :grant
+    end
   end
 end
