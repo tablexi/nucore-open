@@ -18,6 +18,9 @@
             = sf.input :_destroy, as: :hidden
     - if @submission.quantity_editable?
       %tfoot
-        %td{colspan: 3}= f.add_nested_fields_link :samples, text("add"), class: "btn btn-success"
+        %tr
+          %td{colspan: 3}= f.add_nested_fields_link :samples, text("add"), class: "btn btn-success"
+
+  %h4.js--print-warning= text("warning")
 
   = f.submit text("submit"), class: "btn btn-primary"
