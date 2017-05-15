@@ -11,7 +11,6 @@
       = render "table_controls"
       %thead
         %tr
-          %th
           %th= Order.model_name.human
           %th= OrderDetail.model_name.human
           %th= sortable "entry_at", SecureRooms::Occupancy.human_attribute_name(:entry_at)
@@ -23,7 +22,6 @@
           - order = od.order
           - occ = od.occupancy
           %tr
-            %td.centered= check_box_tag("order_detail_ids[]", od.id, false, class: "toggle", id: nil)
             %td.centered= link_to od.order_id, facility_order_path(current_facility, order)
             %td.centered= link_to od.id, manage_order_detail_path(od), class: "manage-order-detail"
             %td= human_datetime(occ.entry_at)

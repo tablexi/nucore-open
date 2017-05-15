@@ -20,6 +20,7 @@ Rails.application.routes.draw do
         post "assign_price_policies_to_problem_orders"
         post "batch_update"
         get "show_problems"
+        get "tab_counts"
       end
     end
   end

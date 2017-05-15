@@ -15,6 +15,7 @@ module SecureRooms
           :index,
           :show_problems,
           :assign_price_policies_to_problem_orders,
+          :tab_counts,
         ], Occupancy
       end
     end
