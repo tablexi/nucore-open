@@ -1606,17 +1606,6 @@ RSpec.describe OrderDetail do
     end
   end
 
-  describe "#is_canceled?" do
-    it 'returns true if canceled_at is present' do
-      order_detail.update_attributes(canceled_at: Time.current)
-      expect(order_detail).to be_is_canceled
-    end
-
-    it 'returns false if canceld_at is not present' do
-      expect(order_detail).not_to be_is_canceled
-    end
-  end
-
   def set_cancellation_cost_for_all_policies(cost)
     PricePolicy.all.each do |price_policy|
       price_policy.update_attribute :cancellation_cost, cost

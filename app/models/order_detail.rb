@@ -396,10 +396,6 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
-  def is_canceled? # non-standard name to avoid conflict with AASM
-    canceled_at.present?
-  end
-
   # block will be called after the transition, but before the save
   def change_status!(new_status, &block)
     new_state = new_status.state_name

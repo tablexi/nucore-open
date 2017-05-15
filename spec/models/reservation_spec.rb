@@ -311,7 +311,6 @@ RSpec.describe Reservation do
   end
 
   describe "#canceled?" do
-    # TODO: move to order_detail_spec
     let(:price_group) { create(:price_group, facility: facility) }
     let!(:instrument_pp) { FactoryGirl.create(:instrument_price_policy, product: instrument, price_group: price_group) }
     let(:user) { FactoryGirl.create(:user) }

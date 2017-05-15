@@ -36,8 +36,8 @@ class Reservation < ActiveRecord::Base
   delegate :owner, to: :account, allow_nil: true
 
   def canceled?
-    return nil unless order_detail
-    order_detail.is_canceled?
+    return false unless order_detail
+    order_detail.canceled_at?
   end
 
   ## AR Hooks
