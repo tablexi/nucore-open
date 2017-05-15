@@ -21,7 +21,7 @@ module SplitAccounts
       @split_order_details = splits.map { |split| build_split_order_detail(split) }
 
       apply_order_detail_remainders
-      apply_reservation_remainders if split_time_data?
+      apply_time_data_remainders if split_time_data?
 
       split_order_details
     end
@@ -51,10 +51,11 @@ module SplitAccounts
       split_order_detail.split = split
       split_order_detail.account = split.subaccount
       order_detail_attribute_splitter.split(order_detail, split_order_detail, split)
-      build_split_reservation(split_order_detail, split) if split_time_data?
+      build_split_time_data(split_order_detail, split) if split_time_data?
 
       # `dup` does not copy over ID. This assignment needs to happen after the
-      # reservation is set, otherwise ActiveRecord will delete the original reservation.
+      # reservation/occupancy is set, otherwise ActiveRecord will delete the
+      # original reference.
       split_order_detail.id = order_detail.id
 
       split_order_detail
@@ -64,12 +65,12 @@ module SplitAccounts
       @split_time_data.present?
     end
 
-    def build_split_reservation(split_order_detail, split)
+    def build_split_time_data(split_order_detail, split)
       return unless order_detail.time_data.present?
       split_time_data = SplitTimeDataDecorator.new(order_detail.time_data.dup)
       time_data_splitter.split(order_detail.time_data, split_time_data, split)
       # Warning: if `id` is set on the order_detail when this assignment happens,
-      # ActiveRecord will delete the original reservation. This was a change in
+      # ActiveRecord will delete the original reference. This was a change in
       # behavior between Rails 4.1 and 4.2.
       split_order_detail.time_data = split_time_data
     end
@@ -79,7 +80,7 @@ module SplitAccounts
       applier.apply_remainders(order_detail_attribute_splitter)
     end
 
-    def apply_reservation_remainders
+    def apply_time_data_remainders
       return unless order_detail.time_data.present?
       applier = RemainderApplier.new(order_detail.time_data, split_order_details.map(&:time_data), splits)
       applier.apply_remainders(time_data_splitter)
