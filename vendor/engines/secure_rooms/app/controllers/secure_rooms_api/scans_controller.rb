@@ -2,6 +2,8 @@ module SecureRoomsApi
 
   class ScansController < SecureRoomsApi::ApiController
 
+    rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+
     before_action :load_user_and_reader
 
     def scan
@@ -24,6 +26,10 @@ module SecureRoomsApi
         card_reader_number: params[:reader_identifier],
         control_device_number: params[:controller_identifier],
       )
+    end
+
+    def render_not_found
+      render json: { error: :not_found }, status: 404
     end
 
   end
