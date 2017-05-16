@@ -56,7 +56,7 @@ describe "ReservationTimeFieldAdjustor", ->
     it "does not update the duration field", ->
       $("#start_date", fixture.el).val("01/03/2015").trigger("change")
       expect(@subject.calculateDuration()).toEqual(60)
-      expect(@subject.durationField.val()).toEqual("60")
+      expect(@subject.durationField().val()).toEqual("60")
 
   describe "changing the duration", ->
     it "updates the end time", ->
@@ -82,22 +82,22 @@ describe "ReservationTimeFieldAdjustor", ->
     it "updates the duration, but not the start time, when changing the date", ->
       $("#end_date", fixture.el).val("11/14/2015").trigger("change")
       expect(@subject.calculateDuration()).toEqual(1500)
-      expect(@subject.durationField.val()).toEqual("1500")
+      expect(@subject.durationField().val()).toEqual("1500")
 
     it "updates the duration when changing the hour", ->
       $("#end_hour", fixture.el).val("11").trigger("change")
       expect(@subject.calculateDuration()).toEqual(120)
-      expect(@subject.durationField.val()).toEqual("120")
+      expect(@subject.durationField().val()).toEqual("120")
 
     it "updates the duration when changing the minute", ->
       $("#end_minute", fixture.el).val("00").trigger("change")
       expect(@subject.calculateDuration()).toEqual(45)
-      expect(@subject.durationField.val()).toEqual("45")
+      expect(@subject.durationField().val()).toEqual("45")
 
     it "update the duration when changing the meridian", ->
       $("#end_meridian", fixture.el).val("PM").trigger("change")
       expect(@subject.calculateDuration()).toEqual(780)
-      expect(@subject.durationField.val()).toEqual("780")
+      expect(@subject.durationField().val()).toEqual("780")
 
     it "reverts back to the original times if date is set before the start time", ->
       $("#end_date", fixture.el).val("11/12/2015").trigger("change")
