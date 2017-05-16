@@ -40,23 +40,14 @@ module Users
       end
     end
 
-    def operator_of?(facility, allow_global: true)
+    def operator_of?(facility)
       return false if facility.blank?
-      [
-        facility_staff_of?(facility),
-        facility_senior_staff_of?(facility),
-        manager_of?(facility, allow_global: allow_global),
-      ].any?
+      user_roles.operator?(facility) || administrator?
     end
 
-    def manager_of?(facility, allow_global: true)
+    def manager_of?(facility)
       return false if facility.blank?
-      manager_of = [
-        facility_director_of?(facility),
-        facility_administrator_of?(facility),
-      ].any?
-
-      manager_of || (allow_global && administrator?)
+      user_roles.manager?(facility) || administrator?
     end
 
     def can_override_restrictions?(product)
