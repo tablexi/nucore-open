@@ -14,7 +14,7 @@ module SplitAccounts
         # We will need to refactor the general_reports_controller_spec in
         # order to remove the `try` methods below.
         if order_detail.account.try(:splits).try(:present?)
-          results.concat SplitAccounts::OrderDetailSplitter.new(order_detail, split_reservations: options[:reservations]).split
+          results.concat SplitAccounts::OrderDetailSplitter.new(order_detail, split_time_data: options[:time_data]).split
         else
           results << order_detail
         end

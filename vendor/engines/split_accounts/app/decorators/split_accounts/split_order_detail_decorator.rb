@@ -5,6 +5,7 @@ module SplitAccounts
   class SplitOrderDetailDecorator < SimpleDelegator
 
     attr_accessor :quantity_override, :split
+    attr_writer :time_data
 
     def quantity
       quantity_override || __getobj__.quantity
@@ -12,6 +13,10 @@ module SplitAccounts
 
     def quantity=(value)
       @quantity_override = BigDecimal(value.to_s)
+    end
+
+    def time_data
+      @time_data || super
     end
 
     # Let it pretend to be a real OrderDetail

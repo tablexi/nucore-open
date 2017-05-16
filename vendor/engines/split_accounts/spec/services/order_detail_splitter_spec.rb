@@ -86,6 +86,8 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
       end
     end
 
+    let(:instrument) { build_stubbed(:instrument) }
+
     let(:order_detail) do
       build_stubbed(:order_detail, reservation: reservation,
                                    created_by: 1,
@@ -94,7 +96,8 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
                                    actual_subsidy: BigDecimal("19.99"),
                                    estimated_cost: BigDecimal("29.99"),
                                    estimated_subsidy: BigDecimal("39.99"),
-                                   account: split_account)
+                                   account: split_account,
+                                   product: instrument)
     end
 
     let(:start_at) { 1.hour.ago }
@@ -103,7 +106,8 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
                                   reserve_end_at: start_at + 30.minutes, actual_start_at: start_at,
                                   actual_end_at: start_at + 45.minutes)
     end
-    let(:results) { described_class.new(order_detail, split_reservations: true).split.map(&:reservation) }
+    let(:order_detail_results) { described_class.new(order_detail, split_time_data: true).split }
+    let(:results) { order_detail_results.map(&:time_data) }
 
     it "splits the reservation minutes" do
       expect(results.map(&:duration_mins)).to eq([10.02, 9.99, 9.99])
@@ -114,11 +118,11 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
     end
 
     it "splits the order detail's accounts" do
-      expect(results.map { |res| res.order_detail.account }).to eq([subaccount_1, subaccount_2, subaccount_3])
+      expect(order_detail_results.map(&:account)).to eq([subaccount_1, subaccount_2, subaccount_3])
     end
 
     it "splits to order details costs" do
-      expect(results.map { |res| res.order_detail.actual_cost }).to eq([3.35, 3.32, 3.32])
+      expect(order_detail_results.map(&:actual_cost)).to eq([3.35, 3.32, 3.32])
     end
 
     it "copies the reservation start and end times" do
@@ -150,7 +154,7 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
 
     it "does not do anything to the reservation" do
       order_detail.update_attributes!(account: split_account)
-      described_class.new(order_detail, split_reservations: true).split
+      described_class.new(order_detail, split_time_data: true).split
       expect(reservation.reload).to be_persisted
     end
   end

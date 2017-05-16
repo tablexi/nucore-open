@@ -10,6 +10,7 @@ module SplitAccounts
 
     def split(original_object, split_object, split)
       splittable_attributes.each do |attr|
+        next unless original_object.respond_to?(attr)
         split_object.public_send "#{attr}=", floored_amount(split.percent, original_object.public_send(attr))
       end
     end

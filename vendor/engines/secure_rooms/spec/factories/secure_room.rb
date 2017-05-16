@@ -8,5 +8,11 @@ FactoryGirl.define do
         room.schedule_rules.create(attributes_for(:schedule_rule))
       end
     end
+
+    trait :with_base_price do
+      after(:create) do |room, _evaluator|
+        create(:secure_room_price_policy, price_group: PriceGroup.base.first, product: room)
+      end
+    end
   end
 end
