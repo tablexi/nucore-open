@@ -2,6 +2,8 @@ module DateTimeInput
 
   class FormData
 
+    extend DateHelper
+
     def initialize(time)
       @time = time
     end
@@ -16,15 +18,9 @@ module DateTimeInput
       return new(param) if param.is_a?(Time)
       param = param.with_indifferent_access
 
-      str = param[:date]
-      format = "%m/%d/%Y"
+      time_string = "#{param[:hour]}:#{param[:minute].to_s.rjust(2, '0')} #{param[:ampm]}" if check_time_param!(param)
 
-      if check_time_param!(param)
-        str += " #{param[:hour]}:#{param[:minute].to_s.rjust(2, '0')} #{param[:ampm]}"
-        format += " %H:%M %p"
-      end
-
-      new(Time.strptime(str, format))
+      new(parse_usa_date(param[:date], time_string))
     end
 
     def self.check_time_param!(param)
