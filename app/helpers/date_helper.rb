@@ -13,9 +13,9 @@ module DateHelper
     end
   end
 
-  def parse_usa_date(date, extra_date_info = nil)
+  def parse_usa_date(date, time_string = nil)
     date_string = (date =~ /\d{1,2}\/\d{1,2}\/\d{4}/ ? Date.strptime($&, "%m/%d/%Y") : date).to_s
-    date_string += " #{extra_date_info}" if extra_date_info
+    date_string += " #{time_string}" if time_string
 
     Time.zone.parse(date_string)
   rescue
