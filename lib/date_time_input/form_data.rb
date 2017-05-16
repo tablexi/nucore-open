@@ -20,6 +20,7 @@ module DateTimeInput
 
       time_string = "#{param[:hour]}:#{param[:minute].to_s.rjust(2, '0')} #{param[:ampm]}" if check_time_param!(param)
 
+      raise ArgumentError, "Missing date param" unless param[:date].present?
       new(parse_usa_date(param[:date], time_string))
     end
 
