@@ -1,2 +1,4 @@
 %ul.nav.nav-tabs
-  = # TODO: Add tabs
+  = tab t("views.secure_rooms.shared.tabnav_occupancy.in_progress"), facility_occupancies_path
+  - if current_ability.can?(:show_problems, SecureRooms::Occupancy)
+    = display_tab t("views.secure_rooms.shared.tabnav_occupancy.problem"), show_problems_facility_occupancies_path, action: :show_problems

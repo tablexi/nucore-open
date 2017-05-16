@@ -7,6 +7,10 @@ $ ->
 
     if active_tab.indexOf('reservations') > -1
       'reservations'
+    # TODO: Using this engine-referencing condition here is a stopgap to avoid
+    #       removal of the now-defunct tab-count ajax reloading.
+    else if active_tab.indexOf('occupancies') > -1
+      'occupancies'
     else
       'orders'
 
