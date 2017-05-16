@@ -4,7 +4,7 @@
       = text_field_tag :product_add_quantity, 1
 
       = select_tag :product_add,
-        options_for_select(current_facility.products.active_plus_hidden.pluck(:name, :id))
+        options_for_select(current_facility.products.mergeable_into_order.pluck(:name, :id))
 
       = label_tag :order_status_id, OrderDetail.human_attribute_name(:order_status)
       = select_tag :order_status_id,
