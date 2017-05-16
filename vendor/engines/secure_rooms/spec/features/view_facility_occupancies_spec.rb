@@ -16,20 +16,20 @@ RSpec.describe "Viewing Occupancies" do
   end
 
   context "with occupancy" do
-    let(:account) { create :account, :with_account_owner, owner: facility_staff }
-
-    before do
-      # Allow purchase of order
-      # TODO: Update when new factories are merged in
-      allow_any_instance_of(Order).to receive(:cart_valid?).and_return(true)
-      allow_any_instance_of(OrderDetail).to receive(:account_usable_by_order_owner?).and_return(true)
-    end
+    let!(:policy) { create(:secure_room_price_policy, product: secure_room, usage_rate: 60, price_group: order_detail.account.price_groups.first) }
+    let(:order) { create(:purchased_order, product: secure_room) }
+    let!(:order_detail) { order.order_details.first }
 
     context "with an active occupancy" do
-      let!(:active_occupancy) { create(:occupancy, :active, secure_room: secure_room, account: account) }
-
-      before do
-        SecureRooms::AccessHandlers::OrderHandler.process(active_occupancy)
+      let!(:active_occupancy) do
+        create(
+          :occupancy,
+          :active,
+          user: order_detail.user,
+          secure_room: secure_room,
+          order_detail: order_detail,
+          account: order_detail.account,
+        )
       end
 
       it "shows the order details" do
@@ -46,12 +46,18 @@ RSpec.describe "Viewing Occupancies" do
     end
 
     context "with a problem occupancy" do
-      let!(:problem_occupancy) { create(:occupancy, :orphan, secure_room: secure_room, account: account) }
-      let(:account) { create :account, :with_account_owner, owner: facility_staff }
-
-      before do
-        SecureRooms::AccessHandlers::OrderHandler.process(problem_occupancy)
+      let!(:problem_occupancy) do
+        create(
+          :occupancy,
+          :orphan,
+          user: order_detail.user,
+          secure_room: secure_room,
+          order_detail: order_detail,
+          account: order_detail.account,
+        )
       end
+
+      before { order_detail.complete! }
 
       it "shows the order details" do
         visit show_problems_facility_occupancies_path(facility)
