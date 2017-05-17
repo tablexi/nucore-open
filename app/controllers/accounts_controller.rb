@@ -17,7 +17,7 @@ class AccountsController < ApplicationController
   # GET /accounts
   def index
     @account_users = session_user.account_users
-    @administered_order_details_in_review = current_user.administered_order_details.all_in_review
+    @administered_order_details_in_review = current_user.administered_order_details.in_review
   end
 
   # GET /accounts/1
@@ -40,7 +40,7 @@ class AccountsController < ApplicationController
   def transactions_in_review_with_search
     @order_details = @order_details.where(account_id: @account.id)
     @recently_reviewed = @order_details.recently_reviewed.paginate(page: params[:page])
-    @order_details = @order_details.all_in_review
+    @order_details = @order_details.in_review
 
     @extra_date_column = :reviewed_at
     @order_detail_link = {
