@@ -54,9 +54,14 @@ class Product < ActiveRecord::Base
   scope :alphabetized, -> { order("lower(name)") }
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
+  scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
 
   def self.types
     @product_types ||= [Instrument, Item, Service, Bundle]
+  end
+
+  def self.mergeable_types
+    @mergeable_types ||= [Instrument, Item, Service, Bundle]
   end
 
   # Products that can be used as accessories

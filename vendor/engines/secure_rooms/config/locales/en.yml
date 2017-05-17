@@ -18,6 +18,26 @@ en:
   pages:
     admin_occupancies: Occupancies
 
+  order_details:
+    notices:
+      missing_entry:
+        badge: Missing Entry
+        alert: This order's occupancy does not have an entry time. Please ensure that all times are set and there is a price policy for the date this order was fulfilled.
+      missing_exit:
+        badge: Missing Exit
+        alert: This order's occupancy does not have an exit time. Please ensure that all times are set and there is a price policy for the date this order was fulfilled.
+
+  secure_rooms:
+    facility_occupancies:
+      table_controls:
+        update_occupancies: Update Occupancies
+      show_problems:
+        instructions: |
+          The occupancy line items below are complete and either do not have a
+          price policy or are occupancies without usage information.
+          Each will need to be corrected.
+        no_problem_occupancies: There are no problem occupancies.
+
   activerecord:
     models:
       secure_room:
@@ -93,9 +113,15 @@ en:
         edit:
           instructions: |
             TODO: Instructions on how to find your card number
+      facility_occupancies:
+        index:
+          no_occupancies: There are no \"In Process\" occupancies.
       shared:
-        tabnav_users:
-          title: Secure Room Access
+        tabnav_occupancy:
+          in_progress: In Progress
+          problem: Problem Occupancies
         tabnav_secure_room:
           card_readers_title: Card Readers
           occupancies_title: Occupancies
+        tabnav_users:
+          title: Secure Room Access

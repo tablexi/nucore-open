@@ -15,7 +15,14 @@ Rails.application.routes.draw do
       patch :"card_number/update", to: "secure_rooms/card_numbers#update"
     end
 
-    resources :occupancies, controller: "secure_rooms/facility_occupancies", only: :index
+    resources :occupancies, controller: "secure_rooms/facility_occupancies", only: :index do
+      collection do
+        post "assign_price_policies_to_problem_orders"
+        post "batch_update"
+        get "show_problems"
+        get "tab_counts"
+      end
+    end
   end
 
   namespace :secure_rooms_api do

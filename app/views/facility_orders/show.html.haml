@@ -43,7 +43,9 @@
           = status_badge(od)
         %td.product
           = od.product
-          = "<br/>#{od.reservation}".html_safe if od.reservation
+          - if od.time_data.present?
+            %br
+            = od.time_data
         %td.action
           - if od.add_accessories?
             = link_to new_facility_order_order_detail_accessory_path(current_facility, @order, od), class: ["has_accessories", "persistent"] do

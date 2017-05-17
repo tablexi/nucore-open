@@ -13,12 +13,12 @@ RSpec.describe DateTimeInput::FormData do
 
     describe "with all the fields in the AM" do
       let(:hash) { { date: "04/06/2017", hour: 4, minute: 19, ampm: "AM" } }
-      it { is_expected.to eq(Time.zone.parse("2017-04-06 04:19")) }
+      it { is_expected.to eq(Time.zone.parse("2017-04-06 04:19").in_time_zone) }
     end
 
     describe "with all the fields in the PM" do
       let(:hash) { { date: "04/06/2017", hour: 4, minute: 19, ampm: "PM" } }
-      it { is_expected.to eq(Time.zone.parse("2017-04-06 16:19")) }
+      it { is_expected.to eq(Time.zone.parse("2017-04-06 16:19").in_time_zone) }
     end
 
     describe "missing data" do
@@ -43,22 +43,17 @@ RSpec.describe DateTimeInput::FormData do
 
     describe "with all the fields in the AM" do
       let(:hash) { { date: "04/06/2017", hour: 4, minute: 19, ampm: "AM" } }
-      it { is_expected.to eq(Time.zone.parse("2017-04-06 04:19")) }
+      it { is_expected.to eq(Time.zone.parse("2017-04-06 04:19").in_time_zone) }
     end
 
     describe "with all the fields in the PM" do
       let(:hash) { { date: "04/06/2017", hour: 4, minute: 19, ampm: "PM" } }
-      it { is_expected.to eq(Time.zone.parse("2017-04-06 16:19")) }
+      it { is_expected.to eq(Time.zone.parse("2017-04-06 16:19").in_time_zone) }
     end
 
     describe "missing data" do
       let(:hash) { { date: "04/06/2017", hour: 4 } }
       specify { expect { subject }.to raise_error(ArgumentError, /Must have all or none/) }
-    end
-
-    describe "an invalid date" do
-      let(:hash) { { date: "19/06/2017", hour: 4, minute: 19, ampm: "PM" } }
-      specify { expect { subject }.to raise_error(ArgumentError, /time/) }
     end
   end
 

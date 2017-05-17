@@ -4,9 +4,6 @@ module SecureRooms
 
     include DateTimeInput::Model
 
-    date_time_inputable :entry_at
-    date_time_inputable :exit_at
-
     belongs_to :secure_room, foreign_key: :product_id
     belongs_to :user
     belongs_to :account
@@ -14,13 +11,16 @@ module SecureRooms
     belongs_to :entry_event, class_name: SecureRooms::Event
     belongs_to :exit_event, class_name: SecureRooms::Event
 
-    validates :secure_room, :user, presence: true
-
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range
 
+    date_time_inputable :entry_at
+    date_time_inputable :exit_at
+
     alias_attribute :actual_start_at, :entry_at
     alias_attribute :actual_end_at, :exit_at
+
+    validates :secure_room, :user, presence: true
 
     def self.valid
       where(orphaned_at: nil)

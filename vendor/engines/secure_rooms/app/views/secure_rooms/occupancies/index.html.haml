@@ -35,7 +35,7 @@
         %th= SecureRooms::Occupancy.human_attribute_name(:orphaned_at)
     %tbody
       - @problem_occupancies.each do |occupancy|
-        %tr.secure_rooms_problem_occupancy{id: "secure_rooms_problem_occupancy_#{occupancy.id}"}
+        %tr.secure_rooms_problem_occupancy{ id: "secure_rooms_problem_occupancy_#{occupancy.id}" }
           %td= occupancy.user.username
           %td= human_datetime(occupancy.entry_at)
           %td= human_datetime(occupancy.exit_at)

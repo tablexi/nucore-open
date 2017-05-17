@@ -203,7 +203,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
       let(:column_index) { headers.index("Reservation Minutes") }
 
       it "has the splits" do
-        expect(column_values).to eq(%w(30.0 30.0))
+        expect(column_values).to eq(%w(30 30))
       end
     end
 

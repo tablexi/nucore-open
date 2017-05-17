@@ -24,7 +24,7 @@ RSpec.describe "Editing an occupancy" do
     order_detail.complete!
     login_as director
     visit facility_transactions_path(facility)
-    click_link order_detail.id
+    first("a.manage-order-detail", text: order_detail.id).click
   end
 
   describe "with a complete occupancy", :aggregate_failures do
