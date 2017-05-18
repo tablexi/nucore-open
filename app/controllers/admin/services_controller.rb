@@ -9,6 +9,16 @@ module Admin
       render nothing: true
     end
 
+    def process_five_minute_tasks
+      workers = [AutoExpireReservation, EndReservationOnly, AutoLogout]
+
+      workers.each do |worker|
+        worker.new.perform
+      end
+
+      render nothing: true
+    end
+
   end
 
 end
