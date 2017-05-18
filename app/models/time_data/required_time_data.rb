@@ -6,8 +6,8 @@ module TimeData
       false
     end
 
-    def problem?
-      true
+    def problem_description_key
+      :missing_actuals
     end
 
     # Gives us both `blank?` and `present?`

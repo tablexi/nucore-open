@@ -8,6 +8,7 @@ class OrderDetail < ActiveRecord::Base
   include OrderDetail::Accessorized
   include NUCore::Database::WhereIdsIn
   include NUCore::Database::ClobSafeDistinct
+  include TextHelpers::Translation
 
   versioned
 
@@ -30,7 +31,7 @@ class OrderDetail < ActiveRecord::Base
 
   before_save :set_problem_order
   def set_problem_order
-    self.problem = complete? && (price_policy.blank? || time_data.problem?)
+    self.problem = complete? && problem_description_key.present?
     update_fulfilled_at_on_resolve if time_data.present?
     true # problem might be false; we need the callback chain to continue
   end
@@ -55,7 +56,6 @@ class OrderDetail < ActiveRecord::Base
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
-  delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
   # TODO: Refactor this from Reservation into OrderDetail
   delegate :canceled_at, to: :reservation, allow_nil: true
 
@@ -93,6 +93,7 @@ class OrderDetail < ActiveRecord::Base
   # were being triggered on orders where the orderer had been removed from the account.
   validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
   validates_length_of :note, maximum: 1000, allow_blank: true, allow_nil: true
+  validate :valid_manual_fulfilled_at
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility
@@ -502,7 +503,7 @@ class OrderDetail < ActiveRecord::Base
   def price_groups
     groups = user.price_groups
     groups += account.price_groups if account
-    groups.compact.uniq
+    groups.uniq
   end
 
   # set the object's response_set
@@ -842,7 +843,13 @@ class OrderDetail < ActiveRecord::Base
   # will have no effect. This is to protect `fulfilled_at` from being written
   # to when it shouldn't be. It should be a USA formatted date string.
   def manual_fulfilled_at=(string)
-    @manual_fulfilled_at = ValidFulfilledAtDate.parse(string)
+    @manual_fulfilled_at = ValidFulfilledAtDate.new(string)
+  end
+
+  def valid_manual_fulfilled_at
+    if @manual_fulfilled_at && @manual_fulfilled_at.invalid?
+      errors.add(:fulfilled_at, @manual_fulfilled_at.error)
+    end
   end
 
   def time_data
@@ -851,6 +858,17 @@ class OrderDetail < ActiveRecord::Base
     else
       TimeData::NullTimeData.new
     end
+  end
+
+  def translation_scope
+    "activerecord.models.order_detail"
+  end
+
+  def problem_description_key
+    time_data_problem_key = time_data.problem_description_key
+    price_policy_problem_key = :missing_price_policy if price_policy.blank?
+
+    time_data_problem_key || price_policy_problem_key
   end
 
   private
@@ -870,7 +888,7 @@ class OrderDetail < ActiveRecord::Base
 
   def make_complete
     # Don't update fulfilled_at if it was manually set.
-    self.fulfilled_at = @manual_fulfilled_at || Time.current
+    self.fulfilled_at = @manual_fulfilled_at.presence || Time.current
     assign_price_policy
     self.reviewed_at = Time.zone.now unless SettingsHelper.has_review_period?
   end
@@ -917,7 +935,7 @@ class OrderDetail < ActiveRecord::Base
 
   def update_fulfilled_at_on_resolve
     if problem_changed? && !problem_order?
-      self.fulfilled_at = reservation.reserve_end_at
+      self.fulfilled_at = time_data.actual_end_at
     end
   end
 

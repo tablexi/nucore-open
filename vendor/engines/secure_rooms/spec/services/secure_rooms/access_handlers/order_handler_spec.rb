@@ -2,18 +2,19 @@ require "rails_helper"
 
 RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
   let(:user) { create :user }
-  let(:card_reader) { create :card_reader }
+  let(:secure_room) { create :secure_room }
+  let(:card_reader) { create :card_reader, secure_room: secure_room }
   let(:account) { create :account, :with_account_owner, owner: user }
 
   describe "#process" do
     context "with an orderable occupancy" do
       before do
-        card_reader.secure_room.update(requires_approval: false)
+        secure_room.update(requires_approval: false)
         allow_any_instance_of(Product).to receive(:can_purchase_order_detail?).and_return(true)
       end
 
       let(:occupancy) do
-        create(:occupancy, :active, user: user, secure_room: card_reader.secure_room, account: account)
+        create(:occupancy, :active, user: user, secure_room: secure_room, account: account)
       end
 
       it "creates an order" do
@@ -58,6 +59,40 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
           expect(order_detail.created_by_user).to eq user
         end
       end
+
+      context "when completing the occupancy" do
+        let(:occupancy) do
+          create(
+            :occupancy,
+            :complete,
+            user: user,
+            secure_room: secure_room,
+            account: account,
+          )
+        end
+
+        describe "order_detail" do
+          subject(:order_detail) { described_class.process(occupancy).order_details.first }
+
+          let(:price_group) { PriceGroup.first }
+          let!(:price_policy) do
+            create(
+              :secure_room_price_policy,
+              product: secure_room,
+              price_group: price_group,
+            )
+          end
+
+          it { is_expected.to be_complete }
+          it { is_expected.to be_fulfilled_at }
+          it { is_expected.not_to be_problem }
+
+          it "has price information" do
+            expect(order_detail.price_policy).to be_present
+            expect(order_detail.cost).to be_present
+          end
+        end
+      end
     end
 
     context "without an occupancy account" do
@@ -65,9 +100,14 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
         create(:occupancy, :active, user: user, secure_room: card_reader.secure_room)
       end
 
-      it "skips order creation" do
+      it "creates an order" do
         expect { described_class.process(occupancy) }
-          .to change(Order, :count).by(0)
+          .to change(Order, :count).by(1)
+      end
+
+      it "does not attempt to purchase the order without an account" do
+        order = described_class.process(occupancy)
+        expect(order).to be_new
       end
     end
   end

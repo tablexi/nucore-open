@@ -25,3 +25,10 @@ describe "Responsive table support", ->
     $(".table").addClass("js--responsive_table")
     ResponsiveTable.respond()
     expect($(".table")).not.toContainElement(".responsive-header")
+
+  it "inserts a space if the table cell is empty, for spacing", ->
+    $(".table").addClass("js--responsive_table")
+    expected = $("td").eq(2).clone().append("Invoice #&nbsp;").text()
+    ResponsiveTable.respond()
+    expect($("td").eq(2).text()).toEqual(expected)
+    expect($("td").eq(3).text()).toEqual("FacilitySmall Hadron Collider")

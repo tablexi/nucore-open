@@ -15,6 +15,8 @@ module SecureRooms
       end
 
       def process
+        return unless event.success?
+
         if current_occupant? && exiting?
           existing_occupancy.associate_exit!(event)
         elsif new_occupant? && entering?
@@ -23,7 +25,7 @@ module SecureRooms
           new_occupancy.mark_orphaned!
           new_occupancy.associate_exit!(event)
         elsif current_occupant? && entering?
-          existing_occupancy.mark_orphaned!
+          complete_existing_occupancy!
           new_occupancy.associate_entry!(event)
         else
           raise NotImplementedError, "Encountered unexpected scan context"
@@ -45,6 +47,11 @@ module SecureRooms
           user: event.user,
           account: event.account,
         )
+      end
+
+      def complete_existing_occupancy!
+        existing_occupancy.mark_orphaned!
+        OrderHandler.process(existing_occupancy)
       end
 
       def current_occupant?

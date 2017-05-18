@@ -190,7 +190,7 @@ class ReservationsController < ApplicationController
     if @reservation.move_to_earliest
       flash[:notice] = "The reservation was moved successfully."
     else
-      flash[:error] = @reservation.errors.full_messages.join("<br/>")
+      flash[:error] = @reservation.errors.full_messages.join("<br/>").html_safe
     end
 
     redirect_to reservations_status_path(status: "upcoming")

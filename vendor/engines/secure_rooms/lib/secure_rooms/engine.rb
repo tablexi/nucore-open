@@ -7,7 +7,9 @@ module SecureRooms
     config.to_prepare do
       ::AbilityExtensionManager.extensions << "SecureRooms::AbilityExtension"
 
+      NavTab::LinkCollection.send :include, SecureRooms::LinkCollectionExtension
       OrderDetail.send :include, SecureRooms::OrderDetailExtension
+      ::OrderDetails::ParamUpdater.send :include, SecureRooms::OrderDetails::ParamUpdaterExtension
 
       bundle_index = Product.types.index(Bundle) || -1
       Product.types.insert(bundle_index, SecureRoom)

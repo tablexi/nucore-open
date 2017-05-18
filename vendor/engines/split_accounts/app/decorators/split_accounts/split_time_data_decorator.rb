@@ -1,15 +1,16 @@
 module SplitAccounts
 
-  class SplitReservationDecorator < SimpleDelegator
+  class SplitTimeDataDecorator < SimpleDelegator
 
     attr_accessor :quantity
+    attr_writer :actual_duration_mins
 
     def duration_mins
       __getobj__.instance_variable_get(:@duration_mins)
     end
 
     def actual_duration_mins
-      __getobj__.instance_variable_get(:@actual_duration_mins)
+      @actual_duration_mins || super
     end
 
     # Let it pretend to be a real Reservation

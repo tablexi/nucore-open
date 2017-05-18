@@ -14,8 +14,8 @@ module Reports
                                 .includes(:order_detail)
 
       order_details = reservations.map(&:order_detail)
-      virtual_order_details = OrderDetailListTransformerFactory.instance(order_details).perform(reservations: true)
-      virtual_order_details.map(&:reservation)
+      virtual_order_details = OrderDetailListTransformerFactory.instance(order_details).perform(time_data: true)
+      virtual_order_details.map(&:time_data)
     end
 
   end

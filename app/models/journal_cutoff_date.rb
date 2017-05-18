@@ -2,6 +2,9 @@ class JournalCutoffDate < ActiveRecord::Base
 
   include ActiveModel::ForbiddenAttributesProtection
 
+  include DateTimeInput::Model
+  date_time_inputable :cutoff_date
+
   validates :cutoff_date, presence: true
   validate :unique_month_for_cutoff_date, if: :cutoff_date?
 
@@ -18,20 +21,6 @@ class JournalCutoffDate < ActiveRecord::Base
 
   def past?
     cutoff_date < Time.current
-  end
-
-  # TODO: consider turning this into a reusable module
-  def cutoff_date_time=(hash)
-    formatted = "#{cutoff_date.to_date} #{hash[:hour]}:#{hash[:minute]}#{hash[:ampm]}"
-    self.cutoff_date = Time.zone.parse(formatted)
-  end
-
-  def cutoff_date_time
-    {
-      hour: cutoff_date.strftime("%-l"),
-      minute:  "%02d" % cutoff_date.min,
-      ampm: cutoff_date.strftime("%p"),
-    }
   end
 
   private

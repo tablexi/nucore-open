@@ -18,6 +18,7 @@ en:
       submissions:
         form:
           submit: "Save Submission"
+          warning: "This order is not submitted. Please click Save Submission and move to the next step before printing your sample sheet."
           add: Add
           remove: Remove
       orders:

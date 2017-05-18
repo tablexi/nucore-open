@@ -9,7 +9,6 @@ RSpec.describe ProductAccessoriesController do
   let(:instrument) { FactoryGirl.create(:setup_instrument) }
   let(:facility) { instrument.facility }
   let(:accessory) { FactoryGirl.create(:setup_item, facility: facility) }
-  let(:unchosen_accessory) { FactoryGirl.create(:setup_item, facility: facility) }
 
   before :each do
     @authable = facility
@@ -17,6 +16,11 @@ RSpec.describe ProductAccessoriesController do
   end
 
   describe "index" do
+    let!(:unchosen_accessory) { FactoryGirl.create(:setup_item, facility: facility) }
+    let!(:bundle) do
+      FactoryGirl.create(:bundle, facility: facility)
+    end
+
     before :each do
       @method = :get
       @action = :index
@@ -30,7 +34,6 @@ RSpec.describe ProductAccessoriesController do
       before :each do
         maybe_grant_always_sign_in :admin
         instrument.accessories << accessory
-        unchosen_accessory # load
         do_request
       end
 
@@ -39,11 +42,15 @@ RSpec.describe ProductAccessoriesController do
       end
 
       it "excludes the already created accessory in the list" do
-        expect(assigns(:available_accessories)).to_not include(accessory)
+        expect(assigns(:available_accessories)).not_to include(accessory)
       end
 
       it "does not include itself" do
-        expect(assigns(:available_accessories)).to_not include(instrument)
+        expect(assigns(:available_accessories)).not_to include(instrument)
+      end
+
+      it "does not include the bundle" do
+        expect(assigns(:available_accessories)).not_to include(bundle)
       end
     end
 
@@ -53,7 +60,7 @@ RSpec.describe ProductAccessoriesController do
       ProductAccessory.first.soft_delete
       instrument.accessories << unchosen_accessory
       do_request
-      expect(assigns(:product_accessories)).to_not include accessory
+      expect(assigns(:product_accessories)).not_to include(accessory)
     end
   end
 

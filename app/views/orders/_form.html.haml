@@ -1,8 +1,8 @@
 = simple_form_for order, url: { action: :update_or_purchase } do |f|
-  %table.table.table-striped.table-hover.js--cart#cart
+  %table.table.table-striped.table-hover.js--cart#cart.js--responsive_table
     %thead
       %tr
-        %th
+        %th &nbsp;
         %th= OrderDetail.human_attribute_name(:product)
         %th.centered= OrderDetail.human_attribute_name(:quantity)
         %th.currency= OrderDetail.human_attribute_name(:estimated_cost)
@@ -14,16 +14,19 @@
       - grouped_order_details.each do |order_details|
         = render partial: "cart_row", collection: order_details, as: :order_detail, locals: { order_details: order_details }
 
-    %tfoot
+    %tfoot.cart
       %tr
         %td.currency{colspan: "3"}
           %b= t(".td.total")
         %td.currency
+          .responsive-header= OrderDetail.human_attribute_name(:estimated_cost)
           %b= number_to_currency order.estimated_cost
         - if order.has_subsidies?
           %td.currency
+            .responsive-header= OrderDetail.human_attribute_name(:estimated_subsidy)
             %b= number_to_currency order.estimated_subsidy
         %td.currency
+          .responsive-header= OrderDetail.human_attribute_name(:estimated_total)
           %b= number_to_currency order.estimated_total
 
   %p.footnote= t(".foot.all")

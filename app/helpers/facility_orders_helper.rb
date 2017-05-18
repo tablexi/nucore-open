@@ -9,9 +9,7 @@ module FacilityOrdersHelper
     notices << "can_reconcile" if order_detail.can_reconcile_journaled?
     notices << "in_open_journal" if order_detail.in_open_journal?
 
-    warnings = []
-    warnings << "missing_actuals" if order_detail.complete? && order_detail.reservation.try(:requires_but_missing_actuals?)
-    warnings << "missing_price_policy" if order_detail.missing_price_policy? && !order_detail.reservation.try(:requires_but_missing_actuals?)
+    warnings = Array(order_detail.problem_description_key)
 
     { warnings: warnings, notices: notices }
   end
@@ -19,10 +17,10 @@ module FacilityOrdersHelper
   def order_detail_badges(order_detail)
     notices = order_detail_notices(order_detail)
 
-    output = build_badges(notices[:warnings], "label-important")
-    output += build_badges(notices[:notices], "label-info")
+    output = build_badges(notices[:notices], "label-info")
+    output += build_badges(notices[:warnings], "label-important")
 
-    output.join(" ").html_safe
+    safe_join(output)
   end
 
   def banner_date_label(object, field, label = nil)

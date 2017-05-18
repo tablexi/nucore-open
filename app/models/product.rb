@@ -54,17 +54,23 @@ class Product < ActiveRecord::Base
   scope :alphabetized, -> { order("lower(name)") }
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
+  scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
 
   def self.types
     @product_types ||= [Instrument, Item, Service, Bundle]
   end
 
-  def self.non_instruments
-    where("products.type <> 'Instrument'")
+  def self.mergeable_types
+    @mergeable_types ||= [Instrument, Item, Service, Bundle]
   end
 
-  def self.exclude(exclusion_list)
-    where("products.id NOT IN (?)", exclusion_list)
+  # Products that can be used as accessories
+  def self.accessorizable
+    where(type: [Item, Service])
+  end
+
+  def self.exclude(products)
+    where.not(id: products)
   end
 
   scope :for_facility, lambda { |facility|
@@ -215,7 +221,7 @@ class Product < ActiveRecord::Base
     # are always handled the same way. Put the base group at the front of the
     # price policy array so that it takes precedence over all others that have
     # equal unit cost. See task #49823.
-    base_ndx = price_policies.index { |pp| pp.price_group == PriceGroup.base.first }
+    base_ndx = price_policies.index { |pp| pp.price_group == PriceGroup.base }
     base = price_policies.delete_at base_ndx if base_ndx
     price_policies.sort! { |pp1, pp2| pp1.price_group.name <=> pp2.price_group.name }
     price_policies.unshift base if base

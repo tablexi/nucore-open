@@ -1487,4 +1487,20 @@ RSpec.describe Reservation do
       end
     end
   end
+
+  describe "#problem_description_key" do
+    subject(:problem_description_key) { reservation.problem_description_key }
+
+    context "requires_but_missing_actuals?" do
+      before { expect(reservation).to receive(:requires_but_missing_actuals?).and_return(true) }
+
+      it { is_expected.to eq :missing_actuals }
+    end
+
+    context "usage exists" do
+      before { expect(reservation).to receive(:requires_but_missing_actuals?).and_return(false) }
+
+      it { is_expected.to be_blank }
+    end
+  end
 end

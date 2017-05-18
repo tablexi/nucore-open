@@ -1,8 +1,5 @@
 - unless order_detail.order.validated?
   .label.label-warning= order_detail.validate_for_purchase
 
-- if order_detail.bundle
-  = order_detail.bundle
-  &ndash;
 
 = order_detail.product

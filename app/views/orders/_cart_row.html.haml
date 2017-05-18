@@ -1,7 +1,10 @@
-%tr
-  - if order_detail_iteration.first?
-    %td.centered{ rowspan: order_details.count }= link_to text("shared.remove"), remove_order_path(@order, order_detail), method: :put
-
+%tr{class: order_detail_iteration.first? ? "first-in-bundle" : ""}
+  %td
+    - if order_detail_iteration.first?
+      = link_to text("shared.remove"), remove_order_path(@order, order_detail), method: :put
+      %strong
+        - if order_detail.bundle
+          = order_detail.bundle
   %td
     = render "#{order_detail.product.class.name.underscore}_desc", order_detail: order_detail
     - if show_note_input_to_user?(order_detail)

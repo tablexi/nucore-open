@@ -47,6 +47,14 @@ class UserRole < ActiveRecord::Base
     where(role: global_roles)
   end
 
+  def self.operator?(facility)
+    any? { |ur| ur.facility == facility && ur.in?(facility_roles) }
+  end
+
+  def self.manager?(facility)
+    any? { |ur| ur.facility == facility && ur.in?(facility_management_roles) }
+  end
+
   #
   # Assigns +role+ to +user+ for +facility+
   # [_user_]

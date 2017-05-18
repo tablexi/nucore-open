@@ -110,6 +110,7 @@ class Accessories::Accessorizer
     attrs = @order_detail.attributes.slice("account_id", "created_by")
     attrs.merge(order: @order_detail.order,
                 product: accessory,
+                note: options[:note],
                 quantity: options[:quantity],
                 product_accessory: product_accessory(accessory),
                 state: "new")

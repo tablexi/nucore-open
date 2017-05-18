@@ -177,7 +177,7 @@ GEM
       orm_adapter (~> 0.5.0)
     climate_control (0.1.0)
     cliver (0.3.2)
-    clockpunch (0.1.9)
+    clockpunch (0.1.10)
       coffee-script
       railties (>= 3.1)
       sass
@@ -339,7 +339,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
     nio4r (2.0.0)
-    nokogiri (1.6.8.1)
+    nokogiri (1.7.2)
       mini_portile2 (~> 2.1.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
@@ -475,7 +475,7 @@ GEM
     ruby-progressbar (1.8.1)
     ruby-rc4 (0.1.5)
     ruby_dep (1.3.1)
-    rubyzip (1.2.0)
+    rubyzip (1.2.1)
     sass (3.4.23)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -584,7 +584,7 @@ DEPENDENCIES
   chosen-rails
   ci_reporter_rspec
   ckeditor (~> 4.1.6)
-  clockpunch (~> 0.1.0)
+  clockpunch (~> 0.1.10)
   codeclimate_circle_ci_coverage
   coffee-rails (~> 4.1.1)
   coffeelint
@@ -612,7 +612,7 @@ DEPENDENCIES
   logstash-event
   mysql2 (~> 0.3.20)
   nested_form_fields
-  nokogiri (~> 1.6.1)
+  nokogiri (~> 1.7.1)
   oj (~> 2.12.14)
   paperclip (~> 4.2.0)
   poltergeist

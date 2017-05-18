@@ -9,17 +9,22 @@
         = render "warnings"
 
     .row
-      .span5= account_input(f)
+      .span5.js--pricingUpdate
+        = account_input(f)
 
       .span5
         - if @order_statuses
           = f.association :order_status, collection: @order_statuses, label_method: :name_with_level, include_blank: false
-          - unless f.object.fulfilled_at?
+          - if f.object.fulfilled_at.blank? || f.object.fulfilled_at_changed?
             = f.input :fulfilled_at,
               as: :string,
               label: "&nbsp;".html_safe,
               placeholder: OrderDetail.human_attribute_name(:fulfilled_at),
-              input_html: { class: "datepicker__data js--showOnCompleteStatus", data: { min_date: SettingsHelper.fiscal_year_beginning.iso8601, max_date: Date.today.iso8601, complete_target: "#order_detail_order_status_id" } }
+              input_html: { class: "datepicker__data js--showOnCompleteStatus",
+                data: { min_date: ValidFulfilledAtDate.min.iso8601,
+                  max_date: ValidFulfilledAtDate.max.iso8601,
+                  complete_target: "#order_detail_order_status_id"}}
+
         - else
           = f.label :order_status
           = @order_detail.order_status
@@ -37,10 +42,10 @@
     = render_view_hook "after_order_status", f: f, order_detail: @order_detail
 
     .row
-      - if @order_detail.reservation
-        .span5= render "reservation", f: f, reservation: @order_detail.reservation
+      - if @order_detail.time_data.present?
+        .span5= render "order_management/order_details/#{@order_detail.time_data.class.name.underscore}", f: f
       - else
-        .span5
+        .span5.js--pricingUpdate
           = f.input :quantity, as: :order_detail_quantity, hint_html: { class: "help-inline" }
 
       .span5
