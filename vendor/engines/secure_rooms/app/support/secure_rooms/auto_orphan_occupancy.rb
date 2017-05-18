@@ -13,7 +13,13 @@ module SecureRooms
     private
 
     def occupancy_order_details
-      OrderDetail.joins(:occupancy).merge(SecureRooms::Occupancy.current)
+      OrderDetail.joins(:occupancy).merge(long_running_occupancies)
+    end
+
+    def long_running_occupancies
+      SecureRooms::Occupancy.current.where(
+        SecureRooms::Occupancy.arel_table[:entry_at].lt(Time.current - 12.hours),
+      )
     end
 
     def orphan_occupancy(od)

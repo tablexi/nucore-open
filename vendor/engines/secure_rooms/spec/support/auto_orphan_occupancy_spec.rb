@@ -10,11 +10,12 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
   let!(:order_detail) { order.order_details.first }
 
   describe '#perform' do
-    context "an active occupancy" do
+    context "with a very long-running occupancy" do
       let!(:occupancy) do
         create(
           :occupancy,
           :active,
+          entry_at: 3.days.ago,
           user: order_detail.user,
           secure_room: secure_room,
           order_detail: order_detail,
@@ -46,7 +47,29 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
       end
     end
 
-    context "a completed occupancy" do
+    context "with a short-term active occupancy" do
+      let!(:occupancy) do
+        create(
+          :occupancy,
+          :active,
+          user: order_detail.user,
+          secure_room: secure_room,
+          order_detail: order_detail,
+          account: order_detail.account,
+        )
+      end
+
+      it "does not orphan the occupancy" do
+        expect { action.perform }.not_to change { occupancy.reload.orphan? }
+      end
+
+      it "does not involve the order handler" do
+        expect(SecureRooms::AccessHandlers::OrderHandler).not_to receive(:process)
+        action.perform
+      end
+    end
+
+    context "with an already completed occupancy" do
       let!(:occupancy) do
         create(
           :occupancy,
