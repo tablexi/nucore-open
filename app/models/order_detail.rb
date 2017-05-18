@@ -168,15 +168,7 @@ class OrderDetail < ActiveRecord::Base
       .where("order_details.state NOT IN('canceled', 'reconciled')")
   end
 
-  scope :in_review, lambda { |facility|
-    all.joins(:product)
-      .where(products: { facility_id: facility.id })
-      .where(state: "complete")
-      .where("order_details.reviewed_at > ?", Time.zone.now)
-      .not_disputed
-  }
-
-  scope :all_in_review, lambda {
+  scope :in_review, lambda {
     joins(:order)
       .where(state: "complete")
       .where("order_details.reviewed_at > ?", Time.current)
@@ -221,7 +213,7 @@ class OrderDetail < ActiveRecord::Base
 
   def in_review?
     # check in the database if self.id is in the scope
-    self.class.all_in_review.find_by_id(id) ? true : false
+    self.class.in_review.find_by_id(id) ? true : false
     # this would work without hitting the database again, but duplicates the functionality of the scope
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
   end
