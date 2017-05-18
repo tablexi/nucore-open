@@ -71,7 +71,6 @@ RSpec.describe "Viewing Occupancies" do
       end
     end
 
-
     context "with a missing price-policy occupancy" do
       let!(:occupancy) do
         create(
@@ -102,9 +101,7 @@ RSpec.describe "Viewing Occupancies" do
         expect(order_detail.reload).not_to be_problem
         expect(current_path).to eq(show_problems_facility_occupancies_path(facility))
         expect(page).not_to have_link(occupancy.order_detail.id)
-
       end
     end
-
   end
 end
