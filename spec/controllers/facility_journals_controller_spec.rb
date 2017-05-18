@@ -415,7 +415,7 @@ RSpec.describe FacilityJournalsController do
 
   describe "#new" do
     let(:expiry_date) { Time.zone.now - 1.year }
-    let(:user) { FactoryGirl.create(:user)}
+    let(:user) { FactoryGirl.create(:user) }
     let(:expired_payment_source) { create(:nufs_account, expires_at: expiry_date, account_users_attributes: account_users_attributes_hash(user: user), facility_id: facility.id) }
     let!(:problem_order_detail) { place_and_complete_item_order(user, facility, expired_payment_source, true) }
 
