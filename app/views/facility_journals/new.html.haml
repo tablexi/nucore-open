@@ -25,6 +25,8 @@
 = content_for :top_block do
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }
 
+- if @problem_order_details.any?
+  = render 'problem_transactions', order_details: @problem_order_details
 - if @order_details.any?
   = content_for :action_instructions do
     - if has_pending_journals?
