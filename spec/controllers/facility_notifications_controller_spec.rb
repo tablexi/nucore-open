@@ -34,6 +34,12 @@ RSpec.describe FacilityNotificationsController do
   end
 
   describe "GET #index" do
+    let!(:problem_order) do
+      place_and_complete_item_order(@user, @authable, @account2).tap do |od|
+        od.update!(price_policy: nil)
+      end
+    end
+
     before :each do
       @method = :get
       @action = :index
@@ -43,7 +49,7 @@ RSpec.describe FacilityNotificationsController do
       it_should_deny_all [:staff, :senior_staff]
 
       it_should_allow_managers_only do
-        expect(assigns(:order_details) - [@order_detail1, @order_detail2, @order_detail3]).to be_empty
+        expect(assigns(:order_details)).to contain_exactly(@order_detail1, @order_detail2, @order_detail3)
         expect(assigns(:order_detail_action)).to eq(:send_notifications)
         is_expected.not_to set_flash
       end

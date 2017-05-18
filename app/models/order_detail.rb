@@ -161,6 +161,7 @@ class OrderDetail < ActiveRecord::Base
       .where(reviewed_at: nil)
       .with_price_policy
       .not_disputed
+      .where(problem: false)
   }
 
   def self.all_movable
