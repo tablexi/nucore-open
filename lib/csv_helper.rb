@@ -1,15 +1,6 @@
 module CSVHelper
 
-  CSV = case RUBY_VERSION
-        when "1.8.7"
-          require "faster_csv" unless defined?(FasterCSV)
-
-          FasterCSV
-        else
-          require "csv" unless defined?(CSV)
-
-          CSV
-    end
+  require "csv"
 
   def set_csv_headers(filename)
     if request.env["HTTP_USER_AGENT"] =~ /msie/i
