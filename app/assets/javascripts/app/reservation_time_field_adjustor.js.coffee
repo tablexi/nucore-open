@@ -68,6 +68,7 @@ class window.ReservationTimeFieldAdjustor
   _reserveEndChangeCallback: =>
     if @calculateDuration() >= 0
       @durationField().val(@calculateDuration())
+      @durationField().trigger("change")
       @_changed()
     else
       # If the duration ends up negative, i.e. end is before start,
