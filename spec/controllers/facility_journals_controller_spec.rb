@@ -437,9 +437,7 @@ RSpec.describe FacilityJournalsController do
       sign_in @admin
       do_request
       expect(response).to be_success
-      expect(assigns(:order_details)).to be_include(@order_detail1)
-      expect(assigns(:order_details)).to be_include(@order_detail3)
-      expect(assigns(:problem_order_details)).to be_include(problem_order_detail)
+      expect(assigns(:order_details)).to contain_all([@order_detail1, @order_detail3, problem_order_detail])
       expect(assigns(:pending_journals)).to be_empty
       expect(assigns(:order_detail_action)).to eq(:create)
     end
@@ -453,7 +451,7 @@ RSpec.describe FacilityJournalsController do
 
       sign_in @admin
       do_request
-      expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
+      expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3, problem_order_detail]
       expect(assigns(:pending_journals)).to eq([@pending_journal])
       expect(assigns(:order_detail_action)).to be_nil
     end

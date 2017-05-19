@@ -11,27 +11,27 @@
       });
 
       $(function(){
-        $('#journals_create_form').submit(function(e) {
-          $(e.target).find(':submit').attr('disabled', 'true');
+        $("#journals_create_form").submit(function(e) {
+          $(e.target).find(":submit").attr("disabled", "true");
         });
       });
 
-= render :partial => "shared/transactions/headers"
+= render "shared/transactions/headers"
 = content_for :h1 do
   = current_facility
 = content_for :h2 do
   %h2= t_create_model(Journal)
 
 = content_for :top_block do
-  = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }
+  = render "shared/transactions/top", tab: "new_journal"
 
 - if @order_details.expired_account.any?
-  = render 'problem_transactions', order_details: @order_details.expired_account
+  = render "problem_transactions", order_details: @order_details.expired_account
 - if @order_details.any?
   = content_for :action_instructions do
     - if has_pending_journals?
-      %p.notice= t("facility_journals.new.not_closed_html", :link => facility_journals_path)
+      %p.notice= t("facility_journals.new.not_closed_html", link: facility_journals_path)
     - else
       %p.notice= text("facility_journals.new.instructions")
-  = render 'shared/transactions/table', order_details: @order_details.valid_account
-  = render :partial => 'shared/reconcile_footnote'
+  = render "shared/transactions/table", order_details: @order_details.valid_account
+  = render "shared/reconcile_footnote"
