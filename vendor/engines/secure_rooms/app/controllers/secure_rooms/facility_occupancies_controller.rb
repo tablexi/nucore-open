@@ -32,7 +32,7 @@ module SecureRooms
     protected
 
     def show_problems_path
-      show_problems_facility_occupancies_path
+      show_problems_facility_occupancies_path(current_facility)
     end
 
     private

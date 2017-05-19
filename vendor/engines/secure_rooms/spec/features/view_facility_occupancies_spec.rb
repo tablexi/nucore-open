@@ -45,7 +45,7 @@ RSpec.describe "Viewing Occupancies" do
       end
     end
 
-    context "with a problem occupancy" do
+    context "with an orphaned occupancy" do
       let!(:problem_occupancy) do
         create(
           :occupancy,
@@ -64,9 +64,43 @@ RSpec.describe "Viewing Occupancies" do
 
         expect(current_path).to eq(show_problems_facility_occupancies_path(facility))
         # TODO: Update specs after page is updated
-        expect(page).to have_content(problem_occupancy.order_detail.id)
+        expect(page).to have_link(problem_occupancy.order_detail.id)
         expect(page).to have_content(problem_occupancy.user.full_name)
         expect(page).to have_content(problem_occupancy.secure_room.name)
+        expect(page).to have_content("Missing Exit")
+      end
+    end
+
+    context "with a missing price-policy occupancy" do
+      let!(:occupancy) do
+        create(
+          :occupancy,
+          :complete,
+          user: order_detail.user,
+          secure_room: secure_room,
+          order_detail: order_detail,
+          account: order_detail.account,
+        )
+      end
+
+      before do
+        secure_room.price_policies.destroy_all
+        order_detail.backdate_to_complete! occupancy.exit_at
+      end
+
+      it "can mass assign price policies" do
+        visit show_problems_facility_occupancies_path(facility)
+
+        expect(page).to have_content(order_detail.id)
+        expect(page).to have_content("Missing Price Policy")
+
+        create(:secure_room_price_policy, product: secure_room, price_group: order_detail.user.price_groups.first)
+
+        click_link "Assign Price Policies"
+
+        expect(order_detail.reload).not_to be_problem
+        expect(current_path).to eq(show_problems_facility_occupancies_path(facility))
+        expect(page).not_to have_link(occupancy.order_detail.id)
       end
     end
   end
