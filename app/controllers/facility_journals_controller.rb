@@ -29,6 +29,13 @@ class FacilityJournalsController < ApplicationController
   def new_with_search
     set_default_variables
     @layout = "two_column_head"
+
+    respond_to do |format|
+      format.csv do
+        @order_details = @order_details.expired_account
+      end
+      format.any {}
+    end
   end
 
   # PUT /facilities/journals/:id
