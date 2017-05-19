@@ -143,9 +143,7 @@ class FacilityJournalsController < ApplicationController
   end
 
   def set_default_variables
-    need_journal = @order_details.need_journal
-    @order_details = need_journal.valid_account
-    @problem_order_details = need_journal.expired_account
+    @order_details = @order_details.need_journal
 
     set_pending_journals
     set_earliest_journal_date

@@ -25,13 +25,13 @@
 = content_for :top_block do
   = render :partial => 'shared/transactions/top', :locals => { :tab => 'new_journal' }
 
-- if @problem_order_details.any?
-  = render 'problem_transactions', order_details: @problem_order_details
+- if @order_details.expired_account.any?
+  = render 'problem_transactions', order_details: @order_details.expired_account
 - if @order_details.any?
   = content_for :action_instructions do
     - if has_pending_journals?
       %p.notice= t("facility_journals.new.not_closed_html", :link => facility_journals_path)
     - else
       %p.notice= text("facility_journals.new.instructions")
-  = render :partial => 'shared/transactions/table'
+  = render 'shared/transactions/table', order_details: @order_details.valid_account
   = render :partial => 'shared/reconcile_footnote'

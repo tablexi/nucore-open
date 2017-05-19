@@ -14,11 +14,11 @@
             %th.nowrap= OrderDetail.human_attribute_name(@extra_date_column_header || @extra_date_column)
           - if current_facility.blank? || cross_facility?
             %th= Facility.model_name.human
-          %th.nowrap= [Account.model_name.human, Account.human_attribute_name("expires_at")].join(" ")
           %th.order-note= OrderDetail.human_attribute_name("description")
           %th.nowrap= OrderDetail.human_attribute_name("user")
           - unless @account
             %th= Account.model_name.human
+            %th.nowrap= Account.human_attribute_name("expires_at")
             %th= Account.human_attribute_name("owner")
           %th.currency= OrderDetail.human_attribute_name("cost")
           %th= OrderDetail.human_attribute_name("order_status")
@@ -41,7 +41,6 @@
             - if current_facility.blank? || cross_facility?
 
               %td= order_detail.order.facility
-            %td= order_detail.account.expires_at.try(:strftime, "%m/%d/%Y")
             %td.user-order-detail.order-note
               .order-detail-description
                 = order_detail_description(order_detail)
@@ -58,6 +57,7 @@
             %td= order_detail.order.user.full_name
             - unless @account
               %td= order_detail.account
+              %td= order_detail.account.expires_at.try(:strftime, "%m/%d/%Y")
               %td= order_detail.account.owner_user
             %td.currency
               - order_detail.send(:extend, PriceDisplayment)
