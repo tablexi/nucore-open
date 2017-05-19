@@ -7,9 +7,7 @@ class AddForeignKeys < ActiveRecord::Migration
     add_index :price_group_members, :account_id
     add_index :products, :initial_order_status_id
 
-    # The dartmouth database violates this one
     add_foreign_key :account_users, :users
-
     add_foreign_key :journal_rows, :accounts
     add_foreign_key :journal_rows, :journals
     add_foreign_key :journal_rows, :order_details
@@ -19,30 +17,14 @@ class AddForeignKeys < ActiveRecord::Migration
     add_foreign_key :order_details, :statements
     add_foreign_key :orders, :order_imports
     add_foreign_key :orders, :orders, column: :merge_with_order_id
-
-    #The UIC and Dartmouth databases violate this
     add_foreign_key :orders, :users
-
     add_foreign_key :price_group_members, :accounts
-
-    # This is in a migration, the Dartmouth database has it, the UIC
-    # one does not
-    #add_foreign_key :price_group_members, :price_groups
-
     add_foreign_key :price_group_members, :users
-
-    # The Dartmouth database fails this one
     add_foreign_key :product_users, :users
     add_foreign_key :statement_rows, :order_details
-
-    #The UIC database violates this
     add_foreign_key :statement_rows, :statements
-
     add_foreign_key :statements, :accounts
-
-    # The UIC db has one row that violates this
     add_foreign_key :user_roles, :facilities
-
     add_foreign_key :user_roles, :users
 
   end
