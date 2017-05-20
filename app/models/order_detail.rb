@@ -15,6 +15,10 @@ class OrderDetail < ActiveRecord::Base
   # Used when ordering to override certain restrictions
   attr_accessor :being_purchased_by_admin
 
+  # Used in the order detail popup to allow reservations and occupancies to
+  # enforce additional validations.
+  attr_accessor :editing_time_data
+
   # So you can see what price policy was used in the price estimation
   attr_reader :estimated_price_policy
 

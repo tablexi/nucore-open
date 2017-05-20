@@ -3,6 +3,8 @@ module Reservations::Validations
   extend ActiveSupport::Concern
 
   included do
+    delegate :editing_time_data, to: :order_detail, allow_nil: true
+
     validates_uniqueness_of :order_detail_id, allow_nil: true
     validates :product_id, :reserve_start_at, presence: true
     validates :reserve_end_at, presence: true, if: :end_at_required?
@@ -21,6 +23,7 @@ module Reservations::Validations
 
     validate :starts_before_ends
     validate :duration_is_interval
+    validates :actual_duration_mins, presence: true, if: ->(r) { r.actual_start_at? && r.editing_time_data }
   end
 
   # Validation Methods

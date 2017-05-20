@@ -4,9 +4,6 @@ module SecureRooms
 
     include DateTimeInput::Model
 
-    # Set this field to `true` to trigger validations on entry/exit times
-    attr_accessor :editing_times
-
     belongs_to :secure_room, foreign_key: :product_id
     belongs_to :user
     belongs_to :account
@@ -16,6 +13,7 @@ module SecureRooms
 
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range
+    delegate :editing_time_data, to: :order_detail, allow_nil: true
 
     date_time_inputable :entry_at
     date_time_inputable :exit_at
@@ -24,7 +22,7 @@ module SecureRooms
     alias_attribute :actual_end_at, :exit_at
 
     validates :secure_room, :user, presence: true
-    validate :entry_and_exit_are_valid, if: :editing_times
+    validate :entry_and_exit_are_valid, if: :editing_time_data
 
     def self.valid
       where(orphaned_at: nil)

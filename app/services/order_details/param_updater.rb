@@ -9,6 +9,7 @@ class OrderDetails::ParamUpdater
         :dispute_resolved_reason,
         :quantity,
         :note,
+        :editing_time_data,
         reservation: [
           :reserve_start_date,
           :reserve_start_hour,

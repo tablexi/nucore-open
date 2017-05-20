@@ -1,11 +1,10 @@
 .datetime-block.js--timeFieldAdjustor
   = f.simple_fields_for :occupancy_attributes, f.object.time_data do |of|
-    = of.input :editing_times, value: true, as: :hidden
-    = of.input :entry_at, as: :time_dropdown
+    = of.input :entry_at, as: :time_dropdown, error: false
 
-    = of.input :actual_duration_mins, input_html: { class: "timeinput", data: { allow_init_blank: true } }
+    = of.input :actual_duration_mins, input_html: { class: "timeinput", data: { allow_init_blank: true } }, error: false
 
-    = of.input :exit_at, as: :time_dropdown
+    = of.input :exit_at, as: :time_dropdown, error: false
 
 :coffeescript
   $ ->
