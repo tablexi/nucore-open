@@ -67,7 +67,7 @@ class OrderDetails::ParamUpdater
       end
     end
 
-    merge_time_data_errors if @order_detail.time_data
+    merge_reservation_errors if @order_detail.reservation.present?
 
     if user_newly_assigned && SettingsHelper.feature_on?(:order_assignment_notifications)
       OrderAssignmentMailer.notify_assigned_user(@order_detail).deliver_later
@@ -112,10 +112,10 @@ class OrderDetails::ParamUpdater
     # returns nil
   end
 
-  def merge_time_data_errors
-    return unless @order_detail.time_data.present?
-    @order_detail.time_data.errors.each do |_error, message|
-      @order_detail.errors.add("time_data.base", message)
+  # Occupancies use accepts_nested_attributes which handles this.
+  def merge_reservation_errors
+    @order_detail.reservation.errors.each do |error, message|
+      @order_detail.errors.add(Reservation.human_attribute_name(error), message)
     end
   end
 

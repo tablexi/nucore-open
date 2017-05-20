@@ -4,6 +4,9 @@ module SecureRooms
 
     include DateTimeInput::Model
 
+    # Set this field to `true` to trigger validations on entry/exit times
+    attr_accessor :editing_times
+
     belongs_to :secure_room, foreign_key: :product_id
     belongs_to :user
     belongs_to :account
@@ -21,6 +24,7 @@ module SecureRooms
     alias_attribute :actual_end_at, :exit_at
 
     validates :secure_room, :user, presence: true
+    validate :entry_and_exit_are_valid, if: :editing_times
 
     def self.valid
       where(orphaned_at: nil)
@@ -83,6 +87,16 @@ module SecureRooms
 
     def range
       TimeRange.new(entry_at, exit_at)
+    end
+
+    def entry_and_exit_are_valid
+      if entry_at && exit_at
+        errors.add(:actual_duration_mins, :zero_minutes) if exit_at <= entry_at
+      elsif entry_at.blank?
+        errors.add(:entry_at, :blank)
+      elsif exit_at.blank?
+        errors.add(:exit_at, :blank)
+      end
     end
 
   end

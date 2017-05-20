@@ -27,10 +27,10 @@ module Reservations::Validations
 
   def starts_before_ends
     if reserve_start_at && reserve_end_at
-      errors.add("reserve_end_date", "must be after the reservation start time") if reserve_end_at <= reserve_start_at
+      errors.add(:duration_mins, :zero_minutes) if reserve_end_at <= reserve_start_at
     end
     if actual_start_at && actual_end_at
-      errors.add("actual_end_date", "must be after the actual start time") if actual_end_at <= actual_start_at
+      errors.add(:actual_duration_mins, :zero_minutes) if actual_end_at <= actual_start_at
     end
   end
 

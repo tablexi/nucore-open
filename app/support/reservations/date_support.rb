@@ -67,12 +67,11 @@ module Reservations::DateSupport
     end
   end
 
-  def actual_duration_mins(base_time = Time.zone.now)
+  def actual_duration_mins
     if @actual_duration_mins
       @actual_duration_mins.to_i
     elsif actual_start_at
-      end_at = actual_end_at || base_time
-      TimeRange.new(actual_start_at, end_at).duration_mins
+      TimeRange.new(actual_start_at, actual_end_at).duration_mins
     else
       0
     end
