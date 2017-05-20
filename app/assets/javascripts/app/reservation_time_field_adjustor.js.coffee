@@ -2,7 +2,7 @@ class window.DateTimeSelectionWidgetGroup
   constructor: (@$dateField, @$hourField, @$minuteField, @$meridianField) ->
 
   getDateTime: ->
-    return unless @$dateField.val() && @$hourField.val() && @$minuteField.val() && @$meridianField.val()
+    return false unless @$dateField.val() && @$hourField.val() && @$minuteField.val() && @$meridianField.val()
     formatter = TimeFormatter.fromString(@$dateField.val(), @$hourField.val(), @$minuteField.val(), @$meridianField.val())
     formatter.toDateTime()
 
@@ -75,6 +75,8 @@ class window.ReservationTimeFieldAdjustor
     @_changed()
 
   _reserveEndChangeCallback: =>
+    return unless @reserveEnd.valid()
+
     if @calculateDuration() >= 0
       @durationField().val(@calculateDuration())
       @durationField().trigger("change")
