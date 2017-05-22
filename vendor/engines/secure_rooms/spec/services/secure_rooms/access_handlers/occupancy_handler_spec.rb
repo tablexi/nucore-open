@@ -105,13 +105,32 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
 
       context "new_occupant" do
         context "entering" do
-          let(:card_reader) { create :card_reader, ingress: true }
-
-          describe "the new occupancy" do
+          describe "an entry only room" do
+            let(:card_reader) { create :card_reader, ingress: true }
             subject(:occupancy) { described_class.process(event) }
 
-            it_should_behave_like "a new occupancy"
-            it_should_behave_like "the entry occupancy"
+            describe "the new occupancy" do
+              it_should_behave_like "a new occupancy"
+              it_should_behave_like "the entry occupancy"
+
+              it "associates the event to both entry and exit" do
+                expect(occupancy.exit_at).to eq(occupancy.entry_at)
+                expect(occupancy.exit_event).to eq(event)
+              end
+            end
+
+            describe "a room with both entry and exit" do
+              let!(:card_reader) { create :card_reader, ingress: true }
+              let!(:exit_card_reader) { create :card_reader, ingress: false, secure_room: card_reader.secure_room }
+
+              it_should_behave_like "a new occupancy"
+              it_should_behave_like "the entry occupancy"
+
+              it "does not have an exit associated with it" do
+                expect(occupancy.exit_at).to be_blank
+                expect(occupancy.exit_event).to be_blank
+              end
+            end
           end
         end
 
