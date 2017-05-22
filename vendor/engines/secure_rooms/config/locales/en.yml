@@ -21,8 +21,8 @@ en:
   order_details:
     notices:
       missing_entry:
-        badge: Missing Entry
-        alert: This order's occupancy does not have an entry time. Please ensure that all times are set and there is a price policy for the date this order was fulfilled.
+        badge: Inferred Account
+        alert: This order's account was inferred from the associated user due to its missing entry. Please ensure that the associated account is correct, all times are set and there is a price policy for the date this order was fulfilled.
       missing_exit:
         badge: Missing Exit
         alert: This order's occupancy does not have an exit time. Please ensure that all times are set and there is a price policy for the date this order was fulfilled.
