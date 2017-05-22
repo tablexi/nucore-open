@@ -17,9 +17,7 @@ module SecureRooms
     end
 
     def long_running_occupancies
-      SecureRooms::Occupancy.current.where(
-        SecureRooms::Occupancy.arel_table[:entry_at].lt(Time.current - 12.hours),
-      )
+      SecureRooms::Occupancy.current.where("entry_at < ?", 12.hours.ago)
     end
 
     def orphan_occupancy(od)
