@@ -23,10 +23,10 @@ RSpec.describe "Scanning in and out", type: :controller do
     describe "scanning in" do
       before do
         post :scan,
-               card_number: user.card_number,
-               reader_identifier: in_reader.card_reader_number,
-               controller_identifier: in_reader.control_device_number,
-               account_identifier: account.id
+             card_number: user.card_number,
+             reader_identifier: in_reader.card_reader_number,
+             controller_identifier: in_reader.control_device_number,
+             account_identifier: account.id
       end
 
       it "creates a new order in purchased state" do
@@ -37,9 +37,9 @@ RSpec.describe "Scanning in and out", type: :controller do
       describe "and then scanning out" do
         before do
           post :scan,
-                 card_number: user.card_number,
-                 reader_identifier: out_reader.card_reader_number,
-                 controller_identifier: out_reader.control_device_number
+               card_number: user.card_number,
+               reader_identifier: out_reader.card_reader_number,
+               controller_identifier: out_reader.control_device_number
         end
 
         it "completes the order and sets pricing" do
@@ -56,10 +56,10 @@ RSpec.describe "Scanning in and out", type: :controller do
     describe "scanning in" do
       before do
         post :scan,
-               card_number: user.card_number,
-               reader_identifier: in_reader.card_reader_number,
-               controller_identifier: in_reader.control_device_number,
-               account_identifier: account.id
+             card_number: user.card_number,
+             reader_identifier: in_reader.card_reader_number,
+             controller_identifier: in_reader.control_device_number,
+             account_identifier: account.id
       end
 
       it "creates a new order in a completed state with pricing" do
