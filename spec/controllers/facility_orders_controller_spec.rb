@@ -510,6 +510,7 @@ RSpec.describe FacilityOrdersController do
       @action = :tab_counts
       @order_detail2 = FactoryGirl.create(:order_detail, order: @order, product: @product)
 
+      # TODO: what about occupancies~?
       expect(@authable.order_details.non_reservations.new_or_inprocess.size).to eq(2)
 
       @problem_order_details = (1..3).map do |_i|
@@ -537,6 +538,7 @@ RSpec.describe FacilityOrdersController do
         maybe_grant_always_sign_in :director
       end
       it "should get only new if thats all you ask for" do
+        # TODO: what about occupancies~?
         @authable.order_details.non_reservations.new_or_inprocess.to_sql
         @params[:tabs] = ["new_or_in_process_orders"]
         do_request

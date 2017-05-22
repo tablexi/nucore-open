@@ -256,7 +256,7 @@ class OrderDetail < ActiveRecord::Base
       .where.not(statement_id: nil)
   }
 
-  scope :non_reservations, -> { joins(:product).where("products.type <> 'Instrument'") }
+  scope :non_reservations, -> { joins(:product).merge(Product.orderable_through_cart) }
   scope :reservations, -> { joins(:product).where("products.type = 'Instrument'") }
 
   scope :purchased, -> { joins(:order).merge(Order.purchased) }

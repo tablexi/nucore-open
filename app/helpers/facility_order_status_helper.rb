@@ -2,6 +2,7 @@ module FacilityOrderStatusHelper
 
   def new_or_in_process_orders
     # will never include instrument order details
+    # TODO: what about occupancies~?
     facility_ods = current_facility.order_details.non_reservations
     facility_ods = facility_ods.joins(:order).where("(order_details.state = ? OR order_details.state = ?) AND orders.state = ?", "new", "inprocess", "purchased")
 
@@ -25,6 +26,7 @@ module FacilityOrderStatusHelper
   end
 
   def disputed_orders
+    # TODO: what about occupancies~?
     current_facility.order_details
                     .non_reservations
                     .in_dispute

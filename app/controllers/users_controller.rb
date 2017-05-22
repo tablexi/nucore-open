@@ -103,6 +103,7 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users/:user_id/orders
   def orders
     # order details for this facility
+    # TODO: what about occupancies~?
     @order_details = @user.order_details
                           .non_reservations
                           .for_facility(current_facility)

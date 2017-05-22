@@ -22,6 +22,7 @@ class FacilityOrdersController < ApplicationController
 
   # GET /facility/1/orders
   def index
+    # TODO: what about occupancies~?
     @order_details = new_or_in_process_orders.paginate(page: params[:page])
   end
 
