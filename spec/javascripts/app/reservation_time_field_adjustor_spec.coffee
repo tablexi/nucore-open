@@ -222,22 +222,24 @@ describe "ReservationTimeFieldAdjustor", ->
       expect(@subject.reserveStart.getDateTime()).toEqual(new Date(2015, 10, 13, 9, 13))
       expect(@subject.durationField().val()).toEqual("62")
 
-    it "sets the start time to end time and duration to zero when setting start after start", =>
-      $("#end_date", fixture.el).val("11/13/2015").trigger("change")
+    it "sets the start time to end time and duration to zero when setting start after end", =>
+      $("#start_date", fixture.el).val("11/13/2015").trigger("change")
       expect(@subject.durationField().val()).toEqual("")
-      expect(@subject.reserveEnd.valid()).toBe(false)
+      expect(@subject.reserveStart.valid()).toBe(false)
 
-      $("#end_hour", fixture.el).val("1").trigger("change")
+      $("#start_hour", fixture.el).val("11").trigger("change")
       expect(@subject.durationField().val()).toEqual("")
-      expect(@subject.reserveEnd.valid()).toBe(false)
+      expect(@subject.reserveStart.valid()).toBe(false)
 
-      $("#end_minute", fixture.el).val("17").trigger("change")
+      $("#start_minute", fixture.el).val("17").trigger("change")
       expect(@subject.durationField().val()).toEqual("")
-      expect(@subject.reserveEnd.valid()).toBe(false)
+      expect(@subject.reserveStart.valid()).toBe(false)
 
-      $("#end_meridian", fixture.el).val("AM").trigger("change")
+      $("#start_meridian", fixture.el).val("AM").trigger("change")
 
-      expect(@subject.reserveEnd.getDateTime()).toEqual(new Date(2015, 10, 13, 10, 15))
+      expect(@subject.reserveStart.getDateTime()).toEqual(new Date(2015, 10, 13, 11, 17))
+      expect(@subject.reserveEnd.getDateTime()).toEqual(new Date(2015, 10, 13, 11, 17))
+
       expect(@subject.durationField().val()).toEqual("0")
 
 
