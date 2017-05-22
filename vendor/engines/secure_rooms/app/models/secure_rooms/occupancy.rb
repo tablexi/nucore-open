@@ -49,7 +49,7 @@ module SecureRooms
     def associate_entry!(event)
       update!(
         entry_event: event,
-        entry_at: event.created_at,
+        entry_at: Time.current,
       )
       self
     end
@@ -57,7 +57,7 @@ module SecureRooms
     def associate_exit!(event)
       update!(
         exit_event: event,
-        exit_at: event.created_at,
+        exit_at: Time.current,
       )
       self
     end
