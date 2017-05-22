@@ -1,6 +1,6 @@
 #= require jquery
 
-describe "ReservationTimeFieldAdjustor", ->
+describe "ReservationTimeFieldAdjustor", =>
   @init = =>
     @form = $("form", fixture.el)
     @subject = new ReservationTimeFieldAdjustor(
@@ -129,7 +129,7 @@ describe "ReservationTimeFieldAdjustor", ->
       @init()
 
     describe "entering a duration", =>
-      beforeEach =>
+      beforeEach ->
         $("#duration").val("120").trigger("change")
 
       it "sets the end time", =>
@@ -195,7 +195,7 @@ describe "ReservationTimeFieldAdjustor", ->
       @init()
 
     describe "entering a duration", =>
-      beforeEach =>
+      beforeEach ->
         $("#duration").val("120").trigger("change")
 
       it "sets the start time to X minutes before the end when entering a duration", =>
@@ -241,8 +241,3 @@ describe "ReservationTimeFieldAdjustor", ->
       expect(@subject.reserveEnd.getDateTime()).toEqual(new Date(2015, 10, 13, 11, 17))
 
       expect(@subject.durationField().val()).toEqual("0")
-
-
-
-
-
