@@ -53,7 +53,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
         before { secure_room.product_users.create!(user: card_user, approved_by: 0) }
 
         describe "and inside the schedule rules", :time_travel do
-          let(:now) { Time.zone.local(2016, 5, 15, 12, 00) }
+          let(:now) { Time.zone.local(2016, 5, 15, 12, 0) }
           it "is denied for the right reason" do
             expect(verdict).to be_denied
             expect(verdict.reason).to include("no valid accounts")
@@ -93,7 +93,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
       describe "the user is on the access list" do
         before { secure_room.product_users.create!(user: card_user, approved_by: 0) }
         describe "and inside the schedule rules", :time_travel do
-          let(:now) { Time.zone.local(2016, 5, 15, 12, 00) }
+          let(:now) { Time.zone.local(2016, 5, 15, 12, 0) }
           it { is_expected.to be_granted }
         end
 
@@ -115,5 +115,4 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
       end
     end
   end
-
 end
