@@ -21,7 +21,7 @@ en:
   order_details:
     notices:
       missing_entry:
-        badge: Inferred Account
+        badge: Missing Entry
         alert: This order's account was inferred from the associated user due to its missing entry. Please ensure that the associated account is correct, all times are set and there is a price policy for the date this order was fulfilled.
       missing_exit:
         badge: Missing Exit
