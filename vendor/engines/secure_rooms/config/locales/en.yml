@@ -55,6 +55,9 @@ en:
     attributes:
       user:
         card_number: Card Number
+      order_detail/occupancy:
+        exit_at: Time of Exit
+        actual_duration_mins: Duration
       secure_rooms/card_reader:
         description: Description
         card_reader_number: Card Reader Number

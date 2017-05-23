@@ -54,8 +54,8 @@
           = render "result_file_icon", od: od
 
         %td.currency.timeinput= od.reservation.try(:duration_mins)
-        - if od.time_data.try(:actual_duration_mins)
-          %td.currency.timeinput= od.time_data.actual_duration_mins
+        - if od.time_data.present?
+          %td.currency{class: od.time_data.actual_duration_mins ? "timeinput" : ""}= od.time_data.actual_duration_mins || "???"
         - elsif od.quantity_as_time?
           %td.currency.timeinput= od.quantity
         - else

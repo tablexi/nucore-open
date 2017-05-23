@@ -70,11 +70,6 @@ en:
           %{product} may not be set initially to an order status of %{status}.
 
     facility_order_details:
-      edit:
-        notice:
-          open_journal: "You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first."
-          no_actuals: "This order's reservation does not have an actual time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
-          no_policy: "This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Clicking 'Save' will attempt to assign a price policy to this order and save any other changes."
       destroy:
         notice: "You cannot delete an order detail that isn't being merged"
         error: "Could not delete order detail %{order_detail_id}"

@@ -13,6 +13,7 @@ module SecureRooms
 
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range
+    delegate :editing_time_data, to: :order_detail, allow_nil: true
 
     date_time_inputable :entry_at
     date_time_inputable :exit_at
@@ -21,6 +22,7 @@ module SecureRooms
     alias_attribute :actual_end_at, :exit_at
 
     validates :secure_room, :user, presence: true
+    validate :entry_and_exit_are_valid, if: :editing_time_data
 
     def self.valid
       where(orphaned_at: nil)
@@ -83,6 +85,16 @@ module SecureRooms
 
     def range
       TimeRange.new(entry_at, exit_at)
+    end
+
+    def entry_and_exit_are_valid
+      if entry_at && exit_at
+        errors.add(:actual_duration_mins, :zero_minutes) if exit_at <= entry_at
+      elsif entry_at.blank?
+        errors.add(:entry_at, :blank)
+      elsif exit_at.blank?
+        errors.add(:exit_at, :blank)
+      end
     end
 
   end

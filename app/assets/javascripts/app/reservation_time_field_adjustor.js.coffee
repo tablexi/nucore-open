@@ -2,6 +2,7 @@ class window.DateTimeSelectionWidgetGroup
   constructor: (@$dateField, @$hourField, @$minuteField, @$meridianField) ->
 
   getDateTime: ->
+    return false unless @$dateField.val() && @$hourField.val() && @$minuteField.val() && @$meridianField.val()
     formatter = TimeFormatter.fromString(@$dateField.val(), @$hourField.val(), @$minuteField.val(), @$meridianField.val())
     formatter.toDateTime()
 
@@ -15,6 +16,9 @@ class window.DateTimeSelectionWidgetGroup
     @$minuteField.val(dateTime.getMinutes())
 
     @change()
+
+  valid: =>
+    @getDateTime() && !isNaN(@getDateTime().getTime())
 
   change: (callback) ->
     fields = [@$dateField, @$hourField, @$minuteField, @$meridianField]
@@ -59,31 +63,52 @@ class window.ReservationTimeFieldAdjustor
 
   _durationChangeCallback: =>
     durationMinutes = @durationField().val()
+    return unless durationMinutes % @reserveInterval == 0
 
-    if durationMinutes % @reserveInterval == 0
+    if @reserveStart.valid()
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime().addMinutes(durationMinutes))
-      @_changed()
+    else if @reserveEnd.valid() # If we had an end, but no begin
+      @reserveStart
+        .setDateTime(@reserveEnd.getDateTime().addMinutes(-durationMinutes))
+
+    @_changed()
 
   _reserveEndChangeCallback: =>
-    if @calculateDuration() >= 0
-      @durationField().val(@calculateDuration())
-      @durationField().trigger("change")
-      @_changed()
-    else
+    return unless @reserveEnd.valid()
+
+    if @calculateDuration() < 0
       # If the duration ends up negative, i.e. end is before start,
       # set the end to the start time plus the duration specified in the box
       @reserveEnd
         .setDateTime(@reserveStart.getDateTime()
           .addMinutes(@durationField().val()))
 
-  _reserveStartChangeCallback: =>
-    duration = @durationField().val()
-    # Changing the start time will leave the duration alone, but change the
-    # end time to X minutes after the start time
-    endTime = @reserveStart.getDateTime().addMinutes(duration)
+    @durationField().val(@calculateDuration())
+    @durationField().trigger("change")
+    @_changed()
 
-    @reserveEnd.setDateTime(endTime)
+  _reserveStartChangeCallback: =>
+    # Wait until all the fields are filled before we do anything here
+    return unless @reserveStart.valid()
+
+    duration = @durationField().val()
+    # Duration starts as blank if there is a missing start/stop
+    if duration
+      # Changing the start time will leave the duration alone, but change the
+      # end time to X minutes after the start time
+      endTime = @reserveStart.getDateTime().addMinutes(duration)
+      @reserveEnd.setDateTime(endTime)
+    else
+
+      if @calculateDuration() < 0
+        # If the duration ends up negative, i.e. start is after end, leave the
+        # start time alone, but set the end time to the beginning.
+        @reserveEnd.setDateTime(@reserveStart.getDateTime())
+
+      @durationField().val(@calculateDuration())
+      @durationField().trigger("change")
+
     @_changed()
 
   _changed: =>
