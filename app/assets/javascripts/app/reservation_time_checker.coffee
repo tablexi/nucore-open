@@ -1,3 +1,5 @@
+# Validates that the selected reservation is valid for max/min durations as well
+# as interval (5, 10, 15, 30 minutes).
 class window.ReservationTimeChecker
   constructor: (@selector, @alertId = 'duration-alert')->
     if @validPage()
@@ -60,3 +62,10 @@ class window.ReservationTimeChecker
         @showError()
       else
         @hideError()
+
+$ ->
+  target = ".js--reservationValidations #reservation_duration_mins, .edit_reservation #reservation_duration_mins"
+
+  if $(target).length
+    new ReservationTimeChecker(target)
+
