@@ -1,19 +1,19 @@
-= modelless_form_for :url => url_for(params), :method => :get, :html => { :class => "search_form" }, :defaults => { :required => false } do |f|
+= modelless_form_for url: url_for(params), method: :get, html: { class: "search_form" }, defaults: { required: false } do |f|
   .row
     %fieldset.span6#search
-      = f.input :facilities, :as => :transaction_chosen
-      = f.input :accounts, :label_method => 'account_list_item', :as => :transaction_chosen unless @account
-      = f.input :products, :as => :transaction_chosen, :data_method => :product_options
-      = f.input :account_owners, :label => Account.human_attribute_name(:owner).pluralize, :label_method => :full_name, :as => :transaction_chosen unless @account
-      = f.input :order_statuses, :data_method => :order_statuses_options, :as => :transaction_chosen
+      = f.input :facilities, as: :transaction_chosen
+      = f.input :accounts, label_method: 'account_list_item', as: :transaction_chosen unless @account
+      = f.input :products, as: :transaction_chosen, data_method: :product_options
+      = f.input :account_owners, label: Account.human_attribute_name(:owner).pluralize, label_method: :full_name, as: :transaction_chosen unless @account
+      = f.input :order_statuses, data_method: :order_statuses_options, as: :transaction_chosen
       = render_view_hook("end_of_first_column", f: f)
     %fieldset.span2#calendar_filter
       %br
-      = f.input "date_range[field]", :collection => @search_options[:date_range], :selected => @date_range_field, :label => false
-      = f.input "date_range[start]", :input_html => { value: @search_fields[:date_range].try(:[], :start).to_s.gsub("-","/"), class: ['datepicker', 'in_past'] }, label: 'Start Date'
-      = f.input "date_range[end]", :input_html => { value: @search_fields[:date_range].try(:[], :end).to_s.gsub("-","/"), :class => ['datepicker', 'in_past'] }, :label => 'End Date'
+      = f.input "date_range[field]", collection: @search_options[:date_range], selected: @date_range_field, label: false
+      = f.input "date_range[start]", input_html: { value: @search_fields[:date_range].try(:[], :start).to_s.gsub("-","/"), class: ['datepicker', 'in_past'] }, label: "Start Date"
+      = f.input "date_range[end]", input_html: { value: @search_fields[:date_range].try(:[], :end).to_s.gsub("-","/"), class: ['datepicker', 'in_past'] }, label: "End Date"
 
       .submit_button
         = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
         = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
-        = f.submit "Search", :class => 'btn'
+        = f.submit "Search", class: 'btn'
