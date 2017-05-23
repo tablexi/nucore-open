@@ -9,6 +9,7 @@ module SecureRooms
 
       NavTab::LinkCollection.send :include, SecureRooms::LinkCollectionExtension
       OrderDetail.send :include, SecureRooms::OrderDetailExtension
+      User.send :include, SecureRooms::UserExtension
       ::OrderDetails::ParamUpdater.send :include, SecureRooms::OrderDetails::ParamUpdaterExtension
 
       bundle_index = Product.types.index(Bundle) || -1
