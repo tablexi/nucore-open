@@ -1,5 +1,7 @@
 require "rails_helper"
 
+# This is intended as an API-level feature spec. It uses the controller testing
+# mechanism since Capybara doesn't provide good API testing.
 RSpec.describe "Scanning in and out", type: :controller do
   before { @controller = SecureRoomsApi::ScansController.new }
 
