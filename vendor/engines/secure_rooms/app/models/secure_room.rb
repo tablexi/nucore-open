@@ -12,6 +12,10 @@ class SecureRoom < Product
     order_detail.occupancy
   end
 
+  def entry_only?
+    card_readers.egress.none?
+  end
+
   private
 
   def set_secure_room_defaults
