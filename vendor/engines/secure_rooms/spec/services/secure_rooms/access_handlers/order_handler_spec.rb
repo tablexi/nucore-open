@@ -1,20 +1,17 @@
 require "rails_helper"
 
 RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
-  let(:user) { create :user }
-  let(:secure_room) { create :secure_room }
-  let(:card_reader) { create :card_reader, secure_room: secure_room }
-  let(:account) { create :account, :with_account_owner, owner: user }
+  let(:user) { create(:user, card_number: "123456") }
+  let(:secure_room) { create(:secure_room, :with_schedule_rule, :with_base_price) }
+  let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
+  let!(:card_reader) { create :card_reader, secure_room: secure_room }
 
-  before { allow_any_instance_of(described_class).to receive(:user_can_purchase_secure_room?).and_return(true) }
+  before do
+    secure_room.product_users.create!(user: user, approved_by: 0)
+  end
 
   describe "#process" do
     context "with an orderable occupancy" do
-      before do
-        secure_room.update(requires_approval: false)
-        allow_any_instance_of(Product).to receive(:can_purchase_order_detail?).and_return(true)
-      end
-
       let(:occupancy) do
         create(:occupancy, :active, user: user, secure_room: secure_room, account: account)
       end
@@ -76,15 +73,6 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
         describe "order_detail" do
           subject(:order_detail) { described_class.process(occupancy).order_details.first }
 
-          let(:price_group) { PriceGroup.first }
-          let!(:price_policy) do
-            create(
-              :secure_room_price_policy,
-              product: secure_room,
-              price_group: price_group,
-            )
-          end
-
           it { is_expected.to be_complete }
           it { is_expected.to be_fulfilled_at }
           it { is_expected.not_to be_problem }
@@ -99,36 +87,32 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
 
     context "without an occupancy account" do
       let(:occupancy) do
-        create(:occupancy, :active, user: user, secure_room: card_reader.secure_room)
+        create(:occupancy, :active, user: user, secure_room: card_reader.secure_room, account: account)
       end
 
-      let!(:account) { create :nufs_account, :with_account_owner, owner: user }
-      let(:price_group) { PriceGroup.first }
-      let!(:price_policy) do
-        create(
-          :secure_room_price_policy,
-          product: secure_room,
-          price_group: price_group,
-        )
+      context "when the user is expected to pay for access" do
+        it "creates an order" do
+          expect { described_class.process(occupancy) }
+            .to change(Order, :count).by(1)
+        end
+
+        describe "the order" do
+          subject(:order) { described_class.process(occupancy) }
+
+          it { is_expected.to be_purchased }
+
+          it "assigns an account to the order" do
+            expect(order.account).to eq account
+          end
+        end
       end
 
-      before do
-        secure_room.update(requires_approval: false)
-        allow(secure_room).to receive(:can_purchase?).and_return(true)
-      end
+      context "when the user is a facility operator" do
+        let(:user) { create :user, :facility_director, facility: card_reader.facility }
 
-      it "creates an order" do
-        expect { described_class.process(occupancy) }
-          .to change(Order, :count).by(1)
-      end
-
-      describe "the order" do
-        subject(:order) { described_class.process(occupancy) }
-
-        it { is_expected.to be_purchased }
-
-        it "assigns an account to the order" do
-          expect(order.account).to eq account
+        it "does not create an order" do
+          expect { described_class.process(occupancy) }
+            .not_to change(Order, :count)
         end
       end
     end

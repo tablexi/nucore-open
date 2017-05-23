@@ -14,6 +14,10 @@ module SecureRooms
 
     before_create :set_tablet_token
 
+    def self.ingress
+      where(ingress: true)
+    end
+
     def self.egress
       where(ingress: false)
     end

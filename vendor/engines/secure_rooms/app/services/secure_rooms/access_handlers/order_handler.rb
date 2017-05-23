@@ -15,8 +15,7 @@ module SecureRooms
       end
 
       def process
-        # TODO: [#145957283] Ensure facility operators with accounts do not create orders on exit
-        return unless user_can_purchase_secure_room?
+        return if user_exempt_from_purchase?
 
         find_or_create_order
         complete_order
@@ -54,8 +53,9 @@ module SecureRooms
         occupancy.update(account: accounts.first)
       end
 
-      def user_can_purchase_secure_room?
-        occupancy.user.accounts_for_product(occupancy.secure_room).present?
+      def user_exempt_from_purchase?
+        in_reader = occupancy.secure_room.card_readers.ingress.first
+        SecureRooms::CheckAccess.new.authorize(occupancy.user, in_reader).accounts.blank?
       end
 
       def create_order_and_detail
