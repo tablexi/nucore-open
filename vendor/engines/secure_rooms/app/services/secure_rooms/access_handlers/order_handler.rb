@@ -15,6 +15,7 @@ module SecureRooms
       end
 
       def process
+        # TODO: [#145957283] Ensure facility operators with accounts do not create orders on exit
         return unless user_can_purchase_secure_room?
 
         find_or_create_order
