@@ -55,4 +55,16 @@ RSpec.describe "Creating a journal" do
     end
   end
 
+  describe "exporting problem orders" do
+    before do
+      visit new_facility_journal_path(facility)
+    end
+
+    it "can export problem orders to a csv" do
+      expect(page).to have_content("These payment sources were not valid at the time of fulfillment.")
+      click_link "Export as CSV"
+      expect(page).to have_content("A report is being prepared and will be emailed")
+    end
+  end
+
 end
