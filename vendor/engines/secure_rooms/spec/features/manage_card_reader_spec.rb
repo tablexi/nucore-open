@@ -9,21 +9,16 @@ RSpec.describe "Managing CardReaders" do
   it "can create a card reader" do
     visit facility_secure_room_card_readers_path(facility, secure_room)
     click_link "Add Card Reader"
-    fill_in "card_reader[description]", with: "New Reader Description"
-    fill_in "card_reader[card_reader_number]", with: "New Reader Number"
-    fill_in "card_reader[control_device_number]", with: "New Device Number"
+    fill_in "Description", with: "New Reader Description"
+    fill_in "Card Reader Number", with: "New Reader Number"
+    fill_in "MAC Address", with: "00:00:00:00:00:00"
     click_button "Create Card Reader"
-
-    new_reader = secure_room.card_readers.find_by(
-      card_reader_number: "New Reader Number",
-      control_device_number: "New Device Number",
-    )
 
     expect(current_path).to eq(facility_secure_room_card_readers_path(facility, secure_room))
     within(".secure_rooms_card_reader") do
       expect(page).to have_content("New Reader Description")
       expect(page).to have_content("New Reader Number")
-      expect(page).to have_content("New Device Number")
+      expect(page).to have_content("00:00:00:00:00:00")
       expect(page).to have_content("In")
     end
   end
@@ -34,9 +29,9 @@ RSpec.describe "Managing CardReaders" do
     it "can edit a card reader" do
       visit facility_secure_room_card_readers_path(facility, secure_room)
       within(".product_list") { click_link "Edit" }
-      fill_in "card_reader[description]", with: "Edited Reader Description"
-      fill_in "card_reader[card_reader_number]", with: "Edited Reader Number"
-      fill_in "card_reader[control_device_number]", with: "Edited Device Number"
+      fill_in "Description", with: "Edited Reader Description"
+      fill_in "Card Reader Number", with: "Edited Reader Number"
+      fill_in "MAC Address", with: "FF:FF:FF:FF:FF:FF"
       select "Out", from: "Direction"
       click_button "Update Card Reader"
 
@@ -44,7 +39,7 @@ RSpec.describe "Managing CardReaders" do
       within(".secure_rooms_card_reader") do
         expect(page).to have_content("Edited Reader Description")
         expect(page).to have_content("Edited Reader Number")
-        expect(page).to have_content("Edited Device Number")
+        expect(page).to have_content("FF:FF:FF:FF:FF:FF")
         expect(page).to have_content("Out")
       end
     end

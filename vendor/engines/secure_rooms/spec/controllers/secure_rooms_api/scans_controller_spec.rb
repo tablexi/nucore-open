@@ -12,7 +12,7 @@ RSpec.describe SecureRoomsApi::ScansController do
     subject { response }
 
     let(:secure_room) { create(:secure_room, :with_schedule_rule) }
-    let(:card_reader) { create(:card_reader, tablet_token: "TABLETID", secure_room: secure_room) }
+    let(:card_reader) { create(:card_reader, tablet_token: "TABLETID", secure_room: secure_room, control_device_number: "FF:FF:FF:FF:FF:FF") }
     let(:user) { create(:user, card_number: "123456") }
 
     describe "negative responses" do
@@ -85,6 +85,17 @@ RSpec.describe SecureRoomsApi::ScansController do
             expect(JSON.parse(response.body)["tablet_identifier"]).to eq("TABLETID")
           end
         end
+      end
+
+      describe "with a mis-cased controller ID" do
+        before do
+          post :scan,
+               card_number: user.card_number,
+               reader_identifier: card_reader.card_reader_number,
+               controller_identifier: card_reader.control_device_number.downcase
+        end
+
+        it { is_expected.not_to have_http_status(:not_found) }
       end
     end
   end
