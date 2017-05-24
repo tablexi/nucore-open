@@ -9,7 +9,6 @@
 
 %h1= @user.full_name
 = simple_form_for [current_facility, @user], url: facility_user_card_number_update_path(current_facility, @user) do |f|
-  = html("instructions")
   .form-inputs
     = f.input :card_number
     = f.button :submit, text("shared.update"), class: ["btn", "btn-primary"]
