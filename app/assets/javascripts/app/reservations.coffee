@@ -22,4 +22,3 @@ $ ->
       $('#reservation_submit').attr('value', text)
 
     .trigger('change')
-
