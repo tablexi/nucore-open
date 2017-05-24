@@ -53,6 +53,11 @@ module SecureRooms
         occupancy.update(account: accounts.first)
       end
 
+      # Whether or not an occupant must pay for their time is determined by
+      # CheckAccess at scan-in time. In the event we don't have access to
+      # scan-in information, we check the user's access with a room's in-reader
+      # to find what the verdict would have been. A verdict returning accounts
+      # signifies the user would have needed to select one to enter.
       def user_exempt_from_purchase?
         in_reader = occupancy.secure_room.card_readers.ingress.first
         SecureRooms::CheckAccess.new.authorize(occupancy.user, in_reader).accounts.blank?
