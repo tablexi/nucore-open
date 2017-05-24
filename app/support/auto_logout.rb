@@ -43,8 +43,7 @@ class AutoLogout
     reservation.product.relay.deactivate unless reservation.other_reservation_using_relay?
     reservation.order_detail.complete!
   rescue => e
-    ActiveSupport::Notifications.instrument("background_error",
-                                            exception: e, information: "Error on Order # #{od} - #{e}")
+    STDERR.puts "Error on Order # #{od} - #{e}"
     raise ActiveRecord::Rollback
   end
 

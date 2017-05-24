@@ -9,7 +9,11 @@ require File.expand_path(File.dirname(__FILE__) + "/environment")
 job_type :rake, "cd :path && :environment_variable=:environment bundle exec rake :task :output"
 
 every 5.minutes, roles: [:db] do
-  command "curl --silent -X POST #{Rails.application.routes.url_helpers.admin_services_process_five_minute_tasks_url}"
+  rake "order_details:expire_reservations"
+end
+
+every 5.minutes, roles: [:db] do
+  rake "order_details:auto_logout"
 end
 
 every 1.minute, roles: [:db] do
