@@ -39,7 +39,7 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
 
       it "sets the order_detail problem status" do
         action.perform
-        expect(order_detail.reload.problem).to be true
+        expect(order_detail.reload).to be_problem
       end
 
       it "does not assign pricing" do
