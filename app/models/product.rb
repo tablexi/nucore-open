@@ -55,9 +55,14 @@ class Product < ActiveRecord::Base
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
+  scope :orderable_through_cart, -> { not_archived.where(type: cart_types) }
 
   def self.types
     @product_types ||= [Instrument, Item, Service, Bundle]
+  end
+
+  def self.cart_types
+    @cart_types ||= [Item, Service, Bundle]
   end
 
   def self.mergeable_types

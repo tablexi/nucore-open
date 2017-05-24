@@ -44,6 +44,7 @@ class Cart
 
   # Will find the first cart that either has a non-instrument,
   # has multiple items, or is empty
+  # TODO: what about occupancies~?
   def non_reservation_only_cart
     all_carts.find { |order| order.order_details.non_reservations.any? || order.order_details.size != 1 }
   end

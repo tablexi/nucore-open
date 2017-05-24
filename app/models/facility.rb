@@ -122,6 +122,7 @@ class Facility < ActiveRecord::Base
   end
 
   def problem_non_reservation_order_details
+    # TODO: what about occupancies~?
     complete_problem_order_details.non_reservations
   end
 
