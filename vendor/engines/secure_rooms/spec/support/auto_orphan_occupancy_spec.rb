@@ -53,6 +53,34 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
       end
     end
 
+    context "with a long-running non-order occupancy" do
+      let(:user) { create(:user, :staff, card_number: "123456", facility: secure_room.facility) }
+      let(:event) { create :event, :successful, occurred_at: 3.days.ago, card_reader: card_reader, user: user }
+      let!(:occupancy) do
+        create(
+          :occupancy,
+          :active,
+          entry_event: event,
+          user: user,
+          secure_room: secure_room,
+        )
+      end
+
+      it "orphans the occupancy" do
+        expect { action.perform }.to change { occupancy.reload.orphan? }.from(false).to(true)
+      end
+
+      it "sends the occupancy through the order handler" do
+        expect(SecureRooms::AccessHandlers::OrderHandler).to receive(:process).with(occupancy)
+        action.perform
+      end
+
+      it "does not generate an order" do
+        action.perform
+        expect(user.orders).to be_blank
+      end
+    end
+
     context "with a short-term active occupancy" do
       let!(:occupancy) do
         create(
