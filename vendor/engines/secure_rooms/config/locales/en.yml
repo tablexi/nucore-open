@@ -78,6 +78,13 @@ en:
         orphaned_at: Time Marked as Orphaned
         actual_duration_mins: Duration
 
+    errors:
+      models:
+        secure_rooms/card_reader:
+          attributes:
+            control_device_number:
+              invalid: must be in "00:00:00:00:00:00" format
+
   controllers:
     secure_rooms/card_readers:
       create:
@@ -128,3 +135,8 @@ en:
           occupancies_title: Occupancies
         tabnav_users:
           title: Secure Room Access
+
+  simple_form:
+    placeholders:
+      card_reader:
+        control_device_number: "00:00:00:00:00:00"
