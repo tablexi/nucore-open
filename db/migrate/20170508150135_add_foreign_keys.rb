@@ -1,10 +1,9 @@
 class AddForeignKeys < ActiveRecord::Migration
   def change
     add_index :notifications, [:subject_id, :subject_type]
-    add_index :order_details, :project_id
     add_index :order_statuses, :parent_id
-    add_index :orders, :merge_with_order_id
-    add_index :price_group_members, :account_id
+    add_index(:orders, :merge_with_order_id) unless index_exists?(:orders, :merge_with_order_id)
+    add_index(:price_group_members, :account_id) unless index_exists?(:price_group_members, :account_id)
     add_index :products, :initial_order_status_id
 
     add_foreign_key :account_users, :users
