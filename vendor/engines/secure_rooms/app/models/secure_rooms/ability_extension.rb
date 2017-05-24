@@ -13,6 +13,7 @@ module SecureRooms
       if user.operator_of?(resource)
         ability.can [
           :index,
+          :dashboard,
           :show_problems,
           :assign_price_policies_to_problem_orders,
           :tab_counts,

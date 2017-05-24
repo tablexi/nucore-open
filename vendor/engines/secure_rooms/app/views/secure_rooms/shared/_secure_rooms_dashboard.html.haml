@@ -1,0 +1,27 @@
+-# TODO: Styling needs work
+%h3= room.name
+.row
+  .span6
+    %h4= text(:current)
+    %table.table.table-striped.table-hover.product_list
+      %thead
+        %tr
+          %th= User.human_attribute_name(:full_name)
+          %th= SecureRooms::Occupancy.human_attribute_name(:entry_at)
+      %tbody
+        - room.occupancies.current.each do |occupancy|
+          %tr
+            %td= occupancy.user.full_name
+            %td= human_datetime(occupancy.entry_at)
+  .span6
+    %h4= text(:recent)
+    %table.table.table-striped.table-hover.product_list
+      %thead
+        %tr
+          %th= User.human_attribute_name(:full_name)
+          %th= SecureRooms::Occupancy.human_attribute_name(:exit_at)
+      %tbody
+        - room.occupancies.recent.each do |occupancy|
+          %tr
+            %td= occupancy.user.full_name
+            %td= human_datetime(occupancy.exit_at)

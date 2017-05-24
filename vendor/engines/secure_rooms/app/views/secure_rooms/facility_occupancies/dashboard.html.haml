@@ -1,0 +1,8 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :tabnav do
+  = render "secure_rooms/shared/tabnav_occupancy"
+
+- if @secure_rooms.present?
+  = render partial: "secure_rooms/shared/secure_rooms_dashboard", collection: @secure_rooms, as: :room

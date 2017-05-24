@@ -124,6 +124,7 @@ en:
           no_occupancies: There are no \"In Process\" occupancies.
       shared:
         tabnav_occupancy:
+          dashboard: Dashboard
           in_progress: In Progress
           problem: Problem Occupancies
         tabnav_secure_room:
@@ -131,6 +132,9 @@ en:
           occupancies_title: Occupancies
         tabnav_users:
           title: Secure Room Access
+        secure_rooms_dashboard:
+          current: Current Occupants
+          recent: Recent Occupants
 
   simple_form:
     placeholders:

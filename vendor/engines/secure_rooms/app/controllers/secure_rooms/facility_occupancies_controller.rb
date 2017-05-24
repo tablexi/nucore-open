@@ -25,6 +25,10 @@ module SecureRooms
       @active_tab = "admin_occupancies"
     end
 
+    def dashboard
+      @secure_rooms = current_facility.products(SecureRoom).active
+    end
+
     def index
       @order_details = new_or_in_process_orders.order(@order_by_clause).paginate(page: params[:page])
     end
