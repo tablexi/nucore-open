@@ -86,7 +86,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
           # orders need to be "purchased" but we don't care about the details
           before do
             allow_any_instance_of(OrderDetail).to receive(:valid_for_purchase?).and_return(true)
-            allow_any_instance_of(SecureRooms::AccessHandlers::OrderHandler).to receive(:user_can_purchase_secure_room?).and_return(true)
+            allow_any_instance_of(SecureRooms::AccessHandlers::OrderHandler).to receive(:user_exempt_from_purchase?).and_return(false)
           end
 
           describe "the new occupancy" do

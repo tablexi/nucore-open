@@ -13,7 +13,7 @@ RSpec.describe "Scanning in and out", type: :controller do
   end
 
   let(:secure_room) { create(:secure_room, :with_schedule_rule, :with_base_price) }
-  let(:in_reader) { create(:card_reader, secure_room: secure_room, ingress: true) }
+  let!(:in_reader) { create(:card_reader, secure_room: secure_room, ingress: true) }
 
   let(:user) { create(:user, card_number: "123456") }
   let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
@@ -31,24 +31,73 @@ RSpec.describe "Scanning in and out", type: :controller do
              account_identifier: account.id
       end
 
-      it "creates a new order in purchased state" do
-        expect(user.orders).to be_one
-        expect(user.orders.first).to be_purchased
-      end
-
-      describe "and then scanning out" do
-        before do
-          post :scan,
-               card_number: user.card_number,
-               reader_identifier: out_reader.card_reader_number,
-               controller_identifier: out_reader.control_device_number
+      context "with a paying user" do
+        it "creates a new order in purchased state" do
+          expect(user.orders).to be_one
+          expect(user.orders.first).to be_purchased
         end
 
-        it "completes the order and sets pricing" do
-          expect(user.order_details).to be_one
-          expect(user.order_details.first).to be_complete
-          expect(user.order_details.first.price_policy).to be_present
-          expect(user.order_details.first.actual_total).to be_present
+        describe "and then scanning out" do
+          before do
+            post :scan,
+                 card_number: user.card_number,
+                 reader_identifier: out_reader.card_reader_number,
+                 controller_identifier: out_reader.control_device_number
+          end
+
+          it "completes the order and sets pricing" do
+            expect(user.order_details).to be_one
+            expect(user.order_details.first).to be_complete
+            expect(user.order_details.first.price_policy).to be_present
+            expect(user.order_details.first.actual_total).to be_present
+          end
+        end
+      end
+
+      context "with a non-paying user" do
+        let(:user) { create(:user, :staff, card_number: "123456", facility: secure_room.facility) }
+
+        it "does not create any order" do
+          expect(user.orders).to be_blank
+        end
+
+        describe "and then scanning out" do
+          before do
+            post :scan,
+                 card_number: user.card_number,
+                 reader_identifier: out_reader.card_reader_number,
+                 controller_identifier: out_reader.control_device_number
+          end
+
+          it "again does not create any order" do
+            expect(user.orders).to be_blank
+          end
+        end
+      end
+    end
+
+    describe "scanning out" do
+      let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
+
+      before do
+        post :scan,
+             card_number: user.card_number,
+             reader_identifier: out_reader.card_reader_number,
+             controller_identifier: out_reader.control_device_number
+      end
+
+      context "with a paying user" do
+        it "creates an order with a problem order detail" do
+          expect(user.orders).to be_one
+          expect(user.order_details.first).to be_problem
+        end
+      end
+
+      context "with a non-paying user" do
+        let(:user) { create(:user, :staff, card_number: "123456", facility: out_reader.facility) }
+
+        it "does not create any order" do
+          expect(user.orders).to be_blank
         end
       end
     end

@@ -2,17 +2,25 @@ module SecureRooms
 
   class CardReader < ActiveRecord::Base
 
+    MAC_ADDRESS_FORMAT = /\A([0-9A-F]{2}:){5}([0-9A-F]{2})\z/
+
     belongs_to :secure_room, foreign_key: :product_id
 
     delegate :facility, to: :secure_room
 
     alias_attribute :ingress, :direction_in
 
-    validates :product_id, :card_reader_number, :control_device_number, presence: true
-    validates :card_reader_number, uniqueness: { scope: :control_device_number }
+    validates :product_id, presence: true
+    validates :control_device_number, presence: true, format: { with: MAC_ADDRESS_FORMAT }
+    validates :card_reader_number, presence: true, uniqueness: { scope: :control_device_number }
     validates :tablet_token, uniqueness: true
 
+    before_validation :clean_mac_address
     before_create :set_tablet_token
+
+    def self.ingress
+      where(ingress: true)
+    end
 
     def self.egress
       where(ingress: false)
@@ -44,6 +52,10 @@ module SecureRooms
         token = ("A".."Z").to_a.sample(12).join
         break token if self.class.find_by(tablet_token: token).blank?
       end
+    end
+
+    def clean_mac_address
+      self.control_device_number = control_device_number.to_s.upcase.tr("-", ":")
     end
 
   end

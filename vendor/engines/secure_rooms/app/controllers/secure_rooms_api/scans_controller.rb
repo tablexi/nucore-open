@@ -22,9 +22,10 @@ module SecureRoomsApi
 
     def load_user_and_reader
       @user = User.find_by!(card_number: params[:card_number])
+
       @card_reader = SecureRooms::CardReader.find_by!(
         card_reader_number: params[:reader_identifier],
-        control_device_number: params[:controller_identifier],
+        control_device_number: params[:controller_identifier].upcase,
       )
     end
 
