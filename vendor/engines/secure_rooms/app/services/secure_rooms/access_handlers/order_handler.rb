@@ -15,6 +15,9 @@ module SecureRooms
       end
 
       def process
+        # TODO: [#145957283] Ensure facility operators with accounts do not create orders on exit
+        return unless user_can_purchase_secure_room?
+
         find_or_create_order
         complete_order
 
@@ -38,14 +41,21 @@ module SecureRooms
 
       def create_order
         ActiveRecord::Base.transaction do
+          assign_account unless occupancy.account_id?
+
           create_order_and_detail
-          # TODO: This avoids an exception but results in un-purchased order on
-          # problem occupancy, which may not appear in the problem-order scope
-          if occupancy.account_id?
-            order.validate_order!
-            order.purchase!
-          end
+          order.validate_order!
+          order.purchase!
         end
+      end
+
+      def assign_account
+        accounts = occupancy.user.accounts_for_product(occupancy.secure_room)
+        occupancy.update(account: accounts.first)
+      end
+
+      def user_can_purchase_secure_room?
+        occupancy.user.accounts_for_product(occupancy.secure_room).present?
       end
 
       def create_order_and_detail

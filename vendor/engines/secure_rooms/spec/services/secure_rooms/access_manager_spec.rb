@@ -12,7 +12,7 @@ RSpec.describe SecureRooms::AccessManager, type: :service do
     it "calls each AccessHandler" do
       expect(SecureRooms::AccessHandlers::EventHandler).to receive(:process).and_call_original
       expect(SecureRooms::AccessHandlers::OccupancyHandler).to receive(:process).and_call_original
-      expect(SecureRooms::AccessHandlers::OrderHandler).to receive(:process).and_call_original
+      expect(SecureRooms::AccessHandlers::OrderHandler).to receive(:process)
 
       described_class.process(verdict)
     end

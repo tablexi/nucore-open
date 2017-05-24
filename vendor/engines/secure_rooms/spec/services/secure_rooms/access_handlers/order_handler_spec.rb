@@ -6,6 +6,8 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
   let(:card_reader) { create :card_reader, secure_room: secure_room }
   let(:account) { create :account, :with_account_owner, owner: user }
 
+  before { allow_any_instance_of(described_class).to receive(:user_can_purchase_secure_room?).and_return(true) }
+
   describe "#process" do
     context "with an orderable occupancy" do
       before do
@@ -100,14 +102,34 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
         create(:occupancy, :active, user: user, secure_room: card_reader.secure_room)
       end
 
+      let!(:account) { create :nufs_account, :with_account_owner, owner: user }
+      let(:price_group) { PriceGroup.first }
+      let!(:price_policy) do
+        create(
+          :secure_room_price_policy,
+          product: secure_room,
+          price_group: price_group,
+        )
+      end
+
+      before do
+        secure_room.update(requires_approval: false)
+        allow(secure_room).to receive(:can_purchase?).and_return(true)
+      end
+
       it "creates an order" do
         expect { described_class.process(occupancy) }
           .to change(Order, :count).by(1)
       end
 
-      it "does not attempt to purchase the order without an account" do
-        order = described_class.process(occupancy)
-        expect(order).to be_new
+      describe "the order" do
+        subject(:order) { described_class.process(occupancy) }
+
+        it { is_expected.to be_purchased }
+
+        it "assigns an account to the order" do
+          expect(order.account).to eq account
+        end
       end
     end
   end
