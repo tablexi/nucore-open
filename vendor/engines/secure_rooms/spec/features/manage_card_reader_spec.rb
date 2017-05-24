@@ -9,9 +9,9 @@ RSpec.describe "Managing CardReaders" do
   it "can create a card reader" do
     visit facility_secure_room_card_readers_path(facility, secure_room)
     click_link "Add Card Reader"
-    fill_in "card_reader[description]", with: "New Reader Description"
-    fill_in "card_reader[card_reader_number]", with: "New Reader Number"
-    fill_in "card_reader[control_device_number]", with: "New Device Number"
+    fill_in "Description", with: "New Reader Description"
+    fill_in "Card Reader Number", with: "New Reader Number"
+    fill_in "MAC Address", with: "New Device Number"
     click_button "Create Card Reader"
 
     new_reader = secure_room.card_readers.find_by(
@@ -34,9 +34,9 @@ RSpec.describe "Managing CardReaders" do
     it "can edit a card reader" do
       visit facility_secure_room_card_readers_path(facility, secure_room)
       within(".product_list") { click_link "Edit" }
-      fill_in "card_reader[description]", with: "Edited Reader Description"
-      fill_in "card_reader[card_reader_number]", with: "Edited Reader Number"
-      fill_in "card_reader[control_device_number]", with: "Edited Device Number"
+      fill_in "Description", with: "Edited Reader Description"
+      fill_in "Card Reader Number", with: "Edited Reader Number"
+      fill_in "MAC Address", with: "Edited Device Number"
       select "Out", from: "Direction"
       click_button "Update Card Reader"
 

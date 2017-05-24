@@ -61,7 +61,7 @@ en:
       secure_rooms/card_reader:
         description: Description
         card_reader_number: Card Reader Number
-        control_device_number: Control Device Number
+        control_device_number: MAC Address
         direction: Direction
         direction_in: Direction
         human_direction:
