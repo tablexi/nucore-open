@@ -130,3 +130,10 @@ end
 FactoryGirl::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
 end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
