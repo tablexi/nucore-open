@@ -5,21 +5,32 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
 
   let(:facility) { create(:setup_facility) }
   let(:secure_room) { create(:secure_room, facility: facility) }
-  let!(:policy) { create(:secure_room_price_policy, product: secure_room, usage_rate: 60, price_group: order_detail.account.price_groups.first) }
-  let(:order) { create(:purchased_order, product: secure_room) }
-  let!(:order_detail) { order.order_details.first }
+  let(:card_reader) { create :card_reader, secure_room: secure_room }
+  let(:user) { create(:user) }
+  let(:policy) { create(:secure_room_price_policy, product: secure_room, usage_rate: 60, price_group: order_detail.account.price_groups.first) }
+  let(:account) { create(:setup_account, :with_account_owner, owner: user, facility_id: facility.id) }
+  let!(:order) { create(:purchased_order, account: account, product: secure_room, user: account.owner.user) }
+  let(:order_detail) { order.order_details.first }
+
+  before do
+    ignore_order_detail_account_validations
+    secure_room.update(requires_approval: false)
+    allow_any_instance_of(SecureRoom).to receive(:can_purchase?).and_return(true)
+  end
 
   describe '#perform' do
     context "with a very long-running occupancy" do
+      let(:event) { create :event, :successful, card_reader: card_reader, user: user }
       let!(:occupancy) do
         create(
           :occupancy,
           :active,
+          entry_event: event,
           entry_at: 3.days.ago,
-          user: order_detail.user,
+          user: account.owner.user,
           secure_room: secure_room,
           order_detail: order_detail,
-          account: order_detail.account,
+          account: account,
         )
       end
 
@@ -33,7 +44,8 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
       end
 
       it "sets the order_detail problem status" do
-        expect { action.perform }.to change { order_detail.reload.problem }.to(true)
+        action.perform
+        expect(order_detail.reload.problem).to be true
       end
 
       it "does not assign pricing" do
@@ -41,7 +53,7 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
         expect(order_detail.reload.price_policy).to be_nil
       end
 
-      it "sets the occupancy fulfilled at time" do
+      it "sets the order detail fulfilled at time" do
         action.perform
         expect(order_detail.reload.fulfilled_at).to eq occupancy.reload.orphaned_at
       end
