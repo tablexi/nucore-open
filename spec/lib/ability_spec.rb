@@ -48,7 +48,6 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
     it { is_expected.not_to be_allowed_to(:read, Notification) }
     it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
-    it { is_expected.not_to be_allowed_to(:disputed, Order) }
     it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
     it { is_expected.not_to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:batch_update, Order) }
@@ -232,7 +231,6 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
-    it { is_expected.to be_allowed_to(:disputed, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it_is_allowed_to([:batch_update, :cancel, :index], Reservation)
     it { is_expected.to be_allowed_to(:administer, User) }
@@ -273,7 +271,6 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
-    it { is_expected.to be_allowed_to(:disputed, Order) }
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it { is_expected.to be_allowed_to(:manage, PriceGroup) }
     it_is_allowed_to([:batch_update, :cancel, :index], Reservation)

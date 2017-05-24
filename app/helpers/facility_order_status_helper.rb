@@ -24,12 +24,6 @@ module FacilityOrderStatusHelper
     end
   end
 
-  def disputed_orders
-    current_facility.order_details
-                    .non_reservations
-                    .in_dispute
-  end
-
   def sort_column
     params[:sort] || "order_number"
   end

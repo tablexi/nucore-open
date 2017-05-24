@@ -77,15 +77,6 @@ RSpec.describe FacilityOrdersController do
 
   it_behaves_like "it supports order_detail POST #batch_update"
 
-  context '#disputed' do
-    before :each do
-      @method = :get
-      @action = :disputed
-    end
-
-    it_should_allow_managers_only
-  end
-
   context '#index' do
     before :each do
       @method = :get
@@ -518,16 +509,7 @@ RSpec.describe FacilityOrdersController do
         order_detail
       end
 
-      @disputed_order_details = (1..4).map do |_i|
-        order_detail = place_and_complete_item_order(@staff, @authable)
-        order_detail.update_attributes(dispute_at: Time.zone.now,
-                                       dispute_resolved_at: nil,
-                                       dispute_reason: "because")
-        order_detail
-      end
-      expect(@authable.order_details.in_dispute.size).to eq(4)
-
-      @params.merge!(tabs: %w(new_or_in_process_orders disputed_orders problem_order_details))
+      @params.merge!(tabs: %w(new_or_in_process_orders problem_order_details))
     end
 
     it_should_allow_operators_only {}
@@ -550,10 +532,9 @@ RSpec.describe FacilityOrdersController do
         do_request
         expect(response).to be_success
         body = JSON.parse(response.body)
-        expect(body.keys).to contain_all %w(new_or_in_process_orders disputed_orders problem_order_details)
+        expect(body.keys).to contain_all %w(new_or_in_process_orders problem_order_details)
         expect(body["new_or_in_process_orders"]).to eq(2)
         expect(body["problem_order_details"]).to eq(3)
-        expect(body["disputed_orders"]).to eq(4)
       end
     end
   end
