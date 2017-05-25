@@ -176,7 +176,7 @@ GEM
       orm_adapter (~> 0.5.0)
     climate_control (0.1.0)
     cliver (0.3.2)
-    clockpunch (0.1.11)
+    clockpunch (0.1.12)
       coffee-script
       railties (>= 3.1)
       sass
@@ -577,7 +577,7 @@ DEPENDENCIES
   chosen-rails
   ci_reporter_rspec
   ckeditor (~> 4.1.6)
-  clockpunch (~> 0.1.11)
+  clockpunch (~> 0.1.12)
   codeclimate_circle_ci_coverage
   coffee-rails (~> 4.1.1)
   coffeelint
