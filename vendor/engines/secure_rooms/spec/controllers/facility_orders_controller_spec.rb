@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe FacilityOrdersController do
+
   let(:facility) { create(:setup_facility) }
   let(:secure_room) { create(:secure_room, :with_schedule_rule, :with_base_price, facility: facility) }
 
@@ -29,4 +30,5 @@ RSpec.describe FacilityOrdersController do
       expect(assigns(:order_details)).to eq([])
     end
   end
+
 end

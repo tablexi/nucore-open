@@ -140,3 +140,6 @@ en:
     placeholders:
       card_reader:
         control_device_number: "00:00:00:00:00:00"
+
+  message_summarizer:
+    problem_occupancies: Problem Occupancies

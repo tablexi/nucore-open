@@ -15,6 +15,9 @@ module SecureRooms
       bundle_index = Product.types.index(Bundle) || -1
       Product.types.insert(bundle_index, SecureRoom)
 
+      problem_summary_index = MessageSummarizer.summary_classes.index(MessageSummarizer::ProblemReservationOrderDetailsSummary) || -1
+      MessageSummarizer.summary_classes.insert(problem_summary_index + 1, SecureRooms::ProblemOccupancyMessageSummary)
+
       Admin::ServicesController.five_minute_tasks << SecureRooms::AutoOrphanOccupancy
 
       ViewHook.add_hook "users.show",
