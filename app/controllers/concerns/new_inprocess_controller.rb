@@ -13,7 +13,7 @@ module NewInprocessController
         :order_status,
         :assigned_user
       )
-      .order(sort_lookup_hash[sort_column])
+      .order(sort_clause)
       .paginate(page: params[:page])
   end
 
@@ -33,6 +33,12 @@ module NewInprocessController
 
   def sort_column
     sort_lookup_hash.key?(params[:sort]) ? params[:sort] : sort_lookup_hash.keys.first
+  end
+
+  def sort_clause
+    Array(sort_lookup_hash[sort_column]).map do |clause|
+      [clause, sort_direction].join(" ")
+    end.join(", ")
   end
 
 end
