@@ -10,7 +10,7 @@ RSpec.describe User do
 
   it "validates uniquess of username" do
     # we need at least 1 user to test validations
-    is_expected.to validate_uniqueness_of(:username)
+    is_expected.to validate_uniqueness_of(:username).case_insensitive
   end
 
   context "when the created username is mixed-case" do
