@@ -7,7 +7,7 @@ class MessageSummarizer::ProblemOrderDetailsSummary < MessageSummarizer::Facilit
   end
 
   def get_count
-    facility.problem_non_reservation_order_details.count
+    facility.problem_plain_order_details.count
   end
 
   def i18n_key

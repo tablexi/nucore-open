@@ -88,7 +88,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def problem_order_details
-    current_facility.problem_non_reservation_order_details
+    current_facility.problem_plain_order_details
   end
 
   private
@@ -119,7 +119,7 @@ class FacilityOrdersController < ApplicationController
     # will never include instrument order details
     current_facility.order_details
       .new_or_inprocess
-      .non_reservations
+      .plain_orders
   end
 
   def sort_lookup_hash

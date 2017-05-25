@@ -112,11 +112,6 @@ class OrderDetail < ActiveRecord::Base
       .references(:order)
   }
 
-  scope :for_product_type, lambda { |product_type|
-    joins("LEFT JOIN products ON products.id = order_details.product_id")
-      .where("products.type" => product_type)
-  }
-
   scope :non_canceled, -> { where.not(state: "canceled") }
 
   def self.for_facility(facility)
@@ -260,8 +255,10 @@ class OrderDetail < ActiveRecord::Base
       .where.not(statement_id: nil)
   }
 
-  scope :non_reservations, -> { joins(:product).where("products.type <> 'Instrument'") }
-  scope :reservations, -> { joins(:product).where("products.type = 'Instrument'") }
+  # Supports single type or an array of product types
+  scope :for_product_type, ->(product_type) { joins(:product).where(products: { type: product_type }) }
+  scope :plain_orders, -> { for_product_type(["Item", "Service"]) }
+  scope :reservations, -> { for_product_type("Instrument") }
 
   scope :purchased, -> { joins(:order).merge(Order.purchased) }
 
