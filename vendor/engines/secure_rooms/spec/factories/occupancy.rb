@@ -32,10 +32,11 @@ FactoryGirl.define do
       order_detail { FactoryGirl.create(:setup_order, product: secure_room, user: user, account: account).order_details.first }
 
       after(:create) do |occupancy|
-        ProductUser.create!(user: occupancy.user, product: occupancy.secure_room, approved_by: 0)
+        ProductUser.find_or_create_by!(user: occupancy.user, product: occupancy.secure_room, approved_by: 0)
         occupancy.order_detail.order.validate_order!
         occupancy.order_detail.order.purchase!
-        occupancy.order_detail.backdate_to_complete! occupancy.exit_at
+
+        occupancy.order_detail.backdate_to_complete! occupancy.exit_at if occupancy.exit_at?
       end
     end
   end
