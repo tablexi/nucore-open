@@ -15,7 +15,7 @@ RSpec.describe FacilityOrdersController do
   describe "index" do
     before { get :index, facility_id: facility }
 
-    it "does not include te occupancies" do
+    it "does not include the occupancies" do
       expect(response).to be_success
       expect(assigns(:order_details)).to eq([])
     end
@@ -24,7 +24,7 @@ RSpec.describe FacilityOrdersController do
   describe "show_problems" do
     before { get :show_problems, facility_id: facility }
 
-    it "does not include te occupancies" do
+    it "does not include the occupancies" do
       expect(response).to have_http_status(:ok)
       expect(assigns(:order_details)).to eq([])
     end
