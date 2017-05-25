@@ -1,6 +1,6 @@
 module SecureRooms
 
-  class SecureRoomOccupanciesController < ApplicationController
+  class OccupanciesController < ApplicationController
 
     layout "plain"
 

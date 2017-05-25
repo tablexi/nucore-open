@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       resources :card_readers, controller: "secure_rooms/card_readers", except: :show
       resources :schedule_rules, except: [:show]
       resources :product_access_groups
-      resources :occupancies, only: [:index], controller: "secure_rooms/secure_room_occupancies"
+      resources :occupancies, only: [:index], controller: "secure_rooms/occupancies"
       put "update_restrictions", to: "product_users#update_restrictions"
     end
 
