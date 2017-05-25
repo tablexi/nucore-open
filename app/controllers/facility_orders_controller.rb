@@ -118,8 +118,8 @@ class FacilityOrdersController < ApplicationController
   def new_or_in_process_orders
     # will never include instrument order details
     current_facility.order_details
-      .new_or_inprocess
-      .plain_orders
+                    .new_or_inprocess
+                    .plain_orders
   end
 
   def sort_lookup_hash
