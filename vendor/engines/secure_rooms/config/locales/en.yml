@@ -119,10 +119,6 @@ en:
             problem: "Occupants missing scan data"
 
     secure_rooms:
-      card_numbers:
-        edit:
-          instructions: |
-            TODO: Instructions on how to find your card number
       facility_occupancies:
         index:
           no_occupancies: There are no \"In Process\" occupancies.
