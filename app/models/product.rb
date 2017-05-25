@@ -2,9 +2,6 @@ class Product < ActiveRecord::Base
 
   include TextHelpers::Translation
 
-  cattr_accessor(:types) { ConfigurableArray.new([Instrument, Item, Service, Bundle]) }
-  cattr_accessor(:mergeable_types) { ConfigurableArray.new([Instrument, Item, Service, Bundle]) }
-
   belongs_to :facility
   belongs_to :initial_order_status, class_name: "OrderStatus"
   belongs_to :facility_account
@@ -17,6 +14,9 @@ class Product < ActiveRecord::Base
   has_many   :accessories, through: :product_accessories, class_name: "Product"
   has_many   :price_policies
   has_many   :training_requests, dependent: :destroy
+
+  cattr_accessor(:types) { ConfigurableArray.new([Instrument, Item, Service, Bundle]) }
+  cattr_accessor(:mergeable_types) { ConfigurableArray.new([Instrument, Item, Service, Bundle]) }
 
   # Allow us to use `product.hidden?`
   alias_attribute :hidden, :is_hidden
