@@ -2,6 +2,9 @@ class Product < ActiveRecord::Base
 
   include TextHelpers::Translation
 
+  cattr_accessor(:types) { ConfigurableArray.new([Instrument, Item, Service, Bundle]) }
+  cattr_accessor(:mergeable_types) { ConfigurableArray.new([Instrument, Item, Service, Bundle]) }
+
   belongs_to :facility
   belongs_to :initial_order_status, class_name: "OrderStatus"
   belongs_to :facility_account
@@ -55,14 +58,6 @@ class Product < ActiveRecord::Base
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
-
-  def self.types
-    @product_types ||= [Instrument, Item, Service, Bundle]
-  end
-
-  def self.mergeable_types
-    @mergeable_types ||= [Instrument, Item, Service, Bundle]
-  end
 
   # Products that can be used as accessories
   def self.accessorizable
