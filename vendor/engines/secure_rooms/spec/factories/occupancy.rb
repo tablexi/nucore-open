@@ -39,5 +39,14 @@ FactoryGirl.define do
         occupancy.order_detail.backdate_to_complete! occupancy.exit_at if occupancy.exit_at?
       end
     end
+
+    trait :problem_with_order_detail do
+      orphan
+      with_order_detail
+
+      after(:create) do |occupancy|
+        occupancy.order_detail.complete!
+      end
+    end
   end
 end
