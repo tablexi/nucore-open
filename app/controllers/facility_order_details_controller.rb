@@ -4,12 +4,9 @@ class FacilityOrderDetailsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_current_facility
-  before_action :init_order_detail, except: :remove_from_journal
+  before_action :init_order_detail
 
   load_and_authorize_resource class: OrderDetail
-
-  include FacilityOrderStatusHelper
-  helper_method :new_or_in_process_orders
 
   def initialize
     @active_tab = "admin_orders"
