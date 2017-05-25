@@ -7,6 +7,7 @@ class SecureRoom < Product
   has_many :occupancies, foreign_key: :product_id, class_name: SecureRooms::Occupancy
 
   before_validation :set_secure_room_defaults, on: :create
+  validates :dashboard_token, presence: true
 
   def time_data_for(order_detail)
     order_detail.occupancy
@@ -21,6 +22,7 @@ class SecureRoom < Product
   def set_secure_room_defaults
     self.requires_approval = true
     self.is_hidden = true
+    self.dashboard_token = SecureRandom.uuid
   end
 
 end

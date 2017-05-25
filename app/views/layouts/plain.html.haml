@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+%html
+  %head
+    = render :partial => '/shared/head'
+  %body
+    #content
+      .container
+        .row
+          .span12
+            = render partial: 'shared/flashes'
+            = yield
