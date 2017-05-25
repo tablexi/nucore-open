@@ -26,7 +26,7 @@ module SecureRooms
     end
 
     def dashboard
-      @secure_rooms = current_facility.products(SecureRoom).active_plus_hidden.order(name: :asc)
+      @secure_rooms = current_facility.products(SecureRoom).active_plus_hidden.alphabetized
     end
 
     def index
