@@ -9,13 +9,13 @@ module ProblemOrderDetailsController
 
   def show_problems
     @order_details = problem_order_details
-      .includes(
-        { order: :user },
-        :account,
-        :order,
-        :product,
-      )
-      .paginate(page: params[:page])
+                     .includes(
+                       { order: :user },
+                       :account,
+                       :order,
+                       :product,
+                     )
+                     .paginate(page: params[:page])
   end
 
   private

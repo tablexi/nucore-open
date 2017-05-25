@@ -19,9 +19,9 @@ module SecureRooms
     end
 
     # GET /facilities/:facility_id/occupancies
-  # Provided by NewInprocessController
-  # def index
-  # end
+    # Provided by NewInprocessController
+    # def index
+    # end
 
     protected
 
