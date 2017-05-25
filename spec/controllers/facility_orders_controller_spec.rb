@@ -519,7 +519,7 @@ RSpec.describe FacilityOrdersController do
         maybe_grant_always_sign_in :director
       end
       it "should get only new if thats all you ask for" do
-        @authable.order_details.non_reservations.new_or_inprocess.to_sql
+        @authable.order_details.plain_orders.new_or_inprocess.to_sql
         @params[:tabs] = ["new_or_in_process_orders"]
         do_request
         expect(response).to be_success
