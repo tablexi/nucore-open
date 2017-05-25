@@ -209,7 +209,7 @@ class FacilityReservationsController < ApplicationController
   def problem_order_details
     current_facility
       .problem_reservation_order_details
-      .joins(:reservation)
+      .includes(:reservation)
       .order("reservations.reserve_start_at DESC")
   end
 
