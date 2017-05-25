@@ -1,5 +1,6 @@
 class FacilityReservationsController < ApplicationController
 
+  include NewInprocessController
   include ProblemOrderDetailsController
   include TabCountHelper
   include Timelineable
@@ -11,31 +12,13 @@ class FacilityReservationsController < ApplicationController
 
   load_and_authorize_resource class: Reservation
 
-  helper_method :sort_column, :sort_direction
-
-  ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN = {
-    "date" => "reservations.reserve_start_at",
-    "reserve_range" => "CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)",
-    "product_name"  => "products.name",
-    "status"        => "order_statuses.name",
-    "assigned_to"   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
-    "reserved_by"   => "#{User.table_name}.first_name, #{User.table_name}.last_name",
-  }.freeze
-
   def initialize
     super
     @active_tab = "admin_reservations"
   end
 
   # GET /facilities/:facility_id/reservations
-  def index
-    real_sort_clause = ORDER_BY_CLAUSE_OVERRIDES_BY_SORTABLE_COLUMN[sort_column] || sort_column
-
-    order_by_clause = [real_sort_clause, sort_direction].join(" ")
-    @order_details = new_or_in_process_orders(order_by_clause)
-
-    @order_details = @order_details.paginate(page: params[:page])
-  end
+  # index provided by NewInprocessController
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id/edit
   def edit
@@ -221,18 +204,6 @@ class FacilityReservationsController < ApplicationController
     end
   end
 
-  def new_or_in_process_orders(order_by_clause = "reservations.reserve_start_at")
-    current_facility.order_details.new_or_inprocess.reservations
-                    .includes(
-                      { order: :user },
-                      :order_status,
-                      :reservation,
-                      :assigned_user,
-                    )
-                    .where("reservations.id IS NOT NULL")
-                    .order(order_by_clause)
-  end
-
   def problem_order_details
     current_facility
       .problem_reservation_order_details
@@ -240,13 +211,20 @@ class FacilityReservationsController < ApplicationController
       .order("reservations.reserve_start_at DESC")
   end
 
-  def sort_column
-    # TK: check against a whitelist
-    params[:sort] || "date"
+  def new_or_in_process_scope
+    current_facility.order_details.new_or_inprocess.reservations
+                    .includes(:reservation)
   end
 
-  def sort_direction
-    (params[:dir] || "") =~ /asc/i ? "asc" : "desc"
+  def sort_lookup_hash
+    {
+      "date" => "reservations.reserve_start_at",
+      "reserve_range" => "CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)",
+      "product_name"  => "products.name",
+      "status"        => "order_statuses.name",
+      "assigned_to"   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
+      "reserved_by"   => "#{User.table_name}.first_name, #{User.table_name}.last_name",
+    }
   end
 
   def set_windows
