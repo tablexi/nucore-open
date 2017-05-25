@@ -163,40 +163,6 @@ RSpec.describe FacilityReservationsController do
     end
   end
 
-  context '#disputed' do
-    before(:each) do
-      @method = :get
-      @action = :disputed
-    end
-
-    it_should_allow_managers_only # TODO: identical to FacilityOrdersController#disputed spec
-  end
-
-  context '#edit' do
-    before :each do
-      @method = :get
-      @action = :edit
-    end
-
-    it_should_allow_operators_only do
-      expect(assigns(:order)).to eq(@order)
-      expect(assigns(:order_detail)).to eq(@order_detail)
-      expect(assigns(:reservation)).to eq(@reservation)
-      expect(assigns(:instrument)).to eq(@product)
-      is_expected.to render_template "edit"
-    end
-
-    context "redirect on no edit" do
-      before :each do
-        @reservation.update_attribute(:canceled_at, Time.zone.now)
-      end
-
-      it_should_allow :director do
-        assert_redirected_to facility_order_order_detail_reservation_path(@authable, @order, @order_detail, @reservation)
-      end
-    end
-  end
-
   context '#index' do
     before :each do
       @method = :get
@@ -455,7 +421,7 @@ RSpec.describe FacilityReservationsController do
     before(:each) do
       @method = :get
       @action = :tab_counts
-      @params.merge!(tabs: %w(new_or_in_process_orders disputed_orders problem_order_details))
+      @params.merge!(tabs: %w(new_or_in_process_orders problem_order_details))
     end
 
     it_should_allow_operators_only

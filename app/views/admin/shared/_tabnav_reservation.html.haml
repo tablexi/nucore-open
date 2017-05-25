@@ -3,5 +3,3 @@
   = display_tab "New / In Process", facility_reservations_path, action: :index
   - if current_ability.can?(:show_problems, Reservation)
     = display_tab "Problem Reservations", show_problems_facility_reservations_path, action: :show_problems
-  - if SettingsHelper.has_review_period? && current_ability.can?(:disputed, Reservation)
-    = display_tab "Disputed", disputed_facility_reservations_path, action: :disputed

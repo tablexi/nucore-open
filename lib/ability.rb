@@ -188,7 +188,7 @@ class Ability
           account.facility.nil? || account.facility == resource
         end
 
-        can [:disputed, :show_problems], [Order, Reservation]
+        can [:show_problems], [Order, Reservation]
         can [:activate, :deactivate], ExternalService
       end
 

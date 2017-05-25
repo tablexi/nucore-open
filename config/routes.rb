@@ -164,7 +164,6 @@ Nucore::Application.routes.draw do
         post "assign_price_policies_to_problem_orders"
         post "batch_update"
         get "show_problems"
-        get "disputed"
         get "tab_counts"
       end
 
@@ -193,7 +192,6 @@ Nucore::Application.routes.draw do
         post "assign_price_policies_to_problem_orders"
         post "batch_update"
         get "show_problems"
-        get "disputed"
         get "timeline"
         get "tab_counts"
       end
