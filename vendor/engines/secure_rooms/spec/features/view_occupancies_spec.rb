@@ -21,11 +21,6 @@ RSpec.describe "Viewing Occupancies" do
     let!(:complete_occupancy) { create(:occupancy, :complete, secure_room: secure_room) }
     let!(:second_room_active_occupancy) { create(:occupancy, :active, secure_room: second_secure_room) }
 
-    before do
-      secure_room.update(is_hidden: false)
-      second_secure_room.update(is_hidden: false)
-    end
-
     it "can view only the current Occupancies" do
       visit dashboard_facility_occupancies_path(facility)
 
