@@ -115,7 +115,7 @@ class FacilityOrdersController < ApplicationController
     @order_appender ||= OrderAppender.new(@order, current_user)
   end
 
-  def new_or_in_process_scope
+  def new_or_in_process_orders
     # will never include instrument order details
     current_facility.order_details
       .new_or_inprocess

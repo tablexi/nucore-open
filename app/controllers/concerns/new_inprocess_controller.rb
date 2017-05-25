@@ -7,7 +7,7 @@ module NewInprocessController
   end
 
   def index
-    @order_details = new_or_in_process_scope
+    @order_details = new_or_in_process_orders
       .includes(
         { order: :user },
         :order_status,
@@ -19,7 +19,7 @@ module NewInprocessController
 
   private
 
-  def new_or_in_process_scope
+  def new_or_in_process_orders
     raise NotImplementedError
   end
 

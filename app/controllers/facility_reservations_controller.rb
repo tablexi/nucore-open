@@ -18,7 +18,9 @@ class FacilityReservationsController < ApplicationController
   end
 
   # GET /facilities/:facility_id/reservations
-  # index provided by NewInprocessController
+  # Provided by NewInprocessController
+  # def index
+  # end
 
   # GET /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id/edit
   def edit
@@ -211,7 +213,7 @@ class FacilityReservationsController < ApplicationController
       .order("reservations.reserve_start_at DESC")
   end
 
-  def new_or_in_process_scope
+  def new_or_in_process_orders
     current_facility.order_details.new_or_inprocess.reservations
                     .includes(:reservation)
   end
