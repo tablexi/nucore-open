@@ -8,10 +8,12 @@ class FacilityOrdersController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
 
-  load_and_authorize_resource class: Order
-
   before_action :load_order, only: [:edit, :show, :update, :send_receipt]
   before_action :load_merge_orders, only: [:edit, :show]
+
+  load_and_authorize_resource class: Order
+
+  helper_method :sort_column, :sort_direction
 
   def initialize
     @active_tab = "admin_orders"
