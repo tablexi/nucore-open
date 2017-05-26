@@ -125,7 +125,7 @@ RSpec.describe ReservationUserActionPresenter do
 
         it "returns canceled_at to what it was before" do
           text
-          expect(reservation.canceled_at).to be_blank
+          expect(reservation.order_detail.canceled_at).to be_blank
         end
       end
 

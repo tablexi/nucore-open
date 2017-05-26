@@ -28,7 +28,7 @@ RSpec.describe InstrumentOfflineReservationCanceler do
 
         it "cancels the reservation", :aggregate_failures do
           expect(reservation.reload).to be_canceled
-          expect(reservation.canceled_reason)
+          expect(order_detail.reload.canceled_reason)
             .to eq("The instrument was offline")
         end
 

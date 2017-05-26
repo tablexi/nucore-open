@@ -8,7 +8,6 @@ RSpec.describe Reservations::Rendering do
       reserve_end_at: reserve_end_at,
       actual_start_at: actual_start_at,
       actual_end_at: actual_end_at,
-      canceled_at: canceled_at,
     )
   end
 
@@ -16,7 +15,6 @@ RSpec.describe Reservations::Rendering do
   let(:reserve_end_at) { nil }
   let(:actual_start_at) { nil }
   let(:actual_end_at) { nil }
-  let(:canceled_at) { nil }
 
   describe "#actuals_string" do
     context "when there is an actual start_at" do
@@ -198,7 +196,7 @@ RSpec.describe Reservations::Rendering do
       end
 
       context "and the reservation is canceled" do
-        let(:canceled_at) { 4.hours.ago }
+        before { expect(reservation).to receive(:canceled?).and_return(true) }
 
         it "returns the formatted range with '(Canceled)' appended" do
           expect(reservation.to_s)

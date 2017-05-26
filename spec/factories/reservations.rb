@@ -14,7 +14,9 @@ FactoryGirl.define do
     reserve_end_at { reserve_start_at + 1.hour }
 
     trait :canceled do
-      canceled_at { 1.minute.ago }
+      after(:create) do |reservation|
+        reservation.order_detail.update_attributes(canceled_at: 1.minute.ago)
+      end
     end
 
     trait :inprocess do
