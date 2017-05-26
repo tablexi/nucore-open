@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170501201633) do
+ActiveRecord::Schema.define(version: 20170526170933) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -602,6 +602,22 @@ ActiveRecord::Schema.define(version: 20170501201633) do
   end
 
   add_index "schedules", ["facility_id"], name: "i_schedules_facility_id", using: :btree
+
+  create_table "secure_rooms_alerts", force: :cascade do |t|
+    t.text     "additional_data",   limit: 65535
+    t.string   "class_code",        limit: 255
+    t.string   "event_code",        limit: 255
+    t.string   "event_description", limit: 255
+    t.string   "mac_address",       limit: 255
+    t.string   "message_id",        limit: 255
+    t.datetime "message_time"
+    t.string   "message_type",      limit: 255
+    t.string   "priority",          limit: 255
+    t.string   "task_code",         limit: 255
+    t.string   "task_description",  limit: 255
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
 
   create_table "secure_rooms_card_readers", force: :cascade do |t|
     t.integer  "product_id",            limit: 4,                  null: false

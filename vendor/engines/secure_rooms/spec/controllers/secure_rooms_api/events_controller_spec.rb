@@ -9,9 +9,7 @@ RSpec.describe SecureRoomsApi::EventsController do
   end
 
   describe "create" do
-    subject { response }
-
-    describe "some data" do
+    context "with some data" do
       let(:params) do
         {
           message_id: "000009",
@@ -29,16 +27,34 @@ RSpec.describe SecureRoomsApi::EventsController do
         post :create, params
       end
 
-      it { is_expected.to be_success }
+      describe "response" do
+        subject { response }
+
+        it { is_expected.to be_success }
+      end
+
+      describe "new alert" do
+        subject(:alert) { SecureRooms::Alert.find_by(params) }
+
+        it "stores all values" do
+          params.each do |key, value|
+            expect(alert.send(key)).to eq value
+          end
+        end
+      end
     end
 
-    describe "invalid credentials" do
+    context "with invalid credentials" do
       before do
         request.env.delete("HTTP_AUTHORIZATION")
         post :create
       end
 
-      it { is_expected.to have_http_status(:unauthorized) }
+      describe "response" do
+        subject { response }
+
+        it { is_expected.to have_http_status(:unauthorized) }
+      end
     end
   end
 end
