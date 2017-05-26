@@ -22,11 +22,11 @@ RSpec.describe Facility do
       end
     end
 
-    describe "#problem_non_reservation_order_details" do
+    describe "#problem_plain_order_details" do
       let(:product) { create(:setup_item) }
 
       context "when there are no problem non-reservations" do
-        it { expect(facility.problem_non_reservation_order_details).to be_empty }
+        it { expect(facility.problem_plain_order_details).to be_empty }
       end
 
       context "when there are problem orders" do
@@ -35,7 +35,7 @@ RSpec.describe Facility do
         before { convert_to_problem_order(order) }
 
         it "returns the problem non-reservation order details" do
-          expect(facility.problem_non_reservation_order_details)
+          expect(facility.problem_plain_order_details)
             .to match_array(problem_orders)
         end
       end

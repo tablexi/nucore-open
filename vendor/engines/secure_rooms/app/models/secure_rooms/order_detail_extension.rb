@@ -9,7 +9,7 @@ module SecureRooms
 
       accepts_nested_attributes_for :occupancy, update_only: true
 
-      scope :occupancies, -> { joins(:product).where(products: { type: SecureRoom }) }
+      scope :occupancies, -> { for_product_type("SecureRoom") }
     end
 
   end

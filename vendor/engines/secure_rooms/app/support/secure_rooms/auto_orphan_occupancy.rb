@@ -12,8 +12,12 @@ module SecureRooms
 
     private
 
+    def earliest_allowed_time
+      Settings.occupancies.timeout_period.seconds.ago
+    end
+
     def long_running_occupancies
-      SecureRooms::Occupancy.current.where("entry_at < ?", 12.hours.ago)
+      SecureRooms::Occupancy.current.where("entry_at < ?", earliest_allowed_time)
     end
 
     def orphan_occupancy(occupancy)
