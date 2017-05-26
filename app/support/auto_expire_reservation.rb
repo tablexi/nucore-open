@@ -14,11 +14,15 @@ class AutoExpireReservation
     purchased_active_order_details
   end
 
+  def earliest_allowed_time
+    Time.zone.now - Settings.reservations.timeout_period
+  end
+
   def purchased_active_order_details
     OrderDetail.purchased_active_reservations
                .joins(:product)
                .joins_relay
-               .where("reservations.reserve_end_at < ?", Time.zone.now - 12.hours)
+               .where("reservations.reserve_end_at < ?", earliest_allowed_time)
                .readonly(false)
   end
 

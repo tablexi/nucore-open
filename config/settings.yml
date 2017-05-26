@@ -61,6 +61,10 @@ order_details:
 
 reservations:
   grace_period: <%= 5.minutes %>
+  timeout_period: <%= 12.hours %>
+
+occupancies:
+  timeout_period: <%= 12.hours %>
 
 billing:
   review_period: <%= 7.days %>
