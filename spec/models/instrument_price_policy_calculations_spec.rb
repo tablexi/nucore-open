@@ -141,7 +141,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     end
 
     it 'returns #calculate_cancellation_costs if the reservation was canceled' do
-      expect(reservation).to receive(:canceled_at).and_return Time.zone.now
+      expect(reservation.order_detail).to receive(:canceled_at?).and_return true
       expect(policy).to receive(:calculate_cancellation_costs).with reservation
       expect(policy).to_not receive :calculate_overage
       expect(policy).to_not receive :calculate_reservation
@@ -303,24 +303,31 @@ RSpec.describe InstrumentPricePolicyCalculations do
 
   describe "determining whether or not a cancellation should be penalized" do
     let(:options) { { usage_rate: 3.0, cancellation_cost: 5.0 } }
+
     before(:each) { allow(policy.product).to receive(:min_cancel_hours).and_return 3 }
 
     describe "when it's inside the minimum cancelation window" do
-      let(:reservation) { double reserve_start_at: now + 30.minutes, canceled_at: now }
+      let(:reservation) { double reserve_start_at: now + 30.minutes, order_detail: order_detail }
+      let(:order_detail) { double canceled_at: now }
 
       specify { expect(policy).to be_cancellation_penalty(reservation) }
 
       it "charges the cancellation cost" do
+        expect(reservation).to receive(:canceled?).and_return(true)
+
         expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 5.0, subsidy: 0)
       end
     end
 
     describe "when it's outside the minimum calcellation window" do
-      let(:reservation) { double reserve_start_at: now + 4.hours, canceled_at: now }
+      let(:reservation) { double reserve_start_at: now + 4.hours, order_detail: order_detail }
+      let(:order_detail) { double canceled_at: now }
 
       specify { expect(policy).not_to be_cancellation_penalty(reservation) }
 
       it "does not charge the cancelation cost" do
+        expect(reservation).to receive(:canceled?).and_return(true)
+
         expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
       end
     end

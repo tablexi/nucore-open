@@ -59,7 +59,7 @@ RSpec.describe UsersController do
   end
 
   describe "PUT #update", feature_setting: { create_users: true } do
-    let(:user) { FactoryGirl.create(:user, :external, first_name: "Old") }
+    let(:user) { FactoryGirl.create(:user, :external, first_name: "Old", uid: 22) }
 
     before(:each) do
       @method = :put
@@ -83,7 +83,7 @@ RSpec.describe UsersController do
 
       it_should_allow_admin_only(:found) do
         expect(user.reload.first_name).to eq("Old")
-        expect(user.uid).to be_blank
+        expect(user.uid).to eq 22
       end
     end
   end

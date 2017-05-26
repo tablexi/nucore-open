@@ -5,4 +5,4 @@
   = render "secure_rooms/shared/tabnav_occupancy"
 
 - if @secure_rooms.present?
-  = render partial: "secure_rooms/shared/dashboard_with_header", collection: @secure_rooms, as: :room
+  = render partial: "secure_rooms/shared/secure_rooms_dashboard", collection: @secure_rooms, as: :room
