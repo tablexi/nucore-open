@@ -13,7 +13,7 @@ module SecureRooms
     private
 
     def earliest_allowed_time
-      Time.zone.now - Settings.occupancies.timeout_period
+      Settings.occupancies.timeout_period.seconds.ago
     end
 
     def long_running_occupancies

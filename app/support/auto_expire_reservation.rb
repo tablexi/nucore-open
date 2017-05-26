@@ -15,7 +15,7 @@ class AutoExpireReservation
   end
 
   def earliest_allowed_time
-    Time.zone.now - Settings.reservations.timeout_period
+    Settings.reservations.timeout_period.seconds.ago
   end
 
   def purchased_active_order_details
