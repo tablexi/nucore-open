@@ -119,7 +119,7 @@ class FacilityOrdersController < ApplicationController
     # will never include instrument order details
     current_facility.order_details
                     .new_or_inprocess
-                    .plain_orders
+                    .untimed_orders
   end
 
   def sort_lookup_hash

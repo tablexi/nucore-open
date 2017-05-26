@@ -261,7 +261,7 @@ class OrderDetail < ActiveRecord::Base
 
   # Supports single type or an array of product types
   scope :for_product_type, ->(product_type) { joins(:product).where(products: { type: product_type }) }
-  scope :plain_orders, -> { for_product_type(["Item", "Service"]) }
+  scope :untimed_orders, -> { for_product_type(["Item", "Service"]) }
   scope :reservations, -> { for_product_type("Instrument") }
 
   scope :purchased, -> { joins(:order).merge(Order.purchased) }
