@@ -1,2 +1,2 @@
 = @headers.join(',')
-= CSVHelper::CSV.generate {|csv| render :partial => 'report_data_rows', :locals => { :csv => csv } }.html_safe
+= CSV.generate {|csv| render :partial => 'report_data_rows', :locals => { :csv => csv } }.html_safe

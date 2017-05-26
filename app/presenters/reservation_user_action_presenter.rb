@@ -89,10 +89,10 @@ class ReservationUserActionPresenter
 
   # Yields with canceled_at set to now, but returns it to the previous value
   def with_cancelation_now
-    old_value = order_detail.reservation.canceled_at
-    order_detail.reservation.canceled_at = Time.zone.now
+    old_value = order_detail.canceled_at
+    order_detail.canceled_at = Time.zone.now
     result = yield
-    order_detail.reservation.canceled_at = old_value
+    order_detail.canceled_at = old_value
     result
   end
 
