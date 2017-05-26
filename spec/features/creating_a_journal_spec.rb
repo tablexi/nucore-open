@@ -26,13 +26,16 @@ RSpec.describe "Creating a journal" do
       visit new_facility_journal_path(facility)
     end
 
-    it 'has only journalable order details' do
+    it "has journalable order details" do
       expect(page).to have_content("Select the orders that you wish to journal.")
       expect(page).to have_content(reviewed_order_detail.id)
+    end
+
+    it "does not have unreviewed order details" do
       expect(page).not_to have_content(unreviewed_order_detail.id)
     end
 
-    it 'has problem order details' do
+    it "has invalid payment order details" do
       expect(page).to have_content("These payment sources were not valid at the time of fulfillment.")
       expect(page).to have_content(problem_order_detail.id)
       expect(page).to have_content(problem_order_detail.account.expires_at.strftime("%m/%d/%Y"))
