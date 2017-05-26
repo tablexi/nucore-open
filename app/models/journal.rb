@@ -43,9 +43,10 @@ class Journal < ActiveRecord::Base
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
 
   has_many :journal_rows
-  # `has_many :order_details, -> { distrinct }, through: :journal_rows` does not
-  # work because Oracle has a problem with `DISTINCT *` and CLOB fields.
-  has_many :order_details
+
+  # _order_details is used for building associations, and may contain duplicates.
+  # Consider this private. Use order_details instead.
+  has_many :_order_details, class_name: "OrderDetail", through: :journal_rows
 
   validates_presence_of   :reference, :updated_by, on: :update
   validates_presence_of   :created_by
@@ -78,14 +79,19 @@ class Journal < ActiveRecord::Base
     end
   end
 
+  # TODO: Is it posible to have a cross-facility journal? If not, there are lots
+  # of specs and other logic that do allow it.
   def self.facility_ids_with_pending_journals
-    # use AR to build the SQL for pending journals
-    pending_facility_ids_sql = Journal.joins(order_details: :order).where(is_successful: nil).select("DISTINCT orders.facility_id").to_sql
+    Journal.joins(_order_details: :order).where(is_successful: nil).distinct.pluck("orders.facility_id")
+  end
 
-    # run it and get the results back (a list)
-    pending_facility_ids = Journal.connection.select_values(pending_facility_ids_sql)
-
-    pending_facility_ids
+  # This pseudo-association cannot be a `has_many :through` because that will
+  # always INNER JOIN journal_rows, which for split accounts will return
+  # duplicate OrderDetails. And we can't add `-> { distinct }` as the scope
+  # because Oracle has problems with `DISTINCT *` when one of the columns is a
+  # CLOB (e.g. the notes field).
+  def order_details
+    OrderDetail.where(id: journal_rows.select(:order_detail_id).distinct)
   end
 
   def create_journal_rows!(order_details)
@@ -97,7 +103,7 @@ class Journal < ActiveRecord::Base
     if facility_id?
       [facility_id]
     else
-      order_details.joins(:order)
+      _order_details.joins(:order)
                    .select("orders.facility_id")
                    .collect(&:facility_id)
                    .uniq
