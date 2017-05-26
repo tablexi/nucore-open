@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170501201633) do
+ActiveRecord::Schema.define(version: 20170525143813) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -479,8 +479,10 @@ ActiveRecord::Schema.define(version: 20170501201633) do
     t.text     "training_request_contacts", limit: 65535
     t.boolean  "note_available_to_users",                 default: false, null: false
     t.integer  "cutoff_hours",              limit: 4,     default: 0,     null: false
+    t.string   "dashboard_token",           limit: 255
   end
 
+  add_index "products", ["dashboard_token"], name: "index_products_on_dashboard_token", using: :btree
   add_index "products", ["facility_account_id"], name: "fk_facility_accounts", using: :btree
   add_index "products", ["facility_id"], name: "fk_rails_0c9fa1afbe", using: :btree
   add_index "products", ["schedule_id"], name: "i_instruments_schedule_id", using: :btree
