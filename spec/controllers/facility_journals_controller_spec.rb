@@ -414,6 +414,11 @@ RSpec.describe FacilityJournalsController do
   end
 
   describe "#new" do
+    let(:expiry_date) { Time.zone.now - 1.year }
+    let(:user) { FactoryGirl.create(:user) }
+    let(:expired_payment_source) { create(:nufs_account, expires_at: expiry_date, account_users_attributes: account_users_attributes_hash(user: user), facility_id: facility.id) }
+    let!(:problem_order_detail) { place_and_complete_item_order(user, facility, expired_payment_source, true) }
+
     before :each do
       @method = :get
       @action = :new
@@ -432,8 +437,7 @@ RSpec.describe FacilityJournalsController do
       sign_in @admin
       do_request
       expect(response).to be_success
-      expect(assigns(:order_details)).to be_include(@order_detail1)
-      expect(assigns(:order_details)).to be_include(@order_detail3)
+      expect(assigns(:order_details)).to contain_all([@order_detail1, @order_detail3, problem_order_detail])
       expect(assigns(:pending_journals)).to be_empty
       expect(assigns(:order_detail_action)).to eq(:create)
     end
@@ -447,7 +451,7 @@ RSpec.describe FacilityJournalsController do
 
       sign_in @admin
       do_request
-      expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
+      expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3, problem_order_detail]
       expect(assigns(:pending_journals)).to eq([@pending_journal])
       expect(assigns(:order_detail_action)).to be_nil
     end

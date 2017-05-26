@@ -254,6 +254,10 @@ class OrderDetail < ActiveRecord::Base
       .not_disputed
   }
 
+  # these depend on a join with accounts, as in .need_journal above
+  scope :valid_account, -> { where("accounts.expires_at >= order_details.fulfilled_at") }
+  scope :expired_account, -> { where("accounts.expires_at < order_details.fulfilled_at") }
+
   scope :statemented, lambda { |facility|
     joins(:order)
       .where(orders: { facility_id: facility.id })
