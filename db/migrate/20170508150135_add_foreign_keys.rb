@@ -1,4 +1,5 @@
 class AddForeignKeys < ActiveRecord::Migration
+
   def change
     add_index :notifications, [:subject_id, :subject_type]
     add_index :order_statuses, :parent_id
@@ -25,6 +26,6 @@ class AddForeignKeys < ActiveRecord::Migration
     add_foreign_key :statements, :accounts
     add_foreign_key :user_roles, :facilities
     add_foreign_key :user_roles, :users
-
   end
+
 end
