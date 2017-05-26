@@ -128,7 +128,7 @@ class FacilityJournalsController < ApplicationController
 
   def order_details_for_creation
     return [] unless params[:order_detail_ids].present?
-    @order_details.includes(:order).where_ids_in(params[:order_detail_ids])
+    @order_details.includes(:account, :product, order: :user).where_ids_in(params[:order_detail_ids])
   end
 
   def set_pending_journals
