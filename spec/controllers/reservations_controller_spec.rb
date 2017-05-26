@@ -844,7 +844,7 @@ RSpec.describe ReservationsController do
 
       context "when the reservation is canceled" do
         before(:each) do
-          reservation.update_attribute(:canceled_at, 1.day.ago)
+          reservation.order_detail.update_attributes(canceled_at: 1.day.ago)
           sign_in @admin
           do_request
         end

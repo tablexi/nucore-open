@@ -51,6 +51,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :order_status
   belongs_to :account
   belongs_to :bundle, foreign_key: "bundle_product_id"
+  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
   has_one    :reservation, dependent: :destroy, inverse_of: :order_detail
   has_one    :external_service_receiver, as: :receiver, dependent: :destroy
   has_many   :journal_rows, inverse_of: :order_detail
@@ -60,8 +61,7 @@ class OrderDetail < ActiveRecord::Base
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
-  # TODO: Refactor this from Reservation into OrderDetail
-  delegate :canceled_at, to: :reservation, allow_nil: true
+  delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
   delegate :in_cart?, :facility, :ordered_at, :user, to: :order
   delegate :price_group, to: :price_policy, allow_nil: true
@@ -213,7 +213,7 @@ class OrderDetail < ActiveRecord::Base
 
   def in_review?
     # check in the database if self.id is in the scope
-    self.class.in_review.find_by_id(id) ? true : false
+    self.class.in_review.exists?(id: id)
     # this would work without hitting the database again, but duplicates the functionality of the scope
     # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
   end
@@ -249,6 +249,10 @@ class OrderDetail < ActiveRecord::Base
       .not_disputed
   }
 
+  # these depend on a join with accounts, as in .need_journal above
+  scope :valid_account, -> { where("accounts.expires_at >= order_details.fulfilled_at") }
+  scope :expired_account, -> { where("accounts.expires_at < order_details.fulfilled_at") }
+
   scope :statemented, lambda { |facility|
     joins(:order)
       .where(orders: { facility_id: facility.id })
@@ -283,9 +287,11 @@ class OrderDetail < ActiveRecord::Base
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
   scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
   scope :for_owners, lambda { |owners|
-    joins(:account)
-      .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
-      .where("account_users.user_id in (?)", owners) unless owners.blank?
+    if owners.present?
+      joins(:account)
+        .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
+        .where("account_users.user_id in (?)", owners)
+    end
   }
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
@@ -300,11 +306,11 @@ class OrderDetail < ActiveRecord::Base
     search
   }
 
-  scope :fulfilled_in_date_range, lambda {|start_date, end_date|
+  scope :fulfilled_in_date_range, lambda { |start_date, end_date|
     action_in_date_range :fulfilled_at, start_date, end_date
   }
 
-  scope :action_in_date_range, lambda {|action, start_date, end_date|
+  scope :action_in_date_range, lambda { |action, start_date, end_date|
     valid = TransactionSearch::DateRangeSearcher::FIELDS.map(&:to_sym) + [:journal_date]
     raise ArgumentError.new("Invalid action: #{action}. Must be one of: #{valid}") unless valid.include? action.to_sym
     logger.debug("searching #{action} between #{start_date} and #{end_date}")
@@ -464,7 +470,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def has_uncanceled_reservation?
-    reservation.present? && reservation.canceled_at.blank?
+    reservation.present? && !canceled_at?
   end
 
   def cancelable?
@@ -710,16 +716,16 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def disputed?
+    # only used in specs
     dispute_at.present? && !canceled?
   end
 
-  def cancel_reservation(canceled_by, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
-    res = reservation
-    res.canceled_by = canceled_by.id
+  def cancel_reservation(canceled_by, canceled_reason: nil, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
+    self.canceled_by = canceled_by.id
+    self.canceled_reason = canceled_reason
 
     if admin
-      res.canceled_at = Time.zone.now
-      return false unless res.save
+      return false unless update_attributes(canceled_at: Time.current)
 
       if admin_with_cancel_fee
         clear_statement if cancellation_fee == 0
@@ -729,9 +735,9 @@ class OrderDetail < ActiveRecord::Base
         change_status! order_status
       end
     else
-      return false unless res && res.can_cancel?
-      res.canceled_at = Time.zone.now # must set canceled_at after calling #can_cancel?
-      return false unless res.save
+      return false unless reservation && reservation.can_cancel?
+      # must set canceled_at after calling #can_cancel?
+      return false unless update_attributes(canceled_at: Time.current)
       clear_statement if cancellation_fee == 0
       cancel_with_fee order_status
     end

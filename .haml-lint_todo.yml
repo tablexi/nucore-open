@@ -61,7 +61,6 @@ linters:
       - "app/views/facility_facility_accounts/edit.html.haml"
       - "app/views/facility_journals/history.html.haml"
       - "app/views/facility_journals/index.html.haml"
-      - "app/views/facility_journals/new.html.haml"
       - "app/views/facility_journals/show.xml.haml"
       - "app/views/facility_notifications/in_review.html.haml"
       - "app/views/facility_notifications/index.html.haml"

@@ -208,7 +208,7 @@ RSpec.describe OrderDetail do
     is_expected.not_to allow_value(nil).for(:product_id)
   end
 
-  it "should have a order" do
+  it "should have an order" do
     is_expected.not_to allow_value(nil).for(:order_id)
   end
 
@@ -769,7 +769,7 @@ RSpec.describe OrderDetail do
     expect(desc).to match(/#{@order_detail.order.id}/)
   end
 
-  context "is_in_dispute?" do
+  context "#in_dispute?" do
     it "should be in dispute" do
       @order_detail.dispute_at = Time.zone.now
       @order_detail.dispute_resolved_at = nil
@@ -1059,8 +1059,8 @@ RSpec.describe OrderDetail do
 
       it "canceled its reservation" do
         @reservation.reload
-        expect(@reservation.canceled_by).to eq user.id
-        expect(@reservation.canceled_at).to be_present
+        expect(@reservation.order_detail.canceled_by).to eq user.id
+        expect(@reservation.order_detail.canceled_at).to be_present
       end
 
       it "is in a canceled state" do
@@ -1130,7 +1130,7 @@ RSpec.describe OrderDetail do
 
         context "the reservation was already canceled" do
           it "should not cancel" do
-            @reservation.update_attribute :canceled_at, Time.zone.now
+            @reservation.order_detail.update_attributes(canceled_at: Time.zone.now)
             expect(order_detail.cancel_reservation(user)).to be false
           end
         end
@@ -1192,7 +1192,7 @@ RSpec.describe OrderDetail do
         before :each do
           instrument.update_attribute(:min_cancel_hours, 2)
           order_detail.reload
-          reservation.update_attribute(:canceled_at, Time.zone.now)
+          reservation.order_detail.update_attributes(canceled_at: Time.zone.now)
         end
 
         context "when in the no-fee period" do
@@ -1203,7 +1203,7 @@ RSpec.describe OrderDetail do
           before :each do
             @current_time = Time.now
             travel(3.hours)
-            reservation.update_attribute(:canceled_at, Time.zone.now)
+            reservation.order_detail.update_attributes(canceled_at: Time.zone.now)
           end
 
           after { travel_to(@current_time) }
@@ -1229,7 +1229,7 @@ RSpec.describe OrderDetail do
       let!(:price_policy) { instrument_reservation_price_policy }
 
       context "when the reservation has been canceled" do
-        before { reservation.update_attribute(:canceled_at, Time.zone.now) }
+        before { reservation.order_detail.update_attributes(canceled_at: Time.zone.now) }
 
         it_should_behave_like "it charges cancellation fees appropriately"
       end

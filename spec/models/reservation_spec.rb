@@ -11,6 +11,7 @@ RSpec.describe Reservation do
       reserve_start_meridian: "am",
       duration_mins: 60,
       split_times: true,
+      order_detail: order_detail,
     )
   end
 
@@ -19,6 +20,8 @@ RSpec.describe Reservation do
     facility.facility_accounts.create(attributes_for(:facility_account))
   end
   let(:instrument) { @instrument }
+  let(:order) { FactoryGirl.create(:setup_order, product: instrument) }
+  let(:order_detail) { FactoryGirl.create(:order_detail, account: order.account, order: order, product: instrument) }
 
   before(:each) do
     @instrument = create(:instrument, facility_account_id: facility_account.id, facility: facility, reserve_interval: 15)
@@ -123,8 +126,8 @@ RSpec.describe Reservation do
   end
 
   describe "#can_cancel?" do
-    context "when the reservation has a canceled_at timestamp" do
-      before { allow(reservation).to receive(:canceled_at).and_return(1.day.ago) }
+    context "when the reservation is already canceled" do
+      before { allow(reservation).to receive(:canceled?).and_return(true) }
 
       it { is_expected.not_to be_can_cancel }
     end
@@ -308,20 +311,29 @@ RSpec.describe Reservation do
   end
 
   describe "#canceled?" do
+    let(:price_group) { create(:price_group, facility: facility) }
+    let!(:instrument_pp) { FactoryGirl.create(:instrument_price_policy, product: instrument, price_group: price_group) }
+    let(:user) { FactoryGirl.create(:user) }
+    let(:account) { FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
+    let!(:account_price_group_memeber) { create(:account_price_group_member, account: account, price_group: price_group) }
+    let(:order) { user.orders.create(attributes_for(:order, created_by: user.id, account: account, facility: facility)) }
+    let!(:order_detail) { FactoryGirl.create(:order_detail, order: order, product_id: instrument.id, account: account, quantity: 1) }
+
     subject(:reservation) do
       instrument.reservations.create(reserve_start_date: (Date.today + 1.day).to_s,
                                      reserve_start_hour: "10",
                                      reserve_start_min: "0",
                                      reserve_start_meridian: "am",
                                      duration_mins: "120",
-                                     split_times: true)
+                                     split_times: true,
+                                     order_detail_id: order_detail.id)
     end
 
     it { is_expected.to be_valid }
     it { is_expected.not_to be_canceled }
 
     context "when canceled_at is set" do
-      before { reservation.canceled_at = Time.current }
+      before { order_detail.update_attributes(canceled_at: Time.current) }
       it { is_expected.to be_canceled }
     end
   end
@@ -367,13 +379,13 @@ RSpec.describe Reservation do
       end
 
       context "the reservation has been canceled" do
-        before { reservation.update_attribute(:canceled_at, 1.hour.ago) }
+        before { reservation.order_detail.update_attributes(canceled_at: 1.hour.ago) }
 
         it_behaves_like "a customer is not allowed to edit"
       end
 
       context "the reservation has not been canceled" do
-        before { reservation.update_attribute(:canceled_at, nil) }
+        before { reservation.order_detail.update_attributes(canceled_at: nil) }
 
         context "it is complete" do
           before :each do
@@ -618,7 +630,7 @@ RSpec.describe Reservation do
 
       it "should not be moveable if the reservation is canceled" do
         expect(@reservation1).to be_startable_now
-        @reservation1.canceled_at = Time.zone.now
+        @reservation1.order_detail.update_attributes(canceled_at: Time.zone.now)
         expect(@reservation1).not_to be_startable_now
       end
 

@@ -33,11 +33,11 @@ module SecureRooms
     end
 
     def self.current
-      valid.where(exit_at: nil).where.not(entry_at: nil)
+      valid.order(entry_at: :desc).where(exit_at: nil).where.not(entry_at: nil)
     end
 
     def self.recent
-      valid.where.not(exit_at: nil).limit(10)
+      valid.order(exit_at: :desc).where.not(exit_at: nil).limit(10)
     end
 
     def mark_orphaned!

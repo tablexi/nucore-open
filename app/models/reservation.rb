@@ -14,7 +14,6 @@ class Reservation < ActiveRecord::Base
   belongs_to :product
   belongs_to :order_detail, inverse_of: :reservation
   has_one :order, through: :order_detail
-  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
 
   ## Virtual attributes
   #####
@@ -35,6 +34,11 @@ class Reservation < ActiveRecord::Base
   delegate :facility, to: :product, allow_nil: true
   delegate :lock_window, to: :product, prefix: true
   delegate :owner, to: :account, allow_nil: true
+
+  def canceled?
+    return false unless order_detail
+    order_detail.canceled_at?
+  end
 
   ## AR Hooks
   after_update :auto_save_order_detail, if: :order_detail
@@ -60,7 +64,7 @@ class Reservation < ActiveRecord::Base
       .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
   end
 
-  scope :not_canceled, -> { where(canceled_at: nil) }
+  scope :not_canceled, -> { where(order_details: { canceled_at: nil }) } # dubious
   scope :not_started, -> { where(actual_start_at: nil) }
   scope :not_ended, -> { where(actual_end_at: nil) }
 
@@ -92,7 +96,8 @@ class Reservation < ActiveRecord::Base
     # Eliminate by letting Rails filter by #reserve_end_at
     joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
       .joins("LEFT JOIN orders ON orders.id = order_details.order_id")
-      .where(canceled_at: nil, "orders.state" => [nil, "purchased"])
+      .not_canceled
+      .where("orders.state" => [nil, "purchased"])
       .order(reserve_end_at: :asc)
       .to_a
       .delete_if { |reservation| reservation.reserve_end_at < t }
@@ -204,13 +209,9 @@ class Reservation < ActiveRecord::Base
       .none?
   end
 
-  def canceled?
-    canceled_at.present?
-  end
-
   # can the CUSTOMER cancel the order
   def can_cancel?
-    canceled_at.nil? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
+    !canceled? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
   end
 
   def can_customer_edit?

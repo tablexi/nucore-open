@@ -23,6 +23,10 @@ module SecureRooms
     # def index
     # end
 
+    def dashboard
+      @secure_rooms = current_facility.products(SecureRoom).active_plus_hidden.alphabetized
+    end
+
     protected
 
     def show_problems_path

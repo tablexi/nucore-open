@@ -120,18 +120,18 @@ RSpec.describe OrderImport, :time_travel do
   def generate_import_file(*args)
     args = [{}] if args.length == 0 # default to at least one valid row
 
-    whole_csv = CSVHelper::CSV.generate headers: true do |csv|
+    whole_csv = CSV.generate headers: true do |csv|
       csv << CSV_HEADERS
       args.each do |opts|
-        row = CSVHelper::CSV::Row.new(CSV_HEADERS, [
-                                        opts[:username] || "guest",
-                                        opts[:account_number]     || "111-2222222-33333333-01",
-                                        opts[:product_name]       || "Example Item",
-                                        opts[:quantity]           || 1,
-                                        opts[:order_date]         || nucore_format_date(default_order_date),
-                                        opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date),
-                                        opts[:note]               || "Test Note",
-                                      ])
+        row = CSV::Row.new(CSV_HEADERS, [
+                             opts[:username] || "guest",
+                             opts[:account_number]     || "111-2222222-33333333-01",
+                             opts[:product_name]       || "Example Item",
+                             opts[:quantity]           || 1,
+                             opts[:order_date]         || nucore_format_date(default_order_date),
+                             opts[:fullfillment_date]  || nucore_format_date(default_fulfilled_date),
+                             opts[:note]               || "Test Note",
+                           ])
         csv << row
       end
     end

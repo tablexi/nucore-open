@@ -1,2 +1,2 @@
 = @headers.join(',')
-= CSVHelper::CSV.generate {|csv| @rows.each{|row| csv << row} }.html_safe
+= CSV.generate {|csv| @rows.each{|row| csv << row} }.html_safe
