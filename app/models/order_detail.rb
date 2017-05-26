@@ -7,8 +7,6 @@ class OrderDetail < ActiveRecord::Base
   include NotificationSubject
   include OrderDetail::Accessorized
   include NUCore::Database::WhereIdsIn
-  include NUCore::Database::ClobSafeDistinct
-  include TextHelpers::Translation
 
   versioned
 

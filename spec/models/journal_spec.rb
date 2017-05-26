@@ -20,6 +20,21 @@ RSpec.describe Journal do
     it { is_expected.to validate_length_of(:reference).is_at_most(50) }
   end
 
+  describe "#order_details" do
+    let(:order_detail) { order.order_details.first }
+    before do
+      order_detail.to_complete!
+      journal.save!
+      journal.create_journal_rows!([order_detail, order_detail])
+    end
+
+    it "has three rows, but only one order detail" do
+      # one per order detail, plus one credit
+      expect(journal.journal_rows.where.not(order_detail: nil).count).to eq(2)
+      expect(journal.order_details.count).to eq(1)
+    end
+  end
+
   context "#amount" do
     context "when its order detail quantities change" do
       let(:order_details) { order.order_details }
@@ -367,4 +382,5 @@ RSpec.describe Journal do
       end
     end
   end
+
 end

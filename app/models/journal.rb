@@ -39,12 +39,13 @@ class Journal < ActiveRecord::Base
 
   attr_accessor :order_details_for_creation
 
-  has_many                :journal_rows
-  belongs_to              :facility
-  # The distinct is necessary for SplitAccount orders where one order detail might
-  # be split across multiple journal rows
-  has_many :order_details, -> { clob_safe_distinct }, through: :journal_rows
-  belongs_to              :created_by_user, class_name: "User", foreign_key: :created_by
+  belongs_to :facility
+  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
+
+  has_many :journal_rows
+  # `has_many :order_details, -> { distrinct }, through: :journal_rows` does not
+  # work because Oracle has a problem with `DISTINCT *` and CLOB fields.
+  has_many :order_details
 
   validates_presence_of   :reference, :updated_by, on: :update
   validates_presence_of   :created_by
