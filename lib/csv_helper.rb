@@ -1,7 +1,5 @@
 module CSVHelper
 
-  require "csv"
-
   def set_csv_headers(filename)
     if request.env["HTTP_USER_AGENT"] =~ /msie/i
       headers["Pragma"] = "public"

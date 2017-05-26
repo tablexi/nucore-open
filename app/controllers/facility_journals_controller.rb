@@ -32,6 +32,7 @@ class FacilityJournalsController < ApplicationController
 
     respond_to do |format|
       format.csv do
+        # used for "Export as CSV" link for order details with expired accounts
         @order_details = @order_details.expired_account
       end
       format.any {}
