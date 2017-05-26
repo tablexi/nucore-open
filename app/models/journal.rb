@@ -46,7 +46,7 @@ class Journal < ActiveRecord::Base
 
   # _order_details is used for building associations, and may contain duplicates.
   # Consider this private. Use order_details instead.
-  has_many :_order_details, class_name: "OrderDetail", through: :journal_rows
+  has_many :_order_details, class_name: "OrderDetail", through: :journal_rows, source: :order_detail
 
   validates_presence_of   :reference, :updated_by, on: :update
   validates_presence_of   :created_by
