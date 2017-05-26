@@ -279,6 +279,9 @@ ActiveRecord::Schema.define(version: 20170524174531) do
     t.datetime "reconciled_at"
     t.integer  "project_id",              limit: 4
     t.text     "note",                    limit: 65535
+    t.datetime "canceled_at"
+    t.integer  "canceled_by",             limit: 4
+    t.string   "canceled_reason",         limit: 255
   end
 
   add_index "order_details", ["account_id"], name: "fk_od_accounts", using: :btree

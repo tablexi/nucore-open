@@ -3,10 +3,10 @@ module SecureRooms
   class CheckAccess
 
     DEFAULT_RULES = [
-      AccessRules::EgressRule,
       AccessRules::OperatorRule,
       AccessRules::ArchivedProductRule,
       AccessRules::RequiresApprovalRule,
+      AccessRules::EgressRule,
       AccessRules::ScheduleRule,
       AccessRules::AccountSelectionRule,
       AccessRules::DenyAllRule,

@@ -51,7 +51,7 @@ class FacilityNotificationsController < ApplicationController
 
   # GET /facilities/notifications/in_review
   def in_review_with_search
-    @order_details = @order_details.all_in_review
+    @order_details = @order_details.in_review
     @order_details = @order_details.reorder(:reviewed_at)
     @order_detail_action = :mark_as_reviewed
     order_details_sort(:reviewed_at)

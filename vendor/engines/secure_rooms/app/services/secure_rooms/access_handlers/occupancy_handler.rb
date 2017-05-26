@@ -20,6 +20,7 @@ module SecureRooms
         if current_occupant? && exiting?
           existing_occupancy.associate_exit!(event)
         elsif new_occupant? && entering?
+          new_occupancy.associate_exit!(event) if entry_only?
           new_occupancy.associate_entry!(event)
         elsif new_occupant? && exiting?
           new_occupancy.mark_orphaned!
@@ -33,6 +34,10 @@ module SecureRooms
       end
 
       private
+
+      def entry_only?
+        event.secure_room.entry_only?
+      end
 
       def existing_occupancy
         @existing_occupancy ||= Occupancy.current.find_by(

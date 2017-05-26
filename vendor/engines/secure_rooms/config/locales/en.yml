@@ -22,7 +22,7 @@ en:
     notices:
       missing_entry:
         badge: Missing Entry
-        alert: This order's occupancy does not have an entry time. Please ensure that all times are set and there is a price policy for the date this order was fulfilled.
+        alert: This order's account was inferred from the associated user due to its missing entry. Please ensure that the associated account is correct, all times are set and there is a price policy for the date this order was fulfilled.
       missing_exit:
         badge: Missing Exit
         alert: This order's occupancy does not have an exit time. Please ensure that all times are set and there is a price policy for the date this order was fulfilled.
@@ -55,10 +55,13 @@ en:
     attributes:
       user:
         card_number: Card Number
+      order_detail/occupancy:
+        exit_at: Time of Exit
+        actual_duration_mins: Duration
       secure_rooms/card_reader:
         description: Description
         card_reader_number: Card Reader Number
-        control_device_number: Control Device Number
+        control_device_number: MAC Address
         direction: Direction
         direction_in: Direction
         human_direction:
@@ -74,6 +77,13 @@ en:
         exit_at: Time of Exit
         orphaned_at: Time Marked as Orphaned
         actual_duration_mins: Duration
+
+    errors:
+      models:
+        secure_rooms/card_reader:
+          attributes:
+            control_device_number:
+              invalid: must be in "00:00:00:00:00:00" format
 
   controllers:
     secure_rooms/card_readers:
@@ -109,15 +119,12 @@ en:
             problem: "Occupants missing scan data"
 
     secure_rooms:
-      card_numbers:
-        edit:
-          instructions: |
-            TODO: Instructions on how to find your card number
       facility_occupancies:
         index:
           no_occupancies: There are no \"In Process\" occupancies.
       shared:
         tabnav_occupancy:
+          dashboard: Dashboard
           in_progress: In Progress
           problem: Problem Occupancies
         tabnav_secure_room:
@@ -125,3 +132,11 @@ en:
           occupancies_title: Occupancies
         tabnav_users:
           title: Secure Room Access
+        secure_rooms_dashboard:
+          current: Current Occupants
+          recent: Recent Occupants
+
+  simple_form:
+    placeholders:
+      card_reader:
+        control_device_number: "00:00:00:00:00:00"

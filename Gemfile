@@ -41,7 +41,7 @@ gem "ckeditor", "~> 4.1.6"
 gem "jquery-rails"
 gem "jquery-ui-rails", "~> 6.0.1"
 gem "vuejs-rails"
-gem "clockpunch", "~> 0.1.10"
+gem "clockpunch", "~> 0.1.12"
 gem "simple_form", "~> 3.3.1"
 gem "font-awesome-rails", "~> 3.2.0"
 gem "nested_form_fields"
@@ -97,9 +97,6 @@ group :development, :test do
   gem "quiet_assets"
   gem "rspec-rails", "~> 3.5.2"
   gem "rspec-activejob"
-  gem "shoulda-matchers",  "~> 2.8.0", require: false
-  gem "rspec-collection_matchers"
-  gem "single_test", "0.4.0"
   gem "spring"
   gem "spring-commands-rspec"
   gem "teaspoon-jasmine"
@@ -114,6 +111,9 @@ group :test do
   gem "capybara"
   gem "capybara-email"
   gem "poltergeist"
+  gem "rspec-collection_matchers"
+  gem "shoulda-matchers",  "~> 3.1.0"
+  gem "single_test", "0.4.0"
 end
 
 group :stage, :production do

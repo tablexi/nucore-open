@@ -274,6 +274,7 @@ en:
       not_closed: You may not generate a new journal until the pending journal is closed.
       not_closed_html: You may not generate a new journal until the <a href="%{link}">pending journal</a> is closed.
       no_orders: There are no orders to be journaled at this time.
+      expired_payment: These payment sources were not valid at the time of fulfillment. Please choose a different payment source.
     index:
       head:
         pending: Pending Journal
@@ -688,7 +689,7 @@ en:
     notices:
       missing_actuals:
         badge: Missing Actuals
-        alert: This order's reservation does not have an actual time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled.
+        alert: This order's reservation does not have an actual end time. Please ensure that actual times are set and there is a price policy for the date this order was fulfilled.
       missing_price_policy:
         badge: Missing Price Policy
         alert: This order does not have a price policy assigned. Please ensure that there is a price policy for the date this order was fulfilled. Saving will attempt to assign a price policy.

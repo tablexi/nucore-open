@@ -15,6 +15,8 @@ module SecureRooms
       end
 
       def process
+        return if user_exempt_from_purchase?
+
         find_or_create_order
         complete_order
 
@@ -38,14 +40,27 @@ module SecureRooms
 
       def create_order
         ActiveRecord::Base.transaction do
+          assign_account unless occupancy.account_id?
+
           create_order_and_detail
-          # TODO: This avoids an exception but results in un-purchased order on
-          # problem occupancy, which may not appear in the problem-order scope
-          if occupancy.account_id?
-            order.validate_order!
-            order.purchase!
-          end
+          order.validate_order!
+          order.purchase!
         end
+      end
+
+      def assign_account
+        accounts = occupancy.user.accounts_for_product(occupancy.secure_room)
+        occupancy.update(account: accounts.first)
+      end
+
+      # Whether or not an occupant must pay for their time is determined by
+      # CheckAccess at scan-in time. In the event we don't have access to
+      # scan-in information, we check the user's access with a room's in-reader
+      # to find what the verdict would have been. A verdict returning accounts
+      # signifies the user would have needed to select one to enter.
+      def user_exempt_from_purchase?
+        in_reader = occupancy.secure_room.card_readers.ingress.first
+        SecureRooms::CheckAccess.new.authorize(occupancy.user, in_reader).accounts.blank?
       end
 
       def create_order_and_detail

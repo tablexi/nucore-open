@@ -9,7 +9,7 @@ class FacilityOrderDetailsController < ApplicationController
   load_and_authorize_resource class: OrderDetail
 
   include FacilityOrderStatusHelper
-  helper_method :new_or_in_process_orders, :disputed_orders
+  helper_method :new_or_in_process_orders
 
   def initialize
     @active_tab = "admin_orders"

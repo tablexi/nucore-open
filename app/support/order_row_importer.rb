@@ -24,6 +24,8 @@ class OrderRowImporter
     :fulfillment_date,
   ].map { |k| HEADERS[k] }
 
+  cattr_accessor(:importable_product_types) { [Item, Service] }
+
   def self.order_key_for_row(row)
     new(row, nil).order_key
   end
@@ -214,14 +216,13 @@ class OrderRowImporter
   end
 
   def validate_product_is_importable
-    case
-    when product.is_a?(Service)
+    unless product.class.in?(importable_product_types)
+      add_error("import of #{product.class.model_name.human} orders not allowed at this time")
+    end
+
+    if product.is_a?(Service)
       add_error("Service requires survey") if product.active_survey?
       add_error("Service requires template") if product.active_template?
-    when product.is_a?(Instrument)
-      add_error("import of Instrument orders not allowed at this time")
-    when product.is_a?(Bundle)
-      add_error("import of Bundle orders not allowed at this time")
     end
   end
 

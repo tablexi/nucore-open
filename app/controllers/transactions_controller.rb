@@ -13,7 +13,7 @@ class TransactionsController < ApplicationController
 
   def in_review_with_search
     @recently_reviewed = current_user.administered_order_details.recently_reviewed.paginate(page: params[:page])
-    @order_details = current_user.administered_order_details.all_in_review
+    @order_details = current_user.administered_order_details.in_review
     @extra_date_column = :reviewed_at
     @order_detail_link = {
       text: text("shared.dispute"),

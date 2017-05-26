@@ -25,11 +25,6 @@ class FacilityOrdersController < ApplicationController
     @order_details = new_or_in_process_orders.paginate(page: params[:page])
   end
 
-  # GET /facilities/:facility_id/orders/disputed
-  def disputed
-    @order_details = disputed_orders.paginate(page: params[:page])
-  end
-
   def show
     @order_details = @order.order_details.ordered_by_parents
     @order_details = @order_details.includes(:reservation, :order_status, :product, :order)

@@ -3,8 +3,8 @@ class TimeDropdownInput < SimpleForm::Inputs::Base
 
   def input(wrapper_options)
     merged_input_options = merge_wrapper_options(input_html_options, wrapper_options)
-
-    @builder.simple_fields_for attribute_name, object.public_send("#{attribute_name}_date_time_data"), defaults: { include_blank: false, label: false } do |f|
+    value = object.public_send("#{attribute_name}_date_time_data")
+    @builder.simple_fields_for attribute_name, value, defaults: { include_blank: value.present?, label: false } do |f|
       template.safe_join(
         [
           date_field(f),

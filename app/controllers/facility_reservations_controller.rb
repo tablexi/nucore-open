@@ -176,12 +176,6 @@ class FacilityReservationsController < ApplicationController
     flash.merge!(msg_hash) if msg_hash
   end
 
-  # GET /facilities/:facility_id/reservations/disputed
-  def disputed
-    @order_details = disputed_orders
-                     .paginate(page: params[:page])
-  end
-
   # DELETE  /facilities/:facility_id/instruments/:instrument_id/reservations/:id
   def destroy
     @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
@@ -244,12 +238,6 @@ class FacilityReservationsController < ApplicationController
       .problem_reservation_order_details
       .joins(:reservation)
       .order("reservations.reserve_start_at DESC")
-  end
-
-  def disputed_orders
-    current_facility.order_details
-                    .reservations
-                    .in_dispute
   end
 
   def sort_column

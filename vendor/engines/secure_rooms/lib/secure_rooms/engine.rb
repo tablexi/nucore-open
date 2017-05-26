@@ -9,10 +9,13 @@ module SecureRooms
 
       NavTab::LinkCollection.send :include, SecureRooms::LinkCollectionExtension
       OrderDetail.send :include, SecureRooms::OrderDetailExtension
+      User.send :include, SecureRooms::UserExtension
       ::OrderDetails::ParamUpdater.send :include, SecureRooms::OrderDetails::ParamUpdaterExtension
 
       bundle_index = Product.types.index(Bundle) || -1
       Product.types.insert(bundle_index, SecureRoom)
+
+      Admin::ServicesController.five_minute_tasks << SecureRooms::AutoOrphanOccupancy
 
       ViewHook.add_hook "users.show",
                         "additional_user_fields",

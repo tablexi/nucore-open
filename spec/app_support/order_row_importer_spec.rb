@@ -266,6 +266,29 @@ RSpec.describe OrderRowImporter do
       end
     end
 
+    describe "when the product is an instrument" do
+      let(:chart_string) { account.account_number }
+      let(:price_group) { create(:price_group, facility: facility) }
+      let(:product) do
+        create(:setup_instrument,
+               facility: facility,
+               facility_account: facility_account,
+              )
+      end
+      let(:product_name) { product.name }
+      let(:username) { user.username }
+
+      before(:each) do
+        create(:user_price_group_member, user: user, price_group: price_group)
+        product.instrument_price_policies.create(
+          attributes_for(:instrument_price_policy, price_group: price_group),
+        )
+      end
+
+      it_behaves_like "an order was not created"
+      it_behaves_like "it has an error message", "Instrument orders not allowed"
+    end
+
     context "when the user has an account for the product's facility" do
       let(:chart_string) { account.account_number }
       let(:fulfillment_date) { "1/1/1999" }
