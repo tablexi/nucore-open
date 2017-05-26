@@ -28,16 +28,16 @@ RSpec.describe "Creating a journal" do
 
     it "has journalable order details" do
       expect(page).to have_content("Select the orders that you wish to journal.")
-      expect(page).to have_content(reviewed_order_detail.id)
+      expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
     end
 
     it "does not have unreviewed order details" do
-      expect(page).not_to have_content(unreviewed_order_detail.id)
+      expect(page).not_to have_content(OrderDetailPresenter.new(unreviewed_order_detail).description_as_html)
     end
 
     it "has invalid payment order details" do
       expect(page).to have_content("These payment sources were not valid at the time of fulfillment.")
-      expect(page).to have_content(problem_order_detail.id)
+      expect(page).to have_content(OrderDetailPresenter.new(problem_order_detail).description_as_html)
       expect(page).to have_content(problem_order_detail.account.expires_at.strftime("%m/%d/%Y"))
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe "Creating a journal" do
     end
 
     it "can select order details and create a journal" do
-      expect(page).to have_content(reviewed_order_detail.id)
+      expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
       check "order_detail_ids_"
       click_button "Create"
       expect(page).to have_content "Pending Journal"
