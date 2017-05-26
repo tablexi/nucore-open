@@ -1,5 +1,6 @@
 class FacilityOrdersController < ApplicationController
 
+  include NewInprocessController
   include ProblemOrderDetailsController
   include TabCountHelper
 
@@ -8,12 +9,10 @@ class FacilityOrdersController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
 
-  load_and_authorize_resource class: Order
-
   before_action :load_order, only: [:edit, :show, :update, :send_receipt]
   before_action :load_merge_orders, only: [:edit, :show]
 
-  include FacilityOrderStatusHelper
+  load_and_authorize_resource class: Order
 
   def initialize
     @active_tab = "admin_orders"
@@ -21,9 +20,9 @@ class FacilityOrdersController < ApplicationController
   end
 
   # GET /facility/1/orders
-  def index
-    @order_details = new_or_in_process_orders.paginate(page: params[:page])
-  end
+  # Provided by NewInprocessController
+  # def index
+  # end
 
   def show
     @order_details = @order.order_details.ordered_by_parents
@@ -89,7 +88,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def problem_order_details
-    current_facility.problem_non_reservation_order_details
+    current_facility.problem_plain_order_details
   end
 
   private
@@ -114,6 +113,23 @@ class FacilityOrdersController < ApplicationController
 
   def order_appender
     @order_appender ||= OrderAppender.new(@order, current_user)
+  end
+
+  def new_or_in_process_orders
+    # will never include instrument order details
+    current_facility.order_details
+                    .new_or_inprocess
+                    .untimed_orders
+  end
+
+  def sort_lookup_hash
+    {
+      "order_number" => ["order_details.order_id", "order_details.id"],
+      "date" => "orders.ordered_at",
+      "product" => ["products.name", "order_details.state", "orders.ordered_at"],
+      "assigned_to" => ["assigned_users_order_details.last_name", "assigned_users_order_details.first_name", "order_statuses.name", "orders.ordered_at"],
+      "status" => ["order_statuses.name", "orders.ordered_at"],
+    }
   end
 
 end
