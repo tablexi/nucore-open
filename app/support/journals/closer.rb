@@ -49,7 +49,7 @@ class Journals::Closer
         state: "reconciled",
         order_status_id: OrderStatus.reconciled_status.id,
         reconciled_at: reconciled_at,
-        updated_at: Time.current
+        updated_at: Time.current,
       )
     else
       false
