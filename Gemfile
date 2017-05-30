@@ -72,6 +72,7 @@ gem "split_accounts", "~> 0.0.1", path: "vendor/engines/split_accounts"
 gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
 
 group :development do
+  gem "bullet"
   gem "coffeelint"
   gem "haml_lint", "~>0.24.0"
   gem "letter_opener"

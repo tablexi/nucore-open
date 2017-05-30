@@ -123,6 +123,8 @@ en:
         index:
           no_occupancies: There are no \"In Process\" occupancies.
       shared:
+        dashboard_with_header:
+          dashboard_link: Link to Public Dashboard
         tabnav_occupancy:
           dashboard: Dashboard
           in_progress: In Progress

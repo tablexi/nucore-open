@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe SecureRoom do
-  describe "default values" do
-    subject(:room) { described_class.new }
-    before { room.validate }
+  subject(:room) { described_class.new }
+  before { room.validate }
 
+  describe "default values" do
     it { is_expected.to be_requires_approval }
     it { is_expected.to be_hidden }
 
@@ -18,5 +18,10 @@ RSpec.describe SecureRoom do
       it { is_expected.to be_requires_approval }
       it { is_expected.to be_hidden }
     end
+  end
+
+  describe "dasboard_token generation" do
+    subject { room.dashboard_token }
+    it { is_expected.to be_present }
   end
 end
