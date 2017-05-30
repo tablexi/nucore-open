@@ -19,6 +19,7 @@ module SecureRooms
     def path
       controller.show_problems_facility_occupancies_path(facility)
     end
+
   end
 
 end
