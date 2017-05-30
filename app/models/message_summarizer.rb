@@ -4,6 +4,16 @@ class MessageSummarizer
 
   delegate :each, to: :visible_summaries
 
+  cattr_accessor(:summary_classes) do
+    ConfigurableArray.new([
+                            NotificationsSummary,
+                            OrderDetailsInDisputeSummary,
+                            ProblemOrderDetailsSummary,
+                            ProblemReservationOrderDetailsSummary,
+                            TrainingRequestsSummary,
+                          ])
+  end
+
   def initialize(controller)
     @controller = controller
   end
@@ -25,40 +35,13 @@ class MessageSummarizer
   end
 
   def summaries
-    [
-      notifications,
-      order_details_in_dispute,
-      problem_order_details,
-      problem_reservation_order_details,
-      training_requests,
-    ]
+    @summaries ||= summary_classes.map { |c| c.new(@controller) }
   end
 
   private
 
   def message_count
     @message_count ||= visible_summaries.sum(&:count)
-  end
-
-  def notifications
-    @notifications ||= NotificationsSummary.new(@controller)
-  end
-
-  def order_details_in_dispute
-    @order_details_in_dispute ||= OrderDetailsInDisputeSummary.new(@controller)
-  end
-
-  def problem_order_details
-    @problem_order_details ||= ProblemOrderDetailsSummary.new(@controller)
-  end
-
-  def problem_reservation_order_details
-    @problem_reservation_order_details ||=
-      ProblemReservationOrderDetailsSummary.new(@controller)
-  end
-
-  def training_requests
-    @training_requests ||= TrainingRequestsSummary.new(@controller)
   end
 
 end
