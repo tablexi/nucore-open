@@ -135,6 +135,7 @@ en:
         tabnav_users:
           title: Secure Room Access
         secure_rooms_dashboard:
+          time_label: Occupancy Data Taken At
           current: Current Occupants
           recent: Recent Occupants
 
