@@ -15,9 +15,6 @@ class Product < ActiveRecord::Base
   has_many   :price_policies
   has_many   :training_requests, dependent: :destroy
 
-  cattr_accessor(:types) { ConfigurableArray.new([Instrument, Item, Service, Bundle]) }
-  cattr_accessor(:mergeable_types) { ConfigurableArray.new([Instrument, Item, Service, Bundle]) }
-
   # Allow us to use `product.hidden?`
   alias_attribute :hidden, :is_hidden
 
@@ -58,6 +55,14 @@ class Product < ActiveRecord::Base
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
+
+  def self.types
+    @types ||= ConfigurableArray.new([Instrument, Item, Service, Bundle])
+  end
+
+  def self.mergeable_types
+    @mergeable_types ||= ConfigurableArray.new([Instrument, Item, Service, Bundle])
+  end
 
   # Products that can be used as accessories
   def self.accessorizable
