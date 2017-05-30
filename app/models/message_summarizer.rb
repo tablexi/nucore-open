@@ -35,7 +35,7 @@ class MessageSummarizer
   end
 
   def summaries
-    summary_classes.map { |c| c.new(@controller) }
+    @summaries ||= summary_classes.map { |c| c.new(@controller) }
   end
 
   private
