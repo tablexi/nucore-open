@@ -3,8 +3,8 @@ module SecureRoomsApi
   class EventsController < SecureRoomsApi::ApiController
 
     def create
-      SecureRooms::Alert.create(
-        alert_params.merge(
+      SecureRooms::AlarmEvent.create(
+        alarm_event_params.merge(
           message_time: parse_time(params[:message_time]),
           raw_post: request.raw_post,
         ),
@@ -15,7 +15,7 @@ module SecureRoomsApi
 
     private
 
-    def alert_params
+    def alarm_event_params
       params.permit(
         :additional_data,
         :class_code,

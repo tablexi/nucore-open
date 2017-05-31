@@ -605,7 +605,7 @@ ActiveRecord::Schema.define(version: 20170526170933) do
 
   add_index "schedules", ["facility_id"], name: "i_schedules_facility_id", using: :btree
 
-  create_table "secure_rooms_alerts", force: :cascade do |t|
+  create_table "secure_rooms_alarm_events", force: :cascade do |t|
     t.text     "additional_data",   limit: 65535
     t.string   "class_code",        limit: 255
     t.string   "event_code",        limit: 255

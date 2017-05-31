@@ -1,7 +1,7 @@
-class CreateAlerts < ActiveRecord::Migration
+class CreateAlarmEvents < ActiveRecord::Migration
 
   def change
-    create_table :secure_rooms_alerts do |t|
+    create_table :secure_rooms_alarm_events do |t|
       t.text :additional_data
       t.string :class_code
       t.string :event_code

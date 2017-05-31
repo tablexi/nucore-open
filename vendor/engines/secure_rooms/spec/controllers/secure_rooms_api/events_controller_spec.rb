@@ -34,23 +34,23 @@ RSpec.describe SecureRoomsApi::EventsController do
         it { is_expected.to be_success }
       end
 
-      describe "new alert" do
-        subject(:alert) { SecureRooms::Alert.find_by(message_id: params[:message_id]) }
+      describe "new alarm_event" do
+        subject(:alarm_event) { SecureRooms::AlarmEvent.find_by(message_id: params[:message_id]) }
 
         it "stores a parsed timestamp properly" do
           m_t = DateTime.strptime(params[:message_time], "%H:%M:%S %Z %m/%d/%Y")
-          expect(alert.message_time).to eq m_t
+          expect(alarm_event.message_time).to eq m_t
         end
 
         it "stores all values" do
-          expect(alert.message_id).to eq params[:message_id]
-          expect(alert.message_type).to eq params[:message_type]
-          expect(alert.class_code).to eq params[:class_code]
-          expect(alert.task_code).to eq params[:task_code]
-          expect(alert.event_code).to eq params[:event_code]
-          expect(alert.priority).to eq params[:priority]
-          expect(alert.task_description).to eq params[:task_description]
-          expect(alert.event_description).to eq params[:event_description]
+          expect(alarm_event.message_id).to eq params[:message_id]
+          expect(alarm_event.message_type).to eq params[:message_type]
+          expect(alarm_event.class_code).to eq params[:class_code]
+          expect(alarm_event.task_code).to eq params[:task_code]
+          expect(alarm_event.event_code).to eq params[:event_code]
+          expect(alarm_event.priority).to eq params[:priority]
+          expect(alarm_event.task_description).to eq params[:task_description]
+          expect(alarm_event.event_description).to eq params[:event_description]
         end
       end
     end
