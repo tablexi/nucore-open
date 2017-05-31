@@ -2,7 +2,6 @@ require "rails_helper"
 require "controller_spec_helper"
 
 require "stringio"
-require "csv_helper"
 
 CSV_HEADERS = [
   "Netid / Email",

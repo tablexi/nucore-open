@@ -1,4 +1,5 @@
 require "rails_helper"
+require "csv"
 
 RSpec.describe OrderRowImporter do
   include DateHelper
