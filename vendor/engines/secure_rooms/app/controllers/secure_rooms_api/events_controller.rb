@@ -3,7 +3,8 @@ module SecureRoomsApi
   class EventsController < SecureRoomsApi::ApiController
 
     def create
-      SecureRooms::AlarmEvent.create(
+      # TODO: Discuss how to handle errors
+      SecureRooms::AlarmEvent.create!(
         alarm_event_params.merge(
           message_time: parse_time(params[:message_time]),
           raw_post: request.raw_post,
