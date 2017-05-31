@@ -369,6 +369,6 @@ Nucore::Application.routes.draw do
 
   # api
   namespace :api do
-    resources :order_details, only: [:show]
+    resources :order_details, only: [:show, :index]
   end
 end

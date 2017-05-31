@@ -5,6 +5,14 @@ class Api::OrderDetailsController < ApplicationController
 
   http_basic_authenticate_with name: Settings.api.basic_auth_name, password: Settings.api.basic_auth_password
 
+  # Qualtrics requires that we use a query parameter rather than being part of
+  # the URL.
+  # /api/order_details.json?id=123
+  def index
+    show
+  end
+
+  # /api/order_details/123.json
   def show
     render json: Api::OrderDetail.new(order_detail).to_h
   end
