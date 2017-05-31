@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170526170933) do
+ActiveRecord::Schema.define(version: 20170531183710) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -596,7 +596,7 @@ ActiveRecord::Schema.define(version: 20170526170933) do
     t.boolean "on_sat",                                                            null: false
   end
 
-  add_index "schedule_rules", ["product_id"], name: "fk_rails_bd1c8c4ecb", using: :btree
+  add_index "schedule_rules", ["product_id"], name: "index_schedule_rules_on_product_id", using: :btree
 
   create_table "schedules", force: :cascade do |t|
     t.string   "name",        limit: 255
