@@ -2,10 +2,14 @@ module SecureRoomsApi
 
   class EventsController < SecureRoomsApi::ApiController
 
-    before_action :parse_time
-
     def create
-      SecureRooms::Alert.create(alert_params)
+      SecureRooms::Alert.create(
+        alert_params.merge(
+          message_time: parse_time(params[:message_time]),
+          raw_post: request.raw_post,
+        ),
+      )
+
       render nothing: true
     end
 
@@ -27,10 +31,9 @@ module SecureRoomsApi
       )
     end
 
-    # TODO: not certain this goes here but awaiting discussion
-    def parse_time
+    def parse_time(time_str)
       format_str = "%H:%M:%S %Z %m/%d/%Y"
-      params[:message_time] = DateTime.strptime(params[:message_time], format_str)
+      DateTime.strptime(time_str, format_str)
     end
 
   end

@@ -617,6 +617,7 @@ ActiveRecord::Schema.define(version: 20170526170933) do
     t.string   "priority",          limit: 255
     t.string   "task_code",         limit: 255
     t.string   "task_description",  limit: 255
+    t.text     "raw_post",          limit: 65535
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
   end
