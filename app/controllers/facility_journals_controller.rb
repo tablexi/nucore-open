@@ -29,6 +29,14 @@ class FacilityJournalsController < ApplicationController
   def new_with_search
     set_default_variables
     @layout = "two_column_head"
+
+    respond_to do |format|
+      format.csv do
+        # used for "Export as CSV" link for order details with expired accounts
+        @order_details = @order_details.expired_account
+      end
+      format.any {}
+    end
   end
 
   # PUT /facilities/journals/:id
@@ -128,7 +136,7 @@ class FacilityJournalsController < ApplicationController
 
   def order_details_for_creation
     return [] unless params[:order_detail_ids].present?
-    @order_details.includes(:order).where_ids_in(params[:order_detail_ids])
+    @order_details.includes(:account, :product, order: :user).where_ids_in(params[:order_detail_ids])
   end
 
   def set_pending_journals

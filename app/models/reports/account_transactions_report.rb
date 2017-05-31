@@ -64,6 +64,7 @@ class Reports::AccountTransactionsReport
       "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
       Account.model_name.human,
       Account.human_attribute_name("owner"),
+      Account.human_attribute_name("expires_at"),
       OrderDetail.human_attribute_name("order_status"),
     ]
   end
@@ -91,6 +92,7 @@ class Reports::AccountTransactionsReport
       order_detail.account.description,
       order_detail.account.account_number,
       order_detail.account.owner_user,
+      format_usa_date(order_detail.account.expires_at),
       order_detail.order_status,
     ]
   end

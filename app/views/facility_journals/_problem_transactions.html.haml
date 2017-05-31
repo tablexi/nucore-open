@@ -3,6 +3,9 @@
     %p.alert.alert-error= t("facility_journals.new.expired_payment")
 .row
   .span12
+    %p= link_to t("reports.account_transactions.export"), url_for(params.merge(format: :csv)), class: "js--exportSearchResults pull-right", data: { form: ".search_form" }
+.row
+  .span12
     %table.table.table-striped.table-hover.dense.old-table
       %thead
         %tr
@@ -22,7 +25,7 @@
         - order_details.each do |order_detail|
           %tr{ class: row_class(order_detail) }
             %td.nowrap= link_to order_detail.order.id, facility_order_path(order_detail.order.facility, order_detail.order)
-            %td.nowrap= link_to order_detail.id, manage_order_detail_path(order_detail), class: 'manage-order-detail'
+            %td.nowrap= link_to order_detail.id, manage_order_detail_path(order_detail), class: "manage-order-detail"
             - if current_facility.blank? || cross_facility?
               %td= order_detail.order.facility
             %td= format_usa_date(order_detail.public_send(:"#{@date_range_field}"))

@@ -1,0 +1,15 @@
+%h1= @secure_room.name
+#secure-rooms-dashboard{ data: { url: @refresh_url } }
+  = render "secure_rooms/shared/secure_rooms_dashboard", room: @secure_room
+
+:javascript
+  $(document).ready(function() {
+    window.setInterval(function() {
+      $.ajax({
+        url: $("#secure-rooms-dashboard").data("url"),
+        success: function(response) {
+          $("#secure-rooms-dashboard").html(response);
+        },
+      });
+    }, 5000);
+  });

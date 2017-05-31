@@ -110,6 +110,9 @@ GEM
     bootstrap-sass (2.3.2.2)
       sass (~> 3.2)
     builder (3.2.3)
+    bullet (5.5.1)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.10.0)
     byebug (9.0.6)
     cancancan (1.15.0)
     capistrano (3.7.2)
@@ -547,6 +550,7 @@ GEM
     unicorn (5.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
+    uniform_notifier (1.10.0)
     vuejs-rails (1.0.24)
     warden (1.2.6)
       rack (>= 1.0)
@@ -573,6 +577,7 @@ DEPENDENCIES
   awesome_print (= 1.1.0)
   bootstrap-sass (~> 2.3.2)
   bulk_email!
+  bullet
   c2po (~> 1.0.0)!
   cancancan (= 1.15)
   capistrano

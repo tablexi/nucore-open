@@ -7,8 +7,6 @@ class OrderDetail < ActiveRecord::Base
   include NotificationSubject
   include OrderDetail::Accessorized
   include NUCore::Database::WhereIdsIn
-  include NUCore::Database::ClobSafeDistinct
-  include TextHelpers::Translation
 
   versioned
 
@@ -110,11 +108,6 @@ class OrderDetail < ActiveRecord::Base
       .includes(:order)
       .merge(Order.purchased)
       .references(:order)
-  }
-
-  scope :for_product_type, lambda { |product_type|
-    joins("LEFT JOIN products ON products.id = order_details.product_id")
-      .where("products.type" => product_type)
   }
 
   scope :non_canceled, -> { where.not(state: "canceled") }
@@ -264,8 +257,10 @@ class OrderDetail < ActiveRecord::Base
       .where.not(statement_id: nil)
   }
 
-  scope :non_reservations, -> { joins(:product).where("products.type <> 'Instrument'") }
-  scope :reservations, -> { joins(:product).where("products.type = 'Instrument'") }
+  # Supports single type or an array of product types
+  scope :for_product_type, ->(product_type) { joins(:product).where(products: { type: product_type }) }
+  scope :untimed_orders, -> { for_product_type(["Item", "Service"]) }
+  scope :reservations, -> { for_product_type("Instrument") }
 
   scope :purchased, -> { joins(:order).merge(Order.purchased) }
 
