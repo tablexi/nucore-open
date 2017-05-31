@@ -37,3 +37,4 @@ spec/examples.txt
 .DS_Store
 .tags
 .tags1
+erd.*

@@ -27,13 +27,16 @@ RSpec.describe OrderDetailBatchUpdater do
   describe "#update!" do
     shared_examples_for "batch updating" do
       context "when assigned_user_id is already set" do
-        before { order_detail.update_attribute(:assigned_user_id, 2) }
+        let(:assigned_user) { create(:user) }
+        before do
+          order_detail.update_attribute(:assigned_user, assigned_user)
+        end
 
         context "and the assigned_user_id parameter is blank" do
           it "does not change the assigned_user_id" do
             expect { updater.update! }
               .not_to change { order_detail.reload.assigned_user_id }
-              .from(2)
+              .from(assigned_user.id)
           end
 
           it "returns a no-changes-required note" do
@@ -42,13 +45,14 @@ RSpec.describe OrderDetailBatchUpdater do
         end
 
         context "and the assigned_user_id parameter is a new value" do
-          let(:assigned_user_id) { "1" }
+          let(:new_assigned_user) { create(:user) }
+          let(:assigned_user_id) { new_assigned_user.id.to_s }
 
           it "updates assigned_user_id to the new value" do
             expect { updater.update! }
               .to change { order_detail.reload.assigned_user_id }
-              .from(2)
-              .to(1)
+              .from(assigned_user.id)
+              .to(assigned_user_id.to_i)
           end
 
           it "returns a successful update note" do
@@ -58,12 +62,12 @@ RSpec.describe OrderDetailBatchUpdater do
         end
 
         context "and the assigned_user_id parameter is the same value" do
-          let(:assigned_user_id) { "2" }
+          let(:assigned_user_id) { assigned_user.id.to_s }
 
           it "does not change the assigned_user_id" do
             expect { updater.update! }
               .not_to change { order_detail.reload.assigned_user_id }
-              .from(2)
+              .from(assigned_user.id)
           end
 
           it "returns a successful update note (despite nothing changing)" do
@@ -78,7 +82,7 @@ RSpec.describe OrderDetailBatchUpdater do
           it "changes the assigned_user_id to nil" do
             expect { updater.update! }
               .to change { order_detail.reload.assigned_user_id }
-              .from(2)
+              .from(assigned_user.id)
               .to(nil)
           end
 
