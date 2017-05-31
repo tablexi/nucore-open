@@ -25,6 +25,13 @@ test:
       --format junit > $CIRCLE_TEST_REPORTS/teaspoon.xml
     - bundle exec report_coverage
 
+experimental:
+  notify:
+    branches:
+      only:
+        - master
+        - develop
+
 deployment:
   staging:
     branch: master
