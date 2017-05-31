@@ -39,7 +39,7 @@ class OrderDetailStoredFilesController < ApplicationController
     @file.created_by = session_user.id ## this is correct, session_user instead of acting_user
 
     if @file.save
-      flash[:notice] = text('upload_order_file.success')
+      flash[:notice] = text("upload_order_file.success")
 
       if @order_detail.order.to_be_merged?
         @order_detail.merge! # trigger the OrderDetailObserver callbacks
@@ -48,7 +48,7 @@ class OrderDetailStoredFilesController < ApplicationController
         redirect_to(order_path(@order))
       end
     else
-      flash.now[:error] = text('upload_order_file.error')
+      flash.now[:error] = text("upload_order_file.error")
       render :order_file
     end
   end
@@ -57,13 +57,13 @@ class OrderDetailStoredFilesController < ApplicationController
   def remove_order_file
     if @order_detail.new?
       if @order_detail.stored_files.template_result.all?(&:destroy)
-        flash[:notice] = text('remove_order_file.success')
+        flash[:notice] = text("remove_order_file.success")
       else
-        flash[:error] = text('remove_order_file.delete_error')
+        flash[:error] = text("remove_order_file.delete_error")
       end
       @order.invalidate!
     else
-      flash[:error] = text('remove_order_file.already_purchased_error')
+      flash[:error] = text("remove_order_file.already_purchased_error")
     end
     redirect_to(order_path(@order))
   end
