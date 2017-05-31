@@ -12,8 +12,12 @@ module SecureRooms
       User.send :include, SecureRooms::UserExtension
       ::OrderDetails::ParamUpdater.send :include, SecureRooms::OrderDetails::ParamUpdaterExtension
 
-      Product.types.insert_before(SecureRoom, Bundle)
-      MessageSummarizer.summary_classes.insert_after(SecureRooms::ProblemOccupancyMessageSummary, MessageSummarizer::ProblemReservationOrderDetailsSummary)
+      ArrayUtil.insert_before(Product.types, SecureRoom, Bundle)
+      ArrayUtil.insert_after(
+        MessageSummarizer.summary_classes,
+        SecureRooms::ProblemOccupancyMessageSummary,
+        MessageSummarizer::ProblemReservationOrderDetailsSummary,
+      )
 
       Admin::ServicesController.five_minute_tasks << SecureRooms::AutoOrphanOccupancy
 

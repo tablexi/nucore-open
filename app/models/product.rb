@@ -57,11 +57,11 @@ class Product < ActiveRecord::Base
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
 
   def self.types
-    @types ||= ConfigurableArray.new([Instrument, Item, Service, Bundle])
+    @types ||= [Instrument, Item, Service, Bundle]
   end
 
   def self.mergeable_types
-    @mergeable_types ||= ConfigurableArray.new([Instrument, Item, Service, Bundle])
+    @mergeable_types ||= [Instrument, Item, Service, Bundle]
   end
 
   # Products that can be used as accessories
