@@ -186,3 +186,12 @@ en:
       destroy:
         notice: "The user was successfully removed from the Price Group"
         error: "An error was encountered while attempting to remove the user from the Price Group"
+
+    order_detail_stored_files:
+      upload_order_file:
+        success: Order File uploaded successfully.
+        error: An error was encountered while uploading the Order File.
+      remove_order_file:
+        delete_error: An error was encountered while deleting the uploaded Order File.
+        success: The uploaded Order File has been deleted successfully.
+        already_purchased_error: Order has already been placed.
