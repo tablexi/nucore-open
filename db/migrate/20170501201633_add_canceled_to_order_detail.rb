@@ -4,10 +4,10 @@ class AddCanceledToOrderDetail < ActiveRecord::Migration
     add_column :order_details, :canceled_by, :integer
     add_column :order_details, :canceled_reason, :string
 
-    Reservation.where.not(order_detail_id: nil).find_each do |reservation|
-      reservation.order_detail.update_attributes(canceled_at: reservation.canceled_at,
-                                                 canceled_by: reservation.canceled_by,
-                                                 canceled_reason: reservation.canceled_reason)
+    Reservation.where.not(order_detail_id: nil, canceled_at: nil).includes(:order_detail).find_each do |reservation|
+      reservation.order_detail.update_columns(canceled_at: reservation.canceled_at,
+                                              canceled_by: reservation.canceled_by,
+                                              canceled_reason: reservation.canceled_reason)
     end
   end
 
