@@ -42,6 +42,10 @@ RSpec.describe SecureRoomsApi::EventsController do
           expect(alarm_event.message_time).to eq m_t
         end
 
+        it "stores the raw post request data" do
+          expect(alarm_event.raw_post).to eq request.raw_post
+        end
+
         it "stores all values" do
           expect(alarm_event.message_id).to eq params[:message_id]
           expect(alarm_event.message_type).to eq params[:message_type]
