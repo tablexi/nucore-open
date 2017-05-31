@@ -64,6 +64,7 @@ RSpec.configure do |config|
 
   config.before(:all) do
     # users are not created within transactions, so delete them all here before running tests
+    PriceGroupMember.delete_all
     UserRole.delete_all
     User.delete_all
 

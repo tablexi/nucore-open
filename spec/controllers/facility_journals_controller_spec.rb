@@ -275,8 +275,9 @@ RSpec.describe FacilityJournalsController do
 
       context "order detail is already journaled" do
         before :each do
+          journal = create(:journal)
           @params[:order_detail_ids] = [@order_detail1.id]
-          @order_detail1.update_attributes(journal_id: 1)
+          @order_detail1.update_attributes(journal_id: journal.id)
         end
 
         it_behaves_like "journal error", "is already journaled in journal"

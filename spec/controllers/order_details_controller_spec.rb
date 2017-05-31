@@ -334,12 +334,21 @@ RSpec.describe OrderDetailsController do
         end
 
         describe "when the order is statemented" do
-          before { order_detail.update_attributes!(reviewed_at: 1.day.ago, statement_id: 10) }
+          before do
+            statement = create(
+              :statement, account: account, facility: facility, created_by: user.id)
+            order_detail.update_attributes!(
+              reviewed_at: 1.day.ago, statement: statement)
+          end
           it_behaves_like "cannot modify the account"
         end
 
         describe "when the order is journaled" do
-          before { order_detail.update_attributes!(reviewed_at: 1.day.ago, journal_id: 10) }
+          before do
+            journal = create(:journal)
+            order_detail.update_attributes!(
+              reviewed_at: 1.day.ago, journal: journal)
+          end
           it_behaves_like "cannot modify the account"
         end
       end

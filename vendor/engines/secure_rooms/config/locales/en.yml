@@ -135,6 +135,7 @@ en:
         tabnav_users:
           title: Secure Room Access
         secure_rooms_dashboard:
+          time_label: Occupancy Data Taken At
           current: Current Occupants
           recent: Recent Occupants
 
@@ -142,3 +143,6 @@ en:
     placeholders:
       card_reader:
         control_device_number: "00:00:00:00:00:00"
+
+  message_summarizer:
+    problem_occupancies: Problem Occupancies

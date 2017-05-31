@@ -12,8 +12,8 @@ module SecureRooms
       User.send :include, SecureRooms::UserExtension
       ::OrderDetails::ParamUpdater.send :include, SecureRooms::OrderDetails::ParamUpdaterExtension
 
-      bundle_index = Product.types.index(Bundle) || -1
-      Product.types.insert(bundle_index, SecureRoom)
+      Product.types.insert_before(SecureRoom, Bundle)
+      MessageSummarizer.summary_classes.insert_after(SecureRooms::ProblemOccupancyMessageSummary, MessageSummarizer::ProblemReservationOrderDetailsSummary)
 
       Admin::ServicesController.five_minute_tasks << SecureRooms::AutoOrphanOccupancy
 
