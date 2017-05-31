@@ -5,13 +5,13 @@ class MessageSummarizer
   delegate :each, to: :visible_summaries
 
   cattr_accessor(:summary_classes) do
-    ConfigurableArray.new([
-                            NotificationsSummary,
-                            OrderDetailsInDisputeSummary,
-                            ProblemOrderDetailsSummary,
-                            ProblemReservationOrderDetailsSummary,
-                            TrainingRequestsSummary,
-                          ])
+    [
+      NotificationsSummary,
+      OrderDetailsInDisputeSummary,
+      ProblemOrderDetailsSummary,
+      ProblemReservationOrderDetailsSummary,
+      TrainingRequestsSummary,
+    ]
   end
 
   def initialize(controller)
