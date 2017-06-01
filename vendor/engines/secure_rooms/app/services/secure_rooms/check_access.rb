@@ -12,7 +12,9 @@ module SecureRooms
       AccessRules::DenyAllRule,
     ].freeze
 
-    def initialize(rules = DEFAULT_RULES)
+    cattr_accessor(:rules) { DEFAULT_RULES.dup }
+
+    def initialize(rules = self.class.rules)
       @rules = rules
     end
 
