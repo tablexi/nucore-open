@@ -401,6 +401,10 @@ RSpec.describe OrderDetail do
       it "is not a problem order" do
         expect(order_detail).not_to be_problem_order
       end
+
+      it "does not have a problem_description" do
+        expect(order_detail.problem_description_key).to be_nil
+      end
     end
 
     context "with instruments" do
@@ -496,12 +500,18 @@ RSpec.describe OrderDetail do
 
           it_behaves_like "it is complete"
           it_behaves_like "it is a problem order"
+          it "has a missing actual problem key" do
+            expect(order_detail.problem_description_key).to eq(:missing_actuals)
+          end
 
           context "and has a reservation_rate" do
             let(:order_detail) { order_detail_with_actuals_and_price_policy }
 
             it_behaves_like "it is complete"
             it_behaves_like "it is a problem order"
+            it "has a missing actual problem key" do
+              expect(order_detail.problem_description_key).to eq(:missing_actuals)
+            end
           end
         end
 
@@ -510,6 +520,19 @@ RSpec.describe OrderDetail do
 
           it_behaves_like "it is complete"
           it_behaves_like "it is a problem order"
+
+          describe "when it is missing and requiring actuals" do
+            it do
+              expect(order_detail.problem_description_key).to eq(:missing_actuals)
+            end
+          end
+
+          describe "when it has actuals" do
+            before { order_detail.reservation.update_attributes(actual_start_at: Time.current, actual_end_at: Time.current) }
+            it do
+              expect(order_detail.problem_description_key).to eq(:missing_price_policy)
+            end
+          end
 
           context "when a price policy is assigned" do
             let!(:price_policy) do
@@ -554,6 +577,10 @@ RSpec.describe OrderDetail do
         end
 
         it_behaves_like "it is a problem order"
+
+        it "has a missing price policy description" do
+          expect(order_detail.problem_description_key).to eq(:missing_price_policy)
+        end
 
         context "when adding a compatible price policy" do
           let!(:price_policy) do

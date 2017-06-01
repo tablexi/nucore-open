@@ -33,7 +33,7 @@ class OrderDetail < ActiveRecord::Base
 
   before_save :set_problem_order
   def set_problem_order
-    self.problem = complete? && problem_description_key.present?
+    self.problem = problem_description_key.present?
     update_fulfilled_at_on_resolve if time_data.present?
     true # problem might be false; we need the callback chain to continue
   end
@@ -769,10 +769,6 @@ class OrderDetail < ActiveRecord::Base
     problem
   end
 
-  def missing_price_policy?
-    complete? && price_policy.nil?
-  end
-
   def in_open_journal?
     journal && journal.open?
   end
@@ -863,8 +859,10 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def problem_description_key
+    return unless complete?
+
     time_data_problem_key = time_data.problem_description_key
-    price_policy_problem_key = :missing_price_policy if missing_price_policy?
+    price_policy_problem_key = :missing_price_policy if price_policy.blank?
 
     time_data_problem_key || price_policy_problem_key
   end
