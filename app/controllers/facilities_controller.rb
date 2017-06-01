@@ -27,6 +27,15 @@ class FacilitiesController < ApplicationController
       acting_user.present? && acting_user.recently_used_facilities.sorted
   end
 
+  # GET /facilities/:facility_url/dashboard
+  def dashboard
+    if current_facility.instruments.active.any?
+      redirect_to timeline_facility_reservations_path(current_facility)
+    else
+      redirect_to facility_orders_path(current_facility)
+    end
+  end
+
   # GET /facilities
   def index
     @facilities = Facility.active.sorted
