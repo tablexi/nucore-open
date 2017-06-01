@@ -1,8 +1,6 @@
-require "csv_helper"
+require "csv"
 
 class OrderImport < ActiveRecord::Base
-
-  include CSVHelper
 
   belongs_to :facility
   belongs_to :upload_file, class_name: "StoredFile", dependent: :destroy
