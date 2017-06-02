@@ -5,7 +5,11 @@ class Api::OrderDetail
   end
 
   def to_h
-    { account: account_to_hash, ordered_for: ordered_for_to_hash }
+    {
+      order_number: @order_detail.order_number,
+      account: account_to_hash,
+      ordered_for: ordered_for_to_hash,
+    }
   end
 
   private

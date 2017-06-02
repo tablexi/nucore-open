@@ -25,6 +25,8 @@ class UrlService < ExternalService
       referer: referer_url(request),
       receiver_id: receiver.id,
     }
+
+    query[:order_number] = receiver.order_number if receiver.respond_to?(:order_number)
     query[:quantity] = receiver.quantity if receiver.respond_to?(:quantity)
     query.to_query
   end

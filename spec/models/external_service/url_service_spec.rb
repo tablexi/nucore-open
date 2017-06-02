@@ -2,47 +2,61 @@ require "rails_helper"
 
 RSpec.describe UrlService do
 
-  subject(:url_service) { described_class.create location: "http://www.survey.com" }
+  let(:url_service) do
+    described_class.create(
+      location: "http://www.survey.com/survey1",
+      default_url_options: { host: "defaulthost" },
+    )
+  end
 
   let(:service) { create :setup_service }
   let(:order) { create :setup_order, product: service }
-  let(:order_detail) { create :order_detail, order: order, product: service }
+  let(:order_detail) { create :order_detail, order: order, product: service, quantity: 3 }
 
-  let(:host_params) do
-    {
-      host: "localhost.test",
-      port: 8080,
-      protocol: "https",
-    }
+  let(:facility) { order_detail.product.facility }
+  let(:product) { order_detail.product }
+
+  let(:query_hash) { Rack::Utils.parse_query(uri.query) }
+  let(:uri) { URI(url_service.new_url(order_detail)) }
+
+  it "uses the service's location as its base" do
+    expect(uri.to_s).to start_with("http://www.survey.com/survey1?")
   end
 
-  let :url_components do
-    {
-      facility_id: order_detail.product.facility.url_name,
-      service_id: order_detail.product.url_name,
-      external_service_id: url_service.id,
-      receiver_id: order_detail.id,
-    }
-  end
+  describe "with a request" do
+    let(:request) { double(host_with_port: "realdomain:8080", fullpath: "/mysite", host: "realdomain", port: 8080, protocol: "https://") }
+    let(:uri) { URI(url_service.new_url(order_detail, request)) }
 
-  describe "with no request" do
-    it "uses the default host, port, and protocol if there is no request" do
-      url_service.default_url_options[:host] = "localhost"
-      complete_survey_url = url_service.complete_survey_url url_components
-      query_string = { quantity: 1, success_url: complete_survey_url, referer: nil, receiver_id: order_detail.id }
-      url = "#{url_service.location}?#{query_string.to_query}"
-      expect(url_service.new_url(order_detail)).to eq url
+    it "sets the correct receiver id" do
+      expect(query_hash["receiver_id"]).to eq(order_detail.id.to_s)
+    end
+
+    it "sets the quantity" do
+      expect(query_hash["quantity"]).to eq("3")
+    end
+
+    it "sets the order number" do
+      expect(query_hash["order_number"]).to eq(order_detail.to_s)
+    end
+
+    it "sets the correct success url" do
+      expect(query_hash["success_url"])
+        .to eq("https://realdomain:8080/facilities/#{facility.url_name}/services/#{product.url_name}/surveys/#{url_service.id}/complete?receiver_id=#{order_detail.id}")
+    end
+
+    it "returns a blank referer" do
+      expect(query_hash["referer"]).to eq("https://realdomain:8080/mysite")
     end
   end
 
-  it "uses the host, port, and protocol of the request" do
-    complete_survey_url = url_service.complete_survey_url url_components.merge(host_params)
-    host_params[:host_with_port] = "#{host_params[:host]}:#{host_params[:port]}"
-    host_params[:fullpath] = "/path/to/somewhere"
-    referer_url = "#{host_params[:protocol]}#{host_params[:host_with_port]}#{host_params[:fullpath]}"
-    query = { quantity: 1, success_url: complete_survey_url, referer: referer_url, receiver_id: order_detail.id }
-    url = "#{url_service.location}?#{query.to_query}"
-    expect(url_service.new_url(order_detail, double(host_params))).to eq url
-  end
+  describe "without a request" do
+    it "sets the correct success url" do
+      expect(query_hash["success_url"])
+        .to eq("http://defaulthost/facilities/#{facility.url_name}/services/#{product.url_name}/surveys/#{url_service.id}/complete?receiver_id=#{order_detail.id}")
+    end
 
+    it "returns a blank referer" do
+      expect(query_hash["referer"]).to be_blank
+    end
+  end
 end
