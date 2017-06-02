@@ -5,7 +5,7 @@ RSpec.describe UrlService do
   let(:url_service) do
     described_class.create(
       location: "http://www.survey.com/survey1",
-      default_url_options: { host: "defaulthost"}
+      default_url_options: { host: "defaulthost" },
     )
   end
 

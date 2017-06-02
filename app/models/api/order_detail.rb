@@ -8,7 +8,7 @@ class Api::OrderDetail
     {
       order_number: @order_detail.order_number,
       account: account_to_hash,
-      ordered_for: ordered_for_to_hash
+      ordered_for: ordered_for_to_hash,
     }
   end
 

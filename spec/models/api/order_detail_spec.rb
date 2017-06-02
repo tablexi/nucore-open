@@ -32,7 +32,7 @@ RSpec.describe Api::OrderDetail do
               username: account_owner.username,
               email: account_owner.email,
             },
-          }
+          },
         )
       end
     end
