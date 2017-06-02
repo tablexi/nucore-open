@@ -144,7 +144,6 @@ linters:
       - "app/views/search/user_search_results.html.haml"
       - "app/views/shared/_acting_as.html.haml"
       - "app/views/shared/_login_button.html.haml"
-      - "app/views/shared/_order_detail_cell.html.haml"
       - "app/views/shared/_problem_order_details.html.haml"
       - "app/views/shared/timeline/_reservation.html.haml"
       - "app/views/shared/transactions/_search.html.haml"

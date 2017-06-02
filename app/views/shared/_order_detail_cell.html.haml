@@ -12,7 +12,7 @@
 
   - if can?(:template_results, od)
     - if od.survey_completed?
-      .order-detail-extra= link_to 'View Order Form', od.external_service_receiver.show_url, :target => '_blank'
+      .order-detail-extra= link_to 'View Order Form', od.external_service_receiver.show_url, target: '_blank'
     - od.stored_files.template_result.each do |stored_file|
       .order-detail-extra
         = link_to t("order_details.show.link.view.order_file"), facility_template_result_path(stored_file)
