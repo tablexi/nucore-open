@@ -35,6 +35,10 @@ RSpec.describe UrlService do
       expect(query_hash["quantity"]).to eq("3")
     end
 
+    it "sets the order number" do
+      expect(query_hash["order_number"]).to eq(order_detail.to_s)
+    end
+
     it "sets the correct success url" do
       expect(query_hash["success_url"])
         .to eq("https://realdomain:8080/facilities/#{facility.url_name}/services/#{product.url_name}/surveys/#{url_service.id}/complete?receiver_id=#{order_detail.id}")

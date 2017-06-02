@@ -692,9 +692,10 @@ class OrderDetail < ActiveRecord::Base
     Account.for_order_detail(self)
   end
 
-  def to_s
+  def order_number
     "#{order_id}-#{id}"
   end
+  alias to_s order_number
 
   def description
     "Order # #{self}"
