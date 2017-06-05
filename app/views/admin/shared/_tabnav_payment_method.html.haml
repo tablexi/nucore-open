@@ -1,8 +1,8 @@
 %ul.nav.nav-tabs
   = tab t(".details"), facility_account_path(current_facility, @account), (secondary_tab == "details")
   -# TODO: use a feature flag here instead
-  - if @account.statements.any? && !current_user.account_manager?
+  - if @account.statements.any? && current_ability.can?(:show, @account.statements.first)
     = tab t(".statements"), facility_account_statements_path(current_facility, @account), (secondary_tab == "statements")
   = tab t(".members"), facility_account_members_path(current_facility, @account), (secondary_tab == "members")
-  - unless current_user.account_manager?
-    = tab t(".orders"), facility_account_orders_path(current_facility, @account), (secondary_tab == "orders")
+  - if current_ability.can?(:show, @account.orders.first)
+    = tab t(".orders"), facility_account_orders_path(current_facility, @accountZ), (secondary_tab == "orders")
