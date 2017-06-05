@@ -55,15 +55,15 @@ class OrderDetailStoredFilesController < ApplicationController
 
   # GET /orders/:order_id/order_details/:order_detail_id/remove_order_file
   def remove_order_file
-    if @order_detail.new?
+    if @order.purchased?
+      flash[:error] = text("remove_order_file.already_purchased_error")
+    else
       if @order_detail.stored_files.template_result.all?(&:destroy)
         flash[:notice] = text("remove_order_file.success")
       else
         flash[:error] = text("remove_order_file.delete_error")
       end
       @order.invalidate!
-    else
-      flash[:error] = text("remove_order_file.already_purchased_error")
     end
     redirect_to(order_path(@order))
   end
