@@ -141,6 +141,11 @@ exist in the `vendor/engines` directory.
 * [Sanger Sequencing order form and well plate management](vendor/engines/sanger_sequencing/README.md)
 * [Split charges between different accounts](vendor/engines/split_accounts/README.md)
 
+Engine-specific migrations should live in the engine's `db/migrate` directory and
+use an engine initializer to add that path to the list of paths Rails checks. If
+you need to disable an engine, you can undo all of the engine's migrations with
+the `rake engines:db:migrate_down[ENGINE_NAME]` task.
+
 ## Learn more
 
 There are valuable resources in the NUcore's doc directory.
