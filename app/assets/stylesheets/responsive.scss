@@ -86,7 +86,6 @@ $navbarActiveBorderColor: #aaa;
       .responsive-header {
         display: block;
         position: absolute;
-        top: 6px;
         left: 6px;
         width: 30%;
         padding-right: 10px;
@@ -101,6 +100,10 @@ $navbarActiveBorderColor: #aaa;
 
     th.currency, td.currency {
       text-align: left;
+    }
+
+    caption {
+      display: block;
     }
 
   }
