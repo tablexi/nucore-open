@@ -124,7 +124,7 @@ feature:
   results_file_notifications_on: true
   set_statement_search_start_date_on: false
   send_statement_emails_on: true
-  responsive_on: false
+  responsive_on: true
 
 split_accounts:
   # Roles are allowed to create Split Accounts
