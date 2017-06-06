@@ -41,7 +41,7 @@ module ReportsHelper
   def order_and_filter_attributes(ar)
     attrs = ar.attributes.to_a
     attrs.delete_if { |ray| ray[0] =~ /._id$|^id$|^updated_at$|^created_at$|._by$/ }
-    attrs.sort { |a1, a2| a1[0] <=> a2[0] }
+    attrs.sort_by { |a| a[0] }
   end
 
 end

@@ -2,7 +2,7 @@ class CurrencyInput < SimpleForm::Inputs::Base
 
   include ActionView::Helpers::NumberHelper
 
-  def input(wrapper_options)
+  def input(_wrapper_options)
     set_value
 
     out = template.content_tag :div, class: ["input-prepend", "currency-input"] do

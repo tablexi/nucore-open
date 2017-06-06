@@ -16,7 +16,7 @@ module AffiliatesHelper
   def select_affiliate_options
     Affiliate
       .by_name
-      .sort_by { |a, b| a.other? ? 1 : 0 } # Force "Other" to be last
+      .sort_by { |a, _b| a.other? ? 1 : 0 } # Force "Other" to be last
       .map do |affiliate|
         [
           affiliate.name,
