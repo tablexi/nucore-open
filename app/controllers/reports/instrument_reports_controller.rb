@@ -9,9 +9,9 @@ module Reports
     def self.reports
       @reports ||= HashWithIndifferentAccess.new(
         instrument: nil,
-        account: -> (reservation) { reservation.order_detail.account },
-        account_owner: -> (reservation) { format_username(reservation.order_detail.account.owner_user) },
-        purchaser: -> (reservation) { format_username(reservation.order_detail.user) },
+        account: ->(reservation) { reservation.order_detail.account },
+        account_owner: ->(reservation) { format_username(reservation.order_detail.account.owner_user) },
+        purchaser: ->(reservation) { format_username(reservation.order_detail.user) },
       )
     end
 

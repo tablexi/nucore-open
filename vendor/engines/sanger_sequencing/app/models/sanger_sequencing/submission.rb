@@ -23,7 +23,7 @@ module SangerSequencing
 
     scope :purchased, -> { joins(:order).merge(Order.purchased.order(ordered_at: :desc)) }
     scope :ready_for_batch, -> { purchased.merge(OrderDetail.new_or_inprocess).where(batch_id: nil) }
-    scope :for_facility, -> (facility) { where(orders: { facility_id: facility.id }) }
+    scope :for_facility, ->(facility) { where(orders: { facility_id: facility.id }) }
 
     def self.for_product_group(product_group)
       if product_group

@@ -14,9 +14,9 @@ module Reports
           # Space at beginning is intentional to bubble it to the top of the list
           od.account.owner_user ? format_username(od.account.owner_user) : " Missing Owner for #{od.account.account_number}"
         end,
-        purchaser: -> (od) { format_username od.order.user },
-        price_group: -> (od) { od.price_policy ? od.price_policy.price_group.name : text("unassigned") },
-        assigned_to: -> (od) { od.assigned_user.presence ? format_username(od.assigned_user) : text("unassigned") },
+        purchaser: ->(od) { format_username od.order.user },
+        price_group: ->(od) { od.price_policy ? od.price_policy.price_group.name : text("unassigned") },
+        assigned_to: ->(od) { od.assigned_user.presence ? format_username(od.assigned_user) : text("unassigned") },
       )
     end
 

@@ -3,11 +3,11 @@ module Projects
   class ReportsExtension
 
     def self.general_report
-      -> (order_detail) { order_detail.project || " No Project" }
+      ->(order_detail) { order_detail.project || " No Project" }
     end
 
     def self.instrument_report
-      -> (reservation) { reservation.order_detail.project || " No Project" }
+      ->(reservation) { reservation.order_detail.project || " No Project" }
     end
 
   end
