@@ -792,7 +792,8 @@ RSpec.describe Instrument do
 
       it "switches the instrument to be online" do
         expect { instrument.online! }
-          .to change { instrument.online? }.from(false).to(true)
+          .to change { instrument.online? }
+          .from(false).to(true)
           .and change { offline_reservation.reload.reserve_end_at }.from(nil)
       end
     end

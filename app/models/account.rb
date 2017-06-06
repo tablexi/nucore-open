@@ -19,7 +19,7 @@ class Account < ActiveRecord::Base
   # only include the last item in the hash as part of the scoping.
   # TODO Consider changing when we get to Rails 4.
   has_one :owner, -> { where("account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL") }, class_name: "AccountUser"
-  has_one    :owner_user, through: :owner, source: :user
+  has_one :owner_user, through: :owner, source: :user
   has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"
   has_many   :price_group_members
   has_many   :order_details

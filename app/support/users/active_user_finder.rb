@@ -22,8 +22,7 @@ class Users::ActiveUserFinder
      user.first_name,
      user.last_name,
      user.last_sign_in_at,
-     user.orders.last.try(:created_at),
-    ]
+     user.orders.last.try(:created_at)]
   end
 
 end

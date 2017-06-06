@@ -57,11 +57,14 @@ class FacilityAccountsReconciliationController < ApplicationController
   def unreconciled_details
     OrderDetail
       .account_unreconciled(current_facility, selected_account)
-      .order(%w(
-               order_details.account_id
-               order_details.statement_id
-               order_details.order_id
-               order_details.id))
+      .order(
+        %w(
+          order_details.account_id
+          order_details.statement_id
+          order_details.order_id
+          order_details.id
+        ),
+      )
       .paginate(page: params[:page])
   end
 

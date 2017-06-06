@@ -56,11 +56,14 @@ RSpec.describe ProductUsersController do
 
       @action = :update_restrictions
       @method = :put
-      @params.deep_merge!(instrument: { product_users: {
-                            @guest_product.id => { product_access_group_id: @level.id },
-                            @staff_product.id => { product_access_group_id: @level2.id },
-                          },
-        })
+      @params.deep_merge!(
+        instrument: {
+          product_users: {
+            @guest_product.id => { product_access_group_id: @level.id },
+            @staff_product.id => { product_access_group_id: @level2.id },
+          },
+        },
+      )
     end
 
     it_should_allow_operators_only :redirect, "update the product_users" do

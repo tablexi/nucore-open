@@ -17,7 +17,7 @@ Nucore::Application.routes.draw do
   get "switch_back", to: 'public#switch_back'
 
   # shared searches
-  get  "/user_search_results", to: 'search#user_search_results'
+  get "/user_search_results", to: 'search#user_search_results'
   get "/#{I18n.t("facilities_downcase")}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
   get "/#{I18n.t("facilities_downcase")}/:facility_id/accounts/user/:user_id", to: 'facility_accounts#user_accounts', as: "user_accounts"
 
@@ -80,7 +80,7 @@ Nucore::Application.routes.draw do
       resources :product_access_groups
       resources :price_policies, controller: "instrument_price_policies", except: [:show]
       resources :reservations, only: [:new, :create, :destroy], controller: "facility_reservations" do
-        get "edit_admin",   to: 'facility_reservations#edit_admin'
+        get "edit_admin", to: 'facility_reservations#edit_admin'
         patch "update_admin", to: 'facility_reservations#update_admin'
       end
 
@@ -283,7 +283,7 @@ Nucore::Application.routes.draw do
     get "instrument_unavailable_reports/:report_by",
         to: "reports/instrument_unavailable_reports#index",
         as: "instrument_unavailable_reports"
-    get "instrument_day_reports/:report_by",   to: 'reports/instrument_day_reports#index',   as: "instrument_day_reports"
+    get "instrument_day_reports/:report_by", to: 'reports/instrument_day_reports#index', as: "instrument_day_reports"
   end
 
   # global settings
@@ -297,8 +297,8 @@ Nucore::Application.routes.draw do
   get "/orders/cart", to: 'orders#cart', as: "cart"
   get "/orders(\/:status)", to: 'orders#index', as: "orders_status", constraints: { status: /pending|all/ } ## emacs quoting \/
 
-  put "/orders/:id/remove/:order_detail_id", to: 'orders#remove',      as: "remove_order"
-  get "/order/:id/add_account",            to: 'orders#add_account', as: "add_account"
+  put "/orders/:id/remove/:order_detail_id", to: 'orders#remove', as: "remove_order"
+  get "/order/:id/add_account", to: 'orders#add_account', as: "add_account"
 
   resources :orders do
     member do

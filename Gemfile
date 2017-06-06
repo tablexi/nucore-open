@@ -16,7 +16,7 @@ end
 
 ## auth
 gem "cancancan", "1.15"
-gem "devise",           "~> 3.5.10"
+gem "devise", "~> 3.5.10"
 gem "devise-encryptable", "~> 0.2.0"
 gem "devise_ldap_authenticatable", "~> 0.8.5"
 
@@ -25,7 +25,7 @@ gem "aasm", "~> 4.11.1"
 gem "paperclip",        "~> 4.2.0"
 gem "vestal_versions",  "1.2.4.3", github: "elzoiddy/vestal_versions"
 gem "awesome_nested_set", "3.0.3"
-gem "nokogiri",         "~> 1.7.1"
+gem "nokogiri", "~> 1.7.1"
 gem "rails-observers"
 
 ## views
@@ -36,7 +36,7 @@ gem "therubyracer"
 gem "bootstrap-sass",   "~> 2.3.2"
 gem "haml",             "~> 4.0.5"
 gem "will_paginate", "~> 3.1.5"
-gem "dynamic_form",     "~> 1.1.4"
+gem "dynamic_form", "~> 1.1.4"
 gem "ckeditor", "~> 4.1.6"
 gem "jquery-rails"
 gem "jquery-ui-rails", "~> 6.0.1"

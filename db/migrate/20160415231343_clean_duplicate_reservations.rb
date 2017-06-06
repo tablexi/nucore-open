@@ -5,10 +5,10 @@ class CleanDuplicateReservations < ActiveRecord::Migration
 
   def up
     order_details_with_multiple_reservations = Reservation
-      .where("order_detail_id is not null")
-      .group(:order_detail_id)
-      .having("count(*) > 1")
-      .pluck(:order_detail_id)
+                                               .where("order_detail_id is not null")
+                                               .group(:order_detail_id)
+                                               .having("count(*) > 1")
+                                               .pluck(:order_detail_id)
 
     order_details_with_multiple_reservations.each do |order_detail_id|
       Reservation.where(order_detail_id: order_detail_id).last.destroy
