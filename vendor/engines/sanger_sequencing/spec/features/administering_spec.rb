@@ -49,9 +49,13 @@ RSpec.describe "Sanger Sequencing Administration" do
         let!(:order_detail) { FactoryGirl.create(:purchased_order, product: service, account: account).order_details.first }
         let!(:submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: order_detail) }
         let(:external_service) { FactoryGirl.create(:external_service) }
-        let!(:receiver) { ExternalServiceReceiver.create(external_service: external_service,
-          receiver: order_detail,
-          response_data: { show_url: sanger_sequencing_submission_path(submission) }.to_json) }
+        let!(:receiver) do
+          ExternalServiceReceiver.create(
+            external_service: external_service,
+            receiver: order_detail,
+            response_data: { show_url: sanger_sequencing_submission_path(submission) }.to_json,
+          )
+        end
 
         before do
           visit facility_orders_path(facility)

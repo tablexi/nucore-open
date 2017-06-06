@@ -151,8 +151,9 @@ Nucore::Application.routes.draw do
     ######
 
     if SettingsHelper.feature_on? :recharge_accounts
-      resources :facility_accounts, controller: "facility_facility_accounts",
-        only: [:index, :new, :create, :edit, :update], path: "#{I18n.t("facility_downcase")}_accounts"
+      resources :facility_accounts,
+                controller: "facility_facility_accounts",
+                only: [:index, :new, :create, :edit, :update], path: "#{I18n.t("facility_downcase")}_accounts"
     end
 
     resources :orders, controller: "facility_orders", only: [:index, :update, :show] do

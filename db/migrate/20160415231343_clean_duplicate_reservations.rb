@@ -1,4 +1,5 @@
 class CleanDuplicateReservations < ActiveRecord::Migration
+
   class Reservation < ActiveRecord::Base
   end
 
@@ -28,4 +29,5 @@ class CleanDuplicateReservations < ActiveRecord::Migration
       add_index :reservations, :order_detail_id, name: "i_reservations_order_detail_id", tablespace: "bc_nucore"
     end
   end
+
 end

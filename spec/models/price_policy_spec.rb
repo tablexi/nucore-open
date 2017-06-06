@@ -15,7 +15,7 @@ RSpec.describe PricePolicy do
     @facility         = FactoryGirl.create(:facility)
     @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group = FactoryGirl.create(:price_group, facility: facility)
-    @item             = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+    @item = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
   end
 
   context "current and newest" do

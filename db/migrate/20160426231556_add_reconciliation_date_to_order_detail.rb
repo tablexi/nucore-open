@@ -1,4 +1,5 @@
 class AddReconciliationDateToOrderDetail < ActiveRecord::Migration
+
   def up
     add_column :order_details, :reconciled_at, :datetime
 
@@ -10,4 +11,5 @@ class AddReconciliationDateToOrderDetail < ActiveRecord::Migration
   def down
     remove_column :order_details, :reconciled_at
   end
+
 end

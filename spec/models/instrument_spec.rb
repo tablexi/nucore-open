@@ -560,11 +560,11 @@ RSpec.describe Instrument do
     before(:each) do
       @price_group = FactoryGirl.create(:price_group, facility: facility)
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument       = FactoryGirl.create(:instrument,
-                                             facility: facility,
-                                             facility_account: facility_account,
-                                             min_reserve_mins: 60,
-                                             max_reserve_mins: 60)
+      @instrument = FactoryGirl.create(:instrument,
+                                       facility: facility,
+                                       facility_account: facility_account,
+                                       min_reserve_mins: 60,
+                                       max_reserve_mins: 60)
       @price_group_product = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)
       assert @instrument.valid?
 

@@ -25,4 +25,5 @@ module AffiliatesHelper
         ]
       end
   end
+
 end

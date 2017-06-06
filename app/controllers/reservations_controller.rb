@@ -165,7 +165,6 @@ class ReservationsController < ApplicationController
 
     Reservation.transaction do
       begin
-
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         mergeable = @order_detail.order.to_be_merged?
 

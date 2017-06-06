@@ -1,4 +1,5 @@
 class AddCanceledToOrderDetail < ActiveRecord::Migration
+
   def up
     add_column :order_details, :canceled_at, :datetime
     add_column :order_details, :canceled_by, :integer
@@ -17,4 +18,5 @@ class AddCanceledToOrderDetail < ActiveRecord::Migration
     remove_column :order_details, :canceled_by, :integer
     remove_column :order_details, :canceled_reason, :string
   end
+
 end
