@@ -633,7 +633,6 @@ en:
           for: "Ordered For"
           by: "Ordered By"
       th:
-        quantity: "Quantity/Product"
         cost: "Cost"
         adjust: "Adjustment"
         total: "Total"
