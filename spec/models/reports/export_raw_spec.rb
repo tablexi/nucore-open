@@ -23,6 +23,8 @@ RSpec.describe Reports::ExportRaw do
     let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
     let(:order_detail) do
       place_product_order(user, facility, item, account).tap do |od|
+        od.complete!
+        od.manually_priced!
         od.update_attributes!(
           quantity: 3,
           actual_cost: BigDecimal("19.99"),
@@ -49,6 +51,7 @@ RSpec.describe Reports::ExportRaw do
     it { is_expected.to have_column("Actual Cost").with_value("$19.99") }
     it { is_expected.to have_column("Actual Subsidy").with_value("$9.99") }
     it { is_expected.to have_column("Actual Total").with_value("$10.00") }
+    it { is_expected.to have_column("Charge For").with_value("Quantity") }
 
     describe "invoices" do
       it { is_expected.to have_column("Invoice Number").with_value("") }
@@ -93,5 +96,6 @@ RSpec.describe Reports::ExportRaw do
     it { is_expected.to have_column("Actual End Time").with_value(reservation.actual_end_at.to_s) }
     it { is_expected.to have_column("Actual Minutes").with_value("65") }
     it { is_expected.to have_column("Quantity").with_value("1") }
+    it { is_expected.to have_column("Charge For").with_value("Reservation") }
   end
 end

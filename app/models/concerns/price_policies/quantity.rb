@@ -9,6 +9,10 @@ module PricePolicies
       validates :unit_subsidy, numericality: { allow_blank: true, greater_than_or_equal_to: 0 }
     end
 
+    def charge_for
+      "quantity"
+    end
+
     def calculate_cost_and_subsidy_from_order_detail(order_detail)
       calculate_cost_and_subsidy(order_detail.quantity)
     end

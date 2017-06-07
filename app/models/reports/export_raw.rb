@@ -85,7 +85,7 @@ module Reports
         reconciled_note: :reconciled_note,
         reconciled_at: :reconciled_at,
         invoice_number: ->(od) { od.statement.try(:invoice_number) },
-        charge_for: ->(od) { od.price_policy.try(:charge_for) },
+        charge_for: ->(od) { ChargeMode.for_order_detail(od).to_s.titleize },
       }
       if SettingsHelper.has_review_period?
         hash
