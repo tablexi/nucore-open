@@ -66,7 +66,7 @@ RSpec.describe Ability do
       let(:facility) { Facility.cross_facility }
 
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
-      it_is_allowed_to([:read, :edit, :suspend, :unsuspend, :create, :update], Account)
+      it_is_allowed_to([:new, :create, :read, :edit, :update, :suspend, :unsuspend], Account)
       it { is_expected.to be_allowed_to(:manage, AccountUser) }
       it { is_expected.to be_allowed_to(:manage, User) }
       it { is_expected.not_to be_allowed_to(:switch_to, other_user) }
