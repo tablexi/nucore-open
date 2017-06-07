@@ -36,13 +36,13 @@ module Reports
 
     def default_report_hash
       {
-        type: -> (reservation) { reservation.class.model_name.human },
+        type: ->(reservation) { reservation.class.model_name.human },
         instrument: :product,
         start_time: :reserve_start_at,
         end_time: :reserve_end_at,
-        total_minutes: -> (reservation) { formatted_total_minutes(reservation) },
+        total_minutes: ->(reservation) { formatted_total_minutes(reservation) },
         admin_note: :admin_note,
-        category: -> (reservation) { reservation_category_label(reservation) },
+        category: ->(reservation) { reservation_category_label(reservation) },
       }
     end
 

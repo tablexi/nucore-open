@@ -1,6 +1,6 @@
 # rubocop:disable Style/BarePercentLiterals
 # rubocop:disable Style/RescueModifier
-# rubocop:disable Style/SpaceInsideStringInterpolation
+# rubocop:disable Layout/SpaceInsideStringInterpolation
 # rubocop:disable Style/UnneededPercentQ
 
 module ActiveRecord

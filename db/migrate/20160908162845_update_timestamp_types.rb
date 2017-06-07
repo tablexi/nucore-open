@@ -10,4 +10,5 @@ class UpdateTimestampTypes < ActiveRecord::Migration
     change_column :users, :deactivated_at, :timestamp
     change_column :notifications, :dismissed_at, :timestamp
   end
+
 end

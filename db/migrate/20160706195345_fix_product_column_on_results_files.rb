@@ -1,7 +1,9 @@
 class FixProductColumnOnResultsFiles < ActiveRecord::Migration
 
   class StoredFile < ActiveRecord::Base
+
     belongs_to :order_detail
+
   end
 
   def up

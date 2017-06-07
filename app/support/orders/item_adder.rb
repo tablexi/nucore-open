@@ -60,12 +60,14 @@ class Orders::ItemAdder
   def create_bundle_order_detail(product, attributes = {})
     group_id = @order.max_group_id + 1
     product.bundle_products.collect do |bp|
-      create_order_detail({
-        product_id: bp.product.id,
-        quantity: bp.quantity,
-        bundle_product_id: product.id,
-        group_id: group_id }.merge(
-          attributes))
+      create_order_detail(
+        {
+          product_id: bp.product.id,
+          quantity: bp.quantity,
+          bundle_product_id: product.id,
+          group_id: group_id,
+        }.merge(attributes),
+      )
     end
   end
 

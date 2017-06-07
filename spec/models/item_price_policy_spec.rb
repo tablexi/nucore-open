@@ -32,7 +32,7 @@ RSpec.describe ItemPricePolicy do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
       @price_group = FactoryGirl.create(:price_group, facility: @facility)
-      @item             = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account: @facility_account))
+      @item = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account: @facility_account))
       @price_group_product = FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
     end
 

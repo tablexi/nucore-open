@@ -12,7 +12,7 @@ class Payment < ActiveRecord::Base
   validates :source,
             presence: true,
             inclusion: {
-              in: -> (*) { valid_sources.map(&:to_s) },
+              in: ->(*) { valid_sources.map(&:to_s) },
               message: "%{value} is not a valid payment source type",
             }
 

@@ -8,9 +8,9 @@ module TransactionHistoryHelper
     search_fields.map!(&:to_s) if search_fields
     options = []
     products.each do |product|
-      options << [product.name, product.id, { :"data-facility" => product.facility_id,
-                                              :"data-restricted" => product.requires_approval?,
-                                              :"data-product-type" => product.type.downcase }]
+      options << [product.name, product.id, { "data-facility": product.facility_id,
+                                              "data-restricted": product.requires_approval?,
+                                              "data-product-type": product.type.downcase }]
     end
     options_for_select options, selected: search_fields
   end
@@ -34,7 +34,7 @@ module TransactionHistoryHelper
     html = "<li class=\"#{enabled ? '' : 'disabled'}\">"
     html << (label_tag field, label.pluralize)
     from_collection = from_collection_method ? send(from_collection_method, var, @search_fields[field]) : options_from_collection_for_select(var, value_field, label_field, @search_fields[field])
-    options = { :multiple => true, :"data-placeholder" => "Select #{label.pluralize.downcase}" }
+    options = { multiple: true, "data-placeholder": "Select #{label.pluralize.downcase}" }
     options[:disabled] = :disabled unless enabled
     html << (select_tag field, from_collection, options)
     html << "</li>"

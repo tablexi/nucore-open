@@ -5,7 +5,7 @@ RSpec.describe PriceGroup do
   let(:facility) { @facility }
 
   before :each do
-    @facility     = FactoryGirl.create(:facility)
+    @facility = FactoryGirl.create(:facility)
     @price_group = FactoryGirl.create(:price_group, facility: facility)
   end
 

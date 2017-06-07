@@ -177,7 +177,7 @@ RSpec.describe AccessoriesController do
 
       describe "adding a manual-scaled accessory" do
         before :each do
-          @params.merge! accessories: {
+          @params[:accessories] = {
             quantity_accessory.id.to_s => {
               quantity: "30",
               enabled: "true",
@@ -223,7 +223,7 @@ RSpec.describe AccessoriesController do
 
       describe "adding an autoscaled accessory" do
         before :each do
-          @params.merge! accessories: {
+          @params[:accessories] = {
             quantity_accessory.id.to_s => {
               quantity: "40",
               enabled: "true",

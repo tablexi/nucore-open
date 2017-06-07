@@ -2,7 +2,7 @@ class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
 
   disable :required
 
-  def input(wrapper_options)
+  def input(_wrapper_options)
     options[:label_method] ||= :name
     options[:value_method] ||= :id
 

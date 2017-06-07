@@ -49,22 +49,22 @@ Style/ClassAndModuleChildren:
   Exclude:
     - "app/controllers/**/*" # We generally use compact style here
 
-Style/EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Exclude:
     # These are naturally DSL-y, and so let's be lenient.
     - "spec/**/*"
     - "lib/tasks/*.rake"
 
-Style/EmptyLinesAroundClassBody:
+Layout/EmptyLinesAroundClassBody:
   EnforcedStyle: empty_lines
 
-Style/EmptyLinesAroundModuleBody:
+Layout/EmptyLinesAroundModuleBody:
   EnforcedStyle: empty_lines
 
 Style/SignalException:
   EnforcedStyle: only_raise
 
-Style/SpaceBeforeFirstArg:
+Layout/SpaceBeforeFirstArg:
   Exclude:
     # We often add extra spaces for alignment in factories.
     - "spec/factories/**/*"

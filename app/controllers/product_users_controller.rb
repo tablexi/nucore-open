@@ -22,10 +22,10 @@ class ProductUsersController < ApplicationController
   def index
     if @product.requires_approval?
       @product_users = @product
-        .product_users
-        .includes(:user)
-        .order("users.last_name ASC", "users.first_name ASC")
-        .paginate(page: params[:page])
+                       .product_users
+                       .includes(:user)
+                       .order("users.last_name ASC", "users.first_name ASC")
+                       .paginate(page: params[:page])
     else
       @product_users = nil
       flash.now[:notice] = text("index.not_required", model: downcase_product_type)
