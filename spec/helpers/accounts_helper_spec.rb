@@ -10,11 +10,11 @@ RSpec.describe AccountsHelper do
     before(:each) do
       allow(current_ability)
         .to receive(:can?)
-        .with(:manage, account)
+        .with(:edit, account)
         .and_return(allowed?)
     end
 
-    context "when allowed to manage the account" do
+    context "when allowed to edit the account" do
       let(:allowed?) { true }
       let(:expected_path) do
         facility_account_path(current_facility, account)
@@ -23,7 +23,7 @@ RSpec.describe AccountsHelper do
       it { is_expected.to include(expected_path).and include(account.to_s) }
     end
 
-    context "when not allowed to manage the account" do
+    context "when not allowed to edit the account" do
       let(:allowed?) { false }
 
       it { is_expected.to eq(account.to_s) }

@@ -8,7 +8,7 @@ module AccountsHelper
   end
 
   def payment_source_link_or_text(account)
-    if current_ability.can?(:manage, account)
+    if current_ability.can?(:edit, account)
       link_to account, facility_account_path(current_facility, account)
     else
       account.to_s
