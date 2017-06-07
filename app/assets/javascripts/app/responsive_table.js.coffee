@@ -28,7 +28,7 @@ class window.ResponsiveTable
   responsive_header: ($row, index) ->
     $("<div>").addClass("responsive-header").text(@text_for_header($row, index))
 
-  text_for_header: ($row, index) =>
+  text_for_header: ($row, index) ->
     header = $($row.closest("table").find("thead th").eq(index))
     header.data("mobile-header") || header.text()
 

@@ -54,7 +54,3 @@ describe "Responsive table support", ->
       expect($innerTableHeaders.eq(1).text()).toEqual("Inner Header 2")
       expect($innerTableHeaders.eq(2).text()).toEqual("Inner Header 1")
       expect($innerTableHeaders.eq(3).text()).toEqual("Inner Header 2")
-
-
-
-
