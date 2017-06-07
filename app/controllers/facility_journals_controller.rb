@@ -32,12 +32,12 @@ class FacilityJournalsController < ApplicationController
 
     @after_search_hook = lambda do
       @valid_order_details, @invalid_order_details = ValidatorFactory.partition_valid_order_details(@order_details.unexpired_account)
-      @unjournalable_order_details = @invalid_order_details + @order_details.expired_account
+      @invalid_order_details += @order_details.expired_account
 
       respond_to do |format|
         format.csv do
           # used for "Export as CSV" link for order details with expired accounts
-          @order_details = @unjournalable_order_details
+          @order_details = @invalid_order_details
         end
         format.any {}
       end

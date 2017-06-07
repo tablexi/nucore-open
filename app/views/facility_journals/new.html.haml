@@ -25,8 +25,8 @@
 = content_for :top_block do
   = render "shared/transactions/top", tab: "new_journal"
 
-- if @unjournalable_order_details.any?
-  = render "problem_transactions", order_details: @unjournalable_order_details
+- if @invalid_order_details.any?
+  = render "problem_transactions", order_details: @invalid_order_details
 - if @valid_order_details.any?
   = content_for :action_instructions do
     - if has_pending_journals?
