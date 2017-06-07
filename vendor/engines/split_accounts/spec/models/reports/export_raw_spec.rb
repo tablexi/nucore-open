@@ -3,7 +3,7 @@ require_relative "../../split_accounts_spec_helper"
 
 RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   let(:account) do
-    FactoryGirl.build(:split_account, without_splits: true, account_users_attributes: account_users_attributes_hash(user: user)).tap do |account|
+    FactoryGirl.build(:split_account, :with_account_owner, without_splits: true, owner: user).tap do |account|
       account.splits << build(:split, percent: 50, apply_remainder: true, subaccount: subaccounts[0], parent_split_account: account)
       account.splits << build(:split, percent: 50, apply_remainder: false, subaccount: subaccounts[1], parent_split_account: account)
       account.save
@@ -40,13 +40,15 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
       end
     end
 
-    it { is_expected.to have_column("Quantity").with_values("0.5", "0.5") }
-    it { is_expected.to have_column("Actual Cost").with_values("$10.00", "$9.99") }
-    it { is_expected.to have_column("Actual Subsidy").with_values("$5.00", "$4.99") }
-    it { is_expected.to have_column("Estimated Cost").with_values("$20.00", "$19.99") }
-    it { is_expected.to have_column("Estimated Subsidy").with_values("$15.00", "$14.99") }
-    it { is_expected.to have_column("Account").with_values(subaccounts.map(&:account_number)) }
-    it { is_expected.to have_column("Split Percent").with_values("50%", "50%") }
+    it "splits the values in the report" do
+      expect(report).to have_column("Quantity").with_values("0.5", "0.5")
+      expect(report).to have_column("Actual Cost").with_values("$10.00", "$9.99")
+      expect(report).to have_column("Actual Subsidy").with_values("$5.00", "$4.99")
+      expect(report).to have_column("Estimated Cost").with_values("$20.00", "$19.99")
+      expect(report).to have_column("Estimated Subsidy").with_values("$15.00", "$14.99")
+      expect(report).to have_column("Account").with_values(subaccounts.map(&:account_number))
+      expect(report).to have_column("Split Percent").with_values("50%", "50%")
+    end
   end
 
   describe "with a reservation", :time_travel do
@@ -54,6 +56,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
     let(:now) { Time.zone.parse("2016-02-01 10:30") }
     let(:reservation) do
       FactoryGirl.create(:completed_reservation,
+                         user: user,
                          product: instrument,
                          reserve_start_at: Time.zone.parse("2016-02-01 08:30"),
                          reserve_end_at: Time.zone.parse("2016-02-01 09:30"),
@@ -64,14 +67,14 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
 
     before { order_detail.update_attributes!(account: account) }
 
-    it { is_expected.to have_column("Reservation Start Time").with_values(Array.new(2).fill(reservation.reserve_start_at.to_s)) }
-    it { is_expected.to have_column("Reservation End Time").with_values(Array.new(2).fill(reservation.reserve_end_at.to_s)) }
-    it { is_expected.to have_column("Reservation Minutes").with_values("30", "30") }
-
-    it { is_expected.to have_column("Actual Start Time").with_values(Array.new(2).fill(reservation.actual_start_at.to_s)) }
-    it { is_expected.to have_column("Actual End Time").with_values(Array.new(2).fill(reservation.actual_end_at.to_s)) }
-    it { is_expected.to have_column("Actual Minutes").with_values("32.5", "32.5") }
-
-    it { is_expected.to have_column("Quantity").with_values("0.5", "0.5") }
+    it "splits the fields correctly" do
+      expect(report).to have_column("Reservation Start Time").with_values(Array.new(2).fill(reservation.reserve_start_at.to_s))
+      expect(report).to have_column("Reservation End Time").with_values(Array.new(2).fill(reservation.reserve_end_at.to_s))
+      expect(report).to have_column("Reservation Minutes").with_values("30", "30")
+      expect(report).to have_column("Actual Start Time").with_values(Array.new(2).fill(reservation.actual_start_at.to_s))
+      expect(report).to have_column("Actual End Time").with_values(Array.new(2).fill(reservation.actual_end_at.to_s))
+      expect(report).to have_column("Actual Minutes").with_values("32.5", "32.5")
+      expect(report).to have_column("Quantity").with_values("0.5", "0.5")
+    end
   end
 end
