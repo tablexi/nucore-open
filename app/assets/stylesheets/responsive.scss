@@ -85,10 +85,9 @@ $navbarActiveBorderColor: #aaa;
 
       .responsive-header {
         display: block;
-        position: absolute;
-        left: 6px;
+        float: left;
+        margin-left: -52%;
         width: 30%;
-        padding-right: 10px;
         font-weight: bold;
       }
 
