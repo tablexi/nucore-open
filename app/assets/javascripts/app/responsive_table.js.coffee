@@ -20,7 +20,10 @@ class window.ResponsiveTable
     @table.find("tbody tr").each (index, row) => @add_header_to_row($(row))
 
   add_header_to_row: ($row) ->
-    $row.find("> td").prepend (index) => @responsive_header($row, index)
+    # Only get the immediate child cells of the row. Without the `>`, it could
+    # also find cells in nested tables.
+    cells = $row.find("> td")
+    cells.prepend (index) => @responsive_header($row, index)
 
   responsive_header: ($row, index) ->
     $("<div>").addClass("responsive-header").text(@text_for_header($row, index))
