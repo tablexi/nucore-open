@@ -41,6 +41,7 @@ module TransactionSearch
         add_optimizations
         @paginate_order_details = false if request.format.csv?
         sort_and_paginate
+        @after_search_hook.call if @after_search_hook
         respond_to do |format|
           format.html { render layout: @layout if @layout }
           format.csv { handle_csv_search }
@@ -144,7 +145,8 @@ module TransactionSearch
   end
 
   def email_csv_export
-    AccountTransactionReportMailer.delay.csv_report_email(to_email, @order_details.pluck(:id), @date_range_field)
+    order_detail_ids = @order_details.respond_to?(:pluck) ? @order_details.pluck(:id) : @order_details.map(&:id)
+    AccountTransactionReportMailer.delay.csv_report_email(to_email, order_detail_ids, @date_range_field)
   end
 
   def to_email
