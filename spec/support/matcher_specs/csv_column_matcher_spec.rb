@@ -17,12 +17,16 @@ RSpec.describe "CSV column matchers" do
         expect(matcher).not_to be_matches(single_line_report)
         expect(matcher.failure_message).to eq(%(Report did not have column with header "NOTFOUND"))
       end
-
     end
 
     describe "with_value" do
       it "matches a value" do
         matcher = have_column("Cost").with_value("$3.50")
+        expect(matcher).to be_matches(single_line_report)
+      end
+
+      it "is composable" do
+        matcher = have_column("Cost").with_value(an_instance_of(String))
         expect(matcher).to be_matches(single_line_report)
       end
 
@@ -60,6 +64,11 @@ RSpec.describe "CSV column matchers" do
         matcher = have_column("Cost").with_values("$4.50", "$5.50")
         expect(matcher).to be_matches(multi_line_report)
       end
+
+      it "is composable" do
+        matcher = have_column("Cost").with_values(a_string_starting_with("$4"), /\A\$5/)
+        expect(matcher).to be_matches(multi_line_report)
+      end
     end
   end
 
@@ -83,6 +92,13 @@ RSpec.describe "CSV column matchers" do
       matcher = have_column_values(
         "Cost" => %w($4.50 $5.50),
         "Quantity" => %w(2 4),
+      )
+      expect(matcher).to be_matches(multi_line_report)
+    end
+
+    it "is composable" do
+      matcher = have_column_values(
+        "Cost" => [a_string_starting_with("$"), /\A\$/],
       )
       expect(matcher).to be_matches(multi_line_report)
     end

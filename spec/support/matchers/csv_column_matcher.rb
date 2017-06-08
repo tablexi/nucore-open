@@ -1,17 +1,26 @@
+require "csv"
+require "pry"
 # Examples:
 # expect(report).to have_column("Quantity")
 # expect(report).to have_column("Quantity").with_value("1")
+# expect(report).to have_column("Quantity").with_value(a_string_starting_with("1"))
+# expect(report).to have_column("Quantity").with_value(/1/)
 # expect(report).to have_column("Quantity").with_values("1", "2")
 # expect(report).to have_column("Quantity").with_values(["1", "2"])
 RSpec::Matchers.define :have_column do |column_header|
   match do |report|
-    lines = report.to_csv.split("\n")
-    headers = lines.shift.split(",")
-    @column_index = headers.index(column_header)
-    break false unless @column_index
+    csv = CSV.parse(report.to_csv, headers: true)
+    break false unless csv.headers.include?(column_header)
     break true unless @expected_values
-    @actual_values = lines.map { |line| line.split(",")[@column_index].to_s }
-    @actual_values == @expected_values
+
+    @actual_values = csv.map { |row| row[column_header] }
+    break false if @actual_values.length != @expected_values.length
+
+    # Compare each pair. Case equality allows using regexes and rspecs
+    # composable matchers.
+    @expected_values.zip(@actual_values).all? do |expected, actual|
+      expected === actual # rubocop:disable Style/CaseEquality
+    end
   end
 
   chain :with_value do |value|
