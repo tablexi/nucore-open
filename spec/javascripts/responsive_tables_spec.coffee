@@ -32,3 +32,25 @@ describe "Responsive table support", ->
     ResponsiveTable.respond()
     expect($("td").eq(2).text()).toEqual(expected)
     expect($("td").eq(3).text()).toEqual("FacilitySmall Hadron Collider")
+
+  describe "when there is a sub-table", ->
+    beforeEach ->
+      loadFixtures("nested_table.html")
+      $(".table").addClass("js--responsive_table")
+      ResponsiveTable.respond()
+
+    it "sets the outer table headers", ->
+      $outerTableHeaders = $("#outer-table > tbody > tr > td > .responsive-header")
+      expect($outerTableHeaders.size()).toEqual(4)
+      expect($outerTableHeaders.eq(0).text()).toEqual("Invoice #")
+      expect($outerTableHeaders.eq(1).text()).toEqual("Facility")
+      expect($outerTableHeaders.eq(2).text()).toEqual("Invoice #")
+      expect($outerTableHeaders.eq(3).text()).toEqual("Facility")
+
+    it "sets the inner table headers", ->
+      $innerTableHeaders = $("#inner-table .responsive-header")
+      expect($innerTableHeaders.size()).toEqual(4)
+      expect($innerTableHeaders.eq(0).text()).toEqual("Inner Header 1")
+      expect($innerTableHeaders.eq(1).text()).toEqual("Inner Header 2")
+      expect($innerTableHeaders.eq(2).text()).toEqual("Inner Header 1")
+      expect($innerTableHeaders.eq(3).text()).toEqual("Inner Header 2")
