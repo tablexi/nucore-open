@@ -39,20 +39,22 @@ RSpec.describe Reports::ExportRaw do
       expect(report.to_csv.split("\n").length).to eq(2)
     end
 
-    it "populates the report", :aggregate_failures do
-      expect(report).to have_column(Facility.model_name.human).with_value("My Facility (MF)")
-      expect(report).to have_column("Order").with_value(order_detail.to_s)
-      expect(report).to have_column("Ordered By").with_value(user.username)
-      expect(report).to have_column("First Name").with_value(user.first_name)
-      expect(report).to have_column("Last Name").with_value(user.last_name)
-      expect(report).to have_column("Quantity").with_value("3")
-      expect(report).to have_column("Estimated Cost").with_value("$39.99")
-      expect(report).to have_column("Estimated Subsidy").with_value("$29.99")
-      expect(report).to have_column("Estimated Total").with_value("$10.00")
-      expect(report).to have_column("Actual Cost").with_value("$19.99")
-      expect(report).to have_column("Actual Subsidy").with_value("$9.99")
-      expect(report).to have_column("Actual Total").with_value("$10.00")
-      expect(report).to have_column("Charge For").with_value("Quantity")
+    it "populates the report" do
+      expect(report).to have_column_values(
+        Facility.model_name.human => "My Facility (MF)",
+        "Order" => order_detail.to_s,
+        "Ordered By" => user.username,
+        "First Name" => user.first_name,
+        "Last Name" => user.last_name,
+        "Quantity" => "3",
+        "Estimated Cost" => "$39.99",
+        "Estimated Subsidy" => "$29.99",
+        "Estimated Total" => "$10.00",
+        "Actual Cost" => "$19.99",
+        "Actual Subsidy" => "$9.99",
+        "Actual Total" => "$10.00",
+        "Charge For" => "Quantity",
+      )
     end
 
     describe "invoices" do
@@ -91,15 +93,17 @@ RSpec.describe Reports::ExportRaw do
       end
     end
 
-    it "populates the report", :aggregate_failures do
-      expect(report).to have_column("Reservation Start Time").with_value(reservation.reserve_start_at.to_s)
-      expect(report).to have_column("Reservation End Time").with_value(reservation.reserve_end_at.to_s)
-      expect(report).to have_column("Reservation Minutes").with_value("60")
-      expect(report).to have_column("Actual Start Time").with_value(reservation.actual_start_at.to_s)
-      expect(report).to have_column("Actual End Time").with_value(reservation.actual_end_at.to_s)
-      expect(report).to have_column("Actual Minutes").with_value("65")
-      expect(report).to have_column("Quantity").with_value("1")
-      expect(report).to have_column("Charge For").with_value("Reservation")
+    it "populates the report" do
+      expect(report).to have_column_values(
+        "Reservation Start Time" => reservation.reserve_start_at.to_s,
+        "Reservation End Time" => reservation.reserve_end_at.to_s,
+        "Reservation Minutes" => "60",
+        "Actual Start Time" => reservation.actual_start_at.to_s,
+        "Actual End Time" => reservation.actual_end_at.to_s,
+        "Actual Minutes" => "65",
+        "Quantity" => "1",
+        "Charge For" => "Reservation",
+      )
     end
   end
 end

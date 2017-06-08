@@ -41,13 +41,15 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
     end
 
     it "splits the values in the report" do
-      expect(report).to have_column("Quantity").with_values("0.5", "0.5")
-      expect(report).to have_column("Actual Cost").with_values("$10.00", "$9.99")
-      expect(report).to have_column("Actual Subsidy").with_values("$5.00", "$4.99")
-      expect(report).to have_column("Estimated Cost").with_values("$20.00", "$19.99")
-      expect(report).to have_column("Estimated Subsidy").with_values("$15.00", "$14.99")
-      expect(report).to have_column("Account").with_values(subaccounts.map(&:account_number))
-      expect(report).to have_column("Split Percent").with_values("50%", "50%")
+      expect(report).to have_column_values(
+        "Quantity" => ["0.5", "0.5"],
+        "Actual Cost" => ["$10.00", "$9.99"],
+        "Actual Subsidy" => ["$5.00", "$4.99"],
+        "Estimated Cost" => ["$20.00", "$19.99"],
+        "Estimated Subsidy" => ["$15.00", "$14.99"],
+        "Account" => subaccounts.map(&:account_number),
+        "Split Percent" => ["50%", "50%"],
+      )
     end
   end
 
@@ -68,13 +70,15 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
     before { order_detail.update_attributes!(account: account) }
 
     it "splits the fields correctly" do
-      expect(report).to have_column("Reservation Start Time").with_values(Array.new(2).fill(reservation.reserve_start_at.to_s))
-      expect(report).to have_column("Reservation End Time").with_values(Array.new(2).fill(reservation.reserve_end_at.to_s))
-      expect(report).to have_column("Reservation Minutes").with_values("30", "30")
-      expect(report).to have_column("Actual Start Time").with_values(Array.new(2).fill(reservation.actual_start_at.to_s))
-      expect(report).to have_column("Actual End Time").with_values(Array.new(2).fill(reservation.actual_end_at.to_s))
-      expect(report).to have_column("Actual Minutes").with_values("32.5", "32.5")
-      expect(report).to have_column("Quantity").with_values("0.5", "0.5")
+      expect(report).to have_column_values(
+        "Reservation Start Time" => Array.new(2).fill(reservation.reserve_start_at.to_s),
+        "Reservation End Time" => Array.new(2).fill(reservation.reserve_end_at.to_s),
+        "Reservation Minutes" => ["30", "30"],
+        "Actual Start Time" => Array.new(2).fill(reservation.actual_start_at.to_s),
+        "Actual End Time" => Array.new(2).fill(reservation.actual_end_at.to_s),
+        "Actual Minutes" => ["32.5", "32.5"],
+        "Quantity" => ["0.5", "0.5"],
+      )
     end
   end
 end

@@ -1,9 +1,15 @@
+# Examples:
+# expect(report).to have_column("Quantity")
+# expect(report).to have_column("Quantity").with_value("1")
+# expect(report).to have_column("Quantity").with_values("1", "2")
+# expect(report).to have_column("Quantity").with_values(["1", "2"])
 RSpec::Matchers.define :have_column do |column_header|
   match do |report|
     headers = report.column_headers
     @column_index = headers.index(column_header)
     lines = report.to_csv.split("\n").drop(1)
     break false unless @column_index
+    break true unless @expected_values
     @actual_values = lines.map { |line| line.split(",")[@column_index].to_s }
     @actual_values == @expected_values
   end
@@ -22,5 +28,29 @@ RSpec::Matchers.define :have_column do |column_header|
     else
       %(Report did not have column with header "#{column_header}")
     end
+  end
+end
+
+# Examples:
+# expect(report).to have_column_values(
+#   "Quantity" => "0.5",
+#   "Actual Cost" => "$10.00",
+# )
+# expect(report).to have_column_values(
+#   "Quantity" => ["0.5", "0.5"],
+#   "Actual Cost" => ["$10.00", "$9.99"],
+# )
+#
+RSpec::Matchers.define :have_column_values do |column_values_hash|
+  match do |report|
+    @failures = column_values_hash.each_with_object([]) do |(column_header, values), memo|
+      matcher = have_column(column_header).with_values(values)
+      memo << matcher.failure_message unless matcher.matches?(report)
+    end
+    @failures.empty?
+  end
+
+  failure_message do
+    @failures.join("\n")
   end
 end
