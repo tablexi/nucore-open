@@ -4,16 +4,19 @@ docker run --name phpldapadmin-service --hostname phpldapadmin-service --link ld
 
 # PHPLDAP_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" phpldapadmin-service)
 
-echo "Go to: https://locahost:8081"
+echo "Go to: https://localhost:8081"
 echo "Login DN: cn=admin,dc=example,dc=org"
 echo "Password: admin"
 
 # Import this to PHP
-# dn: cn=cgreen,dc=example,dc=com
-# gn: Chico
-# sn: Green
-# mail: cgreen@example.com
+# dn: uid=jhl941,dc=example,dc=org
+# uid: jhl941
+# cn: jason,hanggi,jason hanggi
+# gn: Jason
+# sn: Hanggi
+# mail: jason+ldap@tablexi.com
 # userPassword: secret
+# objectClass: top
 # objectClass: person
 # objectClass: organizationalPerson
 # objectClass: inetOrgPerson

@@ -8,7 +8,7 @@
 development:
   host: localhost
   port: 389
-  base: dc=example,dc=com
-  attribute: cn
-  admin_user: "cn=admin,dc=example,dc=com"
+  base: dc=example,dc=org
+  attribute: uid
+  admin_user: "cn=admin,dc=example,dc=org"
   admin_password: secret

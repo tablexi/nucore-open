@@ -1,0 +1,10 @@
+dn: uid=jhl941,dc=example,dc=org
+uid: jhl941
+cn: jason,hanggi,jason hanggi
+gn: Jason
+sn: Hanggi
+mail: jason+ldap@tablexi.com
+userPassword: secret
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
