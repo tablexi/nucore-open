@@ -4,7 +4,6 @@ AllCops:
     - ".bundle/**/*" # Auto-generated
     - "bin/**/*"     # Auto-generated
 
-  TargetRubyVersion: 2.2
 Rails:
   Enabled: true
 
@@ -14,13 +13,8 @@ Lint/HandleExceptions:
 
 Metrics/AbcSize:
   Max: 25
-
-Metrics/BlockLength:
   Exclude:
-    # Blocks in DSLs may be large
-    - "**/*.rake"
-    - "spec/**/*.rb"
-    - "vendor/engines/*/spec/**/*.rb"
+    - "db/**/*" # Sometimes migrations are complex.
 
 Metrics/LineLength:
   Max: 120
@@ -28,26 +22,20 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 20
   Exclude:
-    - "lib/ability.rb"
+    - "db/**/*" # Again, sometimes DB migrations are long.
 
-Metrics/CyclomaticComplexity:
+Metrics/BlockLength:
   Exclude:
-    - "lib/ability.rb"
-
-Metrics/PerceivedComplexity:
-  Exclude:
-    - "lib/ability.rb"
-
-Rails/HttpPositionalArguments:
-  Exclude:
-    # This cop should be enabled for Rails 5
-    - "spec/*_spec_helper.rb"
-    - "spec/**/*.rb"
-    - "vendor/engines/*/spec/controllers/**/*.rb"
+    # These are naturally DSL-y, and so let's be lenient.
+    - "spec/**/*"
 
 Style/ClassAndModuleChildren:
   Exclude:
     - "app/controllers/**/*" # We generally use compact style here
+
+Style/Documentation:
+  Exclude:
+    - "db/**/*" # No need to require migrations to be documented.
 
 Layout/EmptyLinesAroundBlockBody:
   Exclude:
@@ -57,9 +45,15 @@ Layout/EmptyLinesAroundBlockBody:
 
 Layout/EmptyLinesAroundClassBody:
   EnforcedStyle: empty_lines
+  Exclude:
+    - "db/**/*" # Migrations are compact by default, and it's not worth the wrestle.
 
 Layout/EmptyLinesAroundModuleBody:
   EnforcedStyle: empty_lines
+
+Layout/ExtraSpacing:
+  Exclude:
+    - "db/migrate/*" # Generated migrations often have extra spacing
 
 Style/SignalException:
   EnforcedStyle: only_raise
@@ -68,6 +62,7 @@ Layout/SpaceBeforeFirstArg:
   Exclude:
     # We often add extra spaces for alignment in factories.
     - "spec/factories/**/*"
+    - "db/migrate/*" # We often add extra spaces for alignment in migrations.
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
