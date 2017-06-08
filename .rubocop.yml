@@ -1,22 +1,31 @@
-AllCops:
-  TargetRubyVersion: 2.2
-
-AllCops:
-  DisplayCopNames: true
-
 inherit_from:
   - .rubocop-txi.yml
   - .rubocop_todo.yml
 
-# Overrides can go here, but try to conform to TXI standards as specified in
-# .rubocop-txi.yml when possible.
-#
-# Example...
-# Metrics/CyclomaticComplexity:
-#   Enabled: false # We've got nasty methods!
-#
+AllCops:
+  DisplayCopNames: true
+  Exclude:
+    # Rubocop does not seem to merge these from -txi in AllCops, so we need to
+    # reiterate them.
+    - "db/schema.rb" # You can't touch this
+    - ".bundle/**/*" # Auto-generated
+    - "bin/**/*"     # Auto-generated
+    # Some forks have schema.rb files in their custom engines
+    - "vendor/engines/*/db/schema.rb"
 
+# Project-specific overrides go here, but try to conform to TXI standards as
+# specified in .rubocop-txi.yml when possible.
+
+# We prefer this to a one-liner:
+# def methodname
+# end
 Style/EmptyMethod:
   EnforcedStyle: expanded
-Style/HashSyntax:
-  EnforcedStyle: ruby19
+
+Rails/HttpPositionalArguments:
+  Enabled: false
+
+Metrics/BlockLength:
+  # spec/ is excluded in txi, but we need to exclude from engines as well
+  Exclude:
+    - "vendor/engines/*/spec/**/*.rb"

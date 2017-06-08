@@ -1,8 +1,4 @@
-# rubocop:disable Style/BarePercentLiterals
-# rubocop:disable Style/RescueModifier
-# rubocop:disable Layout/SpaceInsideStringInterpolation
-# rubocop:disable Style/UnneededPercentQ
-
+# rubocop:disable Style/BarePercentLiterals, Style/RescueModifier, Layout/SpaceInsideStringInterpolation, Style/UnneededPercentQ
 module ActiveRecord
 
   module ConnectionAdapters
@@ -68,3 +64,4 @@ module ActiveRecord
   end
 
 end
+# rubocop:enable Style/BarePercentLiterals, Style/RescueModifier, Layout/SpaceInsideStringInterpolation, Style/UnneededPercentQ
