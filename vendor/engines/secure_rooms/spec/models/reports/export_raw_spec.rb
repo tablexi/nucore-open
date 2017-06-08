@@ -46,10 +46,9 @@ RSpec.describe Reports::ExportRaw, :time_travel do
         "Quantity" => "1",
         "Product" => secure_room.name,
         "Product Type" => "Secure Room",
-        # Numbers have quotes around them to make sure excel formats them properly
-        "Estimated Cost" => %(""),
-        "Estimated Subsidy" => %(""),
-        "Estimated Total" => %(""),
+        "Estimated Cost" => "",
+        "Estimated Subsidy" => "",
+        "Estimated Total" => "",
         "Reservation Start Time" => "",
         "Reservation End Time" => "",
         "Reservation Minutes" => "",
