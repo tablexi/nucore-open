@@ -40,19 +40,19 @@ RSpec.describe Reports::ExportRaw do
     end
 
     it "populates the report", :aggregate_failures do
-      is_expected.to have_column(Facility.model_name.human).with_value("My Facility (MF)")
-      is_expected.to have_column("Order").with_value(order_detail.to_s)
-      is_expected.to have_column("Ordered By").with_value(user.username)
-      is_expected.to have_column("First Name").with_value(user.first_name)
-      is_expected.to have_column("Last Name").with_value(user.last_name)
-      is_expected.to have_column("Quantity").with_value("3")
-      is_expected.to have_column("Estimated Cost").with_value("$39.99")
-      is_expected.to have_column("Estimated Subsidy").with_value("$29.99")
-      is_expected.to have_column("Estimated Total").with_value("$10.00")
-      is_expected.to have_column("Actual Cost").with_value("$19.99")
-      is_expected.to have_column("Actual Subsidy").with_value("$9.99")
-      is_expected.to have_column("Actual Total").with_value("$10.00")
-      is_expected.to have_column("Charge For").with_value("Quantity")
+      expect(report).to have_column(Facility.model_name.human).with_value("My Facility (MF)")
+      expect(report).to have_column("Order").with_value(order_detail.to_s)
+      expect(report).to have_column("Ordered By").with_value(user.username)
+      expect(report).to have_column("First Name").with_value(user.first_name)
+      expect(report).to have_column("Last Name").with_value(user.last_name)
+      expect(report).to have_column("Quantity").with_value("3")
+      expect(report).to have_column("Estimated Cost").with_value("$39.99")
+      expect(report).to have_column("Estimated Subsidy").with_value("$29.99")
+      expect(report).to have_column("Estimated Total").with_value("$10.00")
+      expect(report).to have_column("Actual Cost").with_value("$19.99")
+      expect(report).to have_column("Actual Subsidy").with_value("$9.99")
+      expect(report).to have_column("Actual Total").with_value("$10.00")
+      expect(report).to have_column("Charge For").with_value("Quantity")
     end
 
     describe "invoices" do
@@ -92,14 +92,14 @@ RSpec.describe Reports::ExportRaw do
     end
 
     it "populates the report", :aggregate_failures do
-      is_expected.to have_column("Reservation Start Time").with_value(reservation.reserve_start_at.to_s)
-      is_expected.to have_column("Reservation End Time").with_value(reservation.reserve_end_at.to_s)
-      is_expected.to have_column("Reservation Minutes").with_value("60")
-      is_expected.to have_column("Actual Start Time").with_value(reservation.actual_start_at.to_s)
-      is_expected.to have_column("Actual End Time").with_value(reservation.actual_end_at.to_s)
-      is_expected.to have_column("Actual Minutes").with_value("65")
-      is_expected.to have_column("Quantity").with_value("1")
-      is_expected.to have_column("Charge For").with_value("Reservation")
+      expect(report).to have_column("Reservation Start Time").with_value(reservation.reserve_start_at.to_s)
+      expect(report).to have_column("Reservation End Time").with_value(reservation.reserve_end_at.to_s)
+      expect(report).to have_column("Reservation Minutes").with_value("60")
+      expect(report).to have_column("Actual Start Time").with_value(reservation.actual_start_at.to_s)
+      expect(report).to have_column("Actual End Time").with_value(reservation.actual_end_at.to_s)
+      expect(report).to have_column("Actual Minutes").with_value("65")
+      expect(report).to have_column("Quantity").with_value("1")
+      expect(report).to have_column("Charge For").with_value("Reservation")
     end
   end
 end
