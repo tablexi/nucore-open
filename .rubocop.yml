@@ -23,6 +23,10 @@ AllCops:
 Style/EmptyMethod:
   EnforcedStyle: expanded
 
+# We prefer to not require %w() until you have a larger array
+Style/WordArray:
+  MinSize: 5
+
 Rails/HttpPositionalArguments:
   Enabled: false
 
