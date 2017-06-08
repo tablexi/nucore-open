@@ -5,9 +5,9 @@
 # expect(report).to have_column("Quantity").with_values(["1", "2"])
 RSpec::Matchers.define :have_column do |column_header|
   match do |report|
-    headers = report.column_headers
+    lines = report.to_csv.split("\n")
+    headers = lines.shift.split(",")
     @column_index = headers.index(column_header)
-    lines = report.to_csv.split("\n").drop(1)
     break false unless @column_index
     break true unless @expected_values
     @actual_values = lines.map { |line| line.split(",")[@column_index].to_s }
