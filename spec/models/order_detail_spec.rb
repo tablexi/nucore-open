@@ -950,38 +950,42 @@ RSpec.describe OrderDetail do
         expect { OrderDetail.action_in_date_range(:random_action, nil, nil) }.to raise_error(ArgumentError)
       end
 
-      context "journaled_or_statemented" do
-        before :each do
-          @journal = create(:journal, facility: @facility, reference: "xyz", created_by: @user.id, journal_date: 2.days.ago)
-          @statement = create(:statement, facility: @facility, created_by: @user.id, account: @account, created_at: 1.day.ago)
-          @order_detail.to_complete!
-          @order_detail2.to_complete!
-          @order_detail.update_attributes(journal_id: @journal.id, fulfilled_at: 5.days.ago, reconciled_at: 4.days.ago)
-          @order_detail2.update_attributes(statement_id: @statement.id, fulfilled_at: 7.days.ago, reconciled_at: 6.days.ago)
-        end
+      before :each do
+        @journal = create(:journal, facility: @facility, reference: "xyz", created_by: @user.id, journal_date: 2.days.ago.beginning_of_day)
+        @statement = create(:statement, facility: @facility, created_by: @user.id, account: @account, created_at: 1.day.ago)
+        @order_detail.to_complete!
+        @order_detail2.to_complete!
+        @order_detail.update_attributes(journal_id: @journal.id, fulfilled_at: 5.days.ago, reconciled_at: 4.days.ago)
+        @order_detail2.update_attributes(statement_id: @statement.id, fulfilled_at: 7.days.ago, reconciled_at: 6.days.ago)
+      end
 
-        it "should return nothing when searching wrong date range" do
+      it "works for fulfilled at date" do
+        expect(OrderDetail.action_in_date_range(:fulfilled_at, 4.days.ago, 2.days.ago)).to be_empty
+        expect(OrderDetail.action_in_date_range(:fulfilled_at, 6.days.ago, 3.days.ago)).to eq([@order_detail])
+        expect(OrderDetail.action_in_date_range(:fulfilled_at, 8.days.ago, 3.days.ago)).to match_array([@order_detail, @order_detail2])
+      end
+
+      it "works for reconciled_at date" do
+        expect(OrderDetail.action_in_date_range(:reconciled_at, 2.days.ago, 1.day.ago)).to eq([])
+        expect(OrderDetail.action_in_date_range(:reconciled_at, 5.days.ago, 2.days.ago)).to eq([@order_detail])
+        expect(OrderDetail.action_in_date_range(:reconciled_at, 7.days.ago, 2.days.ago)).to match_array([@order_detail, @order_detail2])
+      end
+
+      it "works for journal date" do
+        expect(OrderDetail.action_in_date_range(:journal_date, 3.days.ago, 1.day.ago)).to eq([@order_detail])
+      end
+
+      context "journaled_or_statemented" do
+        it "returns nothing when searching wrong date range" do
           expect(OrderDetail.action_in_date_range(:journal_or_statement_date, 7.days.ago, 6.days.ago)).to be_empty
         end
 
-        it "should work for fulfilled at date" do
-          expect(OrderDetail.action_in_date_range(:fulfilled_at, 4.days.ago, 2.days.ago)).to be_empty
-          expect(OrderDetail.action_in_date_range(:fulfilled_at, 6.days.ago, 3.days.ago)).to eq([@order_detail])
-          expect(OrderDetail.action_in_date_range(:fulfilled_at, 8.days.ago, 3.days.ago)).to match_array([@order_detail, @order_detail2])
-        end
-
-        it "should work for reconciled_at date" do
-          expect(OrderDetail.action_in_date_range(:reconciled_at, 2.days.ago, 1.day.ago)).to eq([])
-          expect(OrderDetail.action_in_date_range(:reconciled_at, 5.days.ago, 2.days.ago)).to eq([@order_detail])
-          expect(OrderDetail.action_in_date_range(:reconciled_at, 7.days.ago, 2.days.ago)).to match_array([@order_detail, @order_detail2])
-        end
-
-        it "should work for journal date" do
-          expect(OrderDetail.action_in_date_range(:journal_date, 3.days.ago, 1.day.ago)).to eq([@order_detail])
-        end
-
-        it "should return both statemented and journaled" do
+        it "returns both statemented and journaled" do
           expect(OrderDetail.action_in_date_range(:journal_or_statement_date, 3.days.ago, Time.zone.now)).to match_array([@order_detail, @order_detail2])
+        end
+
+        it "returns journaled when the date is exact" do
+          expect(OrderDetail.action_in_date_range(:journal_or_statement_date, 2.days.ago.beginning_of_day, 2.days.ago.end_of_day)).to include(@order_detail)
         end
       end
     end
