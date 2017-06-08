@@ -13,7 +13,7 @@ RSpec::Matchers.define :have_column do |column_header|
     break false unless csv.headers.include?(column_header)
     break true unless @expected_values
 
-    @actual_values = csv.map { |row| row[column_header] }
+    @actual_values = csv.map { |row| row[column_header].to_s }
     break false if @actual_values.length != @expected_values.length
 
     # Compare each pair. Case equality allows using regexes and rspecs
