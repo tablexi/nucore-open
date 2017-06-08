@@ -4,6 +4,7 @@ inherit_from:
 
 AllCops:
   DisplayCopNames: true
+  TargetRubyVersion: 2.2
   Exclude:
     # Rubocop does not seem to merge these from -txi in AllCops, so we need to
     # reiterate them.
