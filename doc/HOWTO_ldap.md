@@ -35,6 +35,23 @@ must be the value of `ldap.yml`'s `attribute: key`.
 The additional LDIF attributes that make up the remainder of the LDAP `dn` must
 be the value of the `base: key`.
 
+### Using Docker
+
+```
+docker run --name ldap-service --hostname ldap-service -p 389:389 -p 636:636 --detach osixia/openldap
+```
+
+Optionally, you can run an administrative site.
+```
+docker run --name phpldapadmin-service --hostname phpldapadmin-service --link ldap-service:ldap-host --env PHPLDAPADMIN_LDAP_HOSTS=ldap-host --detach -p 8081:443 osixia/phpldapadmin
+
+echo "Go to: https://localhost:8081"
+echo "Login DN: cn=admin,dc=example,dc=org"
+echo "Password: admin"
+```
+
+Using this site, you can copy and paste the user's `ldif` config into the "Import" feature.
+
 ### Setting up an LDAP Server on Mac OS
 
 As root, copy this configuration to `/etc/openldap/slapd.conf`:
@@ -105,13 +122,13 @@ rootdn "cn=admin,dc=example,dc=com"
 rootpw {SSHA}bLqKkdr2MxXPLLpU4d7bvSYgM0D6zlh/
 
 access to attr=userPassword
-       by dn="cn=admin,dc=example,dc=com" write
+       by dn="cn=admin,dc=example,dc=org" write
        by self write
        by * auth
 
 access to *
-       by dn="cn=admin,dc=example,dc=com"  write
-       by dn="cn=cgreen,dc=example,dc=com" read
+       by dn="cn=admin,dc=example,dc=org"  write
+       by dn="cn=cgreen,dc=example,dc=org" read
        by users read
        by self write
        by * auth
@@ -176,17 +193,18 @@ o: Table XI
 You will also need at least one user in the LDAP directory. To create a user:
 
 ```bash
-ldapadd -x -D "cn=admin,dc=example,dc=com" -w secret -f usr.ldif
+ldapadd -x -D "cn=admin,dc=example,dc=org" -w secret -f usr.ldif
 ```
 
 `usr.ldif` is a file in LDAP data interchange format. Here's an example:
 
 ```
-dn: cn=cgreen,dc=example,dc=com
+dn: uid=cgreen,dc=example,dc=org
+uid: cgreen
 cn: Chico Green
 gn: Chico
 sn: Green
-mail: cgreen@example.com
+mail: cgreen@example.org
 userPassword: secret
 objectClass: person
 objectClass: organizationalPerson
@@ -196,7 +214,7 @@ objectClass: inetOrgPerson
 ### Search the LDAP Directory
 
 ```bash
-ldapsearch -x -D "cn=admin,dc=example,dc=com" -w secret -b "dc=example,dc=com" “cn=*”
+ldapsearch -x -D "cn=admin,dc=example,dc=org" -w secret -b "dc=example,dc=org" "uid=*"
 ```
 
 You should see output similar to this:
@@ -205,18 +223,18 @@ You should see output similar to this:
 # extended LDIF
 #
 # LDAPv3
-# base <dc=example,dc=com> with scope subtree
-# filter: cn=*
+# base <dc=example,dc=org> with scope subtree
+# filter: uid=*
 # requesting: ALL
 #
 
-# cgreen, example.com
-dn: cn=cgreen,dc=example,dc=com
+# cgreen, example.org
+dn: cn=cgreen,dc=example,dc=org
+uid: cgreen
 cn: Chico Green
-cn: cgreen
 givenName: Chico
 sn: Green
-mail: cgreen@example.com
+mail: cgreen@example.org
 userPassword:: bm90Z3VtcA==
 objectClass: person
 objectClass: organizationalPerson
@@ -234,7 +252,7 @@ Create a password-less `User`:
 
 ```bash
 bundle exec rails console
-[1] pry(main)> User.create!(username: "cgreen", first_name: "Chico", last_name: "Green", email: "cgreen@example.com")
+[1] pry(main)> User.create!(username: "cgreen", first_name: "Chico", last_name: "Green", email: "cgreen@example.org")
 ```
 
 Try logging in to NUcore with username `cgreen` and password `secret`.
