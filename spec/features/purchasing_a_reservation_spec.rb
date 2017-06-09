@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Purchasing a reservation" do
 
-  let!(:instrument) { FactoryGirl.create(:setup_instrument, note_available_to_users: true) }
+  let!(:instrument) { FactoryGirl.create(:setup_instrument, user_notes_field_mode: "optional") }
   let!(:facility) { instrument.facility }
   let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
   let!(:price_policy) { FactoryGirl.create(:instrument_price_policy, price_group: PriceGroup.base, product: instrument) }

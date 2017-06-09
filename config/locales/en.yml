@@ -512,6 +512,12 @@ en:
     new:
       mark_offline: Take instrument offline
 
+  products:
+    user_notes_field_mode:
+      hidden: None
+      optional: Optional
+      required: Required
+
   admin_reservations:
     categories:
       maintenance: Maintenance

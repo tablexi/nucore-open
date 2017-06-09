@@ -687,4 +687,22 @@ RSpec.describe Product do
       expect(product.read_attribute(:training_request_contacts)).to eq(cleaned_contacts)
     end
   end
+
+  describe "notes" do
+    it "is expected to not be available to users by default" do
+      item = build(:item)
+      expect(item).not_to be_note_available_to_user
+    end
+
+    it "is available to the user in optional mode" do
+      item = build(:item, user_notes_field_mode: "optional")
+      expect(item).to be_valid
+      expect(item).to be_note_available_to_user
+    end
+
+    it "is available to the user in required mode" do
+      item = build(:item, user_notes_field_mode: "required")
+      expect(item).to be_note_available_to_user
+    end
+  end
 end
