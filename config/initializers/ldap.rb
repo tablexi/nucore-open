@@ -1,5 +1,6 @@
 Rails.application.config.to_prepare do
   if File.exist?("#{Rails.root}/config/ldap.yml")
+    User.send(:devise, :ldap_authenticatable)
     User.send(:include, Ldap::UserExtension)
     UsersController.send(:include, Ldap::UsersControllerExtension)
   end

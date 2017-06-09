@@ -1,15 +1,15 @@
 module Ldap
 
-  class LdapUser
+  class UserEntry
 
-    # Returns an Array of `Ldap::User`s
+    # Returns an Array of Ldap::LdapUsers
     def self.search(uid)
       return [] unless uid
-      escaped_query = Net::LDAP::Filter.escape(uid)
-      ldap_entries = admin_ldap.search(base: admin_ldap.base, filter: "#{Ldap.attribute_field}=#{escaped_query}")
+      ldap_entries = admin_ldap.search(filter: Net::LDAP::Filter.eq(Ldap.attribute_field, uid))
       ldap_entries.map { |entry| new(entry) }
     end
 
+    # Returns a single Ldap::LdapUser
     def self.find(uid)
       search(uid).first
     end
@@ -18,8 +18,6 @@ module Ldap
       Devise::LDAP::Connection.admin
     end
     private_class_method :admin_ldap
-
-    attr_reader :entry
 
     def initialize(ldap_entry)
       @ldap_entry = ldap_entry
@@ -42,16 +40,7 @@ module Ldap
     end
 
     def to_user
-      ::User.new(
-        username: username,
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-      )
-    end
-
-    def persisted?
-      false
+      UserConverter.new(self).to_user
     end
 
   end

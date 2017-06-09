@@ -24,10 +24,6 @@ class User < ActiveRecord::Base
   validates :email, presence: true, email_format: true
   validates_uniqueness_of :username, :email
 
-  def after_ldap_authentication
-    Ldap::UserConverter.find_and_update_user(self)
-  end
-
   #
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
   alias_attribute :login, :username
