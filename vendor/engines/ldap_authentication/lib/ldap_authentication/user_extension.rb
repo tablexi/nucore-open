@@ -25,7 +25,7 @@ module LdapAuthentication
       ActiveSupport::Notifications.instrument(
         "background_error",
         exception: e,
-        information: "Could not update User #{username} because of validation errors"
+        information: "Could not update User #{username} because of validation errors",
       )
     end
 

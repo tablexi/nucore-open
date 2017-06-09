@@ -48,7 +48,7 @@ RSpec.describe LdapAuthentication::UserConverter do
         username: "uname",
         first_name: "First",
         last_name: "Last",
-        email: "primary@example.org"
+        email: "primary@example.org",
       )
     end
   end

@@ -1,4 +1,4 @@
-$:.push File.expand_path("../lib", __FILE__)
+$LOAD_PATH.push File.expand_path("../lib", __FILE__)
 
 # Maintain your gem's version:
 require "ldap_authentication/version"
@@ -18,5 +18,4 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 4.2.7.1"
   s.add_dependency "devise_ldap_authenticatable", "~> 0.8.5"
-
 end
