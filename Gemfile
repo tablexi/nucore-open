@@ -18,7 +18,6 @@ end
 gem "cancancan", "1.15"
 gem "devise", "~> 3.5.10"
 gem "devise-encryptable", "~> 0.2.0"
-gem "devise_ldap_authenticatable", "~> 0.8.5"
 
 ## models
 gem "aasm", "~> 4.11.1"
@@ -65,6 +64,7 @@ gem "daemons", "1.1.9"
 gem "bulk_email", path: "vendor/engines/bulk_email"
 gem "c2po", "~> 1.0.0", path: "vendor/engines/c2po"
 gem "dataprobe", "~> 1.0.0", path: "vendor/engines/dataprobe"
+gem "ldap_authentication", path: "vendor/engines/ldap_authentication"
 gem "projects", "~> 0.0.1", path: "vendor/engines/projects"
 gem "sanger_sequencing", "~> 0.0.1", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"

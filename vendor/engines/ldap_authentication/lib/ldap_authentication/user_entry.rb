@@ -1,11 +1,11 @@
-module Ldap
+module LdapAuthentication
 
   class UserEntry
 
     # Returns an Array of Ldap::LdapUsers
     def self.search(uid)
       return [] unless uid
-      ldap_entries = admin_ldap.search(filter: Net::LDAP::Filter.eq(Ldap.attribute_field, uid))
+      ldap_entries = admin_ldap.search(filter: Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid))
       ldap_entries.map { |entry| new(entry) }
     end
 
@@ -24,7 +24,7 @@ module Ldap
     end
 
     def username
-      @ldap_entry.public_send(Ldap.attribute_field).last
+      @ldap_entry.public_send(LdapAuthentication.attribute_field).last
     end
 
     def first_name

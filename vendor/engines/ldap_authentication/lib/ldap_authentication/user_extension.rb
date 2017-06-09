@@ -1,4 +1,4 @@
-module Ldap
+module LdapAuthentication
 
   module UserExtension
 
@@ -14,8 +14,8 @@ module Ldap
 
     # Overrides the default no-op from devise_ldap_authenticatable
     def after_ldap_authentication
-      entry = Ldap::UserEntry.find(username)
-      update_attributes!(entry.attributes)
+      entry = UserEntry.find(username)
+      update_attributes!(UserConverter.new(entry).attributes)
     end
 
   end

@@ -35,6 +35,13 @@ PATH
       rails (~> 4.2.6)
 
 PATH
+  remote: vendor/engines/ldap_authentication
+  specs:
+    ldap_authentication (0.0.1)
+      devise_ldap_authenticatable (~> 0.8.5)
+      rails (~> 4.2.7.1)
+
+PATH
   remote: vendor/engines/projects
   specs:
     projects (0.0.1)
@@ -599,7 +606,6 @@ DEPENDENCIES
   delayed_job_active_record (~> 4.0.1)
   devise (~> 3.5.10)
   devise-encryptable (~> 0.2.0)
-  devise_ldap_authenticatable (~> 0.8.5)
   dynamic_form (~> 1.1.4)
   exception_notification (~> 4.0.1)
   eye-patch
@@ -613,6 +619,7 @@ DEPENDENCIES
   haml_lint (~> 0.24.0)
   jquery-rails
   jquery-ui-rails (~> 6.0.1)
+  ldap_authentication!
   letter_opener
   lograge
   logstash-event

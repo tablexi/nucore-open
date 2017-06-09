@@ -1,4 +1,4 @@
-module Ldap
+module LdapAuthentication
 
   class UserConverter
 
