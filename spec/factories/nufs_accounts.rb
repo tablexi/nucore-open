@@ -1,6 +1,6 @@
 overridable_factory :nufs_account do
-  sequence(:account_number) do |n|
-    "9#{'%02d' % n}-7777777" # fund3-dept7
+  sequence(:account_number, "0000000") do |n|
+    "999-#{n}" # fund3-dept7
   end
 
   sequence(:description, "aaaaaaaa") { |n| "nufs account #{n}" }
