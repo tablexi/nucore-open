@@ -36,7 +36,7 @@ module Reports
     end
 
     def to_csv
-      (csv_header + csv_body).to_s
+      @csv ||= (csv_header + csv_body).to_s
     end
 
     def filename

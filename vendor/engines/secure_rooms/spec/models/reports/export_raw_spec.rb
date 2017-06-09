@@ -39,108 +39,39 @@ RSpec.describe Reports::ExportRaw, :time_travel do
 
   describe "normal accounts" do
     let(:account) { FactoryGirl.create(:setup_account, owner: user) }
-    # Remove quotes: numbers have quotes around them to make sure they're formatted
-    # properly.
-    subject(:value) { column_values.first.delete("\"") }
 
-    it "has header row plus one data row" do
-      expect(lines.length).to eq(2)
-    end
-
-    describe "for fulfilled_at" do
-      let(:column_header) { "Fulfilled At" }
-      it { is_expected.to eq(occupancy.exit_at.to_s) }
-    end
-
-    describe "for quantity" do
-      let(:column_header) { "Quantity" }
-      it { is_expected.to eq("1") }
-    end
-
-    describe "for product_id" do
-      let(:column_header) { "Product" }
-      it { is_expected.to eq(secure_room.name) }
-    end
-
-    describe "for product_type" do
-      let(:column_header) { "Product Type" }
-      it { is_expected.to eq("Secure Room") }
-    end
-
-    ["Estimated Cost", "Estimated Subsidy", "Estimated Cost",
-     "Reservation Start Time", "Reservation End Time", "Reservation Minutes"].each do |field|
-      describe "for #{field}" do
-        let(:column_header) { field }
-        it { is_expected.to eq("") }
-      end
-    end
-
-    describe "for actual_cost" do
-      let(:column_header) { "Actual Cost" }
-      it { is_expected.to eq("$65.00") }
-    end
-
-    describe "for actual_subsidy" do
-      let(:column_header) { "Actual Subsidy" }
-      it { is_expected.to eq("$10.84") }
-    end
-
-    describe "for actual_total" do
-      let(:column_header) { "Actual Total" }
-      it { is_expected.to eq("$54.16") }
-    end
-
-    describe "actual_start_at" do
-      let(:column_header) { "Actual Start Time" }
-      it { is_expected.to eq(occupancy.entry_at.to_s) }
-    end
-
-    describe "actual_end_at" do
-      let(:column_header) { "Actual End Time" }
-      it { is_expected.to eq(occupancy.exit_at.to_s) }
-    end
-
-    describe "actual_minutes" do
-      let(:column_header) { "Actual Minutes" }
-      it { is_expected.to eq("65") }
+    it "populates the report properly" do
+      expect(report).to have_column_values(
+        "Fulfilled At" => occupancy.exit_at.to_s,
+        "Quantity" => "1",
+        "Product" => secure_room.name,
+        "Product Type" => "Secure Room",
+        "Estimated Cost" => "",
+        "Estimated Subsidy" => "",
+        "Estimated Total" => "",
+        "Reservation Start Time" => "",
+        "Reservation End Time" => "",
+        "Reservation Minutes" => "",
+        "Actual Cost" => "$65.00",
+        "Actual Subsidy" => "$10.84",
+        "Actual Total" => "$54.16",
+        "Actual Start Time" => occupancy.entry_at.to_s,
+        "Actual End Time" => occupancy.exit_at.to_s,
+        "Actual Minutes" => "65",
+      )
     end
   end
 
   describe "split accounts", :enable_split_accounts do
     let(:account) { FactoryGirl.create(:split_account, owner: user) }
 
-    context "for actual_start_at" do
-      let(:column_index) { headers.index("Actual Start Time") }
-
-      it "always has the same value" do
-        expect(column_values).to be_present
-        expect(column_values).to all(eq(occupancy.entry_at.to_s))
-      end
-    end
-
-    context "for actual_end_at" do
-      let(:column_index) { headers.index("Actual End Time") }
-
-      it "always has the same value" do
-        expect(column_values).to be_present
-        expect(column_values).to all(eq(occupancy.exit_at.to_s))
-      end
-    end
-
-    context "for the reservation duration" do
-      let(:column_index) { headers.index("Actual Minutes") }
-
-      it "has the splits" do
-        expect(column_values).to eq(["32.5", "32.5"])
-      end
-    end
-
-    context "for the quantity" do
-      let(:column_index) { headers.index("Quantity") }
-
-      it "has the splits" do
-        expect(column_values).to eq(["0.5", "0.5"])
-      end
+    it "splits and populates the report properly" do
+      expect(report).to have_column_values(
+        "Actual Start Time" => Array.new(2).fill(occupancy.entry_at.to_s),
+        "Actual End Time" => Array.new(2).fill(occupancy.exit_at.to_s),
+        "Actual Minutes" => ["32.5", "32.5"],
+        "Quantity" => ["0.5", "0.5"],
+      )
     end
   end
 end

@@ -15,6 +15,10 @@ class SecureRoomPricePolicy < PricePolicy
     calculator.calculate(entry_at, exit_at)
   end
 
+  def charge_for
+    product.entry_only? ? "entry" : "usage"
+  end
+
   private
 
   def calculator
