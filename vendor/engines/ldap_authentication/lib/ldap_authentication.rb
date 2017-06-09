@@ -5,7 +5,13 @@ require "ldap_authentication/engine"
 
 module LdapAuthentication
 
-  mattr_accessor :config
+  def self.config
+    return { "attribute" => "uid" } if Rails.env.test?
+
+    if File.exist?(Rails.root.join("config", "ldap.yml"))
+      @config ||= YAML.safe_load(ERB.new(File.read(Rails.root.join("config", "ldap.yml"))).result)[Rails.env]
+    end
+  end
 
   def self.attribute_field
     config["attribute"]

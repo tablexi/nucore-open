@@ -4,8 +4,8 @@ module LdapAuthentication
 
     CONVERTABLE_ATTRIBUTES = [:username, :first_name, :last_name, :email].freeze
 
-    def initialize(ldap_user)
-      @ldap_user = ldap_user
+    def initialize(user_entry)
+      @user_entry = user_entry
     end
 
     def to_user
@@ -14,7 +14,7 @@ module LdapAuthentication
 
     def attributes
       CONVERTABLE_ATTRIBUTES.each_with_object({}) do |field, output|
-        output[field] = @ldap_user.public_send(field)
+        output[field] = @user_entry.public_send(field)
       end
     end
 

@@ -6,8 +6,7 @@ module LdapAuthentication
   class Engine < Rails::Engine
 
     config.to_prepare do
-      if File.exist?(Rails.root.join("config", "ldap.yml"))
-        LdapAuthentication.config = YAML.safe_load(ERB.new(File.read(Rails.root.join("config", "ldap.yml"))).result)[Rails.env]
+      if LdapAuthentication.config
         User.send(:devise, :ldap_authenticatable)
         User.send(:include, LdapAuthentication::UserExtension)
         UsersController.send(:include, LdapAuthentication::UsersControllerExtension)

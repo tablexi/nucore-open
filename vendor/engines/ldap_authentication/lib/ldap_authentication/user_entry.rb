@@ -2,14 +2,14 @@ module LdapAuthentication
 
   class UserEntry
 
-    # Returns an Array of Ldap::LdapUsers
+    # Returns an Array of `LdapAuthentication::UserEntry`s
     def self.search(uid)
       return [] unless uid
       ldap_entries = admin_ldap.search(filter: Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid))
       ldap_entries.map { |entry| new(entry) }
     end
 
-    # Returns a single Ldap::LdapUser
+    # Returns a single LdapAuthentication::UserEntry
     def self.find(uid)
       search(uid).first
     end
