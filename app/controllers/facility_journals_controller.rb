@@ -30,12 +30,17 @@ class FacilityJournalsController < ApplicationController
     set_default_variables
     @layout = "two_column_head"
 
-    respond_to do |format|
-      format.csv do
-        # used for "Export as CSV" link for order details with expired accounts
-        @order_details = @order_details.expired_account
+    @after_search_hook = lambda do
+      @valid_order_details, @invalid_order_details = ValidatorFactory.partition_valid_order_details(@order_details.unexpired_account)
+      @invalid_order_details += @order_details.expired_account
+
+      respond_to do |format|
+        format.csv do
+          # used for "Export as CSV" link for order details with expired accounts
+          @order_details = @invalid_order_details
+        end
+        format.any {}
       end
-      format.any {}
     end
   end
 
