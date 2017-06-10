@@ -1,5 +1,5 @@
 = simple_form_for order, url: { action: :update_or_purchase } do |f|
-  %table.table.table-striped.table-hover.js--cart#cart.js--responsive_table
+  %table.table.table-striped.table-hover.js--cart.js--responsive_table#cart
     %thead
       %tr
         %th &nbsp;
@@ -12,11 +12,11 @@
 
     %tbody
       - grouped_order_details.each do |order_details|
-        = render partial: "cart_row", collection: order_details, as: :order_detail, locals: { order_details: order_details }
+        = render partial: "cart_row", collection: order_details, as: :order_detail, locals: { order_details: order_details, f: f }
 
     %tfoot.cart
       %tr
-        %td.currency{colspan: "3"}
+        %td.currency{ colspan: "3" }
           %b= t(".td.total")
         %td.currency
           .responsive-header= OrderDetail.human_attribute_name(:estimated_cost)
@@ -40,8 +40,10 @@
       = render_view_hook "acting_as", f: f, order_detail: order.order_details.first
       .backdate_fields= render "edit_date", f: f
 
-    %ul.inline{style: "float: left"}
-      %li= submit_tag t("shared.update"), class: "btn"
+    %ul.inline{ style: "float: left" }
+      %li
+        = f.submit t("shared.update"),
+          class: "btn"
       - if order.validated?
         %li
           = f.submit t("shared.purchase"),

@@ -258,10 +258,7 @@ class OrdersController < ApplicationController
       order_purchaser.purchase!
     end
 
-    if order_purchaser.quantities_changed?
-      flash[:notice] = I18n.t("controllers.orders.purchase.quantities_changed")
-      render :show
-    else
+    if order_purchaser.success?
       if single_reservation? && !acting_as?
         flash[:notice] = I18n.t("controllers.orders.purchase.reservation.success")
         if can_switch_instrument_on?
@@ -272,14 +269,13 @@ class OrdersController < ApplicationController
       else
         redirect_to receipt_order_path(@order)
       end
+    else
+      flash.now[:error] = order_purchaser.errors.join("<br/>").html_safe if order_purchaser.errors.present?
+      render :show
     end
-  rescue NUCore::OrderDetailUpdateException => e
-    logger.debug "errors #{@order.errors.full_messages}"
-    flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
-    render :show
   rescue => e
     flash[:error] = I18n.t("orders.purchase.error")
-    flash[:error] += " #{e.message}" if e.message
+    flash[:error] += " #{e.message}" if e.message.present?
     @order.reload.invalidate!
 
     if single_reservation?
@@ -326,7 +322,7 @@ class OrdersController < ApplicationController
   # Group into chunks by the group id. If group_id is nil, then it should get its
   # own chunk.
   def grouped_order_details
-    @order.order_details.order(:group_id).slice_when do |before, after|
+    @order.order_details.sort_by(&:group_id).slice_when do |before, after|
       before.group_id.nil? || before.group_id != after.group_id
     end
   end

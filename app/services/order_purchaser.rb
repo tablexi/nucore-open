@@ -3,13 +3,12 @@ class OrderPurchaser
   attr_reader :acting_as, :order, :order_in_past, :params, :user
   attr_accessor :backdate_to
 
-  cattr_accessor(:additional_validations) { [] }
+  cattr_accessor(:additional_validations) { [NotePresenceOnPurchaseValidator] }
 
   alias acting_as? acting_as
   alias order_in_past? order_in_past
 
   delegate :order_notification_recipient, to: :order
-  delegate :quantities_changed?, to: :order_detail_updater
 
   def initialize(acting_as:, order:, order_in_past:, params:, user:)
     @acting_as = acting_as
@@ -17,18 +16,38 @@ class OrderPurchaser
     @order_in_past = order_in_past
     @params = params
     @user = user
+    @success = false
+    @errors = []
   end
 
   def purchase!
-    return if order_detail_updater.update! && quantities_changed?
+    order_detail_updater.update!
+    if order_detail_updater.quantities_changed?
+      @errors << I18n.t("controllers.orders.purchase.quantities_changed")
+      return
+    end
 
     order.ordered_at = backdate_to if backdate_to
 
-    validate_and_purchase!
+    validate_order!
+    return unless do_additional_validations
+    purchase_order!
+
     order_in_the_past! if order_in_past?
 
     Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
     Notifier.delay.order_notification(order, order_notification_recipient) if send_facility_notification?
+    @success = true
+  rescue NUCore::OrderDetailUpdateException => e
+    @errors = order.errors.full_messages
+  end
+
+  def success?
+    @success
+  end
+
+  def errors
+    @errors.compact.uniq
   end
 
   private
@@ -70,12 +89,6 @@ class OrderPurchaser
     !acting_as? || params[:send_notification] == "1"
   end
 
-  def validate_and_purchase!
-    validate_order!
-    do_additional_validations!
-    purchase_order!
-  end
-
   def validate_order!
     # Empty because validate_order! and purchase! don't give useful error messages
     raise NUCore::PurchaseException.new("") unless order.validate_order!
@@ -86,11 +99,14 @@ class OrderPurchaser
     raise NUCore::PurchaseException.new("") unless order.purchase!
   end
 
-  def do_additional_validations!
-    additional_validations.each do |validator_class|
+  def do_additional_validations
+    additional_validations.all? do |validator_class|
       validator = validator_class.new(@order)
-      unless validator.valid?
-        raise NUCore::PurchaseException.new(validator.error_message)
+      if validator.valid?
+        true
+      else
+        @errors << validator.error_message
+        false
       end
     end
   end

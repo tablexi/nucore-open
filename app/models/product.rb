@@ -281,6 +281,10 @@ class Product < ActiveRecord::Base
     user_notes_field_mode != "hidden"
   end
 
+  def note_required_for_purchase?
+    user_notes_field_mode == "required"
+  end
+
   protected
 
   def translation_scope

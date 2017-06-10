@@ -318,7 +318,7 @@ RSpec.describe OrdersController do
       end
 
       it "has a flash message" do
-        expect(flash[:notice]).to include("Quantities have changed")
+        expect(flash[:error]).to include("Quantities have changed")
       end
 
       it "renders the show view" do
