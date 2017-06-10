@@ -2,8 +2,6 @@ class Product < ActiveRecord::Base
 
   include TextHelpers::Translation
 
-  USER_NOTES_FIELD_MODES = %w(hidden optional required).freeze
-
   belongs_to :facility
   belongs_to :initial_order_status, class_name: "OrderStatus"
   belongs_to :facility_account
@@ -22,7 +20,7 @@ class Product < ActiveRecord::Base
 
   validates_presence_of :name, :type
   validate_url_name :url_name, :facility_id
-  validates :user_notes_field_mode, presence: true, inclusion: USER_NOTES_FIELD_MODES
+  validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.values
 
   if SettingsHelper.feature_on? :expense_accounts
     validates(
@@ -277,12 +275,16 @@ class Product < ActiveRecord::Base
     self[:training_request_contacts] = CsvArrayString.new(str).to_s
   end
 
-  def note_available_to_users?
-    user_notes_field_mode != "hidden"
+  def user_notes_field_mode
+    Products::UserNoteMode.new(self[:user_notes_field_mode])
   end
 
-  def note_required_for_purchase?
-    user_notes_field_mode == "required"
+  def user_notes_field_mode=(str_value)
+    self[:user_notes_field_mode] = Products::UserNoteMode.new(str_value).raw_value
+  end
+
+  def note_available_to_users?
+    user_notes_field_mode.visible?
   end
 
   protected

@@ -10,4 +10,4 @@
 
 = f.input :is_archived, as: :boolean, label: false, inline_label: text("hints.is_archived")
 = f.input :is_hidden, as: :boolean, label: false, inline_label: text("hints.is_hidden", field: f.object.class.model_name.human.downcase)
-= f.input :user_notes_field_mode, label: text("hints.note_available_to_users"), collection: I18n.t("products.user_notes_field_mode").invert.to_a, include_blank: false
+= f.input :user_notes_field_mode, label: text("hints.note_available_to_users"), collection: Products::UserNoteMode.values, include_blank: false
