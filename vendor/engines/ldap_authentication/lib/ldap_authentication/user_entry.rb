@@ -15,7 +15,7 @@ module LdapAuthentication
     end
 
     def self.admin_ldap
-      Devise::LDAP::Connection.admin
+      LdapAuthentication.admin_connection
     end
     private_class_method :admin_ldap
 

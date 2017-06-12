@@ -13,7 +13,7 @@ RSpec.describe LdapAuthentication::UserEntry do
 
   describe ".find" do
     let(:admin_ldap) { spy("AdminConnection", search: [net_ldap_entry]) }
-    before { allow(Devise::LDAP::Connection).to receive(:admin) { admin_ldap } }
+    before { allow(LdapAuthentication).to receive(:admin_connection) { admin_ldap } }
 
     it "returns a UserEntry" do
       entry = described_class.find("uname")
