@@ -691,18 +691,19 @@ RSpec.describe Product do
   describe "notes" do
     it "is expected to not be available to users by default" do
       item = build(:item)
-      expect(item).not_to be_note_available_to_user
+      expect(item.user_notes_field_mode).not_to be_visible
     end
 
     it "is available to the user in optional mode" do
       item = build(:item, user_notes_field_mode: "optional")
-      expect(item).to be_valid
-      expect(item).to be_note_available_to_user
+      expect(item.user_notes_field_mode).to be_visible
+      expect(item.user_notes_field_mode).not_to be_required
     end
 
     it "is available to the user in required mode" do
       item = build(:item, user_notes_field_mode: "required")
-      expect(item).to be_note_available_to_user
+      expect(item.user_notes_field_mode).to be_visible
+      expect(item.user_notes_field_mode).to be_required
     end
   end
 end
