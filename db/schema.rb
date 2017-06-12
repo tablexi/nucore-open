@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531183710) do
+ActiveRecord::Schema.define(version: 20170609131421) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -43,6 +43,8 @@ ActiveRecord::Schema.define(version: 20170531183710) do
     t.integer  "facility_id",            limit: 4
     t.integer  "affiliate_id",           limit: 4
     t.string   "affiliate_other",        limit: 255
+    t.string   "outside_contact_info",   limit: 255
+    t.string   "ar_number",              limit: 255
   end
 
   add_index "accounts", ["affiliate_id"], name: "index_accounts_on_affiliate_id", using: :btree

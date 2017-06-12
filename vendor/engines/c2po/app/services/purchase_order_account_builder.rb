@@ -13,6 +13,8 @@ class PurchaseOrderAccountBuilder < AccountBuilder
       :affiliate_other,
       :remittance_information,
       :formatted_expires_at,
+      :outside_contact_info,
+      :ar_number,
     ]
   end
 
@@ -25,6 +27,8 @@ class PurchaseOrderAccountBuilder < AccountBuilder
       :affiliate_other,
       :remittance_information,
       :formatted_expires_at,
+      :outside_contact_info,
+      :ar_number,
     ]
   end
 

@@ -29,6 +29,12 @@ module C2po
       ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "c2po/facility_accounts/show/remittance_information"
     end
 
+    initializer :append_migrations do |app|
+      config.paths["db/migrate"].expanded.each do |expanded_path|
+        app.config.paths["db/migrate"] << expanded_path
+      end
+    end
+
   end
 
 end

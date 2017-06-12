@@ -21,6 +21,7 @@ RSpec.describe PurchaseOrderAccountBuilder, type: :service do
         affiliate_other: affiliate_other,
         remittance_information: "Bill To goes here",
         formatted_expires_at: I18n.l(1.year.from_now.to_date, format: :usa),
+        outside_contact_info: "800 588-2300",
       },
     )
   end
