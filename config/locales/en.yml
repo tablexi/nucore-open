@@ -514,7 +514,7 @@ en:
 
   products:
     user_notes_field_mode:
-      hidden: None
+      hidden: "No"
       optional: Optional
       required: Required
 
