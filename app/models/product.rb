@@ -280,11 +280,7 @@ class Product < ActiveRecord::Base
   end
 
   def user_notes_field_mode=(str_value)
-    self[:user_notes_field_mode] = Products::UserNoteMode.new(str_value).raw_value
-  end
-
-  def note_available_to_users?
-    user_notes_field_mode.visible?
+    self[:user_notes_field_mode] = Products::UserNoteMode.new(str_value)
   end
 
   protected

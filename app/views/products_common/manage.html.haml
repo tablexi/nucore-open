@@ -25,7 +25,7 @@
       = f.input :training_request_contacts
   = f.input :is_archived
   = f.input :is_hidden
-  = f.input :user_notes_field_mode
+  = f.input :user_notes_field_mode, value_method: :to_label
 
   = render_if_exists "#{@product.class.name.underscore}_manage_fields", f: f
 - if can? :edit, @product

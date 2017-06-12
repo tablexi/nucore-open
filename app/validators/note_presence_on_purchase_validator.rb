@@ -7,7 +7,7 @@ class NotePresenceOnPurchaseValidator
   def valid?
     # Use select instead of none? to make sure we loop over everything
     invalid_orders = @order.order_details.select do |od|
-      if od.product.note_required_for_purchase? && od.note.blank?
+      if od.product.user_notes_field_mode.required? && od.note.blank?
         od.errors.add(:note, :blank) # truthy return
       end
     end
