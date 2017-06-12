@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative "../matchers/csv_column_matcher"
+require_relative "../support/matchers/csv_column_matcher"
 
 RSpec.describe "CSV column matchers" do
   let(:single_line_report) { double("Single", to_csv: "Quantity,Cost\n1,$3.50") }
