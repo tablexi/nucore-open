@@ -275,6 +275,7 @@ en:
       not_closed_html: You may not generate a new journal until the <a href="%{link}">pending journal</a> is closed.
       no_orders: There are no orders to be journaled at this time.
       expired_payment: These payment sources were not valid at the time of fulfillment. Please choose a different payment source.
+      download_unjournalable: Export Errors as CSV
     index:
       head:
         pending: Pending Journal
