@@ -70,11 +70,13 @@ class NavTab::LinkCollection
     end
   end
 
+  cattr_accessor(:report_tab_subnav) { [:general_reports, :instrument_utilization_reports] }
+
   def admin_reports
     if single_facility? && ability.can?(:manage, Reports::ReportsController)
       NavTab::Link.new(
         tab: :admin_reports,
-        subnav: [general_reports, instrument_utilization_reports],
+        subnav: report_tab_subnav.map { |method_name| self.send(method_name) }
       )
     end
   end
