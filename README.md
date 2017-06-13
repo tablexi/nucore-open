@@ -140,6 +140,7 @@ exist in the `vendor/engines` directory.
 * Link orders together as a Project (projects)
 * [Sanger Sequencing order form and well plate management](vendor/engines/sanger_sequencing/README.md)
 * [Split charges between different accounts](vendor/engines/split_accounts/README.md)
+* [Authenticate against an LDAP server](vendor/engines/ldap_authentication/README.md)
 
 Engine-specific migrations should live in the engine's `db/migrate` directory and
 use an engine initializer to add that path to the list of paths Rails checks. If
@@ -158,7 +159,7 @@ There are valuable resources in the NUcore's doc directory.
 
 * Need help getting Oracle running on your Mac? [**See HOWTO_oracle.txt**](doc/HOWTO_oracle.txt)
 
-* Want to authenticate users against your institution's LDAP server? [**See HOWTO_ldap.txt**](doc/HOWTO_ldap.md)
+* Want to authenticate users against your institution's LDAP server? [**See the `ldap_authentication` engine**](vendor/engines/ldap_authentication/README.md)
 
 * Need to use a 3rd party service with your NUcore? [**See HOWTO_external_services.txt**](doc/HOWTO_external_services.md)
 
