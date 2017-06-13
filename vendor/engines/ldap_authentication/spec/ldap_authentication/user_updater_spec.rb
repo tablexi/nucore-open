@@ -45,5 +45,4 @@ RSpec.describe LdapAuthentication::UserUpdater do
       expect(user.email).to eq("old@example.org")
     end
   end
-
 end
