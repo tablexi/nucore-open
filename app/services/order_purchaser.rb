@@ -3,7 +3,7 @@ class OrderPurchaser
   attr_reader :acting_as, :order, :order_in_past, :params, :user
   attr_accessor :backdate_to
 
-  cattr_accessor(:additional_validations) { [NotePresenceOnPurchaseValidator] }
+  cattr_accessor(:additional_validations) { [AllDetailsOnOrderValidator.build(NotePresenceValidator)] }
 
   alias acting_as? acting_as
   alias order_in_past? order_in_past

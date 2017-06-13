@@ -2,8 +2,6 @@
   %ul.breadcrumb
     %li= link_to t('.crumbs.orders'), orders_url
     %li &raquo;
-    %li= link_to @order.facility, facility_path(@order.facility)
-    %li &raquo;
     %li= t('.crumbs.receipt')
 
 = content_for :h1 do
