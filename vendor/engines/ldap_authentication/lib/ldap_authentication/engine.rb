@@ -6,11 +6,11 @@ module LdapAuthentication
   class Engine < Rails::Engine
 
     config.to_prepare do
-      LdapAuthentication.configure!
-
-      User.send(:devise, :ldap_authenticatable)
-      User.send(:include, LdapAuthentication::UserExtension)
-      UsersController.send(:include, LdapAuthentication::UsersControllerExtension)
+      if LdapAuthentication.configured?
+        User.send(:devise, :ldap_authenticatable)
+        User.send(:include, LdapAuthentication::UserExtension)
+        UsersController.send(:include, LdapAuthentication::UsersControllerExtension)
+      end
     end
 
   end

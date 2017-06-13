@@ -6,23 +6,24 @@ require "ldap_authentication/engine"
 
 module LdapAuthentication
 
-  def self.configure!
-    @config = config
+  def self.configured?
+    config.present?
   end
 
   def self.config
-    if File.exist?(Rails.root.join("config", "ldap.yml"))
-      yaml = YAML.safe_load(ERB.new(File.read(Rails.root.join("config", "ldap.yml"))).result) || {}
-      config = yaml.fetch(Rails.env, {})
+    return @config if defined?(@config)
 
-      if Rails.env.test?
-        @admin_connection = NullConnection.new
-      elsif config.blank?
-        raise "Error configuring LDAP. Check your config/ldap.yml file."
-      end
-
-      config
+    if Rails.env.test?
+      @admin_connection = NullConnection.new
+      @config = {}
+    elsif File.exist?(Rails.root.join("config", "ldap.yml"))
+      @config = load_config_from_file
+      raise "Could not configure LDAP. Check your config/ldap.yml file." if @config.blank?
+    else
+      @config = {}
     end
+
+    @config
   end
 
   def self.admin_connection
@@ -31,6 +32,11 @@ module LdapAuthentication
 
   def self.attribute_field
     config.fetch("attribute", "uid")
+  end
+
+  def self.load_config_from_file
+    yaml = YAML.safe_load(ERB.new(File.read(Rails.root.join("config", "ldap.yml"))).result) || {}
+    yaml.fetch(Rails.env, {})
   end
 
 end

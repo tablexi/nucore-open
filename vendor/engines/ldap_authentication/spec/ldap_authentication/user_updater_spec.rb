@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe User do
+RSpec.describe LdapAuthentication::UserUpdater do
   let(:user_entry) do
     double("UserEntry", username: "abc123", first_name: "First", last_name: "Last", email: "primary@example.org")
   end
@@ -10,9 +10,13 @@ RSpec.describe User do
     allow(LdapAuthentication::UserEntry).to receive(:find).with("xyz789").and_return(nil)
   end
 
+  def update_user(user)
+    described_class.new(user).update_from_ldap
+  end
+
   it "updates the attributes after successful ldap authentication" do
     user = create(:user, username: "abc123")
-    user.after_ldap_authentication
+    described_class.new(user).update_from_ldap
     user.reload
 
     expect(user.first_name).to eq("First")
@@ -22,7 +26,7 @@ RSpec.describe User do
 
   it "raises an error if the user is not found" do
     user = create(:user, username: "xyz789")
-    expect { user.after_ldap_authentication }.to raise_error(/not found in LDAP/)
+    expect { described_class.new(user).update_from_ldap }.to raise_error(/not found in LDAP/)
   end
 
   describe "a validation error" do
@@ -32,13 +36,14 @@ RSpec.describe User do
     it "triggers a notification" do
       expect(ActiveSupport::Notifications).to receive(:instrument).with("background_error", a_hash_including(information: /Could not update User/))
 
-      user.after_ldap_authentication
+      described_class.new(user).update_from_ldap
     end
 
     it "does not update the user's information" do
-      user.after_ldap_authentication
+      described_class.new(user).update_from_ldap
       user.reload
       expect(user.email).to eq("old@example.org")
     end
   end
+
 end
