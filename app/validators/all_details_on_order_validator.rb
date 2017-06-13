@@ -15,14 +15,14 @@ class AllDetailsOnOrderValidator
   def valid?
     # Use select instead of none? to make sure we loop over everything
     invalid_orders = @order.order_details.reject do |od|
-      self.class.order_detail_validator_class.new(od).valid?
+      order_detail_validator_class.new(od).valid?
     end
 
     invalid_orders.none?
   end
 
   def error_message
-    "Some products require notes"
+    I18n.t(order_detail_validator_class.name.underscore, scope: "validators.all_details_on_order_validator")
   end
 
 end

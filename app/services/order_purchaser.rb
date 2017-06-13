@@ -3,7 +3,11 @@ class OrderPurchaser
   attr_reader :acting_as, :order, :order_in_past, :params, :user
   attr_accessor :backdate_to
 
-  cattr_accessor(:additional_validations) { [AllDetailsOnOrderValidator.build(NotePresenceValidator)] }
+  # TODO: remove this once all child instances have been updated
+  def self.additional_validations
+    warn "Use OrderPurchaseValidator.additional_validations instead of OrderPurchaser at #{caller(1..1)}"
+    OrderPurchaseValidator.additional_validations
+  end
 
   alias acting_as? acting_as
   alias order_in_past? order_in_past
@@ -100,14 +104,12 @@ class OrderPurchaser
   end
 
   def do_additional_validations
-    additional_validations.all? do |validator_class|
-      validator = validator_class.new(@order)
-      if validator.valid?
-        true
-      else
-        @errors << validator.error_message
-        false
-      end
+    validator = OrderPurchaseValidator.new(@order)
+    if validator.valid?
+      true
+    else
+      @errors = validator.errors
+      false
     end
   end
 
