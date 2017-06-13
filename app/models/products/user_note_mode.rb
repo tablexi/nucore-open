@@ -2,14 +2,14 @@ module Products
 
   class UserNoteMode
 
+    VALID_MODES = %w(hidden optional required).freeze
+
     attr_reader :raw_value
 
+    # An array of UserNoteModes representing the possible modes
+    # Use this in validations and form collections.
     def self.values
-      valid_values.map { |value| new(value) }
-    end
-
-    def self.valid_values
-      %w(hidden optional required).freeze
+      VALID_MODES.map { |value| new(value) }
     end
 
     def initialize(raw_value)
@@ -17,6 +17,16 @@ module Products
       freeze
     end
 
+    def required?
+      raw_value == "required"
+    end
+
+    def visible?
+      raw_value != "hidden"
+    end
+
+    # to_label is a method by simple_form to generate the option name in dropdowns
+    # that it tries before falling back to to_s
     def to_label
       I18n.t(raw_value, scope: "products.user_notes_field_mode", default: raw_value.titleize)
     end
@@ -34,14 +44,6 @@ module Products
       else
         false
       end
-    end
-
-    def required?
-      raw_value == "required"
-    end
-
-    def visible?
-      raw_value != "hidden"
     end
 
   end
