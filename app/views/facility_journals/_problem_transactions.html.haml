@@ -3,7 +3,7 @@
     %p.alert.alert-error= t("facility_journals.new.expired_payment")
 .row
   .span12
-    %p= link_to t("reports.account_transactions.export"), url_for(params.merge(format: :csv)), class: "js--exportSearchResults pull-right", data: { form: ".search_form" }
+    %p= link_to t("facility_journals.new.download_unjournalable"), url_for(params.merge(format: :csv)), class: "js--exportSearchResults pull-right", data: { form: ".search_form" }
 .row
   .span12
     %table.table.table-striped.table-hover.dense.old-table
