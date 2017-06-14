@@ -46,6 +46,8 @@ nav ul.nav > li:hover {
   @extend .nav;
   @extend .nav-list;
 
+  margin-bottom: 10px;
+
   li {
     line-height: 1.3em;
     &.nav-header {
