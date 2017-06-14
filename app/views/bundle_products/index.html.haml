@@ -36,3 +36,4 @@
             %td= bundle_product.quantity
           - else
             %td= %(#{bundle_product.quantity} (#{link_to text("shared.edit"), edit_facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product)})).html_safe
+          %td= price_policy_errors(product)
