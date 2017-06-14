@@ -27,16 +27,6 @@ class FacilitiesController < ApplicationController
       acting_user.present? && acting_user.recently_used_facilities.sorted
   end
 
-  class DefaultFacilityHomepageRedirector
-    def self.redirect_path(facility)
-      if facility.instruments.active.any?
-        Rails.application.routes.url_helpers.timeline_facility_reservations_path(facility)
-      else
-        Rails.application.routes.url_helpers.facility_orders_path(facility)
-      end
-    end
-  end
-
   cattr_accessor(:facility_homepage_redirector) { DefaultFacilityHomepageRedirector }
 
   # GET /facilities/:facility_url/dashboard
