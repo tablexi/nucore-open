@@ -123,6 +123,9 @@ en:
       bundle:
         one: Bundle
         other: Bundles
+      bundle_product:
+        one: Bundled Product
+        other: Bundled Products
       facility:
         one: Facility
         other: Facilities
