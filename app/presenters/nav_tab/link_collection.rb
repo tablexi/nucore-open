@@ -76,7 +76,7 @@ class NavTab::LinkCollection
     if single_facility? && ability.can?(:manage, Reports::ReportsController)
       NavTab::Link.new(
         tab: :admin_reports,
-        subnav: report_tab_subnav.map { |method_name| self.send(method_name) }
+        subnav: report_tab_subnav.map { |method_name| send(method_name) },
       )
     end
   end
