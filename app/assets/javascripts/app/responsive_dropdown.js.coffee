@@ -5,6 +5,6 @@
 #
 
 $ ->
-  $("li.dropdown a").click (e) =>
+  $("li.dropdown a").click (e) ->
     e.stopPropagation()
     $(e.target).next('ul.dropdown-menu').css("display", "block")
