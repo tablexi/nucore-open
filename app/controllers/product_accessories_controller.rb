@@ -34,7 +34,7 @@ class ProductAccessoriesController < ApplicationController
   private
 
   def init_product
-    @product = current_facility.products.find_by_url_name!(params[:product_id])
+    @product = current_facility.products.find_by!(url_name: params[:product_id])
   end
 
   def set_available_accessories

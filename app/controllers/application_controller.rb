@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
       when facility_id == Facility.cross_facility.url_name
         Facility.cross_facility
       else
-        Facility.find_by_url_name(facility_id.to_s) # TODO: rewrite as #find_by(url_name: …) after Rails 4.x upgrade
+        Facility.find_by(url_name: facility_id.to_s)
       end
   end
 

@@ -45,7 +45,7 @@ class SurveysController < ApplicationController
   end
 
   def init_service
-    @service = current_facility.services.find_by_url_name!(params[:service_id])
+    @service = current_facility.services.find_by!(url_name: params[:service_id])
   end
 
 end

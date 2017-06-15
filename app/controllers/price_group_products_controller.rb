@@ -52,7 +52,7 @@ class PriceGroupProductsController < ApplicationController
   private
 
   def init_price_group_products
-    @product = Product.find_by_url_name!(params[:id])
+    @product = Product.find_by!(url_name: params[:id])
     @is_instrument = @product.is_a? Instrument
     @price_groups = current_facility.price_groups
 

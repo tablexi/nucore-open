@@ -64,7 +64,7 @@ class BundleProductsController < ApplicationController
   end
 
   def init_bundle
-    @bundle = current_facility.bundles.find_by_url_name!(params[:bundle_id])
+    @bundle = current_facility.bundles.find_by!(url_name: params[:bundle_id])
   end
 
   def init_bundle_product
