@@ -62,7 +62,7 @@ class FacilitiesController < ApplicationController
       @facilities = operable_facilities
       raise ActiveRecord::RecordNotFound if @facilities.empty?
       if @facilities.size == 1
-        redirect_to facility_default_admin_path(@facilities.first)
+        redirect_to dashboard_facility_path(@facilities.first)
         return
       end
     end
