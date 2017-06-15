@@ -22,6 +22,9 @@ module Products
       end
     end
 
+    # Prefer the use of the factory `UserNoteMode[raw_value]` over directly
+    # initializing this class with `new` as it will not hard error on invalid
+    # inputs.
     def initialize(raw_value)
       @raw_value = raw_value
       raise ArgumentError, "Invalid value: #{raw_value}" unless VALID_MODES.include?(raw_value)
