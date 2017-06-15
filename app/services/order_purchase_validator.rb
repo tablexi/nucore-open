@@ -1,5 +1,7 @@
 class OrderPurchaseValidator
 
+  # The AllDetailsOnOrderValidator will validate each individual OrderDetail
+  # within the order using the NotePresenceValidator.
   cattr_accessor(:additional_validations) { [AllDetailsOnOrderValidator.build(NotePresenceValidator)] }
 
   attr_reader :errors

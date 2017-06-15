@@ -2,13 +2,24 @@ class AllDetailsOnOrderValidator
 
   cattr_accessor :order_detail_validator_class
 
+  # Build a validator that will take an Order in its constructor and validate each
+  # child order detail using the order_detail_validator_class.
+  #
+  # Example:
+  # validator = AllDetailsOnOrder.build(NotePresenceValidator)
+  # validator.new(order).valid?
+  #
+  # This will run NotePresenceValidator.new(order_detail).valid? for each
+  # element of @order.order_details
   def self.build(order_detail_validator_class)
     Class.new(AllDetailsOnOrderValidator) do
       self.order_detail_validator_class = order_detail_validator_class
     end
   end
 
+  # This class should only be initialized through the `.build` method
   def initialize(order)
+    raise "Should not be initialized directly. Use the `.build` factory method instead" unless order_detail_validator_class
     @order = order
   end
 
