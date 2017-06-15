@@ -20,7 +20,7 @@ class Product < ActiveRecord::Base
 
   validates_presence_of :name, :type
   validate_url_name :url_name, :facility_id
-  validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.values
+  validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.all
 
   if SettingsHelper.feature_on? :expense_accounts
     validates(
@@ -276,11 +276,11 @@ class Product < ActiveRecord::Base
   end
 
   def user_notes_field_mode
-    Products::UserNoteMode.new(self[:user_notes_field_mode])
+    Products::UserNoteMode.from_string(self[:user_notes_field_mode])
   end
 
   def user_notes_field_mode=(str_value)
-    self[:user_notes_field_mode] = Products::UserNoteMode.new(str_value)
+    self[:user_notes_field_mode] = Products::UserNoteMode.from_string(str_value)
   end
 
   protected

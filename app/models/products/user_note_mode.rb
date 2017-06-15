@@ -8,12 +8,21 @@ module Products
 
     # An array of UserNoteModes representing the possible modes
     # Use this in validations and form collections.
-    def self.values
+    def self.all
       VALID_MODES.map { |value| new(value) }
+    end
+
+    def self.from_string(mode_string)
+      if VALID_MODES.include?(mode_string)
+        new(mode_string)
+      else
+        InvalidUserNoteMode.new(mode_string)
+      end
     end
 
     def initialize(raw_value)
       @raw_value = raw_value
+      raise ArgumentError, "Invalid value: #{raw_value}" unless VALID_MODES.include?(raw_value)
       freeze
     end
 
@@ -46,6 +55,20 @@ module Products
       end
     end
 
+    class InvalidUserNoteMode
+
+      def initialize(raw_value)
+        @raw_value = raw_value
+      end
+
+      def to_label
+        "Invalid User Note Mode: #{@raw_value}"
+      end
+
+      def to_s
+        to_label
+      end
+    end
   end
 
 end
