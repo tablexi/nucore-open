@@ -35,7 +35,7 @@ class AutoLogout
   end
 
   def complete_status
-    @complete_status ||= OrderStatus.find_by_name!("Complete")
+    @complete_status ||= OrderStatus.find_by!(name: "Complete")
   end
 
   def complete_reservation(od)

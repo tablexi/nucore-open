@@ -45,7 +45,7 @@ class OrderRowImporter
       user
       .accounts
       .for_facility(product.facility)
-      .active.find_by_account_number(account_number)
+      .active.find_by(account_number: account_number)
   end
 
   def errors?

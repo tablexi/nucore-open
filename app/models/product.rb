@@ -250,7 +250,7 @@ class Product < ActiveRecord::Base
   end
 
   def find_product_user(user)
-    product_users.find_by_user_id(user.id)
+    product_users.find_by(user_id: user.id)
   end
 
   def mergeable?

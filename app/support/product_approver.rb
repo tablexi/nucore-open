@@ -83,7 +83,7 @@ class ProductApprover
   end
 
   def get_product_user(product)
-    product.product_users.find_by_user_id(@user.id)
+    product.product_users.find_by(user_id: @user.id)
   end
 
 end
