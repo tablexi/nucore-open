@@ -32,7 +32,7 @@ RSpec.describe InstrumentPricePolicy do
 
   context "completed" do
     before :each do
-      @order_detail.change_status! OrderStatus.find_by_name("Complete")
+      @order_detail.change_status! OrderStatus.find_by(name: "Complete")
       expect(@order_detail.state).to eq("complete")
     end
 

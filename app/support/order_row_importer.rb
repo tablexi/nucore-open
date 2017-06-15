@@ -78,7 +78,7 @@ class OrderRowImporter
 
   def user
     @user ||=
-      User.find_by_username(user_field) || User.find_by_email(user_field)
+      User.find_by(username: user_field) || User.find_by(email: user_field)
   end
 
   def add_error(message)
@@ -150,7 +150,7 @@ class OrderRowImporter
       .facility
       .products
       .active_plus_hidden
-      .find_by_name(product_field)
+      .find_by(name: product_field)
   end
 
   def product_field

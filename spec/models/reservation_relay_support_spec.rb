@@ -10,7 +10,7 @@ RSpec.describe Reservation do
 
       # needs to have a relay
       res.product.relay = FactoryGirl.create(:relay_dummy, instrument: res.product)
-      res.order_detail.change_status!(OrderStatus.find_by_name("Complete"))
+      res.order_detail.change_status!(OrderStatus.find_by(name: "Complete"))
       res
     end
 
