@@ -66,7 +66,9 @@ module Products
       def to_s
         to_label
       end
+
     end
+
   end
 
 end
