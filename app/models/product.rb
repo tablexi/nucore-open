@@ -276,11 +276,11 @@ class Product < ActiveRecord::Base
   end
 
   def user_notes_field_mode
-    Products::UserNoteMode.from_string(self[:user_notes_field_mode])
+    Products::UserNoteMode[self[:user_notes_field_mode]]
   end
 
   def user_notes_field_mode=(str_value)
-    self[:user_notes_field_mode] = Products::UserNoteMode.from_string(str_value)
+    self[:user_notes_field_mode] = Products::UserNoteMode[str_value]
   end
 
   protected

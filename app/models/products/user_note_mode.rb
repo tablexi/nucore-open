@@ -12,11 +12,13 @@ module Products
       VALID_MODES.map { |value| new(value) }
     end
 
-    def self.from_string(mode_string)
-      if VALID_MODES.include?(mode_string)
-        new(mode_string)
+    def self.[](mode)
+      if mode.is_a?(self)
+        mode
+      elsif VALID_MODES.include?(mode)
+        new(mode)
       else
-        InvalidUserNoteMode.new(mode_string)
+        InvalidUserNoteMode.new(mode)
       end
     end
 
@@ -45,14 +47,7 @@ module Products
     end
 
     def ==(other)
-      case other
-      when self.class
-        raw_value == other.raw_value
-      when String
-        raw_value == other
-      else
-        false
-      end
+      to_s == other.to_s
     end
 
     class InvalidUserNoteMode
