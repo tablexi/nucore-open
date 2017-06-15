@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
       when facility_id == Facility.cross_facility.url_name
         Facility.cross_facility
       else
-        Facility.find_by(url_name: facility_id.to_s)
+        Facility.find_by(url_name: facility_id)
       end
   end
 
