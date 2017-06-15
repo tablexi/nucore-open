@@ -90,10 +90,10 @@ RSpec.describe InstrumentPricePolicy do
 
   describe "after create" do
     it "creates a PriceGroupProduct with default reservation window if one does not exist" do
-      pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
+      pgp = PriceGroupProduct.find_by(price_group_id: policy.price_group.id, product_id: policy.product.id)
       expect(pgp).to be_nil
       expect(policy.save).to be true
-      pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
+      pgp = PriceGroupProduct.find_by(price_group_id: policy.price_group.id, product_id: policy.product.id)
       expect(pgp.reservation_window).to eq PriceGroupProduct::DEFAULT_RESERVATION_WINDOW
     end
 
@@ -131,7 +131,7 @@ RSpec.describe InstrumentPricePolicy do
 
     it "returns the reservation window from the after created PriceGroupProduct" do
       expect(policy.save).to be true
-      pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(policy.price_group.id, policy.product.id)
+      pgp = PriceGroupProduct.find_by(price_group_id: policy.price_group.id, product_id: policy.product.id)
       expect(policy.reservation_window).to eq pgp.reservation_window
     end
   end
