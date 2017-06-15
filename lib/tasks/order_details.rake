@@ -34,7 +34,7 @@ namespace :order_details do
     Rails.logger = Logger.new(STDOUT)
     uncanceler = OrderUncanceler.new
     File.open(args[:filename]).each_line do |line|
-      order_detail = OrderDetail.find_by_id(line.chomp)
+      order_detail = OrderDetail.find_by(id: line.chomp)
       if order_detail
         uncanceler.uncancel_to_complete(order_detail)
       else

@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
   end
 
   def acting_user
-    @acting_user ||= User.find_by_id(session[:acting_user_id]) || session_user
+    @acting_user ||= User.find_by(id: session[:acting_user_id]) || session_user
   end
 
   def acting_as?
