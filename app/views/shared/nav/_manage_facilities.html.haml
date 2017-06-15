@@ -8,4 +8,4 @@
       %b.caret
     %ul.dropdown-menu
       - menu_facilities.each do |facility|
-        %li= link_to facility.name, facility_default_admin_path(facility)
+        %li= link_to facility.name, dashboard_facility_path(facility)

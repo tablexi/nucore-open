@@ -55,6 +55,7 @@ Nucore::Application.routes.draw do
 
     member do
       get "manage"
+      get "dashboard"
     end
 
     resources :products, only: [:index] do

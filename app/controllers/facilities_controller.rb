@@ -27,6 +27,13 @@ class FacilitiesController < ApplicationController
       acting_user.present? && acting_user.recently_used_facilities.sorted
   end
 
+  cattr_accessor(:facility_homepage_redirector) { DefaultFacilityHomepageRedirector }
+
+  # GET /facilities/:facility_url/dashboard
+  def dashboard
+    redirect_to facility_homepage_redirector.redirect_path(current_facility)
+  end
+
   # GET /facilities
   def index
     @facilities = Facility.active.sorted
@@ -55,7 +62,7 @@ class FacilitiesController < ApplicationController
       @facilities = operable_facilities
       raise ActiveRecord::RecordNotFound if @facilities.empty?
       if @facilities.size == 1
-        redirect_to facility_default_admin_path(@facilities.first)
+        redirect_to dashboard_facility_path(@facilities.first)
         return
       end
     end

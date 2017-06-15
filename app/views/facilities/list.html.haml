@@ -13,5 +13,5 @@
     %tbody
       - @facilities.each do |facility|
         %tr
-          %td= link_to facility, facility_default_admin_path(facility)
+          %td= link_to facility, dashboard_facility_path(facility)
           %td= facility.status_string

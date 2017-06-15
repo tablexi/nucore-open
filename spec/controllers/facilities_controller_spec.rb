@@ -256,7 +256,7 @@ RSpec.describe FacilitiesController do
         it_should_allow_all (facility_operators - [:admin]) do
           expect(assigns(:facilities)).to eq([@authable])
           expect(assigns(:operable_facilities)).to eq([@authable])
-          expect(response).to redirect_to(timeline_facility_reservations_path(@authable))
+          expect(response).to redirect_to(dashboard_facility_path(@authable))
         end
       end
       context "has no instruments" do
@@ -264,7 +264,7 @@ RSpec.describe FacilitiesController do
         it_should_allow_all (facility_operators - [:admin]) do
           expect(assigns(:facilities)).to eq([@authable])
           expect(assigns(:operable_facilities)).to eq([@authable])
-          expect(response).to redirect_to(facility_orders_path(@authable))
+          expect(response).to redirect_to(dashboard_facility_path(@authable))
         end
       end
     end

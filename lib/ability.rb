@@ -148,7 +148,7 @@ class Ability
 
         can :index, User if controller.is_a?(FacilityUserReservationsController)
 
-        can [:list, :show], Facility
+        can [:list, :dashboard, :show], Facility
         can :act_as, Facility
         can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
         can [:instrument_status, :instrument_statuses, :switch], Instrument
