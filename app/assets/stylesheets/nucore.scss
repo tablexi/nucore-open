@@ -356,10 +356,11 @@ textarea.wide {
 }
 
 /* Bootstrap adds an element with this class when you expand a dropdown and your
- * browser supports the ontouchstart event. It claims to be necessary "if mobile
- * we we use a backdrop because click events don't delegate". Instead, this
- * is taking the tap and preventing the actual link to receive the click.
+ * browser supports the ontouchstart event. It's a workaround for mobile Safari's
+ * click handlers, but takes over the whole screen and prevents clicks to the
+ * sub-menu links.
+ * https://stackoverflow.com/questions/17579750/drop-down-menu-not-working-on-mobile-devices
  */
 .dropdown-backdrop {
-  display: none;
+  position: static;
 }
