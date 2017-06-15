@@ -29,8 +29,8 @@ RSpec.describe OrderDetail do
         @order_details = Array.new(3) do
           order_detail = order.order_details.create(attributes_for(:order_detail)
             .update(product_id: item.id, account_id: account.id))
-          order_detail.change_status!(OrderStatus.find_by_name("In Process"))
-          order_detail.change_status!(OrderStatus.find_by_name("Complete"))
+          order_detail.change_status!(OrderStatus.find_by(name: "In Process"))
+          order_detail.change_status!(OrderStatus.find_by(name: "Complete"))
           order_detail.update_attribute :statement_id, original_statement.id
           order_detail.reload
         end

@@ -42,7 +42,7 @@ class FacilityAccountsReconciliationController < ApplicationController
 
   def selected_account
     @selected_account ||= if params[:selected_account].present?
-                            @accounts.find_by_id(params[:selected_account])
+                            @accounts.find_by(id: params[:selected_account])
                           else
                             @accounts.first
     end

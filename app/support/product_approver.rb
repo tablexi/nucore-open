@@ -62,7 +62,7 @@ class ProductApprover
     product_user = product.find_product_user(@user) || return
     update_product_user_access_group(
       product_user,
-      ProductAccessGroup.find_by_id(access_group_id),
+      ProductAccessGroup.find_by(id: access_group_id),
     )
   end
 
@@ -83,7 +83,7 @@ class ProductApprover
   end
 
   def get_product_user(product)
-    product.product_users.find_by_user_id(@user.id)
+    product.product_users.find_by(user_id: @user.id)
   end
 
 end

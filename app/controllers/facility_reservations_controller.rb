@@ -96,7 +96,7 @@ class FacilityReservationsController < ApplicationController
 
   # GET /facilities/:facility_id/instruments/:instrument_id/reservations/new
   def new
-    @instrument   = current_facility.instruments.find_by_url_name!(params[:instrument_id])
+    @instrument   = current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.next_available_reservation ||
                    @instrument.admin_reservations.build(duration_mins: @instrument.min_reserve_mins)
     @reservation = @reservation.becomes(AdminReservation)
@@ -125,7 +125,7 @@ class FacilityReservationsController < ApplicationController
 
   # GET /facilities/:facility_id/instruments/:instrument_id/reservations/:id/edit_admin
   def edit_admin
-    @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
+    @instrument  = current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
     set_windows
@@ -134,7 +134,7 @@ class FacilityReservationsController < ApplicationController
 
   # PUT /facilities/:facility_id/instruments/:instrument_id/reservations/:id
   def update_admin
-    @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
+    @instrument  = current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
     set_windows
@@ -163,7 +163,7 @@ class FacilityReservationsController < ApplicationController
 
   # DELETE  /facilities/:facility_id/instruments/:instrument_id/reservations/:id
   def destroy
-    @instrument  = current_facility.instruments.find_by_url_name!(params[:instrument_id])
+    @instrument  = current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.reservations.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
 

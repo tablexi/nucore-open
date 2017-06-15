@@ -18,7 +18,7 @@ namespace :order_details do
 
   desc "Retouch all complete order details and recalculate pricing"
   task :recalculate_prices, [:facility_slug] => :environment do |_t, _args|
-    Facility.find_by_url_name("path").order_details.where(state: "complete").each do |od|
+    Facility.find_by(url_name: "path").order_details.where(state: "complete").each do |od|
       old_cost = od.actual_cost
       old_subsidy = od.actual_subsidy
       old_total = od.actual_total
@@ -34,7 +34,7 @@ namespace :order_details do
     Rails.logger = Logger.new(STDOUT)
     uncanceler = OrderUncanceler.new
     File.open(args[:filename]).each_line do |line|
-      order_detail = OrderDetail.find_by_id(line.chomp)
+      order_detail = OrderDetail.find_by(id: line.chomp)
       if order_detail
         uncanceler.uncancel_to_complete(order_detail)
       else

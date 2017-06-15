@@ -15,14 +15,14 @@ class InstrumentPricePolicy < PricePolicy
   after_create :ensure_reservation_window
 
   def reservation_window
-    pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
+    pgp = PriceGroupProduct.find_by(price_group_id: price_group.id, product_id: product.id)
     pgp.try(:reservation_window) || 0
   end
 
   private
 
   def ensure_reservation_window
-    pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(price_group.id, product.id)
+    pgp = PriceGroupProduct.find_by(price_group_id: price_group.id, product_id: product.id)
 
     PriceGroupProduct.create(
       price_group: price_group,

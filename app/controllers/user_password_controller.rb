@@ -20,7 +20,7 @@ class UserPasswordController < ApplicationController
 
   def reset
     if request.post? && params[:user]
-      @user = User.find_by_email(params[:user][:email])
+      @user = User.find_by(email: params[:user][:email])
       if @user
         if @user.password_updatable?
           @user.send_reset_password_instructions

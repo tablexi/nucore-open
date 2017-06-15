@@ -177,7 +177,7 @@ class ProductsCommonController < ApplicationController
 
   # Dynamically get the proper object from the database based on the controller name
   def init_product
-    @product = current_facility_products.find_by_url_name!(params[:"#{singular_object_name}_id"] || params[:id])
+    @product = current_facility_products.find_by!(url_name: params[:"#{singular_object_name}_id"] || params[:id])
   end
 
   def product_class

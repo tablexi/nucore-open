@@ -303,7 +303,7 @@ RSpec.describe Order do
         it "should have quantity of each = quantity specified in the bundle * passed in quantity" do
           # check quantities
           @ods.each do |od|
-            expect(od.quantity).to eq(@bundle.bundle_products.find_by_product_id(od.product_id).quantity)
+            expect(od.quantity).to eq(@bundle.bundle_products.find_by(product_id: od.product_id).quantity)
           end
         end
       end

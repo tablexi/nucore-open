@@ -23,8 +23,8 @@ class ReservationsController < ApplicationController
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
-    @facility     = Facility.find_by_url_name!(params[:facility_id])
-    @instrument   = @facility.instruments.find_by_url_name!(params[:instrument_id])
+    @facility     = Facility.find_by!(url_name: params[:facility_id])
+    @instrument   = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
     @start_at     = params[:start] ? Time.zone.at(params[:start].to_i) : Time.zone.now
     @start_date   = @start_at.beginning_of_day
@@ -293,7 +293,6 @@ class ReservationsController < ApplicationController
 
   def load_and_check_resources
     load_basic_resources
-    # @reservation  = @instrument.reservations.find_by_id_and_order_detail_id(params[:reservation_id], @order_detail.id)
     raise ActiveRecord::RecordNotFound if @reservation.blank?
   end
 

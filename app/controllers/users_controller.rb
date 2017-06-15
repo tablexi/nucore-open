@@ -30,7 +30,7 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users
   def index
-    @new_user = User.find_by_id(params[:user])
+    @new_user = User.find_by(id: params[:user])
     @users =
       User
       .with_recent_orders(current_facility)

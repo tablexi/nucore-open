@@ -23,7 +23,7 @@ class PriceGroupProductsController < ApplicationController
 
     @price_groups.each do |pg|
       pg_key = "price_group_#{pg.id}".to_sym
-      pgp = PriceGroupProduct.find_by_price_group_id_and_product_id(pg.id, @product.id)
+      pgp = PriceGroupProduct.find_by(price_group_id: pg.id, product_id: @product.id)
 
       if params[pg_key].blank?
         pgp.destroy if pgp
@@ -52,7 +52,7 @@ class PriceGroupProductsController < ApplicationController
   private
 
   def init_price_group_products
-    @product = Product.find_by_url_name!(params[:id])
+    @product = Product.find_by!(url_name: params[:id])
     @is_instrument = @product.is_a? Instrument
     @price_groups = current_facility.price_groups
 

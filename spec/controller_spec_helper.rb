@@ -223,7 +223,7 @@ def grant_role(user, authable = nil)
   when "owner"
     # Creating a NufsAccount requires an owner to be present, and some pre-Rails3 tests try to add the same user
     # to the same account with the same role of owner. That's a uniqueness error on AccountUser. Avoid it.
-    existing = AccountUser.find_by_user_id_and_account_id_and_user_role(user.id, authable.id, AccountUser::ACCOUNT_OWNER)
+    existing = AccountUser.find_by(user_id: user.id, account_id: authable.id, user_role: AccountUser::ACCOUNT_OWNER)
     AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin) unless existing
     expect(user.reload).to be_owner_of(authable)
   when "purchaser"

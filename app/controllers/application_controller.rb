@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
       when facility_id == Facility.cross_facility.url_name
         Facility.cross_facility
       else
-        Facility.find_by_url_name(facility_id.to_s) # TODO: rewrite as #find_by(url_name: …) after Rails 4.x upgrade
+        Facility.find_by(url_name: facility_id)
       end
   end
 
@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
   end
 
   def acting_user
-    @acting_user ||= User.find_by_id(session[:acting_user_id]) || session_user
+    @acting_user ||= User.find_by(id: session[:acting_user_id]) || session_user
   end
 
   def acting_as?

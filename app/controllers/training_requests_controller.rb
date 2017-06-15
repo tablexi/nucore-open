@@ -57,7 +57,7 @@ class TrainingRequestsController < ApplicationController
 
   def load_product
     @product =
-      current_facility.products.active.find_by_url_name!(params[:product_id])
+      current_facility.products.active.find_by!(url_name: params[:product_id])
   end
 
 end

@@ -17,7 +17,7 @@ class Survey
   end
 
   def deactivate_current
-    old_active = service.external_service_passers.find_by_active true
+    old_active = service.external_service_passers.find_by(active: true)
     old_active.update_attribute(:active, false) if old_active
   end
 
