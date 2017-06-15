@@ -370,12 +370,6 @@ RSpec.describe OrdersController do
 
     it_should_require_login
 
-    it_should_allow :staff do
-      expect(assigns(:order)).to be_kind_of Order
-      expect(assigns(:order)).to eq(@order)
-      is_expected.to respond_with :redirect
-    end
-
     context "success" do
       before :each do
         @instrument = FactoryGirl.create(:instrument,
