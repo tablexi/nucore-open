@@ -18,7 +18,6 @@ class OptionalRequiredNotesField < ActiveRecord::Migration
     add_column :products, :note_available_to_users, :boolean, null: false, default: false
 
     Product.find_each do |product|
-      mode = product.note_available_to_users? ? "optional" : "hidden"
       product.update_column(:note_available_to_users, product.user_notes_field_mode != "hidden")
     end
 
