@@ -138,15 +138,13 @@ class Ability
           fileupload.file_type == "sample_result"
         end
 
-        can [:administer], User
+        can [:index, :administer], User # TODO: Can we get rid of :administer?
 
         if controller.is_a?(UsersController) || controller.is_a?(SearchController)
           can :manage, User
           cannot([:edit, :update], User)
           cannot(:switch_to, User) { |target_user| !target_user.active? }
         end
-
-        can :index, User if controller.is_a?(FacilityUserReservationsController)
 
         can [:list, :dashboard, :show], Facility
         can :act_as, Facility
