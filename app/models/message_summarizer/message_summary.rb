@@ -19,7 +19,7 @@ class MessageSummarizer::MessageSummary
   end
 
   def visible?
-    allowed? && in_context?
+    allowed? && in_context? && any?
   end
 
   private
