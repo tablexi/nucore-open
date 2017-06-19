@@ -7,20 +7,17 @@
 = content_for :tabnav do
   = render "admin/shared/tabnav_product", secondary_tab: "products"
 
-%h2= t(".head")
+%h2= text("admin.shared.add", model: BundleProduct.model_name.human)
 
-= form_for([current_facility, @bundle, @bundle_product]) do |f|
+= simple_form_for([current_facility, @bundle, @bundle_product]) do |f|
   = f.error_messages
 
-  %ul.form
-    %li
-      = f.label :product_id, nil, class: "require"
-      = f.select :product_id,
-        grouped_options_for_select(@bundle.products_for_group_select, @bundle_product.product_id, prompt: "")
+  .form-inputs
+    = f.label :product_id, nil, class: "require"
+    = f.select :product_id,
+      grouped_options_for_select(@bundle.products_for_group_select, @bundle_product.product_id, prompt: "")
 
-    %li
-      = f.label :quantity, nil, class: "require"
-      = f.text_field :quantity
+    = f.input :quantity, required: true
 
   %ul.inline
     %li= f.submit t("shared.create"), class: "btn"

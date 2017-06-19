@@ -27,6 +27,10 @@ class Bundle < Product
     end
   end
 
+  def products_missing_price_policies
+    products.select { |p| p.current_price_policies.none? }
+  end
+
   private
 
   def requires_account?

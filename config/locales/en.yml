@@ -851,6 +851,7 @@ en:
     errors:
       none_exist_for_date: No valid price policies exists for that date.
       none_exist: No current price policies
+      missing_for_bundle: Product missing current price policies
       fewer_than_price_groups: Some price groups are missing price policies
     rate: Rate
 

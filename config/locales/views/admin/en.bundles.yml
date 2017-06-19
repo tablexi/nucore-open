@@ -1,0 +1,8 @@
+en:
+  views:
+    bundle_products:
+      index:
+        none_or_inactive: No products have been added to the bundle or some of the products added to this bundle are inactive. Users will be unable to view or purchase this bundle until resolved.
+        add: Add Bundled Product
+        description: The table below shows the products included in this bundle.
+        none: No products have been added to this bundle.
