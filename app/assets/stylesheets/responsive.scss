@@ -1,5 +1,6 @@
 /* Bootstrap overrides go here. This is included after bootstrap. */
 $navCollapseBackgroundColor: #f7f7f7;
+$navbarLinkColorActive: #e6e6e6;
 $navCollapseColor: #777;
 $navbarActiveBorderColor: #aaa;
 
@@ -31,11 +32,18 @@ $navbarActiveBorderColor: #aaa;
       `header .navbar .nav > li > a` and `!important` as well as target
       only the .nav-collapse links
   */
-  header .navbar .nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+  header .navbar .nav-collapse .nav > li > a,
+  .nav-collapse .dropdown-menu a {
     color: $navCollapseColor !important;
-    &:hover {
+    background: $navCollapseBackgroundColor;
+
+    &:hover, &:focus {
       color: $navCollapseColor !important;
+      background: $navbarLinkColorActive;
     }
+  }
+  header .navbar .nav-collapse .nav > li.active > a {
+    background: $navbarLinkColorActive;
   }
   header .navbar .nav > li.navbar-text {
     padding: 10px;
