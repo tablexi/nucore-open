@@ -67,7 +67,7 @@ class Ability
       can :manage, [Account, Journal, OrderDetail]
       can [:send_receipt, :show], Order
       if resource == Facility.cross_facility
-        can [:accounts, :index, :orders, :show], User
+        can [:accounts, :index, :orders, :show, :administer], User
       end
       can :manage_users, Facility.cross_facility if SettingsHelper.feature_on?(:billing_administrator_users_tab)
       can :manage_billing, Facility.cross_facility
@@ -138,7 +138,7 @@ class Ability
           fileupload.file_type == "sample_result"
         end
 
-        can [:index, :administer], User # TODO: Can we get rid of :administer?
+        can [:administer], User
 
         if controller.is_a?(UsersController) || controller.is_a?(SearchController)
           can :manage, User
