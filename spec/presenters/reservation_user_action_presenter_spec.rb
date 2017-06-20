@@ -63,7 +63,7 @@ RSpec.describe ReservationUserActionPresenter do
       allow(order_detail).to receive(:reservation).and_return reservation
     end
 
-    subject(:text) { presenter.user_actions }
+    subject(:text) { presenter.user_actions.join("|") }
 
     it "is blank by default" do
       expect(text).to be_blank

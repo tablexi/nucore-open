@@ -74,12 +74,7 @@
         %tr
           %td.centered
             - if res
-              - if res.can_switch_instrument_on?
-                = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
-              - elsif res.can_switch_instrument_off?
-                = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => end_reservation_class(res)
-              - elsif res.can_cancel?
-                = link_to t('.link.reservation.cancel'), "#"
+              = reservation_actions(res)
             - else
               &nbsp;
           %td.centered=h @order_detail.wrapped_quantity
