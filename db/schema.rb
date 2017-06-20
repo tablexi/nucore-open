@@ -289,16 +289,16 @@ ActiveRecord::Schema.define(version: 20170619213358) do
   add_index "order_details", ["account_id"], name: "fk_od_accounts", using: :btree
   add_index "order_details", ["assigned_user_id"], name: "index_order_details_on_assigned_user_id", using: :btree
   add_index "order_details", ["bundle_product_id"], name: "fk_bundle_prod_id", using: :btree
-  add_index "order_details", ["dispute_by_id"], name: "order_details_dispute_by_id_fk", using: :btree
+  add_index "order_details", ["dispute_by_id"], name: "fk_rails_14de4f1c86", using: :btree
   add_index "order_details", ["group_id"], name: "index_order_details_on_group_id", using: :btree
   add_index "order_details", ["journal_id"], name: "index_order_details_on_journal_id", using: :btree
-  add_index "order_details", ["order_id"], name: "sys_c009172", using: :btree
+  add_index "order_details", ["order_id"], name: "fk_rails_e5976611fd", using: :btree
   add_index "order_details", ["order_status_id"], name: "index_order_details_on_order_status_id", using: :btree
-  add_index "order_details", ["parent_order_detail_id"], name: "order_details_parent_order_detail_id_fk", using: :btree
-  add_index "order_details", ["price_policy_id"], name: "sys_c009175", using: :btree
+  add_index "order_details", ["parent_order_detail_id"], name: "fk_rails_cc2adae8c3", using: :btree
+  add_index "order_details", ["price_policy_id"], name: "fk_rails_555b721183", using: :btree
   add_index "order_details", ["problem"], name: "index_order_details_on_problem", using: :btree
-  add_index "order_details", ["product_accessory_id"], name: "order_details_product_accessory_id_fk", using: :btree
-  add_index "order_details", ["product_id"], name: "sys_c009173", using: :btree
+  add_index "order_details", ["product_accessory_id"], name: "fk_rails_e4f0ef56a6", using: :btree
+  add_index "order_details", ["product_id"], name: "fk_rails_4f2ac9473b", using: :btree
   add_index "order_details", ["project_id"], name: "index_order_details_on_project_id", using: :btree
   add_index "order_details", ["response_set_id"], name: "index_order_details_on_response_set_id", using: :btree
   add_index "order_details", ["state"], name: "index_order_details_on_state", using: :btree
@@ -345,9 +345,8 @@ ActiveRecord::Schema.define(version: 20170619213358) do
     t.integer  "order_import_id",     limit: 4
   end
 
-  add_index "orders", ["account_id"], name: "sys_c008808", using: :btree
+  add_index "orders", ["account_id"], name: "fk_rails_144e25bef6", using: :btree
   add_index "orders", ["facility_id"], name: "index_orders_on_facility_id", using: :btree
-  add_index "orders", ["facility_id"], name: "orders_facility_id_fk", using: :btree
   add_index "orders", ["merge_with_order_id"], name: "index_orders_on_merge_with_order_id", using: :btree
   add_index "orders", ["order_import_id"], name: "index_orders_on_order_import_id", using: :btree
   add_index "orders", ["state"], name: "index_orders_on_state", using: :btree
@@ -377,7 +376,7 @@ ActiveRecord::Schema.define(version: 20170619213358) do
   end
 
   add_index "price_group_members", ["account_id"], name: "index_price_group_members_on_account_id", using: :btree
-  add_index "price_group_members", ["price_group_id"], name: "sys_c008583", using: :btree
+  add_index "price_group_members", ["price_group_id"], name: "fk_rails_0425013e5b", using: :btree
   add_index "price_group_members", ["user_id"], name: "index_price_group_members_on_user_id", using: :btree
 
   create_table "price_group_products", force: :cascade do |t|
@@ -388,8 +387,8 @@ ActiveRecord::Schema.define(version: 20170619213358) do
     t.datetime "updated_at",                   null: false
   end
 
-  add_index "price_group_products", ["price_group_id"], name: "i_pri_gro_pro_pri_gro_id", using: :btree
-  add_index "price_group_products", ["product_id"], name: "i_pri_gro_pro_pro_id", using: :btree
+  add_index "price_group_products", ["price_group_id"], name: "index_price_group_products_on_price_group_id", using: :btree
+  add_index "price_group_products", ["product_id"], name: "index_price_group_products_on_product_id", using: :btree
 
   create_table "price_groups", force: :cascade do |t|
     t.integer "facility_id",    limit: 4
@@ -399,7 +398,7 @@ ActiveRecord::Schema.define(version: 20170619213358) do
     t.boolean "admin_editable",            default: true, null: false
   end
 
-  add_index "price_groups", ["facility_id", "name"], name: "sys_c008577", unique: true, using: :btree
+  add_index "price_groups", ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name", unique: true, using: :btree
 
   create_table "price_policies", force: :cascade do |t|
     t.string   "type",              limit: 50,                                           null: false
@@ -418,7 +417,7 @@ ActiveRecord::Schema.define(version: 20170619213358) do
     t.string   "legacy_rates",      limit: 255
   end
 
-  add_index "price_policies", ["price_group_id"], name: "sys_c008589", using: :btree
+  add_index "price_policies", ["price_group_id"], name: "fk_rails_74aa223960", using: :btree
   add_index "price_policies", ["product_id"], name: "index_price_policies_on_product_id", using: :btree
 
   create_table "product_access_groups", force: :cascade do |t|
@@ -493,7 +492,7 @@ ActiveRecord::Schema.define(version: 20170619213358) do
 
   add_index "products", ["dashboard_token"], name: "index_products_on_dashboard_token", using: :btree
   add_index "products", ["facility_account_id"], name: "fk_facility_accounts", using: :btree
-  add_index "products", ["facility_id"], name: "sys_c008556", using: :btree
+  add_index "products", ["facility_id"], name: "fk_rails_0c9fa1afbe", using: :btree
   add_index "products", ["initial_order_status_id"], name: "index_products_on_initial_order_status_id", using: :btree
   add_index "products", ["schedule_id"], name: "i_instruments_schedule_id", using: :btree
   add_index "products", ["url_name"], name: "index_products_on_url_name", using: :btree
@@ -538,13 +537,7 @@ ActiveRecord::Schema.define(version: 20170619213358) do
   end
 
   add_index "reservations", ["order_detail_id"], name: "res_od_uniq_fk", unique: true, using: :btree
-  add_index "reservations", ["order_detail_id"], name: "res_ord_det_id_fk", using: :btree
   add_index "reservations", ["product_id", "reserve_start_at"], name: "index_reservations_on_product_id_and_reserve_start_at", using: :btree
-  add_index "reservations", ["product_id"], name: "reservations_instrument_id_fk", using: :btree
-
-  create_table "roles", force: :cascade do |t|
-    t.string "name", limit: 255
-  end
 
   create_table "sanger_seq_product_groups", force: :cascade do |t|
     t.integer  "product_id", limit: 4,   null: false
@@ -570,8 +563,8 @@ ActiveRecord::Schema.define(version: 20170619213358) do
 
   create_table "sanger_sequencing_samples", force: :cascade do |t|
     t.integer  "submission_id",      limit: 4,   null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "customer_sample_id", limit: 255
   end
 
@@ -579,8 +572,8 @@ ActiveRecord::Schema.define(version: 20170619213358) do
 
   create_table "sanger_sequencing_submissions", force: :cascade do |t|
     t.integer  "order_detail_id", limit: 4
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "batch_id",        limit: 4
   end
 
@@ -604,7 +597,6 @@ ActiveRecord::Schema.define(version: 20170619213358) do
   end
 
   add_index "schedule_rules", ["product_id"], name: "index_schedule_rules_on_product_id", using: :btree
-  add_index "schedule_rules", ["product_id"], name: "sys_c008573", using: :btree
 
   create_table "schedules", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -645,6 +637,7 @@ ActiveRecord::Schema.define(version: 20170619213358) do
 
   add_index "secure_rooms_card_readers", ["card_reader_number", "control_device_number"], name: "i_secure_room_reader_ids", unique: true, using: :btree
   add_index "secure_rooms_card_readers", ["product_id"], name: "index_secure_rooms_card_readers_on_product_id", using: :btree
+  add_index "secure_rooms_card_readers", ["tablet_token"], name: "index_secure_rooms_card_readers_on_tablet_token", unique: true, using: :btree
 
   create_table "secure_rooms_events", force: :cascade do |t|
     t.integer  "card_reader_id",  limit: 4,   null: false
@@ -694,9 +687,9 @@ ActiveRecord::Schema.define(version: 20170619213358) do
 
   create_table "statement_rows", force: :cascade do |t|
     t.integer  "statement_id",    limit: 4, null: false
+    t.integer  "order_detail_id", limit: 4, null: false
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
-    t.integer  "order_detail_id", limit: 4, null: false
   end
 
   add_index "statement_rows", ["order_detail_id"], name: "index_statement_rows_on_order_detail_id", using: :btree
@@ -745,7 +738,7 @@ ActiveRecord::Schema.define(version: 20170619213358) do
   end
 
   add_index "user_roles", ["facility_id"], name: "fk_rails_dca27403dd", using: :btree
-  add_index "user_roles", ["user_id", "facility_id", "role"], name: "i_use_rol_use_id_fac_id_rol", using: :btree
+  add_index "user_roles", ["user_id", "facility_id", "role"], name: "index_user_roles_on_user_id_and_facility_id_and_role", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "username",               limit: 255,              null: false
@@ -792,10 +785,10 @@ ActiveRecord::Schema.define(version: 20170619213358) do
   add_index "versions", ["commit_label"], name: "index_versions_on_commit_label", using: :btree
   add_index "versions", ["created_at"], name: "index_versions_on_created_at", using: :btree
   add_index "versions", ["tag"], name: "index_versions_on_tag", using: :btree
-  add_index "versions", ["user_id", "user_type"], name: "i_versions_user_id_user_type", using: :btree
+  add_index "versions", ["user_id", "user_type"], name: "index_versions_on_user_id_and_user_type", using: :btree
   add_index "versions", ["user_name"], name: "index_versions_on_user_name", using: :btree
-  add_index "versions", ["version_number"], name: "index_versions_on_number", using: :btree
-  add_index "versions", ["versioned_id", "versioned_type"], name: "i_ver_ver_id_ver_typ", using: :btree
+  add_index "versions", ["version_number"], name: "index_versions_on_version_number", using: :btree
+  add_index "versions", ["versioned_id", "versioned_type"], name: "index_versions_on_versioned_id_and_versioned_type", using: :btree
 
   add_foreign_key "account_users", "accounts", name: "fk_accounts"
   add_foreign_key "account_users", "users"
@@ -812,43 +805,43 @@ ActiveRecord::Schema.define(version: 20170619213358) do
   add_foreign_key "journal_rows", "order_details"
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
   add_foreign_key "order_details", "journals"
-  add_foreign_key "order_details", "order_details", column: "parent_order_detail_id", name: "order_details_parent_order_detail_id_fk"
+  add_foreign_key "order_details", "order_details", column: "parent_order_detail_id"
   add_foreign_key "order_details", "order_statuses"
-  add_foreign_key "order_details", "orders", name: "sys_c009172"
-  add_foreign_key "order_details", "price_policies", name: "sys_c009175"
-  add_foreign_key "order_details", "product_accessories", name: "order_details_product_accessory_id_fk"
+  add_foreign_key "order_details", "orders"
+  add_foreign_key "order_details", "price_policies"
+  add_foreign_key "order_details", "product_accessories"
+  add_foreign_key "order_details", "products"
   add_foreign_key "order_details", "products", column: "bundle_product_id", name: "fk_bundle_prod_id"
-  add_foreign_key "order_details", "products", name: "sys_c009173"
   add_foreign_key "order_details", "statements"
   add_foreign_key "order_details", "users", column: "assigned_user_id"
-  add_foreign_key "order_details", "users", column: "dispute_by_id", name: "order_details_dispute_by_id_fk"
+  add_foreign_key "order_details", "users", column: "dispute_by_id"
   add_foreign_key "order_imports", "facilities", name: "fk_order_imports_facilities"
-  add_foreign_key "orders", "accounts", name: "sys_c008808"
-  add_foreign_key "orders", "facilities", name: "orders_facility_id_fk"
+  add_foreign_key "orders", "accounts"
+  add_foreign_key "orders", "facilities"
   add_foreign_key "orders", "order_imports"
   add_foreign_key "orders", "orders", column: "merge_with_order_id"
   add_foreign_key "orders", "users"
-  add_foreign_key "payments", "accounts", name: "payments_account_id_fk"
-  add_foreign_key "payments", "statements", name: "payments_statement_id_fk"
-  add_foreign_key "payments", "users", column: "paid_by_id", name: "payments_paid_by_id_fk"
+  add_foreign_key "payments", "accounts"
+  add_foreign_key "payments", "statements"
+  add_foreign_key "payments", "users", column: "paid_by_id"
   add_foreign_key "price_group_members", "accounts"
-  add_foreign_key "price_group_members", "price_groups", name: "sys_c008583"
+  add_foreign_key "price_group_members", "price_groups"
   add_foreign_key "price_group_members", "users"
-  add_foreign_key "price_groups", "facilities", name: "sys_c008578"
-  add_foreign_key "price_policies", "price_groups", name: "sys_c008589"
+  add_foreign_key "price_groups", "facilities"
+  add_foreign_key "price_policies", "price_groups"
   add_foreign_key "product_users", "products", name: "fk_products"
   add_foreign_key "product_users", "users"
-  add_foreign_key "products", "facilities", name: "sys_c008556"
+  add_foreign_key "products", "facilities"
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
-  add_foreign_key "projects", "facilities", name: "projects_facility_id_fk"
-  add_foreign_key "reservations", "order_details", name: "res_ord_det_id_fk"
-  add_foreign_key "reservations", "products", name: "reservations_product_id_fk"
+  add_foreign_key "projects", "facilities"
+  add_foreign_key "reservations", "order_details"
+  add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"
   add_foreign_key "sanger_seq_product_groups", "products"
   add_foreign_key "sanger_sequencing_batches", "facilities"
   add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id", on_delete: :cascade
   add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
-  add_foreign_key "schedule_rules", "products", name: "sys_c008573"
+  add_foreign_key "schedule_rules", "products"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
   add_foreign_key "secure_rooms_card_readers", "products"
   add_foreign_key "secure_rooms_events", "accounts"
