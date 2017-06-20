@@ -10,7 +10,7 @@
             data: { toggle: "dropdown" }
 
           %ul.dropdown-menu
-            - summarizer.select(&:any?).each do |message_summary|
+            - summarizer.each do |message_summary|
               %li= message_summary.link
   - else
     %li.navbar-text= summarizer.tab_label

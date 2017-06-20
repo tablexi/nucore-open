@@ -27,7 +27,7 @@ class MessageSummarizer
   end
 
   def visible_tab?
-    visible_summaries.any?
+    messages? || @controller.admin_tab?
   end
 
   def visible_summaries
