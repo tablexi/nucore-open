@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe "Viewing Occupancies" do
   let(:facility) { create(:setup_facility) }
   let(:secure_room) { create(:secure_room, facility: facility) }
-  let(:facility_staff) { create(:user, :staff, facility: facility) }
-  before { login_as facility_staff }
+  let(:facility_director) { create(:user, :facility_director, facility: facility) }
+  before { login_as facility_director }
 
   context "with no in-progress occupancies" do
     it "shows no occupancies" do
