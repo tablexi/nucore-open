@@ -62,7 +62,8 @@
     %table.table.table-striped.table-hover.old-table.old-table.js--responsive_table
       %thead
         %tr
-          %th.centered= text("views.reservations.my_table.actions")
+          - if res
+            %th.centered= text("views.reservations.my_table.actions")
           %th= OrderDetail.human_attribute_name(:quantity)
           %th= OrderDetail.human_attribute_name(:product)
           %th= OrderDetail.human_attribute_name(:status)
@@ -72,27 +73,20 @@
           %th.currency= t('.th.total')
       %tbody
         %tr
-          %td.centered
-            - if res
-              = reservation_actions(res)
-            - else
-              &nbsp;
+          - if res
+            %td.centered= reservation_actions(res)
           %td.centered= @order_detail.wrapped_quantity
           %td.user-order-detail
             .order-detail-description= order_detail_description(@order_detail)
             - if res
-              .order-detail-extra
-                - if res.can_customer_edit?
-                  = link_to res, edit_order_order_detail_reservation_path(@order, @order_detail, res)
-                - else
-                  = link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
+              .order-detail-extra= reservation_view_edit_link(res)
             - if @order_detail.survey_completed?
               .order-detail-extra= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.show_url, :target => '_blank')
             - unless @order_detail.stored_files.template_result.empty?
               .order-detail-extra
                 = link_to t(".link.view.order_file"), order_detail_first_template_result_path(@order_detail)
             - unless @order_detail.note.blank?
-              .order-detail-extra.order-detail-note= "Note: #{@order_detail.note}"
+              .order-detail-extra.order-detail-note= render "shared/order_detail_note", order_detail: @order_detail
           %td= @order_detail.order_status
           - if @order_detail.cost_estimated?
             %td.estimated_cost.currency= show_estimated_cost(@order_detail)
