@@ -47,14 +47,17 @@ RSpec.describe "Purchasing a reservation" do
 
   describe "trying to order with a required note" do
     before do
-      instrument.update!(user_notes_field_mode: "required")
+      instrument.update!(
+        user_notes_field_mode: "required",
+        user_notes_label: "Show me what you got",
+      )
     end
 
     it "does not create the reservation without a note" do
       click_button "Create"
       expect(page).to have_content "Note may not be blank"
 
-      fill_in "Note", with: "This is my note."
+      fill_in "Show me what you got", with: "This is my note."
       click_button "Create"
 
       expect(page).to have_content("My Reservations")
