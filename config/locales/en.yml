@@ -678,10 +678,6 @@ en:
       submit:
         dispute: "Dispute Purchase"
       th:
-        action: "Action"
-        quantity: "Quantity"
-        product: "Product"
-        status: "Status"
         cost: "Cost"
         adjust: "Adjustment"
         total: "Total"

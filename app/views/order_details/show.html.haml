@@ -62,10 +62,10 @@
     %table.table.table-striped.table-hover.old-table.old-table.js--responsive_table
       %thead
         %tr
-          %th.centered= t('.th.action')
-          %th= t('.th.quantity')
-          %th= t('.th.product')
-          %th= t('.th.status')
+          %th.centered= text("views.reservations.my_table.actions")
+          %th= OrderDetail.human_attribute_name(:quantity)
+          %th= OrderDetail.human_attribute_name(:product)
+          %th= OrderDetail.human_attribute_name(:status)
           %th.currency= t('.th.cost')
           - if @order_detail.has_subsidies?
             %th.currency= t('.th.adjust')
@@ -77,7 +77,7 @@
               = reservation_actions(res)
             - else
               &nbsp;
-          %td.centered=h @order_detail.wrapped_quantity
+          %td.centered= @order_detail.wrapped_quantity
           %td.user-order-detail
             .order-detail-description= order_detail_description(@order_detail)
             - if res
@@ -90,22 +90,22 @@
               .order-detail-extra= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.show_url, :target => '_blank')
             - unless @order_detail.stored_files.template_result.empty?
               .order-detail-extra
-                =link_to t(".link.view.order_file"), order_detail_first_template_result_path(@order_detail)
+                = link_to t(".link.view.order_file"), order_detail_first_template_result_path(@order_detail)
             - unless @order_detail.note.blank?
               .order-detail-extra.order-detail-note= "Note: #{@order_detail.note}"
-          %td=h @order_detail.order_status
+          %td= @order_detail.order_status
           - if @order_detail.cost_estimated?
-            %td.estimated_cost.currency=show_estimated_cost(@order_detail)
+            %td.estimated_cost.currency= show_estimated_cost(@order_detail)
             - if @order_detail.has_subsidies?
-              %td.estimated_cost.currency=show_estimated_subsidy(@order_detail)
-            %td.estimated_cost.currency=show_estimated_total(@order_detail)
+              %td.estimated_cost.currency= show_estimated_subsidy(@order_detail)
+            %td.estimated_cost.currency= show_estimated_total(@order_detail)
           - elsif @order_detail.price_policy.nil?
-            %td{:colspan => 2}= t('.unassigned')
+            %td{ colspan: 2 }= t(".unassigned")
 
           - else
-            %td.actual_cost.currency=show_actual_cost(@order_detail)
+            %td.actual_cost.currency= show_actual_cost(@order_detail)
             - if @order_detail.has_subsidies?
-              %td.actual_cost.currency=show_actual_subsidy(@order_detail)
-            %td.actual_cost.currency=show_actual_total(@order_detail)
+              %td.actual_cost.currency= show_actual_subsidy(@order_detail)
+            %td.actual_cost.currency= show_actual_total(@order_detail)
 
 = render :partial => '/price_display_footnote'
