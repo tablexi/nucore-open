@@ -40,34 +40,38 @@ RSpec.describe User do
     it "default has the base price group" do
       expect(user.price_groups).to eq [PriceGroup.base]
     end
+
     it "external user has external price group" do
       external_user = FactoryGirl.create(:user, :external)
       expect(external_user.price_groups).to eq [PriceGroup.external]
     end
   end
 
-  it "is a member of any explicitly mapped price groups" do
-    pg = FactoryGirl.create(:price_group, facility: facility)
-    UserPriceGroupMember.create(user: user, price_group: pg)
-    expect(user.price_groups.include?(pg)).to eq(true)
-  end
+  describe "price groups", feature_setting: { user_based_price_groups: true } do
 
-  it "belongs to price groups of accounts" do
-    cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
-    pg = FactoryGirl.create(:price_group, facility: facility)
-    AccountPriceGroupMember.create(account: cc, price_group: pg)
-    expect(user.account_price_groups.include?(pg)).to be true
-  end
+    it "is a member of any explicitly mapped price groups" do
+      pg = FactoryGirl.create(:price_group, facility: facility)
+      UserPriceGroupMember.create(user: user, price_group: pg)
+      expect(user.price_groups.include?(pg)).to eq(true)
+    end
 
-  it "belongs to price groups of the account owner" do
-    owner = create(:user)
-    cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: owner))
-    pg = FactoryGirl.create(:price_group, facility: facility)
-    UserPriceGroupMember.create(user: owner, price_group: pg)
+    it "belongs to price groups of accounts" do
+      cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
+      pg = FactoryGirl.create(:price_group, facility: facility)
+      AccountPriceGroupMember.create(account: cc, price_group: pg)
+      expect(user.account_price_groups.include?(pg)).to be true
+    end
 
-    cc.account_users.create(user: user, created_by: owner.id, user_role: "Purchaser")
+    it "belongs to price groups of the account owner" do
+      owner = create(:user)
+      cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: owner))
+      pg = FactoryGirl.create(:price_group, facility: facility)
+      UserPriceGroupMember.create(user: owner, price_group: pg)
 
-    expect(user.account_price_groups.include?(pg)).to be true
+      cc.account_users.create(user: user, created_by: owner.id, user_role: "Purchaser")
+
+      expect(user.account_price_groups.include?(pg)).to be true
+    end
   end
 
   it { is_expected.to be_authenticated_locally }

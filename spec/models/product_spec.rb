@@ -18,7 +18,7 @@ RSpec.describe Product do
 
     end
 
-    before :each do
+    before(:example) do
       @facility         = FactoryGirl.create(:facility)
       @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     end
@@ -152,28 +152,13 @@ RSpec.describe Product do
       end
     end
 
-    context "email" do
+    context "email", feature_setting: { expense_accounts: false } do
       before :each do
         @facility = FactoryGirl.create(:facility, email: "facility@example.com")
         @product = TestProduct.create!(contact_email: "product@example.com", facility: @facility, name: "Test Product", url_name: "test")
       end
 
-      before :all do
-        SettingsHelper.enable_feature(:expense_accounts, false)
-      end
-
-      after :all do
-        reset_settings
-      end
-
-      context "product specific enabled" do
-        before :all do
-          @original_setting = SettingsHelper.feature_on? :product_specific_contacts
-          SettingsHelper.enable_feature(:product_specific_contacts)
-        end
-        after :all do
-          SettingsHelper.enable_feature(:product_specific_contacts, @original_setting)
-        end
+      context "product specific enabled", feature_setting: { product_specific_contacts: true } do
 
         it "should return the product's email if it has it" do
           expect(@product.email).to eq("product@example.com")
@@ -201,15 +186,7 @@ RSpec.describe Product do
         end
       end
 
-      context "product specific disabled" do
-        before :all do
-          @original_setting = SettingsHelper.feature_on? :product_specific_contacts
-          SettingsHelper.enable_feature(:product_specific_contacts, false)
-        end
-
-        after :all do
-          SettingsHelper.enable_feature(:product_specific_contacts, @original_setting)
-        end
+      context "product specific disabled", feature_setting: { product_specific_contacts: false } do
 
         it "should return the facility's email address even if the product has an email" do
           expect(@product.email).to eq("facility@example.com")
@@ -232,7 +209,7 @@ RSpec.describe Product do
       end
     end
 
-    context "can_purchase?" do
+    context "can_purchase?", feature_setting: { user_based_price_groups: true } do
       class TestPricePolicy < PricePolicy
 
         def rate_field
@@ -251,6 +228,7 @@ RSpec.describe Product do
 
         @user_price_group_ids = @user.price_groups.map(&:id)
       end
+      
       it "should not be purchasable if it is archived" do
         @product.update_attributes is_archived: true
         expect(@product).not_to be_available_for_purchase
