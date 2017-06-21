@@ -228,7 +228,7 @@ RSpec.describe Product do
 
         @user_price_group_ids = @user.price_groups.map(&:id)
       end
-      
+
       it "should not be purchasable if it is archived" do
         @product.update_attributes is_archived: true
         expect(@product).not_to be_available_for_purchase
