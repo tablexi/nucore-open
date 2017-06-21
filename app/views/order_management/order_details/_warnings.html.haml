@@ -1,12 +1,4 @@
-- presenter = OrderDetailNoticePresenter.new(@order_detail)
-
-- if presenter.warnings.any?
-  .alert.alert-error
-    = safe_join(presenter.warnings.map(&:alert_text), content_tag(:br))
-
-- if presenter.statuses.any?
-  .alert.alert-info
-    = safe_join(presenter.statuses.map(&:alert_text), content_tag(:br))
+= OrderDetailNoticePresenter.new(@order_detail).alerts_to_html
 
 - if @order_detail.errors.any?
   .alert.alert-error

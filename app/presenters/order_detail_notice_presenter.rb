@@ -1,5 +1,6 @@
 class OrderDetailNoticePresenter < DelegateClass(OrderDetail)
 
+  include ActionView::Helpers::TagHelper
   include ActionView::Helpers::OutputSafetyHelper
 
   def statuses
@@ -23,6 +24,24 @@ class OrderDetailNoticePresenter < DelegateClass(OrderDetail)
 
   def badges_to_html
     safe_join(notices.map(&:badge_to_html))
+  end
+
+  def alerts_to_html
+    blocks = [
+      build_alert(warnings, "error"),
+      build_alert(statuses, "info"),
+    ].compact
+
+    safe_join(blocks)
+  end
+
+  private
+
+  def build_alert(notices, severity_class)
+    return if notices.none?
+
+    text = safe_join(notices.map(&:alert_text), content_tag(:br))
+    content_tag(:div, text, class: ["alert", "alert-#{severity_class}"])
   end
 
   # Not meant to be used outside the presenter class

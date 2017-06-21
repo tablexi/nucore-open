@@ -29,7 +29,7 @@
         %td= order_detail_description(order_detail)
         %td= order_detail.account
         %td.centered
-          = OrderDetailNoticePresenter.new(order_detail).badges_to_html
+          = order_detail_badges(order_detail)
           = link_to text("shared.update"), manage_order_detail_path(order_detail), class: "manage-order-detail"
 
 = will_paginate(@order_details)
