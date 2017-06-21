@@ -1,13 +1,12 @@
-- notices = order_detail_notices(@order_detail)
-- if notices[:warnings].any?
-  .alert.alert-error
-    - notices[:warnings].each do |warning|
-      = t("order_details.notices.#{warning}.alert")
+- presenter = OrderDetailNoticePresenter.new(@order_detail)
 
-- if notices[:notices].any?
+- if presenter.warnings.any?
+  .alert.alert-error
+    = safe_join(presenter.warnings.map(&:alert_text), content_tag(:br))
+
+- if presenter.statuses.any?
   .alert.alert-info
-    - notices[:notices].each do |notice|
-      = t("order_details.notices.#{notice}.alert")
+    = safe_join(presenter.statuses.map(&:alert_text), content_tag(:br))
 
 - if @order_detail.errors.any?
   .alert.alert-error
