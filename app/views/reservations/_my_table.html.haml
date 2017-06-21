@@ -3,7 +3,7 @@
     %tr
       %th.centered= OrderDetail.human_attribute_name(:id)
       %th.centered= text("actions")
-      %th{data: {"mobile-header" => text("short_reservation")}}= text("reservation")
+      %th{ data: { "mobile-header" => text("short_reservation") } }= text("reservation")
       %th.order-note.order-note--wide= OrderDetail.human_attribute_name(:product)
       %th.centered= OrderDetail.human_attribute_name(:status)
       %th.currency= OrderDetail.human_attribute_name(:unassigned_total)
