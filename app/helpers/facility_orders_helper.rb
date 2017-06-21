@@ -4,6 +4,11 @@ module FacilityOrdersHelper
     OrderDetailNoticePresenter.new(order_detail).badges_to_html
   end
 
+  def order_detail_status_badges(order_detail)
+    # Only return status badges, no warning (problem order) badges
+    OrderDetailNoticePresenter.new(order_detail).badges_to_html(only: :status)
+  end
+
   def banner_date_label(object, field, label = nil)
     banner_label(object, field, label) do |value|
       value = human_datetime value

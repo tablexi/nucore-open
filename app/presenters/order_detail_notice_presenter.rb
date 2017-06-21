@@ -22,8 +22,11 @@ class OrderDetailNoticePresenter < DelegateClass(OrderDetail)
     statuses + warnings
   end
 
-  def badges_to_html
-    safe_join(notices.map(&:badge_to_html))
+  # Filter to only status or warnings by passing `only: :status` or `only: :warning`
+  def badges_to_html(only: [:status, :warning])
+    filtered = notices.select { |notice| Array(only).include?(notice.severity) }
+
+    safe_join(filtered.map(&:badge_to_html))
   end
 
   def alerts_to_html
@@ -48,6 +51,8 @@ class OrderDetailNoticePresenter < DelegateClass(OrderDetail)
   class Notice
 
     include ActionView::Helpers::TagHelper
+
+    attr_reader :severity
 
     def initialize(key, severity = :status)
       @key = key

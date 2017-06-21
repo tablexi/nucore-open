@@ -60,7 +60,9 @@
         %td.currency
           - order_detail.send(:extend, PriceDisplayment)
           = order_detail.wrapped_total
-        %td.nowrap= order_detail.order_status
+        %td.nowrap
+          = order_detail.order_status
+          = order_detail_status_badges(order_detail)
         - if local_assigns[:show_statements]
           %td= link_to "Download", account_statement_path(@account, order_detail.statement_id, format: :pdf) if order_detail.statement
 = will_paginate(order_details) if order_details.respond_to? :total_pages
