@@ -1,7 +1,9 @@
 module DateHelper
 
+  DATE_FORMAT = %r(\A\d{1,2}/\d{1,2}/\d{4}\z)
+
   def usa_formatted_date?(date_string)
-    date_string.present? && date_string =~ %r(\A\d{1,2}/\d{1,2}/\d{4}\z)
+    date_string.present? && date_string.strip =~ DATE_FORMAT
   end
 
   def parse_usa_import_date(date_string)
@@ -14,11 +16,15 @@ module DateHelper
   end
 
   def parse_usa_date(date, time_string = nil)
-    date_string = (date =~ /\d{1,2}\/\d{1,2}\/\d{4}/ ? Date.strptime($&, "%m/%d/%Y") : date).to_s
-    date_string += " #{time_string}" if time_string
+    return unless usa_formatted_date?(date)
 
-    Time.zone.parse(date_string)
-  rescue
+    date = Date.strptime(DATE_FORMAT.match(date.strip).to_s, "%m/%d/%Y")
+    if time_string
+      Time.zone.parse("#{date} #{time_string}")
+    else
+      date.to_time
+    end
+  rescue ArgumentError
     nil
   end
 

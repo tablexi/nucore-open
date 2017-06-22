@@ -41,20 +41,20 @@ RSpec.describe DateHelper do
 
   describe "#parse_usa_date" do
 
-    context "passed bad dates" do
-      ["05012012", "somegarbage", "11/31/2012", nil, "9/"].each do |bad_date_string|
-        it "should not raise error for: #{bad_date_string}" do
+    context "given bad dates" do
+      ["05012012", "somegarbage", "11/31/2012", nil, "9/", "5/1/20114", "1/4/16"].each do |bad_date_string|
+        it "does not raise error for: #{bad_date_string}" do
           expect { parse_usa_date(bad_date_string) }.not_to raise_error
         end
 
-        it "should return nil for #{bad_date_string}" do
+        it "returns nil for #{bad_date_string}" do
           expect(parse_usa_date(bad_date_string)).to be_nil
         end
       end
     end
 
-    context "passed valid dates" do
-      it "parse a usa formatted date properly" do
+    context "given valid dates" do
+      it "parses a date with month and day in USA style" do
         expect(parse_usa_date("05/10/2012")).to eq(Time.zone.parse("2012-05-10"))
       end
 
@@ -62,11 +62,21 @@ RSpec.describe DateHelper do
         expect(parse_usa_date("5/1/2012")).to eq(Time.zone.parse("2012-05-01"))
       end
 
-      it "should truncate a date with more than four digits in year" do
-        expect(parse_usa_date("5/1/20114")).to eq(Time.zone.parse("2011-05-01"))
+      it "can handle leading/trailing whitespace" do
+        expect(parse_usa_date("  5/1/2012  ")).to eq(Time.zone.parse("2012-05-01"))
+      end
+    end
+
+    context "with a time as well" do
+      it "parses a date with month and day in USA style" do
+        expect(parse_usa_date("05/10/2012", "3:17 PM")).to eq(Time.zone.parse("2012-05-10 15:17"))
       end
 
+      it "returns nil  with invalid time" do
+        expect(parse_usa_date("5/10/2012", "34:23 FM")).to be_nil
+      end
     end
+
   end
 
   describe "#human_datetime" do
