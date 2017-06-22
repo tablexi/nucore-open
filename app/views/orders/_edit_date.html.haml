@@ -5,7 +5,7 @@
   = hidden_field_tag :backdate_order, true
   - default_time = time_floor(Time.zone.now)
   = simple_fields_for :backdate, :builder => ModelLessFormBuilder, :defaults => { :required => false } do |f|
-    = f.input :order_date, :input_html => { :value => params[:order_date] || format_usa_date(default_time), :class => 'datepicker' }
+    = f.input :order_date, input_html: { value: params[:order_date] || format_usa_date(default_time), class: "datepicker__data" , data: { max_date: Time.current.iso8601 } }
 
     = label_tag :order_time
     .time-select= time_select_tag :order_time, params[:order_datetime] || default_time
@@ -14,5 +14,3 @@
 
     = f.input :send_notification, :as => :boolean, :input_html => { :value => 1 }, :default => params[:send_notification], :label => false, :inline_label => true
 
-  :javascript
-    $(function() { $('.datepicker').datepicker({maxDate: '#{format_usa_date(Time.zone.now)}'}); });
