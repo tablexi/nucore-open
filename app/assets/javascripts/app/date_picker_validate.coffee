@@ -3,10 +3,18 @@ $ ->
     $input = $(e.target)
 
     format = $input.datepicker("option", "dateFormat")
+    minDate = $input.datepicker("option", "minDate")
+    maxDate = $input.datepicker("option", "maxDate")
 
     try
-      $.datepicker.parseDate(format, $input.val())
+      date = $.datepicker.parseDate(format, $input.val())
+
+      if maxDate && date > $.datepicker.parseDate(format, maxDate)
+        throw "Beyond maxDate"
+      if minDate && date < $.datepicker.parseDate(format, minDate)
+        throw "Before minDate"
+
       $input.closest(".control-group").removeClass("error")
-    catch
+    catch e
       $input.closest(".control-group").addClass("error")
 
