@@ -18,9 +18,9 @@ $ ->
       date = parseDate($input.val(), format)
 
       if maxDate && date > maxDate
-        throw "Beyond maxDate"
+        throw new Error("Beyond maxDate")
       if minDate && date < minDate
-        throw "Before minDate"
+        throw new Error("Before minDate")
 
       $input.closest(".control-group").removeClass("error")
     catch e
