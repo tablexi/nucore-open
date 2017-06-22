@@ -10,11 +10,10 @@ $ ->
       date = $.datepicker.parseDate(format, $input.val())
 
       if maxDate && date > $.datepicker.parseDate(format, maxDate)
-        throw "Beyond maxDate"
+        throw new Error("Beyond maxDate")
       if minDate && date < $.datepicker.parseDate(format, minDate)
-        throw "Before minDate"
+        throw new Error("Before minDate")
 
       $input.closest(".control-group").removeClass("error")
     catch e
       $input.closest(".control-group").addClass("error")
-
