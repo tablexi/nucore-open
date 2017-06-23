@@ -12,10 +12,14 @@ module Products
       VALID_MODES.map { |value| new(value) }
     end
 
+    def self.valid?(mode)
+      VALID_MODES.include?(mode)
+    end
+
     def self.[](mode)
       if mode.is_a?(self)
         mode
-      elsif VALID_MODES.include?(mode)
+      elsif valid?(mode)
         new(mode)
       else
         InvalidUserNoteMode.new(mode)
@@ -23,11 +27,11 @@ module Products
     end
 
     # Prefer the use of the factory `UserNoteMode[raw_value]` over directly
-    # initializing this class with `new` as it will not hard error on invalid
-    # inputs.
+    # initializing this class with `new` as the factory method will not raise
+    # a hard error on invalid inputs.
     def initialize(raw_value)
       @raw_value = raw_value
-      raise ArgumentError, "Invalid value: #{raw_value}" unless VALID_MODES.include?(raw_value)
+      raise ArgumentError, "Invalid value: #{raw_value}" unless self.class.valid?(raw_value)
       freeze
     end
 

@@ -24,7 +24,7 @@ class AllDetailsOnOrderValidator
   end
 
   def valid?
-    # Use select instead of none? to make sure we loop over everything
+    # Loop over everything so that all order details get `errors` applied to them
     invalid_orders = @order.order_details.reject do |od|
       order_detail_validator_class.new(od).valid?
     end
