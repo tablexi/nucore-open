@@ -13,6 +13,7 @@
       = banner_date_label @order_detail, :statement_date do |date|
         - link_to date, statement_path(@order_detail.statement)
       = banner_date_label @order_detail, :journal_date
+      = banner_label @order_detail, :journal_reference
 
       - if @order_detail.removable_from_journal?
         .row
