@@ -651,7 +651,7 @@ en:
         edit: "Edit Online Order Form"
         new: "Complete Online Order Form"
     purchase:
-      error: Unable to place order.
+      error: Unable to place order. %{message}
 
   order_details:
     edit:
