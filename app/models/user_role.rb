@@ -12,6 +12,7 @@ class UserRole < ActiveRecord::Base
   FACILITY_SENIOR_STAFF = "Facility Senior Staff".freeze
 
   module AssociationExtension
+
     def operator?(facility)
       any? { |ur| ur.facility == facility && ur.in?(facility_roles) }
     end
@@ -19,6 +20,7 @@ class UserRole < ActiveRecord::Base
     def manager?(facility)
       any? { |ur| ur.facility == facility && ur.in?(facility_management_roles) }
     end
+
   end
 
   def self.account_manager
