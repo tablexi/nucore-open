@@ -23,7 +23,8 @@ describe "DatePickerValidate", ->
   describe "with min and maxDate constraints on the picker", ->
     fixture.set '
       <div class="control-group">
-        <input id="picker1" class="datepicker__data" value="06/22/2017" data-min-date="2017-01-01" data-max-date="2017-12-31" />
+        <input id="picker1" class="datepicker__data" value="06/22/2017"
+               data-min-date="2017-01-01" data-max-date="2017-12-31" />
       </div>
     '
 
@@ -45,13 +46,14 @@ describe "DatePickerValidate", ->
       expect($(".help-inline")).toHaveText(/cannot be after/)
 
   describe "with two pickers with different options", ->
-    describe "with min and maxDate constraints on the picker", ->
     fixture.set '
       <div id="control1" class="control-group">
-        <input id="picker1" class="datepicker__data" value="06/22/2017" data-min-date="2017-01-01" data-max-date="2017-12-31" />
+        <input id="picker1" class="datepicker__data" value="06/22/2017"
+               data-min-date="2017-01-01" data-max-date="2017-12-31" />
       </div>
       <div id="control2" class="control-group">
-        <input id="picker2" class="datepicker__data" value="04/13/2016" data-min-date="2016-01-01" data-max-date="2016-12-31" />
+        <input id="picker2" class="datepicker__data" value="04/13/2016"
+               data-min-date="2016-01-01" data-max-date="2016-12-31" />
       </div>
     '
 
