@@ -67,27 +67,45 @@ RSpec.describe DateHelper do
       end
     end
 
-    it "returns the datetime when given a Date" do
-      date = Date.new(2012, 5, 1)
-      expect(parse_usa_date(date)).to eq(Time.zone.parse("2012-05-01"))
-    end
-
-    it "returns the datetime when given a Date and time string" do
-      date = Date.new(2012, 5, 1)
-      expect(parse_usa_date(date, "3:17 PM")).to eq(Time.zone.parse("2012-05-01 15:17"))
-    end
-
     context "with a time as well" do
       it "parses a date with month and day in USA style" do
         expect(parse_usa_date("05/10/2012", "3:17 PM")).to eq(Time.zone.parse("2012-05-10 15:17"))
       end
 
-      it "returns nil  with invalid time" do
+      it "parses a date/time in 24 hour format" do
+        expect(parse_usa_date("05/10/2012", "15:17")).to eq(Time.zone.parse("2012-05-10 15:17"))
+      end
+
+      it "returns nil with invalid time" do
         expect(parse_usa_date("5/10/2012", "34:23 FM")).to be_nil
       end
 
       it "returns nil for valid time, but nil input" do
         expect(parse_usa_date(nil, "3:17 PM")).to be_nil
+      end
+    end
+
+    # TODO: These should not be officially supported, but many tests rely on this
+    # behavior. In the main app, this method is only every called with user input,
+    # usually coming from a datepicker. Until we clean the tests up, we support
+    # these formats.
+    describe "semi-valid inputs" do
+      it "returns the datetime when given a Date" do
+        date = Date.new(2012, 5, 1)
+        expect(parse_usa_date(date)).to eq(Time.zone.parse("2012-05-01"))
+      end
+
+      it "returns the datetime when given a Date and time string" do
+        date = Date.new(2012, 5, 1)
+        expect(parse_usa_date(date, "3:17 PM")).to eq(Time.zone.parse("2012-05-01 15:17"))
+      end
+
+      it "returns the datetime for YYYY-MM-DD format" do
+        expect(parse_usa_date("2012-05-01")).to eq(Time.zone.parse("2012-05-01"))
+      end
+
+      it "returns the datetime for YYYY-MM-DD format with a time" do
+        expect(parse_usa_date("2012-05-01", "4:19 PM")).to eq(Time.zone.parse("2012-05-01 16:19"))
       end
     end
 

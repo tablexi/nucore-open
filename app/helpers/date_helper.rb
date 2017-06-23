@@ -15,6 +15,8 @@ module DateHelper
     end
   end
 
+  # Expected date format: "MM/DD/YYYY"
+  # Time string: "HH:MM AM/PM"
   def parse_usa_date(date, time_string = nil)
     date = date.to_s.strip
 
