@@ -67,6 +67,16 @@ RSpec.describe DateHelper do
       end
     end
 
+    it "returns the datetime when given a Date" do
+      date = Date.new(2012, 5, 1)
+      expect(parse_usa_date(date)).to eq(Time.zone.parse("2012-05-01"))
+    end
+
+    it "returns the datetime when given a Date and time string" do
+      date = Date.new(2012, 5, 1)
+      expect(parse_usa_date(date, "3:17 PM")).to eq(Time.zone.parse("2012-05-01 15:17"))
+    end
+
     context "with a time as well" do
       it "parses a date with month and day in USA style" do
         expect(parse_usa_date("05/10/2012", "3:17 PM")).to eq(Time.zone.parse("2012-05-10 15:17"))
@@ -74,6 +84,10 @@ RSpec.describe DateHelper do
 
       it "returns nil  with invalid time" do
         expect(parse_usa_date("5/10/2012", "34:23 FM")).to be_nil
+      end
+
+      it "returns nil for valid time, but nil input" do
+        expect(parse_usa_date(nil, "3:17 PM")).to be_nil
       end
     end
 
