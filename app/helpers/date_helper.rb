@@ -16,15 +16,15 @@ module DateHelper
   end
 
   def parse_usa_date(date, time_string = nil)
+    date = date.to_s.strip
+
     # TODO: Many tests pass either a Date, a Time, or an YYYY-MM-DD formatted
     # string as a parameter. This conditional will handle those cases. We should
     # probably go through and clean up the tests at some point.
-    if date.to_s =~ /\A\d{4}-\d{2}-\d{2}/
-      date = format_usa_date(Date.parse(date.to_s))
-    end
+    date = format_usa_date(Date.parse(date)) if date =~ /\A\d{4}-\d{2}-\d{2}/
 
-    return unless usa_formatted_date?(date.to_s.strip)
-    date = Date.strptime(USA_DATE_FORMAT.match(date.to_s.strip).to_s, "%m/%d/%Y")
+    return unless usa_formatted_date?(date)
+    date = Date.strptime(date, "%m/%d/%Y")
 
     if time_string
       Time.zone.parse("#{date} #{time_string}")
