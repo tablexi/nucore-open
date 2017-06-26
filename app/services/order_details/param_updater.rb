@@ -115,8 +115,9 @@ class OrderDetails::ParamUpdater
 
   # Occupancies use accepts_nested_attributes which handles this.
   def merge_reservation_errors
-    @order_detail.reservation.errors.each do |error, message|
-      @order_detail.errors.add(Reservation.human_attribute_name(error), message)
+    @order_detail.reservation.errors.each do |field, message|
+      field = Reservation.human_attribute_name(field) if field != :base
+      @order_detail.errors.add(field, message)
     end
   end
 

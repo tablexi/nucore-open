@@ -2,7 +2,7 @@
     url: manage_facility_order_order_detail_path(current_facility, @order, @order_detail),
     remote: modal?,
     html: { class: ["manage_order_detail", edit_disabled? ? "disabled" : ""] } do |f|
-  = f.input :editing_time_data, value: true, as: :hidden
+  = f.input :editing_time_data, as: :hidden, input_html: { value: true }
 
   %div{class: modal? ? "modal-body" : ""}
     .row
