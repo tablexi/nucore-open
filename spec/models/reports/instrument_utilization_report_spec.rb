@@ -46,7 +46,7 @@ RSpec.describe Reports::InstrumentUtilizationReport do
   describe "with a problem reservation" do
     let(:reservations) do
       build_stubbed_list(:reservation, 3, duration_mins: 30,
-      actual_start_at: 1.hour.ago, actual_end_at: nil, product: product)
+                                          actual_start_at: 1.hour.ago, actual_end_at: nil, product: product)
     end
 
     it "has the correct row" do
