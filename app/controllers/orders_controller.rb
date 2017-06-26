@@ -278,8 +278,7 @@ class OrdersController < ApplicationController
     flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
     render :show
   rescue => e
-    flash[:error] = I18n.t("orders.purchase.error")
-    flash[:error] += " #{e.message}" if e.message
+    flash[:error] = I18n.t("orders.purchase.error", message: e.message).html_safe
     @order.reload.invalidate!
 
     if single_reservation?
