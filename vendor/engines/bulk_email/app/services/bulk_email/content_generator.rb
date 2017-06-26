@@ -2,6 +2,8 @@ module BulkEmail
 
   class ContentGenerator
 
+    include TextHelpers::Translation
+
     DEFAULT_RECIPIENT_NAME = "Firstname Lastname".freeze
 
     attr_reader :facility, :subject_product
@@ -13,9 +15,9 @@ module BulkEmail
 
     def subject_prefix
       if facility.single_facility?
-        "[#{I18n.t('app_name')} #{facility.name}]"
+        text("subject_prefix_with_facility", name: facility.name, abbreviation: facility.abbreviation)
       else
-        "[#{I18n.t('app_name')}]"
+        text("subject_prefix")
       end
     end
 
@@ -25,15 +27,19 @@ module BulkEmail
 
     def greeting(recipient_name = nil)
       [
-        I18n.t("bulk_email.body.greeting", recipient_name: recipient_name || DEFAULT_RECIPIENT_NAME),
+        text("body.greeting", recipient_name: recipient_name || DEFAULT_RECIPIENT_NAME),
         reason_statement,
       ].compact.join("\n\n")
     end
 
     def signoff
       if facility.single_facility?
-        I18n.t("bulk_email.body.signoff", facility_name: facility.name)
+        text("body.signoff", facility_name: facility.name)
       end
+    end
+
+    def translation_scope
+      "bulk_email"
     end
 
     private

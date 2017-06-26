@@ -106,6 +106,8 @@ RSpec.configure do |config|
 
   require "text_helpers/rspec"
 
+  config.include TextHelpers::RSpec::TestHelpers, locales: true
+
   config.before(:suite) do
     TextHelpers::RSpec.setup_spec_translations
   end
