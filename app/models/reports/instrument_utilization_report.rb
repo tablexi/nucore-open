@@ -53,7 +53,7 @@ class Reports::InstrumentUtilizationReport
     def +(other)
       DataRow.new(quantity + other.quantity,
                   reserved_mins + other.reserved_mins,
-                  actual_mins + other.actual_mins)
+                  actual_mins + other.actual_mins.to_f)
     end
 
     def /(other)
