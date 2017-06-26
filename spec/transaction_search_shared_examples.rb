@@ -1,6 +1,6 @@
 RSpec.shared_examples_for TransactionSearch do |date_range_field|
   context "when searching" do
-    let(:date_string) { "2001-01-01" }
+    let(:date_string) { "01/01/2011" }
     let(:datetime) { Time.zone.parse(date_string) }
 
     it "supports the inner method" do

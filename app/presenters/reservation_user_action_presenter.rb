@@ -28,7 +28,8 @@ class ReservationUserActionPresenter
     end
 
     actions << cancel_link if can_cancel?
-    actions.compact.join("&nbsp;|&nbsp;").html_safe
+
+    actions.compact
   end
 
   def view_edit_link

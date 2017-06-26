@@ -62,55 +62,44 @@
     %table.table.table-striped.table-hover.old-table.old-table.js--responsive_table
       %thead
         %tr
-          %th.centered= t('.th.action')
-          %th= t('.th.quantity')
-          %th= t('.th.product')
-          %th= t('.th.status')
+          - if res
+            %th.centered= text("views.reservations.my_table.actions")
+          %th= OrderDetail.human_attribute_name(:quantity)
+          %th= OrderDetail.human_attribute_name(:product)
+          %th= OrderDetail.human_attribute_name(:status)
           %th.currency= t('.th.cost')
           - if @order_detail.has_subsidies?
             %th.currency= t('.th.adjust')
           %th.currency= t('.th.total')
       %tbody
         %tr
-          %td.centered
-            - if res
-              - if res.can_switch_instrument_on?
-                = link_to t('reservations.switch.start'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'on')
-              - elsif res.can_switch_instrument_off?
-                = link_to t('reservations.switch.end'), order_order_detail_reservation_switch_instrument_path(@order, @order_detail, res, :switch => 'off'), :class => end_reservation_class(res)
-              - elsif res.can_cancel?
-                = link_to t('.link.reservation.cancel'), "#"
-            - else
-              &nbsp;
-          %td.centered=h @order_detail.wrapped_quantity
+          - if res
+            %td.centered= reservation_actions(res)
+          %td.centered= @order_detail.wrapped_quantity
           %td.user-order-detail
             .order-detail-description= order_detail_description(@order_detail)
             - if res
-              .order-detail-extra
-                - if res.can_customer_edit?
-                  = link_to res, edit_order_order_detail_reservation_path(@order, @order_detail, res)
-                - else
-                  = link_to res, order_order_detail_reservation_path(@order, @order_detail, res)
+              .order-detail-extra= reservation_view_edit_link(res)
             - if @order_detail.survey_completed?
               .order-detail-extra= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.show_url, :target => '_blank')
             - unless @order_detail.stored_files.template_result.empty?
               .order-detail-extra
-                =link_to t(".link.view.order_file"), order_detail_first_template_result_path(@order_detail)
+                = link_to t(".link.view.order_file"), order_detail_first_template_result_path(@order_detail)
             - unless @order_detail.note.blank?
-              .order-detail-extra.order-detail-note= "Note: #{@order_detail.note}"
-          %td=h @order_detail.order_status
+              .order-detail-extra.order-detail-note= render "shared/order_detail_note", order_detail: @order_detail
+          %td= @order_detail.order_status
           - if @order_detail.cost_estimated?
-            %td.estimated_cost.currency=show_estimated_cost(@order_detail)
+            %td.estimated_cost.currency= show_estimated_cost(@order_detail)
             - if @order_detail.has_subsidies?
-              %td.estimated_cost.currency=show_estimated_subsidy(@order_detail)
-            %td.estimated_cost.currency=show_estimated_total(@order_detail)
+              %td.estimated_cost.currency= show_estimated_subsidy(@order_detail)
+            %td.estimated_cost.currency= show_estimated_total(@order_detail)
           - elsif @order_detail.price_policy.nil?
-            %td{:colspan => 2}= t('.unassigned')
+            %td{ colspan: 2 }= t(".unassigned")
 
           - else
-            %td.actual_cost.currency=show_actual_cost(@order_detail)
+            %td.actual_cost.currency= show_actual_cost(@order_detail)
             - if @order_detail.has_subsidies?
-              %td.actual_cost.currency=show_actual_subsidy(@order_detail)
-            %td.actual_cost.currency=show_actual_total(@order_detail)
+              %td.actual_cost.currency= show_actual_subsidy(@order_detail)
+            %td.actual_cost.currency= show_actual_total(@order_detail)
 
 = render :partial => '/price_display_footnote'

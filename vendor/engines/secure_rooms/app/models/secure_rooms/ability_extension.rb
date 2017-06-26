@@ -14,9 +14,14 @@ module SecureRooms
         ability.can [
           :index,
           :dashboard,
+          :tab_counts,
+        ], Occupancy
+      end
+
+      if user.manager_of?(resource)
+        ability.can [
           :show_problems,
           :assign_price_policies_to_problem_orders,
-          :tab_counts,
         ], Occupancy
       end
     end

@@ -7,7 +7,7 @@ module Projects
     include HashHelper
 
     def transform(original_hash)
-      insert_into_hash_after(original_hash, :price_group, project: :project)
+      insert_into_hash_after(original_hash, :charge_for, project: :project)
     end
 
   end

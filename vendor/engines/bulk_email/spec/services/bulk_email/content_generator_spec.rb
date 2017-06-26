@@ -44,10 +44,17 @@ RSpec.describe BulkEmail::ContentGenerator do
   end
 
   describe "#subject_prefix" do
-    context "when in a single-facility context" do
-      it "includes the app and facility names" do
+    context "when in a single-facility context", :locales do
+      before do
+        set_translation("bulk_email.subject_prefix_with_facility",
+                        "[!app_name! %{name} (%{abbreviation})]")
+      end
+
+      it "includes the app, facility name, and abbreviation" do
         expect(subject.subject_prefix)
-          .to eq("[#{I18n.t('app_name')} #{facility.name}]")
+          .to include(I18n.t("app_name"))
+          .and include(facility.name)
+          .and include(facility.abbreviation)
       end
     end
 

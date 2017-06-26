@@ -1,19 +1,17 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'bundles' }
+  = render "admin/shared/sidenav_product", sidenav_tab: "bundles"
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'products'}
+  = render "admin/shared/tabnav_product", secondary_tab: "products"
 
-%h2== Edit Bundled Product
-%h3=h @bundle_product.product
+%h2= text("admin.shared.edit", model: BundleProduct.model_name.human)
+%h3= @bundle_product.product
 
-= form_for([current_facility, @bundle, @bundle_product]) do |f|
+= simple_form_for([current_facility, @bundle, @bundle_product]) do |f|
   = f.error_messages
-  %ul.form
-    %li
-      = f.label :quantity, nil, :class => 'require'
-      = f.text_field :quantity
+  .form-inputs
+    = f.input :quantity, required: true
   %ul.inline
-    %li= f.submit 'Save', :class => 'btn'
-    %li= link_to 'Cancel', facility_bundle_bundle_products_path
+    %li= f.submit text("shared.save"), class: "btn btn-primary"
+    %li= link_to text("shared.cancel"), facility_bundle_bundle_products_path

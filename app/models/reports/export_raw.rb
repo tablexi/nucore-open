@@ -60,6 +60,7 @@ module Reports
         owner_last_name: ->(od) { od.account.owner_user.last_name },
         owner_email: ->(od) { od.account.owner_user.email },
         price_group: ->(od) { od.price_policy.try(:price_group).try(:name) },
+        charge_for: ->(od) { ChargeMode.for_order_detail(od).to_s.titleize },
         estimated_cost: ->(od) { as_currency(od.estimated_cost) },
         estimated_subsidy: ->(od) { as_currency(od.estimated_subsidy) },
         estimated_total: ->(od) { as_currency(od.estimated_total) },
@@ -81,11 +82,10 @@ module Reports
         dispute_resolved_reason: :dispute_resolved_reason,
         reviewed_at: :reviewed_at,
         statemented_on: ->(od) { od.statement.created_at if od.statement },
+        invoice_number: ->(od) { od.statement.try(:invoice_number) },
         journal_date: ->(od) { od.journal.journal_date if od.journal },
         reconciled_note: :reconciled_note,
         reconciled_at: :reconciled_at,
-        invoice_number: ->(od) { od.statement.try(:invoice_number) },
-        charge_for: ->(od) { ChargeMode.for_order_detail(od).to_s.titleize },
       }
       if SettingsHelper.has_review_period?
         hash

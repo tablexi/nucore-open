@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe NavTab::Link do
-  include TextHelpers::RSpec::TestHelpers
-
   let(:cross_facility) { false }
   let(:link) do
     described_class.new(

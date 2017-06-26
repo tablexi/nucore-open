@@ -1,9 +1,10 @@
-module Ldap
+module LdapAuthentication
 
   module UsersControllerExtension
 
     def service_username_lookup(username)
-      Ldap::Search.new.search(username).first
+      entry = UserEntry.find(username)
+      entry.to_user if entry
     end
 
   end

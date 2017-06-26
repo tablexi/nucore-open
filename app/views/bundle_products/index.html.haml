@@ -1,39 +1,39 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'bundles' }
+  = render "admin/shared/sidenav_product", sidenav_tab: "bundles"
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_product', :locals => {:secondary_tab => 'products'}
+  = render "admin/shared/tabnav_product", secondary_tab: "products"
 
+%h2= @bundle
 
-%h2=h @bundle
-
-%p The table below shows the products included in this bundle.
+%p= text("description")
 
 - unless @bundle.products_active?
-  %p.notice No products have been added to the bundle or some of the products added to this bundle are inactive.  Users will be unable to view or purchase this bundle until resolved.
+  %p.notice= text("none_or_inactive")
 
 #admin-subnav
   - if can? :create, BundleProduct
     %ul.inline
-      %li= link_to 'Add Bundled Product', new_facility_bundle_bundle_product_path
+      %li= link_to text("add"), new_facility_bundle_bundle_product_path, class: "btn-add"
 
 - if @bundle_products.empty?
-  %p.notice No products have been added to this bundle.
+  %p.notice= text("none")
 - else
   %table.table.table-striped.table-hover
     %thead
       %tr
         %th
-        %th Product
-        %th Quantity
+        %th= Product.model_name.human
+        %th= Bundle.human_attribute_name(:quantity)
     %tbody
       - @bundle_products.each do |bundle_product|
         - product = bundle_product.product
         %tr
-          %td.centered= link_to 'Remove', facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product), :method => :delete if can? :delete, bundle_product
+          %td.centered= link_to text("shared.remove"), facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product), :method => :delete if can? :delete, bundle_product
           %td= link_to product.to_s_with_status, send("manage_facility_#{product.class.name.downcase}_path", current_facility, product)
           - if product.is_a?(Instrument) or cannot? :edit, bundle_product
-            %td== #{bundle_product.quantity}
+            %td= bundle_product.quantity
           - else
-            %td== #{bundle_product.quantity} (#{link_to 'edit', edit_facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product)})
+            %td= %(#{bundle_product.quantity} (#{link_to text("shared.edit"), edit_facility_bundle_bundle_product_path(current_facility, @bundle, bundle_product)})).html_safe
+          %td= price_policy_errors(product)

@@ -274,8 +274,7 @@ class OrdersController < ApplicationController
       render :show
     end
   rescue => e
-    flash.now[:error] = I18n.t("orders.purchase.error")
-    flash.now[:error] += " #{e.message}" if e.message.present?
+    flash.now[:error] = I18n.t("orders.purchase.error", message: e.message).html_safe
     @order.reload.invalidate!
     render :show
   end

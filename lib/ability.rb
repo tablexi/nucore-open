@@ -67,7 +67,7 @@ class Ability
       can :manage, [Account, Journal, OrderDetail]
       can [:send_receipt, :show], Order
       if resource == Facility.cross_facility
-        can [:accounts, :index, :orders, :show], User
+        can [:accounts, :index, :orders, :show, :administer], User
       end
       can :manage_users, Facility.cross_facility if SettingsHelper.feature_on?(:billing_administrator_users_tab)
       can :manage_billing, Facility.cross_facility
@@ -145,8 +145,6 @@ class Ability
           cannot([:edit, :update], User)
           cannot(:switch_to, User) { |target_user| !target_user.active? }
         end
-
-        can :index, User if controller.is_a?(FacilityUserReservationsController)
 
         can [:list, :dashboard, :show], Facility
         can :act_as, Facility

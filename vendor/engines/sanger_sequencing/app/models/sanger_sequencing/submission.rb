@@ -35,7 +35,9 @@ module SangerSequencing
 
     def create_samples!(quantity)
       quantity = quantity.to_i
-      raise ArgumentError, "quantity must be positive" if quantity <= 0
+      # Always create at least one sample, even if input was invalid
+      quantity = [1, quantity].max
+
       transaction do
         Array.new(quantity) { samples.create! }
       end
