@@ -1,26 +1,12 @@
 module FacilityOrdersHelper
 
-  def order_detail_notices(order_detail)
-    notices = []
-
-    notices << "in_review" if order_detail.in_review?
-    # notices << 'reviewed' if order_detail.reviewed?
-    notices << "in_dispute" if order_detail.in_dispute?
-    notices << "can_reconcile" if order_detail.can_reconcile_journaled?
-    notices << "in_open_journal" if order_detail.in_open_journal?
-
-    warnings = Array(order_detail.problem_description_key)
-
-    { warnings: warnings, notices: notices }
+  def order_detail_badges(order_detail)
+    OrderDetailNoticePresenter.new(order_detail).badges_to_html
   end
 
-  def order_detail_badges(order_detail)
-    notices = order_detail_notices(order_detail)
-
-    output = build_badges(notices[:notices], "label-info")
-    output += build_badges(notices[:warnings], "label-important")
-
-    safe_join(output)
+  def order_detail_status_badges(order_detail)
+    # Only return status badges, no warning (problem order) badges
+    OrderDetailNoticePresenter.new(order_detail).badges_to_html(only: :status)
   end
 
   def banner_date_label(object, field, label = nil)
@@ -39,14 +25,6 @@ module FacilityOrdersHelper
         content_tag(:dt, label || object.class.human_attribute_name(field)) +
           content_tag(:dd, value)
       end
-    end
-  end
-
-  private
-
-  def build_badges(notices, label_class)
-    notices.map do |notice|
-      content_tag(:span, t("order_details.notices.#{notice}.badge"), class: ["label", label_class])
     end
   end
 
