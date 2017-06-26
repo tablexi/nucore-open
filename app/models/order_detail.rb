@@ -74,6 +74,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   delegate :journal_date, to: :journal, allow_nil: true
+  delegate :reference, to: :journal, prefix: true, allow_nil: true
+
   def statement_date
     statement.try(:created_at)
   end
