@@ -530,9 +530,6 @@ ActiveRecord::Schema.define(version: 20170609131421) do
     t.datetime "reserve_end_at"
     t.datetime "actual_start_at"
     t.datetime "actual_end_at"
-    t.datetime "canceled_at"
-    t.integer  "canceled_by",      limit: 4
-    t.string   "canceled_reason",  limit: 50
     t.string   "admin_note",       limit: 255
     t.string   "type",             limit: 255
     t.string   "category",         limit: 255
