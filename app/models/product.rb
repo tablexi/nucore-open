@@ -20,6 +20,8 @@ class Product < ActiveRecord::Base
 
   validates_presence_of :name, :type
   validate_url_name :url_name, :facility_id
+  validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.all
+
   if SettingsHelper.feature_on? :expense_accounts
     validates(
       :account,
@@ -271,6 +273,14 @@ class Product < ActiveRecord::Base
 
   def training_request_contacts=(str)
     self[:training_request_contacts] = CsvArrayString.new(str).to_s
+  end
+
+  def user_notes_field_mode
+    Products::UserNoteMode[self[:user_notes_field_mode]]
+  end
+
+  def user_notes_field_mode=(str_value)
+    self[:user_notes_field_mode] = Products::UserNoteMode[str_value]
   end
 
   protected

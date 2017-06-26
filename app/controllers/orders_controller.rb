@@ -258,10 +258,7 @@ class OrdersController < ApplicationController
       order_purchaser.purchase!
     end
 
-    if order_purchaser.quantities_changed?
-      flash[:notice] = I18n.t("controllers.orders.purchase.quantities_changed")
-      render :show
-    else
+    if order_purchaser.success?
       if single_reservation? && !acting_as?
         flash[:notice] = I18n.t("controllers.orders.purchase.reservation.success")
         if can_switch_instrument_on?
@@ -272,23 +269,14 @@ class OrdersController < ApplicationController
       else
         redirect_to receipt_order_path(@order)
       end
-    end
-  rescue NUCore::OrderDetailUpdateException => e
-    logger.debug "errors #{@order.errors.full_messages}"
-    flash[:error] = @order.errors.full_messages.join("<br/>").html_safe
-    render :show
-  rescue => e
-    flash[:error] = I18n.t("orders.purchase.error", message: e.message).html_safe
-    @order.reload.invalidate!
-
-    if single_reservation?
-      # with additional validations (see OrderPurchaser), we discard the existing reservation
-      # and redirect to new. otherwise it takes us out of the normal reservation purchase flow
-      @order.order_details.first.reservation.destroy if @order.order_details.first.reservation
-      redirect_to new_order_order_detail_reservation_path(@order, @order.order_details.first)
     else
-      redirect_to order_path(@order)
+      flash.now[:error] = order_purchaser.errors.join("<br/>").html_safe if order_purchaser.errors.present?
+      render :show
     end
+  rescue => e
+    flash.now[:error] = I18n.t("orders.purchase.error", message: e.message).html_safe
+    @order.reload.invalidate!
+    render :show
   end
 
   # GET /orders/1/receipt
@@ -325,7 +313,10 @@ class OrdersController < ApplicationController
   # Group into chunks by the group id. If group_id is nil, then it should get its
   # own chunk.
   def grouped_order_details
-    @order.order_details.order(:group_id).slice_when do |before, after|
+    # Do not do any additional scopes on `@order.order_details` to ensure the list
+    # of OrderDetail objects is memoized. Validations are run on `@order.order_details`
+    # and we want to be able to render validation errors inline.
+    @order.order_details.sort_by(&:group_id).slice_when do |before, after|
       before.group_id.nil? || before.group_id != after.group_id
     end
   end

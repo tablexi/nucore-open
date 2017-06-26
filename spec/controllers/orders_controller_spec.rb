@@ -279,7 +279,7 @@ RSpec.describe OrdersController do
 
       it "updates the quantity", :aggregate_failures do
         @order_detail.reload
-        expect(flash[:notice]).to include("Quantities have changed")
+        expect(flash[:error]).to include("Quantities have changed")
         expect(@order_detail.quantity).to eq(5)
       end
 
@@ -318,7 +318,7 @@ RSpec.describe OrdersController do
       end
 
       it "has a flash message" do
-        expect(flash[:notice]).to include("Quantities have changed")
+        expect(flash[:error]).to include("Quantities have changed")
       end
 
       it "renders the show view" do
@@ -369,12 +369,6 @@ RSpec.describe OrdersController do
     end
 
     it_should_require_login
-
-    it_should_allow :staff do
-      expect(assigns(:order)).to be_kind_of Order
-      expect(assigns(:order)).to eq(@order)
-      is_expected.to respond_with :redirect
-    end
 
     context "success" do
       before :each do

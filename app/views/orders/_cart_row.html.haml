@@ -1,32 +1,40 @@
-%tr{class: order_detail_iteration.first? ? "first-in-bundle" : ""}
-  %td
-    - if order_detail_iteration.first?
-      = link_to text("shared.remove"), remove_order_path(@order, order_detail), method: :put
-      %strong
-        - if order_detail.bundle
-          = order_detail.bundle
-  %td
-    = render "#{order_detail.product.class.name.underscore}_desc", order_detail: order_detail
-    - if show_note_input_to_user?(order_detail)
-      %label.inline.cart__noteField{ for: "note#{order_detail.id}" }
-        Note:
-        %br
-        = text_area_tag("note#{order_detail.id}", order_detail.note, rows: 3 )
+= f.simple_fields_for order_detail do |odf|
+  %tr{ class: order_detail_iteration.first? ? "first-in-bundle" : "" }
+    %td
+      - if order_detail_iteration.first?
+        = link_to text("shared.remove"), remove_order_path(f.object, order_detail), method: :put
+        %strong
+          - if order_detail.bundle
+            = order_detail.bundle
+    %td
+      = render "#{order_detail.product.class.name.underscore}_desc", order_detail: order_detail
 
-    - if order_detail.product.is_a?(Instrument)
-      %td
-    - elsif order_detail.bundle
-      %td.centered= order_detail.quantity
+      - if show_note_input_to_user?(order_detail)
+        = odf.input :note,
+          input_html: { rows: 3,
+          id: "note#{order_detail.id}",
+          name: "note#{order_detail.id}" }
+
+      - if order_detail.product.is_a?(Instrument)
+        %td
+      - elsif order_detail.bundle
+        %td.centered= order_detail.quantity
+      - else
+        %td.centered
+          = odf.input :quantity,
+            disabled: order_detail.quantity_locked_by_survey?,
+            input_html: { name: "quantity#{order_detail.id}",
+            id: "quantity#{order_detail.id}",
+            class: "cart__quantityField" },
+            label: false
+
+    - if order_detail.cost_estimated?
+      %td.currency= show_estimated_cost(order_detail)
+      - if @order.has_subsidies?
+        %td.currency= show_estimated_subsidy(order_detail)
+      %td.currency= show_estimated_total(order_detail)
     - else
-      %td.centered= text_field_tag "quantity#{order_detail.id}", order_detail.quantity, value: order_detail.quantity, size: 3, class: "cart__quantityField", disabled: order_detail.quantity_locked_by_survey?
-
-  - if order_detail.cost_estimated?
-    %td.currency= show_estimated_cost(order_detail)
-    - if @order.has_subsidies?
-      %td.currency= show_estimated_subsidy(order_detail)
-    %td.currency= show_estimated_total(order_detail)
-  - else
-    %td.currency= text("shared.unassigned")
-    - if @order.has_subsidies?
       %td.currency= text("shared.unassigned")
-    %td.currency= text("shared.unassigned")
+      - if @order.has_subsidies?
+        %td.currency= text("shared.unassigned")
+      %td.currency= text("shared.unassigned")

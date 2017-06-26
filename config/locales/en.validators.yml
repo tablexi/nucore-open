@@ -1,0 +1,4 @@
+en:
+  validators:
+    all_details_on_order_validator:
+      note_presence_validator: Some products require a note

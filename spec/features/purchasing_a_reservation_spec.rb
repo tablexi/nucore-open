@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Purchasing a reservation" do
 
-  let!(:instrument) { FactoryGirl.create(:setup_instrument, note_available_to_users: true) }
+  let!(:instrument) { FactoryGirl.create(:setup_instrument, user_notes_field_mode: "optional") }
   let!(:facility) { instrument.facility }
   let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
   let!(:price_policy) { FactoryGirl.create(:instrument_price_policy, price_group: PriceGroup.base, product: instrument) }
@@ -43,6 +43,23 @@ RSpec.describe "Purchasing a reservation" do
     it "has an error" do
       expect(page).to have_content "must start at a future time"
     end
+  end
+
+  describe "trying to order with a required note" do
+    before do
+      instrument.update!(user_notes_field_mode: "required")
+    end
+
+    it "does not create the reservation without a note" do
+      click_button "Create"
+      expect(page).to have_content "Note may not be blank"
+
+      fill_in "Note", with: "This is my note."
+      click_button "Create"
+
+      expect(page).to have_content("My Reservations")
+    end
+
   end
 
 end

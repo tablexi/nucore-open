@@ -25,6 +25,9 @@ class ReservationCreator
 
         save_reservation_and_order_detail(session_user)
 
+        validator = OrderPurchaseValidator.new(@order)
+        raise ActiveRecord::RecordInvalid, @order_detail if validator.invalid?
+
         if to_be_merged
           # The purchase_order_path or cart_path will handle the backdating, but we need
           # to do this here for merged reservations.

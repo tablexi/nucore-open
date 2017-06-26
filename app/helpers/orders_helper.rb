@@ -23,7 +23,7 @@ module OrdersHelper
   end
 
   def show_note_input_to_user?(order_detail)
-    acting_as? || order_detail.product.note_available_to_users?
+    acting_as? || order_detail.product.user_notes_field_mode.visible?
   end
 
 end
