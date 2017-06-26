@@ -11,6 +11,18 @@ class UserRole < ActiveRecord::Base
   FACILITY_STAFF = "Facility Staff".freeze
   FACILITY_SENIOR_STAFF = "Facility Senior Staff".freeze
 
+  module AssociationExtension
+
+    def operator?(facility)
+      any? { |ur| ur.facility == facility && ur.in?(facility_roles) }
+    end
+
+    def manager?(facility)
+      any? { |ur| ur.facility == facility && ur.in?(facility_management_roles) }
+    end
+
+  end
+
   def self.account_manager
     [ACCOUNT_MANAGER]
   end
@@ -45,14 +57,6 @@ class UserRole < ActiveRecord::Base
 
   def self.global
     where(role: global_roles)
-  end
-
-  def self.operator?(facility)
-    any? { |ur| ur.facility == facility && ur.in?(facility_roles) }
-  end
-
-  def self.manager?(facility)
-    any? { |ur| ur.facility == facility && ur.in?(facility_management_roles) }
   end
 
   #
