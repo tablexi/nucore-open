@@ -260,9 +260,30 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
               it "renders an error", :aggregate_failures do
                 expect(flash[:error]).to be_present
+                expect(assigns(:order_detail).errors.full_messages).to include("The reservation conflicts with another reservation.")
                 expect(response).to render_template(:edit)
                 expect(response.code).to eq("406")
               end
+            end
+          end
+
+          describe "trying to set zero minutes" do
+            before do
+              @params[:order_detail] = {
+                reservation: reservation_params(order_detail.reservation.reserve_start_at).merge(duration_mins: 0),
+              }
+              do_request
+            end
+
+            it "does not save the reservation" do
+              expect(assigns(:order_detail).reservation).to be_changed
+            end
+
+            it "renders an error", :aggregate_failures do
+              expect(flash[:error]).to be_present
+              expect(assigns(:order_detail).errors.full_messages).to include("Duration must be at least 1 minute")
+              expect(response).to render_template(:edit)
+              expect(response.code).to eq("406")
             end
           end
 
