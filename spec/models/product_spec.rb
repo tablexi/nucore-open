@@ -209,7 +209,7 @@ RSpec.describe Product do
       end
     end
 
-    context "can_purchase?", feature_setting: { user_based_price_groups: true } do
+    context "can_purchase?" do
       class TestPricePolicy < PricePolicy
 
         def rate_field
@@ -222,11 +222,7 @@ RSpec.describe Product do
         @product = TestProduct.create!(facility: @facility, name: "Test Product", url_name: "test")
         @price_group = FactoryGirl.create(:price_group, facility: @facility)
         @price_group2 = FactoryGirl.create(:price_group, facility: @facility)
-        @user = FactoryGirl.create(:user)
-        FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group)
-        @user.reload
-
-        @user_price_group_ids = @user.price_groups.map(&:id)
+        @user_price_group_ids = [@price_group]
       end
 
       it "should not be purchasable if it is archived" do
@@ -339,6 +335,7 @@ RSpec.describe Product do
                                                         can_purchase: true)
         expect(@product).not_to be_can_purchase(@user_price_group_ids)
       end
+
       it "should be purchasable if there are no current policies, but two future policies, one of which is purchasable and one is not" do
         expect(@product.current_price_policies).to be_empty
         @price_policy_pg1 = TestPricePolicy.create!(price_group: @price_group,
@@ -351,8 +348,7 @@ RSpec.describe Product do
                                                     start_date: Time.zone.now + 2.days,
                                                     expire_date: Time.zone.now + 4.days + 1.second,
                                                     can_purchase: false)
-        FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group2)
-        @user_price_group_ids = @user.reload.price_groups.map(&:id)
+        @user_price_group_ids = [@price_group, @price_group2]
         expect(@product).to be_can_purchase(@user_price_group_ids)
       end
 
@@ -378,8 +374,7 @@ RSpec.describe Product do
                                 start_date: 5.days.ago,
                                 expire_date: 4.days.ago,
                                 can_purchase: false)
-        FactoryGirl.create(:user_price_group_member, user: @user, price_group: @price_group2)
-        @user_price_group_ids = @user.reload.price_groups.map(&:id)
+        @user_price_group_ids = [@price_group, @price_group2]
         expect(@product).not_to be_can_purchase(@user_price_group_ids)
       end
     end
