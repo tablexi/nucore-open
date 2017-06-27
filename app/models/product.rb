@@ -21,6 +21,7 @@ class Product < ActiveRecord::Base
   validates_presence_of :name, :type
   validate_url_name :url_name, :facility_id
   validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.all
+  validates :user_notes_label, length: { maximum: 255 }
 
   if SettingsHelper.feature_on? :expense_accounts
     validates(

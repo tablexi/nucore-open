@@ -11,6 +11,8 @@
 
       - if show_note_input_to_user?(order_detail)
         = odf.input :note,
+          label: order_detail.product.user_notes_label.presence,
+          required: order_detail.product.user_notes_field_mode.required?,
           input_html: { rows: 3,
           id: "note#{order_detail.id}",
           name: "note#{order_detail.id}" }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170609214859) do
+ActiveRecord::Schema.define(version: 20170619213358) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -487,6 +487,7 @@ ActiveRecord::Schema.define(version: 20170609214859) do
     t.integer  "cutoff_hours",              limit: 4,     default: 0,        null: false
     t.string   "dashboard_token",           limit: 255
     t.string   "user_notes_field_mode",     limit: 255,   default: "hidden", null: false
+    t.string   "user_notes_label",          limit: 255
   end
 
   add_index "products", ["dashboard_token"], name: "index_products_on_dashboard_token", using: :btree

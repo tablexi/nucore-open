@@ -45,13 +45,16 @@ RSpec.describe "Placing an item order" do
       expect(page).to have_content "This is a note"
     end
 
-    it "cannot place an order while missing the note if it is required" do
-      product.update_attributes!(user_notes_field_mode: "required")
+    it "cannot place an order while missing the note if it is required, and has a custom label" do
+      product.update!(
+        user_notes_field_mode: "required",
+        user_notes_label: "Show me what you got",
+      )
       add_to_cart
       click_button "Purchase"
       expect(page).to have_content("may not be blank")
 
-      fill_in "Note", with: "A note"
+      fill_in "Show me what you got", with: "A note"
       click_button "Purchase"
       expect(page).to have_content "Order Receipt"
     end
