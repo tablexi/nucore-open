@@ -5,20 +5,19 @@ RSpec.describe AccessoriesController do
   render_views
   before(:all) { create_users }
 
-  let(:instrument) { create(:instrument_with_accessory) }
+  let(:instrument) { create(:instrument_with_accessory, :always_available) }
   let(:facility) { instrument.facility }
   let(:quantity_accessory) { instrument.accessories.first }
   let(:auto_accessory) { create(:accessory, parent: instrument, scaling_type: "auto") }
   let(:manual_accessory) { create(:accessory, parent: instrument, scaling_type: "manual") }
-  let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 1.day.ago) }
+  let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 1.hour.ago) }
   let(:order_detail) { reservation.order_detail }
   let(:order) { order_detail.order }
   let(:new_order_status) { OrderStatus.new_os.first }
 
   before :each do
     order_detail.change_status! new_order_status
-    reservation.update_attributes(actual_start_at: 1.day.ago, actual_end_at: 1.day.ago + 30.minutes)
-    @authable = instrument.facility
+    @authable = facility
     @params = { order_id: order.id, order_detail_id: order_detail.id }
   end
 
@@ -30,6 +29,7 @@ RSpec.describe AccessoriesController do
 
     it_should_allow_operators_only {}
 
+    # facility admin specs cover the inner workings
     context "as the user who made the reservation" do
       before :each do
         sign_in order.user
@@ -49,27 +49,59 @@ RSpec.describe AccessoriesController do
         auto_accessory
         manual_accessory
 
-        maybe_grant_always_sign_in :admin
-        do_request
+        sign_in FactoryGirl.create(:user, :facility_director, facility: facility)
       end
 
-      it "has all three accessories" do
-        expect(assigns(:order_details).size).to eq(3)
+      describe "a completed reservation" do
+        before do
+          reservation.update_attributes(actual_start_at: 1.hour.ago, actual_end_at: 30.minutes.ago)
+          do_request
+        end
+
+        it "has all three accessories" do
+          expect(assigns(:order_details).size).to eq(3)
+        end
+
+        it "defaults to a quantity of 1 for quantity" do
+          od = assigns(:order_details).find { |od| od.product == quantity_accessory }
+          expect(od.quantity).to eq(1)
+        end
+
+        it "defaults to the reservation time for auto-scaled" do
+          od = assigns(:order_details).find { |od| od.product == auto_accessory }
+          expect(od.quantity).to eq(30)
+        end
+
+        it "defaults to the reservation duration for manual scaled" do
+          od = assigns(:order_details).find { |od| od.product == manual_accessory }
+          expect(od.quantity).to eq(30)
+        end
       end
 
-      it "defaults to a quantity of 1 for quantity" do
-        od = assigns(:order_details).find { |od| od.product == quantity_accessory }
-        expect(od.quantity).to eq(1)
-      end
+      describe "an ongoing reservation" do
+        before do
+          reservation.update_attributes!(actual_start_at: 37.minutes.ago, actual_end_at: nil)
+          do_request
+        end
 
-      it "defaults to the reservation time for auto-scaled" do
-        od = assigns(:order_details).find { |od| od.product == auto_accessory }
-        expect(od.quantity).to eq(order_detail.reservation.actual_duration_mins)
-      end
+        it "has all three accessories" do
+          expect(assigns(:order_details).size).to eq(3)
+        end
 
-      it "defaults to the reservation duration for manual scaled" do
-        od = assigns(:order_details).find { |od| od.product == manual_accessory }
-        expect(od.quantity).to eq(order_detail.reservation.actual_duration_mins)
+        it "defaults to a quantity of 1 for quantity" do
+          od = assigns(:order_details).find { |od| od.product == quantity_accessory }
+          expect(od.quantity).to eq(1)
+        end
+
+        it "defaults to the reservation time for auto-scaled" do
+          od = assigns(:order_details).find { |od| od.product == auto_accessory }
+          expect(od.quantity).to eq(37)
+        end
+
+        it "defaults to the reservation duration for manual scaled" do
+          od = assigns(:order_details).find { |od| od.product == manual_accessory }
+          expect(od.quantity).to eq(37)
+        end
       end
     end
 
@@ -101,6 +133,7 @@ RSpec.describe AccessoriesController do
 
     context "as the user who made the reservation" do
       before :each do
+        reservation.update_attributes(actual_start_at: 1.hour.ago, actual_end_at: 30.minutes.ago)
         sign_in order.user
       end
 
@@ -241,7 +274,7 @@ RSpec.describe AccessoriesController do
 
         it "creates the order detail with the length, no matter what the parameter" do
           do_request
-          expect(assigns(:order_details).first.quantity).to eq(reservation.actual_duration_mins)
+          expect(assigns(:order_details).first.quantity).to eq(30)
         end
 
         it "creates the order detail as the same status as the parent" do

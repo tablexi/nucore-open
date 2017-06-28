@@ -67,11 +67,17 @@ module Reservations::DateSupport
     end
   end
 
-  def actual_duration_mins
+  # If the reservation is ongoing, we sometimes want to know how long a currently
+  # running reservation has been running for (e.g. accessories).
+  def actual_or_current_duration_mins
+    actual_duration_mins(actual_end_fallback: Time.current)
+  end
+
+  def actual_duration_mins(actual_end_fallback: nil)
     if @actual_duration_mins
       @actual_duration_mins.to_i
     elsif actual_start_at
-      TimeRange.new(actual_start_at, actual_end_at).duration_mins
+      TimeRange.new(actual_start_at, actual_end_at || actual_end_fallback).duration_mins
     else
       0
     end
