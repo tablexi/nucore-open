@@ -3,12 +3,6 @@ class OrderPurchaser
   attr_reader :acting_as, :order, :order_in_past, :params, :user
   attr_accessor :backdate_to
 
-  # TODO: remove this once all child instances have been updated
-  def self.additional_validations
-    warn "Use OrderPurchaseValidator.additional_validations instead of OrderPurchaser at #{caller(1..1)}"
-    OrderPurchaseValidator.additional_validations
-  end
-
   alias acting_as? acting_as
   alias order_in_past? order_in_past
 
