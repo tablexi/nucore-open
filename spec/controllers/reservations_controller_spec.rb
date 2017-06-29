@@ -124,7 +124,7 @@ RSpec.describe ReservationsController do
           do_request
         end
 
-        it { expect(assigns[:unavailable]).to be_empty }
+        it { expect(assigns[:unavailable]).to be_blank }
       end
 
       context "schedule rules" do
@@ -190,6 +190,55 @@ RSpec.describe ReservationsController do
 
       it "includes instrument1 and instrument2 reservations" do
         expect(assigns(:reservations)).to match_array(reservations)
+      end
+    end
+
+    describe "showing details" do
+      describe "as a guest" do
+        before { sign_in @guest }
+
+        it "defaults to false" do
+          do_request
+          expect(assigns(:show_details)).to be_falsy
+        end
+
+        it "is false even if I request it and the instrument is not configured to show it" do
+          instrument.update!(show_details: false)
+          @params[:with_details] = "true"
+          do_request
+
+          expect(assigns(:show_details)).to be_falsy
+        end
+
+        it "is true if I request details and it is not configured" do
+          instrument.update!(show_details: true)
+          @params[:with_details] = "true"
+          do_request
+          expect(assigns(:show_details)).to be_truthy
+        end
+      end
+
+      describe "as a facility staff" do
+        before { maybe_grant_always_sign_in :staff }
+
+        it "is falsy if I don't request details" do
+          do_request
+          expect(assigns(:show_details)).to be_falsy
+        end
+
+        it "is true if I request details" do
+          @params[:with_details] = "true"
+          do_request
+
+          expect(assigns(:show_details)).to be_truthy
+        end
+
+        it "is falsy if I request with the string false" do
+          @params[:with_details] = "false"
+          do_request
+
+          expect(assigns(:show_details)).to be_falsy
+        end
       end
     end
   end

@@ -23,45 +23,39 @@ class ReservationsController < ApplicationController
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
   def index
-    @facility     = Facility.find_by!(url_name: params[:facility_id])
-    @instrument   = @facility.instruments.find_by!(url_name: params[:instrument_id])
+    @facility = Facility.find_by!(url_name: params[:facility_id])
+    @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
-    @start_at     = params[:start] ? Time.zone.at(params[:start].to_i) : Time.zone.now
-    @start_date   = @start_at.beginning_of_day
+    @start_at = params[:start] ? Time.zone.at(params[:start].to_i) : Time.zone.now
+    @end_at = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at.end_of_day
 
-    @end_at       = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at.end_of_day
+    admin_reservations = @instrument.schedule.admin_reservations.in_range(@start_at, @end_at)
+    user_reservations = @instrument.schedule
+                                   .reservations
+                                   .active
+                                   .in_range(@start_at, @end_at)
+                                   .includes(order_detail: { order: :user })
 
-    @admin_reservations = @instrument.schedule.admin_reservations.in_range(@start_at, @end_at)
+    @reservations = admin_reservations + user_reservations
 
-    @user_reservations = @instrument.schedule
-                                    .reservations
-                                    .active
-                                    .in_range(@start_at, @end_at)
-                                    .includes(order_detail: { order: :user })
+    # We don't need the unavailable hours month view
+    unless month_view?
+      @rules = @instrument.schedule_rules
 
-    @reservations = @admin_reservations + @user_reservations
+      if @instrument.requires_approval? && acting_user && acting_user.cannot_override_restrictions?(@instrument)
+        @rules = @rules.available_to_user(acting_user)
+      end
 
-    @rules        = @instrument.schedule_rules
-
-    # restrict to available if it requires approval and the user
-    # isn't a facility admin
-    if @instrument.requires_approval && acting_user && acting_user.cannot_override_restrictions?(@instrument)
-      @rules = @rules.available_to_user(acting_user)
+      @unavailable = ScheduleRule.unavailable(@rules)
     end
 
-    # We're not using unavailable rules for month view
-    @unavailable = if month_view?
-                     []
-                   else
-                     # build unavailable schedule
-                     ScheduleRule.unavailable(@rules)
-                   end
+    @show_details = params[:with_details] == "true" && (@instrument.show_details? || can?(:administer, Reservation))
 
     respond_to do |format|
-      as_calendar_object_options = { start_date: @start_date, with_details: params[:with_details] }
+      as_calendar_object_options = { start_date: @start_at.beginning_of_day, with_details: @show_details }
       format.js do
-        render json: @reservations.map { |r| r.as_calendar_object(as_calendar_object_options) }.flatten +
-                     @unavailable.map { |r| r.as_calendar_object(as_calendar_object_options) }.flatten
+        render json: @reservations.map { |r| r.as_calendar_object(as_calendar_object_options) } +
+                     Array(@unavailable).map { |r| r.as_calendar_object(as_calendar_object_options) }
       end
     end
   end
@@ -297,7 +291,11 @@ class ReservationsController < ApplicationController
   end
 
   def ability_resource
-    @reservation
+    if action_name == "index"
+      current_facility
+    else
+      @reservation
+    end
   end
 
   # TODO: you shouldn't be able to edit reservations that have passed or are outside of the cancellation period (check to make sure order has been placed)
@@ -370,9 +368,9 @@ class ReservationsController < ApplicationController
                     reserve_end_at: default_reservation_mins.minutes.from_now)
   end
 
+  # `1.week` causes a problem with daylight saving week since it's technically longer
+  # than a week
   def month_view?
-    # 1.week causes a problem with daylight saving week since it's technically longer
-    # than a week
     @end_at - @start_at > 8.days
   end
 
