@@ -222,7 +222,7 @@ RSpec.describe Product do
         @product = TestProduct.create!(facility: @facility, name: "Test Product", url_name: "test")
         @price_group = FactoryGirl.create(:price_group, facility: @facility)
         @price_group2 = FactoryGirl.create(:price_group, facility: @facility)
-        @user_price_group_ids = [@price_group]
+        @price_groups = [@price_group]
       end
 
       it "should not be purchasable if it is archived" do
@@ -240,7 +240,7 @@ RSpec.describe Product do
       end
 
       it "should not be purchasable if there are no pricing rules ever" do
-        expect(@product).not_to be_can_purchase(@user_price_group_ids)
+        expect(@product).not_to be_can_purchase(@price_groups)
       end
 
       it "should not be purchasable if there is no price rule for a user, but there are current price rules" do
@@ -249,7 +249,7 @@ RSpec.describe Product do
                                                 start_date: Time.zone.now - 1.day,
                                                 expire_date: Time.zone.now + 7.days,
                                                 can_purchase: true)
-        expect(@product).not_to be_can_purchase(@user_price_group_ids)
+        expect(@product).not_to be_can_purchase(@price_groups)
       end
 
       it "should be purchasable if there is a current price rule for the user's group" do
@@ -258,7 +258,7 @@ RSpec.describe Product do
                                                 start_date: Time.zone.now - 1.day,
                                                 expire_date: Time.zone.now + 7.days,
                                                 can_purchase: true)
-        expect(@product).to be_can_purchase(@user_price_group_ids)
+        expect(@product).to be_can_purchase(@price_groups)
       end
 
       it "should be purchasable if the user has an expired price rule where they were allowed to purchase" do
@@ -267,7 +267,7 @@ RSpec.describe Product do
                                                 start_date: Time.zone.now - 7.days,
                                                 expire_date: Time.zone.now - 1.day,
                                                 can_purchase: true)
-        expect(@product).to be_can_purchase(@user_price_group_ids)
+        expect(@product).to be_can_purchase(@price_groups)
       end
 
       it "should not be purchasable if there is a current rule, but marked as can_purchase = false" do
@@ -276,7 +276,7 @@ RSpec.describe Product do
                                                 start_date: Time.zone.now - 1.day,
                                                 expire_date: Time.zone.now + 7.days,
                                                 can_purchase: false)
-        expect(@product).not_to be_can_purchase(@user_price_group_ids)
+        expect(@product).not_to be_can_purchase(@price_groups)
       end
 
       it "should not be purchasable if the most recent expired policy is marked can_purchase = false" do
@@ -290,7 +290,7 @@ RSpec.describe Product do
                                                  start_date: Time.zone.now - 5.days,
                                                  expire_date: Time.zone.now + 4.days,
                                                  can_purchase: false)
-        expect(@product).not_to be_can_purchase(@user_price_group_ids)
+        expect(@product).not_to be_can_purchase(@price_groups)
       end
 
       it "should be purchasable if the most recent expired policy is can_purchase, but old ones arent" do
@@ -304,7 +304,7 @@ RSpec.describe Product do
                                                  start_date: Time.zone.now - 5.days,
                                                  expire_date: Time.zone.now + 4.days,
                                                  can_purchase: true)
-        expect(@product).to be_can_purchase(@user_price_group_ids)
+        expect(@product).to be_can_purchase(@price_groups)
       end
 
       it "should be purchasable if there is a current policy with can_purchase, but a future one that cant" do
@@ -319,7 +319,7 @@ RSpec.describe Product do
                                                         expire_date: Time.zone.now + 4.days,
                                                         can_purchase: false)
         expect(@product.current_price_policies).to eq([@current_price_policy])
-        expect(@product).to be_can_purchase(@user_price_group_ids)
+        expect(@product).to be_can_purchase(@price_groups)
       end
 
       it "should not be purchasable if there is a current policy without can_purchase, but a future one that can" do
@@ -333,7 +333,7 @@ RSpec.describe Product do
                                                         start_date: Time.zone.now + 2.days,
                                                         expire_date: Time.zone.now + 4.days,
                                                         can_purchase: true)
-        expect(@product).not_to be_can_purchase(@user_price_group_ids)
+        expect(@product).not_to be_can_purchase(@price_groups)
       end
 
       it "should be purchasable if there are no current policies, but two future policies, one of which is purchasable and one is not" do
@@ -348,8 +348,8 @@ RSpec.describe Product do
                                                     start_date: Time.zone.now + 2.days,
                                                     expire_date: Time.zone.now + 4.days + 1.second,
                                                     can_purchase: false)
-        @user_price_group_ids = [@price_group, @price_group2]
-        expect(@product).to be_can_purchase(@user_price_group_ids)
+        @price_groups = [@price_group, @price_group2]
+        expect(@product).to be_can_purchase(@price_groups)
       end
 
       it "should not be purchasable if there are no current policies, and most recent for each group cannot can_purchase" do
@@ -374,8 +374,8 @@ RSpec.describe Product do
                                 start_date: 5.days.ago,
                                 expire_date: 4.days.ago,
                                 can_purchase: false)
-        @user_price_group_ids = [@price_group, @price_group2]
-        expect(@product).not_to be_can_purchase(@user_price_group_ids)
+        @price_groups = [@price_group, @price_group2]
+        expect(@product).not_to be_can_purchase(@price_groups)
       end
     end
 
