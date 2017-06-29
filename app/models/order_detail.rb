@@ -289,8 +289,8 @@ class OrderDetail < ActiveRecord::Base
   scope :for_owners, lambda { |owners|
     return if owners.blank?
     joins(account: :account_users)
-      .where(account_users: { user_role: AccountUser::ACCOUNT_OWNER })
-      .where("account_users.user_id in (?)", owners)
+      .where(account_users: { user_role: AccountUser::ACCOUNT_OWNER,
+                              user_id: owners })
   }
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
