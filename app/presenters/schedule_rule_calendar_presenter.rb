@@ -6,9 +6,10 @@ class ScheduleRuleCalendarPresenter
 
   delegate :end_hour, :end_min, :instrument, :start_hour, :start_min, :unavailable, to: :schedule_rule
 
-  def self.to_json(schedule_rules)
-    schedule_rules.flat_map do |schedule_rule|
-      new(schedule_rule).to_json
+  # Returns a single array of Hashes
+  def self.to_json(schedule_rules, options = {})
+    Array(schedule_rules).flat_map do |schedule_rule|
+      new(schedule_rule, options).to_json
     end
   end
 
@@ -17,6 +18,8 @@ class ScheduleRuleCalendarPresenter
     @options = options
   end
 
+  # Returns an array of hashes. A Mon-Fri 9-5 rule would return 5 hashes, one for
+  # each day.
   def to_json
     Range.new(0, 6).map do |day_index|
       date = (start_date + day_index.days).to_datetime

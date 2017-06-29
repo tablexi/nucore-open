@@ -54,8 +54,8 @@ class ReservationsController < ApplicationController
     respond_to do |format|
       as_calendar_object_options = { start_date: @start_at.beginning_of_day, with_details: @show_details }
       format.js do
-        render json: @reservations.map { |r| r.as_calendar_object(as_calendar_object_options) } +
-                     Array(@unavailable).map { |r| r.as_calendar_object(as_calendar_object_options) }
+        render json: Reservation.as_calendar_objects(@reservations, as_calendar_object_options) +
+                     ScheduleRule.as_calendar_objects(@unavailable, as_calendar_object_options)
       end
     end
   end

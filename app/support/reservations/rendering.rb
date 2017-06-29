@@ -8,6 +8,12 @@ module Reservations::Rendering
     delegate :as_calendar_object, to: :calendar_presenter
   end
 
+  class_methods do
+    def as_calendar_objects(reservations, options = {})
+      Array(reservations).map { |r| r.as_calendar_object(options) }
+    end
+  end
+
   def display_start_at
     actual_start_at || reserve_start_at
   end
