@@ -11,8 +11,9 @@ RSpec.shared_examples_for TransactionSearch do |date_range_field|
       let(:params) { super().merge(account_owners: [3, 4]) }
 
       it "applies the parameter" do
-        expect(assigns(:order_details).where_values)
-          .to be_include("account_users.user_id in ('3','4')")
+        where_values = assigns(:order_details).where_values.reject { |v| v.is_a?(String) }
+        expect(where_values.map(&:to_sql))
+          .to include("`account_users`.`user_id` IN (3, 4)")
       end
     end
 
