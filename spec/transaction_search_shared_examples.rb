@@ -12,7 +12,7 @@ RSpec.shared_examples_for TransactionSearch do |date_range_field|
 
       it "applies the parameter" do
         in_nodes = assigns(:order_details)
-          .where_values.select { |v| v.is_a?(Arel::Nodes::In) }
+                   .where_values.select { |v| v.is_a?(Arel::Nodes::In) }
         expect(in_nodes).to satisfy { |nodes|
           nodes.any? do |node|
             node.left.name == :user_id &&
