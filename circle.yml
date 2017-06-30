@@ -2,6 +2,8 @@ machine:
   timezone: "America/Chicago"
 
 dependencies:
+  pre:
+    - gem install bundler
   bundler:
     without: [oracle]
   pre:
