@@ -353,7 +353,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     numerizer (0.1.1)
-    oj (2.12.14)
+    oj (3.2.0)
     orm_adapter (0.5.0)
     paperclip (4.2.4)
       activemodel (>= 3.2.0)
@@ -627,7 +627,7 @@ DEPENDENCIES
   nested_form_fields
   net-telnet
   nokogiri (~> 1.7.1)
-  oj (~> 2.12.14)
+  oj
   paperclip (~> 4.2.0)
   poltergeist
   prawn (= 0.12)
@@ -675,7 +675,7 @@ DEPENDENCIES
   will_paginate (~> 3.1.5)
 
 RUBY VERSION
-   ruby 2.3.4p301
+   ruby 2.4.1p111
 
 BUNDLED WITH
    1.15.1
