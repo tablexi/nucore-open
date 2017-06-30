@@ -1,7 +1,5 @@
 class MessageSummarizer
 
-  include Enumerable
-
   delegate :each, to: :visible_summaries
 
   cattr_accessor(:summary_classes) do

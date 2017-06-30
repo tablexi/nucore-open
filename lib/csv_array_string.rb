@@ -5,7 +5,6 @@
 #   => ["test", "test2", "test3"]
 class CsvArrayString < SimpleDelegator
 
-  include Enumerable
   delegate :each, to: :to_a
 
   def to_a
