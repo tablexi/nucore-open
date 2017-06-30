@@ -1,6 +1,4 @@
 machine:
-  ruby:
-    version: 2.3.4
   timezone: "America/Chicago"
 
 dependencies:
