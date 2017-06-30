@@ -42,8 +42,7 @@ class ReservationCreator
         @error = e.message
         raise ActiveRecord::Rollback
       rescue => e
-        @error = I18n.t("orders.purchase.error")
-        @error += " #{e.message}" if e.message
+        @error = I18n.t("orders.purchase.error", message: e.message).html_safe
         raise ActiveRecord::Rollback
       end
     end
