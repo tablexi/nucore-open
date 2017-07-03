@@ -31,8 +31,8 @@ RSpec.describe BundlesController do
     it_should_require_login
 
     it_should_allow_all facility_operators do
-      expect(assigns(:archived_product_count)).to be_kind_of Fixnum
-      expect(assigns(:not_archived_product_count)).to be_kind_of Fixnum
+      expect(assigns(:archived_product_count)).to be_kind_of Integer
+      expect(assigns(:not_archived_product_count)).to be_kind_of Integer
       expect(assigns(:products).size).to eq(1)
       expect(assigns(:products)).to eq(@authable.bundles.not_archived)
     end

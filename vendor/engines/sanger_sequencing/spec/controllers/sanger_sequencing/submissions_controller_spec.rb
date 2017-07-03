@@ -49,7 +49,7 @@ RSpec.describe SangerSequencing::SubmissionsController do
       expect(data).to be_a(Array)
       expect(data.length).to eq(described_class::NEW_IDS_COUNT)
       expect(data).to all match(
-        a_hash_including("id" => an_instance_of(Fixnum),
+        a_hash_including("id" => an_instance_of(Integer),
                          "customer_sample_id" => a_string_matching(/\A\d{4}\z/)),
       )
     end
