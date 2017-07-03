@@ -111,7 +111,7 @@ class ReservationsController < ApplicationController
       end
     else
       @reservation = creator.reservation
-      flash.now[:error] = creator.error
+      flash.now[:error] = creator.error.html_safe
       set_windows
       render :new
     end

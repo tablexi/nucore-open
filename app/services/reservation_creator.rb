@@ -25,7 +25,7 @@ class ReservationCreator
 
         save_reservation_and_order_detail(session_user)
 
-        validator = OrderPurchaseValidator.new(@order)
+        validator = OrderPurchaseValidator.new(@order_detail)
         raise ActiveRecord::RecordInvalid, @order_detail if validator.invalid?
 
         if to_be_merged
