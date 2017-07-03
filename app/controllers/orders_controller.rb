@@ -316,7 +316,8 @@ class OrdersController < ApplicationController
     # Do not do any additional scopes on `@order.order_details` to ensure the list
     # of OrderDetail objects is memoized. Validations are run on `@order.order_details`
     # and we want to be able to render validation errors inline.
-    @order.order_details.sort_by(&:group_id).slice_when do |before, after|
+    sorted_order_details = @order.order_details.sort_by { |od| od.group_id.to_i }
+    sorted_order_details.slice_when do |before, after|
       before.group_id.nil? || before.group_id != after.group_id
     end
   end
