@@ -11,8 +11,15 @@ RSpec.shared_examples_for TransactionSearch do |date_range_field|
       let(:params) { super().merge(account_owners: [3, 4]) }
 
       it "applies the parameter" do
-        expect(assigns(:order_details).where_values)
-          .to be_include("account_users.user_id in ('3','4')")
+        in_nodes = assigns(:order_details)
+                   .where_values.select { |v| v.is_a?(Arel::Nodes::In) }
+        expect(in_nodes).to satisfy { |nodes|
+          nodes.any? do |node|
+            node.left.name == :user_id &&
+              node.left.relation.name.casecmp("account_users").zero? &&
+              node.right.map(&:val) == ["3", "4"]
+          end
+        }
       end
     end
 

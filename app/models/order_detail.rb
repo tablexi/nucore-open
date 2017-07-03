@@ -287,11 +287,10 @@ class OrderDetail < ActiveRecord::Base
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
   scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
   scope :for_owners, lambda { |owners|
-    if owners.present?
-      joins(:account)
-        .joins("INNER JOIN account_users on account_users.account_id = accounts.id and user_role = 'Owner'")
-        .where("account_users.user_id in (?)", owners)
-    end
+    return if owners.blank?
+    joins(account: :account_users)
+      .where(account_users: { user_role: AccountUser::ACCOUNT_OWNER,
+                              user_id: owners })
   }
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
 
