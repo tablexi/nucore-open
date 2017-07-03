@@ -11,7 +11,7 @@
         %th.currency= OrderDetail.human_attribute_name(:estimated_total)
 
     %tbody
-      - grouped_order_details.each do |order_details|
+      - order.grouped_order_details.each do |order_details|
         = render partial: "cart_row", collection: order_details, as: :order_detail, locals: { order_details: order_details, f: f }
 
     %tfoot.cart

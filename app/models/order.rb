@@ -180,6 +180,15 @@ class Order < ActiveRecord::Base
     order_details.maximum(:group_id).to_i + 1
   end
 
+  # Group into chunks by the group_id so bundles stick together. If group_id is
+  # nil, it is not a bundle, so it should get its own chunk.
+  def grouped_order_details
+    sorted_order_details = order_details.sort_by(&:safe_group_id)
+    sorted_order_details.slice_when do |before, after|
+      before.group_id.nil? || before.group_id != after.group_id
+    end
+  end
+
   def has_subsidies?
     order_details.any?(&:has_subsidies?)
   end
