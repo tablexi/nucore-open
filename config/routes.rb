@@ -102,7 +102,7 @@ Nucore::Application.routes.draw do
     resources :bundles do
       get :manage, on: :member
       resources :bundle_products, controller: "bundle_products", except: [:show]
-      resources :file_uploads, path: "files", only: [:new, :create, :destroy]
+      resources :file_uploads, path: "files", only: [:index, :create, :destroy]
       get "/files/:file_type/:id", to: 'file_uploads#download', as: "download_product_file"
     end
 
