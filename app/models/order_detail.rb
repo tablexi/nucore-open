@@ -810,6 +810,11 @@ class OrderDetail < ActiveRecord::Base
     !bundle.nil?
   end
 
+  # Useful when sorting so we don't get `nil` to number comparisons
+  def safe_group_id
+    group_id.to_i
+  end
+
   def to_notice(notification_class, *_args)
     case notification_class.name
     when MergeNotification.name

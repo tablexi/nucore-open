@@ -310,18 +310,6 @@ class OrdersController < ApplicationController
 
   private
 
-  # Group into chunks by the group id. If group_id is nil, then it should get its
-  # own chunk.
-  def grouped_order_details
-    # Do not do any additional scopes on `@order.order_details` to ensure the list
-    # of OrderDetail objects is memoized. Validations are run on `@order.order_details`
-    # and we want to be able to render validation errors inline.
-    @order.order_details.sort_by(&:group_id).slice_when do |before, after|
-      before.group_id.nil? || before.group_id != after.group_id
-    end
-  end
-  helper_method :grouped_order_details
-
   def build_order_date
     if params[:order_date].present? && params[:order_time].present?
       parse_usa_date(params[:order_date], join_time_select_values(params[:order_time]))
