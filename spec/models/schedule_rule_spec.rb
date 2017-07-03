@@ -228,7 +228,7 @@ RSpec.describe ScheduleRule do
 
       # find past sunday, and build calendar object
       @sunday = Time.current.beginning_of_week(:sunday).to_date
-      @calendar = @rule.as_calendar_object
+      @calendar = @rule.as_calendar_objects
 
       # each title should be the same
       @calendar.each do |hash|
@@ -247,7 +247,7 @@ RSpec.describe ScheduleRule do
       expect(@not_available.size).to eq(14)
       # should mark each rule as unavailable
       assert_equal true, @not_available.first.unavailable
-      @not_calendar = @not_available.collect(&:as_calendar_object).flatten
+      @not_calendar = @not_available.collect(&:as_calendar_objects).flatten
 
       # days should be same as above
       # even times should be 12 am to 9 am
@@ -300,14 +300,14 @@ RSpec.describe ScheduleRule do
       @tuesday = Time.current.beginning_of_week(:sunday).to_date + 2
 
       # times should be tue 1 am - 3 am
-      @calendar1 = @rule1.as_calendar_object
+      @calendar1 = @rule1.as_calendar_objects
       @calendar1.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 1.hour)
         expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 3.hours)
       end
 
       # times should be tue 7 am - 9 am
-      @calendar2 = @rule2.as_calendar_object
+      @calendar2 = @rule2.as_calendar_objects
       @calendar2.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 7.hours)
         expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 9.hours)
@@ -316,7 +316,7 @@ RSpec.describe ScheduleRule do
       # build not available rules from the available rules collection, 3 for tue and 1 each for rest of days
       @not_available = ScheduleRule.unavailable([@rule1, @rule2])
       expect(@not_available.size).to eq(9)
-      @not_calendar = @not_available.collect(&:as_calendar_object).flatten
+      @not_calendar = @not_available.collect(&:as_calendar_objects).flatten
 
       # rules for tuesday should be 12am-1am, 3am-7am, 9pm-12pm
       @tuesday_times = @not_calendar.select { |hash| Time.zone.parse(hash["start"]).to_date == @tuesday }.collect do |hash|
@@ -361,14 +361,14 @@ RSpec.describe ScheduleRule do
       @wednesday = @tuesday + 1
 
       # times should be tue 9 pm - 12 am
-      @calendar1 = @rule1.as_calendar_object
+      @calendar1 = @rule1.as_calendar_objects
       @calendar1.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 21.hours)
         expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 24.hours)
       end
 
       # times should be tue 12 am - 9 am
-      @calendar2 = @rule2.as_calendar_object
+      @calendar2 = @rule2.as_calendar_objects
       @calendar2.each_with_index do |hash, _i|
         expect(Time.zone.parse(hash["start"])).to eq(@wednesday + 0.hours)
         expect(Time.zone.parse(hash["end"])).to eq(@wednesday + 9.hours)
@@ -387,7 +387,7 @@ RSpec.describe ScheduleRule do
 
       # set start_date as wednesday
       @wednesday = Time.current.beginning_of_week(:sunday).to_date + 3
-      @calendar = @rule.as_calendar_object(start_date: @wednesday)
+      @calendar = @rule.as_calendar_objects(start_date: @wednesday)
 
       # should start on wednesday
       expect(@calendar.size).to eq(7)

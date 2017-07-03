@@ -53,6 +53,11 @@ class ScheduleRule < ActiveRecord::Base
     end
   end
 
+  # Returns a single array of calendar objects representing the set of schedule_rules
+  def self.as_calendar_objects(schedule_rules, options = {})
+    ScheduleRuleCalendarPresenter.to_json(schedule_rules, options)
+  end
+
   def at_least_one_day_selected
     errors.add(:base, "Please select at least one day") unless
       on_sun? || on_mon? || on_tue? || on_wed? || on_thu? || on_fri? || on_sat?
@@ -140,8 +145,10 @@ class ScheduleRule < ActiveRecord::Base
     dt_int >= start_time_int && dt_int <= end_time_int
   end
 
-  # build weekly calendar object
-  def as_calendar_object(options = {})
+  # Build weekly calendar hashes
+  # Returns an array of hashes. A Mon-Fri 9-5 rule would return 5 hashes, one for
+  # each day.
+  def as_calendar_objects(options = {})
     ScheduleRuleCalendarPresenter.new(self, options).to_json
   end
 
@@ -163,6 +170,12 @@ class ScheduleRule < ActiveRecord::Base
     overlap / duration
   end
 
+  # Inverts a set of rules into another set of rules representing the times the
+  # product is unavailable.
+  #
+  # Example:
+  # Input: A set of rules representing every day, available from 9-noon and 1-5.
+  # Output: A set of rules for each day, midnight-9, noon-1, and 5-midnight
   def self.unavailable(rules)
     # rules is always a collection
     rules     = Array(rules)

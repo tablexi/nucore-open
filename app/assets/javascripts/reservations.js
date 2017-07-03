@@ -1,4 +1,7 @@
 $(document).ready(function() {
+
+  $calendar = $('#calendar');
+
   // initialize fullcalendar
   var calendarOptions = {
     editable: false,
@@ -11,7 +14,8 @@ $(document).ready(function() {
         $.fullCalendar.formatDate(event.end,   'hh:mmTT')
       ].join('&mdash;') + '<br/>';
 
-      if (typeof withDetails != 'undefined' && withDetails) {
+      // Default for our tooltip is to show.
+      if ($calendar.data("show-tooltip") != false) {
         if (event.admin) {  // administrative reservation
           tooltip += 'Admin Reservation<br/>';
         } else {            // normal reservation
@@ -73,7 +77,7 @@ $(document).ready(function() {
 	  $.extend(calendarOptions, {year: d.getFullYear(), month: d.getMonth(), date: d.getDate()});
   }
 
-  $('#calendar').fullCalendar(calendarOptions);
+  $calendar.fullCalendar(calendarOptions);
 
   init_datepickers();
 
