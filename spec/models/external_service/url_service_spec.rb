@@ -41,7 +41,7 @@ RSpec.describe UrlService do
 
     it "sets the correct success url" do
       expect(query_hash["success_url"])
-        .to eq("https://realdomain:8080/facilities/#{facility.url_name}/services/#{product.url_name}/surveys/#{url_service.id}/complete?receiver_id=#{order_detail.id}")
+        .to eq("https://realdomain:8080/#{I18n.t('facilities_downcase')}/#{facility.url_name}/services/#{product.url_name}/surveys/#{url_service.id}/complete?receiver_id=#{order_detail.id}")
     end
 
     it "returns a blank referer" do
@@ -52,7 +52,7 @@ RSpec.describe UrlService do
   describe "without a request" do
     it "sets the correct success url" do
       expect(query_hash["success_url"])
-        .to eq("http://defaulthost/facilities/#{facility.url_name}/services/#{product.url_name}/surveys/#{url_service.id}/complete?receiver_id=#{order_detail.id}")
+        .to eq("http://defaulthost/#{I18n.t('facilities_downcase')}/#{facility.url_name}/services/#{product.url_name}/surveys/#{url_service.id}/complete?receiver_id=#{order_detail.id}")
     end
 
     it "returns a blank referer" do
