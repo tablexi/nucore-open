@@ -25,7 +25,7 @@ class ReservationCreator
 
         save_reservation_and_order_detail(session_user)
 
-        validator = OrderPurchaseValidator.new(@order)
+        validator = OrderPurchaseValidator.new(@order_detail)
         raise ActiveRecord::RecordInvalid, @order_detail if validator.invalid?
 
         if to_be_merged
@@ -42,8 +42,7 @@ class ReservationCreator
         @error = e.message
         raise ActiveRecord::Rollback
       rescue => e
-        @error = I18n.t("orders.purchase.error")
-        @error += " #{e.message}" if e.message
+        @error = I18n.t("orders.purchase.error", message: e.message).html_safe
         raise ActiveRecord::Rollback
       end
     end

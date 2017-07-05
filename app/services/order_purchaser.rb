@@ -98,7 +98,7 @@ class OrderPurchaser
   end
 
   def do_additional_validations
-    validator = OrderPurchaseValidator.new(@order)
+    validator = OrderPurchaseValidator.new(@order.order_details)
     if validator.valid?
       true
     else

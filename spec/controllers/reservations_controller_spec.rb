@@ -614,7 +614,7 @@ RSpec.describe ReservationsController do
       sign_in @guest
       @params[:order_account] = 0 # Cause Account not found error
       expect { do_request }.not_to change(Reservation, :count)
-      expect(response.body).to include(I18n.t("orders.purchase.error"))
+      expect(response.body).to include(I18n.t("orders.purchase.error", message: ""))
     end
 
     context "with other things in the cart (bundle or multi-add)" do
