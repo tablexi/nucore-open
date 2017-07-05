@@ -9,14 +9,14 @@ RSpec.describe DefaultFacilityHomepageRedirector do
       let!(:reservation) { create(:purchased_reservation) }
 
       it "returns the correct path" do
-        path = "/facilities/#{facility.url_name}/reservations/timeline"
+        path = "/#{I18n.t('facilities_downcase')}/#{facility.url_name}/reservations/timeline"
 
         expect(DefaultFacilityHomepageRedirector.redirect_path(facility)).to eq path
       end
     end
     context "without active instruments" do
       it "returns the correct path" do
-        path = "/facilities/#{facility.url_name}/orders"
+        path = "/#{I18n.t('facilities_downcase')}/#{facility.url_name}/orders"
 
         expect(DefaultFacilityHomepageRedirector.redirect_path(facility)).to eq path
       end
