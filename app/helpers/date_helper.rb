@@ -26,13 +26,11 @@ module DateHelper
     date = format_usa_date(Date.parse(date)) if date =~ /\A\d{4}-\d{2}-\d{2}/
 
     return unless usa_formatted_date?(date)
-    date = Date.strptime(date, "%m/%d/%Y")
 
-    if time_string
-      Time.zone.parse("#{date} #{time_string}")
-    else
-      date.to_time
-    end
+    date_string = Date.strptime(date, "%m/%d/%Y").to_s
+    date_string += " #{time_string}" if time_string
+
+    Time.zone.parse(date_string)
   rescue ArgumentError
     nil
   end
