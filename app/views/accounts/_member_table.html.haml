@@ -14,6 +14,7 @@
       %th= t(".th.name")
       %th= t(".th.email")
       %th= t(".th.role")
+      = render_view_hook("member_table_headers")
 
   %tbody
     - @account.account_users.active.each do |au|
@@ -29,3 +30,4 @@
         %td= "#{au.user} (#{au.user.username})"
         %td= au.user.email
         %td= au.user_role
+        = render_view_hook("member_table_columns", account_user: au)
