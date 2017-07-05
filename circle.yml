@@ -1,8 +1,6 @@
 machine:
   ruby:
     version: 2.2.4
-  timezone: "America/Chicago"
-
 
 dependencies:
   bundler:
