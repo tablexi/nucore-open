@@ -81,7 +81,7 @@ RSpec.describe ReservationUserActionPresenter do
       end
 
       context "can switch on" do
-        let(:link_args) { { switch: "on" } }
+        let(:link_args) { { switch: "on", reservation_started: "on" } }
 
         before :each do
           expect(reservation)

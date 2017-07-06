@@ -264,12 +264,13 @@ class ReservationsController < ApplicationController
       ReservationInstrumentSwitcher.new(@reservation).switch_off!
       flash[:notice] = "The instrument has been deactivated successfully"
     end
-    session[:reservation_ended] = true if params[:reservation_ended].present?
+    session[:reservation_auto_logout] = true if params[:reservation_ended].present?
   end
 
   def switch_instrument_on!
     ReservationInstrumentSwitcher.new(@reservation).switch_on!
     flash[:notice] = "The instrument has been activated successfully"
+    session[:reservation_auto_logout] = true if params[:reservation_started].present?
   end
 
   def load_basic_resources
