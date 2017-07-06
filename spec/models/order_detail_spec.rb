@@ -852,6 +852,154 @@ RSpec.describe OrderDetail do
     end
   end
 
+  describe "#in_review? and #reviewed?" do
+    it "is neither when incomplete" do
+      expect(@order_detail).not_to be_in_review
+      expect(@order_detail).not_to be_reviewed
+    end
+
+    context "the order is complete" do
+      before { @order_detail.to_complete }
+
+      it "is in_review but not reviewed if the date is in the future" do
+        @order_detail.reviewed_at = 1.day.from_now
+
+        expect(@order_detail).to be_in_review
+        expect(@order_detail).not_to be_reviewed
+      end
+
+      it "is reviewed but not in review if the date is in the past" do
+        @order_detail.reviewed_at = 1.day.ago
+
+        expect(@order_detail).not_to be_in_review
+        expect(@order_detail).to be_reviewed
+      end
+
+      it "is neither when it is in dispute" do
+        @order_detail.reviewed_at = 1.day.from_now
+        @order_detail.dispute_at = 1.day.ago
+
+        expect(@order_detail).not_to be_in_review
+        expect(@order_detail).not_to be_reviewed
+      end
+    end
+  end
+
+  describe "#ready_for_statement?" do
+    describe "a statementable account" do
+      before do
+        allow(Account.config).to receive(:using_statements?).and_return true
+      end
+
+      it "is not ready if it has not been reviewed" do
+        @order_detail.reviewed_at = nil
+        expect(@order_detail).not_to be_ready_for_statement
+      end
+
+      it "is ready if it is not statemented and the reviewed_at is in the past" do
+        @order_detail.reviewed_at = 1.day.ago
+        expect(@order_detail).to be_ready_for_statement
+      end
+
+      it "is not ready if the reviewed_at is in the future" do
+        @order_detail.reviewed_at = 1.day.from_now
+        expect(@order_detail).not_to be_ready_for_statement
+      end
+
+      it "is not ready if reviewed_at is in the past, but is in dispute" do
+        @order_detail.reviewed_at = 1.day.ago
+        @order_detail.dispute_at = 1.day.ago
+        expect(@order_detail).not_to be_ready_for_statement
+      end
+
+      it "is not ready if it is statemented" do
+        @order_detail.reviewed_at = 1.day.ago
+        @order_detail.statement_id = 1
+        expect(@order_detail).not_to be_ready_for_statement
+      end
+    end
+
+    describe "a non-statementable account" do
+      before do
+        allow(Account.config).to receive(:using_statements?).and_return false
+      end
+
+      it "is not ready, even when other states are correct" do
+        @order_detail.reviewed_at = 1.day.ago
+        expect(@order_detail).not_to be_ready_for_statement
+      end
+    end
+  end
+
+  describe "#ready_for_journal?" do
+    describe "a statementable account" do
+      before do
+        allow(Account.config).to receive(:using_journal?).and_return true
+      end
+
+      it "is not ready if it has not been reviewed" do
+        @order_detail.reviewed_at = nil
+        expect(@order_detail).not_to be_ready_for_journal
+      end
+
+      it "is ready if it is not statemented and the reviewed_at is in the past" do
+        @order_detail.reviewed_at = 1.day.ago
+        expect(@order_detail).to be_ready_for_journal
+      end
+
+      it "is not ready if the reviewed_at is in the future" do
+        @order_detail.reviewed_at = 1.day.from_now
+        expect(@order_detail).not_to be_ready_for_journal
+      end
+
+      it "is not ready if reviewed_at is in the past, but is in dispute" do
+        @order_detail.reviewed_at = 1.day.ago
+        @order_detail.dispute_at = 1.day.ago
+        expect(@order_detail).not_to be_ready_for_journal
+      end
+
+      it "is not ready if it is statemented" do
+        @order_detail.reviewed_at = 1.day.ago
+        @order_detail.journal_id = 1
+        expect(@order_detail).not_to be_ready_for_journal
+      end
+    end
+
+    describe "a non-statementable account" do
+      before do
+        allow(Account.config).to receive(:using_journal?).and_return false
+      end
+
+      it "is not ready, even when other states are correct" do
+        @order_detail.reviewed_at = 1.day.ago
+        expect(@order_detail).not_to be_ready_for_journal
+      end
+    end
+  end
+
+  describe "#awaiting_payment?" do
+    it "is not awaiting payment if journaled" do
+      @order_detail.to_complete
+      @order_detail.journal_id = 1
+      expect(@order_detail).not_to be_awaiting_payment
+    end
+
+    it "is awaiting payment if it is statemented but not reconciled" do
+      @order_detail.to_complete
+      @order_detail.statement_id = 1
+      expect(@order_detail).to be_awaiting_payment
+    end
+
+    it "is not awaiting payment if it is reconciled" do
+      @order_detail.to_complete
+      @order_detail.actual_cost = 100
+      @order_detail.actual_subsidy = 0
+      @order_detail.to_reconciled
+      @order_detail.statement_id = 1
+      expect(@order_detail).not_to be_awaiting_payment
+    end
+  end
+
   describe "#reviewed_at" do
     before { order_detail.to_complete! }
 

@@ -707,6 +707,15 @@ en:
       can_reconcile:
         alert: This order can be reconciled
         badge: Can Reconcile
+      ready_for_statement:
+        alert: This order is ready to be statemented
+        badge: Ready for Statement
+      ready_for_journal:
+        alert: This order is ready to be journaled
+        badge: Ready for Journal
+      awaiting_payment:
+        alert: This order has been statemented, but is not yet reconciled
+        badge: Awaiting Payment
     note: "Note: %{note}"
 
   product_accessories:
