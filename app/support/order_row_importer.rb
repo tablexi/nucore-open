@@ -70,10 +70,14 @@ class OrderRowImporter
     @order_key ||= [user_field, chart_string_field, order_date_field]
   end
 
-  def row_with_errors # TODO: refactor
-    new_row = @row.dup
+  def row_with_errors
+    # Start with a hash of HEADERS keys with nil values to ensure optional columns
+    # are included in the report even if they are not in the uploaded CSV.
+    new_row = Hash[HEADERS.values.zip []]
+    new_row.merge!(@row)
     new_row[HEADERS[:errors]] = errors.join(", ")
-    new_row
+
+    CSV::Row.new(new_row.keys, new_row.values)
   end
 
   def user

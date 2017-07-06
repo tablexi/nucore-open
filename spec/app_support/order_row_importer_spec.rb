@@ -44,7 +44,6 @@ RSpec.describe OrderRowImporter do
       "Quantity" => quantity,
       "Order Date" => order_date,
       "Fulfillment Date" => fulfillment_date,
-      "Errors" => errors,
       "Note" => notes,
     }
     CSV::Row.new(ref.keys, ref.values)
@@ -56,7 +55,6 @@ RSpec.describe OrderRowImporter do
   let(:quantity) { "column4" }
   let(:order_date) { "column5" }
   let(:fulfillment_date) { "column6" }
-  let(:errors) { "column7" }
   let(:notes) { "column8" }
 
   describe "#import" do
@@ -385,7 +383,6 @@ RSpec.describe OrderRowImporter do
           "Quantity" => quantity,
           "Order Date" => order_date,
           "Fulfillment Date" => fulfillment_date,
-          "Errors" => errors,
           "Note" => notes,
         }
         CSV::Row.new(ref.keys, ref.values)
@@ -436,7 +433,31 @@ RSpec.describe OrderRowImporter do
 
   describe "#row_with_errors" do
     let(:errors) { %w(one two three) }
-    let(:row) { { "Errors" => "" } }
+    let(:row) do
+      {
+        "Netid / Email" => username,
+        "Chart String" => chart_string,
+        "Product Name" => product_name,
+        "Quantity" => quantity,
+        "Order Date" => order_date,
+        "Fulfillment Date" => fulfillment_date,
+      }
+    end
+
+    it "has all of the columns in the correct order" do
+      expect(subject.row_with_errors.headers).to eq(
+        [
+          "Netid / Email",
+          "Chart String",
+          "Product Name",
+          "Quantity",
+          "Order Date",
+          "Fulfillment Date",
+          "Note",
+          "Errors",
+        ],
+      )
+    end
 
     context "when the import has no errors" do
       it "does not add errors to the error column" do

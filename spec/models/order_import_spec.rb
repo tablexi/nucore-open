@@ -3,21 +3,22 @@ require "controller_spec_helper"
 
 require "stringio"
 
-CSV_HEADERS = [
-  "Netid / Email",
-  "Chart String",
-  "Product Name",
-  "Quantity",
-  "Order Date",
-  "Fulfillment Date",
-  "Note",
-].freeze
-
-def nucore_format_date(date)
-  date.strftime("%m/%d/%Y")
-end
-
 RSpec.describe OrderImport, :time_travel do
+
+  CSV_HEADERS = [
+    "Netid / Email",
+    "Chart String",
+    "Product Name",
+    "Quantity",
+    "Order Date",
+    "Fulfillment Date",
+    "Note",
+  ].freeze
+
+  def nucore_format_date(date)
+    date.strftime("%m/%d/%Y")
+  end
+
   let(:now) { fiscal_year_beginning + 5.days }
 
   subject(:order_import) do
