@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe ReservationCalendar do
 
+  let(:order) { build_stubbed(:order) }
   let(:reservation) do
     build(:reservation,
           reserve_start_date: 1.day.from_now.to_date,
@@ -10,15 +11,18 @@ RSpec.describe ReservationCalendar do
           reserve_start_meridian: "am",
           duration_mins: 60,
           split_times: true,
-          order_detail: build(:order_detail),
+          order: order,
+          order_detail: build(:order_detail, order: order),
          )
   end
   let(:calendar) { ReservationCalendar.new(reservation) }
+  let(:facility) { build(:facility, name: "Facility", abbreviation: "FA") }
   let(:ical) { calendar.as_ical }
 
   before(:each) do
     allow(reservation).to receive_message_chain(:product, :name)
-      .and_return("Instrument 1")
+      .and_return("Instrument")
+    allow(reservation).to receive(:facility).and_return(facility)
   end
 
   describe "#as_ical" do
@@ -28,8 +32,9 @@ RSpec.describe ReservationCalendar do
       event = ical.events.first
       expect(event.dtstart).to eq(reservation.reserve_start_at)
       expect(event.dtend).to eq(reservation.reserve_end_at)
-      expect(event.summary).to eq("Reservation for Instrument 1")
-      expect(event.description).to eq("Reservation for Instrument 1")
+      expect(event.summary).to eq("FA: Instrument")
+      expect(event.description).to eq("Facility reservation for Instrument. Order number #{order.id}")
+      expect(event.location).to eq("Facility")
       expect(event.ip_class).to eq("PRIVATE")
     end
 
