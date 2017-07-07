@@ -73,7 +73,7 @@ class OrderRowImporter
   def row_with_errors
     # Start with a hash of HEADERS keys with nil values to ensure optional columns
     # are included in the report even if they are not in the uploaded CSV.
-    new_row = Hash[HEADERS.values.zip []]
+    new_row = HEADERS.values.each_with_object({}) { |header, hash| hash[header] = nil }
     new_row.merge!(@row)
     new_row[HEADERS[:errors]] = errors.join(", ")
 
