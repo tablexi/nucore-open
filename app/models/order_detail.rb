@@ -211,17 +211,6 @@ class OrderDetail < ActiveRecord::Base
     where("estimated_cost IS NOT NULL")
   end
 
-  def in_review?
-    # check in the database if self.id is in the scope
-    self.class.in_review.exists?(id: id)
-    # this would work without hitting the database again, but duplicates the functionality of the scope
-    # state == 'complete' and !reviewed_at.nil? and reviewed_at > Time.zone.now and (dispute_at.nil? or !dispute_resolved_at.nil?)
-  end
-
-  def reviewed?
-    reviewed_at.present? && !in_review? && !in_dispute?
-  end
-
   def can_be_viewed_by?(user)
     order.user_id == user.id || account.owner_user.id == user.id || account.business_admins.any? { |au| au.user_id == user.id }
   end
@@ -527,10 +516,6 @@ class OrderDetail < ActiveRecord::Base
     end
   end
 
-  def can_dispute?
-    in_review?
-  end
-
   def customer_account_changeable?
     journal_id.blank? && statement_id.blank? && !canceled?
   end
@@ -711,15 +696,6 @@ class OrderDetail < ActiveRecord::Base
     price_policy.nil? && estimated_cost && estimated_subsidy && actual_cost.nil? && actual_subsidy.nil?
   end
 
-  def in_dispute?
-    dispute_at && dispute_resolved_at.nil? && !canceled?
-  end
-
-  def disputed?
-    # only used in specs
-    dispute_at.present? && !canceled?
-  end
-
   def cancel_reservation(canceled_by, canceled_reason: nil, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
     self.canceled_by = canceled_by.id
     self.canceled_reason = canceled_reason
@@ -769,6 +745,34 @@ class OrderDetail < ActiveRecord::Base
   # the method will return true, otherwise false
   def problem_order?
     problem
+  end
+
+  def can_dispute?
+    in_review? && dispute_at.blank?
+  end
+
+  def in_dispute?
+    dispute_at.present? && dispute_resolved_at.nil? && !canceled?
+  end
+
+  def in_review?
+    reviewed_at.try(:future?) && !in_dispute?
+  end
+
+  def reviewed?
+    reviewed_at.try(:past?) && !in_dispute?
+  end
+
+  def ready_for_statement?
+    reviewed? && statement_id.blank? && Account.config.using_statements?(account.type)
+  end
+
+  def ready_for_journal?
+    reviewed? && journal_id.blank? && Account.config.using_journal?(account.type)
+  end
+
+  def awaiting_payment?
+    statement_id.present? && !reconciled?
   end
 
   def in_open_journal?

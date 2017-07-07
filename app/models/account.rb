@@ -201,7 +201,7 @@ class Account < ActiveRecord::Base
 
   def can_reconcile?(order_detail)
     if self.class.using_journal?
-      order_detail.journal.try(:successful?) || OrderDetail.need_journal.exists?(order_detail.id)
+      order_detail.journal.try(:successful?) || order_detail.ready_for_journal?
     elsif self.class.using_statements?
       order_detail.statement_id.present?
     else
