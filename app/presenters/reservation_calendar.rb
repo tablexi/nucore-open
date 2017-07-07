@@ -2,8 +2,8 @@ class ReservationCalendar < SimpleDelegator
 
   attr_accessor :hostname
 
-  def self.to_calendar(reservation)
-    ReservationCalendar.new(reservation).as_ical
+  def self.to_calendar(reservation, hostname)
+    new(reservation, hostname).as_ical
   end
 
   def initialize(reservation, hostname)
@@ -16,13 +16,19 @@ class ReservationCalendar < SimpleDelegator
     cal.event do |e|
       e.dtstart = Icalendar::Values::DateTime.new(reserve_start_at)
       e.dtend = Icalendar::Values::DateTime.new(reserve_end_at)
-      e.summary = "#{facility.abbreviation}: #{product.name}"
-      e.description = "#{facility.name} reservation for #{product.name}. Order number #{order.id}"
+      e.summary = I18n.t(
+        "ical.summary", facility: facility.abbreviation, product: product.name)
+      e.description = I18n.t(
+        "ical.description",
+        facility: facility.name,
+        product: product.name,
+        order_number: order_detail.order_number)
       e.location = facility.name
       e.url = Icalendar::Values::Uri.new(
-        Rails.application.routes.url_helpers.order_order_detail_reservation_url(
-          order_id: order.id, order_detail_id: order_detail_id,
-          id: id, host: @hostname))
+        Rails.application.routes.url_helpers.order_order_detail_url(
+          order_id: order.id,
+          id: order_detail.id,
+          host: @hostname))
       e.ip_class = "PRIVATE"
     end
     cal

@@ -1,8 +1,9 @@
 require "rails_helper"
 
-RSpec.describe ReservationCalendar do
+RSpec.describe ReservationCalendar, :aggregate_failures do
 
   let(:order) { build_stubbed(:order) }
+  let(:order_detail) { build_stubbed(:order_detail, order: order) }
   let(:reservation) do
     build_stubbed(:reservation,
                   reserve_start_date: 1.day.from_now.to_date,
@@ -12,7 +13,7 @@ RSpec.describe ReservationCalendar do
                   duration_mins: 60,
                   split_times: true,
                   order: order,
-                  order_detail: build_stubbed(:order_detail, order: order))
+                  order_detail: order_detail)
   end
   let(:calendar) { ReservationCalendar.new(reservation, "localhost") }
   let(:facility) { build(:facility, name: "Facility", abbreviation: "FA") }
@@ -32,9 +33,9 @@ RSpec.describe ReservationCalendar do
       expect(event.dtstart).to eq(reservation.reserve_start_at)
       expect(event.dtend).to eq(reservation.reserve_end_at)
       expect(event.summary).to eq("FA: Instrument")
-      expect(event.description).to eq("Facility reservation for Instrument. Order number #{order.id}")
+      expect(event.description).to eq("Facility reservation for Instrument. Order number #{order_detail.order_number}.")
       expect(event.location).to eq("Facility")
-      expect(event.url.to_s).to eq("http://localhost/orders/1001/order_details/1002/reservations/1003")
+      expect(event.url.to_s).to eq("http://localhost/orders/#{order.id}/order_details/#{order_detail.id}")
       expect(event.ip_class).to eq("PRIVATE")
     end
 

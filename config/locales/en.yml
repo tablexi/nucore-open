@@ -1139,3 +1139,7 @@ en:
 
   testing:
     overriding: This should be overriden in override/en.yml
+
+  ical:
+    summary: "%{facility}: %{product}"
+    description: "%{facility} reservation for %{product}. Order number %{order_number}."
