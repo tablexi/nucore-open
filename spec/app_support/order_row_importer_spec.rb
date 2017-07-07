@@ -55,7 +55,7 @@ RSpec.describe OrderRowImporter do
   let(:quantity) { "column4" }
   let(:order_date) { "column5" }
   let(:fulfillment_date) { "column6" }
-  let(:notes) { "column8" }
+  let(:notes) { "column7" }
 
   describe "#import" do
     shared_examples_for "an order was created" do
