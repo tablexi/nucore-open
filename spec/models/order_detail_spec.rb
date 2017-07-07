@@ -827,18 +827,17 @@ RSpec.describe OrderDetail do
     before :each do
       @order_detail.to_complete
       @order_detail.reviewed_at = 1.day.from_now
-      @order_detail.save
 
       @order_detail2 = @order.order_details.create(attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
       @order_detail2.to_complete
       @order_detail2.reviewed_at = 1.day.ago
-      @order_detail2.save!
     end
 
     it "should not be disputable if its not complete" do
       @order_detail3 = @order.order_details.create(attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
       expect(@order_detail3).not_to be_can_dispute
     end
+
     it "should not be in dispute if the review date has passed" do
       expect(@order_detail).to be_can_dispute
       expect(@order_detail2).not_to be_can_dispute
@@ -848,6 +847,14 @@ RSpec.describe OrderDetail do
       @order_detail.dispute_at = 1.hour.ago
       @order_detail.dispute_reason = "because"
       @order_detail.save!
+      expect(@order_detail).not_to be_can_dispute
+    end
+
+    it "is not disputable if if the dispute has been resolved, but the reviewed at is in the future" do
+      @order_detail.reviewed_at = 5.day.from_now
+      @order_detail.dispute_at = 1.hour.ago
+      @order_detail.dispute_resolved_at = 1.hour.ago
+
       expect(@order_detail).not_to be_can_dispute
     end
   end
