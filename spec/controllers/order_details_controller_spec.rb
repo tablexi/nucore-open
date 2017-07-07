@@ -29,7 +29,7 @@ RSpec.describe OrderDetailsController do
       context "with a blank dispute_reason" do
         let(:dispute_reason) { "" }
 
-        it "does not set set the dispute at" do
+        it "does not set the dispute at" do
           expect(order_detail.reload.dispute_at).to be_blank
         end
       end
@@ -37,7 +37,7 @@ RSpec.describe OrderDetailsController do
       context "with a dispute_reason" do
         let(:dispute_reason) { "Too expensive" }
 
-        it "caputures the dispute at time" do
+        it "captures the dispute at time" do
           expect(order_detail.reload.dispute_at).to be_present
         end
 

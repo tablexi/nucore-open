@@ -851,7 +851,7 @@ RSpec.describe OrderDetail do
     end
 
     it "is not disputable if if the dispute has been resolved, but the reviewed at is in the future" do
-      @order_detail.reviewed_at = 5.day.from_now
+      @order_detail.reviewed_at = 5.days.from_now
       @order_detail.dispute_at = 1.hour.ago
       @order_detail.dispute_resolved_at = 1.hour.ago
 
