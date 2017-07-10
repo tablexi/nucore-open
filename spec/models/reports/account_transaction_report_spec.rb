@@ -5,8 +5,7 @@ RSpec.describe Reports::AccountTransactionsReport do
 
   describe '#to_csv' do
     context "with no order details" do
-      # TODO: use `.none` in Rails 4
-      let(:order_details) { OrderDetail.where("1 = 0") }
+      let(:order_details) { OrderDetail.none }
 
       it "generates a header" do
         expect(report.to_csv.lines.count).to eq(1)

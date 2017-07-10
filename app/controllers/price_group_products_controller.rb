@@ -57,8 +57,7 @@ class PriceGroupProductsController < ApplicationController
     @price_groups = current_facility.price_groups
 
     existing_pgps = @product.price_group_products
-    # TODO: change to plain Hash once we don't need to support Ruby 1.8
-    groups_with_pgp = ActiveSupport::OrderedHash[existing_pgps.map { |pgp| [pgp.price_group, pgp] }]
+    groups_with_pgp = Hash[existing_pgps.map { |pgp| [pgp.price_group, pgp] }]
 
     @price_group_products = []
     current_facility.price_groups.each do |pg|

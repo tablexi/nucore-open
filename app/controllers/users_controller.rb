@@ -204,7 +204,7 @@ class UsersController < ApplicationController
   end
 
   def username_database_lookup(username)
-    User.where("LOWER(username) = ?", username.downcase).first
+    User.find_by("LOWER(username) = ?", username.downcase)
   end
 
   def generate_new_password

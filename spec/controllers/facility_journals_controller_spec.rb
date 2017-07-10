@@ -120,7 +120,7 @@ RSpec.describe FacilityJournalsController do
         end
 
         it "sets all order details to reconciled" do
-          reconciled_status = OrderStatus.reconciled.first
+          reconciled_status = OrderStatus.reconciled_status
           expect(@order_detail1.reload.order_status).to eq(reconciled_status)
           expect(@order_detail3.reload.order_status).to eq(reconciled_status)
         end
@@ -153,7 +153,7 @@ RSpec.describe FacilityJournalsController do
         end
 
         it "leaves the order statuses as complete" do
-          completed_status = OrderStatus.complete.first
+          completed_status = OrderStatus.complete_status
           expect(@order_detail1.reload.order_status).to eq(completed_status)
           expect(@order_detail3.reload.order_status).to eq(completed_status)
         end
@@ -379,7 +379,7 @@ RSpec.describe FacilityJournalsController do
     #     @params[:order_detail_ids] = order_details.map(&:id)
     #     @order.state = "validated"
     #     @order.purchase!
-    #     complete_status = OrderStatus.complete.first
+    #     complete_status = OrderStatus.complete_status
 
     #     order_details.each do |order_detail|
     #       order_detail.update_attributes(

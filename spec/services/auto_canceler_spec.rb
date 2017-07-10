@@ -35,7 +35,7 @@ RSpec.describe AutoCanceler, :time_travel do
     res
   end
 
-  let(:canceled_status) { OrderStatus.canceled.first }
+  let(:canceled_status) { OrderStatus.canceled_status }
 
   let(:canceler) { AutoCanceler.new }
 

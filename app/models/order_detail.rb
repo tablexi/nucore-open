@@ -67,11 +67,7 @@ class OrderDetail < ActiveRecord::Base
     estimated_price_policy.try(:price_group)
   end
 
-  # consider changing in Rails 4 to
-  # `has_many :current_journal_rows, -> { where(journal_id: journal_id) }`
-  def current_journal_rows
-    journal_rows.where(journal_id: journal_id)
-  end
+  has_many :current_journal_rows, -> { where(journal_id: journal_id) }
 
   delegate :journal_date, to: :journal, allow_nil: true
   delegate :reference, to: :journal, prefix: true, allow_nil: true
@@ -434,7 +430,7 @@ class OrderDetail < ActiveRecord::Base
       reservation.assign_actuals_off_reserve unless reservation.product.reservation_only?
       reservation.save!
     end
-    change_status!(OrderStatus.complete.first) do |od|
+    change_status!(OrderStatus.complete_status) do |od|
       od.fulfilled_at = event_time
       od.assign_price_policy
     end
@@ -904,7 +900,7 @@ class OrderDetail < ActiveRecord::Base
     fee = cancellation_fee
     self.actual_cost = fee
     self.actual_subsidy = 0
-    change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
+    change_status!(fee > 0 ? OrderStatus.complete_status : order_status)
     save! if changed? # If the cancel goes from complete => complete, change status doesn't save
     true
   end

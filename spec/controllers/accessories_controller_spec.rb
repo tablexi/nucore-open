@@ -13,7 +13,7 @@ RSpec.describe AccessoriesController do
   let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 1.hour.ago) }
   let(:order_detail) { reservation.order_detail }
   let(:order) { order_detail.order }
-  let(:new_order_status) { OrderStatus.new_os.first }
+  let(:new_order_status) { OrderStatus.new_status }
 
   before :each do
     order_detail.change_status! new_order_status

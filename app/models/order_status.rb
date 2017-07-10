@@ -16,30 +16,30 @@ class OrderStatus < ActiveRecord::Base
   end
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).order(:lft) }
-  scope :new_os, -> { where(name: "New").limit(1) }
-  scope :inprocess, -> { where(name: "In Process").limit(1) }
-  scope :canceled, -> { where(name: "Canceled").limit(1) }
-  scope :complete, -> { where(name: "Complete").limit(1) }
-  scope :reconciled, -> { where(name: "Reconciled").limit(1) }
+  scope :new_os, -> { find_by(name: "New") }
+  scope :inprocess, -> { find_by(name: "In Process") }
+  scope :canceled, -> { find_by(name: "Canceled") }
+  scope :complete, -> { find_by(name: "Complete") }
+  scope :reconciled, -> { find_by(name: "Reconciled") }
 
   def self.new_status
-    new_os.first
+    new_os
   end
 
   def self.complete_status
-    complete.first
+    complete
   end
 
   def self.canceled_status
-    canceled.first
+    canceled
   end
 
   def self.in_process_status
-    inprocess.first
+    inprocess
   end
 
   def self.reconciled_status
-    reconciled.first
+    reconciled
   end
 
   def self.add_to_order_statuses(facility)
@@ -75,7 +75,7 @@ class OrderStatus < ActiveRecord::Base
   end
 
   def root_canceled?
-    root == OrderStatus.canceled.first
+    root == OrderStatus.canceled_status
   end
 
   class << self

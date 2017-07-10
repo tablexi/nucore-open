@@ -1146,8 +1146,8 @@ RSpec.describe OrderDetail do
     end
 
     describe "non_canceled" do
-      let!(:order_detail) { create(:order_detail, order_status: OrderStatus.canceled.first, state: "canceled", order: Order.last, product: Product.last) }
-      let!(:active_order_detail) { create(:order_detail, order_status: OrderStatus.complete.first, order: Order.last, product: Product.last) }
+      let!(:order_detail) { create(:order_detail, order_status: OrderStatus.canceled_status, state: "canceled", order: Order.last, product: Product.last) }
+      let!(:active_order_detail) { create(:order_detail, order_status: OrderStatus.complete_status, order: Order.last, product: Product.last) }
 
       it "should return only order details with non-cancelled status" do
         expect(OrderDetail.non_canceled).to include(active_order_detail)
@@ -1527,7 +1527,7 @@ RSpec.describe OrderDetail do
     context "when setting order status to Canceled" do
 
       def cancel_order_detail(options)
-        order_detail.update_order_status!(user, OrderStatus.canceled.first, options)
+        order_detail.update_order_status!(user, OrderStatus.canceled_status, options)
       end
 
       context "is statemented" do

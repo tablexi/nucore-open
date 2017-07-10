@@ -76,7 +76,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         end
 
         it "has new as a status" do
-          expect(assigns(:order_statuses)).to include(OrderStatus.new_os.first)
+          expect(assigns(:order_statuses)).to include(OrderStatus.new_status)
         end
 
         it "does not have a price policy" do
@@ -99,7 +99,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
       context "completed order" do
         before :each do
-          item_order_detail.change_status!(OrderStatus.complete.first)
+          item_order_detail.change_status!(OrderStatus.complete_status)
         end
 
         context "with a price policy" do
@@ -165,7 +165,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
       context "order in open journal" do
         let(:journal) { FactoryGirl.create(:journal, facility: facility) }
         before :each do
-          item_order_detail.change_status!(OrderStatus.complete.first)
+          item_order_detail.change_status!(OrderStatus.complete_status)
           item_order_detail.update_attributes(reviewed_at: 1.day.ago)
           journal.create_journal_rows! [item_order_detail]
           item_order_detail.reload
@@ -814,7 +814,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         before :each do
           reservation.update_attributes(reserve_start_at: reservation.reserve_start_at - 2.days, reserve_end_at: reservation.reserve_end_at - 2.days)
-          order_detail.update_order_status! @admin, OrderStatus.complete.first
+          order_detail.update_order_status! @admin, OrderStatus.complete_status
           @params[:order_detail] = {
             reservation: reservation_params(reservation.reserve_start_at, reservation.reserve_start_at)
                                    .merge(duration_mins: reservation.duration_mins, actual_duration_mins: new_duration),
