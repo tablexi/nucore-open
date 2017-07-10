@@ -16,30 +16,25 @@ class OrderStatus < ActiveRecord::Base
   end
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).order(:lft) }
-  scope :new_os, -> { find_by(name: "New") }
-  scope :inprocess, -> { find_by(name: "In Process") }
-  scope :canceled, -> { find_by(name: "Canceled") }
-  scope :complete, -> { find_by(name: "Complete") }
-  scope :reconciled, -> { find_by(name: "Reconciled") }
 
   def self.new_status
-    new_os
+    find_by(name: "New"
   end
 
   def self.complete_status
-    complete
+    find_by(name: "Complete")
   end
 
   def self.canceled_status
-    canceled
+    find_by(name: "Canceled")
   end
 
   def self.in_process_status
-    inprocess
+    find_by(name: "In Process")
   end
 
   def self.reconciled_status
-    reconciled
+    find_by(name: "Reconciled")
   end
 
   def self.add_to_order_statuses(facility)
