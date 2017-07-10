@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| f.read.chomp }
+
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
@@ -70,6 +72,7 @@ gem "sanger_sequencing", "~> 0.0.1", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", "~> 0.0.1", path: "vendor/engines/split_accounts"
 gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
+gem "net-telnet"
 
 group :development do
   gem "bullet"
@@ -122,7 +125,7 @@ group :stage, :production do
   gem "exception_notification", "~> 4.0.1"
   gem "lograge"
   gem "logstash-event"
-  gem "oj", "~> 2.12.14"
+  gem "oj"
   gem "rollbar"
   gem "unicorn", require: false
   gem "whenever", require: false

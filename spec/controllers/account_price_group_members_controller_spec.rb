@@ -134,7 +134,7 @@ RSpec.describe AccountPriceGroupMembersController do
     # it_should_allow_all facility_operators do
     it_should_allow :admin do
       expect(assigns(:accounts)).to include(account)
-      expect(assigns(:limit)).to be_kind_of Fixnum
+      expect(assigns(:limit)).to be_kind_of Integer
       expect(assigns(:price_group)).to eq(price_group)
       is_expected.to render_template("search_results")
     end

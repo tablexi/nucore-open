@@ -58,7 +58,7 @@ RSpec.describe Dataprobe::Ipio do
   end
 
   def should_update_sequence
-    fake_sequence = [double("Fixnum")]
+    fake_sequence = [double("Integer")]
     fake_reply = double "String", unpack: fake_sequence
     expect(fake_socket).to receive(:recv).with(2).and_return fake_reply
     expect(fake_reply).to receive(:unpack).with "s<"

@@ -345,6 +345,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
+    net-telnet (0.1.1)
     nio4r (2.0.0)
     nokogiri (1.7.2)
       mini_portile2 (~> 2.1.0)
@@ -352,7 +353,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     numerizer (0.1.1)
-    oj (2.12.14)
+    oj (3.2.0)
     orm_adapter (0.5.0)
     paperclip (4.2.4)
       activemodel (>= 3.2.0)
@@ -624,8 +625,9 @@ DEPENDENCIES
   logstash-event
   mysql2 (~> 0.3.20)
   nested_form_fields
+  net-telnet
   nokogiri (~> 1.7.1)
-  oj (~> 2.12.14)
+  oj
   paperclip (~> 4.2.0)
   poltergeist
   prawn (= 0.12)
@@ -672,5 +674,8 @@ DEPENDENCIES
   whenever
   will_paginate (~> 3.1.5)
 
+RUBY VERSION
+   ruby 2.4.1p111
+
 BUNDLED WITH
-   1.15.0
+   1.15.1
