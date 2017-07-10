@@ -17,7 +17,7 @@ RSpec.describe ReservationCalendar, :aggregate_failures do
   end
   let(:calendar) { ReservationCalendar.new(reservation, "localhost") }
   let(:facility) { build(:facility, name: "Facility", abbreviation: "FA") }
-  let(:ical) { calendar.as_ical }
+  let(:ical) { calendar.ical }
 
   before(:each) do
     allow(reservation).to receive_message_chain(:product, :name)

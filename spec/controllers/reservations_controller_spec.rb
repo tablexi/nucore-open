@@ -1378,4 +1378,37 @@ RSpec.describe ReservationsController do
       expect(response.body).to_not include "show_canceled"
     end
   end
+
+  describe "get #show" do
+    let(:start) { Time.zone.now.end_of_day + 1.second + 9.hours }
+    let(:reservation) do
+      @instrument.reservations.create!(
+        reserve_start_at: start, order_detail: @order_detail,
+        duration_mins: 60, split_times: true)
+    end
+
+    before(:example) do
+      sign_in(@admin)
+    end
+
+    context "normal HTML" do
+      it "renders the normal template" do
+        Rails.logger.ap reservation.errors
+        get :show, order_id: @order.id, order_detail_id: @order_detail.id,
+                   id: reservation.id
+        is_expected.to render_template("show")
+      end
+    end
+
+    context "ical" do
+      it "downloads an ical" do
+        get :show, order_id: @order.id, order_detail_id: @order_detail.id,
+                   id: reservation.id, format: :ics
+        expect(response.body).to match(/BEGIN:VCALENDAR/)
+      end
+
+    end
+
+  end
+
 end

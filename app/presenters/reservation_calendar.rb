@@ -1,6 +1,6 @@
 class ReservationCalendar < SimpleDelegator
 
-  attr_accessor :hostname
+  attr_accessor :hostname, :ical
 
   def self.to_calendar(reservation, hostname)
     new(reservation, hostname).as_ical
@@ -9,29 +9,46 @@ class ReservationCalendar < SimpleDelegator
   def initialize(reservation, hostname)
     super(reservation)
     @hostname = hostname
+    generate_ical
   end
 
-  def as_ical
-    cal = Icalendar::Calendar.new
-    cal.event do |e|
+  def generate_ical
+    @ical = Icalendar::Calendar.new
+    ical.event do |e|
       e.dtstart = Icalendar::Values::DateTime.new(reserve_start_at)
       e.dtend = Icalendar::Values::DateTime.new(reserve_end_at)
-      e.summary = I18n.t(
-        "ical.summary", facility: facility.abbreviation, product: product.name)
-      e.description = I18n.t(
-        "ical.description",
-        facility: facility.name,
-        product: product.name,
-        order_number: order_detail.order_number)
+      e.summary = summary
+      e.description = description
       e.location = facility.name
-      e.url = Icalendar::Values::Uri.new(
-        Rails.application.routes.url_helpers.order_order_detail_url(
-          order_id: order.id,
-          id: order_detail.id,
-          host: @hostname))
+      e.url = url
       e.ip_class = "PRIVATE"
     end
-    cal
+    ical
+  end
+
+  def to_ical
+    ical.publish
+    ical.to_ical
+  end
+
+  def summary
+    I18n.t("ical.summary", facility: facility.abbreviation, product: product.name)
+  end
+
+  def description
+    I18n.t(
+      "ical.description",
+      facility: facility.name,
+      product: product.name,
+      order_number: order_detail.order_number)
+  end
+
+  def url
+    Icalendar::Values::Uri.new(
+      Rails.application.routes.url_helpers.order_order_detail_url(
+        order_id: order.id,
+        id: order_detail.id,
+        host: @hostname))
   end
 
 end

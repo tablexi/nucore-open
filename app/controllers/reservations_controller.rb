@@ -138,6 +138,17 @@ class ReservationsController < ApplicationController
     @reservation  = Reservation.find(params[:id])
 
     raise ActiveRecord::RecordNotFound if @reservation != @order_detail.reservation
+
+    respond_to do |format|
+      format.html
+
+      format.ics do
+        calendar = ReservationCalendar.new(@reservation, request.host)
+        send_data(calendar.to_ical,
+                  type: 'text/calendar', disposition: 'attachment',
+                  filename: "reservation_cal_#{@reservation.id}.ics")
+      end
+    end
   end
 
   # GET /orders/1/order_details/1/reservations/1/edit
