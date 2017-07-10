@@ -18,7 +18,7 @@ class OrderStatus < ActiveRecord::Base
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).order(:lft) }
 
   def self.new_status
-    find_by(name: "New"
+    find_by(name: "New")
   end
 
   def self.complete_status
