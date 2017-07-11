@@ -1,33 +1,14 @@
+class window.FullCalendarConfig
+  constructor: (@$element) ->
 
-$ ->
-  window.defaultCalendarOptions = {
+  options: ->
     editable: false
     defaultView: 'agendaWeek'
     allDaySlot: false
     events: events_path
-    loading: (isLoading, view) ->
-      if isLoading
-        $("#overlay").addClass('on').removeClass('off')
-      else
-        $("#overlay").addClass('off').removeClass('on')
-        try
-          startDate = $.fullCalendar.formatDate(view.start, "yyyyMMdd")
-          endDate   = $.fullCalendar.formatDate(view.end, "yyyyMMdd")
-          # check calendar start date
-          if startDate < minDate
-            # hide the previous button
-            $("div.fc-button-prev").hide()
-          else
-            # show the previous button
-            $("div.fc-button-prev").show()
-
-          # check calendar end date
-          if endDate > maxDate
-            # hide the next button
-            $("div.fc-button-next").hide()
-          else
-            # show the next button
-            $("div.fc-button-next").show()
+    loading: (isLoading, view) =>
+      @toggleOverlay(isLoading)
+      @toggleNextPrev(view) if !isLoading
 
     eventAfterRender: (event, element) ->
       tooltip = [
@@ -56,7 +37,34 @@ $ ->
               at:  'bottom left'
               my:  'topRight'
           )
-  }
+  toggleOverlay: (isLoading) ->
+    if isLoading
+      $("#overlay").addClass("on").removeClass("off")
+    else
+      $("#overlay").addClass("off").removeClass("on")
+
+  toggleNextPrev: (view) ->
+    try
+      startDate = $.fullCalendar.formatDate(view.start, "yyyyMMdd")
+      endDate   = $.fullCalendar.formatDate(view.end, "yyyyMMdd")
+      # check calendar start date
+      if startDate < minDate
+        # hide the previous button
+        $("div.fc-button-prev").hide()
+      else
+        # show the previous button
+        $("div.fc-button-prev").show()
+
+      # check calendar end date
+      if endDate > maxDate
+        # hide the next button
+        $("div.fc-button-next").hide()
+      else
+        # show the next button
+        $("div.fc-button-next").show()
+
+$ ->
+  window.defaultCalendarOptions = new FullCalendarConfig($("#calendar")).options()
   if window.minTime?
     defaultCalendarOptions.minTime = window.minTime
   if window.maxTime?
