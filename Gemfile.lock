@@ -654,7 +654,7 @@ DEPENDENCIES
   sass-rails (~> 5.0.6)
   secure_rooms!
   shoulda-matchers (~> 3.1.0)
-  simple_form
+  simple_form (~> 3.5.0)
   single_test (= 0.4.0)
   split_accounts (~> 0.0.1)!
   spreadsheet (~> 1.1.4)
