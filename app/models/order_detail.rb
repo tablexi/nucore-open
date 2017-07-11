@@ -56,7 +56,6 @@ class OrderDetail < ActiveRecord::Base
   has_many   :notifications, as: :subject, dependent: :destroy
   has_many   :stored_files, dependent: :destroy
   has_many   :sample_results_files, -> { sample_result }, class_name: "StoredFile"
-  has_many   :current_journal_rows, -> { where(journal_id: journal_id) }, class_name: "JournalRow"
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
@@ -68,6 +67,11 @@ class OrderDetail < ActiveRecord::Base
     estimated_price_policy.try(:price_group)
   end
 
+  # consider changing in Rails 4 to
+  # `has_many :current_journal_rows, -> { where(journal_id: journal_id) }`
+  def current_journal_rows
+    journal_rows.where(journal_id: journal_id)
+  end
 
   delegate :journal_date, to: :journal, allow_nil: true
   delegate :reference, to: :journal, prefix: true, allow_nil: true
