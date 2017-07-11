@@ -58,7 +58,7 @@ class OrderStatus < ActiveRecord::Base
   end
 
   def self.add_to_order_statuses(facility)
-    non_protected_statuses(facility) - [canceled_status]
+    non_protected_statuses(facility) - [canceled]
   end
 
   def editable?
@@ -90,7 +90,7 @@ class OrderStatus < ActiveRecord::Base
   end
 
   def root_canceled?
-    root == OrderStatus.canceled_status
+    root == OrderStatus.canceled
   end
 
   class << self
@@ -104,7 +104,7 @@ class OrderStatus < ActiveRecord::Base
     end
 
     def initial_statuses(facility)
-      first_invalid_status = canceled_status
+      first_invalid_status = canceled
       statuses = all.sort_by(&:lft).reject do |os|
         !os.is_left_of?(first_invalid_status)
       end
@@ -113,7 +113,7 @@ class OrderStatus < ActiveRecord::Base
     end
 
     def non_protected_statuses(facility)
-      first_protected_status = reconciled_status
+      first_protected_status = reconciled
       statuses = all.sort_by(&:lft).reject do |os|
         !os.is_left_of?(first_protected_status)
       end
