@@ -3,7 +3,6 @@ tmp/
 .bundle/
 .idea/
 .rvmrc
-.ruby-version
 .ruby-gemset
 sqlnet.log
 config/database.yml

@@ -299,7 +299,7 @@ GEM
       sysexits (~> 1.1)
     hashery (2.1.2)
     hitimes (1.2.4)
-    i18n (0.8.4)
+    i18n (0.8.6)
     icalendar (2.4.1)
     ipaddress (0.8.3)
     jquery-rails (4.2.2)
@@ -346,6 +346,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
+    net-telnet (0.1.1)
     nio4r (2.0.0)
     nokogiri (1.7.2)
       mini_portile2 (~> 2.1.0)
@@ -353,7 +354,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     numerizer (0.1.1)
-    oj (2.12.14)
+    oj (3.2.0)
     orm_adapter (0.5.0)
     paperclip (4.2.4)
       activemodel (>= 3.2.0)
@@ -498,9 +499,9 @@ GEM
     shoulda-matchers (3.1.1)
       activesupport (>= 4.0.0)
     sigar (0.7.3)
-    simple_form (3.3.1)
-      actionpack (> 4, < 5.1)
-      activemodel (> 4, < 5.1)
+    simple_form (3.5.0)
+      actionpack (> 4, < 5.2)
+      activemodel (> 4, < 5.2)
     simplecov (0.13.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -626,8 +627,9 @@ DEPENDENCIES
   logstash-event
   mysql2 (~> 0.3.20)
   nested_form_fields
+  net-telnet
   nokogiri (~> 1.7.1)
-  oj (~> 2.12.14)
+  oj
   paperclip (~> 4.2.0)
   poltergeist
   prawn (= 0.12)
@@ -654,7 +656,7 @@ DEPENDENCIES
   sass-rails (~> 5.0.6)
   secure_rooms!
   shoulda-matchers (~> 3.1.0)
-  simple_form (~> 3.3.1)
+  simple_form (~> 3.5.0)
   single_test (= 0.4.0)
   split_accounts (~> 0.0.1)!
   spreadsheet (~> 1.1.4)
@@ -673,6 +675,9 @@ DEPENDENCIES
   web-console
   whenever
   will_paginate (~> 3.1.5)
+
+RUBY VERSION
+   ruby 2.4.1p111
 
 BUNDLED WITH
    1.15.1

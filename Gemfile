@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| f.read.chomp }
+
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
@@ -42,7 +44,7 @@ gem "jquery-rails"
 gem "jquery-ui-rails", "~> 6.0.1"
 gem "vuejs-rails"
 gem "clockpunch", "~> 0.1.12"
-gem "simple_form", "~> 3.3.1"
+gem "simple_form", "~> 3.5.0"
 gem "font-awesome-rails", "~> 3.2.0"
 gem "nested_form_fields"
 gem "text_helpers"
@@ -71,11 +73,12 @@ gem "sanger_sequencing", "~> 0.0.1", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", "~> 0.0.1", path: "vendor/engines/split_accounts"
 gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
+gem "net-telnet"
 
 group :development do
   gem "bullet"
   gem "coffeelint"
-  gem "haml_lint", "~>0.24.0"
+  gem "haml_lint", "~> 0.24.0"
   gem "letter_opener"
   gem "rails-erd"
   gem "rubocop", require: false
@@ -123,7 +126,7 @@ group :stage, :production do
   gem "exception_notification", "~> 4.0.1"
   gem "lograge"
   gem "logstash-event"
-  gem "oj", "~> 2.12.14"
+  gem "oj"
   gem "rollbar"
   gem "unicorn", require: false
   gem "whenever", require: false

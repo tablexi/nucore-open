@@ -13,12 +13,4 @@
 - else
   %p.notice= text("none")
 
-- if session[:reservation_ended]
-  - session.delete(:reservation_ended)
-  .modal.hide.fade#logout_modal
-    .modal-body= t("reservations.logout.body")
-    .modal-footer
-      = link_to t("reservations.logout.cancel"), reservations_path, class: "btn"
-      = link_to t("pages.logout"),
-        sign_out_user_path,
-        class: "btn btn-primary logout"
+= render "shared/auto_logout"

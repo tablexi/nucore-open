@@ -1,19 +1,19 @@
 class OrderPurchaseValidator
 
-  # The AllDetailsOnOrderValidator will validate each individual OrderDetail
+  # The AllOrderDetailsValidator will validate each individual OrderDetail
   # within the order using the NotePresenceValidator.
-  cattr_accessor(:additional_validations) { [AllDetailsOnOrderValidator.build(NotePresenceValidator)] }
+  cattr_accessor(:additional_validations) { [AllOrderDetailsValidator.build(NotePresenceValidator)] }
 
   attr_reader :errors
 
-  def initialize(order)
-    @order = order
+  def initialize(order_details)
+    @order_details = Array(order_details)
     @errors = []
   end
 
   def valid?
     additional_validations.all? do |validator_class|
-      validator = validator_class.new(@order)
+      validator = validator_class.new(@order_details)
       if validator.valid?
         true
       else
