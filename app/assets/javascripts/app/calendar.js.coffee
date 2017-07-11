@@ -1,3 +1,4 @@
+
 $ ->
   window.defaultCalendarOptions = {
     editable: false
@@ -61,3 +62,9 @@ $ ->
   if window.maxTime?
     defaultCalendarOptions.maxTime = window.maxTime
     defaultCalendarOptions.height = 42*(maxTime - minTime) + 75
+  if window.initialDate
+    d = Date.parse(initialDate)
+    $.extend(defaultCalendarOptions,
+      year: d.getFullYear()
+      month: d.getMonth()
+      date: d.getDate())

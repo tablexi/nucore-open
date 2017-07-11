@@ -1,4 +1,3 @@
-//= require _calendar
 $(document).ready(function() {
   var calendarOptions = $.extend({}, defaultCalendarOptions, {
                   header: {left: '', center: 'title', right: 'prev,next today agendaDay,agendaWeek,month'},
