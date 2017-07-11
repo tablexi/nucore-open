@@ -15,7 +15,7 @@ RSpec.describe ReservationCalendar, :aggregate_failures do
                   order: order,
                   order_detail: order_detail)
   end
-  let(:calendar) { ReservationCalendar.new(reservation, "localhost") }
+  let(:calendar) { ReservationCalendar.new(reservation, "localhost", "http") }
   let(:facility) { build(:facility, name: "Facility", abbreviation: "FA") }
   let(:ical) { calendar.ical }
 

@@ -644,6 +644,7 @@ en:
         adjust: "Adjustment"
         total: "Total"
       total: "Total"
+      calendar_tooltip: Calendar file download"
     show:
       h1: "Cart"
       intro: "Your cart will be saved between visits and can be added to, or your order completed at a later time."

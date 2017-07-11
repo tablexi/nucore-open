@@ -1,14 +1,15 @@
 class ReservationCalendar < SimpleDelegator
 
-  attr_accessor :hostname, :ical
+  attr_accessor :hostname, :ical, :protocol
 
-  def self.to_calendar(reservation, hostname)
-    new(reservation, hostname).as_ical
+  def self.to_calendar(reservation, hostname, protocol)
+    new(reservation, hostname, protocol).as_ical
   end
 
-  def initialize(reservation, hostname)
+  def initialize(reservation, hostname, protocol)
     super(reservation)
     @hostname = hostname
+    @protocol = protocol
     generate_ical
   end
 
@@ -48,7 +49,8 @@ class ReservationCalendar < SimpleDelegator
       Rails.application.routes.url_helpers.order_order_detail_url(
         order_id: order.id,
         id: order_detail.id,
-        host: @hostname))
+        host: @hostname,
+        protocol: protocol))
   end
 
 end

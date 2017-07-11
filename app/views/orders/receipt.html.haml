@@ -44,7 +44,7 @@
             .order-detail-extra
               = link_to(fa_icon("calendar"),
                 order_order_detail_reservation_path(@order, order_detail, res, format: :ics),
-                title: "Calendar file download")
+                title: t(".calendar_tooltip"))
           - if order_detail.note.present?
             .order-detail-extra.order-detail-note= "Note: #{order_detail.note}"
           = render_view_hook "after_note", order_detail: order_detail
