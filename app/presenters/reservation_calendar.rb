@@ -49,7 +49,7 @@ class ReservationCalendar < SimpleDelegator
       Rails.application.routes.url_helpers.order_order_detail_url(
         order_id: order.id,
         id: order_detail.id,
-        host: @hostname,
+        host: hostname,
         protocol: protocol))
   end
 

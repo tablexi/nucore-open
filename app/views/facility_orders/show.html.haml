@@ -53,7 +53,7 @@
 
           - if od.reservation.present?
             = link_to(fa_icon("calendar"),
-              order_order_detail_reservation_path(@order, od, od.reservation, format: :ics),
+              facility_order_order_detail_url(current_facility, @order, od, format: :ics),
               title: t("ical.calendar_tooltip"))
           = render "order_file_icon", od: od
           = render "result_file_icon", od: od

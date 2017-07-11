@@ -14,9 +14,21 @@ class FacilityOrderDetailsController < ApplicationController
   end
 
   def show
-    # This is deprecated in favor of OrderManagement::OrderDetailsController, but
-    # we want to avoid 404s
-    redirect_to facility_order_path(current_facility, @order)
+    respond_to do |format|
+      format.html do
+        # This is deprecated in favor of OrderManagement::OrderDetailsController, but
+        # we want to avoid 404s
+        redirect_to facility_order_path(current_facility, @order)
+      end
+
+      format.ics do
+        calendar = ReservationCalendar.new(
+          @order_detail.reservation, request.host, request.protocol)
+        send_data(calendar.to_ical,
+                  type: "text/calendar", disposition: "attachment",
+                  filename: "reservation_cal_#{@order_detail.order_number}.ics")
+      end
+    end
   end
 
   def destroy
