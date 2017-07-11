@@ -38,7 +38,7 @@ class OrderStatus < ActiveRecord::Base
   end
 
   def self.add_to_order_statuses(facility)
-    non_protected_statuses(facility) - canceled
+    non_protected_statuses(facility) - [canceled_status]
   end
 
   def editable?
