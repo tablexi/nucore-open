@@ -43,7 +43,7 @@ module OrderDetails
     def reconcile(order_detail, params)
       order_detail.reconciled_at = @reconciled_at
       order_detail.assign_attributes(allowed(params))
-      order_detail.change_status!(OrderStatus.reconciled_status)
+      order_detail.change_status!(OrderStatus.reconciled)
       @count += 1
     rescue => e
       @error_fields = { order_detail.id => order_detail.errors.collect { |field, _error| field } }

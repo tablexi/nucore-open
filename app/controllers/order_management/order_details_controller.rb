@@ -97,10 +97,10 @@ class OrderManagement::OrderDetailsController < ApplicationController
     return if @order_detail.reconciled?
 
     if @order_detail.complete?
-      @order_statuses = [OrderStatus.complete_status, OrderStatus.canceled_status]
-      @order_statuses << OrderStatus.reconciled_status if @order_detail.can_reconcile?
-    elsif @order_detail.order_status.root == OrderStatus.canceled_status
-      @order_statuses = OrderStatus.canceled_status.self_and_descendants
+      @order_statuses = [OrderStatus.complete, OrderStatus.canceled]
+      @order_statuses << OrderStatus.reconciled if @order_detail.can_reconcile?
+    elsif @order_detail.order_status.root == OrderStatus.canceled
+      @order_statuses = OrderStatus.canceled.self_and_descendants
     else
       @order_statuses = OrderStatus.non_protected_statuses(current_facility)
     end

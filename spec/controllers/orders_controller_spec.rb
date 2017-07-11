@@ -398,7 +398,7 @@ RSpec.describe OrdersController do
       end
 
       it "sets the order detail status to the product's default status" do # TODO: reword this so it's not identical to the previous spec
-        @order_status = FactoryGirl.create(:order_status, parent: OrderStatus.in_process_status)
+        @order_status = FactoryGirl.create(:order_status, parent: OrderStatus.in_process)
         @instrument.update_attributes!(initial_order_status_id: @order_status.id)
         sign_in @staff
         do_request
@@ -587,14 +587,14 @@ RSpec.describe OrdersController do
         end
 
         it "can set the order_detail states to canceled" do
-          @params[:order_status_id] = OrderStatus.canceled_status.id
+          @params[:order_status_id] = OrderStatus.canceled.id
           do_request
           assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq("canceled") }
         end
 
         context "completed" do
           before :each do
-            @params.merge!(order_status_id: OrderStatus.complete_status.id)
+            @params.merge!(order_status_id: OrderStatus.complete.id)
           end
 
           it "can set order_detail states to completed" do
@@ -720,7 +720,7 @@ RSpec.describe OrdersController do
 
           context "canceled" do
             before :each do
-              @params[:order_status_id] = OrderStatus.canceled_status.id
+              @params[:order_status_id] = OrderStatus.canceled.id
               do_request
             end
 

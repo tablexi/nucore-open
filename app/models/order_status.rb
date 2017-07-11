@@ -21,20 +21,40 @@ class OrderStatus < ActiveRecord::Base
     find_by(name: "New")
   end
 
-  def self.complete_status
+  def self.complete
     find_by(name: "Complete")
   end
 
-  def self.canceled_status
+  def self.canceled
     find_by(name: "Canceled")
   end
 
-  def self.in_process_status
+  def self.in_process
     find_by(name: "In Process")
   end
 
-  def self.reconciled_status
+  def self.reconciled
     find_by(name: "Reconciled")
+  end
+
+  def self.complete_status
+    warn "Depecrated complete_status called. Use complete instead. At #{caller(1..1)}"
+    complete
+  end
+
+  def self.canceled_status
+    warn "Depecrated canceled_status called. Use canceled instead. At #{caller(1..1)}"
+    canceled
+  end
+
+  def self.in_process_status
+    warn "Depecrated in_process_status called. Use in_process instead. At #{caller(1..1)}"
+    in_process
+  end
+
+  def self.reconciled_status
+    warn "Depecrated reconciled_status called. Use reconciled instead. At #{caller(1..1)}"
+    reconciled
   end
 
   def self.add_to_order_statuses(facility)
