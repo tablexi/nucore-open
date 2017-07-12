@@ -47,7 +47,7 @@ class Journals::Closer
     if journal.update_attributes(params.merge(is_successful: true))
       journal.order_details.update_all(
         state: "reconciled",
-        order_status_id: OrderStatus.reconciled_status.id,
+        order_status_id: OrderStatus.reconciled.id,
         reconciled_at: reconciled_at,
         updated_at: Time.current,
       )

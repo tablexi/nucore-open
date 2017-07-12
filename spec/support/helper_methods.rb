@@ -99,7 +99,7 @@ def place_and_complete_item_order(ordered_by, facility, account = nil, reviewed 
   # purchase it
   @order.purchase!
 
-  @order_detail.change_status!(OrderStatus.complete.first)
+  @order_detail.change_status!(OrderStatus.complete)
 
   od_attrs = {
     actual_cost: 20,

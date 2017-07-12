@@ -185,7 +185,7 @@ RSpec.describe FacilityAccountsReconciliationController do
     @order_detail.assign_price_policy
     @order_detail.save!
 
-    @order_detail.change_status!(OrderStatus.complete.first)
+    @order_detail.change_status!(OrderStatus.complete)
 
     statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: account)
     @order_detail.update_attributes!(account: account, fulfilled_at: 1.day.ago, actual_cost: 10, actual_subsidy: 2)

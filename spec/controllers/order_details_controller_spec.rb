@@ -359,7 +359,7 @@ RSpec.describe OrderDetailsController do
 
       describe "a canceled reservation" do
         before do
-          order_detail.update_order_status!(user, OrderStatus.canceled_status)
+          order_detail.update_order_status!(user, OrderStatus.canceled)
         end
         it_behaves_like "cannot modify the account"
       end

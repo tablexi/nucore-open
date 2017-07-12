@@ -420,11 +420,11 @@ class OrderDetail < ActiveRecord::Base
   # OrderDetail#complete! should be used to complete an OrderDetail instead of
   # OrderDetail#to_complete
   def complete!
-    change_status!(OrderStatus.complete_status)
+    change_status!(OrderStatus.complete)
   end
 
   def force_complete!
-    update(state: "complete", order_status: OrderStatus.complete_status)
+    update(state: "complete", order_status: OrderStatus.complete)
   end
 
   def backdate_to_complete!(event_time = Time.zone.now)
@@ -434,7 +434,7 @@ class OrderDetail < ActiveRecord::Base
       reservation.assign_actuals_off_reserve unless reservation.product.reservation_only?
       reservation.save!
     end
-    change_status!(OrderStatus.complete.first) do |od|
+    change_status!(OrderStatus.complete) do |od|
       od.fulfilled_at = event_time
       od.assign_price_policy
     end
@@ -696,7 +696,7 @@ class OrderDetail < ActiveRecord::Base
     price_policy.nil? && estimated_cost && estimated_subsidy && actual_cost.nil? && actual_subsidy.nil?
   end
 
-  def cancel_reservation(canceled_by, canceled_reason: nil, order_status: OrderStatus.canceled_status, admin: false, admin_with_cancel_fee: false)
+  def cancel_reservation(canceled_by, canceled_reason: nil, order_status: OrderStatus.canceled, admin: false, admin_with_cancel_fee: false)
     self.canceled_by = canceled_by.id
     self.canceled_reason = canceled_reason
 
@@ -904,7 +904,7 @@ class OrderDetail < ActiveRecord::Base
     fee = cancellation_fee
     self.actual_cost = fee
     self.actual_subsidy = 0
-    change_status!(fee > 0 ? OrderStatus.complete.first : order_status)
+    change_status!(fee > 0 ? OrderStatus.complete : order_status)
     save! if changed? # If the cancel goes from complete => complete, change status doesn't save
     true
   end

@@ -162,7 +162,7 @@ class Order < ActiveRecord::Base
     order_status = order_status.is_a?(OrderStatus) ? order_status : OrderStatus.find(order_status)
 
     order_details.each do |od|
-      if order_status.root == OrderStatus.complete.first
+      if order_status.root == OrderStatus.complete
         od.backdate_to_complete!(ordered_at)
       else
         od.update_order_status!(update_by, order_status, admin: true)

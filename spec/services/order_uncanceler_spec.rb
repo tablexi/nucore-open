@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe OrderUncanceler do
-  let(:cancel_status) { OrderStatus.canceled.first }
+  let(:cancel_status) { OrderStatus.canceled }
   let(:uncanceler) { OrderUncanceler.new }
 
   context "with an item" do

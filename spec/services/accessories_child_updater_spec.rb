@@ -36,7 +36,7 @@ RSpec.describe Accessories::ChildUpdater do
 
     context "when the parent moves from new to in process" do
       before do
-        order_detail.update_order_status! user, OrderStatus.inprocess.first
+        order_detail.update_order_status! user, OrderStatus.in_process
       end
 
       it "moves the child to in process as well" do
@@ -59,7 +59,7 @@ RSpec.describe Accessories::ChildUpdater do
       before do
         allow_any_instance_of(Reservation).to receive(:can_cancel?).and_return true
         reservation.end_reservation!
-        order_detail.update_order_status! user, OrderStatus.canceled.first
+        order_detail.update_order_status! user, OrderStatus.canceled
       end
 
       it "moves the child to canceled" do
@@ -69,7 +69,7 @@ RSpec.describe Accessories::ChildUpdater do
 
     context "when the child has been canceled, but the parent is still new and moves to completed" do
       before do
-        child_order_detail.update_order_status! user, OrderStatus.canceled.first
+        child_order_detail.update_order_status! user, OrderStatus.canceled
         reservation.end_reservation!
       end
 

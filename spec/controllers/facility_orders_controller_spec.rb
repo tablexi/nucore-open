@@ -209,15 +209,15 @@ RSpec.describe FacilityOrdersController do
           before { @params[:order_status_id] = order_status.id.to_s }
 
           context "of 'In Process'" do
-            let(:order_status) { OrderStatus.in_process_status }
+            let(:order_status) { OrderStatus.in_process }
 
             it_should_allow :director, "to add an instrument to existing order via merge" do
-              expect(order_detail.order_status).to eq(OrderStatus.in_process_status)
+              expect(order_detail.order_status).to eq(OrderStatus.in_process)
             end
           end
 
           context "of 'Complete'" do
-            let(:order_status) { OrderStatus.complete_status }
+            let(:order_status) { OrderStatus.complete }
             let(:director) do
               FactoryGirl.create(:user, :facility_director, facility: facility)
             end
@@ -255,7 +255,7 @@ RSpec.describe FacilityOrdersController do
         end
 
         context "when setting the order status to 'Complete'" do
-          let(:complete_status) { OrderStatus.complete_status }
+          let(:complete_status) { OrderStatus.complete }
           before { @params[:order_status_id] = complete_status.id.to_s }
 
           context "and setting fulfilled_at" do
@@ -314,10 +314,10 @@ RSpec.describe FacilityOrdersController do
         end
 
         context "when setting an order status" do
-          before { @params[:order_status_id] = OrderStatus.in_process_status.id }
+          before { @params[:order_status_id] = OrderStatus.in_process.id }
 
           it_should_allow :director, "to add an item to existing order via merge" do
-            expect(order_detail.order_status).to eq(OrderStatus.in_process_status)
+            expect(order_detail.order_status).to eq(OrderStatus.in_process)
           end
         end
       end

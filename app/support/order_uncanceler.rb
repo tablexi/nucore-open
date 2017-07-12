@@ -1,8 +1,8 @@
 class OrderUncanceler
 
   def initialize
-    @complete_status = OrderStatus.complete.first
-    @canceled_status = OrderStatus.canceled.first
+    @complete_status = OrderStatus.complete
+    @canceled_status = OrderStatus.canceled
   end
 
   def uncancel_to_complete(order_detail)

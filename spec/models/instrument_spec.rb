@@ -724,7 +724,7 @@ RSpec.describe Instrument do
           let(:user) { FactoryGirl.build :user }
           before :each do
             travel_to_and_return(60.minutes.ago) do
-              reservation.order_detail.update_order_status! user, OrderStatus.canceled.first
+              reservation.order_detail.update_order_status! user, OrderStatus.canceled
               expect(reservation).to be_canceled
             end
           end

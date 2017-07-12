@@ -41,7 +41,7 @@ RSpec.describe Product do
       end
 
       it "should give correct initial order status" do
-        os = OrderStatus.inprocess.first
+        os = OrderStatus.in_process
         @item.update_attribute(:initial_order_status_id, os.id)
         expect(@item.initial_order_status).to eq(os)
       end

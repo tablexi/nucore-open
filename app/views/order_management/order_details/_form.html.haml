@@ -37,7 +37,7 @@
               = check_box_tag "with_cancel_fee",
                 1,
                 false,
-                data: { connect: "#order_detail_order_status_id", show_on: OrderStatus.canceled.first.id }
+                data: { connect: "#order_detail_order_status_id", show_on: OrderStatus.canceled.id }
               = t("facility_order_details.edit.label.with_cancel_fee")
 
     = render_view_hook "after_order_status", f: f, order_detail: @order_detail

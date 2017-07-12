@@ -304,7 +304,7 @@ RSpec.describe ReservationsController do
 
         it "should not have an upcoming message for a canceled reservation" do
           @upcoming.update_attributes(reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
-          @upcoming.order_detail.update_order_status!(@staff, OrderStatus.canceled.first)
+          @upcoming.order_detail.update_order_status!(@staff, OrderStatus.canceled)
           do_request
           expect(response.body).to_not include I18n.t("reservations.notices.upcoming", reservation: @upcoming)
         end

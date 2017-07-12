@@ -265,7 +265,7 @@ RSpec.describe FacilityReservationsController do
         @canceled_reservation = FactoryGirl.create(:reservation, product: @product, reserve_start_at: 2.hours.from_now, reserve_end_at: 3.hours.from_now)
         @order_detail3 = FactoryGirl.create(:order_detail, order: @order, product: @product, reservation: @canceled_reservation)
         expect(@canceled_reservation).to be_persisted
-        @order_detail3.update_order_status! @admin, OrderStatus.canceled.first
+        @order_detail3.update_order_status! @admin, OrderStatus.canceled
 
         @admin_reservation = FactoryGirl.create(
           :admin_reservation,

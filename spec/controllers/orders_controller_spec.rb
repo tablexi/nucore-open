@@ -394,11 +394,11 @@ RSpec.describe OrdersController do
         sign_in @staff
         do_request
         expect(assigns[:order].order_details.size).to eq(1)
-        expect(assigns[:order].order_details.first.order_status).to eq(OrderStatus.new_os.first)
+        expect(assigns[:order].order_details.first.order_status).to eq(OrderStatus.new_status)
       end
 
       it "sets the order detail status to the product's default status" do # TODO: reword this so it's not identical to the previous spec
-        @order_status = FactoryGirl.create(:order_status, parent: OrderStatus.inprocess.first)
+        @order_status = FactoryGirl.create(:order_status, parent: OrderStatus.in_process)
         @instrument.update_attributes!(initial_order_status_id: @order_status.id)
         sign_in @staff
         do_request
@@ -581,20 +581,20 @@ RSpec.describe OrdersController do
         end
 
         it "leave the order_detail states as new if new is set as the param" do
-          @params[:order_status_id] = OrderStatus.new_os.first.id
+          @params[:order_status_id] = OrderStatus.new_status.id
           do_request
           assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq("new") }
         end
 
         it "can set the order_detail states to canceled" do
-          @params[:order_status_id] = OrderStatus.canceled.first.id
+          @params[:order_status_id] = OrderStatus.canceled.id
           do_request
           assigns[:order].reload.order_details.all? { |od| expect(od.state).to eq("canceled") }
         end
 
         context "completed" do
           before :each do
-            @params.merge!(order_status_id: OrderStatus.complete.first.id)
+            @params.merge!(order_status_id: OrderStatus.complete.id)
           end
 
           it "can set order_detail states to completed" do
@@ -720,7 +720,7 @@ RSpec.describe OrdersController do
 
           context "canceled" do
             before :each do
-              @params[:order_status_id] = OrderStatus.canceled.first.id
+              @params[:order_status_id] = OrderStatus.canceled.id
               do_request
             end
 
@@ -1161,8 +1161,8 @@ RSpec.describe OrdersController do
     it "sets the potential order_statuses from this facility and only this facility" do
       maybe_grant_always_sign_in :staff
       @facility2 = FactoryGirl.create(:facility)
-      @order_status = FactoryGirl.create(:order_status, facility: @authable, parent: OrderStatus.new_os.first)
-      @order_status_other = FactoryGirl.create(:order_status, facility: @facility2, parent: OrderStatus.new_os.first)
+      @order_status = FactoryGirl.create(:order_status, facility: @authable, parent: OrderStatus.new_status)
+      @order_status_other = FactoryGirl.create(:order_status, facility: @facility2, parent: OrderStatus.new_status)
       do_request
       expect(assigns[:order_statuses]).to be_include @order_status
       expect(assigns[:order_statuses]).not_to be_include @order_status_other

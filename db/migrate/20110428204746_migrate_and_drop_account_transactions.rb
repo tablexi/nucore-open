@@ -19,7 +19,7 @@ class MigrateAndDropAccountTransactions < ActiveRecord::Migration
 
         if journal.is_successful? == true
           od.state = "reconciled"
-          od.order_status = OrderStatus.reconciled.first
+          od.order_status = OrderStatus.reconciled
         end
       end
 

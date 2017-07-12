@@ -357,8 +357,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
             product
               .price_policies
               .for_date(price_policy.start_date)
-              .where(price_group_id: last_price_group_id)
-              .first # TODO: update to #find_by for Rails 4
+              .find_by(price_group_id: last_price_group_id)
           end
 
           before(:each) do
@@ -377,8 +376,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
             product
               .price_policies
               .for_date(price_policy.start_date)
-              .where(price_group_id: new_price_group)
-              .first # TODO: update to #find_by for Rails 4
+              .find_by(price_group_id: new_price_group)
           end
           let(:product_price_groups) do
             product.price_policies.map(&:price_group)

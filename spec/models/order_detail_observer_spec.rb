@@ -83,21 +83,21 @@ RSpec.describe OrderDetailObserver do
       expect(@order_detail.reload.order.state).to eq("purchased")
 
       Settings.order_details.status_change_hooks = { in_process: "DummyHooks::DummyHook1", new: "DummyHooks::DummyHook2" }
-      expect(@order_detail.order_status).to eq(OrderStatus.new_os.first)
+      expect(@order_detail.order_status).to eq(OrderStatus.new_status)
     end
     it "should trigger a notification on change to inprogress" do
-      expect_any_instance_of(DummyHooks::DummyHook1).to receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first).once
-      expect(@order_detail.change_status!(OrderStatus.inprocess.first)).to be true
+      expect_any_instance_of(DummyHooks::DummyHook1).to receive(:on_status_change).once.with(@order_detail, OrderStatus.new_status, OrderStatus.in_process).once
+      expect(@order_detail.change_status!(OrderStatus.in_process)).to be true
     end
     it "should trigger a notification on change from in_process to new" do
-      expect_any_instance_of(DummyHooks::DummyHook1).to receive(:on_status_change).once.with(@order_detail, OrderStatus.new_os.first, OrderStatus.inprocess.first)
-      expect(@order_detail.change_status!(OrderStatus.inprocess.first)).to be true
-      expect_any_instance_of(DummyHooks::DummyHook2).to receive(:on_status_change).once.with(@order_detail, OrderStatus.inprocess.first, OrderStatus.new_os.first)
-      expect(@order_detail.change_status!(OrderStatus.new_os.first)).to be true
+      expect_any_instance_of(DummyHooks::DummyHook1).to receive(:on_status_change).once.with(@order_detail, OrderStatus.new_status, OrderStatus.in_process)
+      expect(@order_detail.change_status!(OrderStatus.in_process)).to be true
+      expect_any_instance_of(DummyHooks::DummyHook2).to receive(:on_status_change).once.with(@order_detail, OrderStatus.in_process, OrderStatus.new_status)
+      expect(@order_detail.change_status!(OrderStatus.new_status)).to be true
     end
     it "should not trigger going from new to new" do
       expect_any_instance_of(DummyHooks::DummyHook2).to receive(:on_status_change).never
-      expect(@order_detail.change_status!(OrderStatus.new_os.first)).to be true
+      expect(@order_detail.change_status!(OrderStatus.new_status)).to be true
     end
   end
 end

@@ -7,7 +7,7 @@
 
 = simple_form_for([current_facility, @order_status]) do |f|
   = f.error_messages
-  = f.association :parent, collection: (OrderStatus.new_os + OrderStatus.inprocess + OrderStatus.canceled), include_blank: false
+  = f.association :parent, collection: ([OrderStatus.new_status, OrderStatus.in_process, OrderStatus.canceled]), include_blank: false
 
   = f.input :name
 

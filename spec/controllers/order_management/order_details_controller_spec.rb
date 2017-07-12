@@ -76,7 +76,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         end
 
         it "has new as a status" do
-          expect(assigns(:order_statuses)).to include(OrderStatus.new_os.first)
+          expect(assigns(:order_statuses)).to include(OrderStatus.new_status)
         end
 
         it "does not have a price policy" do
@@ -99,7 +99,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
       context "completed order" do
         before :each do
-          item_order_detail.change_status!(OrderStatus.complete.first)
+          item_order_detail.change_status!(OrderStatus.complete)
         end
 
         context "with a price policy" do
@@ -165,7 +165,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
       context "order in open journal" do
         let(:journal) { FactoryGirl.create(:journal, facility: facility) }
         before :each do
-          item_order_detail.change_status!(OrderStatus.complete.first)
+          item_order_detail.change_status!(OrderStatus.complete)
           item_order_detail.update_attributes(reviewed_at: 1.day.ago)
           journal.create_journal_rows! [item_order_detail]
           item_order_detail.reload
@@ -313,7 +313,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
             )
 
             @params[:order_detail] = {
-              order_status_id: OrderStatus.canceled_status.id.to_s,
+              order_status_id: OrderStatus.canceled.id.to_s,
             }
           end
 
@@ -340,7 +340,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
                                             actual_end_at: nil)
 
               travel_and_return(7.days) do
-                order_detail.change_status!(OrderStatus.complete_status)
+                order_detail.change_status!(OrderStatus.complete)
               end
 
               @params[:with_cancel_fee] = "1"
@@ -425,7 +425,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
               order_detail.update_attributes(statement_id: statement.id, price_policy_id: PricePolicy.first.id)
 
               @params[:order_detail] = {
-                order_status_id: OrderStatus.canceled_status.id.to_s,
+                order_status_id: OrderStatus.canceled.id.to_s,
               }
             end
 
@@ -497,7 +497,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         before { sign_in @admin }
 
         describe "updating pricing" do
-          before { order_detail.change_status!(OrderStatus.complete_status) }
+          before { order_detail.change_status!(OrderStatus.complete) }
 
           it "updates the price manually" do
             @params[:order_detail] = {
@@ -610,7 +610,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         describe "resolving dispute" do
           before do
-            order_detail.change_status!(OrderStatus.complete_status)
+            order_detail.change_status!(OrderStatus.complete)
             order_detail.update_attributes(
               reviewed_at: Time.zone.now,
               dispute_at: Time.zone.now,
@@ -668,7 +668,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           describe "without a fulfillment date" do
             before do
               @params[:order_detail] = {
-                order_status_id: OrderStatus.complete_status.id.to_s,
+                order_status_id: OrderStatus.complete.id.to_s,
               }
               do_request
             end
@@ -681,7 +681,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           describe "with a fulfillment date" do
             before do
               @params[:order_detail] = {
-                order_status_id: OrderStatus.complete_status.id.to_s,
+                order_status_id: OrderStatus.complete.id.to_s,
                 fulfilled_at: I18n.l(fulfilled_at.to_date, format: :usa),
               }
               do_request
@@ -717,10 +717,10 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         describe "reconciling", :time_travel do
           before do
-            order_detail.change_status!(OrderStatus.complete_status)
+            order_detail.change_status!(OrderStatus.complete)
             order_detail.update_attributes(reviewed_at: 1.day.ago)
             @params[:order_detail] = {
-              order_status_id: OrderStatus.reconciled_status.id,
+              order_status_id: OrderStatus.reconciled.id,
             }
           end
 
@@ -729,7 +729,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
               .to change { order_detail.reload.state }
               .to("reconciled")
             expect(order_detail.order_status)
-              .to eq(OrderStatus.reconciled_status)
+              .to eq(OrderStatus.reconciled)
           end
 
           it "sets reconciled_at to now" do
@@ -814,7 +814,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         before :each do
           reservation.update_attributes(reserve_start_at: reservation.reserve_start_at - 2.days, reserve_end_at: reservation.reserve_end_at - 2.days)
-          order_detail.update_order_status! @admin, OrderStatus.complete.first
+          order_detail.update_order_status! @admin, OrderStatus.complete
           @params[:order_detail] = {
             reservation: reservation_params(reservation.reserve_start_at, reservation.reserve_start_at)
                                    .merge(duration_mins: reservation.duration_mins, actual_duration_mins: new_duration),

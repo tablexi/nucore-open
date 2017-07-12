@@ -35,7 +35,7 @@ RSpec.describe FacilityAccountsReconciliationController do
   let(:admin) { FactoryGirl.create(:user, :administrator) }
 
   before do
-    order_detail.change_status!(OrderStatus.complete_status)
+    order_detail.change_status!(OrderStatus.complete)
     order_detail.update_attributes(reviewed_at: 5.minutes.ago, statement: statement)
   end
 

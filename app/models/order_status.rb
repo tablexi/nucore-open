@@ -16,34 +16,49 @@ class OrderStatus < ActiveRecord::Base
   end
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).order(:lft) }
-  scope :new_os, -> { where(name: "New").limit(1) }
-  scope :inprocess, -> { where(name: "In Process").limit(1) }
-  scope :canceled, -> { where(name: "Canceled").limit(1) }
-  scope :complete, -> { where(name: "Complete").limit(1) }
-  scope :reconciled, -> { where(name: "Reconciled").limit(1) }
 
   def self.new_status
-    new_os.first
+    find_by(name: "New")
+  end
+
+  def self.complete
+    find_by(name: "Complete")
+  end
+
+  def self.canceled
+    find_by(name: "Canceled")
+  end
+
+  def self.in_process
+    find_by(name: "In Process")
+  end
+
+  def self.reconciled
+    find_by(name: "Reconciled")
   end
 
   def self.complete_status
-    complete.first
+    warn "Depecrated complete_status called. Use complete instead. At #{caller(1..1)}"
+    complete
   end
 
   def self.canceled_status
-    canceled.first
+    warn "Depecrated canceled_status called. Use canceled instead. At #{caller(1..1)}"
+    canceled
   end
 
   def self.in_process_status
-    inprocess.first
+    warn "Depecrated in_process_status called. Use in_process instead. At #{caller(1..1)}"
+    in_process
   end
 
   def self.reconciled_status
-    reconciled.first
+    warn "Depecrated reconciled_status called. Use reconciled instead. At #{caller(1..1)}"
+    reconciled
   end
 
   def self.add_to_order_statuses(facility)
-    non_protected_statuses(facility) - canceled
+    non_protected_statuses(facility) - [canceled]
   end
 
   def editable?
@@ -75,7 +90,7 @@ class OrderStatus < ActiveRecord::Base
   end
 
   def root_canceled?
-    root == OrderStatus.canceled.first
+    root == OrderStatus.canceled
   end
 
   class << self
@@ -89,7 +104,7 @@ class OrderStatus < ActiveRecord::Base
     end
 
     def initial_statuses(facility)
-      first_invalid_status = canceled_status
+      first_invalid_status = canceled
       statuses = all.sort_by(&:lft).reject do |os|
         !os.is_left_of?(first_invalid_status)
       end
@@ -98,7 +113,7 @@ class OrderStatus < ActiveRecord::Base
     end
 
     def non_protected_statuses(facility)
-      first_protected_status = reconciled_status
+      first_protected_status = reconciled
       statuses = all.sort_by(&:lft).reject do |os|
         !os.is_left_of?(first_protected_status)
       end
