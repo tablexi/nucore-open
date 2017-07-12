@@ -125,7 +125,7 @@ group :stage, :production do
   gem "exception_notification", "~> 4.0.1"
   gem "lograge"
   gem "logstash-event"
-  gem "oj"
+  gem "oj", "~> 3.2.0"
   gem "rollbar"
   gem "unicorn", require: false
   gem "whenever", require: false

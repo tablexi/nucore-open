@@ -627,7 +627,7 @@ DEPENDENCIES
   nested_form_fields
   net-telnet
   nokogiri (~> 1.7.1)
-  oj
+  oj (~> 3.2.0)
   paperclip (~> 4.2.0)
   poltergeist
   prawn (= 0.12)
