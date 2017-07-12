@@ -144,9 +144,8 @@ class ReservationsController < ApplicationController
 
       format.ics do
         calendar = ReservationCalendar.new(@reservation, request.host, request.protocol)
-        send_data(calendar.to_ical,
-                  type: "text/calendar", disposition: "attachment",
-                  filename: "reservation_cal_#{@order_detail.order_number}.ics")
+        send_data(calendar.to_ical, type: "text/calendar",
+                                    disposition: "attachment", filename: calendar.filename)
       end
     end
   end

@@ -44,6 +44,7 @@ class Notifier < ActionMailer::Base
     @user = args[:user]
     @order = args[:order]
     @greeting = text("views.notifier.order_receipt.intro")
+    attach_ical(@order)
     send_nucore_mail args[:user].email, text("views.notifier.order_receipt.subject")
   end
 
@@ -75,6 +76,16 @@ class Notifier < ActionMailer::Base
   end
 
   private
+
+  def attach_ical(order)
+    options = Rails.application.config.action_mailer.default_url_options
+    order.order_details.map(&:reservation).compact.each do |reservation|
+      calendar = ReservationCalendar.new(reservation, options[:host], options[:protocol])
+      attachments[calendar.filename] = {
+        mime_type: "text/calendar", content: [calendar.to_ical]
+      }
+    end
+  end
 
   def attach_statement_pdf
     attachments[statement_pdf.filename] = {

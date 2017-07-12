@@ -3,13 +3,13 @@ class ReservationCalendar < SimpleDelegator
   attr_accessor :hostname, :ical, :protocol
 
   def self.to_calendar(reservation, hostname, protocol)
-    new(reservation, hostname, protocol).as_ical
+    new(reservation, hostname, protocol).to_ical
   end
 
   def initialize(reservation, hostname, protocol)
     super(reservation)
     @hostname = hostname
-    @protocol = protocol
+    @protocol = protocol || "http"
     generate_ical
   end
 
@@ -51,6 +51,10 @@ class ReservationCalendar < SimpleDelegator
         id: order_detail.id,
         host: hostname,
         protocol: protocol))
+  end
+
+  def filename
+    "reservation_cal_#{order_detail.order_number}.ics"
   end
 
 end
