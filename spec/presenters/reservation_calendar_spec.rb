@@ -15,7 +15,7 @@ RSpec.describe ReservationCalendar, :aggregate_failures do
                   order: order,
                   order_detail: order_detail)
   end
-  let(:calendar) { ReservationCalendar.new(reservation, "localhost", "http") }
+  let(:calendar) { ReservationCalendar.new(reservation) }
   let(:facility) { build(:facility, name: "Facility", abbreviation: "FA") }
   let(:ical) { calendar.ical }
 
@@ -35,7 +35,7 @@ RSpec.describe ReservationCalendar, :aggregate_failures do
       expect(event.summary).to eq("FA: Instrument")
       expect(event.description).to eq("Facility reservation for Instrument. Order number #{order_detail.order_number}.")
       expect(event.location).to eq("Facility")
-      expect(event.url.to_s).to eq("http://localhost/orders/#{order.id}/order_details/#{order_detail.id}")
+      expect(event.url.to_s).to eq("")
       expect(event.ip_class).to eq("PRIVATE")
     end
 

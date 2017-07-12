@@ -78,9 +78,8 @@ class Notifier < ActionMailer::Base
   private
 
   def attach_ical(order)
-    options = Rails.application.config.action_mailer.default_url_options
     order.order_details.map(&:reservation).compact.each do |reservation|
-      calendar = ReservationCalendar.new(reservation, options[:host], options[:protocol])
+      calendar = ReservationCalendar.new(reservation)
       attachments[calendar.filename] = {
         mime_type: "text/calendar", content: [calendar.to_ical]
       }

@@ -1,15 +1,14 @@
 class ReservationCalendar < SimpleDelegator
 
-  attr_accessor :hostname, :ical, :protocol
+  attr_accessor :url, :ical
 
-  def self.to_calendar(reservation, hostname, protocol)
-    new(reservation, hostname, protocol).to_ical
+  def self.to_calendar(reservation, url = nil)
+    new(reservation, url).to_ical
   end
 
-  def initialize(reservation, hostname, protocol)
+  def initialize(reservation, url = nil)
     super(reservation)
-    @hostname = hostname
-    @protocol = protocol || "http"
+    @url = url
     generate_ical
   end
 
@@ -21,7 +20,7 @@ class ReservationCalendar < SimpleDelegator
       e.summary = summary
       e.description = description
       e.location = facility.name
-      e.url = url
+      e.url = url if url.present?
       e.ip_class = "PRIVATE"
     end
     ical
@@ -42,15 +41,6 @@ class ReservationCalendar < SimpleDelegator
       facility: facility.name,
       product: product.name,
       order_number: order_detail.order_number)
-  end
-
-  def url
-    Icalendar::Values::Uri.new(
-      Rails.application.routes.url_helpers.order_order_detail_url(
-        order_id: order.id,
-        id: order_detail.id,
-        host: hostname,
-        protocol: protocol))
   end
 
   def filename
