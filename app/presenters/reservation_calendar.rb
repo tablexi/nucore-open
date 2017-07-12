@@ -20,7 +20,7 @@ class ReservationCalendar < SimpleDelegator
       e.summary = summary
       e.description = description
       e.location = facility.name
-      e.url = url if url.present?
+      e.url = Icalendar::Values::Uri.new(url) if url.present?
       e.ip_class = "PRIVATE"
     end
     ical
