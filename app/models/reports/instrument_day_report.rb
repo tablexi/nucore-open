@@ -108,7 +108,7 @@ class Reports::InstrumentDayReport
     end
 
     def value
-      @reservation.actual_start_at.present? ? @reservation.actual_duration_mins : 0
+      @reservation.actual_duration_mins.to_i
     end
 
     def transform(data)
