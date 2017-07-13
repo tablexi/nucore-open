@@ -35,9 +35,9 @@ class ReservationsController < ApplicationController
                                    .active
                                    .in_range(@start_at, @end_at)
                                    .includes(order_detail: { order: :user })
-    offine_reservations = @instrument.offline_reservations.in_range(@start_at, @end_at)
+    offline_reservations = @instrument.offline_reservations.in_range(@start_at, @end_at)
 
-    @reservations = admin_reservations + user_reservations + offine_reservations
+    @reservations = admin_reservations + user_reservations + offline_reservations
 
     # We don't need the unavailable hours month view
     unless month_view?
