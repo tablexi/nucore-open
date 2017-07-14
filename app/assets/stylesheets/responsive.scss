@@ -5,7 +5,7 @@ $navCollapseColor: #777;
 $navbarActiveBorderColor: #aaa;
 
 /* 979px - 980px is where nav-collapse gets triggered */
-@media (max-width: 979px) {
+@media screen and (max-width: 979px) {
   .hidden-with-nav {
     display: inherit !important;
   }
@@ -116,7 +116,7 @@ $navbarActiveBorderColor: #aaa;
   }
 }
 
-@media (min-width: 980px) {
+@media screen and (min-width: 980px) {
   .visible-with-nav {
     display: inherit !important;
   }
