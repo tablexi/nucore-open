@@ -1,7 +1,25 @@
 class window.FullCalendarConfig
   constructor: (@$element) ->
 
+  init: (options) ->
+    @$element.fullCalendar($.extend(@options(), options))
+
   options: ->
+    options = @baseOptions()
+    if window.minTime?
+      options.minTime = window.minTime
+    if window.maxTime?
+      options.maxTime = window.maxTime
+      options.height = 42*(maxTime - minTime) + 75
+    if window.initialDate
+      d = Date.parse(initialDate)
+      $.extend(options,
+        year: d.getFullYear()
+        month: d.getMonth()
+        date: d.getDate())
+    options
+
+  baseOptions: ->
     editable: false
     defaultView: 'agendaWeek'
     allDaySlot: false
@@ -53,17 +71,3 @@ class window.FullCalendarConfig
             at:  'bottom left'
             my:  'topRight'
         )
-
-$ ->
-  window.defaultCalendarOptions = new FullCalendarConfig($("#calendar")).options()
-  if window.minTime?
-    defaultCalendarOptions.minTime = window.minTime
-  if window.maxTime?
-    defaultCalendarOptions.maxTime = window.maxTime
-    defaultCalendarOptions.height = 42*(maxTime - minTime) + 75
-  if window.initialDate
-    d = Date.parse(initialDate)
-    $.extend(defaultCalendarOptions,
-      year: d.getFullYear()
-      month: d.getMonth()
-      date: d.getDate())

@@ -1,8 +1,6 @@
 $(document).ready(function() {
 
-  // initialize fullcalendar
-  var calendarOptions = $.extend({}, defaultCalendarOptions);
-  $('#calendar').fullCalendar(calendarOptions);
+  new FullCalendarConfig($("#calendar")).init()
 
   init_datepickers();
 
@@ -54,6 +52,5 @@ $(document).ready(function() {
   }
   $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
 
-  //$("div.fc-button-prev").hide();
 });
 
