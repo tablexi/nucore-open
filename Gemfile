@@ -123,7 +123,7 @@ end
 group :stage, :production do
   gem "eye-patch", require: false
   gem "exception_notification", "~> 4.0.1"
-  gem "lograge"
+  gem "lograge", "~> 0.5.1"
   gem "logstash-event"
   gem "oj", "~> 3.2.0"
   gem "rollbar"
