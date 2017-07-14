@@ -2,11 +2,7 @@ class ReservationCalendar < SimpleDelegator
 
   attr_accessor :url, :ical
 
-  def self.to_calendar(reservation, url = nil)
-    new(reservation, url).to_ical
-  end
-
-  def initialize(reservation, url = nil)
+  def initialize(reservation, url: nil)
     super(reservation)
     @url = url
     generate_ical
