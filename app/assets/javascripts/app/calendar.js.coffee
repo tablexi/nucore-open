@@ -10,7 +10,7 @@ class window.FullCalendarConfig
       options.minTime = window.minTime
     if window.maxTime?
       options.maxTime = window.maxTime
-      options.height = 42*(maxTime - minTime) + 75
+      options.height = 42 * (maxTime - minTime) + 75
     if window.initialDate
       d = Date.parse(initialDate)
       $.extend(options,
@@ -21,7 +21,7 @@ class window.FullCalendarConfig
 
   baseOptions: ->
     editable: false
-    defaultView: 'agendaWeek'
+    defaultView: "agendaWeek"
     allDaySlot: false
     events: events_path
     loading: (isLoading, view) =>
@@ -47,9 +47,9 @@ class window.FullCalendarConfig
 
   buildTooltip: (event, element) ->
     tooltip = [
-      $.fullCalendar.formatDate(event.start, 'h:mmTT'),
-      $.fullCalendar.formatDate(event.end,   'h:mmTT')
-    ].join('&ndash;') + '<br/>'
+      $.fullCalendar.formatDate(event.start, "h:mmTT"),
+      $.fullCalendar.formatDate(event.end,   "h:mmTT")
+    ].join("&ndash;") + "<br/>"
 
     # Default for our tooltip is to show.
     if $("#calendar").data("show-tooltip") != false
@@ -59,7 +59,7 @@ class window.FullCalendarConfig
         event.product,
       ].filter(
         (e) -> e? # remove undefined values
-      ).join('<br/>')
+      ).join("<br/>")
 
       # create the tooltip
       if element.qtip
@@ -68,6 +68,6 @@ class window.FullCalendarConfig
           style:
             classes: "qtip-light"
           position:
-            at:  'bottom left'
-            my:  'topRight'
+            at: "bottom left"
+            my: "topRight"
         )
