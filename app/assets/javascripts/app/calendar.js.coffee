@@ -8,8 +8,9 @@ class window.FullCalendarConfig
     events: events_path
     loading: (isLoading, view) =>
       @toggleOverlay(isLoading)
-      @toggleNextPrev(view) if !isLoading
+
     eventAfterRender: @buildTooltip
+    eventAfterAllRender: @toggleNextPrev
 
   toggleOverlay: (isLoading) ->
     if isLoading
@@ -18,27 +19,13 @@ class window.FullCalendarConfig
       $("#overlay").addClass("off").removeClass("on")
 
   toggleNextPrev: (view) ->
+    # window.minDate/maxDate are strings formatted like 20170714
     try
       startDate = $.fullCalendar.formatDate(view.start, "yyyyMMdd")
       endDate   = $.fullCalendar.formatDate(view.end, "yyyyMMdd")
-      # check calendar start date
 
-      if startDate < window.minDate
-        # hide the previous button
-        $("div.fc-button-prev").hide()
-      else
-        # show the previous button
-        $("div.fc-button-prev").show()
-
-      # check calendar end date
-      if endDate > window.maxDate
-        # hide the next button
-        $("div.fc-button-next").hide()
-      else
-        # show the next button
-        $("div.fc-button-next").show()
-    catch e
-      console.debug e
+      $(".fc-button-prev").toggleClass("fc-state-disabled", startDate < window.minDate)
+      $(".fc-button-next").toggleClass("fc-state-disabled", endDate > window.maxDate)
 
   buildTooltip: (event, element) ->
     tooltip = [
