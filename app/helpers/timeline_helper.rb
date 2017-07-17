@@ -50,6 +50,16 @@ module TimelineHelper
     classes
   end
 
+  def reservation_user_display(reservation)
+    if reservation.offline?
+      t(".offline_reservation")
+    elsif reservation.admin?
+      t(".admin_reservation")
+    else
+      reservation.user
+    end
+  end
+
   def reservation_date_range_display(date, reservation)
     # start = date.beginning_of_day >= reservation.display_start_at ?
     "#{reservation_date_in_day(date, reservation.display_start_at)} &ndash; #{reservation_date_in_day(date, reservation.display_end_at)}".html_safe

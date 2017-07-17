@@ -183,6 +183,10 @@ class Reservation < ActiveRecord::Base
     raise ActiveRecord::RecordInvalid.new(self) unless save_as_user(user)
   end
 
+  def offline?
+    type == "OfflineReservation"
+  end
+
   def admin?
     order.nil? && !blackout?
   end

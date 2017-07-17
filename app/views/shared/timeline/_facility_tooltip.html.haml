@@ -1,4 +1,4 @@
-%strong= reservation.admin? ? t(".admin_reservation") : reservation.user
+%strong= reservation_user_display(reservation)
 
 %br
 %span= reservation_date_range_display(@display_datetime, reservation)

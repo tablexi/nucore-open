@@ -15,6 +15,8 @@ module Reservations
           else
             {}
           end
+        elsif offline?
+          { "admin" => true, "title" => "Instrument\nOffline" }
         else
           { "admin" => true, "title" => "Admin\nReservation" }
         end,

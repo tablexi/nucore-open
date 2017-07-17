@@ -136,6 +136,7 @@ en:
     timeline:
       facility_tooltip:
         admin_reservation: Administrative Reservation
+        offline_reservation: Instrument Offline
     update: Update
 
   global_search:
