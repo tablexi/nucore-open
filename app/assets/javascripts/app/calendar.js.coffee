@@ -1,8 +1,8 @@
 class window.FullCalendarConfig
-  constructor: (@$element) ->
+  constructor: (@$element, @customOptions) ->
 
-  init: (options) ->
-    @$element.fullCalendar($.extend(@options(), options))
+  init: ->
+    @$element.fullCalendar($.extend(@options(), @customOptions))
 
   options: ->
     options = @baseOptions()
@@ -37,10 +37,9 @@ class window.FullCalendarConfig
       $("#overlay").addClass("off").removeClass("on")
 
   toggleNextPrev: (view) ->
-    # window.minDate/maxDate are strings formatted like 20170714
     try
-      startDate = $.fullCalendar.formatDate(view.start, "yyyyMMdd")
-      endDate   = $.fullCalendar.formatDate(view.end, "yyyyMMdd")
+      startDate = @formatCalendarDate(view.start)
+      endDate = @formatCalendarDate(view.end)
 
       $(".fc-button-prev").toggleClass("fc-state-disabled", startDate < window.minDate)
       $(".fc-button-next").toggleClass("fc-state-disabled", endDate > window.maxDate)
@@ -51,7 +50,8 @@ class window.FullCalendarConfig
       $.fullCalendar.formatDate(event.end,   "h:mmTT")
     ].join("&ndash;") + "<br/>"
 
-    # Default for our tooltip is to show.
+    # Default for our tooltip is to show, even if data-attribute is undefined.
+    # Only hide if explicitly set to false.
     if $("#calendar").data("show-tooltip") != false
       tooltip += [
         event.title,
@@ -71,3 +71,7 @@ class window.FullCalendarConfig
             at: "bottom left"
             my: "topRight"
         )
+
+  # window.minDate/maxDate are strings formatted like 20170714
+  formatCalendarDate: (date) ->
+    $.fullCalendar.formatDate(date, "yyyyMMdd")
