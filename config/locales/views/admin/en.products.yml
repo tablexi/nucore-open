@@ -34,6 +34,10 @@ en:
         index:
           description: Services are provided by the !facility_downcase! on behalf of the user. Forms for collection of additional information may be attached to the service.  Results files may be returned to the user.
 
+      timed_services:
+        index:
+          description: Timed services are provided by the !facility_downcase! on behalf of the user; billing is based on time used.
+
       items:
         index:
           description: Items are fixed-price products that do not require a reservation or additional user information.

@@ -1,0 +1,2 @@
+class TimedServicesController < ProductsCommonController
+end

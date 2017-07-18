@@ -60,7 +60,7 @@ class Product < ActiveRecord::Base
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
 
   def self.types
-    @types ||= [Instrument, Item, Service, Bundle]
+    @types ||= [Instrument, Item, Service, TimedService, Bundle]
   end
 
   def self.mergeable_types
