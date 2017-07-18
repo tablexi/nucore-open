@@ -64,7 +64,7 @@ RSpec.shared_examples_for "a loggable object" do
         created_at: a_truthy_value)
       # Note: there's no else clause on this test becuase there's
       # no easy way to guarantee that the incoming instance is
-      # deletable in context because of foreign key attachements. 
+      # deletable in context because of foreign key attachements.
     end
   end
 
