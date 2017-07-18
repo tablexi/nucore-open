@@ -24,7 +24,7 @@ RSpec.shared_examples_for "a loggable object" do
     if instance.has_attribute?("created_by")
       instance.created_by = creator.id
       instance.save!
-      log = LogEvent.last
+      log = instance.log_events.last
       expect(log).to have_attributes(
         loggable_id: instance.id, loggable_type: described_class.to_s,
         user: creator, event_type: "create",
@@ -40,7 +40,7 @@ RSpec.shared_examples_for "a loggable object" do
     starting_log_id = most_recent_log_id
     if instance.has_attribute?("updated_by")
       instance.update(updated_by: updater.id)
-      log = LogEvent.last
+      log = instance.log_events.last
       expect(log).to have_attributes(
         loggable_id: instance.id, loggable_type: described_class.to_s,
         user: updater, event_type: "update",
@@ -57,7 +57,7 @@ RSpec.shared_examples_for "a loggable object" do
     if instance.has_attribute?("deleted_by")
       instance.update(deleted_by: destroyer.id)
       instance.destroy
-      log = LogEvent.last
+      log = instance.log_events.last
       expect(log).to have_attributes(
         loggable_id: instance.id, loggable_type: described_class.to_s,
         user: destroyer, event_type: "delete",
