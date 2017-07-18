@@ -16,6 +16,7 @@ class Facility < ActiveRecord::Base
 
   has_many :items
   has_many :services
+  has_many :timed_services
   has_many :instruments
   has_many :bundles
   has_many :journals
