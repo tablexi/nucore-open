@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe AccountUser do
+
   context "when creating through Account" do
     subject(:account) { build(:nufs_account, :with_account_owner) }
 
@@ -40,6 +41,12 @@ RSpec.describe AccountUser do
   context "when a user has an active role for an account" do
     let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
     let(:user) { create(:user) }
+
+    it_should_behave_like "a loggable object" do
+      let(:instance) do
+        build(:account_user, :purchaser, account: account, user: create(:user))
+      end
+    end
 
     context "when creating another role for the user for the account" do
       subject(:account_user) do

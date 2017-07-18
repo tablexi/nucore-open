@@ -208,6 +208,7 @@ RSpec.describe UsersController do
             it_should_allow_operators_only :redirect do
               expect(assigns(:user)).to be_kind_of User
               expect(assigns(:user)).to be_persisted
+              expect(assigns(:user).created_by).to be_truthy
               assert_redirected_to facility_users_url(user: assigns[:user].id)
             end
           end

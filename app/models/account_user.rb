@@ -3,6 +3,8 @@ class AccountUser < ActiveRecord::Base
   belongs_to :user
   belongs_to :account, inverse_of: :account_users
 
+  include Loggable
+
   ACCOUNT_PURCHASER = "Purchaser".freeze
   ACCOUNT_OWNER = "Owner".freeze
   ACCOUNT_ADMINISTRATOR = "Business Administrator".freeze

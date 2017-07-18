@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170713183443) do
+ActiveRecord::Schema.define(version: 20170717203646) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -770,6 +770,7 @@ ActiveRecord::Schema.define(version: 20170713183443) do
     t.integer  "uid",                    limit: 4
     t.datetime "deactivated_at"
     t.string   "card_number",            limit: 255
+    t.integer  "created_by",             limit: 4
   end
 
   add_index "users", ["card_number"], name: "index_users_on_card_number", using: :btree

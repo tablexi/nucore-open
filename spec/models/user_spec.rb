@@ -8,6 +8,10 @@ RSpec.describe User do
   let(:price_group) { create(:price_group, facility: facility) }
   let(:price_policy) { item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: price_group.id)) }
 
+  it_should_behave_like "a loggable object" do
+    let(:instance) { build(:user) }
+  end
+
   it "validates uniquess of username" do
     # we need at least 1 user to test validations
     is_expected.to validate_uniqueness_of(:username).case_insensitive
