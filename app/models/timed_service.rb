@@ -4,4 +4,8 @@ class TimedService < Product
 
   validates_presence_of :initial_order_status_id
 
+  def quantity_as_time?
+    true
+  end
+
 end

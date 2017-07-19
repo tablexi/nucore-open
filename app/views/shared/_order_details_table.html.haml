@@ -15,7 +15,7 @@
           = link_to order_detail,
             current_facility ? order_detail.show_order_path : order_detail.show_order_detail_path
         %td= order_detail.ordered_at
-        %td.centered= order_detail.quantity
+        %td.centered= order_detail.wrapped_quantity
         %td.order-note.order-note--wide
           %ul.unstyled
             %li= order_detail.description_as_html_with_facility_prefix

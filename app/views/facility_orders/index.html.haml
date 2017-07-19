@@ -27,7 +27,7 @@
 
       -## THE DETAIL ROWS
       %tbody
-        - @order_details.each do |od|
+        - OrderDetailPresenter.wrap(@order_details).each do |od|
           - order = od.order
           %tr
             %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
@@ -35,12 +35,11 @@
             %td.centered= link_to od.id, manage_order_detail_path(od), :class => 'manage-order-detail'
             %td=h human_datetime(order.ordered_at)
             %td= order.user.full_name
-            %td.centered= od.quantity
+            %td.centered= od.wrapped_quantity
             = render :partial => 'shared/order_detail_cell', :locals => { :od => od }
             %td= od.assigned_user
             %td= od.order_status
             %td.currency
-              - od.send(:extend, PriceDisplayment)
               = od.wrapped_total
         -## THE FOOTER CONTROL ROW
       = render partial: 'table_controls'

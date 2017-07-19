@@ -24,6 +24,7 @@
       - else
         %td.centered
           = odf.input :quantity,
+            as: :order_detail_quantity,
             disabled: order_detail.quantity_locked_by_survey?,
             input_html: { name: "quantity#{order_detail.id}",
             id: "quantity#{order_detail.id}",

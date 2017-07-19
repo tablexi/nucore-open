@@ -123,7 +123,7 @@ class Facility < ActiveRecord::Base
   end
 
   def problem_plain_order_details
-    complete_problem_order_details.untimed_orders
+    complete_problem_order_details.item_and_service_orders
   end
 
   def problem_reservation_order_details

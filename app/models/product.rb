@@ -240,6 +240,10 @@ class Product < ActiveRecord::Base
     self.class.name.underscore.pluralize
   end
 
+  def quantity_as_time?
+    false
+  end
+
   def product_accessory_by_id(id)
     product_accessories.where(accessory_id: id).first
   end
