@@ -815,6 +815,7 @@ ActiveRecord::Schema.define(version: 20170717203646) do
   add_foreign_key "journal_rows", "accounts"
   add_foreign_key "journal_rows", "journals"
   add_foreign_key "journal_rows", "order_details"
+  add_foreign_key "log_events", "users"
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
   add_foreign_key "order_details", "journals"
   add_foreign_key "order_details", "order_details", column: "parent_order_detail_id"
