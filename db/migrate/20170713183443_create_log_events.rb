@@ -7,5 +7,8 @@ class CreateLogEvents < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+
+    add_index(:log_events, [:loggable_type, :loggable_id],
+      name: "index_log_events_loggable")
   end
 end

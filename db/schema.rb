@@ -236,11 +236,12 @@ ActiveRecord::Schema.define(version: 20170717203646) do
     t.integer  "loggable_id",   limit: 4
     t.string   "loggable_type", limit: 255
     t.string   "event_type",    limit: 255
-    t.integer  "user_id",       limit: 4
+    t.integer  "user_id",       limit: 4,   null: false
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
   end
 
+  add_index "log_events", ["loggable_type", "loggable_id"], name: "index_log_events_loggable", using: :btree
   add_index "log_events", ["user_id"], name: "index_log_events_on_user_id", using: :btree
 
   create_table "notifications", force: :cascade do |t|
