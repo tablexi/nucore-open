@@ -2,7 +2,6 @@ class User < ActiveRecord::Base
 
   include ::Users::Roles
   include NUCore::Database::WhereIdsIn
-  include Loggable
 
   # ldap_authenticatable is included via a to_prepare hook if ldap is enabled
   devise :database_authenticatable, :encryptable, :trackable, :recoverable
@@ -21,6 +20,8 @@ class User < ActiveRecord::Base
   has_many :facilities, through: :user_roles
   has_many :training_requests, dependent: :destroy
   has_many :stored_files, through: :order_details, class_name: "StoredFile"
+  has_many :log_events, as: :loggable
+
   validates_presence_of :username, :first_name, :last_name
   validates :email, presence: true, email_format: true
   validates_uniqueness_of :username, :email

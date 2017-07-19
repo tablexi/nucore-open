@@ -2,8 +2,7 @@ class AccountUser < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :account, inverse_of: :account_users
-
-  include Loggable
+  has_many :log_events, as: :loggable
 
   ACCOUNT_PURCHASER = "Purchaser".freeze
   ACCOUNT_OWNER = "Owner".freeze

@@ -66,6 +66,7 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     @user.password = generate_new_password
     @user.created_by = current_user.try(:id)
+    LogEvent.log(@user, :create, current_user)
 
     if @user.save
       @user.create_default_price_group!
@@ -85,6 +86,7 @@ class UsersController < ApplicationController
       redirect_to facility_users_path
     elsif @user.save
       @user.update(created_by: current_user)
+      LogEvent.log(@user, :create, current_user)
       @user.create_default_price_group!
       save_user_success
     else

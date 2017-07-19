@@ -211,6 +211,10 @@ RSpec.describe AccountBuilder, type: :service do
                                        })
     end
 
+    before(:example) do
+      allow(account).to receive(:destroyed?).and_return(false)
+    end
+
     it "returns an account" do
       expect(builder.update).to be_a(NufsAccount)
     end

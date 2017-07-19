@@ -42,12 +42,6 @@ RSpec.describe AccountUser do
     let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
     let(:user) { create(:user) }
 
-    it_should_behave_like "a loggable object" do
-      let(:instance) do
-        build(:account_user, :purchaser, account: account, user: create(:user))
-      end
-    end
-
     context "when creating another role for the user for the account" do
       subject(:account_user) do
         build(:account_user, :purchaser, account: account, user: user)

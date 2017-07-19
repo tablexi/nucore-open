@@ -50,6 +50,7 @@ class FacilityAccountsController < ApplicationController
     # The builder might add some errors to base. If those exist,
     # we don't want to try saving as that would clear the original errors
     if @account.errors[:base].empty? && @account.save
+      LogEvent.log(@account, :create, current_user)
       flash[:notice] = I18n.t("controllers.facility_accounts.create.success")
       redirect_to facility_user_accounts_path(current_facility, @account.owner_user)
     else
@@ -73,6 +74,7 @@ class FacilityAccountsController < ApplicationController
     ).update
 
     if @account.save
+      LogEvent.log(@account, :update, current_user)
       flash[:notice] = I18n.t("controllers.facility_accounts.update")
       redirect_to facility_account_path
     else

@@ -9,14 +9,6 @@ RSpec.describe Account do
 
   it_should_behave_like "an Account"
 
-  it_should_behave_like "a loggable object" do
-    let(:instance) do
-      build(
-        :nufs_account,
-        account_users_attributes: account_users_attributes_hash(user: user))
-    end
-  end
-
   describe ".with_orders_for_facility" do
     subject { described_class.with_orders_for_facility(facility) }
     let(:product_a) { create(:setup_item, :with_facility_account, facility: facility_a) }
