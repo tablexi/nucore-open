@@ -24,7 +24,7 @@ RSpec.describe OrderDetail do
     expect(@order).to be_valid
     @order_detail = @order.order_details.create(attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
     expect(@order_detail.state).to eq("new")
-    expect(@order_detail.version).to eq(1)
+    expect(@order_detail.versions.size).to eq(1)
     expect(@order_detail.order_status).to be_nil
   end
 
@@ -630,13 +630,13 @@ RSpec.describe OrderDetail do
         nil
       end
       expect(@order_detail.state).to eq("new")
-      expect(@order_detail.version).to eq(1)
+      expect(@order_detail.versions.size).to eq(1)
     end
 
     it "should allow anyone to transition from 'new' to 'inprocess', increment version" do
       @order_detail.to_inprocess!
       expect(@order_detail.state).to eq("inprocess")
-      expect(@order_detail.version).to eq(2)
+      expect(@order_detail.versions.size).to eq(2)
     end
 
     context "needs price policy" do
@@ -678,7 +678,7 @@ RSpec.describe OrderDetail do
         @order_detail.to_complete!
         @order_detail.to_canceled!
         expect(@order_detail.state).to eq "canceled"
-        expect(@order_detail.version).to eq(4)
+        expect(@order_detail.versions.size).to eq(4)
       end
 
       it "should not transition to canceled from reconciled" do
@@ -688,7 +688,7 @@ RSpec.describe OrderDetail do
         @order_detail.to_reconciled!
         expect { @order_detail.to_canceled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("reconciled")
-        expect(@order_detail.version).to eq(4)
+        expect(@order_detail.versions.size).to eq(4)
       end
 
       it "should not transition to canceled if part of journal" do
@@ -699,7 +699,7 @@ RSpec.describe OrderDetail do
         @order_detail.to_complete!
         expect { @order_detail.to_canceled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("complete")
-        expect(@order_detail.version).to eq(4)
+        expect(@order_detail.versions.size).to eq(4)
       end
 
       context "transitioning to canceled when statemented" do
@@ -737,20 +737,20 @@ RSpec.describe OrderDetail do
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         expect(@order_detail.state).to eq("complete")
-        expect(@order_detail.version).to eq(3)
+        expect(@order_detail.versions.size).to eq(3)
         @order_detail.to_reconciled!
         expect(@order_detail.state).to eq("reconciled")
-        expect(@order_detail.version).to eq(4)
+        expect(@order_detail.versions.size).to eq(4)
       end
 
       it "should not transition to reconciled if there are no actual costs" do
         @order_detail.to_inprocess!
         @order_detail.to_complete!
         expect(@order_detail.state).to eq("complete")
-        expect(@order_detail.version).to eq(3)
+        expect(@order_detail.versions.size).to eq(3)
         expect { @order_detail.to_reconciled! }.to raise_error(AASM::InvalidTransition)
         expect(@order_detail.state).to eq("complete")
-        expect(@order_detail.version).to eq(3)
+        expect(@order_detail.versions.size).to eq(3)
       end
 
     end

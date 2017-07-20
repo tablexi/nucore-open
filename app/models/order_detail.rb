@@ -8,7 +8,7 @@ class OrderDetail < ActiveRecord::Base
   include OrderDetail::Accessorized
   include NUCore::Database::WhereIdsIn
 
-  versioned
+  has_paper_trail
 
   # Used when ordering to override certain restrictions
   attr_accessor :being_purchased_by_admin

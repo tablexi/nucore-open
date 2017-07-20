@@ -74,7 +74,7 @@ RSpec.describe OrderDetailObserver do
       @order = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
       @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
       expect(@order_detail.state).to eq("new")
-      expect(@order_detail.version).to eq(1)
+      expect(@order_detail.versions.size).to eq(1)
       expect(@order_detail.order_status).to be_nil
 
       expect(@order.validate_order!).to be true
