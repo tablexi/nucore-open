@@ -409,13 +409,14 @@ RSpec.describe OrderDetail do
 
     context "with instruments" do
       let(:instruments) do
-        create_list(:instrument, 4, facility_account: facility_account, facility: facility)
+        create_list(:instrument, 5, facility_account: facility_account, facility: facility)
       end
 
       let(:instrument_with_actuals) { instruments[0] }
       let(:instrument_with_actuals_and_price_policy) { instruments[1] }
       let(:instrument_without_actuals) { instruments[2] }
       let(:instrument_without_price_policy) { instruments[3] }
+      let(:instrument_without_actuals_without_price_policy) { instruments[4] }
 
       let(:order) do
         create(:order,
@@ -437,6 +438,7 @@ RSpec.describe OrderDetail do
       let(:order_detail_with_actuals) { order_details[1] }
       let(:order_detail_with_actuals_and_price_policy) { order_details[2] }
       let(:order_detail_without_price_policy) { order_details[3] }
+      let(:order_detail_without_actuals_without_price_policy) { order_details[4] }
 
       let(:reservation_for_instrument_with_actuals_and_price_policy) do
         create(:reservation,
@@ -451,6 +453,7 @@ RSpec.describe OrderDetail do
 
       before :each do
         instrument_without_actuals.relay.destroy
+        instrument_without_actuals_without_price_policy.relay.destroy
 
         instruments.each do |instrument|
           create(:schedule_rule, product: instrument)
@@ -465,6 +468,10 @@ RSpec.describe OrderDetail do
         create(:reservation,
                product: instrument_without_actuals,
                order_detail: order_detail_without_actuals,
+              )
+        create(:reservation,
+               product: instrument_without_actuals_without_price_policy,
+               order_detail: order_detail_without_actuals_without_price_policy,
               )
         create(:reservation,
                product: instrument_with_actuals,
@@ -535,26 +542,53 @@ RSpec.describe OrderDetail do
           end
 
           context "when a price policy is assigned" do
-            let!(:price_policy) do
-              create_price_policy(product: order_detail.product)
+            context "for price policies requiring actuals" do
+              let!(:price_policy) do
+                create(:instrument_usage_price_policy, { price_group: account.price_groups.first, product: order_detail.product })
+              end
+
+              before :each do
+                order_detail.reservation.assign_actuals_off_reserve
+                order_detail.assign_price_policy
+                order_detail.save!
+              end
+
+              it "has a price policy" do
+                expect(order_detail.price_policy).to eq price_policy
+              end
+
+              it_behaves_like "it is not a problem order"
+
+              it "has its fulfilled_at timestamp set to its reservation's actual_end_at" do
+                expect(order_detail.fulfilled_at)
+                  .to eq order_detail.reservation.actual_end_at
+              end
             end
 
-            before :each do
-              order_detail.reservation.assign_actuals_off_reserve
-              order_detail.assign_price_policy
-              order_detail.save!
+
+            context "for price policies not requiring actuals" do
+              let(:order_detail) { order_detail_without_actuals_without_price_policy }
+              let!(:price_policy) do
+                create(:instrument_price_policy, { price_group: account.price_groups.first, product: order_detail.product })
+              end
+              let!(:fulfilled_at) { order_detail.fulfilled_at }
+
+              before :each do
+                order_detail.assign_price_policy
+                order_detail.save!
+              end
+
+              it "has a price policy" do
+                expect(order_detail.price_policy).to eq price_policy
+              end
+
+              it_behaves_like "it is not a problem order"
+
+              it "its fulfilled_at timestamp does not change" do
+                expect(order_detail.fulfilled_at).to eq fulfilled_at
+              end
             end
 
-            it "has a price policy" do
-              expect(order_detail.price_policy).to eq price_policy
-            end
-
-            it_behaves_like "it is not a problem order"
-
-            it "has its fulfilled_at timestamp set to its reservation's end_at" do
-              expect(order_detail.fulfilled_at)
-                .to eq order_detail.reservation.reserve_end_at
-            end
           end
         end
       end
