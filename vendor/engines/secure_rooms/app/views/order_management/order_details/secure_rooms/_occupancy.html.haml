@@ -1,4 +1,5 @@
 .datetime-block.js--timeFieldAdjustor
+  = f.input :editing_time_data, as: :hidden, input_html: { value: true }
   = f.simple_fields_for :occupancy_attributes, f.object.time_data do |of|
     = of.input :entry_at, as: :time_dropdown, error: false
 
