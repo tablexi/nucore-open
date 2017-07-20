@@ -10,7 +10,6 @@ RSpec.describe "Managing an order detail" do
 
   let(:director) { create(:user, :facility_director, facility: facility) }
 
-
   before do
     login_as director
     visit manage_facility_order_order_detail_path(facility, order, order_detail)
