@@ -544,7 +544,7 @@ RSpec.describe OrderDetail do
           context "when a price policy is assigned" do
             context "for price policies requiring actuals" do
               let!(:price_policy) do
-                create(:instrument_usage_price_policy, { price_group: account.price_groups.first, product: order_detail.product })
+                create(:instrument_usage_price_policy, price_group: account.price_groups.first, product: order_detail.product)
               end
 
               before :each do
@@ -565,11 +565,10 @@ RSpec.describe OrderDetail do
               end
             end
 
-
             context "for price policies not requiring actuals" do
               let(:order_detail) { order_detail_without_actuals_without_price_policy }
               let!(:price_policy) do
-                create(:instrument_price_policy, { price_group: account.price_groups.first, product: order_detail.product })
+                create(:instrument_price_policy, price_group: account.price_groups.first, product: order_detail.product)
               end
               let!(:fulfilled_at) { order_detail.fulfilled_at }
 
