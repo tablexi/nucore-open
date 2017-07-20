@@ -768,7 +768,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def ready_for_journal?
-    reviewed? && journal_id.blank? && Account.config.using_journal?(account.type)
+    reviewed? && journal_id.blank? && Account.config.using_journal?(account.type) && !reconciled?
   end
 
   def awaiting_payment?

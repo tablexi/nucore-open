@@ -970,6 +970,16 @@ RSpec.describe OrderDetail do
         @order_detail.journal_id = 1
         expect(@order_detail).not_to be_ready_for_journal
       end
+
+      it "is not ready if it was manually reconciled" do
+        @order_detail.reviewed_at = 1.day.ago
+        @order_detail.to_inprocess!
+        @order_detail.to_complete!
+        @order_detail.actual_cost = 100
+        @order_detail.actual_subsidy = 0
+        @order_detail.to_reconciled
+        expect(@order_detail).not_to be_ready_for_journal
+      end
     end
 
     describe "a non-statementable account" do
