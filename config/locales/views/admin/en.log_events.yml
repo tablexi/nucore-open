@@ -1,0 +1,18 @@
+en:
+  views:
+    log_events:
+      index:
+        account__create: Payment Source created
+        account__update: Payment Source updated
+        account_user__create: Payment Source User added
+        account_user__delete: Payment Source User removed
+        end_date: End Date
+        event_filter: Event
+        event_placeholder: Filter on one or more events
+        event_time: Event Time
+        event: Event
+        filter: Filter
+        object: Object
+        start_date: Start Date
+        user__create: User added
+        user: User

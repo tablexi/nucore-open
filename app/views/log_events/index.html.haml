@@ -1,0 +1,52 @@
+= content_for :h1 do
+  = text("pages.global_settings")
+
+= content_for :sidebar do
+  = render("admin/shared/sidenav_global", sidenav_tab: "log_events")
+
+%h2= text("pages.event_log")
+
+= form_tag(log_events_path, method: :get) do
+
+  = label_tag(text(:event_filter))
+  = select_tag(:events,
+    options_for_select([[text("account__create"), "account__create"],
+                        [text("account__update"), "account__update"],
+                        [text("account_user__create"), "account_user__create"],
+                        [text("account_user__delete"), "account_user__delete"],
+                        [text("user__create"), "user__create"]], params[:events]),
+    multiple: true,
+    class: "js--chosen",
+    data: { placeholder: text(:event_placeholder) })
+
+  = label_tag(text(:start_date))
+  = text_field_tag(:start_date, params[:start_date], class: :datepicker)
+
+  = label_tag(text(:end_date))
+  = text_field_tag(:end_date, params[:end_date], class: :datepicker)
+
+  = submit_tag(text(:filter))
+
+
+= will_paginate(@log_events)
+
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th= text("event_time")
+      %th= text("event")
+      %th= text("object")
+      %th= text("user")
+
+  %tbody
+    - @log_events.each do |log_event|
+      %tr
+        %td= format_usa_datetime(log_event.event_time)
+        %td= text(log_event.locale_tag)
+        %td= log_event.loggable_to_s
+        %td= log_event.user.try(:to_s)
+
+= will_paginate(@log_events)
+
+:coffeescript
+  $('.datepicker').datepicker({dateFormat: "mm/dd/yy"})

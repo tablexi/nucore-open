@@ -293,6 +293,7 @@ Nucore::Application.routes.draw do
   resources :global_user_roles do
     get "search", on: :collection
   end
+  resources :log_events, only: :index
 
   # order process
   get "/orders/cart", to: 'orders#cart', as: "cart"

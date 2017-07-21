@@ -31,7 +31,8 @@ class AccountUsersController < ApplicationController
     @account_user.created_by = session_user.id
 
     if @account_user.save
-      LogEvent.log(@account_user, :create, current_user)
+      LogEvent.log(
+        @account_user, :create, @account_user.created_at, current_user)
       flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
       redirect_to account_account_users_path(@account)
     else
@@ -48,7 +49,8 @@ class AccountUsersController < ApplicationController
     @account_user.deleted_by = session_user.id
 
     if @account_user.save
-      LogEvent.log(@account_user, :delete, current_user)
+      LogEvent.log(
+        @account_user, :delete, @account_user.deleted_at, current_user)
       flash[:notice] = "The user was successfully removed from the payment method"
     else
       flash[:error] = "An error was encountered while attempting to remove the user from the payment method"
