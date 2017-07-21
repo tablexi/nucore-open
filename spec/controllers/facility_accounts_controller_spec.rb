@@ -120,6 +120,10 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
       it_should_allow_all facility_managers do
         expect(assigns(:account).affiliate).to be_nil
         expect(assigns(:account).affiliate_other).to be_nil
+        expect(assigns(:account).log_events.size).to eq(1)
+        expect(assigns(:account).log_events.first).to have_attributes(
+          loggable: assigns(:account), event_type: "update",
+          user_id: a_truthy_value)
         is_expected.to set_flash
         assert_redirected_to facility_account_url
       end
@@ -154,6 +158,10 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         assigns(:account).account_users[0] == @owner
         expect(assigns(:account).affiliate).to be_nil
         expect(assigns(:account).affiliate_other).to be_nil
+        expect(assigns(:account).log_events.size).to eq(1)
+        expect(assigns(:account).log_events.first).to have_attributes(
+          loggable: assigns(:account), event_type: "create",
+          user_id: a_truthy_value)
         is_expected.to set_flash
         expect(response).to redirect_to(facility_user_accounts_path(facility, owner_user))
       end

@@ -70,6 +70,10 @@ RSpec.describe AccountUsersController do
       expect(assigns(:account_user)).to be_kind_of AccountUser
       expect(assigns(:account_user).user).to eq(@purchaser)
       expect(assigns(:account_user).created_by).to eq(@owner.id)
+      expect(assigns(:account_user).log_events.size).to eq(1)
+      expect(assigns(:account_user).log_events.first).to have_attributes(
+        loggable: assigns(:account_user), event_type: "create",
+        user_id: a_truthy_value)
       expect(@purchaser.reload).to be_purchaser_of(@authable)
       is_expected.to set_flash
       assert_redirected_to(account_account_users_path(@authable))
@@ -82,10 +86,10 @@ RSpec.describe AccountUsersController do
     before :each do
       @method = :delete
       @action = :destroy
-      @account_user = FactoryGirl.create(:account_user, user_role: AccountUser::ACCOUNT_ADMINISTRATOR,
-                                                        account_id: @authable.id,
-                                                        user_id: @staff.id,
-                                                        created_by: @admin.id)
+      @account_user = FactoryGirl.create(
+        :account_user, user_role: AccountUser::ACCOUNT_ADMINISTRATOR,
+                       account_id: @authable.id, user_id: @staff.id,
+                       created_by: @admin.id)
       @params = { account_id: @authable.id, id: @account_user.id }
     end
 
@@ -98,6 +102,10 @@ RSpec.describe AccountUsersController do
       @account_user.reload
       expect(@account_user.deleted_at).not_to be_nil
       expect(@account_user.deleted_by).to eq(@owner.id)
+      expect(assigns(:account_user).log_events.size).to eq(1)
+      expect(assigns(:account_user).log_events.first).to have_attributes(
+        loggable: assigns(:account_user), event_type: "delete",
+        user_id: a_truthy_value)
       is_expected.to set_flash
       assert_redirected_to(account_account_users_path(@authable))
     end

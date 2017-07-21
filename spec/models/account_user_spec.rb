@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe AccountUser do
+
   context "when creating through Account" do
     subject(:account) { build(:nufs_account, :with_account_owner) }
 
