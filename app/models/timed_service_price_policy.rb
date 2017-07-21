@@ -23,9 +23,7 @@ class TimedServicePricePolicy < PricePolicy
   private
 
   def calculate_for_time(duration)
-    start_at = Time.current.beginning_of_day
-    end_at = start_at + duration.minutes
-    PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at)
+    costs = { cost: duration * usage_rate, subsidy: duration * usage_subsidy }
   end
 
 end
