@@ -8,4 +8,6 @@ class VestalVersion < ActiveRecord::Base
 
   belongs_to :versioned, polymorphic: true
 
+  serialize :modifications
+
 end
