@@ -120,7 +120,6 @@ RSpec.describe OrderDetailNoticePresenter do
       expect(presenter.alerts_to_html).to be_empty
     end
 
-
     it "shows an important badge for a problem order" do
       allow(order_detail).to receive_messages(problem?: true, problem_description_key: :missing_price_policy)
       expect(presenter.alerts_to_html).to have_alert(/does not have a price policy/).with_level(:error)
