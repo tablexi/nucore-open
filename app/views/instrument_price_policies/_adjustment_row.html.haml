@@ -7,11 +7,12 @@
   = text_field_tag "price_policy_#{price_group.id}[usage_subsidy]",
     display_usage_subsidy(price_group, price_policy), size: 8, class: "usage_adjustment"
 
-%td
-  = t("price_policies.amount")
-  %br
-  %span.minimum_cost{ data: { usage_subsidy: price_policy.usage_subsidy } }
-  = hidden_price_policy_tag(price_group.id, price_policy.minimum_cost, :minimum_cost, params["price_policy_#{price_group.id}"])
+- if local_assigns[:minimum_cost] != false
+  %td
+    = t("price_policies.amount")
+    %br
+    %span.minimum_cost{ data: { usage_subsidy: price_policy.usage_subsidy } }
+    = hidden_price_policy_tag(price_group.id, price_policy.minimum_cost, :minimum_cost, params["price_policy_#{price_group.id}"])
 
 - if local_assigns[:cancellation] != false
   %td

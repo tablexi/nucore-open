@@ -14,8 +14,8 @@ module PricePolicies
     def calculate(start_at, end_at)
       return if start_at > end_at
       duration_mins = TimeRange.new(start_at, end_at).duration_mins
-      discount = calculate_discount(start_at, end_at)
-      cost_and_subsidy(duration_mins, discount)
+      discount_multiplier = product.try(:schedule_rules) ? calculate_discount(start_at, end_at) : 1
+      cost_and_subsidy(duration_mins, discount_multiplier)
     end
 
     def calculate_discount(start_at, end_at)
@@ -28,13 +28,13 @@ module PricePolicies
 
     private
 
-    def cost_and_subsidy(duration_mins, discount)
-      costs = { cost: duration_mins * usage_rate * discount }
+    def cost_and_subsidy(duration_mins, discount_multiplier)
+      costs = { cost: duration_mins * usage_rate * discount_multiplier }
 
       if costs[:cost] < minimum_cost.to_f
         { cost: minimum_cost, subsidy: minimum_cost_subsidy }
       else
-        costs.merge(subsidy: duration_mins * usage_subsidy * discount)
+        costs.merge(subsidy: duration_mins * usage_subsidy * discount_multiplier)
       end
     end
 
