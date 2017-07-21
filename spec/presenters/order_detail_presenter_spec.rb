@@ -11,24 +11,6 @@ RSpec.describe OrderDetailPresenter do
     let(:reservation) { create(:setup_reservation) }
   end
 
-  describe "#actual_total" do
-    subject { presented.actual_total }
-
-    before { allow(order_detail).to receive(:actual_total) { actual_total } }
-
-    context "when there is an actual_total value" do
-      let(:actual_total) { 20.15 }
-
-      it { is_expected.to eq("$20.15") }
-    end
-
-    context "when there is no actual_total value" do
-      let(:actual_total) { nil }
-
-      it { is_expected.to eq("") }
-    end
-  end
-
   describe "#description_as_html" do
     subject { presented.description_as_html }
 
@@ -76,26 +58,6 @@ RSpec.describe OrderDetailPresenter do
     end
 
     it { is_expected.to eq(expected_path) }
-  end
-
-  describe "#estimated_total" do
-    subject { presented.estimated_total }
-
-    before(:each) do
-      allow(order_detail).to receive(:estimated_total) { estimated_total }
-    end
-
-    context "when there is an estimated_total value" do
-      let(:estimated_total) { 20.15 }
-
-      it { is_expected.to eq("$20.15") }
-    end
-
-    context "when there is no estimated_total value" do
-      let(:estimated_total) { nil }
-
-      it { is_expected.to eq("") }
-    end
   end
 
   describe "#ordered_at" do

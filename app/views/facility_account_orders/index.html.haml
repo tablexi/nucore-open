@@ -42,11 +42,11 @@
           %td= od.order_status
           %td.currency
             - if od.cost_estimated?
-              %span.estimated_cost= od.estimated_total
+              %span.estimated_cost= od.wrapped_total
             - elsif od.price_policy.blank?
               = t(".unassigned")
             - else
-              %span.actual_cost= od.actual_total
+              %span.actual_cost= od.wrapped_total
       %tr
         %td.centered{colspan: 5}= will_paginate(@order_details)
 
