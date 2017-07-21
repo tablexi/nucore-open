@@ -2,17 +2,17 @@
   = current_facility
 
 - if acting_as? || session_user.try(:operator_of?, current_facility)
-  - instruments    = current_facility.instruments.active_plus_hidden
-  - items          = current_facility.items.active_plus_hidden
-  - services       = current_facility.services.active_plus_hidden
+  - instruments = current_facility.instruments.active_plus_hidden
+  - items = current_facility.items.active_plus_hidden
+  - services = current_facility.services.active_plus_hidden
   - timed_services = current_facility.timed_services.active_plus_hidden
-  - bundles        = current_facility.bundles.active_plus_hidden
+  - bundles = current_facility.bundles.active_plus_hidden
 - else
-  - instruments    = current_facility.instruments.active
-  - items          = current_facility.items.active
-  - services       = current_facility.services.active
+  - instruments = current_facility.instruments.active
+  - items = current_facility.items.active
+  - services = current_facility.services.active
   - timed_services = current_facility.timed_services.active
-  - bundles        = current_facility.bundles.active.reject{|b| !b.products_active?}
+  - bundles = current_facility.bundles.active.reject{|b| !b.products_active?}
 
 = content_for :breadcrumb do
   %ul.breadcrumb

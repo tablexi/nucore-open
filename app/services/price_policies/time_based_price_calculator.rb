@@ -14,7 +14,7 @@ module PricePolicies
     def calculate(start_at, end_at)
       return if start_at > end_at
       duration_mins = TimeRange.new(start_at, end_at).duration_mins
-      discount_multiplier = product.try(:schedule_rules) ? calculate_discount(start_at, end_at) : 1
+      discount_multiplier = product.respond_to?(:schedule_rules) ? calculate_discount(start_at, end_at) : 1
       cost_and_subsidy(duration_mins, discount_multiplier)
     end
 
