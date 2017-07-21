@@ -3,27 +3,29 @@ module Reservations
   class CalendarPresenter < DelegateClass(Reservation)
 
     def as_calendar_object(options = {})
-      calendar_object_default.merge(
-        if order.present?
-          if options[:with_details].present?
-            {
-              "admin" => false,
-              "email" => order.user.email,
-              "name"  => order.user.full_name.to_s,
-              "title" => "#{order.user.first_name}\n#{order.user.last_name}",
-            }
-          else
-            {}
-          end
-        elsif offline?
-          { "admin" => true, "title" => "Instrument\nOffline" }
-        else
-          { "admin" => true, "title" => "Admin\nReservation" }
-        end,
-      )
+      calendar_object_default.merge(reservation_options(options))
     end
 
     private
+
+    def reservation_options(options)
+      if order.present?
+        if options[:with_details].present?
+          {
+            "email" => order.user.email,
+            "title" => order.user.full_name,
+          }
+        else
+          {}
+        end
+      elsif offline?
+        { "title" => "Instrument Offline" }
+      else
+        {
+          "title" => "Admin Reservation",
+        }
+      end
+    end
 
     def calendar_object_default
       {

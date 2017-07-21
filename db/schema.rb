@@ -232,6 +232,18 @@ ActiveRecord::Schema.define(version: 20170720161356) do
 
   add_index "journals", ["facility_id"], name: "index_journals_on_facility_id", using: :btree
 
+  create_table "log_events", force: :cascade do |t|
+    t.integer  "loggable_id",   limit: 4
+    t.string   "loggable_type", limit: 255
+    t.string   "event_type",    limit: 255
+    t.integer  "user_id",       limit: 4,   null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "log_events", ["loggable_type", "loggable_id"], name: "index_log_events_loggable", using: :btree
+  add_index "log_events", ["user_id"], name: "index_log_events_on_user_id", using: :btree
+
   create_table "notifications", force: :cascade do |t|
     t.string   "type",         limit: 255, null: false
     t.integer  "subject_id",   limit: 4,   null: false
@@ -814,6 +826,7 @@ ActiveRecord::Schema.define(version: 20170720161356) do
   add_foreign_key "journal_rows", "accounts"
   add_foreign_key "journal_rows", "journals"
   add_foreign_key "journal_rows", "order_details"
+  add_foreign_key "log_events", "users"
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
   add_foreign_key "order_details", "journals"
   add_foreign_key "order_details", "order_details", column: "parent_order_detail_id"

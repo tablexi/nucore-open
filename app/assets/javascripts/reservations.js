@@ -1,83 +1,6 @@
 $(document).ready(function() {
 
-  $calendar = $('#calendar');
-
-  // initialize fullcalendar
-  var calendarOptions = {
-    editable: false,
-    defaultView: 'agendaWeek',
-    allDaySlot: false,
-    events: events_path,
-    eventAfterRender: function(event, element) {
-      var tooltip = [
-        $.fullCalendar.formatDate(event.start, 'hh:mmTT'),
-        $.fullCalendar.formatDate(event.end,   'hh:mmTT')
-      ].join('&mdash;') + '<br/>';
-
-      // Default for our tooltip is to show.
-      if ($calendar.data("show-tooltip") != false) {
-        if (event.admin) {  // administrative reservation
-          tooltip += 'Admin Reservation<br/>';
-        } else {            // normal reservation
-          tooltip += [
-            event.name,
-            event.email
-          ].join('<br/>');
-        }
-
-        // create the tooltip
-        if (element.qtip) {
-          $(element).qtip({
-            content: tooltip,
-            style: {
-              classes: "qtip-light"
-            },
-            position: {
-              at:  'bottom left',
-              my:  'topRight'
-            }
-          });
-        }
-      }
-    },
-    minTime: minTime,
-    maxTime: maxTime,
-    height: (maxTime - minTime)*42 + 75,
-    loading: function(isLoading, view) {
-      if (isLoading) {
-        $("#overlay").addClass('on').removeClass('off');
-      } else {
-        $("#overlay").addClass('off').removeClass('on');
-        try {
-          var startDate = $.fullCalendar.formatDate(view.start, "yyyyMMdd")
-          var endDate   = $.fullCalendar.formatDate(view.end, "yyyyMMdd")
-          // check calendar start date
-          if (startDate < minDate) {
-            // hide the previous button
-            $("div.fc-button-prev").hide();
-          } else {
-            // show the previous button
-            $("div.fc-button-prev").show();
-          }
-          // check calendar end date
-          if (endDate > maxDate) {
-            // hide the next button
-            $("div.fc-button-next").hide();
-          } else {
-            // show the next button
-            $("div.fc-button-next").show();
-          }
-        } catch(error) {}
-      }
-    }
-
-  };
-  if (window.initialDate) {
-	  var d = new Date(Date.parse(initialDate));
-	  $.extend(calendarOptions, {year: d.getFullYear(), month: d.getMonth(), date: d.getDate()});
-  }
-
-  $calendar.fullCalendar(calendarOptions);
+  new FullCalendarConfig($("#calendar")).init()
 
   init_datepickers();
 
@@ -86,10 +9,10 @@ $(document).ready(function() {
     if (typeof minDaysFromNow == "undefined") {
       window['minDaysFromNow'] = 0;
     }
-    $("#datepicker").datepicker({'minDate':minDaysFromNow, 'maxDate':maxDaysFromNow});
+    $("#datepicker").datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow});
 
     $('.datepicker').each(function(){
-      $(this).datepicker({'minDate':minDaysFromNow, 'maxDate':maxDaysFromNow})
+      $(this).datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow})
       		.change(function() {
       			var d = new Date(Date.parse($(this).val()));
       			$('#calendar').fullCalendar('gotoDate', d);
@@ -129,6 +52,5 @@ $(document).ready(function() {
   }
   $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
 
-  //$("div.fc-button-prev").hide();
 });
 

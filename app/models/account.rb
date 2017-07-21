@@ -28,6 +28,7 @@ class Account < ActiveRecord::Base
   has_many   :payments, inverse_of: :account
   belongs_to :affiliate
   accepts_nested_attributes_for :account_users
+  has_many :log_events, as: :loggable
 
   scope :active, -> { where("expires_at > ?", Time.current).where(suspended_at: nil) }
   scope :administered_by, lambda { |user|

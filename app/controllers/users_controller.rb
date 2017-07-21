@@ -65,6 +65,7 @@ class UsersController < ApplicationController
   def create_external
     @user = User.new(params[:user])
     @user.password = generate_new_password
+    LogEvent.log(@user, :create, current_user)
 
     if @user.save
       @user.create_default_price_group!
@@ -83,6 +84,7 @@ class UsersController < ApplicationController
       flash[:error] = text("users.search.user_already_exists", username: @user.username)
       redirect_to facility_users_path
     elsif @user.save
+      LogEvent.log(@user, :create, current_user)
       @user.create_default_price_group!
       save_user_success
     else

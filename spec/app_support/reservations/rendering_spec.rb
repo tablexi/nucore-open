@@ -58,15 +58,14 @@ RSpec.describe Reservations::Rendering do
   describe "#as_calendar_object" do
     let(:actual_start_at) { Time.zone.local(2015, 8, 1, 9, 15, 16) }
     let(:actual_end_at) { Time.zone.local(2015, 8, 1, 10, 16, 17) }
-    let(:title) { "Admin\nReservation" }
+    let(:title) { "Admin Reservation" }
 
-    let(:hash_without_details) do
+    let(:base_hash) do
       {
-        "allDay" => false,
+        "start" => "Sat, 01 Aug 2015 09:15:16",
         "end" => "Sat, 01 Aug 2015 10:16:17",
         "product" => "Generic",
-        "start" => "Sat, 01 Aug 2015 09:15:16",
-        "title" => title,
+        "allDay" => false,
       }
     end
 
@@ -76,47 +75,35 @@ RSpec.describe Reservations::Rendering do
       let(:order) { build_stubbed(:order, user: user) }
       let(:user) { build_stubbed(:user) }
 
-      let(:hash_with_details) do
-        hash_without_details.merge(
-          "admin" => false,
-          "email" => user.email,
-          "name" => user.full_name,
-        )
-      end
-
       before { allow(reservation).to receive(:order).and_return(order) }
 
       context "with details requested" do
-        let(:title) { "#{user.first_name}\n#{user.last_name}" }
+        let(:title) { user.full_name }
 
         it "returns a hash with extra details about the order" do
           expect(reservation.as_calendar_object(with_details: true))
-            .to eq(hash_with_details)
+            .to eq(base_hash.merge("email" => user.email, "title" => user.full_name))
         end
       end
 
       context "without details requested" do
-        let(:title) { "Reservation" }
-
         it "returns a hash without extra details about the order" do
-          expect(reservation.as_calendar_object).to eq(hash_without_details)
+          expect(reservation.as_calendar_object).to eq(base_hash.merge("title" => "Reservation"))
         end
       end
     end
 
     context "without an order" do
-      let(:hash_with_no_order) { hash_without_details.merge("admin" => true) }
-
       context "with details requested" do
         it "returns a hash without extra details about the order" do
           expect(reservation.as_calendar_object(with_details: true))
-            .to eq(hash_with_no_order)
+            .to eq(base_hash.merge("title" => "Admin Reservation"))
         end
       end
 
       context "without details requested" do
         it "returns a hash without extra details about the order" do
-          expect(reservation.as_calendar_object).to eq(hash_with_no_order)
+          expect(reservation.as_calendar_object).to eq(base_hash.merge("title" => "Admin Reservation"))
         end
       end
     end
