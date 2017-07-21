@@ -5,5 +5,7 @@
 # along with the has_many clause in OrderDetail
 
 class VestalVersion < ActiveRecord::Base
+
   belongs_to :versioned, polymorphic: true
+
 end
