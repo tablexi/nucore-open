@@ -23,8 +23,8 @@ gem "devise-encryptable", "~> 0.2.0"
 
 ## models
 gem "aasm", "~> 4.11.1"
-gem "paperclip",        "~> 4.2.0"
-gem "vestal_versions",  "1.2.4.3", github: "elzoiddy/vestal_versions"
+gem "paperclip", "~> 4.2.0"
+gem "paper_trail"
 gem "awesome_nested_set", "3.0.3"
 gem "nokogiri", "~> 1.7.1"
 gem "rails-observers"
