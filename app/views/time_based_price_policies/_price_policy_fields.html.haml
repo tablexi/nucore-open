@@ -16,9 +16,9 @@
       %th= price_policy.class.human_attribute_name(:type)
       %th= price_policy.class.human_attribute_name(:can_purchase)
       %th= price_policy.class.human_attribute_name(:hourly_usage_rate)
-      - if local_assigns[:minimum_cost] != false
+      - if local_assigns[:minimum_cost]
         %th= price_policy.class.human_attribute_name(:minimum_cost)
-      - if local_assigns[:cancellation] != false
+      - if local_assigns[:cancellation]
         %th= price_policy.class.human_attribute_name(:cancellation_cost)
   %tbody
     - @price_policies.each do |price_policy|
