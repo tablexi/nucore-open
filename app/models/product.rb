@@ -64,12 +64,12 @@ class Product < ActiveRecord::Base
   end
 
   def self.mergeable_types
-    @mergeable_types ||= [Instrument, Item, Service, Bundle]
+    @mergeable_types ||= [Instrument, Item, Service, TimedService, Bundle]
   end
 
   # Products that can be used as accessories
   def self.accessorizable
-    where(type: [Item, Service])
+    where(type: [Item, Service, TimedService])
   end
 
   def self.exclude(products)
