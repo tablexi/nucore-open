@@ -1,1 +1,1 @@
-= render "time_based_price_policies/price_policy_fields", f: f, cancellation: true, minimum_cost: true, collection: TimedServicePricePolicy::CHARGE_FOR.map { |k, v| [k.to_s.titleize, v] }
+= render "time_based_price_policies/price_policy_fields", f: f, cancellation: true, minimum_cost: true, charge_for_collection: charge_for_options(@price_policies.first.product)

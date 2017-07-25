@@ -4,9 +4,10 @@
 = render "price_policies/dates", f: f
 
 - price_policy = @price_policies.first
-= f.input :charge_for,
-  collection: local_assigns[:collection] ? collection : charge_for_options(price_policy.product),
-  selected: price_policy.charge_for
+- if local_assigns[:charge_for_collection]
+  = f.input :charge_for,
+    collection: charge_for_collection,
+    selected: price_policy.charge_for
 
 %table.table.table-striped.table-hover.price-policy-table
   %thead
