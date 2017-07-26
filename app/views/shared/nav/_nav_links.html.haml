@@ -1,7 +1,7 @@
 %ul.nav
   - if responsive?
     -# .hidden-with-nav is hidden > 979px
-    %li.hidden-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
+    %li.hidden-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.count})", :cart
   - navigation_links.each do |link|
     %li{class: link.tab_class(controller), id: link.tab_id }
       - if link.subnav.present?
