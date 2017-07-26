@@ -65,9 +65,9 @@ class UsersController < ApplicationController
   def create_external
     @user = User.new(params[:user])
     @user.password = generate_new_password
-    LogEvent.log(@user, :create, @user.created_at, current_user)
 
     if @user.save
+      LogEvent.log(@user, :create, @user.created_at, current_user)
       @user.create_default_price_group!
       save_user_success
     else

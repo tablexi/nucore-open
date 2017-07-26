@@ -9,23 +9,25 @@
 = form_tag(log_events_path, method: :get) do
 
   = label_tag(text(:event_filter))
+
+  - option_list = LogEvent::LogEventSearcher::ALLOWED_EVENTS.map { |event| [text(event), event] }
+
   = select_tag(:events,
-    options_for_select([[text("account__create"), "account__create"],
-                        [text("account__update"), "account__update"],
-                        [text("account_user__create"), "account_user__create"],
-                        [text("account_user__delete"), "account_user__delete"],
-                        [text("user__create"), "user__create"]], params[:events]),
+    options_for_select(option_list, params[:events]),
     multiple: true,
     class: "js--chosen",
     data: { placeholder: text(:event_placeholder) })
 
   = label_tag(text(:start_date))
-  = text_field_tag(:start_date, params[:start_date], class: :datepicker)
+  = text_field_tag(:start_date, params[:start_date], class: :datepicker__data)
 
   = label_tag(text(:end_date))
-  = text_field_tag(:end_date, params[:end_date], class: :datepicker)
+  = text_field_tag(:end_date, params[:end_date], class: :datepicker__data)
 
-  = submit_tag(text(:filter))
+  = label_tag(text(:query))
+  = text_field_tag(:query, params[:query])
+
+  = submit_tag(text(:filter), class: "btn")
 
 
 = will_paginate(@log_events)
@@ -36,7 +38,7 @@
       %th= text("event_time")
       %th= text("event")
       %th= text("object")
-      %th= text("user")
+      %th= text("user_label")
 
   %tbody
     - @log_events.each do |log_event|
@@ -47,6 +49,3 @@
         %td= log_event.user.try(:to_s)
 
 = will_paginate(@log_events)
-
-:coffeescript
-  $('.datepicker').datepicker({dateFormat: "mm/dd/yy"})

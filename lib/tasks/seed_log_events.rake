@@ -28,8 +28,8 @@ namespace :log_events do
 
         next if account_user.deleted_at.blank?
         LogEvent.log(
-          account, :delete, account.deleted_at,
-          User.find_by(id: account.deleted_by))
+          account, :delete, account_user.deleted_at,
+          User.find_by(id: account_user.deleted_by))
       end
 
       User.all.each do |user|
