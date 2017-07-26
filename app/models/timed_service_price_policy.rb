@@ -2,8 +2,6 @@ class TimedServicePricePolicy < PricePolicy
 
   include PricePolicies::Usage
 
-  CHARGE_FOR = { usage: "usage" }.freeze
-
   def estimate_cost_and_subsidy_from_order_detail(order_detail)
     return if order_detail.quantity.blank?
 

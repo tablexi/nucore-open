@@ -1,5 +1,8 @@
 class Orders::ItemAdder
 
+  # time based services default to 30 minutes (arbitrary)
+  DEFAULT_DURATION = 30
+
   def initialize(order)
     @order = order
   end
@@ -13,8 +16,10 @@ class Orders::ItemAdder
             add_bundles(product, @quantity, attributes)
           elsif product.is_a? Service
             add_services(product, @quantity, attributes)
-          # products which have reservations (instruments) should each get their own order_detail
+          elsif product.is_a? TimedService
+            add_timed_services(product, @quantity, attributes)
           elsif product.respond_to?(:reservations) && quantity > 1
+            # products which have reservations (instruments) should each get their own order_detail
             add_instruments(product, @quantity, attributes)
           else
             [create_order_detail({ product_id: product.id, quantity: @quantity }.merge(attributes))]
@@ -37,6 +42,12 @@ class Orders::ItemAdder
   def add_instruments(product, quantity, attributes)
     Array.new(quantity) do
       create_order_detail({ product_id: product.id, quantity: 1 }.merge(attributes))
+    end
+  end
+
+  def add_timed_services(product, quantity, attributes)
+    Array.new(quantity) do
+      create_order_detail({ product_id: product.id, quantity: DEFAULT_DURATION }.merge(attributes))
     end
   end
 
