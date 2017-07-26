@@ -8,7 +8,7 @@ class OrderDetail < ActiveRecord::Base
   include OrderDetail::Accessorized
   include NUCore::Database::WhereIdsIn
 
-  versioned
+  has_paper_trail
 
   # Used when ordering to override certain restrictions
   attr_accessor :being_purchased_by_admin
@@ -56,6 +56,13 @@ class OrderDetail < ActiveRecord::Base
   has_many   :notifications, as: :subject, dependent: :destroy
   has_many   :stored_files, dependent: :destroy
   has_many   :sample_results_files, -> { sample_result }, class_name: "StoredFile"
+
+  # This is a _temporary_ associaton to make up for the fact that the
+  # vestal versions gem is no longer in the project. It's here to
+  # allow access to the vestal data.
+  # once that data is no longer needed, this line and the
+  # associated class can be removed
+  has_many   :vestal_versions, as: :versioned
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :invoice_number, to: :statement, prefix: true
@@ -768,7 +775,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def ready_for_journal?
-    reviewed? && journal_id.blank? && Account.config.using_journal?(account.type)
+    reviewed? && journal_id.blank? && Account.config.using_journal?(account.type) && !reconciled?
   end
 
   def awaiting_payment?
@@ -942,7 +949,7 @@ class OrderDetail < ActiveRecord::Base
 
   def update_fulfilled_at_on_resolve
     if problem_changed? && !problem_order?
-      self.fulfilled_at = time_data.actual_end_at
+      self.fulfilled_at = time_data.actual_end_at if time_data.actual_end_at
     end
   end
 

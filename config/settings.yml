@@ -125,6 +125,7 @@ feature:
   set_statement_search_start_date_on: false
   send_statement_emails_on: true
   responsive_on: true
+  ready_for_journal_notice_on: true
 
 split_accounts:
   # Roles are allowed to create Split Accounts

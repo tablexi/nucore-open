@@ -241,6 +241,7 @@ en:
         cancellation_cost: Reservation Cost
         unit_cost: Unit Cost
         unit_adjustment: Unit Adjustment
+        unit_net_cost: Unit Net Cost
       user_role:
         username: User
       order:

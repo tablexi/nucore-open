@@ -71,6 +71,12 @@ RSpec.describe "Editing an occupancy" do
       expect(occupancy.exit_at).to eq(Time.zone.parse("2017-09-12 09:45"))
       expect(order_detail.reload.fulfilled_at).to eq(occupancy.exit_at)
     end
+
+    it "errors if no end time is set" do
+      click_button "Save"
+
+      expect(page).to have_content("Error while updating order")
+    end
   end
 
   describe "with an orphaned swipe out" do

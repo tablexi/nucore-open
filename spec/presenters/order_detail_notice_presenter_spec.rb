@@ -36,6 +36,16 @@ RSpec.describe OrderDetailNoticePresenter do
       expect(presenter.badges_to_html).to have_badge("Can Reconcile")
     end
 
+    it "shows ready for journal if setting is on", feature_setting: { ready_for_journal_notice: true } do
+      allow(order_detail).to receive(:ready_for_journal?).and_return(true)
+      expect(presenter.badges_to_html).to have_badge("Ready for Journal")
+    end
+
+    it "does not show ready for journal if setting is off", feature_setting: { ready_for_journal_notice: false } do
+      allow(order_detail).to receive(:ready_for_journal?).and_return(true)
+      expect(presenter.badges_to_html).not_to have_badge("Ready for Journal")
+    end
+
     it "shows in open journal" do
       allow(order_detail).to receive(:in_open_journal?).and_return(true)
       expect(presenter.badges_to_html).to have_badge("Open Journal")
@@ -98,6 +108,16 @@ RSpec.describe OrderDetailNoticePresenter do
     it "shows in open journal" do
       allow(order_detail).to receive(:in_open_journal?).and_return(true)
       expect(presenter.alerts_to_html).to have_alert(/pending journal/)
+    end
+
+    it "shows ready for journal if setting is on", feature_setting: { ready_for_journal_notice: true } do
+      allow(order_detail).to receive(:ready_for_journal?).and_return(true)
+      expect(presenter.alerts_to_html).to have_alert(/ready to be journaled/)
+    end
+
+    it "does not show ready for journal if setting is off", feature_setting: { ready_for_journal_notice: false } do
+      allow(order_detail).to receive(:ready_for_journal?).and_return(false)
+      expect(presenter.alerts_to_html).to be_empty
     end
 
     it "shows an important badge for a problem order" do

@@ -17,7 +17,7 @@ RSpec.describe OrderDetail do
     expect(item).to be_valid
     expect(order).to be_valid
     expect(order_detail.state).to eq "new"
-    expect(order_detail.version).to eq 1
+    expect(order_detail.versions.size).to eq 1
     expect(order_detail.order_status).to be_nil
   end
 
