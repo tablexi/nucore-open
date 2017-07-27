@@ -20,8 +20,11 @@ class ProductAccessoriesController < ApplicationController
   end
 
   def create
-    @product.product_accessories.create(params[:product_accessory])
-    flash[:notice] = I18n.t("product_accessories.create.success")
+    if @product_accessory.save
+      flash[:notice] = I18n.t("product_accessories.create.success")
+    else
+      flash[:error] = I18n.t("product_accessories.create.error")
+    end
     redirect_to action: :index
   end
 
