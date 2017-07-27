@@ -4,6 +4,10 @@ class LogEventSearcher
                     "account_user.create", "account_user.delete",
                     "user.create"].freeze
 
+  def self.beginning_of_time
+    10.years.ago
+  end
+
   attr_accessor :start_date, :end_date, :events, :query
 
   def initialize(start_date: nil, end_date: nil, events: [], query: nil)
@@ -26,7 +30,7 @@ class LogEventSearcher
   end
 
   def dates
-    [(start_date || LogEvent.minimum(:event_time)), (end_date || Date.current)]
+    [(start_date || LogEventSearcher.beginning_of_time), (end_date || Date.current)]
   end
 
   def filter_date
@@ -38,25 +42,19 @@ class LogEventSearcher
   def filter_event
     where_strings = events.flatten.map do |event|
       loggable_type, event_type = event.split(".")
-      "(`loggable_type` = '#{loggable_type.camelize}' AND `event_type` = '#{event_type}')"
+      "(loggable_type = '#{loggable_type.camelize}' AND event_type = '#{event_type}')"
     end
     LogEvent.where(where_strings.join(" OR "))
   end
 
   def filter_query
-    accounts = Account.where("account_number LIKE ?", "%#{query}%")
-    users = UserFinder.search(query, 1000)[0]
-    where_string = [
-      filter_loggable_string("Account", accounts),
-      filter_loggable_string("User", users),
-    ].compact.join(" OR ")
-    LogEvent.where(where_string)
-  end
-
-  def filter_loggable_string(loggable_type, loggable_objects)
-    return nil if loggable_objects.empty?
-    id_string = loggable_objects.map(&:id).join(",")
-    "(`loggable_type` ='#{loggable_type}' AND `loggable_id` IN (#{id_string}))"
+    account_ids = Account.where("account_number LIKE ?", "%#{query}%").pluck(:id)
+    user_ids = UserFinder.search(query, nil)[0].map(&:id)
+    account_logs = LogEvent.where(
+      loggable_type: "Account", loggable_id: account_ids).pluck(:id)
+    user_logs =  LogEvent.where(
+      loggable_type: "User", loggable_id: user_ids).pluck(:id)
+    LogEvent.where(id: account_logs + user_logs)
   end
 
 end
