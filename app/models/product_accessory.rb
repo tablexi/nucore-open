@@ -3,7 +3,7 @@ class ProductAccessory < ActiveRecord::Base
   SCALING_TYPES = {
     item: ["quantity"],
     service: ["quantity"],
-    timed_service: ["manual", "auto"]
+    timed_service: ["manual", "auto"],
   }.with_indifferent_access
 
   ## relationships
