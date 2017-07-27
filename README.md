@@ -28,6 +28,7 @@ Welcome to NUcore! This guide will help you get a development environment up and
     cd nucore
     bundle install --without oracle
     ```
+
     - Note: `ruby-oci8` gem installation will fail unless Oracle is set up first.
 
 3. Configure your databases
@@ -54,11 +55,13 @@ Welcome to NUcore! This guide will help you get a development environment up and
     ```
 
 6. Configure your secrets
+
   ```
   cp config/secrets.yml.template config/secrets.yml
   rake secret
   ```
-  - Paste the output from `rake secret` into development/secret_key_base
+
+  - Paste the output from `rake secret` into `config/secrets.yml` for both `development/secret_key_base` and `test/secret_key_base`
 
 7. Configure your file storage
 
