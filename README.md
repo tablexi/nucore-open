@@ -43,6 +43,7 @@ Welcome to NUcore! This guide will help you get a development environment up and
 
     ```
     rake db:create
+    rake db:create RAILS_ENV=test
     rake db:schema:load
     rake db:schema:load RAILS_ENV=test
     ```
