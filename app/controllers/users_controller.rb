@@ -67,7 +67,7 @@ class UsersController < ApplicationController
     @user.password = generate_new_password
 
     if @user.save
-      LogEvent.log(@user, :create, @user.created_at, current_user)
+      LogEvent.log(@user, :create, current_user)
       @user.create_default_price_group!
       save_user_success
     else
@@ -84,7 +84,7 @@ class UsersController < ApplicationController
       flash[:error] = text("users.search.user_already_exists", username: @user.username)
       redirect_to facility_users_path
     elsif @user.save
-      LogEvent.log(@user, :create, @user.created_at, current_user)
+      LogEvent.log(@user, :create, current_user)
       @user.create_default_price_group!
       save_user_success
     else

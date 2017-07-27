@@ -53,7 +53,7 @@ RSpec.describe LogEvent do
     end
 
     it "whitelists event type" do
-      search = LogEvent::LogEventSearcher.new(events: ["user.create", "cheeseburger.create", "user.update"])
+      search = LogEventSearcher.new(events: ["user.create", "cheeseburger.create", "user.update"])
       expect(search.events).to eq(["user.create"])
     end
 
@@ -67,10 +67,10 @@ RSpec.describe LogEvent do
     let!(:account_007) { create(:account, :with_account_owner, account_number: "007-a1") }
     let!(:account_010) { create(:account, :with_account_owner, account_number: "010-frog1") }
 
-    let!(:log_007) { LogEvent.log(account_007, :create, 1.week.ago, owner) }
-    let!(:log_010) { LogEvent.log(account_010, :create, 1.week.ago, owner) }
-    let!(:log_kermit) { LogEvent.log(kermit, :create, 1.week.ago, owner) }
-    let!(:log_piggy) { LogEvent.log(piggy, :create, 1.week.ago, owner) }
+    let!(:log_007) { LogEvent.log(account_007, :create, owner, event_time: 1.week.ago) }
+    let!(:log_010) { LogEvent.log(account_010, :create, owner, event_time: 1.week.ago) }
+    let!(:log_kermit) { LogEvent.log(kermit, :create, owner, event_time: 1.week.ago) }
+    let!(:log_piggy) { LogEvent.log(piggy, :create, owner, event_time: 1.week.ago) }
 
     it "searches based on account number" do
       expect(LogEvent.search(query: "007").to_a).to eq([log_007])
