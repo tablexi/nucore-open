@@ -24,7 +24,7 @@
             - product_name = order_detail_description(od)
             = link_to "#{od.product.facility.abbreviation} / #{product_name}".html_safe, facility_instrument_path(od.product.facility, od.product)
             - if od.product.offline?
-              = tooltip_icon "icon-warning-sign icon-large", t("instruments.offline.note")
+              = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
             - if od.note.present?
               .order-detail-extra.order-detail-note
                 = render "shared/order_detail_note", order_detail: od

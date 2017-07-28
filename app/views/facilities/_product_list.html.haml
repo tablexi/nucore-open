@@ -12,8 +12,8 @@
                 = builder.hidden_field :product_id, value: product.id, index: nil
           = link_to product.name + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(current_facility, product)
           - if acting_user.present? && !product.can_be_used_by?(acting_user)
-            %i.icon-lock
+            %i.fa.fa-lock
             = " (#{product.class.human_attribute_name(:requires_approval_show)})"
 
           - if product.offline?
-            = tooltip_icon "icon-warning-sign icon-large", t("instruments.offline.note")
+            = tooltip_icon "fa fa-exclamation-triangle", t("instruments.offline.note")
