@@ -42,6 +42,9 @@ Nucore::Application.configure do
   # Raise exception on mass assignment protection for Active Record models
   # config.active_record.mass_assignment_sanitizer = :strict
 
+  # Do not log assets path
+  config.assets.quiet = true
+
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
   Delayed::Worker.delay_jobs = false
