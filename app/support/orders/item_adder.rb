@@ -1,7 +1,7 @@
 class Orders::ItemAdder
 
-  # time based services default to 30 minutes (arbitrary)
-  DEFAULT_DURATION = 30
+  # time based services default to 1 minute (arbitrary)
+  DEFAULT_DURATION = 1
 
   def initialize(order)
     @order = order
