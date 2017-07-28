@@ -8,9 +8,9 @@
       - else
         - if responsive?
           %a.btn.btn-navbar.hide-from-print{"data-target" => ".nav-collapse", "data-toggle" => "collapse"}
-            %span.icon-bar
-            %span.icon-bar
-            %span.icon-bar
+            %span.fa.fa-bars
+            %span.fa.fa-bars
+            %span.fa.fa-bars
         -# collapsed at < 979px
         .hide-from-print{class: ("nav-collapse collapse" if responsive?)}
           - if responsive?

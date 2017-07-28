@@ -54,7 +54,7 @@
         %ul= render :partial => 'result_file', :collection => @order_detail.stored_files.sample_result
         - if @order_detail.stored_files.sample_result.size > 1
           = link_to order_order_detail_sample_results_zip_path(@order_detail.order, @order_detail, format: :zip) do
-            %i.icon-download
+            %i.fa.fa-arrow-circle-o-down
             = t(".link.view.zip")
 
 .row
