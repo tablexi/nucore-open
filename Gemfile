@@ -18,7 +18,7 @@ end
 
 ## auth
 gem "cancancan", "1.15"
-gem "devise", "~> 3.5.10"
+gem "devise", "~> 4.3.0"
 gem "devise-encryptable", "~> 0.2.0"
 
 ## models
