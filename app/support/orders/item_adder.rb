@@ -1,7 +1,7 @@
 class Orders::ItemAdder
 
-  # time based services default to 1 minute (arbitrary)
-  DEFAULT_DURATION = 1
+  # timed services default to 1 minute (arbitrary)
+  DEFAULT_TIMED_SERVICES_DURATION = 1
 
   def initialize(order)
     @order = order
@@ -47,7 +47,7 @@ class Orders::ItemAdder
 
   def add_timed_services(product, quantity, attributes)
     Array.new(quantity) do
-      create_order_detail({ product_id: product.id, quantity: DEFAULT_DURATION }.merge(attributes))
+      create_order_detail({ product_id: product.id, quantity: DEFAULT_TIMED_SERVICES_DURATION }.merge(attributes))
     end
   end
 
