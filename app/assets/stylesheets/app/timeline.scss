@@ -191,6 +191,11 @@ body .unit {
   cursor: pointer;
 }
 
+button.ui-datepicker-trigger {
+  background-color: white;
+  border: none;
+}
+
 /***
  * Relay switch checkboxes
  */

@@ -18,8 +18,7 @@ $(function() {
   // Date select calendar
   $(".datepicker").datepicker({
     showOn: "button",
-    buttonImage: window.calendar_image_path,
-    buttonImageOnly: true
+    buttonText: "<i class='fa fa-calendar fa-2x'>",
   }).change(function() {
     $(this).parents("form").submit();
   });
