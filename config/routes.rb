@@ -94,6 +94,11 @@ Nucore::Application.routes.draw do
       resources :price_policies, controller: "service_price_policies", except: [:show]
     end
 
+    resources :timed_services do
+      facility_product_routing_concern
+      resources :price_policies, controller: "timed_service_price_policies", except: [:show]
+    end
+
     resources :items do
       facility_product_routing_concern
       resources :price_policies, controller: "item_price_policies", except: [:show]

@@ -20,7 +20,7 @@
           %ul.nav.pull-right.hide-from-print
             - if acting_as?
               %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"
-              %li= link_to "#{t('pages.cart')} (#{current_cart.order_details.sum(:quantity)})", :cart
+              %li= link_to "#{t('pages.cart')} (#{current_cart.order_details.count})", :cart
             - else
               %li.navbar-text= "#{session_user.full_name} (#{session_user.username})"
               %li.divider-vertical
@@ -28,7 +28,7 @@
                 %li= link_to t("user_password.edit.head"), :edit_current_password
                 %li.divider-vertical
               -# .visible-with-nav is visible > 979px
-              %li.visible-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.sum(:quantity)})", :cart
+              %li.visible-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.count})", :cart
               %li.divider-vertical
               = render "shared/message_summary"
               %li= link_to t('pages.logout'), sign_out_user_path

@@ -60,16 +60,16 @@ class Product < ActiveRecord::Base
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
 
   def self.types
-    @types ||= [Instrument, Item, Service, Bundle]
+    @types ||= [Instrument, Item, Service, TimedService, Bundle]
   end
 
   def self.mergeable_types
-    @mergeable_types ||= [Instrument, Item, Service, Bundle]
+    @mergeable_types ||= [Instrument, Item, Service, TimedService, Bundle]
   end
 
   # Products that can be used as accessories
   def self.accessorizable
-    where(type: [Item, Service])
+    where(type: [Item, Service, TimedService])
   end
 
   def self.exclude(products)
@@ -238,6 +238,10 @@ class Product < ActiveRecord::Base
 
   def product_type
     self.class.name.underscore.pluralize
+  end
+
+  def quantity_as_time?
+    false
   end
 
   def product_accessory_by_id(id)

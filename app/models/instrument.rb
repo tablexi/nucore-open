@@ -75,6 +75,10 @@ class Instrument < Product
     control_mechanism == Relay::CONTROL_MECHANISMS[:manual]
   end
 
+  def quantity_as_time?
+    true
+  end
+
   private
 
   def minimum_reservation_is_multiple_of_interval

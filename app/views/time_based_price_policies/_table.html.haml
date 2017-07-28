@@ -1,0 +1,60 @@
+- price_policy = price_policies.first
+
+%table.table
+  %thead
+    %tr
+      %th.actions{ rowspan: 2 }
+      %th{ rowspan: 2 }= "#{PriceGroup.model_name.human} (#{price_policy.class.human_attribute_name(:type)})"
+      %th.currency{ colspan: 2 }= price_policy.class.human_attribute_name(:hourly_usage_rate)
+      - if local_assigns[:minimum_cost]
+        %th.currency{ rowspan: 2 }= price_policy.class.human_attribute_name(:minimum_cost)
+      - if local_assigns[:cancellation]
+        %th.currency{ rowspan: 2 }= price_policy.class.human_attribute_name(:cancellation_cost)
+  %tbody
+    - price_policies_to_show = price_policies.select { |pp| pp.can_purchase? }
+    - price_policies_to_show.each do |price_policy|
+      %tr
+        - if price_policies_to_show.first == price_policy
+          %td.centered{ rowspan: price_policies_to_show.length }
+            - if price_policies.all? { |pp| pp.editable? } && can?(:edit, PricePolicy)
+              %p
+                = link_to t("shared.edit"),
+                  [:edit, current_facility, @product, :price_policy, id: url_date]
+              %p
+                = link_to t("shared.remove"),
+                  [current_facility, @product, :price_policy, id: url_date],
+                  data: { confirm: t("shared.confirm_message") },
+                  method: :delete
+            - else
+              %p.muted= t("shared.edit")
+              %p.muted= t("shared.remove")
+
+        %td= "#{price_policy.price_group.name} (#{price_policy.price_group.type_string})"
+
+        - if price_policy.valid?
+          %td.currency{ colspan: 2 }
+            - if price_policy.has_rate?
+              .rate= number_to_currency price_policy.hourly_usage_rate
+              - if price_policy.has_subsidy?
+                .subsidy= "- #{number_to_currency price_policy.hourly_usage_subsidy}"
+                %strong= "= #{number_to_currency price_policy.subsidized_hourly_usage_cost}"
+
+              %p.per-minute-show
+                = number_to_currency price_policy.subsidized_hourly_usage_cost / 60, precision: 4
+                \/ minute
+
+
+          - if local_assigns[:minimum_cost]
+            %td.currency
+              .rate= number_to_currency price_policy.minimum_cost
+              - if price_policy.has_minimum_cost? && price_policy.has_subsidy?
+                .subsidy= "- #{number_to_currency price_policy.minimum_cost_subsidy}"
+                %strong= "= #{number_to_currency price_policy.subsidized_minimum_cost}"
+
+          - if local_assigns[:cancellation]
+            %td.currency= number_to_currency(price_policy.cancellation_cost)
+
+        - else
+          %td.centered{ colspan: 5 }
+            = t("price_policies.problem")
+            = price_policy.errors.full_messages.to_sentence

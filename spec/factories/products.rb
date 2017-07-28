@@ -39,6 +39,11 @@ FactoryGirl.define do
       sequence(:url_name) { |n| "service#{n}" }
     end
 
+    factory :timed_service, class: TimedService do
+      sequence(:name) { |n| "Timed Service #{n}" }
+      sequence(:url_name) { |n| "timed_service#{n}" }
+    end
+
     factory :bundle, class: Bundle do
       transient do
         bundle_products []

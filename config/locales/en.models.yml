@@ -178,6 +178,9 @@ en:
       training_request:
         one: Training Request
         other: Training Requests
+      timed_service:
+        one: Timed Service
+        other: Timed Services
       user:
         one: User
         other: Users

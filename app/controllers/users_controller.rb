@@ -106,7 +106,7 @@ class UsersController < ApplicationController
   def orders
     # order details for this facility
     @order_details = @user.order_details
-                          .untimed_orders
+                          .item_and_service_orders
                           .for_facility(current_facility)
                           .purchased
                           .order("orders.ordered_at DESC")

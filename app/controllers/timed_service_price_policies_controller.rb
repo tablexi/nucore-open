@@ -1,0 +1,2 @@
+class TimedServicePricePoliciesController < PricePoliciesController
+end

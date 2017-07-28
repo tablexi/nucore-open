@@ -35,7 +35,7 @@ module OrderDetail::Accessorized
     complete? && product.accessories.count > child_order_details.count
   end
 
-  delegate :quantity_as_time?, to: :decorated_self
+  delegate :quantity_as_time?, to: :product
 
   delegate :quantity_editable?, to: :decorated_self
 
