@@ -14,6 +14,11 @@
       = text_field_tag(:query, params[:query])
 
     .span3
+      = label_tag(text(:start_date))
+      = text_field_tag(:start_date, params[:start_date], class: :datepicker__data)
+
+  .row
+    .span3
       = label_tag(text(:event_filter))
       - option_list = LogEvent::LogEventSearcher::ALLOWED_EVENTS.map { |event| [text(event), event] }
       = select_tag(:events,
@@ -21,11 +26,6 @@
         multiple: true,
         class: "js--chosen",
         data: { placeholder: text(:event_placeholder) })
-
-  .row
-    .span3
-      = label_tag(text(:start_date))
-      = text_field_tag(:start_date, params[:start_date], class: :datepicker__data)
 
     .span3
       = label_tag(text(:end_date))
