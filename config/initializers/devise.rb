@@ -86,6 +86,9 @@ Devise.setup do |config|
   # The "*/*" below is required to match Internet Explorer requests.
   config.navigational_formats = ["*/*", :html, :pdf]
 
+  # The default HTTP method used to sign out a resource. Default is :delete.
+  config.sign_out_via = :get
+
   # ==> Configuration for :token_authenticatable
   # Defines name of the authentication token params key
   # config.token_authentication_key = :auth_token
