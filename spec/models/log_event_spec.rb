@@ -66,22 +66,28 @@ RSpec.describe LogEvent do
     let!(:piggy) { create(:user, first_name: "Miss", last_name: "Piggy") }
     let!(:account_007) { create(:account, :with_account_owner, account_number: "007-a1") }
     let!(:account_010) { create(:account, :with_account_owner, account_number: "010-frog1") }
+    let!(:au_kermit_007) { create(:account_user, account: account_007, user: kermit, user_role: "Purchaser") }
+    let!(:au_piggy_010) { create(:account_user, account: account_010, user: piggy, user_role: "Purchaser") }
 
     let!(:log_007) { LogEvent.log(account_007, :create, owner, event_time: 1.week.ago) }
     let!(:log_010) { LogEvent.log(account_010, :create, owner, event_time: 1.week.ago) }
     let!(:log_kermit) { LogEvent.log(kermit, :create, owner, event_time: 1.week.ago) }
     let!(:log_piggy) { LogEvent.log(piggy, :create, owner, event_time: 1.week.ago) }
+    let!(:log_au_kermit) { LogEvent.log(au_kermit_007, :create, owner, event_time: 1.week.ago) }
+    let!(:log_au_piggy) { LogEvent.log(au_piggy_010, :create, owner, event_time: 1.week.ago) }
 
     it "searches based on account number" do
-      expect(LogEvent.search(query: "007").to_a).to eq([log_007])
+      expect(LogEvent.search(query: "007").to_a).to eq([log_007, log_au_kermit])
     end
 
     it "searches based on user name" do
-      expect(LogEvent.search(query: "Kermit").to_a).to eq([log_kermit])
+      expect(LogEvent.search(query: "Kermit").to_a).to eq(
+        [log_kermit, log_au_kermit])
     end
 
     it "could find either" do
-      expect(LogEvent.search(query: "frog").to_a).to eq([log_010, log_kermit])
+      expect(LogEvent.search(query: "frog").to_a).to eq(
+        [log_010, log_kermit, log_au_kermit, log_au_piggy])
     end
 
   end

@@ -38,7 +38,7 @@ class LogEventSearcher
   end
 
   # When this gets updated to Rails 5, you can use ActiveRecord#or directly
-  # the event name comes in as <loggable_type>.<event_type>
+  # Also, the event name comes in as <loggable_type>.<event_type>
   def filter_event
     where_strings = events.flatten.map do |event|
       loggable_type, event_type = event.split(".")
@@ -47,14 +47,20 @@ class LogEventSearcher
     LogEvent.where(where_strings.join(" OR "))
   end
 
+  # Some of these queryies become easier to write in Rails 5 when
+  #  you can use ActiveRecord#or directly
   def filter_query
     account_ids = Account.where("account_number LIKE ?", "%#{query}%").pluck(:id)
     user_ids = UserFinder.search(query, nil)[0].map(&:id)
+    account_user_ids = AccountUser.where(account_id: account_ids).pluck(:id) +
+                       AccountUser.where(user_id: user_ids).pluck(:id)
     account_logs = LogEvent.where(
       loggable_type: "Account", loggable_id: account_ids).pluck(:id)
     user_logs =  LogEvent.where(
       loggable_type: "User", loggable_id: user_ids).pluck(:id)
-    LogEvent.where(id: account_logs + user_logs)
+    account_user_logs = LogEvent.where(
+      loggable_type: "AccountUser", loggable_id: account_user_ids).pluck(:id)
+    LogEvent.where(id: account_logs + user_logs + account_user_logs)
   end
 
 end

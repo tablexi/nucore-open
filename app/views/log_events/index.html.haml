@@ -8,26 +8,32 @@
 
 = form_tag(log_events_path, method: :get) do
 
-  = label_tag(text(:event_filter))
+  .row
+    .span3
+      = label_tag(text(:query))
+      = text_field_tag(:query, params[:query])
 
-  - option_list = LogEvent::LogEventSearcher::ALLOWED_EVENTS.map { |event| [text(event), event] }
+    .span3
+      = label_tag(text(:event_filter))
+      - option_list = LogEvent::LogEventSearcher::ALLOWED_EVENTS.map { |event| [text(event), event] }
+      = select_tag(:events,
+        options_for_select(option_list, params[:events]),
+        multiple: true,
+        class: "js--chosen",
+        data: { placeholder: text(:event_placeholder) })
 
-  = select_tag(:events,
-    options_for_select(option_list, params[:events]),
-    multiple: true,
-    class: "js--chosen",
-    data: { placeholder: text(:event_placeholder) })
+  .row
+    .span3
+      = label_tag(text(:start_date))
+      = text_field_tag(:start_date, params[:start_date], class: :datepicker__data)
 
-  = label_tag(text(:start_date))
-  = text_field_tag(:start_date, params[:start_date], class: :datepicker__data)
+    .span3
+      = label_tag(text(:end_date))
+      = text_field_tag(:end_date, params[:end_date], class: :datepicker__data)
 
-  = label_tag(text(:end_date))
-  = text_field_tag(:end_date, params[:end_date], class: :datepicker__data)
-
-  = label_tag(text(:query))
-  = text_field_tag(:query, params[:query])
-
-  = submit_tag(text(:filter), class: "btn")
+  .row
+    .span3
+      = submit_tag(text(:filter), class: "btn")
 
 
 = will_paginate(@log_events)
