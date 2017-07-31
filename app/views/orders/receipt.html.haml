@@ -31,8 +31,7 @@
         %th.currency= t('.th.adjust')
       %th.currency= t('.th.total')
   %tbody
-    - @order_details.each do |order_detail|
-      - order_detail.send(:extend, PriceDisplayment)
+    - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
       %tr
         - res = order_detail.reservation
         %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)

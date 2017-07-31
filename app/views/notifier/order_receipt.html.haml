@@ -35,8 +35,7 @@
       %th= OrderDetail.human_attribute_name("#{label_key_prefix}_total")
       %th= OrderDetail.human_attribute_name(:note).pluralize
   %tbody
-    - @order.order_details.each do |order_detail|
-      - order_detail.send(:extend, PriceDisplayment)
+    - OrderDetailPresenter.wrap(@order.order_details).each do |order_detail|
       %tr
         %td= link_to(order_detail, [order_detail.order, order_detail])
         %td

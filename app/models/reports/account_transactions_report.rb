@@ -72,7 +72,7 @@ class Reports::AccountTransactionsReport
   def build_row(order_detail)
     # Reservation.new acts as null object
     reservation = order_detail.reservation || Reservation.new
-    order_detail.extend(PriceDisplayment)
+    order_detail = OrderDetailPresenter.new(order_detail)
 
     [
       order_detail.order.id,
