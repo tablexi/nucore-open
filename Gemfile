@@ -99,7 +99,6 @@ group :development, :test do
   gem "guard-teaspoon", require: false
   gem "pry-rails", "~> 0.3.4"
   gem "pry-byebug", "~> 3.4.1"
-  gem "quiet_assets"
   gem "rspec-rails", "~> 3.5.2"
   gem "rspec-activejob"
   gem "spring"
