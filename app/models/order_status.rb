@@ -37,26 +37,6 @@ class OrderStatus < ActiveRecord::Base
     find_by(name: "Reconciled")
   end
 
-  def self.complete_status
-    warn "Depecrated complete_status called. Use complete instead. At #{caller(1..1)}"
-    complete
-  end
-
-  def self.canceled_status
-    warn "Depecrated canceled_status called. Use canceled instead. At #{caller(1..1)}"
-    canceled
-  end
-
-  def self.in_process_status
-    warn "Depecrated in_process_status called. Use in_process instead. At #{caller(1..1)}"
-    in_process
-  end
-
-  def self.reconciled_status
-    warn "Depecrated reconciled_status called. Use reconciled instead. At #{caller(1..1)}"
-    reconciled
-  end
-
   def self.add_to_order_statuses(facility)
     non_protected_statuses(facility) - [canceled]
   end
