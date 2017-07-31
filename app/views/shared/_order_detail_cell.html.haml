@@ -2,7 +2,7 @@
   - show_reservation = true
 %td.user-order-detail.order-note
   .order-detail-description
-    = order_detail_description(od)
+    = OrderDetailPresenter.new(od).description_as_html
     - if show_reservation && od.reservation
       %br
       %em= od.reservation

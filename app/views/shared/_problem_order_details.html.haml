@@ -26,7 +26,7 @@
         %td= problem_order_date(order_detail, local_assigns[:show_reservation_start_at])
         %td= order_detail.order.user
         %td.centered= order_detail.quantity
-        %td= order_detail_description(order_detail)
+        %td= OrderDetailPresenter.new(order_detail).description_as_html
         %td= order_detail.account
         %td.centered
           = order_detail_badges(order_detail)

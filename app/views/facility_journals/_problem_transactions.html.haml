@@ -31,7 +31,7 @@
             %td= format_usa_date(order_detail.public_send(:"#{@date_range_field}"))
             %td.user-order-detail.order-note
               .order-detail-description
-                = order_detail_description(order_detail)
+                = OrderDetailPresenter.new(order_detail).description_as_html
                 - order_detail.extend(PriceDisplayment)
                 = "(#{order_detail.wrapped_quantity})".html_safe unless order_detail.problem?
                 - if order_detail.time_data.present?

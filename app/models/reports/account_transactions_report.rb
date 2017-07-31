@@ -79,7 +79,7 @@ class Reports::AccountTransactionsReport
       order_detail.id,
       format_usa_date(order_detail.send(:"#{@date_range_field}")),
       order_detail.order.facility,
-      order_detail_description(order_detail),
+      OrderDetailPresenter.new(order_detail).description_as_html,
       format_usa_datetime(reservation.reserve_start_at),
       format_usa_datetime(reservation.reserve_end_at),
       format_usa_datetime(reservation.actual_start_at),

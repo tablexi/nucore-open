@@ -18,21 +18,19 @@ module ApplicationHelper
     (full_title + app_name).html_safe
   end
 
-  def order_detail_description(order_detail) # TODO: deprecate in favor of OrderDetailPresenter#description_as_html
+  def order_detail_description(order_detail)
+    warn "Depecrated order_detail_description called. Use OrderDetailPresenter#description_as_html instead. At #{caller(1..1)}"
     OrderDetailPresenter.new(order_detail).description_as_html
   end
 
-  def order_detail_description_as_html(order_detail) # TODO: deprecate in favor of OrderDetailPresenter#description_as_html
+  def order_detail_description_as_html(order_detail)
+    warn "Depecrated order_detail_description_as_html called. Use OrderDetailPresenter#description_as_html instead. At #{caller(1..1)}"
     OrderDetailPresenter.new(order_detail).description_as_html
   end
 
-  def order_detail_description_as_text(order_detail) # TODO: move this into OrderDetailPresenter
-    name = order_detail.product.to_s
-    if order_detail.bundle
-      name.prepend("#{order_detail.bundle} -- ")
-    else
-      name
-    end.html_safe
+  def order_detail_description_as_text(order_detail)
+    warn "Depecrated order_detail_description_as_text called. Use OrderDetailPresenter#description_as_text instead. At #{caller(1..1)}"
+    OrderDetailPresenter.new(order_detail).description_as_text
   end
 
   def sortable(column, title = nil)

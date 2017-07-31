@@ -20,7 +20,7 @@
         %td
           = order_detail.order.facility
         %td
-          = order_detail_description(order_detail)
+          = OrderDetailPresenter.new(order_detail).description_as_html
           %br
           %em= order_detail.reservation
         %td

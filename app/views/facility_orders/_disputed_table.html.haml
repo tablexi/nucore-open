@@ -13,7 +13,7 @@
   %tbody
     - @order_details.each do |od|
       - o = od.order
-      - product_name = order_detail_description(od)
+      - product_name = OrderDetailPresenter.new(od).description_as_html
       %tr
         %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
         %td.centered= link_to od.id, manage_order_detail_path(od), :class => 'manage-order-detail'
