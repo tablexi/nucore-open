@@ -388,8 +388,6 @@ GEM
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     public_suffix (2.0.5)
-    quiet_assets (1.1.0)
-      railties (>= 3.1, < 5.0)
     rack (1.6.8)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -635,7 +633,6 @@ DEPENDENCIES
   protected_attributes
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
-  quiet_assets
   rails (= 4.2.9)
   rails-erd
   rails-observers
