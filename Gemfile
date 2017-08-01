@@ -105,7 +105,7 @@ group :development, :test do
   gem "spring-commands-rspec"
   gem "teaspoon-jasmine"
   gem "test-unit", "~> 3.0"
-  gem "thin"
+  gem "thin", ">= 1.7.2"
 end
 
 group :test do
