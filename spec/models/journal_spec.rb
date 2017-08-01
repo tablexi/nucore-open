@@ -33,6 +33,11 @@ RSpec.describe Journal do
 
       context "when journals may not span fiscal years", feature_setting: { journals_may_span_fiscal_years: false } do
         it { is_expected.not_to be_valid }
+
+        it "has the appropriate error" do
+          journal.save
+          expect(journal.errors).to be_added(:base, :fiscal_year_span)
+        end
       end
     end
   end
