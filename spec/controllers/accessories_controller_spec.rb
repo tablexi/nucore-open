@@ -8,8 +8,8 @@ RSpec.describe AccessoriesController do
   let(:instrument) { create(:instrument_with_accessory, :always_available) }
   let(:facility) { instrument.facility }
   let(:quantity_accessory) { instrument.accessories.first }
-  let(:auto_accessory) { create(:accessory, parent: instrument, scaling_type: "auto") }
-  let(:manual_accessory) { create(:accessory, parent: instrument, scaling_type: "manual") }
+  let(:auto_accessory) { create(:time_based_accessory, parent: instrument, scaling_type: "auto") }
+  let(:manual_accessory) { create(:time_based_accessory, parent: instrument, scaling_type: "manual") }
   let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 1.hour.ago) }
   let(:order_detail) { reservation.order_detail }
   let(:order) { order_detail.order }
@@ -109,10 +109,10 @@ RSpec.describe AccessoriesController do
       before :each do
         item = quantity_accessory
         instrument.product_accessories.first.soft_delete
-        instrument.product_accessories.create(accessory: item, scaling_type: "auto")
+        second_accessory = auto_accessory
 
         expect(instrument.reload.product_accessories.count).to eq(1)
-        expect(ProductAccessory.where(product_id: instrument.id, accessory_id: item.id).count).to eq(2)
+        expect(ProductAccessory.where(product_id: instrument.id).count).to eq(2)
       end
 
       it "returns the second accessory" do
