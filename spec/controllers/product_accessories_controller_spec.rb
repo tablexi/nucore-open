@@ -9,6 +9,7 @@ RSpec.describe ProductAccessoriesController do
   let(:instrument) { FactoryGirl.create(:setup_instrument) }
   let(:facility) { instrument.facility }
   let(:accessory) { FactoryGirl.create(:setup_item, facility: facility) }
+  let(:timed_service) { FactoryGirl.create(:setup_timed_service, facility: facility) }
 
   before :each do
     @authable = facility
@@ -65,21 +66,24 @@ RSpec.describe ProductAccessoriesController do
   end
 
   describe "create" do
-    before :each do
+    let(:scaling_type) { "quantity" }
+
+    before do
       @method = :post
       @action = :create
+      @params.merge! product_accessory: { accessory_id: accessory.id, scaling_type: scaling_type }
     end
 
     it_should_allow_managers_and_senior_staff_only(:redirect) {}
 
     context "success" do
-      before :each do
+      before do
         maybe_grant_always_sign_in :admin
-        @params.merge! product_accessory: { accessory_id: accessory.id }
       end
 
-      context "default type" do
-        before :each do
+      context "with quantity-based accessory" do
+
+        before do
           expect(instrument.accessories).to be_empty
           do_request
         end
@@ -97,14 +101,16 @@ RSpec.describe ProductAccessoriesController do
         end
       end
 
-      context "auto scaled" do
-        before :each do
-          @params.deep_merge! product_accessory: { scaling_type: "auto" }
+      context "with time-based accessory" do
+        let(:accessory) { timed_service }
+        let(:scaling_type) { "auto" }
+
+        before do
           do_request
         end
 
         it "creates the new accessory" do
-          expect(instrument.reload.accessories).to eq([accessory])
+          expect(instrument.reload.accessories).to eq([timed_service])
         end
 
         it "sets the new accessory as auto-scaled" do

@@ -96,6 +96,12 @@ FactoryGirl.define do
     factory :setup_service, class: Service do
     end
 
+    factory :setup_timed_service, class: TimedService do
+      after(:create) do |product|
+        product.timed_service_price_policies.create(FactoryGirl.attributes_for(:timed_service_price_policy, price_group: product.facility.price_groups.last))
+      end
+    end
+
     factory :setup_item, class: Item do
       after(:create) do |product|
         product.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: product.facility.price_groups.last))
