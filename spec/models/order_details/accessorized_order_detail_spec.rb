@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe OrderDetail do
   let(:instrument) { FactoryGirl.create(:instrument_with_accessory, :timer) }
   let(:accessory) { instrument.accessories.first }
+  let(:auto_accessory) { create(:time_based_accessory, parent: instrument, scaling_type: "auto") }
+  let(:manual_accessory) { create(:time_based_accessory, parent: instrument, scaling_type: "manual") }
   let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
   let(:order_detail) { reservation.order_detail.tap { |od| od.update(note: "original") } }
   let(:accessorizer) { Accessories::Accessorizer.new(order_detail) }
@@ -61,6 +63,7 @@ RSpec.describe OrderDetail do
   end
 
   context "manual scaled accessory" do
+    let(:accessory) { manual_accessory }
     let(:accessory_order_detail) { accessorizer.add_accessory(accessory) }
     before :each do
       accessorizer.send(:product_accessory, accessory).update_attributes!(scaling_type: "manual")
@@ -103,6 +106,7 @@ RSpec.describe OrderDetail do
   end
 
   context "auto scaled accessory" do
+    let(:accessory) { auto_accessory }
     # reload in order to avoid timestamp truncation causing false-positives on `changes`
     let(:accessory_order_detail) { accessorizer.add_accessory(accessory).reload }
     before :each do
