@@ -661,7 +661,7 @@ DEPENDENCIES
   test-unit (~> 3.0)
   text_helpers
   therubyracer
-  thin (~> 1.7.2)
+  thin (>= 1.7.2)
   uglifier (~> 2.7.2)
   unicorn
   vuejs-rails
