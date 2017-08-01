@@ -168,6 +168,10 @@ body .unit {
   margin-left: 16px;
 }
 
+.timeline_header i {
+  vertical-align: top;
+}
+
 .timeline_instrument {
   margin: 15px 0 22px;
 
@@ -189,6 +193,11 @@ body .unit {
 
 .ui-datepicker-trigger {
   cursor: pointer;
+}
+
+button.ui-datepicker-trigger {
+  background-color: white;
+  border: none;
 }
 
 /***

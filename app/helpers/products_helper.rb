@@ -46,20 +46,20 @@ module ProductsHelper
     if current_facility.show_instrument_availability?
       public_calendar_availability_options(product)
     else
-      { class: ["icon-calendar"],
+      { class: ["fa fa-calendar fa-2x"],
         title: t("instruments.public_schedule.icon") }
     end
   end
 
   def public_calendar_availability_options(product)
     if product.offline?
-      { class: ["icon-calendar", "in-use"],
+      { class: ["fa fa-calendar fa-2x", "in-use"],
         title: text("instruments.offline.note") }
     elsif product.available?
-      { class: ["icon-calendar", "available"],
+      { class: ["fa fa-calendar fa-2x", "available"],
         title: text("instruments.public_schedule.available") }
     else
-      { class: ["icon-calendar", "in-use"],
+      { class: ["fa fa-calendar fa-2x", "in-use"],
         title: text("instruments.public_schedule.unavailable") }
     end
   end

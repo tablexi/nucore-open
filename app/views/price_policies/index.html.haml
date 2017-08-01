@@ -42,7 +42,7 @@
 - if @past_price_policies_by_date.present?
   %h3
     = link_to '#past', data: { toggle: "collapse" } do
-      %i.icon-folder-open
+      %i.fa.fa-folder-open
       = text("past")
   #past.collapse
     - @past_price_policies_by_date.each do |date, rules|

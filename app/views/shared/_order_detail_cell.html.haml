@@ -8,7 +8,7 @@
       %em= od.reservation
 
     - if od.product.offline?
-      = tooltip_icon "icon-warning-sign", t("instruments.offline.note")
+      = tooltip_icon "fa fa-exclamation-triangle", t("instruments.offline.note")
 
   - if can?(:template_results, od)
     - if od.survey_completed?

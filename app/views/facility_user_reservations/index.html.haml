@@ -48,7 +48,7 @@
               = order_detail.description_as_html_with_facility_prefix
 
             - if order_detail.product.offline?
-              = tooltip_icon "icon-warning-sign icon-large",
+              = tooltip_icon "fa fa-exclamation-triangle icon-large",
                 text("instruments.offline.note")
 
             - if order_detail.note.present?
