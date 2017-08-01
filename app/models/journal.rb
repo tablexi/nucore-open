@@ -54,7 +54,7 @@ class Journal < ActiveRecord::Base
   validates_length_of     :reference, maximum: 50
   validate :journal_date_cannot_be_in_future, if: "journal_date.present?"
   validate :must_have_order_details, on: :create, if: :order_details_for_creation
-  validate :must_not_span_fiscal_years, on: :create, if: :has_order_details_for_creation?
+  validate :must_not_span_fiscal_years, on: :create, if: :should_check_fiscal_years?
   validate :journal_date_cannot_be_before_last_fulfillment, on: :create, if: :has_order_details_for_creation?
   validates_with JournalDateMustBeAfterCutoffs, on: :create
   before_validation :set_facility_id, on: :create, if: :has_order_details_for_creation?
@@ -169,6 +169,10 @@ class Journal < ActiveRecord::Base
   delegate :to_s, to: :id
 
   private
+
+  def should_check_fiscal_years?
+    !SettingsHelper.feature_on?(:journals_may_span_fiscal_years) && has_order_details_for_creation?
+  end
 
   def has_order_details_for_creation?
     @order_details_for_creation.try(:any?)

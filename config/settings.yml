@@ -126,6 +126,7 @@ feature:
   send_statement_emails_on: true
   responsive_on: true
   ready_for_journal_notice_on: true
+  journals_may_span_fiscal_years_on: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
