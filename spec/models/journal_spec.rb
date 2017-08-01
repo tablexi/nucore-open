@@ -18,6 +18,28 @@ RSpec.describe Journal do
 
   describe "validations" do
     it { is_expected.to validate_length_of(:reference).is_at_most(50) }
+
+    describe "#must_not_span_fiscal_years" do
+      before do
+        order.add(product)
+        order.reload.order_details.first.update_attributes(fulfilled_at: Time.current)
+        order.order_details.last.update_attributes(fulfilled_at: 1.year.ago)
+        journal.order_details_for_creation = order.order_details
+      end
+
+      context "when journals may span fiscal years", feature_setting: { journals_may_span_fiscal_years: true } do
+        it { is_expected.to be_valid }
+      end
+
+      context "when journals may not span fiscal years", feature_setting: { journals_may_span_fiscal_years: false } do
+        it { is_expected.not_to be_valid }
+
+        it "has the appropriate error" do
+          journal.save
+          expect(journal.errors).to be_added(:base, :fiscal_year_span)
+        end
+      end
+    end
   end
 
   describe "#order_details" do
