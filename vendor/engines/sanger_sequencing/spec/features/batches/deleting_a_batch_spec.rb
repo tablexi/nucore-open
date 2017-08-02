@@ -9,7 +9,7 @@ RSpec.describe "Deleting a batch" do
   let!(:purchased_submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order.order_details.first, sample_count: 50) }
   let!(:purchased_submission2) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order2.order_details.first, sample_count: 50) }
 
-  let!(:batch) { FactoryGirl.create(:sanger_sequencing_batch, submissions: [purchased_submission, purchased_submission2]) }
+  let!(:batch) { FactoryGirl.create(:sanger_sequencing_batch, facility: facility, submissions: [purchased_submission, purchased_submission2]) }
 
   let(:facility_staff) { FactoryGirl.create(:user, :staff, facility: facility) }
 

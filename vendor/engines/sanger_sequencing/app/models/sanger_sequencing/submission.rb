@@ -22,8 +22,14 @@ module SangerSequencing
     alias purchased_at ordered_at
 
     scope :purchased, -> { joins(:order).merge(Order.purchased.order(ordered_at: :desc)) }
-    scope :ready_for_batch, -> { purchased.merge(OrderDetail.new_or_inprocess).where(batch_id: nil) }
     scope :for_facility, ->(facility) { where(orders: { facility_id: facility.id }) }
+
+    BATCHABLE_STATES = %w(new inprocess complete).freeze
+    scope :ready_for_batch, lambda {
+      purchased
+        .merge(OrderDetail.where(state: BATCHABLE_STATES))
+        .where(batch_id: nil)
+    }
 
     def self.for_product_group(product_group)
       if product_group

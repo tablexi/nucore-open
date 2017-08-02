@@ -13,6 +13,12 @@ RSpec.describe "Creating a batch", :js do
 
   before { login_as facility_staff }
 
+  def click_add(submission_id)
+    within("[data-submission-id='#{submission_id}']") do
+      click_link "Add"
+    end
+  end
+
   describe "creating a well-plate" do
     before do
       visit facility_sanger_sequencing_admin_batches_path(facility)
@@ -20,12 +26,6 @@ RSpec.describe "Creating a batch", :js do
     end
 
     describe "adding both submissions" do
-      def click_add(submission_id)
-        within("[data-submission-id='#{submission_id}']") do
-          click_link "Add"
-        end
-      end
-
       before do
         click_add(purchased_submission.id)
         click_add(purchased_submission2.id)
@@ -42,6 +42,28 @@ RSpec.describe "Creating a batch", :js do
 
         expect(current_path).to eq(facility_sanger_sequencing_admin_batches_path(facility))
       end
+    end
+  end
+
+  describe "creating a batch with a previously completed submission" do
+    let!(:completed_submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order2.order_details.first, sample_count: 50) }
+
+    before do
+      purchased_order.order_details.first.to_complete
+
+      visit facility_sanger_sequencing_admin_batches_path(facility)
+      click_link "Create New Batch"
+      click_add(completed_submission.id)
+      click_button "Save Batch"
+    end
+
+    it "Saves the batch and takes you to the batches index", :aggregate_failures do
+      expect(completed_submission.reload.batch_id).to be_present
+
+      expect(SangerSequencing::Batch.last.sample_at(0, "A01")).to be_reserved
+      expect(SangerSequencing::Batch.last.sample_at(0, "B01")).to eq(completed_submission.samples.first)
+
+      expect(current_path).to eq(facility_sanger_sequencing_admin_batches_path(facility))
     end
   end
 
