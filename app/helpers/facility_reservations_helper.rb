@@ -13,6 +13,8 @@ module FacilityReservationsHelper
   end
 
   def reservation_links(reservation)
+    return if reservation.offline?
+
     links = []
     if reservation.admin?
       links << link_to(I18n.t("reservations.edit.link"), edit_admin_reservation_path(reservation))
