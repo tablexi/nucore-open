@@ -23,7 +23,7 @@ class ProductAccessory < ActiveRecord::Base
   def scaling_type_matches_product
     return if SCALING_TYPES[accessory.type.underscore].include?(scaling_type)
 
-    errors.add(:scaling_type, "does not match product type")
+    errors.add(:scaling_type)
   end
 
   def soft_delete

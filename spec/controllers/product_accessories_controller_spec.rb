@@ -66,19 +66,23 @@ RSpec.describe ProductAccessoriesController do
   end
 
   describe "create" do
-    let(:scaling_type) { "quantity" }
-
     before do
       @method = :post
       @action = :create
-      @params.merge! product_accessory: { accessory_id: accessory.id, scaling_type: scaling_type }
     end
 
-    it_should_allow_managers_and_senior_staff_only(:redirect) {}
+    context "permissions" do
+      before do
+        @params.merge! product_accessory: { accessory_id: timed_service.id, scaling_type: "manual" }
+      end
+
+      it_should_allow_managers_and_senior_staff_only(:redirect) {}
+    end
 
     context "success" do
       before do
         maybe_grant_always_sign_in :admin
+        @params.merge! product_accessory: { accessory_id: accessory.id, scaling_type: "quantity" }
       end
 
       context "with quantity-based accessory" do
@@ -102,10 +106,8 @@ RSpec.describe ProductAccessoriesController do
       end
 
       context "with time-based accessory" do
-        let(:accessory) { timed_service }
-        let(:scaling_type) { "auto" }
-
         before do
+          @params.merge! product_accessory: { accessory_id: timed_service.id, scaling_type: "auto" }
           do_request
         end
 
