@@ -39,7 +39,7 @@
       %tr
         %td= link_to(order_detail, [order_detail.order, order_detail])
         %td
-          = OrderDetailPresenter.new(order_detail).description_as_html
+          = order_detail.description_as_html
           - if order_detail.reservation
             %br
             = order_detail.reservation

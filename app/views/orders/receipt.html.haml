@@ -37,7 +37,7 @@
         %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)
         %td.centered= order_detail.wrapped_quantity
         %td.user-order-detail
-          .order-detail-description= OrderDetailPresenter.new(order_detail).description_as_html
+          .order-detail-description= order_detail.description_as_html
           - if res
             .order-detail-extra= res
             .order-detail-extra
