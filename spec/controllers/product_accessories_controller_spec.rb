@@ -73,7 +73,7 @@ RSpec.describe ProductAccessoriesController do
 
     context "permissions" do
       before do
-        @params.merge! product_accessory: { accessory_id: timed_service.id, scaling_type: "manual" }
+        @params[:product_accessory] = { accessory_id: timed_service.id, scaling_type: "manual" }
       end
 
       it_should_allow_managers_and_senior_staff_only(:redirect) {}
@@ -82,7 +82,7 @@ RSpec.describe ProductAccessoriesController do
     context "success" do
       before do
         maybe_grant_always_sign_in :admin
-        @params.merge! product_accessory: { accessory_id: accessory.id, scaling_type: "quantity" }
+        @params[:product_accessory] = { accessory_id: accessory.id, scaling_type: "quantity" }
       end
 
       context "with quantity-based accessory" do
@@ -107,7 +107,7 @@ RSpec.describe ProductAccessoriesController do
 
       context "with time-based accessory" do
         before do
-          @params.merge! product_accessory: { accessory_id: timed_service.id, scaling_type: "auto" }
+          @params[:product_accessory] = { accessory_id: timed_service.id, scaling_type: "auto" }
           do_request
         end
 
