@@ -31,14 +31,13 @@
         %th.currency= t('.th.adjust')
       %th.currency= t('.th.total')
   %tbody
-    - @order_details.each do |order_detail|
-      - order_detail.send(:extend, PriceDisplayment)
+    - OrderDetailPresenter.wrap(@order_details).each do |order_detail|
       %tr
         - res = order_detail.reservation
         %td.centered= link_to order_detail, order_order_detail_path(@order, order_detail)
         %td.centered= order_detail.wrapped_quantity
         %td.user-order-detail
-          .order-detail-description= order_detail_description(order_detail)
+          .order-detail-description= order_detail.description_as_html
           - if res
             .order-detail-extra= res
             .order-detail-extra

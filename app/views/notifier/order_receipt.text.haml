@@ -11,16 +11,15 @@
 = "========================================"
 - @order.order_details.each do |order_detail|
   #{OrderDetail.human_attribute_name(:id)}: #{order_detail}
-  #{order_detail_description_as_text(order_detail)}
+  #{OrderDetailPresenter.new(order_detail).description_as_text}
   - if order_detail.reservation
     #{Reservation.model_name.to_s.titleize}: #{order_detail.reservation}
   #{OrderDetail.human_attribute_name(:quantity)}: #{order_detail.quantity}
   #{OrderDetail.human_attribute_name(:status)}: #{order_detail.order_status.name}
-  - order_detail.send(:extend, PriceDisplayment)
   - label_key_prefix = display_cost_prefix_for_order_detail(order_detail)
-  #{OrderDetail.human_attribute_name("#{label_key_prefix}_cost")}: #{order_detail.display_cost}
-  #{OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy")}: #{order_detail.display_subsidy}
-  #{OrderDetail.human_attribute_name("#{label_key_prefix}_total")}: #{order_detail.display_total}
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_cost")}: #{OrderDetailPresenter.new(order_detail).display_cost}
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy")}: #{OrderDetailPresenter.new(order_detail).display_subsidy}
+  #{OrderDetail.human_attribute_name("#{label_key_prefix}_total")}: #{OrderDetailPresenter.new(order_detail).display_total}
   - if order_detail.note.present?
 
     #{order_detail.note}

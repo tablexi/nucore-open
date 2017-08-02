@@ -36,6 +36,31 @@ RSpec.describe OrderDetailPresenter do
     end
   end
 
+  describe "#description_as_text" do
+    subject { presented.description_as_text }
+
+    let(:product) { build_stubbed(:product, name: "<Micro> & >Scope<") }
+
+    before(:each) do
+      allow(order_detail).to receive(:bundle) { bundle }
+      allow(order_detail).to receive(:product) { product }
+    end
+
+    context "when part of a bundle" do
+      let(:bundle) { build_stubbed(:bundle, name: ">Bun & dle<") }
+
+      it { is_expected.to eq(">Bun & dle< -- <Micro> & >Scope<") }
+      it { is_expected.to be_html_safe }
+    end
+
+    context "when not part of a bundle" do
+      let(:bundle) { nil }
+
+      it { is_expected.to eq("<Micro> & >Scope<") }
+      it { is_expected.to be_html_safe }
+    end
+  end
+
   describe "#description_as_html_with_facility_prefix" do
     subject { presented.description_as_html_with_facility_prefix }
 

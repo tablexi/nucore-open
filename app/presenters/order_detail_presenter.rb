@@ -18,6 +18,15 @@ class OrderDetailPresenter < SimpleDelegator
     end.join(" &mdash; ").html_safe
   end
 
+  def description_as_text
+    name = product.to_s
+    if bundle
+      name.prepend("#{bundle} -- ")
+    else
+      name
+    end.html_safe
+  end
+
   def description_as_html_with_facility_prefix
     "#{facility.abbreviation} / #{description_as_html}".html_safe
   end

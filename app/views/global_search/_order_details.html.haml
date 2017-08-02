@@ -20,13 +20,12 @@
         %td
           = order_detail.order.facility
         %td
-          = order_detail_description(order_detail)
+          = OrderDetailPresenter.new(order_detail).description_as_html
           %br
           %em= order_detail.reservation
         %td
           = order_detail.order.user.full_name
         %td.currency
-          - order_detail.send(:extend, PriceDisplayment)
-          = order_detail.wrapped_total
+          = OrderDetailPresenter.new(order_detail).wrapped_total
         %td.nowrap
           = order_detail.order_status

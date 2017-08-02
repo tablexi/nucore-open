@@ -72,14 +72,14 @@ class Reports::AccountTransactionsReport
   def build_row(order_detail)
     # Reservation.new acts as null object
     reservation = order_detail.reservation || Reservation.new
-    order_detail.extend(PriceDisplayment)
+    order_detail = OrderDetailPresenter.new(order_detail)
 
     [
       order_detail.order.id,
       order_detail.id,
       format_usa_date(order_detail.send(:"#{@date_range_field}")),
       order_detail.order.facility,
-      order_detail_description(order_detail),
+      order_detail.description_as_html,
       format_usa_datetime(reservation.reserve_start_at),
       format_usa_datetime(reservation.reserve_end_at),
       format_usa_datetime(reservation.actual_start_at),

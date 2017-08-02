@@ -75,46 +75,4 @@ RSpec.describe ApplicationHelper do
       it_behaves_like "it returns only facilities with a role"
     end
   end
-
-  describe "#order_detail_description_as_(html|text)" do
-    let(:order_detail) { build_stubbed(:order_detail) }
-    let(:product) { build_stubbed(:product, name: ">& Product <") }
-
-    before { allow(order_detail).to receive(:product).and_return(product) }
-
-    context "when not part of a bundle" do
-      context "as html" do
-        subject { order_detail_description_as_html(order_detail) }
-
-        it { expect(subject).to be_html_safe }
-        it { expect(subject).to eq("&gt;&amp; Product &lt;") }
-      end
-
-      context "as text" do
-        subject { order_detail_description_as_text(order_detail) }
-
-        it { expect(subject).to be_html_safe }
-        it { expect(subject).to eq(">& Product <") }
-      end
-    end
-
-    context "when part of a bundle" do
-      let(:bundle) { build_stubbed(:bundle, name: ">& Bundle <") }
-      before { allow(order_detail).to receive(:bundle).and_return(bundle) }
-
-      context "as html" do
-        subject { order_detail_description_as_html(order_detail) }
-
-        it { expect(subject).to be_html_safe }
-        it { expect(subject).to eq("&gt;&amp; Bundle &lt; &mdash; &gt;&amp; Product &lt;") }
-      end
-
-      context "as text" do
-        subject { order_detail_description_as_text(order_detail) }
-
-        it { expect(subject).to be_html_safe }
-        it { expect(subject).to eq(">& Bundle < -- >& Product <") }
-      end
-    end
-  end
 end

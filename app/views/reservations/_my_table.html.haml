@@ -21,7 +21,7 @@
           = reservation_view_edit_link(res)
         %td.user-order-detail.order-note.order-note--wide
           .order-detail-description
-            - product_name = order_detail_description(od)
+            - product_name = OrderDetailPresenter.new(od).description_as_html
             = link_to "#{od.product.facility.abbreviation} / #{product_name}".html_safe, facility_instrument_path(od.product.facility, od.product)
             - if od.product.offline?
               = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
@@ -31,8 +31,7 @@
 
         %td.centered= od.order_status.name
         %td.currency
-          - od.send(:extend, PriceDisplayment)
-          = od.reload.wrapped_total
+          = OrderDetailPresenter.new(od.reload).wrapped_total
 
 = render "/price_display_footnote"
 = will_paginate(order_details)
