@@ -5,6 +5,7 @@ class ProductAccessory < ActiveRecord::Base
     service: ["quantity"],
     timed_service: ["manual", "auto"],
   }.with_indifferent_access
+  SCALING_TYPES.default = ["quantity"]
 
   ## relationships
   belongs_to :product
