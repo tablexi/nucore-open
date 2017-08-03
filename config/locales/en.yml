@@ -58,6 +58,7 @@ en:
     affiliates: Affiliates
     cart: Cart
     create: Create %{model}
+    event_log: Event Log
     general_reports: General
     global_billing: Billing
     global_settings: Global Settings

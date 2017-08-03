@@ -31,6 +31,8 @@ class UserFinder
           LOWER(username) LIKE :search_term
         OR
           LOWER(CONCAT(first_name, last_name)) LIKE :search_term
+        OR
+          LOWER(email) LIKE :search_term
       )
     SQL
   end

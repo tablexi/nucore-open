@@ -9,6 +9,6 @@ class CreateLogEvents < ActiveRecord::Migration
     end
 
     add_index(:log_events, [:loggable_type, :loggable_id],
-      name: "index_log_events_loggable")
+              name: "index_log_events_loggable")
   end
 end
