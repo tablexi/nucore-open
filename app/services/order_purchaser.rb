@@ -35,6 +35,12 @@ class OrderPurchaser
 
     Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
     Notifier.delay.order_notification(order, order_notification_recipient) if send_facility_notification?
+
+    order.order_details.each do |order_detail|
+      next unless order_detail.product.order_notification_recipient?
+      Notifier.delay.product_order_notification(order_detail, order_detail.product.order_notification_recipient)
+    end
+
     @success = true
   rescue NUCore::OrderDetailUpdateException => e
     @errors = order.errors.full_messages

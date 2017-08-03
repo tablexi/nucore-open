@@ -24,6 +24,26 @@ RSpec.describe Notifier do
     end
   end
 
+  describe ".product_order_notification" do
+    before { Notifier.product_order_notification(order_detail, recipient).deliver_now }
+
+    let(:order_detail) { order.order_details.first }
+    let(:recipient) { "orders@example.net" }
+
+    it "generates a product order notification", :aggregate_failures do
+      expect(email.to).to eq [recipient]
+      expect(email.subject).to include("#{product} Order Notification")
+      expect(email.html_part.to_s).to include(order_detail.to_s)
+      expect(email.text_part.to_s).to include(order_detail.to_s)
+      expect(email.html_part.to_s).to match(/Ordered By.+#{user.full_name}/m)
+      expect(email.text_part.to_s).to include("Ordered By: #{user.full_name}")
+      expect(email.html_part.to_s).to match(/Payment Source.+#{order.account}/m)
+      expect(email.text_part.to_s).to include("Payment Source: #{order.account}")
+      expect(email.html_part.to_s).not_to include("Thank you for your order")
+      expect(email.text_part.to_s).not_to include("Thank you for your order")
+    end
+  end
+
   describe ".order_receipt" do
     let(:note) { nil }
 

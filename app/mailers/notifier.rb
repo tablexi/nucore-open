@@ -33,8 +33,17 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, text("views.notifier.account_update.subject")
   end
 
+  # Notifies the specified recipient if an order is placed including a product
+  def product_order_notification(order_detail, recipient)
+    @order = order_detail.order
+    @order_detail = OrderDetailPresenter.new(order_detail)
+    attach_reservation_ical(order_detail.reservation)
+    send_nucore_mail recipient, text("views.notifier.product_order_notification.subject", product: order_detail.product)
+  end
+
   def order_notification(order, recipient)
     @order = order
+    attach_each_order_ical(@order)
     send_nucore_mail recipient, text("views.notifier.order_notification.subject"), "order_receipt"
   end
 
@@ -44,7 +53,7 @@ class Notifier < ActionMailer::Base
     @user = args[:user]
     @order = args[:order]
     @greeting = text("views.notifier.order_receipt.intro")
-    attach_ical(@order)
+    attach_each_order_ical(@order)
     send_nucore_mail args[:user].email, text("views.notifier.order_receipt.subject")
   end
 
@@ -77,13 +86,19 @@ class Notifier < ActionMailer::Base
 
   private
 
-  def attach_ical(order)
+  def attach_each_order_ical(order)
     order.order_details.map(&:reservation).compact.each do |reservation|
-      calendar = ReservationCalendar.new(reservation)
-      attachments[calendar.filename] = {
-        mime_type: "text/calendar", content: [calendar.to_ical]
-      }
+      attach_reservation_ical(reservation)
     end
+  end
+
+  def attach_reservation_ical(reservation)
+    return unless reservation.present?
+
+    calendar = ReservationCalendar.new(reservation)
+    attachments[calendar.filename] = {
+      mime_type: "text/calendar", content: [calendar.to_ical]
+    }
   end
 
   def attach_statement_pdf
