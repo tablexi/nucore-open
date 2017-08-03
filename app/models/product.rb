@@ -5,15 +5,15 @@ class Product < ActiveRecord::Base
   belongs_to :facility
   belongs_to :initial_order_status, class_name: "OrderStatus"
   belongs_to :facility_account
-  has_many   :product_users
-  has_many   :order_details
-  has_many   :stored_files
-  has_many   :price_groups, through: :price_group_products
-  has_many   :price_group_products
+  has_many :product_users
+  has_many :order_details
+  has_many :stored_files
+  has_many :price_groups, through: :price_group_products
+  has_many :price_group_products
   has_many :product_accessories, -> { where(deleted_at: nil) }, dependent: :destroy
-  has_many   :accessories, through: :product_accessories, class_name: "Product"
-  has_many   :price_policies
-  has_many   :training_requests, dependent: :destroy
+  has_many :accessories, through: :product_accessories, class_name: "Product"
+  has_many :price_policies
+  has_many :training_requests, dependent: :destroy
 
   # Allow us to use `product.hidden?`
   alias_attribute :hidden, :is_hidden

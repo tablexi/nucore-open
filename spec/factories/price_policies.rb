@@ -36,7 +36,6 @@ FactoryGirl.define do
   end
 
   factory :timed_service_price_policy do
-    price_group
     charge_for "usage"
     usage_rate 15 / 60.0
     usage_subsidy 0

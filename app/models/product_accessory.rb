@@ -1,6 +1,11 @@
 class ProductAccessory < ActiveRecord::Base
 
-  SCALING_TYPES = %w(quantity manual auto).freeze
+  SCALING_TYPES = {
+    item: ["quantity"],
+    service: ["quantity"],
+    timed_service: ["manual", "auto"],
+  }.with_indifferent_access
+  SCALING_TYPES.default = ["quantity"]
 
   ## relationships
   belongs_to :product
@@ -9,10 +14,17 @@ class ProductAccessory < ActiveRecord::Base
   ## validations
   validates :product, presence: true
   validates :accessory, presence: true
-  validates :scaling_type, presence: true, inclusion: SCALING_TYPES
+  validates :scaling_type, presence: true
+  validate :scaling_type_matches_product
 
   def self.scaling_types
-    SCALING_TYPES
+    SCALING_TYPES.values.flatten.uniq
+  end
+
+  def scaling_type_matches_product
+    return if SCALING_TYPES[accessory.type.underscore].include?(scaling_type)
+
+    errors.add(:scaling_type)
   end
 
   def soft_delete

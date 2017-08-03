@@ -19,4 +19,15 @@ FactoryGirl.define do
       evaluator.parent.product_accessories.create(accessory: item, scaling_type: evaluator.scaling_type)
     end
   end
+
+  factory :time_based_accessory, parent: :setup_timed_service do
+    transient do
+      parent { create :setup_instrument, facility: facility }
+      scaling_type "auto"
+    end
+
+    after(:create) do |item, evaluator|
+      evaluator.parent.product_accessories.create(accessory: item, scaling_type: evaluator.scaling_type)
+    end
+  end
 end

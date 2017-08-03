@@ -5,11 +5,11 @@ RSpec.describe AccessoriesController do
   render_views
   before(:all) { create_users }
 
-  let(:instrument) { create(:instrument_with_accessory, :always_available) }
+  let(:instrument) { create(:setup_instrument, :always_available) }
   let(:facility) { instrument.facility }
-  let(:quantity_accessory) { instrument.accessories.first }
-  let(:auto_accessory) { create(:accessory, parent: instrument, scaling_type: "auto") }
-  let(:manual_accessory) { create(:accessory, parent: instrument, scaling_type: "manual") }
+  let(:quantity_accessory) { create(:accessory, parent: instrument, facility: facility) }
+  let(:auto_accessory) { create(:time_based_accessory, parent: instrument, scaling_type: "auto", facility: facility) }
+  let(:manual_accessory) { create(:time_based_accessory, parent: instrument, scaling_type: "manual", facility: facility) }
   let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 1.hour.ago) }
   let(:order_detail) { reservation.order_detail }
   let(:order) { order_detail.order }
@@ -105,17 +105,17 @@ RSpec.describe AccessoriesController do
       end
     end
 
-    context "with a deleted accessory" do
+    context "with a soft-deleted accessory association" do
       before :each do
-        item = quantity_accessory
+        accessory = manual_accessory
         instrument.product_accessories.first.soft_delete
-        instrument.product_accessories.create(accessory: item, scaling_type: "auto")
+        instrument.product_accessories.create(accessory: accessory, scaling_type: "auto")
 
         expect(instrument.reload.product_accessories.count).to eq(1)
-        expect(ProductAccessory.where(product_id: instrument.id, accessory_id: item.id).count).to eq(2)
+        expect(ProductAccessory.where(product_id: instrument.id, accessory_id: accessory.id).count).to eq(2)
       end
 
-      it "returns the second accessory" do
+      it "the same accessory can be re-added" do
         maybe_grant_always_sign_in :admin
         do_request
 
@@ -211,13 +211,11 @@ RSpec.describe AccessoriesController do
       describe "adding a manual-scaled accessory" do
         before :each do
           @params[:accessories] = {
-            quantity_accessory.id.to_s => {
+            manual_accessory.id.to_s => {
               quantity: "30",
               enabled: "true",
             },
           }
-
-          instrument.product_accessories.first.update_attributes(scaling_type: "manual")
         end
 
         it "creates the order detail" do
@@ -245,7 +243,7 @@ RSpec.describe AccessoriesController do
 
         context "adding a disabled accessory" do
           before :each do
-            @params[:accessories][quantity_accessory.id.to_s][:enabled] = "false"
+            @params[:accessories][manual_accessory.id.to_s][:enabled] = "false"
           end
 
           it "does not add the accessory" do
@@ -257,13 +255,11 @@ RSpec.describe AccessoriesController do
       describe "adding an autoscaled accessory" do
         before :each do
           @params[:accessories] = {
-            quantity_accessory.id.to_s => {
+            auto_accessory.id.to_s => {
               quantity: "40",
               enabled: "true",
             },
           }
-
-          instrument.product_accessories.first.update_attributes(scaling_type: "auto")
         end
 
         it "creates the order detail" do
@@ -290,7 +286,7 @@ RSpec.describe AccessoriesController do
 
         context "adding a disabled accessory" do
           before :each do
-            @params[:accessories][quantity_accessory.id.to_s][:enabled] = "false"
+            @params[:accessories][auto_accessory.id.to_s][:enabled] = "false"
           end
 
           it "does not add the accessory" do

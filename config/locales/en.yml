@@ -732,6 +732,7 @@ en:
       add: Add as Accessory
     create:
       success: The accessory has been added.
+      error: Unable to add accessory - please check that the scaling type matches the product type.
     destroy:
       success: The accessory has been removed.
     button:
