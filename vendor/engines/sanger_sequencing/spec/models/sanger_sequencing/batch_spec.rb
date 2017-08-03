@@ -11,17 +11,17 @@ RSpec.describe SangerSequencing::Batch do
 
     context "with group given as nil" do
       let(:group) { nil }
-      it { is_expected.to eq [blank_batch, nil_batch] }
+      it { is_expected.to match_array [blank_batch, nil_batch] }
     end
 
     context "with group given as empty string" do
       let(:group) { "" }
-      it { is_expected.to eq [blank_batch, nil_batch] }
+      it { is_expected.to match_array [blank_batch, nil_batch] }
     end
 
     context "with a group provided" do
       let(:group) { "fragment" }
-      it { is_expected.to eq [grouped_batch] }
+      it { is_expected.to match_array [grouped_batch] }
     end
   end
 end

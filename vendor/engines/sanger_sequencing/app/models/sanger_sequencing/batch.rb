@@ -2,7 +2,7 @@ module SangerSequencing
 
   class Batch < ActiveRecord::Base
 
-    DEFAULT_GROUP = [nil, ""].freeze
+    DEFAULT_PRODUCT_GROUP_NAME = [nil, ""].freeze
 
     self.table_name = "sanger_sequencing_batches"
 
@@ -17,9 +17,9 @@ module SangerSequencing
       where(facility: facility)
     end
 
-    def self.for_product_group(product_group)
-      product_group = DEFAULT_GROUP if product_group.blank?
-      where(group: product_group)
+    def self.for_product_group(product_group_name)
+      product_group_name = DEFAULT_PRODUCT_GROUP_NAME if product_group_name.blank?
+      where(group: product_group_name)
     end
 
     def well_plates
