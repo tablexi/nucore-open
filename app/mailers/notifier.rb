@@ -93,7 +93,7 @@ class Notifier < ActionMailer::Base
   end
 
   def attach_reservation_ical(reservation)
-    return unless reservation.present?
+    return if reservation.blank?
 
     calendar = ReservationCalendar.new(reservation)
     attachments[calendar.filename] = {
