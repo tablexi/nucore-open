@@ -5,4 +5,4 @@
 # Mime::Type.register_alias "text/html", :iphone
 
 Mime::Type.register "application/vnd.ms-excel", :xls
-Mime::Type.register "text/calendar", :ics
+Mime::Type.register "text/calendar", :ics unless Mime::Type.lookup_by_extension(:ics)

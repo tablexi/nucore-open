@@ -4,7 +4,7 @@ class ReservationsController < ApplicationController
 
   customer_tab  :all
   before_action :authenticate_user!, except: [:index]
-  before_action :check_acting_as, only: [:switch_instrument, :show, :list]
+  before_action :check_acting_as, only: [:switch_instrument, :list]
   before_action :load_basic_resources, only: [:new, :create, :edit, :update]
   before_action :load_and_check_resources, only: [:move, :switch_instrument]
 
