@@ -47,7 +47,7 @@
             = od.time_data
         %td.action
           - if od.add_accessories?
-            = link_to new_facility_order_order_detail_accessory_path(current_facility, @order, od), class: ["has_accessories", "persistent"] do
+            = link_to new_facility_order_order_detail_accessory_path(current_facility, @order, od), class: ["has_accessories", "persistent", "undecorated"] do
               = tooltip_icon "fa fa-plus-square", t("product_accessories.pick_accessories.title")
 
           - if od.reservation.present?

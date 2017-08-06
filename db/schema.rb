@@ -236,9 +236,10 @@ ActiveRecord::Schema.define(version: 20170803181918) do
     t.integer  "loggable_id",   limit: 4
     t.string   "loggable_type", limit: 255
     t.string   "event_type",    limit: 255
-    t.integer  "user_id",       limit: 4,   null: false
+    t.integer  "user_id",       limit: 4
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
+    t.datetime "event_time"
   end
 
   add_index "log_events", ["loggable_type", "loggable_id"], name: "index_log_events_loggable", using: :btree
