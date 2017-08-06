@@ -81,16 +81,16 @@ class OrderPurchaser
 
   def send_purchase_notifications
     if !acting_as? || params[:send_notification] == "1"
-      Notifier.delay.order_receipt(user: order.user, order: order)
+      PurchaseNotifier.order_receipt(user: order.user, order: order).deliver_later
     end
 
     if order_notification_recipient.present? && !acting_as?
-      Notifier.delay.order_notification(order, order_notification_recipient)
+      PurchaseNotifier.order_notification(order, order_notification_recipient).deliver_later
     end
 
     order.order_details.each do |order_detail|
       next unless order_detail.product.order_notification_recipient?
-      Notifier.delay.product_order_notification(order_detail, order_detail.product.order_notification_recipient)
+      PurchaseNotifier.product_order_notification(order_detail, order_detail.product.order_notification_recipient).deliver_later
     end
   end
 
