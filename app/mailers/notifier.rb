@@ -3,7 +3,6 @@ class Notifier < ActionMailer::Base
   include DateHelper
   add_template_helper ApplicationHelper
   add_template_helper TranslationHelper
-  add_template_helper OrdersHelper
   add_template_helper ViewHookHelper
 
   default from: Settings.email.from, content_type: "multipart/alternative"
@@ -31,30 +30,6 @@ class Notifier < ActionMailer::Base
     @user = args[:user]
     @account = args[:account]
     send_nucore_mail args[:user].email, text("views.notifier.account_update.subject")
-  end
-
-  # Notifies the specified recipient if an order is placed including a product
-  def product_order_notification(order_detail, recipient)
-    @order = order_detail.order
-    @order_detail = OrderDetailPresenter.new(order_detail)
-    attach_reservation_ical(order_detail.reservation)
-    send_nucore_mail recipient, text("views.notifier.product_order_notification.subject", product: order_detail.product)
-  end
-
-  def order_notification(order, recipient)
-    @order = order
-    attach_each_order_ical(@order)
-    send_nucore_mail recipient, text("views.notifier.order_notification.subject"), "order_receipt"
-  end
-
-  # Custom order forms send out a confirmation email when filled out by a
-  # customer. Customer gets one along with PI/Admin/Lab Manager.
-  def order_receipt(args)
-    @user = args[:user]
-    @order = args[:order]
-    @greeting = text("views.notifier.order_receipt.intro")
-    attach_each_order_ical(@order)
-    send_nucore_mail args[:user].email, text("views.notifier.order_receipt.subject")
   end
 
   def review_orders(user_id:, account_ids:, facility: Facility.cross_facility)
@@ -85,21 +60,6 @@ class Notifier < ActionMailer::Base
   end
 
   private
-
-  def attach_each_order_ical(order)
-    order.order_details.map(&:reservation).compact.each do |reservation|
-      attach_reservation_ical(reservation)
-    end
-  end
-
-  def attach_reservation_ical(reservation)
-    return if reservation.blank?
-
-    calendar = ReservationCalendar.new(reservation)
-    attachments[calendar.filename] = {
-      mime_type: "text/calendar", content: [calendar.to_ical]
-    }
-  end
 
   def attach_statement_pdf
     attachments[statement_pdf.filename] = {

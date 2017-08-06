@@ -8,6 +8,26 @@ class NotifierPreview < ActionMailer::Preview
     )
   end
 
+  def product_order_notification
+    statement = Statement.first
+    Notifier.statement(
+      user: User.first,
+      facility: statement.facility,
+      account: statement.account,
+      statement: statement,
+    )
+  end
+
+  def order_notification
+    statement = Statement.first
+    Notifier.statement(
+      user: User.first,
+      facility: statement.facility,
+      account: statement.account,
+      statement: statement,
+    )
+  end
+
   def statement
     statement = Statement.first
     Notifier.statement(

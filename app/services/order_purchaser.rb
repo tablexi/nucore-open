@@ -33,13 +33,7 @@ class OrderPurchaser
 
     order_in_the_past! if order_in_past?
 
-    Notifier.delay.order_receipt(user: order.user, order: order) if send_receipt?
-    Notifier.delay.order_notification(order, order_notification_recipient) if send_facility_notification?
-
-    order.order_details.each do |order_detail|
-      next unless order_detail.product.order_notification_recipient?
-      Notifier.delay.product_order_notification(order_detail, order_detail.product.order_notification_recipient)
-    end
+    send_purchase_notifications
 
     @success = true
   rescue NUCore::OrderDetailUpdateException => e
@@ -85,12 +79,19 @@ class OrderPurchaser
     order.order_details.order("order_details.id").pluck(:quantity)
   end
 
-  def send_facility_notification?
-    order_notification_recipient.present? && !acting_as?
-  end
+  def send_purchase_notifications
+    if !acting_as? || params[:send_notification] == "1"
+      Notifier.delay.order_receipt(user: order.user, order: order)
+    end
 
-  def send_receipt?
-    !acting_as? || params[:send_notification] == "1"
+    if order_notification_recipient.present? && !acting_as?
+      Notifier.delay.order_notification(order, order_notification_recipient)
+    end
+
+    order.order_details.each do |order_detail|
+      next unless order_detail.product.order_notification_recipient?
+      Notifier.delay.product_order_notification(order_detail, order_detail.product.order_notification_recipient)
+    end
   end
 
   def validate_order!

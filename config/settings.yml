@@ -90,8 +90,8 @@ relays:
 
 # You should change this if you want to be able to access the API
 api:
-  basic_auth_name: <%= SecureRandom.hex %>
-  basic_auth_password: <%= SecureRandom.hex %>
+  basic_auth_name: name
+  basic_auth_password: password
 
 # You should change this if you want to be able to access the SecureRooms API
 secure_rooms_api:

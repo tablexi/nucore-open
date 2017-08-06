@@ -1,0 +1,12 @@
+en:
+  views:
+    purchase_notifier:
+      product_order_notification:
+        subject: "%{product} Order Notification"
+      order_notification:
+        subject: "!app_name! Order Notification"
+      order_receipt:
+        subject: "!app_name! Order Receipt"
+        intro: "Thank you for your order on the !app_name! website."
+        outro: "All prices are estimates. Actual cost is assigned when the order is complete."
+        total: Total
