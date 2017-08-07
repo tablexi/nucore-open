@@ -186,7 +186,7 @@ class OrderImport < ActiveRecord::Base
 
   def send_notifications(orders)
     orders.each do |order|
-      Notifier.delay.order_receipt(user: order.user, order: order)
+      PurchaseNotifier.order_receipt(user: order.user, order: order).deliver_later
     end
   end
 
