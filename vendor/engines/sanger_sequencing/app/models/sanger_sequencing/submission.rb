@@ -32,7 +32,7 @@ module SangerSequencing
     }
 
     def self.for_product_group(product_group)
-      if product_group
+      if product_group.present?
         where(order_details: { product_id: ProductGroup.where(group: product_group).pluck(:product_id) })
       else
         where.not(order_details: { product_id: ProductGroup.pluck(:product_id) })
