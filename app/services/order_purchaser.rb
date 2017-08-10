@@ -80,11 +80,14 @@ class OrderPurchaser
   end
 
   def send_purchase_notifications
-    if !acting_as? || params[:send_notification] == "1"
+    should_send_receipt = !acting_as? || params[:send_notification] == "1"
+    should_send_order_notification = order_notification_recipient.present? && !acting_as?
+
+    if should_send_receipt
       PurchaseNotifier.order_receipt(user: order.user, order: order).deliver_later
     end
 
-    if order_notification_recipient.present? && !acting_as?
+    if should_send_order_notification
       PurchaseNotifier.order_notification(order, order_notification_recipient).deliver_later
     end
 

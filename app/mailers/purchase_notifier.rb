@@ -8,7 +8,7 @@ class PurchaseNotifier < ActionMailer::Base
 
   default from: Settings.email.from, content_type: "multipart/alternative"
 
-  # Notifies the specified recipient if an order is placed including a product
+  # Notifies the specified facility staff member if an order is placed including a product
   def product_order_notification(order_detail, recipient)
     @order = order_detail.order
     @order_detail = OrderDetailPresenter.new(order_detail)
@@ -16,6 +16,7 @@ class PurchaseNotifier < ActionMailer::Base
     send_nucore_mail recipient, text("views.purchase_notifier.product_order_notification.subject", product: order_detail.product)
   end
 
+  # Notifies the specified facility staff member if any order is placed within a facility
   def order_notification(order, recipient)
     @order = order
     attach_all_icals_from_order(@order)
