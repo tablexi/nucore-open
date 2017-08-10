@@ -104,7 +104,7 @@ RSpec.describe OrderImport, :time_travel do
 
   shared_examples_for "it does not send notifications" do
     it "does not send notifications" do
-      expect(Notifier).to receive(:order_receipt).never
+      expect(PurchaseNotifier).to receive(:order_receipt).never
       order_import.process_upload!
     end
   end
@@ -160,10 +160,10 @@ RSpec.describe OrderImport, :time_travel do
     end
 
     it "sends notifications" do
-      expect(Notifier)
+      expect(PurchaseNotifier)
         .to receive(:order_receipt)
         .once
-        .and_return(double(deliver: nil))
+        .and_return(double(deliver_later: nil))
 
       order_import.process_upload!
     end
@@ -193,10 +193,10 @@ RSpec.describe OrderImport, :time_travel do
         let(:import_file) { generate_import_file }
 
         it "sends notifications" do
-          expect(Notifier)
+          expect(PurchaseNotifier)
             .to receive(:order_receipt)
             .once
-            .and_return(double(deliver: nil))
+            .and_return(double(deliver_later: nil))
 
           order_import.process_upload!
         end
@@ -263,10 +263,10 @@ RSpec.describe OrderImport, :time_travel do
         end
 
         it "sends a notification for second order" do
-          expect(Notifier)
+          expect(PurchaseNotifier)
             .to receive(:order_receipt)
             .once
-            .and_return(double(deliver: nil))
+            .and_return(double(deliver_later: nil))
 
           order_import.process_upload!
         end

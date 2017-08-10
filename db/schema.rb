@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170721204610) do
+ActiveRecord::Schema.define(version: 20170803181918) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -474,33 +474,34 @@ ActiveRecord::Schema.define(version: 20170721204610) do
   add_index "product_users", ["user_id"], name: "index_product_users_on_user_id", using: :btree
 
   create_table "products", force: :cascade do |t|
-    t.string   "type",                      limit: 50,                       null: false
-    t.integer  "facility_id",               limit: 4,                        null: false
-    t.string   "name",                      limit: 200,                      null: false
-    t.string   "url_name",                  limit: 50,                       null: false
-    t.text     "description",               limit: 65535
-    t.integer  "schedule_id",               limit: 4
-    t.boolean  "requires_approval",                                          null: false
-    t.integer  "initial_order_status_id",   limit: 4
-    t.boolean  "is_archived",                                                null: false
-    t.boolean  "is_hidden",                                                  null: false
-    t.datetime "created_at",                                                 null: false
-    t.datetime "updated_at",                                                 null: false
-    t.integer  "min_reserve_mins",          limit: 4
-    t.integer  "max_reserve_mins",          limit: 4
-    t.integer  "min_cancel_hours",          limit: 4
-    t.integer  "facility_account_id",       limit: 4
-    t.string   "account",                   limit: 5
-    t.boolean  "show_details",                            default: false,    null: false
-    t.integer  "auto_cancel_mins",          limit: 4
-    t.string   "contact_email",             limit: 255
-    t.integer  "reserve_interval",          limit: 4
-    t.integer  "lock_window",               limit: 4,     default: 0,        null: false
-    t.text     "training_request_contacts", limit: 65535
-    t.integer  "cutoff_hours",              limit: 4,     default: 0,        null: false
-    t.string   "dashboard_token",           limit: 255
-    t.string   "user_notes_field_mode",     limit: 255,   default: "hidden", null: false
-    t.string   "user_notes_label",          limit: 255
+    t.string   "type",                         limit: 50,                       null: false
+    t.integer  "facility_id",                  limit: 4,                        null: false
+    t.string   "name",                         limit: 200,                      null: false
+    t.string   "url_name",                     limit: 50,                       null: false
+    t.text     "description",                  limit: 65535
+    t.integer  "schedule_id",                  limit: 4
+    t.boolean  "requires_approval",                                             null: false
+    t.integer  "initial_order_status_id",      limit: 4
+    t.boolean  "is_archived",                                                   null: false
+    t.boolean  "is_hidden",                                                     null: false
+    t.datetime "created_at",                                                    null: false
+    t.datetime "updated_at",                                                    null: false
+    t.integer  "min_reserve_mins",             limit: 4
+    t.integer  "max_reserve_mins",             limit: 4
+    t.integer  "min_cancel_hours",             limit: 4
+    t.integer  "facility_account_id",          limit: 4
+    t.string   "account",                      limit: 5
+    t.boolean  "show_details",                               default: false,    null: false
+    t.integer  "auto_cancel_mins",             limit: 4
+    t.string   "contact_email",                limit: 255
+    t.integer  "reserve_interval",             limit: 4
+    t.integer  "lock_window",                  limit: 4,     default: 0,        null: false
+    t.text     "training_request_contacts",    limit: 65535
+    t.integer  "cutoff_hours",                 limit: 4,     default: 0,        null: false
+    t.string   "dashboard_token",              limit: 255
+    t.string   "user_notes_field_mode",        limit: 255,   default: "hidden", null: false
+    t.string   "user_notes_label",             limit: 255
+    t.string   "order_notification_recipient", limit: 255
   end
 
   add_index "products", ["dashboard_token"], name: "index_products_on_dashboard_token", using: :btree

@@ -449,7 +449,7 @@ RSpec.describe OrdersController do
 
         context "when ordering" do
           it "sends receipts" do
-            expect(Notifier).to receive(:order_receipt).once { DummyNotifier.new }
+            expect(PurchaseNotifier).to receive(:order_receipt).once { DummyNotifier.new }
             do_request
           end
         end
@@ -461,7 +461,7 @@ RSpec.describe OrdersController do
             before { @params[:send_notification] = "1" }
 
             it "sends receipts" do
-              expect(Notifier).to receive(:order_receipt).once { DummyNotifier.new }
+              expect(PurchaseNotifier).to receive(:order_receipt).once { DummyNotifier.new }
               do_request
             end
           end
@@ -470,7 +470,7 @@ RSpec.describe OrdersController do
             before { @params[:send_notification] = "" }
 
             it "does not send receipts" do
-              expect(Notifier).not_to receive(:order_receipt)
+              expect(PurchaseNotifier).not_to receive(:order_receipt)
               do_request
             end
           end
@@ -484,7 +484,7 @@ RSpec.describe OrdersController do
           let(:facility) { create(:facility, :with_order_notification) }
 
           it "sends order notifications" do
-            expect(Notifier).to receive(:order_notification).once { DummyNotifier.new }
+            expect(PurchaseNotifier).to receive(:order_notification).once { DummyNotifier.new }
             do_request
           end
 
@@ -492,7 +492,7 @@ RSpec.describe OrdersController do
             before { switch_to @staff }
 
             it "does not send order notifications" do
-              expect(Notifier).not_to receive(:order_notification)
+              expect(PurchaseNotifier).not_to receive(:order_notification)
               do_request
             end
           end
@@ -500,7 +500,7 @@ RSpec.describe OrdersController do
 
         context "when the facility has no order_notification_recipient" do
           it "sends no order notifications" do
-            expect(Notifier).not_to receive(:order_notification)
+            expect(PurchaseNotifier).not_to receive(:order_notification)
             do_request
           end
         end

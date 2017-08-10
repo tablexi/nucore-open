@@ -1,4 +1,9 @@
 en:
+  views:
+    products_common:
+      manage:
+        none_entered: None Entered
+
   controllers:
     instruments:
       requires_approval: |

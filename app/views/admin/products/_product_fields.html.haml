@@ -10,6 +10,7 @@
 
 = f.input :is_archived, as: :boolean, label: false, inline_label: text("hints.is_archived")
 = f.input :is_hidden, as: :boolean, label: false, inline_label: text("hints.is_hidden", field: f.object.class.model_name.human.downcase)
+= f.input :order_notification_recipient, as: :email, hint: text("hints.order_notification")
 
 - unless f.object.is_a?(Bundle)
   = f.input :user_notes_field_mode, collection: Products::UserNoteMode.all, include_blank: false

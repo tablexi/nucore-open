@@ -6,7 +6,7 @@ module SangerSequencing
       NavTab::LinkCollection.send :include, SangerSequencing::LinkCollectionExtension
 
       ViewHook.add_hook "orders.receipt", "after_note", "sanger_sequencing/orders/samples_on_receipt"
-      ViewHook.add_hook "notifier.order_receipt", "after_note", "sanger_sequencing/orders/samples_on_receipt"
+      ViewHook.add_hook "purchase_notifier.order_receipt", "after_note", "sanger_sequencing/orders/samples_on_receipt"
     end
 
     config.generators do |g|
