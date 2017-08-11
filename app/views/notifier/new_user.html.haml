@@ -2,8 +2,15 @@
 
 - if @password
   %p
+    = text(".username_and_password_text")
+    %br
     = "#{User.human_attribute_name(:username)}: #{@user.username}"
     %br
     = "#{User.human_attribute_name(:password)}: #{@password}"
 - else
-  %p= text(".no_password")
+  %p
+    = text(".only_username_text")
+    %br
+    = "#{User.human_attribute_name(:username)}: #{@user.username}"
+
+= html(".outro_html")

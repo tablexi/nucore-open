@@ -1,7 +1,13 @@
-= text(".intro", first_name: @user.first_name, last_name: @user.last_name, login_url: new_user_session_url)
+= text(".intro_text", first_name: @user.first_name, last_name: @user.last_name, login_url: new_user_session_url)
+= '' # new line
 
-= "#{User.human_attribute_name(:username)}: #{@user.username}"
 - if @password
-  = "#{User.human_attribute_name(:password)}: #{@password}"
+    = text(".username_and_password_text")
+    = "#{User.human_attribute_name(:username)}: #{@user.username}"
+    = "#{User.human_attribute_name(:password)}: #{@password}"
 - else
-  = text(".no_password")
+    = text(".only_username_text")
+    = "#{User.human_attribute_name(:username)}: #{@user.username}"
+
+= '' # new line
+= text(".outro_text")
