@@ -43,8 +43,9 @@ RSpec.describe InstrumentPricePolicyCalculations do
       expect(policy.estimate_cost_and_subsidy(end_at, start_at)).to be_nil
     end
 
-    it "returns nil if start_at or end_at is nil" do
-      expect(policy.estimate_cost_and_subsidy(nil, start_at)).to be_nil
+    it "returns nil if start_at or end_at is nil", :aggregate_failures do
+      expect(policy.estimate_cost_and_subsidy(nil, end_at)).to be_nil
+      expect(policy.estimate_cost_and_subsidy(start_at, nil)).to be_nil
     end
 
     it "returns nil if purchase if end_at equals start_at" do
