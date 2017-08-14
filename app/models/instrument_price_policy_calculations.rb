@@ -11,7 +11,7 @@ module InstrumentPricePolicyCalculations
 
   def estimate_cost_and_subsidy(start_at, end_at)
     return if restrict_purchase?
-
+    return if start_at.blank? || end_at.blank?
     return if end_at <= start_at
 
     calculate_for_time(start_at, end_at)
