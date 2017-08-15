@@ -161,7 +161,7 @@ There are valuable resources in the NUcore's doc directory.
 
 * Need to move changes between nucore-open and your fork? [**See HOWTO_forks.txt**](doc/HOWTO_forks.md)
 
-* Need help getting Oracle running on your Mac? [**See HOWTO_oracle.txt**](doc/HOWTO_oracle.txt)
+* Need help getting Oracle running on your Mac? [**See HOWTO_oracle.md**](doc/HOWTO_oracle.md)
 
 * Want to authenticate users against your institution's LDAP server? [**See the `ldap_authentication` engine**](vendor/engines/ldap_authentication/README.md)
 
