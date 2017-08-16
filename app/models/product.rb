@@ -18,7 +18,8 @@ class Product < ActiveRecord::Base
   # Allow us to use `product.hidden?`
   alias_attribute :hidden, :is_hidden
 
-  validates_presence_of :name, :type
+  validates :type, presence: true
+  validates :name, presence: true, length: { maximum: 200 }
   validate_url_name :url_name, :facility_id
   validates :user_notes_field_mode, presence: true, inclusion: Products::UserNoteMode.all
   validates :user_notes_label, length: { maximum: 255 }
