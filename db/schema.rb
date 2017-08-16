@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803181918) do
+ActiveRecord::Schema.define(version: 20170816180831) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -206,7 +206,7 @@ ActiveRecord::Schema.define(version: 20170803181918) do
     t.integer "order_detail_id", limit: 4
     t.string  "account",         limit: 5
     t.decimal "amount",                      precision: 9, scale: 2, null: false
-    t.string  "description",     limit: 200
+    t.string  "description",     limit: 512
     t.integer "account_id",      limit: 4
   end
 
