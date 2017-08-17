@@ -4,7 +4,7 @@ en:
       account_update:
         subject: "!app_name! Payment Method Updated"
       new_user:
-        intro_html: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
+        intro_html: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at [%{login_url}](%{login_url})."
         intro_text: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at %{login_url}."
         only_username_text: You may log in with your username and password.
         only_username_html: You may log in with your username and password.
