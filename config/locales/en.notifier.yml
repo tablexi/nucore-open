@@ -6,10 +6,15 @@ en:
       new_user:
         intro_html: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
         intro_text: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at %{login_url}."
-        no_password: You may log in with your username and password.
+        only_username_text: You may log in with your username and password.
+        only_username_html: You may log in with your username and password.
         subject: "Welcome to !app_name!"
-        username_and_password_text: ""
-        only_username_text: ""
+        username_and_password_text: |
+          Username: %{username}
+          Password: %{password}
+        username_and_password_html: |
+          Username: %{username}<br/>
+          Password: %{password}
         outro_html: ""
         outro_text: ""
       order_status_changed_to_approved:
