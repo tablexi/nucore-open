@@ -44,6 +44,7 @@ class FacilityAccountUsersController < ApplicationController
       render(action: "new")
     else
       flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
+      LogEvent.log(@account_user, :create, current_user)
       Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver_now
       redirect_to facility_account_members_path(current_facility, @account)
     end
@@ -57,6 +58,7 @@ class FacilityAccountUsersController < ApplicationController
     @account_user.deleted_by = session_user.id
 
     if @account_user.save
+      LogEvent.log(@account_user, :delete, current_user)
       flash[:notice] = "The user was successfully removed from the payment method"
     else
       flash[:error] = "An error was encountered while attempting to remove the user from the payment method"
