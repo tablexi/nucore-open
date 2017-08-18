@@ -1,0 +1,10 @@
+<%= text(".intro_text", first_name: @user.first_name, last_name: @user.last_name, login_url: new_user_session_url) %>
+
+<% # non-standard indentation below is to prevent indents appearing in the text formatting of this email %>
+<% if @password %>
+<%= text(".username_and_password_text", username: @user.username, password: @password) %>
+<% else %>
+<%= text(".only_username_text", username: @user.username) %>
+<% end %>
+
+<%= text(".outro_text") %>

@@ -4,10 +4,19 @@ en:
       account_update:
         subject: "!app_name! Payment Method Updated"
       new_user:
-        intro_html: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at <a href=\"%{login_url}\">%{login_url}</a>."
-        intro: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at %{login_url}."
-        no_password: You may log in with your username and password.
+        intro_html: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at [%{login_url}](%{login_url})."
+        intro_text: "Congratulations, %{first_name}. A !app_name! account has been created for you. You may log in at %{login_url}."
+        only_username_text: You may log in with your username and password.
+        only_username_html: You may log in with your username and password.
         subject: "Welcome to !app_name!"
+        username_and_password_text: |
+          Username: %{username}
+          Password: %{password}
+        username_and_password_html: |
+          Username: %{username}<br/>
+          Password: %{password}
+        outro_html: ""
+        outro_text: ""
       order_status_changed_to_approved:
         subject: "Order #%{order_detail} has been approved"
         header: "The following order has been approved."

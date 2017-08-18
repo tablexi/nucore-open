@@ -18,4 +18,9 @@ class NotifierPreview < ActionMailer::Preview
     )
   end
 
+  def new_user
+    user = User.first
+    Notifier.new_user(user: user, password: "password")
+  end
+
 end
