@@ -7,8 +7,8 @@ module Reservations::Validations
 
     validates_uniqueness_of :order_detail_id, allow_nil: true
     validates :product_id, presence: true
-    validates :reserve_end_at, presence: true, if: :end_at_required?
     validates :reserve_start_at, presence: true
+    validates :reserve_end_at, presence: true, if: :end_at_required?
     validate :does_not_conflict_with_other_reservation,
              :instrument_is_available_to_reserve,
              :satisfies_minimum_length,
