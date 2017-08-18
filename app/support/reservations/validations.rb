@@ -13,7 +13,7 @@ module Reservations::Validations
              :instrument_is_available_to_reserve,
              :satisfies_minimum_length,
              :satisfies_maximum_length,
-             if: -> (r) { r.reserve_start_at && r.reserve_end_at && r.reservation_changed? },
+             if: ->(r) { r.reserve_start_at && r.reserve_end_at && r.reservation_changed? },
              unless: :admin?
 
     validates_each [:actual_start_at, :actual_end_at] do |record, attr, value|
