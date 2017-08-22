@@ -6,6 +6,8 @@ RSpec.describe Reservations::Validations do
 
   let(:now) { Time.zone.now }
 
+  it { is_expected.to validate_presence_of(:reserve_start_at) }
+
   it 'validates with #duration_is_interval' do
     expect(reservation).to receive :duration_is_interval
     reservation.save
@@ -57,6 +59,22 @@ RSpec.describe Reservations::Validations do
             expect(reservation.save_as_user(user)).to be(true)
           end
         end
+      end
+    end
+  end
+
+  describe "conditionally run validations" do
+    context "with reserve_start_at, reserve_end_at, and reservation_changed? is true" do
+      it "runs conditional validations" do
+        expect(reservation).to receive :does_not_conflict_with_other_reservation
+        reservation.save
+      end
+    end
+
+    context "with missing reserve_start_at" do
+      it "does not run conditional validations" do
+        expect(reservation).not_to receive :does_not_conflict_with_other_reservation
+        reservation.update_attributes(reserve_start_at: nil)
       end
     end
   end
