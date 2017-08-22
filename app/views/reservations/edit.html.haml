@@ -25,6 +25,13 @@
 
   = render "reservation_fields", f: f
 
+  .well
+    .container
+      .row
+        .span
+          %h4= OrderDetail.model_name.human
+          = f.input :note
+
   %ul.inline
     %li= f.submit 'Save', class: 'btn'
     - if @order.purchased?
