@@ -181,6 +181,18 @@ RSpec.describe InstrumentPricePolicyCalculations do
       policy.calculate_cost_and_subsidy reservation
     end
 
+    it "returns nil when reserve_start at is nil and charging for reservation" do
+      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
+      allow(reservation).to receive(:reserve_start_at).and_return nil
+      expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
+    end
+
+    it "returns nil when reserve_start at is nil and charging for reservation" do
+      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
+      allow(reservation).to receive(:reserve_end_at).and_return nil
+      expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
+    end
+
     %w(usage overage).each do |charge_for|
       it "returns nil if actual_start_at is missing and we are charging by #{charge_for}" do
         policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[charge_for.to_sym]
