@@ -40,6 +40,8 @@ module InstrumentPricePolicyCalculations
 
   # CHARGE_FOR[:reservation] uses reserve start and end time for calculation
   def calculate_reservation(reservation)
+    # One or both of these could be blank if we parse an invalid date in a form
+    return unless reservation.reserve_start_at && reservation.reserve_end_at
     calculate_for_time(reservation.reserve_start_at, reservation.reserve_end_at)
   end
 
