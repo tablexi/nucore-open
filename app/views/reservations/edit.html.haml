@@ -23,6 +23,15 @@
 = simple_form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages
 
+  - if show_note_input_to_user?(@order_detail)
+    .well
+      .container
+        .row
+          .span
+            = f.input :note,
+              label: @order_detail.product.user_notes_label.presence,
+              required: @order_detail.product.user_notes_field_mode.required?
+
   = render "reservation_fields", f: f
 
   %ul.inline
