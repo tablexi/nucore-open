@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170816180831) do
+ActiveRecord::Schema.define(version: 20170829193038) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -745,6 +745,16 @@ ActiveRecord::Schema.define(version: 20170816180831) do
   add_index "training_requests", ["product_id"], name: "index_training_requests_on_product_id", using: :btree
   add_index "training_requests", ["user_id"], name: "index_training_requests_on_user_id", using: :btree
 
+  create_table "user_preferences", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.string   "name",       limit: 255, null: false
+    t.string   "value",      limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "user_preferences", ["user_id"], name: "index_user_preferences_on_user_id", using: :btree
+
   create_table "user_roles", force: :cascade do |t|
     t.integer "user_id",     limit: 4,   null: false
     t.integer "facility_id", limit: 4
@@ -883,6 +893,7 @@ ActiveRecord::Schema.define(version: 20170816180831) do
   add_foreign_key "statements", "facilities", name: "fk_statement_facilities"
   add_foreign_key "stored_files", "order_details", name: "fk_files_od"
   add_foreign_key "stored_files", "products", name: "fk_files_product"
+  add_foreign_key "user_preferences", "users"
   add_foreign_key "user_roles", "facilities"
   add_foreign_key "user_roles", "users"
 end

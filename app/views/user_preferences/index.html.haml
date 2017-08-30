@@ -1,0 +1,12 @@
+%h1 User Preferences
+
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th Option
+      %th Selected
+  %tbody
+    - current_user.user_preferences.find_each do |user_preference|
+      %tr
+        %td= user_preference.name
+        %td= link_to user_preference.value, edit_user_preference_path(user_preference)

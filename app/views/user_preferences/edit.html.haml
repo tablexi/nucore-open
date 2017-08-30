@@ -1,0 +1,6 @@
+= simple_form_for(@user_preference) do |f|
+  = f.input :value, collection: UserPreference::OPTIONS[@user_preference.name], include_blank: false
+
+  = f.button :submit, class: ["btn", "btn-primary"]
+
+  = link_to text("shared.cancel"), user_user_preferences_path(@user_preference.user)
