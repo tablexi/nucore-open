@@ -1012,6 +1012,11 @@ en:
       link: "Add Payment Source"
       notice: "%{user_name} does not have any payment sources."
 
+  user_preferences:
+    index:
+      preference_name_header: Option
+      preference_value_header: Selected
+
   facility_statements:
     new:
       no_orders: There are no completed orders that require statements.
