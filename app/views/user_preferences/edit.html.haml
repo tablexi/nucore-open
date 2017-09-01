@@ -1,5 +1,5 @@
 = simple_form_for(@user_preference) do |f|
-  = f.input :value, collection: UserPreference::OPTIONS[@user_preference.name], include_blank: false
+  = f.input :value, collection: UserPreference.options[@user_preference.name], include_blank: false
 
   = f.button :submit, class: ["btn", "btn-primary"]
 
