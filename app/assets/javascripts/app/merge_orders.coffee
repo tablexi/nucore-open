@@ -3,10 +3,11 @@ class window.MergeOrder
     # empty body
 
   initTimeBasedServices: ->
+    return unless @$form.length
+
     @$quantity_field = @$form.find(".js--edit-order__quantity")
-    console.debug "quantity field", @$quantity_field
-    @$timed_quantity_display_field = @$form.find(".js--edit-order__timed-quantity")
-    console.debug "timed quantity field", @$timed_quantity_display_field
+    @$timed_quantity_display_field = @$form.find(".js--edit-order__duration")
+
     # clockpunch converts the original field into a field with name _display.
     # We will need to disable both the visible display field and the hidden field
     # so they don't get sent as part of the POST.

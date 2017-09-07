@@ -57,7 +57,8 @@ class FacilityOrdersController < ApplicationController
   # PUT/PATCH /facilities/:facility_id/orders/:id
   def update
     product = current_facility.products.find(params[:product_add])
-    quantity = params[:product_add_quantity].to_i
+    quantity = params.fetch(:product_add_quantity, 1).to_i
+    params[:duration] = params[:product_add_duration]
 
     if quantity <= 0
       flash[:notice] = text("update.zero_quantity")

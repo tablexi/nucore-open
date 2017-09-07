@@ -12,14 +12,18 @@ class OrderAppender
   def add!(product, quantity, params)
     OrderDetail.transaction do
       products = product.is_a?(Bundle) ? product.products : [product]
-
-      note = params[:note].presence
       order_status = load_order_status(params[:order_status_id].presence, product.facility)
       order = products.any?(&:mergeable?) ? build_merge_order : original_order
       notifications = false
 
-      order.add(product, quantity, created_by: user.id).each do |order_detail|
-        update_order_detail!(order_detail, note: note, order_status: order_status, fulfilled_at: params[:fulfilled_at])
+      attributes = {
+        note: params[:note].presence,
+        duration: params[:duration],
+        created_by: user.id,
+      }
+
+      order.add(product, quantity, attributes).each do |order_detail|
+        update_order_detail!(order_detail, order_status: order_status, fulfilled_at: params[:fulfilled_at])
 
         if order.to_be_merged? && !order_detail.valid_for_purchase?
           notifications = true
@@ -47,8 +51,7 @@ class OrderAppender
     OrderStatus.for_facility(facility).find(order_status_id) if order_status_id
   end
 
-  def update_order_detail!(order_detail, note:, order_status:, fulfilled_at:)
-    order_detail.note = note if note.present?
+  def update_order_detail!(order_detail, order_status:, fulfilled_at:)
     order_detail.manual_fulfilled_at = fulfilled_at
     order_detail.set_default_status!
     order_detail.change_status!(order_status) if order_status.present?

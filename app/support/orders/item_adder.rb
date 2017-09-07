@@ -9,20 +9,23 @@ class Orders::ItemAdder
 
   def add(product, quantity = 1, attributes = {})
     check_for_mixed_facility! product
-    @quantity = quantity.to_i
+    quantity = quantity.to_i
+    # Only TimedServices care about duration
+    duration = attributes.delete(:duration)
+
     return [] if quantity <= 0
 
     ods = if product.is_a? Bundle
-            add_bundles(product, @quantity, attributes)
+            add_bundles(product, quantity, attributes)
           elsif product.is_a? Service
-            add_services(product, @quantity, attributes)
+            add_services(product, quantity, attributes)
           elsif product.is_a? TimedService
-            add_timed_services(product, @quantity, attributes)
+            add_timed_services(product, quantity, duration, attributes)
           elsif product.respond_to?(:reservations) && quantity > 1
             # products which have reservations (instruments) should each get their own order_detail
-            add_instruments(product, @quantity, attributes)
+            add_instruments(product, quantity, attributes)
           else
-            [create_order_detail({ product_id: product.id, quantity: @quantity }.merge(attributes))]
+            [create_order_detail({ product_id: product.id, quantity: quantity }.merge(attributes))]
           end
     ods || []
   end
@@ -45,9 +48,9 @@ class Orders::ItemAdder
     end
   end
 
-  def add_timed_services(product, quantity, attributes)
+  def add_timed_services(product, quantity, duration, attributes)
     Array.new(quantity) do
-      create_order_detail({ product_id: product.id, quantity: DEFAULT_TIMED_SERVICES_DURATION }.merge(attributes))
+      create_order_detail({ product_id: product.id, quantity: duration || DEFAULT_TIMED_SERVICES_DURATION}.merge(attributes))
     end
   end
 

@@ -83,7 +83,7 @@ RSpec.describe "Adding to an existing order" do
       visit facility_order_path(facility, order)
       fill_in "product_add_quantity", with: "1"
       select instrument.name, from: "product_add"
-      click_button "Add to Order"
+      click_button "Add To Order"
     end
 
     it "requires a reservation to be set up before adding to the order" do
@@ -94,6 +94,23 @@ RSpec.describe "Adding to an existing order" do
 
       expect(order.reload.order_details.count).to be(2)
       expect(order.order_details.last.product).to eq(instrument)
+    end
+  end
+
+  describe "adding a timed service", feature_setting: { timed_services: true } do
+    let(:product) { create(:setup_timed_service, :with_facility_account) }
+
+    before do
+      visit facility_order_path(facility, order)
+      select product.name, from: "product_add"
+      fill_in "product_add_duration", with: "31"
+      click_button "Add To Order"
+    end
+
+    it "has a new order detail with the proper quantity" do
+      expect(order.reload.order_details.count).to be(2)
+      expect(order.order_details.last.product).to eq(product)
+      expect(order.order_details.last.quantity).to eq(31)
     end
   end
 
