@@ -77,7 +77,7 @@ class Product < ActiveRecord::Base
   end
 
   def self.mergeable_types
-    @mergeable_types ||= default_types
+    default_types
   end
 
   # Products that can be used as accessories
