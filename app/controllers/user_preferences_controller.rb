@@ -8,11 +8,11 @@ class UserPreferencesController < ApplicationController
   end
 
   def edit
-    @user_preference = current_user.user_preferences.find params[:id]
+    @user_preference = current_user.user_preferences.find(params[:id])
   end
 
   def update
-    @user_preference = current_user.user_preferences.find params[:id]
+    @user_preference = current_user.user_preferences.find(params[:id])
     if @user_preference.update_attributes(value: user_preference_params[:value])
       redirect_to user_user_preferences_path(current_user)
     else

@@ -754,7 +754,6 @@ ActiveRecord::Schema.define(version: 20170829193038) do
   end
 
   add_index "user_preferences", ["user_id", "name"], name: "index_user_preferences_on_user_id_and_name", unique: true, using: :btree
-  add_index "user_preferences", ["user_id"], name: "index_user_preferences_on_user_id", using: :btree
 
   create_table "user_roles", force: :cascade do |t|
     t.integer "user_id",     limit: 4,   null: false
