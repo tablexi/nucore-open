@@ -24,7 +24,7 @@ class window.MergeOrder
       @$quantity_field.val(1) if is_timed
       @$quantity_field.prop("disabled", is_timed)
 
-    @$form.find("#product_add").trigger("change")
+    @$form.find(".js--edit-order__product").trigger("change")
 
 $ ->
   new MergeOrder($(".js--edit-order")).initTimeBasedServices()
