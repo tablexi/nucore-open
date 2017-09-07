@@ -19,7 +19,7 @@ RSpec.describe "Placing an order with a project" do
   before do
     login_as facility_admin
     visit facility_users_path(facility)
-    fill_in "search_term", with: user.full_name
+    fill_in "search_term", with: user.email
     click_button "Search"
     click_link "Order For"
   end
