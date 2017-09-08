@@ -84,8 +84,10 @@ class StatementPdf
     pdf.table([order_detail_headers] + order_detail_rows, header: true, width: 510) do
       row(0).style(LABEL_ROW_STYLE)
       column(0).width = 125
-      column(1).width = 300
+      column(1).width = 225
+      column(2).width = 75
       column(2).style(align: :right)
+      column(3).style(align: :right)
     end
   end
 
@@ -96,7 +98,7 @@ class StatementPdf
   end
 
   def order_detail_headers
-    ["Fulfillment Date", "Order", "Amount"]
+    ["Fulfillment Date", "Order", "Quantity", "Amount"]
   end
 
   def order_detail_rows
@@ -104,6 +106,7 @@ class StatementPdf
       [
         human_datetime(order_detail.fulfilled_at),
         "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? "" : "\n#{order_detail.note}"),
+        OrderDetailPresenter.new(order_detail).wrapped_quantity,
         number_to_currency(order_detail.actual_total),
       ]
     end
