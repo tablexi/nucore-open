@@ -14,7 +14,7 @@
   #{OrderDetailPresenter.new(order_detail).description_as_text}
   - if order_detail.reservation
     #{Reservation.model_name.to_s.titleize}: #{order_detail.reservation}
-  #{OrderDetail.human_attribute_name(:quantity)}: #{order_detail.quantity}
+  #{OrderDetail.human_attribute_name(:quantity)}: #{OrderDetailPresenter.new(order_detail).wrapped_quantity}
   #{OrderDetail.human_attribute_name(:status)}: #{order_detail.order_status.name}
   - label_key_prefix = display_cost_prefix_for_order_detail(order_detail)
   #{OrderDetail.human_attribute_name("#{label_key_prefix}_cost")}: #{OrderDetailPresenter.new(order_detail).display_cost}

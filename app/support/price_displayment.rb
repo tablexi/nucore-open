@@ -77,7 +77,7 @@ module PriceDisplayment
     end
 
     def html
-      content_tag :span, value, class: "timeinput"
+      MinutesToTimeFormatter.new(value).to_s
     end
 
   end
