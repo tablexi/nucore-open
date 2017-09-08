@@ -8,4 +8,8 @@ class TimedService < Product
     true
   end
 
+  def order_quantity_as_time?
+    true
+  end
+
 end

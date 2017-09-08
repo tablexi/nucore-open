@@ -253,7 +253,13 @@ class Product < ActiveRecord::Base
     self.class.name.underscore.pluralize
   end
 
+  # Used when displaying quantities throughout the site and when editing an order.
   def quantity_as_time?
+    false
+  end
+
+  # Primarily used when adding to an existing order (merge orders)
+  def order_quantity_as_time?
     false
   end
 

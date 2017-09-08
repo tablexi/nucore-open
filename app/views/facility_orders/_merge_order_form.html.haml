@@ -4,7 +4,7 @@
       = text_field_tag :product_add_quantity, 1, class: "js--edit-order__quantity"
 
       = select_tag :product_add,
-        options_for_select(current_facility.products.mergeable_into_order.alphabetized.map { |p| [p.name, p.id, {"data-timed-product" => p.quantity_as_time?}] }),
+        options_for_select(current_facility.products.mergeable_into_order.alphabetized.map { |p| [p.name, p.id, {"data-timed-product" => p.order_quantity_as_time?}] }),
         class: "js--edit-order__product"
       = text_field_tag :product_add_duration, 1, class: "js--edit-order__duration"
 
