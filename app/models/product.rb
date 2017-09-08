@@ -64,7 +64,7 @@ class Product < ActiveRecord::Base
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
 
-  DEFAULT_TYPES = [Instrument, Item, Service, TimedService, Bundle]
+  DEFAULT_TYPES = [Instrument, Item, Service, TimedService, Bundle].freeze
 
   def self.types
     @types ||= DEFAULT_TYPES
