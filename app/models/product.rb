@@ -67,11 +67,11 @@ class Product < ActiveRecord::Base
   DEFAULT_TYPES = [Instrument, Item, Service, TimedService, Bundle].freeze
 
   def self.types
-    @types ||= DEFAULT_TYPES
+    @types ||= DEFAULT_TYPES.dup
   end
 
   def self.mergeable_types
-    @mergeable_types ||= DEFAULT_TYPES
+    @mergeable_types ||= DEFAULT_TYPES.dup
   end
 
   # Products that can be used as accessories
