@@ -49,7 +49,3 @@ describe "Merge Orders", ->
 
         it "enables the quantity", ->
           expect($("#quantity")).not.toBeDisabled()
-
-
-
-
