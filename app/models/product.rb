@@ -64,20 +64,14 @@ class Product < ActiveRecord::Base
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
 
-  def self.default_types
-    if SettingsHelper.feature_on?(:timed_services)
-      [Instrument, Item, Service, TimedService, Bundle]
-    else
-      [Instrument, Item, Service, Bundle]
-    end
-  end
+  DEFAULT_TYPES = [Instrument, Item, Service, TimedService, Bundle].freeze
 
   def self.types
-    @types ||= default_types
+    @types ||= DEFAULT_TYPES.dup
   end
 
   def self.mergeable_types
-    default_types
+    @mergeable_types ||= DEFAULT_TYPES.dup
   end
 
   # Products that can be used as accessories
