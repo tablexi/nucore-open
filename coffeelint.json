@@ -55,7 +55,7 @@
   },
   "newlines_after_classes": {
     "value": 1,
-    "level": "error"
+    "level": "ignore"
   },
   "no_backticks": {
     "level": "error"
