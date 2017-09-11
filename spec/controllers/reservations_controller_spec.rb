@@ -963,6 +963,32 @@ RSpec.describe ReservationsController do
         assert_redirected_to cart_url
       end
 
+      describe "updating the note" do
+        before(:each) do
+          sign_in reservation.user
+          @params[:reservation][:note] = "This is an updated note"
+          do_request
+        end
+
+        it "updates the note" do
+          expect(reservation.reload.note).to eq("This is an updated note")
+        end
+      end
+
+      describe "updating to blank on a required note instrument" do
+        before(:each) do
+          instrument.update!(user_notes_field_mode: "required")
+          sign_in reservation.user
+          @params[:reservation][:note] = ""
+          do_request
+        end
+
+        it "renders with an error" do
+          expect(response).to render_template(:edit)
+          expect(response.body).to include("may not be blank")
+        end
+      end
+
       describe "when trying to update a past reservation" do
         before(:each) do
           sign_in @admin
