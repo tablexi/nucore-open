@@ -10,6 +10,7 @@ class UserPreferencesController < ApplicationController
 
   def edit
     @user_preference = current_user.user_preferences.find(params[:id])
+    @user_preference_option = @user_preference.option
   end
 
   def update

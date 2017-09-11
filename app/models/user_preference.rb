@@ -4,7 +4,12 @@ class UserPreference < ActiveRecord::Base
   validates :name, :value, presence: true
   validates :name, uniqueness: { scope: :user_id }
 
-  cattr_accessor(:options_list) { [] } # list of option classes
+  cattr_accessor(:options_list) { [] } # list of option class names
+
+  def self.options_for(user)
+    options_list.map { |class_name| class_name.new(user) }
+                .select(&:visible_to_user?)
+  end
 
   def self.create_appropriate_user_preferences(user)
     options_list.each do |option_class|
@@ -13,6 +18,10 @@ class UserPreference < ActiveRecord::Base
       preference.value ||= option.default_value
       preference.save
     end
+  end
+
+  def option
+    self.class.options_for(user).find {|opt| opt.name == name }
   end
 
 end

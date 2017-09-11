@@ -11,6 +11,8 @@ class UserRole < ActiveRecord::Base
   FACILITY_STAFF = "Facility Staff".freeze
   FACILITY_SENIOR_STAFF = "Facility Senior Staff".freeze
 
+  scope :facility_director, -> { where(role: FACILITY_DIRECTOR) }
+
   module AssociationExtension
 
     def operator?(facility)
