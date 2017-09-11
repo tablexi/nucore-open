@@ -4,6 +4,7 @@ class UserPreferencesController < ApplicationController
   before_action :check_acting_as
 
   def index
+    UserPreference.create_appropriate_user_preferences(current_user)
     @user_preferences = current_user.user_preferences
   end
 

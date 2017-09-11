@@ -22,10 +22,7 @@
               %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"
               %li= link_to "#{t('pages.cart')} (#{current_cart.order_details.count})", :cart
             - else
-              - if session_user.user_preferences.any?
-                %li.visible-with-link= link_to "#{session_user.full_name} (#{session_user.username})", user_user_preferences_path(session_user)
-              - else
-                %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"
+              %li.visible-with-link= link_to "#{session_user.full_name} (#{session_user.username})", user_user_preferences_path(session_user)
               %li.divider-vertical
               - if current_user.password_updatable? && SettingsHelper.feature_on?(:password_update)
                 %li= link_to t("user_password.edit.head"), :edit_current_password
