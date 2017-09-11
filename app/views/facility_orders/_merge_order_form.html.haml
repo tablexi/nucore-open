@@ -1,10 +1,12 @@
 - if @merge_orders.blank?
   .well
     = simple_form_for [current_facility, @order], method: :put, html: { class: "js--edit-order" } do |f|
-      = text_field_tag :product_add_quantity, 1
+      = text_field_tag :product_add_quantity, 1, class: "js--edit-order__quantity"
 
       = select_tag :product_add,
-        options_for_select(current_facility.products.mergeable_into_order.pluck(:name, :id))
+        options_for_select(current_facility.products.mergeable_into_order.alphabetized.map { |p| [p.name, p.id, {"data-timed-product" => p.order_quantity_as_time?}] }),
+        class: "js--edit-order__product"
+      = text_field_tag :product_add_duration, 1, class: "js--edit-order__duration"
 
       = label_tag :order_status_id, OrderDetail.human_attribute_name(:order_status)
       = select_tag :order_status_id,
