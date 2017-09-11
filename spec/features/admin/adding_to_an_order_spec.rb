@@ -97,7 +97,7 @@ RSpec.describe "Adding to an existing order" do
     end
   end
 
-  describe "adding a timed service", feature_setting: { timed_services: true } do
+  describe "adding a timed service" do
     let(:product) { create(:setup_timed_service, :with_facility_account) }
 
     before do
