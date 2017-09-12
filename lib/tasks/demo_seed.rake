@@ -249,9 +249,9 @@ namespace :demo do
     user_facility_administrator = User.find_by(username: "mfa123@example.com")
     unless user_facility_administrator
       user_facility_administrator = User.new(username: "mfa123@example.com",
-                            email: "mfa123@example.com",
-                            first_name: "Macy",
-                            last_name: "Administator")
+                                             email: "mfa123@example.com",
+                                             first_name: "Macy",
+                                             last_name: "Administator")
       user_facility_administrator.password = "password"
       user_facility_administrator.save!
     end
@@ -285,7 +285,6 @@ namespace :demo do
 
       UserRole.grant(user_billing_administrator, UserRole::BILLING_ADMINISTRATOR)
     end
-
 
     UserPriceGroupMember.find_or_create_by!(user_id: user_pi.id, price_group_id: pgnu.id)
     UserPriceGroupMember.find_or_create_by!(user_id: user_student.id, price_group_id: pgnu.id)
