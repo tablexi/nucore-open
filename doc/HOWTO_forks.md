@@ -41,3 +41,12 @@ the commits in your branch so you only need to bring one commit.
 git fetch nu
 git cherry-pick XXXXX
 ```
+
+# Deploy
+From the root of your fork:
+
+- `bundle exec cap [staging_name] deploy`
+
+Find `staging_name` by the name of the `.rb` files in `config/deploy/[staging_name].rb`
+
+To confirm deploy was successful: In browser, go to staging and confirm new functionality is there
