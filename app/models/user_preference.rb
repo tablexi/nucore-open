@@ -1,4 +1,5 @@
 class UserPreference < ActiveRecord::Base
+
   include ActiveModel::ForbiddenAttributesProtection
 
   belongs_to :user
