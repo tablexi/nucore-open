@@ -1,8 +1,8 @@
 class UserPreference < ActiveRecord::Base
 
   belongs_to :user
-  validates :name, :value, presence: true
-  validates :name, uniqueness: { scope: :user_id }
+  validates :value, presence: true
+  validates :name, presence: true, uniqueness: { scope: :user_id }
 
   cattr_accessor(:options_list) { [] } # list of option class names
 
