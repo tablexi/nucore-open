@@ -14,7 +14,7 @@
   = f.input :username
   = f.input :email
   = f.input :last_sign_in_at, default_value: "none"
-  = f.input :internal?, label: text("views.users.edit.internal")
+  = f.input :internal?, label: text("views.users.edit.internal") if SettingsHelper.feature_on?(:user_based_price_groups)
   = f.input :deactivated_at unless f.object.active?
   = render_view_hook "additional_user_fields", f: f
 
