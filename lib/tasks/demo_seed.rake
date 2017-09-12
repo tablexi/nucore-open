@@ -246,6 +246,17 @@ namespace :demo do
     end
     UserRole.grant(user_staff, UserRole::FACILITY_STAFF, facility)
 
+    user_facility_administrator = User.find_by(username: "mfa123@example.com")
+    unless user_facility_administrator
+      user_facility_administrator = User.new(username: "mfa123@example.com",
+                            email: "mfa123@example.com",
+                            first_name: "Macy",
+                            last_name: "Administator")
+      user_facility_administrator.password = "password"
+      user_facility_administrator.save!
+    end
+    UserRole.grant(user_facility_administrator, UserRole::FACILITY_ADMINISTRATOR, facility)
+
     user_director = User.find_by(username: "ddi123@example.com")
     unless user_director
       user_director = User.new(username: "ddi123@example.com",
@@ -255,6 +266,7 @@ namespace :demo do
       user_director.password = "password"
       user_director.save
     end
+    UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
 
     if SettingsHelper.feature_on?(:billing_administrator)
       user_billing_administrator = User.find_by(email: "bba123@example.com")
@@ -274,7 +286,6 @@ namespace :demo do
       UserRole.grant(user_billing_administrator, UserRole::BILLING_ADMINISTRATOR)
     end
 
-    UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
 
     UserPriceGroupMember.find_or_create_by!(user_id: user_pi.id, price_group_id: pgnu.id)
     UserPriceGroupMember.find_or_create_by!(user_id: user_student.id, price_group_id: pgnu.id)
