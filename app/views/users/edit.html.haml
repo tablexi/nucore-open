@@ -19,7 +19,7 @@
     = f.input :last_name, readonly: !@user.admin_editable?
     = f.input :email, readonly: !@user.admin_editable?
     = f.input :username, readonly: true
-    - if current_user.administrator?
+    - if current_user.administrator? && SettingsHelper.feature_on?(:user_based_price_groups)
       = f.input :internal?, label: text(".internal"), as: :select, default: false
     = f.button :submit, text("shared.update"), class: ["btn", "btn-primary"]
     &nbsp;
