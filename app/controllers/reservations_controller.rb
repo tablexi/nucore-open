@@ -166,8 +166,10 @@ class ReservationsController < ApplicationController
     end
 
     @reservation.assign_times_from_params(reservation_params)
+    reservation_update_attributes = params.require(:reservation).permit(:note)
+    @reservation.assign_attributes(reservation_update_attributes)
 
-    render_edit && return unless duration_change_valid?
+    render_edit && return unless changes_valid_for_update?
 
     Reservation.transaction do
       begin
@@ -390,6 +392,10 @@ class ReservationsController < ApplicationController
   def render_edit
     set_windows
     render action: "edit"
+  end
+
+  def changes_valid_for_update?
+    duration_change_valid? && NotePresenceValidator.new(@reservation).valid?
   end
 
   def duration_change_valid?
