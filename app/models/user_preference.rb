@@ -1,4 +1,5 @@
 class UserPreference < ActiveRecord::Base
+  include ActiveModel::ForbiddenAttributesProtection
 
   belongs_to :user
   validates :value, presence: true
@@ -21,7 +22,7 @@ class UserPreference < ActiveRecord::Base
   end
 
   def option
-    self.class.options_for(user).find {|opt| opt.name == name }
+    self.class.options_for(user).find { |opt| opt.name == name }
   end
 
 end
