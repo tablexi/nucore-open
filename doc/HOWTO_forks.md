@@ -47,13 +47,6 @@ From the root of your fork:
 
 - `bundle exec cap [staging_name] deploy`
 
-Find `staging_name` by the name of the `.rb` files in `config/deploy`
+Find `staging_name` by the name of the `.rb` files in `config/deploy/[staging_name].rb`
 
-To confirm deploy was successful:
-
-- `ssh nucore@nucore.rrc.uic.edu`
-- `ls -al`
-- `cd nucore.rrc.uic.edu/current`
-- `bundle exec eye info`
-- Confirm that delayed job etc successfully restarted.
-- In browser, go to `nucore.rrc.uic.edu` and confirm new functionality is there
+To confirm deploy was successful: In browser, go to staging and confirm new functionality is there
