@@ -246,12 +246,23 @@ namespace :demo do
     end
     UserRole.grant(user_staff, UserRole::FACILITY_STAFF, facility)
 
+    user_senior_staff = User.find_by(username: "sst123@example.com")
+    unless user_senior_staff
+      user_senior_staff = User.new(username: "sst123@example.com",
+                                   email: "sst123@example.com",
+                                   first_name: "Serena",
+                                   last_name: "Senior Staff")
+      user_senior_staff.password = "password"
+      user_senior_staff.save!
+    end
+    UserRole.grant(user_senior_staff, UserRole::FACILITY_SENIOR_STAFF, facility)
+
     user_facility_administrator = User.find_by(username: "mfa123@example.com")
     unless user_facility_administrator
       user_facility_administrator = User.new(username: "mfa123@example.com",
                                              email: "mfa123@example.com",
                                              first_name: "Macy",
-                                             last_name: "Administator")
+                                             last_name: "Facility Administator")
       user_facility_administrator.password = "password"
       user_facility_administrator.save!
     end
@@ -267,6 +278,17 @@ namespace :demo do
       user_director.save
     end
     UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
+
+    user_account_manager = User.find_by(username: "aam123@example.com")
+    unless user_account_manager
+      user_account_manager = User.new(username: "aam123@example.com",
+                                      email: "aam123@example.com",
+                                      first_name: "Ava",
+                                      last_name: "Account Manager")
+      user_account_manager.password = "password"
+      user_account_manager.save!
+    end
+    UserRole.grant(user_account_manager, UserRole::ACCOUNT_MANAGER)
 
     if SettingsHelper.feature_on?(:billing_administrator)
       user_billing_administrator = User.find_by(email: "bba123@example.com")
