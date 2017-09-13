@@ -4,7 +4,7 @@ class UserPreferencesController < ApplicationController
   before_action :check_acting_as
 
   def index
-    UserPreference.create_appropriate_user_preferences(current_user)
+    UserPreference.create_missing_user_preferences(current_user)
     @user_preferences = current_user.user_preferences
   end
 
@@ -15,7 +15,7 @@ class UserPreferencesController < ApplicationController
 
   def update
     @user_preference = current_user.user_preferences.find(params[:id])
-    if @user_preference.update_attributes(value: user_preference_params[:value])
+    if @user_preference.update_attributes(user_preference_params)
       redirect_to user_user_preferences_path(current_user)
     else
       render :edit

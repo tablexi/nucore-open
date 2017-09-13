@@ -13,7 +13,7 @@ class UserPreference < ActiveRecord::Base
                 .select(&:visible_to_user?)
   end
 
-  def self.create_appropriate_user_preferences(user)
+  def self.create_missing_user_preferences(user)
     options_list.each do |option_class|
       option = option_class.new(user)
       preference = user.user_preferences.find_or_initialize_by(name: option.name)
