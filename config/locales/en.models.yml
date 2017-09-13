@@ -184,6 +184,9 @@ en:
       user:
         one: User
         other: Users
+      user_preference:
+        one: User Preference
+        other: User Preferences
     # Model Attributes
     attributes:
       affiliate:

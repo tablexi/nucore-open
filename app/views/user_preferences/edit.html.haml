@@ -1,0 +1,11 @@
+= content_for :h1 do
+  = UserPreference.model_name.human.pluralize
+
+%h3= @user_preference.name
+
+= simple_form_for(@user_preference) do |f|
+  = f.input :value, collection: @user_preference_option.options_for_user, include_blank: false
+
+  = f.button :submit, class: ["btn", "btn-primary"]
+
+  = link_to text("shared.cancel"), user_user_preferences_path(@user_preference.user)

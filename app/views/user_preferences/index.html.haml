@@ -1,0 +1,13 @@
+= content_for :h1 do
+  = UserPreference.model_name.human.pluralize
+
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th= text("user_preferences.index.preference_name_header")
+      %th= text("user_preferences.index.preference_value_header")
+  %tbody
+    - @user_preferences.find_each do |user_preference|
+      %tr
+        %td= user_preference.name
+        %td= link_to user_preference.value, edit_user_preference_path(user_preference)

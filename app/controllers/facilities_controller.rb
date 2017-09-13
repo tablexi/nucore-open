@@ -31,7 +31,7 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities/:facility_url/dashboard
   def dashboard
-    redirect_to facility_homepage_redirector.redirect_path(current_facility)
+    redirect_to facility_homepage_redirector.redirect_path(current_facility, current_user)
   end
 
   # GET /facilities

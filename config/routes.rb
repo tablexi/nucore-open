@@ -23,6 +23,10 @@ Nucore::Application.routes.draw do
 
   post "global_search" => 'global_search#index', as: "global_search"
 
+  resources :users, only: [] do
+    resources :user_preferences, only: [:index, :edit, :update], shallow: true
+  end
+
   # front-end accounts
   resources :accounts, only: [:index, :show] do
     resources :statements, only: [:show, :index]
