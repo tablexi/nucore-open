@@ -283,7 +283,7 @@ RSpec.describe FacilityJournalsController do
         it_behaves_like "journal error", "is already journaled in journal"
       end
 
-      context "spans fiscal year" do
+      context "spans fiscal year", feature_setting: { journals_may_span_fiscal_years: false } do
         before :each do
           @order_detail1.update_attributes(fulfilled_at: SettingsHelper.fiscal_year_end - 1.day)
           @order_detail3.update_attributes(fulfilled_at: SettingsHelper.fiscal_year_end + 1.day)
