@@ -43,7 +43,8 @@ git cherry-pick XXXXX
 ```
 
 # Deploy
-To staging:
+### To staging:
+
 From the root of your fork:
 
 - `bundle exec cap [staging_name] deploy`
@@ -52,8 +53,9 @@ Find `staging_name` by the name of the `.rb` files in `config/deploy/[staging_na
 
 To confirm deploy was successful: In browser, go to staging and confirm new functionality is there
 
-To master:
-Merge deploy into your master branch.
+### To production:
+
+Merge develop into your master branch.
 
 Then:
 - `bundle exec cap [prod_name] deploy`
