@@ -168,7 +168,12 @@ RSpec.describe GlobalSearchController do
       end
 
       context "when there is an order and order detail with same ids" do
-        let!(:order2) { FactoryGirl.create(:purchased_order, id: order_detail.id, product: product) }
+        let!(:order2) do
+          # random test failure, if by chance there is an order with the same ID
+          # in the spec suite.
+          Order.find_by(id: order_detail.id) || FactoryGirl.create(:purchased_order, id: order_detail.id, product: product)
+        end
+
         before :each do
           get :index, search: order_detail.id.to_s
         end
