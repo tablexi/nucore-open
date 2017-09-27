@@ -26,7 +26,7 @@ gem "aasm", "~> 4.11.1"
 gem "paperclip", "~> 4.2.0"
 gem "paper_trail"
 gem "awesome_nested_set", "~> 3.1.3"
-gem "nokogiri"
+gem "nokogiri", ">= 1.8.1"
 gem "rails-observers"
 gem "icalendar"
 
