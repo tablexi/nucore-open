@@ -13,18 +13,22 @@ Follow these instructions to set up the Oracle database to run in Docker, but th
 * Start the oracle container:
 
 ```
-docker run -d -p 1521:1521 --name nucore_db -v /u01/app/oracle:~/oracle_data sath89/oracle-12c
-# wait, it sometimes takes a few minutes to come up
-# "ORA-01033: ORACLE initialization or shutdown in progress" means wait.
+mkdir $HOME/oracle_data
+docker run -p 1521:1521 --name nucore_db -v $HOME/oracle_data:/u01/app/oracle sath89/oracle-12c
+# This will take several minutes as the database initializes.
+# Wait for "Database ready to use. Enjoy! ;)"
 ```
 
-Change the `~/oracle_data` to some path on your host machine. This volume will
-remain persistent even across re-creations of the container.
+`$HOME/oracle_data` is just a recommended location where your oracle data files will
+be saved. This will allow them to remain persistent even across re-creations of
+the container.
 
 * Next time you want to start the server, run:
 
 ```
 docker start nucore_db
+# wait, it sometimes takes a few minutes to come up
+# "ORA-01033: ORACLE initialization or shutdown in progress" means wait.
 ```
 
 ## Setting up the Oracle Client Drivers
@@ -126,12 +130,12 @@ rake demo:seed
 #### Restore from a backup
 
 Copy the `.dmp` file into your Oracle container (put it in a shared volume like `~/oracle_data`)
-and then move it to `/u01/app/oracle/datapump/`.
+and then move it to `/u01/app/oracle/admin/xe/dpdump/`.
 
 Get a bash shell inside your container:
 
 ```
-
+docker exec -it nucore_db bash
 ```
 
 Run this (replacing the DUMPFILE filename and the second part of REMAP_SCHEMA with your database's username):
