@@ -118,8 +118,8 @@ en:
         one: Account User
         other: Account Users
       admin_reservation:
-        one: Admin Reservation
-        other: Admin Reservations
+        one: Admin Hold
+        other: Admin Holds
       bundle:
         one: Bundle
         other: Bundles

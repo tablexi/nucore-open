@@ -136,7 +136,7 @@ en:
         add_account: "Add Payment Source"
     timeline:
       facility_tooltip:
-        admin_reservation: Administrative Reservation
+        admin_reservation: Administrative Hold
         offline_reservation: Instrument Offline
     update: Update
 
@@ -1044,12 +1044,12 @@ en:
       available: Available
       unavailable: Unavailable
     schedule:
-      administrative_reservations: Administrative Reservations
-      add_admin_reservation: Add Admin Reservation
+      administrative_reservations: Administrative Holds
+      add_admin_reservation: Add Admin Hold
       bring_instrument_online: Bring Instrument Online
       instrument_is_offline: This instrument is currently offline
       mark_instrument_offline: Mark Instrument Offline
-      no_upcoming_admin_reservations: There are no upcoming administrative reservations.
+      no_upcoming_admin_reservations: There are no upcoming administrative holds.
       reservations_calendar: Reservations Calendar
 
     instrument_fields:
