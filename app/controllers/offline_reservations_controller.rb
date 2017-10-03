@@ -17,6 +17,7 @@ class OfflineReservationsController < ApplicationController
 
   def create
     @reservation = @instrument.offline_reservations.new(new_offline_reservation_params)
+    @reservation.assign_attributes(created_by: current_user.id)
 
     if @reservation.save
       flag_ongoing_reservations_as_problem
