@@ -141,6 +141,7 @@ class FacilityReservationsController < ApplicationController
 
     @reservation.assign_times_from_params(params[:admin_reservation])
     @reservation.admin_note = params[:admin_reservation][:admin_note]
+    @reservation.expires_mins_before = params[:admin_reservation][:expires_mins_before]
     @reservation.category = params[:admin_reservation][:category]
 
     if @reservation.save
