@@ -49,6 +49,7 @@ module Reports
           res.product.name,
           res.type.to_s.sub(/Reservation\z/, ""),
           reservation_category_label(res),
+          res.created_by.full_name
         ]
       end
     end
