@@ -6,11 +6,7 @@ class NufsAccountBuilder < AccountBuilder
 
   # Override strong_params for `build` account.
   def account_params_for_build
-    [
-      { account_number_parts: NufsAccount.account_number_field_names },
-      :account_number,
-      :description,
-    ]
+    super + [{ account_number_parts: NufsAccount.account_number_field_names }]
   end
 
   # Hooks into superclass's `build` method.

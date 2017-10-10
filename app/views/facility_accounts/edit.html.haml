@@ -11,6 +11,7 @@
   = f.error_messages
 
   = render "facility_accounts/account_fields/#{@account.class.name.underscore}", f: f
+  = render_view_hook("end_of_form", f: f, account: @account)
 
   %ul.inline
     %li= f.submit t(".save"), class: "btn btn-primary"

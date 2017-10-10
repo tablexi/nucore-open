@@ -27,6 +27,8 @@
 
   = f.input :display_status, input_html: { class: @account.suspended? ? "suspended-account" : "" }
 
+
+  = render_view_hook("end_of_readonly_form", f: f, account: @account)
   = render_view_hook("after_end_of_form", f: f, account: @account)
 
 %ul.inline
