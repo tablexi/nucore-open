@@ -7,7 +7,7 @@ if defined?(Rollbar)
     # Without configuration, Rollbar is enabled in all environments.
     # To disable in specific environments, set config.enabled=false.
     # Here we'll disable in 'test':
-    config.enabled = config.access_token.present?
+    config.enabled = config.access_token.present? && !Rails.env.test?
 
     config.exception_level_filters.merge!(
       "ActiveRecord::RecordNotFound"       => "ignore",
