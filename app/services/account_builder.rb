@@ -88,21 +88,19 @@ class AccountBuilder
   def after_update
   end
 
+  # Needs to be overridable by engines
+  cattr_accessor :common_permitted_account_params { [:description] }
+
   # Override in subclassed builder to define additional strong_param attributes
   # for build action. Returns an array of "permitted" params.
   def account_params_for_build
-    [
-      :account_number,
-      :description,
-    ]
+    self.class.common_permitted_account_params + [:account_number]
   end
 
   # Override in subclassed builder to define additional strong_param attributes
   # for update action. Returns an array of "permitted" params.
   def account_params_for_update
-    [
-      :description,
-    ]
+    self.class.common_permitted_account_params.dup
   end
 
   # Applies strong_param rules to the passed in params based on the current
