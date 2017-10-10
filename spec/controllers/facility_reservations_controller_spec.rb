@@ -142,7 +142,7 @@ RSpec.describe FacilityReservationsController do
         end
 
         it "sets created_by" do
-          expect(assigns[:reservation].created_by).to eq @director.id
+          expect(assigns[:reservation].created_by).to eq @director
         end
 
         it "redirects to the facility's schedule page" do

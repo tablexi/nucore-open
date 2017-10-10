@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171003181322) do
+ActiveRecord::Schema.define(version: 20171010205831) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -539,18 +539,20 @@ ActiveRecord::Schema.define(version: 20171003181322) do
   add_index "relays", ["instrument_id"], name: "index_relays_on_instrument_id", using: :btree
 
   create_table "reservations", force: :cascade do |t|
-    t.integer  "order_detail_id",  limit: 4
-    t.integer  "product_id",       limit: 4,   null: false
-    t.datetime "reserve_start_at",             null: false
+    t.integer  "order_detail_id",     limit: 4
+    t.integer  "product_id",          limit: 4,   null: false
+    t.datetime "reserve_start_at",                null: false
     t.datetime "reserve_end_at"
     t.datetime "actual_start_at"
     t.datetime "actual_end_at"
-    t.string   "admin_note",       limit: 255
-    t.string   "type",             limit: 255
-    t.string   "category",         limit: 255
-    t.integer  "created_by",       limit: 4
+    t.string   "admin_note",          limit: 255
+    t.string   "type",                limit: 255
+    t.string   "category",            limit: 255
+    t.integer  "expires_mins_before", limit: 4
+    t.integer  "created_by_id",       limit: 4
   end
 
+  add_index "reservations", ["created_by_id"], name: "fk_rails_85d57d72c4", using: :btree
   add_index "reservations", ["order_detail_id"], name: "res_od_uniq_fk", unique: true, using: :btree
   add_index "reservations", ["product_id", "reserve_start_at"], name: "index_reservations_on_product_id_and_reserve_start_at", using: :btree
 
@@ -874,6 +876,7 @@ ActiveRecord::Schema.define(version: 20171003181322) do
   add_foreign_key "projects", "facilities"
   add_foreign_key "reservations", "order_details"
   add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"
+  add_foreign_key "reservations", "users", column: "created_by_id"
   add_foreign_key "sanger_seq_product_groups", "products"
   add_foreign_key "sanger_sequencing_batches", "facilities"
   add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id", on_delete: :cascade

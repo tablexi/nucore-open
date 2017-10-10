@@ -111,7 +111,7 @@ class FacilityReservationsController < ApplicationController
     @instrument =
       current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.admin_reservations.new
-    @reservation.assign_attributes(params[:admin_reservation].merge(created_by: current_user.id))
+    @reservation.assign_attributes(params[:admin_reservation].merge(created_by: current_user))
     @reservation.assign_times_from_params(params[:admin_reservation])
 
     if @reservation.save
