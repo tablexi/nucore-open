@@ -85,16 +85,6 @@ RSpec.describe OrderDetailPresenter do
     it { is_expected.to eq(expected_path) }
   end
 
-  describe "#ordered_at" do
-    subject { presented.ordered_at }
-    let(:order) { build_stubbed(:order, ordered_at: ordered_at) }
-    let(:ordered_at) { Time.zone.parse("2015-02-01T13:00:59") }
-
-    before { allow(order_detail).to receive(:order) { order } }
-
-    it { is_expected.to eq("02/01/2015  1:00 PM") }
-  end
-
   describe "#row_class" do
     subject { presented.row_class }
 
