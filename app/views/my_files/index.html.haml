@@ -18,7 +18,7 @@
         %td= link_to file.order_detail, [file.order_detail.order, file.order_detail]
         %td= file.order_detail.facility
         %td= file.product
-        %td= human_datetime(file.created_at)
+        %td= format_usa_datetime(file.created_at)
         %td= file.creator
 
 = will_paginate(@files)

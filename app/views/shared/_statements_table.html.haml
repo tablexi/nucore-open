@@ -22,7 +22,7 @@
             %br
             - path = current_facility ? statement_path(s) : account_statement_path(s.account, s, format: :pdf)
             = link_to t("statements.pdf.download"), path
-          %td= human_datetime(s.created_at)
+          %td= format_usa_datetime(s.created_at)
           %td= s.account.notify_users.map(&:full_name).join(', ')
           - unless @account
             %td= link_to s.account, facility_account_path(current_facility, s.account)
