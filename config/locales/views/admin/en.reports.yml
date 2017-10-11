@@ -14,5 +14,6 @@ en:
       actual: "Actual Time (h)"
       percent_actual: "Percent of Actual Time"
       type: Type
+      created_by: Created By
     reports/instrument_day_reports:
       instrument: Instrument
