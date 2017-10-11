@@ -43,7 +43,7 @@ module Reports
         total_minutes: ->(reservation) { formatted_total_minutes(reservation) },
         admin_note: :admin_note,
         category: ->(reservation) { reservation_category_label(reservation) },
-        created_by: :created_by
+        created_by: :created_by,
       }
     end
 
