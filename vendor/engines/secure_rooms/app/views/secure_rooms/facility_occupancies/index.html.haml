@@ -24,7 +24,7 @@
           %tr
             %td.centered= link_to od.order_id, facility_order_path(current_facility, order)
             %td.centered= link_to od.id, manage_order_detail_path(od), class: "manage-order-detail"
-            %td= human_datetime(occ.entry_at)
+            %td= format_usa_datetime(occ.entry_at)
             %td= od.user.nil? ? "" : od.user.try(:full_name)
             = render partial: "shared/order_detail_cell", locals: { od: od, show_occupancy: false }
             %td= od.account

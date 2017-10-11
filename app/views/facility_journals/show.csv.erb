@@ -50,8 +50,8 @@ output = CSV.generate do |csv|
 
     row = [od.facility,
            od.to_s,
-           human_datetime(order.ordered_at),
-           human_datetime(od.fulfilled_at)]
+           format_usa_datetime(order.ordered_at),
+           format_usa_datetime(od.fulfilled_at)]
 
            # Who placed the order
     row << buyer.uid if @show_uid
@@ -73,7 +73,7 @@ output = CSV.generate do |csv|
 
     row +=[account.account_number,
            account.description_to_s,
-           human_datetime(account.expires_at),
+           format_usa_datetime(account.expires_at),
 
            # account owner information
            owner.username,
@@ -90,10 +90,10 @@ output = CSV.generate do |csv|
 
     # review and dispute info
     if SettingsHelper::has_review_period?
-      row += [human_datetime(od.reviewed_at),
-              human_datetime(od.dispute_at),
+      row += [format_usa_datetime(od.reviewed_at),
+              format_usa_datetime(od.dispute_at),
               od.dispute_reason,
-              human_datetime(od.dispute_resolved_at),
+              format_usa_datetime(od.dispute_resolved_at),
               od.dispute_resolved_reason]
     end
 

@@ -22,7 +22,7 @@
           - else
             = link_to t("statements.pdf.download"), account_facility_statement_path(statement.account, statement.facility, statement, format: :pdf)
         %td
-          = human_datetime(statement.created_at)
+          = format_usa_datetime(statement.created_at)
         %td
           = statement.facility
         %td

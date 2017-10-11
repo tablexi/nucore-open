@@ -1,5 +1,5 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_billing', :locals => { :sidenav_tab => 'reconcile' }
@@ -21,7 +21,7 @@
       - @journals.each do |j|
         %tr
           %td.centered= link_to 'View', facility_journal_path(current_facility, j)
-          %td=h human_datetime(j.created_at)
-          %td=h human_date(j.journal_date)
-          %td=h j.reference
-          %td=h j.status_string
+          %td= format_usa_datetime(j.created_at)
+          %td= human_date(j.journal_date)
+          %td= j.reference
+          %td= j.status_string

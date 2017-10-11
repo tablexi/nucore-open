@@ -62,7 +62,7 @@
                 esp.external_service.location,
                 target: "_blank"
 
-            %td= human_datetime(esp.created_at)
+            %td= format_usa_datetime(esp.created_at)
 
 .box_no_fill
   %h3= t(".download_form.head")
@@ -104,5 +104,5 @@
                 data: { confirm: t(".download_form.confirm") }
 
             %td= link_to stored_file.name, product_file_path(stored_file)
-            %td= human_datetime(stored_file.created_at)
+            %td= format_usa_datetime(stored_file.created_at)
             %td= User.find(stored_file.created_by).full_name
