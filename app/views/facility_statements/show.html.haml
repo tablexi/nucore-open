@@ -20,4 +20,4 @@
       %td
         %ul
           %li= link_to @statement.account, facility_account_statement_path(current_facility, @statement.account, 'recent')
-      %td=h @statement.account.owner_user.full_name
+      %td= @statement.account.owner_user.full_name

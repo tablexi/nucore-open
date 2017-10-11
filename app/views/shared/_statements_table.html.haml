@@ -28,7 +28,7 @@
             %td= link_to s.account, facility_account_path(current_facility, s.account)
           - unless current_facility.try(:single_facility?)
             %td= s.facility.name
-          %td.currency=h s.order_details.count
+          %td.currency= s.order_details.count
           %td.currency= number_to_currency(s.total_cost)
           %td= t("statements.reconciled.#{s.reconciled?}")
 

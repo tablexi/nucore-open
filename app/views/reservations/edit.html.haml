@@ -16,9 +16,9 @@
 
 
 = content_for :h1 do
-  =h @instrument.facility
+  = @instrument.facility
 
-%h2=h @instrument
+%h2= @instrument
 
 = simple_form_for([@order, @order_detail, @reservation]) do |f|
   = f.error_messages

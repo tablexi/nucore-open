@@ -10,16 +10,16 @@
   = javascript_include_tag 'reservations.js'
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
-%h2=h @instrument
+%h2= @instrument
 %ul.form
   %li
     %label Reservation
-    =h @reservation
+    = @reservation
   %li
     %label Actual Usage
-    =h @reservation.actuals_string
+    = @reservation.actuals_string
 
 #overlay
   #spinner

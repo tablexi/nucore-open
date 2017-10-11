@@ -11,7 +11,7 @@
 = content_for :h1 do
   Upload Order Form
 
-%h2=h @order_detail.product
+%h2= @order_detail.product
 
 = form_for(@file, url: order_order_detail_upload_order_file_path, html: { multipart: true, method: :post }) do |f|
   = f.error_messages

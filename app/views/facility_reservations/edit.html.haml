@@ -18,9 +18,9 @@
   = javascript_include_tag 'reservations.js'
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
-%h2=h @instrument.name
+%h2= @instrument.name
 
 = simple_form_for(@reservation, :url => facility_order_order_detail_reservation_path, :html => {:method => :put}) do |f|
   = f.error_messages
