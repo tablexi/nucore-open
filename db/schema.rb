@@ -552,7 +552,7 @@ ActiveRecord::Schema.define(version: 20171010205831) do
     t.integer  "created_by_id",       limit: 4
   end
 
-  add_index "reservations", ["created_by_id"], name: "fk_rails_85d57d72c4", using: :btree
+  add_index "reservations", ["created_by_id"], name: "index_reservations_on_created_by_id", using: :btree
   add_index "reservations", ["order_detail_id"], name: "res_od_uniq_fk", unique: true, using: :btree
   add_index "reservations", ["product_id", "reserve_start_at"], name: "index_reservations_on_product_id_and_reserve_start_at", using: :btree
 
