@@ -16,5 +16,9 @@
   %br
   %span= reservation.admin_note
 
+- if reservation.created_by.present?
+  %br
+  %span= reservation.created_by.full_name
+
 %br
 = reservation_links(reservation)

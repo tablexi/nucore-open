@@ -13,6 +13,7 @@ class Reservation < ActiveRecord::Base
   #####
   belongs_to :product
   belongs_to :order_detail, inverse_of: :reservation
+  belongs_to :created_by, class_name: "User"
   has_one :order, through: :order_detail
 
   ## Virtual attributes

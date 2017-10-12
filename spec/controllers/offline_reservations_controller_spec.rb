@@ -19,6 +19,12 @@ RSpec.describe OfflineReservationsController do
       }
     end
 
+    it "sets created_by" do
+      post :create, params
+
+      expect(assigns[:reservation].created_by).to eq administrator
+    end
+
     context "when an ongoing reservation exists for the instrument" do
       let!(:reservation) do
         FactoryGirl.create(:setup_reservation, :running, product: instrument)

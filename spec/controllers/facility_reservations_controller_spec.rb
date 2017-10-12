@@ -141,6 +141,10 @@ RSpec.describe FacilityReservationsController do
           expect(assigns[:reservation].admin_note).to eq "Testing"
         end
 
+        it "sets created_by" do
+          expect(assigns[:reservation].created_by).to eq @director
+        end
+
         it "redirects to the facility's schedule page" do
           is_expected.to redirect_to facility_instrument_schedule_path
         end
