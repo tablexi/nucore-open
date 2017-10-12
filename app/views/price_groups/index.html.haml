@@ -1,4 +1,4 @@
-x= content_for :h1 do
+= content_for :h1 do
   = current_facility
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_admin', :locals => { :sidenav_tab => 'price_groups' }
