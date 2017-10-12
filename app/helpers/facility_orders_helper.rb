@@ -11,7 +11,7 @@ module FacilityOrdersHelper
 
   def banner_date_label(object, field, label = nil)
     banner_label(object, field, label) do |value|
-      value = human_datetime value
+      value = format_usa_datetime(value)
       value = yield(value) if value && block_given?
       value
     end

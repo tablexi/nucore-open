@@ -1,4 +1,4 @@
 %li
   = link_to result_file.name, stored_file_path(result_file)
   &mdash;
-  = human_datetime(result_file.created_at)
+  = format_usa_datetime(result_file.created_at)

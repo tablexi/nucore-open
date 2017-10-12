@@ -51,5 +51,5 @@
                 data: { confirm: t(".confirm_delete") }
 
           %td= link_to stored_file.name, product_file_path(stored_file)
-          %td= human_datetime(stored_file.created_at)
+          %td= format_usa_datetime(stored_file.created_at)
           %td= User.find(stored_file.created_by).full_name

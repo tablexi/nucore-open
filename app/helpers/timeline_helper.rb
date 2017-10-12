@@ -69,7 +69,7 @@ module TimelineHelper
     if day_date.beginning_of_day < reservation_date && reservation_date < day_date.end_of_day
       human_time(reservation_date)
     else
-      human_datetime(reservation_date)
+      format_usa_datetime(reservation_date)
     end
   end
 

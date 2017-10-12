@@ -1,5 +1,5 @@
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 
 = content_for :tabnav do
   = render :partial => 'admin/shared/tabnav_order', :locals => { :secondary_tab => 'new'}
@@ -32,7 +32,7 @@
             %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {:class => 'toggle', :id => nil })
             %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
             %td.centered= link_to od.id, manage_order_detail_path(od), :class => 'manage-order-detail'
-            %td= human_datetime(od.order.ordered_at)
+            %td= format_usa_datetime(od.order.ordered_at)
             %td= od.order.user.full_name
             %td.centered= OrderDetailPresenter.new(od).wrapped_quantity
             = render :partial => 'shared/order_detail_cell', :locals => { :od => od }

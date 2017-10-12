@@ -104,7 +104,7 @@ class StatementPdf
   def order_detail_rows
     @statement.order_details.includes(:product).order("fulfilled_at DESC").map do |order_detail|
       [
-        human_datetime(order_detail.fulfilled_at),
+        format_usa_datetime(order_detail.fulfilled_at),
         "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? "" : "\n#{order_detail.note}"),
         OrderDetailPresenter.new(order_detail).wrapped_quantity,
         number_to_currency(order_detail.actual_total),

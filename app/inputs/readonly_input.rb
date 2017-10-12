@@ -18,8 +18,17 @@ class ReadonlyInput < SimpleForm::Inputs::Base
 
   private
 
-  def process_datetime(value)
-    human_datetime(value, options.slice(:date_only))
+  def process_datetime(datetime)
+    return nil if datetime.blank?
+    begin
+      if options[:date_only]
+        format_usa_date(datetime)
+      else
+        format_usa_datetime(datetime)
+      end
+    rescue
+      ""
+    end
   end
 
   def process_boolean(value)

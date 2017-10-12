@@ -4,11 +4,11 @@
 
 %li= form.input :date_start,
   label: t("reports.fields.date_start"),
-  input_html: { value: human_datetime(@date_start, date_only: true), class: "datepicker" }
+  input_html: { value: format_usa_date(@date_start), class: "datepicker" }
 
 %li
   .field-clarifier= t("support.array.two_words_connector")
 
 %li= form.input :date_end,
   label: t("reports.fields.#{controller_name}.date_end", default: t("reports.fields.date_end")),
-  input_html: { value: human_datetime(@date_end, date_only: true), class: "datepicker" }
+  input_html: { value: format_usa_date(@date_end), class: "datepicker" }

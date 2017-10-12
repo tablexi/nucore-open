@@ -35,10 +35,6 @@ class OrderDetailPresenter < SimpleDelegator
     edit_facility_order_order_detail_reservation_path(facility, order, id, reservation)
   end
 
-  def ordered_at
-    human_datetime(order.ordered_at)
-  end
-
   def row_class
     reconcile_warning? ? "reconcile-warning" : ""
   end

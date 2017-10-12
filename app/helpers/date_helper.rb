@@ -47,19 +47,6 @@ module DateHelper
     date.strftime("%B %e, %Y")
   end
 
-  def human_datetime(datetime, args = {})
-    return nil if datetime.blank?
-    begin
-      if args[:date_only]
-        format_usa_date(datetime)
-      else
-        format_usa_datetime(datetime)
-      end
-    rescue
-      ""
-    end
-  end
-
   def human_time(dt)
     return nil if dt.nil?
     begin

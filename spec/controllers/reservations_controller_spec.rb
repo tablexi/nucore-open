@@ -1151,10 +1151,10 @@ RSpec.describe ReservationsController do
       expect(assigns(:order_detail)).to eq(order_detail)
       expect(assigns(:instrument)).to eq(instrument)
       expect(assigns(:reservation)).to eq(reservation)
-      expect(human_datetime(assigns(:reservation).reserve_start_at))
-        .to eq(human_datetime(reservation.earliest_possible.reserve_start_at))
-      expect(human_datetime(assigns(:reservation).reserve_end_at))
-        .to eq(human_datetime(reservation.earliest_possible.reserve_end_at))
+      expect(format_usa_datetime(assigns(:reservation).reserve_start_at))
+        .to eq(format_usa_datetime(reservation.earliest_possible.reserve_start_at))
+      expect(format_usa_datetime(assigns(:reservation).reserve_end_at))
+        .to eq(format_usa_datetime(reservation.earliest_possible.reserve_end_at))
       is_expected.to set_flash
       assert_redirected_to reservations_status_path(status: "upcoming")
     end
@@ -1184,8 +1184,8 @@ RSpec.describe ReservationsController do
         expect(assigns(:order_detail)).to eq(@order_detail)
         expect(assigns(:instrument)).to eq(@instrument)
         expect(assigns(:reservation)).to eq(@reservation)
-        expect(human_datetime(assigns(:reservation).reserve_start_at)).to eq(human_datetime(@orig_start_at))
-        expect(human_datetime(assigns(:reservation).reserve_end_at)).to eq(human_datetime(@orig_end_at))
+        expect(format_usa_datetime(assigns(:reservation).reserve_start_at)).to eq(format_usa_datetime(@orig_start_at))
+        expect(format_usa_datetime(assigns(:reservation).reserve_end_at)).to eq(format_usa_datetime(@orig_end_at))
         is_expected.to set_flash
         assert_redirected_to reservations_status_path(status: "upcoming")
       end

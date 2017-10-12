@@ -17,10 +17,10 @@
       %tr
         %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
         %td.centered= link_to od.id, manage_order_detail_path(od), :class => 'manage-order-detail'
-        %td=h human_datetime(o.ordered_at)
-        %td=h User.find(o.created_by).full_name
-        %td=h User.find(o.user_id).full_name
+        %td= format_usa_datetime(o.ordered_at)
+        %td= User.find(o.created_by).full_name
+        %td= User.find(o.user_id).full_name
         %td= product_name
-        %td=h human_datetime(od.dispute_at)
-        %td=h od.dispute_reason
+        %td= format_usa_datetime(od.dispute_at)
+        %td= od.dispute_reason
 = will_paginate(@order_details)

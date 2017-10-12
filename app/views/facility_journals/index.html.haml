@@ -30,7 +30,7 @@
               %td
                 %ul.unstyled
                   = render "downloads", facility: current_facility, journal: pending_journal, label_size: :short
-              %td= human_datetime(pending_journal.created_at)
+              %td= format_usa_datetime(pending_journal.created_at)
               - if cross_facility?
                 %td= facility_abbreviations.join("<br>").html_safe
               %td= f.input :reference, label: false, input_html: { class: 'input-medium' }
@@ -63,7 +63,7 @@
       - @journals.each do |j|
         %tr
           %td.centered= link_to 'View', facility_journal_path(current_facility, j)
-          %td= human_datetime(j.created_at)
+          %td= format_usa_datetime(j.created_at)
           %td= human_date(j.journal_date)
           %td= j.reference
           %td= j.description

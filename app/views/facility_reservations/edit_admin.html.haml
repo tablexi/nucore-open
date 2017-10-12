@@ -12,7 +12,7 @@
   = javascript_include_tag 'reservations.js'
 
 = content_for :h1 do
-  =h current_facility
+  = current_facility
 = content_for :sidebar do
   = render :partial => 'admin/shared/sidenav_product', :locals => { :sidenav_tab => 'instruments' }
 = content_for :tabnav do

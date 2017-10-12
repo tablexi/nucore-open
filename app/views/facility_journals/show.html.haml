@@ -62,7 +62,7 @@
               - if order_detail.note?
                 %br
                 = order_detail.note
-            %td= human_datetime(order_detail.fulfilled_at)
+            %td= format_usa_datetime(order_detail.fulfilled_at)
             %td= order_detail.account
             %td= number_to_currency(order_detail.total)
             %td= order_detail.reconciled? ? t("boolean.true") : t("boolean.false")

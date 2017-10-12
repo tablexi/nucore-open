@@ -16,7 +16,7 @@ module ProblemOrderDetailsHelper
         order_detail.order.ordered_at
       end
 
-    human_datetime(date)
+    format_usa_datetime(date)
   end
 
 end
