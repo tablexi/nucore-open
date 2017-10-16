@@ -7,12 +7,10 @@
           %li= link_to t("pages.login"), :new_user_session
       - else
         - if responsive?
-          %a.btn.btn-navbar.hide-from-print{"data-target" => ".nav-collapse", "data-toggle" => "collapse"}
-            %span.fa.fa-bars
-            %span.fa.fa-bars
-            %span.fa.fa-bars
+          %a.btn.btn-navbar.hide-from-print{ data: { target: ".nav-collapse", toggle: "collapse" } }
+            %span.fa.fa-lg.fa-bars
         -# collapsed at < 979px
-        .hide-from-print{class: ("nav-collapse collapse" if responsive?)}
+        .hide-from-print{ class: ("nav-collapse collapse" if responsive?) }
           - if responsive?
             -# .hidden-with-nav is hidden > 979px
             .hidden-with-nav
