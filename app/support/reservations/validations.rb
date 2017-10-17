@@ -9,7 +9,7 @@ module Reservations::Validations
     validates :product_id, presence: true
     validates :reserve_start_at, presence: true
     validates :reserve_end_at, presence: true, if: :end_at_required?
-    validate :does_not_conflict_with_other_reservation,
+    validate :does_not_conflict_with_other_user_reservation,
              :instrument_is_available_to_reserve,
              :satisfies_minimum_length,
              :satisfies_maximum_length,
@@ -48,12 +48,12 @@ module Reservations::Validations
     errors.add :base, :duration_not_interval, reserve_interval: product.reserve_interval unless diff % product.reserve_interval == 0
   end
 
-  def does_not_conflict_with_other_reservation?
-    conflicting_reservation.nil?
+  def does_not_conflict_with_other_user_reservation?
+    conflicting_user_reservation.nil?
   end
 
-  def does_not_conflict_with_other_reservation
-    res = conflicting_reservation
+  def does_not_conflict_with_other_user_reservation
+    res = conflicting_user_reservation
 
     if res
       msg = res.order.try(:==, order) ? :conflict_in_cart : :conflict
@@ -65,17 +65,38 @@ module Reservations::Validations
   # Look for a reservation on the same instrument that conflicts in time with a
   # purchased, admin, or in-cart reservation. Should not check reservations that
   # are unpurchased in other user's carts.
-  def conflicting_reservation(options = {})
+  def conflicting_user_reservation
     order_id = order_detail.try(:order_id) || 0
 
     conflicting_reservations =
       Reservation
       .joins_order
       .where(product_id: product.schedule.product_ids)
-      .not_this_reservation(options[:exclude] || self)
+      .user
+      .not_this_reservation(self)
       .not_canceled
       .not_ended
       .where("(orders.state = 'purchased' OR orders.state IS NULL OR orders.id = ?)", order_id)
+      .overlapping(reserve_start_at, reserve_end_at)
+
+    conflicting_reservations.first
+  end
+
+  def does_not_conflict_with_admin_reservation?
+    conflicting_admin_reservation.nil?
+  end
+
+  def does_not_conflict_with_admin_reservation
+    errors.add(:base, :conflict) if conflicting_admin_reservation
+  end
+
+  def conflicting_admin_reservation
+    conflicting_reservations =
+      Reservation
+      .where(product_id: product.schedule.product_ids)
+      .not_canceled
+      .not_ended
+      .non_user
       .overlapping(reserve_start_at, reserve_end_at)
 
     conflicting_reservations.first
@@ -130,6 +151,7 @@ module Reservations::Validations
     in_window
     in_the_future
     starts_before_cutoff if requires_cutoff_validation?
+    does_not_conflict_with_admin_reservation
     return false if errors.any?
     save
   end
