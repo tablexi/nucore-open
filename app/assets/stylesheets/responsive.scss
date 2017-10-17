@@ -6,6 +6,15 @@ $navbarActiveBorderColor: #aaa;
 
 /* 979px - 980px is where nav-collapse gets triggered */
 @media screen and (max-width: 979px) {
+
+  .navbar .btn-navbar {
+    padding: 5px 15px;
+
+    .fa-bars {
+      transform: scaleX(1.5); // Widen it
+    }
+  }
+
   .hidden-with-nav {
     display: inherit !important;
   }
