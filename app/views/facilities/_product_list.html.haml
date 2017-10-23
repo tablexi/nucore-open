@@ -2,7 +2,7 @@
   .product_list{class: products.first.class.model_name.to_s.pluralize.downcase}
     %h3= product_list_title products, local_assigns[:title_extra]
     - if products.first.class.model_name == "TimedService"
-      %p Please note: Quantity below are individual orders, not minutes per order.
+      %p= t("facilities.show.timed_services_note")
     %ul
       - products.sort.each_with_index do |product, index|
         %li{class: product.class.model_name.to_s.downcase}

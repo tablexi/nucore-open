@@ -829,6 +829,7 @@ en:
 
     show:
       daily_view: 'daily view'
+      timed_services_note: "Please note: Quantity below are individual orders, not minutes per order."
 
     movable_transactions:
       head: "Move Transactions"
