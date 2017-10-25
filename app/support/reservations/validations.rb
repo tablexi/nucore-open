@@ -93,6 +93,7 @@ module Reservations::Validations
   def conflicting_admin_reservation
     conflicting_reservations =
       Reservation
+      .joins_order
       .where(product_id: product.schedule.product_ids)
       .not_canceled
       .not_ended
