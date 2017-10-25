@@ -10,12 +10,14 @@ class NavTab::GlobalLinkCollection
     @ability = ability
   end
 
+  cattr_accessor(:link_collection) { [
+      :admin_cross_facility_users,
+      :global_settings,
+      :admin_cross_facility_billing,
+    ] }
+
   def links
-    [
-      admin_cross_facility_users,
-      global_settings,
-      admin_cross_facility_billing,
-    ].select(&:present?)
+    link_collection.map { |method_name| send(method_name) }.select(&:present?)
   end
 
   private
