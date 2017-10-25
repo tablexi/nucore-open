@@ -1,18 +1,18 @@
 = content_for :tabnav do
-  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'statements'}
+  = render partial: "shared/tabnav_account", locals: {secondary_tab: "statements"}
 = content_for :h1 do
-  = t('.head.h1')
+  = t(".head.h1")
 
 %h2= @account
-%h3= t('.head.h3', :facility => @facility.to_s)
+%h3= t(".head.h3", facility: @facility.to_s)
 
 
 - if @statements.empty?
-  %p.notice= t('.notice')
+  %p.notice= t(".notice")
 - else
   %ul.grid_5
     - @statements.each do |statement|
-      %li= link_to human_date(statement.invoice_date), account_facility_statement_path(@account, @facility, statement, :format => :pdf)
+      %li= link_to human_date(statement.invoice_date), account_facility_statement_path(@account, @facility, statement, format: :pdf)
 
   %p= will_paginate(@statements)
 

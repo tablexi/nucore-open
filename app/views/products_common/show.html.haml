@@ -1,6 +1,6 @@
 = content_for :breadcrumb do
   %ul.breadcrumb
-    %li= link_to 'Home', :root
+    %li= link_to "Home", :root
     %li &raquo;
     %li= link_to current_facility, current_facility
     %li &raquo;
@@ -12,9 +12,9 @@
 .wysiwyg.pull-left
   = @product.description
   - if @login_required
-    = link_to 'Login', new_user_session_path, :class => 'btn'
+    = link_to "Login", new_user_session_path, class: "btn"
   - elsif @add_to_cart
-    = link_to 'Add to cart', add_order_path(acting_user.cart(session_user), :order => {:order_details => [{:product_id => @product.id, :quantity => 1}] }), :method => :put, :class => 'btn'
+    = link_to "Add to cart", add_order_path(acting_user.cart(session_user), order: {order_details: [{product_id: @product.id, quantity: 1}] }), method: :put, class: "btn"
 
 - docs = @product.stored_files.info
 - unless docs.empty?

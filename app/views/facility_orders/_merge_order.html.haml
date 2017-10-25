@@ -1,6 +1,6 @@
 - if @merge_orders.present?
   .well
-    %p.alert.alert-info= t 'facility_orders.edit.attention'
+    %p.alert.alert-info= t("facility_orders.edit.attention")
     %table.table.table-striped.table-hover
       %thead
         %tr
@@ -16,9 +16,9 @@
         - @merge_orders.each do |order|
           - order.order_details.each do |detail|
             %tr
-              %td.centered= link_to 'Remove', facility_order_order_detail_path(current_facility, order, detail), :method => :delete
+              %td.centered= link_to "Remove", facility_order_order_detail_path(current_facility, order, detail), method: :delete
               %td
-                = render :partial => "orders/#{detail.product.class.name.downcase}_desc", :locals => { :order_detail => detail }
+                = render partial: "orders/#{detail.product.class.name.downcase}_desc", locals: { order_detail: detail }
               %td.centered
                 = detail.quantity
               - if detail.cost_estimated?
