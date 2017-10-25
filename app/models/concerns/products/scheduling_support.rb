@@ -162,7 +162,7 @@ module Products::SchedulingSupport
       while time < day_end
         reservation = reserver.reservations.new(reserve_start_at: time, reserve_end_at: time + duration)
 
-        conflict = reservation.conflicting_reservation(exclude: @options[:exclude])
+        conflict = reservation.conflicting_user_reservation
         return reservation if conflict.nil?
 
         time = conflict.reserve_end_at
