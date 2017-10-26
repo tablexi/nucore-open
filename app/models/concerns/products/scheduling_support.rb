@@ -163,10 +163,10 @@ module Products::SchedulingSupport
         reservation = reserver.reservations.new(reserve_start_at: time, reserve_end_at: time + duration)
 
         conflict = reservation.conflicting_user_reservation(exclude: @options[:exclude])
-        admin_conflict = reservation.conflicting_admin_reservation if !reserved_by_admin
+        admin_conflict = reservation.conflicting_admin_reservation
         return reservation if [conflict, admin_conflict].none?
 
-        time = [conflict, admin_conflict].compact.max_by(&:reserve_end_at)
+        time = [conflict, admin_conflict].compact.max_by(&:reserve_end_at).reserve_end_at
       end
     end
 
