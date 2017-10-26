@@ -578,12 +578,12 @@ RSpec.describe Reservation do
                                                      order_detail: @detail2,
                                                      split_times: true)
 
-      expect(@reservation2).not_to be_does_not_conflict_with_other_reservation
+      expect(@reservation2).not_to be_does_not_conflict_with_other_user_reservation
 
       @instrument2 = create(:instrument, facility: facility, facility_account: facility_account)
 
       @reservation2.product = @instrument2
-      expect(@reservation2).to be_does_not_conflict_with_other_reservation
+      expect(@reservation2).to be_does_not_conflict_with_other_user_reservation
     end
 
     context "moving" do
@@ -777,7 +777,7 @@ RSpec.describe Reservation do
   end
 
   context "conflicting reservations" do
-    let!(:reservation) do
+    let!(:existing_user_reservation) do
       instrument.reservations.create!(reserve_start_date: Date.today + 1.day,
                                       reserve_start_hour: 10,
                                       reserve_start_min: 0,
@@ -786,64 +786,97 @@ RSpec.describe Reservation do
                                       split_times: true)
     end
 
-    let(:conflicting_reservation) do
+    let!(:existing_admin_reservation) do
+      instrument.admin_reservations.create!(reserve_start_date: Date.today + 1.day,
+                                            reserve_start_hour: 10,
+                                            reserve_start_min: 0,
+                                            reserve_start_meridian: "am",
+                                            duration_mins: "120",
+                                            split_times: true)
+    end
+
+    let(:new_user_reservation) do
       res = instrument.reservations.build(reserve_start_date: Date.today + 1.day,
                                           reserve_start_hour: 10,
                                           reserve_start_min: 0,
                                           reserve_start_meridian: "am",
                                           duration_mins: "60",
                                           split_times: true)
-      res.valid?
+      res.valid? # runs before_validation hooks
       res
     end
 
-    let(:conflicting_admin_reservation) do
-      res = instrument.reservations.build(reserve_start_date: Date.today + 1.day,
-                                          reserve_start_hour: 10,
-                                          reserve_start_min: 0,
-                                          reserve_start_meridian: "am",
-                                          duration_mins: "60",
-                                          split_times: true)
-      res.valid?
-      allow(res).to receive(:admin?).and_return(true)
+    let(:new_admin_reservation) do
+      res = instrument.admin_reservations.build(reserve_start_date: Date.today + 1.day,
+                                                reserve_start_hour: 10,
+                                                reserve_start_min: 0,
+                                                reserve_start_meridian: "am",
+                                                duration_mins: "60",
+                                                split_times: true)
+      res.valid? # runs before_validation hooks
       res
     end
 
-    it "should be a conflicting reservation" do
-      expect(conflicting_reservation).not_to be_does_not_conflict_with_other_reservation
+    it "has a conflicting user reservation" do
+      expect(new_user_reservation.conflicting_user_reservation).to eq existing_user_reservation
+    end
+
+    it "has a conflicting admin reservation" do
+      expect(new_user_reservation.conflicting_admin_reservation).to eq existing_admin_reservation
+    end
+
+    context "scheduling over admin reservations" do
+      let(:user) { FactoryGirl.create(:user) }
+      let(:admin_user) { FactoryGirl.create(:user, :staff, facility: facility) }
+      let(:new_user_reservation) do
+        instrument.reservations.build(
+                                      reserve_start_at: 1.day.from_now.change(hour: 11, min: 0),
+                                      reserve_end_at: 1.day.from_now.change(hour: 12, min: 0)
+                                      )
+      end
+      it "can schedule over an admin reservation if order is placed by admin" do
+        expect(new_user_reservation.save_as_user(admin_user)).to be_truthy
+      end
+
+      it "cannot schedule over an admin reservation if order is not placed by admin" do
+        allow(new_user_reservation).to receive(:in_window?).and_return(true)
+
+        expect(new_user_reservation.save_as_user(user)).to be_falsy
+        expect(new_user_reservation.errors[:base]).to include("The reservation conflicts with another reservation.")
+      end
     end
 
     it "should be invalid" do
-      expect(conflicting_reservation).not_to be_valid
-      expect(conflicting_reservation.errors[:base]).to include "The reservation conflicts with another reservation."
+      expect(new_user_reservation).not_to be_valid
+      expect(new_user_reservation.errors[:base]).to include "The reservation conflicts with another reservation."
     end
 
     it "should allow an admin reservation to overlap" do
-      expect(conflicting_admin_reservation).to be_valid
+      expect(new_admin_reservation).to be_valid
     end
 
     context "and the reservation has started" do
       before :each do
         # Actual start must be in the past
-        reservation.update_attributes! reserve_start_at: 30.minutes.ago,
-                                       reserve_end_at: 30.minutes.from_now,
-                                       actual_start_at: 30.minutes.ago
+        existing_user_reservation.update_attributes! reserve_start_at: 30.minutes.ago,
+                                                     reserve_end_at: 30.minutes.from_now,
+                                                     actual_start_at: 30.minutes.ago
 
-        conflicting_reservation.assign_attributes reserve_start_at: 30.minutes.ago,
-                                                  reserve_end_at: 30.minutes.from_now
+        new_user_reservation.assign_attributes reserve_start_at: 30.minutes.ago,
+                                               reserve_end_at: 30.minutes.from_now
       end
 
       it "should be a conflict" do
-        expect(conflicting_reservation).not_to be_valid
+        expect(new_user_reservation).not_to be_valid
       end
 
       context "and ended" do
         before :each do
-          reservation.update_attributes!(actual_end_at: 20.minutes.ago)
+          existing_user_reservation.update_attributes!(actual_end_at: 20.minutes.ago)
         end
 
         it "should not conflict" do
-          expect(conflicting_reservation).to be_valid
+          expect(new_user_reservation).to be_valid
         end
       end
     end
