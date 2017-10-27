@@ -58,7 +58,7 @@ RSpec.describe Reservations::Rendering do
   describe "#as_calendar_object" do
     let(:actual_start_at) { Time.zone.local(2015, 8, 1, 9, 15, 16) }
     let(:actual_end_at) { Time.zone.local(2015, 8, 1, 10, 16, 17) }
-    let(:title) { "Admin Reservation" }
+    let(:title) { "Admin Hold" }
 
     let(:base_hash) do
       {
@@ -94,16 +94,26 @@ RSpec.describe Reservations::Rendering do
     end
 
     context "without an order" do
+      subject(:reservation) do
+        build_stubbed(
+          :admin_reservation,
+          reserve_start_at: reserve_start_at,
+          reserve_end_at: reserve_end_at,
+          actual_start_at: actual_start_at,
+          actual_end_at: actual_end_at,
+        )
+      end
+
       context "with details requested" do
         it "returns a hash without extra details about the order" do
           expect(reservation.as_calendar_object(with_details: true))
-            .to eq(base_hash.merge("title" => "Admin Reservation"))
+            .to eq(base_hash.merge("title" => "Admin Hold"))
         end
       end
 
       context "without details requested" do
         it "returns a hash without extra details about the order" do
-          expect(reservation.as_calendar_object).to eq(base_hash.merge("title" => "Admin Reservation"))
+          expect(reservation.as_calendar_object).to eq(base_hash.merge("title" => "Admin Hold"))
         end
       end
     end
