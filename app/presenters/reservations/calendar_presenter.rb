@@ -21,7 +21,7 @@ module Reservations
       elsif offline?
         { "title" => "Instrument Offline" }
       else
-        { "title" => self.model_name.human }
+        { "title" => model_name.human }
       end
     end
 
