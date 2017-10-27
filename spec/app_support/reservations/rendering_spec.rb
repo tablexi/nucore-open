@@ -94,6 +94,16 @@ RSpec.describe Reservations::Rendering do
     end
 
     context "without an order" do
+      subject(:reservation) do
+        build_stubbed(
+          :admin_reservation,
+          reserve_start_at: reserve_start_at,
+          reserve_end_at: reserve_end_at,
+          actual_start_at: actual_start_at,
+          actual_end_at: actual_end_at,
+        )
+      end
+
       context "with details requested" do
         it "returns a hash without extra details about the order" do
           expect(reservation.as_calendar_object(with_details: true))
