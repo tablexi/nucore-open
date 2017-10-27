@@ -1279,21 +1279,21 @@ RSpec.describe Reservation do
     end
 
     it "should have start set to reserve_start_at timestamp if no actual" do
-      expect(@cal_obj_wo_actual_end["start"]).to eq(@reserve_start_at_timestamp)
+      expect(@cal_obj_wo_actual_end[:start]).to eq(@reserve_start_at_timestamp)
     end
     it "should have end set to reserve_end_at timestamp if no actual" do
-      expect(@cal_obj_wo_actual_end["end"]).to eq(@reserve_end_at_timestamp)
+      expect(@cal_obj_wo_actual_end[:end]).to eq(@reserve_end_at_timestamp)
     end
 
     it "should have start set to actual timestamp" do
-      expect(@cal_obj_w_actual_end["start"]).to eq(@actual_start_at_timestamp)
+      expect(@cal_obj_w_actual_end[:start]).to eq(@actual_start_at_timestamp)
     end
     it "should have end set to actual_end_at timestamp" do
-      expect(@cal_obj_w_actual_end["end"]).to eq(@actual_end_at_timestamp)
+      expect(@cal_obj_w_actual_end[:end]).to eq(@actual_end_at_timestamp)
     end
 
     it "should include the instrument name" do
-      expect(@cal_obj_w_actual_end["product"]).to eq(@instrument.name)
+      expect(@cal_obj_w_actual_end[:product]).to eq(@instrument.name)
     end
   end
 
