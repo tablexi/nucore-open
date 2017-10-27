@@ -62,10 +62,10 @@ RSpec.describe Reservations::Rendering do
 
     let(:base_hash) do
       {
-        "start" => "Sat, 01 Aug 2015 09:15:16",
-        "end" => "Sat, 01 Aug 2015 10:16:17",
-        "product" => "Generic",
-        "allDay" => false,
+        start: "Sat, 01 Aug 2015 09:15:16",
+        end: "Sat, 01 Aug 2015 10:16:17",
+        product: "Generic",
+        allDay: false,
       }
     end
 
@@ -82,13 +82,13 @@ RSpec.describe Reservations::Rendering do
 
         it "returns a hash with extra details about the order" do
           expect(reservation.as_calendar_object(with_details: true))
-            .to eq(base_hash.merge("email" => user.email, "title" => user.full_name))
+            .to eq(base_hash.merge(email: user.email, title: user.full_name))
         end
       end
 
       context "without details requested" do
         it "returns a hash without extra details about the order" do
-          expect(reservation.as_calendar_object).to eq(base_hash.merge("title" => "Reservation"))
+          expect(reservation.as_calendar_object).to eq(base_hash.merge(title: "Reservation"))
         end
       end
     end
@@ -101,19 +101,22 @@ RSpec.describe Reservations::Rendering do
           reserve_end_at: reserve_end_at,
           actual_start_at: actual_start_at,
           actual_end_at: actual_end_at,
+          created_by: user
         )
       end
+
+      let(:user) { FactoryGirl.build(:user) }
 
       context "with details requested" do
         it "returns a hash without extra details about the order" do
           expect(reservation.as_calendar_object(with_details: true))
-            .to eq(base_hash.merge("title" => "Admin Hold"))
+            .to eq(base_hash.merge(title: "Admin Hold", email: user.full_name))
         end
       end
 
       context "without details requested" do
         it "returns a hash without extra details about the order" do
-          expect(reservation.as_calendar_object).to eq(base_hash.merge("title" => "Admin Hold"))
+          expect(reservation.as_calendar_object).to eq(base_hash.merge(title: "Admin Hold", email: user.full_name))
         end
       end
     end
