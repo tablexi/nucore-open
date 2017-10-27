@@ -12,26 +12,32 @@ module Reservations
       if order.present?
         if options[:with_details].present?
           {
-            "email" => order.user.email,
-            "title" => order.user.full_name,
+            title: order.user.full_name,
+            email: order.user.email,
           }
         else
           {}
         end
       elsif offline?
-        { "title" => "Instrument Offline" }
+        {
+          title: "Instrument Offline",
+          email: created_by.full_name,
+        }
       else
-        { "title" => model_name.human }
+        {
+          title: model_name.human,
+          email: created_by.full_name,
+        }
       end
     end
 
     def calendar_object_default
       {
-        "start" => I18n.l(display_start_at, format: :calendar),
-        "end" => I18n.l(display_end_at, format: :calendar),
-        "allDay" => false,
-        "title" => "Reservation",
-        "product" => product.name,
+        start: I18n.l(display_start_at, format: :calendar),
+        end: I18n.l(display_end_at, format: :calendar),
+        allDay: false,
+        title: model_name.human,
+        product: product.name,
       }
     end
 
