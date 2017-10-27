@@ -22,7 +22,7 @@
                 label: false,
                 input_html: { value: od.quantity,
                               class: od.quantity_as_time? ? "timeinput" : "",
-                              data: { :always_disabled => !od.quantity_editable? } }
+                              data: { always_disabled: !od.quantity_editable? } }
 
   .modal-footer
     = f.button :submit, class: "btn-primary", value: t("product_accessories.button.submit")
