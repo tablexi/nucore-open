@@ -21,12 +21,12 @@ module Reservations
       elsif offline?
         {
           title: "Instrument Offline",
-          email: created_by.full_name,
+          email: created_by.try(:full_name),
         }
       else
         {
           title: model_name.human,
-          email: created_by.full_name,
+          email: created_by.try(:full_name),
         }
       end
     end
