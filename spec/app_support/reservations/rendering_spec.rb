@@ -101,7 +101,7 @@ RSpec.describe Reservations::Rendering do
           reserve_end_at: reserve_end_at,
           actual_start_at: actual_start_at,
           actual_end_at: actual_end_at,
-          created_by: user
+          created_by: user,
         )
       end
 
