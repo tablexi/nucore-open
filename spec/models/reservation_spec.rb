@@ -830,9 +830,9 @@ RSpec.describe Reservation do
       let(:admin_user) { FactoryGirl.create(:user, :staff, facility: facility) }
       let(:new_user_reservation) do
         instrument.reservations.build(
-                                      reserve_start_at: 1.day.from_now.change(hour: 11, min: 0),
-                                      reserve_end_at: 1.day.from_now.change(hour: 12, min: 0)
-                                      )
+          reserve_start_at: 1.day.from_now.change(hour: 11, min: 0),
+          reserve_end_at: 1.day.from_now.change(hour: 12, min: 0),
+        )
       end
       it "can schedule over an admin reservation if order is placed by admin" do
         expect(new_user_reservation.save_as_user(admin_user)).to be_truthy
