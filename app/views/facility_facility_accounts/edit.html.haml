@@ -2,14 +2,14 @@
   = current_facility
 
 = content_for :sidebar do
-  = render "admin/shared/sidenav_admin", :sidenav_tab => "recharge_accounts"
+  = render "admin/shared/sidenav_admin", sidenav_tab: "recharge_accounts"
 
 = content_for :head_content do
   = javascript_include_tag "accounts.js"
 
 %h2= text("admin.shared.edit", model: FacilityAccount.model_name.human)
 %p= text(".main")
-= form_for @facility_account, :url => facility_facility_account_path do |f|
+= form_for @facility_account, url: facility_facility_account_path do |f|
   = f.error_messages
   = render "facility_account_fields", f: f
   %ul.inline

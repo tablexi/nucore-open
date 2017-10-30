@@ -22,7 +22,7 @@
 
 %h2= @instrument
 
-= simple_form_for([@instrument, @reservation], :url => facility_instrument_reservations_path) do |f|
+= simple_form_for([@instrument, @reservation], url: facility_instrument_reservations_path) do |f|
   = f.error_messages
   = render "reservation_fields", f: f
   .clearfix

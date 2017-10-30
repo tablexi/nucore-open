@@ -2,15 +2,15 @@
   %ul.breadcrumb
     %li= order_reservation_breadcrumb
     %li &raquo;
-    %li= t('.head.h1', :order_number => @order_detail.to_s)
+    %li= t(".head.h1", order_number: @order_detail.to_s)
 
 = content_for :h1 do
-  = t('.head.h1', :order_number => @order_detail.to_s)
+  = t(".head.h1", order_number: @order_detail.to_s)
 
 - res = @order_detail.reservation
 .row
   .span6
-    %p= link_to t('.link.receipt'), receipt_order_path(@order)
+    %p= link_to t(".link.receipt"), receipt_order_path(@order)
 
     = readonly_form_for :order do |f|
       = f.input :facility, label: Facility.model_name.human
@@ -29,12 +29,12 @@
     - if current_ability.can?(:dispute, @order_detail)
       - if @order_detail.can_dispute?
         .well
-          %h3= t('.head.dispute')
-          %p= t('.instruct.dispute')
-          = simple_form_for(@order_detail, :url => dispute_order_order_detail_path, :html => {:method => :put}) do |f|
+          %h3= t(".head.dispute")
+          %p= t(".instruct.dispute")
+          = simple_form_for(@order_detail, url: dispute_order_order_detail_path, html: {method: :put}) do |f|
             = f.input :dispute_reason
 
-            = f.submit t('.submit.dispute'), :class => 'btn'
+            = f.submit t(".submit.dispute"), class: "btn"
 
       - if @order_detail.dispute_at
         .well
@@ -50,8 +50,8 @@
 
     - if @order_detail.stored_files.sample_result.any?
       .well
-        %h3= t('.head.results')
-        %ul= render :partial => 'result_file', :collection => @order_detail.stored_files.sample_result
+        %h3= t(".head.results")
+        %ul= render partial: "result_file", collection: @order_detail.stored_files.sample_result
         - if @order_detail.stored_files.sample_result.size > 1
           = link_to order_order_detail_sample_results_zip_path(@order_detail.order, @order_detail, format: :zip) do
             %i.fa.fa-arrow-circle-o-down
@@ -67,10 +67,10 @@
           %th= OrderDetail.human_attribute_name(:quantity)
           %th= OrderDetail.human_attribute_name(:product)
           %th= OrderDetail.human_attribute_name(:status)
-          %th.currency= t('.th.cost')
+          %th.currency= t(".th.cost")
           - if @order_detail.has_subsidies?
-            %th.currency= t('.th.adjust')
-          %th.currency= t('.th.total')
+            %th.currency= t(".th.adjust")
+          %th.currency= t(".th.total")
       %tbody
         %tr
           - if res
@@ -81,7 +81,7 @@
             - if res
               .order-detail-extra= reservation_view_edit_link(res)
             - if @order_detail.survey_completed?
-              .order-detail-extra= link_to(t('.link.view.order_form'), @order_detail.external_service_receiver.show_url, :target => '_blank')
+              .order-detail-extra= link_to(t(".link.view.order_form"), @order_detail.external_service_receiver.show_url, target: "_blank")
             - unless @order_detail.stored_files.template_result.empty?
               .order-detail-extra
                 = link_to t(".link.view.order_file"), order_detail_first_template_result_path(@order_detail)
@@ -104,6 +104,6 @@
               %td.actual_cost.currency= show_actual_subsidy(@order_detail)
             %td.actual_cost.currency= show_actual_total(@order_detail)
 
-= render :partial => '/price_display_footnote'
+= render partial: "/price_display_footnote"
 
 = render "shared/auto_logout"

@@ -1,23 +1,23 @@
 = content_for :tabnav do
-  = render :partial => 'shared/tabnav_account', :locals => {:secondary_tab => 'members'}
+  = render partial: "shared/tabnav_account", locals: {secondary_tab: "members"}
 = content_for :h1 do
-  = t('.head')
+  = t(".head")
 
-= simple_form_for(@account_user, :url => account_account_users_path(@account)) do |f|
+= simple_form_for(@account_user, url: account_account_users_path(@account)) do |f|
   = f.error_messages
 
   = f.simple_fields_for @account do |a|
-    = a.input :account_number, :as => :readonly
-    = a.input :type_string, :as => :readonly
-    = a.input :description, :as => :readonly
-    = a.input :expires_at, :as => :readonly, :date_only => true
+    = a.input :account_number, as: :readonly
+    = a.input :type_string, as: :readonly
+    = a.input :description, as: :readonly
+    = a.input :expires_at, as: :readonly, date_only: true
 
   = f.simple_fields_for @user do |u|
-    = u.input :full_name, :as => :readonly, :label => Account.human_attribute_name(:user)
-  = f.input :user_id, :as => :hidden, :input_html => { :value => @user.id, :name => 'user_id' }
+    = u.input :full_name, as: :readonly, label: Account.human_attribute_name(:user)
+  = f.input :user_id, as: :hidden, input_html: { value: @user.id, name: "user_id" }
 
-  = f.input :user_role, :collection => AccountUser.selectable_user_roles, :selected => 'Purchaser'
+  = f.input :user_role, collection: AccountUser.selectable_user_roles, selected: "Purchaser"
 
   %ul.inline
-    %li= f.submit 'Create', :class => 'btn'
-    %li= link_to 'Cancel', account_account_users_path(@account)
+    %li= f.submit "Create", class: "btn"
+    %li= link_to "Cancel", account_account_users_path(@account)
