@@ -562,7 +562,7 @@ en:
       link: Cancel
     finished: Reservation Ended
     moving_up:
-      link: Begin Now
+      link: Move Up
       title: Move Reservation
       button: Move
       confirm_same_day: The earliest time you can move this reservation to begins on %{start_date} at %{start_time} and ends at %{end_time}.

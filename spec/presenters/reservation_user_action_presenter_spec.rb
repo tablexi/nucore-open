@@ -176,7 +176,7 @@ RSpec.describe ReservationUserActionPresenter do
         expect(reservation).to receive(:startable_now?).and_return true
       end
 
-      it "includes the move 'Begin Now' link" do
+      it "includes the move 'Move Up' link" do
         expect(text).to include link
       end
     end

@@ -316,16 +316,16 @@ RSpec.describe ReservationsController do
           sign_in @staff
         end
 
-        it "should not show Begin Now if there is no time to move it forward to" do
+        it "should not show Move Up if there is no time to move it forward to" do
           allow_any_instance_of(Reservation).to receive(:earliest_possible).and_return(nil)
           do_request
-          expect(response.body).not_to include("Begin Now")
+          expect(response.body).not_to include("Move Up")
         end
 
-        it "should show Begin Now if there is a time to move it forward to" do
+        it "should show Move Up if there is a time to move it forward to" do
           allow_any_instance_of(Reservation).to receive(:earliest_possible).and_return(Reservation.new)
           do_request
-          expect(response.body).to include("Begin Now")
+          expect(response.body).to include("Move Up")
         end
       end
     end
