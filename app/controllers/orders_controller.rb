@@ -259,6 +259,9 @@ class OrdersController < ApplicationController
     end
 
     if order_purchaser.success?
+      should_show_admin_hold_warning = @order.order_details.map(&:reservation).compact.map(&:conflicting_admin_reservation).any?
+      flash[:error] = I18n.t("controllers.reservations.create.admin_hold_warning") if should_show_admin_hold_warning
+
       if single_reservation? && !acting_as?
         flash[:notice] = I18n.t("controllers.orders.purchase.reservation.success")
         if can_switch_instrument_on?

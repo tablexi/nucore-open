@@ -99,6 +99,9 @@ class ReservationsController < ApplicationController
       @reservation = creator.reservation
       flash[:notice] = I18n.t "controllers.reservations.create.success"
 
+      should_show_admin_hold_warning = creator.reservation.conflicting_admin_reservation.present?
+      flash[:error] = I18n.t('controllers.reservations.create.admin_hold_warning') if should_show_admin_hold_warning
+
       if creator.merged_order?
         redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
       elsif creator.instrument_only_order?
