@@ -567,16 +567,19 @@ RSpec.describe Reservation do
       assert_equal ["The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue."], @reservation2.errors[:base]
     end
 
-
     context "with admin reservations" do
-      let!(:admin_reservation) { create(:admin_reservation,
-                                product: instrument,
-                                reserve_start_at: 30.minutes.ago,
-                                duration: 1.hour) }
-      let(:reservation) { create(:reservation,
-        product: instrument,
-        reserve_start_at: 1.hour.from_now,
-        duration: 1.hour)}
+      let!(:admin_reservation) do
+        create(:admin_reservation,
+               product: instrument,
+               reserve_start_at: 30.minutes.ago,
+               duration: 1.hour)
+      end
+      let(:reservation) do
+        create(:reservation,
+               product: instrument,
+               reserve_start_at: 1.hour.from_now,
+               duration: 1.hour)
+      end
 
       it "suggests a time that does not overlap with an existing admin reservation" do
         expect(reservation.earliest_possible.reserve_start_at).to eq 30.minutes.from_now
