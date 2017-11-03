@@ -34,8 +34,34 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
     end
 
     it "returns to My Reservations" do
-      expect(page).to have_content "My Reservations"
+      expect(page).to have_content "Order Receipt"
       expect(Reservation.last.note).to eq("A note")
     end
+  end
+
+  describe "ordering over an administrative hold" do
+    let!(:admin_reservation) { create(:admin_reservation, product: instrument, reserve_start_at: 30.minutes.from_now, duration: 1.hour) }
+
+    describe "when you create a reservation" do
+      it "can purchase" do
+        click_link instrument.name
+
+        # time is frozen to 9:30am, we expect the default time to be the end of the admin reservation
+        expect(page.find_field("reservation_reserve_start_date").value).to match(%r[09/11/\d{4}])
+        expect(page.find_field("reservation_reserve_start_hour").value).to eq "11"
+        expect(page.find_field("reservation_reserve_start_min").value).to eq "0"
+        expect(page.find_field("reservation_reserve_start_meridian").value).to eq "AM"
+
+        fill_in "Duration", with: 90
+        select 10, from: "reservation_reserve_start_hour"
+        select user.accounts.first.description, from: "Payment Source"
+        click_button "Create"
+
+        expect(page).to have_content "Order Receipt"
+        expect(page).to have_content "Warning: You have scheduled over an administrative hold."
+        expect(page).to have_content "10:00 AM - 11:30 AM"
+      end
+    end
+
   end
 end

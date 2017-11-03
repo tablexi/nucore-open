@@ -172,10 +172,10 @@ class Reservation < ActiveRecord::Base
 
   def save_as_user(user)
     if user.operator_of?(product.facility)
-      @reserved_by_admin = true
+      self.reserved_by_admin = true
       save
     else
-      @reserved_by_admin = false
+      self.reserved_by_admin = false
       save_extended_validations
     end
   end
@@ -268,7 +268,8 @@ class Reservation < ActiveRecord::Base
     satisfies_minimum_length? &&
       satisfies_maximum_length? &&
       instrument_is_available_to_reserve? &&
-      does_not_conflict_with_other_reservation?
+      does_not_conflict_with_other_user_reservation? &&
+      (reserved_by_admin || does_not_conflict_with_admin_reservation?)
   end
 
   def has_actuals?

@@ -409,7 +409,7 @@ RSpec.describe OrdersController do
       it "redirects to my reservations on a successful purchase of a single reservation" do
         sign_in @staff
         do_request
-        expect(flash[:notice]).to eq("Reservation completed successfully")
+        expect(flash[:notice]).to eq("Reservation created successfully")
         expect(response).to redirect_to reservations_path
       end
 

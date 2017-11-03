@@ -116,6 +116,7 @@ en:
       create:
         no_selection: "You must select a payment source before reserving"
         success: "The reservation was successfully created."
+        admin_hold_warning: "Warning: You have scheduled over an administrative hold."
       order_detail_removed: |
         The instrument order has been removed from your cart.
         Please add it again to make a reservation.
@@ -161,7 +162,7 @@ en:
         future_dating_error: "Order dates in the future are not allowed"
         quantities_changed: Quantities have changed. Please review updated prices then click "Purchase"
         reservation:
-          success: Reservation completed successfully
+          success: Reservation created successfully
 
     order_imports:
       create:

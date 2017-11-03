@@ -66,14 +66,14 @@ RSpec.describe Reservations::Validations do
   describe "conditionally run validations" do
     context "with reserve_start_at, reserve_end_at, and reservation_changed? is true" do
       it "runs conditional validations" do
-        expect(reservation).to receive :does_not_conflict_with_other_reservation
+        expect(reservation).to receive :does_not_conflict_with_other_user_reservation
         reservation.save
       end
     end
 
     context "with missing reserve_start_at" do
       it "does not run conditional validations" do
-        expect(reservation).not_to receive :does_not_conflict_with_other_reservation
+        expect(reservation).not_to receive :does_not_conflict_with_other_user_reservation
         reservation.update_attributes(reserve_start_at: nil)
       end
     end
