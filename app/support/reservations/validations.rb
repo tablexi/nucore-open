@@ -90,6 +90,10 @@ module Reservations::Validations
     errors.add(:base, :conflict) if conflicting_admin_reservation
   end
 
+  def conflicting_admin_reservation?
+    conflicting_admin_reservation.present?
+  end
+
   def conflicting_admin_reservation
     conflicting_reservations =
       Reservation

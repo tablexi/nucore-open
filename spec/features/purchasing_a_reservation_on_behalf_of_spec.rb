@@ -58,7 +58,6 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
         click_button "Create"
 
         expect(page).to have_content "Order Receipt"
-        # save_and_open_page
         expect(page).to have_content "Warning: You have scheduled over an administrative hold."
         expect(page).to have_content "10:00 AM - 11:30 AM"
       end
