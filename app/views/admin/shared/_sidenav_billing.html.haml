@@ -18,7 +18,8 @@
 
   %li.divider
   %li.nav-header= Journal.model_name.human.pluralize
-  = tab t_create_model(Journal), new_facility_journal_path, (sidenav_tab == 'new_journal')
+  - if current_facility.single_facility?
+    = tab t_create_model(Journal), new_facility_journal_path, (sidenav_tab == 'new_journal')
   = tab t_manage_models(Journal), facility_journals_path, (sidenav_tab == 'journals')
 
   = render "shared/sidenav_billing/statements", sidenav_tab: sidenav_tab

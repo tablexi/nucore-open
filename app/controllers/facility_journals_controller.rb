@@ -27,6 +27,8 @@ class FacilityJournalsController < ApplicationController
 
   # GET /facilities/journals/new
   def new_with_search
+    raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+
     set_default_variables
     @layout = "two_column_head"
 
@@ -70,6 +72,8 @@ class FacilityJournalsController < ApplicationController
 
   # POST /facilities/journals
   def create_with_search
+    raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+
     new_journal_from_params
     verify_journal_date_format
 
