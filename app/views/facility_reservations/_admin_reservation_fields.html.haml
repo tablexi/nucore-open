@@ -11,9 +11,8 @@
   = f.input :admin_note, input_html: { class: "span6" } unless @order_detail
 
 .clearfix
-
-.control-group
-  = f.input :expires?, as: :boolean
-  = f.input :expires_mins_before, input_html: { class: "timeinput" }
+%div
+  = f.input :expires?, as: :boolean, input_html: { data: { "disables" => ".admin_reservation_expires_mins_before" } }, wrapper_html: {class: "input-inline"}
+  = f.input :expires_mins_before, input_html: { class: "timeinput" }, wrapper_html: {class: "input-inline"}
 
 .clearfix
