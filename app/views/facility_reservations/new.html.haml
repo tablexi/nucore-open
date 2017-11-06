@@ -24,7 +24,7 @@
 
 = simple_form_for([@instrument, @reservation], url: facility_instrument_reservations_path) do |f|
   = f.error_messages
-  = render "reservation_fields", f: f
+  = render "admin_reservation_fields", f: f
   .clearfix
   %ul.inline
     %li= f.submit t("shared.create"), class: "btn"

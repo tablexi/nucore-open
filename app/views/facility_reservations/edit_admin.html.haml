@@ -22,7 +22,7 @@
 
 = simple_form_for([@instrument, @reservation], :url => facility_instrument_reservation_update_admin_path) do |f|
   = f.error_messages
-  = render :partial => 'reservation_fields', :locals => { :f => f }
+  = render :partial => 'admin_reservation_fields', :locals => { :f => f }
   .clearfix
   %ul.inline
     %li= f.submit 'Save', :class => 'btn'
