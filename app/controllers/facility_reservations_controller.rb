@@ -177,8 +177,8 @@ class FacilityReservationsController < ApplicationController
 
   def admin_reservation_params
     admin_params = params.require(:admin_reservation).permit(:admin_note,
-                                            :expires_mins_before,
-                                            :category)
+                                                             :expires_mins_before,
+                                                             :category)
     admin_params[:expires_mins_before] = nil if params[:admin_reservation][:expires] == "0"
     admin_params
   end
