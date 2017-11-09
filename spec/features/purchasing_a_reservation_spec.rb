@@ -70,25 +70,44 @@ RSpec.describe "Purchasing a reservation" do
   end
 
   describe "ordering over an administrative hold" do
-    let!(:admin_reservation) { create(:admin_reservation, product: instrument, reserve_start_at: 30.minutes.from_now, duration: 1.hour) }
 
     describe "when you create a reservation" do
-      it "cannot purchase" do
-        click_link instrument.name
-        select user.accounts.first.description, from: "Payment Source"
+      context "admin hold is not expired" do
+        let!(:admin_reservation) { create(:admin_reservation, product: instrument, reserve_start_at: 30.minutes.from_now, duration: 1.hour) }
 
-        # time is frozen to 9:30am ten days after fiscal year start, we expect the default time to be the end of the admin reservation
-        expect(page.find_field("reservation_reserve_start_date").value).to eq Time.zone.today.strftime("%m/%d/%Y")
-        expect(page.find_field("reservation_reserve_start_hour").value).to eq "11"
-        expect(page.find_field("reservation_reserve_start_min").value).to eq "0"
-        expect(page.find_field("reservation_reserve_start_meridian").value).to eq "AM"
+        it "cannot purchase" do
+          click_link instrument.name
+          select user.accounts.first.description, from: "Payment Source"
 
-        fill_in "Duration", with: 90
-        select 10, from: "reservation_reserve_start_hour"
-        select user.accounts.first.description, from: "Payment Source"
-        click_button "Create"
+          # time is frozen to 9:30am, we expect the default time to be the end of the admin reservation
+          expect(page.find_field("reservation_reserve_start_date").value).to eq Time.zone.today.strftime("%m/%d/%Y")
+          expect(page.find_field("reservation_reserve_start_hour").value).to eq "11"
+          expect(page.find_field("reservation_reserve_start_min").value).to eq "0"
+          expect(page.find_field("reservation_reserve_start_meridian").value).to eq "AM"
 
-        expect(page).to have_content "The reservation conflicts with another reservation."
+          fill_in "Duration", with: 90
+          select 10, from: "reservation_reserve_start_hour"
+          select user.accounts.first.description, from: "Payment Source"
+          click_button "Create"
+
+          expect(page).to have_content "The reservation conflicts with another reservation."
+        end
+      end
+
+      context "admin hold is expired" do
+        let!(:admin_reservation) { create(:admin_reservation, product: instrument, reserve_start_at: 30.minutes.from_now, duration: 1.hour, deleted_at: 1.hour.ago) }
+
+        it "can purchase" do
+
+          click_link instrument.name
+          select user.accounts.first.description, from: "Payment Source"
+          fill_in "Duration", with: 90
+          select 10, from: "reservation_reserve_start_hour"
+          select user.accounts.first.description, from: "Payment Source"
+          click_button "Create"
+
+          expect(page).to have_content "Reservation created successfully"
+        end
       end
     end
 

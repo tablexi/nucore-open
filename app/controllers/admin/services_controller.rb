@@ -4,8 +4,9 @@ module Admin
 
     skip_before_action :verify_authenticity_token
 
-    def cancel_reservations_for_offline_instruments
+    def process_one_minute_tasks
       InstrumentOfflineReservationCanceler.new.cancel!
+      AdminReservationExpirer.new.expire!
       render nothing: true
     end
 

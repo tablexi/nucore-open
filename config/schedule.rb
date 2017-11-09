@@ -13,7 +13,7 @@ every 5.minutes, roles: [:db] do
 end
 
 every 1.minute, roles: [:db] do
-  command "curl --silent -X POST #{Rails.application.routes.url_helpers.admin_services_cancel_reservations_for_offline_instruments_url}"
+  command "curl --silent -X POST #{Rails.application.routes.url_helpers.admin_services_process_one_minute_tasks_url}"
 end
 
 every :day, at: "4:17am", roles: [:db] do

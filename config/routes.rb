@@ -374,7 +374,7 @@ Nucore::Application.routes.draw do
 
   namespace :admin do
     namespace :services do
-      post "cancel_reservations_for_offline_instruments"
+      post "process_one_minute_tasks"
       post "process_five_minute_tasks"
     end
   end

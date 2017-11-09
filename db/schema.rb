@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171010205831) do
+ActiveRecord::Schema.define(version: 20171109201156) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -550,9 +550,11 @@ ActiveRecord::Schema.define(version: 20171010205831) do
     t.string   "category",            limit: 255
     t.integer  "expires_mins_before", limit: 4
     t.integer  "created_by_id",       limit: 4
+    t.datetime "deleted_at"
   end
 
   add_index "reservations", ["created_by_id"], name: "index_reservations_on_created_by_id", using: :btree
+  add_index "reservations", ["deleted_at"], name: "index_reservations_on_deleted_at", using: :btree
   add_index "reservations", ["order_detail_id"], name: "res_od_uniq_fk", unique: true, using: :btree
   add_index "reservations", ["product_id", "reserve_start_at"], name: "index_reservations_on_product_id_and_reserve_start_at", using: :btree
 
