@@ -77,8 +77,8 @@ RSpec.describe "Purchasing a reservation" do
         click_link instrument.name
         select user.accounts.first.description, from: "Payment Source"
 
-        # time is frozen to 9:30am, we expect the default time to be the end of the admin reservation
-        expect(page.find_field("reservation_reserve_start_date").value).to match(%r[09/11/\d{4}])
+        # time is frozen to 9:30am ten days after fiscal year start, we expect the default time to be the end of the admin reservation
+        expect(page.find_field("reservation_reserve_start_date").value).to eq Time.zone.today.strftime("%m/%d/%Y")
         expect(page.find_field("reservation_reserve_start_hour").value).to eq "11"
         expect(page.find_field("reservation_reserve_start_min").value).to eq "0"
         expect(page.find_field("reservation_reserve_start_meridian").value).to eq "AM"
