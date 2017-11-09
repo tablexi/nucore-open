@@ -2,7 +2,7 @@ require "set"
 
 class Journal < ActiveRecord::Base
 
-  class CreationError < StandardError; end
+  class CreationError < NUCore::Error; end
 
   module Overridable
 
@@ -197,9 +197,8 @@ class Journal < ActiveRecord::Base
   end
 
   def set_facility_id
-    # detect if this should be a multi-facility journal, set facility_id appropriately
     self.facility_id = if @order_details_for_creation.collect { |od| od.order.facility_id }.uniq.size > 1
-                         nil
+                         raise CreationError, "Cannot create a cross facility journal"
                        else
                          @order_details_for_creation.first.order.facility_id
                        end

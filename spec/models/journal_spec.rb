@@ -233,7 +233,6 @@ RSpec.describe Journal do
         end
 
         journal = Journal.create!(
-          facility_id: (facilities_list.size == 1 ? facilities_list.first.id : nil),
           created_by: @admin.id,
           journal_date: Time.zone.now,
         )
@@ -251,6 +250,20 @@ RSpec.describe Journal do
 
       it "should not allow creation of a journal for A" do
         expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
+      end
+    end
+
+    describe "cross facility journal" do
+      let(:journal) { Journal.new(created_by: @admin.id, journal_date: Time.current, order_details_for_creation: order_details) }
+      let(:order_details) do
+        [
+          place_and_complete_item_order(@admin, @facilitya, @account, true),
+          place_and_complete_item_order(@admin, @facilityb, @account, true),
+        ]
+      end
+
+      it "cannot create the journal" do
+        expect { journal.save }.to raise_error(Journal::CreationError)
       end
     end
 

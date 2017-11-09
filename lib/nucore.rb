@@ -3,13 +3,16 @@ module NUCore
   class PermissionDenied < SecurityError
   end
 
-  class MixedFacilityCart < StandardError
+  class Error < StandardError
   end
 
-  class NotPermittedWhileActingAs < StandardError
+  class MixedFacilityCart < NUCore::Error
   end
 
-  class PurchaseException < StandardError; end
+  class NotPermittedWhileActingAs < NUCore::Error
+  end
+
+  class PurchaseException < NUCore::Error; end
 
   def self.portal
     "nucore"
