@@ -326,17 +326,6 @@ Rails/Present:
 Rails/SkipsModelValidations:
   Enabled: false
 
-# Offense count: 11
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: strict, flexible
-Rails/TimeZone:
-  Exclude:
-    - 'spec/helpers/settings_helper_spec.rb'
-    - 'spec/lib/transaction_history_search_spec.rb'
-    - 'spec/models/account_spec.rb'
-    - 'spec/models/order_detail_spec.rb'
-    - 'spec/models/schedule_rule_spec.rb'
-
 # Offense count: 82
 # Cop supports --auto-correct.
 # Configuration parameters: Include.
@@ -551,7 +540,7 @@ Style/NumericPredicate:
   Enabled: false
 
 # Offense count: 3
-Style/OpMethod:
+Naming/BinaryOperatorParameterName:
   Exclude:
     - 'app/models/account.rb'
     - 'app/models/price_group.rb'
@@ -568,7 +557,7 @@ Style/PercentLiteralDelimiters:
 # NamePrefix: is_, has_, have_
 # NamePrefixBlacklist: is_, has_, have_
 # NameWhitelist: is_a?
-Style/PredicateName:
+Naming/PredicateName:
   Enabled: false
 
 # Offense count: 2

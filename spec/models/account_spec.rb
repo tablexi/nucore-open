@@ -369,7 +369,7 @@ RSpec.describe Account do
       let!(:facility) { create :facility }
       let!(:po_show) { create_po_for(user, facility) }
       let!(:po_hidden) { create_po_for(user, create(:facility)) }
-      let!(:po_deleted) { create_po_for(user, facility, Time.now - 1.day) }
+      let!(:po_deleted) { create_po_for(user, facility, 1.day.ago) }
 
       it "filters by facility" do
         expect(user.accounts.for_facility(facility)).to match_array([po_show])

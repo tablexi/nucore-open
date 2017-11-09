@@ -265,7 +265,7 @@ RSpec.describe OrderDetail do
         @order_detail.product = @instrument
         @order_detail.save
         assert @order_detail.reservation
-        @start_stop = [Time.now, Time.now + 1.hour]
+        @start_stop = [Time.current, 1.hour.from_now]
       end
 
       it "should assign_estimated_price" do
@@ -1421,7 +1421,7 @@ RSpec.describe OrderDetail do
         before :each do
           instrument.update_attribute(:min_cancel_hours, 2)
           order_detail.reload
-          reservation.order_detail.update_attributes(canceled_at: Time.zone.now)
+          reservation.order_detail.update_attributes(canceled_at: Time.current)
         end
 
         context "when in the no-fee period" do
@@ -1430,9 +1430,9 @@ RSpec.describe OrderDetail do
 
         context "when after the time when the cancellation fee applies" do
           before :each do
-            @current_time = Time.now
+            @current_time = Time.current
             travel(3.hours)
-            reservation.order_detail.update_attributes(canceled_at: Time.zone.now)
+            reservation.order_detail.update_attributes(canceled_at: Time.current)
           end
 
           after { travel_to(@current_time) }
@@ -1458,7 +1458,7 @@ RSpec.describe OrderDetail do
       let!(:price_policy) { instrument_reservation_price_policy }
 
       context "when the reservation has been canceled" do
-        before { reservation.order_detail.update_attributes(canceled_at: Time.zone.now) }
+        before { reservation.order_detail.update_attributes(canceled_at: Time.current) }
 
         it_should_behave_like "it charges cancellation fees appropriately"
       end
