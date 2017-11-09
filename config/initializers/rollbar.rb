@@ -14,6 +14,7 @@ if defined?(Rollbar)
       "ActionController::RoutingError"     => "ignore",
       "AbstractController::ActionNotFound" => "ignore",
       "ActionController::UnknownFormat"    => "ignore",
+      "ActionController::UnknownHttpMethod" => "ignore",
     )
 
     # By default, Rollbar will try to call the `current_user` controller method
