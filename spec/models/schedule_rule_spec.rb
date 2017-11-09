@@ -95,7 +95,7 @@ RSpec.describe ScheduleRule do
                                        facility: @facility,
                                        facility_account: @facility_account)
       @rule = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
-      expect(@rule).to be_cover(DateTime.new(1981, 9, 15, 12, 0, 0))
+      expect(@rule).to be_cover(Time.zone.local(1981, 9, 15, 12, 0, 0))
     end
 
     it "should not recognize non-inclusive datetimes" do
@@ -105,7 +105,7 @@ RSpec.describe ScheduleRule do
                                        facility: @facility,
                                        facility_account: @facility_account)
       @rule = @instrument.schedule_rules.build(FactoryGirl.attributes_for(:schedule_rule))
-      expect(@rule).not_to be_cover(DateTime.new(1981, 9, 15, 3, 0, 0))
+      expect(@rule).not_to be_cover(Time.zone.local(1981, 9, 15, 3, 0, 0))
     end
   end
 

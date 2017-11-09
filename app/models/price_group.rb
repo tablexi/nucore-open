@@ -60,8 +60,8 @@ class PriceGroup < ActiveRecord::Base
     is_internal? && display_order == 1
   end
 
-  def <=>(obj)
-    "#{display_order}-#{name}".casecmp("#{obj.display_order}-#{obj.name}")
+  def <=>(other)
+    "#{display_order}-#{name}".casecmp("#{other.display_order}-#{other.name}")
   end
 
   def can_delete?

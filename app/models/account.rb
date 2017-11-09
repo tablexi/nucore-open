@@ -128,8 +128,8 @@ class Account < ActiveRecord::Base
     I18n.t("activerecord.models.#{self.class.to_s.underscore}.one", default: self.class.model_name.human)
   end
 
-  def <=>(obj)
-    account_number <=> obj.account_number
+  def <=>(other)
+    account_number <=> other.account_number
   end
 
   def owner_user_name
