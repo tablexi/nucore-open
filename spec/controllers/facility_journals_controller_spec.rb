@@ -339,22 +339,16 @@ RSpec.describe FacilityJournalsController do
       it_should_support_searching
     end
 
-    context "with a mixed facility journal", feature_setting: { billing_administrator: true } do
+    context "in cross facility", feature_setting: { billing_administrator: true } do
       before :each do
-        ignore_account_validations
-        create_order_details
-
-        @facility2 = create(:facility)
-        @account2 = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @admin), facility_id: @facility2.id)
-        @facility2_order_detail = place_and_complete_item_order(@user, @facility2, @account2, true)
-
         @params[:facility_id] = "all"
-        @params[:order_detail_ids] = [@order_detail1.id, @facility2_order_detail.id]
         sign_in create(:user, :billing_administrator)
         do_request
       end
 
-      it { expect(assigns(:journal).facility_id).to be_nil }
+      it "renders a 404" do
+        expect(response.code).to eq("404")
+      end
     end
 
     # SLOW
@@ -462,6 +456,18 @@ RSpec.describe FacilityJournalsController do
         @user = @admin
       end
       it_should_support_searching
+    end
+
+    context "in cross facility", feature_setting: { billing_administrator: true } do
+      before :each do
+        @params[:facility_id] = "all"
+        sign_in create(:user, :billing_administrator)
+        do_request
+      end
+
+      it "renders a 404" do
+        expect(response.code).to eq("404")
+      end
     end
   end
 
