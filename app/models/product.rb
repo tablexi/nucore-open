@@ -139,8 +139,8 @@ class Product < ActiveRecord::Base
   end
 
   # TODO: favor the alphabetized scope over relying on Array#sort
-  def <=>(obj)
-    name.casecmp obj.name
+  def <=>(other)
+    name.casecmp other.name
   end
 
   # If there isn't an email specific to the product, fall back to the facility's email

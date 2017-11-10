@@ -31,7 +31,7 @@ RSpec.describe TransactionSearch do
     @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
     @price_group      = @authable.price_groups.create(FactoryGirl.attributes_for(:price_group))
     @account          = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
-    @order            = @staff.orders.create(FactoryGirl.attributes_for(:order, created_by: @staff.id, account: @account, ordered_at: Time.now))
+    @order            = @staff.orders.create(FactoryGirl.attributes_for(:order, created_by: @staff.id, account: @account, ordered_at: Time.current))
     @item             = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
     @order_detail_complete = place_and_complete_item_order(@user, @authable, @account)
     @order_detail_new = place_product_order(@staff, @authable, @item)
