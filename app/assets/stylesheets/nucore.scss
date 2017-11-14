@@ -368,3 +368,12 @@ textarea.wide {
 .dropdown-backdrop {
   position: static;
 }
+
+.checkboxControl {
+  display: flex;
+  min-height: 6em;
+}
+
+.checkboxControl__checkbox {
+  margin-right: 2.5em;
+}
