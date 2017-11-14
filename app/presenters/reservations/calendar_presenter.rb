@@ -23,11 +23,16 @@ module Reservations
           title: "Instrument Offline",
           email: created_by.try(:full_name),
         }
-      else
+      elsif expires_mins_before.present?
         {
           title: model_name.human,
           email: created_by.try(:full_name),
           expiration: "Expires #{display_as_time(expires_mins_before)} prior",
+        }
+      else
+        {
+          title: model_name.human,
+          email: created_by.try(:full_name),
         }
       end
     end

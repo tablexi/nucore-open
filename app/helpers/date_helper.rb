@@ -57,6 +57,8 @@ module DateHelper
   end
 
   def display_as_time(minutes)
+    return "" unless minutes
+
     hours = minutes / 60
     mins = (minutes % 60).to_s.rjust(2,"0")
     "#{hours}:#{mins}"
