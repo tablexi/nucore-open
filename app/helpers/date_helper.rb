@@ -60,7 +60,7 @@ module DateHelper
     return "" unless minutes
 
     hours = minutes / 60
-    mins = (minutes % 60).to_s.rjust(2,"0")
+    mins = (minutes % 60).to_s.rjust(2, "0")
     "#{hours}:#{mins}"
   end
 
