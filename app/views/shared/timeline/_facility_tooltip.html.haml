@@ -22,7 +22,7 @@
 
 - if reservation.expires_mins_before.present?
   %br
-  %span= t('.expiration', time: display_as_time(reservation.expires_mins_before))
+  %span= t(".expiration", time: MinutesToTimeFormatter.new(reservation.expires_mins_before))
 
 %br
 = reservation_links(reservation)

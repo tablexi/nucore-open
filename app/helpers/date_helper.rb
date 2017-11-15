@@ -56,14 +56,6 @@ module DateHelper
     end
   end
 
-  def display_as_time(minutes)
-    return "" unless minutes
-
-    hours = minutes / 60
-    mins = (minutes % 60).to_s.rjust(2, "0")
-    "#{hours}:#{mins}"
-  end
-
   def time_ceil(time, precision = 5.minutes)
     time = time.dup.change(sec: 0)
     Time.zone.at((time.to_f / precision).ceil * precision)
