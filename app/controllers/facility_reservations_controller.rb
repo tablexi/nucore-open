@@ -95,6 +95,7 @@ class FacilityReservationsController < ApplicationController
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/reservations/new
+  # for admin reservations
   def new
     @instrument   = current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.next_available_reservation ||
@@ -107,11 +108,12 @@ class FacilityReservationsController < ApplicationController
   end
 
   # POST /facilities/:facility_id/instruments/:instrument_id/reservations
+  # for admin reservations
   def create
     @instrument =
       current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.admin_reservations.new
-    @reservation.assign_attributes(params[:admin_reservation].merge(created_by: current_user))
+    @reservation.assign_attributes(admin_reservation_params.merge(created_by: current_user))
     @reservation.assign_times_from_params(params[:admin_reservation])
 
     if @reservation.save
@@ -140,8 +142,7 @@ class FacilityReservationsController < ApplicationController
     set_windows
 
     @reservation.assign_times_from_params(params[:admin_reservation])
-    @reservation.admin_note = params[:admin_reservation][:admin_note]
-    @reservation.category = params[:admin_reservation][:category]
+    @reservation.assign_attributes(admin_reservation_params)
 
     if @reservation.save
       flash[:notice] = "The reservation has been updated successfully."
@@ -173,6 +174,14 @@ class FacilityReservationsController < ApplicationController
   end
 
   protected
+
+  def admin_reservation_params
+    admin_params = params.require(:admin_reservation).permit(:admin_note,
+                                                             :expires_mins_before,
+                                                             :category)
+    admin_params[:expires_mins_before] = nil if params[:admin_reservation][:expires] == "0"
+    admin_params
+  end
 
   def show_problems_path
     show_problems_facility_reservations_path

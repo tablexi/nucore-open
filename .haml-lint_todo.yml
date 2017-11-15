@@ -203,7 +203,6 @@ linters:
       - "app/views/shared/_nav.html.haml"
       - "app/views/shared/_problem_order_details.html.haml"
       - "app/views/shared/nav/_manage_facilities.html.haml"
-      - "app/views/shared/timeline/_facility_tooltip.html.haml"
       - "app/views/shared/timeline/_instrument.html.haml"
       - "app/views/statements/show.html.haml"
       - "vendor/engines/sanger_sequencing/app/views/sanger_sequencing/admin/batches/_submission_list.html.haml"

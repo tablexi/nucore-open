@@ -2,6 +2,8 @@ require "date"
 
 class Reservation < ActiveRecord::Base
 
+  acts_as_paranoid # soft deletes
+
   include DateHelper
   include Reservations::DateSupport
   include Reservations::Validations

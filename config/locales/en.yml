@@ -138,6 +138,7 @@ en:
       facility_tooltip:
         admin_reservation: Administrative Hold
         offline_reservation: Instrument Offline
+        expiration: Expires %{time} prior
     update: Update
 
   global_search:

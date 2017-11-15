@@ -433,10 +433,10 @@ RSpec.describe FacilityReservationsController do
   end
 
   context "admin" do
-    before :each do
-      @reservation.order_detail_id = nil
-      @reservation.save
-      @reservation.reload
+    let(:admin_reservation) { create(:admin_reservation, product: @product) }
+
+    before do
+      @reservation = admin_reservation
       @params = { facility_id: @authable.url_name, instrument_id: @product.url_name, reservation_id: @reservation.id }
     end
 

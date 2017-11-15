@@ -24,7 +24,38 @@
 
 = simple_form_for(@reservation, url: facility_order_order_detail_reservation_path, html: {method: :put}) do |f|
   = f.error_messages
-  = render partial: "reservation_fields", locals: {f: f}
+
+  - if @reservation.admin_editable?
+    .datetime-block
+      = f.input :reserve_start_date, input_html: { class: "datepicker" }
+      .control-group
+        .controls
+          .string.optional.control-label &nbsp;
+          = time_select f, :reserve_start
+      = f.input :duration_mins, input_html: { class: "timeinput" }
+  - else
+    = f.input :reserve_start_date, label: "Reservation", as: :readonly, input_html: { value: @reservation.reserve_to_s }
+
+  .clearfix
+
+  - if @reservation.can_edit_actuals?
+    .datetime-block
+      = f.input :actual_start_date, input_html: { class: "datepicker" }
+      .control-group
+        .controls
+          .string.optional.control-label &nbsp;
+          = time_select f, :actual_start
+      = f.input :actual_duration_mins, input_html: { class: "timeinput" }
+    - unless @reservation.has_actuals?
+      .copy_actual_from_reservation
+        = link_to "Copy from reservation", "#"
+        %span.start_date.hidden= @reservation.reserve_start_at
+        %span.end_date.hidden= @reservation.reserve_end_at
+    - if @instrument.reservation_only?
+      %li.alert This is a reservation only instrument. Pricing is determined by the reservation times.
+  - else
+    = f.input :actual_start_date, as: :readonly, input_html: { value: @reservation.actuals_string }
+
   .clearfix
   %ul.inline
     %li= f.submit "Save", class: "btn"

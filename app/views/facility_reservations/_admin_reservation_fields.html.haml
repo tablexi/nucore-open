@@ -1,0 +1,46 @@
+.control-group
+  = f.input :category do
+    = f.select :category, options_for_select(admin_category_collection, f.object.category), include_blank: "Select a Category"
+.js--timeFieldAdjustor
+  .datetime-block
+    = f.input :reserve_start_date, input_html: { class: "datepicker" }
+    .control-group
+      .controls
+        .string.optional.control-label &nbsp;
+        = time_select f, :reserve_start
+    = f.input :duration_mins, input_html: { class: "timeinput" }
+
+    = f.input :reserve_end_date, input_html: { class: "datepicker" }
+    .control-group
+      .controls
+        .string.optional.control-label &nbsp;
+        = time_select f, :reserve_end, minute_step: 1
+
+.clearfix
+
+= f.input :admin_note, input_html: { class: "span6" } unless @order_detail
+
+.checkboxControl
+  = f.input :expires?, as: :boolean, input_html: { data: { disables: ".admin_reservation_expires_mins_before" } }, wrapper_html: { class: "checkboxControl__checkbox" }
+  = f.input :expires_mins_before, input_html: { class: "timeinput" }
+
+.clearfix
+
+:coffeescript
+  $ ->
+    new ReservationTimeFieldAdjustor(
+      $(".js--timeFieldAdjustor"),
+      "start": [
+        "admin_reservation[reserve_start_date]",
+        "admin_reservation[reserve_start_hour]",
+        "admin_reservation[reserve_start_min]",
+        "admin_reservation[reserve_start_meridian]"
+      ]
+      "end": [
+        "admin_reservation[reserve_end_date]",
+        "admin_reservation[reserve_end_hour]",
+        "admin_reservation[reserve_end_min]",
+        "admin_reservation[reserve_end_meridian]"
+      ]
+      "duration": "admin_reservation[duration_mins]"
+    )

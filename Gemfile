@@ -29,6 +29,7 @@ gem "awesome_nested_set", "~> 3.1.3"
 gem "nokogiri", ">= 1.8.1"
 gem "rails-observers"
 gem "icalendar"
+gem "paranoia"
 
 ## views
 gem "sass-rails", "~> 5.0.6"

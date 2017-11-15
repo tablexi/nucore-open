@@ -356,6 +356,8 @@ GEM
       cocaine (~> 0.5.5)
       mime-types
     parallel (1.12.0)
+    paranoia (2.4.0)
+      activerecord (>= 4.0, < 5.2)
     parser (2.4.0.0)
       ast (~> 2.2)
     pdf-reader (2.0.0)
@@ -626,6 +628,7 @@ DEPENDENCIES
   oj (~> 3.2.0)
   paper_trail
   paperclip (~> 4.2.0)
+  paranoia
   poltergeist
   prawn (= 0.12)
   prawn_rails (= 0.0.11)

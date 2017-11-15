@@ -24,10 +24,12 @@ module Reservations
           email: created_by.try(:full_name),
         }
       else
-        {
+        hash = {
           title: model_name.human,
           email: created_by.try(:full_name),
         }
+        hash[:expiration] = "Expires #{MinutesToTimeFormatter.new(expires_mins_before)} prior" if expires_mins_before.present?
+        hash
       end
     end
 

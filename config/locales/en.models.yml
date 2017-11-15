@@ -330,6 +330,7 @@ en:
         canceled_by: Canceled By
         canceled_at: Canceled At
         type: Type
+        expires_mins_before: Expires Time Prior
       statement:
         id: "Invoice #"
         created_by: Sent By
