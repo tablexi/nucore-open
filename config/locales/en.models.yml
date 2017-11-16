@@ -330,7 +330,8 @@ en:
         canceled_by: Canceled By
         canceled_at: Canceled At
         type: Type
-        expires_mins_before: Expires Time Prior
+        expires?: Release In Advance?
+        expires_mins_before: "Release hh:mm Prior To Start"
       statement:
         id: "Invoice #"
         created_by: Sent By
