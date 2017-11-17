@@ -103,6 +103,7 @@ class FacilityReservationsController < ApplicationController
     @reservation = @reservation.becomes(AdminReservation)
     @reservation.round_reservation_times
     @reservation_form = AdminReservationForm.new(@reservation)
+    @reservation_form.repeat_end_date = format_usa_date(@reservation.reserve_end_at)
     set_windows
 
     render layout: "two_column"
@@ -116,8 +117,6 @@ class FacilityReservationsController < ApplicationController
     @reservation = @instrument.admin_reservations.new
     @reservation_form = AdminReservationForm.new(@reservation)
     @reservation_form.assign_attributes(admin_reservation_params.merge(created_by: current_user))
-    # @reservation.assign_attributes(admin_reservation_params.merge(created_by: current_user))
-    # @reservation.assign_times_from_params(params[:admin_reservation])
     @reservation_form.assign_times_from_params(params[:admin_reservation])
 
     if @reservation_form.save

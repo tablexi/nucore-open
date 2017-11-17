@@ -2,6 +2,13 @@ class AdminReservationForm
 
   include ActiveModel::Validations
 
+  REPEAT_OPTIONS = %w(
+    daily
+    weekdays_only
+    weekly
+    monthly
+  ).freeze
+
   delegate :to_key, :to_model, to: :reservation
   delegate :category, :reserve_start_date, :reserve_start_hour,
            :reserve_start_min, :reserve_start_meridian, :duration_mins,
@@ -21,6 +28,8 @@ class AdminReservationForm
 
   def assign_attributes(attrs)
     @reservation.assign_attributes(attrs.except(:repeat_frequency, :repeat_end_date))
+    @repeat_frequency = attrs[:repeat_frequency]
+    @repeat_end_date = attrs[:repeat_end_date]
   end
 
   def save
@@ -33,12 +42,31 @@ class AdminReservationForm
     end
   end
 
-  def repeats?
-    nil
+  def create_recurring_reservations
+    case repeat_frequency
+    when "Daily"
+      reservation = build_next_reservation(1.day, @reservation)
+
+      while reservation.reserve_start_date <= repeat_end_date
+        reservation.save
+        reservation = build_next_reservation(1.day, reservation)
+      end
+    when "Weekdays Only"
+    when "Weekly"
+      build_next_reservation(1.week)
+    when "Monthly"
+      build_next_reservation(1.month)
+    else
+      raise ArgumentError
+    end
+
+    true
   end
 
-  def create_recurring_reservations
-    true
+  def build_next_reservation(increment, previous_reservation)
+    reservation = previous_reservation.dup
+    reservation.reserve_start_date += increment
+    reservation.reserve_end_date += increment
   end
 
 end
