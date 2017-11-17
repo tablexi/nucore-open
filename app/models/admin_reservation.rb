@@ -10,6 +10,13 @@ class AdminReservation < Reservation
     other
   ).freeze
 
+  REPEAT_OPTIONS = %w(
+    daily
+    weekdays_only
+    weekly
+    monthly
+  )
+
   belongs_to :product
 
   validates :category,
