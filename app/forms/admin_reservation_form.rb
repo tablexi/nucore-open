@@ -8,6 +8,7 @@ class AdminReservationForm
            :reserve_end_date, :reserve_end_hour, :reserve_end_min,
            :reserve_end_meridian, :admin_note, :expires?,
            :expires_mins_before, to: :reservation
+  delegate :assign_times_from_params, to: :reservation
 
   attr_accessor :repeats, :repeat_frequency, :repeat_end_date
   attr_reader :reservation
@@ -19,7 +20,7 @@ class AdminReservationForm
   end
 
   def assign_attributes(attrs)
-    @reservation.assign_attributes(attrs.except(:repeats?, :repeat_interval, :repeat_num))
+    @reservation.assign_attributes(attrs.except(:repeat_frequency, :repeat_end_date))
   end
 
   def save
@@ -33,7 +34,11 @@ class AdminReservationForm
   end
 
   def repeats?
-    !!repeats
+    nil
+  end
+
+  def create_recurring_reservations
+    true
   end
 
 end
