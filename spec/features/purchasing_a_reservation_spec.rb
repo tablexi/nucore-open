@@ -43,7 +43,7 @@ RSpec.describe "Purchasing a reservation" do
     end
 
     it "has an error" do
-      expect(page).to have_content "must start at a future time"
+      expect(page).to have_content "must be in the future"
     end
   end
 

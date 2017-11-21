@@ -956,7 +956,7 @@ RSpec.describe Reservation do
                                                     duration_mins: 61,
                                                     split_times: true)
       expect(@reservation).not_to be_valid
-      expect(@reservation.errors[:base]).to include "The reservation is too long"
+      expect(@reservation.errors).to be_added(:base, :too_long, length: 60)
     end
 
     context "when the reservation does not exceed the maximum length" do
@@ -995,7 +995,7 @@ RSpec.describe Reservation do
                                                     duration_mins: 29,
                                                     split_times: true)
       expect(@reservation).not_to be_valid
-      expect(@reservation.errors[:base]).to include "The reservation is too short"
+      expect(@reservation.errors).to be_added(:base, :too_short, length: 30)
     end
 
     it "allows reservations over the minimum length" do

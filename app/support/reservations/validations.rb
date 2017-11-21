@@ -123,7 +123,7 @@ module Reservations::Validations
   end
 
   def satisfies_minimum_length
-    errors.add(:base, "The reservation is too short") unless satisfies_minimum_length?
+    errors.add(:base, :too_short, length: product.min_reserve_mins) unless satisfies_minimum_length?
   end
 
   def satisfies_maximum_length?
@@ -139,11 +139,11 @@ module Reservations::Validations
   end
 
   def satisfies_maximum_length
-    errors.add(:base, "The reservation is too long") unless satisfies_maximum_length?
+    errors.add(:base, :too_long, length: product.max_reserve_mins) unless satisfies_maximum_length?
   end
 
   def instrument_is_available_to_reserve
-    errors.add(:base, "The reservation spans time that the instrument is unavailable for reservation") unless instrument_is_available_to_reserve?
+    errors.add(:base, :unavailable_to_reserve) unless instrument_is_available_to_reserve?
   end
 
   def instrument_is_available_to_reserve?(start_at = reserve_start_at, end_at = reserve_end_at)
@@ -165,7 +165,7 @@ module Reservations::Validations
 
   def in_the_future
     if reserve_start_at_changed?
-      errors.add(:reserve_start_at, "The reservation must start at a future time") unless in_the_future?
+      errors.add(:reserve_start_at, :in_past) unless in_the_future?
     end
   end
 
@@ -178,7 +178,7 @@ module Reservations::Validations
   end
 
   def in_window
-    errors.add(:base, "The reservation is too far in advance") unless in_window?
+    errors.add(:base, :out_of_window) unless in_window?
   end
 
   # return the longest available reservation window for the groups

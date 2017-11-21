@@ -81,8 +81,14 @@ en:
             base:
               conflict: The reservation conflicts with another reservation.
               conflict_in_cart: The reservation conflicts with another reservation in your cart. Please purchase or remove it then continue.
+              out_of_window: The reservation is too far in advance
+              unavailable_to_reserve: The reservation spans time that the instrument is unavailable for reservation
+              too_long: The reservation is too long. It cannot be longer than %{length} minutes.
+              too_short: The reservation is too short. It must be at least %{length} minutes.
             reserve_start_at:
-              after_cutoff: must be at least %{hours} hours in the future.
+              after_cutoff: must be at least %{hours} hours in the future
+              in_past: must be in the future
+
         stored_file:
           attributes:
             name:
