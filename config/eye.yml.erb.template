@@ -40,6 +40,12 @@ processes:
       stderr: log/unicorn.stderr.log
       monitor_children:
         stop_command: "kill -QUIT {PID}"
+        checks:
+          - name: memory
+            config:
+              times: 3
+              every: 20 seconds
+              below: 512 megabytes # Change this per installation based on box size
       user_commands:
         rotate: "kill -USR1 {PID}"
 
@@ -67,3 +73,9 @@ processes:
       stop_grace: 30 seconds
       notify:
         crash: error
+    checks:
+      - name: memory
+        config:
+          times: 3
+          every: 20 seconds
+          below: 1 gigabyte # Change this per installation based on box size
