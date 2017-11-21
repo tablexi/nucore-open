@@ -178,7 +178,7 @@ class Reservation < ActiveRecord::Base
       save
     else
       self.reserved_by_admin = false
-      save_extended_validations
+      save(context: :user_purchase)
     end
   end
 

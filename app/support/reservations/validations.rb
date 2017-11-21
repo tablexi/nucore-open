@@ -25,6 +25,15 @@ module Reservations::Validations
     validate :starts_before_ends
     validate :duration_is_interval
     validates :actual_duration_mins, presence: true, if: ->(r) { r.actual_start_at? && r.editing_time_data }
+
+    # Validations when user purchasing for self
+    validate :does_not_conflict_with_admin_reservation, on: [:user_purchase, :walkup_available]
+    validate :in_window,
+             :in_the_future,
+             on: :user_purchase
+    validate :starts_before_cutoff,
+             on: :user_purchase,
+             if: :requires_cutoff_validation?
   end
 
   # Validation Methods
@@ -148,21 +157,6 @@ module Reservations::Validations
             end
 
     rules.cover?(start_at, end_at)
-  end
-
-  # Extended validation methods
-  def save_extended_validations(options = {})
-    perform_validations(options)
-    in_window
-    in_the_future
-    starts_before_cutoff if requires_cutoff_validation?
-    does_not_conflict_with_admin_reservation
-    return false if errors.any?
-    save
-  end
-
-  def save_extended_validations!
-    raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations
   end
 
   def in_the_future?
