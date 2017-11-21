@@ -1,6 +1,7 @@
 class AdminReservationForm
 
   include ActiveModel::Validations
+  include DateHelper
 
   REPEAT_OPTIONS = %w(
     daily
@@ -20,6 +21,8 @@ class AdminReservationForm
   attr_accessor :repeats, :repeat_frequency, :repeat_end_date
   attr_reader :reservation
 
+  validates :repeat_frequency, inclusion: { in: REPEAT_OPTIONS, allow_nil: true }
+
   # validates :max_end_date
 
   def initialize(reservation)
@@ -29,20 +32,31 @@ class AdminReservationForm
   def assign_attributes(attrs)
     @reservation.assign_attributes(attrs.except(:repeat_frequency, :repeat_end_date))
     @repeat_frequency = attrs[:repeat_frequency]
-    @repeat_end_date = attrs[:repeat_end_date]
+    # TODO: Handle invalid dates
+    @repeat_end_date = parse_usa_date(attrs[:repeat_end_date])
+  end
+
+  def valid?
+    [@reservation.valid?, super].each {}
+    # errors does not support `merge`
+    @reservation.errors.each do |k, errors|
+      errors.add(k, errors)
+    end
+    errors.none?
   end
 
   def save
-    if [@reservation, self].map(&:valid?).all?
+    if valid?
       @reservation.save
       create_recurring_reservations
     else
-      self.errors.merge(@registration.errors)
       false
     end
   end
 
   def create_recurring_reservations
+    return true if repeat_frequency.blank?
+
     case repeat_frequency
     when "Daily"
       reservation = build_next_reservation(1.day, @reservation)

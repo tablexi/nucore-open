@@ -102,8 +102,9 @@ class FacilityReservationsController < ApplicationController
                    @instrument.admin_reservations.build(duration_mins: @instrument.min_reserve_mins)
     @reservation = @reservation.becomes(AdminReservation)
     @reservation.round_reservation_times
+
     @reservation_form = AdminReservationForm.new(@reservation)
-    @reservation_form.repeat_end_date = format_usa_date(@reservation.reserve_end_at)
+    @reservation_form.repeat_end_date = @reservation.reserve_end_at
     set_windows
 
     render layout: "two_column"
