@@ -682,31 +682,42 @@ RSpec.describe Instrument do
 
   end
 
-  describe "available?" do
+  describe "walkup_available?" do
     subject(:instrument) { FactoryGirl.create :setup_instrument }
 
-    it { is_expected.to be_available }
+    it { is_expected.to be_walkup_available }
 
     context "there is not a current schedule rule" do
       before :each do
         instrument.schedule_rules.destroy_all
       end
 
-      it { is_expected.not_to be_available }
+      it { is_expected.not_to be_walkup_available }
     end
 
     context "zero minimum reservation" do
       before :each do
         instrument.update_attributes(min_reserve_mins: 0)
       end
-      it { is_expected.to be_available }
+      it { is_expected.to be_walkup_available }
     end
 
     context "with nil minimum reservation" do
       before :each do
         instrument.update_attributes(min_reserve_mins: nil)
       end
-      it { is_expected.to be_available }
+      it { is_expected.to be_walkup_available }
+    end
+
+    context "with an admin reservation" do
+      let!(:reservation) do
+        FactoryGirl.create(:admin_reservation,
+                           reserve_start_at: 30.minutes.ago,
+                           reserve_end_at: 30.minutes.from_now,
+                           product: instrument)
+      end
+
+      it { is_expected.not_to be_walkup_available }
     end
 
     context "reservation only instrument" do
@@ -718,7 +729,7 @@ RSpec.describe Instrument do
                              product: instrument
         end
 
-        it { is_expected.not_to be_available }
+        it { is_expected.not_to be_walkup_available }
 
         context "but it was canceled" do
           let(:user) { FactoryGirl.build :user }
@@ -729,7 +740,7 @@ RSpec.describe Instrument do
             end
           end
 
-          it { is_expected.to be_available }
+          it { is_expected.to be_walkup_available }
         end
       end
 
@@ -738,7 +749,7 @@ RSpec.describe Instrument do
           instrument.update_attributes!(min_reserve_mins: nil)
         end
 
-        it { is_expected.to be_available }
+        it { is_expected.to be_walkup_available }
       end
     end
 
@@ -761,7 +772,7 @@ RSpec.describe Instrument do
                                           actual_start_at: 30.minutes.ago)
           end
 
-          it { is_expected.not_to be_available }
+          it { is_expected.not_to be_walkup_available }
 
           context "but it was ended already" do
             before :each do
@@ -769,7 +780,7 @@ RSpec.describe Instrument do
                                             actual_end_at: 10.minutes.ago)
             end
 
-            it { is_expected.to be_available }
+            it { is_expected.to be_walkup_available }
           end
         end
       end

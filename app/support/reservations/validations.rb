@@ -25,6 +25,15 @@ module Reservations::Validations
     validate :starts_before_ends
     validate :duration_is_interval
     validates :actual_duration_mins, presence: true, if: ->(r) { r.actual_start_at? && r.editing_time_data }
+
+    # Validations when user purchasing for self
+    validate :does_not_conflict_with_admin_reservation, on: [:user_purchase, :walkup_available]
+    validate :in_window,
+             :in_the_future,
+             on: :user_purchase
+    validate :starts_before_cutoff,
+             on: :user_purchase,
+             if: :requires_cutoff_validation?
   end
 
   # Validation Methods
@@ -114,7 +123,7 @@ module Reservations::Validations
   end
 
   def satisfies_minimum_length
-    errors.add(:base, "The reservation is too short") unless satisfies_minimum_length?
+    errors.add(:base, :too_short, length: product.min_reserve_mins) unless satisfies_minimum_length?
   end
 
   def satisfies_maximum_length?
@@ -130,11 +139,11 @@ module Reservations::Validations
   end
 
   def satisfies_maximum_length
-    errors.add(:base, "The reservation is too long") unless satisfies_maximum_length?
+    errors.add(:base, :too_long, length: product.max_reserve_mins) unless satisfies_maximum_length?
   end
 
   def instrument_is_available_to_reserve
-    errors.add(:base, "The reservation spans time that the instrument is unavailable for reservation") unless instrument_is_available_to_reserve?
+    errors.add(:base, :unavailable_to_reserve) unless instrument_is_available_to_reserve?
   end
 
   def instrument_is_available_to_reserve?(start_at = reserve_start_at, end_at = reserve_end_at)
@@ -150,28 +159,13 @@ module Reservations::Validations
     rules.cover?(start_at, end_at)
   end
 
-  # Extended validation methods
-  def save_extended_validations(options = {})
-    perform_validations(options)
-    in_window
-    in_the_future
-    starts_before_cutoff if requires_cutoff_validation?
-    does_not_conflict_with_admin_reservation
-    return false if errors.any?
-    save
-  end
-
-  def save_extended_validations!
-    raise ActiveRecord::RecordInvalid.new(self) unless save_extended_validations
-  end
-
   def in_the_future?
     reserve_start_at > Time.zone.now
   end
 
   def in_the_future
     if reserve_start_at_changed?
-      errors.add(:reserve_start_at, "The reservation must start at a future time") unless in_the_future?
+      errors.add(:reserve_start_at, :in_past) unless in_the_future?
     end
   end
 
@@ -184,7 +178,7 @@ module Reservations::Validations
   end
 
   def in_window
-    errors.add(:base, "The reservation is too far in advance") unless in_window?
+    errors.add(:base, :out_of_window) unless in_window?
   end
 
   # return the longest available reservation window for the groups

@@ -55,7 +55,7 @@ module ProductsHelper
     if product.offline?
       { class: ["fa fa-calendar fa-2x", "in-use"],
         title: text("instruments.offline.note") }
-    elsif product.available?
+    elsif product.walkup_available?
       { class: ["fa fa-calendar fa-2x", "available"],
         title: text("instruments.public_schedule.available") }
     else

@@ -43,7 +43,7 @@ module Products::SchedulingSupport
     schedule.reservations.active
   end
 
-  def available?(time = Time.zone.now)
+  def walkup_available?(time = Time.zone.now)
     # zero and nil should default to 1 minute
     reservation_length = [min_reserve_mins.to_i, reserve_interval.to_i].max
     reservation = Reservation.new(
@@ -52,7 +52,7 @@ module Products::SchedulingSupport
       reserve_end_at: time + reservation_length.minutes,
       blackout: true # so it's not considered an admin and allowed to overlap
     )
-    reservation.valid?
+    reservation.valid?(:walkup_available)
   end
 
   # find the next available reservation based on schedule rules and existing reservations
