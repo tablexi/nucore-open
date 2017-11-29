@@ -21,10 +21,11 @@ class AdminReservationForm
   attr_accessor :repeats, :repeat_frequency, :repeat_end_date
   attr_reader :reservation
 
-  validates :repeat_frequency, inclusion: { in: REPEAT_OPTIONS.map(&:titleize), allow_nil: true }
+  validates :repeat_frequency, inclusion: { in: REPEAT_OPTIONS, allow_nil: true }
   validates :repeat_end_date, presence: true
 
-  validate :max_end_date
+  validate :cannot_exceed_max_end_date
+  # validate :repeat_end_date_before_date
 
   def initialize(reservation)
     @reservation = reservation
@@ -60,13 +61,13 @@ class AdminReservationForm
     recurrence = NuRecurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.end_of_day)
 
     repeats = case repeat_frequency
-    when "Daily"
+    when "daily"
       recurrence.daily
-    when "Weekdays Only"
+    when "weekdays_only"
       recurrence.weekdays
-    when "Weekly"
+    when "weekly"
       recurrence.weekly
-    when "Monthly"
+    when "monthly"
       recurrence.monthly
     else
       # no repeat
@@ -81,7 +82,11 @@ class AdminReservationForm
   end
 
   def max_end_date
-    if repeat_end_date > Time.current + 12.weeks
+    12.weeks.from_now
+  end
+
+  def cannot_exceed_max_end_date
+    if repeat_end_date && repeat_end_date > max_end_date
       errors.add :repeat_end_date, :too_far_in_future
     end
   end
@@ -89,6 +94,10 @@ class AdminReservationForm
 end
 
 #####
+# move to models, change name to Recurrence
+# write specs for recurrence object, + recurrence feature specs (one happy path)
+# specs for form object (validation rules, other recurrence types)
+# add group id (uuid)
 
 # NuRecurrence.new(30.days.ago, 30.days.ago + 1.hour).weekdays.take(10).map { |t| [t.start_time, t.end_time] }
 # NuRecurrence.new(30.days.ago, 30.days.ago + 1.hour, until_time: 10.days.ago).weekdays.map { |t| [t.start_time, t.end_time] }
