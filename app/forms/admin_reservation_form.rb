@@ -21,18 +21,19 @@ class AdminReservationForm
   attr_accessor :repeats, :repeat_frequency, :repeat_end_date
   attr_reader :reservation
 
-  validates :repeat_frequency, inclusion: { in: REPEAT_OPTIONS, allow_nil: true }
+  validates :repeat_frequency, inclusion: { in: REPEAT_OPTIONS.map(&:titleize), allow_nil: true }
+  validates :repeat_end_date, presence: true
 
-  # validates :max_end_date
+  validate :max_end_date
 
   def initialize(reservation)
     @reservation = reservation
   end
 
   def assign_attributes(attrs)
-    @reservation.assign_attributes(attrs.except(:repeat_frequency, :repeat_end_date))
+    @reservation.assign_attributes(attrs.except(:repeat_frequency, :repeat_end_date, :repeats))
+    @repeats = attrs[:repeats]
     @repeat_frequency = attrs[:repeat_frequency]
-    # TODO: Handle invalid dates
     @repeat_end_date = parse_usa_date(attrs[:repeat_end_date])
   end
 
@@ -47,40 +48,83 @@ class AdminReservationForm
 
   def save
     if valid?
-      @reservation.save
-      create_recurring_reservations
+      # @reservation.save
+      reservations = create_recurring_reservations
+      reservations.map(&:save).all?
     else
       false
     end
   end
 
   def create_recurring_reservations
-    return true if repeat_frequency.blank?
+    recurrence = NuRecurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.end_of_day)
 
-    case repeat_frequency
+    repeats = case repeat_frequency
     when "Daily"
-      reservation = build_next_reservation(1.day, @reservation)
-
-      while reservation.reserve_start_date <= repeat_end_date
-        reservation.save
-        reservation = build_next_reservation(1.day, reservation)
-      end
+      recurrence.daily
     when "Weekdays Only"
+      recurrence.weekdays
     when "Weekly"
-      build_next_reservation(1.week)
+      recurrence.weekly
     when "Monthly"
-      build_next_reservation(1.month)
+      recurrence.monthly
     else
-      raise ArgumentError
+      # no repeat
+      recurrence.daily.take(1)
     end
 
-    true
+    repeats.map do |t|
+      @reservation.dup.tap do |res|
+        res.assign_attributes(reserve_start_at: t.start_time, reserve_end_at: t.end_time)
+      end
+    end
   end
 
-  def build_next_reservation(increment, previous_reservation)
-    reservation = previous_reservation.dup
-    reservation.reserve_start_date += increment
-    reservation.reserve_end_date += increment
+  def max_end_date
+    if repeat_end_date > Time.current + 12.weeks
+      errors.add :repeat_end_date, :too_far_in_future
+    end
+  end
+
+end
+
+#####
+
+# NuRecurrence.new(30.days.ago, 30.days.ago + 1.hour).weekdays.take(10).map { |t| [t.start_time, t.end_time] }
+# NuRecurrence.new(30.days.ago, 30.days.ago + 1.hour, until_time: 10.days.ago).weekdays.map { |t| [t.start_time, t.end_time] }
+class NuRecurrence
+
+  include Enumerable
+  delegate :each, to: :to_enum
+
+  def initialize(start_at, end_at, until_time: nil)
+    @until_time = until_time
+    @schedule = IceCube::Schedule.new(
+      start_at, end_time: end_at)
+  end
+
+  def daily
+    @schedule.add_recurrence_rule IceCube::Rule.daily.until(@until_time)
+    self
+  end
+
+  def weekdays
+    @schedule.add_recurrence_rule IceCube::Rule.weekly.day(:monday, :tuesday, :wednesday, :thursday, :friday).until(@until_time)
+    self
+  end
+
+  def weekly
+    @schedule.add_recurrence_rule IceCube::Rule.weekly.until(@until_time)
+    self
+  end
+
+  def monthly
+    @schedule.add_recurrence_rule IceCube::Rule.monthly.until(@until_time)
+    self
+  end
+
+  def to_enum
+    @schedule.all_occurrences_enumerator
   end
 
 end
