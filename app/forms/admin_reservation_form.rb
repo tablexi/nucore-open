@@ -98,7 +98,7 @@ class AdminReservationForm
 end
 
 #####
-# write specs for recurrence object, + recurrence feature specs (one happy path)
+# recurrence feature specs (one happy path)
 # specs for form object (validation rules, other recurrence types)
 # add group id (uuid)
 

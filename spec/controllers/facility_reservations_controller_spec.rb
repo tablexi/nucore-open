@@ -128,6 +128,7 @@ RSpec.describe FacilityReservationsController do
 
         it "creates an admin_reservation", :aggregate_failures do
           expect(assigns[:reservation]).to be_present.and be_admin
+          # what is a better way to test this
           expect(assigns[:reservation]).not_to be_new_record
         end
 
