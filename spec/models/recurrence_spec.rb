@@ -15,7 +15,7 @@ RSpec.describe Recurrence do
 
     it "only includes weekdays", :aggregate_failures do
       expect(repeats.map(&:wday)).to include(1..5)
-      expect(repeats.map(&:wday)).not_to include(6,7)
+      expect(repeats.map(&:wday)).not_to include(0, 6)
     end
   end
 

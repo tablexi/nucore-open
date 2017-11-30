@@ -61,17 +61,17 @@ class AdminReservationForm
     recurrence = Recurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.try(:end_of_day))
 
     repeats = case repeat_frequency
-    when "daily"
-      recurrence.daily
-    when "weekdays_only"
-      recurrence.weekdays
-    when "weekly"
-      recurrence.weekly
-    when "monthly"
-      recurrence.monthly
-    else
-      # no repeat
-      recurrence.daily.take(1)
+              when "daily"
+                recurrence.daily
+              when "weekdays_only"
+                recurrence.weekdays
+              when "weekly"
+                recurrence.weekly
+              when "monthly"
+                recurrence.monthly
+              else
+                # no repeat
+                recurrence.daily.take(1)
     end
 
     repeats.map do |t|
@@ -98,7 +98,5 @@ class AdminReservationForm
 end
 
 #####
-# recurrence feature specs (one happy path)
 # specs for form object (validation rules, other recurrence types)
 # add group id (uuid)
-
