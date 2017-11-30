@@ -25,7 +25,7 @@ class AdminReservationForm
   validates :repeat_end_date, presence: true, if: :repeats?
 
   validate :cannot_exceed_max_end_date
-  # validate :repeat_end_date_before_date
+  validate :repeat_end_date_after_initial_date
 
   def initialize(reservation)
     @reservation = reservation
@@ -72,7 +72,7 @@ class AdminReservationForm
               else
                 # no repeat
                 recurrence.daily.take(1)
-    end
+              end
 
     repeats.map do |t|
       @reservation.dup.tap do |res|
@@ -88,6 +88,12 @@ class AdminReservationForm
   def cannot_exceed_max_end_date
     if repeat_end_date && repeat_end_date > max_end_date
       errors.add :repeat_end_date, :too_far_in_future
+    end
+  end
+
+  def repeat_end_date_after_initial_date
+    if repeat_end_date && repeat_end_date < parse_usa_date(reserve_start_date)
+      errors.add :repeat_end_date, :must_be_after_initial_reservation
     end
   end
 

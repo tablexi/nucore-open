@@ -24,6 +24,8 @@ en:
             repeat_end_date:
               blank: must be a valid date
               too_far_in_future: too far in future
+              must_be_after_initial_reservation: must occur after initial reservation
+
 
 
   activerecord:
