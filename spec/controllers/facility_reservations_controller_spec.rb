@@ -124,30 +124,20 @@ RSpec.describe FacilityReservationsController do
       before { maybe_grant_always_sign_in :director }
 
       context "when the reservation is valid" do
-        before { do_request }
 
-        it "creates an admin_reservation", :aggregate_failures do
-          expect(assigns[:reservation]).to be_present.and be_admin
-          # what is a better way to test this
-          expect(assigns[:reservation]).not_to be_new_record
-        end
-
-        it "sets times", :aggregate_failures do
-          expect(assigns[:reservation].reserve_start_at).to eq(reserve_start_at)
-          expect(assigns[:reservation].reserve_end_at)
-            .to eq(reserve_start_at + 60.minutes)
-        end
 
         it "sets admin_note" do
+          do_request
           expect(assigns[:reservation].admin_note).to eq "Testing"
         end
 
         it "sets created_by" do
+          do_request
           expect(assigns[:reservation].created_by).to eq @director
         end
 
-        it "redirects to the facility's schedule page" do
-          is_expected.to redirect_to facility_instrument_schedule_path
+        it "saves it" do
+          expect { do_request }.to change(Reservation, :count).by(1)
         end
       end
 
@@ -157,12 +147,10 @@ RSpec.describe FacilityReservationsController do
           # allowed to per ticket 38975
           allow_any_instance_of(Reservation).to receive(:valid?).and_return(false)
           @params[:reservation] = FactoryGirl.attributes_for(:reservation)
-          do_request
         end
 
         it "does not save the reservation", :aggregate_failures do
-          expect(assigns[:reservation]).to be_new_record
-          is_expected.to render_template :new
+          expect { do_request }.not_to change(Reservation, :count)
         end
       end
     end

@@ -50,14 +50,14 @@ class AdminReservationForm
   def save
     if valid?
       # @reservation.save
-      reservations = create_recurring_reservations
+      reservations = build_recurring_reservations
       reservations.map(&:save).all?
     else
       false
     end
   end
 
-  def create_recurring_reservations
+  def build_recurring_reservations
     recurrence = Recurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.try(:end_of_day))
     group_id = SecureRandom.uuid
 
@@ -103,7 +103,3 @@ class AdminReservationForm
   end
 
 end
-
-#####
-# specs for form object (validation rules, other recurrence types)
-# add group id (uuid)
