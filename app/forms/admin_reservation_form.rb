@@ -58,7 +58,7 @@ class AdminReservationForm
   end
 
   def create_recurring_reservations
-    recurrence = NuRecurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.end_of_day)
+    recurrence = Recurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.end_of_day)
 
     repeats = case repeat_frequency
     when "daily"
@@ -94,46 +94,7 @@ class AdminReservationForm
 end
 
 #####
-# move to models, change name to Recurrence
 # write specs for recurrence object, + recurrence feature specs (one happy path)
 # specs for form object (validation rules, other recurrence types)
 # add group id (uuid)
 
-# NuRecurrence.new(30.days.ago, 30.days.ago + 1.hour).weekdays.take(10).map { |t| [t.start_time, t.end_time] }
-# NuRecurrence.new(30.days.ago, 30.days.ago + 1.hour, until_time: 10.days.ago).weekdays.map { |t| [t.start_time, t.end_time] }
-class NuRecurrence
-
-  include Enumerable
-  delegate :each, to: :to_enum
-
-  def initialize(start_at, end_at, until_time: nil)
-    @until_time = until_time
-    @schedule = IceCube::Schedule.new(
-      start_at, end_time: end_at)
-  end
-
-  def daily
-    @schedule.add_recurrence_rule IceCube::Rule.daily.until(@until_time)
-    self
-  end
-
-  def weekdays
-    @schedule.add_recurrence_rule IceCube::Rule.weekly.day(:monday, :tuesday, :wednesday, :thursday, :friday).until(@until_time)
-    self
-  end
-
-  def weekly
-    @schedule.add_recurrence_rule IceCube::Rule.weekly.until(@until_time)
-    self
-  end
-
-  def monthly
-    @schedule.add_recurrence_rule IceCube::Rule.monthly.until(@until_time)
-    self
-  end
-
-  def to_enum
-    @schedule.all_occurrences_enumerator
-  end
-
-end
