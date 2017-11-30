@@ -22,7 +22,7 @@ class AdminReservationForm
   attr_reader :reservation
 
   validates :repeat_frequency, inclusion: { in: REPEAT_OPTIONS, allow_nil: true }
-  validates :repeat_end_date, presence: true
+  validates :repeat_end_date, presence: true, if: :repeats?
 
   validate :cannot_exceed_max_end_date
   # validate :repeat_end_date_before_date
@@ -58,7 +58,7 @@ class AdminReservationForm
   end
 
   def create_recurring_reservations
-    recurrence = Recurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.end_of_day)
+    recurrence = Recurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.try(:end_of_day))
 
     repeats = case repeat_frequency
     when "daily"
@@ -89,6 +89,10 @@ class AdminReservationForm
     if repeat_end_date && repeat_end_date > max_end_date
       errors.add :repeat_end_date, :too_far_in_future
     end
+  end
+
+  def repeats?
+    repeats == "1"
   end
 
 end
