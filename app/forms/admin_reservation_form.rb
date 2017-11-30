@@ -59,6 +59,7 @@ class AdminReservationForm
 
   def create_recurring_reservations
     recurrence = Recurrence.new(reservation.reserve_start_at, reservation.reserve_end_at, until_time: repeat_end_date.try(:end_of_day))
+    group_id = SecureRandom.uuid
 
     repeats = case repeat_frequency
               when "daily"
@@ -76,7 +77,7 @@ class AdminReservationForm
 
     repeats.map do |t|
       @reservation.dup.tap do |res|
-        res.assign_attributes(reserve_start_at: t.start_time, reserve_end_at: t.end_time)
+        res.assign_attributes(reserve_start_at: t.start_time, reserve_end_at: t.end_time, group_id: group_id)
       end
     end
   end
