@@ -15,7 +15,7 @@ class AdminReservationForm
            :reserve_start_min, :reserve_start_meridian, :duration_mins,
            :reserve_end_date, :reserve_end_hour, :reserve_end_min,
            :reserve_end_meridian, :admin_note, :expires?,
-           :expires_mins_before, to: :reservation
+           :expires_mins_before, :reserve_start_at, to: :reservation
   delegate :assign_times_from_params, to: :reservation
 
   attr_accessor :repeats, :repeat_frequency, :repeat_end_date
@@ -83,7 +83,7 @@ class AdminReservationForm
   end
 
   def max_end_date
-    12.weeks.from_now
+    reserve_start_at + 12.weeks
   end
 
   def cannot_exceed_max_end_date
@@ -93,7 +93,7 @@ class AdminReservationForm
   end
 
   def repeat_end_date_after_initial_date
-    if repeat_end_date && repeat_end_date < parse_usa_date(reserve_start_date)
+    if repeat_end_date && repeat_end_date < reserve_start_at
       errors.add :repeat_end_date, :must_be_after_initial_reservation
     end
   end
