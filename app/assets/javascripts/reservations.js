@@ -9,10 +9,10 @@ $(document).ready(function() {
     if (typeof minDaysFromNow == "undefined") {
       window['minDaysFromNow'] = 0;
     }
-    $("#datepicker").datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow});
+    $("#datepicker").datepicker();
 
     $('.datepicker').each(function(){
-      $(this).datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow})
+      $(this).datepicker()
       		.change(function() {
       			var d = new Date(Date.parse($(this).val()));
       			$('#calendar').fullCalendar('gotoDate', d);

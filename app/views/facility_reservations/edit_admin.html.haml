@@ -2,9 +2,6 @@
   = render "shared/headers/calendar"
   :javascript
     var events_path     = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, :format => 'js', :with_details => true)}";
-    var minDate         = "#{@min_date}";
-    var maxDate         = "#{@max_date}";
-    var maxDaysFromNow  = #{@max_window}; //#{@instrument.max_reservation_window};
     var minTime         = #{@instrument.first_available_hour};
     var maxTime         = #{@instrument.last_available_hour+1};
     var withDetails     = true;
