@@ -49,7 +49,6 @@ class AdminReservationForm
 
   def save
     if valid?
-      # @reservation.save
       reservations = build_recurring_reservations
       reservations.map(&:save).all?
     else

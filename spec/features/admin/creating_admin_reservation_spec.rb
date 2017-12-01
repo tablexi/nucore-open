@@ -28,6 +28,8 @@ RSpec.describe "Creating an admin reservation" do
     fill_in "Repeat end date", with: "10/20/#{fiscal_year}"
     click_button "Create"
 
+    expect(page).to have_content "10/17/#{fiscal_year} 9:30 AM - 10:00 AM"
+    expect(page).to have_content "10/18/#{fiscal_year} 9:30 AM - 10:00 AM"
     expect(page).to have_content "10/19/#{fiscal_year} 9:30 AM - 10:00 AM"
     expect(page).to have_content "10/20/#{fiscal_year} 9:30 AM - 10:00 AM"
   end

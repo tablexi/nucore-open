@@ -12,24 +12,26 @@ RSpec.describe AdminReservationForm do
     describe "cannot_exceed_max_end_date" do
       it "invalid past max end date" do
         form.assign_attributes(repeats: "1", repeat_frequency: "weekly", repeat_end_date: format_usa_date(start_date + 14.weeks))
-        expect(form.valid?).to eq false
+        expect(form).not_to be_valid
+        expect(form.errors).to be_added(:repeat_end_date, :too_far_in_future)
       end
 
       it "valid before max end date" do
         form.assign_attributes(repeats: "1", repeat_frequency: "weekly", repeat_end_date: format_usa_date(start_date + 12.weeks))
-        expect(form.valid?).to eq true
+        expect(form).to be_valid
       end
     end
 
     describe "repeat_end_date_after_initial_date" do
       it "invalid before initial date" do
         form.assign_attributes(repeats: "1", repeat_frequency: "weekly", repeat_end_date: format_usa_date(start_date - 1.day))
-        expect(form.valid?).to eq false
+        expect(form).not_to be_valid
+        expect(form.errors).to be_added(:repeat_end_date, :must_be_after_initial_reservation)
       end
 
       it "valid after initial date" do
         form.assign_attributes(repeats: "1", repeat_frequency: "weekly", repeat_end_date: format_usa_date(start_date + 1.day))
-        expect(form.valid?).to eq true
+        expect(form).to be_valid
       end
     end
   end
@@ -45,7 +47,7 @@ RSpec.describe AdminReservationForm do
         expect(form.build_recurring_reservations.length).to eq 6
       end
 
-      it "sets the group id", :aggregate_failures do
+      it "sets all reservations with the same group id", :aggregate_failures do
         group_ids = form.build_recurring_reservations.map(&:group_id)
         expect(group_ids.uniq.length).to eq 1
         expect(group_ids).to all(be_present)
@@ -89,10 +91,10 @@ RSpec.describe AdminReservationForm do
       end
 
       context "on the 31st" do
-        let(:start_date) { Time.zone.parse("2017-10-31 12:00:00") }
+        let(:start_date) { Time.zone.parse("2017-12-31 12:00:00") }
 
         it "builds reservations with expected dates" do
-          expect(form.build_recurring_reservations.map { |t| t.reserve_start_at.strftime("%F") }).to eq ["2017-10-31", "2017-11-30", "2017-12-31", "2018-01-31"]
+          expect(form.build_recurring_reservations.map { |t| t.reserve_start_at.strftime("%F") }).to eq ["2017-12-31", "2018-01-31", "2018-02-28", "2018-03-31"]
         end
       end
 
@@ -101,6 +103,14 @@ RSpec.describe AdminReservationForm do
 
         it "builds reservations with expected dates" do
           expect(form.build_recurring_reservations.map { |t| t.reserve_start_at.strftime("%F") }).to eq ["2017-11-30", "2017-12-30", "2018-01-30", "2018-02-28"]
+        end
+      end
+
+      context "on a leap year" do
+        let(:start_date) { Time.zone.parse("2015-12-31 12:00:00") }
+
+        it "builds reservations with expected dates" do
+          expect(form.build_recurring_reservations.map { |t| t.reserve_start_at.strftime("%F") }).to eq ["2015-12-31", "2016-01-31", "2016-02-29", "2016-03-31"]
         end
       end
     end
