@@ -6,6 +6,10 @@ en:
       auto_assign_account: "Could not find a valid payment source for purchasing %{product_name}"
 
   activemodel:
+    attributes:
+      admin_reservation_form:
+        expires?: Release In Advance
+        expires_mins_before: "Release hh:mm Prior To Start"
     errors:
       models:
         order_details/reconciler:
@@ -23,7 +27,7 @@ en:
           attributes:
             repeat_end_date:
               blank: must be a valid date
-              too_far_in_future: too far in future
+              too_far_in_future: Cannot be dated more than %{time} in the future
               must_be_after_initial_reservation: must occur after initial reservation
 
 
@@ -343,8 +347,6 @@ en:
         canceled_by: Canceled By
         canceled_at: Canceled At
         type: Type
-        expires?: Release In Advance?
-        expires_mins_before: "Release hh:mm Prior To Start"
       statement:
         id: "Invoice #"
         created_by: Sent By
