@@ -63,6 +63,7 @@ gem "fog-aws"
 gem "rake"
 gem "spreadsheet", "~> 1.1.4"
 gem "daemons", "1.1.9"
+gem "ice_cube"
 
 ## custom
 gem "bulk_email", path: "vendor/engines/bulk_email"

@@ -102,6 +102,9 @@ class FacilityReservationsController < ApplicationController
                    @instrument.admin_reservations.build(duration_mins: @instrument.min_reserve_mins)
     @reservation = @reservation.becomes(AdminReservation)
     @reservation.round_reservation_times
+
+    @reservation_form = AdminReservationForm.new(@reservation)
+    @reservation_form.repeat_end_date = @reservation.reserve_end_at
     set_windows
 
     render layout: "two_column"
@@ -113,10 +116,11 @@ class FacilityReservationsController < ApplicationController
     @instrument =
       current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.admin_reservations.new
-    @reservation.assign_attributes(admin_reservation_params.merge(created_by: current_user))
-    @reservation.assign_times_from_params(params[:admin_reservation])
+    @reservation_form = AdminReservationForm.new(@reservation)
+    @reservation_form.assign_attributes(admin_reservation_params.merge(created_by: current_user))
+    @reservation_form.assign_times_from_params(params[:admin_reservation])
 
-    if @reservation.save
+    if @reservation_form.save
       flash[:notice] = "The reservation has been created successfully."
       redirect_to facility_instrument_schedule_url
     else
@@ -178,8 +182,13 @@ class FacilityReservationsController < ApplicationController
   def admin_reservation_params
     admin_params = params.require(:admin_reservation).permit(:admin_note,
                                                              :expires_mins_before,
-                                                             :category)
+                                                             :category,
+                                                             :repeats,
+                                                             :repeat_frequency,
+                                                             :repeat_end_date)
     admin_params[:expires_mins_before] = nil if params[:admin_reservation][:expires] == "0"
+    admin_params[:repeat_frequency] = nil if params[:admin_reservation][:repeats] == "0"
+    admin_params[:repeat_end_date] = nil if params[:admin_reservation][:repeats] == "0"
     admin_params
   end
 
