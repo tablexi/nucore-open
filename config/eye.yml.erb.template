@@ -17,14 +17,16 @@ triggers:
       within: 5 minutes
 
 notifications:
-  - name: monitoring
-    type: ses
+  - name: crash
+    type: mail
     level: info
-    contact: nucore+eye@example.com
+    contact: eye@nucore.example.com
     config:
-      from: noreply@example.com
-      access_key_id: ~
-      secret_access_key: ~
+      from_mail: noreply@example.com
+      host: smtp.example.com
+      port: 25
+      # domain: ~
+
 
 processes:
   - name: unicorn
@@ -48,6 +50,8 @@ processes:
               below: 512 megabytes # Change this per installation based on box size
       user_commands:
         rotate: "kill -USR1 {PID}"
+      notify:
+        crash: error
 
   # only run on 1 instance
   - name: auto_cancel
