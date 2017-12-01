@@ -41,8 +41,8 @@ class AdminReservationForm
   def valid?
     [@reservation.valid?, super].each {}
     # errors does not support `merge`
-    @reservation.errors.each do |k, errors|
-      errors.add(k, errors)
+    @reservation.errors.each do |k, error_messages|
+      errors.add(k, error_messages)
     end
     errors.none?
   end

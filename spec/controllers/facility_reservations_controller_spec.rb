@@ -125,7 +125,6 @@ RSpec.describe FacilityReservationsController do
 
       context "when the reservation is valid" do
 
-
         it "sets admin_note" do
           do_request
           expect(assigns[:reservation].admin_note).to eq "Testing"
