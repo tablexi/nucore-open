@@ -3,14 +3,14 @@
     = f.select :category, options_for_select(admin_category_collection, f.object.category), include_blank: "Select a Category"
 .js--timeFieldAdjustor
   .datetime-block
-    = f.input :reserve_start_date, input_html: { class: "datepicker" }
+    = f.input :reserve_start_date, input_html: { class: "datepicker__data" }
     .control-group
       .controls
         .string.optional.control-label &nbsp;
         = time_select f, :reserve_start
     = f.input :duration_mins, input_html: { class: "timeinput" }
 
-    = f.input :reserve_end_date, input_html: { class: "datepicker" }
+    = f.input :reserve_end_date, input_html: { class: "datepicker__data" }
     .control-group
       .controls
         .string.optional.control-label &nbsp;
