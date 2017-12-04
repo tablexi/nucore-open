@@ -58,7 +58,7 @@ RSpec.describe Order do
       let!(:order_detail_2) { create(:order_detail, order: order, product: item, account: account, actual_cost: 12, actual_subsidy: 0, price_policy: price_policy) }
       let(:cost) { 22 }
       let(:subsidy) { 5 }
-      let(:total) { 17}
+      let(:total) { 17 }
 
       it "should have the expected cost" do
         expect(order.cost).to eq cost
