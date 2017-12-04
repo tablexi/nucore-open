@@ -8,11 +8,12 @@ $(document).ready(function() {
   function init_datepickers() {
     if (typeof minDaysFromNow == "undefined") {
       window['minDaysFromNow'] = 0;
+      window['maxDaysFromNow'] = 365;
     }
-    $("#datepicker").datepicker();
+    $("#datepicker").datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow});
 
     $('.datepicker').each(function(){
-      $(this).datepicker()
+      $(this).datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow})
       		.change(function() {
       			var d = new Date(Date.parse($(this).val()));
       			$('#calendar').fullCalendar('gotoDate', d);
