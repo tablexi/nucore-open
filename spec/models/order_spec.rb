@@ -81,7 +81,7 @@ RSpec.describe Order do
       it "does include canceled with fee order details in its total" do
         create(:order_detail, order: order, product: item, account: account, actual_cost: 5, actual_subsidy: 0, price_policy: price_policy, state: 'complete', canceled_at: Time.current)
 
-        expect(order.total).to eq (total + 5)
+        expect(order.total).to eq total + 5
       end
     end
 
