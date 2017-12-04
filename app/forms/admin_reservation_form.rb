@@ -87,7 +87,7 @@ class AdminReservationForm
 
   def cannot_exceed_max_end_date
     if repeat_end_date && repeat_end_date > max_end_date
-      errors.add :repeat_end_date, :too_far_in_future
+      errors.add :repeat_end_date, :too_far_in_future, time: "12 weeks"
     end
   end
 

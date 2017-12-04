@@ -13,7 +13,7 @@ RSpec.describe AdminReservationForm do
       it "invalid past max end date" do
         form.assign_attributes(repeats: "1", repeat_frequency: "weekly", repeat_end_date: format_usa_date(start_date + 14.weeks))
         expect(form).not_to be_valid
-        expect(form.errors).to be_added(:repeat_end_date, :too_far_in_future)
+        expect(form.errors).to be_added(:repeat_end_date, :too_far_in_future, time: "12 weeks")
       end
 
       it "valid before max end date" do
