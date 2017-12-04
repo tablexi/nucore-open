@@ -78,13 +78,13 @@
       %td
       %td.currency
         %strong
-          = number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.cost }
+          = number_to_currency @order.cost
       %td.currency
         %strong
-          = number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.subsidy }
+          = number_to_currency @order.subsidy
       %td.currency
         %strong
-          = number_to_currency @order_details.non_canceled.inject(0) { |sum,od| sum + od.total }
+          = number_to_currency @order.total
       %td
 
 - if current_ability.can?(:update, Order)

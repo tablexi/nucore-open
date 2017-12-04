@@ -71,7 +71,7 @@ class Order < ActiveRecord::Base
   end
 
   [:total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy].each do |method_name|
-    define_method(method_name) { total_cost method_name }
+    define_method(method_name) { order_details.non_canceled.to_a.sum(&method_name) }
   end
 
   def in_cart?
@@ -240,13 +240,5 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def total_cost(order_detail_method)
-    cost = 0
-    order_details.each do |od|
-      od_cost = od.method(order_detail_method.to_sym).call
-      cost += od_cost if od_cost
-    end
-    cost
-  end
 
 end

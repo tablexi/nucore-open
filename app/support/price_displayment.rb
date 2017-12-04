@@ -2,7 +2,7 @@
 # Module for use by OrderDetail for easier interface to costs and subsidies
 #
 # Use:
-# order_detail.send(:extend, PriceDisplayment)
+# order_detail.send(:extend, PriceDisplayment) <-- deprecated in favor of using OrderDetailPresenter
 # order_detail.display_cost
 #
 # This will display the actual cost if there is one, otherwise it will fall back to
