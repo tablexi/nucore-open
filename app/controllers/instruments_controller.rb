@@ -11,6 +11,13 @@ class InstrumentsController < ProductsCommonController
 
   skip_before_action :init_product, only: [:instrument_statuses]
 
+  # http://localhost:3000/facilities/all/instruments
+  def index
+    @instruments = Instrument.active
+    @active_tab = "home"
+    render layout: "application"
+  end
+
   # GET /facilities/:facility_id/instruments/:instrument_id
   def show
     assert_product_is_accessible!

@@ -1,0 +1,11 @@
+= content_for :h1 do
+  = Instrument.model_name.human(count: 2)
+
+- if @instruments.any?
+
+  - @instruments.each do |instrument|
+    %h4.header-tight= link_to instrument, facility_instrument_path(instrument.facility, instrument)
+    / %p= instrument.description # probably need to truncate
+
+- else
+  .alert.alert-info= t(".empty", items: Instrument.model_name.human(count: 2))
