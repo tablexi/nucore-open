@@ -46,7 +46,7 @@
         %td= order_detail.wrapped_quantity
         %td= order_detail.order_status.name
         %td= order_detail.display_cost unless order_detail.canceled?
-        %td= order_detail.display_subsidy
+        %td= order_detail.display_subsidy unless order_detail.canceled?
         %td= order_detail.display_total unless order_detail.canceled?
         %td
           - if order_detail.note.present?

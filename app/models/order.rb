@@ -71,7 +71,7 @@ class Order < ActiveRecord::Base
   end
 
   [:total, :cost, :subsidy, :estimated_total, :estimated_cost, :estimated_subsidy].each do |method_name|
-    define_method(method_name) { order_details.non_canceled.to_a.sum(&method_name) }
+    define_method(method_name) { order_details.non_canceled.map(&method_name).compact.sum }
   end
 
   def in_cart?
