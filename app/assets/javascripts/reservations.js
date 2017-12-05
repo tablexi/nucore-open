@@ -9,6 +9,9 @@ $(document).ready(function() {
     if (typeof minDaysFromNow == "undefined") {
       window['minDaysFromNow'] = 0;
     }
+    if (typeof maxDaysFromNow == "undefined") {
+      window['maxDaysFromNow'] = 365;
+    }
     $("#datepicker").datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow});
 
     $('.datepicker').each(function(){

@@ -102,10 +102,8 @@ class FacilityReservationsController < ApplicationController
                    @instrument.admin_reservations.build(duration_mins: @instrument.min_reserve_mins)
     @reservation = @reservation.becomes(AdminReservation)
     @reservation.round_reservation_times
-
     @reservation_form = AdminReservationForm.new(@reservation)
     @reservation_form.repeat_end_date = @reservation.reserve_end_at
-    set_windows
 
     render layout: "two_column"
   end
@@ -124,7 +122,6 @@ class FacilityReservationsController < ApplicationController
       flash[:notice] = "The reservation has been created successfully."
       redirect_to facility_instrument_schedule_url
     else
-      set_windows
       render action: "new", layout: "two_column"
     end
   end
@@ -134,7 +131,6 @@ class FacilityReservationsController < ApplicationController
     @instrument  = current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
-    set_windows
     render layout: "two_column"
   end
 
@@ -143,7 +139,6 @@ class FacilityReservationsController < ApplicationController
     @instrument  = current_facility.instruments.find_by!(url_name: params[:instrument_id])
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
-    set_windows
 
     @reservation.assign_times_from_params(params[:admin_reservation])
     @reservation.assign_attributes(admin_reservation_params)
