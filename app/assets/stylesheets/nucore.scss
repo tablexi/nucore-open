@@ -377,3 +377,16 @@ textarea.wide {
 .checkboxControl__checkbox {
   margin-right: 2.5em;
 }
+
+.productListLine {
+  display: flex;
+}
+
+.productListLine__productName {
+  display: flex-start;
+  padding-right: 1em;
+}
+
+.productListLine__facilityName {
+  display: flex-end;
+}

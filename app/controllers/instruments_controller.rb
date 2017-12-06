@@ -13,7 +13,7 @@ class InstrumentsController < ProductsCommonController
 
   # http://localhost:3000/facilities/all/instruments
   def index
-    @instruments = Instrument.active.order(:name)
+    @instruments = Instrument.active.in_active_facility.order(:name).includes(:facility)
     @active_tab = "home"
     render layout: "application"
   end

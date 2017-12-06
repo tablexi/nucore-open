@@ -63,6 +63,7 @@ class Product < ActiveRecord::Base
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
+  scope :in_active_facility, -> { joins(:facility).where(facilities: { is_active: true }) }
 
   def self.types
     @types ||= [Instrument, Item, Service, TimedService, Bundle]

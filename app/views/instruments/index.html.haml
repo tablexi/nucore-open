@@ -4,7 +4,9 @@
 - if @instruments.any?
 
   - @instruments.each do |instrument|
-    %h4.header-tight= link_to instrument, facility_instrument_path(instrument.facility, instrument)
+    .productListLine
+      %h4.header-tight.productListLine__productName= link_to instrument, facility_instrument_path(instrument.facility, instrument)
+      %h5.header-tightproductListLine__facilityName= link_to instrument.facility, facility_path(instrument.facility)
     / %p= instrument.description # probably need to truncate
 
 - else
