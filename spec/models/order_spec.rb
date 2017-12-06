@@ -54,70 +54,52 @@ RSpec.describe Order do
     let(:user) { create(:user) }
 
     context "actual" do
-      before :each do
-        @cost = @subsidy = 0
-
-        (1..4).each do |i|
-          cost = 10 * i
-          subsidy = 5 * i
-          @cost += cost
-          @subsidy += subsidy
-          order.order_details.create(attributes_for(:order_detail,
-                                                    product_id: item.id,
-                                                    account_id: account.id,
-                                                    actual_cost: cost,
-                                                    actual_subsidy: subsidy,
-                                                    price_policy_id: price_policy.id,
-                                                   ))
-        end
-
-        @total = @cost - @subsidy
-      end
+      let!(:order_detail_1) { create(:order_detail, order: order, product: item, account: account, actual_cost: 10, actual_subsidy: 5, price_policy: price_policy) }
+      let!(:order_detail_2) { create(:order_detail, order: order, product: item, account: account, actual_cost: 12, actual_subsidy: 0, price_policy: price_policy) }
+      let(:cost) { 22 }
+      let(:subsidy) { 5 }
+      let(:total) { cost - subsidy }
 
       it "should have the expected cost" do
-        expect(order.cost).to eq @cost
+        expect(order.cost).to eq cost
       end
 
       it "should have the expected subsidy" do
-        expect(order.subsidy).to eq @subsidy
+        expect(order.subsidy).to eq subsidy
       end
 
       it "should have the expected total" do
-        expect(order.total).to eq @total
+        expect(order.total).to eq total
+      end
+
+      it "does not include canceled state order details in its total" do
+        create(:order_detail, :canceled, order: order, product: item, account: account, actual_cost: 5, actual_subsidy: 0, price_policy: price_policy)
+
+        expect(order.total).to eq total
+      end
+
+      it "does include canceled with fee order details in its total" do
+        create(:order_detail, :canceled_with_cost, order: order, product: item, account: account, actual_cost: 5, actual_subsidy: 0, price_policy: price_policy)
+
+        expect(order.total).to eq total + 5
       end
     end
 
     context "estimated" do
-      before :each do
-        @estimated_cost = @estimated_subsidy = 0
-
-        (1..4).each do |i|
-          cost = 10 * i
-          subsidy = 5 * i
-          @estimated_cost += cost
-          @estimated_subsidy += subsidy
-          order.order_details.create(attributes_for(:order_detail,
-                                                    product_id: item.id,
-                                                    account_id: account.id,
-                                                    estimated_cost: cost,
-                                                    estimated_subsidy: subsidy,
-                                                    price_policy_id: price_policy.id,
-                                                   ))
-        end
-
-        @estimated_total = @estimated_cost - @estimated_subsidy
-      end
+      let!(:order_detail_1) { create(:order_detail, order: order, product: item, account: account, estimated_cost: 10, estimated_subsidy: 5, price_policy: price_policy) }
+      let!(:order_detail_2) { create(:order_detail, order: order, product: item, account: account, estimated_cost: 12, estimated_subsidy: 0, price_policy: price_policy) }
+      let!(:canceled_order_detail) { create(:order_detail, order: order, product: item, account: account, estimated_cost: 8, estimated_subsidy: 2, price_policy: price_policy, state: 'canceled') }
 
       it "should have the expected estimated_cost" do
-        expect(order.estimated_cost).to eq @estimated_cost
+        expect(order.estimated_cost).to eq 22
       end
 
       it "should have the expected estimated_subsidy" do
-        expect(order.estimated_subsidy).to eq @estimated_subsidy
+        expect(order.estimated_subsidy).to eq 5
       end
 
       it "should have the expected estimated_total" do
-        expect(order.estimated_total).to eq @estimated_total
+        expect(order.estimated_total).to eq 17
       end
     end
   end

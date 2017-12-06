@@ -45,9 +45,9 @@
             = order_detail.reservation
         %td= order_detail.wrapped_quantity
         %td= order_detail.order_status.name
-        %td= order_detail.display_cost
-        %td= order_detail.display_subsidy
-        %td= order_detail.display_total
+        %td= order_detail.display_cost unless order_detail.canceled?
+        %td= order_detail.display_subsidy unless order_detail.canceled?
+        %td= order_detail.display_total unless order_detail.canceled?
         %td
           - if order_detail.note.present?
             = order_detail.note
@@ -56,7 +56,7 @@
       %td{colspan: 6}
         %strong= text(".total")
       %td.currency
-        = number_to_currency(@order.order_details.to_a.sum { |d| d.total || 0 })
+        = number_to_currency(@order.total)
       %td
 
 - if @order.any_details_estimated?

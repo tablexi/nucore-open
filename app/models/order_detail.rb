@@ -702,7 +702,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def cost_estimated?
-    price_policy.nil? && estimated_cost && estimated_subsidy && actual_cost.nil? && actual_subsidy.nil?
+    price_policy.nil? && estimated_cost && estimated_subsidy && actual_cost.nil? && actual_subsidy.nil? && !canceled?
   end
 
   def cancel_reservation(canceled_by, canceled_reason: nil, order_status: OrderStatus.canceled, admin: false, admin_with_cancel_fee: false)
