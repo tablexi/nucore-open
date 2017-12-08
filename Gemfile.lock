@@ -468,8 +468,7 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rspec_junit_formatter (0.2.3)
-      builder (< 4)
+    rspec_junit_formatter (0.3.0)
       rspec-core (>= 2, < 4, != 2.12.0)
     rubocop (0.51.0)
       parallel (~> 1.10)
@@ -647,7 +646,7 @@ DEPENDENCIES
   rspec-activejob
   rspec-collection_matchers
   rspec-rails (~> 3.5.2)
-  rspec_junit_formatter (= 0.2.3)
+  rspec_junit_formatter (= 0.3.0)
   rubocop
   ruby-oci8 (~> 2.2.0)
   rubyzip
