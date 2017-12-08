@@ -200,6 +200,7 @@ GEM
       execjs
       json
     concurrent-ruby (1.0.5)
+    crass (1.0.3)
     daemons (1.1.9)
     debug_inspector (0.0.2)
     delayed_job (4.1.3)
@@ -237,10 +238,10 @@ GEM
     eye-patch (0.4.1)
       chronic_duration
       eye (>= 0.6.2)
-    factory_girl (4.8.0)
+    factory_girl (4.9.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.8.0)
-      factory_girl (~> 4.8.0)
+    factory_girl_rails (4.9.0)
+      factory_girl (~> 4.9.0)
       railties (>= 3.0.0)
     ffi (1.9.17)
     fog-aws (0.9.4)
@@ -290,7 +291,8 @@ GEM
       sysexits (~> 1.1)
     hashery (2.1.2)
     hitimes (1.2.6)
-    i18n (0.8.6)
+    i18n (0.9.1)
+      concurrent-ruby (~> 1.0)
     icalendar (2.4.1)
     ice_cube (0.16.2)
     ipaddress (0.8.3)
@@ -316,7 +318,8 @@ GEM
       activesupport (>= 4, < 5.2)
       railties (>= 4, < 5.2)
     logstash-event (1.2.02)
-    loofah (2.0.3)
+    loofah (2.1.1)
+      crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lumberjack (1.0.11)
     mail (2.6.6)
@@ -430,7 +433,7 @@ GEM
     rainbow (2.2.2)
       rake
     raindrops (0.18.0)
-    rake (12.2.1)
+    rake (12.3.0)
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
       ffi (>= 0.5.0)
@@ -547,7 +550,7 @@ GEM
     timers (4.1.2)
       hitimes
     ttfunk (1.0.3)
-    tzinfo (1.2.3)
+    tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uglifier (2.7.2)
       execjs (>= 0.3.0)
@@ -607,7 +610,7 @@ DEPENDENCIES
   dynamic_form (~> 1.1.4)
   exception_notification (~> 4.0.1)
   eye-patch
-  factory_girl_rails (~> 4.8.0)
+  factory_girl_rails (~> 4.9.0)
   fine_uploader!
   fog-aws
   font-awesome-rails (~> 4.7.0)
