@@ -238,10 +238,10 @@ GEM
     eye-patch (0.4.1)
       chronic_duration
       eye (>= 0.6.2)
-    factory_girl (4.8.0)
+    factory_girl (4.9.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.8.0)
-      factory_girl (~> 4.8.0)
+    factory_girl_rails (4.9.0)
+      factory_girl (~> 4.9.0)
       railties (>= 3.0.0)
     ffi (1.9.17)
     fog-aws (0.9.4)
@@ -610,7 +610,7 @@ DEPENDENCIES
   dynamic_form (~> 1.1.4)
   exception_notification (~> 4.0.1)
   eye-patch
-  factory_girl_rails (~> 4.8.0)
+  factory_girl_rails (~> 4.9.0)
   fine_uploader!
   fog-aws
   font-awesome-rails (~> 4.7.0)
