@@ -34,7 +34,7 @@ gem "paranoia"
 ## views
 gem "sass-rails", "~> 5.0.6"
 gem "coffee-rails", "~> 4.2.2"
-gem "uglifier",     "~> 2.7.2"
+gem "uglifier",     "~> 4.0.2"
 gem "therubyracer"
 gem "bootstrap-sass",   "~> 2.3.2"
 gem "haml",             "~> 4.0.5"
