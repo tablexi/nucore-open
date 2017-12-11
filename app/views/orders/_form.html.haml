@@ -29,7 +29,7 @@
           .responsive-header= OrderDetail.human_attribute_name(:estimated_total)
           %b= number_to_currency order.estimated_total
 
-  %p.footnote= t(".foot.all")
+  %p.footnote= html("orders.form.foot.all")
 
   - if order.order_details.any? { |od| od.product.is_a?(Instrument) }
     %p.footnote= t(".foot.instrument")
