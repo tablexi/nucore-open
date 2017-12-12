@@ -559,7 +559,7 @@ GEM
       kgio (~> 2.6)
       raindrops (~> 0.7)
     uniform_notifier (1.10.0)
-    vuejs-rails (1.0.24)
+    vuejs-rails (2.4.2)
     warden (1.2.7)
       rack (>= 1.0)
     web-console (3.3.0)
