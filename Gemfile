@@ -13,7 +13,7 @@ gem "rails_config",     "0.3.3"
 gem "mysql2",           "~> 0.3.20"
 group :oracle do
   gem "ruby-oci8", "~> 2.2.0"
-  gem "activerecord-oracle_enhanced-adapter", "~> 1.6.0"
+  gem "activerecord-oracle_enhanced-adapter", "~> 1.6.9"
 end
 
 ## auth
