@@ -95,7 +95,7 @@ group :development, :deployment do
 end
 
 group :development, :test do
-  gem "awesome_print", "1.1.0"
+  gem "awesome_print", "1.8.0"
   gem "factory_girl_rails", "~> 4.9.0"
   gem "guard-rspec", require: false
   gem "guard-teaspoon", require: false
