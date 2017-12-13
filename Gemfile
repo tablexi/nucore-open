@@ -99,7 +99,7 @@ group :development, :test do
   gem "factory_girl_rails", "~> 4.9.0"
   gem "guard-rspec", require: false
   gem "guard-teaspoon", require: false
-  gem "pry-rails", "~> 0.3.4"
+  gem "pry-rails", "~> 0.3.6"
   gem "pry-byebug", "~> 3.4.1"
   gem "rspec-rails", "~> 3.5.2"
   gem "rspec-activejob"
