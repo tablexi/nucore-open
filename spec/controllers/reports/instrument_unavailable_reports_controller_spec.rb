@@ -29,38 +29,38 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
     context "with an instrument with 2 out_of_order incidents totalling 72 hours" do
       before(:each) do
         FactoryBot.create(:offline_reservation,
-                           :out_of_order,
-                           product: instruments.first,
-                           reserve_start_at: date_start.beginning_of_day,
-                           duration: 2.days)
+                          :out_of_order,
+                          product: instruments.first,
+                          reserve_start_at: date_start.beginning_of_day,
+                          duration: 2.days)
         FactoryBot.create(:offline_reservation,
-                           :out_of_order,
-                           product: instruments.first,
-                           reserve_start_at: (date_start + 3.days).beginning_of_day,
-                           duration: 1.day)
+                          :out_of_order,
+                          product: instruments.first,
+                          reserve_start_at: (date_start + 3.days).beginning_of_day,
+                          duration: 1.day)
       end
 
       context "and an instrument with 1 maintenance incident totalling 24 hours" do
         before(:each) do
           FactoryBot.create(:offline_reservation,
-                             :maintenance,
-                             product: instruments.second,
-                             reserve_start_at: (date_start + 1.day).beginning_of_day,
-                             duration: 1.day)
+                            :maintenance,
+                            product: instruments.second,
+                            reserve_start_at: (date_start + 1.day).beginning_of_day,
+                            duration: 1.day)
         end
 
         context "with two instruments each with admin reservations of 24 hours each" do
           before(:each) do
             FactoryBot.create(:admin_reservation,
-                               product: instruments.first,
-                               reserve_start_at: (date_start + 2.days).beginning_of_day,
-                               duration: 1.day,
-                               category: nil)
+                              product: instruments.first,
+                              reserve_start_at: (date_start + 2.days).beginning_of_day,
+                              duration: 1.day,
+                              category: nil)
             FactoryBot.create(:admin_reservation,
-                               product: instruments.third,
-                               reserve_start_at: (date_start + 1.day).beginning_of_day,
-                               duration: 3.days,
-                               category: nil)
+                              product: instruments.third,
+                              reserve_start_at: (date_start + 1.day).beginning_of_day,
+                              duration: 3.days,
+                              category: nil)
             xhr(:get, :index, params)
           end
 
@@ -86,9 +86,9 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
       before(:each) do
         FactoryBot.create(:offline_reservation,
-                           product: instruments.first,
-                           reserve_start_at: reserve_start_at,
-                           reserve_end_at: reserve_end_at)
+                          product: instruments.first,
+                          reserve_start_at: reserve_start_at,
+                          reserve_end_at: reserve_end_at)
         xhr(:get, :index, params)
       end
 
@@ -104,9 +104,9 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
       before(:each) do
         FactoryBot.create(:offline_reservation,
-                           product: instruments.first,
-                           reserve_start_at: reserve_start_at,
-                           reserve_end_at: reserve_end_at)
+                          product: instruments.first,
+                          reserve_start_at: reserve_start_at,
+                          reserve_end_at: reserve_end_at)
         xhr(:get, :index, params)
       end
 

@@ -18,26 +18,26 @@ RSpec.describe Schedule do
     context "with a reservation placed" do
       let!(:reservation) do
         FactoryBot.create(:purchased_reservation,
-                           product: instrument,
-                           reserve_start_at: first_reservation_time,
-                           reserve_end_at: first_reservation_time + 1.hour)
+                          product: instrument,
+                          reserve_start_at: first_reservation_time,
+                          reserve_end_at: first_reservation_time + 1.hour)
       end
 
       it "should not allow a second reservation that overlaps" do
         reservation2 = FactoryBot.build(:setup_reservation,
-                                         product: instrument,
-                                         reserve_start_at: first_reservation_time + 30.minutes,
-                                         reserve_end_at: first_reservation_time + 1.hour + 30.minutes,
-                                        )
+                                        product: instrument,
+                                        reserve_start_at: first_reservation_time + 30.minutes,
+                                        reserve_end_at: first_reservation_time + 1.hour + 30.minutes,
+                                       )
         expect(reservation2).not_to be_valid
       end
 
       it "should allow a second reservation that doesn't overlap" do
         reservation2 = FactoryBot.build(:setup_reservation,
-                                         product: instrument,
-                                         reserve_start_at: first_reservation_time + 1.hour,
-                                         reserve_end_at: first_reservation_time + 2.hours,
-                                        )
+                                        product: instrument,
+                                        reserve_start_at: first_reservation_time + 1.hour,
+                                        reserve_end_at: first_reservation_time + 2.hours,
+                                       )
         expect(reservation2).to be_valid
       end
     end
@@ -49,26 +49,26 @@ RSpec.describe Schedule do
     context "with a reservation placed" do
       let!(:reservation) do
         FactoryBot.create(:purchased_reservation,
-                           product: instruments[0],
-                           reserve_start_at: first_reservation_time,
-                           reserve_end_at: first_reservation_time + 1.hour)
+                          product: instruments[0],
+                          reserve_start_at: first_reservation_time,
+                          reserve_end_at: first_reservation_time + 1.hour)
       end
 
       it "should not allow a second reservation that overlaps on the other instrument" do
         reservation2 = FactoryBot.build(:setup_reservation,
-                                         product: instruments[1],
-                                         reserve_start_at: first_reservation_time + 30.minutes,
-                                         reserve_end_at: first_reservation_time + 1.hour + 30.minutes,
-                                        )
+                                        product: instruments[1],
+                                        reserve_start_at: first_reservation_time + 30.minutes,
+                                        reserve_end_at: first_reservation_time + 1.hour + 30.minutes,
+                                       )
         expect(reservation2).not_to be_valid
       end
 
       context "a second reservation successfully placed" do
         let!(:reservation2) do
           FactoryBot.create(:purchased_reservation,
-                             product: instruments[1],
-                             reserve_start_at: first_reservation_time + 1.hour,
-                             reserve_end_at: first_reservation_time + 2.hours)
+                            product: instruments[1],
+                            reserve_start_at: first_reservation_time + 1.hour,
+                            reserve_end_at: first_reservation_time + 2.hours)
         end
 
         it "should have the reservations under the individual instruments" do

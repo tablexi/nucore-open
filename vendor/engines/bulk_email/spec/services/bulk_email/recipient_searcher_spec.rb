@@ -54,12 +54,12 @@ RSpec.describe BulkEmail::RecipientSearcher do
 
   def place_order(purchaser:, product:, account:)
     FactoryBot.create(:setup_order,
-                       :purchased,
-                       created_by: purchaser.id,
-                       product: product,
-                       user: purchaser,
-                       account: account,
-                       ordered_at: Time.current)
+                      :purchased,
+                      created_by: purchaser.id,
+                      product: product,
+                      user: purchaser,
+                      account: account,
+                      ordered_at: Time.current)
   end
 
   context "#has_search_fields?" do
@@ -161,9 +161,9 @@ RSpec.describe BulkEmail::RecipientSearcher do
     context "when filtering by reservation dates" do
       let(:instrument) do
         FactoryBot.create(:instrument,
-                           facility_account: facility_account,
-                           min_reserve_mins: 60,
-                           max_reserve_mins: 60)
+                          facility_account: facility_account,
+                          min_reserve_mins: 60,
+                          max_reserve_mins: 60)
       end
 
       def place_reservation(purchaser, at)

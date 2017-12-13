@@ -7,8 +7,8 @@ RSpec.describe "Placing an order with a project" do
   let(:facility_admin) { FactoryBot.create(:user, :facility_administrator, facility: facility) }
   let!(:price_policy) do
     FactoryBot.create(:item_price_policy,
-                       price_group: PriceGroup.base, product: product,
-                       unit_cost: 33.25)
+                      price_group: PriceGroup.base, product: product,
+                      unit_cost: 33.25)
   end
   let!(:account_price_group_member) do
     FactoryBot.create(:account_price_group_member, account: account, price_group: price_policy.price_group)

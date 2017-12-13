@@ -43,8 +43,8 @@ end
 def create_nufs_account_with_owner(owner = :owner)
   owner = instance_variable_get("@#{owner}")
   FactoryBot.create(:nufs_account,
-                     account_users_attributes: [FactoryBot.attributes_for(:account_user, user: owner)],
-                    )
+                    account_users_attributes: [FactoryBot.attributes_for(:account_user, user: owner)],
+                   )
 end
 
 # Simulates placing an order for a product
@@ -206,10 +206,10 @@ end
 def setup_reservation(facility, facility_account, account, user)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
   @instrument = FactoryBot.create(:instrument,
-                                   facility: facility,
-                                   facility_account: facility_account,
-                                   min_reserve_mins: 60,
-                                   max_reserve_mins: 60)
+                                  facility: facility,
+                                  facility_account: facility_account,
+                                  min_reserve_mins: 60,
+                                  max_reserve_mins: 60)
   assert @instrument.valid?
   @price_group = FactoryBot.create(:price_group, facility: facility)
   FactoryBot.create(:price_group_product, product: @instrument, price_group: @price_group)
@@ -280,9 +280,9 @@ end
 
 def setup_account(factory, facility, user)
   FactoryBot.create(factory,
-                     facility: facility,
-                     account_users_attributes: account_users_attributes_hash(user: user),
-                    )
+                    facility: facility,
+                    account_users_attributes: account_users_attributes_hash(user: user),
+                   )
 end
 
 def setup_item_from_facility_account(facility_account)

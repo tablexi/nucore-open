@@ -172,10 +172,10 @@ RSpec.describe FileUploadsController do
 
       create_order_detail
       @file_upload = FactoryBot.create(:stored_file,
-                                        order_detail_id: @order_detail.id,
-                                        created_by: @admin.id,
-                                        product: @service,
-                                       )
+                                       order_detail_id: @order_detail.id,
+                                       created_by: @admin.id,
+                                       product: @service,
+                                      )
 
       @params = {
         facility_id: @authable.url_name,
@@ -191,11 +191,11 @@ RSpec.describe FileUploadsController do
     context "sample_result" do
       before :each do
         @sample_result = FactoryBot.create(:stored_file,
-                                            order_detail_id: @order_detail.id,
-                                            created_by: @staff.id,
-                                            product: @service,
-                                            file_type: "sample_result",
-                                           )
+                                           order_detail_id: @order_detail.id,
+                                           created_by: @staff.id,
+                                           product: @service,
+                                           file_type: "sample_result",
+                                          )
         @params.merge!(id: @sample_result.id)
       end
 
@@ -209,17 +209,17 @@ RSpec.describe FileUploadsController do
   def create_order_detail
     @facility_account = FactoryBot.create(:facility_account, facility: @authable)
     @product = FactoryBot.create(:item,
-                                  facility_account: @facility_account,
-                                  facility: @authable,
-                                 )
+                                 facility_account: @facility_account,
+                                 facility: @authable,
+                                )
     @account = create_nufs_account_with_owner
     @order = FactoryBot.create(:order,
-                                facility: @authable,
-                                user: @director,
-                                created_by: @director.id,
-                                account: @account,
-                                ordered_at: Time.zone.now,
-                               )
+                               facility: @authable,
+                               user: @director,
+                               created_by: @director.id,
+                               account: @account,
+                               ordered_at: Time.zone.now,
+                              )
     @price_group = FactoryBot.create(:price_group, facility: @authable)
     @price_policy = FactoryBot.create(:item_price_policy, product: @product, price_group: @price_group)
     @order_detail = FactoryBot.create(:order_detail, order: @order, product: @product, price_policy: @price_policy)

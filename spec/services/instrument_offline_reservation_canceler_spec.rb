@@ -15,8 +15,8 @@ RSpec.describe InstrumentOfflineReservationCanceler do
       context "when a reservation starting now exists" do
         let!(:reservation) do
           FactoryBot.create(:purchased_reservation,
-                             product: instrument,
-                             reserve_start_at: Time.current)
+                            product: instrument,
+                            reserve_start_at: Time.current)
         end
 
         before(:each) do

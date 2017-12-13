@@ -12,25 +12,25 @@ RSpec.describe AutoCanceler, :time_travel do
   let(:instrument) { FactoryBot.create :setup_instrument }
   let!(:future_reservation) do
     FactoryBot.create :purchased_reservation,
-                       product: instrument,
-                       reserve_start_at: base_date + 1.day,
-                       reserve_end_at: base_date + 1.day + 1.hour
+                      product: instrument,
+                      reserve_start_at: base_date + 1.day,
+                      reserve_end_at: base_date + 1.day + 1.hour
   end
 
   let!(:past_reservation) do
     FactoryBot.create :purchased_reservation,
-                       product: instrument,
-                       reserve_start_at: base_date - 2.hours,
-                       reserve_end_at: base_date - 1.hour,
-                       reserved_by_admin: true
+                      product: instrument,
+                      reserve_start_at: base_date - 2.hours,
+                      reserve_end_at: base_date - 1.hour,
+                      reserved_by_admin: true
   end
 
   let!(:completed_reservation) do
     res = FactoryBot.create :purchased_reservation,
-                             product: instrument,
-                             reserve_start_at: base_date - 3.hours,
-                             reserve_end_at: base_date - 2.hours,
-                             reserved_by_admin: true
+                            product: instrument,
+                            reserve_start_at: base_date - 3.hours,
+                            reserve_end_at: base_date - 2.hours,
+                            reserved_by_admin: true
     res.order_detail.to_complete!
     res
   end
@@ -65,10 +65,10 @@ RSpec.describe AutoCanceler, :time_travel do
 
     it "should not cancel a past reservation in the cart" do
       cart_reservation = FactoryBot.create(:setup_reservation,
-                                            product: instrument,
-                                            reserve_start_at: base_date - 1.day,
-                                            reserve_end_at: base_date - 1.day + 1.hour,
-                                            reserved_by_admin: true)
+                                           product: instrument,
+                                           reserve_start_at: base_date - 1.day,
+                                           reserve_end_at: base_date - 1.day + 1.hour,
+                                           reserved_by_admin: true)
 
       canceler.cancel_reservations
       expect(cart_reservation.order_detail.reload.order_status).not_to eq(canceled_status)

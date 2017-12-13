@@ -2,8 +2,8 @@ require "rails_helper"
 
 def define_purchasable_instrument
   @instrument    = FactoryBot.create(:instrument,
-                                      facility: @facility,
-                                      facility_account: @facility_account)
+                                     facility: @facility,
+                                     facility_account: @facility_account)
   @instrument_pp = FactoryBot.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
   FactoryBot.create(:price_group_product, product: @instrument, price_group: @price_group)
   # default rule, 9am - 5pm all days
@@ -203,8 +203,8 @@ RSpec.describe Order do
 
     it "should check for schedule rule changes before purchase" do
       @instrument    = FactoryBot.create(:instrument,
-                                          facility: @facility,
-                                          facility_account: @facility_account)
+                                         facility: @facility,
+                                         facility_account: @facility_account)
       @instrument_pp = FactoryBot.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
       FactoryBot.create(:price_group_product, product: @instrument, price_group: @price_group)
       # default rule, 9am - 5pm all days

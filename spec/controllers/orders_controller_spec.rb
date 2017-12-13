@@ -373,9 +373,9 @@ RSpec.describe OrdersController do
     context "success" do
       before :each do
         @instrument = FactoryBot.create(:instrument,
-                                         facility: @authable,
-                                         facility_account: @facility_account,
-                                         no_relay: true)
+                                        facility: @authable,
+                                        facility_account: @facility_account,
+                                        no_relay: true)
         @instrument_pp = create :instrument_price_policy, price_group: @nupg, product: @instrument
         define_open_account(@instrument.account, @account.account_number)
         @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
@@ -806,10 +806,10 @@ RSpec.describe OrdersController do
       before :each do
         @order.clear_cart?
         @instrument = FactoryBot.create(:instrument,
-                                         facility: @authable,
-                                         facility_account: @facility_account,
-                                         min_reserve_mins: 60,
-                                         max_reserve_mins: 60)
+                                        facility: @authable,
+                                        facility_account: @facility_account,
+                                        min_reserve_mins: 60,
+                                        max_reserve_mins: 60)
         @params[:id] = @order.id
         @params[:order][:order_details].first[:product_id] = @instrument.id
       end
@@ -1045,8 +1045,8 @@ RSpec.describe OrdersController do
   context "cart meta data" do
     before(:each) do
       @instrument = FactoryBot.create(:instrument,
-                                       facility: @authable,
-                                       facility_account: @facility_account)
+                                      facility: @authable,
+                                      facility_account: @facility_account)
 
       @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24))
       @instrument_pp = @instrument.instrument_price_policies.create(FactoryBot.attributes_for(:instrument_price_policy, price_group_id: @price_group.id))

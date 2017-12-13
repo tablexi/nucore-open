@@ -249,8 +249,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
             context "it conflicts with another reservation" do
               before do
                 FactoryBot.create(:purchased_reservation,
-                                   reserve_start_at: new_reserve_start,
-                                   product: instrument)
+                                  reserve_start_at: new_reserve_start,
+                                  product: instrument)
                 do_request
               end
 
@@ -531,12 +531,12 @@ RSpec.describe OrderManagement::OrderDetailsController do
         describe "when the price policy would change" do
           let!(:previous_price_policy) do
             FactoryBot.create(:item_price_policy,
-                               product: item,
-                               price_group: price_group,
-                               unit_cost: 19,
-                               start_date: 30.days.ago,
-                               expire_date: 28.days.ago,
-                              )
+                              product: item,
+                              price_group: price_group,
+                              unit_cost: 19,
+                              start_date: 30.days.ago,
+                              expire_date: 28.days.ago,
+                             )
           end
           before { order_detail.backdate_to_complete!(29.days.ago) }
 

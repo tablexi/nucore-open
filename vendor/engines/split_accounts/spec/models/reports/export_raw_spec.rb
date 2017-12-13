@@ -58,12 +58,12 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
     let(:now) { Time.zone.parse("2016-02-01 10:30") }
     let(:reservation) do
       FactoryBot.create(:completed_reservation,
-                         user: user,
-                         product: instrument,
-                         reserve_start_at: Time.zone.parse("2016-02-01 08:30"),
-                         reserve_end_at: Time.zone.parse("2016-02-01 09:30"),
-                         actual_start_at: Time.zone.parse("2016-02-01 08:30"),
-                         actual_end_at: Time.zone.parse("2016-02-01 09:35"))
+                        user: user,
+                        product: instrument,
+                        reserve_start_at: Time.zone.parse("2016-02-01 08:30"),
+                        reserve_end_at: Time.zone.parse("2016-02-01 09:30"),
+                        actual_start_at: Time.zone.parse("2016-02-01 08:30"),
+                        actual_end_at: Time.zone.parse("2016-02-01 09:35"))
     end
     let(:order_detail) { reservation.order_detail }
 

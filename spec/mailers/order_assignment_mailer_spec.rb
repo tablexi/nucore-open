@@ -7,8 +7,8 @@ RSpec.describe OrderAssignmentMailer do
 
   def stubbed_order_detail(order)
     FactoryBot.build_stubbed(:order_detail,
-                              assigned_user: assigned_user,
-                              order: order)
+                             assigned_user: assigned_user,
+                             order: order)
   end
 
   describe ".notify_assigned_user" do

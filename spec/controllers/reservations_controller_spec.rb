@@ -175,8 +175,8 @@ RSpec.describe ReservationsController do
       let(:reservation1) { FactoryBot.create(:purchased_reservation, product: instrument) }
       let(:reservation2) do
         FactoryBot.create(:purchased_reservation,
-                           product: instrument2,
-                           reserve_start_at: reservation1.reserve_end_at) # Immediately after reservation1
+                          product: instrument2,
+                          reserve_start_at: reservation1.reserve_end_at) # Immediately after reservation1
       end
       let(:reservations) { [reservation1, reservation2] }
 

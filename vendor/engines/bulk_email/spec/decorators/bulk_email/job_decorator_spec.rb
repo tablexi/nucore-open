@@ -24,8 +24,8 @@ RSpec.describe BulkEmail::JobDecorator do
 
   let(:undecorated_job) do
     FactoryBot.build_stubbed(:bulk_email_job,
-                              recipients: recipients,
-                              search_criteria: search_criteria)
+                             recipients: recipients,
+                             search_criteria: search_criteria)
   end
 
   describe "#sender" do

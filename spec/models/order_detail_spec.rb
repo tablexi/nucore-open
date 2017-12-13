@@ -258,10 +258,10 @@ RSpec.describe OrderDetail do
         @rule = @instrument.schedule_rules.create(attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
 
         @order_detail.reservation = FactoryBot.create(:reservation,
-                                                       reserve_start_at: Time.current,
-                                                       reserve_end_at: 1.hour.from_now,
-                                                       product: @instrument,
-                                                       split_times: true)
+                                                      reserve_start_at: Time.current,
+                                                      reserve_end_at: 1.hour.from_now,
+                                                      product: @instrument,
+                                                      split_times: true)
         @order_detail.product = @instrument
         @order_detail.save
         assert @order_detail.reservation

@@ -89,8 +89,8 @@ FactoryBot.define do
 
     after(:create) do |product|
       FactoryBot.create(:price_group_product,
-                         product: product,
-                         price_group: product.facility.price_groups.last)
+                        product: product,
+                        price_group: product.facility.price_groups.last)
     end
 
     factory :setup_service, class: Service do

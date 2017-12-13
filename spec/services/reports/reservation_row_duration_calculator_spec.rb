@@ -9,8 +9,8 @@ RSpec.describe Reports::ReservationRowDurationCalculator do
 
   let(:reservation) do
     FactoryBot.build(:offline_reservation,
-                      reserve_start_at: reserve_start_at,
-                      reserve_end_at: reserve_end_at)
+                     reserve_start_at: reserve_start_at,
+                     reserve_end_at: reserve_end_at)
   end
 
   let(:start_time) { Date.new(2016, 1, 1).beginning_of_day }

@@ -4,9 +4,9 @@ RSpec.describe Reservation do
   context "started reservation completed by cron job" do
     subject do
       res = FactoryBot.create :purchased_reservation,
-                               reserve_start_at: Time.zone.parse("#{Date.today} 10:00:00") - 2.days,
-                               reserve_end_at: Time.zone.parse("#{Date.today} 10:00:00") - 2.days + 1.hour,
-                               actual_start_at: Time.zone.parse("#{Date.today} 10:00:00") - 2.days
+                              reserve_start_at: Time.zone.parse("#{Date.today} 10:00:00") - 2.days,
+                              reserve_end_at: Time.zone.parse("#{Date.today} 10:00:00") - 2.days + 1.hour,
+                              actual_start_at: Time.zone.parse("#{Date.today} 10:00:00") - 2.days
 
       # needs to have a relay
       res.product.relay = FactoryBot.create(:relay_dummy, instrument: res.product)

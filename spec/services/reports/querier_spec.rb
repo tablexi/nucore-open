@@ -28,7 +28,7 @@ RSpec.describe Reports::Querier do
     let(:merge_order) { FactoryBot.create(:merge_order, merge_with_order: order) }
     let!(:merge_order_detail) do
       FactoryBot.create(:order_detail, product: item,
-                                        order_status: OrderStatus.new_status, order: merge_order)
+                                       order_status: OrderStatus.new_status, order: merge_order)
     end
 
     it "excludes the merge order detail" do

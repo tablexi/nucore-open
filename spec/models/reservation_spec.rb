@@ -43,8 +43,8 @@ RSpec.describe Reservation do
           context "when it is purchased (not in the cart)" do
             let!(:reservation) do
               FactoryBot.create(:purchased_reservation,
-                                 product: instrument,
-                                 reserve_start_at: now)
+                                product: instrument,
+                                reserve_start_at: now)
             end
 
             it { is_expected.to eq [reservation] }
@@ -53,8 +53,8 @@ RSpec.describe Reservation do
           context "when it is unpurchased (in the cart)" do
             let!(:reservation) do
               FactoryBot.create(:setup_reservation,
-                                 product: instrument,
-                                 reserve_start_at: now)
+                                product: instrument,
+                                reserve_start_at: now)
             end
 
             it { is_expected.to be_blank }
@@ -64,9 +64,9 @@ RSpec.describe Reservation do
         context "when the order_detail.state is :inprocess" do
           let!(:reservation) do
             FactoryBot.create(:purchased_reservation,
-                               :inprocess,
-                               product: instrument,
-                               reserve_start_at: now)
+                              :inprocess,
+                              product: instrument,
+                              reserve_start_at: now)
           end
 
           it { is_expected.to eq [reservation] }
@@ -1068,9 +1068,9 @@ RSpec.describe Reservation do
       let!(:running) do
         start_time = 1.hour.ago - 1.second
         FactoryBot.create(:setup_reservation,
-                           product: instrument,
-                           reserve_start_at: start_time,
-                           actual_start_at: start_time)
+                          product: instrument,
+                          reserve_start_at: start_time,
+                          actual_start_at: start_time)
       end
 
       before do
@@ -1457,8 +1457,8 @@ RSpec.describe Reservation do
   describe "#extendable?" do
     subject(:reservation) do
       FactoryBot.build(:purchased_reservation,
-                        :running,
-                        product: instrument)
+                       :running,
+                       product: instrument)
     end
 
     before do
@@ -1473,9 +1473,9 @@ RSpec.describe Reservation do
     context "with another reservation following" do
       let(:other_reservation) do
         FactoryBot.build(:purchased_reservation,
-                          reserve_start_at: reservation.reserve_end_at,
-                          reserve_end_at: reservation.reserve_end_at + 1.hour,
-                          product: reservation.product)
+                         reserve_start_at: reservation.reserve_end_at,
+                         reserve_end_at: reservation.reserve_end_at + 1.hour,
+                         product: reservation.product)
       end
 
       before do
@@ -1527,9 +1527,9 @@ RSpec.describe Reservation do
       context "with another reservation following" do
         let(:other_reservation) do
           FactoryBot.build(:purchased_reservation,
-                            reserve_start_at: reservation.reserve_end_at,
-                            reserve_end_at: reservation.reserve_end_at + 1.hour,
-                            product: reservation.product)
+                           reserve_start_at: reservation.reserve_end_at,
+                           reserve_end_at: reservation.reserve_end_at + 1.hour,
+                           product: reservation.product)
         end
 
         before do

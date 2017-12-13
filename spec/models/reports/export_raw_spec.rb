@@ -74,11 +74,11 @@ RSpec.describe Reports::ExportRaw do
     let(:instrument) { FactoryBot.create(:setup_instrument, :always_available, facility: facility) }
     let(:reservation) do
       FactoryBot.create(:completed_reservation,
-                         product: instrument,
-                         reserve_start_at: Time.zone.parse("2016-02-01 08:30"),
-                         reserve_end_at: Time.zone.parse("2016-02-01 09:30"),
-                         actual_start_at: Time.zone.parse("2016-02-01 08:30"),
-                         actual_end_at: Time.zone.parse("2016-02-01 09:35"))
+                        product: instrument,
+                        reserve_start_at: Time.zone.parse("2016-02-01 08:30"),
+                        reserve_end_at: Time.zone.parse("2016-02-01 09:30"),
+                        actual_start_at: Time.zone.parse("2016-02-01 08:30"),
+                        actual_end_at: Time.zone.parse("2016-02-01 09:35"))
     end
 
     let(:user) { order_detail.user }

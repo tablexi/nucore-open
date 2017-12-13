@@ -12,18 +12,18 @@ RSpec.describe FacilityOrderDetailsController do
     @authable = FactoryBot.create(:facility)
     @facility_account = FactoryBot.create(:facility_account, facility: @authable)
     @product = FactoryBot.create(:item,
-                                  facility_account: @facility_account,
-                                  facility: @authable,
-                                 )
+                                 facility_account: @facility_account,
+                                 facility: @authable,
+                                )
     @account = create_nufs_account_with_owner :director
     @order = FactoryBot.create(:order,
-                                facility: @authable,
-                                user: @director,
-                                created_by: @director.id,
-                                account: @account,
-                                ordered_at: Time.zone.now,
-                                state: "purchased",
-                               )
+                               facility: @authable,
+                               user: @director,
+                               created_by: @director.id,
+                               account: @account,
+                               ordered_at: Time.zone.now,
+                               state: "purchased",
+                              )
     @price_group = FactoryBot.create(:price_group, facility: @authable)
     @price_policy = FactoryBot.create(:item_price_policy, product: @product, price_group: @price_group)
     @order_detail = FactoryBot.create(:order_detail, order: @order, product: @product, price_policy: @price_policy)
@@ -62,12 +62,12 @@ RSpec.describe FacilityOrderDetailsController do
   def prepare_reservation
     @order_detail.update_attributes(price_policy: nil)
     @instrument = FactoryBot.create(:instrument, facility: @authable,
-                                                  facility_account: @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account)))
+                                                 facility_account: @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account)))
     @instrument_price_policy = FactoryBot.create(:instrument_price_policy,
-                                                  product: @instrument,
-                                                  price_group: @price_group,
-                                                  usage_rate: 10,
-                                                  usage_subsidy: 0)
+                                                 product: @instrument,
+                                                 price_group: @price_group,
+                                                 usage_rate: 10,
+                                                 usage_subsidy: 0)
     expect(@instrument_price_policy).to be_persisted
     allow_any_instance_of(Instrument).to receive(:cheapest_price_policy).and_return(@instrument_price_policy)
     @reservation = place_reservation @authable, @order_detail, 1.day.ago

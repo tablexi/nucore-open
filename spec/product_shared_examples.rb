@@ -6,8 +6,8 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   let(:facility_account) { facility.facility_accounts.create!(FactoryBot.attributes_for(:facility_account)) }
   let(:product) do
     FactoryBot.create(product_type,
-                       facility: facility,
-                       facility_account: facility_account)
+                      facility: facility,
+                      facility_account: facility_account)
   end
   let(:order) { create(:order, account: account, created_by_user: user, user: user) }
   let(:order_detail) { order.order_details.create(attributes_for(:order_detail, account: account, product: product, quantity: 1)) }
@@ -119,8 +119,8 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
   let(:facility_account) { facility.facility_accounts.create!(FactoryBot.attributes_for(:facility_account)) }
   let(:product) do
     FactoryBot.create(product_type,
-                       facility: facility,
-                       facility_account: facility_account)
+                      facility: facility,
+                      facility_account: facility_account)
   end
   let(:order) { create(:order, account: account, created_by_user: user, user: user) }
   let(:order_detail) { order.order_details.create(attributes_for(:order_detail, account: account, product: product)) }
@@ -142,9 +142,9 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
 
   let!(:reservation) do
     FactoryBot.create(:reservation,
-                       product: product,
-                       reserve_start_at: 1.hour.from_now,
-                       order_detail: order_detail)
+                      product: product,
+                      reserve_start_at: 1.hour.from_now,
+                      order_detail: order_detail)
   end
 
   context '#cheapest_price_policy' do

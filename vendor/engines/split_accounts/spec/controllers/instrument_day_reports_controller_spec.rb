@@ -8,11 +8,11 @@ RSpec.describe Reports::InstrumentDayReportsController, :enable_split_accounts d
   let!(:reservation) do
     # This is a Thursday
     FactoryBot.create(:completed_reservation, product: instrument,
-                                               reserve_start_at: Time.zone.local(2016, 3, 17, 10, 30),
-                                               reserve_end_at: Time.zone.local(2016, 3, 17, 12, 30),
-                                               actual_start_at: Time.zone.local(2016, 3, 17, 10, 30),
-                                               actual_end_at: Time.zone.local(2016, 3, 17, 12, 0)
-                      )
+                                              reserve_start_at: Time.zone.local(2016, 3, 17, 10, 30),
+                                              reserve_end_at: Time.zone.local(2016, 3, 17, 12, 30),
+                                              actual_start_at: Time.zone.local(2016, 3, 17, 10, 30),
+                                              actual_end_at: Time.zone.local(2016, 3, 17, 12, 0)
+                     )
   end
   let(:user) { reservation.order_detail.account.owner_user }
   let(:admin) { FactoryBot.create(:user, :administrator) }

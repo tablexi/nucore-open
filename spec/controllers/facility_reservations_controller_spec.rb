@@ -18,20 +18,20 @@ RSpec.describe FacilityReservationsController do
     @authable = FactoryBot.create(:facility)
     @facility_account = FactoryBot.create(:facility_account, facility: @authable)
     @product = FactoryBot.create(:instrument,
-                                  facility_account: @facility_account,
-                                  facility: @authable,
-                                 )
+                                 facility_account: @facility_account,
+                                 facility: @authable,
+                                )
     @schedule_rule = FactoryBot.create(:schedule_rule, product: @product)
     @product.reload
     @account = create_nufs_account_with_owner :director
     @order = FactoryBot.create(:order,
-                                facility: @authable,
-                                user: @director,
-                                created_by: @director.id,
-                                account: @account,
-                                ordered_at: Time.zone.now,
-                                state: "purchased",
-                               )
+                               facility: @authable,
+                               user: @director,
+                               created_by: @director.id,
+                               account: @account,
+                               ordered_at: Time.zone.now,
+                               state: "purchased",
+                              )
 
     @reservation = FactoryBot.create(:reservation, product: @product)
     expect(@reservation).not_to be_new_record
@@ -211,9 +211,9 @@ RSpec.describe FacilityReservationsController do
     context "instrument listing" do
       before :each do
         @instrument2 = FactoryBot.create(:instrument,
-                                          facility_account: @facility_account,
-                                          facility: @authable,
-                                          is_hidden: true)
+                                         facility_account: @facility_account,
+                                         facility: @authable,
+                                         is_hidden: true)
         maybe_grant_always_sign_in :director
         @method = :get
         @action = :timeline
@@ -241,13 +241,13 @@ RSpec.describe FacilityReservationsController do
       before :each do
         # create unpurchased reservation
         @order2 = FactoryBot.create(:order,
-                                     facility: @authable,
-                                     user: @director,
-                                     created_by: @director.id,
-                                     account: @account,
-                                     ordered_at: nil,
-                                     state: "new",
-                                    )
+                                    facility: @authable,
+                                    user: @director,
+                                    created_by: @director.id,
+                                    account: @account,
+                                    ordered_at: nil,
+                                    state: "new",
+                                   )
         # make sure the reservations are happening today
         @reservation.update_attributes!(reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
 

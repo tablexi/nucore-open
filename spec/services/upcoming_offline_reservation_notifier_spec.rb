@@ -12,9 +12,9 @@ RSpec.describe UpcomingOfflineReservationNotifier do
       context "and a purchased reservation exists for it" do
         let!(:reservation) do
           FactoryBot.create(:purchased_reservation,
-                             product: instrument,
-                             reserve_start_at: now + 10.hours,
-                             reserve_end_at: now + 11.hours)
+                            product: instrument,
+                            reserve_start_at: now + 10.hours,
+                            reserve_end_at: now + 11.hours)
         end
         let(:stub_delivery) { double(ActionMailer::MessageDelivery) }
         let(:user) { reservation.user }

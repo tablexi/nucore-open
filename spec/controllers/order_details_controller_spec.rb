@@ -175,7 +175,7 @@ RSpec.describe OrderDetailsController do
         let(:signed_in_user) { FactoryBot.create(:user) }
         before do
           FactoryBot.create(:account_user, :business_administrator,
-                             user: signed_in_user, account: order_detail.account)
+                            user: signed_in_user, account: order_detail.account)
           perform
         end
 
@@ -188,7 +188,7 @@ RSpec.describe OrderDetailsController do
         let(:signed_in_user) { FactoryBot.create(:user) }
         before do
           FactoryBot.create(:account_user, :purchaser,
-                             user: signed_in_user, account: order_detail.account)
+                            user: signed_in_user, account: order_detail.account)
           perform
         end
 
@@ -201,7 +201,7 @@ RSpec.describe OrderDetailsController do
         let(:signed_in_user) { FactoryBot.create(:user) }
         before do
           FactoryBot.create(:account_user, :purchaser,
-                             user: signed_in_user, account: order_detail.account)
+                            user: signed_in_user, account: order_detail.account)
           order.update_attributes(user: signed_in_user)
           perform
         end

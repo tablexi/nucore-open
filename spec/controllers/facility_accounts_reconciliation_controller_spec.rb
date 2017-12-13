@@ -30,7 +30,7 @@ RSpec.describe FacilityAccountsReconciliationController do
   let(:order_detail) { order.order_details.first }
   let(:statement) do
     FactoryBot.create(:statement, account: account, facility: facility,
-                                   created_by_user: admin, created_at: 5.days.ago)
+                                  created_by_user: admin, created_at: 5.days.ago)
   end
   let(:admin) { FactoryBot.create(:user, :administrator) }
 

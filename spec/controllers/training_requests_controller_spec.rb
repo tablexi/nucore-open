@@ -4,7 +4,7 @@ RSpec.describe TrainingRequestsController, feature_setting: { training_requests:
   let(:facility) { FactoryBot.create(:setup_facility) }
   let(:product) do
     FactoryBot.create(:setup_item, facility: facility,
-                                    requires_approval: true, training_request_contacts: training_request_contacts)
+                                   requires_approval: true, training_request_contacts: training_request_contacts)
   end
   let(:training_request_contacts) { "test@example.com, test2@example.com" }
   let(:user) { FactoryBot.create(:user) }
