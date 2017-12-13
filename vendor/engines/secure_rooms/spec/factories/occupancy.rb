@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :occupancy, class: SecureRooms::Occupancy do
     secure_room
     user
@@ -29,7 +29,7 @@ FactoryGirl.define do
 
     trait :with_order_detail do
       association :secure_room, :with_schedule_rule, :with_base_price
-      order_detail { FactoryGirl.create(:setup_order, product: secure_room, user: user, account: account).order_details.first }
+      order_detail { FactoryBot.create(:setup_order, product: secure_room, user: user, account: account).order_details.first }
 
       after(:create) do |occupancy|
         ProductUser.find_or_create_by!(user: occupancy.user, product: occupancy.secure_room, approved_by: 0)

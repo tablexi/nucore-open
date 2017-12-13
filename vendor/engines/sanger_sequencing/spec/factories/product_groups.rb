@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :product_group, class: SangerSequencing::ProductGroup do
     product factory: :setup_service
 

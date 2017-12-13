@@ -7,7 +7,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
+    @authable = FactoryBot.create(:facility)
     @account = create_nufs_account_with_owner
   end
 
@@ -129,8 +129,8 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
       context "changing a user's role" do
         context "from business admin to purchaser" do
           before :each do
-            @business_admin = FactoryGirl.create(:user)
-            FactoryGirl.create(:account_user, account: @account, user: @business_admin, user_role: AccountUser::ACCOUNT_ADMINISTRATOR)
+            @business_admin = FactoryBot.create(:user)
+            FactoryBot.create(:account_user, account: @account, user: @business_admin, user_role: AccountUser::ACCOUNT_ADMINISTRATOR)
             @params.merge!(
               account_id: @account.id,
               user_id: @business_admin.id,
@@ -184,7 +184,7 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
     before(:each) do
       @method = :delete
       @action = :destroy
-      @account_user = FactoryGirl.create(:account_user, user: @purchaser,
+      @account_user = FactoryBot.create(:account_user, user: @purchaser,
                                                         account: @account,
                                                         user_role: AccountUser::ACCOUNT_PURCHASER,
                                                         created_by: @admin.id)

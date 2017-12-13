@@ -10,8 +10,8 @@ RSpec.describe GlobalSearchController do
 
   describe "a facility staff" do
     let(:facility) { project.facility }
-    let(:project) { FactoryGirl.create(:project) }
-    let(:user) { FactoryGirl.create(:user, :staff, facility: facility) }
+    let(:project) { FactoryBot.create(:project) }
+    let(:user) { FactoryBot.create(:user, :staff, facility: facility) }
     let(:results) { assigns[:searchers].find { |s| s.template == "projects" }.results }
     before { sign_in user }
 
@@ -23,7 +23,7 @@ RSpec.describe GlobalSearchController do
     end
 
     context "while in another facility" do
-      let(:facility2) { FactoryGirl.create(:facility) }
+      let(:facility2) { FactoryBot.create(:facility) }
       it "does not find the project" do
         get :index, facility_id: facility2, search: project.name
         expect(results).not_to include(project)

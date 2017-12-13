@@ -34,8 +34,8 @@ RSpec.describe Ability do
 
   shared_examples_for "it allows switch_to on active, but not deactivated users" do
     let(:stub_controller) { UsersController.new }
-    let(:active_user) { FactoryGirl.build(:user) }
-    let(:deactivated_user) { FactoryGirl.build(:user, deactivated_at: 1.day.ago) }
+    let(:active_user) { FactoryBot.build(:user) }
+    let(:deactivated_user) { FactoryBot.build(:user, deactivated_at: 1.day.ago) }
 
     it { is_expected.to be_allowed_to(:switch_to, active_user) }
     it { is_expected.not_to be_allowed_to(:switch_to, deactivated_user) }
@@ -52,7 +52,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:administer, User) }
     it { is_expected.not_to be_allowed_to(:batch_update, Order) }
     it_is_not_allowed_to([:batch_update, :cancel, :index], Reservation)
-    it_is_not_allowed_to([:edit, :update]) { FactoryGirl.create(:user) }
+    it_is_not_allowed_to([:edit, :update]) { FactoryBot.create(:user) }
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
@@ -121,8 +121,8 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
 
     context "in a single facility" do
-      let(:internal_user) { FactoryGirl.create(:user) }
-      let(:external_user) { FactoryGirl.create(:user, :external) }
+      let(:internal_user) { FactoryBot.create(:user) }
+      let(:external_user) { FactoryBot.create(:user, :external) }
       it_is_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
       it { is_expected.to be_allowed_to(:manage, User) }
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
@@ -176,7 +176,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, Account) }
     it { is_expected.to be_allowed_to(:manage, Journal) }
     it { is_expected.to be_allowed_to(:manage, OrderDetail) }
-    it_is_not_allowed_to([:edit, :update]) { FactoryGirl.create(:user) }
+    it_is_not_allowed_to([:edit, :update]) { FactoryBot.create(:user) }
 
     context "in a single facility" do
       it { is_expected.not_to be_allowed_to(:manage_users, facility) }
@@ -237,7 +237,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, PriceGroup) }
     it { is_expected.to be_allowed_to(:manage, ScheduleRule) }
     it { is_expected.to be_allowed_to(:manage, ProductAccessGroup) }
-    it_is_not_allowed_to([:edit, :update]) { FactoryGirl.create(:user) }
+    it_is_not_allowed_to([:edit, :update]) { FactoryBot.create(:user) }
 
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :account_user do
     user_role "Owner" # TODO: explicitly use the :owner trait
     created_by 0

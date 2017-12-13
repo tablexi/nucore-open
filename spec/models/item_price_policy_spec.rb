@@ -22,28 +22,28 @@ RSpec.describe ItemPricePolicy do
     it { is_expected.to validate_numericality_of(:unit_subsidy).is_greater_than_or_equal_to(0) }
 
     it "should not allow a subsidy more than cost" do
-      pp = FactoryGirl.build(:item_price_policy, unit_subsidy: 10, unit_cost: 5)
+      pp = FactoryBot.build(:item_price_policy, unit_subsidy: 10, unit_cost: 5)
       expect(pp).not_to be_valid
       expect(pp.errors.keys).to be_include :unit_subsidy
     end
   end
   context "test requiring items" do
     before(:each) do
-      @facility         = FactoryGirl.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @price_group = FactoryGirl.create(:price_group, facility: @facility)
-      @item = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account: @facility_account))
-      @price_group_product = FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+      @facility         = FactoryBot.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @price_group = FactoryBot.create(:price_group, facility: @facility)
+      @item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account: @facility_account))
+      @price_group_product = FactoryBot.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
     end
 
     it "should create using factory" do
       # price policy belongs to an item and a price group
-      ipp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @price_group))
+      ipp = @item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group: @price_group))
       expect(ipp).to be_valid
     end
 
     it "should return the item" do
-      ipp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, start_date: Date.today, price_group_id: @price_group.id))
+      ipp = @item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, start_date: Date.today, price_group_id: @price_group.id))
       expect(ipp.product).to eq(@item)
     end
 
@@ -58,7 +58,7 @@ RSpec.describe ItemPricePolicy do
     end
 
     it "should not create a price policy for a day that a policy already exists for" do
-      ipp_new = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, start_date: Date.today + 7, price_group_id: @price_group.id))
+      ipp_new = @item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, start_date: Date.today + 7, price_group_id: @price_group.id))
       expect(ipp_new.errors_on(:start_date)).not_to be_nil
     end
 

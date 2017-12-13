@@ -3,12 +3,12 @@ require "rails_helper"
 RSpec.describe PriceGroupProduct do
 
   before :each do
-    @facility = FactoryGirl.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @instrument = FactoryGirl.create(:instrument,
+    @facility = FactoryBot.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @instrument = FactoryBot.create(:instrument,
                                      facility: @facility,
                                      facility_account_id: @facility_account.id)
-    @price_group = FactoryGirl.create(:price_group, facility: @facility)
+    @price_group = FactoryBot.create(:price_group, facility: @facility)
   end
 
   it "should require product" do
@@ -24,7 +24,7 @@ RSpec.describe PriceGroupProduct do
   end
 
   it "should not require reservation window" do
-    item = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+    item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
     expect(PriceGroupProduct.new(product: item, price_group: @price_group)).not_to validate_presence_of :reservation_window
   end
 

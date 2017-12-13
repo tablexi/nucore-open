@@ -5,15 +5,15 @@ RSpec.describe "Sanger Sequencing Administration" do
   include_context "Setup Sanger Service"
 
   describe "as facility staff" do
-    let(:facility_staff) { FactoryGirl.create(:user, :staff, facility: facility) }
+    let(:facility_staff) { FactoryBot.create(:user, :staff, facility: facility) }
 
     before { login_as facility_staff }
 
     describe "index view" do
-      let!(:unpurchased_order) { FactoryGirl.create(:setup_order, product: service, account: account) }
-      let!(:unpurchased_submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: unpurchased_order.order_details.first) }
-      let!(:purchased_order) { FactoryGirl.create(:purchased_order, product: service, account: account) }
-      let!(:purchased_submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order.order_details.first) }
+      let!(:unpurchased_order) { FactoryBot.create(:setup_order, product: service, account: account) }
+      let!(:unpurchased_submission) { FactoryBot.create(:sanger_sequencing_submission, order_detail: unpurchased_order.order_details.first) }
+      let!(:purchased_order) { FactoryBot.create(:purchased_order, product: service, account: account) }
+      let!(:purchased_submission) { FactoryBot.create(:sanger_sequencing_submission, order_detail: purchased_order.order_details.first) }
 
       before do
         visit list_facilities_path
@@ -46,9 +46,9 @@ RSpec.describe "Sanger Sequencing Administration" do
       end
 
       describe "accessing via the 'View Order Form' link" do
-        let!(:order_detail) { FactoryGirl.create(:purchased_order, product: service, account: account).order_details.first }
-        let!(:submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: order_detail) }
-        let(:external_service) { FactoryGirl.create(:external_service) }
+        let!(:order_detail) { FactoryBot.create(:purchased_order, product: service, account: account).order_details.first }
+        let!(:submission) { FactoryBot.create(:sanger_sequencing_submission, order_detail: order_detail) }
+        let(:external_service) { FactoryBot.create(:external_service) }
         let!(:receiver) do
           ExternalServiceReceiver.create(
             external_service: external_service,
@@ -82,8 +82,8 @@ RSpec.describe "Sanger Sequencing Administration" do
   end
 
   describe "as a member of another facility" do
-    let(:facility2) { FactoryGirl.create(:facility) }
-    let(:other_user) { FactoryGirl.create(:user, :staff, facility: facility2) }
+    let(:facility2) { FactoryBot.create(:facility) }
+    let(:other_user) { FactoryBot.create(:user, :staff, facility: facility2) }
 
     before { login_as other_user }
 

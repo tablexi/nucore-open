@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe InstrumentPricePolicy do
   before :each do
-    @instrument = FactoryGirl.create(:setup_instrument)
+    @instrument = FactoryBot.create(:setup_instrument)
     expect(@instrument.price_policies.count).to eq(1)
     @price_policy = @instrument.price_policies.first
     @price_policy.update_attributes(usage_rate: 0,
@@ -10,7 +10,7 @@ RSpec.describe InstrumentPricePolicy do
                                     minimum_cost: 0,
                                     cancellation_cost: 0)
 
-    @reservation = FactoryGirl.create(:purchased_reservation, product: @instrument,
+    @reservation = FactoryBot.create(:purchased_reservation, product: @instrument,
                                                               reserve_start_at: 1.day.ago, reserve_end_at: 1.day.ago + 1.hour)
     @order_detail = @reservation.reload.order_detail
     @order_detail.assign_estimated_price

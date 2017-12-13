@@ -2,7 +2,7 @@ require "rails_helper"
 require "controller_spec_helper"
 
 RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: true } do
-  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility) { FactoryBot.create(:facility) }
   let(:account) { create_nufs_account_with_owner }
   let(:admin) { @admin }
 
@@ -12,13 +12,13 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
 
   before(:each) do
     @authable = facility
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
-    @item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @item = FactoryBot.create(:item, facility_account: @facility_account, facility: @authable)
     @account = account
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
-    @order = FactoryGirl.create(:order, user: @purchaser, created_by: @purchaser.id, facility: @authable)
-    @order_detail = FactoryGirl.create(:order_detail, product: @item, order: @order, account: @account)
+    @order = FactoryBot.create(:order, user: @purchaser, created_by: @purchaser.id, facility: @authable)
+    @order_detail = FactoryBot.create(:order_detail, product: @item, order: @order, account: @account)
   end
 
   context "index" do
@@ -109,7 +109,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         @params = {
           facility_id: @authable.url_name,
           id: @account.id,
-          nufs_account: FactoryGirl.attributes_for(:nufs_account),
+          nufs_account: FactoryBot.attributes_for(:nufs_account),
         }
       end
 
@@ -136,7 +136,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
       before :each do
         @method = :post
         @action = :create
-        @acct_attrs = FactoryGirl.attributes_for(:nufs_account)
+        @acct_attrs = FactoryBot.attributes_for(:nufs_account)
         @params = {
           facility_id: @authable.url_name,
           owner_user_id: @owner.id,
@@ -307,7 +307,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
   end
 
   context "with statements", :time_travel, if: Account.config.statements_enabled? do
-    let!(:statements) { FactoryGirl.create_list(:statement, 2, facility_id: facility.id, created_by: admin.id, account: account) }
+    let!(:statements) { FactoryBot.create_list(:statement, 2, facility_id: facility.id, created_by: admin.id, account: account) }
 
     describe "show_statement" do
       before :each do
@@ -345,10 +345,10 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
     end
 
     describe "statements" do
-      let!(:other_facility_statement) { FactoryGirl.create(:statement, created_by: admin.id, account: account) }
+      let!(:other_facility_statement) { FactoryBot.create(:statement, created_by: admin.id, account: account) }
 
       describe "a single facility" do
-        let(:director) { FactoryGirl.create(:user, :facility_director, facility: facility) }
+        let(:director) { FactoryBot.create(:user, :facility_director, facility: facility) }
 
         before do
           sign_in director
@@ -362,7 +362,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
       end
 
       describe "cross facility" do
-        let(:account_manager) { FactoryGirl.create(:user, :account_manager) }
+        let(:account_manager) { FactoryBot.create(:user, :account_manager) }
         before do
           sign_in account_manager
           get :statements, facility_id: "all", account_id: account.id

@@ -5,23 +5,23 @@ RSpec.describe NotificationSender, :aggregate_failures do
 
   let(:accounts) do
     account_owners.map do |user|
-      FactoryGirl.create_list(:setup_account, 2, owner: user, facility_id: facility.id)
+      FactoryBot.create_list(:setup_account, 2, owner: user, facility_id: facility.id)
     end.flatten
   end
   let(:account_ids) { accounts.map(&:id) }
   let(:delivery) { OpenStruct.new(deliver_now: true) }
   let(:facility) { item.facility }
-  let(:item) { FactoryGirl.create(:setup_item, :with_facility_account) }
+  let(:item) { FactoryBot.create(:setup_item, :with_facility_account) }
   let!(:order_details) do
     accounts.map do |account|
-      FactoryGirl.create(:account_user, :purchaser, user_id: purchaser.id, account_id: account.id)
+      FactoryBot.create(:account_user, :purchaser, user_id: purchaser.id, account_id: account.id)
       Array.new(3) { place_product_order(purchaser, facility, item, account) }
     end.flatten
   end
   let(:order_detail_ids) { order_details.map(&:id) }
   let(:price_policy) { item.price_policies.first }
-  let(:account_owners) { FactoryGirl.create_list(:user, 2) }
-  let(:purchaser) { FactoryGirl.create(:user) }
+  let(:account_owners) { FactoryBot.create_list(:user, 2) }
+  let(:purchaser) { FactoryBot.create(:user) }
 
   before(:each) do
     # This feature only gets used when there is a review period, so go ahead and enable it.

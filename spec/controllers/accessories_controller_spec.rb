@@ -49,7 +49,7 @@ RSpec.describe AccessoriesController do
         auto_accessory
         manual_accessory
 
-        sign_in FactoryGirl.create(:user, :facility_director, facility: facility)
+        sign_in FactoryBot.create(:user, :facility_director, facility: facility)
       end
 
       describe "a completed reservation" do

@@ -12,22 +12,22 @@ RSpec.describe PricePolicy do
   let(:facility) { @facility }
 
   before :each do
-    @facility         = FactoryGirl.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group = FactoryGirl.create(:price_group, facility: facility)
-    @item = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+    @facility         = FactoryBot.create(:facility)
+    @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @price_group = FactoryBot.create(:price_group, facility: facility)
+    @item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
   end
 
   context "current and newest" do
     let!(:price_policy) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :instrument_price_policy,
         start_date: Time.zone.now,
         expire_date: Time.zone.now + 1.day,
       )
     end
     let!(:overlapping_price_policy) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :instrument_price_policy,
         start_date: 1.day.ago.beginning_of_day,
         product: price_policy.product,
@@ -47,14 +47,14 @@ RSpec.describe PricePolicy do
     end
 
     it "should set default expire_date" do
-      @pp = FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: nil)
+      @pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: nil)
       expect(@pp.expire_date).not_to be_nil
       expect(@pp.expire_date).to eq(Time.zone.parse("2020-9-30").end_of_day)
     end
 
     it "should not allow an expire date the same as start date" do
       pp = ItemPricePolicy.new(
-        FactoryGirl.attributes_for(:item_price_policy,
+        FactoryBot.attributes_for(:item_price_policy,
                                    price_group_id: @price_group.id,
                                    product_id: @item.id,
                                    start_date: @start_date,
@@ -67,7 +67,7 @@ RSpec.describe PricePolicy do
 
     it "should not allow an expire date after a generated date" do
       pp = ItemPricePolicy.new(
-        FactoryGirl.attributes_for(:item_price_policy,
+        FactoryBot.attributes_for(:item_price_policy,
                                    price_group_id: @price_group.id,
                                    product_id: @item.id,
                                    start_date: @start_date,
@@ -79,21 +79,21 @@ RSpec.describe PricePolicy do
 
     it "should not set default expire_date if one is given" do
       expire_date = @start_date + 3.months
-      pp = FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+      pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
       expect(pp.expire_date).not_to be_nil
       expect(pp.expire_date).to eq(expire_date)
     end
 
     it "should not be expired" do
       expire_date = @start_date + 3.months
-      pp = FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+      pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
       expect(pp).not_to be_expired
     end
 
     it "should be expired" do
       @start_date = Time.zone.parse("2000-5-5")
       expire_date = @start_date + 1.month
-      pp = FactoryGirl.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+      pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
       expect(pp).to be_expired
     end
 
@@ -102,8 +102,8 @@ RSpec.describe PricePolicy do
   context "restrict purchase" do
 
     before :each do
-      @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
-      # @pgp=FactoryGirl.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
+      @pp = FactoryBot.create(:item_price_policy, product: @item, price_group: @price_group)
+      # @pgp=FactoryBot.create(:price_group_product, :product => @item, :price_group => @price_group, :reservation_window => nil)
     end
 
     it "should not restrict purchase" do
@@ -148,16 +148,16 @@ RSpec.describe PricePolicy do
 
   context "truncate old policies" do
     before :each do
-      @user     = FactoryGirl.create(:user)
-      @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-      @price_group = FactoryGirl.create(:price_group, facility: @facility)
-      @item2 = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+      @user     = FactoryBot.create(:user)
+      @account  = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+      @price_group = FactoryBot.create(:price_group, facility: @facility)
+      @item2 = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
     end
     it "should truncate the old policy" do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
       travel_to_and_return(@today) do
-        @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
-        @pp2 = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
+        @pp = FactoryBot.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
+        @pp2 = FactoryBot.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
         expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
         expect(@pp.expire_date).to be < (@today + 1.day).end_of_day
         expect(@pp2.reload.start_date).to eq(@today + 2.days)
@@ -169,9 +169,9 @@ RSpec.describe PricePolicy do
       @today = Time.zone.local(2011, 06, 06, 12, 0, 0)
 
       travel_to_and_return(@today) do
-        @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
-        @pp3 = FactoryGirl.create(:item_price_policy, product: @item2, price_group: @price_group, start_date: @today, expire_date: @today + 30.days)
-        @pp2 = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
+        @pp = FactoryBot.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today.beginning_of_day, expire_date: @today + 30.days)
+        @pp3 = FactoryBot.create(:item_price_policy, product: @item2, price_group: @price_group, start_date: @today, expire_date: @today + 30.days)
+        @pp2 = FactoryBot.create(:item_price_policy, product: @item, price_group: @price_group, start_date: @today + 2.days, expire_date: @today + 30.days)
         expect(@pp.reload.start_date).to eq(@today.beginning_of_day)
         expect(@pp.expire_date).to be < (@today + 1.day).end_of_day
         expect(@pp2.reload.start_date).to eq(@today + 2.days)
@@ -203,14 +203,14 @@ RSpec.describe PricePolicy do
     context "order assignment" do
 
       before :each do
-        @user     = FactoryGirl.create(:user)
-        @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-        @order    = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id))
-        @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
-        @price_group = FactoryGirl.create(:price_group, facility: @facility)
+        @user     = FactoryBot.create(:user)
+        @account  = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+        @order    = @user.orders.create(FactoryBot.attributes_for(:order, created_by: @user.id))
+        @order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
+        @price_group = FactoryBot.create(:price_group, facility: @facility)
         create(:account_price_group_member, account: @account, price_group: @price_group)
-        FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
-        @pp = FactoryGirl.create(:item_price_policy, product: @item, price_group: @price_group)
+        FactoryBot.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+        @pp = FactoryBot.create(:item_price_policy, product: @item, price_group: @price_group)
       end
 
       it "should not be assigned" do

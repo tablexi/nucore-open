@@ -15,9 +15,9 @@ RSpec.describe InstrumentsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @instrument       = FactoryGirl.create(:instrument,
+    @authable         = FactoryBot.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @instrument       = FactoryBot.create(:instrument,
                                            facility: @authable,
                                            facility_account: @facility_account,
                                            no_relay: true)
@@ -257,7 +257,7 @@ RSpec.describe InstrumentsController do
       @method = :post
       @action = :create
       @params.merge!(
-        instrument: FactoryGirl.attributes_for(:instrument,
+        instrument: FactoryBot.attributes_for(:instrument,
                                                facility_account_id: @facility_account.id,
                                                control_mechanism: "manual",
                                               ),
@@ -342,7 +342,7 @@ RSpec.describe InstrumentsController do
 
     describe "shared schedule" do
       before :each do
-        @schedule = FactoryGirl.create(:schedule, facility: @authable)
+        @schedule = FactoryBot.create(:schedule, facility: @authable)
         sign_in @admin
       end
 
@@ -511,14 +511,14 @@ RSpec.describe InstrumentsController do
 
       describe "schedule sharing" do
         let(:admin_reservation) do
-          FactoryGirl.create(
+          FactoryBot.create(
             :admin_reservation,
             product: @instrument,
             reserve_start_at: 2.days.from_now,
           )
         end
         let(:admin_reservation2) do
-          FactoryGirl.create(
+          FactoryBot.create(
             :admin_reservation,
             product: @instrument,
             reserve_start_at: 1.day.from_now,
@@ -558,25 +558,25 @@ RSpec.describe InstrumentsController do
 
         @method = :get
         @action = :instrument_statuses
-        @instrument_with_relay = FactoryGirl.create(:instrument,
+        @instrument_with_relay = FactoryBot.create(:instrument,
                                                     facility: @authable,
                                                     facility_account: @facility_account,
                                                     no_relay: true)
-        FactoryGirl.create(:relay_syna, instrument: @instrument_with_relay)
+        FactoryBot.create(:relay_syna, instrument: @instrument_with_relay)
 
-        @instrument_with_dummy_relay = FactoryGirl.create(:instrument,
+        @instrument_with_dummy_relay = FactoryBot.create(:instrument,
                                                           facility: @authable,
                                                           facility_account: @facility_account,
                                                           no_relay: true)
-        FactoryGirl.create(:relay_dummy, instrument: @instrument_with_dummy_relay)
+        FactoryBot.create(:relay_dummy, instrument: @instrument_with_dummy_relay)
 
         @instrument_with_dummy_relay.instrument_statuses.create(is_on: true)
-        @instrument_with_bad_relay = FactoryGirl.create(:instrument,
+        @instrument_with_bad_relay = FactoryBot.create(:instrument,
                                                         facility: @authable,
                                                         facility_account: @facility_account,
                                                         no_relay: true)
 
-        FactoryGirl.create(:relay_synb, instrument: @instrument_with_bad_relay)
+        FactoryBot.create(:relay_synb, instrument: @instrument_with_bad_relay)
         allow_any_instance_of(RelaySynaccessRevB).to receive(:query_status).and_raise(StandardError.new("Error!"))
         @instrument_with_bad_relay.relay.update_attribute(:ip, "")
       end

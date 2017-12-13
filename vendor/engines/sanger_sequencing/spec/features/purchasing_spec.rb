@@ -3,15 +3,15 @@ require "rails_helper"
 RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
   include RSpec::Matchers.clone # Give RSpec's `all` precedence over Capybara's
 
-  let(:facility) { FactoryGirl.create(:setup_facility, sanger_sequencing_enabled: true) }
-  let!(:service) { FactoryGirl.create(:setup_service, facility: facility) }
-  let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
-  let!(:price_policy) { FactoryGirl.create(:service_price_policy, price_group: PriceGroup.base, product: service) }
-  let(:user) { FactoryGirl.create(:user) }
+  let(:facility) { FactoryBot.create(:setup_facility, sanger_sequencing_enabled: true) }
+  let!(:service) { FactoryBot.create(:setup_service, facility: facility) }
+  let!(:account) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user) }
+  let!(:price_policy) { FactoryBot.create(:service_price_policy, price_group: PriceGroup.base, product: service) }
+  let(:user) { FactoryBot.create(:user) }
   let(:external_service) { create(:external_service, location: new_sanger_sequencing_submission_path) }
   let!(:sanger_order_form) { create(:external_service_passer, external_service: external_service, active: true, passer: service) }
   let!(:account_price_group_member) do
-    FactoryGirl.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
+    FactoryBot.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
   end
 
   shared_examples_for "purchasing a sanger product and filling out the form" do
@@ -148,7 +148,7 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
   end
 
   describe "while acting as another user" do
-    let(:admin) { FactoryGirl.create(:user, :administrator) }
+    let(:admin) { FactoryBot.create(:user, :administrator) }
     before do
       login_as admin
       visit facility_user_switch_to_path(facility, user)

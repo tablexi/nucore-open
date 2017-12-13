@@ -9,16 +9,16 @@ RSpec.describe AutoCanceler, :time_travel do
   end
 
   let(:base_date) { Time.zone.parse("#{Date.today} 12:30:00") }
-  let(:instrument) { FactoryGirl.create :setup_instrument }
+  let(:instrument) { FactoryBot.create :setup_instrument }
   let!(:future_reservation) do
-    FactoryGirl.create :purchased_reservation,
+    FactoryBot.create :purchased_reservation,
                        product: instrument,
                        reserve_start_at: base_date + 1.day,
                        reserve_end_at: base_date + 1.day + 1.hour
   end
 
   let!(:past_reservation) do
-    FactoryGirl.create :purchased_reservation,
+    FactoryBot.create :purchased_reservation,
                        product: instrument,
                        reserve_start_at: base_date - 2.hours,
                        reserve_end_at: base_date - 1.hour,
@@ -26,7 +26,7 @@ RSpec.describe AutoCanceler, :time_travel do
   end
 
   let!(:completed_reservation) do
-    res = FactoryGirl.create :purchased_reservation,
+    res = FactoryBot.create :purchased_reservation,
                              product: instrument,
                              reserve_start_at: base_date - 3.hours,
                              reserve_end_at: base_date - 2.hours,
@@ -64,7 +64,7 @@ RSpec.describe AutoCanceler, :time_travel do
     end
 
     it "should not cancel a past reservation in the cart" do
-      cart_reservation = FactoryGirl.create(:setup_reservation,
+      cart_reservation = FactoryBot.create(:setup_reservation,
                                             product: instrument,
                                             reserve_start_at: base_date - 1.day,
                                             reserve_end_at: base_date - 1.day + 1.hour,

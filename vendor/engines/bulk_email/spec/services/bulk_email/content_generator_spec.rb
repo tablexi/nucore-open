@@ -4,8 +4,8 @@ RSpec.describe BulkEmail::ContentGenerator do
   subject { described_class.new(facility) }
 
   let(:facility) { instrument.facility }
-  let(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
-  let(:recipient) { FactoryGirl.build(:user) }
+  let(:instrument) { FactoryBot.create(:setup_instrument, :offline) }
+  let(:recipient) { FactoryBot.build(:user) }
 
   describe "#greeting" do
     context "without a recipient name" do

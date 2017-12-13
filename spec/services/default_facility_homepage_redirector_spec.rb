@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe DefaultFacilityHomepageRedirector do
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:user) { FactoryGirl.create(:user) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:user) { FactoryBot.create(:user) }
 
   describe "#redirect_path" do
     context "with active instruments" do

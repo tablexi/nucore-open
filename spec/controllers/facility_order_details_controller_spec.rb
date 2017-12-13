@@ -9,14 +9,14 @@ RSpec.describe FacilityOrderDetailsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
-    @product = FactoryGirl.create(:item,
+    @authable = FactoryBot.create(:facility)
+    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @product = FactoryBot.create(:item,
                                   facility_account: @facility_account,
                                   facility: @authable,
                                  )
     @account = create_nufs_account_with_owner :director
-    @order = FactoryGirl.create(:order,
+    @order = FactoryBot.create(:order,
                                 facility: @authable,
                                 user: @director,
                                 created_by: @director.id,
@@ -24,9 +24,9 @@ RSpec.describe FacilityOrderDetailsController do
                                 ordered_at: Time.zone.now,
                                 state: "purchased",
                                )
-    @price_group = FactoryGirl.create(:price_group, facility: @authable)
-    @price_policy = FactoryGirl.create(:item_price_policy, product: @product, price_group: @price_group)
-    @order_detail = FactoryGirl.create(:order_detail, order: @order, product: @product, price_policy: @price_policy)
+    @price_group = FactoryBot.create(:price_group, facility: @authable)
+    @price_policy = FactoryBot.create(:item_price_policy, product: @product, price_group: @price_group)
+    @order_detail = FactoryBot.create(:order_detail, order: @order, product: @product, price_policy: @price_policy)
     @order_detail.set_default_status!
     @params = { facility_id: @authable.url_name, order_id: @order.id, id: @order_detail.id }
   end
@@ -61,9 +61,9 @@ RSpec.describe FacilityOrderDetailsController do
 
   def prepare_reservation
     @order_detail.update_attributes(price_policy: nil)
-    @instrument = FactoryGirl.create(:instrument, facility: @authable,
-                                                  facility_account: @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)))
-    @instrument_price_policy = FactoryGirl.create(:instrument_price_policy,
+    @instrument = FactoryBot.create(:instrument, facility: @authable,
+                                                  facility_account: @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account)))
+    @instrument_price_policy = FactoryBot.create(:instrument_price_policy,
                                                   product: @instrument,
                                                   price_group: @price_group,
                                                   usage_rate: 10,

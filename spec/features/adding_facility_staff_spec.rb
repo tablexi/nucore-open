@@ -7,9 +7,9 @@ RSpec.describe "Adding/Removing Facility Staff" do
     ""
   end
 
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:admin) { FactoryGirl.create(:user, :facility_administrator, facility: facility) }
-  let(:normal_user) { FactoryGirl.create(:user) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:admin) { FactoryBot.create(:user, :facility_administrator, facility: facility) }
+  let(:normal_user) { FactoryBot.create(:user) }
 
   before { login_as admin }
 

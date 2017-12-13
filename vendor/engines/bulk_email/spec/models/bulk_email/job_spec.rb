@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe BulkEmail::Job, type: :model do
-  subject(:bulk_email_job) { FactoryGirl.build(:bulk_email_job) }
+  subject(:bulk_email_job) { FactoryBot.build(:bulk_email_job) }
 
   it { is_expected.to belong_to(:facility) }
   it { is_expected.to belong_to(:user) }

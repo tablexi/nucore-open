@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "User's Card Number" do
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:card_user) { FactoryGirl.create(:user) }
-  let(:staff_user) { FactoryGirl.create(:user, :staff, facility: facility) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:card_user) { FactoryBot.create(:user) }
+  let(:staff_user) { FactoryBot.create(:user, :staff, facility: facility) }
 
   describe "update" do
     before do

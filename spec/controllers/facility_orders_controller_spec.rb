@@ -13,9 +13,9 @@ RSpec.describe FacilityOrdersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
-    @product = FactoryGirl.create(:item,
+    @authable = FactoryBot.create(:facility)
+    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @product = FactoryBot.create(:item,
                                   facility_account: @facility_account,
                                   facility: @authable,
                                  )
@@ -187,7 +187,7 @@ RSpec.describe FacilityOrdersController do
       end
 
       context "when adding an instrument" do
-        let(:instrument) { FactoryGirl.create(:instrument, facility_account: facility_account) }
+        let(:instrument) { FactoryBot.create(:instrument, facility_account: facility_account) }
         let(:merge_order) { Order.find_by(merge_with_order_id: order.id) }
         let(:order_detail) { merge_order.order_details.last }
 
@@ -219,7 +219,7 @@ RSpec.describe FacilityOrdersController do
           context "of 'Complete'" do
             let(:order_status) { OrderStatus.complete }
             let(:director) do
-              FactoryGirl.create(:user, :facility_director, facility: facility)
+              FactoryBot.create(:user, :facility_director, facility: facility)
             end
 
             before do
@@ -237,7 +237,7 @@ RSpec.describe FacilityOrdersController do
       end
 
       context "when adding an item" do
-        let(:item) { FactoryGirl.create(:item, facility_account: facility_account) }
+        let(:item) { FactoryBot.create(:item, facility_account: facility_account) }
         let(:order_detail) { order.order_details.last }
 
         before { @params[:product_add] = item.id }
@@ -323,7 +323,7 @@ RSpec.describe FacilityOrdersController do
       end
 
       context "when adding a service" do
-        let(:service) { FactoryGirl.create(:service, facility_account: facility_account) }
+        let(:service) { FactoryBot.create(:service, facility_account: facility_account) }
 
         before do
           allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
@@ -375,11 +375,11 @@ RSpec.describe FacilityOrdersController do
 
       context "when adding a bundle" do
         let(:bundle) do
-          FactoryGirl.create(:bundle, bundle_products: bundle_products, facility_account: facility_account)
+          FactoryBot.create(:bundle, bundle_products: bundle_products, facility_account: facility_account)
         end
         let(:bundle_products) { [product, additional_product] }
         let(:additional_product) do
-          FactoryGirl.create(bundled_product_type, facility_account: facility_account)
+          FactoryBot.create(bundled_product_type, facility_account: facility_account)
         end
 
         before { @params[:product_add] = bundle.id }
@@ -499,7 +499,7 @@ RSpec.describe FacilityOrdersController do
     before :each do
       @method = :get
       @action = :tab_counts
-      @order_detail2 = FactoryGirl.create(:order_detail, order: @order, product: @product)
+      @order_detail2 = FactoryBot.create(:order_detail, order: @order, product: @product)
 
       expect(@authable.order_details.item_and_service_orders.new_or_inprocess.size).to eq(2)
 

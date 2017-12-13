@@ -1,6 +1,6 @@
 require File.expand_path("factories_env", File.dirname(__FILE__))
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :log_event do
     loggable ""
     event_type "MyString"

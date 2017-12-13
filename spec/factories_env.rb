@@ -22,8 +22,8 @@ end
 #
 # Allows overriding of factories by engines, etc.
 def overridable_factory(factory_name, *args, &block)
-  return if FactoryGirl.factories.registered? factory_name
-  FactoryGirl.define do
+  return if FactoryBot.factories.registered? factory_name
+  FactoryBot.define do
     factory factory_name, *args do
       instance_eval(&block)
     end

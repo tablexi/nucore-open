@@ -1,8 +1,8 @@
 RSpec.shared_examples_for "AccountBuilder#build" do
   subject(:account) { builder.build }
   let(:builder) { described_class.new(options) }
-  let(:facility) { FactoryGirl.build_stubbed(:facility) }
-  let(:user) { FactoryGirl.build_stubbed(:user) }
+  let(:facility) { FactoryBot.build_stubbed(:facility) }
+  let(:user) { FactoryBot.build_stubbed(:user) }
 
   context "when the affiliate_id param is set" do
     let(:affiliate) { Affiliate.create!(name: "New Affiliate") }

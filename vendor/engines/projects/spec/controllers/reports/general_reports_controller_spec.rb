@@ -2,11 +2,11 @@ require "rails_helper"
 
 RSpec.describe Reports::GeneralReportsController do
   let(:facility) { item.facility }
-  let(:item) { FactoryGirl.create(:setup_item) }
-  let!(:order) { FactoryGirl.create(:purchased_order, product: item, ordered_at: 1.month.ago) }
-  let!(:no_project_order) { FactoryGirl.create(:purchased_order, product: item) }
-  let(:project) { FactoryGirl.create(:project, facility: facility) }
-  let(:administrator) { FactoryGirl.create(:user, :administrator) }
+  let(:item) { FactoryBot.create(:setup_item) }
+  let!(:order) { FactoryBot.create(:purchased_order, product: item, ordered_at: 1.month.ago) }
+  let!(:no_project_order) { FactoryBot.create(:purchased_order, product: item) }
+  let(:project) { FactoryBot.create(:project, facility: facility) }
+  let(:administrator) { FactoryBot.create(:user, :administrator) }
 
   describe "the project report" do
     before do

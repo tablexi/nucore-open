@@ -10,13 +10,13 @@ RSpec.describe BundlesController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
-    @bundle = FactoryGirl.create(:bundle, facility_account: @facility_account, facility: @authable)
+    @authable = FactoryBot.create(:facility)
+    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @bundle = FactoryBot.create(:bundle, facility_account: @facility_account, facility: @authable)
 
     # Create at least one item in the bundle, otherwise bundle.can_purchase? will return false
-    item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
-    price_policy = item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: @nupg))
+    item = FactoryBot.create(:item, facility_account: @facility_account, facility: @authable)
+    price_policy = item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group: @nupg))
     bundle_product = BundleProduct.new(bundle: @bundle, product: item, quantity: 1)
     bundle_product.save!
   end
@@ -207,7 +207,7 @@ RSpec.describe BundlesController do
     before(:each) do
       @method = :post
       @action = :create
-      @params = { facility_id: @authable.url_name, bundle: FactoryGirl.attributes_for(:bundle) }
+      @params = { facility_id: @authable.url_name, bundle: FactoryBot.attributes_for(:bundle) }
     end
 
     it_should_require_login
@@ -229,7 +229,7 @@ RSpec.describe BundlesController do
       @params = {
         facility_id: @authable.url_name,
         id: @bundle.url_name,
-        bundle: FactoryGirl.attributes_for(:bundle, url_name: @bundle.url_name),
+        bundle: FactoryBot.attributes_for(:bundle, url_name: @bundle.url_name),
       }
     end
 

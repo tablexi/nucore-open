@@ -8,7 +8,7 @@ overridable_factory :nufs_account do
   created_by 0
 end
 
-FactoryGirl.modify do
+FactoryBot.modify do
   factory :nufs_account do
     trait :with_order do
       with_account_owner
@@ -17,17 +17,17 @@ FactoryGirl.modify do
         product nil
       end
 
-      account_users_attributes { [FactoryGirl.attributes_for(:account_user, user: owner)] }
+      account_users_attributes { [FactoryBot.attributes_for(:account_user, user: owner)] }
 
       after(:create) do |account, evaluator|
-        order = FactoryGirl.create(
+        order = FactoryBot.create(
           :order,
           user: evaluator.owner,
           created_by: evaluator.owner.id,
           facility: evaluator.product.facility,
         )
 
-        FactoryGirl.create(
+        FactoryBot.create(
           :order_detail,
           product: evaluator.product,
           order: order,
@@ -38,7 +38,7 @@ FactoryGirl.modify do
   end
 end
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :setup_account, class: NufsAccount, parent: :nufs_account do
     transient do
       owner { create(:user) }

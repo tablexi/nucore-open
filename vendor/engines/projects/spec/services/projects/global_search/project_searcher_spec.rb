@@ -2,13 +2,13 @@ require "rails_helper"
 
 RSpec.describe Projects::GlobalSearch::ProjectSearcher do
   let(:facility) { nil }
-  let!(:facility_a) { FactoryGirl.create(:facility) }
-  let!(:facility_b) { FactoryGirl.create(:facility) }
-  let!(:facility_a_projects) { FactoryGirl.create_list(:project, 2, facility: facility_a) }
-  let!(:facility_b_projects) { FactoryGirl.create_list(:project, 2, facility: facility_b) }
+  let!(:facility_a) { FactoryBot.create(:facility) }
+  let!(:facility_b) { FactoryBot.create(:facility) }
+  let!(:facility_a_projects) { FactoryBot.create_list(:project, 2, facility: facility_a) }
+  let!(:facility_b_projects) { FactoryBot.create_list(:project, 2, facility: facility_b) }
   let(:query) { nil }
   let(:searcher) { described_class.new(user, facility, query) }
-  let(:user) { FactoryGirl.create(:user, :administrator) }
+  let(:user) { FactoryBot.create(:user, :administrator) }
 
   describe "#results" do
     subject(:results) { searcher.results }

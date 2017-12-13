@@ -10,11 +10,11 @@ RSpec.describe InstrumentOfflineReservationCanceler do
 
   describe "#cancel!" do
     context "when the instrument is offline" do
-      let!(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+      let!(:instrument) { FactoryBot.create(:setup_instrument, :offline) }
 
       context "when a reservation starting now exists" do
         let!(:reservation) do
-          FactoryGirl.create(:purchased_reservation,
+          FactoryBot.create(:purchased_reservation,
                              product: instrument,
                              reserve_start_at: Time.current)
         end

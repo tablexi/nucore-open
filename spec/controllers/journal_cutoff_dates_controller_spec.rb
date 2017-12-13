@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe JournalCutoffDatesController do
   describe "as a normal user" do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryBot.create(:user) }
     before { sign_in user }
 
     it "does not give access to index" do
@@ -23,7 +23,7 @@ RSpec.describe JournalCutoffDatesController do
   end
 
   describe "as a global admin" do
-    let(:user) { FactoryGirl.create(:user, :administrator) }
+    let(:user) { FactoryBot.create(:user, :administrator) }
     before { sign_in user }
 
     describe "#new" do

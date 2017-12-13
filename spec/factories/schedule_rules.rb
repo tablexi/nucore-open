@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :schedule_rule do
     discount_percent 0.00
     start_hour 9

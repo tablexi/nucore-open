@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Managing an order detail" do
 
   let(:facility) { create(:setup_facility) }
-  let(:instrument) { FactoryGirl.create(:setup_instrument, facility: facility, control_mechanism: "timer") }
+  let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility, control_mechanism: "timer") }
   let(:reservation) { create(:purchased_reservation, product: instrument) }
   let(:order_detail) { reservation.order_detail }
   let(:order) { reservation.order }

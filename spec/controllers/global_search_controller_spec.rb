@@ -34,8 +34,8 @@ end
 
 RSpec.describe GlobalSearchController do
   before(:all) { create_users }
-  let!(:product) { FactoryGirl.create(:setup_item) }
-  let!(:order) { FactoryGirl.create(:purchased_order, product: product) }
+  let!(:product) { FactoryBot.create(:setup_item) }
+  let!(:order) { FactoryBot.create(:purchased_order, product: product) }
   let!(:order_detail) { order.order_details.first }
   let!(:facility) { order.facility }
   let(:order_detail_results) { assigns[:searchers].find { |s| s.template == "order_details" }.results }
@@ -85,7 +85,7 @@ RSpec.describe GlobalSearchController do
     end
 
     context "when signed in as facility admin for a different facility" do
-      let(:facility2) { FactoryGirl.create :facility }
+      let(:facility2) { FactoryBot.create :facility }
       before :each do
         grant_role(@staff, facility2)
         sign_in @staff
@@ -95,9 +95,9 @@ RSpec.describe GlobalSearchController do
     end
 
     context "when signed in as facility admin, but order was placed for the user in a different facility" do
-      let(:facility2) { FactoryGirl.create :setup_facility }
-      let!(:product) { FactoryGirl.create(:setup_item, facility: facility2) }
-      let!(:order) { FactoryGirl.create(:purchased_order, product: product) }
+      let(:facility2) { FactoryBot.create :setup_facility }
+      let!(:product) { FactoryBot.create(:setup_item, facility: facility2) }
+      let!(:order) { FactoryBot.create(:purchased_order, product: product) }
       let!(:order_detail) { order.order_details.first }
       let(:user) { order.user }
       before :each do
@@ -154,7 +154,7 @@ RSpec.describe GlobalSearchController do
       end
 
       it "should not return an unpurchased order" do
-        order2 = FactoryGirl.create(:setup_order, product: product)
+        order2 = FactoryBot.create(:setup_order, product: product)
         get :index, search: order2.id.to_s
         expect(order_detail_results).to be_empty
       end
@@ -168,7 +168,7 @@ RSpec.describe GlobalSearchController do
       end
 
       context "when there is an order and order detail with same ids" do
-        let!(:order2) { FactoryGirl.create(:purchased_order, id: order_detail.id, product: product) }
+        let!(:order2) { FactoryBot.create(:purchased_order, id: order_detail.id, product: product) }
         before :each do
           get :index, search: order_detail.id.to_s
         end
@@ -204,7 +204,7 @@ RSpec.describe GlobalSearchController do
       end
 
       describe "when searching for a statement", if: Account.config.statements_enabled? do
-        let!(:statement) { FactoryGirl.create(:statement, created_by_user: create(:user)) }
+        let!(:statement) { FactoryBot.create(:statement, created_by_user: create(:user)) }
 
         it "finds it by the invoice number" do
           get :index, search: statement.invoice_number

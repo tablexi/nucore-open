@@ -2,15 +2,15 @@
 # Call this method in a before(:all) block at the top of your +describe+
 def create_users
   # TODO: Phase these out with "let" assignments, and use traits to assign roles
-  @admin = FactoryGirl.create(:user, :administrator, username: "admin")
-  @business_admin = FactoryGirl.create(:user, username: "business_admin")
-  @director = FactoryGirl.create(:user, username: "director")
-  @facility_admin = FactoryGirl.create(:user, username: "facility_admin")
-  @guest = FactoryGirl.create(:user, username: "guest")
-  @owner = FactoryGirl.create(:user, username: "owner")
-  @purchaser = FactoryGirl.create(:user, username: "purchaser")
-  @staff = FactoryGirl.create(:user, username: "staff")
-  @senior_staff = FactoryGirl.create(:user, username: "senior_staff")
+  @admin = FactoryBot.create(:user, :administrator, username: "admin")
+  @business_admin = FactoryBot.create(:user, username: "business_admin")
+  @director = FactoryBot.create(:user, username: "director")
+  @facility_admin = FactoryBot.create(:user, username: "facility_admin")
+  @guest = FactoryBot.create(:user, username: "guest")
+  @owner = FactoryBot.create(:user, username: "owner")
+  @purchaser = FactoryBot.create(:user, username: "purchaser")
+  @staff = FactoryBot.create(:user, username: "staff")
+  @senior_staff = FactoryBot.create(:user, username: "senior_staff")
 end
 
 #

@@ -15,10 +15,10 @@ RSpec.describe ServicesController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @service          = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
-    @service_pp       = @service.service_price_policies.create(FactoryGirl.attributes_for(:service_price_policy, price_group: @nupg))
+    @authable         = FactoryBot.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @service          = @authable.services.create(FactoryBot.attributes_for(:service, facility_account_id: @facility_account.id))
+    @service_pp       = @service.service_price_policies.create(FactoryBot.attributes_for(:service_price_policy, price_group: @nupg))
     @params = { facility_id: @authable.url_name }
   end
 
@@ -160,7 +160,7 @@ RSpec.describe ServicesController do
     before :each do
       @method = :post
       @action = :create
-      @params.merge!(service: FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+      @params.merge!(service: FactoryBot.attributes_for(:service, facility_account_id: @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -182,7 +182,7 @@ RSpec.describe ServicesController do
     before :each do
       @method = :put
       @action = :update
-      @params.merge!(id: @service.url_name, service: FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+      @params.merge!(id: @service.url_name, service: FactoryBot.attributes_for(:service, facility_account_id: @facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do

@@ -12,11 +12,11 @@ RSpec.describe OfflineCancellationMailer do
       described_class.send_notification(reservation).deliver_now
     end
 
-    let(:instrument) { FactoryGirl.create(:setup_instrument) }
-    let(:order) { FactoryGirl.build_stubbed(:order) }
-    let(:order_detail) { FactoryGirl.build_stubbed(:order_detail) }
-    let(:reservation) { FactoryGirl.build_stubbed(:reservation) }
-    let(:user) { FactoryGirl.build_stubbed(:user) }
+    let(:instrument) { FactoryBot.create(:setup_instrument) }
+    let(:order) { FactoryBot.build_stubbed(:order) }
+    let(:order_detail) { FactoryBot.build_stubbed(:order_detail) }
+    let(:reservation) { FactoryBot.build_stubbed(:reservation) }
+    let(:user) { FactoryBot.build_stubbed(:user) }
 
     it "generates an offline cancellation notification", :aggregate_failures do
       expect(email.to).to eq [user.email]

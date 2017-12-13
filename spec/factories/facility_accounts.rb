@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :facility_account do
     facility
     revenue_account 51_234

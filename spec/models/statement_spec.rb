@@ -112,7 +112,7 @@ RSpec.describe Statement do
       end
 
       describe "with partial payment" do
-        let!(:payments) { FactoryGirl.create(:payment, account: statement.account, statement: statement, amount: statement.total_cost / 2) }
+        let!(:payments) { FactoryBot.create(:payment, account: statement.account, statement: statement, amount: statement.total_cost / 2) }
 
         it "is not paid_in_full" do
           expect(statement).not_to be_paid_in_full
@@ -120,7 +120,7 @@ RSpec.describe Statement do
       end
 
       describe "with multiple payments totaling to the total amount" do
-        let!(:payments) { FactoryGirl.create_list(:payment, 2, account: statement.account, statement: statement, amount: statement.total_cost / 2) }
+        let!(:payments) { FactoryBot.create_list(:payment, 2, account: statement.account, statement: statement, amount: statement.total_cost / 2) }
 
         it "is paid_in_full" do
           expect(statement).to be_paid_in_full

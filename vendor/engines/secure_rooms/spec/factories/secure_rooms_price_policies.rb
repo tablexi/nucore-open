@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :secure_room_price_policy do
     price_group
     usage_rate 60

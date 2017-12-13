@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe BulkEmail::Mailer do
   describe ".mail" do
     let(:email) { ActionMailer::Base.deliveries.last }
-    let(:recipient) { FactoryGirl.build_stubbed(:user) }
+    let(:recipient) { FactoryBot.build_stubbed(:user) }
     let(:custom_subject) { "Custom subject" }
     let(:body) { "Custom message" }
     let(:reply_to) { "reply@example.com" }
@@ -21,7 +21,7 @@ RSpec.describe BulkEmail::Mailer do
     end
 
     context "with a single facility sender" do
-      let(:facility) { FactoryGirl.build_stubbed(:facility) }
+      let(:facility) { FactoryBot.build_stubbed(:facility) }
       let(:args) { { body: body, subject: custom_subject, recipient: recipient, facility: facility } }
       let(:sender_string) { "From: #{facility.name} <#{Settings.email.from}>" }
 

@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe NufsAccount do
   context "account number validations" do
     before(:each) do
-      @user     = FactoryGirl.create(:user)
-      @options  = FactoryGirl.attributes_for(:nufs_account, description: "account description", expires_at: Time.zone.now + 1.day, created_by: @user,
+      @user     = FactoryBot.create(:user)
+      @options  = FactoryBot.attributes_for(:nufs_account, description: "account description", expires_at: Time.zone.now + 1.day, created_by: @user,
                                                             account_users_attributes: account_users_attributes_hash(user: @user))
       @starts_at  = Time.zone.now - 3.days
       @expires_at = Time.zone.now + 3.days
@@ -18,7 +18,7 @@ RSpec.describe NufsAccount do
     end
 
     it "should not have a facility" do
-      facility = FactoryGirl.create(:facility)
+      facility = FactoryBot.create(:facility)
       account = NufsAccount.create(@options)
       expect(account.facility).to be_nil
     end

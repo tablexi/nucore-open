@@ -257,7 +257,7 @@ RSpec.describe OrderDetail do
         @pp = create(:instrument_price_policy, product: @instrument, price_group: @price_group)
         @rule = @instrument.schedule_rules.create(attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
 
-        @order_detail.reservation = FactoryGirl.create(:reservation,
+        @order_detail.reservation = FactoryBot.create(:reservation,
                                                        reserve_start_at: Time.current,
                                                        reserve_end_at: 1.hour.from_now,
                                                        product: @instrument,
@@ -1261,7 +1261,7 @@ RSpec.describe OrderDetail do
       start_date = 1.day.from_now
       setup_reservation(facility, facility_account, account, user)
       place_reservation(facility, order_detail, start_date)
-      FactoryGirl.create(:account_price_group_member, account: account, price_group: @price_group)
+      FactoryBot.create(:account_price_group_member, account: account, price_group: @price_group)
       order_detail.update_attribute(:statement_id, statement.id)
     end
 

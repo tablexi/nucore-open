@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe ResultsFileNotifier do
-  let(:service) { FactoryGirl.create(:setup_service) }
+  let(:service) { FactoryBot.create(:setup_service) }
   let(:order) { create(:purchased_order, product: service) }
-  let(:stored_file) { FactoryGirl.create(:stored_file, :results, order_detail: order.order_details.first) }
+  let(:stored_file) { FactoryBot.create(:stored_file, :results, order_detail: order.order_details.first) }
   let(:notifier) { described_class.new(stored_file) }
 
   describe "with notifications enabled", feature_setting: { results_file_notifications: true, my_files: true } do

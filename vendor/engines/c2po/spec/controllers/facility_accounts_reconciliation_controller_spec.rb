@@ -7,19 +7,19 @@ RSpec.describe FacilityAccountsReconciliationController do
   include DateHelper
 
   let(:account) { @account }
-  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility) { FactoryBot.create(:facility) }
 
   before(:all) { create_users }
 
   before(:each) do
     @authable = facility # TODO: replace '@authable' with 'facility' throughout
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
-    @item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
-    @account = FactoryGirl.create(:credit_card_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner)])
+    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @item = FactoryBot.create(:item, facility_account: @facility_account, facility: @authable)
+    @account = FactoryBot.create(:credit_card_account, account_users_attributes: [FactoryBot.attributes_for(:account_user, user: @owner)])
     grant_role(@purchaser, @account)
     grant_role(@owner, @account)
-    @order = FactoryGirl.create(:order, user: @purchaser, created_by: @purchaser.id, facility: @authable)
-    @order_detail = FactoryGirl.create(:order_detail, product: @item, order: @order, account: @account)
+    @order = FactoryBot.create(:order, user: @purchaser, created_by: @purchaser.id, facility: @authable)
+    @order_detail = FactoryBot.create(:order_detail, product: @item, order: @order, account: @account)
   end
 
   shared_examples "an authable account" do
@@ -122,7 +122,7 @@ RSpec.describe FacilityAccountsReconciliationController do
 
   context "update_credit_cards" do
     before :each do
-      ccact = FactoryGirl.build(:credit_card_account)
+      ccact = FactoryBot.build(:credit_card_account)
       prepare_for_account_update("CreditCardAccount", ccact)
     end
 
@@ -154,7 +154,7 @@ RSpec.describe FacilityAccountsReconciliationController do
 
   context "update_purchase_orders" do
     before :each do
-      @poact = FactoryGirl.build(:purchase_order_account)
+      @poact = FactoryBot.build(:purchase_order_account)
       prepare_for_account_update("PurchaseOrderAccount", @poact)
     end
 
@@ -179,15 +179,15 @@ RSpec.describe FacilityAccountsReconciliationController do
     @action = :update
     account.account_users_attributes = [{ user_id: @purchaser.id, user_role: AccountUser::ACCOUNT_OWNER, created_by: @admin.id }]
     account.save!
-    @price_policy = FactoryGirl.create(:item_price_policy, product: @item, price_group: @nupg)
-    @price_group_product = FactoryGirl.create(:price_group_product, product: @item, price_group: @nupg, reservation_window: nil)
+    @price_policy = FactoryBot.create(:item_price_policy, product: @item, price_group: @nupg)
+    @price_group_product = FactoryBot.create(:price_group_product, product: @item, price_group: @nupg, reservation_window: nil)
     @order_detail.account = account
     @order_detail.assign_price_policy
     @order_detail.save!
 
     @order_detail.change_status!(OrderStatus.complete)
 
-    statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: account)
+    statement = FactoryBot.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: account)
     @order_detail.update_attributes!(account: account, fulfilled_at: 1.day.ago, actual_cost: 10, actual_subsidy: 2)
     @order_detail.statement = statement
     @order_detail.save!
@@ -212,7 +212,7 @@ RSpec.describe FacilityAccountsReconciliationController do
     @params = { facility_id: @authable.url_name, account_type: account_type }
     account.account_users_attributes = [{ user_id: @purchaser.id, user_role: AccountUser::ACCOUNT_OWNER, created_by: @admin.id }]
     assert account.save
-    statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: account)
+    statement = FactoryBot.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: account)
     @order_detail.to_complete!
     @order_detail.update_attributes(account: account, fulfilled_at: 1.day.ago, actual_cost: 10, actual_subsidy: 2)
     @order_detail.statement = statement

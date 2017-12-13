@@ -5,12 +5,12 @@ RSpec.describe GlobalSearch::StatementSearcher do
   describe "#results" do
     subject(:results) { described_class.new(user, facility, query).results }
 
-    let(:creator) { FactoryGirl.create(:user) }
+    let(:creator) { FactoryBot.create(:user) }
     let(:facility) { nil }
-    let!(:statement) { FactoryGirl.create(:statement, created_by_user: creator) }
+    let!(:statement) { FactoryBot.create(:statement, created_by_user: creator) }
 
     describe "as a global admin" do
-      let(:user) { FactoryGirl.create(:user, :administrator) }
+      let(:user) { FactoryBot.create(:user, :administrator) }
 
       describe "with bad input" do
         let(:query) { "whatever" }
@@ -72,41 +72,41 @@ RSpec.describe GlobalSearch::StatementSearcher do
       let(:query) { statement.invoice_number }
 
       describe "as a random user" do
-        let(:user) { FactoryGirl.create(:user) }
+        let(:user) { FactoryBot.create(:user) }
 
         it { is_expected.to be_empty }
       end
 
       describe "facility roles" do
         describe "as a facility admin" do
-          let(:user) { FactoryGirl.create(:user, :facility_administrator, facility: statement.facility) }
+          let(:user) { FactoryBot.create(:user, :facility_administrator, facility: statement.facility) }
           it { is_expected.to eq([statement]) }
         end
 
         describe "as a facility admin for another facility" do
-          let(:other_facility) { FactoryGirl.create(:facility) }
-          let(:user) { FactoryGirl.create(:user, :facility_administrator, facility: other_facility) }
+          let(:other_facility) { FactoryBot.create(:facility) }
+          let(:user) { FactoryBot.create(:user, :facility_administrator, facility: other_facility) }
           it { is_expected.to be_empty }
         end
 
         describe "as a facility director" do
-          let(:user) { FactoryGirl.create(:user, :facility_administrator, facility: statement.facility) }
+          let(:user) { FactoryBot.create(:user, :facility_administrator, facility: statement.facility) }
           it { is_expected.to eq([statement]) }
         end
 
         describe "as a senior staff" do
-          let(:user) { FactoryGirl.create(:user, :senior_staff, facility: statement.facility) }
+          let(:user) { FactoryBot.create(:user, :senior_staff, facility: statement.facility) }
           it { is_expected.to be_empty }
         end
 
         describe "as a staff" do
-          let(:user) { FactoryGirl.create(:user, :staff, facility: statement.facility) }
+          let(:user) { FactoryBot.create(:user, :staff, facility: statement.facility) }
           it { is_expected.to be_empty }
         end
       end
 
       describe "account roles" do
-        let(:grantor) { FactoryGirl.build_stubbed(:user) }
+        let(:grantor) { FactoryBot.build_stubbed(:user) }
 
         describe "as the owner of the account" do
           let(:user) { statement.account.owner_user }
@@ -114,12 +114,12 @@ RSpec.describe GlobalSearch::StatementSearcher do
         end
 
         describe "as the purchaser on the account" do
-          let(:user) { FactoryGirl.create(:user, :purchaser, account: statement.account, administrator: grantor) }
+          let(:user) { FactoryBot.create(:user, :purchaser, account: statement.account, administrator: grantor) }
           it { is_expected.to be_empty }
         end
 
         describe "as a business admin on the account" do
-          let(:user) { FactoryGirl.create(:user, :business_administrator, account: statement.account, administrator: grantor) }
+          let(:user) { FactoryBot.create(:user, :business_administrator, account: statement.account, administrator: grantor) }
           it { is_expected.to eq([statement]) }
         end
       end

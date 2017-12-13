@@ -3,8 +3,8 @@ require "transaction_search_shared_examples"
 
 RSpec.describe TransactionsController do
   let(:params) { {} }
-  let(:product) { FactoryGirl.create(:setup_item, :with_facility_account) }
-  let(:user) { FactoryGirl.create(:user) }
+  let(:product) { FactoryBot.create(:setup_item, :with_facility_account) }
+  let(:user) { FactoryBot.create(:user) }
 
   describe "GET #in_review", billing_review_period: 7.days do
 
@@ -19,7 +19,7 @@ RSpec.describe TransactionsController do
 
     context "when the user owns multiple accounts" do
       let!(:accounts) do
-        FactoryGirl.create_list(:setup_account,
+        FactoryBot.create_list(:setup_account,
                                 2,
                                 :with_order,
                                 product: product,

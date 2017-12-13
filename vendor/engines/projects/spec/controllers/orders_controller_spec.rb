@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe OrdersController do
-  let(:item) { FactoryGirl.create(:setup_item) }
-  let(:order) { FactoryGirl.create(:setup_order, product: item) }
-  let(:project_id) { FactoryGirl.create(:project, facility: order.facility).id }
-  let(:administrator) { FactoryGirl.create(:user, :administrator) }
+  let(:item) { FactoryBot.create(:setup_item) }
+  let(:order) { FactoryBot.create(:setup_order, product: item) }
+  let(:project_id) { FactoryBot.create(:project, facility: order.facility).id }
+  let(:administrator) { FactoryBot.create(:user, :administrator) }
 
   before { sign_in administrator }
 

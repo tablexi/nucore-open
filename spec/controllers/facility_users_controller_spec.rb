@@ -7,7 +7,7 @@ RSpec.describe FacilityUsersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
+    @authable = FactoryBot.create(:facility)
     @params = { facility_id: @authable.url_name }
   end
 

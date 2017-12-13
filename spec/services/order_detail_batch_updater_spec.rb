@@ -15,14 +15,14 @@ RSpec.describe OrderDetailBatchUpdater do
 
   let(:assigned_user_id) { "" }
   let(:facility) { order.facility }
-  let(:item) { FactoryGirl.create(:setup_item) }
-  let(:order) { FactoryGirl.create(:purchased_order, product: item) }
+  let(:item) { FactoryBot.create(:setup_item) }
+  let(:order) { FactoryBot.create(:purchased_order, product: item) }
   let(:order_detail) { order.order_details.first }
   let(:order_status_id) { "" }
   let(:params) do
     { assigned_user_id: assigned_user_id, order_status_id: order_status_id }
   end
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { FactoryBot.create(:user) }
 
   describe "#update!" do
     shared_examples_for "batch updating" do

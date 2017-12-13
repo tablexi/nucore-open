@@ -2,8 +2,8 @@ require "rails_helper"
 require_relative "../../support/shared_contexts/setup_sanger_service"
 
 RSpec.describe SangerSequencing::BatchForm do
-  let(:submission) { FactoryGirl.create(:sanger_sequencing_submission, sample_count: 2) }
-  let(:submission2) { FactoryGirl.create(:sanger_sequencing_submission, sample_count: 3) }
+  let(:submission) { FactoryBot.create(:sanger_sequencing_submission, sample_count: 2) }
+  let(:submission2) { FactoryBot.create(:sanger_sequencing_submission, sample_count: 3) }
 
   describe "new" do
     let(:form) { described_class.new }
@@ -72,10 +72,10 @@ RSpec.describe SangerSequencing::BatchForm do
     describe "facility checking" do
       include_context "Setup Sanger Service"
 
-      let!(:purchased_order) { FactoryGirl.create(:purchased_order, product: service, account: account) }
-      let!(:purchased_order2) { FactoryGirl.create(:purchased_order, product: service, account: account) }
-      let!(:purchased_submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order.order_details.first, sample_count: 50) }
-      let!(:purchased_submission2) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order2.order_details.first, sample_count: 50) }
+      let!(:purchased_order) { FactoryBot.create(:purchased_order, product: service, account: account) }
+      let!(:purchased_order2) { FactoryBot.create(:purchased_order, product: service, account: account) }
+      let!(:purchased_submission) { FactoryBot.create(:sanger_sequencing_submission, order_detail: purchased_order.order_details.first, sample_count: 50) }
+      let!(:purchased_submission2) { FactoryBot.create(:sanger_sequencing_submission, order_detail: purchased_order2.order_details.first, sample_count: 50) }
 
       let(:params) do
         { submission_ids: "#{purchased_submission.id},#{purchased_submission2.id}",
@@ -95,7 +95,7 @@ RSpec.describe SangerSequencing::BatchForm do
       end
 
       describe "when one submission is in another facility" do
-        let(:facility2) { FactoryGirl.create(:facility) }
+        let(:facility2) { FactoryBot.create(:facility) }
 
         before do
           purchased_submission2.order.update(facility: facility2)

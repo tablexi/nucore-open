@@ -1,29 +1,29 @@
 RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   let(:account) { create(:setup_account, owner: user) }
-  let!(:user) { FactoryGirl.create(:user) }
+  let!(:user) { FactoryBot.create(:user) }
   let(:product_type) { product_type }
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account)) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create!(FactoryBot.attributes_for(:facility_account)) }
   let(:product) do
-    FactoryGirl.create(product_type,
+    FactoryBot.create(product_type,
                        facility: facility,
                        facility_account: facility_account)
   end
   let(:order) { create(:order, account: account, created_by_user: user, user: user) }
   let(:order_detail) { order.order_details.create(attributes_for(:order_detail, account: account, product: product, quantity: 1)) }
 
-  let(:price_group) { FactoryGirl.create(:price_group, facility: facility) }
-  let(:price_group2) { FactoryGirl.create(:price_group, facility: facility) }
-  let(:price_group3) { FactoryGirl.create(:price_group, facility: facility) }
-  let(:price_group4) { FactoryGirl.create(:price_group, facility: facility) }
+  let(:price_group) { FactoryBot.create(:price_group, facility: facility) }
+  let(:price_group2) { FactoryBot.create(:price_group, facility: facility) }
+  let(:price_group3) { FactoryBot.create(:price_group, facility: facility) }
+  let(:price_group4) { FactoryBot.create(:price_group, facility: facility) }
 
   let!(:pp_g1) { make_price_policy(unit_cost: 22, price_group: price_group) }
   let!(:pp_g2) { make_price_policy(unit_cost: 23, price_group: price_group2) }
   let!(:pp_g3) { make_price_policy(unit_cost: 5, price_group: price_group3) }
   let!(:pp_g4) { make_price_policy(unit_cost: 4, price_group: price_group4) }
 
-  let!(:account_price_group_member) { FactoryGirl.create(:account_price_group_member, account: order.account, price_group: price_group) }
-  let!(:account_price_group_member2) { FactoryGirl.create(:account_price_group_member, account: order.account, price_group: price_group2) }
+  let!(:account_price_group_member) { FactoryBot.create(:account_price_group_member, account: order.account, price_group: price_group) }
+  let!(:account_price_group_member2) { FactoryBot.create(:account_price_group_member, account: order.account, price_group: price_group2) }
 
   context '#cheapest_price_policy' do
     context "current policies" do
@@ -33,8 +33,8 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
 
       context "with user-based price groups enabled", feature_setting: { user_based_price_groups: true } do
         it "should find the cheapest price policy including groups that belong to the user" do
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group3)
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group4)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group3)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group4)
 
           expect(product.cheapest_price_policy(order_detail)).to eq(pp_g4)
         end
@@ -42,8 +42,8 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
 
       context "without user-based price groups enabled", feature_setting: { user_based_price_groups: false } do
         it "should ignore cheaper price policies that belong to the user but not the account" do
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group3)
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group4)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group3)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group4)
 
           expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
         end
@@ -73,8 +73,8 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
       end
       context "with a restricted price_policy" do
         it "should ignore the restricted price policy even if it is cheaper" do
-          price_group5 = FactoryGirl.create(:price_group, facility: facility)
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group5)
+          price_group5 = FactoryBot.create(:price_group, facility: facility)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group5)
           make_price_policy(unit_cost: 1, price_group: price_group5, can_purchase: false)
 
           expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
@@ -107,41 +107,41 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   private
 
   def make_price_policy(attr = {})
-    product.send(:"#{product_type}_price_policies").create!(FactoryGirl.attributes_for(:"#{product_type}_price_policy", attr))
+    product.send(:"#{product_type}_price_policies").create!(FactoryBot.attributes_for(:"#{product_type}_price_policy", attr))
   end
 end
 
 RSpec.shared_examples_for "ReservationProduct" do |product_type|
   let(:account) { create(:setup_account, owner: user) }
-  let!(:user) { FactoryGirl.create(:user) }
+  let!(:user) { FactoryBot.create(:user) }
   let(:product_type) { product_type }
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account)) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create!(FactoryBot.attributes_for(:facility_account)) }
   let(:product) do
-    FactoryGirl.create(product_type,
+    FactoryBot.create(product_type,
                        facility: facility,
                        facility_account: facility_account)
   end
   let(:order) { create(:order, account: account, created_by_user: user, user: user) }
   let(:order_detail) { order.order_details.create(attributes_for(:order_detail, account: account, product: product)) }
 
-  let(:price_group) { FactoryGirl.create(:price_group, facility: facility) }
-  let(:price_group2) { FactoryGirl.create(:price_group, facility: facility) }
-  let(:price_group3) { FactoryGirl.create(:price_group, facility: facility) }
-  let(:price_group4) { FactoryGirl.create(:price_group, facility: facility) }
+  let(:price_group) { FactoryBot.create(:price_group, facility: facility) }
+  let(:price_group2) { FactoryBot.create(:price_group, facility: facility) }
+  let(:price_group3) { FactoryBot.create(:price_group, facility: facility) }
+  let(:price_group4) { FactoryBot.create(:price_group, facility: facility) }
 
   let!(:pp_g1) { make_price_policy(usage_rate: 22, price_group: price_group) }
   let!(:pp_g2) { make_price_policy(usage_rate: 23, price_group: price_group2) }
   let!(:pp_g3) { make_price_policy(usage_rate: 5, price_group: price_group3) }
   let!(:pp_g4) { make_price_policy(usage_rate: 4, price_group: price_group4) }
 
-  let!(:schedule_rule) { product.schedule_rules.create!(FactoryGirl.attributes_for(:schedule_rule)) }
+  let!(:schedule_rule) { product.schedule_rules.create!(FactoryBot.attributes_for(:schedule_rule)) }
 
-  let!(:account_price_group_member) { FactoryGirl.create(:account_price_group_member, account: account, price_group: price_group) }
-  let!(:account_price_group_member2) { FactoryGirl.create(:account_price_group_member, account: account, price_group: price_group2) }
+  let!(:account_price_group_member) { FactoryBot.create(:account_price_group_member, account: account, price_group: price_group) }
+  let!(:account_price_group_member2) { FactoryBot.create(:account_price_group_member, account: account, price_group: price_group2) }
 
   let!(:reservation) do
-    FactoryGirl.create(:reservation,
+    FactoryBot.create(:reservation,
                        product: product,
                        reserve_start_at: 1.hour.from_now,
                        order_detail: order_detail)
@@ -154,16 +154,16 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
       end
       context "with user-based price groups enabled", feature_setting: { user_based_price_groups: true } do
         it "should find the cheapest price policy including groups that belong to the user" do
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group3)
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group4)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group3)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group4)
           expect(product.cheapest_price_policy(order_detail)).to eq(pp_g4)
         end
       end
 
       context "without user-based price groups enabled", feature_setting: { user_based_price_groups: false } do
         it "should ignore cheaper price policies that belong to the user but not the account" do
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group3)
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group4)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group3)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group4)
 
           expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
         end
@@ -178,8 +178,8 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
       end
       context "with a restricted price_policy" do
         it "should ignore the restricted price policy even if it is cheaper" do
-          price_group5 = FactoryGirl.create(:price_group, facility: facility)
-          FactoryGirl.create(:user_price_group_member, user: user, price_group: price_group5)
+          price_group5 = FactoryBot.create(:price_group, facility: facility)
+          FactoryBot.create(:user_price_group_member, user: user, price_group: price_group5)
           make_price_policy(usage_rate: 1, price_group: price_group5, can_purchase: false)
 
           expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :split_account, class: SplitAccounts::SplitAccount, aliases: ["split_accounts/split_account"] do
     with_account_owner
 

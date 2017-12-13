@@ -13,8 +13,8 @@ RSpec.describe FacilitiesController do
 
   before(:all) { create_users }
 
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:facility_account) { FactoryGirl.create(:facility_account, facility: facility) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:facility_account) { FactoryBot.create(:facility_account, facility: facility) }
 
   before(:each) do
     @authable = facility
@@ -91,7 +91,7 @@ RSpec.describe FacilitiesController do
   end
 
   describe "PUT #update" do
-    let(:facility) { FactoryGirl.create(:facility) }
+    let(:facility) { FactoryBot.create(:facility) }
     before(:each) do
       @method = :put
       @action = :update
@@ -232,7 +232,7 @@ RSpec.describe FacilitiesController do
 
     context "as facility operators with two facilities" do
       before(:each) do
-        @facility2 = FactoryGirl.create(:facility)
+        @facility2 = FactoryBot.create(:facility)
         allow(@controller).to receive(:current_facility).and_return(@authable)
         allow(@controller).to receive(:operable_facilities).and_return([@authable, @facility2])
         expect(@controller).to receive(:init_current_facility).never
@@ -251,7 +251,7 @@ RSpec.describe FacilitiesController do
       end
       context "has instruments" do
         before :each do
-          FactoryGirl.create(:instrument, facility: @authable, facility_account: facility_account)
+          FactoryBot.create(:instrument, facility: @authable, facility_account: facility_account)
         end
         it_should_allow_all (facility_operators - [:admin]) do
           expect(assigns(:facilities)).to eq([@authable])
@@ -271,7 +271,7 @@ RSpec.describe FacilitiesController do
 
     context "as administrator" do
       before(:each) do
-        @facility2 = FactoryGirl.create(:facility)
+        @facility2 = FactoryBot.create(:facility)
         allow(@controller).to receive(:current_facility).and_return(@authable)
       end
 

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :relay do
     type "RelaySynaccessRevA"
     ip "192.168.1.1"

@@ -96,17 +96,17 @@ RSpec.describe Facility do
     end
 
     it "is unique" do
-      @factory1 = FactoryGirl.create(:facility)
-      @factory2 = FactoryGirl.build(:facility, url_name: @factory1.url_name)
+      @factory1 = FactoryBot.create(:facility)
+      @factory2 = FactoryBot.build(:facility, url_name: @factory1.url_name)
       expect(@factory2).not_to be_valid
     end
   end
 
   describe "#order_statuses" do
-    let(:facility) { FactoryGirl.create(:facility) }
-    let(:other_facility) { FactoryGirl.create(:facility) }
-    let!(:my_order_statuses) { FactoryGirl.create_list(:order_status, 3, facility: facility) }
-    let!(:other_order_statuses) { FactoryGirl.create_list(:order_status, 3, facility: other_facility) }
+    let(:facility) { FactoryBot.create(:facility) }
+    let(:other_facility) { FactoryBot.create(:facility) }
+    let!(:my_order_statuses) { FactoryBot.create_list(:order_status, 3, facility: facility) }
+    let!(:other_order_statuses) { FactoryBot.create_list(:order_status, 3, facility: other_facility) }
 
     it "returns only statuses belonging to its own facility or no facility" do
       expect(facility.order_statuses)

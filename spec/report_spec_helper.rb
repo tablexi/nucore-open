@@ -11,7 +11,7 @@ module ReportSpecHelper
 
     base.before(:each) do
       @method = :get
-      @authable = FactoryGirl.create(:facility)
+      @authable = FactoryBot.create(:facility)
       @action = :index
       @params = {
         facility_id: @authable.url_name,

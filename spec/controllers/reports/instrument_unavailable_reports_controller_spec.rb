@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Reports::InstrumentUnavailableReportsController do
-  let(:facility) { FactoryGirl.create(:setup_facility) }
-  let(:instruments) { FactoryGirl.create_list(:setup_instrument, 3, facility: facility) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:instruments) { FactoryBot.create_list(:setup_instrument, 3, facility: facility) }
   let(:params) do
     {
       facility_id: facility.url_name,
@@ -11,7 +11,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
       report_by: :instrument_unavailable,
     }
   end
-  let(:user) { FactoryGirl.create(:user, :administrator) }
+  let(:user) { FactoryBot.create(:user, :administrator) }
 
   before { sign_in(user) }
 
@@ -28,12 +28,12 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
     context "with an instrument with 2 out_of_order incidents totalling 72 hours" do
       before(:each) do
-        FactoryGirl.create(:offline_reservation,
+        FactoryBot.create(:offline_reservation,
                            :out_of_order,
                            product: instruments.first,
                            reserve_start_at: date_start.beginning_of_day,
                            duration: 2.days)
-        FactoryGirl.create(:offline_reservation,
+        FactoryBot.create(:offline_reservation,
                            :out_of_order,
                            product: instruments.first,
                            reserve_start_at: (date_start + 3.days).beginning_of_day,
@@ -42,7 +42,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
       context "and an instrument with 1 maintenance incident totalling 24 hours" do
         before(:each) do
-          FactoryGirl.create(:offline_reservation,
+          FactoryBot.create(:offline_reservation,
                              :maintenance,
                              product: instruments.second,
                              reserve_start_at: (date_start + 1.day).beginning_of_day,
@@ -51,12 +51,12 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
 
         context "with two instruments each with admin reservations of 24 hours each" do
           before(:each) do
-            FactoryGirl.create(:admin_reservation,
+            FactoryBot.create(:admin_reservation,
                                product: instruments.first,
                                reserve_start_at: (date_start + 2.days).beginning_of_day,
                                duration: 1.day,
                                category: nil)
-            FactoryGirl.create(:admin_reservation,
+            FactoryBot.create(:admin_reservation,
                                product: instruments.third,
                                reserve_start_at: (date_start + 1.day).beginning_of_day,
                                duration: 3.days,
@@ -85,7 +85,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
       let(:reserve_end_at) { reserve_start_at + 40.minutes }
 
       before(:each) do
-        FactoryGirl.create(:offline_reservation,
+        FactoryBot.create(:offline_reservation,
                            product: instruments.first,
                            reserve_start_at: reserve_start_at,
                            reserve_end_at: reserve_end_at)
@@ -103,7 +103,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
       let(:reserve_start_at) { (date_start - 1.week).beginning_of_day }
 
       before(:each) do
-        FactoryGirl.create(:offline_reservation,
+        FactoryBot.create(:offline_reservation,
                            product: instruments.first,
                            reserve_start_at: reserve_start_at,
                            reserve_end_at: reserve_end_at)

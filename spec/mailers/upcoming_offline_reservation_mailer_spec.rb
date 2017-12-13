@@ -4,11 +4,11 @@ RSpec.describe UpcomingOfflineReservationMailer do
   let(:email) { ActionMailer::Base.deliveries.last }
 
   describe ".send_offline_instrument_warning" do
-    let(:instrument) { FactoryGirl.create(:setup_instrument) }
-    let(:order) { FactoryGirl.build_stubbed(:order) }
-    let(:order_detail) { FactoryGirl.build_stubbed(:order_detail) }
-    let(:reservation) { FactoryGirl.build_stubbed(:reservation) }
-    let(:user) { FactoryGirl.build_stubbed(:user) }
+    let(:instrument) { FactoryBot.create(:setup_instrument) }
+    let(:order) { FactoryBot.build_stubbed(:order) }
+    let(:order_detail) { FactoryBot.build_stubbed(:order_detail) }
+    let(:reservation) { FactoryBot.build_stubbed(:reservation) }
+    let(:user) { FactoryBot.build_stubbed(:user) }
 
     before(:each) do
       allow(reservation).to receive(:user) { user }

@@ -8,17 +8,17 @@ RSpec.describe FacilityNotificationsController do
   render_views
 
   before :each do
-    @authable = FactoryGirl.create(:facility)
-    @user = FactoryGirl.create(:user)
-    @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-    @authable_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @authable = FactoryBot.create(:facility)
+    @user = FactoryBot.create(:user)
+    @account = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+    @authable_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
     @params = { facility_id: @authable.url_name }
 
     @order_detail1 = place_and_complete_item_order(@user, @authable, @account)
     @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
 
-    @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-    @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+    @account2 = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+    @authable_account2 = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
     @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
   end
 
@@ -109,7 +109,7 @@ RSpec.describe FacilityNotificationsController do
 
           context "with fewer than 10 accounts" do
             it "displays the account list" do
-              @accounts = FactoryGirl.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
+              @accounts = FactoryBot.create_list(:nufs_account, 3, account_users_attributes: account_users_attributes_hash(user: @user))
               @params = { facility_id: @authable.url_name }
 
               @params[:order_detail_ids] = order_details.map(&:id)
@@ -123,7 +123,7 @@ RSpec.describe FacilityNotificationsController do
 
           context "with more than 10 accounts" do
             it "displays a count of accounts" do
-              @accounts = FactoryGirl.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
+              @accounts = FactoryBot.create_list(:nufs_account, 11, account_users_attributes: account_users_attributes_hash(user: @user))
               @params = { facility_id: @authable.url_name }
 
               @params[:order_detail_ids] = order_details.map(&:id)

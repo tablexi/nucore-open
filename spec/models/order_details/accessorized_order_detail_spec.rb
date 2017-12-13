@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe OrderDetail do
-  let(:instrument) { FactoryGirl.create(:setup_instrument, :timer) }
+  let(:instrument) { FactoryBot.create(:setup_instrument, :timer) }
   let(:facility) { instrument.facility }
-  let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
+  let(:reservation) { FactoryBot.create(:completed_reservation, product: instrument) }
   let(:order_detail) { reservation.order_detail.tap { |od| od.update(note: "original") } }
   let(:accessorizer) { Accessories::Accessorizer.new(order_detail) }
 
@@ -38,7 +38,7 @@ RSpec.describe OrderDetail do
     end
 
     it "changes the child's account when changing the parent's account" do
-      new_account = FactoryGirl.create(:setup_account, owner: order_detail.user)
+      new_account = FactoryBot.create(:setup_account, owner: order_detail.user)
       order_detail.update_attributes(account: new_account)
       expect(accessory_order_detail.reload.account).to eq new_account
     end

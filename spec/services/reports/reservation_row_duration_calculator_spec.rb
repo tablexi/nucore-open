@@ -8,7 +8,7 @@ RSpec.describe Reports::ReservationRowDurationCalculator do
   end
 
   let(:reservation) do
-    FactoryGirl.build(:offline_reservation,
+    FactoryBot.build(:offline_reservation,
                       reserve_start_at: reserve_start_at,
                       reserve_end_at: reserve_end_at)
   end

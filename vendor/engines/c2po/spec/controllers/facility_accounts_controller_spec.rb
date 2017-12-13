@@ -6,8 +6,8 @@ RSpec.describe FacilityAccountsController do
 
   let(:account) { @account }
   let(:facility) { facility_account.facility }
-  let(:facility_account) { FactoryGirl.create(:facility_account) }
-  let(:item) { FactoryGirl.create(:item, facility_account: facility_account) }
+  let(:facility_account) { FactoryBot.create(:facility_account) }
+  let(:item) { FactoryBot.create(:item, facility_account: facility_account) }
   let(:account_owner) { @owner }
   let(:purchaser) { @purchaser }
 
@@ -15,11 +15,11 @@ RSpec.describe FacilityAccountsController do
 
   before do
     @authable = facility # controller_spec_helper requires @authable to be set
-    @account = FactoryGirl.create(:credit_card_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: account_owner)])
+    @account = FactoryBot.create(:credit_card_account, account_users_attributes: [FactoryBot.attributes_for(:account_user, user: account_owner)])
     grant_role(purchaser, @account)
     grant_role(account_owner, @account)
-    order = FactoryGirl.create(:order, user: purchaser, created_by: purchaser.id, facility: facility)
-    FactoryGirl.create(:order_detail, product: item, order: order, account: @account)
+    order = FactoryBot.create(:order, user: purchaser, created_by: purchaser.id, facility: facility)
+    FactoryBot.create(:order_detail, product: item, order: order, account: @account)
   end
 
   context "PUT #update" do
@@ -29,13 +29,13 @@ RSpec.describe FacilityAccountsController do
       @params = {
         facility_id: facility.url_name,
         id: @account.id,
-        purchase_order_account: FactoryGirl.attributes_for(:purchase_order_account),
+        purchase_order_account: FactoryBot.attributes_for(:purchase_order_account),
       }
       @params[:purchase_order_account][:affiliate_id] = @params[:purchase_order_account].delete(:affiliate).id
     end
 
     context "with affiliate" do
-      let(:creator) { FactoryGirl.create(:user) }
+      let(:creator) { FactoryBot.create(:user) }
 
       before do
         owner = {
@@ -49,7 +49,7 @@ RSpec.describe FacilityAccountsController do
           account_users_attributes: [owner],
         }
 
-        @account = FactoryGirl.create(:purchase_order_account, account_attrs)
+        @account = FactoryBot.create(:purchase_order_account, account_attrs)
 
         @params[:id] = @account.id
         @params[:account_type] = "PurchaseOrderAccount"
@@ -85,7 +85,7 @@ RSpec.describe FacilityAccountsController do
   end
 
   describe "GET #new" do
-    let(:director) { FactoryGirl.create(:user, :facility_director, facility: facility) }
+    let(:director) { FactoryBot.create(:user, :facility_director, facility: facility) }
 
     before do
       sign_in director
@@ -121,7 +121,7 @@ RSpec.describe FacilityAccountsController do
       @method = :post
       @action = :create
 
-      @acct_attrs = FactoryGirl.attributes_for(:purchase_order_account)
+      @acct_attrs = FactoryBot.attributes_for(:purchase_order_account)
       @acct_attrs[:affiliate_id] = @acct_attrs.delete(:affiliate).id.to_s
 
       @acct_attrs.delete :expires_at
@@ -161,7 +161,7 @@ RSpec.describe FacilityAccountsController do
     context "CreditCardAccount" do
       before do
         @params[:account_type] = "CreditCardAccount"
-        acct_attrs = FactoryGirl.attributes_for(:credit_card_account)
+        acct_attrs = FactoryBot.attributes_for(:credit_card_account)
         acct_attrs[:affiliate_id] = acct_attrs.delete(:affiliate).id.to_s
         acct_attrs[:expiration_month] = "5"
         acct_attrs[:expiration_year] = expiration_year.to_s

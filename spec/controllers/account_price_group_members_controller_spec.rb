@@ -5,12 +5,12 @@ RSpec.describe AccountPriceGroupMembersController do
   render_views
 
   let(:facility) { @authable }
-  let(:price_group) { FactoryGirl.create(:price_group, facility: facility) }
+  let(:price_group) { FactoryBot.create(:price_group, facility: facility) }
 
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
+    @authable = FactoryBot.create(:facility)
   end
 
   shared_examples "facility price group restrictions" do
@@ -31,7 +31,7 @@ RSpec.describe AccountPriceGroupMembersController do
 
   shared_examples "global price group restrictions" do
     context "with a global price group" do
-      let(:price_group) { FactoryGirl.create(:price_group, :cancer_center) }
+      let(:price_group) { FactoryBot.create(:price_group, :cancer_center) }
 
       it_should_allow :admin do
         successful_action_expectations
@@ -119,7 +119,7 @@ RSpec.describe AccountPriceGroupMembersController do
   end
 
   context "search_results" do
-    let!(:account) { FactoryGirl.create(:account, :with_account_owner, account_number: "TESTING123") }
+    let!(:account) { FactoryBot.create(:account, :with_account_owner, account_number: "TESTING123") }
 
     before :each do
       @method = :get

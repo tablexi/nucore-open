@@ -8,9 +8,9 @@ RSpec.shared_examples_for "it supports order_detail POST #batch_update" do
     it_should_allow_operators_only :redirect
 
     context "when batch-assigning facility staff" do
-      let(:admin) { FactoryGirl.create(:user, :facility_administrator, facility: facility) }
-      let(:assignee) { FactoryGirl.create(:user, :staff, facility: facility) }
-      let(:orders) { FactoryGirl.create_list(:purchased_order, 3, product: product) }
+      let(:admin) { FactoryBot.create(:user, :facility_administrator, facility: facility) }
+      let(:assignee) { FactoryBot.create(:user, :staff, facility: facility) }
+      let(:orders) { FactoryBot.create_list(:purchased_order, 3, product: product) }
       let(:order_details) { orders.flat_map(&:order_details) }
 
       before do

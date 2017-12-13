@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :sanger_sequencing_submission, class: SangerSequencing::Submission do
     transient do
       sample_count { 0 }

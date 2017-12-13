@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe OfflineReservationsController do
-  let(:administrator) { FactoryGirl.create(:user, :administrator) }
+  let(:administrator) { FactoryBot.create(:user, :administrator) }
   let(:facility) { instrument.facility }
-  let(:instrument) { FactoryGirl.create(:setup_instrument) }
+  let(:instrument) { FactoryBot.create(:setup_instrument) }
 
   describe "POST #create" do
     before { sign_in administrator }
@@ -27,7 +27,7 @@ RSpec.describe OfflineReservationsController do
 
     context "when an ongoing reservation exists for the instrument" do
       let!(:reservation) do
-        FactoryGirl.create(:setup_reservation, :running, product: instrument)
+        FactoryBot.create(:setup_reservation, :running, product: instrument)
       end
 
       it "becomes a problem reservation" do
@@ -40,7 +40,7 @@ RSpec.describe OfflineReservationsController do
   end
 
   describe "PUT #bring_online" do
-    let(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+    let(:instrument) { FactoryBot.create(:setup_instrument, :offline) }
     let(:params) do
       {
         facility_id: instrument.facility.url_name,
@@ -49,7 +49,7 @@ RSpec.describe OfflineReservationsController do
     end
 
     shared_examples_for "it brings the instrument online" do |role|
-      let(:user) { FactoryGirl.create(:user, role, facility: facility) }
+      let(:user) { FactoryBot.create(:user, role, facility: facility) }
       before { sign_in user }
 
       it "brings the instrument online", :aggregate_failures do
@@ -76,7 +76,7 @@ RSpec.describe OfflineReservationsController do
     end
 
     context "as staff" do
-      let(:staff) { FactoryGirl.create(:user, :staff, facility: facility) }
+      let(:staff) { FactoryBot.create(:user, :staff, facility: facility) }
 
       before { sign_in staff }
 

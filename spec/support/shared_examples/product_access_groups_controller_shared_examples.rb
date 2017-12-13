@@ -1,18 +1,18 @@
 RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" do |product_sym|
   render_views
 
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)) }
-  let(:product) { FactoryGirl.create(product_sym, facility: facility, facility_account: facility_account) }
-  let(:senior_staff) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account)) }
+  let(:product) { FactoryBot.create(product_sym, facility: facility, facility_account: facility_account) }
+  let(:senior_staff) { FactoryBot.create(:user, :senior_staff, facility: facility) }
   let(:params) { { facility_id: facility.url_name, :"#{product_sym}_id" => product.url_name } }
 
   context "index" do
-    let(:staff) { FactoryGirl.create(:user, :staff, facility: facility) }
+    let(:staff) { FactoryBot.create(:user, :staff, facility: facility) }
 
-    let(:product2) { FactoryGirl.create(product_sym, facility: facility, facility_account: facility_account) }
-    let!(:product_groups) { FactoryGirl.create_list(:product_access_group, 2, product: product) }
-    let!(:other_product_group) { FactoryGirl.create(:product_access_group, product: product2) }
+    let(:product2) { FactoryBot.create(product_sym, facility: facility, facility_account: facility_account) }
+    let!(:product_groups) { FactoryBot.create_list(:product_access_group, 2, product: product) }
+    let!(:other_product_group) { FactoryBot.create(:product_access_group, product: product2) }
 
     before :each do
       sign_in staff
@@ -54,7 +54,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
     context "correct info" do
       before do
-        post :create, params.merge(product_access_group: FactoryGirl.attributes_for(:product_access_group))
+        post :create, params.merge(product_access_group: FactoryBot.attributes_for(:product_access_group))
       end
 
       it "creates and assigns the new record" do
@@ -70,7 +70,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
     context "missing data" do
       before do
-        post :create, params.merge(product_access_group: FactoryGirl.attributes_for(:product_access_group, name: ""))
+        post :create, params.merge(product_access_group: FactoryBot.attributes_for(:product_access_group, name: ""))
       end
 
       it "should assign, but not persist the record" do
@@ -86,7 +86,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
   end
 
   context "edit" do
-    let!(:product_access_group) { FactoryGirl.create(:product_access_group, product: product) }
+    let!(:product_access_group) { FactoryBot.create(:product_access_group, product: product) }
 
     before do
       sign_in senior_staff
@@ -101,7 +101,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
   end
 
   context "update" do
-    let(:product_access_group) { FactoryGirl.create(:product_access_group, product: product) }
+    let(:product_access_group) { FactoryBot.create(:product_access_group, product: product) }
 
     before :each do
       sign_in senior_staff
@@ -139,7 +139,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
   end
 
   context "destroy" do
-    let(:product_access_group) { FactoryGirl.create(:product_access_group, product: product) }
+    let(:product_access_group) { FactoryBot.create(:product_access_group, product: product) }
     before :each do
       sign_in senior_staff
       delete :destroy, params.merge(id: product_access_group.id)

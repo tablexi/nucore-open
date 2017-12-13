@@ -3,16 +3,16 @@ require_relative "../../split_accounts_spec_helper"
 
 RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   let(:account) do
-    FactoryGirl.build(:split_account, :with_account_owner, without_splits: true, owner: user).tap do |account|
+    FactoryBot.build(:split_account, :with_account_owner, without_splits: true, owner: user).tap do |account|
       account.splits << build(:split, percent: 50, apply_remainder: true, subaccount: subaccounts[0], parent_split_account: account)
       account.splits << build(:split, percent: 50, apply_remainder: false, subaccount: subaccounts[1], parent_split_account: account)
       account.save
     end
   end
 
-  let(:subaccounts) { FactoryGirl.create_list(:setup_account, 2) }
-  let(:user) { FactoryGirl.create(:user) }
-  let(:facility) { FactoryGirl.create(:setup_facility) }
+  let(:subaccounts) { FactoryBot.create_list(:setup_account, 2) }
+  let(:user) { FactoryBot.create(:user) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
 
   subject(:report) { described_class.new(**report_args) }
   let(:report_args) do
@@ -27,7 +27,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   end
 
   describe "with an item" do
-    let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
+    let(:item) { FactoryBot.create(:setup_item, facility: facility) }
     let(:order_detail) do
       place_product_order(user, facility, item, account).tap do |order_detail|
         order_detail.update_attributes!(
@@ -54,10 +54,10 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   end
 
   describe "with a reservation", :time_travel do
-    let(:instrument) { FactoryGirl.create(:setup_instrument, :always_available, facility: facility) }
+    let(:instrument) { FactoryBot.create(:setup_instrument, :always_available, facility: facility) }
     let(:now) { Time.zone.parse("2016-02-01 10:30") }
     let(:reservation) do
-      FactoryGirl.create(:completed_reservation,
+      FactoryBot.create(:completed_reservation,
                          user: user,
                          product: instrument,
                          reserve_start_at: Time.zone.parse("2016-02-01 08:30"),

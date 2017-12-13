@@ -1,9 +1,9 @@
 RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |product_sym|
   render_views
 
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account)) }
-  let(:product) { FactoryGirl.create(product_sym, facility: facility, facility_account_id: facility_account.id) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:facility_account) { facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account)) }
+  let(:product) { FactoryBot.create(product_sym, facility: facility, facility_account_id: facility_account.id) }
   let(:senior_staff) { create(:user, :senior_staff, facility: facility) }
 
   let(:product_params) { { facility_id: facility.url_name, :"#{product_sym}_id" => product.url_name } }
@@ -49,7 +49,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
       post :create, product_params.merge(schedule_rule: rule_params)
     end
 
-    let(:rule_params) { FactoryGirl.attributes_for(:schedule_rule, product_id: product.id) }
+    let(:rule_params) { FactoryBot.attributes_for(:schedule_rule, product_id: product.id) }
 
     it "creates the schedule rule and redirects to index" do
       expect { do_request }.to change(ScheduleRule, :count).by(1)
@@ -57,7 +57,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
     end
 
     context "with product access groups" do
-      let!(:product_access_groups) { FactoryGirl.create_list(:product_access_group, 3, product_id: product.id) }
+      let!(:product_access_groups) { FactoryBot.create_list(:product_access_group, 3, product_id: product.id) }
 
       it "should come out with no restriction levels" do
         do_request
@@ -78,7 +78,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
   end
 
   describe "with an existing ScheduleRule" do
-    let(:rule) { product.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule)) }
+    let(:rule) { product.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule)) }
 
     describe "edit" do
       before do
@@ -93,7 +93,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
     end
 
     describe "update" do
-      let(:rule_params) { FactoryGirl.attributes_for(:schedule_rule, :weekend) }
+      let(:rule_params) { FactoryBot.attributes_for(:schedule_rule, :weekend) }
       def do_request
         sign_in senior_staff
         put :update, product_params.merge(
@@ -112,7 +112,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
       end
 
       context "with product access groups" do
-        let!(:product_access_groups) { FactoryGirl.create_list(:product_access_group, 3, product_id: product.id) }
+        let!(:product_access_groups) { FactoryBot.create_list(:product_access_group, 3, product_id: product.id) }
 
         it "should come out with no restriction levels" do
           do_request

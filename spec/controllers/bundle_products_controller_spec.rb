@@ -9,10 +9,10 @@ RSpec.describe BundleProductsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
-    @item = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
-    @bundle = FactoryGirl.create(:bundle, facility_account: @facility_account, facility: @authable)
+    @authable = FactoryBot.create(:facility)
+    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @item = FactoryBot.create(:item, facility_account: @facility_account, facility: @authable)
+    @bundle = FactoryBot.create(:bundle, facility_account: @facility_account, facility: @authable)
     @bundle_product = BundleProduct.create!(bundle: @bundle, product: @item, quantity: 1)
   end
 
@@ -38,7 +38,7 @@ RSpec.describe BundleProductsController do
     before(:each) do
       @method = :post
       @action = :create
-      item2 = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+      item2 = FactoryBot.create(:item, facility_account: @facility_account, facility: @authable)
       @params = {
         facility_id: @authable.url_name,
         bundle_id: @bundle.url_name,

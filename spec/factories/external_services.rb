@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :external_service, class: UrlService do
     location "http://survey.test.local"
