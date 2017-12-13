@@ -195,7 +195,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    coffeelint (1.14.0)
+    coffeelint (1.16.1)
       coffee-script
       execjs
       json
