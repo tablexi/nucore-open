@@ -3,6 +3,7 @@ module SecureRooms
   class FacilityOccupanciesController < ApplicationController
 
     include NewInprocessController
+    include SortableColumnController
     include ProblemOrderDetailsController
     include TabCountHelper
 

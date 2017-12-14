@@ -1,6 +1,7 @@
 class FacilityOrdersController < ApplicationController
 
   include NewInprocessController
+  include SortableColumnController
   include ProblemOrderDetailsController
   include TabCountHelper
 

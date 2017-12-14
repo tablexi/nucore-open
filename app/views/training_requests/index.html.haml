@@ -10,7 +10,7 @@
     %thead
       %tr
         %th= sortable TrainingRequest.human_attribute_name(:user)
-        %th= User.human_attribute_name(:email)
+        %th= sortable User.human_attribute_name(:email)
         %th= sortable TrainingRequest.human_attribute_name(:product)
         %th= sortable TrainingRequest.human_attribute_name(:created_at)
         %th

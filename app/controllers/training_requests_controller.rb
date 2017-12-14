@@ -1,6 +1,6 @@
 class TrainingRequestsController < ApplicationController
 
-  include NewInprocessController
+  include SortableColumnController
 
   admin_tab :index
 
@@ -67,6 +67,7 @@ class TrainingRequestsController < ApplicationController
       "Instrument" => "products.name",
       "Name" => "users.first_name",
       "Requested on" => "created_at",
+      "Email" => "users.email"
     }
   end
 
