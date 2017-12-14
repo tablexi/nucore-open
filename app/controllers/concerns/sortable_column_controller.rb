@@ -19,7 +19,7 @@ module SortableColumnController
   end
 
   def sort_direction
-    (params[:dir] || "") == "desc" ? "desc" : "asc"
+    params[:dir] == "desc" ? "desc" : "asc"
   end
 
   def sort_column
