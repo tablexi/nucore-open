@@ -9,6 +9,22 @@ class window.BulkEmailSearchForm
 
   selectedUserTypes: -> @$userTypeCheckboxes().filter(':checked').map -> @.value
 
+  dateIrrelevantSelectedOnly: ->
+    user_types = @selectedUserTypes().toArray()
+    (user_types.includes('authorized_users') || user_types.includes('training_requested')) && !user_types.includes('customers') && !user_types.includes('account_owners')
+
+  updateFormOptions: ->
+    @disableDatepickerWhenIrrelevant()
+    @toggleNonRestrictedProducts()
+
+  disableDatepickerWhenIrrelevant: ->
+    # Dates do not apply for authorized users or training requested search
+    isDateIrrelevant = @dateIrrelevantSelectedOnly()
+    @$form.find('#dates_between')
+      .toggleClass('disabled', isDateIrrelevant)
+      .find('input')
+      .prop('disabled', isDateIrrelevant)
+
   toggleNonRestrictedProducts: ->
     # Hide non-restricted items when doing an authorized_users search
     isHideNonRestrictedProducts = @authorizedUsersSelectedOnly()
@@ -19,17 +35,11 @@ class window.BulkEmailSearchForm
 
     @$form.find('#products').trigger('chosen:updated')
 
-    # Dates do not apply for authorized users search
-    @$form.find('#dates_between')
-      .toggleClass('disabled', isHideNonRestrictedProducts)
-      .find('input')
-      .prop('disabled', isHideNonRestrictedProducts)
-
   $userTypeCheckboxes: -> @$form.find('.bulk_email_user_type')
 
   _initUserTypeChangeHandler: ->
     @$userTypeCheckboxes()
-      .change(=> @toggleNonRestrictedProducts())
+      .change(=> @updateFormOptions())
       .trigger('change')
 
   _initDateRangeSelectionHandlers: ->

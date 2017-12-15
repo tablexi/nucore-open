@@ -8,7 +8,7 @@ module BulkEmail
     attr_reader :search_fields
 
     DEFAULT_SORT = [:last_name, :first_name].freeze
-    USER_TYPES = %i(customers authorized_users account_owners).freeze
+    USER_TYPES = %i(customers authorized_users training_requested account_owners).freeze
 
     def initialize(search_fields)
       @search_fields = search_fields
@@ -59,6 +59,14 @@ module BulkEmail
         .joins(:product_users)
         .uniq
         .where(product_users: { product_id: product_ids_from_params })
+        .reorder(*self.class::DEFAULT_SORT)
+    end
+
+    def search_training_requested
+      users
+        .joins(:training_requests)
+        .uniq
+        .where(training_requests: { product_id: product_ids_from_params })
         .reorder(*self.class::DEFAULT_SORT)
     end
 

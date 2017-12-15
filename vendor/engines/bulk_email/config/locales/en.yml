@@ -12,6 +12,7 @@ en:
       customers: Customers
       account_owners: Account Owners
       authorized_users: Authorized Users
+      training_requested: Users on Training Request List
     dates:
       label: Order or Reservation between
       start: Starting
