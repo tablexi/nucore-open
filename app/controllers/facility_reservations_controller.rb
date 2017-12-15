@@ -1,6 +1,7 @@
 class FacilityReservationsController < ApplicationController
 
   include NewInprocessController
+  include SortableColumnController
   include ProblemOrderDetailsController
   include TabCountHelper
   include Timelineable

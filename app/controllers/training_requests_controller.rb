@@ -1,5 +1,7 @@
 class TrainingRequestsController < ApplicationController
 
+  include SortableColumnController
+
   admin_tab :index
 
   before_action :authenticate_user!
@@ -27,7 +29,7 @@ class TrainingRequestsController < ApplicationController
 
   # GET /facilities/:facility_id/training_requests
   def index
-    @training_requests = current_facility.training_requests
+    @training_requests = current_facility.training_requests.includes(:product, :user).order(sort_clause)
 
     render layout: "two_column"
   end
@@ -58,6 +60,15 @@ class TrainingRequestsController < ApplicationController
   def load_product
     @product =
       current_facility.products.active.find_by!(url_name: params[:product_id])
+  end
+
+  def sort_lookup_hash
+    {
+      "Instrument" => "products.name",
+      "Name" => "users.first_name",
+      "Requested on" => "created_at",
+      "Email" => "users.email",
+    }
   end
 
 end

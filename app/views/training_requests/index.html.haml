@@ -9,10 +9,10 @@
   %table.table.table-striped.table-hover
     %thead
       %tr
-        %th= TrainingRequest.human_attribute_name(:user)
-        %th= User.human_attribute_name(:email)
-        %th= TrainingRequest.human_attribute_name(:product)
-        %th= TrainingRequest.human_attribute_name(:created_at)
+        %th= sortable TrainingRequest.human_attribute_name(:user)
+        %th= sortable User.human_attribute_name(:email)
+        %th= sortable TrainingRequest.human_attribute_name(:product)
+        %th= sortable TrainingRequest.human_attribute_name(:created_at)
         %th
     %tbody
       - @training_requests.each do |training_request|
