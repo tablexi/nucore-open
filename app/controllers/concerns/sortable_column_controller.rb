@@ -26,5 +26,4 @@ module SortableColumnController
     sort_lookup_hash.key?(params[:sort]) ? params[:sort] : sort_lookup_hash.keys.first
   end
 
-
 end

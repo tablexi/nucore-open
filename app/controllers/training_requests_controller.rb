@@ -67,7 +67,7 @@ class TrainingRequestsController < ApplicationController
       "Instrument" => "products.name",
       "Name" => "users.first_name",
       "Requested on" => "created_at",
-      "Email" => "users.email"
+      "Email" => "users.email",
     }
   end
 
