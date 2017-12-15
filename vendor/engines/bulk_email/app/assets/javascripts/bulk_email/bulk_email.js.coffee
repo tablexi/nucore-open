@@ -11,7 +11,8 @@ class window.BulkEmailSearchForm
 
   dateIrrelevantSelectedOnly: ->
     user_types = @selectedUserTypes().toArray()
-    (user_types.includes('authorized_users') || user_types.includes('training_requested')) && !user_types.includes('customers') && !user_types.includes('account_owners')
+    (user_types.includes('authorized_users') || user_types.includes('training_requested')) &&
+      !user_types.includes('customers') && !user_types.includes('account_owners')
 
   updateFormOptions: ->
     @disableDatepickerWhenIrrelevant()
