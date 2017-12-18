@@ -34,6 +34,8 @@
   - if order.order_details.any? { |od| od.product.is_a?(Instrument) }
     %p.footnote= t(".foot.instrument")
 
+  %p.footnote.bold= t("orders.form.foot.bold")
+
   - if order.order_details.size > 0
 
     - if acting_as?
