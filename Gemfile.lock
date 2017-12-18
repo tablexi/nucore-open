@@ -112,7 +112,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
     byebug (9.1.0)
-    cancancan (1.15.0)
+    cancancan (2.1.2)
     capistrano (3.8.1)
       airbrussh (>= 1.0.0)
       i18n
@@ -586,7 +586,7 @@ DEPENDENCIES
   bulk_email!
   bullet
   c2po (~> 1.0.0)!
-  cancancan (= 1.15)
+  cancancan (= 2.1.2)
   capistrano
   capistrano-bundler
   capistrano-rails

@@ -17,7 +17,7 @@ group :oracle do
 end
 
 ## auth
-gem "cancancan", "1.15"
+gem "cancancan", "2.1.2"
 gem "devise", "~> 4.3.0"
 gem "devise-encryptable", "~> 0.2.0"
 
