@@ -4,8 +4,8 @@ class window.BulkEmailSearchForm
     @_initDateRangeSelectionHandlers()
 
   hideNonRestrictedProducts: ->
-    user_types = @selectedUserTypes().toArray()
-    required_selected = $(user_types).filter(['authorized_users', 'training_requested']).toArray()
+    user_types = @selectedUserTypes()
+    required_selected = user_types.filter(['authorized_users', 'training_requested'])
     # if either authorized_users or training_requested is selected (and nothing else), we should display only restricted products
     required_selected.length > 0 && required_selected.length == user_types.length
 
