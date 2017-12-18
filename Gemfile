@@ -118,7 +118,7 @@ group :test do
   gem "capybara-email"
   gem "poltergeist"
   gem "rspec-collection_matchers"
-  gem "shoulda-matchers",  "~> 3.1.0"
+  gem "shoulda-matchers",  "~> 3.1.2"
   gem "single_test", "0.4.0"
 end
 
