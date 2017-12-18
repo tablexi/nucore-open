@@ -3,24 +3,25 @@ class window.BulkEmailSearchForm
     @_initUserTypeChangeHandler()
     @_initDateRangeSelectionHandlers()
 
-  authorizedUsersSelectedOnly: ->
-    user_types = @selectedUserTypes()
-    user_types.length == 1 && user_types[0] == 'authorized_users'
+  hideNonRestrictedProducts: ->
+    user_types = @selectedUserTypes().toArray()
+    required_selected = $(user_types).filter(['authorized_users', 'training_requested']).toArray()
+    # if either authorized_users or training_requested is selected (and nothing else), we should display only restricted products
+    required_selected.length > 0 && required_selected.length == user_types.length
 
   selectedUserTypes: -> @$userTypeCheckboxes().filter(':checked').map -> @.value
 
-  dateIrrelevantSelectedOnly: ->
+  dateRelevant: ->
     user_types = @selectedUserTypes().toArray()
-    (user_types.includes('authorized_users') || user_types.includes('training_requested')) &&
-      !user_types.includes('customers') && !user_types.includes('account_owners')
+    user_types.includes('customers') || user_types.includes('account_owners')
 
   updateFormOptions: ->
     @disableDatepickerWhenIrrelevant()
     @toggleNonRestrictedProducts()
 
   disableDatepickerWhenIrrelevant: ->
-    # Dates do not apply for authorized users or training requested search
-    isDateIrrelevant = @dateIrrelevantSelectedOnly()
+    # Dates only apply for 'customers' and 'account owners', as those are joined through orders
+    isDateIrrelevant = !@dateRelevant()
     @$form.find('#dates_between')
       .toggleClass('disabled', isDateIrrelevant)
       .find('input')
@@ -28,7 +29,7 @@ class window.BulkEmailSearchForm
 
   toggleNonRestrictedProducts: ->
     # Hide non-restricted items when doing an authorized_users search
-    isHideNonRestrictedProducts = @authorizedUsersSelectedOnly()
+    isHideNonRestrictedProducts = @hideNonRestrictedProducts()
     @$form.find('#products option[data-restricted=false]').each ->
       $option = $(@)
       $option.prop('disabled', isHideNonRestrictedProducts)
