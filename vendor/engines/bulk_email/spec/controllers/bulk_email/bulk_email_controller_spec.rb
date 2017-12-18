@@ -48,7 +48,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
           it "sets user_types, in order" do
             expect(assigns[:user_types].keys)
-              .to eq(%i(customers authorized_users account_owners))
+              .to eq(%i(customers authorized_users training_requested account_owners))
           end
 
           it "sets the facility_id as the id, not url_name" do
