@@ -38,7 +38,7 @@
         %td.centered= order_detail.wrapped_quantity
         %td.user-order-detail
           .order-detail-description= order_detail.description_as_html
-          - if order_detail.add_accessories?
+          - if order_detail.add_accessories? && order_detail.complete? && acting_as?
             = link_to new_facility_order_order_detail_accessory_path(@order.facility, @order, order_detail), class: ["has_accessories", "persistent", "undecorated"] do
               = tooltip_icon "fa fa-plus-square", t("product_accessories.pick_accessories.title")
           - if res
