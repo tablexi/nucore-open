@@ -1,4 +1,5 @@
 = javascript_include_tag "reconciliation"
+= javascript_include_tag "transaction_history"
 
 = content_for :h1 do
   = current_facility
@@ -8,23 +9,15 @@
 
 %h2= t(".head", model: account_class.model_name.human(count: 2))
 
-- if @accounts.empty?
-  %p.notice= t(".none", model: account_class.model_name.human(count: 2).downcase)
-- else
+= render "shared/transactions/search2"
 
-  = form_tag([account_route, FacilityAccount], method: :get) do
-    %p= select_tag :selected_account, options_from_collection_for_select(@accounts, :id, :to_s, @selected_account.id)
-
-  - if @selected_account.owner_user
-    %h3= t(".owner", owner: @selected_account.owner_user.full_name)
-  %h3= t(".balance", balance: number_to_currency(@balance))
-
-  %p= t(".instructions")
-
+- if @unreconciled_details.any?
   = form_tag([:update, account_route, FacilityAccount], method: :post) do
     = render "action_row", date: true, unreconciled_order_details: @unreconciled_details
-    = hidden_field_tag :selected_account, @selected_account.id
+    / = hidden_field_tag :selected_account, @selected_account.id
     = render partial: "table"
     = render partial: "action_row"
 
   %p= will_paginate(@unreconciled_details)
+- else
+  %p.notice= t(".none", model: account_class.model_name.human(count: 2).downcase)

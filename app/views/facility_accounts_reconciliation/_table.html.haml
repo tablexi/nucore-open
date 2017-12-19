@@ -3,6 +3,7 @@
     %tr
       %th
       %th= Statement.human_attribute_name(:invoice_number)
+      %th= Account.model_name.human
       %th= Order.model_name.human
       %th= Statement.human_attribute_name(:total_cost)
       %th= Statement.human_attribute_name(:reconcile_note)
@@ -11,6 +12,10 @@
       %tr
         %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", true, class: "toggle"
         %td= "##{order_detail.statement_invoice_number}"
+        %td
+          = order_detail.account
+          %br
+          = order_detail.account.owner_user
         %td.user-order-detail
           .order-detail-description
             = link_to "##{order_detail.order_id}", facility_order_path(current_facility, order_detail.order_id)

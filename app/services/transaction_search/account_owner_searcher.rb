@@ -16,6 +16,14 @@ module TransactionSearch
       order_details.preload(account: :owner_user)
     end
 
+    def label_method
+      :full_name
+    end
+
+    def label
+      Account.human_attribute_name(:owner).pluralize
+    end
+
   end
 
 end
