@@ -15,9 +15,14 @@ module TransactionSearch
       self.class.options
     end
 
+    def multipart?
+      true
+    end
+
     def search(params)
-      start_date = parse_usa_date(params.try(:[], :start).to_s.tr("-", "/"))
-      end_date = parse_usa_date(params.try(:[], :end).to_s.tr("-", "/"))
+      params = params.to_h
+      start_date = parse_usa_date(params[:start].to_s.tr("-", "/"))
+      end_date = parse_usa_date(params[:end].to_s.tr("-", "/"))
       @date_range_field = extract_date_range_field(params)
       order_details.action_in_date_range(@date_range_field, start_date, end_date)
     end

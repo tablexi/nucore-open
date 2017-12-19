@@ -16,6 +16,10 @@ module TransactionSearch
       self.class.key
     end
 
+    def multipart?
+      false
+    end
+
     def label_method
       nil
     end
