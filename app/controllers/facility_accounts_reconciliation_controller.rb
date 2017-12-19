@@ -15,7 +15,7 @@ class FacilityAccountsReconciliationController < ApplicationController
   class SearchForm
     include ActiveModel::Model
 
-    attr_accessor :accounts, :account_owners
+    attr_accessor :accounts, :account_owners, :statements
 
     def self.model_name
       ActiveModel::Name.new(self, nil, "Search")
@@ -26,6 +26,7 @@ class FacilityAccountsReconciliationController < ApplicationController
     end
 
   end
+
   class TransactionSearcherResults
     attr_reader :order_details
     def initialize(order_details, search_options)
@@ -71,6 +72,7 @@ class FacilityAccountsReconciliationController < ApplicationController
     @search = TransactionSearcher.new(
       TransactionSearch::AccountSearcher,
       TransactionSearch::AccountOwnerSearcher,
+      TransactionSearch::StatementSearcher,
     ).search(order_details, @search_form)
 
     @unreconciled_details = @search.order_details.paginate(page: params[:page])
