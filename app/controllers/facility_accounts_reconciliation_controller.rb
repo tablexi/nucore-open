@@ -23,7 +23,6 @@ class FacilityAccountsReconciliationController < ApplicationController
       :accounts,
       :account_owners,
       :statements,
-      :date_range,
     ).search(order_details, @search_form)
 
     @unreconciled_details = @search.order_details.paginate(page: params[:page])
