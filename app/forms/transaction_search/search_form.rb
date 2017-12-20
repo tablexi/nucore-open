@@ -13,7 +13,11 @@ module TransactionSearch
     end
 
     def initialize(params, defaults: default_params)
-      super(params.to_h.reverse_merge(defaults))
+      # If defaults are given, they are merged with the default_params (so we have
+      # everything needed, even if the provided defaults are missing one of our
+      # defaults.
+      full_defaults = defaults.reverse_merge(default_params)
+      super(params.to_h.reverse_merge(full_defaults))
     end
 
     def [](field)
