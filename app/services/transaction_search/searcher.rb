@@ -2,17 +2,16 @@ module TransactionSearch
 
   class Searcher
 
+    # Expects an array of `TransactionSearch::BaseSearcher`s
     def initialize(*searchers)
-      @searchers = Array(searchers).map do |key_or_class|
-        BaseSearcher.from(key_or_class)
-      end
+      @searchers = Array(searchers)
     end
 
     def search(order_details, params)
       @searchers.reduce(Results.new(order_details)) do |results, searcher_class|
         searcher = searcher_class.new(results.order_details)
 
-        # TODO: Collapse optimized into search
+        # TODO: Collapse optimized into search within the searchers
         non_optimized = searcher.search(Array(params[searcher_class.key.to_sym]).reject(&:blank?))
         optimized_order_details = searcher_class.new(non_optimized).optimized
 

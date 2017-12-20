@@ -20,9 +20,9 @@ class FacilityAccountsReconciliationController < ApplicationController
     @search_form = TransactionSearch::SearchForm.new(params[:search])
 
     @search = TransactionSearch::Searcher.new(
-      :accounts,
-      :account_owners,
-      :statements,
+      TransactionSearch::AccountSearcher,
+      TransactionSearch::AccountOwnerSearcher,
+      TransactionSearch::StatementSearcher,
     ).search(order_details, @search_form)
 
     @unreconciled_details = @search.order_details.paginate(page: params[:page])

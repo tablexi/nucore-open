@@ -3,19 +3,15 @@
     %fieldset.span6#search
       - @search.options.reject(&:multipart?).each do |searcher|
         = f.input searcher.key, as: :transaction_chosen2, collection: searcher.options, label: searcher.label, label_method: searcher.label_method
-      / = f.input :facilities, as: :transaction_chosen
-      / = f.input :products, as: :transaction_chosen, data_method: :product_options
-      / = f.input :account_owners, label: Account.human_attribute_name(:owner).pluralize, label_method: :full_name, as: :transaction_chosen unless @account
-      / = f.input :order_statuses, data_method: :order_statuses_options, as: :transaction_chosen
-      / = render_view_hook("end_of_first_column", f: f)
-    - if @search.options.map(&:key).include?("date_ranges")
-      %fieldset.span2#calendar_filter
+
+    %fieldset.span2#calendar_filter
+      - if @search.options.map(&:key).include?("date_ranges")
         %br
         = f.input "date_range_field", collection: TransactionSearch::DateRangeSearcher.options, label: false, include_blank: false
         = f.input "date_range_start", input_html: {class: ["datepicker", "in_past"] }, label: t("reports.fields.date_start")
         = f.input "date_range_end", input_html: { class: ["datepicker", "in_past"] }, label: t("reports.fields.date_end")
 
-        .submit_button
-          = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
-          = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
-          = f.submit "Search", class: "btn"
+      .submit_button
+        = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
+        = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
+        = f.submit "Search", class: "btn"

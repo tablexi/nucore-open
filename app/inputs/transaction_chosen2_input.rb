@@ -15,19 +15,17 @@ class TransactionChosen2Input < SimpleForm::Inputs::CollectionInput
     merged_input_options[:multiple] = true
     merged_input_options["data-placeholder"] = placeholder_label
 
-    # If there is only one possible value, then we want to show it, and not allow
-    # selection, but only if it's not a nullable field
+    # If there is only one possible value, then we want to show it as selected,
+    # but we don't want to allow adding/removing it.
     if collection_size == 1 && !options[:allow_blank]
-      # TODO: what about this?
-      # search_fields[attribute_name] = [collection.first.public_send(value_method)]
-      collection.shift
+      input_options[:selected] = [collection.first.public_send(value_method)]
       merged_input_options[:disabled] = :disabled
     end
 
-    @builder.collection_select(
-      attribute_name, collection, value_method, label_method,
-      input_options, merged_input_options
-    )
+    option_data = option_elems(label_method, value_method)
+    selected = input_options[:selected] || object.public_send(attribute_name)
+    opts = template.options_for_select option_data, selected: selected
+    template.select_tag("#{object.class.model_name.param_key}[#{attribute_name}]", opts, merged_input_options)
   end
 
   def label(wrapper_options)
@@ -37,16 +35,33 @@ class TransactionChosen2Input < SimpleForm::Inputs::CollectionInput
 
   private
 
+  def option_elems(label_method, value_method)
+    collection.map do |i|
+      [
+        i.public_send(label_method),
+        i.public_send(value_method),
+        data_for_item(i),
+      ]
+    end
+  end
+
+  def data_for_item(item)
+    data_proc = options[:data_attrs] || ->(i) {{}}
+    dataify(data_proc.call(item))
+  end
+
+  def dataify(hash)
+    Hash[
+      hash.map { |k, v| ["data-#{k.to_s.dasherize}", v] }
+    ]
+  end
+
   def model_label
     attribute_class.model_name.human(count: 2)
-  rescue
-    attribute_name
   end
 
   def attribute_class
     attribute_name.to_s.classify.constantize
-  # rescue
-  #   attribute_name
   end
 
   def placeholder_label
