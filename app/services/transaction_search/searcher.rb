@@ -5,12 +5,12 @@ module TransactionSearch
     # Do not modify this directly. Use TransactionSearch.register instead.
     cattr_accessor(:default_searchers) do
       [
-        :facilities,
-        :accounts,
-        :products,
-        :account_owners,
-        :order_statuses,
-        :date_ranges,
+        TransactionSearch::FacilitySearcher,
+        TransactionSearch::AccountSearcher,
+        TransactionSearch::ProductSearcher,
+        TransactionSearch::AccountOwnerSearcher,
+        TransactionSearch::OrderStatusSearcher,
+        TransactionSearch::DateRangeSearcher,
       ]
     end
 
