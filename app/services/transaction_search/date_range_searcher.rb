@@ -20,14 +20,18 @@ module TransactionSearch
     end
 
     def search(params)
-      params = params.to_h
-      start_date = parse_usa_date(params[:start].to_s.tr("-", "/"))
-      end_date = parse_usa_date(params[:end].to_s.tr("-", "/"))
+      params ||= {}
+      start_date = to_date(params[:start])
+      end_date = to_date(params[:end])
       @date_range_field = extract_date_range_field(params)
       order_details.action_in_date_range(@date_range_field, start_date, end_date)
     end
 
     private
+
+    def to_date(param_value)
+      parse_usa_date(param_value.to_s.tr("-", "/"))
+    end
 
     def extract_date_range_field(params)
       field = params.try(:[], :field)
