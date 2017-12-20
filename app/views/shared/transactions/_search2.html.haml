@@ -4,7 +4,6 @@
       - @search.options.reject(&:multipart?).each do |searcher|
         = f.input searcher.key, as: :transaction_chosen2, collection: searcher.options, label: searcher.label, label_method: searcher.label_method
       / = f.input :facilities, as: :transaction_chosen
-      / = f.input :accounts, label_method: "account_list_item", as: :transaction_chosen unless @account
       / = f.input :products, as: :transaction_chosen, data_method: :product_options
       / = f.input :account_owners, label: Account.human_attribute_name(:owner).pluralize, label_method: :full_name, as: :transaction_chosen unless @account
       / = f.input :order_statuses, data_method: :order_statuses_options, as: :transaction_chosen
