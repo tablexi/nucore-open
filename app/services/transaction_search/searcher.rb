@@ -11,8 +11,11 @@ module TransactionSearch
       @searchers.reduce(Results.new(order_details)) do |results, searcher_class|
         searcher = searcher_class.new(results.order_details)
 
+        search_params = params[searcher_class.key.to_sym]
+        search_params = Array(search_params).reject(&:blank?) unless searcher.multipart?
+
         # TODO: Collapse optimized into search within the searchers
-        non_optimized = searcher.search(Array(params[searcher_class.key.to_sym]).reject(&:blank?))
+        non_optimized = searcher.search(search_params)
         optimized_order_details = searcher_class.new(non_optimized).optimized
 
         # Options should not be restricted, they should search over the full order details
