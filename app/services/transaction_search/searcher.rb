@@ -14,7 +14,10 @@ module TransactionSearch
         search_params = params[searcher_class.key.to_sym]
         search_params = Array(search_params).reject(&:blank?) unless searcher.multipart?
 
-        # TODO: Collapse optimized into search within the searchers
+        # TODO: Collapse optimized into search within the searchers. We have not
+        # done it yet because the TransactionSearch controller concern still relies
+        # on the API being split into two calls. Once that is gone, these can be
+        # collapsed within each BaseSearcher.
         non_optimized = searcher.search(search_params)
         optimized_order_details = searcher_class.new(non_optimized).optimized
 

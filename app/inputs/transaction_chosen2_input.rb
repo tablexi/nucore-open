@@ -1,3 +1,7 @@
+# This class replaces TransactionChosenInput. That class
+# is still being used by many of the TransactionSearch controller concern views.
+# These should eventually be replaced by TransactionSearch::Searcher (see FacilityAccountsReconciliationController)
+# and this class.
 class TransactionChosen2Input < SimpleForm::Inputs::CollectionInput
 
   disable :required
