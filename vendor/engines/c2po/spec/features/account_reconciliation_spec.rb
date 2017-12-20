@@ -85,9 +85,5 @@ RSpec.describe "Account Reconciliation" do
       expect(order_detail.reload).to be_reconciled
       expect(order_detail.reconciled_at).to eq(1.day.ago.beginning_of_day)
     end
-
-
   end
-
-
 end

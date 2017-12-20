@@ -1,6 +1,7 @@
 module TransactionSearch
 
   class SearchForm
+
     include ActiveModel::Model
 
     attr_accessor :date_range_field, :date_range_start, :date_range_end
@@ -22,7 +23,6 @@ module TransactionSearch
         public_send(field)
       end
     end
-
 
     private
 

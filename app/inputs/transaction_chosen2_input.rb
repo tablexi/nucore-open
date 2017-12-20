@@ -46,7 +46,7 @@ class TransactionChosen2Input < SimpleForm::Inputs::CollectionInput
   end
 
   def data_for_item(item)
-    data_proc = options[:data_attrs] || ->(i) {{}}
+    data_proc = options[:data_attrs] || ->(_i) { {} }
     dataify(data_proc.call(item))
   end
 
