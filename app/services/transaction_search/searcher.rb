@@ -2,8 +2,22 @@ module TransactionSearch
 
   class Searcher
 
+    # Do not modify this directly. Use TransactionSearch.register instead.
+    cattr_accessor(:default_searchers) do
+      [
+        :facilities,
+        :accounts,
+        :products,
+        :account_owners,
+        :order_statuses,
+        :date_ranges,
+      ]
+    end
+
     # Expects an array of `TransactionSearch::BaseSearcher`s
     def initialize(*searchers)
+      searchers = self.class.default_searchers if searchers.blank?
+
       @searchers = Array(searchers)
     end
 

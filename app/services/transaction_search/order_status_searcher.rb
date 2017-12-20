@@ -17,6 +17,12 @@ module TransactionSearch
       order_details.preload(:order_status)
     end
 
+    def data_attrs(order_status)
+      {}.tap do |h|
+        h[:facility] = order_status.facility_id if order_status.facility_id
+      end
+    end
+
   end
 
 end

@@ -5,7 +5,7 @@ module TransactionSearch
     attr_reader :order_details
 
     def self.key
-      to_s.demodulize.sub(/Searcher\z/, '').pluralize.underscore
+      to_s.sub(/\ATransactionSearch::/, '').sub(/Searcher\z/, '').pluralize.underscore
     end
 
     def initialize(order_details)
@@ -26,6 +26,11 @@ module TransactionSearch
 
     def label
       nil
+    end
+
+    # `item` will be one element of the collection
+    def data_attrs(_item)
+      {}
     end
 
     def options
