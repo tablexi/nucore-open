@@ -3,11 +3,11 @@ require "rails_helper"
 RSpec.describe SearchController do
   render_views
 
-  let(:facility) { FactoryGirl.create(:setup_facility) }
-  let!(:user) { FactoryGirl.create(:user, first_name: "Firstname", last_name: "Lastname") }
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let!(:user) { FactoryBot.create(:user, first_name: "Firstname", last_name: "Lastname") }
 
   shared_examples_for "searching" do |action|
-    let(:session_user) { FactoryGirl.create(:user, :facility_administrator, facility: facility) }
+    let(:session_user) { FactoryBot.create(:user, :facility_administrator, facility: facility) }
     let(:params) { {} }
     before do
       sign_in session_user
@@ -32,13 +32,13 @@ RSpec.describe SearchController do
     end
 
     it_behaves_like "searching", "account_account_user" do
-      let(:account) { FactoryGirl.create(:setup_account) }
+      let(:account) { FactoryBot.create(:setup_account) }
       let(:params) { { account_id: account.id } }
     end
 
     describe "facility_account_account_user", feature_setting: { edit_accounts: true } do
       it_behaves_like "searching", "facility_account_account_user" do
-        let(:account) { FactoryGirl.create(:setup_account) }
+        let(:account) { FactoryBot.create(:setup_account) }
         let(:params) { { account_id: account.id } }
       end
     end
@@ -63,12 +63,12 @@ RSpec.describe SearchController do
     end
 
     it_behaves_like "searching", "user_price_group_member" do
-      let(:price_group) { FactoryGirl.create(:price_group, facility: facility) }
+      let(:price_group) { FactoryBot.create(:price_group, facility: facility) }
       let(:params) { { price_group_id: price_group.id } }
     end
 
     it_behaves_like "searching", "user_product_approval" do
-      let(:product) { FactoryGirl.create(:setup_item, facility: facility) }
+      let(:product) { FactoryBot.create(:setup_item, facility: facility) }
       let(:params) { { product_id: product.id } }
     end
   end

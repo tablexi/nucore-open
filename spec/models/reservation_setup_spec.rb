@@ -1,12 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Reservation do
-  let(:instrument) { FactoryGirl.create(:setup_instrument) }
-  let(:user) { FactoryGirl.create(:user) }
-  let(:reservation) { FactoryGirl.create(:purchased_reservation, user: user, product: :instrument) }
+  let(:instrument) { FactoryBot.create(:setup_instrument) }
+  let(:user) { FactoryBot.create(:user) }
+  let(:reservation) { FactoryBot.create(:purchased_reservation, user: user, product: :instrument) }
 
   describe "facility setup" do
-    let(:facility) { FactoryGirl.create(:setup_facility) }
+    let(:facility) { FactoryBot.create(:setup_facility) }
     it "should be saved" do
       expect(facility).to be_persisted
     end
@@ -23,7 +23,7 @@ RSpec.describe Reservation do
 
   describe "instrument setup" do
     it "should be valid" do
-      instrument = FactoryGirl.build(:setup_instrument)
+      instrument = FactoryBot.build(:setup_instrument)
       expect(instrument).to be_valid
     end
 
@@ -70,7 +70,7 @@ RSpec.describe Reservation do
   end
 
   describe "account setup" do
-    let(:account) { FactoryGirl.create(:setup_account) }
+    let(:account) { FactoryBot.create(:setup_account) }
     it "should be persisted" do
       expect(account).to be_persisted
     end
@@ -81,8 +81,8 @@ RSpec.describe Reservation do
   end
 
   describe "order setup" do
-    let(:product) { FactoryGirl.create(:setup_instrument) }
-    let(:order) { FactoryGirl.create(:setup_order, product: product) }
+    let(:product) { FactoryBot.create(:setup_instrument) }
+    let(:order) { FactoryBot.create(:setup_order, product: product) }
 
     it "should have an order detail" do
       expect(order.order_details).not_to be_empty
@@ -95,7 +95,7 @@ RSpec.describe Reservation do
 
   describe "reservation setup" do
     describe "unpurchased" do
-      let(:reservation) { FactoryGirl.create(:setup_reservation) }
+      let(:reservation) { FactoryBot.create(:setup_reservation) }
 
       it "should be saved" do
         expect(reservation).to be_persisted
@@ -107,7 +107,7 @@ RSpec.describe Reservation do
     end
 
     describe "validated reservation" do
-      let(:reservation) { FactoryGirl.create(:validated_reservation) }
+      let(:reservation) { FactoryBot.create(:validated_reservation) }
 
       it "should be saved" do
         expect(reservation).to be_persisted
@@ -119,7 +119,7 @@ RSpec.describe Reservation do
     end
 
     describe "purchased reservation" do
-      let(:reservation) { FactoryGirl.create(:purchased_reservation) }
+      let(:reservation) { FactoryBot.create(:purchased_reservation) }
 
       it "should be saved" do
         expect(reservation).to be_persisted

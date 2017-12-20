@@ -11,8 +11,8 @@ RSpec.describe CancellationFeeCalculator do
       it { is_expected.to eq(0) }
     end
 
-    let(:reservation) { FactoryGirl.create(:purchased_reservation, product: instrument) }
-    let(:instrument) { FactoryGirl.create(:setup_instrument, min_cancel_hours: 9999) }
+    let(:reservation) { FactoryBot.create(:purchased_reservation, product: instrument) }
+    let(:instrument) { FactoryBot.create(:setup_instrument, min_cancel_hours: 9999) }
 
     context "when there is no cancellation_cost" do
       it { is_expected.to eq(0) }

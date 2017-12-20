@@ -2,20 +2,20 @@ require "rails_helper"
 require_relative "../split_accounts_spec_helper"
 
 RSpec.describe Reports::InstrumentDayReportsController, :enable_split_accounts do
-  let(:account) { FactoryGirl.create(:split_account, owner: user) }
-  let(:instrument) { FactoryGirl.create(:setup_instrument, :always_available, facility: facility) }
-  let(:facility) { FactoryGirl.create(:setup_facility) }
+  let(:account) { FactoryBot.create(:split_account, owner: user) }
+  let(:instrument) { FactoryBot.create(:setup_instrument, :always_available, facility: facility) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
   let!(:reservation) do
     # This is a Thursday
-    FactoryGirl.create(:completed_reservation, product: instrument,
-                                               reserve_start_at: Time.zone.local(2016, 3, 17, 10, 30),
-                                               reserve_end_at: Time.zone.local(2016, 3, 17, 12, 30),
-                                               actual_start_at: Time.zone.local(2016, 3, 17, 10, 30),
-                                               actual_end_at: Time.zone.local(2016, 3, 17, 12, 0)
-                      )
+    FactoryBot.create(:completed_reservation, product: instrument,
+                                              reserve_start_at: Time.zone.local(2016, 3, 17, 10, 30),
+                                              reserve_end_at: Time.zone.local(2016, 3, 17, 12, 30),
+                                              actual_start_at: Time.zone.local(2016, 3, 17, 10, 30),
+                                              actual_end_at: Time.zone.local(2016, 3, 17, 12, 0)
+                     )
   end
   let(:user) { reservation.order_detail.account.owner_user }
-  let(:admin) { FactoryGirl.create(:user, :administrator) }
+  let(:admin) { FactoryBot.create(:user, :administrator) }
 
   before { reservation.order_detail.update_attributes!(account: account) }
   before { sign_in admin }

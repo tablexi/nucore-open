@@ -4,12 +4,12 @@ require_relative "../../support/shared_contexts/setup_sanger_service"
 RSpec.describe "Creating a batch", :js do
   include_context "Setup Sanger Service"
 
-  let!(:purchased_order) { FactoryGirl.create(:purchased_order, product: service, account: account) }
-  let!(:purchased_order2) { FactoryGirl.create(:purchased_order, product: service, account: account) }
-  let!(:purchased_submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order.order_details.first, sample_count: 50) }
-  let!(:purchased_submission2) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order2.order_details.first, sample_count: 50) }
+  let!(:purchased_order) { FactoryBot.create(:purchased_order, product: service, account: account) }
+  let!(:purchased_order2) { FactoryBot.create(:purchased_order, product: service, account: account) }
+  let!(:purchased_submission) { FactoryBot.create(:sanger_sequencing_submission, order_detail: purchased_order.order_details.first, sample_count: 50) }
+  let!(:purchased_submission2) { FactoryBot.create(:sanger_sequencing_submission, order_detail: purchased_order2.order_details.first, sample_count: 50) }
 
-  let(:facility_staff) { FactoryGirl.create(:user, :staff, facility: facility) }
+  let(:facility_staff) { FactoryBot.create(:user, :staff, facility: facility) }
 
   before { login_as facility_staff }
 
@@ -46,7 +46,7 @@ RSpec.describe "Creating a batch", :js do
   end
 
   describe "creating a batch with a previously completed submission" do
-    let!(:completed_submission) { FactoryGirl.create(:sanger_sequencing_submission, order_detail: purchased_order2.order_details.first, sample_count: 50) }
+    let!(:completed_submission) { FactoryBot.create(:sanger_sequencing_submission, order_detail: purchased_order2.order_details.first, sample_count: 50) }
 
     before do
       purchased_order.order_details.first.to_complete

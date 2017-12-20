@@ -1,19 +1,19 @@
 require "rails_helper"
 
 RSpec.describe OrderAssignmentMailer do
-  let(:assigned_user) { FactoryGirl.build(:user) }
+  let(:assigned_user) { FactoryBot.build(:user) }
   let(:email) { ActionMailer::Base.deliveries.last }
-  let(:facility) { FactoryGirl.build_stubbed(:facility) }
+  let(:facility) { FactoryBot.build_stubbed(:facility) }
 
   def stubbed_order_detail(order)
-    FactoryGirl.build_stubbed(:order_detail,
-                              assigned_user: assigned_user,
-                              order: order)
+    FactoryBot.build_stubbed(:order_detail,
+                             assigned_user: assigned_user,
+                             order: order)
   end
 
   describe ".notify_assigned_user" do
     context "when given a single order_detail" do
-      let(:order) { FactoryGirl.build_stubbed(:order, facility: facility) }
+      let(:order) { FactoryBot.build_stubbed(:order, facility: facility) }
       let(:order_detail) { stubbed_order_detail(order) }
 
       before { described_class.notify_assigned_user(order_detail).deliver_now }
@@ -31,7 +31,7 @@ RSpec.describe OrderAssignmentMailer do
     end
 
     context "when given multiple order_details" do
-      let(:orders) { FactoryGirl.build_stubbed_list(:order, 3, facility: facility) }
+      let(:orders) { FactoryBot.build_stubbed_list(:order, 3, facility: facility) }
       let(:order_details) do
         orders.map { |order| stubbed_order_detail(order) }
       end

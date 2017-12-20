@@ -26,8 +26,8 @@ if Account.config.statements_enabled?
       @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
       @order_detail2.update_attributes(reviewed_at: nil)
 
-      @account2 = FactoryGirl.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
-      @authable_account2 = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @account2 = FactoryBot.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
+      @authable_account2 = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
       @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
 
       [@order_detail1, @order_detail3].each do |od|
@@ -43,15 +43,15 @@ if Account.config.statements_enabled?
     end
 
     before(:each) do
-      @authable = FactoryGirl.create(:facility)
-      @other_facility = FactoryGirl.create(:facility)
-      @user = FactoryGirl.create(:user)
-      @other_user = FactoryGirl.create(:user)
+      @authable = FactoryBot.create(:facility)
+      @other_facility = FactoryBot.create(:facility)
+      @user = FactoryBot.create(:user)
+      @other_user = FactoryBot.create(:user)
       UserRole.grant(@user, UserRole::ADMINISTRATOR)
-      @account = FactoryGirl.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
-      @other_account = FactoryGirl.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @other_user), facility_id: @other_facility.id)
-      @statement = FactoryGirl.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: @account)
-      @statement2 = FactoryGirl.create(:statement, facility_id: @other_facility.id, created_by: @admin.id, account: @other_account)
+      @account = FactoryBot.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
+      @other_account = FactoryBot.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @other_user), facility_id: @other_facility.id)
+      @statement = FactoryBot.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: @account)
+      @statement2 = FactoryBot.create(:statement, facility_id: @other_facility.id, created_by: @admin.id, account: @other_account)
       @params = { facility_id: @authable.url_name }
     end
 

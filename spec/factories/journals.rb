@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :journal do
     is_successful true
     created_by 1

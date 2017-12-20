@@ -96,7 +96,7 @@ end
 
 group :development, :test do
   gem "awesome_print", "1.8.0"
-  gem "factory_girl_rails", "~> 4.9.0"
+  gem "factory_bot_rails"
   gem "guard-rspec", require: false
   gem "guard-teaspoon", require: false
   gem "pry-rails", "~> 0.3.6"

@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe OrderManagement::OrderDetailsController do
   let(:order_detail) { order.order_details.first }
   let(:facility) { order.facility }
-  let(:item) { FactoryGirl.create(:setup_item) }
-  let(:order) { FactoryGirl.create(:purchased_order, product: item) }
-  let(:active_project) { FactoryGirl.create(:project, facility: facility) }
-  let(:inactive_project) { FactoryGirl.create(:project, :inactive, facility: facility) }
+  let(:item) { FactoryBot.create(:setup_item) }
+  let(:order) { FactoryBot.create(:purchased_order, product: item) }
+  let(:active_project) { FactoryBot.create(:project, facility: facility) }
+  let(:inactive_project) { FactoryBot.create(:project, :inactive, facility: facility) }
 
   describe "PUT #update" do
     def perform_request
@@ -18,7 +18,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
     end
 
     before(:each) do
-      sign_in FactoryGirl.create(:user, :administrator)
+      sign_in FactoryBot.create(:user, :administrator)
       perform_request
       order_detail.reload
     end
@@ -38,7 +38,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         end
 
         context "that is associated with a different facility" do
-          let(:project_id) { FactoryGirl.create(:project).id }
+          let(:project_id) { FactoryBot.create(:project).id }
           it { expect(order_detail.project_id).to be_blank }
         end
       end
@@ -67,7 +67,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           end
 
           context "that is associated with a different facility" do
-            let(:project_id) { FactoryGirl.create(:project).id }
+            let(:project_id) { FactoryBot.create(:project).id }
             it { expect(order_detail.project_id).to eq(active_project.id) }
           end
         end

@@ -7,14 +7,14 @@ RSpec.describe UpcomingOfflineReservationNotifier do
     let(:now) { Date.today.beginning_of_day + 30.minutes }
 
     context "when an instrument is offline" do
-      let!(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+      let!(:instrument) { FactoryBot.create(:setup_instrument, :offline) }
 
       context "and a purchased reservation exists for it" do
         let!(:reservation) do
-          FactoryGirl.create(:purchased_reservation,
-                             product: instrument,
-                             reserve_start_at: now + 10.hours,
-                             reserve_end_at: now + 11.hours)
+          FactoryBot.create(:purchased_reservation,
+                            product: instrument,
+                            reserve_start_at: now + 10.hours,
+                            reserve_end_at: now + 11.hours)
         end
         let(:stub_delivery) { double(ActionMailer::MessageDelivery) }
         let(:user) { reservation.user }

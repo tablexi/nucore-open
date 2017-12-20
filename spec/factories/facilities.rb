@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :facility do
     sequence(:name, "AAAAAAAA") { |n| "Facility#{n}" }
     sequence(:email) { |n| "facility-#{n}@example.com" }
@@ -15,9 +15,9 @@ FactoryGirl.define do
 
   factory :setup_facility, class: Facility, parent: :facility do
     after(:create) do |facility|
-      facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
       # user is_internal => false so that we can just use .last to access it
-      FactoryGirl.create(:price_group, facility: facility, is_internal: false)
+      FactoryBot.create(:price_group, facility: facility, is_internal: false)
     end
   end
 end

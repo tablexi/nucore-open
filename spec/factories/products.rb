@@ -1,11 +1,11 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :product do
     description "Lorem ipsum..."
     account 71_234
     requires_approval false
     is_archived false
     is_hidden false
-    initial_order_status_id { FactoryGirl.create(:order_status, name: "New").id }
+    initial_order_status_id { FactoryBot.create(:order_status, name: "New").id }
 
     after(:build) do |product|
       if product.facility_account.present?
@@ -25,7 +25,7 @@ FactoryGirl.define do
       reserve_interval 1
 
       after(:create) do |inst, evaluator|
-        inst.relay = FactoryGirl.create(:relay_dummy, instrument: inst) unless evaluator.no_relay
+        inst.relay = FactoryBot.create(:relay_dummy, instrument: inst) unless evaluator.no_relay
       end
     end
 
@@ -79,7 +79,7 @@ FactoryGirl.define do
     requires_approval false
     is_archived false
     is_hidden false
-    initial_order_status { FactoryGirl.create(:order_status, name: "New") }
+    initial_order_status { FactoryBot.create(:order_status, name: "New") }
     min_reserve_mins 60
     max_reserve_mins 120
 
@@ -88,9 +88,9 @@ FactoryGirl.define do
     end
 
     after(:create) do |product|
-      FactoryGirl.create(:price_group_product,
-                         product: product,
-                         price_group: product.facility.price_groups.last)
+      FactoryBot.create(:price_group_product,
+                        product: product,
+                        price_group: product.facility.price_groups.last)
     end
 
     factory :setup_service, class: Service do
@@ -98,13 +98,13 @@ FactoryGirl.define do
 
     factory :setup_timed_service, class: TimedService do
       after(:create) do |product|
-        product.timed_service_price_policies.create(FactoryGirl.attributes_for(:timed_service_price_policy, price_group: product.facility.price_groups.last))
+        product.timed_service_price_policies.create(FactoryBot.attributes_for(:timed_service_price_policy, price_group: product.facility.price_groups.last))
       end
     end
 
     factory :setup_item, class: Item do
       after(:create) do |product|
-        product.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group: product.facility.price_groups.last))
+        product.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group: product.facility.price_groups.last))
       end
     end
 
@@ -143,7 +143,7 @@ FactoryGirl.define do
       reserve_interval 1
 
       after(:create) do |inst, evaluator|
-        inst.relay = FactoryGirl.create(:relay_dummy, instrument: inst) unless evaluator.no_relay
+        inst.relay = FactoryBot.create(:relay_dummy, instrument: inst) unless evaluator.no_relay
       end
     end
 

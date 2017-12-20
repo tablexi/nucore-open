@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe Reports::InstrumentReportsController do
-  let(:facility) { FactoryGirl.create(:setup_facility) }
-  let(:instrument) { FactoryGirl.create(:setup_instrument, :timer, facility: facility) }
-  let!(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
-  let!(:no_project_reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:instrument) { FactoryBot.create(:setup_instrument, :timer, facility: facility) }
+  let!(:reservation) { FactoryBot.create(:completed_reservation, product: instrument) }
+  let!(:no_project_reservation) { FactoryBot.create(:completed_reservation, product: instrument) }
   let(:order_detail) { reservation.order_detail }
-  let(:project) { FactoryGirl.create(:project, facility: facility) }
-  let(:user) { FactoryGirl.create(:user, :facility_director, facility: facility) }
+  let(:project) { FactoryBot.create(:project, facility: facility) }
+  let(:user) { FactoryBot.create(:user, :facility_director, facility: facility) }
 
   describe "the project report" do
     before do

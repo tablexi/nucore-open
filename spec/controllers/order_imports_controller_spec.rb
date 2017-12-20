@@ -71,7 +71,7 @@ RSpec.describe OrderImportsController do
   end
 
   describe "downloading an error file" do
-    let(:stored_file) { FactoryGirl.create(:csv_stored_file) }
+    let(:stored_file) { FactoryBot.create(:csv_stored_file) }
     let!(:order_import) do
       OrderImport.create!(
         created_by: @director.id,

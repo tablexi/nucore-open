@@ -9,20 +9,20 @@ RSpec.describe ProductUsersController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @price_group = FactoryGirl.create(:price_group, facility: facility)
-    @instrument       = FactoryGirl.create(:instrument,
-                                           facility: @authable,
-                                           facility_account: @facility_account,
-                                           requires_approval: true)
-    @price_policy     = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
+    @authable         = FactoryBot.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @price_group = FactoryBot.create(:price_group, facility: facility)
+    @instrument       = FactoryBot.create(:instrument,
+                                          facility: @authable,
+                                          facility_account: @facility_account,
+                                          requires_approval: true)
+    @price_policy     = @instrument.instrument_price_policies.create(FactoryBot.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
     expect(@price_policy).to be_valid
     @params = { facility_id: @authable.url_name, instrument_id: @instrument.url_name }
 
-    @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-    @level = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
-    @level2 = FactoryGirl.create(:product_access_group, product_id: @instrument.id)
+    @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
+    @level = FactoryBot.create(:product_access_group, product_id: @instrument.id)
+    @level2 = FactoryBot.create(:product_access_group, product_id: @instrument.id)
   end
 
   context "index" do

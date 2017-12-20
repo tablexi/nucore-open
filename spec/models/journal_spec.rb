@@ -214,12 +214,12 @@ RSpec.describe Journal do
 
   context "journal creation" do
     before :each do
-      @admin = FactoryGirl.create(:user)
-      @facilitya = FactoryGirl.create(:facility, abbreviation: "A")
-      @facilityb = FactoryGirl.create(:facility, abbreviation: "B")
-      @facilityc = FactoryGirl.create(:facility, abbreviation: "C")
-      @facilityd = FactoryGirl.create(:facility, abbreviation: "D")
-      @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @admin), facility_id: @facilitya.id)
+      @admin = FactoryBot.create(:user)
+      @facilitya = FactoryBot.create(:facility, abbreviation: "A")
+      @facilityb = FactoryBot.create(:facility, abbreviation: "B")
+      @facilityc = FactoryBot.create(:facility, abbreviation: "C")
+      @facilityd = FactoryBot.create(:facility, abbreviation: "D")
+      @account = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @admin), facility_id: @facilitya.id)
 
       # little helper to create the calls which the controller performs
       def create_pending_journal_for(*facilities_list)
@@ -331,8 +331,8 @@ RSpec.describe Journal do
   it "should create and attach journal spreadsheet" do
     journal.valid?
     # create nufs account
-    @owner    = FactoryGirl.create(:user)
-    @account  = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @owner))
+    @owner    = FactoryBot.create(:user)
+    @account  = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @owner))
     journal.create_spreadsheet
     expect(journal.file.url).to match(/^\/files/)
   end
@@ -350,20 +350,20 @@ RSpec.describe Journal do
   context "order_details_span_fiscal_years?" do
     before :each do
       Settings.financial.fiscal_year_begins = "06-01"
-      @owner    = FactoryGirl.create(:user)
-      @account  = FactoryGirl.create(:nufs_account, account_users_attributes: [FactoryGirl.attributes_for(:account_user, user: @owner)])
-      @facility_account = facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @item = facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
-      @price_group = FactoryGirl.create(:price_group, facility: facility)
-      FactoryGirl.create(:user_price_group_member, user: @owner, price_group: @price_group)
-      @pp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id))
+      @owner    = FactoryBot.create(:user)
+      @account  = FactoryBot.create(:nufs_account, account_users_attributes: [FactoryBot.attributes_for(:account_user, user: @owner)])
+      @facility_account = facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @item = facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @price_group = FactoryBot.create(:price_group, facility: facility)
+      FactoryBot.create(:user_price_group_member, user: @owner, price_group: @price_group)
+      @pp = @item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group_id: @price_group.id))
 
       # Create one order detail fulfulled in each month for a two year range
       d1 = Time.zone.parse("2020-01-01")
       @order_details = []
       (0..23).each do |i|
-        order = @owner.orders.create(FactoryGirl.attributes_for(:order, created_by: @owner.id))
-        od = order.order_details.create(FactoryGirl.attributes_for(:order_detail, product: @item))
+        order = @owner.orders.create(FactoryBot.attributes_for(:order, created_by: @owner.id))
+        od = order.order_details.create(FactoryBot.attributes_for(:order_detail, product: @item))
         od.update_attributes(actual_cost: 20, actual_subsidy: 0)
         od.to_complete!
         od.update_attributes(fulfilled_at: d1 + i.months)

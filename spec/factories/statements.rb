@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :statement do
     association :account, factory: :setup_account
     created_at { Time.zone.now }

@@ -3,19 +3,19 @@ require "rails_helper"
 RSpec.describe Cart do
   describe "instrument_only_carts" do
     let(:carts) { Cart.abandoned_carts }
-    let(:instrument) { FactoryGirl.create(:setup_instrument) }
-    let(:item) { FactoryGirl.create(:setup_item, facility: instrument.facility) }
+    let(:instrument) { FactoryBot.create(:setup_instrument) }
+    let(:item) { FactoryBot.create(:setup_item, facility: instrument.facility) }
     before :each do
-      @purchased_instrument_order = FactoryGirl.create(:purchased_reservation, product: instrument, reserve_start_at: 2.hours.from_now, reserve_end_at: 3.hours.from_now).order
-      @instrument_order = FactoryGirl.create(:setup_reservation, product: instrument).order
+      @purchased_instrument_order = FactoryBot.create(:purchased_reservation, product: instrument, reserve_start_at: 2.hours.from_now, reserve_end_at: 3.hours.from_now).order
+      @instrument_order = FactoryBot.create(:setup_reservation, product: instrument).order
 
-      @instrument_and_item_order = FactoryGirl.create(:setup_reservation, product: instrument).order
+      @instrument_and_item_order = FactoryBot.create(:setup_reservation, product: instrument).order
       @instrument_and_item_order.add(item, 1)
 
-      @two_instrument_order = FactoryGirl.create(:setup_reservation, product: instrument).order
+      @two_instrument_order = FactoryBot.create(:setup_reservation, product: instrument).order
       @two_instrument_order.add(@two_instrument_order.order_details.first.product, 1)
 
-      @item_order = FactoryGirl.create(:setup_order, product: item)
+      @item_order = FactoryBot.create(:setup_order, product: item)
     end
 
     # setup is expensive, so only do it once and test several things at once

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe EmailEvent do
 
   describe ".notify" do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryBot.create(:user) }
 
     it "yields on the first invocation" do
       expect { |b| described_class.notify(user, "key", &b) }.to yield_control
@@ -37,7 +37,7 @@ RSpec.describe EmailEvent do
       end
 
       it "yields on an invocation for a different user with the same key" do
-        user2 = FactoryGirl.create(:user)
+        user2 = FactoryBot.create(:user)
         expect { |b| described_class.notify(user2, "key", &b) }.to yield_control
       end
     end

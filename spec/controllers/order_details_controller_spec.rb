@@ -89,8 +89,8 @@ RSpec.describe OrderDetailsController do
       end
 
       describe "as a BA" do
-        let!(:account_user) { FactoryGirl.create(:account_user, :business_administrator, account: order_detail.account, user: user) }
-        let(:user) { FactoryGirl.create(:user) }
+        let!(:account_user) { FactoryBot.create(:account_user, :business_administrator, account: order_detail.account, user: user) }
+        let(:user) { FactoryBot.create(:user) }
 
         it "sees the dispute box" do
           perform
@@ -99,8 +99,8 @@ RSpec.describe OrderDetailsController do
       end
 
       describe "as an account purchaser" do
-        let!(:account_user) { FactoryGirl.create(:account_user, :purchaser, account: order_detail.account, user: user) }
-        let(:user) { FactoryGirl.create(:user) }
+        let!(:account_user) { FactoryBot.create(:account_user, :purchaser, account: order_detail.account, user: user) }
+        let(:user) { FactoryBot.create(:user) }
 
         it "does not see the dispute box" do
           perform
@@ -125,9 +125,9 @@ RSpec.describe OrderDetailsController do
         end
 
         context "and I am an administrator on the account, but do not own the order" do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { FactoryBot.create(:user) }
           before do
-            FactoryGirl.create(:account_user, :business_administrator, account: account, user: user)
+            FactoryBot.create(:account_user, :business_administrator, account: account, user: user)
             put :cancel, order_id: order.id, id: order_detail.id
           end
 
@@ -172,10 +172,10 @@ RSpec.describe OrderDetailsController do
       end
 
       describe "as a business admin" do
-        let(:signed_in_user) { FactoryGirl.create(:user) }
+        let(:signed_in_user) { FactoryBot.create(:user) }
         before do
-          FactoryGirl.create(:account_user, :business_administrator,
-                             user: signed_in_user, account: order_detail.account)
+          FactoryBot.create(:account_user, :business_administrator,
+                            user: signed_in_user, account: order_detail.account)
           perform
         end
 
@@ -185,10 +185,10 @@ RSpec.describe OrderDetailsController do
       end
 
       describe "as an account purchaser" do
-        let(:signed_in_user) { FactoryGirl.create(:user) }
+        let(:signed_in_user) { FactoryBot.create(:user) }
         before do
-          FactoryGirl.create(:account_user, :purchaser,
-                             user: signed_in_user, account: order_detail.account)
+          FactoryBot.create(:account_user, :purchaser,
+                            user: signed_in_user, account: order_detail.account)
           perform
         end
 
@@ -198,10 +198,10 @@ RSpec.describe OrderDetailsController do
       end
 
       describe "as the purchaser" do
-        let(:signed_in_user) { FactoryGirl.create(:user) }
+        let(:signed_in_user) { FactoryBot.create(:user) }
         before do
-          FactoryGirl.create(:account_user, :purchaser,
-                             user: signed_in_user, account: order_detail.account)
+          FactoryBot.create(:account_user, :purchaser,
+                            user: signed_in_user, account: order_detail.account)
           order.update_attributes(user: signed_in_user)
           perform
         end
@@ -212,7 +212,7 @@ RSpec.describe OrderDetailsController do
       end
 
       describe "as a random user" do
-        let(:signed_in_user) { FactoryGirl.create(:user) }
+        let(:signed_in_user) { FactoryBot.create(:user) }
         before { perform }
 
         it "does not load" do
@@ -254,7 +254,7 @@ RSpec.describe OrderDetailsController do
 
     describe "#show/edit/update based on state" do
       let(:signed_in_user) { user }
-      let(:account2) { FactoryGirl.create(:setup_account, owner: user) }
+      let(:account2) { FactoryBot.create(:setup_account, owner: user) }
       let(:params) { { account_id: account2.id } }
 
       def perform_show
@@ -315,7 +315,7 @@ RSpec.describe OrderDetailsController do
       end
 
       describe "after completion" do
-        let(:reservation) { FactoryGirl.create(:completed_reservation) }
+        let(:reservation) { FactoryBot.create(:completed_reservation) }
 
         describe "while in the review period" do
           before { order_detail.update_attributes!(reviewed_at: 7.days.from_now) }

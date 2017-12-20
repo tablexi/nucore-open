@@ -15,25 +15,25 @@ RSpec.describe FacilityReservationsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryGirl.create(:facility)
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
-    @product = FactoryGirl.create(:instrument,
-                                  facility_account: @facility_account,
-                                  facility: @authable,
-                                 )
-    @schedule_rule = FactoryGirl.create(:schedule_rule, product: @product)
+    @authable = FactoryBot.create(:facility)
+    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @product = FactoryBot.create(:instrument,
+                                 facility_account: @facility_account,
+                                 facility: @authable,
+                                )
+    @schedule_rule = FactoryBot.create(:schedule_rule, product: @product)
     @product.reload
     @account = create_nufs_account_with_owner :director
-    @order = FactoryGirl.create(:order,
-                                facility: @authable,
-                                user: @director,
-                                created_by: @director.id,
-                                account: @account,
-                                ordered_at: Time.zone.now,
-                                state: "purchased",
-                               )
+    @order = FactoryBot.create(:order,
+                               facility: @authable,
+                               user: @director,
+                               created_by: @director.id,
+                               account: @account,
+                               ordered_at: Time.zone.now,
+                               state: "purchased",
+                              )
 
-    @reservation = FactoryGirl.create(:reservation, product: @product)
+    @reservation = FactoryBot.create(:reservation, product: @product)
     expect(@reservation).not_to be_new_record
     @order_detail = create(:order_detail, account: account, order: @order, product: product, reservation: @reservation)
     @order_detail.set_default_status!
@@ -145,7 +145,7 @@ RSpec.describe FacilityReservationsController do
           # Used to fail by overlapping existing reservation, but now admin reservations are
           # allowed to per ticket 38975
           allow_any_instance_of(Reservation).to receive(:valid?).and_return(false)
-          @params[:reservation] = FactoryGirl.attributes_for(:reservation)
+          @params[:reservation] = FactoryBot.attributes_for(:reservation)
         end
 
         it "does not save the reservation", :aggregate_failures do
@@ -172,7 +172,7 @@ RSpec.describe FacilityReservationsController do
         # setup_reservation overwrites @order_detail
         @order_detail_reservation = @order_detail
 
-        @product = FactoryGirl.create(:item, facility_account: @facility_account, facility: @authable)
+        @product = FactoryBot.create(:item, facility_account: @facility_account, facility: @authable)
         @order_detail_item = place_product_order(@director, @authable, @product, @account)
         @order_detail.order.update_attributes!(state: "purchased")
 
@@ -210,10 +210,10 @@ RSpec.describe FacilityReservationsController do
   context '#timeline' do
     context "instrument listing" do
       before :each do
-        @instrument2 = FactoryGirl.create(:instrument,
-                                          facility_account: @facility_account,
-                                          facility: @authable,
-                                          is_hidden: true)
+        @instrument2 = FactoryBot.create(:instrument,
+                                         facility_account: @facility_account,
+                                         facility: @authable,
+                                         is_hidden: true)
         maybe_grant_always_sign_in :director
         @method = :get
         @action = :timeline
@@ -240,26 +240,26 @@ RSpec.describe FacilityReservationsController do
     context "orders" do
       before :each do
         # create unpurchased reservation
-        @order2 = FactoryGirl.create(:order,
-                                     facility: @authable,
-                                     user: @director,
-                                     created_by: @director.id,
-                                     account: @account,
-                                     ordered_at: nil,
-                                     state: "new",
-                                    )
+        @order2 = FactoryBot.create(:order,
+                                    facility: @authable,
+                                    user: @director,
+                                    created_by: @director.id,
+                                    account: @account,
+                                    ordered_at: nil,
+                                    state: "new",
+                                   )
         # make sure the reservations are happening today
         @reservation.update_attributes!(reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
 
-        @unpurchased_reservation = FactoryGirl.create(:reservation, product: @product, reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
-        @order_detail2 = FactoryGirl.create(:order_detail, order: @order2, product: @product, reservation: @unpurchased_reservation)
+        @unpurchased_reservation = FactoryBot.create(:reservation, product: @product, reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
+        @order_detail2 = FactoryBot.create(:order_detail, order: @order2, product: @product, reservation: @unpurchased_reservation)
 
-        @canceled_reservation = FactoryGirl.create(:reservation, product: @product, reserve_start_at: 2.hours.from_now, reserve_end_at: 3.hours.from_now)
-        @order_detail3 = FactoryGirl.create(:order_detail, order: @order, product: @product, reservation: @canceled_reservation)
+        @canceled_reservation = FactoryBot.create(:reservation, product: @product, reserve_start_at: 2.hours.from_now, reserve_end_at: 3.hours.from_now)
+        @order_detail3 = FactoryBot.create(:order_detail, order: @order, product: @product, reservation: @canceled_reservation)
         expect(@canceled_reservation).to be_persisted
         @order_detail3.update_order_status! @admin, OrderStatus.canceled
 
-        @admin_reservation = FactoryGirl.create(
+        @admin_reservation = FactoryBot.create(
           :admin_reservation,
           product: @product,
           reserve_start_at: Time.zone.now,
@@ -301,7 +301,7 @@ RSpec.describe FacilityReservationsController do
     before :each do
       @method = :put
       @action = :update
-      @params.merge!(reservation: FactoryGirl.attributes_for(:reservation))
+      @params.merge!(reservation: FactoryBot.attributes_for(:reservation))
     end
 
     it_should_allow_operators_only do
@@ -316,9 +316,9 @@ RSpec.describe FacilityReservationsController do
         expect(@order_detail.price_policy).to be_nil
         @order_detail.account = @account
         @order_detail.save!
-        @price_group = FactoryGirl.create(:price_group, facility: @authable)
+        @price_group = FactoryBot.create(:price_group, facility: @authable)
         create(:account_price_group_member, account: account, price_group: @price_group)
-        @instrument_pp = @product.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, price_group_id: @price_group.id))
+        @instrument_pp = @product.instrument_price_policies.create(FactoryBot.attributes_for(:instrument_price_policy, price_group_id: @price_group.id))
         @instrument_pp.reload.restrict_purchase = false
         @reservation.update_attributes(actual_start_at: nil, actual_end_at: nil)
         @params.merge!(reservation: {
@@ -343,7 +343,7 @@ RSpec.describe FacilityReservationsController do
     context "completed order" do
       before :each do
         expect(@order_detail.price_policy).to be_nil
-        @price_group = FactoryGirl.create(:price_group, facility: @authable)
+        @price_group = FactoryBot.create(:price_group, facility: @authable)
         create(:account_price_group_member, account: account, price_group: @price_group)
         @instrument_pp = create(:instrument_price_policy, product: @product, price_group_id: @price_group.id, usage_rate: 2)
         @instrument_pp.reload.restrict_purchase = false
@@ -355,7 +355,7 @@ RSpec.describe FacilityReservationsController do
       context "update actuals" do
         before :each do
           @reservation.update_attributes(actual_start_at: nil, actual_end_at: nil)
-          @reservation_attrs = FactoryGirl.attributes_for(
+          @reservation_attrs = FactoryBot.attributes_for(
             :reservation,
             actual_start_at: @now - 2.hours,
             actual_end_at: @now - 1.hour,
@@ -384,7 +384,7 @@ RSpec.describe FacilityReservationsController do
       context "update reserve" do
         before :each do
           @reservation.update_attributes(actual_start_at: @reservation.reserve_start_at, actual_end_at: @reservation.reserve_end_at)
-          @reservation_attrs = FactoryGirl.attributes_for(
+          @reservation_attrs = FactoryBot.attributes_for(
             :reservation,
             reserve_start_at: @now - 3.hours,
             reserve_end_at: @now - 1.hour,
@@ -441,7 +441,7 @@ RSpec.describe FacilityReservationsController do
       before :each do
         @method = :patch
         @action = :update_admin
-        @params.merge!(admin_reservation: FactoryGirl.attributes_for(:admin_reservation))
+        @params.merge!(admin_reservation: FactoryBot.attributes_for(:admin_reservation))
       end
 
       it_should_allow_operators_only :redirect

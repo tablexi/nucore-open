@@ -4,13 +4,13 @@ RSpec.describe JournalRowUpdater, type: :service do
   let(:updater) { described_class.new(order_detail) }
 
   describe "when the order detail is on a failed journal" do
-    let(:user) { FactoryGirl.create(:user) }
-    let(:facility) { FactoryGirl.create(:setup_facility) }
-    let(:account) { FactoryGirl.create(:split_account, owner: user) }
+    let(:user) { FactoryBot.create(:user) }
+    let(:facility) { FactoryBot.create(:setup_facility) }
+    let(:account) { FactoryBot.create(:split_account, owner: user) }
     # Original costs: actual: 20, subsidy: 10
     let(:order_detail) { place_and_complete_item_order(user, facility, account, true) }
-    let(:journal) { FactoryGirl.create(:journal, is_successful: false, facility: facility) }
-    let(:journal2) { FactoryGirl.create(:journal, is_successful: false, facility: facility) }
+    let(:journal) { FactoryBot.create(:journal, is_successful: false, facility: facility) }
+    let(:journal2) { FactoryBot.create(:journal, is_successful: false, facility: facility) }
 
     before do
       journal.create_journal_rows!([order_detail])

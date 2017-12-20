@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Passwords", :aggregate_failures, feature_setting: { password_update: true } do
-  let(:external_user) { FactoryGirl.create(:user, :external, password: "originalpassword") }
-  let(:internal_user) { FactoryGirl.create(:user, password: "originalpassword") }
+  let(:external_user) { FactoryBot.create(:user, :external, password: "originalpassword") }
+  let(:internal_user) { FactoryBot.create(:user, password: "originalpassword") }
 
   describe "Changing" do
     describe "as an external user" do

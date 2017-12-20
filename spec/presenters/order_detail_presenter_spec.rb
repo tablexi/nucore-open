@@ -164,9 +164,9 @@ RSpec.describe OrderDetailPresenter do
 
   describe "#wrapped_total" do
     subject { presented.wrapped_total }
-    let(:order) { FactoryGirl.create(:setup_order, product: product) }
+    let(:order) { FactoryBot.create(:setup_order, product: product) }
     let(:order_detail) { order.order_details.first }
-    let(:product) { FactoryGirl.create(:setup_item) }
+    let(:product) { FactoryBot.create(:setup_item) }
 
     before { product.price_policies.update_all(unit_cost: "12.34") }
 

@@ -9,14 +9,14 @@ RSpec.describe OrderStatusesController do
     OrderStatus.delete_all
     expect(OrderStatus.all).to be_empty
 
-    @authable = @facility = FactoryGirl.create(:facility)
+    @authable = @facility = FactoryBot.create(:facility)
 
-    @root_status = FactoryGirl.create(:order_status)
+    @root_status = FactoryBot.create(:order_status)
     expect(@root_status).to be_root
-    @root_status2 = FactoryGirl.create(:order_status)
+    @root_status2 = FactoryBot.create(:order_status)
     expect(@root_status2).to be_root
-    @order_status = FactoryGirl.create(:order_status, facility: @facility, parent: @root_status)
-    @order_status2 = FactoryGirl.create(:order_status, facility: @facility, parent: @root_status)
+    @order_status = FactoryBot.create(:order_status, facility: @facility, parent: @root_status)
+    @order_status2 = FactoryBot.create(:order_status, facility: @facility, parent: @root_status)
     expect(OrderStatus.all.size).to eq(4)
     @params = { facility_id: @facility.url_name }
   end
@@ -80,7 +80,7 @@ RSpec.describe OrderStatusesController do
     before :each do
       @action = :create
       @method = :post
-      @params.merge!(order_status: FactoryGirl.attributes_for(:order_status, parent_id: @root_status.id))
+      @params.merge!(order_status: FactoryBot.attributes_for(:order_status, parent_id: @root_status.id))
     end
     it_should_allow_managers_only(:redirect) {}
     context "signed_in" do
@@ -146,7 +146,7 @@ RSpec.describe OrderStatusesController do
     before :each do
       @action = :update
       @method = :put
-      @params.merge!(id: @order_status.id, order_status: FactoryGirl.attributes_for(:order_status, parent_id: @root_status.id))
+      @params.merge!(id: @order_status.id, order_status: FactoryBot.attributes_for(:order_status, parent_id: @root_status.id))
     end
     it_should_allow_managers_only :redirect
     it_should_disallow_editing_root_statuses
@@ -165,9 +165,9 @@ RSpec.describe OrderStatusesController do
       before(:each) { maybe_grant_always_sign_in :director }
       context "success" do
         before :each do
-          @user = FactoryGirl.create(:user)
-          @facility_account = FactoryGirl.create(:facility_account, facility: @facility)
-          @product = FactoryGirl.create(:item, facility: @facility, facility_account: @facility_account)
+          @user = FactoryBot.create(:user)
+          @facility_account = FactoryBot.create(:facility_account, facility: @facility)
+          @product = FactoryBot.create(:item, facility: @facility, facility_account: @facility_account)
           @order_details = []
           3.times do
             order_detail = place_product_order(@user, @facility, @product)

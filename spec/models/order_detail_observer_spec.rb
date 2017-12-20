@@ -64,15 +64,15 @@ RSpec.describe OrderDetailObserver do
     before :each do
       Settings.reload!
       Settings.order_details.status_change_hooks = nil
-      @facility = FactoryGirl.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-      @user     = FactoryGirl.create(:user)
-      @item     = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+      @facility = FactoryBot.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @user     = FactoryBot.create(:user)
+      @item     = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
       expect(@item).to be_valid
-      FactoryGirl.create :item_price_policy, product: @item, price_group: PriceGroup.base
+      FactoryBot.create :item_price_policy, product: @item, price_group: PriceGroup.base
       @account = add_account_for_user(:user, @item)
-      @order = @user.orders.create(FactoryGirl.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
-      @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
+      @order = @user.orders.create(FactoryBot.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
+      @order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))
       expect(@order_detail.state).to eq("new")
       expect(@order_detail.versions.size).to eq(1)
       expect(@order_detail.order_status).to be_nil

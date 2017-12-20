@@ -9,8 +9,8 @@ RSpec.describe Notifier do
 
   if EngineManager.engine_loaded?(:c2po)
     describe ".statement" do
-      let(:account) { FactoryGirl.create(:purchase_order_account, :with_account_owner) }
-      let(:statement) { FactoryGirl.build_stubbed(:statement, facility: facility, account: account) }
+      let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner) }
+      let(:statement) { FactoryBot.build_stubbed(:statement, facility: facility, account: account) }
       let(:email_html) { email.html_part.to_s.gsub(/&nbsp;/, " ") } # Markdown changes some whitespace to &nbsp;
       let(:email_text) { email.text_part.to_s }
 
@@ -34,7 +34,7 @@ RSpec.describe Notifier do
 
   describe ".review_orders" do
     let(:accounts) do
-      FactoryGirl.create_list(:setup_account, 2, owner: user, facility_id: facility.id)
+      FactoryBot.create_list(:setup_account, 2, owner: user, facility_id: facility.id)
     end
     let(:account_ids) { accounts.map(&:id) }
     let(:email_html) { email.html_part.to_s.gsub(/&nbsp;/, " ") } # Markdown changes some whitespace to &nbsp;

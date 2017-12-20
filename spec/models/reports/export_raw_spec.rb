@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe Reports::ExportRaw do
 
-  let(:user) { FactoryGirl.create(:user) }
-  let(:facility) { FactoryGirl.create(:setup_facility, name: "My Facility", abbreviation: "MF") }
-  let(:account) { FactoryGirl.create(:account, :with_account_owner, owner: user) }
+  let(:user) { FactoryBot.create(:user) }
+  let(:facility) { FactoryBot.create(:setup_facility, name: "My Facility", abbreviation: "MF") }
+  let(:account) { FactoryBot.create(:account, :with_account_owner, owner: user) }
 
   subject(:report) { described_class.new(**report_args) }
 
@@ -20,7 +20,7 @@ RSpec.describe Reports::ExportRaw do
   end
 
   describe "for an item" do
-    let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
+    let(:item) { FactoryBot.create(:setup_item, facility: facility) }
     let(:order_detail) do
       place_product_order(user, facility, item, account).tap do |od|
         od.complete!
@@ -71,14 +71,14 @@ RSpec.describe Reports::ExportRaw do
 
   describe "with a reservation", :time_travel do
     let(:now) { Time.zone.parse("2016-02-01 10:30") }
-    let(:instrument) { FactoryGirl.create(:setup_instrument, :always_available, facility: facility) }
+    let(:instrument) { FactoryBot.create(:setup_instrument, :always_available, facility: facility) }
     let(:reservation) do
-      FactoryGirl.create(:completed_reservation,
-                         product: instrument,
-                         reserve_start_at: Time.zone.parse("2016-02-01 08:30"),
-                         reserve_end_at: Time.zone.parse("2016-02-01 09:30"),
-                         actual_start_at: Time.zone.parse("2016-02-01 08:30"),
-                         actual_end_at: Time.zone.parse("2016-02-01 09:35"))
+      FactoryBot.create(:completed_reservation,
+                        product: instrument,
+                        reserve_start_at: Time.zone.parse("2016-02-01 08:30"),
+                        reserve_end_at: Time.zone.parse("2016-02-01 09:30"),
+                        actual_start_at: Time.zone.parse("2016-02-01 08:30"),
+                        actual_end_at: Time.zone.parse("2016-02-01 09:35"))
     end
 
     let(:user) { order_detail.user }

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :reservation do
     transient do
       duration nil
@@ -87,7 +87,7 @@ FactoryGirl.define do
   factory :setup_reservation, class: Reservation, parent: :reservation do
     product factory: :setup_instrument
 
-    order_detail { FactoryGirl.create(:setup_order, product: product).order_details.first }
+    order_detail { FactoryBot.create(:setup_order, product: product).order_details.first }
   end
 
   factory :validated_reservation, parent: :setup_reservation do

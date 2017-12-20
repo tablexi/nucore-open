@@ -12,7 +12,7 @@ RSpec.describe Payment do
 
   describe "belongs to user" do
     let(:payment) { described_class.new }
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryBot.create(:user) }
 
     it "belongs to the user" do
       payment.paid_by = user

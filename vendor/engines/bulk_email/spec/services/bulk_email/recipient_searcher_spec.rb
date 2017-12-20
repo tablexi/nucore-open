@@ -20,20 +20,20 @@ RSpec.describe BulkEmail::RecipientSearcher do
   subject(:searcher) { described_class.new(params) }
 
   let(:users) { searcher.do_search }
-  let(:owner) { FactoryGirl.create(:user) }
-  let(:purchaser)  { FactoryGirl.create(:user) }
-  let(:purchaser2) { FactoryGirl.create(:user) }
-  let(:purchaser3) { FactoryGirl.create(:user) }
+  let(:owner) { FactoryBot.create(:user) }
+  let(:purchaser)  { FactoryBot.create(:user) }
+  let(:purchaser2) { FactoryBot.create(:user) }
+  let(:purchaser3) { FactoryBot.create(:user) }
 
   let(:facility) { facility_account.facility }
-  let(:facility_account) { FactoryGirl.create(:facility_account) }
+  let(:facility_account) { FactoryBot.create(:facility_account) }
 
   let(:product) { create_item }
   let(:product2) { create_item }
   let(:product3) { create_item }
 
-  let(:account) { FactoryGirl.create(:setup_account, owner: owner) }
-  let(:price_group) { FactoryGirl.create(:price_group, facility: facility) }
+  let(:account) { FactoryBot.create(:setup_account, owner: owner) }
+  let(:price_group) { FactoryBot.create(:price_group, facility: facility) }
   let(:usa_today) { Time.current.strftime("%m/%d/%Y") }
 
   let(:params) do
@@ -47,19 +47,19 @@ RSpec.describe BulkEmail::RecipientSearcher do
   before { ignore_order_detail_account_validations }
 
   def create_item
-    FactoryGirl.create(:item, facility_account: facility_account).tap do |item|
-      FactoryGirl.create(:item_price_policy, product: item, price_group: price_group)
+    FactoryBot.create(:item, facility_account: facility_account).tap do |item|
+      FactoryBot.create(:item_price_policy, product: item, price_group: price_group)
     end
   end
 
   def place_order(purchaser:, product:, account:)
-    FactoryGirl.create(:setup_order,
-                       :purchased,
-                       created_by: purchaser.id,
-                       product: product,
-                       user: purchaser,
-                       account: account,
-                       ordered_at: Time.current)
+    FactoryBot.create(:setup_order,
+                      :purchased,
+                      created_by: purchaser.id,
+                      product: product,
+                      user: purchaser,
+                      account: account,
+                      ordered_at: Time.current)
   end
 
   context "#has_search_fields?" do
@@ -160,10 +160,10 @@ RSpec.describe BulkEmail::RecipientSearcher do
 
     context "when filtering by reservation dates" do
       let(:instrument) do
-        FactoryGirl.create(:instrument,
-                           facility_account: facility_account,
-                           min_reserve_mins: 60,
-                           max_reserve_mins: 60)
+        FactoryBot.create(:instrument,
+                          facility_account: facility_account,
+                          min_reserve_mins: 60,
+                          max_reserve_mins: 60)
       end
 
       def place_reservation(purchaser, at)
@@ -254,11 +254,11 @@ RSpec.describe BulkEmail::RecipientSearcher do
   end
 
   context "when searching for account_owners" do
-    let(:owner2) { FactoryGirl.create(:user) }
-    let(:owner3) { FactoryGirl.create(:user) }
+    let(:owner2) { FactoryBot.create(:user) }
+    let(:owner3) { FactoryBot.create(:user) }
     let!(:order_details) do
-      account2 = FactoryGirl.create(:setup_account, owner: owner2)
-      account3 = FactoryGirl.create(:setup_account, owner: owner3)
+      account2 = FactoryBot.create(:setup_account, owner: owner2)
+      account3 = FactoryBot.create(:setup_account, owner: owner3)
 
       [
         place_order(purchaser: purchaser, product: product, account: account),
@@ -284,11 +284,11 @@ RSpec.describe BulkEmail::RecipientSearcher do
   end
 
   context "when searching for customers and account_owners" do
-    let(:owner2) { FactoryGirl.create(:user) }
-    let(:owner3) { FactoryGirl.create(:user) }
+    let(:owner2) { FactoryBot.create(:user) }
+    let(:owner3) { FactoryBot.create(:user) }
     let!(:order_details) do
-      account2 = FactoryGirl.create(:setup_account, owner: owner2)
-      account3 = FactoryGirl.create(:setup_account, owner: owner3)
+      account2 = FactoryBot.create(:setup_account, owner: owner2)
+      account3 = FactoryBot.create(:setup_account, owner: owner3)
 
       [
         place_order(purchaser: purchaser, product: product, account: account),
@@ -315,7 +315,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
   end
 
   context "when searching for authorized_users" do
-    let(:authorized_users) { FactoryGirl.create_list(:user, 3) }
+    let(:authorized_users) { FactoryBot.create_list(:user, 3) }
     let(:user) { authorized_users.first }
     let(:user2) { authorized_users.second }
     let(:user3) { authorized_users.third }
@@ -394,7 +394,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
   # describe "being ready for Oracle" do
   #   before :each do
   #     Array.new(1001) do
-  #       user = FactoryGirl.create(:user)
+  #       user = FactoryBot.create(:user)
   #       od = place_product_order(user, facility, product, account)
   #     end
   #     expect(OrderDetail.all.size).to eq(1001)

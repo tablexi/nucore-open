@@ -4,10 +4,10 @@ RSpec.describe SangerSequencing::Batch do
   describe ".for_product_group" do
     subject { described_class.for_product_group(group) }
 
-    before { FactoryGirl.create(:product_group, :fragment) }
-    let!(:blank_batch) { FactoryGirl.create(:sanger_sequencing_batch, group: "") }
-    let!(:nil_batch) { FactoryGirl.create(:sanger_sequencing_batch, group: nil) }
-    let!(:grouped_batch) { FactoryGirl.create(:sanger_sequencing_batch, group: "fragment") }
+    before { FactoryBot.create(:product_group, :fragment) }
+    let!(:blank_batch) { FactoryBot.create(:sanger_sequencing_batch, group: "") }
+    let!(:nil_batch) { FactoryBot.create(:sanger_sequencing_batch, group: nil) }
+    let!(:grouped_batch) { FactoryBot.create(:sanger_sequencing_batch, group: "fragment") }
 
     context "with group given as nil" do
       let(:group) { nil }

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :instrument_price_policy do
     price_group
     charge_for InstrumentPricePolicy::CHARGE_FOR[:reservation]

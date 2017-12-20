@@ -20,13 +20,13 @@ RSpec.describe Reservation do
     facility.facility_accounts.create(attributes_for(:facility_account))
   end
   let(:instrument) { @instrument }
-  let(:order) { FactoryGirl.create(:setup_order, product: instrument) }
-  let(:order_detail) { FactoryGirl.create(:order_detail, account: order.account, order: order, product: instrument) }
+  let(:order) { FactoryBot.create(:setup_order, product: instrument) }
+  let(:order_detail) { FactoryBot.create(:order_detail, account: order.account, order: order, product: instrument) }
 
   before(:each) do
     @instrument = create(:instrument, facility_account_id: facility_account.id, facility: facility, reserve_interval: 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
-    @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 17))
+    @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 17))
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
@@ -35,16 +35,16 @@ RSpec.describe Reservation do
     let(:now) { Time.current }
 
     context "when the instrument is down" do
-      let!(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+      let!(:instrument) { FactoryBot.create(:setup_instrument, :offline) }
 
       context "and a user reservation exists starting now" do
         context "when the order_detail.state is :new" do
 
           context "when it is purchased (not in the cart)" do
             let!(:reservation) do
-              FactoryGirl.create(:purchased_reservation,
-                                 product: instrument,
-                                 reserve_start_at: now)
+              FactoryBot.create(:purchased_reservation,
+                                product: instrument,
+                                reserve_start_at: now)
             end
 
             it { is_expected.to eq [reservation] }
@@ -52,9 +52,9 @@ RSpec.describe Reservation do
 
           context "when it is unpurchased (in the cart)" do
             let!(:reservation) do
-              FactoryGirl.create(:setup_reservation,
-                                 product: instrument,
-                                 reserve_start_at: now)
+              FactoryBot.create(:setup_reservation,
+                                product: instrument,
+                                reserve_start_at: now)
             end
 
             it { is_expected.to be_blank }
@@ -63,10 +63,10 @@ RSpec.describe Reservation do
 
         context "when the order_detail.state is :inprocess" do
           let!(:reservation) do
-            FactoryGirl.create(:purchased_reservation,
-                               :inprocess,
-                               product: instrument,
-                               reserve_start_at: now)
+            FactoryBot.create(:purchased_reservation,
+                              :inprocess,
+                              product: instrument,
+                              reserve_start_at: now)
           end
 
           it { is_expected.to eq [reservation] }
@@ -74,7 +74,7 @@ RSpec.describe Reservation do
 
         context "when the order_detail.state is :complete with no actual_end_at" do
           let!(:reservation) do
-            FactoryGirl.create(:purchased_reservation, :long_running, product: instrument)
+            FactoryBot.create(:purchased_reservation, :long_running, product: instrument)
           end
 
           before(:each) do
@@ -86,7 +86,7 @@ RSpec.describe Reservation do
 
         context "when the order_detail.state is :reconciled with no actual_end_at" do
           let!(:reservation) do
-            FactoryGirl.create(:completed_reservation, :long_running, product: instrument)
+            FactoryBot.create(:completed_reservation, :long_running, product: instrument)
           end
 
           before(:each) do
@@ -312,12 +312,12 @@ RSpec.describe Reservation do
 
   describe "#canceled?" do
     let(:price_group) { create(:price_group, facility: facility) }
-    let!(:instrument_pp) { FactoryGirl.create(:instrument_price_policy, product: instrument, price_group: price_group) }
-    let(:user) { FactoryGirl.create(:user) }
-    let(:account) { FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
+    let!(:instrument_pp) { FactoryBot.create(:instrument_price_policy, product: instrument, price_group: price_group) }
+    let(:user) { FactoryBot.create(:user) }
+    let(:account) { FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
     let!(:account_price_group_memeber) { create(:account_price_group_member, account: account, price_group: price_group) }
     let(:order) { user.orders.create(attributes_for(:order, created_by: user.id, account: account, facility: facility)) }
-    let!(:order_detail) { FactoryGirl.create(:order_detail, order: order, product_id: instrument.id, account: account, quantity: 1) }
+    let!(:order_detail) { FactoryBot.create(:order_detail, order: order, product_id: instrument.id, account: account, quantity: 1) }
 
     subject(:reservation) do
       instrument.reservations.create(reserve_start_date: (Date.today + 1.day).to_s,
@@ -344,12 +344,12 @@ RSpec.describe Reservation do
 
     before :each do
       @price_group = create(:price_group, facility: facility)
-      @instrument_pp = FactoryGirl.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
-      @user          = FactoryGirl.create(:user)
-      @account       = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+      @instrument_pp = FactoryBot.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
+      @user          = FactoryBot.create(:user)
+      @account       = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
       create(:account_price_group_member, account: @account, price_group: @price_group)
       @order = @user.orders.create(attributes_for(:order, created_by: @user.id, account: @account, facility: facility))
-      order_attrs    = FactoryGirl.attributes_for(:order_detail, product_id: @instrument.id, quantity: 1)
+      order_attrs    = FactoryBot.attributes_for(:order_detail, product_id: @instrument.id, quantity: 1)
       @detail1       = @order.order_details.create(order_attrs.merge(account: @account))
       @detail2       = @order.order_details.create(order_attrs)
 
@@ -614,7 +614,7 @@ RSpec.describe Reservation do
       end
 
       context "when the reserved instrument is offline" do
-        let(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+        let(:instrument) { FactoryBot.create(:setup_instrument, :offline) }
 
         it { is_expected.not_to be_startable_now }
       end
@@ -686,12 +686,12 @@ RSpec.describe Reservation do
           ScheduleRule.destroy_all
           @instrument.schedule_rules.reload
           @instrument.update_attributes(requires_approval: true)
-          @everybody_schedule_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
-          group1 = FactoryGirl.create(:product_access_group, product: @instrument)
+          @everybody_schedule_rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
+          group1 = FactoryBot.create(:product_access_group, product: @instrument)
           @everybody_schedule_rule.product_access_groups << group1
           group1.product_users.create(product: @instrument, user: @user, approved_by: @user.id)
-          @restricted_schedule_rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 17, end_hour: 24))
-          @restricted_schedule_rule.product_access_groups << FactoryGirl.create(:product_access_group, product: @instrument)
+          @restricted_schedule_rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule, start_hour: 17, end_hour: 24))
+          @restricted_schedule_rule.product_access_groups << FactoryBot.create(:product_access_group, product: @instrument)
           @reservation1.reload
         end
 
@@ -777,7 +777,7 @@ RSpec.describe Reservation do
 
     context "ordered_on_behalf_of?" do
       it "should return true if the associated order was ordered by someone else" do
-        @user2 = FactoryGirl.create(:user)
+        @user2 = FactoryBot.create(:user)
         @reservation1.order.update_attributes(created_by_user: @user2)
         expect(@reservation1.reload).to be_ordered_on_behalf_of
       end
@@ -788,7 +788,7 @@ RSpec.describe Reservation do
         expect(@reservation1.reload).not_to be_ordered_on_behalf_of
       end
       it "should return false for admin reservations" do
-        @admin_reservation = FactoryGirl.create(:reservation, product: @instrument)
+        @admin_reservation = FactoryBot.create(:reservation, product: @instrument)
         expect(@admin_reservation).not_to be_ordered_on_behalf_of
       end
 
@@ -845,8 +845,8 @@ RSpec.describe Reservation do
     end
 
     context "scheduling over admin reservations" do
-      let(:user) { FactoryGirl.create(:user) }
-      let(:admin_user) { FactoryGirl.create(:user, :staff, facility: facility) }
+      let(:user) { FactoryBot.create(:user) }
+      let(:admin_user) { FactoryBot.create(:user, :staff, facility: facility) }
       let(:new_user_reservation) do
         instrument.reservations.build(
           reserve_start_at: 1.day.from_now.change(hour: 11, min: 0),
@@ -1035,7 +1035,7 @@ RSpec.describe Reservation do
                                                   split_times: true)
     assert @reservation.invalid?
     # create rule2 that is adjacent to rule (10 pm to 12 am), allowing multi-day reservations
-    @rule2 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 22, end_hour: 24))
+    @rule2 = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule).merge(start_hour: 22, end_hour: 24))
     assert @rule2.valid?
     @reservation = instrument.reservations.create(reserve_start_date: @tomorrow,
                                                   reserve_start_hour: 10,
@@ -1067,10 +1067,10 @@ RSpec.describe Reservation do
     context "with a running reservation" do
       let!(:running) do
         start_time = 1.hour.ago - 1.second
-        FactoryGirl.create(:setup_reservation,
-                           product: instrument,
-                           reserve_start_at: start_time,
-                           actual_start_at: start_time)
+        FactoryBot.create(:setup_reservation,
+                          product: instrument,
+                          reserve_start_at: start_time,
+                          actual_start_at: start_time)
       end
 
       before do
@@ -1157,8 +1157,8 @@ RSpec.describe Reservation do
         @instrument.schedule_rules.destroy_all
         @instrument.schedule_rules.reload
         @instrument.update_attribute :reserve_interval, 15
-        @rule_9to5 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 9, end_hour: 17))
-        @rule_5to7 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 17, end_hour: 19))
+        @rule_9to5 = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule, start_hour: 9, end_hour: 17))
+        @rule_5to7 = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule, start_hour: 17, end_hour: 19))
       end
 
       it "allows a reservation within the schedule rules" do
@@ -1190,16 +1190,16 @@ RSpec.describe Reservation do
 
       context "schedule rules with restrictions" do
         before :each do
-          @user = FactoryGirl.create(:user)
-          @account = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+          @user = FactoryBot.create(:user)
+          @account = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
 
           @instrument.update_attributes(requires_approval: true)
 
           @order = create(:order, user: @user, created_by: @user.id, account: @account, facility: facility)
-          @order_detail = FactoryGirl.create(:order_detail, order: @order, product: @instrument)
+          @order_detail = FactoryBot.create(:order_detail, order: @order, product: @instrument)
           # @instrument.update_attributes(:requires_approval => true)
 
-          @restriction_level = @rule_5to7.product_access_groups.create(FactoryGirl.attributes_for(:product_access_group, product: @instrument))
+          @restriction_level = @rule_5to7.product_access_groups.create(FactoryBot.attributes_for(:product_access_group, product: @instrument))
           @instrument.reload
           @reservation = Reservation.new(reserve_start_date: Date.today + 1,
                                          reserve_start_hour: 6,
@@ -1235,7 +1235,7 @@ RSpec.describe Reservation do
           before :each do
             # user is not in the restricted group
             @product_user = ProductUser.create(user: @user, product: @instrument, approved_by: @user.id)
-            @admin = FactoryGirl.create(:user)
+            @admin = FactoryBot.create(:user)
             UserRole.grant(@admin, UserRole::ADMINISTRATOR)
           end
 
@@ -1260,31 +1260,31 @@ RSpec.describe Reservation do
     before do
       PriceGroupProduct.destroy_all
 
-      @user = FactoryGirl.create(:user)
-      @nupg_pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @nupg)
+      @user = FactoryBot.create(:user)
+      @nupg_pgp = FactoryBot.create(:price_group_product, product: @instrument, price_group: @nupg)
 
       # Setup a price group with an account for this user
-      @price_group1 = FactoryGirl.create(:price_group, facility: facility)
-      @pg1_pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group1)
-      @account1 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-      @account_price_group_member1 = AccountPriceGroupMember.create(FactoryGirl.attributes_for(:account_price_group_member).merge(account: @account1, price_group: @price_group1))
+      @price_group1 = FactoryBot.create(:price_group, facility: facility)
+      @pg1_pgp = FactoryBot.create(:price_group_product, product: @instrument, price_group: @price_group1)
+      @account1 = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
+      @account_price_group_member1 = AccountPriceGroupMember.create(FactoryBot.attributes_for(:account_price_group_member).merge(account: @account1, price_group: @price_group1))
 
       # Setup a second price groups with another account for this user
       create(:account_price_group_member, account: @account1, price_group: @nupg)
-      @user_price_group_member = UserPriceGroupMember.create(FactoryGirl.attributes_for(:user_price_group_member).merge(user: @user, price_group: @nupg))
+      @user_price_group_member = UserPriceGroupMember.create(FactoryBot.attributes_for(:user_price_group_member).merge(user: @user, price_group: @nupg))
 
       # Order against the first account
-      @order = Order.create(FactoryGirl.attributes_for(:order).merge(user: @user, account: @account1, created_by: @user.id))
-      @order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail).merge(product: @instrument, order_status: @os_new))
+      @order = Order.create(FactoryBot.attributes_for(:order).merge(user: @user, account: @account1, created_by: @user.id))
+      @order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail).merge(product: @instrument, order_status: @os_new))
       reservation.order_detail = @order_detail
       reservation.save
     end
 
     it "should find the best reservation window" do
-      @pp_short = InstrumentPricePolicy.create(FactoryGirl.attributes_for(:instrument_price_policy, product_id: @instrument.id))
+      @pp_short = InstrumentPricePolicy.create(FactoryBot.attributes_for(:instrument_price_policy, product_id: @instrument.id))
       @pg1_pgp.reservation_window = 30
       assert @pg1_pgp.save
-      @pp_long = InstrumentPricePolicy.create(FactoryGirl.attributes_for(:instrument_price_policy, product_id: @instrument.id))
+      @pp_long = InstrumentPricePolicy.create(FactoryBot.attributes_for(:instrument_price_policy, product_id: @instrument.id))
       @nupg_pgp.reservation_window = 60
       assert @nupg_pgp.save
       @price_group1.price_policies << @pp_short
@@ -1354,7 +1354,7 @@ RSpec.describe Reservation do
       @rule.destroy
       @instrument.update_attribute :reserve_interval, 15
       @instrument.reload
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
+      @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 24))
 
       @spans_day_reservation = instrument.reservations.create!(reserve_start_at: Time.current.end_of_day - 1.hour,
                                                                duration_mins: 120,
@@ -1400,7 +1400,7 @@ RSpec.describe Reservation do
 
     let!(:rule) do
       @rule.destroy
-      attrs = FactoryGirl.attributes_for :schedule_rule, start_hour: 0, end_hour: 24
+      attrs = FactoryBot.attributes_for :schedule_rule, start_hour: 0, end_hour: 24
       @instrument.schedule_rules.create attrs
     end
 
@@ -1456,9 +1456,9 @@ RSpec.describe Reservation do
 
   describe "#extendable?" do
     subject(:reservation) do
-      FactoryGirl.build(:purchased_reservation,
-                        :running,
-                        product: instrument)
+      FactoryBot.build(:purchased_reservation,
+                       :running,
+                       product: instrument)
     end
 
     before do
@@ -1472,10 +1472,10 @@ RSpec.describe Reservation do
 
     context "with another reservation following" do
       let(:other_reservation) do
-        FactoryGirl.build(:purchased_reservation,
-                          reserve_start_at: reservation.reserve_end_at,
-                          reserve_end_at: reservation.reserve_end_at + 1.hour,
-                          product: reservation.product)
+        FactoryBot.build(:purchased_reservation,
+                         reserve_start_at: reservation.reserve_end_at,
+                         reserve_end_at: reservation.reserve_end_at + 1.hour,
+                         product: reservation.product)
       end
 
       before do
@@ -1526,10 +1526,10 @@ RSpec.describe Reservation do
 
       context "with another reservation following" do
         let(:other_reservation) do
-          FactoryGirl.build(:purchased_reservation,
-                            reserve_start_at: reservation.reserve_end_at,
-                            reserve_end_at: reservation.reserve_end_at + 1.hour,
-                            product: reservation.product)
+          FactoryBot.build(:purchased_reservation,
+                           reserve_start_at: reservation.reserve_end_at,
+                           reserve_end_at: reservation.reserve_end_at + 1.hour,
+                           product: reservation.product)
         end
 
         before do

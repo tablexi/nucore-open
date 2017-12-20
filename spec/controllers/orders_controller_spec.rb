@@ -31,12 +31,12 @@ RSpec.describe OrdersController do
   before(:each) do
     @authable = facility
     @facility_account = facility.facility_accounts.create(attributes_for(:facility_account))
-    @price_group = FactoryGirl.create(:price_group, facility: facility)
+    @price_group = FactoryBot.create(:price_group, facility: facility)
     @item = facility.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
     @account = add_account_for_user(:staff, @item, @price_group)
-    @order = @staff.orders.create(FactoryGirl.attributes_for(:order, created_by: @staff.id, account: @account))
+    @order = @staff.orders.create(FactoryBot.attributes_for(:order, created_by: @staff.id, account: @account))
 
-    @item_pp = @item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 1.hour.ago))
+    @item_pp = @item.item_price_policies.create!(FactoryBot.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 1.hour.ago))
 
     @params = { id: @order.id, order_id: @order.id }
   end
@@ -76,9 +76,9 @@ RSpec.describe OrdersController do
 
       context "cart with one reservation" do
         before :each do
-          @instrument = FactoryGirl.create(:setup_instrument, facility: @authable)
+          @instrument = FactoryBot.create(:setup_instrument, facility: @authable)
           @order.add(@instrument, 1)
-          @res1 = FactoryGirl.create(:setup_reservation, order_detail: @order.order_details[0], product: @instrument)
+          @res1 = FactoryBot.create(:setup_reservation, order_detail: @order.order_details[0], product: @instrument)
         end
 
         it "redirects to a new cart" do
@@ -88,9 +88,9 @@ RSpec.describe OrdersController do
 
         context "with a second reservation" do
           before :each do
-            @instrument2 = FactoryGirl.create(:setup_instrument, facility: @authable)
+            @instrument2 = FactoryBot.create(:setup_instrument, facility: @authable)
             @order.add(@instrument2, 1)
-            @res2 = FactoryGirl.create(:setup_reservation, order_detail: @order.order_details[2], product: @instrument)
+            @res2 = FactoryBot.create(:setup_reservation, order_detail: @order.order_details[2], product: @instrument)
           end
 
           it "redirects to the existing cart" do
@@ -372,10 +372,10 @@ RSpec.describe OrdersController do
 
     context "success" do
       before :each do
-        @instrument = FactoryGirl.create(:instrument,
-                                         facility: @authable,
-                                         facility_account: @facility_account,
-                                         no_relay: true)
+        @instrument = FactoryBot.create(:instrument,
+                                        facility: @authable,
+                                        facility_account: @facility_account,
+                                        no_relay: true)
         @instrument_pp = create :instrument_price_policy, price_group: @nupg, product: @instrument
         define_open_account(@instrument.account, @account.account_number)
         @reservation = place_reservation_for_instrument(@staff, @instrument, @account, Time.zone.now)
@@ -398,7 +398,7 @@ RSpec.describe OrdersController do
       end
 
       it "sets the order detail status to the product's default status" do # TODO: reword this so it's not identical to the previous spec
-        @order_status = FactoryGirl.create(:order_status, parent: OrderStatus.in_process)
+        @order_status = FactoryBot.create(:order_status, parent: OrderStatus.in_process)
         @instrument.update_attributes!(initial_order_status_id: @order_status.id)
         sign_in @staff
         do_request
@@ -414,7 +414,7 @@ RSpec.describe OrdersController do
       end
 
       it "redirects to switch on if the instrument has a relay" do
-        @instrument.update_attributes(relay: FactoryGirl.create(:relay_dummy, instrument: @instrument))
+        @instrument.update_attributes(relay: FactoryBot.create(:relay_dummy, instrument: @instrument))
         sign_in @staff
         do_request
         expect(response).to redirect_to order_order_detail_reservation_switch_instrument_path(
@@ -429,7 +429,7 @@ RSpec.describe OrdersController do
       it "redirects to the receipt when purchasing multiple reservations" do
         @order.add(@instrument, 1)
         expect(@order.order_details.size).to eq(2)
-        @reservation2 = FactoryGirl.create(:reservation, order_detail: @order.order_details[1], product: @instrument)
+        @reservation2 = FactoryBot.create(:reservation, order_detail: @order.order_details[1], product: @instrument)
         expect(Reservation.all.size).to eq(2)
 
         sign_in @staff
@@ -617,7 +617,7 @@ RSpec.describe OrdersController do
           end
 
           it "sets the order_detail fulfilled dates to the order time" do
-            @item_pp = @item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 1.day.ago, expire_date: 1.day.from_now))
+            @item_pp = @item.item_price_policies.create!(FactoryBot.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 1.day.ago, expire_date: 1.day.from_now))
             @params[:order_date] = format_usa_date(1.day.ago)
             @params[:order_time] = { hour: "10", minute: "13", ampm: "AM" }
             do_request
@@ -627,8 +627,8 @@ RSpec.describe OrdersController do
           context "price policies" do
             before :each do
               @item.item_price_policies.clear
-              @item_pp = @item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 1.day.ago, expire_date: 1.day.from_now))
-              @item_past_pp = @item.item_price_policies.create!(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 7.days.ago, expire_date: 1.day.ago))
+              @item_pp = @item.item_price_policies.create!(FactoryBot.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 1.day.ago, expire_date: 1.day.from_now))
+              @item_past_pp = @item.item_price_policies.create!(FactoryBot.attributes_for(:item_price_policy, price_group_id: @price_group.id, start_date: 7.days.ago, expire_date: 1.day.ago))
               @params.merge!(order_time: { hour: "10", minute: "00", ampm: "AM" })
             end
 
@@ -677,7 +677,7 @@ RSpec.describe OrdersController do
         end
 
         context "for a reservation-only instrument" do
-          let(:instrument) { FactoryGirl.create(:setup_instrument, facility: facility, facility_account: @facility_account) }
+          let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility, facility_account: @facility_account) }
 
           before { setup_past_reservation }
 
@@ -689,7 +689,7 @@ RSpec.describe OrdersController do
         end
 
         context "for a non reservation-only instrument" do
-          let(:instrument) { FactoryGirl.create(:setup_instrument, :timer, facility: facility, facility_account: @facility_account) }
+          let(:instrument) { FactoryBot.create(:setup_instrument, :timer, facility: facility, facility_account: @facility_account) }
 
           before { setup_past_reservation }
 
@@ -805,11 +805,11 @@ RSpec.describe OrdersController do
     context "instrument" do
       before :each do
         @order.clear_cart?
-        @instrument = FactoryGirl.create(:instrument,
-                                         facility: @authable,
-                                         facility_account: @facility_account,
-                                         min_reserve_mins: 60,
-                                         max_reserve_mins: 60)
+        @instrument = FactoryBot.create(:instrument,
+                                        facility: @authable,
+                                        facility_account: @facility_account,
+                                        min_reserve_mins: 60,
+                                        max_reserve_mins: 60)
         @params[:id] = @order.id
         @params[:order][:order_details].first[:product_id] = @instrument.id
       end
@@ -873,10 +873,10 @@ RSpec.describe OrdersController do
 
       context "mixed facility" do
         it "should flash error message containing another" do # TODO: reword this
-          @facility2          = FactoryGirl.create(:facility)
-          @facility_account2  = @facility2.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
-          @account2           = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
-          @item2              = @facility2.items.create!(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account2.id))
+          @facility2          = FactoryBot.create(:facility)
+          @facility_account2  = @facility2.facility_accounts.create!(FactoryBot.attributes_for(:facility_account))
+          @account2           = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
+          @item2              = @facility2.items.create!(FactoryBot.attributes_for(:item, facility_account_id: @facility_account2.id))
           # add first item to cart
           maybe_grant_always_sign_in :staff
           do_request
@@ -896,10 +896,10 @@ RSpec.describe OrdersController do
       before :each do
         @order.account = @account
         @order.save!
-        @facility2          = FactoryGirl.create(:facility)
-        @facility_account2  = @facility2.facility_accounts.create!(FactoryGirl.attributes_for(:facility_account))
-        @account2           = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
-        @item2              = @facility2.items.create!(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account2.id))
+        @facility2          = FactoryBot.create(:facility)
+        @facility_account2  = @facility2.facility_accounts.create!(FactoryBot.attributes_for(:facility_account))
+        @account2           = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
+        @item2              = @facility2.items.create!(FactoryBot.attributes_for(:item, facility_account_id: @facility_account2.id))
       end
 
       context "in the right facility" do
@@ -920,7 +920,7 @@ RSpec.describe OrdersController do
 
         it "does not allow guest" do
           maybe_grant_always_sign_in :guest
-          @guest2 = FactoryGirl.create(:user)
+          @guest2 = FactoryBot.create(:user)
           switch_to @guest2
           do_request
           is_expected.to set_flash
@@ -963,8 +963,8 @@ RSpec.describe OrdersController do
     end
 
     it "404s if the order_detail to be removed is not in the current cart" do
-      @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @director))
-      @order2   = @director.orders.create(FactoryGirl.attributes_for(:order, user: @director, created_by: @director.id, account: @account2))
+      @account2 = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @director))
+      @order2   = @director.orders.create(FactoryBot.attributes_for(:order, user: @director, created_by: @director.id, account: @account2))
       @order2.add(@item)
       @order_detail2 = @order2.order_details[0]
       @params[:order_detail_id] = @order_detail2.id
@@ -1044,15 +1044,15 @@ RSpec.describe OrdersController do
 
   context "cart meta data" do
     before(:each) do
-      @instrument = FactoryGirl.create(:instrument,
-                                       facility: @authable,
-                                       facility_account: @facility_account)
+      @instrument = FactoryBot.create(:instrument,
+                                      facility: @authable,
+                                      facility_account: @facility_account)
 
-      @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24))
-      @instrument_pp = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy, price_group_id: @price_group.id))
+      @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24))
+      @instrument_pp = @instrument.instrument_price_policies.create(FactoryBot.attributes_for(:instrument_price_policy, price_group_id: @price_group.id))
       @instrument_pp.restrict_purchase = false
       define_open_account(@instrument.account, @account.account_number)
-      @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+      @service = @authable.services.create(FactoryBot.attributes_for(:service, facility_account_id: @facility_account.id))
       @method = :get
       @action = :show
     end
@@ -1128,8 +1128,8 @@ RSpec.describe OrdersController do
 
   context "checkout" do
     before(:each) do
-      # @item_pp          = FactoryGirl.create(:item_price_policy, :item => @item, :price_group => @price_group)
-      # @pg_member        = FactoryGirl.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
+      # @item_pp          = FactoryBot.create(:item_price_policy, :item => @item, :price_group => @price_group)
+      # @pg_member        = FactoryBot.create(:user_price_group_member, :user => @staff, :price_group => @price_group)
       @order.add(@item, 10)
       @method = :get
       @action = :show
@@ -1138,7 +1138,7 @@ RSpec.describe OrdersController do
     it_should_require_login
 
     it "does not allow viewing of a cart that is purchased" do
-      FactoryGirl.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
+      FactoryBot.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
       define_open_account(@item.account, @account.account_number)
       @order.validate_order!
       @order.purchase!
@@ -1160,9 +1160,9 @@ RSpec.describe OrdersController do
 
     it "sets the potential order_statuses from this facility and only this facility" do
       maybe_grant_always_sign_in :staff
-      @facility2 = FactoryGirl.create(:facility)
-      @order_status = FactoryGirl.create(:order_status, facility: @authable, parent: OrderStatus.new_status)
-      @order_status_other = FactoryGirl.create(:order_status, facility: @facility2, parent: OrderStatus.new_status)
+      @facility2 = FactoryBot.create(:facility)
+      @order_status = FactoryBot.create(:order_status, facility: @authable, parent: OrderStatus.new_status)
+      @order_status_other = FactoryBot.create(:order_status, facility: @facility2, parent: OrderStatus.new_status)
       do_request
       expect(assigns[:order_statuses]).to be_include @order_status
       expect(assigns[:order_statuses]).not_to be_include @order_status_other

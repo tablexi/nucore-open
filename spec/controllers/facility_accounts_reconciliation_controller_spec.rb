@@ -8,7 +8,7 @@ RSpec.describe FacilityAccountsReconciliationController do
 
   end
 
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :reconciliation_test_account, class: ReconciliationTestAccount, parent: :nufs_account do
     end
   end
@@ -23,16 +23,16 @@ RSpec.describe FacilityAccountsReconciliationController do
     Nucore::Application.reload_routes!
   end
 
-  let(:facility) { FactoryGirl.create(:setup_facility) }
-  let(:account) { FactoryGirl.create(:reconciliation_test_account, :with_account_owner) }
-  let(:product) { FactoryGirl.create(:setup_item, facility: facility) }
-  let(:order) { FactoryGirl.create(:purchased_order, product: product, account: account) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:account) { FactoryBot.create(:reconciliation_test_account, :with_account_owner) }
+  let(:product) { FactoryBot.create(:setup_item, facility: facility) }
+  let(:order) { FactoryBot.create(:purchased_order, product: product, account: account) }
   let(:order_detail) { order.order_details.first }
   let(:statement) do
-    FactoryGirl.create(:statement, account: account, facility: facility,
-                                   created_by_user: admin, created_at: 5.days.ago)
+    FactoryBot.create(:statement, account: account, facility: facility,
+                                  created_by_user: admin, created_at: 5.days.ago)
   end
-  let(:admin) { FactoryGirl.create(:user, :administrator) }
+  let(:admin) { FactoryBot.create(:user, :administrator) }
 
   before do
     order_detail.change_status!(OrderStatus.complete)

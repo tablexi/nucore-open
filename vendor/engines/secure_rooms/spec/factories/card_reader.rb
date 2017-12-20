@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :card_reader, class: SecureRooms::CardReader do
     secure_room
     sequence(:card_reader_number) { |n| "card_reader_#{n}" }

@@ -18,7 +18,7 @@ RSpec.describe ReservationsController do
     setup_instrument
     setup_user_for_purchase(@guest, @price_group)
 
-    @order = @guest.orders.create(FactoryGirl.attributes_for(:order, created_by: @guest.id, account: @account))
+    @order = @guest.orders.create(FactoryBot.attributes_for(:order, created_by: @guest.id, account: @account))
     @order.add(@instrument, 1)
     @order_detail = @order.order_details.first
     assert @order_detail.persisted?
@@ -128,7 +128,7 @@ RSpec.describe ReservationsController do
       end
 
       context "schedule rules" do
-        let(:restriction_level) { FactoryGirl.create(:product_access_group, product_id: instrument.id) }
+        let(:restriction_level) { FactoryBot.create(:product_access_group, product_id: instrument.id) }
 
         before(:each) do
           instrument.update_attributes(requires_approval: true)
@@ -171,12 +171,12 @@ RSpec.describe ReservationsController do
     end
 
     describe "shared scheduling" do
-      let(:instrument2) {  FactoryGirl.create(:setup_instrument, facility: facility, schedule: instrument.schedule) }
-      let(:reservation1) { FactoryGirl.create(:purchased_reservation, product: instrument) }
+      let(:instrument2) {  FactoryBot.create(:setup_instrument, facility: facility, schedule: instrument.schedule) }
+      let(:reservation1) { FactoryBot.create(:purchased_reservation, product: instrument) }
       let(:reservation2) do
-        FactoryGirl.create(:purchased_reservation,
-                           product: instrument2,
-                           reserve_start_at: reservation1.reserve_end_at) # Immediately after reservation1
+        FactoryBot.create(:purchased_reservation,
+                          product: instrument2,
+                          reserve_start_at: reservation1.reserve_end_at) # Immediately after reservation1
       end
       let(:reservations) { [reservation1, reservation2] }
 
@@ -260,8 +260,8 @@ RSpec.describe ReservationsController do
     context "upcoming" do
       before :each do
         @params = { status: "upcoming" }
-        @upcoming = FactoryGirl.create(:purchased_reservation, product: @instrument)
-        @in_progress = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
+        @upcoming = FactoryBot.create(:purchased_reservation, product: @instrument)
+        @in_progress = FactoryBot.create(:purchased_reservation, product: @instrument, reserve_start_at: Time.zone.now, reserve_end_at: 1.hour.from_now)
         @in_progress.update_attributes!(actual_start_at: Time.zone.now)
         [@in_progress, @upcoming].each { |res| res.order_detail.order.update_attributes!(user: @staff) }
       end
@@ -295,7 +295,7 @@ RSpec.describe ReservationsController do
 
         it "should have a message for todays reservations" do
           @upcoming.update_attributes(reserve_start_at: 1.hour.from_now, reserve_end_at: 2.hours.from_now)
-          tomorrow_reservation = FactoryGirl.create(:purchased_reservation, product: @instrument, reserve_start_at: 1.day.from_now)
+          tomorrow_reservation = FactoryBot.create(:purchased_reservation, product: @instrument, reserve_start_at: 1.day.from_now)
           tomorrow_reservation.order_detail.order.update_attributes(user: @staff)
           do_request
           expect(response.body).to include I18n.t("reservations.notices.upcoming", reservation: @upcoming)
@@ -351,7 +351,7 @@ RSpec.describe ReservationsController do
     before :each do
       @method = :post
       @action = :create
-      @order = @guest.orders.create(FactoryGirl.attributes_for(:order, created_by: @admin.id, account: @account))
+      @order = @guest.orders.create(FactoryBot.attributes_for(:order, created_by: @admin.id, account: @account))
       @order.add(@instrument, 1)
       @order_detail = @order.order_details.first
       @price_policy_past = create(:instrument_price_policy, product: @instrument, price_group_id: @price_group.id, start_date: 7.days.ago, expire_date: 1.day.ago, usage_rate: 120, charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage])
@@ -466,9 +466,9 @@ RSpec.describe ReservationsController do
 
       context "extra order details" do
         before :each do
-          @service = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+          @service = @authable.services.create(FactoryBot.attributes_for(:service, facility_account_id: @facility_account.id))
           allow_any_instance_of(Service).to receive(:active_survey?).and_return(true)
-          @service_order_detail = @order.order_details.create(FactoryGirl.attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
+          @service_order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail, product_id: @service.id, account_id: @account.id))
         end
 
         it_should_allow :director, "to create a reservation on merge order detail and redirect to order summary when merge order is not destroyed" do
@@ -578,7 +578,7 @@ RSpec.describe ReservationsController do
     context "with new account" do
 
       before :each do
-        @account2 = FactoryGirl.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @guest))
+        @account2 = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @guest))
         define_open_account(@instrument.account, @account2.account_number)
         @params[:order_account] = @account2.id
         expect(@order.account).to eq(@account)
@@ -598,8 +598,8 @@ RSpec.describe ReservationsController do
         expect(@order.account).to be_nil
         expect(@order_detail.account).to be_nil
         @instrument.price_policies.first.update_attributes usage_rate: 240
-        @price_group2 = FactoryGirl.create(:price_group, facility: facility)
-        @pg_account        = FactoryGirl.create(:account_price_group_member, account: @account, price_group: @price_group2)
+        @price_group2 = FactoryBot.create(:price_group, facility: facility)
+        @pg_account        = FactoryBot.create(:account_price_group_member, account: @account, price_group: @price_group2)
         @price_policy2     = create :instrument_price_policy, product: @instrument, price_group_id: @price_group2.id, usage_rate: 120, usage_subsidy: 15
         sign_in @guest
       end
@@ -778,7 +778,7 @@ RSpec.describe ReservationsController do
         @order_detail.update_attributes(account: nil)
         # Only worry about one price group product
         @instrument.price_group_products.destroy_all
-        pgp = FactoryGirl.create(:price_group_product, product: @instrument, price_group: FactoryGirl.create(:price_group, facility: @authable), reservation_window: 14)
+        pgp = FactoryBot.create(:price_group_product, product: @instrument, price_group: FactoryBot.create(:price_group, facility: @authable), reservation_window: 14)
       end
 
       it "does not have an account on the order detail" do
@@ -792,8 +792,8 @@ RSpec.describe ReservationsController do
       end
 
       it "uses the minimum reservation window" do
-        pgp2 = FactoryGirl.create(:price_group_product, product: @instrument, price_group: FactoryGirl.create(:price_group, facility: @authable), reservation_window: 7)
-        pgp3 = FactoryGirl.create(:price_group_product, product: @instrument, price_group: FactoryGirl.create(:price_group, facility: @authable), reservation_window: 21)
+        pgp2 = FactoryBot.create(:price_group_product, product: @instrument, price_group: FactoryBot.create(:price_group, facility: @authable), reservation_window: 7)
+        pgp3 = FactoryBot.create(:price_group_product, product: @instrument, price_group: FactoryBot.create(:price_group, facility: @authable), reservation_window: 21)
         do_request
         expect(assigns(:max_window)).to eq(7)
       end
@@ -1098,7 +1098,7 @@ RSpec.describe ReservationsController do
         # remove all scheduling rules/constraints to allow for the creation of a long reservation
         @instrument.schedule_rules.destroy_all
         @instrument.update_attributes max_reserve_mins: nil
-        FactoryGirl.create(:all_day_schedule_rule, product: @instrument)
+        FactoryBot.create(:all_day_schedule_rule, product: @instrument)
 
         @reservation = @instrument.reservations.create!(
           reserve_start_at: Time.zone.now + 1.day,
@@ -1334,8 +1334,8 @@ RSpec.describe ReservationsController do
           before :each do
             ## (setup stolen from orders_controller_spec)
             ## create a purchasable item
-            @item = @authable.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
-            @item_pp = @item.item_price_policies.create(FactoryGirl.attributes_for(:item_price_policy, price_group_id: @price_group.id))
+            @item = @authable.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+            @item_pp = @item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group_id: @price_group.id))
             @item_pp.reload.restrict_purchase = false
 
             ## make it an accessory of the reserved product

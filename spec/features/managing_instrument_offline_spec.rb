@@ -4,9 +4,9 @@ RSpec.describe "Managing Instrument Offline Reservations" do
 
   before { login_as administrator }
 
-  let(:administrator) { FactoryGirl.create(:user, :administrator) }
+  let(:administrator) { FactoryBot.create(:user, :administrator) }
   let(:facility) { instrument.facility }
-  let(:instrument) { FactoryGirl.create(:setup_instrument) }
+  let(:instrument) { FactoryBot.create(:setup_instrument) }
 
   describe "marking an instrument offline" do
     before(:each) do

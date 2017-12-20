@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe SangerSequencing::WellPlatePresenter do
-  let(:samples) { FactoryGirl.build_stubbed_list(:sanger_sequencing_sample, 10) }
+  let(:samples) { FactoryBot.build_stubbed_list(:sanger_sequencing_sample, 10) }
 
   describe "sample_rows" do
     let(:mapping) do

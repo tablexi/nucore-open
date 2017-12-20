@@ -42,7 +42,7 @@ RSpec.describe User do
     end
 
     it "external user has external price group" do
-      external_user = FactoryGirl.create(:user, :external)
+      external_user = FactoryBot.create(:user, :external)
       expect(external_user.price_groups).to eq [PriceGroup.external]
     end
   end
@@ -50,14 +50,14 @@ RSpec.describe User do
   describe "price groups", feature_setting: { user_based_price_groups: true } do
 
     it "is a member of any explicitly mapped price groups" do
-      pg = FactoryGirl.create(:price_group, facility: facility)
+      pg = FactoryBot.create(:price_group, facility: facility)
       UserPriceGroupMember.create(user: user, price_group: pg)
       expect(user.price_groups.include?(pg)).to eq(true)
     end
 
     it "belongs to price groups of accounts" do
       cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user))
-      pg = FactoryGirl.create(:price_group, facility: facility)
+      pg = FactoryBot.create(:price_group, facility: facility)
       AccountPriceGroupMember.create(account: cc, price_group: pg)
       expect(user.account_price_groups.include?(pg)).to be true
     end
@@ -65,7 +65,7 @@ RSpec.describe User do
     it "belongs to price groups of the account owner" do
       owner = create(:user)
       cc = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: owner))
-      pg = FactoryGirl.create(:price_group, facility: facility)
+      pg = FactoryBot.create(:price_group, facility: facility)
       UserPriceGroupMember.create(user: owner, price_group: pg)
 
       cc.account_users.create(user: user, created_by: owner.id, user_role: "Purchaser")

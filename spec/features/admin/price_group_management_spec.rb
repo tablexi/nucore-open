@@ -2,11 +2,11 @@ require "rails_helper"
 
 RSpec.describe "Managing Price Groups", :aggregate_failures do
 
-  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility) { FactoryBot.create(:facility) }
 
   describe "create" do
     describe "as a facility admin" do
-      let(:user) { FactoryGirl.create(:user, :facility_director, facility: facility) }
+      let(:user) { FactoryBot.create(:user, :facility_director, facility: facility) }
 
       before do
         login_as user
@@ -23,7 +23,7 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
     end
 
     describe "as a facility senior staff" do
-      let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
+      let(:user) { FactoryBot.create(:user, :senior_staff, facility: facility) }
 
       before do
         login_as user

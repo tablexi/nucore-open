@@ -4,7 +4,7 @@ require "controller_spec_helper"
 RSpec.describe BulkEmail::JobsController do
   render_views
 
-  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility) { FactoryBot.create(:facility) }
 
   before(:all) { create_users }
   before(:each) do
@@ -14,7 +14,7 @@ RSpec.describe BulkEmail::JobsController do
 
   describe "GET #index" do
     let!(:bulk_email_jobs) do
-      FactoryGirl.create_list(:bulk_email_job, 3, facility: facility)
+      FactoryBot.create_list(:bulk_email_job, 3, facility: facility)
     end
 
     before(:each) do
@@ -33,7 +33,7 @@ RSpec.describe BulkEmail::JobsController do
   end
 
   describe "GET #show" do
-    let(:bulk_email_job) { FactoryGirl.create(:bulk_email_job, facility: facility) }
+    let(:bulk_email_job) { FactoryBot.create(:bulk_email_job, facility: facility) }
 
     before(:each) do
       @action = "show"

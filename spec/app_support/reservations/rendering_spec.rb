@@ -105,7 +105,7 @@ RSpec.describe Reservations::Rendering do
         )
       end
 
-      let(:user) { FactoryGirl.build(:user) }
+      let(:user) { FactoryBot.build(:user) }
 
       context "with details requested" do
         it "returns a hash without extra details about the order" do

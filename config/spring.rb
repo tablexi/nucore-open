@@ -1,1 +1,1 @@
-Spring.after_fork { FactoryGirl.reload }
+Spring.after_fork { FactoryBot.reload }

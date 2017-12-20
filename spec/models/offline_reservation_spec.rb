@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe OfflineReservation do
   subject(:offline_reservation) { instrument.offline_reservations.build }
-  let(:instrument) { FactoryGirl.create(:setup_instrument) }
+  let(:instrument) { FactoryBot.create(:setup_instrument) }
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:admin_note) }

@@ -8,12 +8,12 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     allow(Settings).to receive_message_chain(:split_accounts, :create_roles).and_return :administrator
   end
 
-  let(:facility) { FactoryGirl.create(:setup_facility) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
   before { sign_in user }
 
   shared_examples "allows editing" do
     describe "show" do
-      let(:split_account) { FactoryGirl.create(:split_account) }
+      let(:split_account) { FactoryBot.create(:split_account) }
 
       before { get :show, facility_id: facility.url_name, id: split_account.id }
 
@@ -23,7 +23,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     end
 
     describe "edit" do
-      let(:split_account) { FactoryGirl.create(:split_account) }
+      let(:split_account) { FactoryBot.create(:split_account) }
       before { get :edit, facility_id: facility.url_name, id: split_account.id }
 
       it "has only the description field", :aggregate_failures do
@@ -34,7 +34,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     end
 
     describe "update" do
-      let(:split_account) { FactoryGirl.create(:split_account) }
+      let(:split_account) { FactoryBot.create(:split_account) }
       before { post :update, facility_id: facility.url_name, id: split_account.id, split_accounts_split_account: { description: "New Description" } }
 
       it "updates the description" do
@@ -44,7 +44,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
   end
 
   shared_examples "allows suspending" do
-    let(:split_account) { FactoryGirl.create(:split_account) }
+    let(:split_account) { FactoryBot.create(:split_account) }
 
     describe "show" do
       before { get :show, facility_id: facility.url_name, id: split_account.id }
@@ -83,7 +83,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
   end
 
   describe "as an admin" do
-    let(:user) { FactoryGirl.create(:user, :administrator) }
+    let(:user) { FactoryBot.create(:user, :administrator) }
 
     include_examples "allows editing"
     include_examples "allows suspending"
@@ -114,7 +114,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
   end
 
   describe "as a facility admin" do
-    let(:user) { FactoryGirl.create(:user, :facility_director, facility: facility) }
+    let(:user) { FactoryBot.create(:user, :facility_director, facility: facility) }
 
     include_examples "allows editing"
     include_examples "allows suspending"
@@ -139,17 +139,17 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
   end
 
   describe "as an account manager" do
-    let(:user) { FactoryGirl.create(:user, :account_manager) }
+    let(:user) { FactoryBot.create(:user, :account_manager) }
     let(:facility) { Facility.cross_facility }
     include_examples "allows editing"
     include_examples "allows suspending"
   end
 
   describe "as a staff member" do
-    let(:user) { FactoryGirl.create(:user, :staff, facility: facility) }
+    let(:user) { FactoryBot.create(:user, :staff, facility: facility) }
 
     describe "show" do
-      let(:split_account) { FactoryGirl.create(:split_account) }
+      let(:split_account) { FactoryBot.create(:split_account) }
 
       before { get :show, facility_id: facility.url_name, id: split_account.id }
 
@@ -160,7 +160,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     end
 
     describe "edit" do
-      let(:split_account) { FactoryGirl.create(:split_account) }
+      let(:split_account) { FactoryBot.create(:split_account) }
       before { get :edit, facility_id: facility.url_name, id: split_account.id }
 
       it "returns a 403" do
@@ -169,7 +169,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     end
 
     describe "update" do
-      let(:split_account) { FactoryGirl.create(:split_account) }
+      let(:split_account) { FactoryBot.create(:split_account) }
       before { post :update, facility_id: facility.url_name, id: split_account.id }
 
       it "returns a 403" do

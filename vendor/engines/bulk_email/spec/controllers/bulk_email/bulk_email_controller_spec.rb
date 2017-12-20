@@ -4,12 +4,12 @@ RSpec.describe BulkEmail::BulkEmailController do
   render_views
 
   let(:facility) { facility_account.facility }
-  let(:facility_account) { FactoryGirl.create(:facility_account) }
-  let!(:instrument) { FactoryGirl.create(:instrument, facility_account: facility_account) }
-  let!(:item) { FactoryGirl.create(:item, facility_account: facility_account) }
+  let(:facility_account) { FactoryBot.create(:facility_account) }
+  let!(:instrument) { FactoryBot.create(:instrument, facility_account: facility_account) }
+  let!(:item) { FactoryBot.create(:item, facility_account: facility_account) }
   let(:params) { { facility_id: facility.url_name } }
-  let!(:restricted_item) { FactoryGirl.create(:item, facility_account: facility_account, requires_approval: true) }
-  let!(:service) { FactoryGirl.create(:service, facility_account: facility_account) }
+  let!(:restricted_item) { FactoryBot.create(:item, facility_account: facility_account, requires_approval: true) }
+  let!(:service) { FactoryBot.create(:service, facility_account: facility_account) }
 
   describe "POST #search" do
     context "when not logged in" do
@@ -67,7 +67,7 @@ RSpec.describe BulkEmail::BulkEmailController do
         context "when there is a hidden product" do
           let(:user_types) { %i(customers) }
           let!(:hidden_product) do
-            FactoryGirl.create(:item, :hidden, facility_account: facility_account)
+            FactoryBot.create(:item, :hidden, facility_account: facility_account)
           end
 
           it { expect(assigns[:products]).to include(hidden_product) }
@@ -77,7 +77,7 @@ RSpec.describe BulkEmail::BulkEmailController do
           let(:user_types) { %i(customers) }
 
           let!(:archived_product) do
-            FactoryGirl.create(:item, :archived, facility_account: facility_account)
+            FactoryBot.create(:item, :archived, facility_account: facility_account)
           end
 
           it { expect(assigns[:products]).not_to include(archived_product) }
@@ -85,22 +85,22 @@ RSpec.describe BulkEmail::BulkEmailController do
       end
 
       context "as an unprivileged user" do
-        let(:user) { FactoryGirl.create(:user) }
+        let(:user) { FactoryBot.create(:user) }
         it { is_expected.to render_template("403") }
       end
 
       context "when logged in as facility staff" do
-        let(:user) { FactoryGirl.create(:user, :staff, facility: facility) }
+        let(:user) { FactoryBot.create(:user, :staff, facility: facility) }
         it { is_expected.to render_template("403") }
       end
 
       context "when logged in as senior facility staff" do
-        let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
+        let(:user) { FactoryBot.create(:user, :senior_staff, facility: facility) }
         it_behaves_like "it can search for recipients"
       end
 
       context "when logged in as a billing administrator" do
-        let(:user) { FactoryGirl.create(:user, :billing_administrator) }
+        let(:user) { FactoryBot.create(:user, :billing_administrator) }
 
         context "in a cross-facility context" do
           let(:facility) { Facility.cross_facility }
@@ -115,7 +115,7 @@ RSpec.describe BulkEmail::BulkEmailController do
       super().merge(format: :csv, recipient_ids: recipients.map(&:id))
     end
 
-    let(:recipients) { FactoryGirl.create_list(:user, 3) }
+    let(:recipients) { FactoryBot.create_list(:user, 3) }
     let(:expected_csv_content) { csv_header + "\n" + expected_csv_body + "\n" }
     let(:csv_header) { "Name,Username,Email" }
     let(:expected_csv_body) do
@@ -123,7 +123,7 @@ RSpec.describe BulkEmail::BulkEmailController do
         [user.full_name, user.username, user.email].join(",")
       end.join("\n")
     end
-    let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
+    let(:user) { FactoryBot.create(:user, :senior_staff, facility: facility) }
 
     before do
       sign_in user
@@ -138,9 +138,9 @@ RSpec.describe BulkEmail::BulkEmailController do
   end
 
   describe "POST #deliver" do
-    let(:recipients) { FactoryGirl.create_list(:user, 3) }
+    let(:recipients) { FactoryBot.create_list(:user, 3) }
     let(:custom_message) { "Custom message" }
-    let(:user) { FactoryGirl.create(:user, :senior_staff, facility: facility) }
+    let(:user) { FactoryBot.create(:user, :senior_staff, facility: facility) }
 
     let(:params) do
       super().merge(bulk_email_delivery_form: {

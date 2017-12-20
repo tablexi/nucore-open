@@ -6,10 +6,10 @@ RSpec.describe ProductAccessoriesController do
 
   before(:all) { create_users }
 
-  let(:instrument) { FactoryGirl.create(:setup_instrument) }
+  let(:instrument) { FactoryBot.create(:setup_instrument) }
   let(:facility) { instrument.facility }
-  let(:accessory) { FactoryGirl.create(:setup_item, facility: facility) }
-  let(:timed_service) { FactoryGirl.create(:setup_timed_service, facility: facility) }
+  let(:accessory) { FactoryBot.create(:setup_item, facility: facility) }
+  let(:timed_service) { FactoryBot.create(:setup_timed_service, facility: facility) }
 
   before :each do
     @authable = facility
@@ -17,9 +17,9 @@ RSpec.describe ProductAccessoriesController do
   end
 
   describe "index" do
-    let!(:unchosen_accessory) { FactoryGirl.create(:setup_item, facility: facility) }
+    let!(:unchosen_accessory) { FactoryBot.create(:setup_item, facility: facility) }
     let!(:bundle) do
-      FactoryGirl.create(:bundle, facility: facility)
+      FactoryBot.create(:bundle, facility: facility)
     end
 
     before :each do

@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ReservationInstrumentSwitcher do
-  let(:instrument) { FactoryGirl.create(:setup_instrument, relay: create(:relay_syna)) }
-  let(:reservation) { FactoryGirl.create(:purchased_reservation, product: instrument) }
+  let(:instrument) { FactoryBot.create(:setup_instrument, relay: create(:relay_syna)) }
+  let(:reservation) { FactoryBot.create(:purchased_reservation, product: instrument) }
   let(:action) { described_class.new(reservation) }
 
   describe '#switch_on!' do
@@ -21,7 +21,7 @@ RSpec.describe ReservationInstrumentSwitcher do
     end
 
     context "with a long running reservation" do
-      let!(:running_reservation) { FactoryGirl.create(:purchased_reservation, :long_running, product: instrument) }
+      let!(:running_reservation) { FactoryBot.create(:purchased_reservation, :long_running, product: instrument) }
 
       it "moves the running reservation to problem status" do
         expect { do_action }.to change { running_reservation.order_detail.reload.problem }.from(false).to(true)
@@ -29,7 +29,7 @@ RSpec.describe ReservationInstrumentSwitcher do
     end
 
     context "with a problem reservation that got canceled" do
-      let!(:running_reservation) { FactoryGirl.create(:purchased_reservation, :long_running, product: instrument) }
+      let!(:running_reservation) { FactoryBot.create(:purchased_reservation, :long_running, product: instrument) }
       before { running_reservation.order_detail.update_order_status! running_reservation.user, OrderStatus.canceled, admin: true }
 
       it "does not do anything to the canceled reservation" do
@@ -38,7 +38,7 @@ RSpec.describe ReservationInstrumentSwitcher do
     end
 
     context "with a problem reservation that got reconciled" do
-      let!(:running_reservation) { FactoryGirl.create(:purchased_reservation, :long_running, product: instrument) }
+      let!(:running_reservation) { FactoryBot.create(:purchased_reservation, :long_running, product: instrument) }
       before do
         running_reservation.order_detail.update_order_status! running_reservation.user, OrderStatus.complete, admin: true
         running_reservation.order_detail.update_order_status! running_reservation.user, OrderStatus.reconciled, admin: true

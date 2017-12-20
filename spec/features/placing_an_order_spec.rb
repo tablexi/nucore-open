@@ -1,18 +1,18 @@
 require "rails_helper"
 
 RSpec.describe "Placing an item order" do
-  let!(:product) { FactoryGirl.create(:setup_item) }
-  let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
+  let!(:product) { FactoryBot.create(:setup_item) }
+  let!(:account) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user) }
   let(:facility) { product.facility }
   let!(:price_policy) do
-    FactoryGirl.create(:item_price_policy,
-                       price_group: PriceGroup.base, product: product,
-                       unit_cost: 33.25)
+    FactoryBot.create(:item_price_policy,
+                      price_group: PriceGroup.base, product: product,
+                      unit_cost: 33.25)
   end
   let!(:account_price_group_member) do
-    FactoryGirl.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
+    FactoryBot.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
   end
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { FactoryBot.create(:user) }
 
   before do
     login_as user

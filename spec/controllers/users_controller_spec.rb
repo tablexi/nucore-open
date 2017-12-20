@@ -4,7 +4,7 @@ require "controller_spec_helper"
 RSpec.describe UsersController do
   render_views
 
-  let(:facility) { FactoryGirl.create(:facility) }
+  let(:facility) { FactoryBot.create(:facility) }
 
   before(:each) do
     create_users
@@ -17,14 +17,14 @@ RSpec.describe UsersController do
     before :each do
       @method = :get
       @action = :index
-      @inactive_user = FactoryGirl.create(:user, first_name: "Inactive")
+      @inactive_user = FactoryBot.create(:user, first_name: "Inactive")
 
-      @active_user = FactoryGirl.create(:user, first_name: "Active")
+      @active_user = FactoryBot.create(:user, first_name: "Active")
       place_and_complete_item_order(@active_user, @authable)
       # place two orders to make sure it only and_return the user once
       place_and_complete_item_order(@active_user, @authable)
 
-      @lapsed_user = FactoryGirl.create(:user, first_name: "Lapsed")
+      @lapsed_user = FactoryBot.create(:user, first_name: "Lapsed")
       @old_order_detail = place_and_complete_item_order(@lapsed_user, @authable)
       @old_order_detail.order.update_attributes(ordered_at: 400.days.ago)
     end
@@ -36,7 +36,7 @@ RSpec.describe UsersController do
 
     context "with newly created user" do
       before :each do
-        @user = FactoryGirl.create(:user)
+        @user = FactoryBot.create(:user)
         @params.merge!(user: @user.id)
       end
       it_should_allow_operators_only :success, "set the user" do
@@ -47,7 +47,7 @@ RSpec.describe UsersController do
   end
 
   describe "GET #edit", feature_setting: { create_users: true } do
-    let(:user) { FactoryGirl.create(:user, :external) }
+    let(:user) { FactoryBot.create(:user, :external) }
 
     before(:each) do
       @method = :get
@@ -59,7 +59,7 @@ RSpec.describe UsersController do
   end
 
   describe "PUT #update", feature_setting: { create_users: true } do
-    let(:user) { FactoryGirl.create(:user, :external, first_name: "Old", uid: 22) }
+    let(:user) { FactoryBot.create(:user, :external, first_name: "Old", uid: 22) }
 
     before(:each) do
       @method = :put
@@ -89,14 +89,14 @@ RSpec.describe UsersController do
   end
 
   describe "GET #access_list" do
-    let(:facility) { FactoryGirl.create(:setup_facility) }
-    let(:user) { FactoryGirl.create(:user) }
-    let!(:instruments) { FactoryGirl.create_list(:instrument_requiring_approval, 2, facility: facility) }
-    let!(:services) { FactoryGirl.create_list(:setup_service, 2, requires_approval: true, facility: facility) }
+    let(:facility) { FactoryBot.create(:setup_facility) }
+    let(:user) { FactoryBot.create(:user) }
+    let!(:instruments) { FactoryBot.create_list(:instrument_requiring_approval, 2, facility: facility) }
+    let!(:services) { FactoryBot.create_list(:setup_service, 2, requires_approval: true, facility: facility) }
     let!(:training_requests) do
       [
-        FactoryGirl.create(:training_request, user: user, product: instruments.last),
-        FactoryGirl.create(:training_request, user: user, product: services.first),
+        FactoryBot.create(:training_request, user: user, product: instruments.last),
+        FactoryBot.create(:training_request, user: user, product: services.first),
       ]
     end
 
@@ -128,7 +128,7 @@ RSpec.describe UsersController do
       end
 
       context "search" do
-        let!(:user) { FactoryGirl.create(:user) }
+        let!(:user) { FactoryBot.create(:user) }
 
         before :each do
           @method = :post
@@ -169,7 +169,7 @@ RSpec.describe UsersController do
 
         context "user does not exist in database" do
           before :each do
-            @user2 = FactoryGirl.build(:user)
+            @user2 = FactoryBot.build(:user)
             allow(controller).to receive(:service_username_lookup).with(@user2.username).and_return(@user2)
             @params.merge!(username_lookup: @user2.username)
           end
@@ -202,7 +202,7 @@ RSpec.describe UsersController do
         context "external user" do
           context "with successful parameters" do
             before :each do
-              @params.merge!(user: FactoryGirl.attributes_for(:user))
+              @params.merge!(user: FactoryBot.attributes_for(:user))
             end
 
             it_should_allow_operators_only :redirect do
@@ -225,7 +225,7 @@ RSpec.describe UsersController do
 
           describe "with extra spaces around the username/email" do
             before do
-              @params[:user] = FactoryGirl.attributes_for(:user, username: " email@example.com", email: "email@example.com")
+              @params[:user] = FactoryBot.attributes_for(:user, username: " email@example.com", email: "email@example.com")
             end
 
             it_should_allow_operators_only :redirect do
@@ -242,7 +242,7 @@ RSpec.describe UsersController do
           end
 
           context "user already exists" do
-            let!(:user) { FactoryGirl.create(:user) }
+            let!(:user) { FactoryBot.create(:user) }
             before :each do
               @params[:username] = user.username
               do_request
@@ -282,7 +282,7 @@ RSpec.describe UsersController do
 
           context "user added" do
             before :each do
-              @ldap_user = FactoryGirl.build(:user)
+              @ldap_user = FactoryBot.build(:user)
               allow(controller).to receive(:service_username_lookup).with(@ldap_user.username).and_return(@ldap_user)
               @params[:username] = @ldap_user.username
               do_request
@@ -317,7 +317,7 @@ RSpec.describe UsersController do
   end
 
   context "switch_to" do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryBot.create(:user) }
     before :each do
       @method = :get
       @action = :switch_to

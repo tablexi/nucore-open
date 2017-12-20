@@ -19,18 +19,18 @@ RSpec.describe Product do
     end
 
     before(:example) do
-      @facility         = FactoryGirl.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
+      @facility         = FactoryBot.create(:facility)
+      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
     end
 
     it "should not create using factory" do
-      @product = Product.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+      @product = Product.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
       expect(@product.errors[:type]).not_to be_nil
     end
 
     context "with item" do
       before :each do
-        @item = @facility.items.create(FactoryGirl.attributes_for(:item, facility_account_id: @facility_account.id))
+        @item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
       end
 
       it "should create map to default price groups" do
@@ -120,10 +120,10 @@ RSpec.describe Product do
     end
 
     context "with overlapping price policies" do
-      let!(:order) { FactoryGirl.create(:setup_order, product: product) }
+      let!(:order) { FactoryBot.create(:setup_order, product: product) }
       let!(:order_detail) { order.order_details.first }
       let!(:price_policy) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :instrument_price_policy,
           product: product,
           price_group: product.price_groups.last,
@@ -133,7 +133,7 @@ RSpec.describe Product do
         )
       end
       let!(:overlapping_price_policy) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :instrument_price_policy,
           start_date: 1.day.ago.beginning_of_day,
           product: product,
@@ -154,7 +154,7 @@ RSpec.describe Product do
 
     context "email", feature_setting: { expense_accounts: false } do
       before :each do
-        @facility = FactoryGirl.create(:facility, email: "facility@example.com")
+        @facility = FactoryBot.create(:facility, email: "facility@example.com")
         @product = TestProduct.create!(contact_email: "product@example.com", facility: @facility, name: "Test Product", url_name: "test")
       end
 
@@ -220,8 +220,8 @@ RSpec.describe Product do
 
       before :each do
         @product = TestProduct.create!(facility: @facility, name: "Test Product", url_name: "test")
-        @price_group = FactoryGirl.create(:price_group, facility: @facility)
-        @price_group2 = FactoryGirl.create(:price_group, facility: @facility)
+        @price_group = FactoryBot.create(:price_group, facility: @facility)
+        @price_group2 = FactoryBot.create(:price_group, facility: @facility)
         @price_groups = [@price_group]
       end
 
@@ -532,25 +532,25 @@ RSpec.describe Product do
 
   describe "#mergeable?" do
     context "when it's a Bundle" do
-      subject { FactoryGirl.build(:bundle) }
+      subject { FactoryBot.build(:bundle) }
 
       it { is_expected.not_to be_mergeable }
     end
 
     context "when it's an Item" do
-      subject { FactoryGirl.build(:item) }
+      subject { FactoryBot.build(:item) }
 
       it { is_expected.not_to be_mergeable }
     end
 
     context "when it's an Instrument" do
-      subject { FactoryGirl.build(:instrument) }
+      subject { FactoryBot.build(:instrument) }
 
       it { is_expected.to be_mergeable }
     end
 
     context "when it's a Service" do
-      subject { FactoryGirl.build(:service) }
+      subject { FactoryBot.build(:service) }
 
       context "with an active survey" do
         before { allow(subject).to receive(:active_survey?).and_return(true) }

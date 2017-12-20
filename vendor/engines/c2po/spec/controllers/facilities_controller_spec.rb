@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe FacilitiesController do
-  let(:admin) { FactoryGirl.create(:user, :administrator) }
+  let(:admin) { FactoryBot.create(:user, :administrator) }
 
   describe "create" do
     before { sign_in admin }
 
     describe "set to true" do
-      let(:params) { FactoryGirl.attributes_for(:facility, accepts_po: true, accepts_cc: true) }
+      let(:params) { FactoryBot.attributes_for(:facility, accepts_po: true, accepts_cc: true) }
 
       it "sets the accepts parameters" do
         expect { post :create, facility: params }.to change(Facility, :count).by(1)
@@ -18,7 +18,7 @@ RSpec.describe FacilitiesController do
     end
 
     describe "set to false" do
-      let(:params) { FactoryGirl.attributes_for(:facility, accepts_po: false, accepts_cc: false) }
+      let(:params) { FactoryBot.attributes_for(:facility, accepts_po: false, accepts_cc: false) }
 
       it "sets the accepts parameters" do
         expect { post :create, facility: params }.to change(Facility, :count).by(1)

@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe Notifier do
   before :each do
-    @user = FactoryGirl.create(:user)
-    @facility = FactoryGirl.create(:facility)
+    @user = FactoryBot.create(:user)
+    @facility = FactoryBot.create(:facility)
     @order_detail = place_and_complete_item_order(@user, @facility)
   end
 

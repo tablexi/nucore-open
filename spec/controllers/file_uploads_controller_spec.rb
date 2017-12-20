@@ -12,9 +12,9 @@ RSpec.describe FileUploadsController do
   before(:all) { create_users }
 
   before :each do
-    @authable         = FactoryGirl.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryGirl.attributes_for(:facility_account))
-    @service          = @authable.services.create(FactoryGirl.attributes_for(:service, facility_account_id: @facility_account.id))
+    @authable         = FactoryBot.create(:facility)
+    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @service          = @authable.services.create(FactoryBot.attributes_for(:service, facility_account_id: @facility_account.id))
     assert @service.valid?
   end
 
@@ -97,7 +97,7 @@ RSpec.describe FileUploadsController do
       end
 
       describe "with a duplicate filename" do
-        let!(:existing_file) { FactoryGirl.create(:stored_file, :results, order_detail: @order_detail, name: "flash_file.swf") }
+        let!(:existing_file) { FactoryBot.create(:stored_file, :results, order_detail: @order_detail, name: "flash_file.swf") }
 
         it "returns an error" do
           sign_in @admin
@@ -171,11 +171,11 @@ RSpec.describe FileUploadsController do
       @action = :destroy
 
       create_order_detail
-      @file_upload = FactoryGirl.create(:stored_file,
-                                        order_detail_id: @order_detail.id,
-                                        created_by: @admin.id,
-                                        product: @service,
-                                       )
+      @file_upload = FactoryBot.create(:stored_file,
+                                       order_detail_id: @order_detail.id,
+                                       created_by: @admin.id,
+                                       product: @service,
+                                      )
 
       @params = {
         facility_id: @authable.url_name,
@@ -190,12 +190,12 @@ RSpec.describe FileUploadsController do
 
     context "sample_result" do
       before :each do
-        @sample_result = FactoryGirl.create(:stored_file,
-                                            order_detail_id: @order_detail.id,
-                                            created_by: @staff.id,
-                                            product: @service,
-                                            file_type: "sample_result",
-                                           )
+        @sample_result = FactoryBot.create(:stored_file,
+                                           order_detail_id: @order_detail.id,
+                                           created_by: @staff.id,
+                                           product: @service,
+                                           file_type: "sample_result",
+                                          )
         @params.merge!(id: @sample_result.id)
       end
 
@@ -207,21 +207,21 @@ RSpec.describe FileUploadsController do
   end
 
   def create_order_detail
-    @facility_account = FactoryGirl.create(:facility_account, facility: @authable)
-    @product = FactoryGirl.create(:item,
-                                  facility_account: @facility_account,
-                                  facility: @authable,
-                                 )
+    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @product = FactoryBot.create(:item,
+                                 facility_account: @facility_account,
+                                 facility: @authable,
+                                )
     @account = create_nufs_account_with_owner
-    @order = FactoryGirl.create(:order,
-                                facility: @authable,
-                                user: @director,
-                                created_by: @director.id,
-                                account: @account,
-                                ordered_at: Time.zone.now,
-                               )
-    @price_group = FactoryGirl.create(:price_group, facility: @authable)
-    @price_policy = FactoryGirl.create(:item_price_policy, product: @product, price_group: @price_group)
-    @order_detail = FactoryGirl.create(:order_detail, order: @order, product: @product, price_policy: @price_policy)
+    @order = FactoryBot.create(:order,
+                               facility: @authable,
+                               user: @director,
+                               created_by: @director.id,
+                               account: @account,
+                               ordered_at: Time.zone.now,
+                              )
+    @price_group = FactoryBot.create(:price_group, facility: @authable)
+    @price_policy = FactoryBot.create(:item_price_policy, product: @product, price_group: @price_group)
+    @order_detail = FactoryBot.create(:order_detail, order: @order, product: @product, price_policy: @price_policy)
   end
 end

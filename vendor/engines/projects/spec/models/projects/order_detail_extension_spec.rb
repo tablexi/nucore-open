@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe Projects::OrderDetailExtension do
   subject(:order_detail) { order.order_details.first }
   let(:facility) { order.facility }
-  let(:item) { FactoryGirl.create(:setup_item) }
-  let(:order) { FactoryGirl.create(:setup_order, product: item) }
-  let(:project) { FactoryGirl.create(:project, facility: facility) }
+  let(:item) { FactoryBot.create(:setup_item) }
+  let(:order) { FactoryBot.create(:setup_order, product: item) }
+  let(:project) { FactoryBot.create(:project, facility: facility) }
 
   context "validations" do
     it "can belong_to a Project" do
@@ -25,7 +25,7 @@ RSpec.describe Projects::OrderDetailExtension do
       end
 
       context "when the Project belongs to a different facility than the Order" do
-        let(:facility) { FactoryGirl.create(:facility) }
+        let(:facility) { FactoryBot.create(:facility) }
 
         it "is invalid" do
           is_expected.not_to be_valid
@@ -49,7 +49,7 @@ RSpec.describe Projects::OrderDetailExtension do
 
       context "and the order_detail was not already associated with it" do
         let(:inactive_project) do
-          FactoryGirl.create(:project, :inactive, facility: facility)
+          FactoryBot.create(:project, :inactive, facility: facility)
         end
 
         it "is invalid" do
@@ -67,15 +67,15 @@ RSpec.describe Projects::OrderDetailExtension do
 
     context "when there are no active projects for the associated facility" do
       before(:each) do
-        FactoryGirl.create(:project, :inactive, facility: order_detail.facility)
+        FactoryBot.create(:project, :inactive, facility: order_detail.facility)
       end
 
       it { expect(order_detail.selectable_projects).to be_empty }
     end
 
     context "when there are active projects for the associated facility" do
-      let(:active_projects) { FactoryGirl.create_list(:project, 3, facility: facility) }
-      let(:inactive_project) { FactoryGirl.create(:project, :inactive, facility: facility) }
+      let(:active_projects) { FactoryBot.create_list(:project, 3, facility: facility) }
+      let(:inactive_project) { FactoryBot.create(:project, :inactive, facility: facility) }
       let!(:all_projects) { active_projects + [inactive_project] }
 
       before { order_detail.update_attribute(:project_id, project_id) }

@@ -2,13 +2,13 @@ require "rails_helper"
 
 RSpec.describe "Purchasing a reservation" do
 
-  let!(:instrument) { FactoryGirl.create(:setup_instrument, user_notes_field_mode: "optional") }
+  let!(:instrument) { FactoryBot.create(:setup_instrument, user_notes_field_mode: "optional") }
   let!(:facility) { instrument.facility }
-  let!(:account) { FactoryGirl.create(:nufs_account, :with_account_owner, owner: user) }
-  let!(:price_policy) { FactoryGirl.create(:instrument_price_policy, price_group: PriceGroup.base, product: instrument) }
-  let(:user) { FactoryGirl.create(:user) }
+  let!(:account) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user) }
+  let!(:price_policy) { FactoryBot.create(:instrument_price_policy, price_group: PriceGroup.base, product: instrument) }
+  let(:user) { FactoryBot.create(:user) }
   let!(:account_price_group_member) do
-    FactoryGirl.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
+    FactoryBot.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
   end
 
   before do

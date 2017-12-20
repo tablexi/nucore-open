@@ -6,7 +6,7 @@ RSpec.describe Reports::ExportRaw, :time_travel do
   let(:facility) { secure_room.facility }
 
   let(:occupancy) do
-    FactoryGirl.create(
+    FactoryBot.create(
       :occupancy,
       :with_order_detail,
       user: user,
@@ -38,7 +38,7 @@ RSpec.describe Reports::ExportRaw, :time_travel do
   let(:column_index) { headers.index(column_header) }
 
   describe "normal accounts" do
-    let(:account) { FactoryGirl.create(:setup_account, owner: user) }
+    let(:account) { FactoryBot.create(:setup_account, owner: user) }
 
     it "populates the report properly" do
       expect(report).to have_column_values(
@@ -63,7 +63,7 @@ RSpec.describe Reports::ExportRaw, :time_travel do
   end
 
   describe "split accounts", :enable_split_accounts do
-    let(:account) { FactoryGirl.create(:split_account, owner: user) }
+    let(:account) { FactoryBot.create(:split_account, owner: user) }
 
     it "splits and populates the report properly" do
       expect(report).to have_column_values(

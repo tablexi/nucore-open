@@ -4,7 +4,7 @@ require "product_shared_examples"
 RSpec.describe Instrument do
   it_should_behave_like "ReservationProduct", :instrument
 
-  let(:facility) { FactoryGirl.create(:setup_facility) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
   let(:facility_account) { facility.facility_accounts.create attributes_for(:facility_account) }
   subject(:instrument) { build :instrument, facility: facility, facility_account: facility_account }
 
@@ -104,10 +104,10 @@ RSpec.describe Instrument do
 
   describe "shared schedules" do
     subject(:instrument) do
-      FactoryGirl.build(:instrument,
-                        facility: facility,
-                        facility_account: facility_account,
-                        schedule: schedule)
+      FactoryBot.build(:instrument,
+                       facility: facility,
+                       facility_account: facility_account,
+                       schedule: schedule)
     end
 
     context "when no schedule is defined" do
@@ -119,7 +119,7 @@ RSpec.describe Instrument do
     end
 
     context "when a schedule is defined" do
-      let(:schedule) { FactoryGirl.create(:schedule, facility: facility) }
+      let(:schedule) { FactoryBot.create(:schedule, facility: facility) }
 
       it "does not create a new schedule" do
         expect { instrument.save! }
@@ -130,7 +130,7 @@ RSpec.describe Instrument do
     describe "name updating" do
       before :each do
         @instrument = setup_instrument(schedule: nil)
-        @instrument2 = FactoryGirl.create(:setup_instrument, schedule: @instrument.schedule)
+        @instrument2 = FactoryBot.create(:setup_instrument, schedule: @instrument.schedule)
         assert @instrument.schedule == @instrument2.schedule
       end
 
@@ -153,10 +153,10 @@ RSpec.describe Instrument do
 
   context "updating nested relay" do
     before :each do
-      @instrument = FactoryGirl.create(:instrument,
-                                       facility: facility,
-                                       facility_account: facility_account,
-                                       no_relay: true)
+      @instrument = FactoryBot.create(:instrument,
+                                      facility: facility,
+                                      facility_account: facility_account,
+                                      no_relay: true)
     end
 
     context "existing type: 'timer' (Timer without relay)" do
@@ -183,7 +183,7 @@ RSpec.describe Instrument do
 
         context "when validations met" do
           before :each do
-            @updated = @instrument.update_attributes(control_mechanism: "relay", relay_attributes: FactoryGirl.attributes_for(:relay))
+            @updated = @instrument.update_attributes(control_mechanism: "relay", relay_attributes: FactoryBot.attributes_for(:relay))
           end
 
           it "should succeed" do
@@ -221,7 +221,7 @@ RSpec.describe Instrument do
 
     context "existing type: RelaySynaccessA" do
       before :each do
-        FactoryGirl.create(:relay, instrument_id: @instrument.id)
+        FactoryBot.create(:relay, instrument_id: @instrument.id)
         expect(@instrument.reload.control_mechanism).to eq("relay")
       end
 
@@ -281,7 +281,7 @@ RSpec.describe Instrument do
 
         context "when validations met" do
           before :each do
-            @updated = @instrument.update_attributes(control_mechanism: "relay", relay_attributes: FactoryGirl.attributes_for(:relay))
+            @updated = @instrument.update_attributes(control_mechanism: "relay", relay_attributes: FactoryBot.attributes_for(:relay))
           end
           it "should succeed" do
             expect(@updated).to be true
@@ -316,14 +316,14 @@ RSpec.describe Instrument do
   context "reservations with schedule rules from 9 am to 5 pm every day, with 60 minute durations" do
     before(:each) do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument = FactoryGirl.create(:instrument,
-                                       facility: facility,
-                                       facility_account: facility_account,
-                                       min_reserve_mins: 60,
-                                       max_reserve_mins: 60)
+      @instrument = FactoryBot.create(:instrument,
+                                      facility: facility,
+                                      facility_account: facility_account,
+                                      min_reserve_mins: 60,
+                                      max_reserve_mins: 60)
       assert @instrument.valid?
       # add rule, available every day from 9 to 5, 60 minutes duration
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
       assert @rule.valid?
       allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
     end
@@ -434,7 +434,7 @@ RSpec.describe Instrument do
                            max_reserve_mins: 60)
       assert @instrument.valid?
       # add rule, available every day from 9 to 5, 60 minutes duration/interval
-      @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule))
+      @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
       assert @rule.valid?
       # stub so today at 9 am is not in the future
       allow_any_instance_of(Reservation).to receive(:in_the_future).and_return(true)
@@ -515,11 +515,11 @@ RSpec.describe Instrument do
   context "available hours based on schedule rules" do
     before(:each) do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument = FactoryGirl.create(:instrument,
-                                       facility: facility,
-                                       facility_account: facility_account,
-                                       min_reserve_mins: 60,
-                                       max_reserve_mins: 60)
+      @instrument = FactoryBot.create(:instrument,
+                                      facility: facility,
+                                      facility_account: facility_account,
+                                      min_reserve_mins: 60,
+                                      max_reserve_mins: 60)
       assert @instrument.valid?
     end
 
@@ -531,7 +531,7 @@ RSpec.describe Instrument do
     context "with a mon-friday rule from 9-5" do
       before :each do
         # add rule, monday-friday from 9 to 5, 60 minutes duration
-        @rule = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:schedule_rule, on_sun: false, on_sat: false))
+        @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule, on_sun: false, on_sat: false))
         assert @rule.valid?
       end
 
@@ -542,9 +542,9 @@ RSpec.describe Instrument do
 
       context "with a weekend reservation going from 8-6" do
         before :each do
-          @rule2 = @instrument.schedule_rules.create(FactoryGirl.attributes_for(:weekend_schedule_rule,
-                                                                                start_hour: 8,
-                                                                                end_hour: 18))
+          @rule2 = @instrument.schedule_rules.create(FactoryBot.attributes_for(:weekend_schedule_rule,
+                                                                               start_hour: 8,
+                                                                               end_hour: 18))
           assert @rule2.valid?
         end
 
@@ -558,18 +558,18 @@ RSpec.describe Instrument do
 
   context "last reserve dates, days from now" do
     before(:each) do
-      @price_group = FactoryGirl.create(:price_group, facility: facility)
+      @price_group = FactoryBot.create(:price_group, facility: facility)
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
-      @instrument = FactoryGirl.create(:instrument,
-                                       facility: facility,
-                                       facility_account: facility_account,
-                                       min_reserve_mins: 60,
-                                       max_reserve_mins: 60)
-      @price_group_product = FactoryGirl.create(:price_group_product, product: @instrument, price_group: @price_group)
+      @instrument = FactoryBot.create(:instrument,
+                                      facility: facility,
+                                      facility_account: facility_account,
+                                      min_reserve_mins: 60,
+                                      max_reserve_mins: 60)
+      @price_group_product = FactoryBot.create(:price_group_product, product: @instrument, price_group: @price_group)
       assert @instrument.valid?
 
       # create price policy with default window of 1 day
-      @price_policy = @instrument.instrument_price_policies.create(FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
+      @price_policy = @instrument.instrument_price_policies.create(FactoryBot.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
     end
 
     it "should have last_reserve_date == tomorrow, last_reserve_days_from_now == 1 when window is 1" do
@@ -582,7 +582,7 @@ RSpec.describe Instrument do
       # create price policy with window of 15 days
       @price_group_product.reservation_window = 15
       assert @price_group_product.save
-      @options       = FactoryGirl.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id)
+      @options       = FactoryBot.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id)
       @price_policy2 = @instrument.instrument_price_policies.new(@options)
       @price_policy2.save(validate: false) # save without validations
       assert_equal 15, @instrument.max_reservation_window
@@ -595,20 +595,20 @@ RSpec.describe Instrument do
     let(:price_policy_ids) { account.price_groups.map(&:id) }
 
     before :each do
-      @instrument = FactoryGirl.create(:instrument,
-                                       facility: facility,
-                                       facility_account: facility_account)
-      @price_group = FactoryGirl.create(:price_group, facility: facility)
-      @user = FactoryGirl.create(:user)
+      @instrument = FactoryBot.create(:instrument,
+                                      facility: facility,
+                                      facility_account: facility_account)
+      @price_group = FactoryBot.create(:price_group, facility: facility)
+      @user = FactoryBot.create(:user)
       @price_group_member = create(:account_price_group_member, account: account, price_group: @price_group)
       @user.reload
-      @price_policy = FactoryGirl.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
+      @price_policy = FactoryBot.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
       # TODO: remove this line
-      FactoryGirl.create(:price_group_product, price_group: @price_group, product: @instrument)
+      FactoryBot.create(:price_group_product, price_group: @price_group, product: @instrument)
     end
 
     it "should be purchasable if there are schedule rules" do
-      @schedule_rule = FactoryGirl.create(:schedule_rule, product: @instrument)
+      @schedule_rule = FactoryBot.create(:schedule_rule, product: @instrument)
       expect(@instrument.reload).to be_can_purchase(price_policy_ids)
     end
 
@@ -618,7 +618,7 @@ RSpec.describe Instrument do
 
     context "with schedule rules" do
       before :each do
-        @schedule_rule = FactoryGirl.create(:schedule_rule, product: @instrument)
+        @schedule_rule = FactoryBot.create(:schedule_rule, product: @instrument)
         @instrument.reload
       end
       it "should be purchasable if there are schedule rules" do
@@ -683,7 +683,7 @@ RSpec.describe Instrument do
   end
 
   describe "walkup_available?" do
-    subject(:instrument) { FactoryGirl.create :setup_instrument }
+    subject(:instrument) { FactoryBot.create :setup_instrument }
 
     it { is_expected.to be_walkup_available }
 
@@ -711,10 +711,10 @@ RSpec.describe Instrument do
 
     context "with an admin reservation" do
       let!(:reservation) do
-        FactoryGirl.create(:admin_reservation,
-                           reserve_start_at: 30.minutes.ago,
-                           reserve_end_at: 30.minutes.from_now,
-                           product: instrument)
+        FactoryBot.create(:admin_reservation,
+                          reserve_start_at: 30.minutes.ago,
+                          reserve_end_at: 30.minutes.from_now,
+                          product: instrument)
       end
 
       it { is_expected.not_to be_walkup_available }
@@ -723,16 +723,16 @@ RSpec.describe Instrument do
     context "reservation only instrument" do
       context "with a current reservation" do
         let!(:reservation) do
-          FactoryGirl.create :purchased_reservation,
-                             reserve_start_at: 30.minutes.ago,
-                             reserve_end_at: 30.minutes.from_now,
-                             product: instrument
+          FactoryBot.create :purchased_reservation,
+                            reserve_start_at: 30.minutes.ago,
+                            reserve_end_at: 30.minutes.from_now,
+                            product: instrument
         end
 
         it { is_expected.not_to be_walkup_available }
 
         context "but it was canceled" do
-          let(:user) { FactoryGirl.build :user }
+          let(:user) { FactoryBot.build :user }
           before :each do
             travel_to_and_return(60.minutes.ago) do
               reservation.order_detail.update_order_status! user, OrderStatus.canceled
@@ -760,10 +760,10 @@ RSpec.describe Instrument do
 
       context "with a current reservation" do
         let!(:reservation) do
-          FactoryGirl.create :purchased_reservation,
-                             reserve_start_at: 30.minutes.ago,
-                             reserve_end_at: 30.minutes.from_now,
-                             product: instrument
+          FactoryBot.create :purchased_reservation,
+                            reserve_start_at: 30.minutes.ago,
+                            reserve_end_at: 30.minutes.from_now,
+                            product: instrument
         end
 
         context "and is started" do
@@ -851,7 +851,7 @@ RSpec.describe Instrument do
     end
 
     context "when offline" do
-      subject(:instrument) { FactoryGirl.create(:setup_instrument, :offline) }
+      subject(:instrument) { FactoryBot.create(:setup_instrument, :offline) }
 
       it { expect(subject.offline_category).to eq("out_of_order") }
     end

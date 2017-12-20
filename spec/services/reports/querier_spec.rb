@@ -2,10 +2,10 @@ require "rails_helper"
 
 RSpec.describe Reports::Querier do
 
-  let(:user) { FactoryGirl.create(:user) }
-  let(:item) { FactoryGirl.create(:setup_item) }
+  let(:user) { FactoryBot.create(:user) }
+  let(:item) { FactoryBot.create(:setup_item) }
   let(:facility) { item.facility }
-  let(:account) { FactoryGirl.create(:setup_account, :with_account_owner, owner: user) }
+  let(:account) { FactoryBot.create(:setup_account, :with_account_owner, owner: user) }
   let!(:order_detail) { place_product_order(user, facility, item, account) }
 
   let(:options) do
@@ -25,10 +25,10 @@ RSpec.describe Reports::Querier do
 
   describe "with a merge order" do
     let(:order) { order_detail.order }
-    let(:merge_order) { FactoryGirl.create(:merge_order, merge_with_order: order) }
+    let(:merge_order) { FactoryBot.create(:merge_order, merge_with_order: order) }
     let!(:merge_order_detail) do
-      FactoryGirl.create(:order_detail, product: item,
-                                        order_status: OrderStatus.new_status, order: merge_order)
+      FactoryBot.create(:order_detail, product: item,
+                                       order_status: OrderStatus.new_status, order: merge_order)
     end
 
     it "excludes the merge order detail" do

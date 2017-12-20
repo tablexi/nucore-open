@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe TrainingRequestsController, feature_setting: { training_requests: true } do
-  let(:facility) { FactoryGirl.create(:setup_facility) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
   let(:product) do
-    FactoryGirl.create(:setup_item, facility: facility,
-                                    requires_approval: true, training_request_contacts: training_request_contacts)
+    FactoryBot.create(:setup_item, facility: facility,
+                                   requires_approval: true, training_request_contacts: training_request_contacts)
   end
   let(:training_request_contacts) { "test@example.com, test2@example.com" }
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { FactoryBot.create(:user) }
 
   describe "#new" do
     def do_request

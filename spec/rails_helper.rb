@@ -31,7 +31,7 @@ RSpec.configure do |config|
   require "capybara/email/rspec"
 
   config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   config.around(:each) do |example|
     if example.metadata[:feature_setting]
@@ -130,7 +130,7 @@ RSpec.configure do |config|
 
 end
 
-FactoryGirl::SyntaxRunner.class_eval do
+FactoryBot::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
 end
 

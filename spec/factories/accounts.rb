@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :account do
     type "Account"
     sequence(:account_number) { |n| n }
@@ -9,7 +9,7 @@ FactoryGirl.define do
 
   trait :with_account_owner do
     transient do
-      owner { FactoryGirl.create(:user) }
+      owner { FactoryBot.create(:user) }
     end
 
     # Every account must have an account_user "owner" in order for the account

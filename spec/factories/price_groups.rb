@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :price_group do
     facility
     sequence(:name, "AAAAAAAA") { |n| "Price Group #{n}" }

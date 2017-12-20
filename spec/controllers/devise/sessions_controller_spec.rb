@@ -5,7 +5,7 @@ RSpec.describe Devise::SessionsController do
 
   describe "#create, aka logging in" do
     describe "a user with the password in the database" do
-      let(:user) { FactoryGirl.create(:user, password: "password") }
+      let(:user) { FactoryBot.create(:user, password: "password") }
 
       specify "can log in" do
         post :create, user: { username: user.username, password: "password" }
@@ -14,7 +14,7 @@ RSpec.describe Devise::SessionsController do
     end
 
     describe "a deactived user" do
-      let(:user) { FactoryGirl.create(:user, password: "password", deactivated_at: 1.minute.ago) }
+      let(:user) { FactoryBot.create(:user, password: "password", deactivated_at: 1.minute.ago) }
 
       specify "can not log in" do
         post :create, user: { username: user.username, password: "password" }

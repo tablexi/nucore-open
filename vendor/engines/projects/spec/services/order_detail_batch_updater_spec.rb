@@ -12,17 +12,17 @@ RSpec.describe OrderDetailBatchUpdater do
   end
 
   let(:facility) { order.facility }
-  let(:item) { FactoryGirl.create(:setup_item) }
-  let(:order) { FactoryGirl.create(:purchased_order, product: item) }
+  let(:item) { FactoryBot.create(:setup_item) }
+  let(:order) { FactoryBot.create(:purchased_order, product: item) }
   let(:order_detail) { order.order_details.first }
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { FactoryBot.create(:user) }
 
   describe "#update!" do
     shared_examples_for "batch updating project_id" do
-      let(:other_project) { FactoryGirl.create(:project, facility: facility) }
+      let(:other_project) { FactoryBot.create(:project, facility: facility) }
 
       context "when project_id is already set" do
-        let(:existing_project) { FactoryGirl.create(:project, facility: facility) }
+        let(:existing_project) { FactoryBot.create(:project, facility: facility) }
 
         before { order_detail.update_attribute(:project_id, existing_project.id) }
 

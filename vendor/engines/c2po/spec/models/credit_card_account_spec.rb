@@ -5,7 +5,7 @@ RSpec.describe CreditCardAccount do
   include AffiliateAccountHelper
 
   before(:each) do
-    @user = FactoryGirl.create(:user)
+    @user = FactoryBot.create(:user)
 
     @owner = {
       user: @user,
@@ -30,7 +30,7 @@ RSpec.describe CreditCardAccount do
   end
 
   it "should take a facility" do
-    facility = FactoryGirl.create(:facility)
+    facility = FactoryBot.create(:facility)
     @account_attrs[:facility] = facility
     account = CreditCardAccount.create(@account_attrs)
     expect(account.facility).to eq(facility)

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :instrument_with_accessory, parent: :setup_instrument do
     transient do
       accessory { create :setup_item, facility: facility }

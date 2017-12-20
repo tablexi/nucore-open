@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Creating an item" do
-  let(:facility) { FactoryGirl.create(:setup_facility) }
-  let(:director) { FactoryGirl.create(:user, :facility_director, facility: facility) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:director) { FactoryBot.create(:user, :facility_director, facility: facility) }
   before { login_as director }
 
   it "can create and edit an item" do

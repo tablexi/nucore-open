@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe BulkEmail::DeliveryForm do
   subject(:form) { described_class.new(user, facility, content_generator) }
   let(:content_generator) { BulkEmail::ContentGenerator.new(facility) }
-  let(:facility) { FactoryGirl.create(:facility) }
-  let(:recipients) { FactoryGirl.create_list(:user, 3) }
-  let(:user) { FactoryGirl.create(:user) }
+  let(:facility) { FactoryBot.create(:facility) }
+  let(:recipients) { FactoryBot.create_list(:user, 3) }
+  let(:user) { FactoryBot.create(:user) }
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:custom_subject) }

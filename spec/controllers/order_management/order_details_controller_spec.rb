@@ -21,9 +21,9 @@ RSpec.describe OrderManagement::OrderDetailsController do
   end
 
   before(:all) { create_users }
-  let(:facility) { FactoryGirl.create(:setup_facility) }
-  let(:item) { FactoryGirl.create(:setup_item, facility: facility) }
-  let(:instrument) { FactoryGirl.create(:setup_instrument, facility: facility, control_mechanism: "timer") }
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:item) { FactoryBot.create(:setup_item, facility: facility) }
+  let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility, control_mechanism: "timer") }
   let(:order_detail) { reservation.order_detail }
   let(:original_account) { create(:setup_account, owner: order_detail.user) }
   let(:price_group) { facility.price_groups.find(&:is_not_global) }
@@ -41,7 +41,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
   end
 
   describe "edit" do
-    let(:item_order) { FactoryGirl.create(:purchased_order, product: item) }
+    let(:item_order) { FactoryBot.create(:purchased_order, product: item) }
     let(:item_order_detail) { item_order.order_details.first }
 
     before :each do
@@ -163,7 +163,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
       end
 
       context "order in open journal" do
-        let(:journal) { FactoryGirl.create(:journal, facility: facility) }
+        let(:journal) { FactoryBot.create(:journal, facility: facility) }
         before :each do
           item_order_detail.change_status!(OrderStatus.complete)
           item_order_detail.update_attributes(reviewed_at: 1.day.ago)
@@ -248,9 +248,9 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
             context "it conflicts with another reservation" do
               before do
-                FactoryGirl.create(:purchased_reservation,
-                                   reserve_start_at: new_reserve_start,
-                                   product: instrument)
+                FactoryBot.create(:purchased_reservation,
+                                  reserve_start_at: new_reserve_start,
+                                  product: instrument)
                 do_request
               end
 
@@ -377,7 +377,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         context "across fiscal year/price policy expiration lines" do
           let(:first_price_policy) { order_detail.product.price_policies.first }
-          let(:reservation) { FactoryGirl.create(:completed_reservation, product: instrument) }
+          let(:reservation) { FactoryBot.create(:completed_reservation, product: instrument) }
           let(:order_detail) { reservation.order_detail }
 
           before do
@@ -488,7 +488,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
     end
 
     describe "for a purchased item" do
-      let(:order) { FactoryGirl.create(:purchased_order, product: item) }
+      let(:order) { FactoryBot.create(:purchased_order, product: item) }
       let(:order_detail) { order.order_details.first }
 
       it_should_allow_operators_only(:redirect) {}
@@ -530,13 +530,13 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
         describe "when the price policy would change" do
           let!(:previous_price_policy) do
-            FactoryGirl.create(:item_price_policy,
-                               product: item,
-                               price_group: price_group,
-                               unit_cost: 19,
-                               start_date: 30.days.ago,
-                               expire_date: 28.days.ago,
-                              )
+            FactoryBot.create(:item_price_policy,
+                              product: item,
+                              price_group: price_group,
+                              unit_cost: 19,
+                              start_date: 30.days.ago,
+                              expire_date: 28.days.ago,
+                             )
           end
           before { order_detail.backdate_to_complete!(29.days.ago) }
 
@@ -581,7 +581,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         end
 
         describe "assigning to a user" do
-          let(:staff_user) { FactoryGirl.create(:user, :staff, facility: facility) }
+          let(:staff_user) { FactoryBot.create(:user, :staff, facility: facility) }
 
           before do
             @params[:order_detail] = { assigned_user_id: staff_user.id.to_s }
@@ -743,7 +743,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
   end
 
   describe "pricing" do
-    let(:reservation) { FactoryGirl.create(:purchased_reservation, product: instrument) }
+    let(:reservation) { FactoryBot.create(:purchased_reservation, product: instrument) }
     let(:order_detail) { reservation.order_detail }
     let(:price_policy) { instrument.price_policies.first }
 

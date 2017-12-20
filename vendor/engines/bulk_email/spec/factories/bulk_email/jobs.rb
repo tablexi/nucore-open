@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :bulk_email_job, class: BulkEmail::Job do
     facility
     user
