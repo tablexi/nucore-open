@@ -307,16 +307,6 @@ RSpec.describe FacilitiesController do
     it_should_allow_managers_only
   end
 
-  context "transactions" do
-    it_behaves_like "transactions", :transactions do
-      it "has a default date set" do
-        sign_in @admin
-        do_request
-        expect(controller.params[:date_range][:start]).to be_present
-      end
-    end
-  end
-
   context "disputed_orders" do
     it_behaves_like "transactions", :disputed_orders
   end

@@ -18,7 +18,6 @@ class TransactionChosen2Input < SimpleForm::Inputs::CollectionInput
 
     merged_input_options[:multiple] = true
     merged_input_options["data-placeholder"] = placeholder_label
-    merged_input_options[:object] = object
 
     # If there is only one possible value, then we want to show it as selected,
     # but we don't want to allow adding/removing it.

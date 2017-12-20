@@ -24,15 +24,15 @@ module TransactionSearch
       end
     end
 
-    private
-
     def date_params
       {
-        field: date_range_field.presence || "ordered_at",
+        field: date_range_field,
         start: date_range_start,
         end: date_range_end,
       }
     end
+
+    private
 
     def default_params
       {
