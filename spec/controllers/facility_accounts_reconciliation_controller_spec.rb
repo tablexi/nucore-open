@@ -39,25 +39,6 @@ RSpec.describe FacilityAccountsReconciliationController do
     order_detail.update_attributes(reviewed_at: 5.minutes.ago, statement: statement)
   end
 
-  describe "index" do
-    def perform
-      get :index, facility_id: facility.url_name, account_type: "ReconciliationTestAccount"
-    end
-
-    before { sign_in admin }
-
-    it "assigns the default account" do
-      perform
-      expect(response).to be_success
-      expect(assigns(:selected_account)).to eq(account)
-    end
-
-    it "has the order" do
-      perform
-      expect(assigns(:unreconciled_details)).to eq([order_detail])
-    end
-  end
-
   describe "update" do
     include DateHelper
 
