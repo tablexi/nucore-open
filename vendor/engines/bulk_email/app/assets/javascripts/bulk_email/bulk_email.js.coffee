@@ -3,15 +3,34 @@ class window.BulkEmailSearchForm
     @_initUserTypeChangeHandler()
     @_initDateRangeSelectionHandlers()
 
-  authorizedUsersSelectedOnly: ->
+  hideNonRestrictedProducts: ->
     user_types = @selectedUserTypes()
-    user_types.length == 1 && user_types[0] == 'authorized_users'
+    required_selected = user_types.filter(['authorized_users', 'training_requested'])
+    # if either authorized_users or training_requested is selected (and nothing else),
+    # we should display only restricted products
+    required_selected.length > 0 && required_selected.length == user_types.length
 
   selectedUserTypes: -> @$userTypeCheckboxes().filter(':checked').map -> @.value
 
+  dateRelevant: ->
+    user_types = @selectedUserTypes().toArray()
+    user_types.includes('customers') || user_types.includes('account_owners')
+
+  updateFormOptions: ->
+    @disableDatepickerWhenIrrelevant()
+    @toggleNonRestrictedProducts()
+
+  disableDatepickerWhenIrrelevant: ->
+    # Dates only apply for 'customers' and 'account owners', as those are joined through orders
+    isDateIrrelevant = !@dateRelevant()
+    @$form.find('#dates_between')
+      .toggleClass('disabled', isDateIrrelevant)
+      .find('input')
+      .prop('disabled', isDateIrrelevant)
+
   toggleNonRestrictedProducts: ->
     # Hide non-restricted items when doing an authorized_users search
-    isHideNonRestrictedProducts = @authorizedUsersSelectedOnly()
+    isHideNonRestrictedProducts = @hideNonRestrictedProducts()
     @$form.find('#products option[data-restricted=false]').each ->
       $option = $(@)
       $option.prop('disabled', isHideNonRestrictedProducts)
@@ -19,17 +38,11 @@ class window.BulkEmailSearchForm
 
     @$form.find('#products').trigger('chosen:updated')
 
-    # Dates do not apply for authorized users search
-    @$form.find('#dates_between')
-      .toggleClass('disabled', isHideNonRestrictedProducts)
-      .find('input')
-      .prop('disabled', isHideNonRestrictedProducts)
-
   $userTypeCheckboxes: -> @$form.find('.bulk_email_user_type')
 
   _initUserTypeChangeHandler: ->
     @$userTypeCheckboxes()
-      .change(=> @toggleNonRestrictedProducts())
+      .change(=> @updateFormOptions())
       .trigger('change')
 
   _initDateRangeSelectionHandlers: ->
