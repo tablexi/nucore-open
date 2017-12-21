@@ -295,7 +295,7 @@ RSpec.describe FacilitiesController do
     it "should use two column head" do
       sign_in @admin
       do_request
-      expect(assigns[:layout]).to eq "two_column_head"
+      expect(response).to render_template("two_column_head")
     end
 
     it "should query against the facility" do
