@@ -10,7 +10,7 @@
   %tbody
     - @unreconciled_details.each do |order_detail|
       %tr
-        %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", true, class: "toggle"
+        %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", false, class: "toggle"
         %td= "##{order_detail.statement_invoice_number}"
         %td
           = order_detail.account

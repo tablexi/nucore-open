@@ -54,8 +54,10 @@ RSpec.describe "Account Reconciliation" do
       expect(page).to have_content(order_number)
       expect(page).not_to have_content(other_order_number)
 
+      check "order_detail_#{order_detail.id}_reconciled"
       fill_in "Reconciliation Date", with: I18n.l(1.day.ago.to_date, format: :usa)
       click_button "Reconcile Orders", match: :first
+
       expect(order_detail.reload).to be_reconciled
       expect(order_detail.reconciled_at).to eq(1.day.ago.beginning_of_day)
     end
@@ -80,8 +82,10 @@ RSpec.describe "Account Reconciliation" do
       expect(page).to have_content(order_number)
       expect(page).not_to have_content(other_order_number)
 
+      check "order_detail_#{order_detail.id}_reconciled"
       fill_in "Reconciliation Date", with: I18n.l(1.day.ago.to_date, format: :usa)
       click_button "Reconcile Orders", match: :first
+
       expect(order_detail.reload).to be_reconciled
       expect(order_detail.reconciled_at).to eq(1.day.ago.beginning_of_day)
     end
