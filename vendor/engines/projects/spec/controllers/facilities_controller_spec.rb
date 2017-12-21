@@ -18,18 +18,18 @@ RSpec.describe FacilitiesController do
     end
 
     it "returns both order details with no filter" do
-      get :transactions, facility_id: facility.url_name, projects: [], date_range: { field: "ordered_at" }
+      get :transactions, facility_id: facility.url_name, search: { projects: [], date_range_field: "ordered_at" }
       expect(assigns(:order_details)).to contain_all([order_detail, order_detail2])
     end
 
     it "returns only the order detail selected" do
-      get :transactions, facility_id: facility.url_name, projects: [project.id], date_range: { field: "ordered_at" }
+      get :transactions, facility_id: facility.url_name, search: { projects: [project.id], date_range_field: "ordered_at" }
       expect(assigns(:order_details)).to eq([order_detail])
     end
 
-    it "includes the projects" do
+    it "includes the projects in the search" do
       get :transactions, facility_id: facility.url_name
-      expect(assigns(:search_options)[:projects]).to eq([project])
+      expect(assigns(:search)[:projects]).to eq([project])
     end
   end
 end

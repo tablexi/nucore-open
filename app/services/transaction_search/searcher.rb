@@ -49,6 +49,9 @@ module TransactionSearch
 
       attr_reader :order_details
 
+      # Return an array of options for a given key
+      delegate :[], to: :to_h
+
       def initialize(order_details, search_options = [])
         @order_details = order_details
         @search_options = search_options.freeze
@@ -56,6 +59,12 @@ module TransactionSearch
 
       def options
         @search_options.dup
+      end
+
+      def to_h
+        @to_h ||= options.each_with_object({}) do |searcher, hash|
+          hash[searcher.key] = searcher.options
+        end
       end
 
     end
