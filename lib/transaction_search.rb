@@ -1,3 +1,6 @@
+# The use of this module as a concern is considered deprecated. Instead
+# the TransactionSearch::Searcher class should be used. See FacilityAccountsReconciliationController
+# for an example.
 module TransactionSearch
 
   def self.included(base)

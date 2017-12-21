@@ -1,3 +1,6 @@
+# This class is deprecated in favor of TransactionChosen2Input. This class
+# is still being used by many of the TransactionSearch controller concern views.
+# These should eventually be replaced by TransactionSearch::Searcher (see FacilityAccountsReconciliationController).
 class TransactionChosenInput < SimpleForm::Inputs::Base # CollectionSelectInput
 
   disable :required

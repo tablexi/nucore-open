@@ -16,6 +16,10 @@ module TransactionSearch
       order_details.includes(:account)
     end
 
+    def label_method
+      :account_list_item
+    end
+
   end
 
 end
