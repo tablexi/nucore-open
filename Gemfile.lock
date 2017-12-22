@@ -452,7 +452,7 @@ GEM
     rspec-activejob (0.6.1)
       activejob (>= 4.2)
       rspec-mocks
-    rspec-collection_matchers (1.1.2)
+    rspec-collection_matchers (1.1.3)
       rspec-expectations (>= 2.99.0.beta1)
     rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
