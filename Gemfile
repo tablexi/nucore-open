@@ -22,7 +22,7 @@ gem "devise", "~> 4.3.0"
 gem "devise-encryptable", "~> 0.2.0"
 
 ## models
-gem "aasm", "~> 4.11.1"
+gem "aasm", "~> 4.12.3"
 gem "paperclip", "~> 4.2.0"
 gem "paper_trail"
 gem "awesome_nested_set", "~> 3.1.3"
