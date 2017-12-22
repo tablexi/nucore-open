@@ -1,6 +1,6 @@
 class InstrumentsController < ProductsCommonController
 
-  customer_tab :show, :public_schedule
+  customer_tab :show, :public_schedule, :list
   admin_tab :create, :new, :edit, :index, :manage, :update, :manage, :schedule
   before_action :store_fullpath_in_session, only: [:index, :show]
   before_action :set_default_lock_window, only: [:create, :update]
@@ -9,10 +9,10 @@ class InstrumentsController < ProductsCommonController
   skip_before_action :authenticate_user!, only: [:public_schedule]
   skip_authorize_resource only: [:public_schedule]
 
-  skip_before_action :init_product, only: [:instrument_statuses]
+  skip_before_action :init_product, only: [:instrument_statuses, :list]
 
-  # http://localhost:3000/facilities/all/instruments
-  def index
+  # GET /facilities/:facility_id/instruments/list
+  def list
     @instruments = Instrument.active.in_active_facility.order(:name).includes(:facility)
     @active_tab = "home"
     render layout: "application"
