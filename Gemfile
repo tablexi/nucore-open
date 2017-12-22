@@ -80,7 +80,7 @@ gem "net-telnet"
 group :development do
   gem "bullet"
   gem "coffeelint"
-  gem "haml_lint", "~> 0.24.0"
+  gem "haml_lint", "~> 0.27.0"
   gem "letter_opener"
   gem "rails-erd"
   gem "rubocop", require: false
