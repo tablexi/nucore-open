@@ -202,7 +202,7 @@ GEM
       json
     concurrent-ruby (1.0.5)
     crass (1.0.3)
-    daemons (1.2.5)
+    daemons (1.2.6)
     debug_inspector (0.0.2)
     delayed_job (4.1.3)
       activesupport (>= 3.0, < 5.2)
@@ -600,7 +600,7 @@ DEPENDENCIES
   codeclimate_circle_ci_coverage
   coffee-rails (~> 4.2.2)
   coffeelint
-  daemons (= 1.2.5)
+  daemons (= 1.2.6)
   dataprobe (~> 1.0.0)!
   delayed_job_active_record (~> 4.1.2)
   devise (~> 4.3.0)
