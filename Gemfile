@@ -119,7 +119,7 @@ group :test do
   gem "poltergeist"
   gem "rspec-collection_matchers"
   gem "shoulda-matchers",  "~> 3.1.2"
-  gem "single_test", "0.4.0"
+  gem "single_test", "0.6.0"
 end
 
 group :stage, :production do
