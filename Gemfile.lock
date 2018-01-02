@@ -352,7 +352,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     numerizer (0.1.1)
-    oj (3.3.9)
+    oj (3.3.10)
     orm_adapter (0.5.0)
     paper_trail (7.1.0)
       activerecord (>= 4.0, < 5.2)
@@ -629,7 +629,7 @@ DEPENDENCIES
   nested_form_fields
   net-telnet
   nokogiri (>= 1.8.1)
-  oj (~> 3.3.9)
+  oj (~> 3.3.10)
   paper_trail
   paperclip (~> 4.2.0)
   paranoia
