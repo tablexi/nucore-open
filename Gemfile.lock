@@ -482,7 +482,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-graphviz (1.2.3)
-    ruby-oci8 (2.2.5)
+    ruby-oci8 (2.2.5.1)
     ruby-ole (1.2.12.1)
     ruby-progressbar (1.9.0)
     ruby-rc4 (0.1.5)
