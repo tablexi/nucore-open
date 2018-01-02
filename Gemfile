@@ -62,7 +62,7 @@ gem "delayed_job_active_record", "~> 4.1.2"
 gem "fog-aws"
 gem "rake"
 gem "spreadsheet", "~> 1.1.5"
-gem "daemons", "1.2.5"
+gem "daemons", "1.2.6"
 gem "ice_cube"
 
 ## custom
