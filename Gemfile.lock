@@ -507,7 +507,8 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
-    single_test (0.4.0)
+    single_test (0.6.0)
+      rake
     spreadsheet (1.1.5)
       ruby-ole (>= 1.0)
     spring (2.0.2)
@@ -657,7 +658,7 @@ DEPENDENCIES
   secure_rooms!
   shoulda-matchers (~> 3.1.2)
   simple_form (~> 3.5.0)
-  single_test (= 0.4.0)
+  single_test (= 0.6.0)
   split_accounts (~> 0.0.1)!
   spreadsheet (~> 1.1.5)
   spring
