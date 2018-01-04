@@ -13,13 +13,14 @@
   clear: both;
   float: right;
   margin-bottom: 0.5em;
+
+  &.float-left {
+    float: left;
+    margin-left: 1.5em;
+    margin-bottom: 2em;
+  }
 }
 
-.search_form input[type=submit].submit--float-left {
-  float: left;
-  margin-left: 1.5em;
-  margin-bottom: 2em;
-}
 
 #table_billing {
   margin-top: 1em;

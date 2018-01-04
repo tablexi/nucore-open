@@ -16,4 +16,4 @@
     .submit_button
       = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
       = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
-      = f.submit "Filter", class: "btn submit--float-left"
+      = f.submit "Filter", class: "btn float-left"
