@@ -38,19 +38,19 @@ RSpec.describe "Account Reconciliation" do
       expect(page).to have_content(other_order_number)
 
       select accounts.first.account_list_item, from: "Payment Sources"
-      click_button "Search"
+      click_button "Filter"
       expect(page).to have_content(order_number)
       expect(page).not_to have_content(other_order_number)
 
       visit credit_cards_facility_accounts_path(facility)
       select accounts.first.owner_user.full_name, from: "Owners"
-      click_button "Search"
+      click_button "Filter"
       expect(page).to have_content(order_number)
       expect(page).not_to have_content(other_order_number)
 
       visit credit_cards_facility_accounts_path(facility)
       select statements.first.invoice_number, from: "Statements"
-      click_button "Search"
+      click_button "Filter"
       expect(page).to have_content(order_number)
       expect(page).not_to have_content(other_order_number)
 
@@ -78,7 +78,7 @@ RSpec.describe "Account Reconciliation" do
       expect(page).to have_content(other_order_number)
 
       select accounts.first.account_list_item, from: "Payment Sources"
-      click_button "Search"
+      click_button "Filter"
       expect(page).to have_content(order_number)
       expect(page).not_to have_content(other_order_number)
 

@@ -10,10 +10,16 @@
 }
 
 .search_form input[type=submit] {
-  clear:both;
-  float:right;
+  clear: both;
+  float: right;
   margin-bottom: 0.5em;
+
+  &.float-left {
+    float: left;
+    margin-bottom: 2em;
+  }
 }
+
 
 #table_billing {
   margin-top: 1em;
