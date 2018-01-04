@@ -8,8 +8,8 @@
 
   - @instruments.each do |instrument|
     .productListLine
-      %h4.header-tight.productListLine__productName= link_to instrument, facility_instrument_path(instrument.facility, instrument)
-      %h5.header-tightproductListLine__facilityName= link_to instrument.facility, facility_path(instrument.facility)
+      %h4.header-tight.productListLine__firstItem= link_to instrument, facility_instrument_path(instrument.facility, instrument)
+      %h5.header-tightproductListLine__lastItem= link_to instrument.facility, facility_path(instrument.facility)
     / %p= instrument.description # probably need to truncate
 
 - else

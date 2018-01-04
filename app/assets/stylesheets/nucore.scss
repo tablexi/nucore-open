@@ -382,11 +382,11 @@ textarea.wide {
   display: flex;
 }
 
-.productListLine__productName {
+.productListLine__firstItem {
   display: flex-start;
   padding-right: 1em;
 }
 
-.productListLine__facilityName {
+.productListLine__lastItem {
   display: flex-end;
 }

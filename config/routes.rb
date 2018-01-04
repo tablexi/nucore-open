@@ -73,7 +73,7 @@ Nucore::Application.routes.draw do
 
     resources :instruments do
       collection do
-        get "list"
+        get "list", to: 'instruments#public_list'
       end
       facility_product_routing_concern
       get "public_schedule", to: 'instruments#public_schedule'
