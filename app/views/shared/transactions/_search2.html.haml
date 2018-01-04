@@ -13,7 +13,7 @@
         = f.input "date_range_start", input_html: {class: ["datepicker", "in_past"] }, label: t("reports.fields.date_start")
         = f.input "date_range_end", input_html: { class: ["datepicker", "in_past"] }, label: t("reports.fields.date_end")
 
-      .submit_button
-        = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
-        = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
-        = f.submit "Search", class: "btn"
+    .submit_button
+      = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
+      = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
+      = f.submit "Filter", class: "btn submit--float-left"

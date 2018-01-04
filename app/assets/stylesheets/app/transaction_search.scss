@@ -10,9 +10,15 @@
 }
 
 .search_form input[type=submit] {
-  clear:both;
-  float:right;
+  clear: both;
+  float: right;
   margin-bottom: 0.5em;
+}
+
+.search_form input[type=submit].submit--float-left {
+  float: left;
+  margin-left: 1.5em;
+  margin-bottom: 2em;
 }
 
 #table_billing {
