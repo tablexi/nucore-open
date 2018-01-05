@@ -172,10 +172,10 @@ GEM
     ci_reporter_rspec (1.0.0)
       ci_reporter (~> 2.0)
       rspec (>= 2.14, < 4)
-    ckeditor (4.1.6)
+    ckeditor (4.2.4)
       cocaine
       orm_adapter (~> 0.5.0)
-    climate_control (0.1.0)
+    climate_control (0.2.0)
     cliver (0.3.2)
     clockpunch (0.1.12)
       coffee-script
@@ -596,7 +596,7 @@ DEPENDENCIES
   capybara-email
   chosen-rails
   ci_reporter_rspec
-  ckeditor (~> 4.1.6)
+  ckeditor (~> 4.2.4)
   clockpunch (~> 0.1.12)
   codeclimate_circle_ci_coverage
   coffee-rails (~> 4.2.2)
