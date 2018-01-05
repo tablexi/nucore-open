@@ -330,9 +330,10 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
+    mimemagic (0.3.2)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
-    minitest (5.11.0)
+    minitest (5.11.1)
     multi_json (1.12.2)
     mysql2 (0.3.21)
     nenv (0.3.0)
@@ -357,11 +358,12 @@ GEM
     paper_trail (8.1.2)
       activerecord (>= 4.2, < 5.2)
       request_store (~> 1.1)
-    paperclip (4.2.4)
-      activemodel (>= 3.2.0)
-      activesupport (>= 3.2.0)
+    paperclip (5.1.0)
+      activemodel (>= 4.2.0)
+      activesupport (>= 4.2.0)
       cocaine (~> 0.5.5)
       mime-types
+      mimemagic (~> 0.3.0)
     parallel (1.12.1)
     paranoia (2.4.0)
       activerecord (>= 4.0, < 5.2)
@@ -632,7 +634,7 @@ DEPENDENCIES
   nokogiri (>= 1.8.1)
   oj (~> 3.3.10)
   paper_trail
-  paperclip (~> 4.2.0)
+  paperclip (~> 5.1.0)
   paranoia
   poltergeist
   prawn (= 0.12)
