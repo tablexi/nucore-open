@@ -1,0 +1,16 @@
+- if SettingsHelper.feature_on?(:equipment_list)
+  = render "shared/nav/equipment_list_nav"
+- else
+  = content_for :h1 do
+    = Instrument.model_name.human(count: 2)
+
+- if @instruments.any?
+
+  - @instruments.each do |instrument|
+    .productListLine
+      %h4.header-tight.productListLine__firstItem= link_to instrument, facility_instrument_path(instrument.facility, instrument)
+      %h5.header-tightproductListLine__lastItem= link_to instrument.facility, facility_path(instrument.facility)
+    / %p= instrument.description # probably need to truncate
+
+- else
+  .alert.alert-info= t(".empty", items: Instrument.model_name.human(count: 2))

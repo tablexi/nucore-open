@@ -1,0 +1,3 @@
+%ul.nav.nav-tabs
+  = tab Facility.model_name.human(count: 2), facilities_path
+  = tab Instrument.model_name.human(count: 2), list_facility_instruments_path(Facility.cross_facility)

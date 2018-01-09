@@ -1,5 +1,8 @@
-= content_for :h1 do
-  = Facility.model_name.human(count: 2)
+- if SettingsHelper.feature_on?(:equipment_list)
+  = render "shared/nav/equipment_list_nav"
+- else
+  = content_for :h1 do
+    = Facility.model_name.human(count: 2)
 
 .alert.alert-info= text(".welcome")
 
