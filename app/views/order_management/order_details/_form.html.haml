@@ -57,6 +57,9 @@
         = render "reconcile_note", f: f
 
       .span4
+        = f.input :price_change_reason, input_html: { disabled: true }
+
+      .span4
         = render "assigned_user", f: f
       .span1= render "facility_orders/order_file_icon", od: @order_detail
 

@@ -299,6 +299,7 @@ en:
         ordered_at: Ordered Date
         ordered_by: Ordered By
         product: Product
+        price_change_reason: Reason for Price Change
         quantity: Quantity
         reconciled_note: Reconciliation Note
         reconciled_at: Reconciliation Date

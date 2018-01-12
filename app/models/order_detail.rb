@@ -46,6 +46,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :assigned_user, class_name: "User", foreign_key: "assigned_user_id"
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
   belongs_to :dispute_by, class_name: "User"
+  belongs_to :price_changed_by_user, class_name: "User"
   belongs_to :order_status
   belongs_to :account
   belongs_to :bundle, foreign_key: "bundle_product_id"
