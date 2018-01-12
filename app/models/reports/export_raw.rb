@@ -87,7 +87,6 @@ module Reports
         reconciled_note: :reconciled_note,
         reconciled_at: :reconciled_at,
         price_change_reason: :price_change_reason,
-        price_changed_by_user: ->(od) { od.price_changed_by_user.try(:full_name) },
       }
       if SettingsHelper.has_review_period?
         hash
