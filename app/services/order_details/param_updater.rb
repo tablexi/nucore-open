@@ -59,7 +59,7 @@ class OrderDetails::ParamUpdater
 
     user_newly_assigned = @order_detail.assigned_user_id_changed? && @order_detail.assigned_user.present?
 
-    @order_detail.manually_priced! #this seems like a misleading method name
+    @order_detail.manually_priced! # this seems like a misleading method name
     # is this a good place to save price_changed_by_user?
     @order_detail.transaction do
       @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation

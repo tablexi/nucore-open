@@ -88,7 +88,7 @@ class OrderDetailManagement
       self.notify_of_update $(row).find('input[name*=total]')
       enablePriceChangeReasonField()
 
-  enablePriceChangeReasonField= ->
+  enablePriceChangeReasonField = ->
     input_field = $("#order_detail_price_change_reason")
     input_field.prop("disabled", false)
     # input_field.parent().parent().toggle()
