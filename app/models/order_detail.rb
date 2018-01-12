@@ -108,6 +108,19 @@ class OrderDetail < ActiveRecord::Base
   validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
   validates_length_of :note, maximum: 1000, allow_blank: true, allow_nil: true
   validate :valid_manual_fulfilled_at
+  validate :require_pricing_note
+
+  def require_pricing_note
+    return unless @manually_priced # && feature flag is off
+    return if cost_estimated?
+
+    dup_od = self.dup
+    dup_od.assign_price_policy
+
+    if price_change_reason.blank? && (dup_od.actual_cost != actual_cost || dup_od.actual_subsidy != actual_subsidy)
+      errors.add :price_change_reason, "is required"
+    end
+  end
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility

@@ -3,7 +3,7 @@ class OrderDetails::PriceChecker
   include ActionView::Helpers::NumberHelper
 
   def initialize(order_detail)
-    @order_detail = order_detail
+    @order_detail = order_detail.dup
   end
 
   def prices_from_params(params)

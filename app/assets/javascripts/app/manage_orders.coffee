@@ -86,12 +86,6 @@ class OrderDetailManagement
       total = row.find('.cost input').val() - row.find('.subsidy input').val()
       row.find('.total input').val(total.toFixed(2))
       self.notify_of_update $(row).find('input[name*=total]')
-      enablePriceChangeReasonField()
-
-  enablePriceChangeReasonField = ->
-    input_field = $("#order_detail_price_change_reason")
-    input_field.prop("disabled", false)
-    # input_field.parent().parent().toggle()
 
   disableSubmit: ->
     @waiting_requests ||= 0

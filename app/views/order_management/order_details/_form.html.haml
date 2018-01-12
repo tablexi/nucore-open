@@ -57,7 +57,8 @@
         = render "reconcile_note", f: f
 
       .span4
-        = f.input :price_change_reason, input_html: { disabled: true }
+        - if @order_detail.actual_cost?
+          = f.input :price_change_reason
 
       .span4
         = render "assigned_user", f: f
