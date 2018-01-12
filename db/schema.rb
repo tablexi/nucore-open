@@ -861,6 +861,7 @@ ActiveRecord::Schema.define(version: 20180111200920) do
   add_foreign_key "order_details", "statements"
   add_foreign_key "order_details", "users", column: "assigned_user_id"
   add_foreign_key "order_details", "users", column: "dispute_by_id"
+  add_foreign_key "order_details", "users", column: "price_changed_by_user_id"
   add_foreign_key "order_imports", "facilities", name: "fk_order_imports_facilities"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "facilities"
