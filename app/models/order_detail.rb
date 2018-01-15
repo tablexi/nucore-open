@@ -115,7 +115,7 @@ class OrderDetail < ActiveRecord::Base
     return if cost_estimated?
 
     if price_change_reason.blank? && actual_costs_differ_from_calculated?
-      errors.add :price_change_reason, :blank
+      errors.add(:price_change_reason, :blank)
     end
   end
 
