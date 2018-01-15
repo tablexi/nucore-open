@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Managing training a request" do
+RSpec.describe "Managing training a request", feature_setting: { training_requests: true } do
   let(:director) { create(:user, :facility_director, facility: facility) }
   let!(:training_request) { create(:training_request) }
   let(:facility) { training_request.product.facility }
