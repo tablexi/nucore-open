@@ -111,7 +111,7 @@ class OrderDetail < ActiveRecord::Base
   validate :require_pricing_note
 
   def require_pricing_note
-    return unless @manually_priced # && feature flag is off
+    return unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
     return if cost_estimated?
 
     if price_change_reason.blank? && actual_costs_differ_from_calculated?

@@ -212,6 +212,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         before { sign_in @admin }
 
         describe "updating price" do
+          # test with feature on and off
         end
 
         describe "updating reservation times" do
