@@ -211,6 +211,9 @@ RSpec.describe OrderManagement::OrderDetailsController do
       context "when signed in as an administrator" do
         before { sign_in @admin }
 
+        describe "updating price" do
+        end
+
         describe "updating reservation times" do
           before do
             instrument.price_policies.first.update_attributes(

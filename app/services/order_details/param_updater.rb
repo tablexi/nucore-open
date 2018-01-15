@@ -61,6 +61,9 @@ class OrderDetails::ParamUpdater
 
     @order_detail.manually_priced! # don't auto-reassign price
     # is this a good place to save price_changed_by_user?
+    # @order_detail.assign_price_changed_by_user
+
+    # update_whodunit if od.price_differs? && od.actual_cost_changed? || od.actual_cost_changed? # od.changes & [:actual_cost, :actual_sub]
     @order_detail.transaction do
       @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation
       if order_status_id && order_status_id.to_i != @order_detail.order_status_id

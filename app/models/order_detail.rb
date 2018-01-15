@@ -114,12 +114,16 @@ class OrderDetail < ActiveRecord::Base
     return unless @manually_priced # && feature flag is off
     return if cost_estimated?
 
+    if price_change_reason.blank? && actual_costs_differ_from_calculated?
+      errors.add :price_change_reason, "is required"
+    end
+  end
+
+  def actual_costs_differ_from_calculated?
     dup_od = self.dup
     dup_od.assign_price_policy
 
-    if price_change_reason.blank? && (dup_od.actual_cost != actual_cost || dup_od.actual_subsidy != actual_subsidy)
-      errors.add :price_change_reason, "is required"
-    end
+    dup_od.actual_cost != actual_cost || dup_od.actual_subsidy != actual_subsidy
   end
 
   ## TODO validate assigned_user is a member of the product's facility
