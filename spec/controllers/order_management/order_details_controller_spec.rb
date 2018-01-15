@@ -1,7 +1,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-RSpec.describe OrderManagement::OrderDetailsController do
+RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price_change_reason_required: false } do
   def reservation_params(reserve_start_at, actual_start_at = nil)
     params = {
       reserve_start_date: I18n.l(reserve_start_at.to_date, format: :usa),
@@ -500,7 +500,41 @@ RSpec.describe OrderManagement::OrderDetailsController do
           before { order_detail.change_status!(OrderStatus.complete) }
 
           describe "price change reason" do
-            # test with feature on and off
+            # the expected price (calculated from the price policy) is 1
+
+            context "with reason required off" do
+              it "does not require a reason when the price is changed" do
+                @params[:order_detail] = {
+                  actual_cost: "10",
+                  actual_subsidy: order_detail.actual_subsidy,
+                }
+                do_request
+
+                expect(assigns[:order_detail].errors).not_to include :price_change_reason
+              end
+            end
+            context "with reason required on", feature_setting: { price_change_reason_required: true } do
+              it "requires a reason when the price is changed from the expected price" do
+                @params[:order_detail] = {
+                  actual_cost: "10",
+                  actual_subsidy: order_detail.actual_subsidy,
+                }
+                do_request
+
+                expect(assigns[:order_detail].errors).to include :price_change_reason
+              end
+
+              it "does not require a reason if the price matches the expected price" do
+                @params[:order_detail] = {
+                  actual_cost: "1",
+                  actual_subsidy: order_detail.actual_subsidy,
+                }
+                do_request
+
+                expect(assigns[:order_detail].errors).not_to include :price_change_reason
+              end
+            end
+
           end
 
           describe "tracking price updates" do
