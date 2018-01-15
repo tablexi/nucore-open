@@ -209,7 +209,7 @@ GEM
     delayed_job_active_record (4.1.2)
       activerecord (>= 3.0, < 5.2)
       delayed_job (>= 3.0, < 5)
-    devise (4.3.0)
+    devise (4.4.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 4.1.0, < 5.2)
@@ -611,7 +611,7 @@ DEPENDENCIES
   daemons (= 1.2.6)
   dataprobe (~> 1.0.0)!
   delayed_job_active_record (~> 4.1.2)
-  devise (~> 4.3.0)
+  devise (~> 4.4.0)
   devise-encryptable (~> 0.2.0)
   dynamic_form (~> 1.1.4)
   exception_notification (~> 4.0.1)
