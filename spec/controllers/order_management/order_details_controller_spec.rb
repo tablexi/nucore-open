@@ -594,7 +594,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
                     note: "i am a note",
                   }
 
-                  expect{ do_request }.not_to change { order_detail.reload.price_changed_by_user }
+                  expect { do_request }.not_to change { order_detail.reload.price_changed_by_user }
                 end
               end
 
@@ -606,7 +606,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
                     price_change_reason: "i am a reason",
                   }
 
-                  expect{ do_request }.to change { order_detail.reload.price_changed_by_user }.to @admin
+                  expect { do_request }.to change { order_detail.reload.price_changed_by_user }.to @admin
                 end
               end
 
@@ -617,7 +617,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
                     actual_subsidy: order_detail.actual_subsidy,
                   }
 
-                  expect{ do_request }.to change { order_detail.reload.price_changed_by_user }.to @admin
+                  expect { do_request }.to change { order_detail.reload.price_changed_by_user }.to @admin
                 end
               end
 
@@ -628,7 +628,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
                     actual_subsidy: "3",
                   }
 
-                  expect{ do_request }.to change { order_detail.reload.price_changed_by_user }.to @admin
+                  expect { do_request }.to change { order_detail.reload.price_changed_by_user }.to @admin
                 end
               end
 
@@ -639,7 +639,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
                     actual_subsidy: order_detail.actual_subsidy,
                   }
 
-                  expect{ do_request }.to change { order_detail.reload.price_changed_by_user }.to nil
+                  expect { do_request }.to change { order_detail.reload.price_changed_by_user }.to nil
                 end
               end
             end

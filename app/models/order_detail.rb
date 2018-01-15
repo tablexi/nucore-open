@@ -120,8 +120,8 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def actual_costs_differ_from_calculated?
-    dup_od = self.dup
-    dup_od.reservation = self.reservation.dup
+    dup_od = dup
+    dup_od.reservation = reservation.dup
     dup_od.assign_price_policy
 
     dup_od.actual_cost != actual_cost || dup_od.actual_subsidy != actual_subsidy
