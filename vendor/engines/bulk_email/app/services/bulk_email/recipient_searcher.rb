@@ -8,14 +8,21 @@ module BulkEmail
     attr_reader :search_fields
 
     DEFAULT_SORT = [:last_name, :first_name].freeze
-    USER_TYPES = %i(customers authorized_users training_requested account_owners).freeze
 
     def initialize(search_fields)
       @search_fields = search_fields
     end
 
+    def self.user_types
+      if SettingsHelper.feature_on?(:training_requests)
+        %i(customers authorized_users training_requested account_owners)
+      else
+        %i(customers authorized_users account_owners)
+      end
+    end
+
     def user_types
-      @user_types ||= USER_TYPES & selected_user_types
+      @user_types ||= self.class.user_types & selected_user_types
     end
 
     def do_search
