@@ -120,15 +120,15 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def actual_costs_differ_from_calculated?
+    !actual_costs_match_calculated?
+  end
+
+  def actual_costs_match_calculated?
     dup_od = dup
     dup_od.reservation = reservation.dup
     dup_od.assign_price_policy
 
-    dup_od.actual_cost != actual_cost || dup_od.actual_subsidy != actual_subsidy
-  end
-
-  def actual_costs_match_calculated?
-    !actual_costs_differ_from_calculated?
+    dup_od.actual_cost == actual_cost && dup_od.actual_subsidy == actual_subsidy
   end
 
   ## TODO validate assigned_user is a member of the product's facility
