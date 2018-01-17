@@ -471,7 +471,7 @@ RSpec.describe Reservation do
                   travel_to(reservation.reserve_start_at - (window_hours - 2).hours)
                 end
 
-                it_behaves_like "a customer is not allowed to edit"
+                it_behaves_like "a customer is allowed to edit"
               end
             end
           end

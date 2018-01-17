@@ -230,7 +230,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def reserve_end_at_editable?
-    outside_lock_window? && Time.zone.now <= reserve_end_at && extendable? && actual_end_at.blank?
+    Time.zone.now <= reserve_end_at && extendable? && actual_end_at.blank?
   end
 
   def extendable?
@@ -245,11 +245,15 @@ class Reservation < ActiveRecord::Base
   end
 
   def before_lock_window?
-    Time.zone.now < reserve_start_at - product_lock_window.hours
+    Time.current < reserve_start_at - product_lock_window.hours
   end
 
   def outside_lock_window?
-    before_lock_window? || Time.zone.now >= reserve_start_at || in_grace_period?
+    before_lock_window? || Time.current >= reserve_start_at || in_grace_period?
+  end
+
+  def inside_lock_window?
+    !before_lock_window?
   end
 
   def admin_editable?
