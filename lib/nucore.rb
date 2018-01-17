@@ -56,6 +56,17 @@ module NUCore
           end
         end
 
+        # Oracle-safe find
+        def find_ids(ids)
+          if NUCore::Database.oracle?
+            results = where_ids_in(ids)
+            raise ActiveRecord::RecordNotFound unless results.length == ids.length
+            results
+          else
+            find(ids)
+          end
+        end
+
       end
 
     end
