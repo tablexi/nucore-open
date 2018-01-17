@@ -156,20 +156,6 @@ class ScheduleRule < ActiveRecord::Base
     percent_overlap(start_at, end_at) * discount_percent.to_f
   end
 
-  def percent_overlap(start_at, end_at)
-    return 0 unless end_at > start_at
-    overlap  = 0
-    duration = (end_at - start_at) / 60
-    # TODO: rewrite to be more efficient; don't iterate over every minute
-    while start_at < end_at
-      if start_at.hour * 100 + start_at.min >= start_time_int && start_at.hour * 100 + start_at.min < end_time_int && on_day?(start_at)
-        overlap += 1
-      end
-      start_at += 60
-    end
-    overlap / duration
-  end
-
   # Inverts a set of rules into another set of rules representing the times the
   # product is unavailable.
   #
@@ -228,6 +214,31 @@ class ScheduleRule < ActiveRecord::Base
     end
 
     not_rules
+  end
+
+  private
+
+  def percent_overlap(start_at, end_at)
+    # Strip off seconds
+    start_at = start_at.change(sec: 0)
+    end_at = end_at.change(sec: 0)
+
+    return 0 unless end_at > start_at
+    total_mins = TimeRange.new(start_at, end_at).duration_mins
+
+    minutes_overlap(start_at, end_at).fdiv total_mins
+  end
+
+  def minutes_overlap(start_at, end_at)
+    overlap_mins = 0
+    # TODO: rewrite to be more efficient; don't iterate over every minute
+    while start_at < end_at
+      if start_at.hour * 100 + start_at.min >= start_time_int && start_at.hour * 100 + start_at.min < end_time_int && on_day?(start_at)
+        overlap_mins += 1
+      end
+      start_at += 60
+    end
+    overlap_mins
   end
 
   # If we're at, say, 4:00, return 3. If we're at 4:01, return 4.

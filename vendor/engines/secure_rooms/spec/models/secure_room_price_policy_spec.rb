@@ -32,5 +32,15 @@ RSpec.describe SecureRoomPricePolicy do
       let(:occupancy) { build_stubbed(:occupancy, entry_at: nil, exit_at: 1.day.ago) }
       it { is_expected.to be_blank }
     end
+
+    describe "with a discount" do
+      before { schedule_rule.discount_percent = 10 }
+
+      describe "rounding seconds" do
+        let(:occupancy) { build_stubbed(:occupancy, entry_at: 1.hour.ago + 15.seconds, exit_at: Time.current) }
+
+        it { is_expected.to eq(cost: 54, subsidy: 13.5) }
+      end
+    end
   end
 end
