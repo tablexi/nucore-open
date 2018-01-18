@@ -246,5 +246,4 @@ class ScheduleRule < ActiveRecord::Base
     overlap_mins
   end
 
-
 end
