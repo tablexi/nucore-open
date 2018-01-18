@@ -1,7 +1,7 @@
 %table.table.table-striped.table-hover
   %thead
     %tr.borderless
-      %td{colspan: 8}
+      %td{colspan: 9}
         .text-right
           = link_to t(".assign_price_policies"),
             assign_price_policies_path,
@@ -13,6 +13,7 @@
       %th= problem_order_date_header(local_assigns[:show_reservation_start_at])
       %th= Order.human_attribute_name(:user)
       %th{ colspan: 2 }= t(".th.quantity_and_product")
+      %th
       %th= Account.model_name.human
       %th= t(".th.problem")
   %tbody
@@ -27,6 +28,11 @@
         %td= order_detail.order.user
         %td.centered= order_detail.quantity
         %td= OrderDetailPresenter.new(order_detail).description_as_html
+        %td
+          - if order_detail.add_accessories?
+            = link_to new_facility_order_order_detail_accessory_path(current_facility, order_detail.order, order_detail), class: ["has_accessories", "persistent", "undecorated"] do
+              = tooltip_icon "fa fa-plus-square", t("product_accessories.pick_accessories.title")
+
         %td= order_detail.account
         %td.centered
           = order_detail_badges(order_detail)
