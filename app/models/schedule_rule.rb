@@ -216,6 +216,11 @@ class ScheduleRule < ActiveRecord::Base
     not_rules
   end
 
+  # If we're at, say, 4:00, return 3. If we're at 4:01, return 4.
+  def hour_floor
+    end_min == 0 ? end_hour - 1 : end_hour
+  end
+
   private
 
   def percent_overlap(start_at, end_at)
@@ -241,9 +246,5 @@ class ScheduleRule < ActiveRecord::Base
     overlap_mins
   end
 
-  # If we're at, say, 4:00, return 3. If we're at 4:01, return 4.
-  def hour_floor
-    end_min == 0 ? end_hour - 1 : end_hour
-  end
 
 end
