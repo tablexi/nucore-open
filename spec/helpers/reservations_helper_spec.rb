@@ -1,11 +1,11 @@
 require "rails_helper"
 
 RSpec.describe ReservationsHelper do
-  describe "#end_time_disabled?" do
+  describe "#end_time_editing_disabled?" do
     context "when the reservation is not persisted" do
       subject(:reservation) { Reservation.new }
 
-      it { expect(end_time_disabled?(reservation)).to be false }
+      it { expect(end_time_editing_disabled?(reservation)).to be false }
     end
 
     context "when the reservation is persisted" do
@@ -15,13 +15,13 @@ RSpec.describe ReservationsHelper do
         context "and the reservation is in a cart" do
           before { reservation.order.ordered_at = nil }
 
-          it { expect(end_time_disabled?(reservation)).to be false }
+          it { expect(end_time_editing_disabled?(reservation)).to be false }
         end
 
         context "and the reservation has been ordered" do
           before { reservation.order.ordered_at = Time.zone.now }
 
-          it { expect(end_time_disabled?(reservation)).to be true }
+          it { expect(end_time_editing_disabled?(reservation)).to be true }
         end
       end
 
@@ -31,17 +31,17 @@ RSpec.describe ReservationsHelper do
         context "and reserve_end_at is set to a time in the past but not saved" do
           before { reservation.reserve_end_at = 1.day.ago }
 
-          it { expect(end_time_disabled?(reservation)).to be false }
+          it { expect(end_time_editing_disabled?(reservation)).to be false }
         end
       end
     end
   end
 
-  describe "#start_time_disabled?" do
+  describe "#start_time_editing_disabled?" do
     context "when the reservation is not persisted" do
       subject(:reservation) { Reservation.new }
 
-      it { expect(start_time_disabled?(reservation)).to be false }
+      it { expect(start_time_editing_disabled?(reservation)).to be false }
     end
 
     context "when the reservation is persisted" do
@@ -51,13 +51,13 @@ RSpec.describe ReservationsHelper do
         context "and the reservation is in a cart" do
           before { reservation.order.ordered_at = false }
 
-          it { expect(start_time_disabled?(reservation)).to be false }
+          it { expect(start_time_editing_disabled?(reservation)).to be false }
         end
 
         context "and the reservation has been ordered" do
           before { reservation.order.ordered_at = Time.zone.now }
 
-          it { expect(start_time_disabled?(reservation)).to be true }
+          it { expect(start_time_editing_disabled?(reservation)).to be true }
         end
       end
 
@@ -67,7 +67,7 @@ RSpec.describe ReservationsHelper do
         context "and reserve_start_at is set to a time in the past but not saved" do
           before { reservation.reserve_start_at = 1.day.ago }
 
-          it { expect(start_time_disabled?(reservation)).to be false }
+          it { expect(start_time_editing_disabled?(reservation)).to be false }
         end
       end
     end
