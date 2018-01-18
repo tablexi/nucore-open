@@ -11,7 +11,7 @@ RSpec.describe BulkEmail::BulkEmailController do
   let!(:restricted_item) { FactoryBot.create(:item, facility_account: facility_account, requires_approval: true) }
   let!(:service) { FactoryBot.create(:service, facility_account: facility_account) }
 
-  describe "POST #search" do
+  describe "POST #search", feature_setting: { training_requests: true }  do
     context "when not logged in" do
       before { post "search", params }
       it { is_expected.to redirect_to(new_user_session_url) }
