@@ -8,7 +8,7 @@ module Reports
 
     def raw_report
       Reports::ExportRaw.new(
-        facility: current_facility,
+        facility_url_name: current_facility.url_name,
         date_range_field: params[:date_range_field],
         date_start: @date_start,
         date_end: @date_end,

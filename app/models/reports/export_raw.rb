@@ -6,10 +6,10 @@ module Reports
 
     include CsvExporter
 
-    attr_reader :order_status_ids, :facility, :date_range_field
+    attr_reader :order_status_ids, :facility_url_name, :date_range_field
 
     def initialize(arguments)
-      [:date_end, :date_start, :facility, :order_status_ids].each do |property|
+      [:date_end, :date_start, :facility_url_name, :order_status_ids].each do |property|
         if arguments[property].present?
           instance_variable_set("@#{property}".to_sym, arguments[property])
         else
@@ -17,6 +17,15 @@ module Reports
         end
       end
       @date_range_field = arguments[:date_range_field] || "journal_or_statement_date"
+    end
+
+
+    def facility
+      @facility ||= if facility_url_name == Facility.cross_facility.url_name
+                      Facility.cross_facility
+                    else
+                      Facility.find_by(url_name: facility_url_name)
+                    end
     end
 
     def description

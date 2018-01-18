@@ -57,7 +57,7 @@ class Facility < ActiveRecord::Base
 
   def self.cross_facility
     @@cross_facility ||=
-      new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL")
+      new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL", is_active: true)
   end
 
   def products(type = nil)
