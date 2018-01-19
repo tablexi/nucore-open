@@ -34,7 +34,6 @@ module Reports
                  .includes(*includes)
                  .preload(*(default_preloads + Array(@extra_preloads)))
                  .merge(Order.purchased)
-                 .find_each(batch_size: 30000)
     end
 
     def default_includes
