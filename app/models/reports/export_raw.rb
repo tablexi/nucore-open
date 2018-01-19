@@ -19,7 +19,6 @@ module Reports
       @date_range_field = arguments[:date_range_field] || "journal_or_statement_date"
     end
 
-
     def facility
       @facility ||= if facility_url_name == Facility.cross_facility.url_name
                       Facility.cross_facility
@@ -107,9 +106,9 @@ module Reports
 
     def report_data_query
       Reports::Querier.new(
-        order_status_id: @order_status_ids,
-        current_facility: @facility,
-        date_range_field: @date_range_field,
+        order_status_id: order_status_ids,
+        current_facility: facility,
+        date_range_field: date_range_field,
         date_range_start: date_start,
         date_range_end: date_end,
         includes: [:reservation, :statement],
