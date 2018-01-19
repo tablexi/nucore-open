@@ -11,7 +11,7 @@ RSpec.describe BulkEmail::BulkEmailController do
   let!(:restricted_item) { FactoryBot.create(:item, facility_account: facility_account, requires_approval: true) }
   let!(:service) { FactoryBot.create(:service, facility_account: facility_account) }
 
-  describe "POST #search", feature_setting: { training_requests: true } do
+  describe "POST #search" do
     context "when not logged in" do
       before { post "search", params }
       it { is_expected.to redirect_to(new_user_session_url) }
@@ -46,7 +46,7 @@ RSpec.describe BulkEmail::BulkEmailController do
               .to eq([item, service, instrument, restricted_item].sort)
           end
 
-          it "sets user_types, in order" do
+          it "sets user_types, in order", feature_setting: { training_requests: true } do
             expect(assigns[:user_types].keys)
               .to eq(%i(customers authorized_users training_requested account_owners))
           end
