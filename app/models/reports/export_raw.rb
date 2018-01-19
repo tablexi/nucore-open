@@ -111,7 +111,8 @@ module Reports
         date_range_field: date_range_field,
         date_range_start: date_start,
         date_range_end: date_end,
-        includes: [:reservation, :statement],
+        includes: [:reservation, :statement, :journal, :reservation, order: [:user]],
+        preloads: [:created_by_user, order: [:facility], account: [:affiliate, :owner_user], price_policy: [:price_group]],
         transformer_options: { time_data: true },
       ).perform
     end
