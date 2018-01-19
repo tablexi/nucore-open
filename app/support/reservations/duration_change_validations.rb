@@ -40,9 +40,9 @@ class Reservations::DurationChangeValidations
 
     if duration_is < duration_was
       if reservation.started? || reservation.reserve_start_at < Time.current
-        errors.add(:reserve_end_at, I18n.t("activerecord.errors.models.reservation.shorten_reservation_once_started"))
+        errors.add(:duration_mins, I18n.t("activerecord.errors.models.reservation.shorten_reservation_once_started"))
       elsif reservation.inside_lock_window?
-        errors.add(:reserve_end_at, I18n.t("activerecord.errors.models.reservation.shorten_reservation_in_lock_window"))
+        errors.add(:duration_mins, I18n.t("activerecord.errors.models.reservation.shorten_reservation_in_lock_window", lock_window: reservation.product.lock_window))
       end
     end
   end
