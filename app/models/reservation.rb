@@ -82,7 +82,7 @@ class Reservation < ActiveRecord::Base
   scope :ongoing, -> { not_ended.where("actual_start_at <= ?", Time.current) }
 
   def self.today
-    for_date(Time.zone.now)
+    for_date(Time.current)
   end
 
   def self.for_date(date)
@@ -94,7 +94,7 @@ class Reservation < ActiveRecord::Base
       .where("reserve_start_at < ?", end_time)
   end
 
-  def self.upcoming(t = Time.zone.now)
+  def self.upcoming(t = Time.current)
     # If this is a named scope differences emerge between Oracle & MySQL on #reserve_end_at querying.
     # Eliminate by letting Rails filter by #reserve_end_at
     joins("LEFT JOIN order_details ON order_details.id = reservations.order_detail_id")
@@ -150,12 +150,12 @@ class Reservation < ActiveRecord::Base
 
   def start_reservation!
     product.schedule.products.flat_map(&:started_reservations).each(&:complete!)
-    self.actual_start_at = Time.zone.now
+    self.actual_start_at = Time.current
     save!
   end
 
   def end_reservation!
-    self.actual_end_at = Time.zone.now
+    self.actual_end_at = Time.current
     save!
     order_detail.complete!
   end
@@ -218,7 +218,7 @@ class Reservation < ActiveRecord::Base
 
   # can the CUSTOMER cancel the order
   def can_cancel?
-    !canceled? && reserve_start_at > Time.zone.now && actual_start_at.nil? && actual_end_at.nil?
+    !canceled? && reserve_start_at > Time.current && actual_start_at.nil? && actual_end_at.nil?
   end
 
   def can_customer_edit?
@@ -230,7 +230,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def reserve_end_at_editable?
-    Time.zone.now <= reserve_end_at && extendable? && actual_end_at.blank?
+    Time.current <= reserve_end_at && extendable? && actual_end_at.blank?
   end
 
   def extendable?
@@ -321,7 +321,7 @@ class Reservation < ActiveRecord::Base
     end
   end
 
-  def in_grace_period?(at = Time.zone.now)
+  def in_grace_period?(at = Time.current)
     at = at.to_i
     grace_period_end = reserve_start_at.to_i
     grace_period_begin = (reserve_start_at - grace_period_duration).to_i
