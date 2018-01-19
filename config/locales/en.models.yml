@@ -85,6 +85,9 @@ en:
           max_less_than_min: "must be greater than or equal to minimum reservation minutes"
         order_detail:
           changing_status: There was an error trying to change the status of the order.
+          attributes:
+            price_change_reason:
+              blank: is required
         reservation:
           cannot_be_completed_in_future: You cannot complete a future reservation.
           duration_not_interval: "The duration of the reservation must be a multiple of %{reserve_interval}"
@@ -299,6 +302,7 @@ en:
         ordered_at: Ordered Date
         ordered_by: Ordered By
         product: Product
+        price_change_reason: Pricing Note
         quantity: Quantity
         reconciled_note: Reconciliation Note
         reconciled_at: Reconciliation Date

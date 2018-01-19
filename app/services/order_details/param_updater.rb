@@ -9,6 +9,7 @@ class OrderDetails::ParamUpdater
         :dispute_resolved_reason,
         :quantity,
         :note,
+        :price_change_reason,
         :editing_time_data,
         reservation: [
           :reserve_start_date,
@@ -58,7 +59,9 @@ class OrderDetails::ParamUpdater
 
     user_newly_assigned = @order_detail.assigned_user_id_changed? && @order_detail.assigned_user.present?
 
-    @order_detail.manually_priced!
+    @order_detail.manually_priced! # don't auto-reassign price
+    assign_price_changed_by_user
+
     @order_detail.transaction do
       @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation
       if order_status_id && order_status_id.to_i != @order_detail.order_status_id
@@ -78,6 +81,14 @@ class OrderDetails::ParamUpdater
   end
 
   private
+
+  def assign_price_changed_by_user
+    if @order_detail.actual_costs_match_calculated?
+      @order_detail.price_changed_by_user = nil
+    elsif %w[actual_cost actual_subsidy price_change_reason].any? { |a| @order_detail.changed.include?(a) }
+      @order_detail.price_changed_by_user = @editing_user
+    end
+  end
 
   def cost_params(params)
     params.permit(:actual_cost, :actual_subsidy)

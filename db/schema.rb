@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171130224610) do
+ActiveRecord::Schema.define(version: 20180111200920) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -260,43 +260,45 @@ ActiveRecord::Schema.define(version: 20171130224610) do
   add_index "notifications", ["user_id"], name: "index_notifications_on_user_id", using: :btree
 
   create_table "order_details", force: :cascade do |t|
-    t.integer  "order_id",                limit: 4,                                              null: false
-    t.integer  "parent_order_detail_id",  limit: 4
-    t.integer  "product_id",              limit: 4,                                              null: false
-    t.integer  "quantity",                limit: 4,                                              null: false
-    t.integer  "price_policy_id",         limit: 4
-    t.decimal  "actual_cost",                           precision: 10, scale: 2
-    t.decimal  "actual_subsidy",                        precision: 10, scale: 2
-    t.integer  "assigned_user_id",        limit: 4
-    t.decimal  "estimated_cost",                        precision: 10, scale: 2
-    t.decimal  "estimated_subsidy",                     precision: 10, scale: 2
-    t.integer  "response_set_id",         limit: 4
-    t.integer  "account_id",              limit: 4
+    t.integer  "order_id",                 limit: 4,                                              null: false
+    t.integer  "parent_order_detail_id",   limit: 4
+    t.integer  "product_id",               limit: 4,                                              null: false
+    t.integer  "quantity",                 limit: 4,                                              null: false
+    t.integer  "price_policy_id",          limit: 4
+    t.decimal  "actual_cost",                            precision: 10, scale: 2
+    t.decimal  "actual_subsidy",                         precision: 10, scale: 2
+    t.integer  "assigned_user_id",         limit: 4
+    t.decimal  "estimated_cost",                         precision: 10, scale: 2
+    t.decimal  "estimated_subsidy",                      precision: 10, scale: 2
+    t.integer  "response_set_id",          limit: 4
+    t.integer  "account_id",               limit: 4
     t.datetime "dispute_at"
-    t.integer  "dispute_by_id",           limit: 4
-    t.string   "dispute_reason",          limit: 200
+    t.integer  "dispute_by_id",            limit: 4
+    t.string   "dispute_reason",           limit: 200
     t.datetime "dispute_resolved_at"
-    t.string   "dispute_resolved_reason", limit: 200
+    t.string   "dispute_resolved_reason",  limit: 200
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "order_status_id",         limit: 4
-    t.string   "state",                   limit: 50
-    t.integer  "group_id",                limit: 4
-    t.integer  "bundle_product_id",       limit: 4
+    t.integer  "order_status_id",          limit: 4
+    t.string   "state",                    limit: 50
+    t.integer  "group_id",                 limit: 4
+    t.integer  "bundle_product_id",        limit: 4
     t.datetime "fulfilled_at"
     t.datetime "reviewed_at"
-    t.integer  "statement_id",            limit: 4
-    t.integer  "journal_id",              limit: 4
-    t.string   "reconciled_note",         limit: 255
-    t.integer  "created_by",              limit: 4,                                              null: false
-    t.integer  "product_accessory_id",    limit: 4
-    t.boolean  "problem",                                                        default: false, null: false
+    t.integer  "statement_id",             limit: 4
+    t.integer  "journal_id",               limit: 4
+    t.string   "reconciled_note",          limit: 255
+    t.integer  "created_by",               limit: 4,                                              null: false
+    t.integer  "product_accessory_id",     limit: 4
+    t.boolean  "problem",                                                         default: false, null: false
     t.datetime "reconciled_at"
-    t.integer  "project_id",              limit: 4
-    t.text     "note",                    limit: 65535
+    t.integer  "project_id",               limit: 4
+    t.text     "note",                     limit: 65535
     t.datetime "canceled_at"
-    t.integer  "canceled_by",             limit: 4
-    t.string   "canceled_reason",         limit: 255
+    t.integer  "canceled_by",              limit: 4
+    t.string   "canceled_reason",          limit: 255
+    t.string   "price_change_reason",      limit: 255
+    t.integer  "price_changed_by_user_id", limit: 4
   end
 
   add_index "order_details", ["account_id"], name: "fk_od_accounts", using: :btree
@@ -308,6 +310,7 @@ ActiveRecord::Schema.define(version: 20171130224610) do
   add_index "order_details", ["order_id"], name: "fk_rails_e5976611fd", using: :btree
   add_index "order_details", ["order_status_id"], name: "index_order_details_on_order_status_id", using: :btree
   add_index "order_details", ["parent_order_detail_id"], name: "fk_rails_cc2adae8c3", using: :btree
+  add_index "order_details", ["price_changed_by_user_id"], name: "index_order_details_on_price_changed_by_user_id", using: :btree
   add_index "order_details", ["price_policy_id"], name: "fk_rails_555b721183", using: :btree
   add_index "order_details", ["problem"], name: "index_order_details_on_problem", using: :btree
   add_index "order_details", ["product_accessory_id"], name: "fk_rails_e4f0ef56a6", using: :btree
@@ -858,6 +861,7 @@ ActiveRecord::Schema.define(version: 20171130224610) do
   add_foreign_key "order_details", "statements"
   add_foreign_key "order_details", "users", column: "assigned_user_id"
   add_foreign_key "order_details", "users", column: "dispute_by_id"
+  add_foreign_key "order_details", "users", column: "price_changed_by_user_id"
   add_foreign_key "order_imports", "facilities", name: "fk_order_imports_facilities"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "facilities"

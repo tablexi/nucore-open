@@ -46,6 +46,7 @@ class OrderDetail < ActiveRecord::Base
   belongs_to :assigned_user, class_name: "User", foreign_key: "assigned_user_id"
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
   belongs_to :dispute_by, class_name: "User"
+  belongs_to :price_changed_by_user, class_name: "User"
   belongs_to :order_status
   belongs_to :account
   belongs_to :bundle, foreign_key: "bundle_product_id"
@@ -107,6 +108,28 @@ class OrderDetail < ActiveRecord::Base
   validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
   validates_length_of :note, maximum: 1000, allow_blank: true, allow_nil: true
   validate :valid_manual_fulfilled_at
+  validate :require_pricing_note
+
+  def require_pricing_note
+    return unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
+    return if cost_estimated?
+
+    if price_change_reason.blank? && actual_costs_differ_from_calculated?
+      errors.add(:price_change_reason, :blank)
+    end
+  end
+
+  def actual_costs_differ_from_calculated?
+    !actual_costs_match_calculated?
+  end
+
+  def actual_costs_match_calculated?
+    dup_od = dup
+    dup_od.reservation = reservation.dup
+    dup_od.assign_price_policy
+
+    dup_od.actual_cost == actual_cost && dup_od.actual_subsidy == actual_subsidy
+  end
 
   ## TODO validate assigned_user is a member of the product's facility
   ## TODO validate order status is global or a member of the product's facility
