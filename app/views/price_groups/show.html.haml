@@ -8,6 +8,6 @@
 %h3= @price_group.name
 - case @tab
 - when :accounts
-  = render "accounts"
+  = render "accounts", price_group: @price_group
 - when :users
-  = render "users"
+  = render "users", price_group: @price_group

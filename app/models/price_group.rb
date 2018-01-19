@@ -40,6 +40,10 @@ class PriceGroup < ActiveRecord::Base
     facility.nil?
   end
 
+  def can_manage_price_group_members?
+    is_not_global || SettingsHelper.feature_on?(:can_manage_global_price_groups)
+  end
+
   def can_purchase?(product)
     !PriceGroupProduct.find_by(price_group_id: id, product_id: product.id).nil?
   end
