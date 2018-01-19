@@ -12,6 +12,8 @@ module Reports
       @date_range_start = options[:date_range_start]
       @date_range_end = options[:date_range_end]
       @extra_includes = options[:includes]
+      @extra_preloads = options[:preloads]
+      @extra_joins = options[:joins]
       @transformer_options = options[:transformer_options]
     end
 
@@ -28,12 +30,19 @@ module Reports
       OrderDetail.where(order_status_id: order_status_id)
                  .for_facility(current_facility)
                  .action_in_date_range(date_range_field, date_range_start, date_range_end)
+                 .joins(*([:order, :account] + Array(@extra_joins)))
                  .includes(*includes)
+                 .preload(*(default_preloads + Array(@extra_preloads)))
                  .merge(Order.purchased)
+                 .find_each(batch_size: 30000)
     end
 
     def default_includes
-      [:account, :order, :order_status, :price_policy, :product]
+      [:order, :price_policy]
+    end
+
+    def default_preloads
+      [:product, :order_status, :account]
     end
 
   end

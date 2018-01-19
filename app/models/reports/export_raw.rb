@@ -105,12 +105,14 @@ module Reports
 
     def report_data_query
       Reports::Querier.new(
-        order_status_id: @order_status_ids,
-        current_facility: @facility,
-        date_range_field: @date_range_field,
+        order_status_id: order_status_ids,
+        current_facility: facility,
+        date_range_field: date_range_field,
         date_range_start: date_start,
         date_range_end: date_end,
-        includes: [:reservation, :statement],
+        joins: [:reservation],
+        includes: [:statement, :journal, :reservation, order: [:user]],
+        preloads: [:created_by_user, order: [:facility], account: [:affiliate, :owner_user], price_policy: :price_group],
         transformer_options: { time_data: true },
       ).perform
     end
