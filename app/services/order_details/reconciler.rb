@@ -12,7 +12,7 @@ module OrderDetails
 
     def initialize(order_detail_scope, params, reconciled_at)
       @params = params
-      @order_details = order_detail_scope.readonly(false).find(to_be_reconciled.keys)
+      @order_details = order_detail_scope.readonly(false).find_ids(to_be_reconciled.keys)
       @reconciled_at = reconciled_at
     end
 
