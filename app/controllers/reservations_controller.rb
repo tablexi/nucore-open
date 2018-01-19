@@ -298,7 +298,11 @@ class ReservationsController < ApplicationController
     @facility = @instrument.facility
   rescue ActiveRecord::RecordNotFound
     flash[:error] = text("order_detail_removed")
-    redirect_to facility_path(@order.facility)
+    if @order
+      redirect_to facility_path(@order.facility)
+    else
+      raise
+    end
   end
 
   def load_and_check_resources
