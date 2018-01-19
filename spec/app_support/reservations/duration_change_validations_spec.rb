@@ -53,8 +53,6 @@ RSpec.describe Reservations::DurationChangeValidations do
         context "and the original start time is inside the window" do
           let(:reserve_start_at) { 23.hours.from_now }
 
-          before { reservation.reserve_start_at -= 2.hours }
-
           context "when still in a cart (not yet ordered)" do
             it { expect(validator).to be_valid }
           end
@@ -63,16 +61,32 @@ RSpec.describe Reservations::DurationChangeValidations do
             before { allow(reservation).to receive(:in_cart?).and_return(false) }
 
             it "does not allow changing the start time" do
+              reservation.reserve_start_at -= 2.hours
+              reservation.reserve_end_at -= 2.hours
+
               expect(validator).not_to be_valid
               expect(validator.errors.full_messages)
                 .to include("Reserve start at cannot change once the reservation has started")
+            end
+
+            it "is allowed to extend the reservation" do
+              reservation.reserve_end_at += 10.minutes
+              expect(validator).to be_valid
+              expect(validator.errors).to be_empty
+            end
+
+            it "is not allowed to shorten the reservation" do
+              reservation.reserve_end_at -= 5.minutes
+              expect(validator).not_to be_valid
+              expect(reservation.errors.full_messages)
+                .to include("Duration cannot be shortened inside the lock window (24 hours)")
             end
           end
         end
       end
     end
 
-    context "with an ongoing reservation" do
+    context "with a started reservation" do
       let(:reserve_start_at) { 30.minutes.ago }
       let(:reserve_end_at) { 40.minutes.from_now }
 
@@ -86,15 +100,20 @@ RSpec.describe Reservations::DurationChangeValidations do
         it "denies changing start time" do
           reservation.reserve_start_at = 40.minutes.ago
           validator.valid?
-          expect(validator.errors.full_messages)
+          expect(reservation.errors.full_messages)
             .to include("Reserve start at cannot change once the reservation has started")
         end
 
         it "denies shortening end time" do
           reservation.reserve_end_at = 35.minutes.from_now
           validator.valid?
-          expect(validator.errors.full_messages)
-            .to include("Reserve end at cannot be shortened once the reservation has started")
+          expect(reservation.errors.full_messages)
+            .to include("Duration cannot be shortened once the reservation has started")
+        end
+
+        it "allows extending" do
+          reservation.reserve_end_at += 10.minutes
+          expect(validator).to be_valid
         end
       end
 
@@ -134,7 +153,7 @@ RSpec.describe Reservations::DurationChangeValidations do
 
           it "denies changing the start time" do
             expect(validator).not_to be_valid
-            expect(validator.errors.full_messages)
+            expect(reservation.errors.full_messages)
               .to include("Reserve start at cannot change once the reservation has started")
           end
         end
@@ -152,8 +171,8 @@ RSpec.describe Reservations::DurationChangeValidations do
 
           it "denies shortening the reservation time" do
             expect(validator).not_to be_valid
-            expect(validator.errors.full_messages)
-              .to include("Reserve end at cannot be shortened once the reservation has started")
+            expect(reservation.errors.full_messages)
+              .to include("Duration cannot be shortened once the reservation has started")
           end
         end
       end

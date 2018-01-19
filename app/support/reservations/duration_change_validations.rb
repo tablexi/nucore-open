@@ -35,10 +35,15 @@ class Reservations::DurationChangeValidations
   end
 
   def duration_not_shortened
-    reservation_started = reservation.actual_start_at || reservation.reserve_start_at < Time.zone.now
-    reservation_shortened = reservation.reserve_end_at_changed? && reservation.reserve_end_at < reservation.reserve_end_at_was
-    if reservation_started && reservation_shortened
-      errors.add(:reserve_end_at, I18n.t("activerecord.errors.models.reservation.shorten_reserve_end_at"))
+    duration_was = TimeRange.new(reservation.reserve_start_at_was, reservation.reserve_end_at_was).duration_mins
+    duration_is = TimeRange.new(reservation.reserve_start_at, reservation.reserve_end_at).duration_mins
+
+    if duration_is < duration_was
+      if reservation.started? || reservation.reserve_start_at < Time.current
+        errors.add(:duration_mins, I18n.t("activerecord.errors.models.reservation.shorten_reservation_once_started"))
+      elsif reservation.inside_lock_window?
+        errors.add(:duration_mins, I18n.t("activerecord.errors.models.reservation.shorten_reservation_in_lock_window", lock_window: reservation.product.lock_window))
+      end
     end
   end
 
