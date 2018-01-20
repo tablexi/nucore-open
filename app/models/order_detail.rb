@@ -354,8 +354,8 @@ class OrderDetail < ActiveRecord::Base
              .joins("LEFT JOIN statements in_range_statements ON in_range_statements.id = order_details.statement_id")
 
     journal_query = ["journal_id IS NOT NULL"]
-    journal_query << "journal_date >= :start_date" if start_date
-    journal_query << "journal_date < :end_date" if end_date
+    journal_query << "journals.journal_date >= :start_date" if start_date
+    journal_query << "journals.journal_date < :end_date" if end_date
 
     statement_query = ["statement_id IS NOT NULL"]
     statement_query << "in_range_statements.created_at >= :start_date" if start_date
