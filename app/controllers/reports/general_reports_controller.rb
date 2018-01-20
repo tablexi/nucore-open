@@ -79,6 +79,7 @@ module Reports
         date_range_field: date_range_field,
         date_range_start: @date_start,
         date_range_end: @date_end,
+        batch_size: 5_000,
       ).perform
     end
 
