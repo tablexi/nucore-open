@@ -11,7 +11,7 @@ RSpec.describe Reports::ExportRaw do
   let(:report_args) do
     {
       action_name: "general",
-      facility: facility,
+      facility_url_name: facility.url_name,
       order_status_ids: [order_detail.order_status_id],
       date_end: 1.day.from_now,
       date_start: 1.day.ago,
@@ -67,6 +67,23 @@ RSpec.describe Reports::ExportRaw do
       end
     end
 
+    context "in a cross facility context" do
+      let(:report_args) do
+        {
+          action_name: "general",
+          facility_url_name: Facility.cross_facility.url_name,
+          order_status_ids: [order_detail.order_status_id],
+          date_end: 1.day.from_now,
+          date_start: 1.day.ago,
+          date_range_field: "ordered_at",
+        }
+      end
+
+      it "exports correct number of line items" do
+        expect(report.to_csv.split("\n").length).to eq(2)
+      end
+    end
+
   end
 
   describe "with a reservation", :time_travel do
@@ -104,6 +121,23 @@ RSpec.describe Reports::ExportRaw do
         "Quantity" => "1",
         "Charge For" => "Reservation",
       )
+    end
+
+    context "in a cross facility context" do
+      let(:report_args) do
+        {
+          action_name: "general",
+          facility_url_name: Facility.cross_facility.url_name,
+          order_status_ids: [order_detail.order_status_id],
+          date_end: 1.day.from_now,
+          date_start: 1.day.ago,
+          date_range_field: "ordered_at",
+        }
+      end
+
+      it "exports correct number of line items" do
+        expect(report.to_csv.split("\n").length).to eq(2)
+      end
     end
   end
 end

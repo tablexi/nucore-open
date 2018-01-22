@@ -128,6 +128,7 @@ feature:
   journals_may_span_fiscal_years_on: false
   equipment_list_on: true
   price_change_reason_required_on: false
+  cross_facility_reports_on: true
 
 split_accounts:
   # Roles are allowed to create Split Accounts
