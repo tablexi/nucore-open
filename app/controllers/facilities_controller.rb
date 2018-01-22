@@ -19,7 +19,7 @@ class FacilitiesController < ApplicationController
 
   include FacilitiesHelper
 
-  layout -> {
+  layout lambda {
     action_name.in?(%w(disputed_orders movable_transactions transactions)) ? "two_column_head" : "two_column"
   }
 
