@@ -109,7 +109,7 @@ class InstrumentsController < ProductsCommonController
   def instrument_status
     begin
       @relay = @product.relay
-      status = Rails.env.test? ? true : @relay.get_status
+      status = SettingsHelper.relays_enabled_for_admin? ? instrument.relay.get_status : true
       @status = @product.instrument_statuses.create!(is_on: status)
     rescue => e
       logger.error e
