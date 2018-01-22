@@ -7,10 +7,10 @@ git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 ## base
 gem "rails", "4.2.9"
 gem "protected_attributes"
-gem "rails_config",     "0.3.3"
+gem "rails_config",     "0.3.3" # gem itself is deprecated (config gem instead)
 
 ## database
-gem "mysql2",           "~> 0.3.20"
+gem "mysql2",           "~> 0.3.20" # behind
 group :oracle do
   gem "ruby-oci8"
   gem "activerecord-oracle_enhanced-adapter"
@@ -25,27 +25,27 @@ gem "devise-encryptable"
 gem "aasm"
 gem "paperclip"
 gem "paper_trail"
-gem "awesome_nested_set", "~> 3.1.3"
-gem "nokogiri", ">= 1.8.1"
+gem "awesome_nested_set"
+gem "nokogiri"
 gem "rails-observers"
 gem "icalendar"
 gem "paranoia"
 
 ## views
-gem "sass-rails", "~> 5.0.6"
-gem "coffee-rails", "~> 4.2.2"
+gem "sass-rails", "~> 5.0.6" # behind
+gem "coffee-rails"
 gem "uglifier"
 gem "therubyracer"
-gem "bootstrap-sass",   "~> 2.3.2"
-gem "haml",             "~> 4.0.5"
+gem "bootstrap-sass",   "~> 2.3.2" # behind
+gem "haml",             "~> 4.0.5" # behind
 gem "will_paginate"
-gem "dynamic_form", "~> 1.1.4"
+gem "dynamic_form"
 gem "ckeditor"
 gem "jquery-rails"
-gem "jquery-ui-rails", "~> 6.0.1"
+gem "jquery-ui-rails"
 gem "vuejs-rails"
-gem "clockpunch", "~> 0.1.12"
-gem "simple_form", "~> 3.5.0"
+gem "clockpunch"
+gem "simple_form"
 gem "font-awesome-rails"
 gem "nested_form_fields"
 gem "text_helpers"
@@ -54,11 +54,11 @@ gem "fine_uploader", path: "vendor/engines/fine_uploader"
 gem "rubyzip"
 
 ## controllers
-gem "prawn",            "0.12"
-gem "prawn_rails",      "0.0.11"
+gem "prawn",            "0.12" # behind
+gem "prawn_rails"
 
 ## other
-gem "delayed_job_active_record", "~> 4.1.2"
+gem "delayed_job_active_record"
 gem "fog-aws"
 gem "rake"
 gem "spreadsheet"
@@ -100,13 +100,13 @@ group :development, :test do
   gem "guard-teaspoon", require: false
   gem "pry-rails"
   gem "pry-byebug"
-  gem "rspec-rails", "~> 3.5.2"
+  gem "rspec-rails", "~> 3.5.2" # behind
   gem "rspec-activejob"
   gem "spring"
   gem "spring-commands-rspec"
   gem "teaspoon-jasmine"
   gem "test-unit" # why do we have this gem?
-  gem "thin", ">= 1.7.2"
+  gem "thin"
 end
 
 group :test do
@@ -123,7 +123,7 @@ end
 
 group :stage, :production do
   gem "eye-patch", require: false
-  gem "exception_notification", "~> 4.0.1"
+  gem "exception_notification", "~> 4.0.1" # behind
   gem "lograge"
   gem "logstash-event"
   gem "oj"
