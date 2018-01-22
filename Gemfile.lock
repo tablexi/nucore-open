@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:tablexi/synaccess.git
-  revision: 7342482d6d5b77aa33b09fbc48e538100f9c31dd
+  revision: d86e6afb7f930fd21ed84091400abab138a36ac6
   specs:
     synaccess_connect (0.2.2)
-      nokogiri (> 1.5)
+      nokogiri (> 1.6)
 
 PATH
   remote: vendor/engines/bulk_email
