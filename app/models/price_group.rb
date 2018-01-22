@@ -14,7 +14,7 @@ class PriceGroup < ActiveRecord::Base
 
   default_scope -> { order(is_internal: :desc, display_order: :asc, name: :asc) }
 
-  before_destroy :is_not_global
+  before_destroy :is_not_global?
   before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil? }
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]) }
@@ -32,7 +32,7 @@ class PriceGroup < ActiveRecord::Base
     globals.find_by(name: Settings.price_group.name.cancer_center)
   end
 
-  def is_not_global
+  def is_not_global?
     !global?
   end
 
@@ -41,7 +41,7 @@ class PriceGroup < ActiveRecord::Base
   end
 
   def can_manage_price_group_members?
-    is_not_global || SettingsHelper.feature_on?(:can_manage_global_price_groups)
+    is_not_global? || SettingsHelper.feature_on?(:can_manage_global_price_groups)
   end
 
   def can_purchase?(product)
