@@ -11,6 +11,11 @@ module SplitAccounts
     def perform(options = {})
       options ||= {} # in case it comes in as nil
 
+      # The main advantage of using the lazy enumerator is to save memory. With it
+      # we will only ever have ~1000 (plus split fake-order-details) in un-freeable
+      # memory at once. It is also significantly faster to writing the first byte
+      # to CSV.
+      # See https://github.com/tablexi/nucore-open/pull/1341 for more details
       nested_map(order_details) do |order_detail|
         if order_detail.account.try(:splits).try(:present?)
           SplitAccounts::OrderDetailSplitter.new(order_detail, split_time_data: options[:time_data]).split
@@ -22,10 +27,12 @@ module SplitAccounts
 
     private
 
-    # Wraps a lazy enumerator with another enumerator so that if the block returns
-    # an Array, each value of that array gets yielded.
+    # Wraps a lazy enumerator with another lazy enumerator so that if the block returns
+    # an Array, each value of that array gets yielded, otherwise, it'll yield the
+    # result of the inner enumerator.
+    #
     # Example:
-    # output = nested_map(1..Float::Infinity) do |i|
+    # output = nested_map(1..Float::INFINITY) do |i|
     #   if i.even?
     #     [i, i]
     #   else
@@ -33,8 +40,10 @@ module SplitAccounts
     #   end
     # end
     #
-    # > output.take(5).to_a
-    # => [1, 2, 2, 3, 4]
+    # > output.class
+    # => Enumerator::Lazy
+    # > output.take(7).to_a
+    # => [1, 2, 2, 3, 4, 4, 5]
     def nested_map(enumerable)
       Enumerator::Lazy.new(enumerable.to_enum) do |yielder, *values|
         results = yield(*values)
