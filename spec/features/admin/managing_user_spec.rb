@@ -14,7 +14,6 @@ RSpec.describe "Managing User Details", :aggregate_failures do
         visit facility_user_path(facility, user)
       end
 
-
       it "allows admin to edit internal/external pricing" do
         expect(page).to have_content("Internal PricingYes")
 
@@ -37,7 +36,6 @@ RSpec.describe "Managing User Details", :aggregate_failures do
         login_as account_admin
         visit facility_user_path(Facility.cross_facility, user)
       end
-
 
       it "does not allow account admin to edit internal/external pricing" do
         expect(page).to have_content("Internal PricingYes")
