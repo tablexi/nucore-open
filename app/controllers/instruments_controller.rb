@@ -131,7 +131,8 @@ class InstrumentsController < ProductsCommonController
       # next if instrument.relay.is_a? RelayDummy
 
       begin
-        status = instrument.relay.get_status
+        # Always return true/on if the relay feature is disabled
+        status = SettingsHelper.relays_enabled_for_admin? ? instrument.relay.get_status : true
         instrument_status = instrument.current_instrument_status
         # if the status hasn't changed, don't create a new status
         @instrument_statuses << if instrument_status && status == instrument_status.is_on?
