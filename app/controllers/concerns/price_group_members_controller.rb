@@ -34,7 +34,7 @@ module PriceGroupMembersController
   end
 
   def destroy
-    raise "Permission Denied" unless @price_group.can_manage_price_group_members?
+    raise NUCore::PermissionDenied unless @price_group.can_manage_price_group_members?
 
     if destroy_price_group_member!
       set_flash(:notice, :destroy)
