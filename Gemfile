@@ -12,18 +12,18 @@ gem "rails_config",     "0.3.3"
 ## database
 gem "mysql2",           "~> 0.3.20"
 group :oracle do
-  gem "ruby-oci8", "~> 2.2.5"
-  gem "activerecord-oracle_enhanced-adapter", "~> 1.6.9"
+  gem "ruby-oci8"
+  gem "activerecord-oracle_enhanced-adapter"
 end
 
 ## auth
-gem "cancancan", "2.1.3"
-gem "devise", "~> 4.4.0"
-gem "devise-encryptable", "~> 0.2.0"
+gem "cancancan"
+gem "devise"
+gem "devise-encryptable"
 
 ## models
-gem "aasm", "~> 4.12.3"
-gem "paperclip", "~> 5.1.0"
+gem "aasm"
+gem "paperclip"
 gem "paper_trail"
 gem "awesome_nested_set", "~> 3.1.3"
 gem "nokogiri", ">= 1.8.1"
@@ -34,19 +34,19 @@ gem "paranoia"
 ## views
 gem "sass-rails", "~> 5.0.6"
 gem "coffee-rails", "~> 4.2.2"
-gem "uglifier",     "~> 4.1.3"
+gem "uglifier"
 gem "therubyracer"
 gem "bootstrap-sass",   "~> 2.3.2"
 gem "haml",             "~> 4.0.5"
-gem "will_paginate", "~> 3.1.6"
+gem "will_paginate"
 gem "dynamic_form", "~> 1.1.4"
-gem "ckeditor", "~> 4.2.4"
+gem "ckeditor"
 gem "jquery-rails"
 gem "jquery-ui-rails", "~> 6.0.1"
 gem "vuejs-rails"
 gem "clockpunch", "~> 0.1.12"
 gem "simple_form", "~> 3.5.0"
-gem "font-awesome-rails", "~> 4.7.0"
+gem "font-awesome-rails"
 gem "nested_form_fields"
 gem "text_helpers"
 gem "chosen-rails"
@@ -61,8 +61,8 @@ gem "prawn_rails",      "0.0.11"
 gem "delayed_job_active_record", "~> 4.1.2"
 gem "fog-aws"
 gem "rake"
-gem "spreadsheet", "~> 1.1.5"
-gem "daemons", "1.2.6"
+gem "spreadsheet"
+gem "daemons"
 gem "ice_cube"
 
 ## custom
@@ -74,12 +74,12 @@ gem "projects", "~> 0.0.1", path: "vendor/engines/projects"
 gem "sanger_sequencing", "~> 0.0.1", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", "~> 0.0.1", path: "vendor/engines/split_accounts"
-gem "synaccess_connect", "~> 0.3.0"
+gem "synaccess_connect"
 
 group :development do
   gem "bullet"
   gem "coffeelint"
-  gem "haml_lint", "~> 0.27.0"
+  gem "haml_lint"
   gem "letter_opener"
   gem "rails-erd"
   gem "rubocop", require: false
@@ -94,39 +94,39 @@ group :development, :deployment do
 end
 
 group :development, :test do
-  gem "awesome_print", "1.8.0"
+  gem "awesome_print"
   gem "factory_bot_rails"
   gem "guard-rspec", require: false
   gem "guard-teaspoon", require: false
-  gem "pry-rails", "~> 0.3.6"
-  gem "pry-byebug", "~> 3.5.1"
+  gem "pry-rails"
+  gem "pry-byebug"
   gem "rspec-rails", "~> 3.5.2"
   gem "rspec-activejob"
   gem "spring"
   gem "spring-commands-rspec"
   gem "teaspoon-jasmine"
-  gem "test-unit", "~> 3.2"
+  gem "test-unit" # why do we have this gem?
   gem "thin", ">= 1.7.2"
 end
 
 group :test do
-  gem "rspec_junit_formatter", "0.3.0"
+  gem "rspec_junit_formatter"
   gem "ci_reporter_rspec"
   gem "codeclimate_circle_ci_coverage"
   gem "capybara"
   gem "capybara-email"
   gem "poltergeist"
   gem "rspec-collection_matchers"
-  gem "shoulda-matchers",  "~> 3.1.2"
-  gem "single_test", "0.6.0"
+  gem "shoulda-matchers"
+  gem "single_test"
 end
 
 group :stage, :production do
   gem "eye-patch", require: false
   gem "exception_notification", "~> 4.0.1"
-  gem "lograge", "~> 0.7.1"
+  gem "lograge"
   gem "logstash-event"
-  gem "oj", "~> 3.3.10"
+  gem "oj"
   gem "rollbar"
   gem "unicorn", require: false
   gem "whenever", require: false
