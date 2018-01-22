@@ -11,8 +11,7 @@ class RelaySynaccessRevA < Relay
   end
 
   def relay_connection
-    clazz = "#{Settings.relays.connect_module}::RevA".constantize
-    @relay_connection ||= clazz.new(host, connection_options)
+    @relay_connection ||= NetBooter::Http::RevA.new(host, connection_options)
   end
 
 end

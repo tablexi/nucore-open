@@ -73,8 +73,6 @@ external_services:
   survey: UrlService
 
 relays:
-  # can also be NetBooter::Telnet
-  connect_module: NetBooter::Http
   test:
     admin_enabled: false
     reservation_enabled: false
