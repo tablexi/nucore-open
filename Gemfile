@@ -74,8 +74,7 @@ gem "projects", "~> 0.0.1", path: "vendor/engines/projects"
 gem "sanger_sequencing", "~> 0.0.1", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", "~> 0.0.1", path: "vendor/engines/split_accounts"
-gem "synaccess_connect", "0.2.2", github: "tablexi/synaccess"
-gem "net-telnet"
+gem "synaccess_connect", "~> 0.3.0"
 
 group :development do
   gem "bullet"
