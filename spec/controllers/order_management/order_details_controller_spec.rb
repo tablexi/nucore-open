@@ -26,7 +26,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
   let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility, control_mechanism: "timer") }
   let(:order_detail) { reservation.order_detail }
   let(:original_account) { create(:setup_account, owner: order_detail.user) }
-  let(:price_group) { facility.price_groups.find(&:is_not_global) }
+  let(:price_group) { facility.price_groups.find(&:is_not_global?) }
   let(:base_price_group) { PriceGroup.base }
   let(:reservation) { create(:purchased_reservation, product: instrument) }
   let(:statement) { create(:statement, facility: facility, created_by: order_detail.user.id, account: original_account) }
