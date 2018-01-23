@@ -27,8 +27,8 @@ RSpec.describe "Editing your own reservation" do
       visit reservations_path
       click_link reservation
 
-      fill_in "Reserve Start", with: format_usa_date(reservation.reserve_start_at + 1.day)
-      fill_in "Reserve End", with: format_usa_date(reservation.reserve_end_at + 1.day)
+      fill_in "Reserve Start", with: format_usa_date(reservation.reserve_start_at + 1.hour)
+      fill_in "Reserve End", with: format_usa_date(reservation.reserve_end_at + 1.hour)
       fill_in "Duration", with: "30"
       click_button "Save"
 
