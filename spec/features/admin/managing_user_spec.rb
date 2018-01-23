@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { user_based_price_groups: true } do
+RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { create_users: true, user_based_price_groups: true } do
 
   let(:facility) { FactoryBot.create(:facility) }
 
