@@ -65,7 +65,10 @@ module Reports
 
     def csv_body
       CSV.generate do |csv|
-        report_data.each { |row| csv << format_row(row) }
+        # When used in delayed_job, this will make sure the query cache is on
+        ActiveRecord::Base.cache do
+          report_data.each { |row| csv << format_row(row) }
+        end
       end
     end
 

@@ -60,9 +60,9 @@ RSpec.describe Reports::GeneralReportsController do
       @account = create_nufs_account_with_owner :user
       define_open_account @item.account, @account.account_number
 
-      @order_detail_ordered_today_unfulfilled = place_product_order(@user, @authable, @item)
+      @order_detail_ordered_today_unfulfilled = place_product_order(@user, @authable, @item, @account)
 
-      @order_detail_ordered_yesterday_unfulfilled = place_product_order(@user, @authable, @item)
+      @order_detail_ordered_yesterday_unfulfilled = place_product_order(@user, @authable, @item, @account)
       @order_detail_ordered_yesterday_unfulfilled.order.update_attributes(ordered_at: 1.day.ago)
 
       @order_detail_ordered_yesterday_fulfilled_today_unreconciled = place_and_complete_item_order(@user, @authable, @account)
@@ -112,26 +112,26 @@ RSpec.describe Reports::GeneralReportsController do
       it "should search search unfulfilled" do
         @params[:status_filter] = [OrderStatus.new_status.id]
         do_request
-        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_today_unfulfilled]
+        expect(assigns[:report_data].to_a).to contain_all [@order_detail_ordered_today_unfulfilled]
       end
 
       it "should search fulfilled" do
         @params[:status_filter] = [@complete.id]
         do_request
-        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_today_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_next_month_unreconciled]
+        expect(assigns[:report_data].to_a).to contain_all [@order_detail_ordered_today_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_next_month_unreconciled]
       end
 
       it "should search reconciled" do
         @params[:status_filter] = [OrderStatus.reconciled.id]
         do_request
-        expect(assigns[:report_data]).to be_empty
+        expect(assigns[:report_data]).to be_none
       end
 
       it "should find reconciled that started yesterday" do
         @params[:status_filter] = [OrderStatus.reconciled.id]
         @params[:date_start] = 1.day.ago.strftime("%m/%d/%Y")
         do_request
-        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
+        expect(assigns[:report_data].to_a).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
       end
     end
 
@@ -143,26 +143,26 @@ RSpec.describe Reports::GeneralReportsController do
       it "should have a problem if it searches unfulfilled" do
         @params[:status_filter] = [OrderStatus.new_status.id]
         do_request
-        expect(assigns[:report_data]).to be_empty
+        expect(assigns[:report_data]).to be_none
       end
 
       it "should search fulfilled" do
         @params[:status_filter] = [@complete.id]
         do_request
-        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_today_unreconciled]
+        expect(assigns[:report_data].to_a).to contain_all [@order_detail_ordered_yesterday_fulfilled_today_unreconciled, @order_detail_ordered_today_fulfilled_today_unreconciled]
       end
 
       it "should search reconciled" do
         @params[:status_filter] = [OrderStatus.reconciled.id]
         do_request
-        expect(assigns[:report_data]).to be_empty
+        expect(assigns[:report_data].to_a).to be_none
       end
 
       it "should find reconciled that started yesterday" do
         @params[:status_filter] = [OrderStatus.reconciled.id]
         @params[:date_start] = 1.day.ago.strftime("%m/%d/%Y")
         do_request
-        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
+        expect(assigns[:report_data].to_a).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today]
       end
     end
 
@@ -175,26 +175,26 @@ RSpec.describe Reports::GeneralReportsController do
       it "should have a problem if it searches unfulfilled" do
         @params[:status_filter] = [OrderStatus.new_status.id]
         do_request
-        expect(assigns[:report_data]).to be_empty
+        expect(assigns[:report_data]).to be_none
       end
 
       it "should have a problem if it searches unjournaled" do
         @params[:status_filter] = [@complete.id]
         do_request
-        expect(assigns[:report_data]).to be_empty
+        expect(assigns[:report_data]).to be_none
       end
 
       it "should search reconciled" do
         @params[:status_filter] = [OrderStatus.reconciled.id]
         do_request
-        expect(assigns[:report_data]).to eq([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today])
+        expect(assigns[:report_data].to_a).to eq([@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today])
       end
 
       it "should find reconciled that started yesterday" do
         @params[:status_filter] = [OrderStatus.reconciled.id]
         @params[:date_start] = 1.day.ago.strftime("%m/%d/%Y")
         do_request
-        expect(assigns[:report_data]).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday]
+        expect(assigns[:report_data].to_a).to contain_all [@order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_today, @order_detail_ordered_yesterday_fulfilled_yesterday_reconciled_yesterday]
       end
     end
   end

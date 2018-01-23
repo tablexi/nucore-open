@@ -15,13 +15,14 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
     let(:order) { build_stubbed(:order) }
 
     let(:order_detail) do
-      build_stubbed(:order_detail, created_by: 1,
+      build_stubbed(:order_detail, created_by: build_stubbed(:user),
                                    quantity: 3,
                                    actual_cost: BigDecimal("9.99"),
                                    actual_subsidy: BigDecimal("19.99"),
                                    estimated_cost: BigDecimal("29.99"),
                                    estimated_subsidy: BigDecimal("39.99"),
-                                   account: split_account)
+                                   account: split_account,
+                                   note: "this is a note")
     end
 
     it "can be initialized" do
@@ -37,7 +38,9 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
 
       it "dups original order detail" do
         results.each do |result|
-          expect(result.created_by).to eq(order_detail.created_by)
+          expect(result.product).to eq(order_detail.product)
+          expect(result.created_by_user).to eq(order_detail.created_by_user)
+          expect(result.note).to eq(order_detail.note)
         end
       end
 

@@ -2,17 +2,22 @@ module Reports
 
   class Querier
 
+    # This seems to be ideal for NU/Oracle, but we can consider tweaking for MySQL
+    BATCH_SIZE = 500
+
     attr_reader :order_status_id, :current_facility, :date_range_field,
-                :date_range_start, :date_range_end, :extra_includes
+                :date_range_start, :date_range_end, :extra_includes,
+                :extra_joins, :extra_preloads, :batch_size, :options
 
     def initialize(options = {})
+      @options = options
       @order_status_id = options[:order_status_id]
       @current_facility = options[:current_facility]
       @date_range_field = options[:date_range_field]
       @date_range_start = options[:date_range_start]
       @date_range_end = options[:date_range_end]
-      @extra_includes = options[:includes]
       @transformer_options = options[:transformer_options]
+      @batch_size = options[:batch_size] || BATCH_SIZE
     end
 
     def perform
@@ -20,20 +25,30 @@ module Reports
     end
 
     def order_details
-      return [] if order_status_id.blank?
-
-      includes = default_includes
-      includes.concat(extra_includes) if extra_includes.present?
+      return OrderDetail.none if order_status_id.blank?
 
       OrderDetail.where(order_status_id: order_status_id)
                  .for_facility(current_facility)
                  .action_in_date_range(date_range_field, date_range_start, date_range_end)
+                 .joins(*joins)
                  .includes(*includes)
+                 .preload(*preloads)
                  .merge(Order.purchased)
+                 .find_each(batch_size: batch_size)
     end
 
-    def default_includes
-      [:account, :order, :order_status, :price_policy, :product]
+    private
+
+    def joins
+      [:order, :account] + Array(options[:joins])
+    end
+
+    def includes
+      [:order, :price_policy] + Array(options[:includes])
+    end
+
+    def preloads
+      [:product, :order_status, :account] + Array(options[:preloads])
     end
 
   end

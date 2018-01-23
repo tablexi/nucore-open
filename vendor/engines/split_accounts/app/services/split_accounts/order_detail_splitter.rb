@@ -46,17 +46,35 @@ module SplitAccounts
       )
     end
 
+    def associations_to_copy
+      [
+        :product,
+        :journal,
+        :statement,
+        :order_status,
+        :price_policy,
+        :created_by_user,
+        :order,
+      ]
+    end
+
     def build_split_order_detail(split)
       split_order_detail = SplitOrderDetailDecorator.new(order_detail.dup)
       split_order_detail.split = split
       split_order_detail.account = split.subaccount
       order_detail_attribute_splitter.split(order_detail, split_order_detail, split)
+
       build_split_time_data(split_order_detail, split) if split_time_data?
 
       # `dup` does not copy over ID. This assignment needs to happen after the
       # reservation/occupancy is set, otherwise ActiveRecord will delete the
       # original reference.
       split_order_detail.id = order_detail.id
+
+      # `dup` does not copy over actual associations, just IDs. When doing reporting
+      # on larger datasets, copying over the actual association can prevent
+      # N+1s because the "fake" order detail will not think it needs to hit the DB.
+      copy_associations(split_order_detail)
 
       split_order_detail
     end
@@ -84,6 +102,12 @@ module SplitAccounts
       return unless order_detail.time_data.present?
       applier = RemainderApplier.new(order_detail.time_data, split_order_details.map(&:time_data), splits)
       applier.apply_remainders(time_data_splitter)
+    end
+
+    def copy_associations(split_order_detail)
+      associations_to_copy.each do |association|
+        split_order_detail.public_send("#{association}=", order_detail.public_send(association))
+      end
     end
 
   end
