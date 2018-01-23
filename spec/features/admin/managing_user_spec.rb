@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Managing User Details", :aggregate_failures do
+RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { user_based_price_groups: true } do
 
   let(:facility) { FactoryBot.create(:facility) }
 
@@ -15,7 +15,7 @@ RSpec.describe "Managing User Details", :aggregate_failures do
       end
 
       it "allows admin to edit internal/external pricing" do
-        expect(page).to have_content("Internal PricingYes")
+        expect(page).to have_content("Internal Pricing")
 
         click_link "Edit"
 
@@ -24,6 +24,14 @@ RSpec.describe "Managing User Details", :aggregate_failures do
         click_button "Update"
 
         expect(page).to have_content("Internal PricingNo")
+
+        click_link "Edit"
+
+        select "Yes", from: "user_internal"
+
+        click_button "Update"
+
+        expect(page).to have_content("Internal PricingYes")
       end
 
     end
@@ -38,7 +46,7 @@ RSpec.describe "Managing User Details", :aggregate_failures do
       end
 
       it "does not allow account admin to edit internal/external pricing" do
-        expect(page).to have_content("Internal PricingYes")
+        expect(page).to have_content("Internal Pricing")
 
         click_link "Edit"
 
