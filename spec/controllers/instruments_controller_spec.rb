@@ -554,6 +554,7 @@ RSpec.describe InstrumentsController do
     context "instrument statuses" do
       before :each do
         # So it doesn't try to actually connect
+        allow(SettingsHelper).to receive(:relays_enabled_for_admin?).and_return(true)
         allow_any_instance_of(RelaySynaccessRevA).to receive(:query_status).and_return(false)
 
         @method = :get
