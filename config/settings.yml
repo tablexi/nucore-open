@@ -126,7 +126,7 @@ feature:
   journals_may_span_fiscal_years_on: false
   equipment_list_on: true
   price_change_reason_required_on: false
-  can_manage_global_price_groups_on: false
+  can_manage_global_price_groups_on: true
 
 split_accounts:
   # Roles are allowed to create Split Accounts
