@@ -105,7 +105,6 @@ group :development, :test do
   gem "spring"
   gem "spring-commands-rspec"
   gem "teaspoon-jasmine"
-  gem "test-unit" # why do we have this gem?
   gem "thin"
 end
 
