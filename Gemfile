@@ -5,7 +5,7 @@ ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| 
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
-gem "rails", "4.2.9"
+gem "rails", "4.2.10"
 gem "protected_attributes"
 gem "rails_config",     "0.3.3" # gem itself is deprecated (config gem instead)
 
