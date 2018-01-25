@@ -10,7 +10,7 @@ gem "protected_attributes"
 gem "rails_config",     "0.3.3" # gem itself is deprecated (config gem instead)
 
 ## database
-gem "mysql2",           "~> 0.3.20" # behind
+gem "mysql2",           "~> 0.4.10" # behind
 group :oracle do
   gem "ruby-oci8"
   gem "activerecord-oracle_enhanced-adapter"
