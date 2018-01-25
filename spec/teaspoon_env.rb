@@ -6,22 +6,23 @@ begin
   if ActionView.gem_version >= Gem::Version.new('4.2.5')
     require 'action_view/helpers/asset_tag_helper'
     module ActionView::Helpers::AssetTagHelper
+
       def javascript_include_tag(*sources)
         options = sources.extract_options!.stringify_keys
         path_options = options.extract!('protocol', 'extname', 'host').symbolize_keys
         path_options[:debug] = options['allow_non_precompiled']
-        sources.uniq.map { |source|
+        sources.uniq.map do |source|
           tag_options = {
-            "src" => path_to_javascript(source, path_options)
+            "src" => path_to_javascript(source, path_options),
           }.merge!(options)
           content_tag(:script, "", tag_options)
-        }.join("\n").html_safe
+        end.join("\n").html_safe
       end
+
     end
   end
-rescue
+rescue StandardError
 end
-
 
 Teaspoon.configure do |config|
   # Determines where the Teaspoon routes will be mounted. Changing this to "/jasmine" would allow you to browse to
