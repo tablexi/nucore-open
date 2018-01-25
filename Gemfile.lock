@@ -275,7 +275,8 @@ GEM
     guard-teaspoon (0.8.0)
       guard (~> 2.2)
       teaspoon (>= 0.8.0)
-    haml (4.0.7)
+    haml (5.0.4)
+      temple (>= 0.8.0)
       tilt
     haml_lint (0.27.0)
       haml (>= 4.0, < 5.1)
@@ -531,6 +532,7 @@ GEM
       railties (>= 3.2.5, < 6)
     teaspoon-jasmine (2.3.4)
       teaspoon (>= 1.0.0)
+    temple (0.8.0)
     text_helpers (0.7.0)
       activesupport
       i18n (>= 0.6.8)
@@ -613,7 +615,7 @@ DEPENDENCIES
   font-awesome-rails
   guard-rspec
   guard-teaspoon
-  haml (~> 4.0.5)
+  haml (~> 5.0.4)
   haml_lint
   icalendar
   ice_cube
