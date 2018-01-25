@@ -218,9 +218,9 @@ GEM
     dynamic_form (1.1.4)
     erubis (2.7.0)
     eventmachine (1.2.5)
-    exception_notification (4.0.1)
-      actionmailer (>= 3.0.4)
-      activesupport (>= 3.0.4)
+    exception_notification (4.2.2)
+      actionmailer (>= 4.0, < 6)
+      activesupport (>= 4.0, < 6)
     excon (0.55.0)
     execjs (2.7.0)
     eye (0.9.4)
@@ -605,7 +605,7 @@ DEPENDENCIES
   devise
   devise-encryptable
   dynamic_form
-  exception_notification (~> 4.0.1)
+  exception_notification (~> 4.2.2)
   eye-patch
   factory_bot_rails
   fine_uploader!
