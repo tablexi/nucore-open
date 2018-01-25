@@ -2,15 +2,15 @@
 # 4.2.10, because "10" is compared to "5" and found wanting (because it's using a string comparison)
 # https://github.com/jejacks0n/teaspoon/pull/529/
 begin
-  require 'action_view'
-  if ActionView.gem_version >= Gem::Version.new('4.2.5')
-    require 'action_view/helpers/asset_tag_helper'
+  require "action_view"
+  if ActionView.gem_version >= Gem::Version.new("4.2.5")
+    require "action_view/helpers/asset_tag_helper"
     module ActionView::Helpers::AssetTagHelper
 
       def javascript_include_tag(*sources)
         options = sources.extract_options!.stringify_keys
-        path_options = options.extract!('protocol', 'extname', 'host').symbolize_keys
-        path_options[:debug] = options['allow_non_precompiled']
+        path_options = options.extract!("protocol", "extname", "host").symbolize_keys
+        path_options[:debug] = options["allow_non_precompiled"]
         sources.uniq.map do |source|
           tag_options = {
             "src" => path_to_javascript(source, path_options),
