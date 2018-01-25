@@ -329,7 +329,7 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.11.2)
     multi_json (1.12.2)
-    mysql2 (0.3.21)
+    mysql2 (0.4.10)
     nenv (0.3.0)
     nested_form_fields (0.8.2)
       coffee-rails (>= 3.2.1)
@@ -625,7 +625,7 @@ DEPENDENCIES
   letter_opener
   lograge
   logstash-event
-  mysql2 (~> 0.3.20)
+  mysql2 (~> 0.4.10)
   nested_form_fields
   nokogiri
   oj
