@@ -37,7 +37,7 @@ gem "coffee-rails"
 gem "uglifier"
 gem "therubyracer"
 gem "bootstrap-sass",   "~> 2.3.2" # behind
-gem "haml",             "~> 4.0.5" # behind
+gem "haml",             "~> 5.0.4" # behind
 gem "will_paginate"
 gem "dynamic_form"
 gem "ckeditor"
