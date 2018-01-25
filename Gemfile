@@ -54,7 +54,7 @@ gem "fine_uploader", path: "vendor/engines/fine_uploader"
 gem "rubyzip"
 
 ## controllers
-gem "prawn", "0.12" # behind
+gem "prawn", "2.2.2" # behind
 gem "prawn_rails"
 
 ## other
