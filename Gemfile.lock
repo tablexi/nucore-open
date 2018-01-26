@@ -368,6 +368,8 @@ GEM
     prawn (2.2.2)
       pdf-core (~> 0.7.0)
       ttfunk (~> 1.5)
+    prawn-table (0.2.2)
+      prawn (>= 1.3.0, < 3.0.0)
     prawn_rails (0.0.11)
       prawn (>= 0.11.1)
       railties (>= 3.0.0)
@@ -598,7 +600,7 @@ DEPENDENCIES
   devise
   devise-encryptable
   dynamic_form
-  exception_notification (~> 4.2.2)
+  exception_notification
   eye-patch
   factory_bot_rails
   fine_uploader!
@@ -606,7 +608,7 @@ DEPENDENCIES
   font-awesome-rails
   guard-rspec
   guard-teaspoon
-  haml (~> 5.0.4)
+  haml
   haml_lint
   icalendar
   ice_cube
@@ -616,7 +618,7 @@ DEPENDENCIES
   letter_opener
   lograge
   logstash-event
-  mysql2 (~> 0.4.10)
+  mysql2
   nested_form_fields
   nokogiri
   oj
@@ -624,7 +626,8 @@ DEPENDENCIES
   paperclip
   paranoia
   poltergeist
-  prawn (= 2.2.2)
+  prawn
+  prawn-table
   prawn_rails
   projects (~> 0.0.1)!
   protected_attributes
@@ -638,13 +641,13 @@ DEPENDENCIES
   rollbar
   rspec-activejob
   rspec-collection_matchers
-  rspec-rails (~> 3.5.2)
+  rspec-rails
   rspec_junit_formatter
   rubocop
   ruby-oci8
   rubyzip
   sanger_sequencing (~> 0.0.1)!
-  sass-rails (~> 5.0.6)
+  sass-rails
   secure_rooms!
   shoulda-matchers
   simple_form
