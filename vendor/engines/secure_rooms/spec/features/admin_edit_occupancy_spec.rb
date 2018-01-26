@@ -45,6 +45,8 @@ RSpec.describe "Editing an occupancy" do
 
       fill_in "Price", with: "45.37"
 
+      fill_in "Pricing Note", with: "i am a note"
+
       click_button "Save"
 
       expect(occupancy.reload.entry_at).to eq(Time.zone.parse("2017-04-12 19:10"))

@@ -4,7 +4,7 @@ class OrderDetails::PriceChecker
 
   def initialize(order_detail)
     @order_detail = order_detail.dup
-    @order_detail.reservation = order_detail.reservation.dup
+    @order_detail.time_data = order_detail.time_data.dup
   end
 
   def prices_from_params(params)

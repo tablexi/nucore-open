@@ -13,6 +13,10 @@ class SecureRoom < Product
     order_detail.occupancy
   end
 
+  def time_data_field
+    :occupancy
+  end
+
   def entry_only?
     card_readers.egress.none?
   end

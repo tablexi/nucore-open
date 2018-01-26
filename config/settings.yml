@@ -125,7 +125,7 @@ feature:
   ready_for_journal_notice_on: true
   journals_may_span_fiscal_years_on: false
   equipment_list_on: true
-  price_change_reason_required_on: false
+  price_change_reason_required_on: true
   can_manage_global_price_groups_on: true
   cross_facility_reports_on: false
 
