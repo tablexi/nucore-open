@@ -114,9 +114,7 @@ class OrderDetail < ActiveRecord::Base
     return unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
     return if cost_estimated?
 
-    if price_change_reason.blank? && actual_costs_differ_from_calculated?
-      errors.add(:price_change_reason, :blank)
-    end
+    errors.add(:price_change_reason, :blank) if price_change_reason.blank? && actual_costs_differ_from_calculated?
   end
 
   def actual_costs_differ_from_calculated?
@@ -317,12 +315,8 @@ class OrderDetail < ActiveRecord::Base
 
   scope :in_date_range, lambda { |start_date, end_date|
     search = all
-    if start_date
-      search = search.where("orders.ordered_at > ?", start_date.beginning_of_day)
-    end
-    if end_date
-      search = search.where("orders.ordered_at < ?", end_date.end_of_day)
-    end
+    search = search.where("orders.ordered_at > ?", start_date.beginning_of_day) if start_date
+    search = search.where("orders.ordered_at < ?", end_date.end_of_day) if end_date
     search
   }
 
@@ -342,9 +336,7 @@ class OrderDetail < ActiveRecord::Base
     # If we're searching on fulfilled_at, ignore any order details that don't have a fulfilled date
     search = search.where("#{action} IS NOT NULL") if [:reconciled_at, :fulfilled_at].include?(action.to_sym)
 
-    if start_date
-      search = search.where("#{action} >= ?", start_date.beginning_of_day)
-    end
+    search = search.where("#{action} >= ?", start_date.beginning_of_day) if start_date
     search = search.where("#{action} <= ?", end_date.end_of_day) if end_date
     search
   }
@@ -421,9 +413,7 @@ class OrderDetail < ActiveRecord::Base
   def change_status!(new_status, &block)
     new_state = new_status.state_name
     # don't try to change state if it's not a valid state or it's the same as it was before
-    if OrderDetail.aasm.states.map(&:name).include?(new_state) && new_state != state.to_sym
-      send("to_#{new_state}")
-    end
+    send("to_#{new_state}") if OrderDetail.aasm.states.map(&:name).include?(new_state) && new_state != state.to_sym
     # don't try to change status if it's the same as before
     unless new_status == order_status
       self.order_status = new_status
@@ -543,9 +533,7 @@ class OrderDetail < ActiveRecord::Base
 
   def account_usable_by_order_owner?
     return unless order && account_id
-    unless AccountUser.find_by(user_id: order.user_id, account_id: account_id, deleted_at: nil)
-      errors.add("account_id", "is not valid for the orderer")
-    end
+    errors.add("account_id", "is not valid for the orderer") unless AccountUser.find_by(user_id: order.user_id, account_id: account_id, deleted_at: nil)
   end
 
   def customer_account_changeable?
@@ -743,7 +731,7 @@ class OrderDetail < ActiveRecord::Base
         change_status! order_status
       end
     else
-      return false unless reservation && reservation.can_cancel?
+      return false unless reservation&.can_cancel?
       # must set canceled_at after calling #can_cancel?
       return false unless update_attributes(canceled_at: Time.current)
       clear_statement if cancellation_fee == 0
@@ -808,7 +796,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def in_open_journal?
-    journal && journal.open?
+    journal&.open?
   end
 
   def in_closed_journal?
@@ -884,23 +872,19 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def valid_manual_fulfilled_at
-    if @manual_fulfilled_at && @manual_fulfilled_at.invalid?
-      errors.add(:fulfilled_at, @manual_fulfilled_at.error)
-    end
+    errors.add(:fulfilled_at, @manual_fulfilled_at.error) if @manual_fulfilled_at&.invalid?
   end
 
   def time_data
     if product.respond_to?(:time_data_field)
-      self.public_send(product.time_data_field) || TimeData::RequiredTimeData.new
+      public_send(product.time_data_field) || TimeData::RequiredTimeData.new
     else
       TimeData::NullTimeData.new
     end
   end
 
   def time_data=(time_data)
-    if product.respond_to?(:time_data_field)
-      self.public_send("#{product.time_data_field}=", time_data)
-    end
+    public_send("#{product.time_data_field}=", time_data) if product.respond_to?(:time_data_field)
   end
 
   def translation_scope
