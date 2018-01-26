@@ -7,7 +7,7 @@ git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 ## base
 gem "rails", "4.2.10"
 gem "protected_attributes"
-gem "rails_config", "0.3.3" # gem itself is deprecated (config gem instead)
+gem "rails_config", "0.99.0" # gem itself is deprecated (config gem instead)
 
 ## database
 gem "mysql2"
