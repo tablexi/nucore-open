@@ -7,10 +7,10 @@ git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 ## base
 gem "rails", "4.2.10"
 gem "protected_attributes"
-gem "rails_config",     "0.3.3" # gem itself is deprecated (config gem instead)
+gem "rails_config", "0.3.3" # gem itself is deprecated (config gem instead)
 
 ## database
-gem "mysql2",           "~> 0.4.10" # behind
+gem "mysql2"
 group :oracle do
   gem "ruby-oci8"
   gem "activerecord-oracle_enhanced-adapter"
@@ -32,12 +32,12 @@ gem "icalendar"
 gem "paranoia"
 
 ## views
-gem "sass-rails", "~> 5.0.6" # behind
+gem "sass-rails"
 gem "coffee-rails"
 gem "uglifier"
 gem "therubyracer"
-gem "bootstrap-sass",   "~> 2.3.2" # behind
-gem "haml",             "~> 5.0.4" # behind
+gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
+gem "haml"
 gem "will_paginate"
 gem "dynamic_form"
 gem "ckeditor"
@@ -54,8 +54,9 @@ gem "fine_uploader", path: "vendor/engines/fine_uploader"
 gem "rubyzip"
 
 ## controllers
-gem "prawn", "0.12" # behind
+gem "prawn"
 gem "prawn_rails"
+gem "prawn-table"
 
 ## other
 gem "delayed_job_active_record"
@@ -100,7 +101,7 @@ group :development, :test do
   gem "guard-teaspoon", require: false
   gem "pry-rails"
   gem "pry-byebug"
-  gem "rspec-rails", "~> 3.5.2" # behind
+  gem "rspec-rails"
   gem "rspec-activejob"
   gem "spring"
   gem "spring-commands-rspec"
@@ -122,7 +123,7 @@ end
 
 group :stage, :production do
   gem "eye-patch", require: false
-  gem "exception_notification", "~> 4.2.2" # behind
+  gem "exception_notification"
   gem "lograge"
   gem "logstash-event"
   gem "oj"
