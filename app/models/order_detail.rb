@@ -126,6 +126,7 @@ class OrderDetail < ActiveRecord::Base
   def actual_costs_match_calculated?
     dup_od = dup
     dup_od.reservation = reservation.dup
+    dup_od.occupancy = occupancy.dup
     dup_od.assign_price_policy
 
     dup_od.actual_cost == actual_cost && dup_od.actual_subsidy == actual_subsidy
