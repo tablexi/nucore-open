@@ -48,6 +48,10 @@ class Instrument < Product
     order_detail.reservation
   end
 
+  def time_data_field
+    :reservation
+  end
+
   # calculate the last possible reservation date based on all current price policies associated with this instrument
   def last_reserve_date
     (Time.zone.now.to_date + max_reservation_window.days).to_date

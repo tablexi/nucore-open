@@ -125,8 +125,7 @@ class OrderDetail < ActiveRecord::Base
 
   def actual_costs_match_calculated?
     dup_od = dup
-    dup_od.reservation = reservation.dup
-    dup_od.occupancy = occupancy.dup
+    dup_od.time_data = time_data.dup
     dup_od.assign_price_policy
 
     dup_od.actual_cost == actual_cost && dup_od.actual_subsidy == actual_subsidy
@@ -891,10 +890,16 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def time_data
-    if product.respond_to?(:time_data_for)
-      product.time_data_for(self) || TimeData::RequiredTimeData.new
+    if product.respond_to?(:time_data_field)
+      self.public_send(product.time_data_field) || TimeData::RequiredTimeData.new
     else
       TimeData::NullTimeData.new
+    end
+  end
+
+  def time_data=(time_data)
+    if product.respond_to?(:time_data_field)
+      self.public_send("#{product.time_data_field}=", time_data)
     end
   end
 
