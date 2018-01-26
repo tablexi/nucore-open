@@ -446,8 +446,6 @@ GEM
       loofah (~> 2.0)
     rails-observers (0.1.5)
       activemodel (>= 4.0)
-    rails_config (0.99.0)
-      config (>= 1.0.0.beta1)
     railties (4.2.10)
       actionpack (= 4.2.10)
       activesupport (= 4.2.10)
@@ -627,6 +625,7 @@ DEPENDENCIES
   codeclimate_circle_ci_coverage
   coffee-rails
   coffeelint
+  config
   daemons
   dataprobe (~> 1.0.0)!
   delayed_job_active_record
@@ -669,7 +668,6 @@ DEPENDENCIES
   rails (= 4.2.10)
   rails-erd
   rails-observers
-  rails_config (= 0.99.0)
   rake
   rollbar
   rspec-activejob
