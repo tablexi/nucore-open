@@ -22,6 +22,7 @@ begin
     end
   end
 rescue StandardError
+  # no-op
 end
 
 Teaspoon.configure do |config|
