@@ -1,3 +1,30 @@
+# There is a teaspoon monkeypatch which is not being correctly applied for rails
+# 4.2.10, because "10" is compared to "5" and found wanting (because it's using a string comparison)
+# https://github.com/jejacks0n/teaspoon/pull/529/
+begin
+  require "action_view"
+  if ActionView.gem_version >= Gem::Version.new("4.2.5")
+    require "action_view/helpers/asset_tag_helper"
+    module ActionView::Helpers::AssetTagHelper
+
+      def javascript_include_tag(*sources)
+        options = sources.extract_options!.stringify_keys
+        path_options = options.extract!("protocol", "extname", "host").symbolize_keys
+        path_options[:debug] = options["allow_non_precompiled"]
+        sources.uniq.map do |source|
+          tag_options = {
+            "src" => path_to_javascript(source, path_options),
+          }.merge!(options)
+          content_tag(:script, "", tag_options)
+        end.join("\n").html_safe
+      end
+
+    end
+  end
+rescue StandardError
+  # no-op
+end
+
 Teaspoon.configure do |config|
   # Determines where the Teaspoon routes will be mounted. Changing this to "/jasmine" would allow you to browse to
   # `http://localhost:3000/jasmine` to run your tests.
