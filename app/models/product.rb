@@ -101,7 +101,7 @@ class Product < ActiveRecord::Base
   end
 
   def self.group_by_type
-    order(:type, :name).group_by(&:type)
+    order(:type, :name).group_by { |product| product.class.model_name.human }
   end
 
   ## AR Hooks
