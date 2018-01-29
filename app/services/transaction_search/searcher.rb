@@ -2,7 +2,9 @@ module TransactionSearch
 
   class Searcher
 
-    # Do not modify this directly. Use TransactionSearch.register instead.
+    # Do not modify this array directly. Use `TransactionSearch.register` instead.
+    # There is some additional setup that needs to happen (adding an atr_accessor
+    # to SearchForm) that `register` handles.
     cattr_accessor(:default_searchers) do
       [
         TransactionSearch::FacilitySearcher,
@@ -50,7 +52,7 @@ module TransactionSearch
       attr_reader :order_details
 
       # Return an array of options for a given key
-      delegate :[], to: :to_h
+      delegate :[], to: :to_options_by_searcher
 
       def initialize(order_details, search_options = [])
         @order_details = order_details
@@ -61,7 +63,7 @@ module TransactionSearch
         @search_options.dup
       end
 
-      def to_h
+      def to_options_by_searcher
         @to_h ||= options.each_with_object({}) do |searcher, hash|
           hash[searcher.key] = searcher.options
         end
