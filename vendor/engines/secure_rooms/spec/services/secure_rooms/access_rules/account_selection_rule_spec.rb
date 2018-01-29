@@ -18,6 +18,20 @@ RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do
     it { is_expected.to have_result_code(:deny) }
   end
 
+  context "one account exists" do
+    let(:account) { create(:account, :with_account_owner, owner: card_user) }
+
+    before do
+      allow_any_instance_of(User).to receive(:accounts_for_product).and_return([account])
+    end
+
+    context "wihtout a selection" do
+      let(:account_identifier) { nil }
+
+      it { is_expected.to have_result_code(:pending) }
+    end
+  end
+
   context "accounts exist" do
     let(:accounts) { create_list(:account, 3, :with_account_owner, owner: card_user) }
 

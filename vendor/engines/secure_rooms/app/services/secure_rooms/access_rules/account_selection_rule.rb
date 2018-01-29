@@ -12,8 +12,6 @@ module SecureRooms
           deny!(:no_accounts)
         elsif selected_account.present?
           grant!(:selected_account, selected_account: selected_account, accounts: accounts)
-        elsif accounts.present? && accounts.one?
-          grant!(:only_account, accounts: accounts)
         elsif accounts.present? && selected_account.blank?
           pending!(:selection_needed, accounts: accounts)
         end
