@@ -36,6 +36,10 @@ module SecureRooms
         has_result_code?(:grant)
       end
 
+      def pending?
+        has_result_code?(:pending)
+      end
+
       def has_result_code?(code)
         @result_code == code
       end

@@ -94,7 +94,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
         before { secure_room.product_users.create!(user: card_user, approved_by: 0) }
         describe "and inside the schedule rules", :time_travel do
           let(:now) { Time.zone.local(2016, 5, 15, 12, 0) }
-          it { is_expected.to be_granted }
+          it { is_expected.to be_pending }
         end
 
         describe "but it is outside the schedule rules", :time_travel do
