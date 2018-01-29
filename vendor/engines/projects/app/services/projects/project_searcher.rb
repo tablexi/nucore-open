@@ -2,6 +2,10 @@ module Projects
 
   class ProjectSearcher < TransactionSearch::BaseSearcher
 
+    def self.key
+      :projects
+    end
+
     def options
       Project.where(id: order_details.select("distinct project_id")).order(:name)
     end
@@ -12,6 +16,10 @@ module Projects
       else
         order_details
       end
+    end
+
+    def label
+      Projects::Project.model_name.human(count: 2)
     end
 
   end

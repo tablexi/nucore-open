@@ -14,6 +14,14 @@ module TransactionSearch
       order_details.includes(:product)
     end
 
+    def data_attrs(product)
+      {
+        facility: product.facility_id,
+        restricted: product.requires_approval?,
+        product_type: product.type.downcase,
+      }
+    end
+
   end
 
 end

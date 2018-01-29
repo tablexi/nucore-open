@@ -9,7 +9,6 @@ class FacilitiesController < ApplicationController
   before_action :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
   before_action :set_admin_billing_tab, only: [:confirm_transactions, :disputed_orders, :movable_transactions, :transactions]
   before_action :set_recently_used_facilities, only: [:index]
-  before_action :set_two_column_head_layout, only: [:disputed_orders, :movable_transactions, :transactions]
   before_action :store_fullpath_in_session, only: [:index, :show]
 
   load_and_authorize_resource find_by: :url_name
@@ -20,7 +19,9 @@ class FacilitiesController < ApplicationController
 
   include FacilitiesHelper
 
-  layout "two_column"
+  layout lambda {
+    action_name.in?(%w(disputed_orders movable_transactions transactions)) ? "two_column_head" : "two_column"
+  }
 
   def set_recently_used_facilities
     @recently_used_facilities =
@@ -113,10 +114,20 @@ class FacilitiesController < ApplicationController
   end
 
   # GET /facilities/transactions
-  def transactions_with_search
-    set_default_start_date
+  def transactions
+    order_details = OrderDetail.purchased.for_facility(current_facility)
     @export_enabled = true
-    paginate_order_details
+
+    @search_form = TransactionSearch::SearchForm.new(
+      params[:search],
+      defaults: {
+        date_range_start: format_usa_date(1.month.ago.beginning_of_month),
+      },
+    )
+
+    @search = TransactionSearch::Searcher.new.search(order_details, @search_form)
+    @date_range_field = @search_form.date_params[:field]
+    @order_details = @search.order_details.paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/disputed_orders
@@ -226,10 +237,6 @@ class FacilitiesController < ApplicationController
 
   def set_admin_billing_tab
     @active_tab = "admin_billing"
-  end
-
-  def set_two_column_head_layout
-    @layout = "two_column_head"
   end
 
 end

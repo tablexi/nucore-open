@@ -7,6 +7,7 @@ module TransactionSearch
     base.extend(ClassMethods)
   end
 
+  # Deprecated. Use the newer searchers
   def self.searchers
     @searchers ||= {
       facilities: FacilitySearcher,
@@ -16,6 +17,13 @@ module TransactionSearch
       order_statuses: OrderStatusSearcher,
       date_range: DateRangeSearcher,
     }
+  end
+
+  # Register a TransactionSearch::BaseSearcher. Unless specified otherwise,
+  # it will be added to the list of default searchers.
+  def self.register(searcher, default: true)
+    Searcher.default_searchers << searcher if default
+    SearchForm.send(:attr_accessor, searcher.key)
   end
 
   module ClassMethods

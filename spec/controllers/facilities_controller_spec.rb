@@ -295,7 +295,7 @@ RSpec.describe FacilitiesController do
     it "should use two column head" do
       sign_in @admin
       do_request
-      expect(assigns[:layout]).to eq "two_column_head"
+      expect(response).to render_template("two_column_head")
     end
 
     it "should query against the facility" do
@@ -305,16 +305,6 @@ RSpec.describe FacilitiesController do
     end
 
     it_should_allow_managers_only
-  end
-
-  context "transactions" do
-    it_behaves_like "transactions", :transactions do
-      it "has a default date set" do
-        sign_in @admin
-        do_request
-        expect(controller.params[:date_range][:start]).to be_present
-      end
-    end
   end
 
   context "disputed_orders" do
