@@ -3,6 +3,8 @@
 
 = render_view_hook "before_login_form"
 
+= render_view_hook "before_login_form"
+
 = simple_form_for resource, as: resource_name, url: session_path(resource_name) do |f|
   .form-inputs
     = f.input :username, required: false, autofocus: true
