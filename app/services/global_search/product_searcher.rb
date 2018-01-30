@@ -9,8 +9,13 @@ module GlobalSearch
     private
 
     def search
-      query_string = "%#{query}%"
-      Product.where("name like ?", query_string)
+      if NUCore::Database.oracle?
+        query_string = ".*#{query}.*"
+        Product.where("regexp_like(name, ?, 'i')", query_string)
+      else
+        query_string = "%#{query}%"
+        Product.where("name like ?", query_string)
+      end
     end
 
 
