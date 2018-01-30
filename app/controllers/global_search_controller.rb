@@ -9,6 +9,7 @@ class GlobalSearchController < ApplicationController
       [
         GlobalSearch::OrderSearcher,
         GlobalSearch::StatementSearcher,
+        GlobalSearch::ProductSearcher,
       ]
   end
 

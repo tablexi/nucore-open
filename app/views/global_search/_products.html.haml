@@ -1,0 +1,20 @@
+%h3= Product.model_name.human(count: 2)
+
+%table.table.table-striped.table-hover.js--responsive_table
+  %thead
+    %tr
+      %th= "#{Product.model_name.human} Name"
+      %th= "Product Type"
+      %th= Facility.model_name.human
+      %th= Product.human_attribute_name("description")
+  %tbody
+    - results.each do |product|
+      %tr
+        %td.nowrap.span2
+          = link_to product.name + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(product.facility, product)
+        %td.span2
+          = product.model_name.human
+        %td.span2
+          = link_to product.facility, facility_path(product.facility)
+        %td.span6
+          = product.description
