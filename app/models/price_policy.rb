@@ -15,9 +15,7 @@ class PricePolicy < ActiveRecord::Base
     unless value.blank?
       start_date = record.start_date
       gen_exp_date = generate_expire_date(start_date)
-      if value <= start_date || value > gen_exp_date
-        record.errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}")
-      end
+      record.errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}") if value <= start_date || value > gen_exp_date
     end
   end
 
@@ -92,7 +90,7 @@ class PricePolicy < ActiveRecord::Base
            .order(:start_date)
            .uniq
            .pluck(:start_date)
-           .map &:to_date
+           .map(&:to_date)
   end
 
   #
@@ -175,7 +173,8 @@ class PricePolicy < ActiveRecord::Base
     self.expire_date ||= self.class.generate_expire_date(self)
   end
 
-  def start_date_is_unique # TODO: Refactor
+  # TODO: Refactor
+  def start_date_is_unique
     type          = self.class.name.downcase.gsub(/pricepolicy$/, "")
     price_group   = self.price_group
     unless product.nil? || price_group.nil?
@@ -194,9 +193,7 @@ class PricePolicy < ActiveRecord::Base
 
   def subsidy_less_than_rate
     return unless defined?(rate_field)
-    if self[rate_field] && self[subsidy_field] && self[subsidy_field] > self[rate_field]
-      errors.add subsidy_field, :subsidy_greater_than_cost
-    end
+    errors.add subsidy_field, :subsidy_greater_than_cost if self[rate_field] && self[subsidy_field] && self[subsidy_field] > self[rate_field]
   end
 
   def truncate_existing_policies

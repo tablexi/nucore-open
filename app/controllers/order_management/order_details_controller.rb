@@ -32,7 +32,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
       flash[:notice] = "The order was successfully updated."
       if @order_detail.updated_children.any?
         flash[:notice] << " Auto-scaled accessories have been updated as well."
-        flash[:updated_order_details] = @order_detail.updated_children.map &:id
+        flash[:updated_order_details] = @order_detail.updated_children.map(&:id)
       end
       if modal?
         render nothing: true

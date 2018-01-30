@@ -39,15 +39,6 @@ Lint/AmbiguousBlockAssociation:
     - 'vendor/engines/secure_rooms/spec/support/auto_orphan_occupancy_spec.rb'
     - 'vendor/engines/split_accounts/spec/controllers/facility_accounts_controller_spec.rb'
 
-# Offense count: 6
-Lint/AmbiguousOperator:
-  Exclude:
-    - 'app/controllers/order_management/order_details_controller.rb'
-    - 'app/models/order.rb'
-    - 'app/models/price_policy.rb'
-    - 'app/support/accessories/update_response.rb'
-    - 'spec/controller_spec_helper.rb'
-
 # Offense count: 11
 Lint/AmbiguousRegexpLiteral:
   Exclude:
