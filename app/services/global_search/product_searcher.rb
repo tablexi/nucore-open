@@ -9,15 +9,16 @@ module GlobalSearch
     private
 
     def search
-      if NUCore::Database.oracle?
-        query_string = ".*#{query}.*"
-        Product.where("regexp_like(name, ?, 'i')", query_string)
-      else
-        query_string = "%#{query}%"
-        Product.where("name like ?", query_string)
-      end
+      query_string = "%#{query}%"
+      Product.includes(:facility).where("LOWER(products.name) LIKE ?", query_string.downcase)
     end
 
+    def restrict(products)
+      facilities = user ? user.operable_facilities : []
+      products.in_active_facility.not_archived.select { |product| product.visible? || facilities.include?(product.facility) }
+      # TODO: Try this (or something like it) in Rails 5
+      # products.in_active_facility.not_archived.merge(Product.where(hidden: false).or(Product.where(facility: facilities)))
+    end
 
   end
 

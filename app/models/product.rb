@@ -272,6 +272,10 @@ class Product < ActiveRecord::Base
     product_users.find_by(user_id: user.id)
   end
 
+  def visible?
+    !hidden?
+  end
+
   def mergeable?
     false
   end

@@ -8,7 +8,7 @@
       %th= Facility.model_name.human
       %th= Product.human_attribute_name("description")
   %tbody
-    - results.each do |product|
+    - results.take(20).each do |product|
       %tr
         %td.nowrap.span2
           = link_to product.name + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(product.facility, product)
@@ -17,4 +17,7 @@
         %td.span2
           = link_to product.facility, facility_path(product.facility)
         %td.span6
-          = product.description
+          = truncate(strip_tags(product.description), length: 300)
+
+- if results.count >= 20
+  %p Additional results not shown. Please try a more specific search.
