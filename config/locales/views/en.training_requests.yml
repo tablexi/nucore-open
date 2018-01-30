@@ -5,3 +5,16 @@ en:
         requires_approval: |
           The %{product} requires approval to reserve. Would you like to be
           contacted by the !facility_downcase! for access or training?
+    training_request_mailer:
+      notify_facility_staff:
+        body: |
+          Training requested for **%{product}**:
+
+          **Name**: %{user}
+
+          **Email**: %{email}
+
+          Visit [here](%{link}) here to give them access.
+  training_request_mailer:
+    notify_facility_staff:
+      subject: "%{facility} - User Requested Training"

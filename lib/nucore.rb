@@ -37,6 +37,18 @@ module NUCore
       end
     end
 
+    def self.sample(scope, count = 1)
+      if NUCore::Database.oracle?
+        scope.order("DBMS_RANDOM.VALUE").limit(count)
+      else
+        scope.order("RAND()").limit(count)
+      end
+    end
+
+    def self.random(scope)
+      sample(scope).first
+    end
+
     module WhereIdsIn
 
       extend ActiveSupport::Concern

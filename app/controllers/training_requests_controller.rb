@@ -47,7 +47,7 @@ class TrainingRequestsController < ApplicationController
   private
 
   def trigger_email_to_facility_staff
-    TrainingRequestMailer.delay.notify_facility_staff(current_user.id, @product.id)
+    TrainingRequestMailer.notify_facility_staff(current_user, @product).deliver_later
   end
 
   def flash_arguments
