@@ -6,12 +6,12 @@ RSpec.describe ProductUsersController do
 
   let(:facility) { create(:setup_facility) }
   let(:instrument) { create(:setup_instrument, facility: facility, requires_approval: true) }
-  let(:guest) { create(:user) }
+  let(:user) { create(:user) }
   let(:admin) { create(:user, :administrator) }
   let(:staff) { create(:user, :staff, facility: facility) }
 
   describe "index" do
-    let!(:guest_product) { ProductUser.create(product: instrument, user: guest, approved_by: admin.id, approved_at: Time.current) }
+    let!(:user_product) { ProductUser.create(product: instrument, user: user, approved_by: admin.id, approved_at: Time.current) }
     let!(:staff_product) { ProductUser.create(product: instrument, user: staff, approved_by: admin.id, approved_at: Time.current) }
 
     def do_request
@@ -21,7 +21,7 @@ RSpec.describe ProductUsersController do
     it "should only return the two users" do
       sign_in admin
       do_request
-      expect(assigns[:product_users]).to eq([guest_product, staff_product])
+      expect(assigns[:product_users]).to eq([user_product, staff_product])
     end
 
     it "should return empty and a flash if the product is not restricted" do
@@ -39,39 +39,38 @@ RSpec.describe ProductUsersController do
     let(:level) { create(:product_access_group, product: instrument) }
     let(:level2) { create(:product_access_group, product: instrument) }
 
-    let!(:guest_product) { create(:product_user, product: instrument, user: guest, approved_by_user: admin) }
+    let!(:user_product) { create(:product_user, product: instrument, user: user, approved_by_user: admin) }
     let!(:staff_product) { create(:product_user, product: instrument, user: staff, approved_by_user: admin) }
 
     it "updates the product_users" do
       sign_in staff
-      put :update_restrictions, {
-        facility_id: facility.url_name,
-        instrument_id: instrument.url_name,
-        instrument: {
-          product_users: {
-            guest_product.id => { product_access_group_id: level.id },
-            staff_product.id => { product_access_group_id: level2.id },
-          },
-        },
-      }
+      put :update_restrictions,
+          facility_id: facility.url_name,
+          instrument_id: instrument.url_name,
+          instrument: {
+            product_users: {
+              user_product.id => { product_access_group_id: level.id },
+              staff_product.id => { product_access_group_id: level2.id },
+            },
+          }
 
-      expect(guest_product.reload.product_access_group).to eq(level)
+      expect(user_product.reload.product_access_group).to eq(level)
       expect(staff_product.reload.product_access_group).to eq(level2)
       expect(flash[:notice]).to be_present
     end
   end
 
   describe "destroy" do
-    let!(:guest_product) { create(:product_user, product: instrument, user: guest, approved_by_user: admin) }
+    let!(:user_product) { create(:product_user, product: instrument, user: user, approved_by_user: admin) }
 
     it "destroys the association" do
       sign_in staff
-      expect {
+      expect do
         delete :destroy,
-          facility_id: facility.url_name,
-          instrument_id: instrument.url_name,
-          id: guest
-      }.to change(ProductUser, :count).by(-1)
+               facility_id: facility.url_name,
+               instrument_id: instrument.url_name,
+               id: user
+      end.to change(ProductUser, :count).by(-1)
       expect(flash[:notice]).to be_present
     end
 
@@ -79,9 +78,9 @@ RSpec.describe ProductUsersController do
       sign_in staff
 
       delete :destroy,
-        facility_id: facility.url_name,
-        instrument_id: instrument.url_name,
-        id: admin
+             facility_id: facility.url_name,
+             instrument_id: instrument.url_name,
+             id: admin
       expect(flash[:notice]).to be_present
     end
   end
