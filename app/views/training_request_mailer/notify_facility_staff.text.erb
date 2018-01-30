@@ -1,3 +1,9 @@
-<%= t(".body", user: @user, product: @product) %>
+<%=
+  text("body",
+    user: @user,
+    product: @product,
+    email: @user.email,
+    link: facility_user_access_list_url(@product.facility.url_name, @user.id)
+  )
+%>
 
-<%= t(".link_html", link: facility_user_access_list_url(@product.facility.url_name, @user.id)) %>

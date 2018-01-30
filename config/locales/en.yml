@@ -1112,16 +1112,6 @@ en:
       failure: "The request from %{user} for %{product} was not able to be removed."
     no_requests: There are no outstanding training requests.
 
-  training_request_mailer:
-    notify_facility_staff:
-      body: "%{user} has requested training for %{product}."
-      body_html: >
-        <strong>%{user}</strong> has requested training for <strong>%{product}</strong>.
-      link_html: >
-        Visit <a href="%{link}">here</a> to give them access.
-      link: "Visit here to give them access: %{link}"
-      subject: "%{facility} - User Requested Training"
-
   transactions:
     in_review: Transactions in Review
     none_in_review_found: No transactions in review were found.
