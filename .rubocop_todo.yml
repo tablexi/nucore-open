@@ -334,7 +334,7 @@ Rails/Validation:
   Enabled: false
 
 # Offense count: 16
-Style/AccessorMethodName:
+Naming/AccessorMethodName:
   Enabled: false
 
 # Offense count: 1
