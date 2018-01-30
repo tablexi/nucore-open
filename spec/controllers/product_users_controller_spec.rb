@@ -60,4 +60,29 @@ RSpec.describe ProductUsersController do
       expect(flash[:notice]).to be_present
     end
   end
+
+  describe "destroy" do
+    let!(:guest_product) { create(:product_user, product: instrument, user: guest, approved_by_user: admin) }
+
+    it "destroys the association" do
+      sign_in staff
+      expect {
+        delete :destroy,
+          facility_id: facility.url_name,
+          instrument_id: instrument.url_name,
+          id: guest
+      }.to change(ProductUser, :count).by(-1)
+      expect(flash[:notice]).to be_present
+    end
+
+    it "does not error if the association is not found" do
+      sign_in staff
+
+      delete :destroy,
+        facility_id: facility.url_name,
+        instrument_id: instrument.url_name,
+        id: admin
+      expect(flash[:notice]).to be_present
+    end
+  end
 end

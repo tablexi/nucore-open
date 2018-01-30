@@ -53,9 +53,12 @@ class ProductUsersController < ApplicationController
   # DELETE /facilities/:facility_id/services/service_id/users/:id
   def destroy
     product_user = ProductUser.find_by(product_id: @product.id, user_id: params[:id])
-    product_user.destroy
 
-    if product_user.destroyed?
+    if product_user.blank?
+      # Show success even if it doesn't exist because it is likely to be a
+      # multi-tab issue
+      flash[:notice] = text("destroy.success", model: downcase_product_type)
+    elsif product_user.destroy && product_user.destroyed?
       flash[:notice] = text("destroy.success", model: downcase_product_type)
     else
       flash[:error]  = text("destroy.failure", model: downcase_product_type)
