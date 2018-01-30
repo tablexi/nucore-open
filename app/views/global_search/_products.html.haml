@@ -19,5 +19,5 @@
         %td.span6
           = truncate(strip_tags(product.description), length: 300)
 
-- if results.count >= 20
-  %p Additional results not shown. Please try a more specific search.
+- if results.count >= 1
+  %p= t('.too_many_results')

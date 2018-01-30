@@ -146,6 +146,8 @@ en:
     index:
       results: Search Results
       no_results: No results found
+    products:
+      too_many_results: Additional results not shown. Please try a more specific search.
 
   facility_account:
     account_fields:
