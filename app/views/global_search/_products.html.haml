@@ -3,8 +3,8 @@
 %table.table.table-striped.table-hover.js--responsive_table
   %thead
     %tr
-      %th= "#{Product.model_name.human} Name"
-      %th= "Product Type"
+      %th= Product.model_name.human
+      %th= Product.human_attribute_name("type")
       %th= Facility.model_name.human
       %th= Product.human_attribute_name("description")
   %tbody
