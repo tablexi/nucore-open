@@ -4,72 +4,84 @@ require "controller_spec_helper"
 RSpec.describe ProductUsersController do
   render_views
 
-  let(:facility) { @authable }
+  let(:facility) { create(:setup_facility) }
+  let(:instrument) { create(:setup_instrument, facility: facility, requires_approval: true) }
+  let(:user) { create(:user) }
+  let(:admin) { create(:user, :administrator) }
+  let(:staff) { create(:user, :staff, facility: facility) }
 
-  before(:all) { create_users }
+  describe "index" do
+    let!(:user_product) { ProductUser.create(product: instrument, user: user, approved_by: admin.id, approved_at: Time.current) }
+    let!(:staff_product) { ProductUser.create(product: instrument, user: staff, approved_by: admin.id, approved_at: Time.current) }
 
-  before(:each) do
-    @authable         = FactoryBot.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-    @price_group = FactoryBot.create(:price_group, facility: facility)
-    @instrument       = FactoryBot.create(:instrument,
-                                          facility: @authable,
-                                          facility_account: @facility_account,
-                                          requires_approval: true)
-    @price_policy     = @instrument.instrument_price_policies.create(FactoryBot.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
-    expect(@price_policy).to be_valid
-    @params = { facility_id: @authable.url_name, instrument_id: @instrument.url_name }
-
-    @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
-    @level = FactoryBot.create(:product_access_group, product_id: @instrument.id)
-    @level2 = FactoryBot.create(:product_access_group, product_id: @instrument.id)
-  end
-
-  context "index" do
-    before :each do
-      @method = :get
-      @action = :index
-      @guest_product = ProductUser.create(product: @instrument, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
-      @staff_product = ProductUser.create(product: @instrument, user: @staff, approved_by: @admin.id, approved_at: Time.zone.now)
+    def do_request
+      get :index, facility_id: facility.url_name, instrument_id: instrument.url_name
     end
 
     it "should only return the two users" do
-      sign_in @admin
+      sign_in admin
       do_request
-      expect(assigns[:product_users]).to eq([@guest_product, @staff_product])
+      expect(assigns[:product_users]).to eq([user_product, staff_product])
     end
 
     it "should return empty and a flash if the product is not restricted" do
-      @instrument.update_attributes(requires_approval: false)
-      sign_in @admin
+      instrument.update_attributes!(requires_approval: false)
+      sign_in admin
       do_request
+
       expect(assigns[:product_users]).to be_nil
       expect(flash[:notice]).not_to be_empty
     end
 
   end
 
-  context "update_restrictions" do
-    before :each do
-      @guest_product = ProductUser.create(product: @instrument, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
-      @staff_product = ProductUser.create(product: @instrument, user: @staff, approved_by: @admin.id, approved_at: Time.zone.now)
+  describe "update_restrictions" do
+    let(:level) { create(:product_access_group, product: instrument) }
+    let(:level2) { create(:product_access_group, product: instrument) }
 
-      @action = :update_restrictions
-      @method = :put
-      @params.deep_merge!(
-        instrument: {
-          product_users: {
-            @guest_product.id => { product_access_group_id: @level.id },
-            @staff_product.id => { product_access_group_id: @level2.id },
-          },
-        },
-      )
+    let!(:user_product) { create(:product_user, product: instrument, user: user, approved_by_user: admin) }
+    let!(:staff_product) { create(:product_user, product: instrument, user: staff, approved_by_user: admin) }
+
+    it "updates the product_users" do
+      sign_in staff
+      put :update_restrictions,
+          facility_id: facility.url_name,
+          instrument_id: instrument.url_name,
+          instrument: {
+            product_users: {
+              user_product.id => { product_access_group_id: level.id },
+              staff_product.id => { product_access_group_id: level2.id },
+            },
+          }
+
+      expect(user_product.reload.product_access_group).to eq(level)
+      expect(staff_product.reload.product_access_group).to eq(level2)
+      expect(flash[:notice]).to be_present
+    end
+  end
+
+  describe "destroy" do
+    let!(:user_product) { create(:product_user, product: instrument, user: user, approved_by_user: admin) }
+
+    it "destroys the association" do
+      sign_in staff
+      expect do
+        delete :destroy,
+               facility_id: facility.url_name,
+               instrument_id: instrument.url_name,
+               id: user
+      end.to change(ProductUser, :count).by(-1)
+      expect(flash[:notice]).to be_present
     end
 
-    it_should_allow_operators_only :redirect, "update the product_users" do
-      expect(ProductUser.find(@guest_product.id).product_access_group).to eq(@level)
-      expect(ProductUser.find(@staff_product.id).product_access_group).to eq(@level2)
-      expect(flash[:notice]).not_to be_nil
+    it "does not error if the association is not found" do
+      sign_in staff
+
+      delete :destroy,
+             facility_id: facility.url_name,
+             instrument_id: instrument.url_name,
+             id: admin
+      expect(flash[:notice]).to be_present
     end
   end
 end
