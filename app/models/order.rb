@@ -198,7 +198,7 @@ class Order < ActiveRecord::Base
   end
 
   def any_details_estimated?
-    order_details.any? &:cost_estimated?
+    order_details.any?(&:cost_estimated?)
   end
 
   # was originally used in OrdersController#add

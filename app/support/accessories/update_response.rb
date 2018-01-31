@@ -11,7 +11,7 @@ class Accessories::UpdateResponse
   end
 
   def persisted_count
-    @order_details.count &:persisted?
+    @order_details.count(&:persisted?)
   end
 
 end

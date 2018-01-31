@@ -26,7 +26,7 @@ end
 # [_params_]
 #   Overrides the @params variable
 def do_request(params = nil)
-  params = @params unless params
+  params ||= @params
   if @method == :xhr
     xhr :get, @action, params
   else
@@ -88,7 +88,7 @@ def it_should_allow(user_sym, spec_desc = "", &eval)
   it "should allow #{user_sym} " + spec_desc, auth: true do
     maybe_grant_always_sign_in(user_sym)
     do_request
-    instance_eval &eval
+    instance_eval(&eval)
   end
 end
 
@@ -196,7 +196,7 @@ def it_should_allow_admin_only(response = :success, spec_desc = "", &eval)
 
   it_should_allow(:admin, spec_desc) do
     is_expected.to respond_with response
-    instance_eval &eval if eval
+    instance_eval(&eval) if eval
   end
 end
 
