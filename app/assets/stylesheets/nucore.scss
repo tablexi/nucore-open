@@ -306,7 +306,7 @@ p.per-minute {
 }
 
 p.per-minute-show {
-  @extend p.per-minute;
+  @extend .per-minute;
   margin-top: 0;
 }
 
