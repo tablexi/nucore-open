@@ -1,28 +1,26 @@
-- price_policy = price_policies.first
-
 %table.table
   %thead
     %tr
       %th.actions{ rowspan: 2 }
-      %th{ rowspan: 2 }= "#{PriceGroup.model_name.human} (#{price_policy.class.human_attribute_name(:type)})"
-      %th.currency{ colspan: 2 }= price_policy.class.human_attribute_name(:hourly_usage_rate)
+      %th{ rowspan: 2 }= "#{PriceGroup.model_name.human} (#{PricePolicy.human_attribute_name(:type)})"
+      %th.currency{ colspan: 2 }= PricePolicy.human_attribute_name(:hourly_usage_rate)
       - if local_assigns[:minimum_cost]
-        %th.currency{ rowspan: 2 }= price_policy.class.human_attribute_name(:minimum_cost)
+        %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:minimum_cost)
       - if local_assigns[:cancellation]
-        %th.currency{ rowspan: 2 }= price_policy.class.human_attribute_name(:cancellation_cost)
+        %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:cancellation_cost)
   %tbody
-    - price_policies_to_show = price_policies.select { |pp| pp.can_purchase? }
+    - price_policies_to_show = price_policies.select(&:can_purchase?)
     - price_policies_to_show.each do |price_policy|
       %tr
         - if price_policies_to_show.first == price_policy
           %td.centered{ rowspan: price_policies_to_show.length }
-            - if price_policies.all? { |pp| pp.editable? } && can?(:edit, PricePolicy)
+            - if price_policies.all?(&:editable?) && can?(:edit, PricePolicy)
               %p
                 = link_to t("shared.edit"),
-                  [:edit, current_facility, @product, :price_policy, id: url_date]
+                  [:edit, current_facility, product, :price_policy, id: url_date]
               %p
                 = link_to t("shared.remove"),
-                  [current_facility, @product, :price_policy, id: url_date],
+                  [current_facility, product, :price_policy, id: url_date],
                   data: { confirm: t("shared.confirm_message") },
                   method: :delete
             - else
