@@ -45,7 +45,6 @@ linters:
       - "app/views/devise/registrations/new.html.haml"
       - "app/views/devise/sessions/new.html.haml"
       - "app/views/devise/unlocks/new.html.haml"
-      - "app/views/facilities/_product_list.html.haml"
       - "app/views/facilities/confirm_transactions.html.haml"
       - "app/views/facilities/new.html.haml"
       - "app/views/facilities/schedule.html.haml"
@@ -168,7 +167,6 @@ linters:
   SpaceInsideHashAttributes:
     exclude:
       - "app/views/accessories/new.html.haml"
-      - "app/views/facilities/_product_list.html.haml"
       - "app/views/facility_account_orders/index.html.haml"
       - "app/views/facility_accounts/_account_type_tabs.html.haml"
       - "app/views/facility_accounts/accounts_receivable.html.haml"
