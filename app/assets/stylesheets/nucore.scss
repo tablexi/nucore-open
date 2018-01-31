@@ -137,7 +137,7 @@ li.nav-spacer {
 
 .product_list {
   ul {
-    @extend ul.unstyled;
+    @extend .unstyled;
   }
   input {
     width: 2em;
