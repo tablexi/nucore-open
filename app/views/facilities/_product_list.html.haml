@@ -1,11 +1,11 @@
 - if products.any?
-  .product_list{class: products.first.class.model_name.to_s.pluralize.downcase}
+  .product_list{ class: products.first.class.model_name.to_s.pluralize.downcase }
     %h3= product_list_title products, local_assigns[:title_extra]
     - if products.first.class.model_name == "TimedService"
       %p= t("facilities.show.timed_services_note")
     %ul
-      - products.sort.each_with_index do |product, index|
-        %li{class: product.class.model_name.to_s.downcase}
+      - products.sort.each do |product|
+        %li{ class: product.class.model_name.to_s.downcase }
           = public_calendar_link(product)
           - if local_assigns[:f]
             = f.fields_for :order_details do |builder|

@@ -24,7 +24,8 @@
     %p.charge-for= text("charges_for", charge_for: policy.charge_for)
   = render "table",
     price_policies: @current_price_policies,
-    url_date: @current_start_date.strftime("%Y-%m-%d")
+    url_date: @current_start_date.strftime("%Y-%m-%d"),
+    product: @product
 
   = price_policy_errors(@product)
 
@@ -37,7 +38,8 @@
       %p.charge-for= text("charges_for", charge_for: policy.charge_for)
     = render "table",
       price_policies: rules,
-      url_date: date.strftime("%Y-%m-%d")
+      url_date: date.strftime("%Y-%m-%d"),
+      product: @product
 
 - if @past_price_policies_by_date.present?
   %h3
@@ -50,4 +52,5 @@
       %h4= text("dates", start: human_date(date), expires: human_date(policy.expire_date))
       = render "table",
         price_policies: rules,
-        url_date: date.strftime("%Y-%m-%d")
+        url_date: date.strftime("%Y-%m-%d"),
+        product: @product

@@ -137,7 +137,7 @@ li.nav-spacer {
 
 .product_list {
   ul {
-    @extend ul.unstyled;
+    @extend .unstyled;
   }
   input {
     width: 2em;
@@ -306,7 +306,7 @@ p.per-minute {
 }
 
 p.per-minute-show {
-  @extend p.per-minute;
+  @extend .per-minute;
   margin-top: 0;
 }
 
