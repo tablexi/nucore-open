@@ -78,7 +78,7 @@ gem "split_accounts", "~> 0.0.1", path: "vendor/engines/split_accounts"
 gem "synaccess_connect"
 
 group :development do
-  gem "bullet"
+  gem "bullet" # Detect N+1s and recommends eager loading
   gem "coffeelint"
   gem "haml_lint"
   gem "letter_opener"
