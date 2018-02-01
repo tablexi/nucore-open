@@ -32,4 +32,46 @@ RSpec.describe "Managing an order detail" do
       expect(page).to have_content("successfully updated")
     end
   end
+
+  describe "canceling order details" do
+    context "canceling an item" do
+      let(:item) { create(:setup_item, facility: facility) }
+      let(:order) { create(:purchased_order, product: item) }
+      let(:order_detail) { order.order_details.first }
+
+      it "cancels the item" do
+        select "Canceled", from: "Status"
+        click_button "Save"
+
+        expect(page).to have_content("Canceled")
+        expect(page).to have_css('tfoot .currency', text: "$0.00", count: 3)
+      end
+    end
+
+    context "canceling a reservation" do
+      before do
+        instrument.price_policies.update_all(cancellation_cost: 5)
+        instrument.update_attribute(:min_cancel_hours, 1)
+      end
+
+      it "cancels without a fee" do
+        select "Canceled", from: "Status"
+        click_button "Save"
+
+        expect(page).to have_content("Canceled")
+        expect(page).to have_css('tfoot .currency', text: "$0.00", count: 3)
+      end
+
+      it "cancels with a fee" do
+        select "Canceled", from: "Status"
+        check "Add reservation cost"
+        click_button "Save"
+
+        # save_and_open_page
+
+        expect(page).to have_content("Canceled")
+        expect(page).to have_css('tfoot .currency', text: "$5.00", count: 2)
+      end
+    end
+  end
 end

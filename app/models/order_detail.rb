@@ -113,6 +113,7 @@ class OrderDetail < ActiveRecord::Base
   def require_pricing_note
     return unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
     return if cost_estimated?
+    return if canceled_at?
 
     errors.add(:price_change_reason, :blank) if price_change_reason.blank? && actual_costs_differ_from_calculated?
   end
@@ -434,7 +435,10 @@ class OrderDetail < ActiveRecord::Base
                          admin: options[:admin],
                          admin_with_cancel_fee: options[:apply_cancel_fee])
     else
-      clear_statement if order_status.root_canceled?
+      if order_status.root_canceled?
+        clear_statement
+        assign_attributes(canceled_by_user: updated_by, canceled_at: Time.current)
+      end
       change_status! order_status, &block
     end
   end

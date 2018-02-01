@@ -1635,6 +1635,18 @@ RSpec.describe OrderDetail do
             expect(order_detail.cancellation_fee).to eq 0
           end
 
+          it "sets canceled_at" do
+            cancel_order_detail(admin: true, apply_cancel_fee: true)
+
+            expect(order_detail.canceled_at).to be_present
+          end
+
+          it "sets canceled_by" do
+            cancel_order_detail(admin: true, apply_cancel_fee: true)
+
+            expect(order_detail.canceled_by_user).to eq user
+          end
+
           it "is removed from its statement" do
             expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
               .to change { order_detail.statement }.from(statement).to(nil)
