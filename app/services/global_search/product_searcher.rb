@@ -24,8 +24,7 @@ module GlobalSearch
     end
 
     def description_search
-      query_string = "%#{query}%"
-      Product.includes(:facility).where("LOWER(products.description) LIKE ?", query_string.downcase)
+      Product.includes(:facility).where("MATCH (products.name, products.description) AGAINST (?)", query)
     end
 
   end

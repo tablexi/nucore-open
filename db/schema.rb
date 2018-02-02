@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180111200920) do
+ActiveRecord::Schema.define(version: 20180202191333) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -511,6 +511,7 @@ ActiveRecord::Schema.define(version: 20180111200920) do
   add_index "products", ["facility_account_id"], name: "fk_facility_accounts", using: :btree
   add_index "products", ["facility_id"], name: "fk_rails_0c9fa1afbe", using: :btree
   add_index "products", ["initial_order_status_id"], name: "index_products_on_initial_order_status_id", using: :btree
+  add_index "products", ["name", "description"], name: "index_products_on_name_and_description", type: :fulltext
   add_index "products", ["schedule_id"], name: "i_instruments_schedule_id", using: :btree
   add_index "products", ["url_name"], name: "index_products_on_url_name", using: :btree
 
