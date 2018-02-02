@@ -51,7 +51,8 @@ RSpec.describe "Managing an order detail" do
     context "canceling a reservation" do
       before do
         instrument.price_policies.update_all(cancellation_cost: 5)
-        instrument.update_attribute(:min_cancel_hours, 1)
+        # reservation is set for tomorrow, we need min_cancel_hours to be longer than time to reserve_start_at
+        instrument.update_attribute(:min_cancel_hours, 48)
       end
 
       it "cancels without a fee" do
@@ -67,9 +68,7 @@ RSpec.describe "Managing an order detail" do
         check "Add reservation cost"
         click_button "Save"
 
-        # save_and_open_page
-
-        expect(page).to have_content("Canceled")
+        expect(page).to have_content("Complete")
         expect(page).to have_css('tfoot .currency', text: "$5.00", count: 2)
       end
     end
