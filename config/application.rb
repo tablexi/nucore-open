@@ -16,7 +16,7 @@ module Nucore
   class Application < Rails::Application
 
     # TODO: This disables strong parameters across the board:
-    config.action_controller.permit_all_parameters = true
+    config.action_controller.permit_all_parameters = false
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
