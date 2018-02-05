@@ -1,10 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Relay do
-  it { is_expected.to allow_mass_assignment_of :auto_logout }
-  it { is_expected.to allow_mass_assignment_of :auto_logout_minutes }
-  it { is_expected.to allow_mass_assignment_of :instrument_id }
-  it { is_expected.to allow_mass_assignment_of :type }
 
   context "with relay" do
 
