@@ -165,7 +165,7 @@ class UsersController < ApplicationController
   private
 
   def edit_user_params
-    params.require(:user).permit(:email, :first_name, :last_name, :username) if @user.admin_editable?
+    @user.admin_editable? ? params.require(:user).permit(:email, :first_name, :last_name, :username) : {}
   end
 
   def price_group_params
