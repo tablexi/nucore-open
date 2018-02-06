@@ -6,7 +6,7 @@
       - @search.options.reject(&:multipart?).each do |searcher|
         = f.input searcher.key, as: :transaction_chosen2, collection: searcher.options, label: searcher.label, label_method: searcher.label_method, data_attrs: searcher.method(:data_attrs), input_html: { id: searcher.key }
 
-    %fieldset.span4#calendar_filter
+    %fieldset.span2#calendar_filter
       - if @search.options.map(&:key).include?("date_ranges")
         %br
         = f.input "date_range_field", collection: TransactionSearch::DateRangeSearcher.options, label: false, include_blank: false
