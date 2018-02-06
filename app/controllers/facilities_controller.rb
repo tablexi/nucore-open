@@ -127,7 +127,12 @@ class FacilitiesController < ApplicationController
 
     @search = TransactionSearch::Searcher.new.search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details.paginate(page: params[:page])
+    @order_details = @search.order_details
+
+    respond_to do |format|
+      format.html { @order_details = @order_details.paginate(page: params[:page]) }
+      format.csv { handle_csv_search }
+    end
   end
 
   # GET /facilities/:facility_id/disputed_orders

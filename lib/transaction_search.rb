@@ -157,7 +157,7 @@ module TransactionSearch
 
   def email_csv_export
     order_detail_ids = @order_details.respond_to?(:pluck) ? @order_details.pluck(:id) : @order_details.map(&:id)
-    AccountTransactionReportMailer.delay.csv_report_email(to_email, order_detail_ids, @date_range_field)
+    AccountTransactionReportMailer.csv_report_email(to_email, order_detail_ids, @date_range_field).deliver_later
   end
 
   def to_email

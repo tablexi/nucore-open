@@ -16,7 +16,7 @@
       = f.input "date_range[start]", input_html: { value: @search_fields[:date_range].try(:[], :start).to_s.gsub("-","/"), class: ["datepicker", "in_past"] }, label: t("reports.fields.date_start")
       = f.input "date_range[end]", input_html: { value: @search_fields[:date_range].try(:[], :end).to_s.gsub("-","/"), class: ["datepicker", "in_past"] }, label: t("reports.fields.date_end")
 
-      .submit_button
-        = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
-        = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
-        = f.submit "Search", class: "btn"
+    .submit_button.span6
+      = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
+      = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
+      = f.submit t("shared.filter"), class: "btn float-left"
