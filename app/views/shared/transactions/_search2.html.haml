@@ -14,6 +14,6 @@
         = f.input "date_range_end", input_html: { class: ["datepicker", "in_past"] }, label: t("reports.fields.date_end")
 
     .submit_button.span6
-      = f.input :email, as: :hidden, input_html: { value: current_user.email }, disabled: true
-      = f.input :format, as: :hidden, input_html: { value: params[:format] }, disabled: true
+      = hidden_field_tag :email, current_user.email, disabled: true
+      = hidden_field_tag :format, params[:format], disabled: true
       = f.submit "Filter", class: "btn float-left"
