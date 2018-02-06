@@ -16,4 +16,4 @@
     .submit_button.span6
       = hidden_field_tag :email, current_user.email, disabled: true
       = hidden_field_tag :format, params[:format], disabled: true
-      = f.submit "Filter", class: "btn float-left"
+      = f.submit t("shared.filter"), class: "btn float-left"
