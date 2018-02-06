@@ -4,6 +4,7 @@ class OrderDetailNoticePresenter < DelegateClass(OrderDetail)
   include ActionView::Helpers::OutputSafetyHelper
 
   def statuses
+    return [] if canceled?
     statuses = []
 
     statuses << Notice.new(:in_review) if in_review?

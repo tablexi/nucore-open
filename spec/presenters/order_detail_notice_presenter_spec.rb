@@ -21,6 +21,12 @@ RSpec.describe OrderDetailNoticePresenter do
       expect(presenter.badges_to_html).to be_blank
     end
 
+    it "shows nothing for a canceled order detail" do
+      allow(order_detail).to receive(:in_review?).and_return(true)
+      allow(order_detail).to receive(:canceled?).and_return(true)
+      expect(presenter.badges_to_html).to be_blank
+    end
+
     it "shows in review if the order is in review" do
       allow(order_detail).to receive(:in_review?).and_return(true)
       expect(presenter.badges_to_html).to have_badge("In Review")
@@ -87,6 +93,12 @@ RSpec.describe OrderDetailNoticePresenter do
     end
 
     it "shows nothing with no warnings/info" do
+      expect(presenter.alerts_to_html).to be_blank
+    end
+
+    it "shows nothing for a canceled order detail" do
+      allow(order_detail).to receive(:in_review?).and_return(true)
+      allow(order_detail).to receive(:canceled?).and_return(true)
       expect(presenter.alerts_to_html).to be_blank
     end
 
