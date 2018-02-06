@@ -336,7 +336,7 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    return if params[:order].blank?
+    return ActionController::Parameters.new if params[:order].blank?
     if acting_as?
       params[:order].permit(*(self.class.permitted_params + self.class.permitted_acting_as_params))
     else

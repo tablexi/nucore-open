@@ -7,8 +7,6 @@ class Relay < ActiveRecord::Base
   validates_presence_of :instrument_id, on: :update
   validate :unique_ip
 
-  attr_accessible :type, :username, :password, :ip, :port, :auto_logout, :auto_logout_minutes, :instrument_id
-
   alias_attribute :host, :ip
 
   CONTROL_MECHANISMS = {

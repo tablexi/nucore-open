@@ -6,7 +6,6 @@ git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
 gem "rails", "4.2.10"
-gem "protected_attributes"
 gem "config"
 
 ## database

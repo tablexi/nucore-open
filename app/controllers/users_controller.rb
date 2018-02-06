@@ -165,11 +165,15 @@ class UsersController < ApplicationController
   private
 
   def edit_user_params
-    params.require(:user).permit(:email, :first_name, :last_name, :username) if @user.admin_editable?
+    if @user.admin_editable?
+      params.require(:user).permit(:email, :first_name, :last_name, :username)
+    else
+      ActionController::Parameters.new
+    end
   end
 
   def price_group_params
-    current_user.administrator? ? params.require(:user).permit(:internal) : {}
+    current_user.administrator? ? params.require(:user).permit(:internal) : ActionController::Parameters.new
   end
 
   def update_access_list_approvals
