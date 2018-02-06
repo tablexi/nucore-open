@@ -8,7 +8,7 @@ class Bundle < Product
   def products_for_group_select
     products = facility.products.where(type: bundleable_product_types).order(:type, :name)
     options = Hash.new { |h, k| h[k] = [] }
-    products.group_by { |product| product.class.name.pluralize }.each do |cname, ps|
+    products.group_by { |product| product.class.model_name.human.pluralize }.each do |cname, ps|
       options[cname] = ps.map { |p| [p.to_s_with_status, p.id] }
     end
     options
