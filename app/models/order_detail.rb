@@ -343,9 +343,7 @@ class OrderDetail < ActiveRecord::Base
   }
 
   scope :ordered_by_action_date, lambda { |action|
-    if action.to_sym == :journal_or_statement_date
-      action = "COALESCE(journal_date, in_range_statements.created_at)"
-    end
+    action = "COALESCE(journal_date, in_range_statements.created_at)" if action.to_sym == :journal_or_statement_date
     order_by_desc_nulls_first(action)
   }
 

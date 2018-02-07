@@ -38,7 +38,7 @@ RSpec.describe TransactionSearch::DateRangeSearcher do
   describe "fulfilled_at" do
     before do
       order_details[0].update!(fulfilled_at: 2.days.ago)
-      order_details[1].update!(fulfilled_at: 1.days.ago)
+      order_details[1].update!(fulfilled_at: 1.day.ago)
     end
 
     it "finds only the right ones when starting a day ago" do
@@ -66,7 +66,7 @@ RSpec.describe TransactionSearch::DateRangeSearcher do
     describe "journaled" do
       before do
         order_details[0].update!(journal: create(:journal, journal_date: 2.days.ago))
-        order_details[1].update!(journal: create(:journal, journal_date: 1.days.ago))
+        order_details[1].update!(journal: create(:journal, journal_date: 1.day.ago))
       end
 
       it "finds only the right ones when starting a day ago" do
@@ -93,7 +93,7 @@ RSpec.describe TransactionSearch::DateRangeSearcher do
     describe "statemented" do
       before do
         order_details[0].update!(statement: create(:statement, created_at: 2.days.ago))
-        order_details[1].update!(statement: create(:statement, created_at: 1.days.ago))
+        order_details[1].update!(statement: create(:statement, created_at: 1.day.ago))
       end
 
       it "finds only the right ones when starting a day ago" do
@@ -121,7 +121,7 @@ RSpec.describe TransactionSearch::DateRangeSearcher do
   describe "reconciled_at" do
     before do
       order_details[0].update!(reconciled_at: 2.days.ago)
-      order_details[1].update!(reconciled_at: 1.days.ago)
+      order_details[1].update!(reconciled_at: 1.day.ago)
     end
 
     it "finds only the right ones when starting a day ago" do
