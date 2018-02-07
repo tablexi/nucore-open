@@ -33,6 +33,12 @@ FactoryBot.define do
       end
     end
 
+    factory :complete_order, parent: :purchased_order do
+      after(:create) do |order|
+        order.order_details.each(&:to_complete!)
+      end
+    end
+
     factory :merge_order do
       transient do
         merge_with_order { nil }
