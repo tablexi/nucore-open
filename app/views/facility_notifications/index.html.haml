@@ -5,7 +5,7 @@
   %h2= t(".head")
 
 = content_for :top_block do
-  = render :partial => 'shared/transactions/top', :locals => { :tab => "notifications" }
+  = render "shared/transactions/top2", tab: "notifications"
 
 - if @order_details.any?
   = render :partial => 'shared/transactions/table'

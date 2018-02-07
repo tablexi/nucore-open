@@ -53,12 +53,6 @@ RSpec.describe FacilityNotificationsController do
         expect(assigns(:order_detail_action)).to eq(:send_notifications)
         is_expected.not_to set_flash
       end
-
-      context "searching" do
-        before { @user = @admin }
-
-        it_should_support_searching
-      end
     end
 
     include_examples "zero-day review period"

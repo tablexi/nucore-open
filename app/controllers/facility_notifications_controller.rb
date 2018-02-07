@@ -23,8 +23,14 @@ class FacilityNotificationsController < ApplicationController
   end
 
   # GET /facilities/notifications
-  def index_with_search
-    @order_details = @order_details.need_notification
+  def index
+    order_details = OrderDetail.need_notification.for_facility(current_facility)
+
+    @search_form = TransactionSearch::SearchForm.new(params[:search])
+    @search = TransactionSearch::Searcher.new.search(order_details, @search_form)
+    @date_range_field = @search_form.date_params[:field]
+    @order_details = @search.order_details
+
     @order_detail_action = :send_notifications
   end
 
