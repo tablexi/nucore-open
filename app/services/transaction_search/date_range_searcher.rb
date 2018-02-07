@@ -24,10 +24,11 @@ module TransactionSearch
       start_date = to_date(params[:start])
       end_date = to_date(params[:end])
       @date_range_field = extract_date_range_field(params)
-      order_details.action_in_date_range(@date_range_field, start_date, end_date)
-    end
 
-    private
+      order_details
+        .action_in_date_range(@date_range_field, start_date, end_date)
+        .ordered_by_action_date(@date_range_field)
+    end
 
     def to_date(param_value)
       parse_usa_date(param_value.to_s.tr("-", "/"))
@@ -35,7 +36,7 @@ module TransactionSearch
 
     def extract_date_range_field(params)
       field = params.try(:[], :field)
-      FIELDS.include?(field) ? field : "fulfilled_at"
+      FIELDS.include?(field.to_s) ? field.to_s : "fulfilled_at"
     end
 
   end
