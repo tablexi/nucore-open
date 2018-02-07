@@ -7,4 +7,5 @@
 
 = content_for :top_block do
   = render "shared/transactions/top2", tab: "transactions"
-= render partial: "shared/transactions/table"
+- if @order_details.any?
+  = render partial: "shared/transactions/table"

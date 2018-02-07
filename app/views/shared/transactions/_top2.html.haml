@@ -2,7 +2,7 @@
   .span3
     #sidebar
       = render "admin/shared/sidenav_billing", sidenav_tab: tab
-  - if @empty_orders
+  - if @order_details.none?
     .span9
       %p.alert.alert-info= text("#{controller_name}.#{action_name}.no_orders")
   - else
