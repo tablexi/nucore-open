@@ -144,7 +144,7 @@ paperclip:
 
 # saml:
 #   idp_metadata: "https://websso.example.com/idp/metadata"
-#   certificate_file: path/to/file.p12
+#   # certificate_file: path/to/file.p12 # Optional. Do not check in to version control.
 #   attribute_map:
 #     "PersonImmutableID": "username"
 #     "User.email": "email"
