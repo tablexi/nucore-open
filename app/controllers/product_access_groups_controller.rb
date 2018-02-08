@@ -22,7 +22,7 @@ class ProductAccessGroupsController < ApplicationController
   end
 
   def update
-    if @product_access_group.update_attributes(params[:product_access_group])
+    if @product_access_group.update_attributes(update_params)
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was successfully updated"
       redirect_to [current_facility, @product, ProductAccessGroup]
     else
@@ -31,7 +31,7 @@ class ProductAccessGroupsController < ApplicationController
   end
 
   def create
-    @product_access_group = @product.product_access_groups.new(params[:product_access_group])
+    @product_access_group = @product.product_access_groups.new(create_params)
     if @product_access_group.save
       flash[:notice] = "#{ProductAccessGroup.model_name.human} was successfully created"
       redirect_to [current_facility, @product, ProductAccessGroup]
@@ -48,6 +48,16 @@ class ProductAccessGroupsController < ApplicationController
       flash[:error] = "There was an error deleting the #{ProductAccessGroup.model_name.human}"
       redirect_to [:edit, current_facility, @product, ProductAccessGroup]
     end
+  end
+
+  private
+
+  def create_params
+    params.require(:product_access_group).permit(:name)
+  end
+
+  def update_params
+    params.require(:product_access_group).permit(:name)
   end
 
 end
