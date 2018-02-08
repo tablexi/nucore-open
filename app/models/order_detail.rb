@@ -342,6 +342,11 @@ class OrderDetail < ActiveRecord::Base
     search
   }
 
+  scope :ordered_by_action_date, lambda { |action|
+    action = "COALESCE(journal_date, in_range_statements.created_at)" if action.to_sym == :journal_or_statement_date
+    order_by_desc_nulls_first(action)
+  }
+
   def self.journaled_or_statemented_in_date_range(start_date, end_date)
     search = joins("LEFT JOIN journals ON journals.id = order_details.journal_id")
              .joins("LEFT JOIN statements in_range_statements ON in_range_statements.id = order_details.statement_id")
@@ -356,8 +361,8 @@ class OrderDetail < ActiveRecord::Base
 
     search.where(
       "(#{journal_query.join(' AND ')}) OR (#{statement_query.join(' AND ')})",
-      start_date: start_date,
-      end_date: end_date,
+      start_date: start_date.try(:beginning_of_day),
+      end_date: end_date.try(:end_of_day),
     )
   end
 
