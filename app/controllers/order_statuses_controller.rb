@@ -5,7 +5,7 @@ class OrderStatusesController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
 
-  load_and_authorize_resource
+  load_and_authorize_resource through: :current_facility
   # Disallow editing root statuses
   before_action :ensure_editable, only: [:edit, :update, :destroy]
 
@@ -24,17 +24,15 @@ class OrderStatusesController < ApplicationController
 
   # GET /order_statuses/new
   def new
-    @order_status = OrderStatus.new(facility: current_facility)
+    @order_status.facility = current_facility
   end
 
   # GET /facilities/:facility_id/order_statuses/:id/edit
   def edit
-    @order_status = current_facility.order_statuses.find(params[:id])
   end
 
   # POST /order_statuses
   def create
-    @order_status = OrderStatus.new(params[:order_status])
     @order_status.facility = current_facility
 
     if @order_status.save
@@ -47,9 +45,7 @@ class OrderStatusesController < ApplicationController
 
   # PUT /facilities/:facility_id/order_statuses/:id
   def update
-    @order_status = current_facility.order_statuses.find(params[:id])
-
-    if @order_status.update_attributes(params[:order_status])
+    if @order_status.update_attributes(update_params)
       flash[:notice] = "The Order Status was successfully updated."
       redirect_to facility_order_statuses_path
     else
@@ -59,7 +55,6 @@ class OrderStatusesController < ApplicationController
 
   # DELETE /facilities/:facility_id/order_statuses/:id
   def destroy
-    @order_status = current_facility.order_statuses.find(params[:id])
     parent_status = @order_status.root
     @order_status.transaction do
       begin
@@ -76,6 +71,14 @@ class OrderStatusesController < ApplicationController
   end
 
   private
+
+  def create_params
+    params.require(:order_status).permit(:name, :parent_id)
+  end
+
+  def update_params
+    params.require(:order_status).permit(:name)
+  end
 
   def ensure_editable
     raise ActiveRecord::RecordNotFound unless @order_status.editable?
