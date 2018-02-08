@@ -2,7 +2,7 @@ module SamlAuthentication
 
   class UserUpdater
 
-    def call(user, saml_response, auth_value)
+    def call(user, saml_response, _auth_value)
       saml_response.attributes.resource_keys.each do |key|
         user.send "#{key}=", saml_response.attribute_value_by_resource_key(key)
       end

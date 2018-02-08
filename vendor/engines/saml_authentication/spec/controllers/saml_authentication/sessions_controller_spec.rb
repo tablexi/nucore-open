@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe SamlAuthentication::SessionsController, type: :controller do
-
   describe "create" do
     # based on a onelogin response
     let(:attribute_map) do
@@ -35,7 +34,6 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
         expect(controller.current_user.username).to eq("sst123")
         expect(controller.current_user.first_name).to eq("Sam")
         expect(controller.current_user.last_name).to eq("Student")
-
       end
 
       it "has no password on the new user" do
@@ -100,5 +98,4 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
     end
   end
-
 end

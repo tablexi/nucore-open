@@ -2,7 +2,7 @@ module SamlAuthentication
 
   class UserLocator
 
-    def call(model, saml_response, auth_value)
+    def call(model, saml_response, _auth_value)
       username = saml_response.attribute_value_by_resource_key(:username)
       email = saml_response.attribute_value_by_resource_key(:email)
 
