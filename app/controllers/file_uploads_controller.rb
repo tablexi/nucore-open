@@ -37,7 +37,7 @@ class FileUploadsController < ApplicationController
 
   # POST /facilities/1/services/3/files
   def create
-    @file = @product.stored_files.new(params[:stored_file].merge(created_by: session_user.id))
+    @file = @product.stored_files.new(create_params.merge(created_by: session_user.id))
     @files = @product.stored_files.where(file_type: @file.file_type || params[:file_type])
 
     if @file.save
@@ -112,6 +112,10 @@ class FileUploadsController < ApplicationController
   end
 
   private
+
+  def create_params
+    params.require(:stored_file).permit(:name, :file_type, :file)
+  end
 
   def init_product
     if params[:product]
