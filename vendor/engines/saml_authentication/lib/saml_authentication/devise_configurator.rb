@@ -13,6 +13,7 @@ module SamlAuthentication
         config.saml_update_user = true
         config.saml_resource_locator = SamlAuthentication::UserLocator.new
         config.saml_update_resource_hook = SamlAuthentication::UserUpdater.new
+
         config.saml_config = fetch_metadata_config
 
         config.saml_configure do |settings|
@@ -28,7 +29,12 @@ module SamlAuthentication
 
     def fetch_metadata_config
       idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
-      idp_metadata_parser.parse_remote(Settings.saml.idp_metadata)
+      # Can be either remote or local
+      if Settings.saml.idp_metadata.start_with?("https://")
+        idp_metadata_parser.parse_remote(Settings.saml.idp_metadata, true)
+      else
+        idp_metadata_parser.parse(File.open(File.expand_path(Settings.saml.idp_metadata)))
+      end
     end
 
     def configure_security(settings)
