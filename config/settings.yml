@@ -143,11 +143,11 @@ paperclip:
   path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename"
 
 # saml:
-#   idp_metadata: "https://websso.examle.com/idp/metadata"
+#   idp_metadata: "https://websso.example.com/idp/metadata"
 #   certificate_file: path/to/file.p12
 #   attribute_map:
 #     "PersonImmutableID": "username"
 #     "User.email": "email"
-#     "User.FirstName": "last_name"
-#     "User.LastName": "first_name"
+#     "User.FirstName": "first_name"
+#     "User.LastName": "last_name"
 
