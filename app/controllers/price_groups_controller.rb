@@ -66,7 +66,7 @@ class PriceGroupsController < ApplicationController
 
   # POST /price_groups
   def create
-    @price_group = PriceGroup.new(params[:price_group].merge(facility: current_facility))
+    @price_group = PriceGroup.new(price_group_params.merge(facility: current_facility))
 
     if @price_group.save
       flash[:notice] = I18n.t("controllers.price_groups.create.notice")
@@ -78,7 +78,7 @@ class PriceGroupsController < ApplicationController
 
   # PUT /price_groups/:id
   def update
-    if @price_group.update_attributes(params[:price_group])
+    if @price_group.update_attributes(price_group_params)
       flash[:notice] = I18n.t("controllers.price_groups.update.notice")
       redirect_to [current_facility, @price_group]
     else
@@ -104,6 +104,10 @@ class PriceGroupsController < ApplicationController
   end
 
   private
+
+  def price_group_params
+    params.require(:price_group).permit(:name, :display_order, :is_internal, :admin_editable, :facility_id)
+  end
 
   def paginate(relation)
     relation.paginate(page: params[:page], per_page: 10)
