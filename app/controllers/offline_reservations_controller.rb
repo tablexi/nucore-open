@@ -16,7 +16,7 @@ class OfflineReservationsController < ApplicationController
   end
 
   def create
-    @reservation = @instrument.offline_reservations.new(new_offline_reservation_params)
+    @reservation = @instrument.offline_reservations.new(create_params)
     @reservation.assign_attributes(created_by: current_user)
 
     if @reservation.save
@@ -68,7 +68,7 @@ class OfflineReservationsController < ApplicationController
     @reservation = @instrument.offline_reservations.find(params[:id])
   end
 
-  def new_offline_reservation_params
+  def create_params
     params[:offline_reservation]
       .permit(:admin_note, :category)
       .merge(reserve_start_at: Time.current)
