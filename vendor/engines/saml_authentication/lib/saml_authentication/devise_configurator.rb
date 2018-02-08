@@ -1,3 +1,6 @@
+require "saml_authentication/user_locator"
+require "saml_authentication/user_updater"
+
 module SamlAuthentication
 
   class DeviseConfigurator
@@ -5,11 +8,11 @@ module SamlAuthentication
     def configure!
       Devise.setup do |config|
         config.saml_session_index_key = :session_index
-        config.saml_use_subject = true
-        config.saml_create_user = false
-        config.saml_update_user = false # TODO: Fix me
-        config.saml_default_user_key = :email # TODO change to :username
-
+        config.saml_default_user_key = :username
+        config.saml_create_user = true
+        config.saml_update_user = true
+        config.saml_resource_locator = SamlAuthentication::UserLocator.new
+        config.saml_update_resource_hook = SamlAuthentication::UserUpdater.new
         config.saml_config = fetch_metadata_config
 
         config.saml_configure do |settings|
