@@ -11,3 +11,5 @@
 
 - if SettingsHelper.feature_on? :password_update
   = link_to "Forgot password?", :reset_password
+
+= render_view_hook("login_screen_announcement")
