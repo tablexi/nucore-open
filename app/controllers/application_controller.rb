@@ -191,4 +191,8 @@ class ApplicationController < ActionController::Base
     current_facility
   end
 
+  def empty_params
+    ActionController::Parameters.new
+  end
+
 end

@@ -214,7 +214,7 @@ RSpec.describe UsersController do
 
           context "with missing parameters" do
             before :each do
-              @params.merge!(user: {})
+              @params.merge!(user: { email: "email@example.com" })
             end
 
             it_should_allow_operators_only do

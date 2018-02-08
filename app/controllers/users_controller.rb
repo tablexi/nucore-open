@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, except: [:password_reset]
   before_action :check_acting_as
 
-  load_and_authorize_resource except: [:password, :password_reset, :edit, :update], id_param: :user_id
+  load_and_authorize_resource except: [:create, :password, :password_reset, :edit, :update], id_param: :user_id
   load_and_authorize_resource only: [:edit, :update], id_param: :id
 
   layout "two_column"
@@ -59,37 +59,6 @@ class UsersController < ApplicationController
       create_internal
     else
       redirect_to new_facility_user_path
-    end
-  end
-
-  def create_external
-    @user = User.new(params[:user])
-    @user.password = generate_new_password
-
-    if @user.save
-      LogEvent.log(@user, :create, current_user)
-      @user.create_default_price_group!
-      save_user_success
-    else
-      render(action: "new_external") && return
-    end
-  end
-
-  def create_internal
-    @user = username_lookup(params[:username])
-    if @user.nil?
-      flash[:error] = text("users.search.netid_not_found")
-      redirect_to facility_users_path
-    elsif @user.persisted?
-      flash[:error] = text("users.search.user_already_exists", username: @user.username)
-      redirect_to facility_users_path
-    elsif @user.save
-      LogEvent.log(@user, :create, current_user)
-      @user.create_default_price_group!
-      save_user_success
-    else
-      flash[:error] = text("create.error", message: @user.errors.full_messages.to_sentence)
-      redirect_to facility_users_path
     end
   end
 
@@ -147,12 +116,10 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/:id/edit
   def edit
-    @user = User.find(params[:id])
   end
 
   # PUT /facilities/:facility_id/users/:id
   def update
-    @user = User.find(params[:id])
     if @user.update_attributes(edit_user_params) && @user.update_price_group(price_group_params)
       flash[:notice] = text("update.success")
       redirect_to facility_user_path(current_facility, @user)
@@ -164,16 +131,50 @@ class UsersController < ApplicationController
 
   private
 
+  def create_params
+    params.require(:user).permit(:email, :first_name, :last_name, :username)
+  end
+
   def edit_user_params
-    if @user.admin_editable?
-      params.require(:user).permit(:email, :first_name, :last_name, :username)
-    else
-      ActionController::Parameters.new
-    end
+    @user.admin_editable? ? params.require(:user).permit(:email, :first_name, :last_name, :username) : empty_params
   end
 
   def price_group_params
-    current_user.administrator? ? params.require(:user).permit(:internal) : ActionController::Parameters.new
+    current_user.administrator? ? params.require(:user).permit(:internal) : empty_params
+  end
+
+  def create_external
+    @user = User.new(create_params)
+    @user.password = generate_new_password
+
+    authorize! :create, @user
+
+    if @user.save
+      LogEvent.log(@user, :create, current_user)
+      @user.create_default_price_group!
+      save_user_success
+    else
+      render(action: "new_external") && return
+    end
+  end
+
+  def create_internal
+    @user = username_lookup(params[:username])
+    authorize! :create, @user
+    if @user.nil?
+      flash[:error] = text("users.search.netid_not_found")
+      redirect_to facility_users_path
+    elsif @user.persisted?
+      flash[:error] = text("users.search.user_already_exists", username: @user.username)
+      redirect_to facility_users_path
+    elsif @user.save
+      LogEvent.log(@user, :create, current_user)
+      @user.create_default_price_group!
+      save_user_success
+    else
+      flash[:error] = text("create.error", message: @user.errors.full_messages.to_sentence)
+      redirect_to facility_users_path
+    end
   end
 
   def update_access_list_approvals
