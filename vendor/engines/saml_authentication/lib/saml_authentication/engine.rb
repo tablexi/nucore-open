@@ -8,6 +8,8 @@ module SamlAuthentication
   class Engine < Rails::Engine
 
     config.to_prepare do
+      next if Settings.saml.blank?
+
       User.send(:devise, :saml_authenticatable)
       ViewHook.add_hook "devise.sessions.new",
                         "before_login_form",
@@ -15,6 +17,8 @@ module SamlAuthentication
     end
 
     config.after_initialize do
+      next if Settings.saml.blank?
+
       Rails.application.reload_routes!
 
       SamlAuthentication::DeviseConfigurator.new.configure!
