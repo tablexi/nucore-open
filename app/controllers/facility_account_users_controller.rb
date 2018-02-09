@@ -33,7 +33,7 @@ class FacilityAccountUsersController < ApplicationController
   def create
     @account = Account.find(params[:account_id])
     @user = User.find(params[:user_id])
-    role = params[:account_user][:user_role]
+    role = create_params[:user_role]
 
     @account_user = @account.add_or_update_member(@user, role, session_user)
     # account owner might've changed by earlier operation... reload it
@@ -67,6 +67,10 @@ class FacilityAccountUsersController < ApplicationController
   end
 
   private
+
+  def create_params
+    params.require(:account_user).permit(:user_role)
+  end
 
   def current_owner?
     @account.owner_user == @user

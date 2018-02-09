@@ -8,7 +8,7 @@ class BundleProductsController < ApplicationController
   before_action :init_bundle
   before_action :init_bundle_product, except: [:new, :create, :index]
 
-  load_and_authorize_resource except: :show
+  load_and_authorize_resource except: :show, through: :bundle
 
   layout "two_column"
 
@@ -24,8 +24,6 @@ class BundleProductsController < ApplicationController
 
   # POST /facilities/:facility_id/bundles/:bundle_id/bundle_products
   def create
-    @bundle_product = @bundle.bundle_products.new(params[:bundle_product])
-
     if @bundle_product.save
       flash[:notice] = "The product was successfully added to the bundle."
       redirect_to facility_bundle_bundle_products_path(current_facility, @bundle)
@@ -45,7 +43,7 @@ class BundleProductsController < ApplicationController
 
   # PUT /facilities/:facility_id/bundles/:bundle_id/bundle_products/:id
   def update
-    if @bundle_product.update_attributes(params[:bundle_product])
+    if @bundle_product.update_attributes(update_params)
       flash[:notice] = "The bundle product was successfully updated."
       redirect_to facility_bundle_bundle_products_path(current_facility, @bundle)
     else
@@ -70,6 +68,16 @@ class BundleProductsController < ApplicationController
 
   def init_bundle_product
     @bundle_product = @bundle.bundle_products.find(params[:id])
+  end
+
+  private
+
+  def create_params
+    params.require(:bundle_product).permit(:product_id, :quantity)
+  end
+
+  def update_params
+    params.require(:bundle_product).permit(:quantity)
   end
 
 end

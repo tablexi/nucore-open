@@ -25,9 +25,9 @@ class AccountUsersController < ApplicationController
   # POST /accounts/:account_id/account_users
   def create
     ## TODO add security
-    @user                    = User.find(params[:user_id])
-    @account_user            = @account.account_users.new(params[:account_user])
-    @account_user.user       = @user
+    @user = User.find(params[:user_id])
+    @account_user = @account.account_users.new(create_params)
+    @account_user.user = @user
     @account_user.created_by = session_user.id
 
     if @account_user.save
@@ -57,6 +57,10 @@ class AccountUsersController < ApplicationController
   end
 
   protected
+
+  def create_params
+    params.require(:account_user).permit(:user_role)
+  end
 
   def init_account
     @account = session_user.accounts.find(params[:account_id])
