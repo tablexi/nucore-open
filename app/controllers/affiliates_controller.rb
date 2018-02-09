@@ -5,11 +5,6 @@ class AffiliatesController < GlobalSettingsController
   end
 
   def create
-    if affiliate_params.blank?
-      flash[:error] = "Affiliate attributes not found!"
-      return redirect_to new_affiliate_path
-    end
-
     @affiliate = Affiliate.create(affiliate_params)
     return render action: :new unless @affiliate.errors.empty?
 
@@ -36,11 +31,6 @@ class AffiliatesController < GlobalSettingsController
     rescue ActiveRecord::RecordNotFound
       flash[:error] = "Affiliate with id #{id} not found!"
     else
-      if affiliate_params.blank?
-        flash.now[:error] = "Affiliate attributes not found!"
-        return render action: :edit
-      end
-
       return render action: :edit unless @affiliate.update_attributes(affiliate_params)
 
       flash[:notice] = "Affiliate #{@affiliate.name} updated"
