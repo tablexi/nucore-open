@@ -26,7 +26,7 @@ class FacilityFacilityAccountsController < ApplicationController
 
   # POST /facilities/:facility_id/facility_accounts(.:format)
   def create
-    @facility_account = current_facility.facility_accounts.new(facility_account_params)
+    @facility_account = current_facility.facility_accounts.new(facility_facility_account_params)
     @facility_account.created_by = session_user.id
 
     if @facility_account.save
@@ -46,7 +46,7 @@ class FacilityFacilityAccountsController < ApplicationController
   def update
     @facility_account = current_facility.facility_accounts.find(params[:id])
 
-    if @facility_account.update_attributes(facility_account_params)
+    if @facility_account.update_attributes(facility_facility_account_params)
       flash[:notice] = text("update.success", model: FacilityAccount.model_name.human)
       redirect_to facility_facility_accounts_path
     else
@@ -56,7 +56,7 @@ class FacilityFacilityAccountsController < ApplicationController
 
   private
 
-  def facility_account_params
+  def facility_facility_account_params
     params.require(:facility_account).permit(:revenue_account, :account_number, :is_active)
   end
 
