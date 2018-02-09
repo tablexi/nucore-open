@@ -6,3 +6,6 @@ devise:
 secure_rooms_api:
   basic_auth_name: 51f5953d88c4c397eaf9bc11439887bf
   basic_auth_password: 4a2100348322d5c3c0bf52979450f7de
+
+saml:
+  idp_metadata: "vendor/engines/saml_authentication/spec/fixtures/idp_metadata.xml"

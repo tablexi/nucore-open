@@ -42,7 +42,8 @@ Nucore::Application.configure do
   # Do not log assets path
   config.assets.quiet = true
 
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  Rails.application.routes.default_url_options =
+    config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
   Delayed::Worker.delay_jobs = false
 end

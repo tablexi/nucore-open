@@ -141,3 +141,13 @@ paperclip:
   storage: filesystem
   url: ":rails_relative_url_root/:attachment/:id_partition/:style/:safe_filename"
   path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename"
+
+# saml:
+#   idp_metadata: "https://websso.example.com/idp/metadata"
+#   # certificate_file: path/to/file.p12 # Optional. Do not check in to version control.
+#   attribute_map:
+#     "PersonImmutableID": "username"
+#     "User.email": "email"
+#     "User.FirstName": "first_name"
+#     "User.LastName": "last_name"
+
