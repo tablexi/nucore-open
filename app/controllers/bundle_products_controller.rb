@@ -8,7 +8,7 @@ class BundleProductsController < ApplicationController
   before_action :init_bundle
   before_action :init_bundle_product, except: [:new, :create, :index]
 
-  load_and_authorize_resource except: :show
+  load_and_authorize_resource except: :show, through: :bundle
 
   layout "two_column"
 
@@ -24,8 +24,6 @@ class BundleProductsController < ApplicationController
 
   # POST /facilities/:facility_id/bundles/:bundle_id/bundle_products
   def create
-    @bundle_product = @bundle.bundle_products.new(create_params)
-
     if @bundle_product.save
       flash[:notice] = "The product was successfully added to the bundle."
       redirect_to facility_bundle_bundle_products_path(current_facility, @bundle)
