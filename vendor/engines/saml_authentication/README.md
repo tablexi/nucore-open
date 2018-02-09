@@ -29,8 +29,8 @@ saml:
 * `idp_metadata`: The URL for your IdP's metadata. This should be provided to you by the IdP.
 * `certificate_file` (Optional): A `.p12` certificate file for signing your requests.
   _Do not check this in to version control_
-* `attribute_map`: A mapping from the IdP's attributes to the `User`'s attributes.
-  `username` and `email` are absolutely required while entries for `first_name`
+* `attribute_map`: A mapping from the IdP's attributes to the NUcore's `users` table
+  columns. `username` and `email` are absolutely required while entries for `first_name`
   and `last_name` are recommended.
 
 ## Handling Users
@@ -44,7 +44,7 @@ When a user logs in one of three things will happen (in this order):
    the user's `username` will be updated as will other attributes. The user's
    password will be cleared, and they will no longer be able to log in via
    username/password. They will always need to log in via SSO in the future.
-3. If the user's username or password does not match an existing a user, a new `User`
+3. If the user's username or email does not match an existing a user, a new `User`
    will be created. They will not be able to do much at this point because they
    will have no payment sources. A facility staff/director/administrator will need
    to set that up for them.
