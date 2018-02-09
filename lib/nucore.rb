@@ -123,7 +123,7 @@ module NUCore
         end
 
         def order_by_desc_nulls_first(field)
-          NUCore::Database.oracle? ? order("#{sanitize_sql(field)} desc nulls first") : order("-#{sanitize_sql(field)}")
+          NUCore::Database.oracle? ? order("#{sanitize_sql(field)} desc nulls first") : order("#{sanitize_sql(field)} DESC")
         end
 
       end
