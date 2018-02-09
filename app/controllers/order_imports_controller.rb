@@ -39,9 +39,13 @@ class OrderImportsController < ApplicationController
 
   private
 
+  def create_params
+    params.require(:order_import).permit(:upload_file, :fail_on_error, :send_receipts)
+  end
+
   def create_order_import!
     OrderImport.create!(
-      params[:order_import].merge(
+      create_params.merge(
         created_by: session_user.id,
         upload_file: stored_file,
         facility: @current_facility,
@@ -91,7 +95,7 @@ class OrderImportsController < ApplicationController
   end
 
   def upload_file
-    @upload_file ||= params[:order_import].delete(:upload_file)
+    @upload_file ||= create_params.delete(:upload_file)
   end
 
 end

@@ -65,6 +65,12 @@ RSpec.describe FileUploadsController do
       is_expected.to render_template("index")
     end
 
+    it "should track created_by" do
+      sign_in @admin
+      do_request
+      expect(@service.reload.stored_files.collect(&:created_by)).to include(@admin.id)
+    end
+
   end
 
   context "upload_sample_results" do

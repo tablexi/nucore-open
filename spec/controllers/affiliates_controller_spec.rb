@@ -45,10 +45,6 @@ RSpec.describe AffiliatesController do
       assert_redirected_to affiliates_path
     end
 
-    it "fails gracefully if no attributes posted" do
-      no_attrs_test { assert_redirected_to new_affiliate_path }
-    end
-
     it("fails gracefully if bad attributes posted") do
       bad_attrs_test(:new) { expect(assigns(:affiliate)).to be_new_record }
     end
@@ -90,10 +86,6 @@ RSpec.describe AffiliatesController do
       it("fails gracefully if given a bad id") { bad_id_test }
 
       it("fails gracefully when posting bad attributes") { bad_attrs_test :edit }
-
-      it "fails gracefully if no attributes are posted" do
-        no_attrs_test { is_expected.to render_template :edit }
-      end
     end
 
     context "DELETE #destroy" do

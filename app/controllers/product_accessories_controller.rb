@@ -36,6 +36,10 @@ class ProductAccessoriesController < ApplicationController
 
   private
 
+  def create_params
+    params.require(:product_accessory).permit(:accessory_id, :scaling_type)
+  end
+
   def init_product
     @product = current_facility.products.find_by!(url_name: params[:product_id])
   end
