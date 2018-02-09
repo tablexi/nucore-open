@@ -16,6 +16,14 @@ module TransactionSearch
       ]
     end
 
+    # Prefer `TransactionSearch.register_optimizer` rather than modifying this
+    # directly in order to maintain API consistency with `default_searchers`.
+    cattr_accessor(:optimizers) do
+      [
+        TransactionSearch::NPlusOneOptimizer,
+      ]
+    end
+
     # Expects an array of `TransactionSearch::BaseSearcher`s
     def initialize(*searchers)
       searchers = self.class.default_searchers if searchers.blank?
@@ -24,6 +32,8 @@ module TransactionSearch
     end
 
     def search(order_details, params)
+      order_details = add_global_optimizations(order_details)
+
       @searchers.reduce(Results.new(order_details)) do |results, searcher_class|
         searcher = searcher_class.new(results.order_details)
 
@@ -44,6 +54,14 @@ module TransactionSearch
           optimized_order_details,
           results.options + [option_searcher],
         )
+      end
+    end
+
+    private
+
+    def add_global_optimizations(order_details)
+      optimizers.reduce(order_details) do |current, optimizer|
+        optimizer.new(current).optimize
       end
     end
 

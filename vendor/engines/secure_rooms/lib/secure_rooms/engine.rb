@@ -12,6 +12,8 @@ module SecureRooms
       User.send :include, SecureRooms::UserExtension
       ::OrderDetails::ParamUpdater.send :include, SecureRooms::OrderDetails::ParamUpdaterExtension
 
+      TransactionSearch.register_optimizer(SecureRooms::NPlusOneOccupancyOptimizer)
+
       ArrayUtil.insert_before(Product.types, SecureRoom, Bundle)
       ArrayUtil.insert_after(
         MessageSummarizer.summary_classes,

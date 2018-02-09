@@ -26,6 +26,10 @@ module TransactionSearch
     SearchForm.send(:attr_accessor, searcher.key)
   end
 
+  def self.register_optimizer(optimizer)
+    Searcher.optimizers << optimizer
+  end
+
   module ClassMethods
 
     # If a method is tagged with _with_search at the end, then define the normal controller
