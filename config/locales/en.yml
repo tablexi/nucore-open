@@ -845,7 +845,6 @@ en:
         label: "Transactions that will be moved:"
       unmovable_transactions:
         label: "Transactions that will not be moved:"
-      submit: "Reassign chart string"
 
     reassign_chart_strings:
       account_select:

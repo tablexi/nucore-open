@@ -4,6 +4,8 @@ module ReassignChartStringsHelper
     form.input :account_id,
                as: :select,
                collection: accounts,
+               label_method: :account_list_item,
+               label: Account.model_name.human,
                input_html: {
                  class: "account_selection",
                  data: {
