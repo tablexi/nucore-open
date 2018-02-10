@@ -7,7 +7,7 @@ RSpec.describe "Moving transactions between accounts" do
   let(:item) { create(:setup_item, facility: facility) }
   let(:user) { create(:user) }
   let(:accounts) { create_list(:setup_account, 2, :with_account_owner, owner: user) }
-  let(:other_account)  { create(:setup_account) }
+  let(:other_account) { create(:setup_account) }
   let(:orders) do
     (accounts + [other_account]).map { |account| create(:complete_order, product: item, account: account) }
   end
@@ -49,7 +49,7 @@ RSpec.describe "Moving transactions between accounts" do
 
     expect(page).to have_content("All chart strings listed above are available")
 
-    select accounts.first.account_list_item, from: "Payment Source" # TODO rename
+    select accounts.first.account_list_item, from: "Payment Source"
     click_button "Reassign Chart String"
 
     expect(page).to have_content("Confirm Transaction Moves")
