@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Sending Notifications", billing_review_period: 7.days do
+RSpec.describe "Review period - Sending notifications and marking as reviewed", billing_review_period: 7.days do
 
   let(:facility) { create(:setup_facility) }
   let(:director) { create(:user, :facility_director, facility: facility) }
@@ -60,6 +60,27 @@ RSpec.describe "Sending Notifications", billing_review_period: 7.days do
   describe "marking as reviewed" do
     before do
       order_details.each { |od| od.update!(reviewed_at: 1.week.from_now) }
+    end
+
+    it "can do a basic search on Orders in Review page" do
+      login_as director
+      visit facility_notifications_path(facility)
+      click_link "Orders In Review"
+
+      # Does not have default values for start/end
+      expect(find_field("Start Date").value).to be_blank
+      expect(find_field("End Date").value).to be_blank
+
+      # Has both orders
+      expect(page).to have_content("OD ##{order_details.first.order_number}")
+      expect(page).to have_content("OD ##{order_details.second.order_number}")
+
+      select accounts.first.account_list_item, from: "Payment Sources"
+      click_button "Filter"
+
+      # Has only the one from the selected account
+      expect(page).to have_content("OD ##{order_details.first.order_number}")
+      expect(page).not_to have_content("OD ##{order_details.second.order_number}")
     end
 
     it "can mark as reviewed and move them to the journal page" do

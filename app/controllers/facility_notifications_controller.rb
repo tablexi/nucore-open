@@ -56,11 +56,15 @@ class FacilityNotificationsController < ApplicationController
   end
 
   # GET /facilities/notifications/in_review
-  def in_review_with_search
-    @order_details = @order_details.in_review
-    @order_details = @order_details.reorder(:reviewed_at)
+  def in_review
+    order_details = current_facility.order_details.in_review.reorder(:reviewed_at)
+
+    @search_form = TransactionSearch::SearchForm.new(params[:search])
+    @search = TransactionSearch::Searcher.new.search(order_details, @search_form)
+    @date_range_field = @search_form.date_params[:field]
+    @order_details = @search.order_details
+
     @order_detail_action = :mark_as_reviewed
-    order_details_sort(:reviewed_at)
     @extra_date_column = :reviewed_at
   end
 
