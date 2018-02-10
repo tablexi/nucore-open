@@ -142,10 +142,16 @@ class FacilitiesController < ApplicationController
   end
 
   # GET /facilities/:facility_id/movable_transactions
-  def movable_transactions_with_search
-    @order_details = @order_details.all_movable
+  def movable_transactions
+    @search_form = TransactionSearch::SearchForm.new(params[:search])
+    @search = TransactionSearch::Searcher.new.search(
+      current_facility.order_details.all_movable,
+      @search_form,
+    )
+    @date_range_field = @search_form.date_params[:field]
+    @order_details = @search.order_details.paginate(page: params[:page], per_page: 100)
+
     @order_detail_action = :reassign_chart_strings
-    paginate_order_details 100
   end
 
   # POST /facilities/:facility_id/movable_transactions/reassign_chart_strings
