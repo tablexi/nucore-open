@@ -1,6 +1,5 @@
 require "rails_helper"
 require "controller_spec_helper"
-require "transaction_search_spec_helper"
 
 RSpec.describe FacilityNotificationsController do
 
@@ -173,12 +172,6 @@ RSpec.describe FacilityNotificationsController do
         expect(assigns(:order_details) - [@order_detail1, @order_detail3]).to be_empty
         expect(assigns(:order_detail_action)).to eq(:mark_as_reviewed)
         is_expected.not_to set_flash
-      end
-
-      context "searching" do
-        before { @user = @admin }
-
-        it_should_support_searching
       end
     end
 
