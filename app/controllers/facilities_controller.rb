@@ -145,7 +145,7 @@ class FacilitiesController < ApplicationController
   def movable_transactions
     @search_form = TransactionSearch::SearchForm.new(params[:search])
     @search = TransactionSearch::Searcher.new.search(
-      current_facility.order_details.all_movable,
+      OrderDetail.all_movable.for_facility(current_facility),
       @search_form,
     )
     @date_range_field = @search_form.date_params[:field]
