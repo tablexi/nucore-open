@@ -118,12 +118,14 @@ module NUCore
 
       module ClassMethods
 
+        # MySQL by default will sort with nulls coming before anything with a value.
+        # Oracle by defaults puts the nulls at the end in ASC mode
         def order_by_asc_nulls_first(field)
-          NUCore::Database.oracle? ? order("#{sanitize_sql(field)} asc nulls first") : order(field)
+          NUCore::Database.oracle? ? order("#{sanitize_sql(field)} ASC NULLS FIRST") : order(field)
         end
 
         def order_by_desc_nulls_first(field)
-          NUCore::Database.oracle? ? order("#{sanitize_sql(field)} desc nulls first") : order("-#{sanitize_sql(field)}")
+          NUCore::Database.oracle? ? order("#{sanitize_sql(field)} DESC NULLS FIRST") : order("#{sanitize_sql(field)} DESC")
         end
 
       end
