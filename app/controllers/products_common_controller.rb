@@ -102,7 +102,7 @@ class ProductsCommonController < ApplicationController
 
   # POST /services
   def create
-    @product = current_facility_products.new(product_params)
+    @product = current_facility_products.new(create_params)
     @product.initial_order_status_id = OrderStatus.default_order_status.id
 
     if @product.save
@@ -120,7 +120,7 @@ class ProductsCommonController < ApplicationController
   # PUT /services/1
   def update
     respond_to do |format|
-      if @product.update_attributes(product_params)
+      if @product.update_attributes(update_params)
         flash[:notice] = "#{@product.class.name.capitalize} was successfully updated."
         format.html { redirect_to([:manage, current_facility, @product]) }
       else
@@ -129,9 +129,19 @@ class ProductsCommonController < ApplicationController
     end
   end
 
-  def product_params
-    # TODO: Strong params
-    params[:"#{singular_object_name}"]
+  def create_params
+    params.require(:"#{singular_object_name}").permit(:name, :url_name, :contact_email, :description,
+                                                       :facility_account_id, :account, :initial_order_status_id,
+                                                       :requires_approval, :training_request_contacts,
+                                                       :is_archived, :is_hidden, :order_notification_recipient,
+                                                       :user_notes_field_mode, :user_notes_label, :show_details,
+                                                       :schedule_id, :control_mechanism, :reserve_interval,
+                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
+                                                       :auto_cancel_mins, :lock_window, :cutoff_hours)
+  end
+
+  def update_params
+    create_params
   end
 
   # DELETE /services/1
