@@ -129,21 +129,6 @@ class ProductsCommonController < ApplicationController
     end
   end
 
-  def create_params
-    params.require(:"#{singular_object_name}").permit(:name, :url_name, :contact_email, :description,
-                                                       :facility_account_id, :account, :initial_order_status_id,
-                                                       :requires_approval, :training_request_contacts,
-                                                       :is_archived, :is_hidden, :order_notification_recipient,
-                                                       :user_notes_field_mode, :user_notes_label, :show_details,
-                                                       :schedule_id, :control_mechanism, :reserve_interval,
-                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
-                                                       :auto_cancel_mins, :lock_window, :cutoff_hours)
-  end
-
-  def update_params
-    create_params
-  end
-
   # DELETE /services/1
   def destroy
     if @product.destroy
@@ -167,12 +152,28 @@ class ProductsCommonController < ApplicationController
 
   private
 
+  def create_params
+    params.require(:"#{singular_object_name}").permit(:name, :url_name, :contact_email, :description,
+                                                      :facility_account_id, :account, :initial_order_status_id,
+                                                      :requires_approval, :training_request_contacts,
+                                                      :is_archived, :is_hidden, :order_notification_recipient,
+                                                      :user_notes_field_mode, :user_notes_label, :show_details,
+                                                      :schedule_id, :control_mechanism, :reserve_interval,
+                                                      :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
+                                                      :auto_cancel_mins, :lock_window, :cutoff_hours,
+                                                      relay_attributes: [:ip, :port, :username, :password, :type, :instrument_id])
+  end
+
+  def update_params
+    create_params
+  end
+
   def assert_product_is_accessible!
     raise NUCore::PermissionDenied unless product_is_accessible?
   end
 
   def product_is_accessible?
-    is_operator = session_user && session_user.operator_of?(current_facility)
+    is_operator = session_user&.operator_of?(current_facility)
     !(@product.is_archived? || (@product.is_hidden? && !is_operator))
   end
 
