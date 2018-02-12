@@ -57,7 +57,7 @@ class FacilityFacilityAccountsController < ApplicationController
   private
 
   def facility_facility_account_params
-    params.require(:facility_account).permit(:revenue_account, :account_number, :is_active)
+    params.require(:facility_account).permit(:revenue_account, :account_number, :is_active, account_number_parts: FacilityAccount.account_number_field_names)
   end
 
 end
