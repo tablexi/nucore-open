@@ -41,7 +41,7 @@ class ReservationCreator
       rescue ActiveRecord::RecordInvalid => e
         @error = e.message
         raise ActiveRecord::Rollback
-      rescue => e
+      rescue StandardError => e
         @error = I18n.t("orders.purchase.error", message: e.message).html_safe
         raise ActiveRecord::Rollback
       end
@@ -60,8 +60,8 @@ class ReservationCreator
 
   def reservation_create_params
     params.require(:reservation)
-      .permit(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian, :duration_mins)
-      .merge(product: @order_detail.product)
+          .permit(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian, :duration_mins)
+          .merge(product: @order_detail.product)
   end
 
   def update_order_account
@@ -76,9 +76,7 @@ class ReservationCreator
 
   def backdate_reservation_if_necessary(session_user)
     facility_ability = Ability.new(session_user, @order.facility, self)
-    if facility_ability.can?(:order_in_past, @order) && @reservation.reserve_end_at < Time.zone.now
-      @order_detail.backdate_to_complete!(@reservation.reserve_end_at)
-    end
+    @order_detail.backdate_to_complete!(@reservation.reserve_end_at) if facility_ability.can?(:order_in_past, @order) && @reservation.reserve_end_at < Time.zone.now
   end
 
   def save_reservation_and_order_detail(session_user)
