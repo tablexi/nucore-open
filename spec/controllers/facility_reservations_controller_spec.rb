@@ -141,11 +141,15 @@ RSpec.describe FacilityReservationsController do
       end
 
       context "when the reservation is invalid" do
-        before(:each) do
-          # Used to fail by overlapping existing reservation, but now admin reservations are
-          # allowed to per ticket 38975
-          allow_any_instance_of(Reservation).to receive(:valid?).and_return(false)
-          @params[:reservation] = FactoryBot.attributes_for(:reservation)
+        let(:admin_reservation_params) do
+          {
+            reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
+            reserve_start_hour: reserve_start_at.hour.to_s,
+            reserve_start_min: reserve_start_at.strftime("%M"),
+            reserve_start_meridian: reserve_start_at.strftime("%p"),
+            duration_mins: "0", # 0 minute duration causes it to be invalid
+            admin_note: "Testing",
+          }
         end
 
         it "does not save the reservation", :aggregate_failures do
@@ -438,10 +442,22 @@ RSpec.describe FacilityReservationsController do
     end
 
     context '#update_admin' do
+      let(:reserve_start_at) { FactoryBot.attributes_for(:admin_reservation)[:reserve_start_at] }
+      let(:admin_reservation_params) do
+        {
+          reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
+          reserve_start_hour: reserve_start_at.hour.to_s,
+          reserve_start_min: reserve_start_at.strftime("%M"),
+          reserve_start_meridian: reserve_start_at.strftime("%p"),
+          duration_mins: "45",
+          admin_note: "Testing",
+        }
+      end
+
       before :each do
         @method = :patch
         @action = :update_admin
-        @params.merge!(admin_reservation: FactoryBot.attributes_for(:admin_reservation))
+        @params.merge!(admin_reservation: admin_reservation_params)
       end
 
       it_should_allow_operators_only :redirect

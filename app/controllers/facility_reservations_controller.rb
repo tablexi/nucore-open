@@ -117,7 +117,7 @@ class FacilityReservationsController < ApplicationController
     @reservation = @instrument.admin_reservations.new
     @reservation_form = AdminReservationForm.new(@reservation)
     @reservation_form.assign_attributes(admin_reservation_params.merge(created_by: current_user))
-    @reservation_form.assign_times_from_params(params[:admin_reservation])
+    @reservation_form.assign_times_from_params(admin_reservation_params)
 
     if @reservation_form.save
       flash[:notice] = "The reservation has been created successfully."
@@ -141,7 +141,7 @@ class FacilityReservationsController < ApplicationController
     @reservation = @instrument.reservations.find(params[:reservation_id])
     raise ActiveRecord::RecordNotFound unless @reservation.order_detail_id.nil?
 
-    @reservation.assign_times_from_params(params[:admin_reservation])
+    @reservation.assign_times_from_params(admin_reservation_params)
     @reservation.assign_attributes(admin_reservation_params)
 
     if @reservation.save
@@ -181,7 +181,13 @@ class FacilityReservationsController < ApplicationController
                                                              :category,
                                                              :repeats,
                                                              :repeat_frequency,
-                                                             :repeat_end_date)
+                                                             :repeat_end_date,
+                                                             :reserve_start_date,
+                                                             :reserve_start_hour,
+                                                             :reserve_start_min,
+                                                             :reserve_start_meridian,
+                                                             :duration_mins,
+                                                             :admin_note)
     admin_params[:expires_mins_before] = nil if params[:admin_reservation][:expires] == "0"
     admin_params[:repeat_frequency] = nil if params[:admin_reservation][:repeats] == "0"
     admin_params[:repeat_end_date] = nil if params[:admin_reservation][:repeats] == "0"
