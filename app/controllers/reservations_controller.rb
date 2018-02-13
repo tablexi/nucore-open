@@ -256,12 +256,12 @@ class ReservationsController < ApplicationController
   private
 
   def reservation_params
-    reservation_params = params[:reservation].except(
-      :actual_start_date,
-      :actual_start_hour,
-      :actual_start_min,
-      :actual_start_meridian,
-    )
+    reservation_params = params.require(:reservation).permit(:reserve_start_date,
+                                                             :reserve_start_hour,
+                                                             :reserve_start_min,
+                                                             :reserve_start_meridian,
+                                                             :duration_mins,
+                                                             :note)
 
     # Prevent overriding of start time params after purchase if start time is locked,
     # e.g. you are in the lock window or the reservation has already started and

@@ -59,8 +59,8 @@ class ReservationCreator
   private
 
   def reservation_create_params
-    params[:reservation]
-      .except(:reserve_end_date, :reserve_end_hour, :reserve_end_min, :reserve_end_meridian)
+    params.require(:reservation)
+      .permit(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian, :duration_mins)
       .merge(product: @order_detail.product)
   end
 
