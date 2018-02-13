@@ -48,34 +48,19 @@ class FacilityReservationsController < ApplicationController
     end
     set_windows
 
-    @reservation.assign_times_from_params(params[:reservation])
+    @reservation.assign_times_from_params(reservation_params)
 
     additional_notice = ""
 
-    if @order_detail.price_policy
-      update_prices
-
-      if @order_detail.actual_cost_changed? || @order_detail.actual_subsidy_changed?
-        additional_notice = "  Order detail actual cost has been updated as well."
-      end
-    else
-      # We're updating a reservation before it's been completed
-      if reserve_changed?
-        @order_detail.assign_estimated_price
-        additional_notice = " Estimated cost has been updated as well."
-      end
+    # We're updating a reservation before it's been completed
+    if reserve_changed?
+      @order_detail.assign_estimated_price
+      additional_notice = " Estimated cost has been updated as well."
     end
 
     Reservation.transaction do
       begin
         @reservation.save_as_user!(session_user)
-
-        unless @order_detail.price_policy
-          old_pp = @order_detail.price_policy
-
-          @order_detail.assign_price_policy
-          additional_notice = "  Order detail price policy and actual cost have been updated as well." unless old_pp == @order_detail.price_policy
-        end
         @order_detail.save!
         flash.now[:notice] = "The reservation has been updated successfully.#{additional_notice}"
       rescue
@@ -175,6 +160,16 @@ class FacilityReservationsController < ApplicationController
 
   protected
 
+  def reservation_params
+    params.require(:reservation).permit(:reserve_start_date,
+                                        :reserve_start_hour,
+                                        :reserve_start_min,
+                                        :reserve_start_meridian,
+                                        :duration_mins,
+                                        :reserve_start_at,
+                                        :reserve_end_at)
+  end
+
   def admin_reservation_params
     admin_params = params.require(:admin_reservation).permit(:admin_note,
                                                              :expires_mins_before,
@@ -212,18 +207,6 @@ class FacilityReservationsController < ApplicationController
   def actual_changed?
     @reservation.can_edit_actuals? &&
       (@reservation.actual_start_at_changed? || @reservation.actual_end_at_changed?)
-  end
-
-  def update_prices
-    if reserve_changed? || actual_changed?
-      @order_detail.assign_estimated_price_from_policy(@order_detail.price_policy)
-
-      costs = @order_detail.price_policy.calculate_cost_and_subsidy(@reservation)
-      if costs.present?
-        @order_detail.actual_cost    = costs[:cost]
-        @order_detail.actual_subsidy = costs[:subsidy]
-      end
-    end
   end
 
   def problem_order_details

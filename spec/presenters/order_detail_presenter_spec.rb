@@ -72,19 +72,6 @@ RSpec.describe OrderDetailPresenter do
     it { is_expected.to be_html_safe }
   end
 
-  describe "#edit_reservation_path" do
-    subject { presented.edit_reservation_path }
-
-    include_context "order with a reservation"
-
-    let(:expected_path) do
-      "/#{facilities_route}/#{facility.url_name}/orders/#{order.id}/order_details/"\
-      "#{order_detail.id}/reservations/#{reservation.id}/edit"
-    end
-
-    it { is_expected.to eq(expected_path) }
-  end
-
   describe "#row_class" do
     subject { presented.row_class }
 
