@@ -1,8 +1,13 @@
+= render 'shared/transactions/headers'
+
 = content_for :h1 do
   = current_facility
 
 = content_for :tabnav do
   = render partial: "admin/shared/tabnav_order", locals: { secondary_tab: "new"}
+
+.span9
+  = render "shared/transactions/search2"
 
 - if @order_details.empty?
   %p.notice There are no "New" or "In Process" orders.
@@ -18,7 +23,7 @@
           %th.order_num_width.centered= sortable "order_number", "Order"
           %th.order_num_width.centered= "Order Detail"
           %th.ordered_on_width= sortable "date", "Ordered On"
-          %th User Name
+          %th= Order.human_attribute_name(:user)
           %th Quantity
           %th.order-note= sortable "product"
           %th= sortable "assigned_to"

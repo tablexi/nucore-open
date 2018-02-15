@@ -8,8 +8,9 @@ module TransactionSearch
       to_s.sub(/\ATransactionSearch::/, '').sub(/Searcher\z/, '').pluralize.underscore
     end
 
-    def initialize(order_details)
+    def initialize(order_details, billing_context: true)
       @order_details = order_details
+      @billing_context = billing_context
     end
 
     def key
