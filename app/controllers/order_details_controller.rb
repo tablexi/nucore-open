@@ -21,10 +21,10 @@ class OrderDetailsController < ApplicationController
   # Put /orders/:order_id/order_details/:id
   def update
     if @order_detail.update_attributes(order_detail_params)
-      flash[:notice] = I18n.t("order_details.update.success")
+      flash[:notice] = text("update.success")
       redirect_to action: :show
     else
-      flash.now[:error] = I18n.t("order_details.update.failure")
+      flash.now[:error] = text("update.error")
       render :edit
     end
   end
@@ -35,9 +35,9 @@ class OrderDetailsController < ApplicationController
     if @order_detail.reservation && @order_detail.reservation.can_cancel?
       @order_detail.transaction do
         if @order_detail.cancel_reservation(session_user)
-          flash[:notice] = "The reservation has been canceled successfully." # TODO: I18n
+          flash[:notice] = text("cancel.success") # TODO: I18n
         else
-          flash[:error] = "An error was encountered while canceling the order." # TODO: I18n
+          flash[:error] = text("cancel.error")
           raise ActiveRecord::Rollback
         end
       end
@@ -57,11 +57,11 @@ class OrderDetailsController < ApplicationController
         @order_detail.dispute_at = Time.zone.now
         @order_detail.dispute_by = current_user
         @order_detail.save!
-        flash[:notice] = "Your purchase has been disputed" # TODO: I18n
-        return_path = @order_detail.reservation ? reservations_path : orders_path
-        redirect_to return_path
+        flash[:notice] = text("dispute.success")
+
+        redirect_to transactions_in_review_path
       rescue => e # TODO: be more specific about what Exceptions to rescue
-        flash.now[:error] = "An error was encountered while disputing the order." # TODO: I18n
+        flash.now[:error] = text("dispute.error")
         @order_detail.dispute_at = nil # manually set this because rollback doesn't reset the unsaved value
         @order_detail.send(:extend, PriceDisplayment)
         render :show

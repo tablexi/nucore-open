@@ -668,9 +668,6 @@ en:
   order_details:
     edit:
       failure: This order is not currently editable.
-    update:
-      success: "The order has been updated"
-      failure: "There was a problem updating the order"
     show:
       head:
         h1: "Order #%{order_number}"
