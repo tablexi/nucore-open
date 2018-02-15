@@ -16,6 +16,6 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "README.md"]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 4.2.9"
-  s.add_dependency "devise_ldap_authenticatable", "~> 0.8.5"
+  s.add_dependency "rails", ">= 4.2"
+  s.add_dependency "devise_ldap_authenticatable", ">= 0.8.6"
 end
