@@ -35,7 +35,7 @@ class OrderDetailsController < ApplicationController
     if @order_detail.reservation && @order_detail.reservation.can_cancel?
       @order_detail.transaction do
         if @order_detail.cancel_reservation(session_user)
-          flash[:notice] = text("cancel.success") # TODO: I18n
+          flash[:notice] = text("cancel.success")
         else
           flash[:error] = text("cancel.error")
           raise ActiveRecord::Rollback
