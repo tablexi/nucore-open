@@ -1,6 +1,7 @@
 module TransactionSearch
 
   class OrderedForSearcher < BaseSearcher
+
     def options
       User.select("users.id, users.first_name, users.last_name")
           .where(id: order_details.select("distinct orders.user_id"))
@@ -18,7 +19,6 @@ module TransactionSearch
     def label
       Order.human_attribute_name(:user)
     end
-
 
   end
 

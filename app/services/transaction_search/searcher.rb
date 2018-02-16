@@ -31,11 +31,11 @@ module TransactionSearch
       @searchers = Array(searchers)
     end
 
-    def search(order_details, params, billing_context: true)
+    def search(order_details, params)
       order_details = add_global_optimizations(order_details)
 
       @searchers.reduce(Results.new(order_details)) do |results, searcher_class|
-        searcher = searcher_class.new(results.order_details, billing_context: billing_context)
+        searcher = searcher_class.new(results.order_details)
 
         search_params = params[searcher_class.key.to_sym]
         search_params = Array(search_params).reject(&:blank?) unless searcher.multipart?
