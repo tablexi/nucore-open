@@ -6,47 +6,48 @@
 = content_for :tabnav do
   = render partial: "admin/shared/tabnav_order", locals: { secondary_tab: "new"}
 
-.span9
+.span12
   = render "shared/transactions/search2"
 
-- if @order_details.empty?
-  %p.notice There are no "New" or "In Process" orders.
-- else
-  = form_tag(batch_update_facility_orders_path, method: :post) do
-    - facility_users = User.find_users_by_facility(current_facility)
-    %table.table.table-striped.table-hover.old-table
-      = render partial: "table_controls"
-      %thead
-        -## THE HEADER ROW
-        %tr
-          %th
-          %th.order_num_width.centered= sortable "order_number", "Order"
-          %th.order_num_width.centered= "Order Detail"
-          %th.ordered_on_width= sortable "date", "Ordered On"
-          %th= Order.human_attribute_name(:user)
-          %th Quantity
-          %th.order-note= sortable "product"
-          %th= sortable "assigned_to"
-          %th= sortable "status"
-          %th.currency Price
-
-      -## THE DETAIL ROWS
-      %tbody
-        - @order_details.each do |od|
+.span12
+  - if @order_details.empty?
+    %p.notice There are no "New" or "In Process" orders.
+  - else
+    = form_tag(batch_update_facility_orders_path, method: :post) do
+      - facility_users = User.find_users_by_facility(current_facility)
+      %table.table.table-striped.table-hover.old-table
+        = render partial: "table_controls"
+        %thead
+          -## THE HEADER ROW
           %tr
-            %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {class: "toggle", id: nil })
-            %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
-            %td.centered= link_to od.id, manage_order_detail_path(od), class: "manage-order-detail"
-            %td= format_usa_datetime(od.order.ordered_at)
-            %td= od.order.user.full_name
-            %td.centered= OrderDetailPresenter.new(od).wrapped_quantity
-            = render partial: "shared/order_detail_cell", locals: { od: od }
-            %td= od.assigned_user
-            %td= od.order_status
-            %td.currency
-              =  OrderDetailPresenter.new(od).wrapped_total
-        -## THE FOOTER CONTROL ROW
-      = render partial: "table_controls"
+            %th
+            %th.order_num_width.centered= sortable "order_number", "Order"
+            %th.order_num_width.centered= "Order Detail"
+            %th.ordered_on_width= sortable "date", "Ordered On"
+            %th= Order.human_attribute_name(:user)
+            %th Quantity
+            %th.order-note= sortable "product"
+            %th= sortable "assigned_to"
+            %th= sortable "status"
+            %th.currency Price
 
-  = will_paginate(@order_details)
-  = render partial: "/price_display_footnote", locals: { admin: true }
+        -## THE DETAIL ROWS
+        %tbody
+          - @order_details.each do |od|
+            %tr
+              %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {class: "toggle", id: nil })
+              %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
+              %td.centered= link_to od.id, manage_order_detail_path(od), class: "manage-order-detail"
+              %td= format_usa_datetime(od.order.ordered_at)
+              %td= od.order.user.full_name
+              %td.centered= OrderDetailPresenter.new(od).wrapped_quantity
+              = render partial: "shared/order_detail_cell", locals: { od: od }
+              %td= od.assigned_user
+              %td= od.order_status
+              %td.currency
+                =  OrderDetailPresenter.new(od).wrapped_total
+          -## THE FOOTER CONTROL ROW
+        = render partial: "table_controls"
+
+    = will_paginate(@order_details)
+    = render partial: "/price_display_footnote", locals: { admin: true }
