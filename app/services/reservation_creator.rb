@@ -60,7 +60,7 @@ class ReservationCreator
 
   def reservation_create_params
     params.require(:reservation)
-          .permit(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian, :duration_mins)
+          .permit(:reserve_start_date, :reserve_start_hour, :reserve_start_min, :reserve_start_meridian, :duration_mins, :note)
           .merge(product: @order_detail.product)
   end
 
