@@ -7,6 +7,7 @@ class ReservationsController < ApplicationController
   before_action :check_acting_as, only: [:switch_instrument, :list]
   before_action :load_basic_resources, only: [:new, :create, :edit, :update]
   before_action :load_and_check_resources, only: [:move, :switch_instrument]
+  authorize_resource only: [:edit, :update, :move]
 
   include TranslationHelper
   include FacilityReservationsHelper
@@ -97,6 +98,7 @@ class ReservationsController < ApplicationController
     creator = ReservationCreator.new(@order, @order_detail, params)
     if creator.save(session_user)
       @reservation = creator.reservation
+      authorize! :create, @reservation
       flash[:notice] = I18n.t "controllers.reservations.create.success"
       flash[:error] = I18n.t('controllers.reservations.create.admin_hold_warning') if creator.reservation.conflicting_admin_reservation?
 
@@ -126,6 +128,10 @@ class ReservationsController < ApplicationController
     options = current_user.can_override_restrictions?(@instrument) ? {} : { user: acting_user }
     next_available = @instrument.next_available_reservation(after: 1.minute.from_now, duration: default_reservation_mins.minutes, options: options)
     @reservation = next_available || default_reservation
+    @reservation.order_detail = @order_detail
+
+    authorize! :new, @reservation
+
     @reservation.round_reservation_times
     unless @instrument.can_be_used_by?(@order_detail.user)
       flash[:notice] = text(".acting_as_not_on_approval_list")
@@ -138,6 +144,7 @@ class ReservationsController < ApplicationController
     @order        = Order.find(params[:order_id])
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = Reservation.find(params[:id])
+    authorize! :show, @reservation
 
     raise ActiveRecord::RecordNotFound if @reservation != @order_detail.reservation
 

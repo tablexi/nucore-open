@@ -921,7 +921,7 @@ RSpec.describe ReservationsController do
 
         context "when the user is not an admin" do
           before(:each) do
-            sign_in @staff
+            maybe_grant_always_sign_in(:staff)
             do_request
           end
 
@@ -1005,7 +1005,7 @@ RSpec.describe ReservationsController do
       describe "when trying to update a running reservation" do
         context "as staff" do
           before(:each) do
-            sign_in @staff
+            maybe_grant_always_sign_in(:staff)
             reservation.update_attribute(:actual_start_at, @start.to_date)
           end
 
