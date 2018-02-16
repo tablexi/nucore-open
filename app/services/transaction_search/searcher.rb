@@ -24,6 +24,11 @@ module TransactionSearch
       ]
     end
 
+    # Shorthand method if you only want the default searchers
+    def self.search(order_details, params)
+      new.search(order_details, params)
+    end
+
     # Expects an array of `TransactionSearch::BaseSearcher`s
     def initialize(*searchers)
       searchers = self.class.default_searchers if searchers.blank?
