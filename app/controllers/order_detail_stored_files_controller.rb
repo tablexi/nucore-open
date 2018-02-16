@@ -32,7 +32,7 @@ class OrderDetailStoredFilesController < ApplicationController
 
   # POST /orders/:order_id/order_details/:order_detail_id/upload_order_file
   def upload_order_file
-    @file = @order_detail.stored_files.new(params[:stored_file])
+    @file = @order_detail.stored_files.new(params.require(:stored_file).permit(:file))
     @file.file_type  = "template_result"
     @file.name       = "Order File"
     @file.product = @order_detail.product
