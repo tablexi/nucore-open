@@ -69,14 +69,15 @@ class ProductUsersController < ApplicationController
 
   # PUT /facilities/:facility_id/instruments/:instrument_id/update_restrictions
   def update_restrictions
-    product_param_name = @product.class.name.underscore
-    unless params[product_param_name]
+    permitted_params = params.require(@product.class.name.underscore).require(:product_users)
+
+    unless permitted_params
       redirect_to action: :index
       return
     end
-    params[product_param_name][:product_users].each do |key, value|
+    permitted_params.each do |key, value|
       product_user = @product.product_users.find(key)
-      product_user.update_attributes(value)
+      product_user.update_attributes(value.permit(:product_access_group_id))
     end
 
     flash[:notice] = text("update_restrictions.success")
