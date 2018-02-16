@@ -8,14 +8,22 @@ module ProblemOrderDetailsController
   end
 
   def show_problems
-    @order_details = problem_order_details
-                     .includes(
-                       { order: :user },
-                       :account,
-                       :order,
-                       :product,
-                     )
-                     .paginate(page: params[:page])
+    order_details = problem_order_details.joins(:order)
+
+    @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at" })
+    @search = TransactionSearch::Searcher.new(TransactionSearch::ProductSearcher,
+                                              TransactionSearch::DateRangeSearcher,
+                                              TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
+    @order_details = @search.order_details.preload(:order_status, :assigned_user).paginate(page: params[:page])
+
+    # @order_details = problem_order_details
+    #                  .includes(
+    #                    { order: :user },
+    #                    :account,
+    #                    :order,
+    #                    :product,
+    #                  )
+    #                  .paginate(page: params[:page])
   end
 
   private
@@ -28,4 +36,7 @@ module ProblemOrderDetailsController
              count: successfully_assigned.count)
   end
 
+  def problem_order_details
+    raise NotImplementedError
+  end
 end

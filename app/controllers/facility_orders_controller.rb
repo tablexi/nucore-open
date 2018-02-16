@@ -89,10 +89,6 @@ class FacilityOrdersController < ApplicationController
     show_problems_facility_orders_path
   end
 
-  def problem_order_details
-    current_facility.problem_plain_order_details
-  end
-
   private
 
   def batch_updater
@@ -122,6 +118,10 @@ class FacilityOrdersController < ApplicationController
     current_facility.order_details
                     .new_or_inprocess
                     .item_and_service_orders
+  end
+
+  def problem_order_details
+    current_facility.problem_plain_order_details
   end
 
   def sort_lookup_hash
