@@ -20,7 +20,7 @@ module SangerSequencing
     def assign_attributes(params = {})
       batch.assign_attributes(
         submission_ids: params[:submission_ids].to_s.split(","),
-        well_plates_raw: params[:well_plate_data].to_h.values,
+        well_plates_raw: Hash(params[:well_plate_data]).values,
         created_by: params[:created_by],
         facility: params[:facility],
         group: params[:group],
