@@ -111,6 +111,28 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
       expect(page).to have_css(".currency .actual_cost", count: 4) # Cost and Total x 2 orders
     end
 
+    it "can modify a reservation in the future" do
+      fill_in "order[order_details][][quantity]", with: "2"
+      click_button "Create Order"
+      choose account.to_s
+      click_button "Continue"
+
+      click_link "Make a Reservation", match: :first
+      fill_in "Reserve Start", with: I18n.l(1.day.from_now.to_date, format: :usa)
+      select "10", from: "reservation[reserve_start_hour]"
+      select "00", from: "reservation[reserve_start_min]"
+      fill_in "Duration", with: "90"
+      click_button "Create"
+
+      reservation_time = "#{1.day.from_now.strftime('%m/%d/%Y')} 10:00 AM - 11:30 AM"
+      expect(page).to have_content(reservation_time)
+      click_link reservation_time
+
+      select "11", from: "reservation[reserve_start_hour]"
+      click_button "Save"
+      expect(page).to have_content("#{1.day.from_now.strftime('%m/%d/%Y')} 11:00 AM - 12:30 PM")
+    end
+
     xit "can modify a reservation in the past" do
       fill_in "order[order_details][][quantity]", with: "2"
       click_button "Create Order"
@@ -124,13 +146,13 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
       fill_in "Duration", with: "90"
       click_button "Create"
 
-      reservation_time = "#{1.day.ago.strftime("%m/%d/%Y")} 10:00 AM - 11:30 AM"
+      reservation_time = "#{1.day.ago.strftime('%m/%d/%Y')} 10:00 AM - 11:30 AM"
       expect(page).to have_content(reservation_time)
       click_link reservation_time
 
       select "11", from: "reservation[reserve_start_hour]"
-      click_button "Update"
-      expect(page).to have_content("#{1.day.ago.strftime("%m/%d/%Y")} 11:00 AM - 12:30 PM")
+      click_button "Save"
+      expect(page).to have_content("#{1.day.ago.strftime('%m/%d/%Y')} 11:00 AM - 12:30 PM")
     end
   end
 end
