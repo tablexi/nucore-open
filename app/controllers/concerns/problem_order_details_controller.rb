@@ -15,15 +15,6 @@ module ProblemOrderDetailsController
                                               TransactionSearch::DateRangeSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @order_details = @search.order_details.preload(:order_status, :assigned_user).paginate(page: params[:page])
-
-    # @order_details = problem_order_details
-    #                  .includes(
-    #                    { order: :user },
-    #                    :account,
-    #                    :order,
-    #                    :product,
-    #                  )
-    #                  .paginate(page: params[:page])
   end
 
   private
