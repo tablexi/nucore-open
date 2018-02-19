@@ -39,4 +39,5 @@ module ProblemOrderDetailsController
   def problem_order_details
     raise NotImplementedError
   end
+
 end
