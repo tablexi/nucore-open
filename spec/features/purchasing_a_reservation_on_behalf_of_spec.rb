@@ -133,7 +133,7 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
       expect(page).to have_content("#{1.day.from_now.strftime('%m/%d/%Y')} 11:00 AM - 12:30 PM")
     end
 
-    xit "can modify a reservation in the past" do
+    it "can modify a reservation in the past" do
       fill_in "order[order_details][][quantity]", with: "2"
       click_button "Create Order"
       choose account.to_s

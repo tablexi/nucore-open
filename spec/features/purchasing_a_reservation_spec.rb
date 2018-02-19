@@ -148,29 +148,5 @@ RSpec.describe "Purchasing a reservation" do
       click_button "Create"
       expect(page).to have_content("Reserve start at must be in the future")
     end
-
-    it "can place a reservation, but then if they wait a long time cannot edit it" do
-      pending "you currently can do this, but probably should not be able to"
-
-      click_link "Make a Reservation", match: :first
-      # Currently 9:30am
-      select "10", from: "reservation[reserve_start_hour]"
-      select "00", from: "reservation[reserve_start_min]"
-      fill_in "Duration", with: "90"
-      click_button "Create"
-
-      travel_to 3.hours.from_now do
-        reservation_time = "#{Time.current.strftime('%m/%d/%Y')} 10:00 AM - 11:30 AM"
-        click_link reservation_time
-        click_button "Save"
-
-        all(:link, "Remove")[1].click
-        click_button "Purchase"
-
-        expect(page).to have_content("must be in the future")
-
-      end
-    end
   end
-
 end

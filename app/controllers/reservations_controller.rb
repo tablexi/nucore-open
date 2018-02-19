@@ -263,7 +263,9 @@ class ReservationsController < ApplicationController
       :actual_start_meridian,
     )
 
-    reservation_params.merge!(reservation_start_as_params) if fixed_start_time?
+    # If the start time is locked (only after purchase, don't allow the params
+    # to override the existing values)
+    reservation_params.merge!(reservation_start_as_params) if fixed_start_time? && !@reservation.in_cart?
 
     reservation_params
   end
@@ -333,7 +335,7 @@ class ReservationsController < ApplicationController
   end
 
   def editable_by_current_user?
-    if current_user.administrator? && @reservation.admin_editable?
+    if current_ability.can?(:manage, @reservation) && @reservation.admin_editable?
       true
     elsif @reservation.can_customer_edit?
       true
