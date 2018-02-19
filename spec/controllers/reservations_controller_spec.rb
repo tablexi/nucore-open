@@ -877,59 +877,8 @@ RSpec.describe ReservationsController do
       end
     end
 
-    describe "#edit" do
-      before(:each) do
-        @method = :get
-        @action = :edit
-        @params.merge!(id: reservation.id)
-      end
-
-      it_should_allow_all facility_users do
-        expect(assigns[:reservation]).to eq(reservation)
-        expect(assigns[:order_detail]).to eq(reservation.order_detail)
-        expect(assigns[:order]).to eq(reservation.order_detail.order)
-        is_expected.to respond_with :success
-      end
-
-      context "when the reservation is canceled" do
-        before(:each) do
-          reservation.order_detail.update_attributes(canceled_at: 1.day.ago)
-          sign_in @admin
-          do_request
-        end
-
-        it "redirects to the show page" do
-          expect(response).to redirect_to([order, order_detail, reservation])
-        end
-      end
-
-      context "when the reservation is in the past" do
-        before(:each) do
-          reservation.reserve_start_at = 24.hours.ago
-          reservation.reserve_end_at = 23.hours.ago
-          reservation.save(validate: false)
-        end
-
-        context "when the user is an admin" do
-          before(:each) do
-            sign_in @admin
-            do_request
-          end
-
-          it { expect(response.response_code).to eq(200) }
-        end
-
-        context "when the user is not an admin" do
-          before(:each) do
-            maybe_grant_always_sign_in(:staff)
-            do_request
-          end
-
-          it { expect(response.response_code).to eq(302) }
-        end
-      end
-    end
-
+    # Many happy paths are tested in features purchasing_a_reservation,
+    # editing_a_reservation, and purchasing_a_reservation_on_behalf_of
     describe "#update" do
       before(:each) do
         @method = :put
@@ -944,23 +893,6 @@ RSpec.describe ReservationsController do
             duration_mins: "60",
           },
         )
-      end
-
-      it_should_allow_all facility_users, "to update reservation" do
-        expect(assigns[:order]).to eq(order)
-        expect(assigns[:order_detail]).to eq(order_detail)
-        expect(assigns[:instrument]).to eq(instrument)
-        expect(assigns[:reservation]).to be_valid
-        expect(assigns[:reservation]).not_to be_changed
-
-        expect(reservation.reload.reserve_start_hour).to eq(10)
-        expect(reservation.reserve_end_hour).to eq(11)
-        expect(reservation.duration_mins).to eq(60)
-        expect(assigns[:order_detail].estimated_cost).to be_present
-        expect(assigns[:order_detail].estimated_subsidy).to be_present
-
-        is_expected.to set_flash
-        assert_redirected_to cart_url
       end
 
       describe "updating the note" do
