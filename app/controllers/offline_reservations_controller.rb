@@ -70,8 +70,8 @@ class OfflineReservationsController < ApplicationController
 
   def create_params
     params.require(:offline_reservation)
-      .permit(:admin_note, :category)
-      .merge(reserve_start_at: Time.current)
+          .permit(:admin_note, :category)
+          .merge(reserve_start_at: Time.current)
   end
 
   def update_params
