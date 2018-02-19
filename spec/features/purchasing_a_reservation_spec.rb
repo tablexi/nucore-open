@@ -12,6 +12,7 @@ RSpec.describe "Purchasing a reservation" do
   end
 
   before do
+    facility.update(accepts_multi_add: true)
     login_as user
     visit root_path
     click_link facility.name
@@ -111,6 +112,65 @@ RSpec.describe "Purchasing a reservation" do
       end
     end
 
+  end
+
+  describe "ordering on an order form" do
+    before do
+      fill_in "order[order_details][][quantity]", with: "2"
+      click_button "Create Order"
+      choose account.to_s
+      click_button "Continue"
+    end
+
+    it "can place a reservation in the future and then edit it" do
+      click_link "Make a Reservation", match: :first
+      fill_in "Reserve Start", with: I18n.l(1.day.from_now.to_date, format: :usa)
+      select "10", from: "reservation[reserve_start_hour]"
+      select "00", from: "reservation[reserve_start_min]"
+      fill_in "Duration", with: "90"
+      click_button "Create"
+
+      reservation_time = "#{1.day.from_now.strftime('%m/%d/%Y')} 10:00 AM - 11:30 AM"
+      expect(page).to have_content(reservation_time)
+      click_link reservation_time
+
+      select "11", from: "reservation[reserve_start_hour]"
+      click_button "Save"
+      expect(page).to have_content("#{1.day.from_now.strftime('%m/%d/%Y')} 11:00 AM - 12:30 PM")
+    end
+
+    it "cannot place a reservtion in the past" do
+      click_link "Make a Reservation", match: :first
+      fill_in "Reserve Start", with: I18n.l(1.day.ago.to_date, format: :usa)
+      select "10", from: "reservation[reserve_start_hour]"
+      select "00", from: "reservation[reserve_start_min]"
+      fill_in "Duration", with: "90"
+      click_button "Create"
+      expect(page).to have_content("Reserve start at must be in the future")
+    end
+
+    it "can place a reservation, but then if they wait a long time cannot edit it" do
+      pending "you currently can do this, but probably should not be able to"
+
+      click_link "Make a Reservation", match: :first
+      # Currently 9:30am
+      select "10", from: "reservation[reserve_start_hour]"
+      select "00", from: "reservation[reserve_start_min]"
+      fill_in "Duration", with: "90"
+      click_button "Create"
+
+      travel_to 3.hours.from_now do
+        reservation_time = "#{Time.current.strftime('%m/%d/%Y')} 10:00 AM - 11:30 AM"
+        click_link reservation_time
+        click_button "Save"
+
+        all(:link, "Remove")[1].click
+        click_button "Purchase"
+
+        expect(page).to have_content("must be in the future")
+
+      end
+    end
   end
 
 end
