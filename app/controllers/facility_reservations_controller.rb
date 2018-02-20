@@ -224,7 +224,6 @@ class FacilityReservationsController < ApplicationController
     current_facility
       .problem_reservation_order_details
       .includes(:reservation)
-      .order("reservations.reserve_start_at DESC")
   end
 
   def new_or_in_process_orders
