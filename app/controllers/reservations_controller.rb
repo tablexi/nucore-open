@@ -263,8 +263,9 @@ class ReservationsController < ApplicationController
       :actual_start_meridian,
     )
 
-    # If the start time is locked (only after purchase, don't allow the params
-    # to override the existing values)
+    # Prevent overriding of start time params after purchase if start time is locked,
+    # e.g. you are in the lock window or the reservation has already started and
+    # you are only allowed to extend the reservation.
     reservation_params.merge!(reservation_start_as_params) if fixed_start_time? && !@reservation.in_cart?
 
     reservation_params

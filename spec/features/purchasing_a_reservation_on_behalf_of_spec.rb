@@ -101,9 +101,6 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
       fill_in "Reserve Start", with: I18n.l(2.days.ago.to_date, format: :usa)
       click_button "Create"
 
-      # this would normally be hidden and the default would be to complete backdated
-      # reservations. This might change in #121458
-      select "Complete", from: "Order Status"
       click_button "Purchase"
 
       expect(page).to have_content "Order Receipt"

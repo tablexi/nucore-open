@@ -8,20 +8,23 @@
     = f.input :order_date,
       input_html: { value: params[:order_date] || format_usa_date(default_time),
           class: "datepicker__data",
-          data: { max_date: Time.current.iso8601 } }
+          data: { max_date: Time.current.iso8601 } },
+          disabled: true
 
     = label_tag :order_time
-    .time-select= time_select_tag :order_time, params[:order_datetime] || default_time
+    .time-select= time_select_tag :order_time, params[:order_datetime] || default_time, disabled: true
 
     = f.input :order_status_id,
       collection: @order_statuses,
       label_method: :name_with_level,
       selected:  params[:order_status_id] || @order_statuses.first.try(:id),
-      label: OrderDetail.human_attribute_name(:order_status)
+      label: OrderDetail.human_attribute_name(:order_status),
+      disabled: true
 
     = f.input :send_notification,
       as: :boolean,
       input_html: { value: 1 },
       default: params[:send_notification],
       label: false,
-      inline_label: true
+      inline_label: true,
+      disabled: true
