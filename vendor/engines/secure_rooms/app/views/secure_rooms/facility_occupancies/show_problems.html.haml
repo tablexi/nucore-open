@@ -1,12 +1,18 @@
+= render 'shared/transactions/headers'
+
 = content_for :h1 do
   = current_facility
 
 = content_for :tabnav do
   = render "secure_rooms/shared/tabnav_occupancy", secondary_tab: "problem"
 
-- if @order_details.present?
-  %p.notice= t(".instructions")
-  = render "shared/problem_order_details", assign_price_policies_path: assign_price_policies_to_problem_orders_facility_occupancies_path
+.span12
+  = render "shared/transactions/search2"
 
-- else
-  %p.notice= t(".no_problem_occupancies")
+.span12
+  - if @order_details.present?
+    %p.notice= t(".instructions")
+    = render "shared/problem_order_details", assign_price_policies_path: assign_price_policies_to_problem_orders_facility_occupancies_path
+
+  - else
+    %p.notice= t(".no_problem_occupancies")
