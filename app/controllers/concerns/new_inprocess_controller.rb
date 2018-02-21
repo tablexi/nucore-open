@@ -1,6 +1,6 @@
 module NewInprocessController
 
-  include TransactionSearch
+  include OrderDetailsCsvExport
 
   def index
     order_details = new_or_in_process_orders.joins(:order)

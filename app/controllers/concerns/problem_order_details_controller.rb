@@ -1,6 +1,6 @@
 module ProblemOrderDetailsController
 
-  include TransactionSearch
+  include OrderDetailsCsvExport
 
   extend ActiveSupport::Concern
 
