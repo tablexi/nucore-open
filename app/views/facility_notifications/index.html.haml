@@ -10,6 +10,5 @@
 - if @order_details.any?
   = render :partial => 'shared/transactions/table'
   = render :partial => 'shared/reconcile_footnote'
-
-
-
+- else
+  %p.alert.alert-info= text("facility_notifications.index.no_orders")

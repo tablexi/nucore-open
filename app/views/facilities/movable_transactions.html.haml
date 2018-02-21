@@ -12,3 +12,5 @@
 - if @order_details.present?
   = render "shared/transactions/table"
   = render "shared/reconcile_footnote"
+- else
+  %p.alert.alert-info= text("facilities.movable_transactions.no_orders")
