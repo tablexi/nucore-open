@@ -9,9 +9,12 @@
 .span12
   = render "shared/transactions/search2"
 
-.span12
-  - if @order_details.any?
+- if @order_details.any?
+  .span12
+    = link_to t('reports.account_transactions.export'), url_for(params.merge(format: :csv)), class: 'js--exportSearchResults pull-right', data: { form: '.search_form' }
+  .span12
     %p.notice= t(".instructions")
     = render "shared/problem_order_details", assign_price_policies_path: assign_price_policies_to_problem_orders_facility_occupancies_path
-  - else
+- else
+  .span12
     %p.notice= t(".no_problem_occupancies")

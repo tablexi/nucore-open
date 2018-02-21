@@ -11,6 +11,8 @@
 
 .span12
   - if @order_details.any?
+    = link_to t('reports.account_transactions.export'), url_for(params.merge(format: :csv)), class: 'js--exportSearchResults pull-right', data: { form: '.search_form' }
+
     = form_tag(batch_update_facility_occupancies_path, method: :post) do
 
       %table.table.table-striped.table-hover.occupancies.old-table
