@@ -219,11 +219,13 @@ class Ability
       # TODO: Add :accessory hash back in to hide hidden accessories from non-admin users
       # See task #55479
       can :read, ProductAccessory # , :accessory => { :is_hidden => false }
+
       if user.operator_of?(resource.product.facility)
         can :read, ProductAccessory
         can :manage, Reservation
+      elsif resource.order.try(:user_id) == user.id
+        can [:read, :create, :update, :destroy, :start_stop, :move], Reservation
       end
-      can :start_stop, Reservation if resource.order.try(:user_id) == user.id
 
     elsif resource.is_a?(TrainingRequest)
       can :create, TrainingRequest

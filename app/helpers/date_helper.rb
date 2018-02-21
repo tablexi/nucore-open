@@ -66,11 +66,11 @@ module DateHelper
     Time.zone.at((time.to_f / precision).floor * precision)
   end
 
-  def time_select_tag(field, default_time = Time.zone.now)
+  def time_select_tag(field, default_time = Time.zone.now, html_options = {})
     output = ""
-    output << select_tag("#{field}[hour]", options_for_select(hour_options, default_time.strftime("%I").to_i))
-    output << select_tag("#{field}[minute]", options_for_select(minute_options, default_time.min))
-    output << select_tag("#{field}[ampm]", options_for_select(%w(AM PM), default_time.strftime("%p")))
+    output << select_tag("#{field}[hour]", options_for_select(hour_options, default_time.strftime("%I").to_i), html_options)
+    output << select_tag("#{field}[minute]", options_for_select(minute_options, default_time.min), html_options)
+    output << select_tag("#{field}[ampm]", options_for_select(%w(AM PM), default_time.strftime("%p")), html_options)
     output.html_safe
   end
 
