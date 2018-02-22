@@ -18,6 +18,6 @@
     = render partial: "shared/problem_order_details",
       locals: { assign_price_policies_path: assign_price_policies_to_problem_orders_facility_reservations_path,
       show_reservation_start_at: true }
-  - else
-    .span12
-      %p.notice= t(".no_problem_reservations")
+- else
+  .span12
+    %p.notice= t(".no_problem_reservations")
