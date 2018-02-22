@@ -12,7 +12,7 @@
 
 - if @order_details.any?
   .span12
-    = link_to t('reports.account_transactions.export'), url_for(params.merge(format: :csv)), class: 'js--exportSearchResults pull-right', data: { form: '.search_form' }
+    = link_to t("reports.account_transactions.export"), url_for(params.merge(format: :csv)), class: "js--exportSearchResults pull-right", data: { form: ".search_form" }
   .span12
     %p.notice= t(".instructions")
     = render partial: "shared/problem_order_details",
