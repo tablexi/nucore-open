@@ -3,7 +3,7 @@ module TransactionSearch
   class OrderedForSearcher < BaseSearcher
 
     def options
-      User.select("users.id, users.first_name, users.last_name")
+      User.select(:id, :first_name, :last_name)
           .where(id: order_details.select("distinct orders.user_id"))
           .order(:last_name, :first_name)
     end
