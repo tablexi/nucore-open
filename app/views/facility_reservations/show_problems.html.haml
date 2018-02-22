@@ -1,3 +1,5 @@
+= render "shared/transactions/headers"
+
 = content_for :h1 do
   = current_facility
 
@@ -5,10 +7,14 @@
   = render partial: "admin/shared/tabnav_reservation",
     locals: { secondary_tab: "problem" }
 
-- if @order_details.empty?
-  %p.notice= t(".no_problem_reservations")
-- else
-  %p.notice= t(".instructions")
-  = render partial: "shared/problem_order_details",
-    locals: { assign_price_policies_path: assign_price_policies_to_problem_orders_facility_reservations_path,
-    show_reservation_start_at: true }
+.span12
+  = render "shared/transactions/search2"
+
+.span12
+  - if @order_details.any?
+    %p.notice= t(".instructions")
+    = render partial: "shared/problem_order_details",
+      locals: { assign_price_policies_path: assign_price_policies_to_problem_orders_facility_reservations_path,
+      show_reservation_start_at: true }
+  - else
+    %p.notice= t(".no_problem_reservations")

@@ -376,6 +376,8 @@ en:
       submit: "Send Notifications"
 
   facility_orders:
+    index:
+      no_new_or_inprocess_orders: There are no "New" or "In Process" orders.
     edit:
       attention: "The following order details need your attention. Before you can add to this order you need to address them."
       head:
@@ -391,6 +393,8 @@ en:
       update_orders: Update Orders
 
   facility_reservations:
+    index:
+      no_new_or_inprocess_reservations: There are no "New" or "In Process" reservations.
     disputed:
       no_disputed_reservations: There are no disputed reservations
     show_problems:

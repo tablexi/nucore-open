@@ -351,6 +351,7 @@ en:
         canceled_by: Canceled By
         canceled_at: Canceled At
         type: Type
+        reserve_range: Reserved For
       statement:
         id: "Invoice #"
         created_by: Sent By

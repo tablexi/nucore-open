@@ -223,8 +223,8 @@ class FacilityReservationsController < ApplicationController
   def problem_order_details
     current_facility
       .problem_reservation_order_details
-      .includes(:reservation)
-      .order("reservations.reserve_start_at DESC")
+      .joins(:reservation)
+      .merge(Reservation.order(reserve_start_at: :desc))
   end
 
   def new_or_in_process_orders

@@ -3,7 +3,7 @@ module TransactionSearch
   class ProductSearcher < BaseSearcher
 
     def options
-      Product.where(id: order_details.select("distinct product_id")).order(:name)
+      Product.where(id: order_details.select("distinct order_details.product_id")).order(:name)
     end
 
     def search(params)

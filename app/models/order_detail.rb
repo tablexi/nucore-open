@@ -306,6 +306,7 @@ class OrderDetail < ActiveRecord::Base
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
   scope :for_products, ->(products) { where("order_details.product_id in (?)", products) unless products.blank? }
+  scope :for_users, ->(user_ids) { joins(:order).where(orders: { user_id: user_ids }) unless user_ids.blank? }
   scope :for_owners, lambda { |owners|
     return if owners.blank?
     joins(account: :account_users)
