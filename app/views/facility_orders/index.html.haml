@@ -1,4 +1,4 @@
-= render 'shared/transactions/headers'
+= render "shared/transactions/headers"
 
 = content_for :h1 do
   = current_facility
@@ -10,28 +10,22 @@
   = render "shared/transactions/search2"
 
 .span12
-  - if @order_details.empty?
-    %p.notice There are no "New" or "In Process" orders.
-  - else
+  - if @order_details.any?
     = form_tag(batch_update_facility_orders_path, method: :post) do
-      - facility_users = User.find_users_by_facility(current_facility)
       %table.table.table-striped.table-hover.old-table
         = render partial: "table_controls"
         %thead
-          -## THE HEADER ROW
           %tr
             %th
-            %th.order_num_width.centered= sortable "order_number", "Order"
-            %th.order_num_width.centered= "Order Detail"
-            %th.ordered_on_width= sortable "date", "Ordered On"
+            %th.order_num_width.centered= sortable "order_number", Order.model_name.human
+            %th.order_num_width.centered= OrderDetail.model_name.human
+            %th.ordered_on_width= sortable "date", Order.human_attribute_name(:ordered_at)
             %th= Order.human_attribute_name(:user)
-            %th Quantity
+            %th= OrderDetail.human_attribute_name(:quantity)
             %th.order-note= sortable "product"
             %th= sortable "assigned_to"
             %th= sortable "status"
-            %th.currency Price
-
-        -## THE DETAIL ROWS
+            %th.currency= OrderDetail.human_attribute_name(:actual_cost)
         %tbody
           - @order_details.each do |od|
             %tr
@@ -46,8 +40,9 @@
               %td= od.order_status
               %td.currency
                 =  OrderDetailPresenter.new(od).wrapped_total
-          -## THE FOOTER CONTROL ROW
         = render partial: "table_controls"
 
     = will_paginate(@order_details)
     = render partial: "/price_display_footnote", locals: { admin: true }
+  - else
+    %p.notice= t(".no_new_or_inprocess_orders")

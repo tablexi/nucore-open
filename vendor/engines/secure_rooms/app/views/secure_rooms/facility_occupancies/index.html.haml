@@ -1,4 +1,4 @@
-= render 'shared/transactions/headers'
+= render "shared/transactions/headers"
 
 = content_for :h1 do
   = current_facility
@@ -10,7 +10,7 @@
   = render "shared/transactions/search2"
 
 .span12
-  - if @order_details.present?
+  - if @order_details.any?
     = form_tag(batch_update_facility_occupancies_path, method: :post) do
 
       %table.table.table-striped.table-hover.occupancies.old-table
