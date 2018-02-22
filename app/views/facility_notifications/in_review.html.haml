@@ -13,3 +13,5 @@
 
   = render "shared/transactions/table"
   = render "shared/reconcile_footnote"
+- else
+  %p.alert.alert-info= text("facility_notifications.in_review.no_orders")
