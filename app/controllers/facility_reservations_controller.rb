@@ -32,9 +32,7 @@ class FacilityReservationsController < ApplicationController
 
     raise ActiveRecord::RecordNotFound unless @reservation == Reservation.find(params[:id])
     set_windows
-    if @reservation.locked?
-      return redirect_to facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @reservation)
-    end
+    return redirect_to facility_order_order_detail_reservation_path(current_facility, @order, @order_detail, @reservation) if @reservation.locked?
   end
 
   # PUT /facilities/:facility_id/orders/:order_id/order_details/:order_detail_id/reservations/:id
@@ -43,9 +41,7 @@ class FacilityReservationsController < ApplicationController
     @order_detail = @order.order_details.find(params[:order_detail_id])
     @reservation  = @order_detail.reservation
     @instrument   = @order_detail.product
-    if @reservation != Reservation.find(params[:id]) || @reservation.locked?
-      raise ActiveRecord::RecordNotFound
-    end
+    raise ActiveRecord::RecordNotFound if @reservation != Reservation.find(params[:id]) || @reservation.locked?
     set_windows
 
     @reservation.assign_times_from_params(reservation_params)
@@ -63,7 +59,7 @@ class FacilityReservationsController < ApplicationController
         @reservation.save_as_user!(session_user)
         @order_detail.save!
         flash.now[:notice] = "The reservation has been updated successfully.#{additional_notice}"
-      rescue
+      rescue StandardError
         flash.now[:error] = "An error was encountered while updating the reservation."
         raise ActiveRecord::Rollback
       end
@@ -171,23 +167,24 @@ class FacilityReservationsController < ApplicationController
   end
 
   def admin_reservation_params
-    admin_params = params.require(:admin_reservation).except(:reserve_end_date,
-                                                             :reserve_end_hour,
-                                                             :reserve_end_min,
-                                                             :reserve_end_meridian,
-                                                             :expires)
-                                                     .permit(:admin_note,
-                                                             :expires_mins_before,
-                                                             :category,
-                                                             :repeats,
-                                                             :repeat_frequency,
-                                                             :repeat_end_date,
-                                                             :reserve_start_date,
-                                                             :reserve_start_hour,
-                                                             :reserve_start_min,
-                                                             :reserve_start_meridian,
-                                                             :duration_mins,
-                                                             :admin_note)
+    admin_params = params.require(:admin_reservation)
+                         .except(:reserve_end_date,
+                                 :reserve_end_hour,
+                                 :reserve_end_min,
+                                 :reserve_end_meridian,
+                                 :expires)
+                         .permit(:admin_note,
+                                 :expires_mins_before,
+                                 :category,
+                                 :repeats,
+                                 :repeat_frequency,
+                                 :repeat_end_date,
+                                 :reserve_start_date,
+                                 :reserve_start_hour,
+                                 :reserve_start_min,
+                                 :reserve_start_meridian,
+                                 :duration_mins,
+                                 :admin_note)
     admin_params[:expires_mins_before] = nil if params[:admin_reservation][:expires] == "0"
     admin_params[:repeat_frequency] = nil if params[:admin_reservation][:repeats] == "0"
     admin_params[:repeat_end_date] = nil if params[:admin_reservation][:repeats] == "0"

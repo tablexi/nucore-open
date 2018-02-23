@@ -95,8 +95,9 @@ class OrderDetails::ParamUpdater
   end
 
   def permitted_params(params)
-    params.except(:fulfilled_at, :order_status_id, :actual_cost, :actual_subsidy)
-          .permit(*self.class.permitted_attributes)
+    QuietStrongParams.with_dropped_params do
+      params.permit(*self.class.permitted_attributes)
+    end
   end
 
   def assign_self_and_reservation_attributes(params)
