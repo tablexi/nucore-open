@@ -136,11 +136,11 @@ class UsersController < ApplicationController
   end
 
   def edit_user_params
-    @user.admin_editable? ? params.require(:user).permit(:email, :first_name, :last_name, :username) : empty_params
+    @user.admin_editable? ? params.require(:user).except(:internal).permit(:email, :first_name, :last_name, :username) : with_dropped_params { empty_params }
   end
 
   def price_group_params
-    current_user.administrator? ? params.require(:user).permit(:internal) : empty_params
+    current_user.administrator? ? params.require(:user).slice(:internal).permit! : with_dropped_params { empty_params }
   end
 
   def create_external
