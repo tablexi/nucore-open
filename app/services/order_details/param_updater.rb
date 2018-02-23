@@ -91,11 +91,13 @@ class OrderDetails::ParamUpdater
   end
 
   def cost_params(params)
-    params.permit(:actual_cost, :actual_subsidy)
+    params.slice(:actual_cost, :actual_subsidy)
+          .permit(:actual_cost, :actual_subsidy)
   end
 
   def permitted_params(params)
-    params.permit(*self.class.permitted_attributes)
+    params.except(:fulfilled_at, :order_status_id, :actual_cost, :actual_subsidy)
+          .permit(*self.class.permitted_attributes)
   end
 
   def assign_self_and_reservation_attributes(params)
