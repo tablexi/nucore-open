@@ -195,4 +195,11 @@ class ApplicationController < ActionController::Base
     ActionController::Parameters.new
   end
 
+  def with_dropped_params
+    old_value = ActionController::Parameters.action_on_unpermitted_parameters
+    ActionController::Parameters.action_on_unpermitted_parameters = :log
+    yield
+    ActionController::Parameters.action_on_unpermitted_parameters = old_value
+  end
+
 end
