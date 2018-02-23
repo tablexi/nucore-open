@@ -91,8 +91,7 @@ class OrderDetails::ParamUpdater
   end
 
   def cost_params(params)
-    params.slice(:actual_cost, :actual_subsidy)
-          .permit(:actual_cost, :actual_subsidy)
+    params.slice(:actual_cost, :actual_subsidy).permit!
   end
 
   def permitted_params(params)
