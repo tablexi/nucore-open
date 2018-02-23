@@ -171,7 +171,12 @@ class FacilityReservationsController < ApplicationController
   end
 
   def admin_reservation_params
-    admin_params = params.require(:admin_reservation).permit(:admin_note,
+    admin_params = params.require(:admin_reservation).except(:reserve_end_date,
+                                                             :reserve_end_hour,
+                                                             :reserve_end_min,
+                                                             :reserve_end_meridian,
+                                                             :expires)
+                                                     .permit(:admin_note,
                                                              :expires_mins_before,
                                                              :category,
                                                              :repeats,
