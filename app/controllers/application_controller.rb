@@ -196,7 +196,7 @@ class ApplicationController < ActionController::Base
   end
 
   def with_dropped_params(&block)
-    QuietStrongParams::with_dropped_params(&block)
+    QuietStrongParams.with_dropped_params(&block)
   end
 
 end
