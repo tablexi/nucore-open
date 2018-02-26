@@ -133,7 +133,7 @@ class FileUploadsController < ApplicationController
   end
 
   def create_product_survey_from_file
-    @file = @product.stored_files.new(params[:stored_file].merge(created_by: session_user.id, name: "Order Form Template"))
+    @file = @product.stored_files.new(create_params.merge(created_by: session_user.id, name: "Order Form Template"))
     @file.transaction do
       begin
         unless @product.stored_files.template.all?(&:destroy)
