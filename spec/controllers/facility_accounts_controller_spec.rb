@@ -109,7 +109,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         @params = {
           facility_id: @authable.url_name,
           id: @account.id,
-          nufs_account: FactoryBot.attributes_for(:nufs_account),
+          nufs_account: FactoryBot.attributes_for(:nufs_account).except(:account_number, :created_by, :expires_at),
         }
       end
 
@@ -136,7 +136,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
       before :each do
         @method = :post
         @action = :create
-        @acct_attrs = FactoryBot.attributes_for(:nufs_account)
+        @acct_attrs = FactoryBot.attributes_for(:nufs_account).except(:created_by, :expires_at)
         @params = {
           facility_id: @authable.url_name,
           owner_user_id: @owner.id,
