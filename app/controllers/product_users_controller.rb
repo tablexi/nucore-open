@@ -75,9 +75,9 @@ class ProductUsersController < ApplicationController
       redirect_to action: :index
       return
     end
-    permitted_params.each do |key, value|
-      product_user = @product.product_users.find(key)
-      product_user.update_attributes(value.permit(:product_access_group_id))
+    permitted_params.each do |product_user_id, product_access_group_params|
+      product_user = @product.product_users.find(product_user_id)
+      product_user.update_attributes(product_access_group_params.permit(:product_access_group_id))
     end
 
     flash[:notice] = text("update_restrictions.success")
