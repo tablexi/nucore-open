@@ -91,7 +91,7 @@ class Accessories::Accessorizer
   end
 
   def permitted_attributes(params)
-    ActionController::Parameters.new(params).permit(:quantity)
+    params.except(:enabled).permit(:quantity)
   end
 
   def product_accessory(accessory)

@@ -91,11 +91,13 @@ class OrderDetails::ParamUpdater
   end
 
   def cost_params(params)
-    params.permit(:actual_cost, :actual_subsidy)
+    params.slice(:actual_cost, :actual_subsidy).permit!
   end
 
   def permitted_params(params)
-    params.permit(*self.class.permitted_attributes)
+    QuietStrongParams.with_dropped_params do
+      params.permit(*self.class.permitted_attributes)
+    end
   end
 
   def assign_self_and_reservation_attributes(params)

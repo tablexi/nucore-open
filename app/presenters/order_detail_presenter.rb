@@ -31,10 +31,6 @@ class OrderDetailPresenter < SimpleDelegator
     "#{facility.abbreviation} / #{description_as_html}".html_safe
   end
 
-  def edit_reservation_path
-    edit_facility_order_order_detail_reservation_path(facility, order, id, reservation)
-  end
-
   def row_class
     reconcile_warning? ? "reconcile-warning" : ""
   end

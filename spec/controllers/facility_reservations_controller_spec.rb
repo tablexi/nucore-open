@@ -141,11 +141,15 @@ RSpec.describe FacilityReservationsController do
       end
 
       context "when the reservation is invalid" do
-        before(:each) do
-          # Used to fail by overlapping existing reservation, but now admin reservations are
-          # allowed to per ticket 38975
-          allow_any_instance_of(Reservation).to receive(:valid?).and_return(false)
-          @params[:reservation] = FactoryBot.attributes_for(:reservation)
+        let(:admin_reservation_params) do
+          {
+            reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
+            reserve_start_hour: reserve_start_at.hour.to_s,
+            reserve_start_min: reserve_start_at.strftime("%M"),
+            reserve_start_meridian: reserve_start_at.strftime("%p"),
+            duration_mins: "0", # 0 minute duration causes it to be invalid
+            admin_note: "Testing",
+          }
         end
 
         it "does not save the reservation", :aggregate_failures do
@@ -298,10 +302,21 @@ RSpec.describe FacilityReservationsController do
   end
 
   context '#update' do
+    let(:reserve_start_at) { FactoryBot.attributes_for(:reservation)[:reserve_start_at] }
+    let(:reservation_params) do
+      {
+        reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
+        reserve_start_hour: reserve_start_at.hour.to_s,
+        reserve_start_min: reserve_start_at.strftime("%M"),
+        reserve_start_meridian: reserve_start_at.strftime("%p"),
+        duration_mins: "45",
+      }
+    end
+
     before :each do
       @method = :put
       @action = :update
-      @params.merge!(reservation: FactoryBot.attributes_for(:reservation))
+      @params.merge!(reservation: reservation_params)
     end
 
     it_should_allow_operators_only do
@@ -339,74 +354,6 @@ RSpec.describe FacilityReservationsController do
         expect(assigns[:order_detail]).to be_estimated_cost_changed
       end
     end
-
-    context "completed order" do
-      before :each do
-        expect(@order_detail.price_policy).to be_nil
-        @price_group = FactoryBot.create(:price_group, facility: @authable)
-        create(:account_price_group_member, account: account, price_group: @price_group)
-        @instrument_pp = create(:instrument_price_policy, product: @product, price_group_id: @price_group.id, usage_rate: 2)
-        @instrument_pp.reload.restrict_purchase = false
-        @now = @reservation.reserve_start_at + 3.hours
-        maybe_grant_always_sign_in :director
-        travel_to_and_return(@now) { @order_detail.to_complete! }
-      end
-
-      context "update actuals" do
-        before :each do
-          @reservation.update_attributes(actual_start_at: nil, actual_end_at: nil)
-          @reservation_attrs = FactoryBot.attributes_for(
-            :reservation,
-            actual_start_at: @now - 2.hours,
-            actual_end_at: @now - 1.hour,
-          )
-          @params.merge!(reservation: @reservation_attrs)
-        end
-
-        it "should update the actuals and assign a price policy if there is none" do
-          travel_to_and_return(@now) do
-            do_request
-            expect(assigns(:order)).to eq(@order)
-            expect(assigns(:order_detail)).to eq(@order_detail)
-            expect(assigns(:reservation)).to eq(@reservation)
-            expect(assigns(:instrument)).to eq(@product)
-            expect(assigns(:reservation).actual_start_at).to eq(@reservation_attrs[:actual_start_at])
-            expect(assigns(:reservation).actual_end_at).to eq(@reservation_attrs[:actual_end_at])
-            expect(assigns(:order_detail).price_policy).to eq(@instrument_pp)
-            expect(assigns(:order_detail).actual_cost).not_to be_nil
-            expect(assigns(:order_detail).actual_subsidy).not_to be_nil
-            expect(flash[:notice]).to be_present
-            is_expected.to render_template "edit"
-          end
-        end
-      end
-
-      context "update reserve" do
-        before :each do
-          @reservation.update_attributes(actual_start_at: @reservation.reserve_start_at, actual_end_at: @reservation.reserve_end_at)
-          @reservation_attrs = FactoryBot.attributes_for(
-            :reservation,
-            reserve_start_at: @now - 3.hours,
-            reserve_end_at: @now - 1.hour,
-            actual_start_at: @reservation.reserve_start_at,
-            actual_end_at: @reservation.reserve_end_at,
-          )
-          @params[:reservation] = @reservation_attrs
-        end
-
-        it "should update the actual cost" do
-          travel_to_and_return(@now) do
-            do_request
-            expect(assigns(:reservation).actual_start_at).to  eq(@reservation_attrs[:actual_start_at])
-            expect(assigns(:reservation).actual_end_at).to    eq(@reservation_attrs[:actual_end_at])
-            expect(assigns(:order_detail).price_policy).to    eq(@instrument_pp)
-            expect(assigns(:order_detail).actual_cost).not_to eq(@order_detail.actual_cost)
-            expect(flash[:notice]).to be_present
-            is_expected.to render_template "edit"
-          end
-        end
-      end
-    end
   end
 
   describe "#tab_counts" do
@@ -438,10 +385,22 @@ RSpec.describe FacilityReservationsController do
     end
 
     context '#update_admin' do
+      let(:reserve_start_at) { FactoryBot.attributes_for(:admin_reservation)[:reserve_start_at] }
+      let(:admin_reservation_params) do
+        {
+          reserve_start_date: reserve_start_at.strftime("%m/%d/%Y"),
+          reserve_start_hour: reserve_start_at.hour.to_s,
+          reserve_start_min: reserve_start_at.strftime("%M"),
+          reserve_start_meridian: reserve_start_at.strftime("%p"),
+          duration_mins: "45",
+          admin_note: "Testing",
+        }
+      end
+
       before :each do
         @method = :patch
         @action = :update_admin
-        @params.merge!(admin_reservation: FactoryBot.attributes_for(:admin_reservation))
+        @params.merge!(admin_reservation: admin_reservation_params)
       end
 
       it_should_allow_operators_only :redirect

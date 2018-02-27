@@ -54,7 +54,7 @@ module OrderDetails
     end
 
     def allowed(params)
-      params.permit(:reconciled_note)
+      params.except(:reconciled).permit(:reconciled_note)
     end
 
     def reconciliation_must_be_in_past

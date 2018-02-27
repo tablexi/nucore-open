@@ -43,7 +43,7 @@ class OfflineReservationsController < ApplicationController
   end
 
   def update
-    if @reservation.update(params[:offline_reservation])
+    if @reservation.update(update_params)
       flash[:notice] = text("update.success")
       redirect_to facility_instrument_schedule_path
     else
@@ -69,9 +69,13 @@ class OfflineReservationsController < ApplicationController
   end
 
   def create_params
-    params[:offline_reservation]
-      .permit(:admin_note, :category)
-      .merge(reserve_start_at: Time.current)
+    params.require(:offline_reservation)
+          .permit(:admin_note, :category)
+          .merge(reserve_start_at: Time.current)
+  end
+
+  def update_params
+    params.require(:offline_reservation).permit(:admin_note, :category)
   end
 
 end
