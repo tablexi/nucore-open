@@ -94,7 +94,7 @@ RSpec.describe Accessories::Accessorizer do
 
     context "a quantity accessory" do
       let(:params) do
-        HashWithIndifferentAccess.new(quantity_accessory.id.to_s => { enabled: "true", quantity: "3" })
+        ActionController::Parameters.new(quantity_accessory.id.to_s => { enabled: "true", quantity: "3" })
       end
       context "creating" do
         it "sets the attributes" do
@@ -130,7 +130,7 @@ RSpec.describe Accessories::Accessorizer do
         let(:child_order_detail) { build_stubbed :order_detail, product: quantity_accessory, order: order, quantity: 1 }
 
         let(:params) do
-          HashWithIndifferentAccess.new(quantity_accessory.id.to_s => { enabled: "false", quantity: "3" })
+          ActionController::Parameters.new(quantity_accessory.id.to_s => { enabled: "false", quantity: "3" })
         end
 
         it "removes the order detail" do
@@ -143,7 +143,7 @@ RSpec.describe Accessories::Accessorizer do
 
     context "a completed order" do
       let(:params) do
-        HashWithIndifferentAccess.new(quantity_accessory.id.to_s => { enabled: "true", quantity: "3" })
+        ActionController::Parameters.new(quantity_accessory.id.to_s => { enabled: "true", quantity: "3" })
       end
       before do
         reservation.order_detail = order_detail

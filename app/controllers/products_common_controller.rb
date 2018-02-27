@@ -102,7 +102,7 @@ class ProductsCommonController < ApplicationController
 
   # POST /services
   def create
-    @product = current_facility_products.new(create_params)
+    @product = current_facility_products.new(resource_params)
     @product.initial_order_status_id = OrderStatus.default_order_status.id
 
     if @product.save
@@ -120,7 +120,7 @@ class ProductsCommonController < ApplicationController
   # PUT /services/1
   def update
     respond_to do |format|
-      if @product.update_attributes(update_params)
+      if @product.update_attributes(resource_params)
         flash[:notice] = "#{@product.class.name.capitalize} was successfully updated."
         format.html { redirect_to([:manage, current_facility, @product]) }
       else
@@ -152,7 +152,7 @@ class ProductsCommonController < ApplicationController
 
   private
 
-  def create_params
+  def resource_params
     params.require(:"#{singular_object_name}").permit(:name, :url_name, :contact_email, :description,
                                                       :facility_account_id, :account, :initial_order_status_id,
                                                       :requires_approval, :training_request_contacts,
@@ -161,11 +161,8 @@ class ProductsCommonController < ApplicationController
                                                       :schedule_id, :control_mechanism, :reserve_interval,
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
+                                                      :auto_logout, :auto_logout_mins,
                                                       relay_attributes: [:ip, :port, :username, :password, :type, :instrument_id])
-  end
-
-  def update_params
-    create_params
   end
 
   def assert_product_is_accessible!
