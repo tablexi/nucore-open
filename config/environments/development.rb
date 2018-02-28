@@ -40,6 +40,9 @@ Nucore::Application.configure do
   # Raise exceptions when missing I18n translations
   config.action_view.raise_on_missing_translations = true
 
+  # Raise exceptions when dropping parameters
+  config.action_controller.action_on_unpermitted_parameters = :raise
+
   config.after_initialize do
     Bullet.enable = false
     Bullet.bullet_logger = true
