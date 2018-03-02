@@ -11,7 +11,7 @@ class TransactionsController < ApplicationController
     super
   end
 
-  def list
+  def index
     account_ids = current_user.account_users.map(&:account_id)
     order_details = OrderDetail.where(account_id: account_ids).joins(:order)
     @export_enabled = true
