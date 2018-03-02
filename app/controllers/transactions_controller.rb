@@ -29,7 +29,12 @@ class TransactionsController < ApplicationController
                                               TransactionSearch::DateRangeSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details
+    @order_details = @search.order_details.preload(:order_status)
+
+    respond_to do |format|
+      format.html { @order_details = @order_details.paginate(page: params[:page]) }
+      format.csv { handle_csv_search }
+    end
   end
 
   def in_review_with_search
