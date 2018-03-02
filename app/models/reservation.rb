@@ -59,7 +59,7 @@ class Reservation < ActiveRecord::Base
   end
 
   scope :ends_in_the_future, lambda {
-    where("reserve_end_at IS NULL OR reserve_end_at > ?", Time.current)
+    where(reserve_end_at: nil).or(where("reserve_end_at > ?", Time.current))
   }
 
   def self.joins_order

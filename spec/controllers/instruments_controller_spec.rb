@@ -278,7 +278,8 @@ RSpec.describe InstrumentsController do
                                       username: "username",
                                       password: "password",
                                       type: RelaySynaccessRevA.name,
-                                      instrument_id: -1 # nested attributes want something
+                                      auto_logout: true,
+                                      auto_logout_minutes: 15,
                                     })
       end
 
@@ -291,6 +292,7 @@ RSpec.describe InstrumentsController do
           expect(relay.username).to eq(@params[:instrument][:relay_attributes][:username])
           expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
           expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
+          expect(relay.auto_logout_minutes).to eq(@params[:instrument][:relay_attributes][:auto_logout_minutes])
         end
       end
 

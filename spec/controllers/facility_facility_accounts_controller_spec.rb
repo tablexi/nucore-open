@@ -44,7 +44,7 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
       @action = :update
       @params.merge!(
         id: facility_account.id,
-        facility_account: attributes_for(:facility_account),
+        facility_account: attributes_for(:facility_account).except(:created_by),
       )
     end
 
@@ -60,7 +60,7 @@ RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on
     before(:each) do
       @method = :post
       @action = :create
-      @params.merge!(facility_account: attributes_for(:facility_account))
+      @params.merge!(facility_account: attributes_for(:facility_account).except(:created_by))
     end
 
     it_should_allow_managers_only :redirect do |user|

@@ -180,7 +180,7 @@ RSpec.describe AccountBuilder, type: :service do
                                            })
         end
 
-        it "sets affiliate" do
+        it "does not set affiliate" do
           expect(builder.build.affiliate_id).to be_nil
         end
       end
@@ -206,7 +206,6 @@ RSpec.describe AccountBuilder, type: :service do
 
     let(:params) do
       ActionController::Parameters.new(nufs_account: {
-                                         account_number: "9999",
                                          description: "changed description",
                                        })
     end

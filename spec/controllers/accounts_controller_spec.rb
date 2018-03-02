@@ -116,13 +116,6 @@ RSpec.describe AccountsController do
 
     it_should_deny :purchaser
 
-    it_should_allow :owner do
-      expect(assigns[:account]).to eq(@authable)
-      expect(assigns[:order_details].where_values_hash).to be_has_key("account_id")
-      expect(assigns[:order_details].where_values_hash["account_id"]).to eq(@authable.id)
-      expect(assigns[:facility]).to be_nil
-    end
-
     it "should use reviewed_at" do
       sign_in @user
       do_request

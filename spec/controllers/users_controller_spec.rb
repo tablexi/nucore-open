@@ -75,17 +75,6 @@ RSpec.describe UsersController do
       expect(user.username).to eq("newemail@example.com")
       expect(response).to redirect_to facility_user_path(facility, user)
     end
-
-    context "with not permitted params" do
-      before(:each) do
-        @params[:user] = { uid: "somevalue" }
-      end
-
-      it_should_allow_admin_only(:found) do
-        expect(user.reload.first_name).to eq("Old")
-        expect(user.uid).to eq 22
-      end
-    end
   end
 
   describe "GET #access_list" do
@@ -202,7 +191,7 @@ RSpec.describe UsersController do
         context "external user" do
           context "with successful parameters" do
             before :each do
-              @params.merge!(user: FactoryBot.attributes_for(:user))
+              @params.merge!(user: FactoryBot.attributes_for(:user).except(:password, :password_confirmation))
             end
 
             it_should_allow_operators_only :redirect do
@@ -225,7 +214,7 @@ RSpec.describe UsersController do
 
           describe "with extra spaces around the username/email" do
             before do
-              @params[:user] = FactoryBot.attributes_for(:user, username: " email@example.com", email: "email@example.com")
+              @params[:user] = FactoryBot.attributes_for(:user, username: " email@example.com", email: "email@example.com").except(:password, :password_confirmation)
             end
 
             it_should_allow_operators_only :redirect do
