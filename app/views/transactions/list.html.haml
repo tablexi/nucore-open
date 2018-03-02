@@ -1,0 +1,7 @@
+= render :partial => "shared/transactions/headers"
+- content_for :h1 do
+  Transaction History
+
+= render "shared/transactions/search2"
+
+= render :partial => 'shared/transactions/table', locals: { show_statements: true }

@@ -358,6 +358,7 @@ Nucore::Application.routes.draw do
 
   namespace :transactions do
     get :in_review
+    get :list
   end
 
   # reservations
