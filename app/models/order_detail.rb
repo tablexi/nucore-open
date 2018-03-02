@@ -182,7 +182,7 @@ class OrderDetail < ActiveRecord::Base
   scope :with_price_policy, -> { where.not(price_policy_id: nil) }
 
   scope :not_disputed, lambda {
-    where("dispute_at IS NULL OR dispute_resolved_at IS NOT NULL")
+    where(dispute_at: nil).or(where.not(dispute_resolved_at: nil))
   }
 
   scope :need_notification, lambda {
@@ -196,7 +196,7 @@ class OrderDetail < ActiveRecord::Base
 
   def self.all_movable
     where(journal_id: nil)
-      .where("order_details.state NOT IN('canceled', 'reconciled')")
+      .where.not(state: ["ordered", "reconciled"])
   end
 
   scope :in_review, lambda {
@@ -231,15 +231,15 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.unreconciled
-    where("order_details.state <> ?", "reconciled")
+    where.not(state: "reconciled")
   end
 
   def self.with_actual_costs
-    where("actual_cost IS NOT NULL")
+    where.not(actual_cost: nil)
   end
 
   def self.with_estimated_costs
-    where("estimated_cost IS NOT NULL")
+    where.not(estimated_cost: nil)
   end
 
   def can_be_viewed_by?(user)
