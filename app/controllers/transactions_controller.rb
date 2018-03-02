@@ -27,6 +27,7 @@ class TransactionsController < ApplicationController
                                               TransactionSearch::AccountSearcher,
                                               TransactionSearch::ProductSearcher,
                                               TransactionSearch::DateRangeSearcher,
+                                              TransactionSearch::OrderStatusSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.preload(:order_status)
