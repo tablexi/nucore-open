@@ -37,19 +37,6 @@ class AccountsController < ApplicationController
     @active_tab = "accounts"
   end
 
-  def transactions_in_review_with_search
-    @order_details = @order_details.where(account_id: @account.id)
-    @recently_reviewed = @order_details.recently_reviewed.paginate(page: params[:page])
-    @order_details = @order_details.in_review
-
-    @extra_date_column = :reviewed_at
-    @order_detail_link = {
-      text: "Dispute",
-      display?: proc { |order_detail| order_detail.can_dispute? },
-      proc: proc { |order_detail| order_order_detail_path(order_detail.order, order_detail) },
-    }
-  end
-
   protected
 
   def init_account

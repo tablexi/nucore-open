@@ -1,7 +1,0 @@
-- if @account.present?
-  = content_for :tabnav do
-    %h2= @account.account_number
-    %p= @account.description_to_s
-    %h3= @facility.name if @facility
-
-= render "shared/transactions/in_review"
