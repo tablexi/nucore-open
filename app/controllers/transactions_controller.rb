@@ -12,7 +12,7 @@ class TransactionsController < ApplicationController
   end
 
   def list
-    account_ids = current_user.account_users.map {|au| au.account_id}
+    account_ids = current_user.account_users.map(&:account_id)
     order_details = OrderDetail.where(account_id: account_ids).joins(:order)
     @export_enabled = true
 
