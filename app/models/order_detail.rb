@@ -231,7 +231,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def self.unreconciled
-    where.not(state: ["reconciled"])
+    where.not(state: "reconciled")
   end
 
   def self.with_actual_costs
