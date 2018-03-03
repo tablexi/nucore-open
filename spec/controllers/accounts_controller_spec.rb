@@ -103,39 +103,6 @@ RSpec.describe AccountsController do
 
   end
 
-  context "transactions_in_review" do
-    before :each do
-      @method = :get
-      @action = :transactions_in_review
-      @params = { id: @authable.id }
-      @user = @authable.owner.user
-    end
-    it_should_support_searching
-
-    it_should_require_login
-
-    it_should_deny :purchaser
-
-    it "should use reviewed_at" do
-      sign_in @user
-      do_request
-      expect(response).to be_success
-      expect(assigns[:extra_date_column]).to eq(:reviewed_at)
-      expect(assigns[:order_details].to_sql).to be_include("order_details.reviewed_at >")
-    end
-
-    it "should add dispute links" do
-      sign_in @user
-      do_request
-      expect(response).to be_success
-      allow_any_instance_of(OrderDetail).to receive(:can_dispute?).and_return(true)
-      expect(assigns[:order_detail_link]).not_to be_nil
-      expect(assigns[:order_detail_link][:text]).to eq("Dispute")
-      expect(assigns[:order_detail_link][:display?].call(OrderDetail.new)).to be true
-    end
-
-  end
-
   context "suspension", if: SettingsHelper.feature_on?(:suspend_accounts) do
     before :each do
       @account = @authable
