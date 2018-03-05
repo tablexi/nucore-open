@@ -62,9 +62,8 @@ class OrderPurchaser
     # update order detail statuses if you've changed it while acting as
     if acting_as? && order_status_id.present?
       order.backdate_order_details!(user, order_status_id)
-    else
-      order.complete_past_reservations!
     end
+    order.complete_past_reservations!
   end
 
   def order_status_id

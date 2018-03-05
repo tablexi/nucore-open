@@ -162,6 +162,8 @@ class Order < ActiveRecord::Base
     order_status = order_status.is_a?(OrderStatus) ? order_status : OrderStatus.find(order_status)
 
     order_details.each do |od|
+      next if od.reservation # reservations should always have order_status dictated by their dates
+
       if order_status.root == OrderStatus.complete
         od.backdate_to_complete!(ordered_at)
       else
