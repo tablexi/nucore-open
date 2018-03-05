@@ -1118,6 +1118,8 @@ en:
     no_requests: There are no outstanding training requests.
 
   transactions:
+    index:
+      history: Transaction History
     in_review: Transactions in Review
     none_in_review_found: No transactions in review were found.
     recently_reviewed: Recently Reviewed

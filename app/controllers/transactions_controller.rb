@@ -30,7 +30,7 @@ class TransactionsController < ApplicationController
                                               TransactionSearch::OrderStatusSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
-    @order_details = @search.order_details.preload(:order_status)
+    @order_details = @search.order_details
 
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }

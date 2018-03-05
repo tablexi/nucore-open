@@ -41,7 +41,7 @@ class NavTab::LinkCollection
   def payment_sources
     NavTab::Link.new(
         tab: :payment_sources,
-        subnav: [:accounts, :transactions].map { |method_name| send(method_name) },
+        subnav: [accounts, transactions]
       )
   end
 
