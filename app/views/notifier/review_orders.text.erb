@@ -1,9 +1,9 @@
-<%= text "body_text_intro", facility: @facility, smart: false, login_url: transactions_in_review_url %>
+<%= text "body_text_intro", facility: @facility, smart: false, login_url: in_review_transactions_url %>
 
 <% @accounts.each do |account| %>
   <%= "#{account.account_list_item}, #{account.owner.user.full_name}" %>
 <% end %>
 
-<%= text "body_text_outro", login_url: transactions_in_review_url, smart: false %>
+<%= text "body_text_outro", login_url: in_review_transactions_url, smart: false %>
 
-<%= transactions_in_review_url %>
+<%= in_review_transactions_url %>

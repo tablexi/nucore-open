@@ -33,7 +33,6 @@ Nucore::Application.routes.draw do
     member do
       get "user_search"
       get "transactions"
-      get "transactions_in_review"
     end
 
     if SettingsHelper.feature_on? :suspend_accounts
