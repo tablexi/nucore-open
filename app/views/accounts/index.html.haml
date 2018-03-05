@@ -6,7 +6,7 @@
 - else
   - if @administered_order_details_in_review.any?
     = link_to t(".transaction_in_review", count: @administered_order_details_in_review.count),
-      transactions_in_review_path
+      in_review_transactions_path
 
   %table.table.table-striped.table-hover.js--responsive_table
     %thead

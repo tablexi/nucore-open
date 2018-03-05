@@ -21,7 +21,7 @@ RSpec.describe "Disputing an order" do
     click_button "Dispute"
 
     expect(page).to have_content("Your purchase has been disputed")
-    expect(current_path).to eq(transactions_in_review_path)
+    expect(current_path).to eq(in_review_transactions_path)
   end
 
 end
