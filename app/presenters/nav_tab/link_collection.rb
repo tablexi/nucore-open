@@ -40,9 +40,9 @@ class NavTab::LinkCollection
 
   def payment_sources
     NavTab::Link.new(
-        tab: :payment_sources,
-        subnav: [accounts, transactions]
-      )
+      tab: :payment_sources,
+      subnav: [accounts, transactions],
+    )
   end
 
   def accounts

@@ -27,7 +27,6 @@ RSpec.describe "Transactions Index Search" do
 
     select accounts.first.description, from: "Payment Sources"
     click_button "Filter"
-    save_and_open_page
     expect(page).to have_css('td', text: accounts.first.description, count: 2)
     expect(page).not_to have_css('td', text: accounts.last.description, count: 2)
 
