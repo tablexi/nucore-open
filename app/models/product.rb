@@ -64,6 +64,7 @@ class Product < ActiveRecord::Base
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
   scope :in_active_facility, -> { joins(:facility).where(facilities: { is_active: true }) }
+  scope :recently_purchased, -> { joins(order_details: :order).order('ordered_at DESC').distinct.limit(10) }
 
   def self.types
     @types ||= [Instrument, Item, Service, TimedService, Bundle]

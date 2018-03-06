@@ -21,3 +21,19 @@
 
 - else
   .alert.alert-info= t(".empty", items: Facility.model_name.human(count: 2))
+
+- if @products.any?
+  %h4= text(".recently_purchased")
+  %table.table.table-striped.table-hover.product_list
+    %thead
+      %tr
+        %th
+    %tbody
+      - @products.each do |product|
+        %tr
+          %td
+            - if product.is_a?(Instrument)
+              = link_to product.name, [product.facility, product, :schedule]
+            - else
+              = link_to product.name, [:manage, product.facility, product]
+            = price_policy_errors(product) unless params[:archived] == "true"

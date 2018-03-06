@@ -39,6 +39,7 @@ class FacilitiesController < ApplicationController
   def index
     @facilities = Facility.active.sorted
     @active_tab = "home"
+    @products = Product.active.in_active_facility.recently_purchased
     render layout: "application"
   end
 

@@ -3,6 +3,7 @@ en:
     facilities:
       index:
         recently_used: Recently Used !Facilities!
+        recently_purchased: Recently Purchased !Products!
         all: All !Facilities!
         welcome: |
           Welcome to !app_name!, the centralized ordering system for shared !facilities_downcase!.
