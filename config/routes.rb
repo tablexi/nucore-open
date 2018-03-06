@@ -33,7 +33,6 @@ Nucore::Application.routes.draw do
     member do
       get "user_search"
       get "transactions"
-      get "transactions_in_review"
     end
 
     if SettingsHelper.feature_on? :suspend_accounts
@@ -356,8 +355,8 @@ Nucore::Application.routes.draw do
     end
   end
 
-  namespace :transactions do
-    get :in_review
+  resources :transactions, only: [:index] do
+    get :in_review, on: :collection
   end
 
   # reservations

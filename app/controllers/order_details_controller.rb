@@ -59,7 +59,7 @@ class OrderDetailsController < ApplicationController
         @order_detail.save!
         flash[:notice] = text("dispute.success")
 
-        redirect_to transactions_in_review_path
+        redirect_to in_review_transactions_path
       rescue => e # TODO: be more specific about what Exceptions to rescue
         flash.now[:error] = text("dispute.error")
         @order_detail.dispute_at = nil # manually set this because rollback doesn't reset the unsaved value

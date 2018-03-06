@@ -29,7 +29,7 @@ class NavTab::LinkCollection
   end
 
   def customer
-    default + [orders, reservations, accounts, files]
+    default + [orders, reservations, payment_sources, files]
   end
 
   def default
@@ -38,8 +38,20 @@ class NavTab::LinkCollection
 
   private
 
+  def payment_sources
+    NavTab::Link.new(
+      tab: :payment_sources,
+      text: t_my(Account),
+      subnav: [accounts, transactions],
+    )
+  end
+
   def accounts
     NavTab::Link.new(tab: :accounts, text: t_my(Account), url: accounts_path)
+  end
+
+  def transactions
+    NavTab::Link.new(tab: :transactions, text: I18n.t("pages.transactions"), url: transactions_path)
   end
 
   def files

@@ -1,0 +1,7 @@
+= render "shared/transactions/headers"
+- content_for :h1 do
+  = t(".history")
+
+= render "shared/transactions/search2"
+
+= render "shared/transactions/table", show_statements: true

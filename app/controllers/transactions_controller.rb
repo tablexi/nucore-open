@@ -11,6 +11,33 @@ class TransactionsController < ApplicationController
     super
   end
 
+  def index
+    account_ids = current_user.account_users.map(&:account_id)
+    order_details = OrderDetail.where(account_id: account_ids).joins(:order)
+    @export_enabled = true
+
+    @search_form = TransactionSearch::SearchForm.new(
+      params[:search],
+      defaults: {
+        date_range_start: format_usa_date(1.month.ago.beginning_of_month),
+      },
+    )
+
+    @search = TransactionSearch::Searcher.new(TransactionSearch::FacilitySearcher,
+                                              TransactionSearch::AccountSearcher,
+                                              TransactionSearch::ProductSearcher,
+                                              TransactionSearch::DateRangeSearcher,
+                                              TransactionSearch::OrderStatusSearcher,
+                                              TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
+    @date_range_field = @search_form.date_params[:field]
+    @order_details = @search.order_details
+
+    respond_to do |format|
+      format.html { @order_details = @order_details.paginate(page: params[:page]) }
+      format.csv { handle_csv_search }
+    end
+  end
+
   def in_review_with_search
     @recently_reviewed = current_user.administered_order_details.recently_reviewed.paginate(page: params[:page])
     @order_details = current_user.administered_order_details.in_review

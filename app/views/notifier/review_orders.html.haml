@@ -1,7 +1,7 @@
-= html "body_html_intro", accounts: @accounts, facility: @facility, login_url: transactions_in_review_url
+= html "body_html_intro", accounts: @accounts, facility: @facility, login_url: in_review_transactions_url
 
 - @accounts.each do |account|
   = "#{account.account_list_item}, #{account.owner.user.full_name}"
   %br
 
-= html "body_html_outro", accounts: @accounts, facility: @facility, login_url: transactions_in_review_url
+= html "body_html_outro", accounts: @accounts, facility: @facility, login_url: in_review_transactions_url
