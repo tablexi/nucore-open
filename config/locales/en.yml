@@ -69,7 +69,6 @@ en:
     logout: Logout
     manage: Manage %{model}
     my_tab: My %{model}
-    payment_sources: My Payment Sources
     transactions: My Transactions
     notices: Notices
 
