@@ -11,7 +11,7 @@ module NewInprocessController
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @order_details = @search.order_details
                             .includes(:order_status)
-                            .joins("left outer join users AS assigned_users on assigned_users.id = order_details.assigned_user_id")
+                            .joins("LEFT OUTER JOIN users AS assigned_users ON assigned_users.id = order_details.assigned_user_id")
                             .reorder(sort_clause)
 
     respond_to do |format|
