@@ -314,6 +314,7 @@ class OrderDetail < ActiveRecord::Base
                               user_id: owners })
   }
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
+  scope :joins_assigned_users, -> { joins("LEFT OUTER JOIN users AS assigned_users ON assigned_users.id = order_details.assigned_user_id") }
 
   scope :in_date_range, lambda { |start_date, end_date|
     search = all
