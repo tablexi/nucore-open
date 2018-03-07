@@ -9,7 +9,7 @@ module NewInprocessController
     @search = TransactionSearch::Searcher.new(TransactionSearch::ProductSearcher,
                                               TransactionSearch::DateRangeSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
-    @order_details = @search.order_details.preload(:order_status, :assigned_user).reorder(sort_clause)
+    @order_details = @search.order_details.includes(:order_status).preload(:assigned_user).reorder(sort_clause)
 
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }
