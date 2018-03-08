@@ -48,7 +48,6 @@ module SecureRooms
       current_facility
         .complete_problem_order_details
         .joins(:occupancy)
-        .merge(SecureRooms::Occupancy.order(entry_at: :desc))
     end
 
     def sort_lookup_hash

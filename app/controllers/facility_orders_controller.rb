@@ -129,7 +129,7 @@ class FacilityOrdersController < ApplicationController
       "order_number" => ["order_details.order_id", "order_details.id"],
       "date" => "orders.ordered_at",
       "product" => ["products.name", "order_details.state", "orders.ordered_at"],
-      "assigned_to" => ["assigned_users_order_details.last_name", "assigned_users_order_details.first_name", "order_statuses.name", "orders.ordered_at"],
+      "assigned_to" => ["assigned_users.last_name", "assigned_users.first_name", "order_statuses.name", "orders.ordered_at"],
       "status" => ["order_statuses.name", "orders.ordered_at"],
     }
   end

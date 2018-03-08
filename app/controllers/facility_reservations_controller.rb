@@ -215,7 +215,6 @@ class FacilityReservationsController < ApplicationController
     current_facility
       .problem_reservation_order_details
       .joins(:reservation)
-      .merge(Reservation.order(reserve_start_at: :desc))
   end
 
   def new_or_in_process_orders
@@ -226,11 +225,11 @@ class FacilityReservationsController < ApplicationController
   def sort_lookup_hash
     {
       "date" => "reservations.reserve_start_at",
-      "reserve_range" => "CONCAT(reservations.reserve_start_at, reservations.reserve_end_at)",
+      "reserve_range" => ["reservations.reserve_start_at", "reservations.reserve_end_at"],
       "product_name"  => "products.name",
       "status"        => "order_statuses.name",
-      "assigned_to"   => "CONCAT(assigned_users_order_details.last_name, assigned_users_order_details.first_name)",
-      "reserved_by"   => "#{User.table_name}.first_name, #{User.table_name}.last_name",
+      "assigned_to"   => ["assigned_users.last_name", "assigned_users.first_name"],
+      "reserved_by"   => ["#{User.table_name}.first_name", "#{User.table_name}.last_name"],
     }
   end
 
