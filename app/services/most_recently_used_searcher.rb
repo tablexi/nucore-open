@@ -1,4 +1,5 @@
 class MostRecentlyUsedSearcher
+  
   attr_reader :user
 
   def initialize(user)
