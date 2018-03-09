@@ -83,26 +83,6 @@ RSpec.describe AccountsController do
 
   end
 
-  context "transactions" do
-    before :each do
-      @method = :get
-      @action = :transactions
-      @params = { id: @authable.id }
-      @user = @authable.owner.user
-    end
-    it_should_require_login
-    it_should_deny :purchaser
-    it_should_allow :owner do
-      expect(assigns(:account)).to eq(@authable)
-      expect(assigns[:order_details].where_values_hash).to eq("account_id" => @authable.id)
-      # @authable is an nufs account, so it doesn't have a facility
-      expect(assigns[:facility]).to be_nil
-    end
-
-    it_should_support_searching
-
-  end
-
   context "suspension", if: SettingsHelper.feature_on?(:suspend_accounts) do
     before :each do
       @account = @authable
