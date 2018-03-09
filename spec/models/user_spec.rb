@@ -190,66 +190,6 @@ RSpec.describe User do
     end
   end
 
-  describe "#recently_used_facilities" do
-    subject { user.recently_used_facilities(limit) }
-    let(:account) { create(:setup_account, owner: user) }
-    let(:facilities) { products.map(&:facility) }
-    let(:limit) { 5 }
-    let(:products) { create_list(:setup_item, 6) }
-    let(:user) { create(:user) }
-
-    context "when the user has no orders" do
-      it { expect(subject).to be_empty }
-    end
-
-    context "a user has made an update very recently" do
-      let!(:old_order) { create(:setup_order, :purchased, account: account, product: products.first, user: user, ordered_at: 1.week.ago) }
-      let!(:new_order) { create(:setup_order, :purchased, account: account, product: products.second, user: user, ordered_at: 1.day.ago) }
-      let!(:unpurchased_order) { create(:setup_order, account: account, product: products.third, user: user) }
-
-      context "bubbling up the newest" do
-        let(:limit) { 1 }
-        it { is_expected.to eq([facilities.second]) }
-      end
-
-      context "ordering by name" do
-        let(:limit) { 2 }
-        it { is_expected.to eq(facilities.first(2)) }
-      end
-
-      context "excludes unpurchased" do
-        let(:limit) { 3 }
-        it { is_expected.to eq(facilities.first(2)) }
-      end
-    end
-
-    context "when the user has orders" do
-      before(:each) do
-        products.first(order_count).each_with_index do |product, i|
-          create(:setup_order, :purchased, account: account, product: product, user: user, ordered_at: i.days.ago)
-        end
-      end
-
-      context "made in fewer than 5 facilities" do
-        let(:order_count) { 4 }
-
-        it { expect(subject).to eq(facilities.first(order_count)) }
-      end
-
-      context "made in 5 facilities" do
-        let(:order_count) { 5 }
-
-        it { expect(subject).to eq(facilities.first(order_count)) }
-      end
-
-      context "made in more than 5 facilities" do
-        let(:order_count) { 6 }
-
-        it { expect(subject).to eq(facilities.first(limit)) }
-      end
-    end
-  end
-
   describe "#deactivate" do
     it "deactivates the user" do
       expect { user.deactivate }.to change(user, :active?).to(false)
