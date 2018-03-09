@@ -55,15 +55,40 @@ class OrderPurchaser
   end
 
   def order_in_the_past!
-    unless order.can_backdate_order_details?
+    unless can_backdate_order_details?
       raise NUCore::PurchaseException.new(I18n.t("controllers.orders.purchase.future_dating_error"))
     end
 
     # update order detail statuses if you've changed it while acting as
     if acting_as? && order_status_id.present?
-      order.backdate_order_details!(user, order_status_id)
+      backdate_order_details!(user, order_status_id)
     end
-    order.complete_past_reservations!
+    complete_past_reservations!
+  end
+
+  def can_backdate_order_details?
+    order.ordered_at <= Time.zone.now
+  end
+
+  def backdate_order_details!(update_by, order_status)
+    # can accept either an order status or an id
+    order_status = order_status.is_a?(OrderStatus) ? order_status : OrderStatus.find(order_status)
+
+    order.order_details.each do |od|
+      next if od.reservation # reservations should always have order_status dictated by their dates
+
+      if order_status.root == OrderStatus.complete
+        od.backdate_to_complete!(order.ordered_at)
+      else
+        od.update_order_status!(update_by, order_status, admin: true)
+      end
+    end
+  end
+
+  def complete_past_reservations!
+    order.order_details.select { |od| od.reservation && od.reservation.reserve_end_at < Time.zone.now }.each do |od|
+      od.backdate_to_complete! od.reservation.reserve_end_at
+    end
   end
 
   def order_status_id
