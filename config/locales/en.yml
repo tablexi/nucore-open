@@ -30,11 +30,6 @@ en:
   facility_downcase: facility
   facilities_downcase: facilities
 
-  Product: "!activerecord.models.product.one!"
-  Products: "!activerecord.models.product.other!"
-  product_downcase: product
-  products_downcase: products
-
   admin:
     shared:
       add: "Add %{model}"
