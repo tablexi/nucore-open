@@ -175,14 +175,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def recently_used_facilities(limit = 5)
-    @recently_used_facilities ||= Hash.new do |hash, key|
-      facility_ids = orders.purchased.order("MAX(ordered_at) DESC").limit(limit).group(:facility_id).pluck(:facility_id)
-      hash[key] = Facility.where(id: facility_ids).sorted
-    end
-    @recently_used_facilities[limit]
-  end
-
   # Devise uses this method for determining if a user is allowed to log in. It
   # also gets called on each request, so if a user gets deactivated, they'll be
   # kicked out of their session.
