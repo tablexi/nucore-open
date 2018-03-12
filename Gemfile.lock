@@ -179,8 +179,8 @@ GEM
       coffee-script
       railties (>= 3.1)
       sass
-    cocaine (0.5.8)
-      climate_control (>= 0.0.3, < 1.0)
+    cocaine (0.6.0)
+      terrapin (= 0.6.0)
     codeclimate-test-reporter (1.0.8)
       simplecov (<= 0.13)
     codeclimate_circle_ci_coverage (0.2.1)
@@ -391,12 +391,12 @@ GEM
     paper_trail (8.1.2)
       activerecord (>= 4.2, < 5.2)
       request_store (~> 1.1)
-    paperclip (5.2.1)
+    paperclip (6.0.0)
       activemodel (>= 4.2.0)
       activesupport (>= 4.2.0)
-      cocaine (~> 0.5.5)
       mime-types
       mimemagic (~> 0.3.0)
+      terrapin (~> 0.6.0)
     parallel (1.12.1)
     paranoia (2.4.0)
       activerecord (>= 4.0, < 5.2)
@@ -567,6 +567,8 @@ GEM
     teaspoon-jasmine (2.3.4)
       teaspoon (>= 1.0.0)
     temple (0.8.0)
+    terrapin (0.6.0)
+      climate_control (>= 0.0.3, < 1.0)
     text_helpers (0.7.0)
       activesupport
       i18n (>= 0.6.8)
