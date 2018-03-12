@@ -6,21 +6,6 @@
 
 .alert.alert-info= text(".welcome")
 
-- if @products.any?
-  %h4= text(".recently_purchased")
-  .product_list{ class: @products.first.class.model_name.to_s.pluralize.downcase }
-    %ul
-      - @products.each do |product|
-        %li{ class: product.class.model_name.to_s.downcase }
-          = link_to product.name, facility_product_path(product.facility, product)
-          - if acting_user.present? && !product.can_be_used_by?(acting_user)
-            %i.fa.fa-lock
-              = " (#{product.class.human_attribute_name(:requires_approval_show)})"
-
-          - if product.offline?
-            = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
-    %hr
-
 - if @facilities.any?
 
   - if @recently_used_facilities.present?
@@ -28,8 +13,24 @@
     - @recently_used_facilities.each do |facility|
       %h4.header-tight= link_to facility, facility_path(facility)
     %hr
-    %h4= text(".all")
 
+  - if @recent_products.any?
+
+    %h4= text(".recently_purchased")
+    .product_list
+      %ul
+        - @recent_products.each do |product|
+          %li
+            = link_to "#{product.name}" + " - #{product.facility}", facility_product_path(product.facility, product)
+            - if acting_user.present? && !product.can_be_used_by?(acting_user)
+              %i.fa.fa-lock
+                = " (#{product.class.human_attribute_name(:requires_approval_show)})"
+
+            - if product.offline?
+              = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
+      %hr
+
+  %h4= text(".all")
   - @facilities.each do |facility|
     %h4.header-tight= link_to facility, facility_path(facility)
     %p= facility.short_description

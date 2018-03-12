@@ -59,12 +59,11 @@ class Product < ActiveRecord::Base
 
   scope :active, -> { where(is_archived: false, is_hidden: false) }
   scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: phase out in favor of the .not_archived scope
-  scope :alphabetized, -> { order("lower(name)") }
+  scope :alphabetized, -> { order("lower(products.name)") }
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
   scope :in_active_facility, -> { joins(:facility).where(facilities: { is_active: true }) }
-  scope :recently_purchased, ->(user) { joins(order_details: :order).merge(Order.where(user: user, state: :purchased).group(:product_id).order('MAX(orders.ordered_at) DESC')).limit(10) }
 
   def self.types
     @types ||= [Instrument, Item, Service, TimedService, Bundle]

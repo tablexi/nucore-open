@@ -32,9 +32,9 @@ class FacilitiesController < ApplicationController
   # GET /facilities
   def index
     @facilities = Facility.active.sorted
-    @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities
+    @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities.sorted
     @active_tab = "home"
-    @products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products
+    @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.alphabetized
     render layout: "application"
   end
 
