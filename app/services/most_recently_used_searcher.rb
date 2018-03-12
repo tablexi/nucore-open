@@ -12,8 +12,8 @@ class MostRecentlyUsedSearcher
     Facility.active
             .joins(products: { order_details: :order })
             .merge(Order.for_user(user)
-              .group(:id)
-              .order('MAX(orders.ordered_at) DESC'))
+                        .group(:id)
+                        .order('MAX(orders.ordered_at) DESC'))
             .limit(limit)
   end
 
@@ -23,8 +23,8 @@ class MostRecentlyUsedSearcher
     Product.active.in_active_facility
            .joins(order_details: :order)
            .merge(Order.for_user(user)
-             .group(:id)
-             .order('MAX(orders.ordered_at) DESC'))
+                       .group(:id)
+                       .order('MAX(orders.ordered_at) DESC'))
            .limit(limit)
   end
 
