@@ -41,7 +41,7 @@ module TransactionSearch
     def default_params
       {
         date_range_field: "fulfilled_at",
-        allowed_date_fields: TransactionSearch::DateRangeSearcher::FIELDS
+        allowed_date_fields: TransactionSearch::DateRangeSearcher::FIELDS,
       }
     end
 
