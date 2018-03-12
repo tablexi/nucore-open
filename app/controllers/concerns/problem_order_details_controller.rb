@@ -12,9 +12,10 @@ module ProblemOrderDetailsController
   def show_problems
     order_details = problem_order_details.joins(:order)
 
-    @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at" })
+    @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at", allowed_date_fields: ["ordered_at"]  })
     @search = TransactionSearch::Searcher.new(TransactionSearch::ProductSearcher,
                                               TransactionSearch::DateRangeSearcher,
+                                              TransactionSearch::AccountSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @order_details = @search.order_details.preload(:order_status, :assigned_user)
 
