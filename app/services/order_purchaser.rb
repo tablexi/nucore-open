@@ -60,8 +60,8 @@ class OrderPurchaser
     end
 
     # update order detail statuses if you've changed it while acting as
-    if acting_as? && order_status_id.present?
-      backdate_order_details!(user, order_status_id)
+    if acting_as? && order_status.present?
+      backdate_order_details!(user, order_status)
     end
     complete_past_reservations!
   end
@@ -71,9 +71,6 @@ class OrderPurchaser
   end
 
   def backdate_order_details!(update_by, order_status)
-    # can accept either an order status or an id
-    order_status = order_status.is_a?(OrderStatus) ? order_status : OrderStatus.find(order_status)
-
     order.order_details.each do |od|
       next if od.reservation # reservations should always have order_status dictated by their dates
 
@@ -91,8 +88,8 @@ class OrderPurchaser
     end
   end
 
-  def order_status_id
-    params[:order_status_id]
+  def order_status
+    OrderStatus.find(params[:order_status_id]) if params[:order_status_id]
   end
 
   def order_update_params
