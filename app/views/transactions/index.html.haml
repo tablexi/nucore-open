@@ -4,4 +4,7 @@
 
 = render "shared/transactions/search2"
 
-= render "shared/transactions/table", show_statements: true
+- if @order_details.any?
+  = render "shared/transactions/table", show_statements: true
+- else
+  %p.alert.alert-info= t(".no_transactions")
