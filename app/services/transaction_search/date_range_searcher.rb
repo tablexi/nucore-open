@@ -7,8 +7,9 @@ module TransactionSearch
 
     attr_reader :date_range_field
 
-    def self.options
+    def self.options(only: FIELDS)
       FIELDS.map { |field| [I18n.t(field, scope: "admin.transaction_search.date_range_fields"), field] }
+            .select { |label, value| value.in?(only) }
     end
 
     def options
