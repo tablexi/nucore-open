@@ -17,18 +17,8 @@
   - if @recent_products.any?
 
     %h4= text(".recently_purchased")
-    .product_list
-      %ul
-        - @recent_products.each do |product|
-          %li
-            = link_to "#{product.name}" + " - #{product.facility}", facility_product_path(product.facility, product)
-            - if acting_user.present? && !product.can_be_used_by?(acting_user)
-              %i.fa.fa-lock
-                = " (#{product.class.human_attribute_name(:requires_approval_show)})"
-
-            - if product.offline?
-              = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
-      %hr
+    = render 'product_list', products: @recent_products
+    %hr
 
   %h4= text(".all")
   - @facilities.each do |facility|
