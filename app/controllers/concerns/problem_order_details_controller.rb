@@ -14,9 +14,9 @@ module ProblemOrderDetailsController
 
     @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at", allowed_date_fields: ["ordered_at"] })
     @search = TransactionSearch::Searcher.new(TransactionSearch::ProductSearcher,
-                                              TransactionSearch::DateRangeSearcher,
                                               TransactionSearch::AccountSearcher,
-                                              TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
+                                              TransactionSearch::OrderedForSearcher,
+                                              TransactionSearch::DateRangeSearcher).search(order_details, @search_form)
     @order_details = @search.order_details.preload(:order_status, :assigned_user)
 
     respond_to do |format|
