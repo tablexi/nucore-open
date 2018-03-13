@@ -28,7 +28,7 @@ module ProductsHelper
   def public_calendar_link(product)
     if product.respond_to? :reservations
       opts = public_calendar_options(product)
-      link_to "", facility_instrument_public_schedule_path( product.facility, product), opts
+      link_to "", facility_instrument_public_schedule_path(product.facility, product), opts
     end
   end
 
