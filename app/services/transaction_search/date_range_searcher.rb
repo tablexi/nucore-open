@@ -9,7 +9,7 @@ module TransactionSearch
 
     def self.options(only: FIELDS)
       FIELDS.map { |field| [I18n.t(field, scope: "admin.transaction_search.date_range_fields"), field] }
-            .select { |label, value| value.in?(only) }
+            .select { |_label, value| value.in?(only) }
     end
 
     def options

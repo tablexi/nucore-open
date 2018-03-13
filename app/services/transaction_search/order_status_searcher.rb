@@ -6,7 +6,6 @@ module TransactionSearch
       OrderStatus.select("order_statuses.id, order_statuses.facility_id, order_statuses.name, order_statuses.lft")
                  .where(id: order_details.select("distinct order_details.order_status_id"))
                  .order("order_statuses.lft")
-
     end
 
     def search(params)
