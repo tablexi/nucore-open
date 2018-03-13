@@ -23,14 +23,17 @@
       - @account_users.each do |au|
         - account = au.account
         %tr
-          %td= account.account_number_to_s
+          - if au.can_administer? || session_user.administrator?
+            %td= link_to account.account_number_to_s, account_path(account)
+          - else
+            %td= account.account_number_to_s
           %td= account.description_to_s
           %td= account.type_string
           %td= human_date(account.expires_at)
           %td= account.facility || '<i>All</i>'.html_safe
           - if au.can_administer? || session_user.administrator?
             - show_th=true
-            %td= link_to "Transactions", transactions_account_path(account)
+            %td= link_to "Transactions", transactions_path(search: { accounts: [account] })
             %td= link_to "Members", account_account_users_path(account)
 
     - if show_th

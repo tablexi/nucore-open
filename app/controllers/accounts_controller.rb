@@ -29,14 +29,6 @@ class AccountsController < ApplicationController
     render(template: "account_users/user_search")
   end
 
-  def transactions_with_search
-    set_default_start_date
-    @order_details = @order_details.where(account_id: @account.id)
-    @export_enabled = true
-    paginate_order_details
-    @active_tab = "accounts"
-  end
-
   protected
 
   def init_account

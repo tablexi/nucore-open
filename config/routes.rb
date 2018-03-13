@@ -32,7 +32,6 @@ Nucore::Application.routes.draw do
     resources :statements, only: [:show, :index]
     member do
       get "user_search"
-      get "transactions"
     end
 
     if SettingsHelper.feature_on? :suspend_accounts
