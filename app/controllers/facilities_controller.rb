@@ -31,8 +31,8 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities
   def index
-    @facilities = Facility.active.sorted
-    @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities.sorted
+    @facilities = Facility.active.alphabetized
+    @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities.alphabetized
     @active_tab = "home"
     @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.alphabetized
     render layout: "application"
@@ -53,7 +53,7 @@ class FacilitiesController < ApplicationController
     # show list of operable facilities for current user, and admins manage all facilities
     @active_tab = "manage_facilites"
     if session_user.administrator?
-      @facilities = Facility.sorted
+      @facilities = Facility.alphabetized
       flash.now[:notice] = "No facilities have been added" if @facilities.empty?
     else
       @facilities = operable_facilities

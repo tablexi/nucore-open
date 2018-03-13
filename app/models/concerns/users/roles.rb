@@ -25,18 +25,18 @@ module Users
     # Returns relation of facilities for which this user is staff, a director, or an admin
     def operable_facilities
       if administrator?
-        Facility.sorted
+        Facility.alphabetized
       else
-        facilities.sorted.where(user_roles: { role: UserRole.facility_roles })
+        facilities.alphabetized.where(user_roles: { role: UserRole.facility_roles })
       end
     end
 
     # Returns relation of facilities for which this user is a director or admin
     def manageable_facilities
       if administrator? || billing_administrator?
-        Facility.sorted
+        Facility.alphabetized
       else
-        facilities.sorted.where(user_roles: { role: UserRole.facility_management_roles })
+        facilities.alphabetized.where(user_roles: { role: UserRole.facility_management_roles })
       end
     end
 

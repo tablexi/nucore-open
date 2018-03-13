@@ -88,7 +88,7 @@ class ApplicationController < ActionController::Base
       when current_facility.blank?
         session_user.manageable_facilities
       when current_facility.cross_facility?
-        Facility.sorted
+        Facility.alphabetized
       else
         Facility.where(id: current_facility.id)
       end
