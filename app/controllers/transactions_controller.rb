@@ -12,8 +12,7 @@ class TransactionsController < ApplicationController
   end
 
   def index
-    account_ids = current_user.account_users.map(&:account_id)
-    order_details = OrderDetail.where(account_id: account_ids).joins(:order)
+    order_details = current_user.administered_order_details.joins(:order)
     @export_enabled = true
 
     @search_form = TransactionSearch::SearchForm.new(
@@ -28,6 +27,7 @@ class TransactionsController < ApplicationController
                                               TransactionSearch::ProductSearcher,
                                               TransactionSearch::DateRangeSearcher,
                                               TransactionSearch::OrderStatusSearcher,
+                                              TransactionSearch::AccountOwnerSearcher,
                                               TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details

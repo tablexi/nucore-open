@@ -1119,6 +1119,7 @@ en:
   transactions:
     index:
       history: Transaction History
+      no_transactions: There are no transactions matching the search parameters.
     in_review: Transactions in Review
     none_in_review_found: No transactions in review were found.
     recently_reviewed: Recently Reviewed
