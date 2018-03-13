@@ -31,16 +31,6 @@ RSpec.describe Order do
     expect(order).to be_new
   end
 
-  it "does not allow backdating with future dates" do
-    order.ordered_at = 1.day.from_now
-    expect(order).to_not be_can_backdate_order_details
-  end
-
-  it "does allow backdating with past dates" do
-    order.ordered_at = 1.day.ago
-    expect(order).to be_can_backdate_order_details
-  end
-
   it { is_expected.to belong_to :order_import }
 
   context "total cost" do

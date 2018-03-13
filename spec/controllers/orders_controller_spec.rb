@@ -718,19 +718,15 @@ RSpec.describe OrdersController do
             expect(@order_detail.actual_cost).not_to be_nil
           end
 
-          context "canceled" do
+          context "with order status params" do
             before :each do
               @params[:order_status_id] = OrderStatus.canceled.id
               do_request
             end
 
-            it "is able to set order_detail states to canceled" do
-              expect(assigns[:order].order_details).to all(be_canceled)
-            end
-
-            it "sets the canceled time on the order_detail" do
-              assigns[:order].order_details.all? { |od| expect(od.canceled_at).not_to be_nil }
-              expect(reservation.order_detail.reload.canceled_at).not_to be_nil
+            it "does not change the reservation order detail state", :aggregate_failures do
+              expect(assigns[:order].order_details).to all(be_complete)
+              expect(assigns[:order].order_details.first.order_status).to eq OrderStatus.complete
             end
           end
         end
