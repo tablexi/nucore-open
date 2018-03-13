@@ -1,8 +1,6 @@
 class GlobalSearchController < ApplicationController
 
   customer_tab :all
-  before_action :authenticate_user!
-  before_action :check_acting_as
 
   def self.searcher_classes
     @searcher_classes ||=
@@ -14,8 +12,13 @@ class GlobalSearchController < ApplicationController
   end
 
   def index
-    @searchers = self.class.searcher_classes.map do |searcher_class|
-      searcher_class.new(current_user, current_facility, params[:search])
+    if session_user.nil? || session_user != acting_user
+      # if user is not logged in, or if ordering on behalf, only product searching is available
+      @searchers = [GlobalSearch::ProductSearcher.new(acting_user, current_facility, params[:search])]
+    else
+      @searchers = self.class.searcher_classes.map do |searcher_class|
+        searcher_class.new(acting_user, current_facility, params[:search])
+      end
     end
   end
 
