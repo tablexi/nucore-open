@@ -34,7 +34,7 @@ class FacilitiesController < ApplicationController
     @facilities = Facility.active.alphabetized
     @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities.alphabetized
     @active_tab = "home"
-    @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.alphabetized
+    @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products
     render layout: "application"
   end
 

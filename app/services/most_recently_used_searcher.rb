@@ -13,7 +13,7 @@ class MostRecentlyUsedSearcher
             .joins(products: { order_details: :order })
             .merge(Order.for_user(user)
                         .group(:id)
-                        .order('MAX(orders.ordered_at) DESC'))
+                        .order("MAX(orders.ordered_at) DESC"))
             .limit(limit)
   end
 
@@ -24,7 +24,7 @@ class MostRecentlyUsedSearcher
            .joins(order_details: :order)
            .merge(Order.for_user(user)
                        .group(:id)
-                       .order('MAX(orders.ordered_at) DESC'))
+                       .order("MAX(orders.ordered_at) DESC"))
            .limit(limit)
   end
 
