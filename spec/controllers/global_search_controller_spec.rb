@@ -167,15 +167,13 @@ RSpec.describe GlobalSearchController do
         expect(order_detail_results).to match_array([order_detail])
       end
 
-      context "when there is an order and order detail with same ids" do
-        let!(:order2) { FactoryBot.create(:purchased_order, id: order_detail.id, product: product) }
+      context "when searching by order id" do
         before :each do
-          get :index, search: order_detail.id.to_s
+          get :index, search: order_detail.order_id.to_s
         end
 
-        it "should include both order and order detail" do
-          expect(order_detail_results)
-            .to match_array([order2.order_details.first, order_detail])
+        it "should return the order detail for that order" do
+          expect(order_detail_results).to include(order_detail)
         end
 
         it "should render a template" do
