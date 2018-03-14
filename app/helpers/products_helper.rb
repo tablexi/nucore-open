@@ -43,7 +43,7 @@ module ProductsHelper
   private
 
   def public_calendar_options(product)
-    if current_facility&.show_instrument_availability?
+    if current_facility&.show_instrument_availability? || product.facility.show_instrument_availability?
       public_calendar_availability_options(product)
     else
       { class: ["fa fa-calendar fa-2x"],

@@ -21,6 +21,7 @@ class MostRecentlyUsedSearcher
     return [] unless user
 
     Product.active.in_active_facility
+           .includes(:facility)
            .joins(order_details: :order)
            .merge(Order.for_user(user)
                        .group(:id)
