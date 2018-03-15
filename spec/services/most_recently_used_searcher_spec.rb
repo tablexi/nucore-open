@@ -22,10 +22,6 @@ RSpec.describe MostRecentlyUsedSearcher do
         expect(recently_used_facilities).to contain_exactly(new_order.facility, old_order.facility)
       end
 
-      it "returns facilities sorted by order date" do
-        expect(recently_used_facilities.first).to eq new_order.facility
-      end
-
       context "when there are orders in more facilities than the limit" do
         before(:each) do
           products.each_with_index do |product, i|
@@ -60,10 +56,6 @@ RSpec.describe MostRecentlyUsedSearcher do
 
       it "returns products that the user has ordered" do
         expect(recently_used_products).to contain_exactly(new_order.order_details.first.product, old_order.order_details.first.product)
-      end
-
-      it "returns products sorted by order date" do
-        expect(recently_used_products.first).to eq new_order.order_details.first.product
       end
 
       context "when there are more recently used products than the limit" do

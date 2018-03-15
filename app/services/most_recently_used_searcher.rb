@@ -9,24 +9,15 @@ class MostRecentlyUsedSearcher
   def recently_used_facilities(limit = 5)
     return [] unless user
 
-    Facility.active
-            .joins(products: { order_details: :order })
-            .merge(Order.for_user(user)
-                        .group(:id)
-                        .order("MAX(orders.ordered_at) DESC"))
-            .limit(limit)
+    facility_ids = user.orders.purchased.order("MAX(ordered_at) DESC").limit(limit).group(:facility_id).pluck(:facility_id)
+    Facility.where(id: facility_ids)
   end
 
   def recently_used_products(limit = 10)
     return [] unless user
 
-    Product.active.in_active_facility
-           .includes(:facility)
-           .joins(order_details: :order)
-           .merge(Order.for_user(user)
-                       .group(:id)
-                       .order("MAX(orders.ordered_at) DESC"))
-           .limit(limit)
+    product_ids = user.orders.joins(order_details: :product).merge(Product.active.in_active_facility).purchased.order("MAX(orders.ordered_at) DESC").limit(limit).group(:product_id).pluck(:product_id)
+    Product.where(id: product_ids)
   end
 
 end

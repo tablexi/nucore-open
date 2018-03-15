@@ -35,7 +35,7 @@ class FacilitiesController < ApplicationController
     @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities.alphabetized
     @active_tab = "home"
     # recent products get sorted alphabetically in the product_list partial
-    @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products
+    @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.includes(:facility)
     render layout: "application"
   end
 
