@@ -16,6 +16,7 @@ class OrderDetailsController < ApplicationController
 
   # GET /orders/:order_id/order_details/:id
   def edit
+    @accounts = AvailableAccountsFinder.new(@order_detail.user, @order_detail.facility, current: @order_detail.account, current_user: acting_user)
   end
 
   # Put /orders/:order_id/order_details/:id

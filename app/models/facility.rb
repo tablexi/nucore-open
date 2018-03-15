@@ -2,16 +2,6 @@ class Facility < ActiveRecord::Base
 
   include ActiveModel::ForbiddenAttributesProtection
 
-  module Overridable
-
-    def can_pay_with_account?(_account)
-      true
-    end
-
-  end
-
-  include Overridable
-
   before_validation :set_journal_mask, on: :create
 
   has_many :items
@@ -54,6 +44,14 @@ class Facility < ActiveRecord::Base
 
   scope :active, -> { where(is_active: true) }
   scope :sorted, -> { order(:name) }
+
+  cattr_accessor :facility_account_validators { [] }
+
+  def can_pay_with_account?(account)
+    return true unless account
+
+    facility_account_validators.all? { |validator| validator.new(self, account).valid? }
+  end
 
   def self.cross_facility
     @@cross_facility ||=
