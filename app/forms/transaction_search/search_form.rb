@@ -4,7 +4,7 @@ module TransactionSearch
 
     include ActiveModel::Model
 
-    attr_accessor :date_range_field, :date_range_start, :date_range_end
+    attr_accessor :date_range_field, :date_range_start, :date_range_end, :allowed_date_fields
     attr_accessor :facilities, :accounts, :products, :account_owners,
                   :order_statuses, :statements, :date_ranges, :ordered_fors
 
@@ -41,6 +41,7 @@ module TransactionSearch
     def default_params
       {
         date_range_field: "fulfilled_at",
+        allowed_date_fields: TransactionSearch::DateRangeSearcher::FIELDS,
       }
     end
 

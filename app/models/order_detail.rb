@@ -138,9 +138,8 @@ class OrderDetail < ActiveRecord::Base
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
   scope :new_or_inprocess, lambda {
     where(state: %w(new inprocess))
-      .includes(:order)
+      .joins(:order)
       .merge(Order.purchased)
-      .references(:order)
   }
 
   scope :non_canceled, -> { where.not(state: "canceled") }

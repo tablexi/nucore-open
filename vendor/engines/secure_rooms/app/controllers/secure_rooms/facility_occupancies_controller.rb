@@ -2,7 +2,7 @@ module SecureRooms
 
   class FacilityOccupanciesController < ApplicationController
 
-    include NewInprocessController
+    include OrderDetailsCsvExport
     include SortableColumnController
     include ProblemOrderDetailsController
     include TabCountHelper
@@ -20,9 +20,18 @@ module SecureRooms
     end
 
     # GET /facilities/:facility_id/occupancies
-    # Provided by NewInprocessController
-    # def index
-    # end
+    def index
+      order_details = new_or_in_process_orders.joins(:order)
+
+      @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at" })
+      @search = TransactionSearch::Searcher.new(TransactionSearch::ProductSearcher).search(order_details, @search_form)
+      @order_details = @search.order_details.includes(:order_status).joins_assigned_users.reorder(sort_clause)
+
+      respond_to do |format|
+        format.html { @order_details = @order_details.paginate(page: params[:page]) }
+        format.csv { handle_csv_search }
+      end
+    end
 
     def dashboard
       @secure_rooms = current_facility.products(SecureRoom).active_plus_hidden.alphabetized
