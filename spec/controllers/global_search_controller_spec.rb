@@ -167,20 +167,6 @@ RSpec.describe GlobalSearchController do
         expect(order_detail_results).to match_array([order_detail])
       end
 
-      context "when searching by order id" do
-        before :each do
-          get :index, search: order_detail.order_id.to_s
-        end
-
-        it "should return the order detail for that order" do
-          expect(order_detail_results).to include(order_detail)
-        end
-
-        it "should render a template" do
-          expect(response).to render_template "index"
-        end
-      end
-
       context "when including the dash" do
         before :each do
           get :index, search: order_detail.to_s
