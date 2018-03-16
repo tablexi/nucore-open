@@ -1,17 +1,18 @@
-engines:
+version: "2"
+plugins:
   brakeman:
     enabled: true
   bundler-audit:
     enabled: true
   csslint:
     enabled: true
-    exclude_paths:
+    exclude_patterns:
       - "vendor/assets"
   coffeelint:
     enabled: true
   duplication:
     enabled: true
-    exclude_paths:
+    exclude_patterns:
       - "**.gemspec"
       - "spec/**"
       - "vendor/engines/**/spec/**"
@@ -24,14 +25,9 @@ engines:
       - javascript
   rubocop:
     enabled: true
-ratings:
-  paths:
-  - "app/**"
-  - "lib/**"
-  - "spec/**"
-  - "vendor/engines/**"
-  - Gemfile.lock
-exclude_paths:
+    config:
+      file: ".rubocop.yml"
+exclude_patterns:
 - bin/
 - config/
 - db/
