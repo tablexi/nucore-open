@@ -8,7 +8,6 @@ class FacilitiesController < ApplicationController
   before_action :check_acting_as, except: [:index, :show]
   before_action :load_order_details, only: [:confirm_transactions, :move_transactions, :reassign_chart_strings]
   before_action :set_admin_billing_tab, only: [:confirm_transactions, :disputed_orders, :movable_transactions, :transactions]
-  before_action :set_recently_used_facilities, only: [:index]
   before_action :store_fullpath_in_session, only: [:index, :show]
 
   load_and_authorize_resource find_by: :url_name
@@ -23,11 +22,6 @@ class FacilitiesController < ApplicationController
     action_name.in?(%w(disputed_orders movable_transactions transactions)) ? "two_column_head" : "two_column"
   }
 
-  def set_recently_used_facilities
-    @recently_used_facilities =
-      acting_user.present? && acting_user.recently_used_facilities.sorted
-  end
-
   cattr_accessor(:facility_homepage_redirector) { DefaultFacilityHomepageRedirector }
 
   # GET /facilities/:facility_url/dashboard
@@ -37,8 +31,10 @@ class FacilitiesController < ApplicationController
 
   # GET /facilities
   def index
-    @facilities = Facility.active.sorted
+    @facilities = Facility.active.alphabetized
+    @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities.alphabetized
     @active_tab = "home"
+    @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.includes(:facility).alphabetized
     render layout: "application"
   end
 
@@ -57,7 +53,7 @@ class FacilitiesController < ApplicationController
     # show list of operable facilities for current user, and admins manage all facilities
     @active_tab = "manage_facilites"
     if session_user.administrator?
-      @facilities = Facility.sorted
+      @facilities = Facility.alphabetized
       flash.now[:notice] = "No facilities have been added" if @facilities.empty?
     else
       @facilities = operable_facilities

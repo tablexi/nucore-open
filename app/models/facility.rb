@@ -43,7 +43,7 @@ class Facility < ActiveRecord::Base
   delegate :in_dispute, to: :order_details, prefix: true
 
   scope :active, -> { where(is_active: true) }
-  scope :sorted, -> { order(:name) }
+  scope :alphabetized, -> { order(:name) }
 
   cattr_accessor :facility_account_validators { [] }
 

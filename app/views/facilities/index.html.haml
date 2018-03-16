@@ -13,11 +13,18 @@
     - @recently_used_facilities.each do |facility|
       %h4.header-tight= link_to facility, facility_path(facility)
     %hr
-    %h4= text(".all")
 
+  - if @recent_products.any?
+
+    %h4= text(".recently_purchased")
+    = render 'product_list', products: @recent_products
+    %hr
+
+  %h4= text(".all")
   - @facilities.each do |facility|
     %h4.header-tight= link_to facility, facility_path(facility)
     %p= facility.short_description
 
 - else
   .alert.alert-info= t(".empty", items: Facility.model_name.human(count: 2))
+
