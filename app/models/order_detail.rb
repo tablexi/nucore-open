@@ -664,7 +664,7 @@ class OrderDetail < ActiveRecord::Base
     self.estimated_subsidy = nil
 
     # is account valid for facility
-    return unless product.facility.can_pay_with_account?(account)
+    return if account && !product.facility.can_pay_with_account?(account)
 
     @estimated_price_policy = product.cheapest_price_policy(self, date)
     assign_estimated_price_from_policy @estimated_price_policy

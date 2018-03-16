@@ -8,7 +8,7 @@ module C2po
 
     config.to_prepare do
       # Include extensions
-      Facility.send :include, C2po::FacilityExtension
+      Facility.facility_account_validators << C2po::C2poAccountValidator
 
       # Concat class variables
       Account.config.account_types.concat C2po::C2PO_ACCOUNT_TYPES
