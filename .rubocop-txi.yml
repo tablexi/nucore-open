@@ -71,10 +71,10 @@ Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
 
 Style/TrailingCommaInArrayLiteral:
-  EnforcedStyleForMultiline: consistent_comma
+  EnforcedStyleForMultiline: no_comma
 
 Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: consistent_comma
+  EnforcedStyleForMultiline: no_comma
 
 Style/TrivialAccessors:
   ExactNameMatch: true
