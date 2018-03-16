@@ -40,15 +40,42 @@ RSpec.describe GlobalSearchController do
   let!(:facility) { order.facility }
   let(:order_detail_results) { assigns[:searchers].find { |s| s.template == "order_details" }.results }
   let(:statement_results) { assigns[:searchers].find { |s| s.template == "statements" }.results }
+  let(:product_results) { assigns[:searchers].find { |s| s.template == "products" }.results }
 
   describe "index" do
-    describe "permissions" do
-      before :each do
-        @action = :index
-        @method = :get
+
+    context "when not signed in" do
+      it "can search with the product searcher", :aggregate_failures do
+        get :index, search: product.name
+
+        expect(assigns[:searchers].map(&:class)).to include(GlobalSearch::ProductSearcher)
+        expect(product_results).to include(product)
       end
 
-      it_should_require_login
+      it "does not search with the order searcher" do
+        get :index, search: order.id.to_s
+
+        expect(assigns[:searchers].map(&:class)).not_to include(GlobalSearch::OrderSearcher)
+      end
+    end
+
+    context "when acting as another user" do
+      before do
+        allow_any_instance_of(GlobalSearchController).to receive(:acting_as?).and_return(true)
+      end
+
+      it "can search with the product searcher", :aggregate_failures do
+        get :index, search: product.name
+
+        expect(assigns[:searchers].map(&:class)).to include(GlobalSearch::ProductSearcher)
+        expect(product_results).to include(product)
+      end
+
+      it "does not search with the order searcher" do
+        get :index, search: order.id.to_s
+
+        expect(assigns[:searchers].map(&:class)).not_to include(GlobalSearch::OrderSearcher)
+      end
     end
 
     context "signed in as a normal user" do
