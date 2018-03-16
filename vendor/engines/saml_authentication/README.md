@@ -32,6 +32,10 @@ saml:
 * `attribute_map`: A mapping from the IdP's attributes to the NUcore's `users` table
   columns. `username` and `email` are absolutely required while entries for `first_name`
   and `last_name` are recommended.
+* `driver`: An optional mapping of settings to pass to the underlying ruby-saml
+  gem. See *What Needs to be Configured* at https://developers.onelogin.com/saml/ruby
+  for a list of valid keys. This useful if the default inferred SAML settings
+  need to be overrided.
 
 ## Handling Users
 
