@@ -86,16 +86,6 @@ relays:
     admin_enabled: true
     reservation_enabled: true
 
-# You should change this if you want to be able to access the API
-api:
-  basic_auth_name: <%= SecureRandom.hex %>
-  basic_auth_password: <%= SecureRandom.hex %>
-
-# You should change this if you want to be able to access the SecureRooms API
-secure_rooms_api:
-  basic_auth_name: <%= SecureRandom.hex %>
-  basic_auth_password: <%= SecureRandom.hex %>
-
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
@@ -135,7 +125,7 @@ split_accounts:
     - administrator
     # - account_manager
 
-# This may be overridden in settings.local.yml if your fork is using S3, so
+# This may be overridden in secrets.yml if your fork is using S3, so
 # be sure to check there for configuration
 paperclip:
   storage: filesystem
