@@ -156,6 +156,11 @@ RSpec.describe FacilitiesController do
       @action = :index
     end
 
+    it "should render the page without a logged in user" do
+      do_request
+      expect(response).to be_successful
+    end
+
     it_should_allow_all [:admin, :guest] do
       expect(assigns[:facilities]).to eq([@authable])
       expect(response).to be_success.and render_template("facilities/index")
