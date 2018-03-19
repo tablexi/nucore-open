@@ -3,14 +3,14 @@ module DownloadableFile
   extend ActiveSupport::Concern
 
   included do
-    has_attached_file :file, Settings.paperclip.to_hash.merge(validate_media_type: false)
+    has_attached_file :file, PaperclipSettings.config.to_hash.merge(validate_media_type: false)
 
     # TODO: Limit attachment types for safe uploads
     do_not_validate_attachment_file_type :file
   end
 
   def download_url
-    if fog?
+    if PaperclipSettings.fog?
       # This is a workaround due to a bug or limitation in fog to generate a
       # private, expiring URL and have it force a download.
       #
@@ -29,12 +29,6 @@ module DownloadableFile
     else
       file.url
     end
-  end
-
-  private
-
-  def fog?
-    Settings.paperclip.storage == "fog"
   end
 
 end
