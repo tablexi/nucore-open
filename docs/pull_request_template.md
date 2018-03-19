@@ -8,4 +8,4 @@ Optional.
 
 # Additional Context
 
-Optional. Feel free to add/modify additional headers as appropriate.
+Optional. Feel free to add/modify additional headers as appropriate, e.g. "Refactorings", "Concerns".
