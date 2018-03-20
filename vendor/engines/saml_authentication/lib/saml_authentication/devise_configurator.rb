@@ -9,8 +9,8 @@ module SamlAuthentication
       Devise.setup do |config|
         config.saml_session_index_key = :session_index
         config.saml_default_user_key = :username
-        config.saml_create_user = true
-        config.saml_update_user = true
+        config.saml_create_user = SettingsHelper.feature_on?(:saml_create_user)
+        config.saml_update_user = SettingsHelper.feature_on?(:saml_create_user)
         config.saml_resource_locator = SamlAuthentication::UserLocator.new
         config.saml_update_resource_hook = SamlAuthentication::UserUpdater.new
 
