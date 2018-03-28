@@ -1,0 +1,10 @@
+email:
+  from: "nucore-noreply@nucore.stage.tablexi.com"
+  # from: 'nucore-noreply@northwestern.edu <nucore-noreply@northwestern.edu>'
+  fake:
+    enabled: true
+    to: ['jason@tablexi.com', "meara@tablexi.com"]
+    whitelist: []
+  exceptions:
+    sender: 'nucore-noreply@northwestern.edu <nucore-noreply@northwestern.edu>'
+    recipients: [ 'support-nucore@tablexi.com <support-nucore@tablexi.com>' ]
