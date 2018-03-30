@@ -58,6 +58,7 @@ class window.FullCalendarConfig
         event.email,
         event.product,
         event.expiration,
+        event.user_note,
       ].filter(
         (e) -> e? # remove undefined values
       ).join("<br/>")

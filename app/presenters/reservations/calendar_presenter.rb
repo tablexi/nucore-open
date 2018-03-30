@@ -29,6 +29,7 @@ module Reservations
           email: created_by.try(:full_name),
         }
         hash[:expiration] = "Expires #{MinutesToTimeFormatter.new(expires_mins_before)} prior" if expires_mins_before.present?
+        hash[:user_note] = user_note
         hash
       end
     end

@@ -10,6 +10,7 @@ en:
       admin_reservation_form:
         expires?: Release In Advance
         expires_mins_before: "Release hh:mm Prior To Start"
+        user_note: Note for users
     errors:
       models:
         order_details/reconciler:
