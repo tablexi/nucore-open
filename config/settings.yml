@@ -128,7 +128,6 @@ feature:
   price_change_reason_required_on: true
   can_manage_global_price_groups_on: true
   cross_facility_reports_on: false
-  saml_create_user_on: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
@@ -144,6 +143,7 @@ paperclip:
   path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename"
 
 # saml:
+#   create_user: false
 #   idp_metadata: "https://websso.example.com/idp/metadata"
 #   # certificate_file: path/to/file.p12 # Optional. Do not check in to version control.
 #   # driver: # Optional. Useful to override inferred SAML settings if need be.
