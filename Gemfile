@@ -9,7 +9,7 @@ gem "rails", "5.0"
 gem "config"
 
 ## database
-gem "mysql2"
+gem "mysql2", "~> 0.4.10"
 group :oracle do
   gem "ruby-oci8"
   gem "activerecord-oracle_enhanced-adapter"
