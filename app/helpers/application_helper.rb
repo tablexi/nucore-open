@@ -37,7 +37,7 @@ module ApplicationHelper
     title ||= column.titleize
     direction = column == sort_column && sort_direction == "asc" ? "desc" : "asc"
     sorting_class = (column == sort_column ? "fa fa-sort-#{sort_direction}" : "fa fa-sort")
-    link_to "#{title} <i class='#{sorting_class}'></i>".html_safe, params.merge({ sort: column, dir: direction })
+    link_to "#{title} <i class='#{sorting_class}'></i>".html_safe, params.merge(sort: column, dir: direction)
   end
 
   #
