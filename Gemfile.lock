@@ -621,7 +621,6 @@ GEM
     websocket-extensions (0.1.3)
     whenever (0.10.0)
       chronic (>= 0.6.3)
-    where-or (0.1.6)
     will_paginate (3.1.6)
     xpath (3.0.0)
       nokogiri (~> 1.8)
@@ -725,7 +724,6 @@ DEPENDENCIES
   vuejs-rails (~> 1.0.26)
   web-console
   whenever
-  where-or
   will_paginate
 
 RUBY VERSION

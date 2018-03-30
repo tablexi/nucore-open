@@ -14,7 +14,6 @@ group :oracle do
   gem "ruby-oci8"
   gem "activerecord-oracle_enhanced-adapter"
 end
-gem "where-or"
 
 ## auth
 gem "cancancan"
