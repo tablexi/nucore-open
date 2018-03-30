@@ -117,6 +117,7 @@ group :test do
   gem "capybara"
   gem "capybara-email"
   gem "poltergeist"
+  gem "rails-controller-testing"
   gem "rspec-collection_matchers"
   gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers" # https://github.com/thoughtbot/shoulda-matchers/issues/913
   gem "single_test"
