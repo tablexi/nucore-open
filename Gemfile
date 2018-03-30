@@ -5,7 +5,7 @@ ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| 
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
-gem "rails", "4.2.10"
+gem "rails", "5.0"
 gem "config"
 
 ## database
