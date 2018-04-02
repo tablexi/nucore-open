@@ -190,30 +190,6 @@ RSpec.describe User do
     end
   end
 
-  describe "#deactivate" do
-    it "deactivates the user" do
-      expect { user.deactivate }.to change(user, :active?).to(false)
-    end
-
-    describe "with a previously deactivated user" do
-      before { travel_and_return(-10.minutes) { user.deactivate } }
-
-      it "does not change the time" do
-        expect { user.deactivate }.not_to change(user, :deactivated_at)
-      end
-    end
-  end
-
-  describe "#activate" do
-    describe "with a deactivated user" do
-      before { user.deactivate }
-
-      it "reactivates the user" do
-        expect { user.activate }.to change(user, :active?).to(true)
-      end
-    end
-  end
-
   describe ".find_users_by_facility" do
     let!(:facility_director) { create(:user, :facility_director, facility: facility) }
     let!(:staff) { create(:user, :staff, facility: facility) }

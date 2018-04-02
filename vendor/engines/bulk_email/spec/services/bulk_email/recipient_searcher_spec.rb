@@ -9,7 +9,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
     end
 
     describe "with an inactive user" do
-      before { user.deactivate }
+      before { user.update(suspended_at: Time.current) }
 
       it "does not include the user" do
         expect(users).not_to include(user)

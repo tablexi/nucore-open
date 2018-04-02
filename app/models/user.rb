@@ -155,43 +155,38 @@ class User < ActiveRecord::Base
   end
 
   def last_first_name
-    "#{last_name}, #{first_name}" + deactivated_string
+    "#{last_name}, #{first_name}" + suspended_string
   end
 
   def to_s
-    full_name + deactivated_string
+    full_name + suspended_string
   end
   alias name to_s
 
-  def deactivated_string
+  def suspended_string
     if active?
       ""
     else
-      " (#{self.class.human_attribute_name(:deactivated)})"
+      " (#{self.class.human_attribute_name(:suspended)})"
     end
   end
 
   # Devise uses this method for determining if a user is allowed to log in. It
-  # also gets called on each request, so if a user gets deactivated, they'll be
+  # also gets called on each request, so if a user gets suspended, they'll be
   # kicked out of their session.
   def active_for_authentication?
     super && active?
   end
 
-  def deactivate
-    update_attribute(:deactivated_at, deactivated_at || Time.current)
-  end
-
-  def activate
-    update_attribute(:deactivated_at, nil)
-  end
+  # TODO: Rename the column
+  alias_attribute :suspended_at, :deactivated_at
 
   def active?
-    deactivated_at.blank?
+    suspended_at.blank?
   end
 
   def self.active
-    where(deactivated_at: nil)
+    where(suspended_at: nil)
   end
 
   def internal?
