@@ -153,4 +153,4 @@ paperclip:
 #     "User.email": "email"
 #     "User.FirstName": "first_name"
 #     "User.LastName": "last_name"
-
+#  # user_updater_class_name: DartmouthRadar::UserUpdater

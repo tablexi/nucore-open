@@ -12,7 +12,7 @@ module SamlAuthentication
         config.saml_create_user = Settings.saml.create_user
         config.saml_update_user = true
         config.saml_resource_locator = SamlAuthentication::UserLocator.new
-        config.saml_update_resource_hook = SamlAuthentication::UserUpdater.new
+        config.saml_update_resource_hook = saml_updater
 
         config.saml_config = fetch_metadata_config
 
@@ -29,6 +29,10 @@ module SamlAuthentication
     end
 
     private
+
+    def saml_updater
+      Settings.saml.user_updater_class_name.presence.try(:constantize).try(:new) || SamlAuthentication::UserUpdater.new
+    end
 
     def fetch_metadata_config
       idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
