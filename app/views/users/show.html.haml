@@ -15,9 +15,16 @@
   = f.input :email
   = f.input :last_sign_in_at, default_value: "none"
   = f.input :internal?, label: text("views.users.edit.internal") if SettingsHelper.feature_on?(:user_based_price_groups)
-  = f.input :deactivated_at unless f.object.active?
+  = f.input :suspended_at unless f.object.active?
   = render_view_hook "additional_user_fields", f: f
 
 - if can? :edit, @user
   %ul.inline
-    %li= link_to text("shared.edit"), edit_facility_user_path(current_facility, @user), class: "btn"
+    %li= link_to text("shared.edit"), edit_facility_user_path(current_facility, @user), class: "btn btn-primary"
+
+    - if can? :deactivate, @user
+      - if @user.active?
+        %li= link_to "Suspend", suspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
+      - else
+        %li= link_to "Activate", activate_facility_user_path(current_facility, @user), class: "btn", method: :patch
+

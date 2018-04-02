@@ -134,6 +134,9 @@ Nucore::Application.routes.draw do
           get "new_external"
           post "search"
         end
+        patch "suspend", on: :member
+        patch "activate", on: :member
+
         get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'
         resources :reservations, only: [:index], param: :order_detail_id, controller: "facility_user_reservations" do

@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   before_action :check_acting_as
 
   load_and_authorize_resource except: [:create, :password, :password_reset, :edit, :update, :show], id_param: :user_id
-  load_and_authorize_resource only: [:edit, :update, :show], id_param: :id
+  load_and_authorize_resource only: [:edit, :update, :show, :suspend, :activate], id_param: :id
 
   layout "two_column"
 
@@ -129,6 +129,17 @@ class UsersController < ApplicationController
       flash[:error] = text("update.error", message: @user_form.errors.full_messages.to_sentence)
       render action: "edit"
     end
+  end
+
+  def suspend
+    @user.suspended_at ||= Time.current
+    @user.save!
+    redirect_to facility_user_path(current_facility, @user), notice: "User suspended"
+  end
+
+  def activate
+    @user.update!(suspended_at: nil)
+    redirect_to facility_user_path(current_facility, @user), notice: "User activated"
   end
 
   private
