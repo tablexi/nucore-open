@@ -13,12 +13,12 @@
 %h2= text("head", user: @user.full_name)
 %p= text("subhead")
 
-= simple_form_for [current_facility, @user] do |f|
+= simple_form_for [current_facility, @user_form] do |f|
   .form-inputs
-    = f.input :first_name, readonly: !@user.admin_editable?
-    = f.input :last_name, readonly: !@user.admin_editable?
-    = f.input :email, readonly: !@user.admin_editable?
-    = f.input :username, readonly: true
+    = f.input :first_name, readonly: !@user_form.admin_editable?
+    = f.input :last_name, readonly: !@user_form.admin_editable?
+    = f.input :email, readonly: !@user_form.admin_editable?
+    = f.input :username, readonly: !@user_form.username_editable?
     - if current_user.administrator? && SettingsHelper.feature_on?(:user_based_price_groups)
       = f.input :internal?, label: text(".internal"), as: :select, default: false
     = f.button :submit, text("shared.update"), class: ["btn", "btn-primary"]
