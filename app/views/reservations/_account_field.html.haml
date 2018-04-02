@@ -22,4 +22,5 @@
         .span6
           = f.input :note,
             label: @order_detail.product.user_notes_label.presence,
-            required: @order_detail.product.user_notes_field_mode.required?
+            required: @order_detail.product.user_notes_field_mode.required?,
+            hint: t(".note_hint")
