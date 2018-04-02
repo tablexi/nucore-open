@@ -18,10 +18,12 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, except: [:password_reset]
   before_action :check_acting_as
 
-  load_and_authorize_resource except: [:create, :password, :password_reset, :edit, :update], id_param: :user_id
-  load_and_authorize_resource only: [:edit, :update], id_param: :id
+  load_and_authorize_resource except: [:create, :password, :password_reset, :edit, :update, :show], id_param: :user_id
+  load_and_authorize_resource only: [:edit, :update, :show], id_param: :id
 
   layout "two_column"
+
+  cattr_accessor :user_form_class { UserForm }
 
   def initialize
     @active_tab = "admin_users"
@@ -31,11 +33,9 @@ class UsersController < ApplicationController
   # GET /facilities/:facility_id/users
   def index
     @new_user = User.find_by(id: params[:user])
-    @users =
-      User
-      .with_recent_orders(current_facility)
-      .order(:last_name, :first_name)
-      .paginate(page: params[:page])
+    @users = User.with_recent_orders(current_facility)
+                 .order(:last_name, :first_name)
+                 .paginate(page: params[:page])
   end
 
   def search
@@ -49,6 +49,7 @@ class UsersController < ApplicationController
 
   def new_external
     @user = User.new(email: params[:email], username: params[:email])
+    @user_form = user_form_class.new(@user)
   end
 
   # POST /facilities/:facility_id/users
@@ -90,7 +91,6 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/:id
   def show
-    @user = User.find(params[:id])
   end
 
   # GET /facilities/:facility_id/users/:user_id/access_list
@@ -116,15 +116,17 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/:id/edit
   def edit
+    @user_form = user_form_class.new(@user)
   end
 
   # PUT /facilities/:facility_id/users/:id
   def update
-    if @user.update_attributes(edit_user_params) && @user.update_price_group(price_group_params)
+    @user_form = user_form_class.new(@user)
+    if @user_form.update_attributes(edit_user_params) && @user.update_price_group(price_group_params)
       flash[:notice] = text("update.success")
       redirect_to facility_user_path(current_facility, @user)
     else
-      flash[:error] = text("update.error", message: @user.errors.full_messages.to_sentence)
+      flash[:error] = text("update.error", message: @user_form.errors.full_messages.to_sentence)
       render action: "edit"
     end
   end
@@ -136,7 +138,7 @@ class UsersController < ApplicationController
   end
 
   def edit_user_params
-    @user.admin_editable? ? params.require(:user).except(:internal).permit(:email, :first_name, :last_name, :username) : empty_params
+    @user_form.admin_editable? ? params.require(:user).except(:internal).permit(:email, :first_name, :last_name, :username) : empty_params
   end
 
   def price_group_params
@@ -145,14 +147,14 @@ class UsersController < ApplicationController
 
   def create_external
     @user = User.new(create_params)
-    @user.password = generate_new_password
+    @user_form = user_form_class.new(@user)
 
-    authorize! :create, @user
+    authorize! :create, @user_form.user
 
-    if @user.save
-      LogEvent.log(@user, :create, current_user)
-      @user.create_default_price_group!
-      save_user_success
+    if @user_form.save
+      LogEvent.log(@user_form.user, :create, current_user)
+      @user_form.user.create_default_price_group!
+      save_user_success(@user_form.user)
     else
       render(action: "new_external") && return
     end
@@ -170,7 +172,7 @@ class UsersController < ApplicationController
     elsif @user.save
       LogEvent.log(@user, :create, current_user)
       @user.create_default_price_group!
-      save_user_success
+      save_user_success(@user)
     else
       flash[:error] = text("create.error", message: @user.errors.full_messages.to_sentence)
       redirect_to facility_users_path
@@ -214,19 +216,14 @@ class UsersController < ApplicationController
     User.find_by("LOWER(username) = ?", username.downcase)
   end
 
-  def generate_new_password
-    chars = ("a".."z").to_a + ("1".."9").to_a + ("A".."Z").to_a
-    chars.sample(8).join
-  end
-
-  def save_user_success
+  def save_user_success(user)
     flash[:notice] = text("create.success")
     if session_user.manager_of?(current_facility)
-      add_role = html("create.add_role", link: facility_facility_user_map_user_path(current_facility, @user), inline: true)
+      add_role = html("create.add_role", link: facility_facility_user_map_user_path(current_facility, user), inline: true)
       flash[:notice].safe_concat(add_role)
     end
-    Notifier.new_user(user: @user, password: @user.password).deliver_later
-    redirect_to facility_users_path(user: @user.id)
+    Notifier.new_user(user: user, password: user.password).deliver_later
+    redirect_to facility_users_path(user: user.id)
   end
 
   def add_flash(key, message)

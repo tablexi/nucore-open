@@ -71,10 +71,6 @@ class User < ActiveRecord::Base
     username.casecmp(email.downcase).zero?
   end
 
-  def admin_editable?
-    email_user?
-  end
-
   def password_updatable?
     email_user?
   end

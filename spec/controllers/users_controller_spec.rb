@@ -65,14 +65,14 @@ RSpec.describe UsersController do
       @method = :put
       @action = :update
       @params[:id] = user.id
-      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "newemail@example.com" }
+      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "user234" }
     end
 
     it_should_allow_admin_only(:found) do
       expect(user.reload.first_name).to eq("New")
       expect(user.last_name).to eq("Name")
       expect(user.email).to eq("newemail@example.com")
-      expect(user.username).to eq("newemail@example.com")
+      expect(user.username).to eq("user234")
       expect(response).to redirect_to facility_user_path(facility, user)
     end
   end
@@ -177,8 +177,7 @@ RSpec.describe UsersController do
         end
 
         it_should_allow_operators_only do
-          expect(assigns(:user)).to be_kind_of User
-          expect(assigns(:user)).to be_new_record
+          expect(assigns(:user_form)).to be_kind_of UserForm
         end
       end
 
@@ -191,13 +190,12 @@ RSpec.describe UsersController do
         context "external user" do
           context "with successful parameters" do
             before :each do
-              @params.merge!(user: FactoryBot.attributes_for(:user).except(:password, :password_confirmation))
+              user_params = FactoryBot.attributes_for(:user, username: 'user123').except(:password, :password_confirmation)
+              @params.merge!(user: user_params)
             end
 
             it_should_allow_operators_only :redirect do
-              expect(assigns(:user)).to be_kind_of User
-              expect(assigns(:user)).to be_persisted
-              assert_redirected_to facility_users_url(user: assigns[:user].id)
+              assert_redirected_to facility_users_url(user: assigns[:user_form].user.id)
             end
           end
 
@@ -207,20 +205,7 @@ RSpec.describe UsersController do
             end
 
             it_should_allow_operators_only do
-              expect(assigns(:user)).to be_new_record
               expect(response).to render_template "new_external"
-            end
-          end
-
-          describe "with extra spaces around the username/email" do
-            before do
-              @params[:user] = FactoryBot.attributes_for(:user, username: " email@example.com", email: "email@example.com").except(:password, :password_confirmation)
-            end
-
-            it_should_allow_operators_only :redirect do
-              expect(assigns(:user)).to be_persisted
-              expect(assigns(:user).email).to eq("email@example.com")
-              expect(assigns(:user).username).to eq("email@example.com")
             end
           end
         end
