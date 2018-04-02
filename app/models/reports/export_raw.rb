@@ -96,6 +96,7 @@ module Reports
         reconciled_at: :reconciled_at,
         price_change_reason: :price_change_reason,
         price_changed_by_user: ->(od) { od.price_changed_by_user.try(:full_name) },
+        assigned_user: ->(od) { od.assigned_user.try(:full_name) },
       }
       if SettingsHelper.has_review_period?
         hash
