@@ -9,7 +9,7 @@ module SamlAuthentication
       Devise.setup do |config|
         config.saml_session_index_key = :session_index
         config.saml_default_user_key = :username
-        config.saml_create_user = Settings.saml.create_user
+        config.saml_create_user = saml_create_user?
         config.saml_update_user = true
         config.saml_resource_locator = SamlAuthentication::UserLocator.new
         config.saml_update_resource_hook = saml_updater
@@ -32,6 +32,14 @@ module SamlAuthentication
 
     def saml_updater
       Settings.saml.user_updater_class_name.presence.try(:constantize).try(:new) || SamlAuthentication::UserUpdater.new
+    end
+
+    def saml_create_user?
+      if !Settings.saml.create_user.nil?
+        Settings.saml.create_user
+      else
+        true
+      end
     end
 
     def fetch_metadata_config

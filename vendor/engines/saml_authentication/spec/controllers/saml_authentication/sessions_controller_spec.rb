@@ -24,6 +24,17 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
     end
 
     describe "the user does not exist already" do
+      around :each do |example|
+        unless Settings.saml.create_user.nil?
+          original_value = Settings.saml.create_user
+          Settings.saml.create_user = true
+        end
+
+        example.run
+
+        Settings.saml.create_user = original_value unless Settings.saml.create_user.nil?
+      end
+
       it "creates a user" do
         expect { post :create, SAMLResponse: saml_response }.to change(User, :count).by(1)
       end
