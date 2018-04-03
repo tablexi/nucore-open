@@ -25,14 +25,12 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
 
     describe "the user does not exist already" do
       around :each do |example|
-        unless Settings.saml.create_user.nil?
-          original_value = Settings.saml.create_user
-          Settings.saml.create_user = true
-        end
+        original_value = Devise.saml_create_user
+        Devise.saml_create_user = true
 
         example.run
 
-        Settings.saml.create_user = original_value unless Settings.saml.create_user.nil?
+        Devise.saml_create_user = original_value
       end
 
       it "creates a user" do

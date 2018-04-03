@@ -35,10 +35,10 @@ module SamlAuthentication
     end
 
     def saml_create_user?
-      if !Settings.saml.create_user.nil?
-        Settings.saml.create_user
-      else
+      if Settings.saml.create_user.nil?
         true
+      else
+        Settings.saml.create_user
       end
     end
 
