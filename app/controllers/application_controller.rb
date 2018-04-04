@@ -119,16 +119,17 @@ class ApplicationController < ActionController::Base
   # Global exception handlers
   rescue_from ActiveRecord::RecordNotFound do |exception|
     Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
-    render_404
+    render_404(exception)
   end
 
   rescue_from ActionController::RoutingError do |exception|
     Rails.logger.debug("#{exception.message}: #{exception.backtrace.join("\n")}") unless Rails.env.production?
-    render_404
+    render_404(exception)
   end
 
-  def render_404
-    render "/404", status: 404, layout: "application"
+  def render_404(_exception)
+    # Add :html in case the 404 is a PDF or XML so the view can be found
+    render "/404", status: 404, layout: "application", formats: request.formats + [:html]
   end
 
   rescue_from NUCore::PermissionDenied, CanCan::AccessDenied, with: :render_403
