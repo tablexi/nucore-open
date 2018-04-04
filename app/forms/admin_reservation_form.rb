@@ -14,7 +14,7 @@ class AdminReservationForm
   delegate :category, :reserve_start_date, :reserve_start_hour,
            :reserve_start_min, :reserve_start_meridian, :duration_mins,
            :reserve_end_date, :reserve_end_hour, :reserve_end_min,
-           :reserve_end_meridian, :admin_note, :expires?,
+           :reserve_end_meridian, :admin_note, :user_note, :expires?,
            :expires_mins_before, :reserve_start_at, to: :reservation
   delegate :assign_times_from_params, to: :reservation
 

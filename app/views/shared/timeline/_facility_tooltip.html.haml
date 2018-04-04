@@ -16,6 +16,10 @@
   %br
   %span= reservation.admin_note
 
+- if reservation.user_note.present?
+  %br
+  %span= reservation.user_note
+
 - if reservation.created_by.present?
   %br
   %span= reservation.created_by.full_name

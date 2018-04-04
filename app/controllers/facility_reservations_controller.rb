@@ -174,6 +174,7 @@ class FacilityReservationsController < ApplicationController
                                  :reserve_end_meridian,
                                  :expires)
                          .permit(:admin_note,
+                                 :user_note,
                                  :expires_mins_before,
                                  :category,
                                  :repeats,

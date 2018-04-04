@@ -102,6 +102,7 @@ RSpec.describe Reservations::Rendering do
           actual_start_at: actual_start_at,
           actual_end_at: actual_end_at,
           created_by: user,
+          user_note: "this is a note",
         )
       end
 
@@ -110,13 +111,13 @@ RSpec.describe Reservations::Rendering do
       context "with details requested" do
         it "returns a hash without extra details about the order" do
           expect(reservation.as_calendar_object(with_details: true))
-            .to eq(base_hash.merge(title: "Admin Hold", email: user.full_name))
+            .to eq(base_hash.merge(title: "Admin Hold", email: user.full_name, user_note: reservation.user_note))
         end
       end
 
       context "without details requested" do
         it "returns a hash without extra details about the order" do
-          expect(reservation.as_calendar_object).to eq(base_hash.merge(title: "Admin Hold", email: user.full_name))
+          expect(reservation.as_calendar_object).to eq(base_hash.merge(title: "Admin Hold", email: user.full_name, user_note: reservation.user_note))
         end
       end
     end
