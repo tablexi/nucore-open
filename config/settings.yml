@@ -133,6 +133,7 @@ paperclip:
   path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename"
 
 # saml:
+#   create_user: true
 #   idp_metadata: "https://websso.example.com/idp/metadata"
 #   # certificate_file: path/to/file.p12 # Optional. Do not check in to version control.
 #   # driver: # Optional. Useful to override inferred SAML settings if need be.
@@ -142,4 +143,4 @@ paperclip:
 #     "User.email": "email"
 #     "User.FirstName": "first_name"
 #     "User.LastName": "last_name"
-
+#  # user_updater_class_name: SamlAuthentication::UserUpdater
