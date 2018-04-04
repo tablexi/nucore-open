@@ -1,6 +1,6 @@
 $(document).ready(function() {
-
-  new FullCalendarConfig($("#calendar")).init()
+  opts = { eventDrop: handleEventDragDrop, eventResize: handleEventDragDrop }
+  new FullCalendarConfig($("#calendar"), opts).init()
 
   init_datepickers();
 
@@ -23,6 +23,19 @@ $(document).ready(function() {
 
       		});
     });
+    // SPIKE
+    $(".js--calendarForm").on("reservation:changed", function(evt, data) {
+      renderCurrentEvent(data.start, data.end);
+    }).trigger("reservation:force_updates");
+
+    // SPIKE
+  }
+
+  function handleEventDragDrop(event, delta, revertFunc) {
+    // make sure we're in the browser's timezone
+    start = moment(event.start.format());
+    end = moment(event.end.format());
+    $(".js--calendarForm").trigger("reservation:set_times", { start: start, end: end })
   }
 
   /* Copy in actual times from reservation time */
@@ -54,6 +67,25 @@ $(document).ready(function() {
     $('#' + id_prefix + '_meridian').val(ampm);
   }
   $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
+
+  // BEGIN SPIKE
+  function renderCurrentEvent(start, end) {
+    if (window.currentEvent) {
+      $("#calendar").fullCalendar("removeEvents", [window.currentEvent.id]);
+    }
+      window.currentEvent = {
+        id: 124,
+        title: "My Event",
+        start: start,
+        end: end,
+        color: '#FF0000',
+        allDay: false,
+        editable: true
+      };
+     $("#calendar").fullCalendar('renderEvent', window.currentEvent, true);
+
+    // END SPIKE
+  }
 
 });
 

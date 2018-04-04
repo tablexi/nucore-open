@@ -36,8 +36,8 @@ class ScheduleRuleCalendarPresenter
     {
       "className" => class_name,
       "title" => title.to_s,
-      "start" => I18n.l(start_at, format: :calendar),
-      "end" => I18n.l(end_at, format: :calendar),
+      "start" => start_at.iso8601,
+      "end" => end_at.iso8601,
       "allDay" => false,
     }
   end

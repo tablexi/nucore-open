@@ -13,3 +13,4 @@
   var reserveMinimum  = #{@instrument.min_reserve_mins || 0};
   var reserveMaximum  = #{@instrument.max_reserve_mins || 0};
   var instrumentOnline = #{@instrument.online?};
+  var initialDate = "#{@reservation&.reserve_start_at&.iso8601}";

@@ -8,8 +8,8 @@
 
 #overlay.on #spinner #hide  {
   background: image-url('transparent.png') top left repeat;
-  filter:alpha(opacity=30);
-  opacity:0.3;
+  filter: alpha(opacity=50);
+  opacity: 0.5;
   overflow: hidden;
 }
 

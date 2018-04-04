@@ -36,8 +36,8 @@ module Reservations
 
     def calendar_object_default
       {
-        start: I18n.l(display_start_at, format: :calendar),
-        end: I18n.l(display_end_at, format: :calendar),
+        start: display_start_at.iso8601,
+        end: display_end_at.iso8601,
         allDay: false,
         title: model_name.human,
         product: product.name,

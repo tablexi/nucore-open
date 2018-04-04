@@ -7,23 +7,20 @@ class window.FullCalendarConfig
   options: ->
     options = @baseOptions()
     if window.minTime?
-      options.minTime = window.minTime
+      options.minTime = "#{window.minTime}:00:00"
     if window.maxTime?
-      options.maxTime = window.maxTime
-      options.height = 42 * (maxTime - minTime) + 75
+      options.maxTime = "#{window.maxTime}:00:00"
+      options.height = 42 * (maxTime - minTime) + 52
     if window.initialDate
-      d = Date.parse(initialDate)
-      $.extend(options,
-        year: d.getFullYear()
-        month: d.getMonth()
-        date: d.getDate())
+      options.defaultDate = window.initialDate;
     options
 
   baseOptions: ->
     editable: false
     defaultView: "agendaWeek"
     allDaySlot: false
-    events: events_path
+    events: events_path,
+    nowIndicator: true
     loading: (isLoading, view) =>
       @toggleOverlay(isLoading)
 

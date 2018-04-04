@@ -52,6 +52,7 @@ gem "text_helpers"
 gem "chosen-rails"
 gem "fine_uploader", path: "vendor/engines/fine_uploader"
 gem "rubyzip"
+gem "momentjs-rails"
 
 ## controllers
 gem "prawn"
