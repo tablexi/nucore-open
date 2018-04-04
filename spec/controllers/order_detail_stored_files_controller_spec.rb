@@ -31,4 +31,25 @@ RSpec.describe OrderDetailStoredFilesController do
       end
     end
   end
+
+  describe "#upload_order_file" do
+    let(:product) { create(:setup_service, :with_order_form) }
+    let(:order_detail) { order.order_details.first }
+    let(:facility) { order.facility }
+    let(:order) { create(:setup_order, product: product) }
+
+    let(:params) { { order_id: order.id, order_detail_id: order_detail.id } }
+    before { sign_in user }
+
+
+    it "can upload the file" do
+      post :upload_order_file, params.merge(stored_file: { file: fixture_file_upload("#{Rails.root}/spec/files/template1.txt") })
+      expect(order_detail.stored_files.count).to eq(1)
+    end
+
+    it "gets an error if there is no file" do
+      post :upload_order_file, params
+      expect(assigns(:file).errors).to be_added(:file, :blank)
+    end
+  end
 end
