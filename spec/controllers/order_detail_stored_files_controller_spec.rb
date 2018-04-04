@@ -41,9 +41,8 @@ RSpec.describe OrderDetailStoredFilesController do
     let(:params) { { order_id: order.id, order_detail_id: order_detail.id } }
     before { sign_in user }
 
-
     it "can upload the file" do
-      post :upload_order_file, params.merge(stored_file: { file: fixture_file_upload("#{Rails.root}/spec/files/template1.txt") })
+      post :upload_order_file, params.merge(stored_file: { file: fixture_file_upload(Rails.root.join("spec/files/template1.txt")) })
       expect(order_detail.stored_files.count).to eq(1)
     end
 
