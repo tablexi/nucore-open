@@ -1,6 +1,6 @@
 module SecureRooms
 
-  class Event < ActiveRecord::Base
+  class Event < ApplicationRecord
 
     belongs_to :secure_room, foreign_key: :product_id
     belongs_to :account

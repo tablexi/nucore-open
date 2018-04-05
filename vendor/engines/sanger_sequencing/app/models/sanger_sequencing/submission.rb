@@ -1,6 +1,6 @@
 module SangerSequencing
 
-  class Submission < ActiveRecord::Base
+  class Submission < ApplicationRecord
 
     self.table_name = "sanger_sequencing_submissions"
 

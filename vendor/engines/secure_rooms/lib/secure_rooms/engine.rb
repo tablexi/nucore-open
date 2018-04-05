@@ -9,6 +9,7 @@ module SecureRooms
 
       NavTab::LinkCollection.send :include, SecureRooms::LinkCollectionExtension
       OrderDetail.send :include, SecureRooms::OrderDetailExtension
+      Facility.send :include, SecureRooms::FacilityExtension
       User.send :include, SecureRooms::UserExtension
       ::OrderDetails::ParamUpdater.send :include, SecureRooms::OrderDetails::ParamUpdaterExtension
 

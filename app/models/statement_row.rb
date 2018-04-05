@@ -1,4 +1,4 @@
-class StatementRow < ActiveRecord::Base
+class StatementRow < ApplicationRecord
 
   belongs_to :statement
   belongs_to :order_detail

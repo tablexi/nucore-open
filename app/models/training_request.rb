@@ -1,4 +1,4 @@
-class TrainingRequest < ActiveRecord::Base
+class TrainingRequest < ApplicationRecord
 
   belongs_to :user
   belongs_to :product

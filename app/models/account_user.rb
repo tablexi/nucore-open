@@ -1,4 +1,4 @@
-class AccountUser < ActiveRecord::Base
+class AccountUser < ApplicationRecord
 
   belongs_to :user
   belongs_to :account, inverse_of: :account_users

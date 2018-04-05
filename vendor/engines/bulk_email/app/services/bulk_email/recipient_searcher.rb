@@ -64,7 +64,7 @@ module BulkEmail
     def search_authorized_users
       users
         .joins(:product_users)
-        .uniq
+        .distinct
         .where(product_users: { product_id: product_ids_from_params })
         .reorder(*self.class::DEFAULT_SORT)
     end
@@ -72,7 +72,7 @@ module BulkEmail
     def search_training_requested
       users
         .joins(:training_requests)
-        .uniq
+        .distinct
         .where(training_requests: { product_id: product_ids_from_params })
         .reorder(*self.class::DEFAULT_SORT)
     end

@@ -1,4 +1,4 @@
-class ProductAccessGroup < ActiveRecord::Base
+class ProductAccessGroup < ApplicationRecord
 
   belongs_to :product
   has_many :product_users, dependent: :nullify

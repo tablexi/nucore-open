@@ -1,6 +1,6 @@
 module Projects
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
 
     include ActiveModel::ForbiddenAttributesProtection
 

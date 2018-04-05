@@ -1,4 +1,4 @@
-class JournalRow < ActiveRecord::Base
+class JournalRow < ApplicationRecord
 
   belongs_to :journal
   belongs_to :order_detail

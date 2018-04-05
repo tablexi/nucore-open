@@ -1,6 +1,6 @@
 #
 # Represents a 3rd party service in use by the system
-class ExternalService < ActiveRecord::Base
+class ExternalService < ApplicationRecord
 
   validates_presence_of :location
 

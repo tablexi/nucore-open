@@ -14,7 +14,8 @@ class OrderDetailUpdateParamHashExtractor
   # ...then the #to_h method would return:
   #   { 123 => { quantity: 2, note: "Noted" } }
   def to_h
-    params.each_with_object({}) do |(key, value), memo|
+    # TODO: clean up this and _cart_row.html.haml
+    params.permit!.to_h.each_with_object({}) do |(key, value), memo|
       match = key.match(/\A(note|quantity)(\d+)\z/) || next
       property = match[1].to_sym
       id = match[2].to_i

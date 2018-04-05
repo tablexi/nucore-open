@@ -1,4 +1,4 @@
-class OrderStatus < ActiveRecord::Base
+class OrderStatus < ApplicationRecord
 
   acts_as_nested_set
 

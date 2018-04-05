@@ -1,4 +1,4 @@
-class FacilityAccount < ActiveRecord::Base
+class FacilityAccount < ApplicationRecord
 
   include Accounts::AccountNumberSectionable
 

@@ -1,4 +1,4 @@
-class BundleProduct < ActiveRecord::Base
+class BundleProduct < ApplicationRecord
 
   belongs_to :bundle, foreign_key: :bundle_product_id
   belongs_to :product

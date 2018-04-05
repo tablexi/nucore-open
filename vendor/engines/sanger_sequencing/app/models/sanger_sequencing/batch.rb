@@ -1,6 +1,6 @@
 module SangerSequencing
 
-  class Batch < ActiveRecord::Base
+  class Batch < ApplicationRecord
 
     DEFAULT_PRODUCT_GROUP_NAME = [nil, ""].freeze
 

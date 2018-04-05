@@ -4,7 +4,7 @@
 # once that data is no longer needed, this class can be removed
 # along with the has_many clause in OrderDetail
 
-class VestalVersion < ActiveRecord::Base
+class VestalVersion < ApplicationRecord
 
   belongs_to :versioned, polymorphic: true
 

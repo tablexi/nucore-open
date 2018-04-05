@@ -1,4 +1,4 @@
-class PriceGroupProduct < ActiveRecord::Base
+class PriceGroupProduct < ApplicationRecord
 
   DEFAULT_RESERVATION_WINDOW = 14
 

@@ -118,7 +118,7 @@ RSpec.describe AffiliatesController do
     maybe_grant_always_sign_in :admin
     do_request
     yield if block_given?
-    expect(assigns(:affiliate).name).to be_nil
+    expect(assigns(:affiliate).name).to be_blank
     is_expected.to render_template template
   end
 

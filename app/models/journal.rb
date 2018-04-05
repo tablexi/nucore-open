@@ -1,6 +1,6 @@
 require "set"
 
-class Journal < ActiveRecord::Base
+class Journal < ApplicationRecord
 
   class CreationError < NUCore::Error; end
 
@@ -106,7 +106,7 @@ class Journal < ActiveRecord::Base
       _order_details.joins(:order)
                     .select("orders.facility_id")
                     .collect(&:facility_id)
-                    .uniq
+                    .distinct
     end
   end
 

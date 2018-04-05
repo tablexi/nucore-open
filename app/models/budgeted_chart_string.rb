@@ -1,4 +1,4 @@
-class BudgetedChartString < ActiveRecord::Base
+class BudgetedChartString < ApplicationRecord
 
   include NUCore::Database::DateHelper
 

@@ -1,6 +1,6 @@
 module SecureRooms
 
-  class AlarmEvent < ActiveRecord::Base
+  class AlarmEvent < ApplicationRecord
 
   end
 

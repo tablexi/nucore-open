@@ -1,4 +1,4 @@
-class OrderDetail < ActiveRecord::Base
+class OrderDetail < ApplicationRecord
 
   include ActiveModel::ForbiddenAttributesProtection
 

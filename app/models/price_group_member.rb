@@ -1,4 +1,4 @@
-class PriceGroupMember < ActiveRecord::Base
+class PriceGroupMember < ApplicationRecord
 
   belongs_to :price_group
 

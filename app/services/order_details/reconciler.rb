@@ -37,7 +37,7 @@ module OrderDetails
     # The params hash comes in with the unchecked IDs as well. Filter out to only
     # those we're going to reconcile. Returns an array of IDs.
     def to_be_reconciled
-      Hash(@params).select { |_order_detail_id, params| params[:reconciled] == "1" }
+      @params.select { |_order_detail_id, params| params[:reconciled] == "1" }
     end
 
     def reconcile(order_detail, params)

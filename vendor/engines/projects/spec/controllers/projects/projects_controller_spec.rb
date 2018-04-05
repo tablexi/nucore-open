@@ -1,7 +1,8 @@
 require "rails_helper"
 require "controller_spec_helper" # for the #facility_operators helper method
 
-def facility_operator_roles # Translates helper roles to User factory traits
+def facility_operator_roles
+  # Translates helper roles to User factory traits
   facility_operators.map do |role|
     case role
     when :admin

@@ -1,4 +1,4 @@
-class JournalCutoffDate < ActiveRecord::Base
+class JournalCutoffDate < ApplicationRecord
 
   include ActiveModel::ForbiddenAttributesProtection
 

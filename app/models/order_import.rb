@@ -1,6 +1,6 @@
 require "csv"
 
-class OrderImport < ActiveRecord::Base
+class OrderImport < ApplicationRecord
 
   belongs_to :facility
   belongs_to :upload_file, class_name: "StoredFile", dependent: :destroy

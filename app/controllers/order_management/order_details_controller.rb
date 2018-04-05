@@ -28,14 +28,14 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
     updater = OrderDetails::ParamUpdater.new(@order_detail, user: session_user, cancel_fee: params[:with_cancel_fee] == "1")
 
-    if updater.update_attributes(params[:order_detail])
+    if updater.update_attributes(params[:order_detail] || empty_params)
       flash[:notice] = "The order was successfully updated."
       if @order_detail.updated_children.any?
         flash[:notice] << " Auto-scaled accessories have been updated as well."
         flash[:updated_order_details] = @order_detail.updated_children.map(&:id)
       end
       if modal?
-        render nothing: true
+        render head :ok
       else
         redirect_to [current_facility, @order]
       end
@@ -48,7 +48,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
   # GET /facilities/:facility_id/orders/:order_id/order_details/:id/pricing
   def pricing
     checker = OrderDetails::PriceChecker.new(@order_detail)
-    @prices = checker.prices_from_params(params[:order_detail])
+    @prices = checker.prices_from_params(params[:order_detail] || empty_params)
 
     render json: @prices.to_json
   end
@@ -67,7 +67,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
       I18n.t "controllers.order_management.order_details.remove_from_journal.notice"
 
     if modal?
-      render nothing: true
+      render head :ok
     else
       redirect_to [current_facility, @order]
     end

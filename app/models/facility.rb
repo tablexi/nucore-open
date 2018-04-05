@@ -1,4 +1,4 @@
-class Facility < ActiveRecord::Base
+class Facility < ApplicationRecord
 
   include ActiveModel::ForbiddenAttributesProtection
 
@@ -60,7 +60,7 @@ class Facility < ActiveRecord::Base
 
   def products(type = nil)
     if type
-      super.where(type: type)
+      self.public_send(type.to_s.pluralize.underscore.to_sym)
     else
       super
     end

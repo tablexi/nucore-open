@@ -1,6 +1,6 @@
 module SangerSequencing
 
-  class Sample < ActiveRecord::Base
+  class Sample < ApplicationRecord
 
     include ActiveModel::ForbiddenAttributesProtection
 
