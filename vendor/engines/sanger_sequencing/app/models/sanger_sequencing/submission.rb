@@ -4,8 +4,6 @@ module SangerSequencing
 
     self.table_name = "sanger_sequencing_submissions"
 
-    include ActiveModel::ForbiddenAttributesProtection
-
     validates :savable_samples, length: { minimum: 1 }, on: :update
 
     belongs_to :order_detail, class_name: "::OrderDetail"

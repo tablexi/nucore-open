@@ -2,8 +2,6 @@ class OfflineReservation < Reservation
 
   CATEGORIES = I18n.t("offline_reservations.categories").keys.map(&:to_s).freeze
 
-  include ActiveModel::ForbiddenAttributesProtection
-
   validates :admin_note, presence: true
   validates :category, presence: true
   validates :category,

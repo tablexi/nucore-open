@@ -1,7 +1,5 @@
 class Facility < ApplicationRecord
 
-  include ActiveModel::ForbiddenAttributesProtection
-
   before_validation :set_journal_mask, on: :create
 
   has_many :items

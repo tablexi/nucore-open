@@ -1,7 +1,5 @@
 class UserPreference < ApplicationRecord
 
-  include ActiveModel::ForbiddenAttributesProtection
-
   belongs_to :user
   validates :value, presence: true
   validates :name, presence: true, uniqueness: { scope: :user_id }

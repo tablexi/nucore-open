@@ -1,7 +1,5 @@
 class JournalCutoffDate < ApplicationRecord
 
-  include ActiveModel::ForbiddenAttributesProtection
-
   include DateTimeInput::Model
   date_time_inputable :cutoff_date
 
