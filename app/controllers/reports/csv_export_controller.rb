@@ -16,7 +16,7 @@ module Reports
       CsvReportMailer.delay.csv_report_email(email_to_address, raw_report) # TODO: use .deliver_later instead
 
       if request.xhr?
-        render head :ok
+        head :ok
       else
         flash[:notice] = I18n.t("controllers.reports.mail_queued", email: email_to_address)
         redirect_to success_redirect_path

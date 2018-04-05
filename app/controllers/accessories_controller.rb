@@ -46,7 +46,7 @@ class AccessoriesController < ApplicationController
 
   def respond_success
     if request.xhr?
-      render head :ok
+      head :ok
     else
       redirect_to core_manager_context? ? [current_facility, @order] : reservations_path
     end

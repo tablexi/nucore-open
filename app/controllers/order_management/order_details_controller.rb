@@ -35,7 +35,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
         flash[:updated_order_details] = @order_detail.updated_children.map(&:id)
       end
       if modal?
-        render head :ok
+        head :ok
       else
         redirect_to [current_facility, @order]
       end
@@ -67,7 +67,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
       I18n.t "controllers.order_management.order_details.remove_from_journal.notice"
 
     if modal?
-      render head :ok
+      head :ok
     else
       redirect_to [current_facility, @order]
     end
