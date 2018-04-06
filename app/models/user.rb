@@ -31,6 +31,9 @@ class User < ActiveRecord::Base
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
   alias_attribute :login, :username
 
+  # TODO: Update downstreams to use `suspended_at`
+  alias_attribute :deactivated_at, :suspended_at
+
   #
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
@@ -142,13 +145,11 @@ class User < ActiveRecord::Base
     OrderDetail.where(account_id: Account.administered_by(self))
   end
 
-  # TODO: Rename the column
-  alias_attribute :suspended_at, :deactivated_at
-
   def full_name(suspended_label: true)
     Users::NamePresenter.new(self, suspended_label: suspended_label).full_name
   end
   alias to_s full_name
+  alias name full_name
 
   def last_first_name(suspended_label: true)
     Users::NamePresenter.new(self, suspended_label: suspended_label).last_first_name
