@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  opts = { eventDrop: handleEventDragDrop, eventResize: handleEventDragDrop }
+  opts = { eventDrop: handleEventDragDrop, eventResize: handleEventDragDrop, selectable: true, select: handleSelect }
   new FullCalendarConfig($("#calendar"), opts).init()
 
   init_datepickers();
@@ -29,6 +29,13 @@ $(document).ready(function() {
     }).trigger("reservation:force_updates");
 
     // SPIKE
+  }
+
+  function handleSelect(start, end, jsEvent, view, resource) {
+    start = moment(start.format());
+    end = moment(end.format());
+    // renderCurrentEvent(start, end);
+    $(".js--calendarForm").trigger("reservation:set_times", { start: start, end: end })
   }
 
   function handleEventDragDrop(event, delta, revertFunc) {

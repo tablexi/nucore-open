@@ -60,14 +60,14 @@ class window.ReservationTimeFieldAdjustor
       @setTimes(data.start, data.end);
     @$form.on "reservation:force_updates", @_changed
 
-
   # in minutes
   calculateDuration: ->
     (@reserveEnd.getDateTime() - @reserveStart.getDateTime()) / 60 / 1000
 
   setTimes: (start, end) =>
-    @reserveStart.setDateTime(start.toDate());
-    @reserveEnd.setDateTime(end.toDate());
+    @reserveStart.setDateTime(start.toDate())
+    @reserveEnd.setDateTime(end.toDate())
+    @_reserveEndChangeCallback() # update duration
 
   _durationChangeCallback: =>
     durationMinutes = @durationField().val()
