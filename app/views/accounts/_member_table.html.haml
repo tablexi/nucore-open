@@ -27,7 +27,7 @@
                 data: { confirm: t("shared.confirm_message") },
                 method: :delete
 
-        %td= "#{au.user} (#{au.user.username})"
+        %td= Users::NamePresenter.new(au.user, username_label: true).full_name
         %td= au.user.email
         %td= au.user_role
         = render_view_hook("member_table_columns", account_user: au)

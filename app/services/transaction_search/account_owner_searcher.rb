@@ -2,8 +2,9 @@ module TransactionSearch
 
   class AccountOwnerSearcher < BaseSearcher
 
+    # TODO: Remove :suspended_at once the old transaction search is gone
     def options
-      User.select("users.id, users.first_name, users.last_name")
+      User.select(:id, :first_name, :last_name, :suspended_at)
           .where(id: order_details.select("distinct account_users.user_id").joins(account: :owner_user))
           .order(:last_name, :first_name)
     end
@@ -17,7 +18,7 @@ module TransactionSearch
     end
 
     def label_method
-      :full_name
+      [:full_name, suspended_label: false]
     end
 
     def label

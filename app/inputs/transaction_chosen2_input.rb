@@ -39,11 +39,12 @@ class TransactionChosen2Input < SimpleForm::Inputs::CollectionInput
 
   private
 
+  # Pass an array if you want arguments, [:full_name, suspended_label: true]
   def option_elems(label_method, value_method)
     collection.map do |i|
       [
-        i.public_send(label_method),
-        i.public_send(value_method),
+        i.public_send(*label_method),
+        i.public_send(*value_method),
         data_for_item(i),
       ]
     end

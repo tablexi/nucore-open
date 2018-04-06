@@ -30,11 +30,7 @@ module Reports
     end
 
     def self.format_username(user)
-      name = ""
-      name += (user.last_name || "")
-      name += ", " unless name.blank?
-      name += (user.first_name || "")
-      "#{name} (#{user.username})"
+      Users::NamePresenter.new(user, username_label: true).last_first_name
     end
 
     def export_raw_visible?

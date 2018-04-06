@@ -142,33 +142,16 @@ class User < ActiveRecord::Base
     OrderDetail.where(account_id: Account.administered_by(self))
   end
 
-  def full_name
-    if first_name.nil? && last_name.nil?
-      username
-    else
-      full = ""
-      full += first_name unless first_name.nil?
-      full += " " unless first_name.nil? || last_name.nil?
-      full += last_name unless last_name.nil?
-      full
-    end
-  end
+  # TODO: Rename the column
+  alias_attribute :suspended_at, :deactivated_at
 
-  def last_first_name
-    "#{last_name}, #{first_name}" + suspended_string
+  def full_name(suspended_label: true)
+    Users::NamePresenter.new(self, suspended_label: suspended_label).full_name
   end
+  alias to_s full_name
 
-  def to_s
-    full_name + suspended_string
-  end
-  alias name to_s
-
-  def suspended_string
-    if active?
-      ""
-    else
-      " (#{self.class.human_attribute_name(:suspended)})"
-    end
+  def last_first_name(suspended_label: true)
+    Users::NamePresenter.new(self, suspended_label: suspended_label).last_first_name
   end
 
   # Devise uses this method for determining if a user is allowed to log in. It
@@ -178,11 +161,12 @@ class User < ActiveRecord::Base
     super && active?
   end
 
-  # TODO: Rename the column
-  alias_attribute :suspended_at, :deactivated_at
-
   def active?
-    suspended_at.blank?
+    !suspended?
+  end
+
+  def suspended?
+    suspended_at.present?
   end
 
   def self.active

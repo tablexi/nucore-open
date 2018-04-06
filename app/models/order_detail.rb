@@ -718,8 +718,7 @@ class OrderDetail < ActiveRecord::Base
   end
 
   def long_description
-    "##{self}: #{order.user}: #{I18n.l(fulfilled_at.to_date, format: :usa)}: "\
-    "#{product} x#{quantity}"
+    OrderDetailJournalDescriptionPresenter.new(self).long_description
   end
 
   def cost_estimated?

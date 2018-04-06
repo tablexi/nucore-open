@@ -11,7 +11,7 @@
       %tbody
         - room.occupancies.current.each do |occupancy|
           %tr
-            %td= occupancy.user.full_name
+            %td= occupancy.user.full_name(suspended_label: false)
             %td= format_usa_datetime(occupancy.entry_at)
   .span6
     %h4= text(:recent)
@@ -23,5 +23,5 @@
       %tbody
         - room.occupancies.recent.each do |occupancy|
           %tr
-            %td= occupancy.user.full_name
+            %td= occupancy.user.full_name(suspended_label: false)
             %td= format_usa_datetime(occupancy.exit_at)
