@@ -85,14 +85,6 @@ class FacilityAccountsController < ApplicationController
   def new_account_user_search
   end
 
-  def user_search
-  end
-
-  # GET /facilities/:facility_id/accounts/search
-  def search
-    flash.now[:notice] = "This page is not yet implemented"
-  end
-
   # GET/POST /facilities/:facility_id/accounts/search_results
   # TODO: use a service object here
   def search_results
@@ -131,10 +123,6 @@ class FacilityAccountsController < ApplicationController
     respond_to do |format|
       format.html { render layout: false }
     end
-  end
-
-  def user_accounts
-    @user = User.find(params[:user_id])
   end
 
   # GET /facilities/:facility_id/accounts/:account_id/members

@@ -19,7 +19,6 @@ Nucore::Application.routes.draw do
   # shared searches
   get "/user_search_results", to: 'search#user_search_results'
   get "/#{I18n.t("facilities_downcase")}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
-  get "/#{I18n.t("facilities_downcase")}/:facility_id/accounts/user/:user_id", to: 'facility_accounts#user_accounts', as: "user_accounts"
 
   post "global_search" => 'global_search#index', as: "global_search"
 
@@ -217,7 +216,6 @@ Nucore::Application.routes.draw do
       resources :accounts, controller: "facility_accounts", only: [:new, :create, :edit, :update] do
         collection do
           get "new_account_user_search"
-          get "user_search"
         end
         resources :account_users, controller: "facility_account_users", only: [:new, :destroy, :create, :update] do
           collection do
@@ -228,10 +226,7 @@ Nucore::Application.routes.draw do
     end
 
     resources :accounts, controller: "facility_accounts", only: [:index, :show] do
-      collection do
-        get "search"
-        get "search_results", via: [:get, :post]
-      end
+      get "search_results", via: [:post], on: :collection
 
       if SettingsHelper.feature_on?(:suspend_accounts)
         get "suspend",   to: 'facility_accounts#suspend',   as: "suspend"

@@ -56,8 +56,6 @@ RSpec.describe SearchController do
 
     it_behaves_like "searching", "map_user"
 
-    it_behaves_like "searching", "user_accounts"
-
     describe "user_new_account", feature_setting: { edit_accounts: true } do
       it_behaves_like "searching", "user_new_account"
     end
