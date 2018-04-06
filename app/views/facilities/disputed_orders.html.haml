@@ -7,6 +7,6 @@
   %h2= t(".head")
 
 = content_for :top_block do
-  = render "shared/transactions/top", tab: "disputed_orders"
+  = render "shared/transactions/top2", tab: "disputed_orders"
 
 = render "shared/transactions/table" if @order_details.present?
