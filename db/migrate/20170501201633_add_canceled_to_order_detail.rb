@@ -1,5 +1,9 @@
 class AddCanceledToOrderDetail < ActiveRecord::Migration
 
+  class Reservation < ActiveRecord::Base
+    belongs_to :order_detail
+  end
+
   def up
     add_column :order_details, :canceled_at, :datetime
     add_column :order_details, :canceled_by, :integer
