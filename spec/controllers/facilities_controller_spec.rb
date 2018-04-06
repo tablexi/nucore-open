@@ -312,8 +312,4 @@ RSpec.describe FacilitiesController do
     it_should_allow_managers_only
   end
 
-  context "disputed_orders" do
-    it_behaves_like "transactions", :disputed_orders
-  end
-
 end
