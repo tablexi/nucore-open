@@ -104,4 +104,3 @@ RSpec.describe Users::NamePresenter do
     end
   end
 end
-
