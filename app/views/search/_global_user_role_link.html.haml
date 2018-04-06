@@ -1,1 +1,1 @@
-= link_to user.last_first_name, edit_global_user_role_path(user.id)
+= link_to_if user.active?, user.last_first_name, edit_global_user_role_path(user.id)

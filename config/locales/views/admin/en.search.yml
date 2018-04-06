@@ -1,0 +1,5 @@
+en:
+  views:
+    search:
+      user_product_approval_link:
+        confirm: Are you sure you wish to authorize this user to order this %{product_type}?
