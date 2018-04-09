@@ -41,6 +41,7 @@ module Reservations
         allDay: false,
         title: model_name.human,
         product: product.name,
+        id: id,
       }
     end
 

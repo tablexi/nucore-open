@@ -25,7 +25,9 @@ class window.FullCalendarConfig
       @toggleOverlay(isLoading)
 
     eventAfterRender: @buildTooltip
-    eventAfterAllRender: @toggleNextPrev
+    eventAfterAllRender: (view) =>
+      @$element.trigger("calendar:rendered")
+      @toggleNextPrev(view)
 
   toggleOverlay: (isLoading) ->
     if isLoading

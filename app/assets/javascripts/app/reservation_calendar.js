@@ -2,7 +2,7 @@ var ReservationCalendar = function() {}
 
 ReservationCalendar.prototype = {
   init: function($calendar, $reservationForm) {
-    this.id = 1234;
+    this.id = $reservationForm.data("reservation-id") || "new";
     this.$calendar = $calendar;
     this.$reservationForm = $reservationForm;
     self = this; // so the handlers have access to this
@@ -13,6 +13,7 @@ ReservationCalendar.prototype = {
       eventOverlap: false,
     }
 
+    $calendar.on("calendar:rendered", this._removeSelfFromSource);
     new FullCalendarConfig($calendar, options).init();
     this._addReservationFormListerer();
   },
@@ -22,8 +23,8 @@ ReservationCalendar.prototype = {
       this.$calendar.fullCalendar("removeEvents", [this.currentEvent.id]);
     }
     this.currentEvent = {
-      id: this.id,
-      title: "My New Reservation",
+      id: "_currentEvent",
+      title: "My Reservation",
       start: start,
       end: end,
       color: '#378006',
@@ -31,6 +32,12 @@ ReservationCalendar.prototype = {
       editable: true
     };
    this.$calendar.fullCalendar('renderEvent', this.currentEvent, true);
+  },
+
+  // When in edit mode,this will remove the current reservation from the JSON
+  // source so we can replace it with our currentEvent.
+  _removeSelfFromSource: function() {
+    self.$calendar.fullCalendar("removeEvents", [self.id]);
   },
 
   _addReservationFormListerer: function() {
