@@ -20,6 +20,12 @@ PATH
       rails (~> 4.2.6)
 
 PATH
+  remote: vendor/engines/fullcalendar
+  specs:
+    fullcalendar (0.0.1)
+      momentjs-rails
+
+PATH
   remote: vendor/engines/ldap_authentication
   specs:
     ldap_authentication (0.0.1)
@@ -653,6 +659,7 @@ DEPENDENCIES
   fine_uploader!
   fog-aws
   font-awesome-rails
+  fullcalendar!
   guard-rspec
   guard-teaspoon
   haml
@@ -665,7 +672,6 @@ DEPENDENCIES
   letter_opener
   lograge
   logstash-event
-  momentjs-rails
   mysql2
   nested_form_fields
   nokogiri
