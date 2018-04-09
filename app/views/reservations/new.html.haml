@@ -26,7 +26,7 @@
 
 = render "documentation"
 
-= simple_form_for [@order, @order_detail, @reservation], html: { class: "js--calendarForm" } do |f|
+= simple_form_for [@order, @order_detail, @reservation], html: { class: "js--reservationForm" } do |f|
   = f.error_messages
   = render "account_field", f: f unless @order_detail.bundled?
   .js--reservationUpdateCreateAndStart

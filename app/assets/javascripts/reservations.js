@@ -1,8 +1,6 @@
 $(document).ready(function() {
-  opts = { eventDrop: handleEventDragDrop, eventResize: handleEventDragDrop, selectable: true, select: handleSelect }
-  new FullCalendarConfig($("#calendar"), opts).init()
-
   init_datepickers();
+  new ReservationCalendar().init($("#calendar"), $(".js--reservationForm"));
 
   // initialize datepicker
   function init_datepickers() {
@@ -19,30 +17,8 @@ $(document).ready(function() {
       		.change(function() {
       			var d = new Date(Date.parse($(this).val()));
       			$('#calendar').fullCalendar('gotoDate', d);
-
-
       		});
     });
-    // SPIKE
-    $(".js--calendarForm").on("reservation:changed", function(evt, data) {
-      renderCurrentEvent(data.start, data.end);
-    }).trigger("reservation:force_updates");
-
-    // SPIKE
-  }
-
-  function handleSelect(start, end, jsEvent, view, resource) {
-    start = moment(start.format());
-    end = moment(end.format());
-    // renderCurrentEvent(start, end);
-    $(".js--calendarForm").trigger("reservation:set_times", { start: start, end: end })
-  }
-
-  function handleEventDragDrop(event, delta, revertFunc) {
-    // make sure we're in the browser's timezone
-    start = moment(event.start.format());
-    end = moment(event.end.format());
-    $(".js--calendarForm").trigger("reservation:set_times", { start: start, end: end })
   }
 
   /* Copy in actual times from reservation time */
@@ -74,25 +50,6 @@ $(document).ready(function() {
     $('#' + id_prefix + '_meridian').val(ampm);
   }
   $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
-
-  // BEGIN SPIKE
-  function renderCurrentEvent(start, end) {
-    if (window.currentEvent) {
-      $("#calendar").fullCalendar("removeEvents", [window.currentEvent.id]);
-    }
-      window.currentEvent = {
-        id: 124,
-        title: "My Event",
-        start: start,
-        end: end,
-        color: '#FF0000',
-        allDay: false,
-        editable: true
-      };
-     $("#calendar").fullCalendar('renderEvent', window.currentEvent, true);
-
-    // END SPIKE
-  }
 
 });
 
