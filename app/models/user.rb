@@ -31,7 +31,8 @@ class User < ActiveRecord::Base
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
   alias_attribute :login, :username
 
-  # TODO: Update downstreams to use `suspended_at`
+  # TODO: This allows downstream forks that reference deactivated_at to not break. Once
+  # those are cleaned up, remove me.
   alias_attribute :deactivated_at, :suspended_at
 
   #

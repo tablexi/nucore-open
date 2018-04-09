@@ -135,7 +135,7 @@ Nucore::Application.routes.draw do
           post "search"
         end
         patch "suspend", on: :member
-        patch "activate", on: :member
+        patch "unsuspend", on: :member
 
         get "switch_to",    to: 'users#switch_to'
         get "orders",       to: 'users#orders'

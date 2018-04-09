@@ -37,13 +37,6 @@ module Users
       @suspended_label
     end
 
-    def append_suspended_string(string)
-      if suspended?
-        "#{string} (#{self.class.human_attribute_name(:suspended)})"
-      else
-        string
-      end
-    end
   end
 
 end

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User deletion" do
+RSpec.describe "User suspension" do
   let(:facility) { create(:facility) }
   let(:user) { create(:user, email: "todelete@example.com", first_name: "Del", last_name: "User") }
 

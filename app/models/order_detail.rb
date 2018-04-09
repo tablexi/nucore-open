@@ -717,6 +717,8 @@ class OrderDetail < ActiveRecord::Base
     "Order # #{self}"
   end
 
+  # Only used by Journals. Consider pulling into the journal/journal row
+  # (NU uses this method in their engines).
   def long_description
     OrderDetailJournalDescriptionPresenter.new(self).long_description
   end

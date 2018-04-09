@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   before_action :check_acting_as
 
   load_and_authorize_resource except: [:create, :password, :password_reset, :edit, :update, :show], id_param: :user_id
-  load_and_authorize_resource only: [:edit, :update, :show, :suspend, :activate], id_param: :id
+  load_and_authorize_resource only: [:edit, :update, :show, :suspend, :unsuspend], id_param: :id
 
   layout "two_column"
 
@@ -137,9 +137,9 @@ class UsersController < ApplicationController
     redirect_to facility_user_path(current_facility, @user), notice: "User suspended"
   end
 
-  def activate
+  def unsuspend
     @user.update!(suspended_at: nil)
-    redirect_to facility_user_path(current_facility, @user), notice: "User activated"
+    redirect_to facility_user_path(current_facility, @user), notice: "User re-activated"
   end
 
   private
