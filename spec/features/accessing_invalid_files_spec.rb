@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Accessing invalid formats" do
 
   it "renders a 404 for a missing page in pdf" do
-    visit "/facilities/examp.pdf"
+    visit "/#{I18n.t("facilities_downcase")}/examp.pdf"
 
     expect(page).to have_content("404")
     expect(page).to have_content("Page Not Found")
@@ -15,7 +15,7 @@ RSpec.describe "Accessing invalid formats" do
 
     it "renders a 403 as html" do
       login_as user
-      visit "facilities/list.pdf"
+      visit "#{I18n.t("facilities_downcase")}/list.pdf"
 
       expect(page).to have_content("403")
       expect(page).to have_content("Permission Denied")
