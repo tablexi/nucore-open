@@ -8,6 +8,7 @@ plugins:
     enabled: true
     exclude_patterns:
       - "vendor/assets"
+      - "vendor/engines/**/vendor/assets"
   coffeelint:
     enabled: true
   duplication:

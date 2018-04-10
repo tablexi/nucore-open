@@ -12,7 +12,7 @@ class window.FullCalendarConfig
       options.maxTime = "#{window.maxTime}:00:00"
       options.height = 42 * (maxTime - minTime) + 52
     if window.initialDate
-      options.defaultDate = window.initialDate;
+      options.defaultDate = window.initialDate
     options
 
   baseOptions: ->
