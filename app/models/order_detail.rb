@@ -171,7 +171,6 @@ class OrderDetail < ActiveRecord::Base
     where("dispute_at IS NOT NULL")
       .where(dispute_resolved_at: nil)
       .where("order_details.state != ?", "canceled")
-      .order("dispute_at")
   end
 
   def self.purchased_active_reservations
