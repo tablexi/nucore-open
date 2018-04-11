@@ -95,8 +95,8 @@ module Reports
         reconciled_note: :reconciled_note,
         reconciled_at: :reconciled_at,
         price_change_reason: :price_change_reason,
-        price_changed_by_user: ->(od) { od.price_changed_by_user.try(:full_name) },
-        assigned_user: ->(od) { od.assigned_user.try(:full_name) },
+        price_changed_by_user: ->(od) { od.price_changed_by_user&.full_name(suspended_label: false) },
+        assigned_user: ->(od) { od.assigned_user&.full_name(suspended_label: false) },
       }
       if SettingsHelper.has_review_period?
         hash
@@ -130,7 +130,7 @@ module Reports
       if order_detail.canceled_by.try(:zero?)
         I18n.t("reports.fields.auto_cancel_name")
       else
-        order_detail.canceled_by_user.try(:full_name)
+        order_detail.canceled_by_user&.full_name(suspended_label: false)
       end
     end
 

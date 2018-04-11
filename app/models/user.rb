@@ -31,6 +31,10 @@ class User < ActiveRecord::Base
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
   alias_attribute :login, :username
 
+  # TODO: This allows downstream forks that reference deactivated_at to not break. Once
+  # those are cleaned up, remove me.
+  alias_attribute :deactivated_at, :suspended_at
+
   #
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
@@ -142,56 +146,33 @@ class User < ActiveRecord::Base
     OrderDetail.where(account_id: Account.administered_by(self))
   end
 
-  def full_name
-    if first_name.nil? && last_name.nil?
-      username
-    else
-      full = ""
-      full += first_name unless first_name.nil?
-      full += " " unless first_name.nil? || last_name.nil?
-      full += last_name unless last_name.nil?
-      full
-    end
+  def full_name(suspended_label: true)
+    Users::NamePresenter.new(self, suspended_label: suspended_label).full_name
   end
+  alias to_s full_name
+  alias name full_name
 
-  def last_first_name
-    "#{last_name}, #{first_name}" + deactivated_string
-  end
-
-  def to_s
-    full_name + deactivated_string
-  end
-  alias name to_s
-
-  def deactivated_string
-    if active?
-      ""
-    else
-      " (#{self.class.human_attribute_name(:deactivated)})"
-    end
+  def last_first_name(suspended_label: true)
+    Users::NamePresenter.new(self, suspended_label: suspended_label).last_first_name
   end
 
   # Devise uses this method for determining if a user is allowed to log in. It
-  # also gets called on each request, so if a user gets deactivated, they'll be
+  # also gets called on each request, so if a user gets suspended, they'll be
   # kicked out of their session.
   def active_for_authentication?
     super && active?
   end
 
-  def deactivate
-    update_attribute(:deactivated_at, deactivated_at || Time.current)
-  end
-
-  def activate
-    update_attribute(:deactivated_at, nil)
-  end
-
   def active?
-    deactivated_at.blank?
+    !suspended?
+  end
+
+  def suspended?
+    suspended_at.present?
   end
 
   def self.active
-    where(deactivated_at: nil)
+    where(suspended_at: nil)
   end
 
   def internal?

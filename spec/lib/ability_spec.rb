@@ -35,10 +35,10 @@ RSpec.describe Ability do
   shared_examples_for "it allows switch_to on active, but not deactivated users" do
     let(:stub_controller) { UsersController.new }
     let(:active_user) { FactoryBot.build(:user) }
-    let(:deactivated_user) { FactoryBot.build(:user, deactivated_at: 1.day.ago) }
+    let(:suspended_user) { FactoryBot.build(:user, :suspended) }
 
     it { is_expected.to be_allowed_to(:switch_to, active_user) }
-    it { is_expected.not_to be_allowed_to(:switch_to, deactivated_user) }
+    it { is_expected.not_to be_allowed_to(:switch_to, suspended_user) }
   end
 
   describe "account manager" do

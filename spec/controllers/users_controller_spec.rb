@@ -305,8 +305,8 @@ RSpec.describe UsersController do
       assert_redirected_to facility_path(@authable)
     end
 
-    describe "a deactivated user" do
-      before(:each) { user.deactivate }
+    describe "a suspended user" do
+      let(:user) { create(:user, :suspended) }
 
       it_should_deny_all([:admin] + facility_operators)
     end

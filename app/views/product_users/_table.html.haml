@@ -18,7 +18,7 @@
             data: { confirm: text("confirm_removal", product_type: @product.model_name.human.downcase) }
 
         %td
-          = link_to "#{user.last_name}, #{user.first_name}", [current_facility, user]
+          = link_to user.last_first_name, [current_facility, user]
 
         %td= user.username
         %td= user.email

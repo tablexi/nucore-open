@@ -716,9 +716,10 @@ class OrderDetail < ActiveRecord::Base
     "Order # #{self}"
   end
 
+  # Only used by Journals. Consider pulling into the journal/journal row
+  # (NU uses this method in their engines).
   def long_description
-    "##{self}: #{order.user}: #{I18n.l(fulfilled_at.to_date, format: :usa)}: "\
-    "#{product} x#{quantity}"
+    OrderDetailJournalDescriptionPresenter.new(self).long_description
   end
 
   def cost_estimated?

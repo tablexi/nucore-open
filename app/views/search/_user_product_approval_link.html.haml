@@ -1,4 +1,3 @@
--# TODO: I18n confirmation
-= link_to user.last_first_name,
+= link_to_if user.active?, user.last_first_name,
   [:new, @facility, @product, :user, user: user],
-  data: { confirm: "Are you sure you wish to authorize this user to order this #{@product.class.model_name.human.downcase}?" }
+  data: { confirm: text("confirm", product_type: @product.class.model_name.human.downcase) }

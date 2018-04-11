@@ -7,6 +7,10 @@ FactoryBot.define do
     sequence(:last_name, &:to_s)
     sequence(:email) { |n| "user#{n}@example.com" }
 
+    trait :suspended do
+      suspended_at { 1.day.ago }
+    end
+
     after(:create) do |user, _|
       user.create_default_price_group!
     end

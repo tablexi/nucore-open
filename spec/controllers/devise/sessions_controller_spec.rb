@@ -13,8 +13,8 @@ RSpec.describe Devise::SessionsController do
       end
     end
 
-    describe "a deactived user" do
-      let(:user) { FactoryBot.create(:user, password: "password", deactivated_at: 1.minute.ago) }
+    describe "a suspended user" do
+      let(:user) { create(:user, :suspended, password: "password") }
 
       specify "can not log in" do
         post :create, user: { username: user.username, password: "password" }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180330180908) do
+ActiveRecord::Schema.define(version: 20180406211501) do
 
   create_table "account_users", force: :cascade do |t|
     t.integer  "account_id", limit: 4,  null: false
@@ -792,7 +792,7 @@ ActiveRecord::Schema.define(version: 20180330180908) do
     t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.integer  "uid",                    limit: 4
-    t.datetime "deactivated_at"
+    t.datetime "suspended_at"
     t.string   "card_number",            limit: 255
   end
 
