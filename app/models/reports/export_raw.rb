@@ -96,7 +96,7 @@ module Reports
         reconciled_at: :reconciled_at,
         price_change_reason: :price_change_reason,
         price_changed_by_user: ->(od) { od.price_changed_by_user&.full_name(suspended_label: false) },
-        assigned_user: ->(od) { od.assigned_user&.full_name(suspended_label: false) },
+        assigned_staff: ->(od) { od.assigned_user&.full_name(suspended_label: false) },
       }
       if SettingsHelper.has_review_period?
         hash

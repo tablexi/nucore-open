@@ -56,7 +56,7 @@ RSpec.describe Reports::ExportRaw do
         "Actual Subsidy" => "$9.99",
         "Actual Total" => "$10.00",
         "Charge For" => "Quantity",
-        "Assigned User" => user.full_name,
+        "Assigned Staff" => user.full_name,
       )
     end
 
