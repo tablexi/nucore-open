@@ -125,9 +125,10 @@ class FileUploadsController < ApplicationController
       @product = current_facility.send(klass).find_by!(url_name: params[:product_id])
     else
       id_param = params.except(:facility_id).keys.detect { |k| k.end_with?("_id") }
-      clazz = id_param.sub(/_id\z/, "").camelize
+      class_name = id_param.sub(/_id\z/, "").camelize
       @product = current_facility
-                 .products(clazz)
+                 .products
+                 .of_type(class_name)
                  .find_by!(url_name: params[id_param])
     end
   end

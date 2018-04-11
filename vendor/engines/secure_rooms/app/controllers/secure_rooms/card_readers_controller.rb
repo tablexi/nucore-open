@@ -59,7 +59,7 @@ module SecureRooms
     private
 
     def init_product
-      @product = current_facility.products(SecureRoom).find_by!(url_name: params[:secure_room_id])
+      @product = current_facility.secure_rooms.find_by!(url_name: params[:secure_room_id])
     end
 
     def card_reader_params

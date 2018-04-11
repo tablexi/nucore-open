@@ -56,14 +56,6 @@ class Facility < ApplicationRecord
       new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL", is_active: true)
   end
 
-  def products(type = nil)
-    if type
-      self.public_send(type.to_s.pluralize.underscore.to_sym)
-    else
-      super
-    end
-  end
-
   def destroy
     # TODO: can you ever delete a facility? Currently no.
     # super

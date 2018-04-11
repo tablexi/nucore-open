@@ -1,6 +1,6 @@
 %ul.sidebar-nav
   - Product.types.each do |product_type|
-    = tab "#{product_type.model_name.human(count: 2)} (#{current_facility.products(product_type).count})",
+    = tab "#{product_type.model_name.human(count: 2)} (#{current_facility.products.of_type(product_type.name).count})",
       [current_facility, product_type],
       sidenav_tab == product_type.model_name.plural
 
