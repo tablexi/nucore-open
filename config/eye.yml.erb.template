@@ -36,7 +36,7 @@ processes:
       restart_command: "kill -USR2 {PID}"
       start_timeout: 15 seconds
       restart_timeout: 15 seconds
-      restart_grace: 5 seconds
+      restart_grace: 15 seconds
       stdout: log/unicorn.stdout.log
       stderr: log/unicorn.stderr.log
       monitor_children:
