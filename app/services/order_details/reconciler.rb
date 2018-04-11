@@ -11,7 +11,7 @@ module OrderDetails
     validate :all_journals_and_statements_must_be_before_reconciliation_date
 
     def initialize(order_detail_scope, params, reconciled_at)
-      @params = params
+      @params = params || ActionController::Parameters.new
       @order_details = order_detail_scope.readonly(false).find_ids(to_be_reconciled.keys)
       @reconciled_at = reconciled_at
     end
