@@ -1,6 +1,6 @@
 -# This view, replaces _search, which relies on the TransactionSearch controller/concern.
 -# This view, along with TransactionSearch::Searcher is the more modern method. See FacilityAccountsReconciliationController
-= simple_form_for @search_form, url: url_for(params.permit(:search)), method: :get, html: { class: "search_form" }, defaults: { required: false } do |f|
+= simple_form_for @search_form, url: url_for(params.permit!), method: :get, html: { class: "search_form" }, defaults: { required: false } do |f|
   .row
     %fieldset.span6#search
       - @search.options.reject(&:multipart?).each do |searcher|
