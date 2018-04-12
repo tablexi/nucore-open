@@ -1,12 +1,14 @@
 = render "shared/transactions/headers"
-= content_for :h1 do
+
+- content_for :h1 do
   = current_facility
 
-=content_for :h2 do
+- content_for :h2 do
   %h2= t_create_models(Statement)
 
-= content_for :top_block do
-  = render "shared/transactions/top", tab: "statements"
+- content_for :top_block do
+  = render "shared/transactions/top2", tab: "statements"
+
 - if @order_details.any?
   = content_for :action_instructions do
     - if SettingsHelper.feature_on?(:send_statement_emails)
@@ -16,3 +18,5 @@
 
   = render "shared/transactions/table"
   = render "shared/reconcile_footnote"
+- else
+  %p.alert.alert-info= t(".no_transactions")

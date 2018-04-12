@@ -9,7 +9,9 @@ class FacilityStatementsController < ApplicationController
 
   include TransactionSearch
 
-  layout "two_column"
+  layout lambda {
+    action_name.in?(%w(new)) ? "two_column_head" : "two_column"
+  }
 
   def initialize
     @active_tab = "admin_billing"
@@ -23,11 +25,15 @@ class FacilityStatementsController < ApplicationController
   end
 
   # GET /facilities/:facility_id/statements/new
-  def new_with_search
-    @order_details = @order_details.need_statement(@facility)
+  def new
+    order_details = OrderDetail.need_statement(@facility)
     @order_detail_action = :create
-    set_default_start_date if SettingsHelper.feature_on?(:set_statement_search_start_date)
-    @layout = "two_column_head"
+
+    defaults = SettingsHelper.feature_on?(:set_statement_search_start_date) ? { date_range_start: format_usa_date(1.month.ago.beginning_of_month) } : {}
+    @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: defaults)
+    @search = TransactionSearch::Searcher.search(order_details, @search_form)
+    @date_range_field = @search_form.date_params[:field]
+    @order_details = @search.order_details
   end
 
   # POST /facilities/:facility_id/statements

@@ -1025,7 +1025,8 @@ en:
 
   facility_statements:
     new:
-      no_orders: There are no completed orders that require statements.
+      no_transactions: There are no transactions requiring statements matching the search parameters.
+
 
   instruments:
     manage:
