@@ -55,17 +55,18 @@ RSpec.describe Reservations::Rendering do
     end
   end
 
-  describe "#as_calendar_object" do
+  describe "#as_calendar_object", time_zone: "America/Chicago" do
     let(:actual_start_at) { Time.zone.local(2015, 8, 1, 9, 15, 16) }
     let(:actual_end_at) { Time.zone.local(2015, 8, 1, 10, 16, 17) }
     let(:title) { "Admin Hold" }
 
     let(:base_hash) do
       {
-        start: "Sat, 01 Aug 2015 09:15:16",
-        end: "Sat, 01 Aug 2015 10:16:17",
+        start: "2015-08-01T09:15:16-05:00",
+        end: "2015-08-01T10:16:17-05:00",
         product: "Generic",
         allDay: false,
+        id: reservation.id,
       }
     end
 

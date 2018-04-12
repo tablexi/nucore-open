@@ -52,7 +52,7 @@ class ScheduleRuleCalendarPresenter
 
   # If start_date is not given, default to the beginning of the current week's Sunday
   def start_date
-    options[:start_date].presence || Time.current.beginning_of_week(:sunday).to_date
+    options[:start_date].presence&.beginning_of_day || Time.current.beginning_of_week(:sunday)
   end
 
   def title

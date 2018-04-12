@@ -19,8 +19,7 @@ class window.FullCalendarConfig
     editable: false
     defaultView: "agendaWeek"
     allDaySlot: false
-    events: events_path,
-    nowIndicator: true
+    events: events_path
     loading: (isLoading, view) =>
       @toggleOverlay(isLoading)
 
