@@ -1,6 +1,6 @@
 module SecureRooms
 
-  class CardReader < ActiveRecord::Base
+  class CardReader < ApplicationRecord
 
     MAC_ADDRESS_FORMAT = /\A([0-9A-F]{2}:){5}([0-9A-F]{2})\z/
 

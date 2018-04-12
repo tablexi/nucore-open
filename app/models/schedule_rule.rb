@@ -1,4 +1,4 @@
-class ScheduleRule < ActiveRecord::Base
+class ScheduleRule < ApplicationRecord
 
   belongs_to :product
 

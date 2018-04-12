@@ -1,4 +1,4 @@
-class PricePolicy < ActiveRecord::Base
+class PricePolicy < ApplicationRecord
 
   include NUCore::Database::DateHelper
 
@@ -88,7 +88,7 @@ class PricePolicy < ActiveRecord::Base
     product.price_policies
            .where("start_date > ?", Time.zone.now.beginning_of_day)
            .order(:start_date)
-           .uniq
+           .distinct
            .pluck(:start_date)
            .map(&:to_date)
   end

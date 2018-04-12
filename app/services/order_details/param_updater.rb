@@ -33,7 +33,7 @@ class OrderDetails::ParamUpdater
   end
 
   def assign_attributes(params)
-    params = ActionController::Parameters.new(params.try(:dup))
+    params = params.dup
     params.delete(:quantity) unless params[:quantity].to_s =~ /\A\d+\z/
 
     assign_self_and_reservation_attributes(permitted_params(params))

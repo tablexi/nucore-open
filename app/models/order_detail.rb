@@ -1,6 +1,4 @@
-class OrderDetail < ActiveRecord::Base
-
-  include ActiveModel::ForbiddenAttributesProtection
+class OrderDetail < ApplicationRecord
 
   include NUCore::Database::SortHelper
   include TranslationHelper

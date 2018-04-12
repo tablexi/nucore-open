@@ -122,8 +122,9 @@ class PricePoliciesController < ApplicationController
 
   def init_product
     id_param = params.except(:facility_id).keys.detect { |k| k.end_with?("_id") }
-    clazz = id_param.sub(/_id\z/, "").camelize
-    @product = current_facility.products(clazz)
+    class_name = id_param.sub(/_id\z/, "").camelize
+    @product = current_facility.products
+                               .of_type(class_name)
                                .find_by!(url_name: params[id_param])
   end
 

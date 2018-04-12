@@ -1,6 +1,4 @@
-class UserPreference < ActiveRecord::Base
-
-  include ActiveModel::ForbiddenAttributesProtection
+class UserPreference < ApplicationRecord
 
   belongs_to :user
   validates :value, presence: true

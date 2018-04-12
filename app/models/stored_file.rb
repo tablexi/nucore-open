@@ -1,4 +1,4 @@
-class StoredFile < ActiveRecord::Base
+class StoredFile < ApplicationRecord
 
   include DownloadableFile
 

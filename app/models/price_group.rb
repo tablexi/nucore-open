@@ -1,4 +1,4 @@
-class PriceGroup < ActiveRecord::Base
+class PriceGroup < ApplicationRecord
 
   belongs_to :facility
   has_many   :order_details, through: :price_policies, dependent: :restrict_with_exception

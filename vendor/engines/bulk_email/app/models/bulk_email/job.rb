@@ -1,6 +1,6 @@
 module BulkEmail
 
-  class Job < ActiveRecord::Base
+  class Job < ApplicationRecord
 
     self.table_name = "bulk_email_jobs"
 

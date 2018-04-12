@@ -77,7 +77,7 @@ RSpec.describe FacilityJournalsController do
         expect(@creation_errors).to be_empty
         expect(@order_detail1.reload.journal_id).not_to be_nil
         expect(@order_detail3.reload.journal_id).not_to be_nil
-        expect(@journal.order_details.uniq.size).to eq(2)
+        expect(@journal.order_details.distinct.size).to eq(2)
         expect(@journal.is_successful).to be_nil
       end
 

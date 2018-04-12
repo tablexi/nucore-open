@@ -1,8 +1,6 @@
 module SangerSequencing
 
-  class Sample < ActiveRecord::Base
-
-    include ActiveModel::ForbiddenAttributesProtection
+  class Sample < ApplicationRecord
 
     self.table_name = "sanger_sequencing_samples"
     belongs_to :submission

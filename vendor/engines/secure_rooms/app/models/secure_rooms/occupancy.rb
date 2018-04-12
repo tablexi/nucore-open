@@ -1,6 +1,6 @@
 module SecureRooms
 
-  class Occupancy < ActiveRecord::Base
+  class Occupancy < ApplicationRecord
 
     include DateTimeInput::Model
 

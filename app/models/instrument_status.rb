@@ -1,4 +1,4 @@
-class InstrumentStatus < ActiveRecord::Base
+class InstrumentStatus < ApplicationRecord
 
   belongs_to :instrument
 

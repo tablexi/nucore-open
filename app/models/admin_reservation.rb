@@ -1,7 +1,5 @@
 class AdminReservation < Reservation
 
-  include ActiveModel::ForbiddenAttributesProtection
-
   CATEGORIES = %w(
     maintenance
     training

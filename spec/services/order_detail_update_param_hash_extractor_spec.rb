@@ -5,7 +5,7 @@ RSpec.describe OrderDetailUpdateParamHashExtractor do
     subject { described_class.new(params).to_h }
 
     context "when the params contain a quantity key" do
-      let(:params) { { "quantity101" => quantity_value } }
+      let(:params) { ActionController::Parameters.new("quantity101" => quantity_value) }
 
       context "with a value" do
         let(:quantity_value) { "5" }
@@ -21,7 +21,7 @@ RSpec.describe OrderDetailUpdateParamHashExtractor do
     end
 
     context "when the params contain a note key" do
-      let(:params) { { "note202" => note_value } }
+      let(:params) { ActionController::Parameters.new("note202" => note_value) }
 
       context "with a value" do
         let(:note_value) { "This is a note" }

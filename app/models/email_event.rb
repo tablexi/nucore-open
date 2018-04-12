@@ -1,7 +1,5 @@
 # Never instantiate this class directly. Use the `notify` method.
-class EmailEvent < ActiveRecord::Base
-
-  include ActiveModel::ForbiddenAttributesProtection
+class EmailEvent < ApplicationRecord
 
   belongs_to :user
   validates :user, presence: true

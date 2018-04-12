@@ -1,10 +1,8 @@
 module SangerSequencing
 
-  class Submission < ActiveRecord::Base
+  class Submission < ApplicationRecord
 
     self.table_name = "sanger_sequencing_submissions"
-
-    include ActiveModel::ForbiddenAttributesProtection
 
     validates :savable_samples, length: { minimum: 1 }, on: :update
 

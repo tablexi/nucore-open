@@ -1,6 +1,6 @@
 require "net/http"
 
-class Relay < ActiveRecord::Base
+class Relay < ApplicationRecord
 
   belongs_to :instrument, inverse_of: :relay
 

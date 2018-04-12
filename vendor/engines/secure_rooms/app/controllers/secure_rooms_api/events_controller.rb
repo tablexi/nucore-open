@@ -10,7 +10,7 @@ module SecureRoomsApi
         ),
       )
 
-      render nothing: true
+      head :ok
     end
 
     private

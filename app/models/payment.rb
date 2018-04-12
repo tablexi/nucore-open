@@ -1,4 +1,4 @@
-class Payment < ActiveRecord::Base
+class Payment < ApplicationRecord
 
   belongs_to :account, inverse_of: :payments
   belongs_to :statement, inverse_of: :payments

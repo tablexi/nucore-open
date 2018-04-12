@@ -1,4 +1,4 @@
-class Schedule < ActiveRecord::Base
+class Schedule < ApplicationRecord
 
   # Associations
   # --------

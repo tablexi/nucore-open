@@ -1,8 +1,6 @@
 module Projects
 
-  class Project < ActiveRecord::Base
-
-    include ActiveModel::ForbiddenAttributesProtection
+  class Project < ApplicationRecord
 
     belongs_to :facility, foreign_key: :facility_id
     has_many :order_details, inverse_of: :project

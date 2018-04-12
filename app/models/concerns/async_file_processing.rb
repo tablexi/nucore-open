@@ -10,7 +10,7 @@
 #   * `process_file!` should raise an error if anything goes wrong
 #
 # Example:
-# class OrderImport < ActiveRecord::Base
+# class OrderImport < ApplicationRecord
 #   include AsyncFileProcessing
 #   def process_file!
 #     do_something(file.path)

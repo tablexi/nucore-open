@@ -1,6 +1,4 @@
-class Facility < ActiveRecord::Base
-
-  include ActiveModel::ForbiddenAttributesProtection
+class Facility < ApplicationRecord
 
   before_validation :set_journal_mask, on: :create
 
@@ -56,14 +54,6 @@ class Facility < ActiveRecord::Base
   def self.cross_facility
     @@cross_facility ||=
       new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL", is_active: true)
-  end
-
-  def products(type = nil)
-    if type
-      super.where(type: type)
-    else
-      super
-    end
   end
 
   def destroy

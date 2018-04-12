@@ -1,6 +1,6 @@
 require "date"
 
-class Reservation < ActiveRecord::Base
+class Reservation < ApplicationRecord
 
   acts_as_paranoid # soft deletes
 

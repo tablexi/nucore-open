@@ -1,4 +1,4 @@
-class LogEvent < ActiveRecord::Base
+class LogEvent < ApplicationRecord
 
   belongs_to :user
   belongs_to :loggable, polymorphic: true

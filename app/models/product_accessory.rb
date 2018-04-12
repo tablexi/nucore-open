@@ -1,4 +1,4 @@
-class ProductAccessory < ActiveRecord::Base
+class ProductAccessory < ApplicationRecord
 
   SCALING_TYPES = {
     item: ["quantity"],

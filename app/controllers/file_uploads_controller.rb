@@ -64,7 +64,7 @@ class FileUploadsController < ApplicationController
       ResultsFileNotifier.new(@upload).notify if @upload.sample_result?
       respond_to do |format|
         format.json { render json: { success: true } }
-        format.html { render nothing: true }
+        format.html { head :ok }
       end
     else
       errors = @upload.errors.map { |_k, msg| msg }.to_sentence
@@ -103,7 +103,7 @@ class FileUploadsController < ApplicationController
     @return_to = params[:return_to]
 
     if request.xhr?
-      render nothing: true
+      head :ok
     elsif @file.file_type == "template"
       redirect_to(@return_to || product_survey_path(current_facility, @product.parameterize, @product))
     else
@@ -125,9 +125,10 @@ class FileUploadsController < ApplicationController
       @product = current_facility.send(klass).find_by!(url_name: params[:product_id])
     else
       id_param = params.except(:facility_id).keys.detect { |k| k.end_with?("_id") }
-      clazz = id_param.sub(/_id\z/, "").camelize
+      class_name = id_param.sub(/_id\z/, "").camelize
       @product = current_facility
-                 .products(clazz)
+                 .products
+                 .of_type(class_name)
                  .find_by!(url_name: params[id_param])
     end
   end

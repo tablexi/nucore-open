@@ -1,4 +1,4 @@
-class Statement < ActiveRecord::Base
+class Statement < ApplicationRecord
 
   has_many :order_details, inverse_of: :statement
   has_many :statement_rows, dependent: :destroy
