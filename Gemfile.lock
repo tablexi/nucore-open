@@ -370,7 +370,7 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     multi_json (1.13.1)
-    mysql2 (0.4.10)
+    mysql2 (0.5.1)
     nenv (0.3.0)
     nested_form_fields (0.8.2)
       coffee-rails (>= 3.2.1)
