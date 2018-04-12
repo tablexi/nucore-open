@@ -42,7 +42,8 @@
     - else
       %li= link_to 'Cancel', cart_path
 
+= start_time_editing_disabled?(@reservation).to_s
 #overlay
   #spinner
     #hide
-      #calendar
+      #calendar{ data: { show_tooltip: @instrument.show_details.to_s, drag_and_drop_enabled: SettingsHelper.feature_on?(:reservation_drag_and_drop).to_s, start_editable: start_time_editing_enabled?(@reservation).to_s } }

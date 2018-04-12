@@ -1,5 +1,5 @@
 class window.FullCalendarConfig
-  constructor: (@$element, @customOptions) ->
+  constructor: (@$element, @customOptions = {}) ->
 
   init: ->
     @$element.fullCalendar($.extend(@options(), @customOptions))

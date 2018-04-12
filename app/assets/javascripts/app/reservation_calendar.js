@@ -5,20 +5,29 @@ ReservationCalendar.prototype = {
     this.id = $reservationForm.data("reservation-id") || "new";
     this.$calendar = $calendar;
     this.$reservationForm = $reservationForm;
-    self = this; // so the handlers have access to this
-    options = {
-      eventDrop: this._handleEventDragDrop,
-      eventResize: this._handleEventDragDrop,
-      dayClick: this._handleClick,
-      eventOverlap: false,
-    }
 
-    $calendar.on("calendar:rendered", this._removeSelfFromSource);
-    new FullCalendarConfig($calendar, options).init();
-    this._addReservationFormListerer();
+    if ($calendar.data("drag-and-drop-enabled")) {
+      self = this; // so our callbacks have access to this object
+
+      fullCalendarOptions = {
+        eventDrop: this._handleEventDragDrop,
+        eventResize: this._handleEventDragDrop,
+        dayClick: this._handleClick,
+        eventOverlap: false,
+      }
+
+      new FullCalendarConfig($calendar, fullCalendarOptions).init();
+      $calendar.on("calendar:rendered", this._removeSelfFromSource);
+      this._addReservationFormListener();
+    } else {
+      console.debug("HELLO");
+      new FullCalendarConfig($calendar).init();
+    }
   },
 
   renderCurrentEvent: function(start, end) {
+    // It was easier to remove the old one and create a new one rather than update
+    // it and get fullCalendar to re-render it.
     if (this.currentEvent) {
       this.$calendar.fullCalendar("removeEvents", [this.currentEvent.id]);
     }
@@ -27,24 +36,25 @@ ReservationCalendar.prototype = {
       title: "My Reservation",
       start: start,
       end: end,
-      color: '#378006',
+      color: "#378006",
       allDay: false,
-      editable: true
+      startEditable: this._isStartEditable(),
+      durationEditable: true
     };
-   this.$calendar.fullCalendar('renderEvent', this.currentEvent, true);
+   this.$calendar.fullCalendar("renderEvent", this.currentEvent, true);
+  },
+
+  _addReservationFormListener: function() {
+    self = this;
+    this.$reservationForm.on("reservation:times_changed", function(evt, data) {
+      self.renderCurrentEvent(data.start, data.end);
+    }).trigger("reservation:set_times", {});
   },
 
   // When in edit mode,this will remove the current reservation from the JSON
   // source so we can replace it with our currentEvent.
   _removeSelfFromSource: function() {
     self.$calendar.fullCalendar("removeEvents", [self.id]);
-  },
-
-  _addReservationFormListerer: function() {
-    self = this;
-    this.$reservationForm.on("reservation:times_changed", function(evt, data) {
-      self.renderCurrentEvent(data.start, data.end);
-    }).trigger("reservation:set_times", {});
   },
 
   _handleEventDragDrop: function(event, delta, revertFunc) {
@@ -60,9 +70,14 @@ ReservationCalendar.prototype = {
     self.$reservationForm.trigger("reservation:set_times", data);
   },
 
-  // make sure we're in the browser's timezone
+  // make sure were in the browser's timezone
   _fixTimezone: function(date) {
     return moment(date.format());
+  },
+
+  // Defaults to true
+  _isStartEditable: function() {
+    return this.$calendar.data("start-editable");
   }
 
 }
