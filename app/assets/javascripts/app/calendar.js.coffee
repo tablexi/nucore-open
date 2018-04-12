@@ -45,8 +45,8 @@ class window.FullCalendarConfig
 
   buildTooltip: (event, element) ->
     tooltip = [
-      $.fullCalendar.formatDate(event.start, "h:mmTT"),
-      $.fullCalendar.formatDate(event.end,   "h:mmTT")
+      $.fullCalendar.formatDate(event.start, "h:mmA"),
+      $.fullCalendar.formatDate(event.end,   "h:mmA")
     ].join("&ndash;") + "<br/>"
 
     # Default for our tooltip is to show, even if data-attribute is undefined.
