@@ -20,7 +20,6 @@ ReservationCalendar.prototype = {
       $calendar.on("calendar:rendered", this._removeSelfFromSource);
       this._addReservationFormListener();
     } else {
-      console.debug("HELLO");
       new FullCalendarConfig($calendar).init();
     }
   },
@@ -44,6 +43,11 @@ ReservationCalendar.prototype = {
    this.$calendar.fullCalendar("renderEvent", this.currentEvent, true);
   },
 
+  // Listen to the reservation form for when it has updated times so we can re-render
+  // the event in the calendar. At page load, the form gets loaded first, so this
+  // event was already triggered before the calendar is ready. The `trigger` here
+  // will tell the form to retrigger the times_changed event now that we're ready
+  // for it.
   _addReservationFormListener: function() {
     self = this;
     this.$reservationForm.on("reservation:times_changed", function(evt, data) {
@@ -70,12 +74,15 @@ ReservationCalendar.prototype = {
     self.$reservationForm.trigger("reservation:set_times", data);
   },
 
-  // make sure were in the browser's timezone
+  // Calendar's times are in "ambiguous" mode. Calling `toDate()` on them will treat
+  // them as UTC, but we want them in the browser's timezone so we can update the form
+  // correctly.
   _fixTimezone: function(date) {
     return moment(date.format());
   },
 
-  // Defaults to true
+  // Start is not editable in Edit when the reservation has already begun, but is
+  // editable if the reservation has not yet begun. Will always be editable in New.
   _isStartEditable: function() {
     return this.$calendar.data("start-editable");
   }
