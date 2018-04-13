@@ -14,6 +14,8 @@ module SamlAuthentication
       ViewHook.add_hook "devise.sessions.new",
                         "before_login_form",
                         "saml_authentication/sessions/new"
+
+      OneLogin::RubySaml::Logging.logger.level = Logger::DEBUG
     end
 
     config.after_initialize do
@@ -22,6 +24,12 @@ module SamlAuthentication
       Rails.application.reload_routes!
 
       SamlAuthentication::DeviseConfigurator.new.configure!
+    end
+
+    initializer :append_migrations do |app|
+      config.paths["db/migrate"].expanded.each do |expanded_path|
+        app.config.paths["db/migrate"] << expanded_path
+      end
     end
 
   end
