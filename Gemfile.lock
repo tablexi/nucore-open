@@ -40,6 +40,12 @@ PATH
       rails (>= 4.2)
 
 PATH
+  remote: vendor/engines/nucore_kfs
+  specs:
+    nucore_kfs (0.0.1)
+      rails (~> 4.2.10)
+
+PATH
   remote: vendor/engines/projects
   specs:
     projects (0.0.1)
@@ -690,6 +696,7 @@ DEPENDENCIES
   mysql2 (~> 0.4.10)
   nested_form_fields
   nokogiri
+  nucore_kfs!
   oj
   paper_trail
   paperclip

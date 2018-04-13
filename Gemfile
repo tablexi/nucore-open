@@ -78,6 +78,7 @@ gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "synaccess_connect"
+gem "nucore_kfs", path: "vendor/engines/nucore_kfs"
 
 group :development do
   gem "bullet" # Detect N+1s and recommends eager loading

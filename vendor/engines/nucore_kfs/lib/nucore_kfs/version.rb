@@ -1,0 +1,3 @@
+module NucoreKfs
+  VERSION = "0.0.1"
+end
