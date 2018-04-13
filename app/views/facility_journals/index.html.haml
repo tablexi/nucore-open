@@ -4,7 +4,7 @@
 = content_for :sidebar do
   = render partial: 'admin/shared/sidenav_billing', locals: { sidenav_tab: 'journals' }
 
-- if has_pending_journals?
+- if current_facility.has_pending_journals?
   %h2= t(".head.pending")
 
   - if @pending_journals.present?

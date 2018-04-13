@@ -23,15 +23,17 @@
   %h2= t_create_model(Journal)
 
 = content_for :top_block do
-  = render "shared/transactions/top", tab: "new_journal"
+  = render "shared/transactions/top2", tab: "new_journal"
 
 - if @invalid_order_details.any?
   = render "problem_transactions", order_details: @invalid_order_details
 - if @valid_order_details.any?
   = content_for :action_instructions do
-    - if has_pending_journals?
+    - if current_facility.has_pending_journals?
       %p.notice= t("facility_journals.new.not_closed_html", link: facility_journals_path)
     - else
       %p.notice= text("facility_journals.new.instructions")
   = render "shared/transactions/table", order_details: @valid_order_details
   = render "shared/reconcile_footnote"
+- if @order_details.none?
+  %p.alert.alert-info= t(".no_transactions")

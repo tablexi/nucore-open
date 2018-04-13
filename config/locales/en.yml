@@ -285,6 +285,7 @@ en:
       no_orders: There are no orders to be journaled at this time.
       expired_payment: These payment sources were not valid at the time of fulfillment. Please choose a different payment source.
       download_unjournalable: Export Errors as CSV
+      no_transactions: There are no transactions requiring journals matching the search parameters.
     index:
       head:
         pending: Pending Journal
