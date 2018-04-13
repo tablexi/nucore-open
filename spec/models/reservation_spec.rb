@@ -1308,8 +1308,12 @@ RSpec.describe Reservation do
   end
 
   context "as_calendar_obj" do
-    let(:reservation) { instrument.reservations.build(reserve_start_at: 1.hour.ago,
-                                                      reserve_end_at: 1.minute.ago) }
+    let(:reservation) do
+      instrument.reservations.build(
+        reserve_start_at: 1.hour.ago,
+        reserve_end_at: 1.minute.ago,
+      )
+    end
     subject(:calendar_object) { reservation.as_calendar_object }
 
     describe "a non-started reservation" do
