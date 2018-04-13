@@ -50,6 +50,7 @@ class FacilityJournalsController < ApplicationController
       format.csv do
         # used for "Export as CSV" link for order details with expired accounts
         @order_details = @invalid_order_details
+        handle_csv_search
       end
       format.any {}
     end
