@@ -9,8 +9,6 @@ class FacilityNotificationsController < ApplicationController
 
   before_action :check_review_period
 
-  include TransactionSearch
-
   layout "two_column_head"
 
   def initialize

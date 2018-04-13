@@ -7,7 +7,7 @@
   %h2= t_create_models(Statement)
 
 - content_for :top_block do
-  = render "shared/transactions/top2", tab: "statements"
+  = render "shared/transactions/top", tab: "statements"
 
 - if @order_details.any?
   = content_for :action_instructions do

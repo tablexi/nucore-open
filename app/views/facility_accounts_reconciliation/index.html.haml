@@ -9,7 +9,7 @@
 
 %h2= t(".head", model: account_class.model_name.human(count: 2))
 
-= render "shared/transactions/search2"
+= render "shared/transactions/search"
 
 - if @unreconciled_details.any?
   = form_tag([:update, account_route, FacilityAccount], method: :post) do

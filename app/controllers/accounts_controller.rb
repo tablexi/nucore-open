@@ -5,7 +5,6 @@ class AccountsController < ApplicationController
   before_action :check_acting_as
   before_action :init_account, only: [:show, :user_search, :transactions, :suspend, :unsuspend]
 
-  include TransactionSearch
   include AccountSuspendActions
   load_and_authorize_resource only: [:show, :user_search, :transactions, :suspend, :unsuspend]
 

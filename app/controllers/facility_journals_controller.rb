@@ -9,8 +9,6 @@ class FacilityJournalsController < ApplicationController
   before_action :check_billing_access
   before_action :init_journals, except: :create
 
-  include TransactionSearch
-
   layout lambda {
     action_name.in?(%w(new)) ? "two_column_head" : "two_column"
   }

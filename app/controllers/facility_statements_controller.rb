@@ -7,8 +7,6 @@ class FacilityStatementsController < ApplicationController
 
   load_and_authorize_resource class: Statement
 
-  include TransactionSearch
-
   layout lambda {
     action_name.in?(%w(new)) ? "two_column_head" : "two_column"
   }
