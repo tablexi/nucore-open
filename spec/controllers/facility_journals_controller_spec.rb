@@ -280,7 +280,8 @@ RSpec.describe FacilityJournalsController do
           @order_detail1.update_attributes(journal_id: journal.id)
         end
 
-        it_behaves_like "journal error", "is already journaled in journal"
+        # order details that have journal id already set are filtered out in #order_detail_for_creation
+        it_behaves_like "journal error", "No orders were selected to journal"
       end
 
       context "spans fiscal year", feature_setting: { journals_may_span_fiscal_years: false } do
@@ -330,13 +331,6 @@ RSpec.describe FacilityJournalsController do
 
         it_behaves_like "journal error", "is invalid. Not open"
       end
-    end
-
-    context "searching" do
-      before :each do
-        @user = @admin
-      end
-      it_should_support_searching
     end
 
     context "in cross facility", feature_setting: { billing_administrator: true } do
@@ -433,7 +427,6 @@ RSpec.describe FacilityJournalsController do
       do_request
       expect(response).to be_success
       expect(assigns(:order_details)).to contain_all([@order_detail1, @order_detail3, problem_order_detail])
-      expect(assigns(:pending_journals)).to be_empty
       expect(assigns(:order_detail_action)).to eq(:create)
     end
 
@@ -447,15 +440,7 @@ RSpec.describe FacilityJournalsController do
       sign_in @admin
       do_request
       expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3, problem_order_detail]
-      expect(assigns(:pending_journals)).to eq([@pending_journal])
       expect(assigns(:order_detail_action)).to be_nil
-    end
-
-    context "searching" do
-      before :each do
-        @user = @admin
-      end
-      it_should_support_searching
     end
 
     context "in cross facility", feature_setting: { billing_administrator: true } do

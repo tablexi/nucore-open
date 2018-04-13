@@ -104,13 +104,11 @@ if Account.config.statements_enabled?
 
       it_should_deny_all [:staff, :senior_staff]
 
-      context "if set statement search start date feature is enabled", feature_setting: { set_statement_search_start_date: false } do
+      context "if set statement search start date feature is disabled", feature_setting: { set_statement_search_start_date: false } do
         it "should return the right order details without start date" do
           grant_and_sign_in(@user)
           do_request
           expect(response).to be_success
-          expect(controller.params[:date_range]).not_to be_present
-          expect(assigns[:search_options][:accounts]).to contain_all [@account, @account2]
           expect(assigns(:facility)).to eq(@authable)
           expect(assigns(:order_detail_action)).to eq(:create)
           expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
@@ -122,15 +120,11 @@ if Account.config.statements_enabled?
           grant_and_sign_in(@user)
           do_request
           expect(response).to be_success
-          expect(controller.params[:date_range][:start]).to be_present
-          expect(assigns[:search_options][:accounts]).to contain_all [@account, @account2]
           expect(assigns(:facility)).to eq(@authable)
           expect(assigns(:order_detail_action)).to eq(:create)
           expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
         end
       end
-
-      it_should_support_searching
     end
 
     context "create" do
