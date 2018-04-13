@@ -1,0 +1,25 @@
+<%
+  output = CSV.generate do |csv|
+    @journal.journal_rows.each do |journal_row|
+      od = journal_row.order_detail
+      next unless journal_row.order_detail
+      # TODO: move some of this logic to the model?
+      next unless od.account.account_number.start_with? "KFS" # do we need this
+      prod = journal_row.order_detail.product
+      raise "couldn't figure out where to return revenue for #{prod.facility.name}'s #{prod.name}" unless
+        prod.facility_account and prod.facility_account.account_number.start_with? "KFS"
+
+      facility_initials = od.facility.name.scan(/([A-Z])/).join
+      date = od.created_at.strftime("%Y%m%d")
+      orgRef = "#{facility_initials}#{date}"
+      aan_out = od.account.account_number
+      aan_out.slice!("KFS")
+      fan_out = prod.facility_account.account_number
+      fan_out.slice!("KFS")
+
+      csv << ["UC", aan_out, nil, 6610, nil, nil, orgRef, "#{od.facility.name} | #{prod.name} | #{date}", show_actual_cost(od)[1..-1]]
+      csv << ["UC", fan_out, nil, 4565, nil, nil, orgRef, "#{od.account.owner_user.last_name} | #{date}", show_actual_cost(od)[1..-1]]
+    end
+  end
+%>
+<%= raw output %>
