@@ -186,23 +186,6 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
 
     end
 
-    context "user_search" do
-
-      before :each do
-        @method = :get
-        @action = :user_search
-        @params = { facility_id: @authable.url_name }
-      end
-
-      it_should_require_login
-
-      it_should_deny_all [:staff, :senior_staff]
-
-      it_should_allow_all facility_managers do
-        is_expected.to render_template "user_search"
-      end
-
-    end
   end
 
   context "accounts_receivable" do
@@ -217,31 +200,13 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
     it_should_deny_all [:staff, :senior_staff]
   end
 
-  context "search" do
-
-    before :each do
-      @method = :get
-      @action = :search
-      @params = { facility_id: @authable.url_name }
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      is_expected.to render_template "search"
-    end
-
-  end
-
   # TODO: ping Chris / Matt for functions / factories
   #      to create other accounts w/ custom numbers
   #      and non-nufs type
   context "search_results" do
 
     before :each do
-      @method = :get
+      @method = :post
       @action = :search_results
       @params = { facility_id: @authable.url_name, search_term: @owner.username }
     end
@@ -253,36 +218,6 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
     it_should_allow_all facility_managers do
       expect(assigns(:accounts).size).to eq(1)
       is_expected.to render_template("search_results")
-    end
-
-    context "POST" do
-
-      before(:each) { @method = :post }
-
-      it_should_allow :director do
-        expect(assigns(:accounts).size).to eq(1)
-        is_expected.to render_template("search_results")
-      end
-
-    end
-
-  end
-
-  context "user_accounts" do
-
-    before :each do
-      @method = :get
-      @action = :user_accounts
-      @params = { facility_id: @authable.url_name, user_id: @guest.id }
-    end
-
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      expect(assigns(:user)).to eq(@guest)
-      is_expected.to render_template("user_accounts")
     end
 
   end

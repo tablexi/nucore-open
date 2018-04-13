@@ -132,12 +132,6 @@ en:
       accounts: "Payment Sources"
       users: "Users"
       edit: "Edit"
-    admin:
-      tabnav_account:
-        recent: "Recent Payment Sources"
-        user: "Search by User"
-        account: "Search By Payment Source"
-        add_account: "Add Payment Source"
     timeline:
       facility_tooltip:
         admin_reservation: Administrative Hold
@@ -152,12 +146,6 @@ en:
       no_results: No results found
     products:
       too_many_results: Additional results not shown. Please try a more specific search.
-
-  facility_account:
-    account_fields:
-      label:
-        account_number:
-          account_number: Account Number
 
   facility_accounts:
     edit:
@@ -178,9 +166,6 @@ en:
     new_account_user_search:
       head: "Add Payment Source"
       instruct: "To add a payment source, first search for the user you would like to create the payment source for."
-      label:
-        search_term: "Search by name, NetID, or username"
-    user_search:
       label:
         search_term: "Search by name, NetID, or username"
     account_fields:
@@ -225,9 +210,6 @@ en:
         sent_at: "Sent At"
         sent_by: "Sent By"
         orders: "# of Orders"
-    user_accounts:
-      add_account: "Add payment source"
-      title: "Payment Sources for %{name}"
   facility_accounts_reconciliation:
     index:
       head: Reconcile %{model}
