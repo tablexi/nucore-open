@@ -1,4 +1,4 @@
-class TransactionChosen2Input < SimpleForm::Inputs::CollectionInput
+class TransactionChosenInput < SimpleForm::Inputs::CollectionInput
 
   disable :required
 
