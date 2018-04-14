@@ -171,8 +171,6 @@ en:
       label:
         owner_user: "Owner User"
         payment_type: "Payment Source Type"
-        account_number:
-          account_number: "Payment Source Number"
         affiliate_display_name: "Affiliate/Category"
         affiliate: "Name" # used for labeling affiliate_other field in forms
         remit: "Bill To"
@@ -839,12 +837,6 @@ en:
 
     transactions:
       no_orders: There are no orders in this !facility_downcase! matching the search parameters
-
-  nufs_account:
-    account_fields:
-      label:
-        account_number:
-          account_number: Account Number
 
   price_policies:
     adjustment: Adjustment
