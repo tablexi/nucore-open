@@ -38,9 +38,21 @@ class TransactionsController < ApplicationController
     end
   end
 
-  def in_review_with_search
+  def in_review
     @recently_reviewed = current_user.administered_order_details.recently_reviewed.paginate(page: params[:page])
-    @order_details = current_user.administered_order_details.in_review
+    order_details = current_user.administered_order_details.in_review
+
+    @search_form = TransactionSearch::SearchForm.new(params[:search])
+    @search = TransactionSearch::Searcher.new(TransactionSearch::FacilitySearcher,
+                                              TransactionSearch::AccountSearcher,
+                                              TransactionSearch::ProductSearcher,
+                                              TransactionSearch::DateRangeSearcher,
+                                              TransactionSearch::OrderStatusSearcher,
+                                              TransactionSearch::AccountOwnerSearcher,
+                                              TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
+    @date_range_field = @search_form.date_params[:field]
+    @order_details = @search.order_details
+
     @extra_date_column = :reviewed_at
     @order_detail_link = {
       text: text("shared.dispute"),

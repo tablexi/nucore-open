@@ -1,5 +1,4 @@
 require "rails_helper"
-require "transaction_search_shared_examples"
 
 RSpec.describe TransactionsController do
   let(:params) { {} }
@@ -14,8 +13,6 @@ RSpec.describe TransactionsController do
     end
 
     let(:action) { :in_review }
-
-    it_behaves_like TransactionSearch, :fulfilled_at
 
     context "when the user owns multiple accounts" do
       let!(:accounts) do
