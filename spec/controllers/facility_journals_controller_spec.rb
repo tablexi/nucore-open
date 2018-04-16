@@ -270,7 +270,7 @@ RSpec.describe FacilityJournalsController do
         expect(response).to redirect_to new_facility_journal_path
         expect(flash[:error]).to be_present
         expect(flash[:error].length).to be < 4000
-        expect(flash[:error]).to end_with I18n.t "controllers.facility_journals.create_with_search.more_errors"
+        expect(flash[:error]).to end_with I18n.t "controllers.facility_journals.create.more_errors"
       end
 
       context "order detail is already journaled" do

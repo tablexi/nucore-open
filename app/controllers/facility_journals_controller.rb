@@ -181,7 +181,7 @@ class FacilityJournalsController < ApplicationController
       msg += "#{error}<br/>"
 
       if msg.size > 2000 # don't overflow session (flash) cookie
-        msg += I18n.t "controllers.facility_journals.create_with_search.more_errors"
+        msg += I18n.t "controllers.facility_journals.create.more_errors"
         break
       end
     end
