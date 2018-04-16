@@ -1,6 +1,5 @@
 require "rails_helper"
 require "controller_spec_helper"
-require "transaction_search_spec_helper"
 
 RSpec.describe FacilitiesController do
   render_views

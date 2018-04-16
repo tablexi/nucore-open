@@ -1,6 +1,5 @@
 require "rails_helper"
 require "controller_spec_helper"
-require "transaction_search_spec_helper"
 
 if Account.config.statements_enabled?
   RSpec.shared_examples "it sets up order_detail and creates statements" do
