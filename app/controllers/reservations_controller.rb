@@ -27,8 +27,8 @@ class ReservationsController < ApplicationController
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
-    @start_at = params[:start] ? Time.zone.at(params[:start].to_i) : Time.zone.now
-    @end_at = params[:end] ? Time.zone.at(params[:end].to_i) : @start_at.end_of_day
+    @start_at = params[:start] ? Time.zone.parse(params[:start]) : Time.zone.now
+    @end_at = params[:end] ? Time.zone.parse(params[:end]) : @start_at.end_of_day
 
     admin_reservations = @instrument.schedule.admin_reservations.in_range(@start_at, @end_at)
     user_reservations = @instrument.schedule

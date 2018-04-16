@@ -1,5 +1,5 @@
 class window.FullCalendarConfig
-  constructor: (@$element, @customOptions) ->
+  constructor: (@$element, @customOptions = {}) ->
 
   init: ->
     @$element.fullCalendar($.extend(@options(), @customOptions))
@@ -7,16 +7,12 @@ class window.FullCalendarConfig
   options: ->
     options = @baseOptions()
     if window.minTime?
-      options.minTime = window.minTime
+      options.minTime = "#{window.minTime}:00:00"
     if window.maxTime?
-      options.maxTime = window.maxTime
-      options.height = 42 * (maxTime - minTime) + 75
+      options.maxTime = "#{window.maxTime}:00:00"
+      options.height = 42 * (maxTime - minTime) + 52
     if window.initialDate
-      d = Date.parse(initialDate)
-      $.extend(options,
-        year: d.getFullYear()
-        month: d.getMonth()
-        date: d.getDate())
+      options.defaultDate = window.initialDate
     options
 
   baseOptions: ->
@@ -28,7 +24,9 @@ class window.FullCalendarConfig
       @toggleOverlay(isLoading)
 
     eventAfterRender: @buildTooltip
-    eventAfterAllRender: @toggleNextPrev
+    eventAfterAllRender: (view) =>
+      @$element.trigger("calendar:rendered")
+      @toggleNextPrev(view)
 
   toggleOverlay: (isLoading) ->
     if isLoading
@@ -46,8 +44,8 @@ class window.FullCalendarConfig
 
   buildTooltip: (event, element) ->
     tooltip = [
-      $.fullCalendar.formatDate(event.start, "h:mmTT"),
-      $.fullCalendar.formatDate(event.end,   "h:mmTT")
+      $.fullCalendar.formatDate(event.start, "h:mmA"),
+      $.fullCalendar.formatDate(event.end,   "h:mmA")
     ].join("&ndash;") + "<br/>"
 
     # Default for our tooltip is to show, even if data-attribute is undefined.

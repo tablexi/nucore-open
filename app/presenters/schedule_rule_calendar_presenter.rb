@@ -36,8 +36,8 @@ class ScheduleRuleCalendarPresenter
     {
       "className" => class_name,
       "title" => title.to_s,
-      "start" => I18n.l(start_at, format: :calendar),
-      "end" => I18n.l(end_at, format: :calendar),
+      "start" => start_at.iso8601,
+      "end" => end_at.iso8601,
       "allDay" => false,
     }
   end
@@ -52,7 +52,7 @@ class ScheduleRuleCalendarPresenter
 
   # If start_date is not given, default to the beginning of the current week's Sunday
   def start_date
-    options[:start_date].presence || Time.current.beginning_of_week(:sunday).to_date
+    options[:start_date].presence&.beginning_of_day || Time.current.beginning_of_week(:sunday)
   end
 
   def title

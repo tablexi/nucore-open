@@ -1308,44 +1308,42 @@ RSpec.describe Reservation do
   end
 
   context "as_calendar_obj" do
-    before :each do
-      @reservation = instrument.reservations.create!(reserve_start_at: 1.hour.ago,
-                                                     duration_mins: 60,
-                                                     split_times: true)
+    let(:reservation) do
+      instrument.reservations.build(
+        reserve_start_at: 1.hour.ago,
+        reserve_end_at: 1.minute.ago,
+      )
+    end
+    subject(:calendar_object) { reservation.as_calendar_object }
 
-      @reserve_start_at_timestamp = @reservation.reserve_start_at.strftime("%a, %d %b %Y %H:%M:%S")
-      @reserve_end_at_timestamp = @reservation.reserve_end_at.strftime("%a, %d %b %Y %H:%M:%S")
-
-      @cal_obj_wo_actual_end = @reservation.as_calendar_object
-
-      @reservation.actual_start_at = 1.minute.from_now
-      @reservation.actual_end_at = 5.minutes.from_now
-
-      @cal_obj_w_actual_end = @reservation.as_calendar_object
-
-      @actual_start_at_timestamp = @reservation.actual_start_at.strftime("%a, %d %b %Y %H:%M:%S")
-      @actual_end_at_timestamp = @reservation.actual_end_at.strftime("%a, %d %b %Y %H:%M:%S")
-
-      assert @reservation.reserve_start_at != @reservation.actual_start_at
-      assert @reservation.reserve_end_at != @reservation.actual_end_at
+    describe "a non-started reservation" do
+      it "contains the relevant information" do
+        expect(calendar_object).to match a_hash_including(
+          start: reservation.reserve_start_at.iso8601,
+          end: reservation.reserve_end_at.iso8601,
+          product: @instrument.name,
+        )
+      end
     end
 
-    it "should have start set to reserve_start_at timestamp if no actual" do
-      expect(@cal_obj_wo_actual_end[:start]).to eq(@reserve_start_at_timestamp)
-    end
-    it "should have end set to reserve_end_at timestamp if no actual" do
-      expect(@cal_obj_wo_actual_end[:end]).to eq(@reserve_end_at_timestamp)
-    end
-
-    it "should have start set to actual timestamp" do
-      expect(@cal_obj_w_actual_end[:start]).to eq(@actual_start_at_timestamp)
-    end
-    it "should have end set to actual_end_at timestamp" do
-      expect(@cal_obj_w_actual_end[:end]).to eq(@actual_end_at_timestamp)
+    describe "a started reservation" do
+      before { reservation.assign_attributes(actual_start_at: 55.minutes.ago) }
+      it "uses the actual start and the reservation end" do
+        expect(calendar_object).to match a_hash_including(
+          start: reservation.actual_start_at.iso8601,
+          end: reservation.reserve_end_at.iso8601,
+        )
+      end
     end
 
-    it "should include the instrument name" do
-      expect(@cal_obj_w_actual_end[:product]).to eq(@instrument.name)
+    describe "a completed reservation" do
+      before { reservation.assign_attributes(actual_start_at: 55.minutes.ago, actual_end_at: 5.minutes.ago) }
+      it "uses the actual times for both start and end" do
+        expect(calendar_object).to match a_hash_including(
+          start: reservation.actual_start_at.iso8601,
+          end: reservation.actual_end_at.iso8601,
+        )
+      end
     end
   end
 

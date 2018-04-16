@@ -26,7 +26,7 @@
 
 = render "documentation"
 
-= simple_form_for([@order, @order_detail, @reservation]) do |f|
+= simple_form_for [@order, @order_detail, @reservation], html: { class: "js--reservationForm" } do |f|
   = f.error_messages
   = render "account_field", f: f unless @order_detail.bundled?
   .js--reservationUpdateCreateAndStart
@@ -65,4 +65,4 @@
 #overlay
   #spinner
     #hide
-      #calendar{ data: { show_tooltip: @instrument.show_details.to_s } }
+      #calendar{ data: { show_tooltip: @instrument.show_details.to_s, drag_and_drop_enabled: SettingsHelper.feature_on?(:reservation_drag_and_drop).to_s, start_editable: "true" } }

@@ -56,10 +56,20 @@ class window.ReservationTimeFieldAdjustor
     @reserveEnd.change(@_reserveEndChangeCallback)
     # Trying to bind directly to the element can cause timeing problems
     @$form.on "change", @durationFieldSelector, @_durationChangeCallback
+    @$form.on "reservation:set_times", (evt, data) =>
+      @setTimes(data.start, data.end)
 
   # in minutes
   calculateDuration: ->
     (@reserveEnd.getDateTime() - @reserveStart.getDateTime()) / 60 / 1000
+
+  setTimes: (start, end) =>
+    @reserveStart.setDateTime(start.toDate()) if start
+    if end
+      @reserveEnd.setDateTime(end.toDate())
+      @_reserveEndChangeCallback() # update duration
+    else
+      @_durationChangeCallback()
 
   _durationChangeCallback: =>
     durationMinutes = @durationField().val()
@@ -112,12 +122,12 @@ class window.ReservationTimeFieldAdjustor
     @_changed()
 
   _changed: =>
-    @$form.trigger("order_management.times_changed")
+    @$form.trigger("reservation:times_changed", { start: @reserveStart.getDateTime(), end: @reserveEnd.getDateTime() })
 
 $ ->
   # reserveInterval is not set on admin reservation pages, and we don't need these handlers there
   if reserveInterval?
-    $("form.new_reservation, form.edit_reservation").each (i, elem) ->
+    $(".js--reservationForm").each (i, elem) ->
       new ReservationTimeFieldAdjustor(
         $(elem),
         "start": [

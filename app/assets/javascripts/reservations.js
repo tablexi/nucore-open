@@ -1,8 +1,6 @@
 $(document).ready(function() {
-
-  new FullCalendarConfig($("#calendar")).init()
-
   init_datepickers();
+  new ReservationCalendar().init($("#calendar"), $(".js--reservationForm"));
 
   // initialize datepicker
   function init_datepickers() {
@@ -19,8 +17,6 @@ $(document).ready(function() {
       		.change(function() {
       			var d = new Date(Date.parse($(this).val()));
       			$('#calendar').fullCalendar('gotoDate', d);
-
-
       		});
     });
   }

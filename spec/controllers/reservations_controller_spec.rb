@@ -63,7 +63,7 @@ RSpec.describe ReservationsController do
 
       before(:each) do
         sign_in @guest
-        @params.merge!(start: now.to_i)
+        @params.merge!(start: now.iso8601)
       end
 
       context "when end is not set" do
@@ -119,8 +119,8 @@ RSpec.describe ReservationsController do
 
       context "when it's a month view" do
         before(:each) do
-          @params[:start] = 1.day.ago.to_i
-          @params[:end] = 30.days.from_now.to_i
+          @params[:start] = 1.day.ago.iso8601
+          @params[:end] = 30.days.from_now.iso8601
           do_request
         end
 
@@ -183,7 +183,7 @@ RSpec.describe ReservationsController do
       before(:each) do
         expect(reservation1).to be_valid
         expect(reservation2).to be_valid
-        @params[:start] = 1.day.from_now.to_i
+        @params[:start] = 1.day.from_now.iso8601
         sign_in @admin
         do_request
       end

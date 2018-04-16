@@ -50,7 +50,7 @@ class OrderDetailManagement
       .bind "change keyup", (evt) =>
         @updatePricing(evt) if $(evt.target).val().length > 0
 
-    @$element.bind "order_management.times_changed", (evt) =>
+    @$element.bind "reservation:times_changed", (evt) =>
       @updatePricing(evt)
 
   updatePricing: (e) ->

@@ -31,6 +31,10 @@ module ReservationsHelper
     ReservationUserActionPresenter.new(self, reservation).view_edit_link
   end
 
+  def start_time_editing_enabled?(reservation)
+    !start_time_editing_disabled?(reservation)
+  end
+
   def start_time_editing_disabled?(reservation)
     return false if !reservation.persisted? || reservation.in_cart?
 

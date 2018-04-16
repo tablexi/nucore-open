@@ -91,6 +91,12 @@ RSpec.configure do |config|
     travel_to(now)
   end
 
+  # Allow specififying a Timezone for a group of tests:
+  # describe "in central", time_zone: "America/Chicago" do
+  config.around(:each, :time_zone) do |example|
+    Time.use_zone(example.metadata[:time_zone]) { example.call }
+  end
+
   config.after(:all) { travel_back }
 
   # rspec-rails 3 will no longer automatically infer an example group's spec type
