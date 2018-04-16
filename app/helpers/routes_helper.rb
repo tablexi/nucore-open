@@ -11,11 +11,10 @@ module RoutesHelper
   end
 
   def sign_out_user_path
-    if current_facility.present?
-      destroy_user_session_path(facility_id: current_facility.url_name)
-    else
-      destroy_user_session_path
-    end
+    # Allow for custom logout paths from saml or other authenticable options
+    strategy = warden.session(:user)[:strategy]
+    # facility_id will cause the user to be redirected to the facility's home page after logout
+    [:destroy, strategy, :user_session, facility_id: current_facility&.url_name].compact
   end
 
   def statement_path(statement)
