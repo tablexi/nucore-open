@@ -42,6 +42,9 @@ Nucore::Application.configure do
   # Do not log assets path
   config.assets.quiet = true
 
+  # Raise exceptions when missing I18n translations
+  config.action_view.raise_on_missing_translations = true
+
   Rails.application.routes.default_url_options =
     config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
