@@ -14,6 +14,8 @@ module SamlAuthentication
       ViewHook.add_hook "devise.sessions.new",
                         "before_login_form",
                         "saml_authentication/sessions/new"
+
+      OneLogin::RubySaml::Logging.logger.level = Logger::DEBUG
     end
 
     config.after_initialize do
