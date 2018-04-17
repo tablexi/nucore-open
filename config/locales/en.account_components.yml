@@ -1,0 +1,16 @@
+# Labels for account components. These are often overridden/added to in the schools
+# to match their chart string fields (e.g. Fund, Org, Department, etc.)
+
+en:
+  nufs_account:
+    account_fields:
+      label:
+        account_number:
+          account_number: Account Number
+
+  facility_account:
+    # Components of the account
+    account_fields:
+      label:
+        account_number:
+          account_number: Account Number

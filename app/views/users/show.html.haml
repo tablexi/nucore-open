@@ -26,5 +26,5 @@
       - if @user.active?
         %li= link_to t("shared.suspend"), suspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
       - else
-        %li= link_to t("share.activate"), unsuspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
+        %li= link_to t("shared.activate"), unsuspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
 
