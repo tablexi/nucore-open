@@ -23,7 +23,7 @@
   %h2= t_create_model(Journal)
 
 = content_for :top_block do
-  = render "shared/transactions/top2", tab: "new_journal"
+  = render "shared/transactions/top", tab: "new_journal"
 
 - if @invalid_order_details.any?
   = render "problem_transactions", order_details: @invalid_order_details

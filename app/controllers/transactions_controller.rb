@@ -4,8 +4,6 @@ class TransactionsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
 
-  include TransactionSearch
-
   def initialize
     @active_tab = "accounts"
     super

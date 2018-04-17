@@ -2,14 +2,13 @@ class FacilityJournalsController < ApplicationController
 
   include DateHelper
   include CSVHelper
+  include OrderDetailsCsvExport
 
   admin_tab     :all
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :check_billing_access
   before_action :init_journals, except: :create
-
-  include TransactionSearch
 
   layout lambda {
     action_name.in?(%w(new)) ? "two_column_head" : "two_column"
@@ -183,7 +182,7 @@ class FacilityJournalsController < ApplicationController
       msg += "#{error}<br/>"
 
       if msg.size > 2000 # don't overflow session (flash) cookie
-        msg += I18n.t "controllers.facility_journals.create_with_search.more_errors"
+        msg += I18n.t "controllers.facility_journals.create.more_errors"
         break
       end
     end

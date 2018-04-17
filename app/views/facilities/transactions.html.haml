@@ -6,7 +6,7 @@
   %h2= text(:history, scope: "admin.transaction_search.actions")
 
 = content_for :top_block do
-  = render "shared/transactions/top2", tab: "transactions"
+  = render "shared/transactions/top", tab: "transactions"
 - if @order_details.any?
   = render "shared/transactions/table"
 - else

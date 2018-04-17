@@ -13,9 +13,6 @@ class FacilitiesController < ApplicationController
   load_and_authorize_resource find_by: :url_name
   skip_load_and_authorize_resource only: [:index, :show]
 
-  # needed for transactions_with_search
-  include TransactionSearch
-
   include FacilitiesHelper
 
   layout lambda {

@@ -31,7 +31,6 @@ module Projects
                         "projects/shared/select_project"
 
       TransactionSearch.register(Projects::ProjectSearcher)
-      TransactionSearch.searchers[:projects] = Projects::ProjectSearcher
 
       ViewHook.add_hook "shared.transactions.search",
                         "end_of_first_column",

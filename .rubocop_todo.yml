@@ -35,7 +35,6 @@ Lint/AmbiguousBlockAssociation:
     - 'spec/controllers/orders_controller_spec.rb'
     - 'spec/models/order_detail_spec.rb'
     - 'spec/models/reservation_spec.rb'
-    - 'spec/transaction_search_shared_examples.rb'
     - 'vendor/engines/secure_rooms/spec/support/auto_orphan_occupancy_spec.rb'
     - 'vendor/engines/split_accounts/spec/controllers/facility_accounts_controller_spec.rb'
 

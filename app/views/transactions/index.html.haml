@@ -2,7 +2,7 @@
 - content_for :h1 do
   = t(".history")
 
-= render "shared/transactions/search2"
+= render "shared/transactions/search"
 
 - if @order_details.any?
   = render "shared/transactions/table", show_statements: true
