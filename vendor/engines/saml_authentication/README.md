@@ -19,6 +19,8 @@ as necessary to connect with your Identity Provider (IdP).
 saml:
   idp_metadata: "https://websso.example.com/idp/metadata"
   certificate_file: path/to/file.p12
+  driver:
+    name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
   attribute_map:
     "PersonImmutableID": "username"
     "User.email": "email"
@@ -73,12 +75,56 @@ OneLogin application configuration:
 
 ## Notes on `saml_authenticatable`
 
-_Coming soon:_ Single Logout is not yet functional.
-
-There are currently monkey patches against the base gem in order to work with NUcore.
+There are currently several overrides against the base gem in order to work with NUcore.
 
 [saml_authentication/model.rb](lib/saml_authentication/model.rb) - Allows us to use
 our settings file for the attribute map (SAML keys vs User attribute/columns)
 
 [saml_authentication/routes.rb](lib/saml_authentication/routes.rb) - The gem's
 routes conflict with the standard Devise database_authenticatable routes.
+
+[controllers/saml_authentication/sessions_controller.rb](app/controllers/saml_authentication/sessions_controller.rb) - Store
+the "winning strategy" so we can chose a logout path based on how you logged in, and handle IdP-initiated single logout.
+
+## Single Logout
+
+There are two types of SLO: SP-initiated and IdP-initiated. SP is when you click the "Logout" button
+on NUcore. IdP is when you sign out from the identity provider.
+
+As part of SLO, the user is logged out of NUcore, the IdP, and any other applications
+that authenticated with the IdP as part of the same IdP session.
+
+Example:
+* User authenticates into webmail with username/password through the IdP
+* On NUcore, when the user clicks the single sign on button to log in, they do not
+  need to re-enter their username/password because they are already logged in to the IdP. They
+  will be automatically logged in.
+* If the user clicks the "Logout" button on NUcore, they will also be logged out of their
+  webmail. If they try to log in to NUcore again, they will be prompted for the IdP's
+  username and password.
+
+### NUcore/SP-initiated Logout
+
+1. User clicks "Logout" on NUcore
+2. User's session is invalidated by Devise
+3. In SamlAuthentication::SessionsController, the `after_sign_out_path` generates a logout request
+   and redirects the user's browser to the IdP with the request as a Base64-encoded/encrypted query
+   parameter.
+4. IdP logs user out, and does an IdP-initiated logout for any other applications that were
+   authenticated as part of the same IdP session.
+5. Once complete, IdP redirects the user's browser to `SamlAuthentication#idp_sign_out` with a `SAMLResponse`
+   param.
+6. We redirect the user to NUcore's homepage (or facility's homepage)
+
+### IdP-initiated Signout
+
+1. User clicks "Logout" on the IdP's site
+2. IdP generates a `SAMLRequest` parameter and redirects the user's browser to
+   `SamlAuthentication::SessionsController#idp_sign_out` with the parameter as part
+   of the query string.
+3. NUcore invalidate's the user's session
+4. NUcore generates an SLO logout response (saying we successfully logged the user out),
+   and redirects the user's browser back to the IdP.
+5. The IdP logs the user out of any other applications that were authenticated as part of
+   the same IdP session.
+6. User is redirected to somewhere on the IdP's (e.g. the login page)
