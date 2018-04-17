@@ -1,5 +1,6 @@
 require "saml_authentication/user_locator"
 require "saml_authentication/user_updater"
+require "saml_authentication/idp_entity_id_reader"
 
 module SamlAuthentication
 
@@ -13,6 +14,8 @@ module SamlAuthentication
         config.saml_update_user = true
         config.saml_resource_locator = SamlAuthentication::UserLocator.new
         config.saml_update_resource_hook = saml_updater
+        config.saml_sign_out_success_url = Rails.application.routes.url_helpers.root_url
+        config.idp_entity_id_reader = SamlAuthentication::IdpEntityIdReader
 
         config.saml_config = fetch_metadata_config
 
