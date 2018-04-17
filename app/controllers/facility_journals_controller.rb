@@ -2,6 +2,7 @@ class FacilityJournalsController < ApplicationController
 
   include DateHelper
   include CSVHelper
+  include OrderDetailsCsvExport
 
   admin_tab     :all
   before_action :authenticate_user!
