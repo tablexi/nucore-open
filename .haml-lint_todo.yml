@@ -56,8 +56,6 @@ linters:
   IdNames:
     exclude:
       - "app/views/shared/_auto_logout.html.haml"
-      - "app/views/shared/transactions/_search2.html.haml"
-      - "app/views/shared/transactions/_top2.html.haml"
 
   # Offense count: 2
   ConsecutiveComments:
