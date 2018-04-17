@@ -8,7 +8,6 @@ module SamlAuthentication
 
     def configure!
       Devise.setup do |config|
-        config.saml_session_index_key = :session_index
         config.saml_default_user_key = :username
         config.saml_create_user = saml_create_user?
         config.saml_update_user = true
