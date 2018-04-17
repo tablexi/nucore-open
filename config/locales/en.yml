@@ -521,7 +521,7 @@ en:
 
   order_management:
     order_details:
-      edit:
+      shared_details:
         remove_from_journal: "Remove From Journal"
 
   product_access_groups:
