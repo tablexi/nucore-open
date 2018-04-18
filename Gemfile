@@ -85,7 +85,7 @@ group :development do
   gem "haml_lint"
   gem "letter_opener"
   gem "rails-erd"
-  gem "rubocop", "0.52", require: false # temporarily locked until codeclimate adds 0.53 support
+  gem "rubocop", "0.54", require: false # needs to be updated in sync with available codeclimate channels
   gem "web-console"
 end
 
