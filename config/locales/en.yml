@@ -537,6 +537,8 @@ en:
       documentation: "Documentation"
       crumb: "Create Reservation"
       notify: Send Notification
+    reservation_fields:
+      duration_hint: enter time as "total minutes" or "hours:minutes"
     list:
       status:
         upcoming: Upcoming
