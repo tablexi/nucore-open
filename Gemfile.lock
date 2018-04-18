@@ -117,7 +117,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11.0)
     byebug (10.0.0)
-    cancancan (2.1.4)
+    cancancan (2.2.0)
     capistrano (3.10.2)
       airbrussh (>= 1.0.0)
       i18n
