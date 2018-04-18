@@ -3,7 +3,9 @@ module TransactionSearch
   class StatementSearcher < BaseSearcher
 
     def options
-      Statement.where(id: order_details.pluck(:statement_id)).reorder(:account_id, :id)
+      # Uses a subquery: SELECT "STATEMENTS".* FROM "STATEMENTS"
+      # WHERE "STATEMENTS"."ID" IN (SELECT DISTINCT "ORDER_DETAILS"."STATEMENT_ID" FROM "ORDER_DETAILS" ...
+      Statement.where(id: order_details.distinct.select(:statement_id)).reorder(:account_id, :id)
     end
 
     def search(params)

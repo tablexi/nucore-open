@@ -4,7 +4,7 @@ module TransactionSearch
 
     def options
       Account.select("accounts.id, accounts.account_number, accounts.description, accounts.type")
-             .where(id: order_details.select("distinct order_details.account_id"))
+             .where(id: order_details.distinct.select(:account_id))
              .order(:account_number, :description)
     end
 
