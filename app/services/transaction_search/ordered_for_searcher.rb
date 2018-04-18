@@ -4,7 +4,7 @@ module TransactionSearch
 
     def options
       User.select(:id, :first_name, :last_name)
-          .where(id: order_details.select("distinct orders.user_id"))
+          .where(id: order_details.distinct.select("orders.user_id"))
           .order(:last_name, :first_name)
     end
 

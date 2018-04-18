@@ -2,10 +2,9 @@ module TransactionSearch
 
   class AccountOwnerSearcher < BaseSearcher
 
-    # TODO: Remove :suspended_at once the old transaction search is gone
     def options
-      User.select(:id, :first_name, :last_name, :suspended_at)
-          .where(id: order_details.select("distinct account_users.user_id").joins(account: :owner_user))
+      User.select(:id, :first_name, :last_name)
+          .where(id: order_details.distinct.select("account_users.user_id").joins(account: :owner_user))
           .order(:last_name, :first_name)
     end
 

@@ -3,7 +3,9 @@ module TransactionSearch
   class ProductSearcher < BaseSearcher
 
     def options
-      Product.where(id: order_details.select("distinct order_details.product_id")).order(:name)
+      # Uses a subquery, i.e. SELECT "PRODUCTS".* FROM "PRODUCTS"
+      # WHERE "PRODUCTS"."ID" IN (SELECT distinct order_details.product_id FROM "ORDER_DETAILS" ...
+      Product.where(id: order_details.distinct.select(:product_id)).order(:name)
     end
 
     def search(params)
