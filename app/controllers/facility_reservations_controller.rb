@@ -225,7 +225,7 @@ class FacilityReservationsController < ApplicationController
 
   def sort_lookup_hash
     {
-      "date" => "reservations.reserve_start_at",
+      "date" => "orders.ordered_at",
       "reserve_range" => ["reservations.reserve_start_at", "reservations.reserve_end_at"],
       "product_name"  => "products.name",
       "status"        => "order_statuses.name",
