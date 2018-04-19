@@ -43,7 +43,7 @@ class Facility < ApplicationRecord
   scope :active, -> { where(is_active: true) }
   scope :alphabetized, -> { order(:name) }
 
-  cattr_accessor :facility_account_validators { [] }
+  cattr_accessor(:facility_account_validators) { [] }
 
   def can_pay_with_account?(account)
     return true unless account

@@ -23,7 +23,7 @@ class UsersController < ApplicationController
 
   layout "two_column"
 
-  cattr_accessor :user_form_class { UserForm }
+  cattr_accessor(:user_form_class) { UserForm }
 
   def initialize
     @active_tab = "admin_users"
