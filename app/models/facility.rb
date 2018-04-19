@@ -52,7 +52,7 @@ class Facility < ApplicationRecord
   end
 
   def self.cross_facility
-    @@cross_facility ||=
+    @cross_facility ||=
       new(url_name: "all", name: "Cross-Facility", abbreviation: "ALL", is_active: true)
   end
 
@@ -62,7 +62,7 @@ class Facility < ApplicationRecord
   end
 
   def description
-    self[:description].html_safe if self[:description]
+    self[:description]&.html_safe
   end
 
   def order_statuses
@@ -126,8 +126,8 @@ class Facility < ApplicationRecord
 
   def set_journal_mask
     f = Facility.all.order(journal_mask: :desc).first
-    self.journal_mask = if f && f.journal_mask.match(/^C(\d{2})$/)
-                          sprintf("C%02d", Regexp.last_match(1).to_i + 1)
+    self.journal_mask = if f&.journal_mask&.match(/^C(\d{2})$/)
+                          format("C%02d", Regexp.last_match(1).to_i + 1)
                         else
                           "C01"
                         end
