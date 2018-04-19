@@ -12,7 +12,7 @@
           .span4
             = time_select f, :reserve_start, { minute_step: @instrument.reserve_interval }, disabled: start_disabled
       .span5
-        = f.input :duration_mins, hint: t(".duration_hint"), input_html: { value: f.object.duration_mins || default_duration, class: "timeinput", disabled: end_time_editing_disabled?(f.object), display: 'inline' }
+        = f.input :duration_mins, hint: text(".duration_hint"), input_html: { value: f.object.duration_mins || default_duration, class: "timeinput", disabled: end_time_editing_disabled?(f.object) }
     .row
       .span7
         = label_tag :reservation_reserve_end_date, "Reserve End", class: "string optional control-label"
