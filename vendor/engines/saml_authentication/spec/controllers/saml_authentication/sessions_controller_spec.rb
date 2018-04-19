@@ -58,6 +58,16 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
         expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
       end
 
+      it "is case-insensitive when matching on username" do
+        user.update(email: "Sst123@example.com")
+        expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
+      end
+
+      it "is case-insensitive when matching on email" do
+        user.update(email: "something_else@example.com", username: "Sst123@example.com")
+        expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
+      end
+
       it "logs in the user" do
         post :create, SAMLResponse: saml_response
         expect(controller.current_user).to eq(user)
