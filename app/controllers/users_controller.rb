@@ -23,7 +23,7 @@ class UsersController < ApplicationController
 
   layout "two_column"
 
-  cattr_accessor :user_form_class { UserForm }
+  cattr_accessor(:user_form_class) { UserForm }
 
   def initialize
     @active_tab = "admin_users"
@@ -219,7 +219,7 @@ class UsersController < ApplicationController
   end
 
   def username_lookup(username)
-    return nil unless username.present?
+    return nil if username.blank?
     username_database_lookup(username.strip) || service_username_lookup(username.strip)
   end
 

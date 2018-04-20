@@ -6,7 +6,7 @@ class Affiliate < ApplicationRecord
   scope :destroyable, -> { where.not(id: self.OTHER.id) }
   scope :by_name, -> { order(:name) }
 
-  def self.OTHER # rubocop:disable Style/MethodName
+  def self.OTHER # rubocop:disable Naming/MethodName
     @@other ||= find_or_create_by(name: "Other") { |a| a.subaffiliates_enabled = true }
   end
 

@@ -34,7 +34,7 @@ class AccountBuilder
   #   AccountBuilder.for("BuilderDoesNotExist") => AccountBuilder
   #
   def self.for(account_type)
-    return self unless account_type.present?
+    return self if account_type.blank?
     begin
       klass = "#{account_type}_builder".classify
       klass.constantize
@@ -89,7 +89,7 @@ class AccountBuilder
   end
 
   # Needs to be overridable by engines
-  cattr_accessor :common_permitted_account_params { [:description] }
+  cattr_accessor(:common_permitted_account_params) { [:description] }
 
   # Override in subclassed builder to define additional strong_param attributes
   # for build action. Returns an array of "permitted" params.
