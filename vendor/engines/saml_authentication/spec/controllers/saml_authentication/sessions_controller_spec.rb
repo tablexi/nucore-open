@@ -52,6 +52,15 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
     end
 
     describe "an email-based user exists" do
+      around :each do |example|
+        original_value = Devise.saml_create_user
+        Devise.saml_create_user = true
+
+        example.run
+
+        Devise.saml_create_user = original_value
+      end
+
       let!(:user) { create(:user, email: "sst123@example.com", username: "sst123@example.com") }
 
       it "does not create a new user" do
@@ -59,12 +68,12 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
 
       it "is case-insensitive when matching on username" do
-        user.update(email: "Sst123@example.com")
+        user.update(email: "something_else@example.com", username: "Sst123")
         expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
       end
 
       it "is case-insensitive when matching on email" do
-        user.update(email: "something_else@example.com", username: "Sst123@example.com")
+        user.update(username: "something_else", email: "Sst123@example.com")
         expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
       end
 
