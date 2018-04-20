@@ -25,11 +25,11 @@ module ProductsHelper
     }
   end
 
-  def public_calendar_link(product, should_show_icon)
+  def public_calendar_link(product, indent: false)
     if product.respond_to? :reservations
       opts = public_calendar_options(product)
       link_to "", facility_instrument_public_schedule_path(product.facility, product), opts
-    elsif should_show_icon
+    elsif indent
       content_tag :span, "", class: "fa-lg fa-fw", style: "display: inline-block"
     end
   end
