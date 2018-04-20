@@ -49,7 +49,7 @@ class TransactionChosenOldInput < SimpleForm::Inputs::Base # CollectionSelectInp
   end
 
   def placeholder_label
-    "Select #{options[:label].downcase}"
+    "Select #{options[:label].capitalize}"
   end
 
   def option_data
