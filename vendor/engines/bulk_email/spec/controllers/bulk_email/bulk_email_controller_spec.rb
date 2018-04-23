@@ -13,7 +13,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
   describe "POST #search" do
     context "when not logged in" do
-      before { post "search", params }
+      before { post "search", params: params }
       it { is_expected.to redirect_to(new_user_session_url) }
     end
 
@@ -24,7 +24,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
       before do
         sign_in user
-        post "search", params
+        post "search", params: params
       end
 
       shared_examples_for "it can search for recipients" do
@@ -127,7 +127,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
     before do
       sign_in user
-      post "create", params
+      post "create", params: params
     end
 
     it "generates the expected CSV" do
@@ -157,7 +157,7 @@ RSpec.describe BulkEmail::BulkEmailController do
 
     before do
       sign_in user
-      post "deliver", params
+      post "deliver", params: params
     end
 
     context "when the form is valid" do

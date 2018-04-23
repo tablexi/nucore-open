@@ -457,7 +457,7 @@ RSpec.describe FacilityJournalsController do
 
   describe "#reconcile" do
     def perform
-      post :reconcile, facility_id: facility.url_name, order_detail: order_detail_params, journal_id: journal.id
+      post :reconcile, params: { facility_id: facility.url_name, order_detail: order_detail_params, journal_id: journal.id }
     end
 
     before do

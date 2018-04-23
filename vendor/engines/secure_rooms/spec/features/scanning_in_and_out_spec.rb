@@ -24,11 +24,12 @@ RSpec.describe "Scanning in and out", type: :controller do
 
     describe "scanning in" do
       before do
-        post :scan,
-             card_number: user.card_number,
-             reader_identifier: in_reader.card_reader_number,
-             controller_identifier: in_reader.control_device_number,
-             account_identifier: account.id
+        post :scan, params: {
+          card_number: user.card_number,
+          reader_identifier: in_reader.card_reader_number,
+          controller_identifier: in_reader.control_device_number,
+          account_identifier: account.id,
+        }
       end
 
       context "with a paying user" do
@@ -39,10 +40,11 @@ RSpec.describe "Scanning in and out", type: :controller do
 
         describe "and then scanning out" do
           before do
-            post :scan,
-                 card_number: user.card_number,
-                 reader_identifier: out_reader.card_reader_number,
-                 controller_identifier: out_reader.control_device_number
+            post :scan, params: {
+              card_number: user.card_number,
+              reader_identifier: out_reader.card_reader_number,
+              controller_identifier: out_reader.control_device_number,
+            }
           end
 
           it "completes the order and sets pricing" do
@@ -63,10 +65,11 @@ RSpec.describe "Scanning in and out", type: :controller do
 
         describe "and then scanning out" do
           before do
-            post :scan,
-                 card_number: user.card_number,
-                 reader_identifier: out_reader.card_reader_number,
-                 controller_identifier: out_reader.control_device_number
+            post :scan, params: {
+              card_number: user.card_number,
+              reader_identifier: out_reader.card_reader_number,
+              controller_identifier: out_reader.control_device_number,
+            }
           end
 
           it "again does not create any order" do
@@ -80,10 +83,11 @@ RSpec.describe "Scanning in and out", type: :controller do
       let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
 
       before do
-        post :scan,
-             card_number: user.card_number,
-             reader_identifier: out_reader.card_reader_number,
-             controller_identifier: out_reader.control_device_number
+        post :scan, params: {
+          card_number: user.card_number,
+          reader_identifier: out_reader.card_reader_number,
+          controller_identifier: out_reader.control_device_number,
+        }
       end
 
       context "with a paying user" do
@@ -106,11 +110,12 @@ RSpec.describe "Scanning in and out", type: :controller do
   describe "with a room having only an entry reader" do
     describe "scanning in" do
       before do
-        post :scan,
-             card_number: user.card_number,
-             reader_identifier: in_reader.card_reader_number,
-             controller_identifier: in_reader.control_device_number,
-             account_identifier: account.id
+        post :scan, params: {
+          card_number: user.card_number,
+          reader_identifier: in_reader.card_reader_number,
+          controller_identifier: in_reader.control_device_number,
+          account_identifier: account.id,
+        }
       end
 
       it "creates a new order in a completed state with pricing" do

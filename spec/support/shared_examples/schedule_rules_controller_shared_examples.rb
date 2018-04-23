@@ -13,7 +13,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
 
     before do
       sign_in staff
-      get :index, product_params
+      get :index, params: product_params
     end
 
     it "sets the product and renders" do
@@ -26,7 +26,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
   describe "new" do
     before do
       sign_in senior_staff
-      get :new, product_params
+      get :new, params: product_params
     end
 
     it "sets the product and renders" do
@@ -46,7 +46,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
   describe "create" do
     def do_request
       sign_in senior_staff
-      post :create, product_params.merge(schedule_rule: rule_params)
+      post :create, params: product_params.merge(schedule_rule: rule_params)
     end
 
     let(:rule_params) { FactoryBot.attributes_for(:schedule_rule, product_id: product.id) }
@@ -83,7 +83,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
     describe "edit" do
       before do
         sign_in senior_staff
-        get :edit, product_params.merge(id: rule.id)
+        get :edit, params: product_params.merge(id: rule.id)
       end
 
       it "assigns the schedule rule and renders" do
@@ -96,7 +96,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
       let(:rule_params) { FactoryBot.attributes_for(:schedule_rule, :weekend) }
       def do_request
         sign_in senior_staff
-        put :update, product_params.merge(
+        put :update, params: product_params.merge(
           id: rule.id,
           schedule_rule: rule_params,
         )
@@ -142,7 +142,7 @@ RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |pro
     context "destroy" do
       def do_request
         sign_in senior_staff
-        delete :destroy, product_params.merge(id: rule.id)
+        delete :destroy, params: product_params.merge(id: rule.id)
       end
 
       it "destroys the object" do

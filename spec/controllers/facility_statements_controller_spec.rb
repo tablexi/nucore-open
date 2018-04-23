@@ -75,7 +75,7 @@ if Account.config.statements_enabled?
         before do
           UserRole.grant(billing_admin, UserRole::BILLING_ADMINISTRATOR)
           sign_in billing_admin
-          get :index, facility_id: "all"
+          get :index, params: { facility_id: "all" }
         end
 
         it "allows access" do

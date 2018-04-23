@@ -17,10 +17,11 @@ RSpec.describe SecureRoomsApi::ScansController do
 
     describe "negative responses" do
       before do
-        post :scan,
-             card_number: user.card_number,
-             reader_identifier: card_reader.card_reader_number,
-             controller_identifier: card_reader.control_device_number
+        post :scan, params: {
+          card_number: user.card_number,
+          reader_identifier: card_reader.card_reader_number,
+          controller_identifier: card_reader.control_device_number,
+        }
       end
 
       describe "initial deny response" do
@@ -58,11 +59,12 @@ RSpec.describe SecureRoomsApi::ScansController do
 
           allow_any_instance_of(User).to receive(:accounts_for_product).and_return(accounts)
 
-          post :scan,
-               card_number: user.card_number,
-               reader_identifier: card_reader.card_reader_number,
-               controller_identifier: card_reader.control_device_number,
-               account_identifier: account_identifier
+          post :scan, params: {
+            card_number: user.card_number,
+            reader_identifier: card_reader.card_reader_number,
+            controller_identifier: card_reader.control_device_number,
+            account_identifier: account_identifier,
+          }
         end
 
         context "with account id requested" do
@@ -89,10 +91,11 @@ RSpec.describe SecureRoomsApi::ScansController do
 
       describe "with a mis-cased controller ID" do
         before do
-          post :scan,
-               card_number: user.card_number,
-               reader_identifier: card_reader.card_reader_number,
-               controller_identifier: card_reader.control_device_number.downcase
+          post :scan, params: {
+            card_number: user.card_number,
+            reader_identifier: card_reader.card_reader_number,
+            controller_identifier: card_reader.control_device_number.downcase,
+          }
         end
 
         it { is_expected.not_to have_http_status(:not_found) }

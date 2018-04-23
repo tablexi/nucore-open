@@ -3,14 +3,14 @@ require "controller_spec_helper"
 
 def it_should_find_the_order(desc = "")
   it "should find the order " + desc do
-    get :index, search: order.id.to_s
+    get :index, params: { search: order.id.to_s }
     expect(order_detail_results).to eq([order_detail])
   end
 end
 
 def it_should_not_find_the_order(desc = "")
   it "should not find the order " + desc do
-    get :index, search: order.id.to_s
+    get :index, params: { search: order.id.to_s }
     expect(order_detail_results).to be_empty
   end
 end
@@ -18,7 +18,7 @@ end
 def it_should_have_admin_edit_paths
   render_views
   it "should have link to the admin path" do
-    get :index, search: order.id.to_s
+    get :index, params: { search: order.id.to_s }
     expect(response.body).to include facility_order_path(order_detail.facility, order_detail.order)
   end
 end
@@ -26,7 +26,7 @@ end
 def it_should_have_customer_paths
   render_views
   it "should have links to the customer view" do
-    get :index, search: order.id.to_s
+    get :index, params: { search: order.id.to_s }
     expect(response.body).to include order_order_detail_path(order_detail.order, order_detail)
     expect(response.body).to include order_path(order)
   end
@@ -46,14 +46,14 @@ RSpec.describe GlobalSearchController do
 
     context "when not signed in" do
       it "can search with the product searcher", :aggregate_failures do
-        get :index, search: product.name
+        get :index, params: { search: product.name }
 
         expect(assigns[:searchers].map(&:class)).to include(GlobalSearch::ProductSearcher)
         expect(product_results).to include(product)
       end
 
       it "does not search with the order searcher" do
-        get :index, search: order.id.to_s
+        get :index, params: { search: order.id.to_s }
 
         expect(assigns[:searchers].map(&:class)).not_to include(GlobalSearch::OrderSearcher)
       end
@@ -65,14 +65,14 @@ RSpec.describe GlobalSearchController do
       end
 
       it "can search with the product searcher", :aggregate_failures do
-        get :index, search: product.name
+        get :index, params: { search: product.name }
 
         expect(assigns[:searchers].map(&:class)).to include(GlobalSearch::ProductSearcher)
         expect(product_results).to include(product)
       end
 
       it "does not search with the order searcher" do
-        get :index, search: order.id.to_s
+        get :index, params: { search: order.id.to_s }
 
         expect(assigns[:searchers].map(&:class)).not_to include(GlobalSearch::OrderSearcher)
       end
@@ -182,7 +182,7 @@ RSpec.describe GlobalSearchController do
 
       it "should not return an unpurchased order" do
         order2 = FactoryBot.create(:setup_order, product: product)
-        get :index, search: order2.id.to_s
+        get :index, params: { search: order2.id.to_s }
         expect(order_detail_results).to be_empty
       end
 
@@ -190,13 +190,13 @@ RSpec.describe GlobalSearchController do
       it_should_have_admin_edit_paths
 
       it "should return the order detail with the id" do
-        get :index, search: order_detail.id.to_s
+        get :index, params: { search: order_detail.id.to_s }
         expect(order_detail_results).to match_array([order_detail])
       end
 
       context "when including the dash" do
         before :each do
-          get :index, search: order_detail.to_s
+          get :index, params: { search: order_detail.to_s }
         end
 
         it "should redirect to order detail" do
@@ -209,7 +209,7 @@ RSpec.describe GlobalSearchController do
         let!(:external_service_receiver) { create :external_service_receiver, external_id: external_id }
 
         it "finds the correct order detail and renders the index page" do
-          get :index, search: external_id
+          get :index, params: { search: external_id }
           expect(order_detail_results).to eq [external_service_receiver.receiver]
         end
       end
@@ -218,17 +218,17 @@ RSpec.describe GlobalSearchController do
         let!(:statement) { FactoryBot.create(:statement, created_by_user: create(:user)) }
 
         it "finds it by the invoice number" do
-          get :index, search: statement.invoice_number
+          get :index, params: { search: statement.invoice_number }
           expect(statement_results).to eq([statement])
         end
 
         it "finds it by the id" do
-          get :index, search: statement.id
+          get :index, params: { search: statement.id }
           expect(statement_results).to eq([statement])
         end
 
         it "does not find it by the wrong invoice number" do
-          get :index, search: "0-123"
+          get :index, params: { search: "0-123" }
           expect(statement_results).to be_empty
         end
       end

@@ -24,7 +24,7 @@ RSpec.describe Reports::GeneralReportsController do
     end
 
     context "defaults" do
-      before { get :index, facility_id: facility.url_name, report_by: :product }
+      before { get :index, params: { facility_id: facility.url_name, report_by: :product } }
 
       it "assigns the proper start date" do
         expect(assigns(:date_start)).to eq(Time.zone.local(2014, 2, 1))
@@ -36,7 +36,7 @@ RSpec.describe Reports::GeneralReportsController do
     end
 
     context "with date parameters" do
-      before { get :index, facility_id: facility.url_name, report_by: :product, date_start: "01/01/2014", date_end: "01/31/2014" }
+      before { get :index, params: { facility_id: facility.url_name, report_by: :product, date_start: "01/01/2014", date_end: "01/31/2014" } }
 
       it "assigns the start date to the beginning of the day" do
         expect(assigns(:date_start)).to eq(Time.zone.local(2014, 1, 1))
@@ -204,12 +204,12 @@ RSpec.describe Reports::GeneralReportsController do
     before { sign_in user }
 
     it "returns a 404" do
-      get :index, report_by: "asdfasdf", facility_id: facility.url_name
+      get :index, params: { report_by: "asdfasdf", facility_id: facility.url_name }
       expect(response.code).to eq("404")
     end
 
     it "returns a 404 for a blank report_by" do
-      get :index, facility_id: facility.url_name, report_by: ""
+      get :index, params: { facility_id: facility.url_name, report_by: "" }
       expect(response.code).to eq("404")
     end
   end

@@ -46,14 +46,15 @@ RSpec.describe FacilityAccountsReconciliationController do
     let(:formatted_reconciled_at) { format_usa_date(reconciled_at) }
 
     def perform
-      post :update, facility_id: facility.url_name, account_type: "ReconciliationTestAccount",
-                    reconciled_at: formatted_reconciled_at,
-                    order_detail: {
-                      order_detail.id.to_s => {
-                        reconciled: "1",
-                        reconciled_note: "A note",
-                      },
-                    }
+      post :update, params: { facility_id: facility.url_name, account_type: "ReconciliationTestAccount",
+                              reconciled_at: formatted_reconciled_at,
+                              order_detail: {
+                                order_detail.id.to_s => {
+                                  reconciled: "1",
+                                  reconciled_note: "A note",
+                                },
+                              }
+                            }
     end
 
     describe "reconciliation date", :time_travel do

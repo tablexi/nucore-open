@@ -34,11 +34,11 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
 
       it "creates a user" do
-        expect { post :create, SAMLResponse: saml_response }.to change(User, :count).by(1)
+        expect { post :create, params: { SAMLResponse: saml_response } }.to change(User, :count).by(1)
       end
 
       it "logs in the user and sets the first/last names" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(controller.current_user.email).to eq("sst123@example.com")
         expect(controller.current_user.username).to eq("sst123")
         expect(controller.current_user.first_name).to eq("Sam")
@@ -46,7 +46,7 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
 
       it "has no password on the new user" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(controller.current_user.encrypted_password).to be_nil
       end
     end
@@ -64,7 +64,7 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       let!(:user) { create(:user, email: "sst123@example.com", username: "sst123@example.com") }
 
       it "does not create a new user" do
-        expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
+        expect { post :create, params: { SAMLResponse: saml_response } }.not_to change(User, :count)
       end
 
       it "is case-insensitive when matching on username" do
@@ -78,23 +78,23 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
 
       it "logs in the user" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(controller.current_user).to eq(user)
       end
 
       it "updates the user's username" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(user.reload.username).to eq("sst123")
       end
 
       it "updates the user's first and last name" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(user.reload.first_name).to eq("Sam")
         expect(user.last_name).to eq("Student")
       end
 
       it "clears the password" do
-        expect { post :create, SAMLResponse: saml_response }.to change { user.reload.encrypted_password }.to(nil)
+        expect { post :create, params: { SAMLResponse: saml_response } }.to change { user.reload.encrypted_password }.to(nil)
       end
     end
 
@@ -111,27 +111,27 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
 
       it "does not create a new user" do
-        expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
+        expect { post :create, params: { SAMLResponse: saml_response } }.not_to change(User, :count)
       end
 
       it "logs in the user" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(controller.current_user).to eq(user)
       end
 
       it "updates the user's email" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(user.reload.email).to eq("sst123@example.com")
       end
 
       it "updates the user's first and last name" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(user.reload.first_name).to eq("Sam")
         expect(user.last_name).to eq("Student")
       end
 
       it "clears the password" do
-        expect { post :create, SAMLResponse: saml_response }.to change { user.reload.encrypted_password }.to(nil)
+        expect { post :create, params: { SAMLResponse: saml_response } }.to change { user.reload.encrypted_password }.to(nil)
       end
     end
   end

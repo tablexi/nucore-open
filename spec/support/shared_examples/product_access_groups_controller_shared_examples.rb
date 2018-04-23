@@ -16,7 +16,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
     before :each do
       sign_in staff
-      get :index, params
+      get :index, params: params
     end
 
     it "succeeds and renders" do
@@ -33,7 +33,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
   context "new" do
     before :each do
       sign_in senior_staff
-      get :new, params
+      get :new, params: params
     end
 
     it "succeeds and renders" do
@@ -54,7 +54,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
     context "correct info" do
       before do
-        post :create, params.merge(product_access_group: FactoryBot.attributes_for(:product_access_group))
+        post :create, params: params.merge(product_access_group: FactoryBot.attributes_for(:product_access_group))
       end
 
       it "creates and assigns the new record" do
@@ -70,7 +70,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
     context "missing data" do
       before do
-        post :create, params.merge(product_access_group: FactoryBot.attributes_for(:product_access_group, name: ""))
+        post :create, params: params.merge(product_access_group: FactoryBot.attributes_for(:product_access_group, name: ""))
       end
 
       it "should assign, but not persist the record" do
@@ -90,7 +90,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
     before do
       sign_in senior_staff
-      get :edit, params.merge(id: product_access_group.id)
+      get :edit, params: params.merge(id: product_access_group.id)
     end
 
     it "assigns the variables and renders the edit template" do
@@ -109,7 +109,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
     context "correct info" do
       before do
-        post :update, params.merge(id: product_access_group.id, product_access_group: { name: "new name" })
+        post :update, params: params.merge(id: product_access_group.id, product_access_group: { name: "new name" })
       end
 
       it "assigns and updates the access group" do
@@ -126,7 +126,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
 
     context "missing data" do
       before do
-        post :update, params.merge(id: product_access_group.id, product_access_group: { name: "" })
+        post :update, params: params.merge(id: product_access_group.id, product_access_group: { name: "" })
       end
 
       it "assigns, but does not update the access group" do
@@ -142,7 +142,7 @@ RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" d
     let(:product_access_group) { FactoryBot.create(:product_access_group, product: product) }
     before :each do
       sign_in senior_staff
-      delete :destroy, params.merge(id: product_access_group.id)
+      delete :destroy, params: params.merge(id: product_access_group.id)
     end
 
     it "destroys the record" do

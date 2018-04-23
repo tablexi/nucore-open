@@ -11,13 +11,13 @@ RSpec.describe JournalCutoffDatesController do
     end
 
     it "does not give access to create" do
-      post :create, journal_cutoff_date: { cutoff_date: 1.month.ago }
+      post :create, params: { journal_cutoff_date: { cutoff_date: 1.month.ago } }
       expect(response.code).to eq("403")
     end
 
     it "does not give access to update" do
       cutoff = JournalCutoffDate.create(cutoff_date: 1.month.from_now)
-      put :update, id: cutoff.id, journal_cutoff_date: {}
+      put :update, params: { id: cutoff.id, journal_cutoff_date: {} }
       expect(response.code).to eq("403")
     end
   end
@@ -62,7 +62,7 @@ RSpec.describe JournalCutoffDatesController do
 
     describe "#create" do
       def do_request
-        post :create, journal_cutoff_date: { cutoff_date: { date: cutoff_date, hour: "3", minute: "15", ampm: "PM" } }
+        post :create, params: { journal_cutoff_date: { cutoff_date: { date: cutoff_date, hour: "3", minute: "15", ampm: "PM" } } }
       end
 
       describe "success" do
@@ -94,7 +94,7 @@ RSpec.describe JournalCutoffDatesController do
       let!(:journal_cutoff_date) { JournalCutoffDate.create(cutoff_date: Time.zone.parse("2016-06-10 15:15")) }
 
       def do_request
-        put :update, id: journal_cutoff_date.id, journal_cutoff_date: { cutoff_date: { date: new_cutoff_date } }
+        put :update, params: { id: journal_cutoff_date.id, journal_cutoff_date: { cutoff_date: { date: new_cutoff_date } } }
       end
 
       describe "success" do
@@ -124,7 +124,7 @@ RSpec.describe JournalCutoffDatesController do
       let!(:journal_cutoff_date) { JournalCutoffDate.create(cutoff_date: 1.month.from_now) }
 
       it "destroys the cutoff date" do
-        expect { delete :destroy, id: journal_cutoff_date.id }.to change(JournalCutoffDate, :count).by(-1)
+        expect { delete :destroy, params: { id: journal_cutoff_date.id } }.to change(JournalCutoffDate, :count).by(-1)
       end
     end
   end

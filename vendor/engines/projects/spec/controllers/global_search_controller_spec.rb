@@ -17,7 +17,7 @@ RSpec.describe GlobalSearchController do
 
     context "while not in the facility" do
       it "finds the project" do
-        get :index, search: project.name
+        get :index, params: { search: project.name }
         expect(results).to include(project)
       end
     end
@@ -25,14 +25,14 @@ RSpec.describe GlobalSearchController do
     context "while in another facility" do
       let(:facility2) { FactoryBot.create(:facility) }
       it "does not find the project" do
-        get :index, facility_id: facility2, search: project.name
+        get :index, params: { facility_id: facility2, search: project.name }
         expect(results).not_to include(project)
       end
     end
 
     context "while in the facility" do
       it "finds the project" do
-        get :index, facility: facility, search: project.name
+        get :index, params: { facility: facility, search: project.name }
         expect(results).to include(project)
       end
     end

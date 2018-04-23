@@ -20,7 +20,7 @@ RSpec.describe OfflineReservationsController do
     end
 
     it "sets created_by" do
-      post :create, params
+      post :create, params: params
 
       expect(assigns[:reservation].created_by).to eq administrator
     end
@@ -31,7 +31,7 @@ RSpec.describe OfflineReservationsController do
       end
 
       it "becomes a problem reservation" do
-        expect { post :create, params }
+        expect { post :create, params: params }
           .to change { reservation.order_detail.reload.problem? }
           .from(false)
           .to(true)
@@ -53,7 +53,7 @@ RSpec.describe OfflineReservationsController do
       before { sign_in user }
 
       it "brings the instrument online", :aggregate_failures do
-        expect { put :bring_online, params }
+        expect { put :bring_online, params: params }
           .to change { instrument.reload.online? }
           .from(false)
           .to(true)
@@ -81,7 +81,7 @@ RSpec.describe OfflineReservationsController do
       before { sign_in staff }
 
       it "may not bring the instrument online", :aggregate_failures do
-        expect { put :bring_online, params }
+        expect { put :bring_online, params: params }
           .not_to change { instrument.reload.online? }
         expect(response.code).to eq("403")
       end

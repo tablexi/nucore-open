@@ -287,7 +287,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
 
         before do
           sign_in director
-          get :statements, facility_id: facility.url_name, account_id: account.id
+          get :statements, params: { facility_id: facility.url_name, account_id: account.id }
         end
 
         it "shows the statements list" do
@@ -300,7 +300,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         let(:account_manager) { FactoryBot.create(:user, :account_manager) }
         before do
           sign_in account_manager
-          get :statements, facility_id: "all", account_id: account.id
+          get :statements, params: { facility_id: "all", account_id: account.id }
         end
 
         it "shows the statements list" do

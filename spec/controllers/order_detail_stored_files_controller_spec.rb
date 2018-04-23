@@ -15,7 +15,7 @@ RSpec.describe OrderDetailStoredFilesController do
       let(:order) { create(:setup_order, product: product) }
 
       it "has access" do
-        get :order_file, params
+        get :order_file, params: params
         expect(response).to be_success
       end
     end
@@ -26,7 +26,7 @@ RSpec.describe OrderDetailStoredFilesController do
       let(:merge_order) { create(:merge_order, merge_with_order: order) }
 
       it "has access" do
-        get :order_file, order_id: merge_order.id, order_detail_id: merge_order.order_details.first.id
+        get :order_file, params: { order_id: merge_order.id, order_detail_id: merge_order.order_details.first.id }
         expect(response).to be_success
       end
     end

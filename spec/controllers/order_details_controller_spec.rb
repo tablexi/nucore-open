@@ -15,7 +15,7 @@ RSpec.describe OrderDetailsController do
     before { sign_in user }
 
     context "when the order is not disputable" do
-      before { put :dispute, params }
+      before { put :dispute, params: params }
 
       it { expect(response.code).to eq("404") }
     end
@@ -23,7 +23,7 @@ RSpec.describe OrderDetailsController do
     context "when the order is disputable" do
       before(:each) do
         order_detail.update_attributes!(state: "complete", reviewed_at: 7.days.from_now)
-        put :dispute, params.merge(order_detail: { dispute_reason: dispute_reason })
+        put :dispute, params: params.merge(order_detail: { dispute_reason: dispute_reason })
       end
 
       context "with a blank dispute_reason" do
@@ -50,7 +50,7 @@ RSpec.describe OrderDetailsController do
 
   describe "#show" do
     def perform
-      get :show, order_id: order.id, id: order_detail.id
+      get :show, params: { order_id: order.id, id: order_detail.id }
     end
 
     before(:each) do
@@ -118,7 +118,7 @@ RSpec.describe OrderDetailsController do
         context "and the reservation is cancelable" do
           before(:each) do
             expect(reservation).to be_can_cancel
-            put :cancel, order_id: order.id, id: order_detail.id
+            put :cancel, params: { order_id: order.id, id: order_detail.id }
           end
 
           it { expect(order_detail.reload).to be_canceled }
@@ -128,7 +128,7 @@ RSpec.describe OrderDetailsController do
           let(:user) { FactoryBot.create(:user) }
           before do
             FactoryBot.create(:account_user, :business_administrator, account: account, user: user)
-            put :cancel, order_id: order.id, id: order_detail.id
+            put :cancel, params: { order_id: order.id, id: order_detail.id }
           end
 
           it { expect(order_detail.reload).not_to be_canceled }
@@ -138,7 +138,7 @@ RSpec.describe OrderDetailsController do
         context "and I am just a purchaser on the account" do
           before do
             account.account_users.update_all(user_role: AccountUser::ACCOUNT_PURCHASER)
-            put :cancel, order_id: order.id, id: order_detail.id
+            put :cancel, params: { order_id: order.id, id: order_detail.id }
           end
 
           it "cancels the order", :aggregate_failures do
@@ -150,7 +150,7 @@ RSpec.describe OrderDetailsController do
         context "and the reservation is not cancelable" do
           before do
             reservation.update_attributes(actual_start_at: Time.current)
-            put :cancel, order_id: order.id, id: order_detail.id
+            put :cancel, params: { order_id: order.id, id: order_detail.id }
           end
 
           it { expect(order_detail.reload).not_to be_canceled }
@@ -224,7 +224,7 @@ RSpec.describe OrderDetailsController do
     describe "#edit" do
       def perform
         sign_in signed_in_user
-        get :edit, order_id: order.id, id: order_detail.id
+        get :edit, params: { order_id: order.id, id: order_detail.id }
       end
 
       it_behaves_like "allows the proper users"
@@ -236,7 +236,7 @@ RSpec.describe OrderDetailsController do
 
       def perform
         sign_in signed_in_user
-        put :update, order_id: order.id, id: order_detail.id, order_detail: params
+        put :update, params: { order_id: order.id, id: order_detail.id, order_detail: params }
       end
 
       it_behaves_like "allows the proper users"
@@ -259,17 +259,17 @@ RSpec.describe OrderDetailsController do
 
       def perform_show
         sign_in signed_in_user
-        get :show, order_id: order.id, id: order_detail.id, order_detail: params
+        get :show, params: { order_id: order.id, id: order_detail.id, order_detail: params }
       end
 
       def perform_edit
         sign_in signed_in_user
-        get :edit, order_id: order.id, id: order_detail.id, order_detail: params
+        get :edit, params: { order_id: order.id, id: order_detail.id, order_detail: params }
       end
 
       def perform_update
         sign_in signed_in_user
-        put :update, order_id: order.id, id: order_detail.id, order_detail: params
+        put :update, params: { order_id: order.id, id: order_detail.id, order_detail: params }
       end
 
       shared_examples_for "can modify the account" do

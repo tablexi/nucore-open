@@ -15,7 +15,7 @@ RSpec.describe ProductUsersController do
     let!(:staff_product) { ProductUser.create(product: instrument, user: staff, approved_by: admin.id, approved_at: Time.current) }
 
     def do_request
-      get :index, facility_id: facility.url_name, instrument_id: instrument.url_name
+      get :index, params: { facility_id: facility.url_name, instrument_id: instrument.url_name }
     end
 
     it "should only return the two users" do
@@ -44,15 +44,16 @@ RSpec.describe ProductUsersController do
 
     it "updates the product_users" do
       sign_in staff
-      put :update_restrictions,
-          facility_id: facility.url_name,
-          instrument_id: instrument.url_name,
-          instrument: {
-            product_users: {
-              user_product.id => { product_access_group_id: level.id },
-              staff_product.id => { product_access_group_id: level2.id },
-            },
-          }
+      put :update_restrictions, params: {
+        facility_id: facility.url_name,
+        instrument_id: instrument.url_name,
+        instrument: {
+          product_users: {
+            user_product.id => { product_access_group_id: level.id },
+            staff_product.id => { product_access_group_id: level2.id },
+          },
+        },
+      }
 
       expect(user_product.reload.product_access_group).to eq(level)
       expect(staff_product.reload.product_access_group).to eq(level2)
@@ -66,10 +67,11 @@ RSpec.describe ProductUsersController do
     it "destroys the association" do
       sign_in staff
       expect do
-        delete :destroy,
-               facility_id: facility.url_name,
-               instrument_id: instrument.url_name,
-               id: user
+        delete :destroy, params: {
+          facility_id: facility.url_name,
+          instrument_id: instrument.url_name,
+          id: user,
+        }
       end.to change(ProductUser, :count).by(-1)
       expect(flash[:notice]).to be_present
     end
@@ -77,10 +79,11 @@ RSpec.describe ProductUsersController do
     it "does not error if the association is not found" do
       sign_in staff
 
-      delete :destroy,
-             facility_id: facility.url_name,
-             instrument_id: instrument.url_name,
-             id: admin
+      delete :destroy, params: {
+        facility_id: facility.url_name,
+        instrument_id: instrument.url_name,
+        id: admin,
+      }
       expect(flash[:notice]).to be_present
     end
   end
