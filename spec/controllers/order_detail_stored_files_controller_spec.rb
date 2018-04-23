@@ -43,12 +43,12 @@ RSpec.describe OrderDetailStoredFilesController do
 
     it "can upload the file" do
       file = fixture_file_upload(Rails.root.join("spec", "files", "template1.txt"))
-      post :upload_order_file, params.merge(stored_file: { file: file })
+      post :upload_order_file, params: params.merge(stored_file: { file: file })
       expect(order_detail.stored_files.count).to eq(1)
     end
 
     it "gets an error if there is no file" do
-      post :upload_order_file, params
+      post :upload_order_file, params: params
       expect(assigns(:file).errors).to be_added(:file, :blank)
     end
   end

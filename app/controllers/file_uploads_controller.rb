@@ -70,7 +70,7 @@ class FileUploadsController < ApplicationController
       errors = @upload.errors.map { |_k, msg| msg }.to_sentence
       respond_to do |format|
         format.json { render json: { error: errors } }
-        format.html { render text: errors, status: 400 }
+        format.html { render plain: errors, status: 400 }
       end
     end
   end

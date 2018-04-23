@@ -21,7 +21,7 @@ class AccountBuilder
     @current_user = options[:current_user] # required
     @facility = options[:facility] # optional
     @owner_user = options[:owner_user] # optional, required for build
-    @params = ActionController::Parameters.new(options[:params]) # optional
+    @params = options[:params] || ActionController::Parameters.new # optional
   end
 
   # Factory method that returns a subclassed `AccountBuilder` if one exists for
