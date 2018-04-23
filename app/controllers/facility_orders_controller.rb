@@ -48,11 +48,8 @@ class FacilityOrdersController < ApplicationController
       flash[:error] = "There was a problem while sending the receipt: #{e.message}"
     end
 
-    begin
-      redirect_to :back
-    rescue ActionController::RedirectBackError
-      redirect_to @order ? facility_order_path(current_facility, @order) : root_path
-    end
+    redirect_fallback = @order ? facility_order_path(current_facility, @order) : root_path
+    redirect_back(fallback_location: redirect_fallback)
   end
 
   # PUT/PATCH /facilities/:facility_id/orders/:id

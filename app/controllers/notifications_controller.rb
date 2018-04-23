@@ -16,11 +16,7 @@ class NotificationsController < ApplicationController
     if @notices.none?
       flash[:notice] = I18n.t "controllers.notifications.no_notices"
 
-      begin
-        redirect_to :back
-      rescue ActionController::RedirectBackError
-        redirect_to root_path
-      end
+      redirect_back(fallback_location: root_path)
     end
   end
 
