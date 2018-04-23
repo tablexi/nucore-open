@@ -4,7 +4,7 @@ $(document).ready(function() {
                   defaultView: 'agendaWeek',
                   allDaySlot: false,
                   header: {left: '', center: '', right: ''},
-                  columnFormat: {week: 'ddd'},
+                  columnHeaderFormat: 'ddd',
                   events: events_path
                 })
 })
