@@ -397,7 +397,7 @@ GEM
     numerizer (0.1.1)
     oj (3.5.1)
     orm_adapter (0.5.0)
-    paper_trail (9.0.0)
+    paper_trail (9.0.1)
       activerecord (>= 4.2, < 5.3)
       request_store (~> 1.1)
     paperclip (6.0.0)
