@@ -7,7 +7,7 @@ module OrderDetailsCsvExport
       render text: I18n.t("controllers.reports.mail_queued", email: to_email)
     else
       flash[:notice] = I18n.t("controllers.reports.mail_queued", email: to_email)
-      redirect_to url_for(params.merge(format: nil, email: nil))
+      redirect_back(fallback_location: url_for)
     end
   end
 
