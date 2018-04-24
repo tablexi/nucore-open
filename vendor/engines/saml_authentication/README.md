@@ -122,9 +122,9 @@ Example:
 2. IdP generates a `SAMLRequest` parameter and redirects the user's browser to
    `SamlAuthentication::SessionsController#idp_sign_out` with the parameter as part
    of the query string.
-3. NUcore invalidate's the user's session
+3. NUcore invalidate the user's session
 4. NUcore generates an SLO logout response (saying we successfully logged the user out),
    and redirects the user's browser back to the IdP.
 5. The IdP logs the user out of any other applications that were authenticated as part of
    the same IdP session.
-6. User is redirected to somewhere on the IdP's (e.g. the login page)
+6. User is redirected to somewhere on the IdP's site (e.g. the login page)

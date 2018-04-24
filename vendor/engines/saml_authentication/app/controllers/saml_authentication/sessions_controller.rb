@@ -2,14 +2,15 @@ module SamlAuthentication
 
   class SessionsController < Devise::SamlSessionsController
 
-    # Some SSO providers are strict and require that the name_identifier matches
-    # what's logged in on their system for SLO.
     before_action :store_logging_out_username, only: :destroy
     after_action :store_winning_strategy, only: :create
 
-    # Overrides SamlSessionsController because we don't want to use saml_session_index_key
-    # because it logs you out of other browsers/sessions when you log in on another
-    # machine.
+    # Overrides SamlSessionsController.
+    #
+    # The default behavior for IdP-initiated signout uses a database-backed
+    # User#saml_session_index_key, which upon invalidation will invalidate _all_
+    # NUcore sessions the user has open, even on other computers. With this override
+    # you are only signed out the current browser's session.
     def idp_sign_out
       if params[:SAMLRequest] # IdP initiated logout
         idp_initiated_sign_out
@@ -27,6 +28,10 @@ module SamlAuthentication
       { scope: resource_name }
     end
 
+    # Override SamlSessionsController
+    #
+    # Some IdP providers require the name_identifier_value of the LogoutRequest
+    # to match the username of the current user.
     def after_sign_out_path_for(_)
       idp_entity_id = get_idp_entity_id(params)
       request = OneLogin::RubySaml::Logoutrequest.new
@@ -55,6 +60,7 @@ module SamlAuthentication
       redirect_to generate_idp_logout_response(saml_config, logout_request.id)
     end
 
+    # Store the username for use in `after_sign_out_path_for`
     def store_logging_out_username
       @signed_out_username = current_user.public_send(Devise.saml_default_user_key)
     end

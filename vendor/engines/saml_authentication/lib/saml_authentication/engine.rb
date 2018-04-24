@@ -15,7 +15,7 @@ module SamlAuthentication
                         "before_login_form",
                         "saml_authentication/sessions/new"
 
-      OneLogin::RubySaml::Logging.logger.level = Logger::DEBUG
+      OneLogin::RubySaml::Logging.logger.level = Rails.env.production? ? Logger::INFO : Logger::DEBUG
     end
 
     config.after_initialize do

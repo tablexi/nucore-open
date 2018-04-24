@@ -1,9 +1,13 @@
 module SamlAuthentication
 
+  # Overrides DeviseSamlAuthenticatable::DefaultIdpEntityIdReader.
+  #
   # The default IdpEntityIdReader triggers an error on SLO because that request to
   # us has a SAMLResponse parameter, which does not get parsed by OneLogin::RubySaml::Response
   # correctly: "Issuer of the Response not found or multiple."
-  # Overrides DeviseSamlAuthenticatable::DefaultIdpEntityIdReader.
+  #
+  # Ideally, we will issue a PR to the devise_saml_authenticatable gem with these
+  # changes so it is corrected upstream.
   class IdpEntityIdReader
 
     def self.entity_id(params)
