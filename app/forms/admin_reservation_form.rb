@@ -10,7 +10,7 @@ class AdminReservationForm
     monthly
   ).freeze
 
-  delegate :to_key, :to_model, to: :reservation
+  delegate :to_key, to: :reservation
   delegate :category, :reserve_start_date, :reserve_start_hour,
            :reserve_start_min, :reserve_start_meridian, :duration_mins,
            :reserve_end_date, :reserve_end_hour, :reserve_end_min,
@@ -36,6 +36,14 @@ class AdminReservationForm
     @repeats = attrs[:repeats]
     @repeat_frequency = attrs[:repeat_frequency]
     @repeat_end_date = parse_usa_date(attrs[:repeat_end_date])
+  end
+
+  def model_name
+    ActiveModel::Name.new(@reservation.class)
+  end
+
+  def to_model
+    self
   end
 
   def valid?

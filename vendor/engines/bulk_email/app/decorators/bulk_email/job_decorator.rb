@@ -2,6 +2,10 @@ module BulkEmail
 
   class JobDecorator < SimpleDelegator
 
+    def to_model
+      self
+    end
+
     def sender
       user.email
     end
