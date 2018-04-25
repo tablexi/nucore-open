@@ -32,7 +32,7 @@ module SamlAuthentication
     #
     # Some IdP providers require the name_identifier_value of the LogoutRequest
     # to match the username of the current user.
-    def after_sign_out_path_for(_)
+    def after_sign_out_path_for(_resource_or_scope)
       idp_entity_id = get_idp_entity_id(params)
       request = OneLogin::RubySaml::Logoutrequest.new
       config = saml_config(idp_entity_id).dup
