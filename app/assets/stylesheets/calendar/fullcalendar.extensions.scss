@@ -23,60 +23,15 @@
   background: image-url('spinner.gif') top center no-repeat;
 }
 
-#calendar table.fc-header {
-	margin-bottom:15px;
+.fc-header-toolbar {
+  margin-bottom: 0;
 }
 
-#calendar table.fc-header tr,
-#calendar table.fc-header th,
-#calendar table.fc-header td {
-	border:1px solid white;
-}
-
-#calendar table {
-	margin-bottom:0;
-}
-
-#calendar table, #calendar tr {
-	border:none;
-}
-
-#calendar .fc-agenda-head tr.fc-last th {
-	padding:10px 0;
-}
-
-#calendar .fc-header-left, #calendar .fc-header-right,  {
-  width: 34%;
-  vertical-align: bottom;
-}
-
-#calendar .fc-header-center {
-  width: 32%;
-}
-
-#calendar .fc-header-title {
-  width: 100%;
-  vertical-align: bottom;
-}
-
-#calendar .fc-header-title h2 {
+.fc-header-toolbar h2 {
   font-size: 18px;
-  line-height: 1em;
-  margin-bottom: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.6em;
 }
 
-#calendar .fc-header .fc-button {
-  margin-bottom: 0;
-  vertical-align: bottom;
-}
-
-#calendar .fc-header {
-  table-layout: fixed;
-}
-
-#calendar .fc-agenda .fc-agenda-axis {
-  width: 3em;
+.fc-noheader .fc-toolbar.fc-header-toolbar {
+  display: none;
 }
