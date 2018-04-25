@@ -4,7 +4,7 @@ RSpec.describe "Statements Search" do
   let(:facility) { create(:setup_facility) }
   let(:director) { create(:user, :facility_director, facility: facility) }
   let(:item) { create(:setup_item, facility: facility) }
-  let(:accounts) { create_list(:purchase_order_account, 2, :with_account_owner) }
+  let(:accounts) { create_list(:account, 2, :with_account_owner, type: Account.config.statement_account_types.first) }
   let(:orders) do
     accounts.map { |account| create(:complete_order, product: item, account: account) }
   end
