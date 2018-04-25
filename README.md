@@ -48,19 +48,15 @@ Welcome to NUcore! This guide will help you get a development environment up and
 
   - Paste the output from `rake secret` into `config/secrets.yml` for both `development/secret_key_base` and `test/secret_key_base`
 
-5. Create your databases
+5. Set up databases
 
     ```
-    rake db:create
-    rake db:create RAILS_ENV=test
-    rake db:schema:load
-    rake db:schema:load RAILS_ENV=test
+    rake db:setup
     ```
 
 6. Seed your development database
 
     ```
-    rake db:seed
     rake demo:seed
     ```
 
