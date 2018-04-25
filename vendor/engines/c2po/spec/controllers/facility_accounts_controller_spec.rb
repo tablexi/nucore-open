@@ -146,7 +146,7 @@ RSpec.describe FacilityAccountsController do
 
       it_should_allow :director do
         expect(assigns(:account).expires_at)
-          .to eq(Time.zone.parse("#{expiration_year}-12-05").end_of_day)
+          .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-12-05").end_of_day)
         expect(assigns(:account).facility_id).to eq(facility.id)
         expect(assigns(:account)).to be_kind_of PurchaseOrderAccount
         expect(assigns(:account).affiliate)
@@ -170,7 +170,7 @@ RSpec.describe FacilityAccountsController do
 
       it_should_allow :director do
         expect(assigns(:account).expires_at)
-          .to eq(Time.zone.parse("#{expiration_year}-5-1").end_of_month.end_of_day)
+          .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-5-1").end_of_month.end_of_day)
         expect(assigns(:account).facility.id).to eq(facility.id)
       end
     end

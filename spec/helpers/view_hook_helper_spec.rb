@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe do
+RSpec.describe ViewHookHelper do
   let(:placement) { "placement1" }
 
   describe "passing the proper path" do

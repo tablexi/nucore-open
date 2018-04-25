@@ -29,11 +29,14 @@ module BulkEmail
     end
 
     def bulk_email_recipient_search_params
-      @bulk_email_recipient_search_params ||= params.slice(:start_date,
-                                                           :end_date,
-                                                           :bulk_email,
-                                                           :products,
-                                                           :product_id)
+      QuietStrongParams.with_dropped_params do
+        params.permit(:start_date,
+                      :end_date,
+                      :product_id,
+                      :facility_id,
+                      products: [],
+                      bulk_email: { user_types: [] })
+      end
     end
 
     def date_range_selection_link(translation_key, params, start_date: Date.today, end_date: Date.today)
@@ -42,7 +45,7 @@ module BulkEmail
 
       link_to(
         text(translation_key, scope: "bulk_email.dates.range"),
-        params.merge(start_date: start_date, end_date: end_date),
+        request.query_parameters.merge(start_date: start_date, end_date: end_date),
         class: "js--bulk-email-date-range-selector",
         data: { start_date: start_date, end_date: end_date },
       )

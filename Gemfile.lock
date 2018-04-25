@@ -1,3 +1,10 @@
+GIT
+  remote: git@github.com:thoughtbot/shoulda-matchers.git
+  revision: c0960bd72dd41c4e9bd8b4375254f539776bfe95
+  specs:
+    shoulda-matchers (3.1.2)
+      activesupport (>= 4.2.0)
+
 PATH
   remote: vendor/engines/bulk_email
   specs:
@@ -538,8 +545,6 @@ GEM
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
     shellany (0.0.1)
-    shoulda-matchers (3.1.2)
-      activesupport (>= 4.0.0)
     simple_form (3.5.0)
       actionpack (> 4, < 5.2)
       activemodel (> 4, < 5.2)
@@ -702,7 +707,7 @@ DEPENDENCIES
   sanger_sequencing (~> 0.0.1)!
   sass-rails
   secure_rooms!
-  shoulda-matchers
+  shoulda-matchers!
   simple_form
   single_test
   split_accounts (~> 0.0.1)!

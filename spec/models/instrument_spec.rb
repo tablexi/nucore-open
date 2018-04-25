@@ -19,7 +19,7 @@ RSpec.describe Instrument do
       is_expected.to allow_value(0).for(attr)
       is_expected.to allow_value(nil).for(attr)
       is_expected.not_to allow_value(-1).for(attr)
-      is_expected.not_to allow_value(5.0).for(attr)
+      is_expected.not_to allow_value(5.1).for(attr)
     end
   end
 

@@ -3,7 +3,7 @@ class ViewHook
   class << self
 
     def instance
-      @@instance ||= new
+      @instance ||= new
     end
 
     delegate :add_hook, :remove_hook, :render_view_hook, to: :instance
