@@ -190,6 +190,11 @@ RSpec.describe InstrumentPricePolicyCalculations do
         allow(reservation).to receive(:has_actual_times?).and_return false
         expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
       end
+
+      it "returns nil if has_reserved_times? is false" do
+        allow(reservation).to receive(:has_reserved_times?).and_return false
+        expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
+      end
     end
 
     context "when configured to charge for reservation" do

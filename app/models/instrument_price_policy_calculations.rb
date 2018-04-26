@@ -54,7 +54,7 @@ module InstrumentPricePolicyCalculations
   # CHARGE_FOR[:overage] charges for all the time that was initially reserved,
   # plus any actual time used beyond the scheduled end time.
   def calculate_overage(reservation)
-    return unless reservation.has_actual_times?
+    return unless reservation.has_reserved_times? && reservation.has_actual_times?
     end_at = [reservation.reserve_end_at, reservation.actual_end_at].max
     calculate_for_time(reservation.reserve_start_at, end_at)
   end
