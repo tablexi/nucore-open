@@ -12,10 +12,11 @@ RSpec.describe "Accessing invalid formats" do
   describe "for a page I don't have access to" do
     let(:user) { create(:user) }
     let(:facility) { create(:facility) }
+    let(:reservation) { create(:purchased_reservation) }
 
     it "renders a 403 as html" do
       login_as user
-      visit "#{I18n.t('facilities_downcase')}/list.pdf"
+      visit "orders/#{reservation.order.id}/order_details/#{reservation.order_detail.id}/reservations/#{reservation.id}.ics"
 
       expect(page).to have_content("403")
       expect(page).to have_content("Permission Denied")

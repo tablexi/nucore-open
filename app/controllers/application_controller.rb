@@ -136,7 +136,7 @@ class ApplicationController < ActionController::Base
   def render_403(_exception)
     # if current_user is nil, the user should be redirected to login
     if current_user
-      render "/403", status: 403, layout: "application"
+      render "/403", status: 403, layout: "application", formats: request.formats + [:html]
     else
       store_location_for(:user, request.fullpath)
       redirect_to new_user_session_path
@@ -145,7 +145,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from NUCore::NotPermittedWhileActingAs, with: :render_acting_error
   def render_acting_error
-    render "/acting_error", status: 403, layout: "application"
+    render "/acting_error", status: 403, layout: "application", formats: request.formats + [:html]
   end
 
   def after_sign_out_path_for(_)
