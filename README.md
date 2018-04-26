@@ -39,23 +39,7 @@ Welcome to NUcore! This guide will help you get a development environment up and
 
     Edit the adapter, database, username, and password settings for both the development and test DBs to match your database instance
 
-4. Create your databases
-
-    ```
-    rake db:create
-    rake db:create RAILS_ENV=test
-    rake db:schema:load
-    rake db:schema:load RAILS_ENV=test
-    ```
-
-5. Seed your development database
-
-    ```
-    rake db:seed
-    rake demo:seed
-    ```
-
-6. Configure your secrets
+4. Configure your secrets
 
   ```
   cp config/secrets.yml.template config/secrets.yml
@@ -63,6 +47,18 @@ Welcome to NUcore! This guide will help you get a development environment up and
   ```
 
   - Paste the output from `rake secret` into `config/secrets.yml` for both `development/secret_key_base` and `test/secret_key_base`
+
+5. Set up databases
+
+    ```
+    rake db:setup
+    ```
+
+6. Seed your development database
+
+    ```
+    rake demo:seed
+    ```
 
 7. Configure your file storage
 
