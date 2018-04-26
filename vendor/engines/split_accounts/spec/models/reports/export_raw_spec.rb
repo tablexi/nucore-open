@@ -73,7 +73,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
       expect(report).to have_column_values(
         "Reservation Start Time" => Array.new(2).fill(reservation.reserve_start_at.to_s),
         "Reservation End Time" => Array.new(2).fill(reservation.reserve_end_at.to_s),
-        "Reservation Minutes" => ["30", "30"],
+        "Reservation Minutes" => ["30.0", "30.0"],
         "Actual Start Time" => Array.new(2).fill(reservation.actual_start_at.to_s),
         "Actual End Time" => Array.new(2).fill(reservation.actual_end_at.to_s),
         "Actual Minutes" => ["32.5", "32.5"],
