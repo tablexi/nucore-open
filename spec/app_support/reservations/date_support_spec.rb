@@ -243,7 +243,7 @@ RSpec.describe Reservations::DateSupport do
     it "returns true when actual_start_at and actual_end_at are set" do
       reservation.assign_attributes(
         actual_start_at: 45.minutes.ago,
-        actual_end_at: 15.minutes.ago
+        actual_end_at: 15.minutes.ago,
       )
       expect(reservation.has_actual_times?).to be true
     end
@@ -263,7 +263,7 @@ RSpec.describe Reservations::DateSupport do
     it "returns true when reserve_start_at and reserve_end_at are set" do
       reservation.assign_attributes(
         reserve_start_at: 45.minutes.ago,
-        reserve_end_at: 15.minutes.ago
+        reserve_end_at: 15.minutes.ago,
       )
       expect(reservation.has_reserved_times?).to be true
     end
