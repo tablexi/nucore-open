@@ -4,6 +4,8 @@ class TransactionsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
 
+  include OrderDetailsCsvExport
+
   def initialize
     @active_tab = "accounts"
     super
