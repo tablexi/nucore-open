@@ -938,6 +938,11 @@ en:
       body: Your export is ready. Please see the attached file.
 
   users:
+    new_user:
+      success: You just created a new user
+      new_payment_source: Create a new payment source for this user
+      add_to_payment_source: Add this user to a payment source
+      order_for: Order on behalf of this user
     access_list:
       head: "%{name} Access List"
       no_products: "%{name} does not have any available products."
