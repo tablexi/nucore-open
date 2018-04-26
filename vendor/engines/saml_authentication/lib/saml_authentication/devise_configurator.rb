@@ -21,6 +21,7 @@ module SamlAuthentication
         config.saml_configure do |settings|
           settings.assertion_consumer_service_url = Rails.application.routes.url_helpers.auth_saml_user_session_url
           settings.issuer = Rails.application.routes.url_helpers.metadata_saml_user_session_url
+          settings.single_logout_service_url = Rails.application.routes.url_helpers.idp_sign_out_user_session_url
           Hash(Settings.saml.driver).each do |key, value|
             settings.public_send("#{key}=", value)
           end
