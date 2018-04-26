@@ -111,7 +111,7 @@ RSpec.describe OrderImport, :time_travel do
 
   context "validations" do
     it { is_expected.to belong_to :creator }
-    it { is_expected.to belong_to :upload_file }
+    it { is_expected.to belong_to(:upload_file).required }
     it { is_expected.to belong_to :error_file }
     it { is_expected.to validate_presence_of :upload_file }
     it { is_expected.to validate_presence_of :created_by }
@@ -351,7 +351,7 @@ RSpec.describe OrderImport, :time_travel do
       end
     end
 
-    context "an excetion is raised when opening the CSV" do
+    context "an exception is raised when opening the CSV" do
       before do
         allow(CSV).to receive(:parse).and_raise(ArgumentError, "invalid byte sequence in UTF-8")
         import.upload_file.file = generate_import_file
