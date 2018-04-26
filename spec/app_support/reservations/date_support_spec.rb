@@ -228,4 +228,44 @@ RSpec.describe Reservations::DateSupport do
       end
     end
   end
+
+  describe "#has_actual_times?" do
+    it "returns false when actual_start_at is blank" do
+      reservation.actual_start_at = nil
+      expect(reservation.has_actual_times?).to be false
+    end
+
+    it "returns false when actual_end_at is blank" do
+      reservation.actual_end_at = nil
+      expect(reservation.has_actual_times?).to be false
+    end
+
+    it "returns true when actual_start_at and actual_end_at are set" do
+      reservation.assign_attributes(
+        actual_start_at: 45.minutes.ago,
+        actual_end_at: 15.minutes.ago
+      )
+      expect(reservation.has_actual_times?).to be true
+    end
+  end
+
+  describe "#has_reserves_times?" do
+    it "returns false when reserve_start_at is blank" do
+      reservation.reserve_start_at = nil
+      expect(reservation.has_reserved_times?).to be false
+    end
+
+    it "returns false when reserve_end_at is blank" do
+      reservation.reserve_end_at = nil
+      expect(reservation.has_reserved_times?).to be false
+    end
+
+    it "returns true when reserve_start_at and reserve_end_at are set" do
+      reservation.assign_attributes(
+        reserve_start_at: 45.minutes.ago,
+        reserve_end_at: 15.minutes.ago
+      )
+      expect(reservation.has_reserved_times?).to be true
+    end
+  end
 end
