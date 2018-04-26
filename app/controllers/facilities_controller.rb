@@ -14,6 +14,7 @@ class FacilitiesController < ApplicationController
   skip_load_and_authorize_resource only: [:index, :show]
 
   include FacilitiesHelper
+  include OrderDetailsCsvExport
 
   layout lambda {
     action_name.in?(%w(disputed_orders movable_transactions transactions)) ? "two_column_head" : "two_column"
