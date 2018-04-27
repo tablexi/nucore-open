@@ -636,7 +636,7 @@ DEPENDENCIES
   bootstrap-sass (~> 2.3.2)
   bulk_email!
   bullet
-  c2po (~> 1.0.0)!
+  c2po!
   cancancan
   capistrano
   capistrano-bundler
@@ -653,7 +653,7 @@ DEPENDENCIES
   coffeelint
   config
   daemons
-  dataprobe (~> 1.0.0)!
+  dataprobe!
   delayed_job_active_record
   devise
   devise-encryptable
@@ -688,7 +688,7 @@ DEPENDENCIES
   prawn
   prawn-table
   prawn_rails
-  projects (~> 0.0.1)!
+  projects!
   pry-byebug
   pry-rails
   rails (= 4.2.10)
@@ -704,13 +704,13 @@ DEPENDENCIES
   ruby-oci8
   rubyzip
   saml_authentication!
-  sanger_sequencing (~> 0.0.1)!
+  sanger_sequencing!
   sass-rails
   secure_rooms!
   shoulda-matchers!
   simple_form
   single_test
-  split_accounts (~> 0.0.1)!
+  split_accounts!
   spreadsheet
   spring
   spring-commands-rspec
