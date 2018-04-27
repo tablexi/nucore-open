@@ -68,7 +68,7 @@ RSpec.describe Journal do
       end
 
       it "updates its total" do
-        expect { journal.order_details.first.increment!(:quantity) }
+        expect { journal.order_details.first.update!(quantity: 2) }
           .to change { journal.reload.amount }.from(1).to(2)
       end
     end

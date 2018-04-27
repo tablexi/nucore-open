@@ -43,7 +43,7 @@ gem "dynamic_form"
 gem "ckeditor"
 gem "jquery-rails"
 gem "jquery-ui-rails"
-gem "vuejs-rails"
+gem "vuejs-rails", "~> 1.0.26" # 2.0 introduces breaking changes
 gem "clockpunch"
 gem "simple_form"
 gem "font-awesome-rails"
@@ -69,14 +69,14 @@ gem "ice_cube"
 
 ## custom
 gem "bulk_email", path: "vendor/engines/bulk_email"
-gem "c2po", "~> 1.0.0", path: "vendor/engines/c2po"
-gem "dataprobe", "~> 1.0.0", path: "vendor/engines/dataprobe"
+gem "c2po", path: "vendor/engines/c2po"
+gem "dataprobe", path: "vendor/engines/dataprobe"
 gem "ldap_authentication", path: "vendor/engines/ldap_authentication"
 gem "saml_authentication", path: "vendor/engines/saml_authentication"
-gem "projects", "~> 0.0.1", path: "vendor/engines/projects"
-gem "sanger_sequencing", "~> 0.0.1", path: "vendor/engines/sanger_sequencing"
+gem "projects", path: "vendor/engines/projects"
+gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
-gem "split_accounts", "~> 0.0.1", path: "vendor/engines/split_accounts"
+gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "synaccess_connect"
 
 group :development do
@@ -119,7 +119,7 @@ group :test do
   gem "capybara-email"
   gem "poltergeist"
   gem "rspec-collection_matchers"
-  gem "shoulda-matchers"
+  gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers" # https://github.com/thoughtbot/shoulda-matchers/issues/913
   gem "single_test"
 end
 

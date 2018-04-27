@@ -3,7 +3,7 @@ require "csv"
 class OrderImport < ApplicationRecord
 
   belongs_to :facility
-  belongs_to :upload_file, class_name: "StoredFile", dependent: :destroy
+  belongs_to :upload_file, class_name: "StoredFile", dependent: :destroy, required: true
   belongs_to :error_file, class_name: "StoredFile", dependent: :destroy
   belongs_to :creator, class_name: "User", foreign_key: :created_by
 

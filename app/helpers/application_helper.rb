@@ -36,8 +36,8 @@ module ApplicationHelper
   def sortable(column, title = nil)
     title ||= column.titleize
     direction = column == sort_column && sort_direction == "asc" ? "desc" : "asc"
-    sorting_class = (column == sort_column ? "fa fa-sort-#{sort_direction}" : "fa fa-sort")
-    link_to "#{title} <i class='#{sorting_class}'></i>".html_safe, params.merge(sort: column, dir: direction)
+    sorting_class = (column == sort_column ? "sort-#{sort_direction}" : "sort")
+    link_to fa_icon(sorting_class, text: title, right: true), url_for(sort: column, dir: direction, search: params[:search])
   end
 
   #
