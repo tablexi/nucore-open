@@ -13,12 +13,38 @@ RSpec.describe "Accessing invalid formats" do
     let(:user) { create(:user) }
     let(:facility) { create(:facility) }
 
-    it "renders a 403 as html" do
-      login_as user
-      visit "#{I18n.t('facilities_downcase')}/list.pdf"
+    describe "a pdf version of a regular page" do
+      it "renders a 403 as html" do
+        login_as user
+        visit "#{I18n.t('facilities_downcase')}/list.pdf"
 
-      expect(page).to have_content("403")
-      expect(page).to have_content("Permission Denied")
+        expect(page).to have_content("403")
+        expect(page).to have_content("Permission Denied")
+      end
+    end
+
+    describe "a statement pdf" do
+      let(:statement) { create(:statement, facility: facility) }
+
+      it "renders a 403 as html" do
+        login_as user
+        visit "accounts/#{statement.account.id}/statements/#{statement.id}.pdf"
+
+        expect(page).to have_content("403")
+        expect(page).to have_content("Permission Denied")
+      end
+    end
+
+    describe "a calendar .ics file" do
+      let(:reservation) { create(:purchased_reservation) }
+
+      it "renders a 403 as html" do
+        login_as user
+        visit "orders/#{reservation.order.id}/order_details/#{reservation.order_detail.id}/reservations/#{reservation.id}.ics"
+
+        expect(page).to have_content("403")
+        expect(page).to have_content("Permission Denied")
+      end
     end
   end
 end
