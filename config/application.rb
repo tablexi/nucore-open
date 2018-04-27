@@ -37,8 +37,6 @@ module Nucore
     config.active_record.observers = :order_detail_observer
     #:cacher, :garbage_collector, :forum_observer
 
-    config.active_record.belongs_to_required_by_default = false
-
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # TODO: Rails 4 can move this into an initializer meaning we can move it into
