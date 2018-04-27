@@ -115,6 +115,14 @@ module Reservations::DateSupport
     meridian_field(:actual_end)
   end
 
+  def has_actual_times?
+    actual_start_at.present? && actual_end_at.present?
+  end
+
+  def has_reserved_times?
+    reserve_start_at.present? && reserve_end_at.present?
+  end
+
   private
 
   def instance_variable_fetch(field, options = {})

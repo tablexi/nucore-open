@@ -41,20 +41,20 @@ module InstrumentPricePolicyCalculations
   # CHARGE_FOR[:reservation] uses reserve start and end time for calculation
   def calculate_reservation(reservation)
     # One or both of these could be blank if we parse an invalid date in a form
-    return unless reservation.reserve_start_at && reservation.reserve_end_at
+    return unless reservation.has_reserved_times?
     calculate_for_time(reservation.reserve_start_at, reservation.reserve_end_at)
   end
 
   # CHARGE_FOR[:usage] uses the actual start/end times for calculation
   def calculate_usage(reservation)
-    return unless reservation.actual_start_at && reservation.actual_end_at
+    return unless reservation.has_actual_times?
     calculate_for_time(reservation.actual_start_at, reservation.actual_end_at)
   end
 
   # CHARGE_FOR[:overage] charges for all the time that was initially reserved,
   # plus any actual time used beyond the scheduled end time.
   def calculate_overage(reservation)
-    return unless reservation.actual_start_at && reservation.actual_end_at
+    return unless reservation.has_reserved_times? && reservation.has_actual_times?
     end_at = [reservation.reserve_end_at, reservation.actual_end_at].max
     calculate_for_time(reservation.reserve_start_at, end_at)
   end

@@ -154,56 +154,64 @@ RSpec.describe InstrumentPricePolicyCalculations do
       policy.calculate_cost_and_subsidy reservation
     end
 
-    it 'returns #calculate_usage when configured to charge for usage' do
-      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:usage]
-      expect(policy).to receive(:calculate_usage).with reservation
-      expect(policy).to_not receive :calculate_overage
-      expect(policy).to_not receive :calculate_reservation
-      expect(policy).to_not receive :calculate_cancellation_costs
-      policy.calculate_cost_and_subsidy reservation
+    context "when configured to charge for usage" do
+      before :each do
+        policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:usage]
+      end
+
+      it 'returns #calculate_usage' do
+        expect(policy).to receive(:calculate_usage).with reservation
+        expect(policy).to_not receive :calculate_overage
+        expect(policy).to_not receive :calculate_reservation
+        expect(policy).to_not receive :calculate_cancellation_costs
+        policy.calculate_cost_and_subsidy reservation
+      end
+
+      it "returns nil if has_actual_times? is false" do
+        allow(reservation).to receive(:has_actual_times?).and_return false
+        expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
+      end
     end
 
-    it 'returns #calculate_overage when configured to charge for overage' do
-      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
-      expect(policy).to receive(:calculate_overage).with reservation
-      expect(policy).to_not receive :calculate_usage
-      expect(policy).to_not receive :calculate_reservation
-      expect(policy).to_not receive :calculate_cancellation_costs
-      policy.calculate_cost_and_subsidy reservation
-    end
+    context "when configured to charge for overage" do
+      before :each do
+        policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
+      end
 
-    it 'returns #calculate_reservation when configured to charge for reservation' do
-      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
-      expect(policy).to receive(:calculate_reservation).with reservation
-      expect(policy).to_not receive :calculate_overage
-      expect(policy).to_not receive :calculate_usage
-      expect(policy).to_not receive :calculate_cancellation_costs
-      policy.calculate_cost_and_subsidy reservation
-    end
+      it 'returns #calculate_overage when configured to charge for overage' do
+        expect(policy).to receive(:calculate_overage).with reservation
+        expect(policy).to_not receive :calculate_usage
+        expect(policy).to_not receive :calculate_reservation
+        expect(policy).to_not receive :calculate_cancellation_costs
+        policy.calculate_cost_and_subsidy reservation
+      end
 
-    it "returns nil when reserve_start at is nil and charging for reservation" do
-      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
-      allow(reservation).to receive(:reserve_start_at).and_return nil
-      expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
-    end
-
-    it "returns nil when reserve_start at is nil and charging for reservation" do
-      policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
-      allow(reservation).to receive(:reserve_end_at).and_return nil
-      expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
-    end
-
-    %w(usage overage).each do |charge_for|
-      it "returns nil if actual_start_at is missing and we are charging by #{charge_for}" do
-        policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[charge_for.to_sym]
-        allow(reservation).to receive(:actual_start_at).and_return nil
+      it "returns nil if has_actual_times? is false" do
+        allow(reservation).to receive(:has_actual_times?).and_return false
         expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
       end
 
-      it "returns nil if actual_end_at is missing and we are charging by #{charge_for}" do
-        policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[charge_for.to_sym]
-        allow(reservation).to receive(:actual_start_at).and_return now
-        allow(reservation).to receive(:actual_end_at).and_return nil
+      it "returns nil if has_reserved_times? is false" do
+        allow(reservation).to receive(:has_reserved_times?).and_return false
+        expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
+      end
+    end
+
+    context "when configured to charge for reservation" do
+      before :each do
+        policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
+      end
+
+      it 'returns #calculate_reservation when configured to charge for reservation' do
+        expect(policy).to receive(:calculate_reservation).with reservation
+        expect(policy).to_not receive :calculate_overage
+        expect(policy).to_not receive :calculate_usage
+        expect(policy).to_not receive :calculate_cancellation_costs
+        policy.calculate_cost_and_subsidy reservation
+      end
+
+      it "returns nil if has_reserved_times? is false" do
+        allow(reservation).to receive(:has_reserved_times?).and_return false
         expect(policy.calculate_cost_and_subsidy(reservation)).to be_nil
       end
     end
