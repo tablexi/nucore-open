@@ -857,7 +857,7 @@ RSpec.describe OrdersController do
 
       it "sets the session with contents of params[:order][:order_details]" do
         expect(session[:add_to_cart]).not_to be_empty
-        expect(session[:add_to_cart]).to match_array([{ "product_id" => @item.id.to_s, "quantity" => "1" }])
+        expect(session[:add_to_cart]).to match_array([{ "product_id" => @item.id.to_s, "quantity" => "1" }]) # deprecated
       end
     end
 

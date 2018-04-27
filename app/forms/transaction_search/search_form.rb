@@ -17,7 +17,8 @@ module TransactionSearch
       # everything needed, even if the provided defaults are missing one of our
       # defaults.
       full_defaults = defaults.reverse_merge(default_params)
-      super(Hash(params).reverse_merge(full_defaults))
+      # okay to use to_unsafe_h here because we are not persisting anything (just a search form)
+      super(full_defaults.merge(params&.to_unsafe_h || {}))
     end
 
     def [](field)
