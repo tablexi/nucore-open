@@ -53,8 +53,7 @@ RSpec.describe FacilityAccountsReconciliationController do
                                   reconciled: "1",
                                   reconciled_note: "A note",
                                 },
-                              }
-                            }
+                              } }
     end
 
     describe "reconciliation date", :time_travel do
