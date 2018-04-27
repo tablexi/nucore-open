@@ -608,7 +608,7 @@ GEM
       kgio (~> 2.6)
       raindrops (~> 0.7)
     uniform_notifier (1.11.0)
-    vuejs-rails (1.0.24)
+    vuejs-rails (1.0.26)
     warden (1.2.7)
       rack (>= 1.0)
     web-console (3.3.0)
@@ -721,7 +721,7 @@ DEPENDENCIES
   thin
   uglifier
   unicorn
-  vuejs-rails
+  vuejs-rails (~> 1.0.26)
   web-console
   whenever
   where-or
