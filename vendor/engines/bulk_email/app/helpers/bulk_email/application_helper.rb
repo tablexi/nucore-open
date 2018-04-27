@@ -39,7 +39,7 @@ module BulkEmail
       end
     end
 
-    def date_range_selection_link(translation_key, params, start_date: Date.today, end_date: Date.today)
+    def date_range_selection_link(translation_key, _params, start_date: Date.today, end_date: Date.today)
       start_date = format_usa_date(start_date)
       end_date = format_usa_date(end_date)
 

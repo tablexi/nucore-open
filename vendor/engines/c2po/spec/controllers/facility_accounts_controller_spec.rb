@@ -23,7 +23,6 @@ RSpec.describe FacilityAccountsController do
   end
 
   context "PUT #update" do
-
     context "with affiliate" do
       let(:creator) { FactoryBot.create(:user) }
 
