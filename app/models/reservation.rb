@@ -149,14 +149,13 @@ class Reservation < ApplicationRecord
   end
 
   def start_reservation!
+    # Mark running reservations as complete, which will move them to problem orders
     product.schedule.products.flat_map(&:started_reservations).each(&:complete!)
-    self.actual_start_at = Time.current
-    save!
+    update!(actual_start_at: Time.current)
   end
 
   def end_reservation!
-    self.actual_end_at = Time.current
-    save!
+    update!(actual_end_at: Time.current)
     order_detail.complete!
   end
 

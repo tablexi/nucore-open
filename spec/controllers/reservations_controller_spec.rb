@@ -1130,6 +1130,8 @@ RSpec.describe ReservationsController do
         @params[:reservation_id] = @reservation.id
         create(:relay, instrument: @instrument)
         @random_user = create(:user)
+        @instrument.update_attributes(min_reserve_mins: 30)
+        @instrument.schedule_rules.update_all(start_hour: 0)
       end
 
       context "on" do
@@ -1176,7 +1178,6 @@ RSpec.describe ReservationsController do
           let(:end_at) { 63.minutes.from_now.change(usec: 0) }
 
           before :each do
-            @instrument.update_attributes(min_reserve_mins: 30)
             @reservation.update_attributes!(reserve_start_at: start_at, reserve_end_at: end_at)
             sign_in @guest
           end
@@ -1185,7 +1186,6 @@ RSpec.describe ReservationsController do
             before { @instrument.update_attributes(requires_approval: true) }
             it "allows it to start" do
               do_request
-              expect(assigns(:reservation)).to_not be_changed
               expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
           end
@@ -1197,23 +1197,65 @@ RSpec.describe ReservationsController do
             end
 
             it "allows it to start" do
-              expect(assigns(:reservation)).to_not be_changed
               expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
           end
 
-          context "and there is another reservation still going on" do
+          context "in the grace period, but there is another reservation still running" do
             let!(:reservation2) do
               create(:purchased_reservation, product: @instrument,
-                                             reserve_start_at: start_at - 30.minutes, reserve_end_at: start_at)
+                                             reserve_start_at: start_at - 30.minutes,
+                                             reserve_end_at: start_at,
+                                             actual_start_at: start_at - 30.minutes)
+            end
+
+            it "does not start the reservation" do
+              do_request
+              expect(assigns(:reservation)).not_to be_started
+              expect(flash[:error]).to match(/previously scheduled reservation is ongoing/)
+            end
+          end
+
+          context "and there is a non-started reservation" do
+            let!(:reservation2) do
+              create(:purchased_reservation, product: @instrument,
+                                             reserve_start_at: start_at - 30.minutes,
+                                             reserve_end_at: start_at,
+                                             actual_start_at: nil)
             end
 
             it "allows it to start" do
               do_request
-              expect(assigns(:reservation)).to_not be_changed
-              expect(assigns(:reservation).reserve_start_at).to eq(start_at)
               expect(assigns(:reservation).actual_start_at).to eq(Time.zone.now)
             end
+          end
+        end
+
+        context "when there is a prior reservation overrunning its time" do
+          let(:start_at) { 3.minutes.ago.change(usec: 0) }
+          let(:end_at) { 57.minutes.from_now.change(usec: 0) }
+
+          let!(:reservation2) do
+            create(:purchased_reservation, product: @instrument,
+                                           reserve_start_at: start_at - 60.minutes,
+                                           reserve_end_at: start_at,
+                                           actual_start_at: start_at - 60.minutes)
+          end
+
+          before :each do
+
+            @reservation.update_attributes!(reserve_start_at: start_at, reserve_end_at: end_at)
+            sign_in @guest
+          end
+
+          it "starts the reservation" do
+            do_request
+            expect(assigns(:reservation)).to be_started
+          end
+
+          it "moves the other reservation to the problem queue" do
+            do_request
+            expect(reservation2.order_detail.reload).to be_problem
           end
         end
 

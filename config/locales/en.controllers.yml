@@ -132,6 +132,8 @@ en:
         Please add it again to make a reservation.
       update:
         failure: The reservation cannot be updated.
+      switch_instrument:
+        prior_is_still_running: Cannot "Begin Reservation" when a previously scheduled reservation is ongoing.
 
     general_reports:
       headers:
