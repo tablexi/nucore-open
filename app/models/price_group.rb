@@ -32,6 +32,10 @@ class PriceGroup < ApplicationRecord
     globals.find_by(name: Settings.price_group.name.cancer_center)
   end
 
+  def is_not_global?
+    !global?
+  end
+
   def global?
     facility.nil?
   end
