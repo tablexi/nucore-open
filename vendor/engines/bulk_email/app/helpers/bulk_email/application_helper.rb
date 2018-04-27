@@ -16,8 +16,7 @@ module BulkEmail
     end
 
     def bulk_email_cancel_params
-      @bulk_email_cancel_params ||=
-        bulk_email_recipient_search_params.merge(return_path: params[:return_path])
+      bulk_email_recipient_search_params.merge(return_path: params[:return_path])
     end
 
     def bulk_email_cancel_path

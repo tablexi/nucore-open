@@ -2,6 +2,10 @@ class Accessories::Scaling::Default < SimpleDelegator
 
   attr_accessor :enabled
 
+  def to_model
+    self
+  end
+
   def order_detail
     __getobj__
   end
