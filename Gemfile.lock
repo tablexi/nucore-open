@@ -146,8 +146,8 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
-    capybara-email (2.5.0)
-      capybara (~> 2.4)
+    capybara-email (3.0.1)
+      capybara (>= 2.4, < 4.0)
       mail
     celluloid (0.17.3)
       celluloid-essentials
@@ -441,7 +441,7 @@ GEM
     pry-rails (0.3.6)
       pry (>= 0.10.4)
     public_suffix (3.0.2)
-    rack (1.6.9)
+    rack (1.6.10)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.10)
