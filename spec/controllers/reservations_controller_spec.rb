@@ -1130,7 +1130,7 @@ RSpec.describe ReservationsController do
         @params[:reservation_id] = @reservation.id
         create(:relay, instrument: @instrument)
         @random_user = create(:user)
-        @instrument.update_attributes(min_reserve_mins: 30)
+        @instrument.update!(min_reserve_mins: 30)
         @instrument.schedule_rules.update_all(start_hour: 0)
       end
 
@@ -1174,8 +1174,8 @@ RSpec.describe ReservationsController do
         it_should_deny :random_user
 
         context "before the reservation start (in grace period)" do
-          let(:start_at) { 3.minutes.from_now.change(usec: 0) }
-          let(:end_at) { 63.minutes.from_now.change(usec: 0) }
+          let(:start_at) { 3.minutes.from_now }
+          let(:end_at) { 63.minutes.from_now }
 
           before :each do
             @reservation.update_attributes!(reserve_start_at: start_at, reserve_end_at: end_at)
