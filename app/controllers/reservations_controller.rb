@@ -243,6 +243,12 @@ class ReservationsController < ApplicationController
       when params[:switch] == "off"
         switch_instrument_off!
       end
+    rescue AASM::InvalidTransition => e
+      flash[:error] = if e.failures.include?(:time_data_completeable?)
+                        text("switch_instrument.prior_is_still_running")
+                      else
+                        e.message
+                      end
     rescue => e
       flash[:error] = e.message
     end
