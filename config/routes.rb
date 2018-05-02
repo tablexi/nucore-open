@@ -126,42 +126,33 @@ Nucore::Application.routes.draw do
       match "map_user", to: 'facility_users#map_user', via: [:get, :post]
     end
 
-    ### Feature Toggle Create Users ###
-    if SettingsHelper.feature_on?(:create_users)
-      resources :users do
+    users_options = if SettingsHelper.feature_on?(:create_users)
+                      {}
+                    else
+                      { except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } }
+                    end
+
+    resources :users, users_options do
+      if SettingsHelper.feature_on?(:create_users)
         collection do
           get "new_external"
           post "search"
         end
         patch "suspend", on: :member
         patch "unsuspend", on: :member
+      end
 
-        get "switch_to",    to: 'users#switch_to'
-        get "orders",       to: 'users#orders'
-        resources :reservations, only: [:index], param: :order_detail_id, controller: "facility_user_reservations" do
-          member do
-            put "cancel"
-          end
+      get "switch_to",    to: 'users#switch_to'
+      get "orders",       to: 'users#orders'
+      resources :reservations, only: [:index], param: :order_detail_id, controller: "facility_user_reservations" do
+        member do
+          put "cancel"
         end
-        get "accounts",     to: 'users#accounts'
-        get "access_list",  to: 'users#access_list'
-        post "access_list/approvals", to: 'users#access_list_approvals'
       end
-    else
-      resources :users, except: [:edit, :update, :new, :create], constraints: { id: /\d+/ } do
-        get "switch_to",    to: 'users#switch_to'
-        get "orders",       to: 'users#orders'
-        resources :reservations, only: [:index], param: :order_detail_id, controller: "facility_user_reservations" do
-          member do
-            put "cancel"
-          end
-        end
-        get "accounts",     to: 'users#accounts'
-        get "access_list",  to: 'users#access_list'
-        post "access_list/approvals", to: 'users#access_list_approvals'
-      end
+      get "accounts",     to: 'users#accounts'
+      get "access_list",  to: 'users#access_list'
+      post "access_list/approvals", to: 'users#access_list_approvals'
     end
-    ######
 
     if SettingsHelper.feature_on? :recharge_accounts
       resources :facility_accounts,
