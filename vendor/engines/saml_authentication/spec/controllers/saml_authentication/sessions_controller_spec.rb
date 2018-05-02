@@ -1,6 +1,19 @@
 require "rails_helper"
 
 RSpec.describe SamlAuthentication::SessionsController, type: :controller do
+  # Utility class to expose some private methods of SamlMessage
+  class SamlEncoder < OneLogin::RubySaml::SamlMessage
+
+    def self.decode(saml)
+      new.send(:decode_raw_saml, saml)
+    end
+
+    def self.encode(saml)
+      new.send(:encode_raw_saml, saml, OpenStruct.new(compress_request: true))
+    end
+
+  end
+
   let(:idp_slo_path) do
     doc = Nokogiri::XML(File.read(File.expand_path("../../fixtures/idp_metadata.xml", __dir__)))
     doc.css("SingleLogoutService").first["Location"]
@@ -161,8 +174,7 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
     it "includes the username in the logout request" do
       delete :destroy
       uri = URI.parse(response.location)
-      deflated = Base64.decode64 Rack::Utils.parse_query(uri.query)["SAMLRequest"]
-      xml = Zlib::Inflate.new(-Zlib::MAX_WBITS).inflate(deflated)
+      xml = SamlEncoder.decode Rack::Utils.parse_query(uri.query)["SAMLRequest"]
       doc = Nokogiri::XML(xml)
       expect(doc.css("saml|NameID").first.text).to eq(user.username)
     end
@@ -178,14 +190,15 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
     describe "sp_initiated_sign_out" do
       it "redirects to the homepage" do
         # captured from OneLogin requests
-        get :idp_sign_out, SAMLResponse: File.read(File.expand_path("../../fixtures/sp_initiated_sign_out.txt", __dir__))
+        encoded = SamlEncoder.encode File.read(File.expand_path("../../fixtures/sp_initiated_sign_out.xml", __dir__))
+        get :idp_sign_out, SAMLResponse: encoded
         expect(response).to redirect_to(root_path)
       end
     end
 
     describe "idp_initiated_sign_out" do
       # Captured from OneLogin requests
-      let(:payload) { File.read(File.expand_path("../../fixtures/sp_initiated_sign_out.txt", __dir__)) }
+      let(:payload) { SamlEncoder.encode File.read(File.expand_path("../../fixtures/idp_initiated_sign_out.xml", __dir__)) }
       before do
         request.env["devise.mapping"] = Devise.mappings[:user]
         sign_in user
