@@ -2,6 +2,13 @@ module C2po
 
   C2PO_ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount).freeze
 
+  C2PO_ACCOUNT_TYPES_APPENDER = proc do
+    Account.config.account_types.concat C2po::C2PO_ACCOUNT_TYPES
+    Account.config.facility_account_types.concat C2po::C2PO_ACCOUNT_TYPES
+    Account.config.statement_account_types.concat C2po::C2PO_ACCOUNT_TYPES
+    Account.config.affiliate_account_types.concat C2po::C2PO_ACCOUNT_TYPES
+  end.freeze
+
   class Engine < Rails::Engine
 
     config.autoload_paths << File.join(File.dirname(__FILE__), "../lib")
@@ -10,11 +17,7 @@ module C2po
       # Include extensions
       Facility.facility_account_validators << C2po::C2poAccountValidator
 
-      # Concat class variables
-      Account.config.account_types.concat C2po::C2PO_ACCOUNT_TYPES
-      Account.config.facility_account_types.concat C2po::C2PO_ACCOUNT_TYPES
-      Account.config.statement_account_types.concat C2po::C2PO_ACCOUNT_TYPES
-      Account.config.affiliate_account_types.concat C2po::C2PO_ACCOUNT_TYPES
+      # Permit engine-specific params
       FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
 
       # Make this engine's views override the main app's views
@@ -33,6 +36,11 @@ module C2po
       config.paths["db/migrate"].expanded.each do |expanded_path|
         app.config.paths["db/migrate"] << expanded_path
       end
+    end
+
+    initializer :append_account_types, before: "set_routes_reloader_hook" do |app|
+      C2PO_ACCOUNT_TYPES_APPENDER.call
+      app.reloader.to_run(&C2PO_ACCOUNT_TYPES_APPENDER)
     end
 
   end
