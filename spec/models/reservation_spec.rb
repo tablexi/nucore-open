@@ -1188,67 +1188,83 @@ RSpec.describe Reservation do
         expect(@reservation).to be_invalid
       end
 
-      context "schedule rules with restrictions" do
+      context "schedule rules with schedule groups" do
         before :each do
-          @user = FactoryBot.create(:user)
-          @account = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-
-          @instrument.update_attributes(requires_approval: true)
-
-          @order = create(:order, user: @user, created_by: @user.id, account: @account, facility: facility)
-          @order_detail = FactoryBot.create(:order_detail, order: @order, product: @instrument)
-          # @instrument.update_attributes(:requires_approval => true)
-
-          @restriction_level = @rule_5to7.product_access_groups.create(FactoryBot.attributes_for(:product_access_group, product: @instrument))
-          @instrument.reload
-          @reservation = Reservation.new(reserve_start_date: Date.today + 1,
-                                         reserve_start_hour: 6,
-                                         reserve_start_min: 0,
-                                         reserve_start_meridian: "pm",
-                                         duration_mins: 60,
-                                         order_detail: @order_detail,
-                                         product: @instrument,
-                                         split_times: true)
+          instrument.update!(requires_approval: true)
         end
 
-        it "should allow a user to reserve if it doesn't require approval" do
-          @instrument.update_attributes(requires_approval: false)
-          expect(@reservation).to be_valid
+        let(:user) { create(:user) }
+        let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
+        let(:instrument) { @instrument }
+        let(:order) { create(:order, user: user, created_by: user.id, account: account, facility: facility) }
+        let(:order_detail) { create(:order_detail, order: order, product: instrument) }
+        let(:reservation) do
+          Reservation.new(reserve_start_date: Date.today + 1,
+                          reserve_start_hour: 5,
+                          reserve_start_min: 1,
+                          reserve_start_meridian: "pm",
+                          duration_mins: 60,
+                          order_detail: order_detail,
+                          product: instrument,
+                          split_times: true)
+        end
+        let!(:product_access_group) { create(:product_access_group, product: instrument, schedule_rules: [@rule_5to7]) }
+
+        it "allows a user to reserve if it doesn't require approval" do
+          instrument.update_attributes(requires_approval: false)
+          expect(reservation).to be_valid
         end
 
-        it "should not allow a user who is not approved to reserve" do
-          expect(@reservation).not_to be_valid
-        end
-        it "should not allow a user who is approved, but not in the group" do
-          @product_user = ProductUser.create(user: @user, product: @instrument, approved_by: @user.id)
-          expect(@product_user).not_to be_new_record
-          expect(@reservation).not_to be_valid
-        end
-        it "should allow a user who is approved and part of the restriction group" do
-          @product_user = @user.product_users.create(product: @instrument, product_access_group: @restriction_level, approved_by: @user.id)
-          expect(@product_user).not_to be_new_record
+        describe "a user who is not approved" do
+          it "does not allow the user" do
+            expect(reservation).to be_invalid
+            expect(reservation.errors).to be_added(:base, :unavailable_to_reserve)
+          end
 
-          expect(@reservation).to be_valid
+          it "does not allow the user to place the reservation 5 minutes ahead" do
+            reservation.valid? # to set times
+            travel_to(reservation.reserve_start_at - 5.minutes) do
+              expect(reservation).to be_invalid
+              expect(reservation.errors).to be_added(:base, :unavailable_to_reserve)
+            end
+          end
+        end
+
+        describe "a user who is approved, but not in the schedule group" do
+          let!(:product_user) { ProductUser.create!(user: user, product: instrument, approved_by: user.id) }
+
+          it "does not allow the user" do
+            expect(reservation).to be_invalid
+            expect(reservation.errors).to be_added(:base, :unavailable_to_reserve)
+          end
+        end
+
+        describe "a user who is approved and part of the schedule group" do
+          let!(:product_user) { ProductUser.create!(user: user, product: instrument, product_access_group: product_access_group, approved_by: user.id) }
+          it "allows a user who is approved and part of the schedule group" do
+            expect(reservation).to be_valid
+          end
         end
 
         context "admin overrides" do
+          let(:admin) { create(:user, :administrator) }
           before :each do
-            # user is not in the restricted group
-            @product_user = ProductUser.create(user: @user, product: @instrument, approved_by: @user.id)
-            @admin = FactoryBot.create(:user)
-            UserRole.grant(@admin, UserRole::ADMINISTRATOR)
+            # user is approved, but not in the schedule group
+            ProductUser.create!(user: user, product: instrument, approved_by: user.id)
           end
 
           it "should allow an administrator to save in one of the restricted scheduling rules" do
-            @reservation.save_as_user!(@admin)
+            reservation.save_as_user!(admin)
             # if it raises an exception, we're in trouble
           end
+
           it "should not allow a regular user to save in a restricted scheduling rule" do
-            expect { @reservation.save_as_user!(@user) }.to raise_error(ActiveRecord::RecordInvalid)
+            expect { reservation.save_as_user!(user) }.to raise_error(ActiveRecord::RecordInvalid)
           end
+
           it "should not allow an administrator to save outside of scheduling rules" do
-            @reservation.update_attributes(reserve_start_hour: 10)
-            expect { @reservation.save_as_user!(@admin) }.to raise_error(ActiveRecord::RecordInvalid)
+            reservation.update_attributes(reserve_start_hour: 10)
+            expect { reservation.save_as_user!(admin) }.to raise_error(ActiveRecord::RecordInvalid)
           end
         end
       end
