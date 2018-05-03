@@ -1223,7 +1223,7 @@ RSpec.describe Reservation do
 
           it "does not allow the user to place the reservation 5 minutes ahead" do
             reservation.valid? # to set times
-            travel_to(reservation.reserve_start_at - 5.minutes) do
+            travel_to_and_return(reservation.reserve_start_at - 5.minutes) do
               expect(reservation).to be_invalid
               expect(reservation.errors).to be_added(:base, :unavailable_to_reserve)
             end

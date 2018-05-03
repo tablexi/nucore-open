@@ -84,11 +84,14 @@ RSpec.configure do |config|
     @epg = PriceGroup.find_or_create_by(name: Settings.price_group.name.external, is_internal: false, display_order: 3)
     @epg.save(validate: false)
 
-    # now=Time.zone.parse("#{Date.today.to_s} 09:30:00")
+    # Because many specs rely on not crossing a fiscal year boundary we lock the
+    # time globally. Rails's `travel_to` helper does not work well with nesting, so
+    # we should use our own custom `travel_and_return` and `travel_to_and_return`
+    # helpers. See TimeTravelHelpers. You can also use the spec_helper-defined
+    # :time_travel metadata tag.
     travel_back
     now = (SettingsHelper.fiscal_year_beginning(Date.today) + 1.year + 10.days).change(hour: 9, min: 30)
-    # puts "travelling to #{now}"
-    travel_to(now)
+    travel_to(now, safe: true)
   end
 
   # Allow specififying a Timezone for a group of tests:
