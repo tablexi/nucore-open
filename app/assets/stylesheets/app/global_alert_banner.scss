@@ -1,0 +1,23 @@
+.global-alert-banner {
+  font-size: 1.2em;
+  text-align: center;
+  width: auto;
+  padding: 0.5em;
+  box-sizing: border-box;
+
+  color: $errorText;
+  background-color: $errorBackground;
+
+  p {
+    line-height: 1.8em;
+    margin-bottom: 0.4em;
+  }
+
+  @media screen and (max-width: 767px) {
+    & {
+      font-size: 1em;
+      margin-left: -$gridGutterWidth;
+      margin-right: -$gridGutterWidth;
+    }
+  }
+}
