@@ -10,7 +10,7 @@ module Reservations::Validations
     validates :reserve_start_at, presence: true
     validates :reserve_end_at, presence: true, if: :end_at_required?
     validate :does_not_conflict_with_other_user_reservation,
-             :allowed_in_scheduled_rules,
+             :allowed_in_schedule_rules,
              :satisfies_minimum_length,
              :satisfies_maximum_length,
              if: ->(r) { r.reserve_start_at && r.reserve_end_at && r.reservation_changed? },
@@ -142,15 +142,24 @@ module Reservations::Validations
     errors.add(:base, :too_long, length: product.max_reserve_mins) unless satisfies_maximum_length?
   end
 
-  def allowed_in_scheduled_rules
+  def allowed_in_schedule_rules?
+    allowed_in_schedule_rules_error.blank?
+  end
+
+  def allowed_in_schedule_rules_error
     # Everyone, including admins, are beholden to the full schedule rules
     if in_all_schedule_rules?
       # Check for order_detail and order because some old specs don't set an order detail.
       return if order_detail&.order.nil?
-      errors.add(:base, :no_schedule_group) unless in_allowed_schedule_rules?
+      :no_schedule_group unless in_allowed_schedule_rules?
     else
-      errors.add(:base, :no_schedule_rule)
+      :no_schedule_rule
     end
+  end
+
+  def allowed_in_schedule_rules
+    error = allowed_in_schedule_rules_error
+    errors.add(:base, error) if error
   end
 
   def in_all_schedule_rules?

@@ -272,7 +272,7 @@ class Reservation < ApplicationRecord
   def valid_before_purchase?
     satisfies_minimum_length? &&
       satisfies_maximum_length? &&
-      allowed_in_scheduled_rules? &&
+      allowed_in_schedule_rules? &&
       does_not_conflict_with_other_user_reservation? &&
       (reserved_by_admin || does_not_conflict_with_admin_reservation?)
   end
