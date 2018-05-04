@@ -1218,14 +1218,14 @@ RSpec.describe Reservation do
         describe "a user who is not approved" do
           it "does not allow the user" do
             expect(reservation).to be_invalid
-            expect(reservation.errors).to be_added(:base, :no_schedule_rule)
+            expect(reservation.errors).to be_added(:base, :no_schedule_group)
           end
 
           it "does not allow the user to place the reservation 5 minutes ahead" do
             reservation.valid? # to set times
             travel_to_and_return(reservation.reserve_start_at - 5.minutes) do
               expect(reservation).to be_invalid
-              expect(reservation.errors).to be_added(:base, :no_schedule_rule)
+              expect(reservation.errors).to be_added(:base, :no_schedule_group)
             end
           end
         end
@@ -1235,7 +1235,7 @@ RSpec.describe Reservation do
 
           it "does not allow the user" do
             expect(reservation).to be_invalid
-            expect(reservation.errors).to be_added(:base, :no_schedule_rule)
+            expect(reservation.errors).to be_added(:base, :no_schedule_group)
           end
         end
 
@@ -1260,7 +1260,7 @@ RSpec.describe Reservation do
 
           it "should not allow a regular user to save in a restricted scheduling rule" do
             expect { reservation.save_as_user!(user) }.to raise_error(ActiveRecord::RecordInvalid)
-            expect(reservation.errors).to be_added(:base, :no_schedule_rule)
+            expect(reservation.errors).to be_added(:base, :no_schedule_group)
           end
 
           it "should not allow an administrator to save outside of scheduling rules" do

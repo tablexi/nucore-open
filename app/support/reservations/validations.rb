@@ -143,19 +143,24 @@ module Reservations::Validations
   end
 
   def allowed_in_scheduled_rules
-    errors.add(:base, :no_schedule_rule) unless allowed_in_scheduled_rules?
+    # Everyone, including admins, are beholden to the full schedule rules
+    if in_all_schedule_rules?
+      # Check for order_detail and order because some old specs don't set an order detail.
+      return if order_detail&.order.nil?
+      errors.add(:base, :no_schedule_group) unless in_allowed_schedule_rules?
+    else
+      errors.add(:base, :no_schedule_rule)
+    end
   end
 
-  def allowed_in_scheduled_rules?(start_at = reserve_start_at, end_at = reserve_end_at)
-    # Check for order_detail and order because some old specs don't set an order detail.
-    # If we're saving as an administrator, they can override the user's schedule rules.
-    rules = if order_detail.try(:order).nil? || reserved_by_admin
-              product.schedule_rules
-            else
-              product.available_schedule_rules(order_detail.order.user)
-            end
+  def in_all_schedule_rules?
+    product.schedule_rules.cover?(reserve_start_at, reserve_end_at)
+  end
 
-    rules.cover?(start_at, end_at)
+  def in_allowed_schedule_rules?
+    # If we're saving as an administrator, they can override the user's schedule rules.
+    return true if reserved_by_admin
+    product.available_schedule_rules(order_detail.order.user).cover?(reserve_start_at, reserve_end_at)
   end
 
   def in_the_future?
