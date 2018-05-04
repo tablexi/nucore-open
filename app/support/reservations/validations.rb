@@ -149,8 +149,6 @@ module Reservations::Validations
   def allowed_in_schedule_rules_error
     # Everyone, including admins, are beholden to the full schedule rules
     if in_all_schedule_rules?
-      # Check for order_detail and order because some old specs don't set an order detail.
-      return if order_detail&.order.nil?
       :no_schedule_group unless in_allowed_schedule_rules?
     else
       :no_schedule_rule
@@ -169,7 +167,8 @@ module Reservations::Validations
   def in_allowed_schedule_rules?
     # If we're saving as an administrator, they can override the user's schedule rules.
     return true if reserved_by_admin
-    product.available_schedule_rules(order_detail.order.user).cover?(reserve_start_at, reserve_end_at)
+    # Some old specs don't set an order detail, so we need to safe-navigate
+    product.available_schedule_rules(order_detail&.order&.user).cover?(reserve_start_at, reserve_end_at)
   end
 
   def in_the_future?
