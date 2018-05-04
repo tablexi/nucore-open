@@ -456,11 +456,11 @@ RSpec.describe Reservation do
                 reservation.reload
               end
 
-              after { travel_to(@current_time) }
+              after(:each) { travel_to(@current_time, safe: true) }
 
               context "before the lock window begins" do
                 before :each do
-                  travel_to(reservation.reserve_start_at - (window_hours + 2).hours)
+                  travel_to(reservation.reserve_start_at - (window_hours + 2).hours, safe: true)
                 end
 
                 it_behaves_like "a customer is allowed to edit"
@@ -468,7 +468,7 @@ RSpec.describe Reservation do
 
               context "after the lock window has begun" do
                 before :each do
-                  travel_to(reservation.reserve_start_at - (window_hours - 2).hours)
+                  travel_to(reservation.reserve_start_at - (window_hours - 2).hours, safe: true)
                 end
 
                 it_behaves_like "a customer is allowed to edit"
