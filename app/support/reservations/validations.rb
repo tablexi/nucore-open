@@ -10,7 +10,7 @@ module Reservations::Validations
     validates :reserve_start_at, presence: true
     validates :reserve_end_at, presence: true, if: :end_at_required?
     validate :does_not_conflict_with_other_user_reservation,
-             :instrument_is_available_to_reserve,
+             :allowed_in_scheduled_rules,
              :satisfies_minimum_length,
              :satisfies_maximum_length,
              if: ->(r) { r.reserve_start_at && r.reserve_end_at && r.reservation_changed? },
@@ -142,11 +142,11 @@ module Reservations::Validations
     errors.add(:base, :too_long, length: product.max_reserve_mins) unless satisfies_maximum_length?
   end
 
-  def instrument_is_available_to_reserve
-    errors.add(:base, :unavailable_to_reserve) unless instrument_is_available_to_reserve?
+  def allowed_in_scheduled_rules
+    errors.add(:base, :no_schedule_rule) unless allowed_in_scheduled_rules?
   end
 
-  def instrument_is_available_to_reserve?(start_at = reserve_start_at, end_at = reserve_end_at)
+  def allowed_in_scheduled_rules?(start_at = reserve_start_at, end_at = reserve_end_at)
     # Check for order_detail and order because some old specs don't set an order detail.
     # If we're saving as an administrator, they can override the user's schedule rules.
     rules = if order_detail.try(:order).nil? || reserved_by_admin
