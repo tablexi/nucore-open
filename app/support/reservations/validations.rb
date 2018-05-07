@@ -10,7 +10,7 @@ module Reservations::Validations
     validates :reserve_start_at, presence: true
     validates :reserve_end_at, presence: true, if: :end_at_required?
     validate :does_not_conflict_with_other_user_reservation,
-             :instrument_is_available_to_reserve,
+             :allowed_in_schedule_rules,
              :satisfies_minimum_length,
              :satisfies_maximum_length,
              if: ->(r) { r.reserve_start_at && r.reserve_end_at && r.reservation_changed? },
@@ -142,20 +142,33 @@ module Reservations::Validations
     errors.add(:base, :too_long, length: product.max_reserve_mins) unless satisfies_maximum_length?
   end
 
-  def instrument_is_available_to_reserve
-    errors.add(:base, :unavailable_to_reserve) unless instrument_is_available_to_reserve?
+  def allowed_in_schedule_rules?
+    allowed_in_schedule_rules_error.blank?
   end
 
-  def instrument_is_available_to_reserve?(start_at = reserve_start_at, end_at = reserve_end_at)
-    # Check for order_detail and order because some old specs don't set an order detail.
-    # If we're saving as an administrator, they can override the user's schedule rules.
-    rules = if order_detail.try(:order).nil? || reserved_by_admin
-              product.schedule_rules
-            else
-              product.available_schedule_rules(order_detail.order.user)
-            end
+  def allowed_in_schedule_rules_error
+    # Everyone, including admins, are beholden to the full schedule rules
+    if in_all_schedule_rules?
+      :no_schedule_group unless in_allowed_schedule_rules?
+    else
+      :no_schedule_rule
+    end
+  end
 
-    rules.cover?(start_at, end_at)
+  def allowed_in_schedule_rules
+    error = allowed_in_schedule_rules_error
+    errors.add(:base, error) if error
+  end
+
+  def in_all_schedule_rules?
+    product.schedule_rules.cover?(reserve_start_at, reserve_end_at)
+  end
+
+  def in_allowed_schedule_rules?
+    # If we're saving as an administrator, they can override the user's schedule rules.
+    return true if reserved_by_admin
+    # Some old specs don't set an order detail, so we need to safe-navigate
+    product.available_schedule_rules(order_detail&.order&.user).cover?(reserve_start_at, reserve_end_at)
   end
 
   def in_the_future?
