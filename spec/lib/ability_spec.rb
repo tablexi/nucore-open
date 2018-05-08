@@ -68,16 +68,16 @@ RSpec.describe Ability do
       it { is_expected.to be_allowed_to(:manage_accounts, facility) }
       it_is_allowed_to([:new, :create, :read, :edit, :update, :suspend, :unsuspend], Account)
       it { is_expected.to be_allowed_to(:manage, AccountUser) }
-      it { is_expected.to be_allowed_to(:manage, User) }
-      it { is_expected.not_to be_allowed_to(:switch_to, other_user) }
+      it_is_allowed_to([:new, :create, :read, :edit, :update, :index, :accounts], User)
+      it_is_not_allowed_to([:switch_to, :suspend, :unsuspend, :orders], User)
     end
 
     context "in no facility" do
       let(:facility) { nil }
 
       it { is_expected.to be_allowed_to(:manage, AccountUser) }
-      it { is_expected.to be_allowed_to(:manage, User) }
-      it { is_expected.not_to be_allowed_to(:switch_to, other_user) }
+      it_is_allowed_to([:new, :create, :read, :edit, :update, :index, :accounts, :search], User)
+      it_is_not_allowed_to([:switch_to, :suspend, :unsuspend, :orders], User)
     end
   end
 

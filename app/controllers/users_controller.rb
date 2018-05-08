@@ -38,6 +38,7 @@ class UsersController < ApplicationController
                  .paginate(page: params[:page])
   end
 
+  # POST /facilities/:facility_id/users/search
   def search
     @user = username_lookup(params[:username_lookup])
     render layout: false
@@ -47,6 +48,7 @@ class UsersController < ApplicationController
   def new
   end
 
+  # GET /facilities/:facility_id/users/new_external
   def new_external
     @user = User.new(email: params[:email], username: params[:email])
     @user_form = user_form_class.new(@user)
@@ -100,18 +102,10 @@ class UsersController < ApplicationController
     @training_requested_product_ids = @user.training_requests.pluck(:product_id)
   end
 
-  def training_requested_for?(product)
-    @training_requested_product_ids.include? product.id
-  end
-  helper_method :training_requested_for?
-
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
   def access_list_approvals
     update_access_list_approvals
     redirect_to facility_user_access_list_path(current_facility, @user)
-  end
-
-  def email
   end
 
   # GET /facilities/:facility_id/users/:id/edit
@@ -131,18 +125,25 @@ class UsersController < ApplicationController
     end
   end
 
+  # PATCH /facilities/:facility_id/users/:id/suspend
   def suspend
     @user.suspended_at ||= Time.current
     @user.save!
     redirect_to facility_user_path(current_facility, @user), notice: "User suspended"
   end
 
+  # PATCH /facilities/:facility_id/users/:id/unsuspend
   def unsuspend
     @user.update!(suspended_at: nil)
     redirect_to facility_user_path(current_facility, @user), notice: "User re-activated"
   end
 
   private
+
+  def training_requested_for?(product)
+    @training_requested_product_ids.include? product.id
+  end
+  helper_method :training_requested_for?
 
   def create_params
     params.require(:user).permit(:email, :first_name, :last_name, :username)
