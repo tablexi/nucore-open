@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 %html
   %head
-    = render :partial => '/shared/head'
+    = render "/shared/head"
   %body
     %header
-      = render :partial => '/shared/acting_as'
-      = render :partial => '/shared/header'
+      = render "/shared/acting_as"
+      = render_view_hook("banner")
+      = render "/shared/header"
     %nav
-      = render :partial => '/shared/nav'
-    = render :partial => '/shared/breadcrumb', :locals => { :breadcrumb => yield(:breadcrumb) }
+      = render "/shared/nav"
+    = render "/shared/breadcrumb", breadcrumb: yield(:breadcrumb)
     #content
       .container
         .row
           .span12
             %h1= yield :h1
             = yield :tabnav
-            = render partial: 'shared/flashes'
+            = render partial: "shared/flashes"
 
             = yield
     %footer
-      = render :partial => '/shared/footer'
+      = render "/shared/footer"
