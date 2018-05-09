@@ -1,7 +1,25 @@
 require "rails_helper"
 
 RSpec.describe SamlAuthentication::SessionsController, type: :controller do
-  describe "create" do
+  # Utility class to expose some private methods of SamlMessage
+  class SamlEncoder < OneLogin::RubySaml::SamlMessage
+
+    def self.decode(saml)
+      new.send(:decode_raw_saml, saml)
+    end
+
+    def self.encode(saml)
+      new.send(:encode_raw_saml, saml, OpenStruct.new(compress_request: true))
+    end
+
+  end
+
+  let(:idp_slo_path) do
+    doc = Nokogiri::XML(File.read(File.expand_path("../../fixtures/idp_metadata.xml", __dir__)))
+    doc.css("SingleLogoutService").first["Location"]
+  end
+
+  describe "#create" do
     # based on a onelogin response
     let(:attribute_map) do
       {
@@ -132,6 +150,68 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
 
       it "clears the password" do
         expect { post :create, SAMLResponse: saml_response }.to change { user.reload.encrypted_password }.to(nil)
+      end
+    end
+  end
+
+  describe "#destroy" do
+    let(:user) { create(:user) }
+    before do
+      request.env["devise.mapping"] = Devise.mappings[:user]
+      sign_in user
+    end
+
+    it "logs the user out logout" do
+      delete :destroy
+      expect(controller.current_user).to be_blank
+    end
+
+    it "redirects to the slo path" do
+      delete :destroy
+      expect(response.location).to start_with(idp_slo_path)
+    end
+
+    it "includes the username in the logout request" do
+      delete :destroy
+      uri = URI.parse(response.location)
+      xml = SamlEncoder.decode Rack::Utils.parse_query(uri.query)["SAMLRequest"]
+      doc = Nokogiri::XML(xml)
+      expect(doc.css("saml|NameID").first.text).to eq(user.username)
+    end
+  end
+
+  describe "#idp_sign_out" do
+    let(:user) { create(:user) }
+    before do
+      request.env["devise.mapping"] = Devise.mappings[:user]
+      request.host = "localhost:3000" # without this, we're getting redirected to http://test.host/
+    end
+
+    describe "sp_initiated_sign_out" do
+      it "redirects to the homepage" do
+        # captured from OneLogin requests
+        encoded = SamlEncoder.encode File.read(File.expand_path("../../fixtures/sp_initiated_sign_out.xml", __dir__))
+        get :idp_sign_out, SAMLResponse: encoded
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    describe "idp_initiated_sign_out" do
+      # Captured from OneLogin requests
+      let(:payload) { SamlEncoder.encode File.read(File.expand_path("../../fixtures/idp_initiated_sign_out.xml", __dir__)) }
+      before do
+        request.env["devise.mapping"] = Devise.mappings[:user]
+        sign_in user
+      end
+
+      it "logs the user out" do
+        get :idp_sign_out, SAMLRequest: payload
+        expect(controller.current_user).to be_blank
+      end
+
+      it "redirects back to the IdP" do
+        get :idp_sign_out, SAMLRequest: payload
+        expect(response.location).to start_with(idp_slo_path)
       end
     end
   end

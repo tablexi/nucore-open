@@ -1,5 +1,6 @@
 require "saml_authentication/user_locator"
 require "saml_authentication/user_updater"
+require "saml_authentication/idp_entity_id_reader"
 
 module SamlAuthentication
 
@@ -7,18 +8,20 @@ module SamlAuthentication
 
     def configure!
       Devise.setup do |config|
-        config.saml_session_index_key = :session_index
         config.saml_default_user_key = :username
         config.saml_create_user = saml_create_user?
         config.saml_update_user = true
         config.saml_resource_locator = SamlAuthentication::UserLocator.new
         config.saml_update_resource_hook = saml_updater
+        config.saml_sign_out_success_url = Rails.application.routes.url_helpers.root_url
+        config.idp_entity_id_reader = SamlAuthentication::IdpEntityIdReader
 
         config.saml_config = fetch_metadata_config
 
         config.saml_configure do |settings|
           settings.assertion_consumer_service_url = Rails.application.routes.url_helpers.auth_saml_user_session_url
           settings.issuer = Rails.application.routes.url_helpers.metadata_saml_user_session_url
+          settings.single_logout_service_url = Rails.application.routes.url_helpers.idp_sign_out_user_session_url
           Hash(Settings.saml.driver).each do |key, value|
             settings.public_send("#{key}=", value)
           end
