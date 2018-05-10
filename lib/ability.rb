@@ -58,7 +58,7 @@ class Ability
         can [:create, :read, :update, :administer, :accounts, :new_external, :search], User
         can [:create, :read, :update, :suspend, :unsuspend], Account
         if SettingsHelper.feature_off?(:create_users)
-          cannot([:edit, :update], User)
+          cannot([:create, :update], User)
         end
       end
     end
