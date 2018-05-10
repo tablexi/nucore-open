@@ -58,6 +58,38 @@ RSpec.describe ReservationsController do
       expect(assigns[:instrument]).to eq(instrument)
     end
 
+    describe "start/stop parameters" do
+      let(:start_range) { Time.zone.local(2018, 5, 15, 12, 13) }
+      let(:end_range) { start_range + 1.week }
+
+      it "supports iso8601 parameters" do
+        @params.merge!(start: start_range.iso8601, end: end_range.iso8601)
+        do_request
+        expect(assigns(:start_at)).to eq(start_range)
+        expect(assigns(:end_at)).to eq(end_range)
+      end
+
+      it "supports unix timestamps" do
+        @params.merge!(start: start_range.to_i, end: end_range.to_i)
+        do_request
+        expect(assigns(:start_at)).to eq(start_range)
+        expect(assigns(:end_at)).to eq(end_range)
+      end
+
+      it "defaults to today with no parameters" do
+        do_request
+        expect(assigns(:start_at)).to eq(Time.current)
+        expect(assigns(:end_at)).to eq(Time.current.end_of_day)
+      end
+
+      it "defaults to the end of day with missing end param" do
+        @params.merge!(start: start_range.iso8601)
+        do_request
+        expect(assigns(:start_at)).to eq(start_range)
+        expect(assigns(:end_at)).to eq(start_range.end_of_day)
+      end
+    end
+
     context "schedule rules" do
       let(:now) { Time.current }
 

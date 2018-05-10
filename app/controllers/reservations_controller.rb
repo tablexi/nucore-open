@@ -27,8 +27,8 @@ class ReservationsController < ApplicationController
     @facility = Facility.find_by!(url_name: params[:facility_id])
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
-    @start_at = params[:start] ? Time.zone.parse(params[:start]) : Time.zone.now
-    @end_at = params[:end] ? Time.zone.parse(params[:end]) : @start_at.end_of_day
+    @start_at = parse_time_param(params[:start]) || Time.zone.now
+    @end_at = parse_time_param(params[:end]) || @start_at.end_of_day
 
     admin_reservations = @instrument.schedule.admin_reservations.in_range(@start_at, @end_at)
     user_reservations = @instrument.schedule
@@ -392,6 +392,18 @@ class ReservationsController < ApplicationController
   def upcoming_today?(reservation)
     now = Time.zone.now
     (reservation.reserve_start_at.to_date == now.to_date || reservation.reserve_start_at < now) && reservation.reserve_end_at > now
+  end
+
+  # Some browsers are not updating their cached JS and have an out-of-date calendar
+  # JS library which uses unix timestamps for the parameters. This allows us to handle both.
+  def parse_time_param(value)
+    return unless value
+
+    if value.to_s =~ /\A\d+{10}\z/ # unix timestamp
+      Time.zone.at(value.to_i)
+    else
+      Time.zone.parse(value)
+    end
   end
 
   def helpers
