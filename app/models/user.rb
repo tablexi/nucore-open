@@ -138,6 +138,7 @@ class User < ApplicationRecord
   # purchasing that product
   def accounts_for_product(product)
     acts = accounts.active.for_facility(product.facility).to_a
+    puts acts.map { |acct| [acct, acct.validate_against_product(product, self)] }
     acts.reject! { |acct| !acct.validate_against_product(product, self).nil? }
     acts
   end
