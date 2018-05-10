@@ -399,8 +399,10 @@ class ReservationsController < ApplicationController
   def parse_time_param(value)
     return unless value
 
-    if value.to_s =~ /\A\d+{10}\z/ # unix timestamp
+    if value.to_s =~ /\A\d{10}\z/ # unix timestamp
       Time.zone.at(value.to_i)
+    elsif value.to_s =~ /\A\d{13}\z/ # unix timestamp with milliseconds
+      Time.zone.at(value.to_i / 1000)
     else
       Time.zone.parse(value)
     end

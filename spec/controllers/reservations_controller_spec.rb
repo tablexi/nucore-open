@@ -63,14 +63,24 @@ RSpec.describe ReservationsController do
       let(:end_range) { start_range + 1.week }
 
       it "supports iso8601 parameters" do
-        @params.merge!(start: start_range.iso8601, end: end_range.iso8601)
+        @params[:start] = start_range.iso8601
+        @params[:end] = end_range.iso8601
         do_request
         expect(assigns(:start_at)).to eq(start_range)
         expect(assigns(:end_at)).to eq(end_range)
       end
 
-      it "supports unix timestamps" do
-        @params.merge!(start: start_range.to_i, end: end_range.to_i)
+      it "supports unix timestamps without milliseconds" do
+        @params[:start] = start_range.to_i
+        @params[:end] = end_range.to_i
+        do_request
+        expect(assigns(:start_at)).to eq(start_range)
+        expect(assigns(:end_at)).to eq(end_range)
+      end
+
+      it "supports unix timestamps with milliseconds" do
+        @params[:start] = start_range.to_i * 1000
+        @params[:end] = end_range.to_i * 1000
         do_request
         expect(assigns(:start_at)).to eq(start_range)
         expect(assigns(:end_at)).to eq(end_range)
@@ -83,7 +93,7 @@ RSpec.describe ReservationsController do
       end
 
       it "defaults to the end of day with missing end param" do
-        @params.merge!(start: start_range.iso8601)
+        @params[:start] = start_range.iso8601
         do_request
         expect(assigns(:start_at)).to eq(start_range)
         expect(assigns(:end_at)).to eq(start_range.end_of_day)
