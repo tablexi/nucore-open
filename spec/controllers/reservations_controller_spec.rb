@@ -70,17 +70,9 @@ RSpec.describe ReservationsController do
         expect(assigns(:end_at)).to eq(end_range)
       end
 
-      it "supports unix timestamps without milliseconds" do
+      it "supports unix timestamps" do
         @params[:start] = start_range.to_i
         @params[:end] = end_range.to_i
-        do_request
-        expect(assigns(:start_at)).to eq(start_range)
-        expect(assigns(:end_at)).to eq(end_range)
-      end
-
-      it "supports unix timestamps with milliseconds" do
-        @params[:start] = start_range.to_i * 1000
-        @params[:end] = end_range.to_i * 1000
         do_request
         expect(assigns(:start_at)).to eq(start_range)
         expect(assigns(:end_at)).to eq(end_range)

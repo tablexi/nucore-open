@@ -396,16 +396,11 @@ class ReservationsController < ApplicationController
 
   # Some browsers are not updating their cached JS and have an out-of-date calendar
   # JS library which uses unix timestamps for the parameters. This allows us to handle both.
-  def parse_time_param(value)
-    return unless value
-
-    if value.to_s.match?(/\A\d{10}\z/) # unix timestamp
-      Time.zone.at(value.to_i)
-    elsif value.to_s.match?(/\A\d{13}\z/) # unix timestamp with milliseconds
-      Time.zone.at(value.to_i / 1000)
-    else
-      Time.zone.parse(value)
-    end
+  def parse_time_param(string_value)
+    return unless string_value
+    Time.zone.parse(string_value)
+  rescue ArgumentError
+    Time.at(string_value.to_i)
   end
 
   def helpers
