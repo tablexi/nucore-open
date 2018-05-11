@@ -128,7 +128,9 @@ group :stage, :production do
   gem "lograge"
   gem "logstash-event"
   gem "oj"
-  gem "rollbar"
+  # 2.15.6 has a problem during cap deploy
+  # https://github.com/rollbar/rollbar-gem/issues/713
+  gem "rollbar", "2.15.5"
   gem "unicorn", require: false
   gem "whenever", require: false
 end
