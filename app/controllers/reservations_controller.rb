@@ -400,7 +400,7 @@ class ReservationsController < ApplicationController
     return unless string_value
     Time.zone.parse(string_value)
   rescue ArgumentError
-    Time.at(string_value.to_i)
+    Time.zone.at(string_value.to_i)
   end
 
   def helpers
