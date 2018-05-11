@@ -26,10 +26,8 @@ Welcome to NUcore! This guide will help you get a development environment up and
 
     ```
     cd nucore
-    bundle install --without oracle
+    bundle install
     ```
-
-    - Note: `ruby-oci8` gem installation will fail unless Oracle is set up first.
 
 3. Configure your databases
 

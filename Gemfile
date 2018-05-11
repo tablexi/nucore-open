@@ -10,10 +10,9 @@ gem "config"
 
 ## database
 gem "mysql2", "~> 0.4.10"
-group :oracle do
-  gem "ruby-oci8"
-  gem "activerecord-oracle_enhanced-adapter"
-end
+# To use Oracle, remove the mysql2 gem above and uncomment these lines
+# gem "ruby-oci8"
+# gem "activerecord-oracle_enhanced-adapter"
 
 ## auth
 gem "cancancan"

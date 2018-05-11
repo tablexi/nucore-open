@@ -4,8 +4,6 @@ machine:
 dependencies:
   pre:
     - gem install bundler
-  bundler:
-    without: [oracle]
   pre:
     - cp config/secrets.yml.template config/secrets.yml
 
