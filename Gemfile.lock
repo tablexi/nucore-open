@@ -104,10 +104,6 @@ GEM
       activemodel (= 5.0.7)
       activesupport (= 5.0.7)
       arel (~> 7.0)
-    activerecord-oracle_enhanced-adapter (1.7.11)
-      activerecord (~> 5.0.0)
-      arel (~> 7.1.4)
-      ruby-plsql (>= 0.5.0)
     activesupport (5.0.7)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
@@ -536,9 +532,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-graphviz (1.2.3)
-    ruby-oci8 (2.2.5.1)
     ruby-ole (1.2.12.1)
-    ruby-plsql (0.6.0)
     ruby-progressbar (1.9.0)
     ruby-saml (1.8.0)
       nokogiri (>= 1.5.10)
@@ -641,7 +635,6 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
-  activerecord-oracle_enhanced-adapter
   awesome_nested_set
   awesome_print
   bootstrap-sass (~> 2.3.2)
@@ -713,7 +706,6 @@ DEPENDENCIES
   rspec-rails
   rspec_junit_formatter
   rubocop (= 0.54)
-  ruby-oci8
   rubyzip
   saml_authentication!
   sanger_sequencing!
