@@ -10,11 +10,7 @@ class Affiliate < ApplicationRecord
     @@other ||= find_or_create_by(name: "Other") { |a| a.subaffiliates_enabled = true }
   end
 
-  before_destroy :destroyable?
-
-  def destroyable?
-    !other?
-  end
+  before_destroy { throw :abort if other? }
 
   def other?
     self == self.class.OTHER

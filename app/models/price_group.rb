@@ -14,7 +14,7 @@ class PriceGroup < ApplicationRecord
 
   default_scope -> { order(is_internal: :desc, display_order: :asc, name: :asc) }
 
-  before_destroy :is_not_global?
+  before_destroy { throw :abort if global? }
   before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil? }
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]) }

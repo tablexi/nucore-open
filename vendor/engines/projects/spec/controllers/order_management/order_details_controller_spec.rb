@@ -10,11 +10,12 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
   describe "PUT #update" do
     def perform_request
-      put :update,
-          facility_id: facility.url_name,
-          order_id: order.id,
-          id: order_detail.id,
-          order_detail: { project_id: project_id }
+      put :update, params: {
+        facility_id: facility.url_name,
+        order_id: order.id,
+        id: order_detail.id,
+        order_detail: { project_id: project_id },
+      }
     end
 
     before(:each) do

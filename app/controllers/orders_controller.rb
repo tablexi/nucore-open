@@ -59,8 +59,8 @@ class OrdersController < ApplicationController
     session[:add_to_cart] = nil
 
     # ignore ods w/ empty or 0 quantities
-    items = items.select { |od| od.is_a?(Hash) && od[:quantity].present? && (od[:quantity] = od[:quantity].to_i) > 0 }
-    return redirect_to(:back, notice: "Please add at least one quantity to order something") unless items.size > 0
+    items = items.compact.map { |i| i.permit(:product_id, :quantity) }.select { |od| od[:quantity].to_i > 0 }
+    return redirect_back(fallback_location: cart_path, notice: "Please add at least one quantity to order something") unless items.size > 0
 
     first_product = Product.find(items.first[:product_id])
     facility_ability = Ability.new(session_user, first_product.facility, self)

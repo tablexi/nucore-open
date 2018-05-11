@@ -61,7 +61,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
                               reserve_start_at: (date_start + 1.day).beginning_of_day,
                               duration: 3.days,
                               category: nil)
-            xhr(:get, :index, params)
+            get(:index, params: params, xhr: true)
           end
 
           it_behaves_like "it sets the required instance variables"
@@ -89,7 +89,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
                           product: instruments.first,
                           reserve_start_at: reserve_start_at,
                           reserve_end_at: reserve_end_at)
-        xhr(:get, :index, params)
+        get(:index, params: params, xhr: true)
       end
 
       it_behaves_like "it sets the required instance variables"
@@ -107,7 +107,7 @@ RSpec.describe Reports::InstrumentUnavailableReportsController do
                           product: instruments.first,
                           reserve_start_at: reserve_start_at,
                           reserve_end_at: reserve_end_at)
-        xhr(:get, :index, params)
+        get(:index, params: params, xhr: true)
       end
 
       context "and the instrument is still offline" do

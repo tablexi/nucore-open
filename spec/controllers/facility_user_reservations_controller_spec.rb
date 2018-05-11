@@ -15,7 +15,7 @@ RSpec.describe FacilityUserReservationsController do
     end
 
     context "when not logged in" do
-      before { get :index, facility_id: facility.url_name, user_id: user.id }
+      before { get :index, params: { facility_id: facility.url_name, user_id: user.id } }
 
       it_behaves_like "the user must log in"
     end
@@ -23,7 +23,7 @@ RSpec.describe FacilityUserReservationsController do
     context "when logged in as a facility director" do
       before(:each) do
         sign_in(facility_director)
-        get :index, facility_id: facility.url_name, user_id: user.id
+        get :index, params: { facility_id: facility.url_name, user_id: user.id }
       end
 
       it "generates a page of reservations", :aggregate_failures do
@@ -42,10 +42,11 @@ RSpec.describe FacilityUserReservationsController do
     shared_examples_for "it can cancel the reservation" do
       def execute_cancel_request
         sign_in(operator)
-        put :cancel,
-            facility_id: facility.url_name,
-            user_id: user.id,
-            order_detail_id: order_detail.id
+        put :cancel, params: {
+          facility_id: facility.url_name,
+          user_id: user.id,
+          order_detail_id: order_detail.id,
+        }
       end
 
       context "when a cancellation fee applies" do

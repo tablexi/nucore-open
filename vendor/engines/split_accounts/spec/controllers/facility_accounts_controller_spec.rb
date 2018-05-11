@@ -15,7 +15,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     describe "show" do
       let(:split_account) { FactoryBot.create(:split_account) }
 
-      before { get :show, facility_id: facility.url_name, id: split_account.id }
+      before { get :show, params: { facility_id: facility.url_name, id: split_account.id } }
 
       it "includes edit button" do
         expect(response.body).to include("Edit")
@@ -24,7 +24,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
     describe "edit" do
       let(:split_account) { FactoryBot.create(:split_account) }
-      before { get :edit, facility_id: facility.url_name, id: split_account.id }
+      before { get :edit, params: { facility_id: facility.url_name, id: split_account.id } }
 
       it "has only the description field", :aggregate_failures do
         expect(response.body).to include("Description")
@@ -35,7 +35,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
     describe "update" do
       let(:split_account) { FactoryBot.create(:split_account) }
-      before { post :update, facility_id: facility.url_name, id: split_account.id, split_accounts_split_account: { description: "New Description" } }
+      before { post :update, params: { facility_id: facility.url_name, id: split_account.id, split_accounts_split_account: { description: "New Description" } } }
 
       it "updates the description" do
         expect(split_account.reload.description).to eq("New Description")
@@ -47,7 +47,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     let(:split_account) { FactoryBot.create(:split_account) }
 
     describe "show" do
-      before { get :show, facility_id: facility.url_name, id: split_account.id }
+      before { get :show, params: { facility_id: facility.url_name, id: split_account.id } }
 
       it "includes the suspend button" do
         expect(response.body).to include("Suspend")
@@ -56,7 +56,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
     describe "suspending" do
       it "suspends the account" do
-        expect { get :suspend, facility_id: facility.url_name, account_id: split_account.id }
+        expect { get :suspend, params: { facility_id: facility.url_name, account_id: split_account.id } }
           .to change { split_account.reload.suspended_at }
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
       before { split_account.update_attributes(suspended_at: 1.day.ago) }
 
       it "reactivates" do
-        expect { get :unsuspend, facility_id: facility.url_name, account_id: split_account.id }
+        expect { get :unsuspend, params: { facility_id: facility.url_name, account_id: split_account.id } }
           .to change { split_account.reload.suspended? }.from(true).to(false)
       end
 
@@ -73,7 +73,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
         before { split_account.subaccounts.first.update_attributes(suspended_at: 1.day.ago) }
 
         it "does not reactivate", :aggregate_failures do
-          expect { get :unsuspend, facility_id: facility.url_name, account_id: split_account.id }
+          expect { get :unsuspend, params: { facility_id: facility.url_name, account_id: split_account.id } }
             .not_to change { split_account.reload.suspended? }
 
           expect(flash[:alert]).to include(I18n.t("activerecord.errors.models.split_accounts/split_account.suspended_child"))
@@ -89,7 +89,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     include_examples "allows suspending"
 
     describe "default new" do
-      before { get :new, facility_id: facility.url_name, owner_user_id: user.id }
+      before { get :new, params: { facility_id: facility.url_name, owner_user_id: user.id } }
 
       it "sees split account option", :aggregate_failures do
         expect(response.code).to eq("200")
@@ -99,7 +99,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     end
 
     describe "new on split accounts" do
-      before { get :new, facility_id: facility.url_name, owner_user_id: user.id, account_type: "SplitAccounts::SplitAccount" }
+      before { get :new, params: { facility_id: facility.url_name, owner_user_id: user.id, account_type: "SplitAccounts::SplitAccount" } }
 
       it "renders successfully", :aggregate_failures do
         expect(response.code).to eq("200")
@@ -120,7 +120,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     include_examples "allows suspending"
 
     describe "default new" do
-      before { get :new, facility_id: facility.url_name, owner_user_id: user.id }
+      before { get :new, params: { facility_id: facility.url_name, owner_user_id: user.id } }
 
       it "does not see split account option", :aggregate_failures do
         expect(response.code).to eq("200")
@@ -130,7 +130,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     end
 
     describe "new on split accounts" do
-      before { get :new, facility_id: facility.url_name, owner_user_id: user.id, account_type: "SplitAccounts::SplitAccount" }
+      before { get :new, params: { facility_id: facility.url_name, owner_user_id: user.id, account_type: "SplitAccounts::SplitAccount" } }
 
       it "falls back to the default account type" do
         expect(assigns(:account)).to be_a(NufsAccount)
@@ -151,7 +151,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
     describe "show" do
       let(:split_account) { FactoryBot.create(:split_account) }
 
-      before { get :show, facility_id: facility.url_name, id: split_account.id }
+      before { get :show, params: { facility_id: facility.url_name, id: split_account.id } }
 
       it "does not show the edit/suspend buttons", :aggregate_failures do
         expect(response.body).not_to include("Edit")
@@ -161,7 +161,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
     describe "edit" do
       let(:split_account) { FactoryBot.create(:split_account) }
-      before { get :edit, facility_id: facility.url_name, id: split_account.id }
+      before { get :edit, params: { facility_id: facility.url_name, id: split_account.id } }
 
       it "returns a 403" do
         expect(response.code).to eq("403")
@@ -170,7 +170,7 @@ RSpec.describe FacilityAccountsController, :enable_split_accounts do
 
     describe "update" do
       let(:split_account) { FactoryBot.create(:split_account) }
-      before { post :update, facility_id: facility.url_name, id: split_account.id }
+      before { post :update, params: { facility_id: facility.url_name, id: split_account.id } }
 
       it "returns a 403" do
         expect(response.code).to eq("403")

@@ -87,7 +87,8 @@ RSpec.describe FacilityJournalsController do
 
       it "throws an error if :reference is empty" do
         @params[:journal_status] = "succeeded"
-        @params[:journal].delete :reference
+        @params[:journal][:reference] = ""
+
         do_request
         expect(flash[:error]).to include "Reference may not be blank"
       end
@@ -223,7 +224,7 @@ RSpec.describe FacilityJournalsController do
 
         it "does not persist the journal" do
           do_request
-          expect(assigns(:journal)).to be_new_record
+          expect(assigns(:journal)).not_to be_persisted
         end
 
         it "has an error" do
@@ -457,7 +458,7 @@ RSpec.describe FacilityJournalsController do
 
   describe "#reconcile" do
     def perform
-      post :reconcile, facility_id: facility.url_name, order_detail: order_detail_params, journal_id: journal.id
+      post :reconcile, params: { facility_id: facility.url_name, order_detail: order_detail_params, journal_id: journal.id }
     end
 
     before do

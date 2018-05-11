@@ -21,7 +21,7 @@ RSpec.describe StatementsController do
 
     before do
       sign_in user
-      get :show, account_id: user.accounts.first.id, id: statement.id, format: :pdf
+      get :show, params: { account_id: user.accounts.first.id, id: statement.id, format: :pdf }
     end
 
     it "renders a PDF" do

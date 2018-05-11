@@ -70,7 +70,7 @@ class FileUploadsController < ApplicationController
       errors = @upload.errors.map { |_k, msg| msg }.to_sentence
       respond_to do |format|
         format.json { render json: { error: errors } }
-        format.html { render text: errors, status: 400 }
+        format.html { render plain: errors, status: 400 }
       end
     end
   end
@@ -154,7 +154,7 @@ class FileUploadsController < ApplicationController
   def create_product_survey_from_url
     survey_param = ExternalServiceManager.survey_service.name.underscore.to_sym
 
-    if params[survey_param].nil? || params[survey_param][:location].blank?
+    if params[survey_param].blank? || params[survey_param][:location].blank?
       @survey = ExternalServiceManager.survey_service.new
       @survey.errors.add(:base, "No location specified")
     else

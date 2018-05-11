@@ -25,7 +25,7 @@ RSpec.describe SecureRoomsApi::EventsController do
       end
 
       before do
-        post :create, params
+        post :create, params: params
       end
 
       describe "response" do

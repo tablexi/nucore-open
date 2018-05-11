@@ -28,9 +28,9 @@ end
 def do_request(params = nil)
   params ||= @params
   if @method == :xhr
-    xhr :get, @action, params
+    get @action, params: params, xhr: true
   else
-    method(@method).call(@action, params)
+    method(@method).call(@action, params: params)
   end
 end
 

@@ -35,7 +35,7 @@ RSpec.describe GlobalUserRolesController do
 
     before(:each) do
       sign_in(user)
-      delete(:destroy, id: user_with_roles_to_destroy)
+      delete(:destroy, params: { id: user_with_roles_to_destroy })
     end
 
     context "when removing global roles for another user" do
@@ -62,7 +62,7 @@ RSpec.describe GlobalUserRolesController do
 
     before(:each) do
       sign_in(administrators.first)
-      get(:edit, id: user.id)
+      get(:edit, params: { id: user.id })
     end
 
     context "when attempting to edit itself" do
@@ -90,7 +90,7 @@ RSpec.describe GlobalUserRolesController do
 
     before(:each) do
       sign_in(administrator)
-      put(:update, id: user.id, roles: roles)
+      put(:update, params: { id: user.id, roles: roles })
     end
 
     after { expect(response).to redirect_to(global_user_roles_url) }

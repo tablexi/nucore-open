@@ -26,7 +26,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
 
     describe "GET #index" do
       def do_request
-        get :index, facility_id: facility.url_name
+        get :index, params: { facility_id: facility.url_name }
       end
 
       describe "when not logged in" do
@@ -60,7 +60,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
 
     describe "GET #inactive" do
       def do_request
-        get :inactive, facility_id: facility.url_name
+        get :inactive, params: { facility_id: facility.url_name }
       end
 
       describe "when not logged in" do
@@ -97,7 +97,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
     let(:project) { FactoryBot.create(:project, facility: facility) }
 
     def do_request
-      get :edit, facility_id: facility.url_name, id: project.id
+      get :edit, params: { facility_id: facility.url_name, id: project.id }
     end
 
     describe "when not logged in" do
@@ -131,7 +131,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
 
   describe "GET #new" do
     def do_request
-      get :new, facility_id: facility.url_name
+      get :new, params: { facility_id: facility.url_name }
     end
 
     describe "when not logged in" do
@@ -167,7 +167,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
     let(:project) { FactoryBot.create(:project, facility: facility) }
 
     def do_request
-      get :show, facility_id: facility.url_name, id: project.id
+      get :show, params: { facility_id: facility.url_name, id: project.id }
     end
 
     describe "when not logged in" do
@@ -201,9 +201,10 @@ RSpec.describe Projects::ProjectsController, type: :controller do
 
   describe "POST #create" do
     def do_request
-      post :create,
-           facility_id: facility.url_name,
-           projects_project: { name: name, description: description }
+      post :create, params: {
+        facility_id: facility.url_name,
+        projects_project: { name: name, description: description },
+      }
     end
 
     let(:name) { "Project Name" }
@@ -248,14 +249,15 @@ RSpec.describe Projects::ProjectsController, type: :controller do
     let(:new_name) { "New project name" }
 
     def do_request
-      put :update,
-          facility_id: facility.url_name,
-          id: project.id,
-          projects_project: {
-            active: active?,
-            description: new_description,
-            name: new_name,
-          }
+      put :update, params: {
+        facility_id: facility.url_name,
+        id: project.id,
+        projects_project: {
+          active: active?,
+          description: new_description,
+          name: new_name,
+        },
+      }
     end
 
     describe "when not logged in" do

@@ -37,7 +37,7 @@ module ApplicationHelper
     title ||= column.titleize
     direction = column == sort_column && sort_direction == "asc" ? "desc" : "asc"
     sorting_class = (column == sort_column ? "sort-#{sort_direction}" : "sort")
-    link_to fa_icon(sorting_class, text: title, right: true), url_for(sort: column, dir: direction, search: params[:search])
+    link_to fa_icon(sorting_class, text: title, right: true), url_for(sort: column, dir: direction, search: request.query_parameters[:search])
   end
 
   #

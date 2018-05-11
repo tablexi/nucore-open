@@ -224,7 +224,7 @@ RSpec.describe FacilityOrdersController do
 
             before do
               sign_in director
-              put @action, @params
+              put @action, params: @params
             end
 
             it "errors due to an invalid transition", :aggregate_failures do

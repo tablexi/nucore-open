@@ -5,16 +5,15 @@ ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| 
 git_source(:github) { |repo_name| "git@github.com:#{repo_name}.git" }
 
 ## base
-gem "rails", "4.2.10"
+gem "rails", "5.0.7"
 gem "config"
 
 ## database
-gem "mysql2"
+gem "mysql2", "~> 0.4.10"
 group :oracle do
   gem "ruby-oci8"
   gem "activerecord-oracle_enhanced-adapter"
 end
-gem "where-or"
 
 ## auth
 gem "cancancan"
@@ -118,6 +117,7 @@ group :test do
   gem "capybara"
   gem "capybara-email"
   gem "poltergeist"
+  gem "rails-controller-testing"
   gem "rspec-collection_matchers"
   gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers" # https://github.com/thoughtbot/shoulda-matchers/issues/913
   gem "single_test"

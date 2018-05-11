@@ -15,7 +15,7 @@ RSpec.describe SangerSequencing::SubmissionsController do
     describe "as the purchaser" do
       before { sign_in user }
       it "has access" do
-        get :edit, id: submission.id
+        get :edit, params: { id: submission.id }
         expect(response).to be_success
       end
     end
@@ -24,7 +24,7 @@ RSpec.describe SangerSequencing::SubmissionsController do
       let(:other_user) { FactoryBot.create(:user) }
       before { sign_in other_user }
       it "does not have access" do
-        get :edit, id: submission.id
+        get :edit, params: { id: submission.id }
         expect(response.code).to eq("403")
       end
     end
@@ -33,7 +33,7 @@ RSpec.describe SangerSequencing::SubmissionsController do
       let(:admin) { FactoryBot.create(:user, :administrator) }
       before { sign_in admin }
       it "does not have access" do
-        get :edit, id: submission.id
+        get :edit, params: { id: submission.id }
         expect(response.code).to eq("403")
       end
     end
@@ -45,7 +45,7 @@ RSpec.describe SangerSequencing::SubmissionsController do
     let(:data) { JSON.parse(response.body) }
 
     it "gets an array of ids" do
-      get :fetch_ids, id: submission.id
+      get :fetch_ids, params: { id: submission.id }
       expect(data).to be_a(Array)
       expect(data.length).to eq(described_class::NEW_IDS_COUNT)
       expect(data).to all match(

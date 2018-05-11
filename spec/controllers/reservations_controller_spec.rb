@@ -1394,16 +1394,16 @@ RSpec.describe ReservationsController do
     context "normal HTML" do
       it "renders the normal template" do
         Rails.logger.ap reservation.errors
-        get :show, order_id: @order.id, order_detail_id: @order_detail.id,
-                   id: reservation.id
+        get :show, params: { order_id: @order.id, order_detail_id: @order_detail.id,
+                             id: reservation.id }
         is_expected.to render_template("show")
       end
     end
 
     context "ical" do
       it "downloads an ical" do
-        get :show, order_id: @order.id, order_detail_id: @order_detail.id,
-                   id: reservation.id, format: :ics
+        get :show, params: { order_id: @order.id, order_detail_id: @order_detail.id,
+                             id: reservation.id, format: :ics }
         expect(response.body).to match(/BEGIN:VCALENDAR/)
       end
 

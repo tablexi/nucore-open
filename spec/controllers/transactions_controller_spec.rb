@@ -9,7 +9,7 @@ RSpec.describe TransactionsController do
 
     before(:each) do
       sign_in user
-      get action, params
+      get action, params: params
     end
 
     let(:action) { :in_review }

@@ -9,7 +9,7 @@ RSpec.describe OrdersController do
   before { sign_in administrator }
 
   def perform_request
-    put action, id: order.id, order: order_params
+    put action, params: { id: order.id, order: order_params }
     order.reload
   end
 

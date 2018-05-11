@@ -31,7 +31,7 @@ module SangerSequencing
 
     def submission
       return @submission if defined?(@submission)
-      @submission = SangerSequencing::Submission.find_by(order_detail: order_detail)
+      @submission = SangerSequencing::Submission.find_by(order_detail_id: order_detail.id)
     end
 
   end

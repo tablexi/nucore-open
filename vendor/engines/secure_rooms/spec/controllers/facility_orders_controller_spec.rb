@@ -13,7 +13,7 @@ RSpec.describe FacilityOrdersController do
   before { sign_in facility_director }
 
   describe "index" do
-    before { get :index, facility_id: facility }
+    before { get :index, params: { facility_id: facility } }
 
     it "does not include the occupancies" do
       expect(response).to be_success
@@ -22,7 +22,7 @@ RSpec.describe FacilityOrdersController do
   end
 
   describe "show_problems" do
-    before { get :show_problems, facility_id: facility }
+    before { get :show_problems, params: { facility_id: facility } }
 
     it "does not include the occupancies" do
       expect(response).to have_http_status(:ok)

@@ -11,7 +11,7 @@ RSpec.describe SearchController do
     let(:params) { {} }
     before do
       sign_in session_user
-      post :user_search_results, params.merge(search_type: action, search_term: user.username)
+      post :user_search_results, params: params.merge(search_type: action, search_term: user.username)
     end
 
     it "#{action} finds the user" do

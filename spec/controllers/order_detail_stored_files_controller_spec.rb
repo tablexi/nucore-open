@@ -15,7 +15,7 @@ RSpec.describe OrderDetailStoredFilesController do
       let(:order) { create(:setup_order, product: product) }
 
       it "has access" do
-        get :order_file, params
+        get :order_file, params: params
         expect(response).to be_success
       end
     end
@@ -26,7 +26,7 @@ RSpec.describe OrderDetailStoredFilesController do
       let(:merge_order) { create(:merge_order, merge_with_order: order) }
 
       it "has access" do
-        get :order_file, order_id: merge_order.id, order_detail_id: merge_order.order_details.first.id
+        get :order_file, params: { order_id: merge_order.id, order_detail_id: merge_order.order_details.first.id }
         expect(response).to be_success
       end
     end
@@ -43,12 +43,12 @@ RSpec.describe OrderDetailStoredFilesController do
 
     it "can upload the file" do
       file = fixture_file_upload(Rails.root.join("spec", "files", "template1.txt"))
-      post :upload_order_file, params.merge(stored_file: { file: file })
+      post :upload_order_file, params: params.merge(stored_file: { file: file })
       expect(order_detail.stored_files.count).to eq(1)
     end
 
     it "gets an error if there is no file" do
-      post :upload_order_file, params
+      post :upload_order_file, params: params
       expect(assigns(:file).errors).to be_added(:file, :blank)
     end
   end

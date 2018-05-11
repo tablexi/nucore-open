@@ -11,7 +11,7 @@ RSpec.describe TrainingRequestsController, feature_setting: { training_requests:
 
   describe "#new" do
     def do_request
-      get :new, facility_id: facility.url_name, product_id: product.url_name
+      get :new, params: { facility_id: facility.url_name, product_id: product.url_name }
     end
 
     describe "while not logged in" do
@@ -38,7 +38,7 @@ RSpec.describe TrainingRequestsController, feature_setting: { training_requests:
 
   describe "#create" do
     def do_request
-      put :create, facility_id: facility.url_name, product_id: product.url_name
+      put :create, params: { facility_id: facility.url_name, product_id: product.url_name }
     end
 
     describe "not logged in" do

@@ -59,7 +59,7 @@ class FacilityJournalsController < ApplicationController
   def update
     @pending_journal = @journal
 
-    action = Journals::Closer.new(@pending_journal, params[:journal].merge(updated_by: session_user.id))
+    action = Journals::Closer.new(@pending_journal, params.fetch(:journal, empty_params).merge(updated_by: session_user.id))
 
     if action.perform params[:journal_status]
       flash[:notice] = I18n.t "controllers.facility_journals.update.notice"
