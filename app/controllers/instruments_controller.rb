@@ -57,7 +57,7 @@ class InstrumentsController < ProductsCommonController
     end
 
     # does the product have any price policies for any of the groups the user is a member of?
-    if add_to_cart && !acting_user_can_purchase?
+    if add_to_cart && !@product.can_purchase?(acting_user_price_group_ids)
       add_to_cart = false
       flash[:notice] = text(".no_price_groups", instrument_name: @product.to_s)
     end
@@ -175,10 +175,6 @@ class InstrumentsController < ProductsCommonController
   end
 
   private
-
-  def acting_user_can_purchase?
-    @product.can_purchase?(acting_user_price_group_ids)
-  end
 
   def acting_user_price_group_ids
     (acting_user.price_groups + acting_user.account_price_groups)
