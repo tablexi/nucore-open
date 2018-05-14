@@ -24,7 +24,6 @@ class InstrumentsController < ProductsCommonController
     add_to_cart = true
     login_required = false
 
-    # does the product have active price policies and schedule rules?
     unless @product.available_for_purchase?
       add_to_cart = false
       flash[:notice] = text(".not_available", instrument: @product)
