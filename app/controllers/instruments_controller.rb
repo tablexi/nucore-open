@@ -70,14 +70,14 @@ class InstrumentsController < ProductsCommonController
 
     @add_to_cart = add_to_cart
 
-    if !add_to_cart
-      return redirect_to facility_path(current_facility)
+    if add_to_cart
+      redirect_to add_order_path(
+        acting_user.cart(session_user),
+        order: { order_details: [{ product_id: @product.id, quantity: 1 }] },
+      )
+    else
+      redirect_to facility_path(current_facility)
     end
-
-    redirect_to add_order_path(
-      acting_user.cart(session_user),
-      order: { order_details: [{ product_id: @product.id, quantity: 1 }] },
-    )
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/schedule
