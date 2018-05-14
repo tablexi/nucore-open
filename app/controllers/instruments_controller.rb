@@ -22,7 +22,6 @@ class InstrumentsController < ProductsCommonController
   def show
     assert_product_is_accessible!
     add_to_cart = true
-    login_required = false
 
     unless @product.available_for_purchase?
       add_to_cart = false
@@ -31,8 +30,7 @@ class InstrumentsController < ProductsCommonController
 
     # is user logged in?
     if add_to_cart && acting_user.blank?
-      login_required = true
-      add_to_cart = false
+      return redirect_to new_user_session_path
     end
 
     if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
@@ -72,9 +70,7 @@ class InstrumentsController < ProductsCommonController
 
     @add_to_cart = add_to_cart
 
-    if login_required
-      return redirect_to new_user_session_path
-    elsif !add_to_cart
+    if !add_to_cart
       return redirect_to facility_path(current_facility)
     end
 
