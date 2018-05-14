@@ -75,9 +75,9 @@ RSpec.describe FacilityAccountsController do
       before do
         sign_in director
         get :new, params: {
-            facility_id: facility.url_name,
-            account_type: account_type,
-            owner_user_id: account_owner.id,
+          facility_id: facility.url_name,
+          account_type: account_type,
+          owner_user_id: account_owner.id,
         }
       end
 
@@ -106,9 +106,9 @@ RSpec.describe FacilityAccountsController do
       before do
         sign_in account_manager
         get :new, params: {
-            facility_id: "all",
-            account_type: account_type,
-            owner_user_id: account_owner.id
+          facility_id: "all",
+          account_type: account_type,
+          owner_user_id: account_owner.id,
         }
       end
 

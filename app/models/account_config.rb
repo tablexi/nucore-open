@@ -70,7 +70,7 @@ class AccountConfig
   def account_types_for_facility(facility, action)
     types = account_types
     types = types.select { |type| type.constantize.cross_facility? } if facility.try(:cross_facility?)
-    types = types - creation_disabled_types if action == :create
+    types -= creation_disabled_types if action == :create
     types
   end
 

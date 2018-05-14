@@ -39,7 +39,8 @@ class FacilityAccountsController < ApplicationController
   end
 
   # GET /facilities/:facility_id/accounts/new
-  def new; end
+  def new
+  end
 
   # POST /facilities/:facility_id/accounts
   def create
