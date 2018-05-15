@@ -55,7 +55,7 @@ class Ability
 
       if resource.blank? || resource == Facility.cross_facility
         can :manage, AccountUser
-        can [:create, :read, :update, :administer, :accounts, :new_external, :search], User
+        can [:create, :read, :administer, :accounts, :new_external, :search], User
         can [:create, :read, :update, :suspend, :unsuspend], Account
         if SettingsHelper.feature_off?(:create_users)
           cannot([:create, :update], User)

@@ -64,8 +64,8 @@ RSpec.describe Ability do
 
     shared_examples_for "correct User permissions" do
       context "when create_users feature is on", feature_setting: { create_users: true } do
-        it_is_allowed_to([:new, :create, :read, :edit, :update, :index, :accounts, :search], User)
-        it_is_not_allowed_to([:switch_to, :suspend, :unsuspend, :orders], User)
+        it_is_allowed_to([:new, :create, :read, :index, :accounts, :search], User)
+        it_is_not_allowed_to([:switch_to, :edit, :update, :suspend, :unsuspend, :orders], User)
       end
 
       context "when create_users feature is off", feature_setting: { create_users: false } do

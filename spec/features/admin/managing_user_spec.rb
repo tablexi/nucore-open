@@ -45,12 +45,14 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
         visit facility_user_path(Facility.cross_facility, user)
       end
 
-      it "does not allow account admin to edit internal/external pricing" do
+      it "does not allow account admin to edit" do
         expect(page).to have_content("Internal Pricing")
+        expect(page).not_to have_link "Edit"
+      end
 
-        click_link "Edit"
-
-        expect(page).not_to have_content("Internal Pricing")
+      it "cannot access the page" do
+        visit edit_facility_user_path(Facility.cross_facility, user)
+        expect(page).to have_content("Permission Denied")
       end
 
     end
