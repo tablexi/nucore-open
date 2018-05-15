@@ -69,31 +69,65 @@ RSpec.describe FacilityAccountsController do
   end
 
   describe "GET #new" do
-    let(:director) { FactoryBot.create(:user, :facility_director, facility: facility) }
+    describe "as a facility director" do
+      let(:director) { FactoryBot.create(:user, :facility_director, facility: facility) }
 
-    before do
-      sign_in director
-      get :new,
+      before do
+        sign_in director
+        get :new, params: {
           facility_id: facility.url_name,
           account_type: account_type,
-          owner_user_id: account_owner.id
-    end
+          owner_user_id: account_owner.id,
+        }
+      end
 
-    context "PurchaseOrderAccount" do
-      let(:account_type) { "PurchaseOrderAccount" }
+      context "PurchaseOrderAccount" do
+        let(:account_type) { "PurchaseOrderAccount" }
 
-      it "loads the account" do
-        expect(response).to be_success
-        expect(assigns(:account)).to be_a(PurchaseOrderAccount)
+        it "loads the account" do
+          expect(response).to be_success
+          expect(assigns(:account)).to be_a(PurchaseOrderAccount)
+        end
+      end
+
+      context "CreditCardAccount" do
+        let(:account_type) { "CreditCardAccount" }
+
+        it "loads the account" do
+          expect(response).to be_success
+          expect(assigns(:account)).to be_a(CreditCardAccount)
+        end
       end
     end
 
-    context "CreditCardAccount" do
-      let(:account_type) { "CreditCardAccount" }
+    describe "as an account administrator" do
+      let(:account_manager) { create(:user, :account_manager) }
 
-      it "loads the account" do
-        expect(response).to be_success
-        expect(assigns(:account)).to be_a(CreditCardAccount)
+      before do
+        sign_in account_manager
+        get :new, params: {
+          facility_id: "all",
+          account_type: account_type,
+          owner_user_id: account_owner.id,
+        }
+      end
+
+      context "PurchaseOrderAccount" do
+        let(:account_type) { "PurchaseOrderAccount" }
+
+        it "falls back to using a chartstring" do
+          expect(response).to be_success
+          expect(assigns(:account)).to be_a(NufsAccount)
+        end
+      end
+
+      context "CreditCardAccount" do
+        let(:account_type) { "CreditCardAccount" }
+
+        it "falls back to using a chartstring" do
+          expect(response).to be_success
+          expect(assigns(:account)).to be_a(NufsAccount)
+        end
       end
     end
   end
