@@ -40,13 +40,10 @@ class FacilityAccountsController < ApplicationController
 
   # GET /facilities/:facility_id/accounts/new
   def new
-    @available_account_types = available_account_types
   end
 
   # POST /facilities/:facility_id/accounts
   def create
-    @available_account_types = available_account_types
-
     # The builder might add some errors to base. If those exist,
     # we don't want to try saving as that would clear the original errors
     if @account.errors[:base].empty? && @account.save
@@ -163,18 +160,20 @@ class FacilityAccountsController < ApplicationController
   private
 
   def available_account_types
-    Account.config.account_types_for_facility(current_facility, :create).select do |account_type|
+    @available_account_types ||= Account.config.account_types_for_facility(current_facility, :create).select do |account_type|
       current_ability.can?(:create, account_type.constantize)
     end
   end
+  helper_method :available_account_types
 
   def current_account_type
-    if available_account_types.include?(params[:account_type])
-      params[:account_type]
-    else
-      available_account_types.first
-    end
+    @current_account_type ||= if available_account_types.include?(params[:account_type])
+                                params[:account_type]
+                              else
+                                available_account_types.first
+                              end
   end
+  helper_method :current_account_type
 
   def init_account
     if params.key? :id
@@ -188,7 +187,6 @@ class FacilityAccountsController < ApplicationController
     raise CanCan::AccessDenied if current_account_type.blank?
 
     @owner_user = User.find(params[:owner_user_id])
-    @current_account_type = current_account_type
     @account = AccountBuilder.for(current_account_type).new(
       account_type: current_account_type,
       facility: current_facility,
