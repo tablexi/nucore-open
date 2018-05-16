@@ -21,62 +21,17 @@ class InstrumentsController < ProductsCommonController
   # GET /facilities/:facility_id/instruments/:instrument_id
   def show
     assert_product_is_accessible!
-    add_to_cart = true
+    instrument_for_cart = InstrumentForCart.new(@product, self)
 
-    unless @product.available_for_purchase?
-      add_to_cart = false
-      flash[:notice] = text(".not_available", instrument: @product)
-    end
-
-    # is user logged in?
-    if add_to_cart && acting_user.blank?
-      return redirect_to new_user_session_path
-    end
-
-    if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
-      if SettingsHelper.feature_on?(:training_requests)
-        if TrainingRequest.submitted?(current_user, @product)
-          flash[:notice] = text("controllers.products_common.already_requested_access", product: @product)
-          return redirect_to facility_path(current_facility)
-        else
-          return redirect_to new_facility_product_training_request_path(current_facility, @product)
-        end
-      else
-        add_to_cart = false
-        flash[:notice] = html(".requires_approval",
-                              email: @product.email,
-                              facility: @product.facility,
-                              instrument: @product)
-      end
-    end
-
-    # does the user have a valid payment source for purchasing this reservation?
-    if add_to_cart && acting_user.accounts_for_product(@product).blank?
-      add_to_cart = false
-      flash[:notice] = text(".no_accounts")
-    end
-
-    # does the product have any price policies for any of the groups the user is a member of?
-    if add_to_cart && !@product.can_purchase?(acting_user_price_group_ids)
-      add_to_cart = false
-      flash[:notice] = text(".no_price_groups", instrument_name: @product.to_s)
-    end
-
-    # when ordering on behalf of, does the staff have permissions for this facility?
-    if add_to_cart && acting_as? && !session_user.operator_of?(@product.facility)
-      add_to_cart = false
-      flash[:notice] = text(".not_authorized_to_order_on_behalf")
-    end
-
-    @add_to_cart = add_to_cart
-
-    if add_to_cart
+    if instrument_for_cart.purchasable_by?(acting_user, session_user)
+      @add_to_cart = true
       redirect_to add_order_path(
         acting_user.cart(session_user),
-        order: { order_details: [{ product_id: @product.id, quantity: 1 }] },
+        order: { order_details: [ { product_id: @product.id, quantity: 1 } ] }
       )
     else
-      redirect_to facility_path(current_facility)
+      @add_to_cart = false
+      redirect_to instrument_for_cart.error_path, notice: instrument_for_cart.error_message
     end
   end
 
@@ -172,15 +127,6 @@ class InstrumentsController < ProductsCommonController
 
   def translation_scope
     "controllers.instruments"
-  end
-
-  private
-
-  def acting_user_price_group_ids
-    (acting_user.price_groups + acting_user.account_price_groups)
-      .flatten
-      .uniq
-      .map(&:id)
   end
 
 end
