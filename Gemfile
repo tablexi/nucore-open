@@ -130,7 +130,7 @@ group :stage, :production do
   gem "oj"
   # 2.15.6 has a problem during cap deploy
   # https://github.com/rollbar/rollbar-gem/issues/713
-  gem "rollbar", "2.15.5"
+  gem "rollbar", "2.16.0"
   gem "unicorn", require: false
   gem "whenever", require: false
 end
