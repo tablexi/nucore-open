@@ -59,6 +59,7 @@ class PricePolicyBuilder
     price_policies.each { |price_policy| price_policy.can_purchase = true }
   end
 
+
   def model_class
     @model_class ||= "#{product.class}PricePolicy".constantize
   end
@@ -90,6 +91,7 @@ class PricePolicyBuilder
   end
 
   def price_policies_for_start_date
+    return [] if start_date.blank?
     product.price_policies.for_date(start_date)
   end
 

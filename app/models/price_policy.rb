@@ -6,14 +6,15 @@ class PricePolicy < ApplicationRecord
   belongs_to :product
   has_many :order_details
 
-  validates_presence_of :start_date, :price_group_id, :type
+  validates :start_date, :expire_date, presence: true
+  validates :price_group_id, :type, presence: true
   validate :start_date_is_unique, if: :start_date?
 
   validate :subsidy_less_than_rate, unless: :restrict_purchase?
 
   validates_each :expire_date do |record, _attr, value|
-    unless value.blank?
-      start_date = record.start_date
+    start_date = record.start_date
+    if value.present? && start_date.present?
       gen_exp_date = generate_expire_date(start_date)
       record.errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}") if value <= start_date || value > gen_exp_date
     end
@@ -23,9 +24,7 @@ class PricePolicy < ApplicationRecord
   before_create :set_expire_date
   before_create :truncate_existing_policies
 
-  def self.for_date(start_date)
-    where("start_date >= ? AND start_date <= ?", start_date.beginning_of_day, start_date.end_of_day)
-  end
+  scope :for_date, ->(start_date) { where("start_date >= ? AND start_date <= ?", start_date.beginning_of_day, start_date.end_of_day) if start_date }
 
   def self.current
     current_for_date(Time.zone.now)
