@@ -11,12 +11,34 @@ header {
       text-shadow: none;
       font-size: 27px;
       color: $headerColor;
+
+      padding: 11px 20px 10px;
+
+      img {
+        height: 1em;
+      }
+
+      span {
+        vertical-align: middle;
+        line-height: 1;
+      }
     }
   }
 
   .navbar-inner, .dropdown-toggle {
-    padding: 10px 0;
     @include gradient-vertical($headerBackgroundColorHighLight, $headerBackgroundColor);
+  }
+
+  .container {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .container:before, .container:after {
+    content: none;
   }
 
   .navbar .nav {
