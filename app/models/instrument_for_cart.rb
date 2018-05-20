@@ -10,11 +10,8 @@ class InstrumentForCart
   def purchasable_by?(acting_user, session_user)
     case
     when !instrument.available_for_purchase?
-      @error_message = controller.text(".not_available", instrument: instrument)
+      @error_message = controller.text(".not_available", product: instrument)
       @error_path = controller.facility_path(controller.current_facility)
-      false
-    when acting_user.blank?
-      @error_path = controller.new_user_session_path
       false
     when !@instrument.can_be_used_by?(acting_user) && !user_can_override_restrictions_on_instrument?(session_user, instrument)
       if SettingsHelper.feature_on?(:training_requests)
@@ -25,21 +22,17 @@ class InstrumentForCart
           @error_path = controller.new_facility_product_training_request_path(controller.current_facility, instrument)
         end
       else
-        @error_message = controller.html(".requires_approval", email: instrument.email, facility: instrument.facility, instrument: instrument)
-        @error_path = controller.facility_path(controller.current_facility)
+        @error_message = controller.html(".requires_approval", email: instrument.email, facility: instrument.facility, product: instrument.class.model_name.human.downcase)
       end
+      false
+    when !instrument.can_purchase?(price_group_ids_for_user(acting_user))
+      @error_message = controller.text(".no_price_groups", product: instrument)
       false
     when acting_user.accounts_for_product(instrument).blank?
       @error_message = controller.text(".no_accounts")
-      @error_path = controller.facility_path(controller.current_facility)
-      false
-    when !instrument.can_purchase?(price_group_ids_for_user(acting_user))
-      @error_message = controller.text(".no_price_groups", instrument_name: instrument.name)
-      @error_path = controller.facility_path(controller.current_facility)
       false
     when controller.acting_as? && !session_user.operator_of?(instrument.facility)
-      @error_message = controller.text(".not_authorized_to_order_on_behalf")
-      @error_path = controller.facility_path(controller.current_facility)
+      @error_message = controller.text(".not_authorized_to_order_on_behalf", products: instrument.class.model_name.human(count: 2).downcase)
       false
     else
       true

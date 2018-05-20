@@ -60,9 +60,7 @@ RSpec.describe BundlesController do
       allow_any_instance_of(Bundle).to receive(:available_for_purchase?).and_return(false)
       do_request
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq("not_available")
       expect(flash[:notice]).not_to be_nil
-
     end
 
     it "should fail without a valid account" do
@@ -70,7 +68,7 @@ RSpec.describe BundlesController do
       do_request
       expect(flash).not_to be_empty
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq("no_accounts")
+      expect(flash[:notice]).to match(/we could not find a valid payment source/)
     end
 
     it 'should falsify @add_to_cart if #acting_user is nil' do
@@ -112,11 +110,10 @@ RSpec.describe BundlesController do
     it "should flash and falsify @add_to_cart if there is no price group for user to purchase through" do
       add_account_for_user(:guest, @bundle.products.first, @nupg)
       sign_in @guest
-      allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(false)
+      allow_any_instance_of(Bundle).to receive(:can_purchase?).and_return(false)
       do_request
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq("not_in_price_group")
-      expect(flash[:notice]).not_to be_nil
+      expect(flash[:notice]).to match(/You are not in a price group/)
     end
 
     it "should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user" do
@@ -125,7 +122,7 @@ RSpec.describe BundlesController do
 
       do_request
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq("not_authorized_acting_as")
+      expect(flash[:notice]).not_to be_nil
     end
 
     it "should not require login" do
@@ -140,9 +137,12 @@ RSpec.describe BundlesController do
     context "restricted bundle" do
       before :each do
         @bundle.update_attributes(requires_approval: true)
-        allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(true)
+        allow_any_instance_of(Bundle).to receive(:can_purchase?).and_return(true)
       end
+
       it "should show a notice if you're not approved" do
+        allow(SettingsHelper).to receive(:feature_on?).and_call_original
+        allow(SettingsHelper).to receive(:feature_on?).with(:training_requests).and_return(false)
         sign_in @guest
         do_request
         expect(assigns[:add_to_cart]).to be false

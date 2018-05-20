@@ -60,7 +60,7 @@ RSpec.describe ServicesController do
       do_request
       expect(flash).not_to be_empty
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:error]).to eq("no_accounts")
+      expect(flash[:notice]).to match(/we could not find a valid payment source/)
     end
 
     context "when the service requires approval" do
