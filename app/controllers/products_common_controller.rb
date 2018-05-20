@@ -40,15 +40,13 @@ class ProductsCommonController < ApplicationController
     @active_tab = "home"
     product_for_cart = ProductForCart.new(@product, self)
 
-    if acting_user.blank?
-      @add_to_cart = false
-    elsif product_for_cart.purchasable_by?(acting_user, session_user)
+    if product_for_cart.purchasable_by?(acting_user, session_user)
       @add_to_cart = true
     else
       @add_to_cart = false
       if product_for_cart.error_path
         return redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
-      else
+      elsif product_for_cart.error_message
         flash.now[:notice] = product_for_cart.error_message
       end
     end

@@ -9,6 +9,8 @@ class ProductForCart
 
   def purchasable_by?(acting_user, session_user)
     case
+    when acting_user.blank?
+      false
     when !product.available_for_purchase?
       @error_message = controller.text(".not_available", product: product)
       @error_path = controller.facility_path(controller.current_facility)
