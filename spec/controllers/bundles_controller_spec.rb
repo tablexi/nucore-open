@@ -75,7 +75,6 @@ RSpec.describe BundlesController do
       allow_any_instance_of(BundlesController).to receive(:acting_user).and_return(nil)
       do_request
       expect(assigns[:add_to_cart]).to be false
-      expect(assigns[:login_required]).to be true
     end
 
     context "when the bundle requires approval" do
@@ -128,8 +127,7 @@ RSpec.describe BundlesController do
     it "should not require login" do
       do_request
       assert_init_bundle
-      expect(assigns(:add_to_cart)).to_not be_nil
-      expect(assigns(:login_required)).to_not be_nil
+      expect(assigns(:add_to_cart)).to be false
       is_expected.not_to set_flash
       is_expected.to render_template("show")
     end

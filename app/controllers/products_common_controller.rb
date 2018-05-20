@@ -42,13 +42,10 @@ class ProductsCommonController < ApplicationController
 
     if acting_user.blank?
       @add_to_cart = false
-      @login_required = true
     elsif product_for_cart.purchasable_by?(acting_user, session_user)
       @add_to_cart = true
-      @login_required = false
     else
       @add_to_cart = false
-      @login_required = false
       if product_for_cart.error_path
         return redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
       else
