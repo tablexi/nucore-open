@@ -31,7 +31,7 @@ class InstrumentsController < ProductsCommonController
       )
     else
       @add_to_cart = false
-      redirect_to product_for_cart.error_path || facility_path(current_facility), notice: product_for_cart.error_message
+      redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
     end
   end
 
