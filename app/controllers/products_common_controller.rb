@@ -34,7 +34,6 @@ class ProductsCommonController < ApplicationController
   end
 
   # GET /facilities/:facility_id/(services|items|bundles)/:(service|item|bundle)_id
-  # TODO InstrumentsController#show has a lot in common; refactor/extract/consolidate
   def show
     @active_tab = "home"
     product_for_cart = ProductForCart.new(@product, self)
