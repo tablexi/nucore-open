@@ -21,11 +21,11 @@ class InstrumentsController < ProductsCommonController
   # GET /facilities/:facility_id/instruments/:instrument_id
   def show
     assert_product_is_accessible!
-    instrument_for_cart = InstrumentForCart.new(@product, self)
+    product_for_cart = ProductForCart.new(@product, self)
 
     if acting_user.blank?
       redirect_to new_user_session_path
-    elsif instrument_for_cart.purchasable_by?(acting_user, session_user)
+    elsif product_for_cart.purchasable_by?(acting_user, session_user)
       @add_to_cart = true
       redirect_to add_order_path(
         acting_user.cart(session_user),
@@ -33,7 +33,7 @@ class InstrumentsController < ProductsCommonController
       )
     else
       @add_to_cart = false
-      redirect_to instrument_for_cart.error_path || facility_path(current_facility), notice: instrument_for_cart.error_message
+      redirect_to product_for_cart.error_path || facility_path(current_facility), notice: product_for_cart.error_message
     end
   end
 

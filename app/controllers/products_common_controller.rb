@@ -38,21 +38,21 @@ class ProductsCommonController < ApplicationController
   def show
     assert_product_is_accessible!
     @active_tab = "home"
-    instrument_for_cart = InstrumentForCart.new(@product, self)
+    product_for_cart = ProductForCart.new(@product, self)
 
     if acting_user.blank?
       @add_to_cart = false
       @login_required = true
-    elsif instrument_for_cart.purchasable_by?(acting_user, session_user)
+    elsif product_for_cart.purchasable_by?(acting_user, session_user)
       @add_to_cart = true
       @login_required = false
     else
       @add_to_cart = false
       @login_required = false
-      if instrument_for_cart.error_path
-        return redirect_to instrument_for_cart.error_path, notice: instrument_for_cart.error_message
+      if product_for_cart.error_path
+        return redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
       else
-        flash.now[:notice] = instrument_for_cart.error_message
+        flash.now[:notice] = product_for_cart.error_message
       end
     end
 
