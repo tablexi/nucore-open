@@ -13,7 +13,6 @@ class ProductForCart
       false
     when !product.available_for_purchase?
       @error_message = controller.text(".not_available", product: product)
-      @error_path = controller.facility_path(controller.current_facility)
       false
     when !@product.can_be_used_by?(acting_user) && !user_can_override_restrictions_on_product?(session_user, product)
       if SettingsHelper.feature_on?(:training_requests)

@@ -61,6 +61,7 @@ RSpec.describe BundlesController do
       do_request
       expect(assigns[:add_to_cart]).to be false
       expect(flash[:notice]).not_to be_nil
+      is_expected.to render_template("show")
     end
 
     it "should fail without a valid account" do
