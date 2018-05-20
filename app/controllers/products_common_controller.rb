@@ -36,7 +36,6 @@ class ProductsCommonController < ApplicationController
   # GET /facilities/:facility_id/(services|items|bundles)/:(service|item|bundle)_id
   # TODO InstrumentsController#show has a lot in common; refactor/extract/consolidate
   def show
-    assert_product_is_accessible!
     @active_tab = "home"
     product_for_cart = ProductForCart.new(@product, self)
     @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
@@ -117,15 +116,6 @@ class ProductsCommonController < ApplicationController
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
                                                       relay_attributes: [:ip, :port, :username, :password, :type,
                                                                          :auto_logout, :auto_logout_minutes, :id])
-  end
-
-  def assert_product_is_accessible!
-    raise NUCore::PermissionDenied unless product_is_accessible?
-  end
-
-  def product_is_accessible?
-    is_operator = session_user&.operator_of?(current_facility)
-    !(@product.is_archived? || (@product.is_hidden? && !is_operator))
   end
 
   def current_facility_products

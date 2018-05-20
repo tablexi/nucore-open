@@ -20,7 +20,6 @@ class InstrumentsController < ProductsCommonController
 
   # GET /facilities/:facility_id/instruments/:instrument_id
   def show
-    assert_product_is_accessible!
     product_for_cart = InstrumentForCart.new(@product, self)
     @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
 
