@@ -13,7 +13,7 @@ class ProductForCart
     case
     when !product.available_for_purchase?
       @error_message = controller.text(".not_available", product: product)
-    when !@product.can_be_used_by?(acting_user) && !user_can_override_restrictions_on_product?(session_user, product)
+    when !product.can_be_used_by?(acting_user) && !user_can_override_restrictions_on_product?(session_user, product)
       if SettingsHelper.feature_on?(:training_requests)
         if TrainingRequest.submitted?(session_user, product)
           @error_message = controller.text("controllers.products_common.already_requested_access", product: product)
@@ -32,7 +32,7 @@ class ProductForCart
       @error_message = controller.text(".not_authorized_to_order_on_behalf", products: product.class.model_name.human(count: 2).downcase)
     end
 
-    [@error_message, @error_path].all?(&:nil?)
+    [error_message, error_path].all?(&:nil?)
   end
 
   private

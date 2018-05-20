@@ -39,19 +39,14 @@ class ProductsCommonController < ApplicationController
     assert_product_is_accessible!
     @active_tab = "home"
     product_for_cart = ProductForCart.new(@product, self)
+    @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
 
-    if product_for_cart.purchasable_by?(acting_user, session_user)
-      @add_to_cart = true
+    if product_for_cart.error_path
+      redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
     else
-      @add_to_cart = false
-      if product_for_cart.error_path
-        return redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
-      elsif product_for_cart.error_message
-        flash.now[:notice] = product_for_cart.error_message
-      end
+      flash.now[:notice] = product_for_cart.error_message if product_for_cart.error_message
+      render layout: "application"
     end
-
-    render layout: "application"
   end
 
   # GET /services/new

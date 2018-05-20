@@ -22,15 +22,14 @@ class InstrumentsController < ProductsCommonController
   def show
     assert_product_is_accessible!
     product_for_cart = InstrumentForCart.new(@product, self)
+    @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
 
-    if product_for_cart.purchasable_by?(acting_user, session_user)
-      @add_to_cart = true
+    if @add_to_cart
       redirect_to add_order_path(
         acting_user.cart(session_user),
         order: { order_details: [ { product_id: @product.id, quantity: 1 } ] }
       )
     else
-      @add_to_cart = false
       redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
     end
   end
