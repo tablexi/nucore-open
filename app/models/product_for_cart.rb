@@ -18,9 +18,9 @@ class ProductForCart
       if SettingsHelper.feature_on?(:training_requests)
         if TrainingRequest.submitted?(session_user, product)
           @error_message = controller.text("controllers.products_common.already_requested_access", product: product)
-          @error_path = controller.facility_path(controller.current_facility)
+          @error_path = controller.facility_path(product.facility)
         else
-          @error_path = controller.new_facility_product_training_request_path(controller.current_facility, product)
+          @error_path = controller.new_facility_product_training_request_path(product.facility, product)
         end
       else
         @error_message = controller.html(".requires_approval", email: product.email, facility: product.facility, product: product.class.model_name.human.downcase)
@@ -50,7 +50,7 @@ class ProductForCart
   end
 
   def product_is_accessible?(session_user)
-    is_operator = session_user&.operator_of?(controller.current_facility)
+    is_operator = session_user&.operator_of?(product.facility)
     !(product.is_archived? || (product.is_hidden? && !is_operator))
   end
 end
