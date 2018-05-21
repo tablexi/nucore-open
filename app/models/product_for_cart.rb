@@ -5,9 +5,8 @@ class ProductForCart
   attr_accessor :error_message
   attr_accessor :error_path
 
-  def initialize(product, controller)
+  def initialize(product)
     @product = product
-    @controller = controller
   end
 
   def purchasable_by?(acting_user, session_user)
@@ -49,7 +48,6 @@ class ProductForCart
 
   private
 
-  attr_accessor :controller
   attr_accessor :product
 
   def user_can_override_restrictions_on_product?(user, product)

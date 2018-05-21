@@ -20,7 +20,7 @@ class InstrumentsController < ProductsCommonController
 
   # GET /facilities/:facility_id/instruments/:instrument_id
   def show
-    instrument_for_cart = InstrumentForCart.new(@product, self)
+    instrument_for_cart = InstrumentForCart.new(@product)
     @add_to_cart = instrument_for_cart.purchasable_by?(acting_user, session_user)
 
     if @add_to_cart

@@ -7,7 +7,7 @@ RSpec.describe ProductForCart do
   let(:item) { facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: facility_account.id)) }
   let(:user) { FactoryBot.create(:user) }
 
-  let(:product_for_cart) { ProductForCart.new(item, ItemsController.new) }
+  let(:product_for_cart) { ProductForCart.new(item) }
 
   context "#purchasable_by?" do
 
@@ -26,7 +26,7 @@ RSpec.describe ProductForCart do
       let(:bundle) { FactoryBot.create(:bundle, facility_account: facility_account, facility: facility) }
       let(:bundle_product) { BundleProduct.new(bundle: @bundle, product: item, quantity: 1) }
 
-      let(:product_for_cart) { ProductForCart.new(bundle, BundlesController.new) }
+      let(:product_for_cart) { ProductForCart.new(bundle) }
 
       before(:each) do
         BundleProduct.create(bundle: bundle, product: item, quantity: 1)

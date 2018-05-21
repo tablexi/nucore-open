@@ -13,7 +13,7 @@ RSpec.describe InstrumentForCart do
 
   let(:user) { FactoryBot.create(:user) }
 
-  let(:instrument_for_cart) { InstrumentForCart.new(instrument, InstrumentsController.new) }
+  let(:instrument_for_cart) { InstrumentForCart.new(instrument) }
 
   context "#purchasable_by?" do
 
