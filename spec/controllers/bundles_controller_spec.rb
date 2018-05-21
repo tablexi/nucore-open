@@ -49,126 +49,14 @@ RSpec.describe BundlesController do
   end
 
   context "show" do
-    before(:each) do
+    before :each do
       @method = :get
       @action = :show
       @params = { facility_id: @authable.url_name, id: @bundle.url_name }
     end
 
-    it "should flash and falsify @add_to_cart if bundle cannot be purchased" do
-      sign_in @guest
-      allow_any_instance_of(Bundle).to receive(:available_for_purchase?).and_return(false)
-      do_request
-      expect(assigns[:add_to_cart]).to be false
-      expect(flash[:notice]).not_to be_nil
-      is_expected.to render_template("show")
-    end
-
-    it "should fail without a valid account" do
-      sign_in @guest
-      do_request
-      expect(flash).not_to be_empty
-      expect(assigns[:add_to_cart]).to be false
-      expect(flash[:notice]).to match(/we could not find a valid payment source/)
-    end
-
-    it 'should falsify @add_to_cart if #acting_user is nil' do
-      allow_any_instance_of(BundlesController).to receive(:acting_user).and_return(nil)
-      do_request
-      expect(assigns[:add_to_cart]).to be false
-    end
-
-    context "when the bundle requires approval" do
-      before(:each) do
-        add_account_for_user(:guest, bundle.products.first)
-        allow_any_instance_of(BundlesController).to receive(:price_policy_available_for_product?).and_return(true)
-        bundle.update_attributes(requires_approval: true)
-      end
-
-      context "if the user is not approved" do
-        before(:each) do
-          sign_in @guest
-          do_request
-        end
-
-        context "if the training request feature is enabled", feature_setting: { training_requests: true } do
-          it "gives the user the option to submit a request for approval" do
-            expect(assigns[:add_to_cart]).to be_blank
-            assert_redirected_to(new_facility_product_training_request_path(facility, bundle))
-          end
-        end
-
-        context "if the training request feature is disabled", feature_setting: { training_requests: false } do
-          it "denies access to the user" do
-            expect(assigns[:add_to_cart]).to be_blank
-            expect(flash[:notice]).to include("bundle requires approval")
-          end
-        end
-      end
-    end
-
-    it "should flash and falsify @add_to_cart if there is no price group for user to purchase through" do
-      add_account_for_user(:guest, @bundle.products.first, @nupg)
-      sign_in @guest
-      allow_any_instance_of(Bundle).to receive(:can_purchase?).and_return(false)
-      do_request
-      expect(assigns[:add_to_cart]).to be false
-      expect(flash[:notice]).to match(/You are not in a price group/)
-    end
-
-    it "should flash and falsify @add_to_cart if user is not authorized to purchase on behalf of another user" do
-      sign_in @guest
-      switch_to @staff
-
-      do_request
-      expect(assigns[:add_to_cart]).to be false
-      expect(flash[:notice]).not_to be_nil
-    end
-
-    it "should not require login" do
-      do_request
-      assert_init_bundle
-      expect(assigns(:add_to_cart)).to be false
-      is_expected.not_to set_flash
-      is_expected.to render_template("show")
-    end
-
-    context "restricted bundle" do
-      before :each do
-        @bundle.update_attributes(requires_approval: true)
-        allow_any_instance_of(Bundle).to receive(:can_purchase?).and_return(true)
-      end
-
-      it "should show a notice if you're not approved" do
-        allow(SettingsHelper).to receive(:feature_on?).and_call_original
-        allow(SettingsHelper).to receive(:feature_on?).with(:training_requests).and_return(false)
-        sign_in @guest
-        do_request
-        expect(assigns[:add_to_cart]).to be false
-        expect(flash[:notice]).not_to be_nil
-      end
-
-      it "should not show a notice and show an add to cart" do
-        @product_user = ProductUser.create(product: @bundle, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
-        add_account_for_user(:guest, @bundle.products.first, @nupg)
-        sign_in @guest
-        do_request
-        expect(flash).to be_empty
-        expect(assigns[:add_to_cart]).to be true
-      end
-
-      context "when the user is an admin" do
-        before(:each) do
-          add_account_for_user(:admin, bundle.products.first)
-          sign_in @admin
-          do_request
-        end
-
-        it "adds the bundle to the cart" do
-          expect(assigns[:add_to_cart]).to be true
-        end
-      end
-    end
+    it_should_support_purchasing
+    it_should_communicate_to_the_user_when_purchasing_is_not_possible
   end
 
   context "new" do

@@ -53,95 +53,10 @@ RSpec.describe ItemsController do
     before :each do
       @method = :get
       @action = :show
-      @block = proc do
-        expect(assigns[:product]).to eq(@item)
-        expect(response).to be_success
-        expect(response).to render_template("show")
-      end
     end
 
-    it "should all public access" do
-      do_request
-      @block.call
-    end
-
-    it_should_allow(:guest) { @block.call }
-
-    it_should_allow_all(facility_operators) { @block.call }
-
-    it "should fail without a valid account" do
-      sign_in @guest
-      do_request
-      expect(flash).not_to be_empty
-      expect(assigns[:add_to_cart]).to be false
-      expect(flash[:notice]).to match(/we could not find a valid payment source/)
-    end
-
-    context "when the item requires approval" do
-      before :each do
-        add_account_for_user(:guest, item)
-        item.update_attributes(requires_approval: true)
-      end
-
-      context "if the user is not approved" do
-        before(:each) do
-          sign_in @guest
-          do_request
-        end
-
-        context "if the training request feature is enabled", feature_setting: { training_requests: true } do
-          it "gives the user the option to submit a request for approval" do
-            expect(assigns[:add_to_cart]).to be_blank
-            assert_redirected_to(new_facility_product_training_request_path(facility, item))
-          end
-        end
-
-        context "if the training request feature is disabled", feature_setting: { training_requests: false } do
-          it "denies access to the user" do
-            expect(assigns[:add_to_cart]).to be_blank
-            expect(flash[:notice]).to include("item requires approval")
-          end
-        end
-      end
-
-      it "should not show a notice and show an add to cart" do
-        @product_user = ProductUser.create(product: @item, user: @guest, approved_by: @admin.id, approved_at: Time.zone.now)
-        add_account_for_user(:guest, @item)
-        sign_in @guest
-        do_request
-        expect(flash).to be_empty
-        expect(assigns[:add_to_cart]).to be true
-      end
-
-      context "when the user is an admin" do
-        before(:each) do
-          add_account_for_user(:admin, item)
-          sign_in @admin
-          do_request
-        end
-
-        it "adds the item to the cart" do
-          expect(assigns[:add_to_cart]).to be true
-        end
-      end
-    end
-
-    context "hidden item" do
-      before :each do
-        @item.update_attributes(is_hidden: true)
-      end
-      it_should_allow_operators_only do
-        expect(response).to be_success
-      end
-      it "should show the page if you're acting as a user" do
-        allow_any_instance_of(ItemsController).to receive(:acting_user).and_return(@guest)
-        allow_any_instance_of(ItemsController).to receive(:acting_as?).and_return(true)
-        sign_in @admin
-        do_request
-        expect(response).to be_success
-        expect(assigns[:product]).to eq(@item)
-      end
-    end
+    it_should_support_purchasing
+    it_should_communicate_to_the_user_when_purchasing_is_not_possible
   end
 
   context "new" do
