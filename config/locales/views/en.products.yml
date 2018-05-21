@@ -22,6 +22,8 @@ en:
       not_authorized_to_order_on_behalf: |
         You are not authorized to order %{products} from this !facility_downcase!
         on behalf of a user.
+      pricing_not_available: |
+        Pricing for this instrument is currently unavailable. Please contact the facility manager for assistance.
 
     products_common:
       already_requested_access: |
@@ -39,4 +41,6 @@ en:
         the !facility_downcase!.
       requires_approval: |
         This %{product} requires approval to purchase; please contact the !facility_downcase!.
+      pricing_not_available: |
+        Pricing for this %{product} is currently unavailable. Please contact the facility manager for assistance.
 

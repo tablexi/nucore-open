@@ -14,6 +14,8 @@ class ProductForCart
     case
     when !product.available_for_purchase?
       @error_message = controller.text(".not_available", product: product)
+    when associated_price_policies(product).none?
+      @error_message = controller.text(".pricing_not_available", product: product.class.model_name.human.downcase)
     when !product.can_be_used_by?(acting_user) && !user_can_override_restrictions_on_product?(session_user, product)
       if SettingsHelper.feature_on?(:training_requests)
         if TrainingRequest.submitted?(session_user, product)
@@ -52,5 +54,9 @@ class ProductForCart
   def product_is_accessible?(session_user)
     is_operator = session_user&.operator_of?(product.facility)
     !(product.is_archived? || (product.is_hidden? && !is_operator))
+  end
+
+  def associated_price_policies(product)
+    product.is_a?(Bundle) ? product.products.flat_map(&:price_policies) : product.price_policies
   end
 end
