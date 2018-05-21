@@ -1,8 +1,2 @@
-= f.input :start_date, input_html: { value: format_usa_date(price_policy.start_date), id: "start_datepicker" }, label: "Effective"
-= f.input :expire_date, input_html: { id: "expire_datepicker", value: format_usa_date(price_policy.expire_date) }, label: "Expires"
-
-:javascript
-  $(function() {
-    $("#start_datepicker").datepicker("option", {minDate: new Date()});
-    $("#expire_datepicker").datepicker("option", {maxDate: "#{@max_expire_date}"});
-  });
+= f.input :start_date, input_html: { value: format_usa_date(price_policy.start_date), class: "datepicker__data" }, label: "Effective"
+= f.input :expire_date, input_html: { value: format_usa_date(price_policy.expire_date), class: "datepicker__data" }, label: "Expires"
