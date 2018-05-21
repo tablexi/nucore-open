@@ -46,12 +46,6 @@ RSpec.describe PricePolicy do
       @start_date = Time.zone.parse("2020-5-5")
     end
 
-    it "should set default expire_date" do
-      @pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: nil)
-      expect(@pp.expire_date).not_to be_nil
-      expect(@pp.expire_date).to be_within(1.second).of(Time.zone.parse("2020-9-30").end_of_day)
-    end
-
     it "should not allow an expire date the same as start date" do
       pp = ItemPricePolicy.new(
         FactoryBot.attributes_for(:item_price_policy,
