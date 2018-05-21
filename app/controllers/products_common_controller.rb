@@ -96,12 +96,6 @@ class ProductsCommonController < ApplicationController
     @active_tab = "admin_products"
   end
 
-  protected
-
-  def translation_scope
-    "controllers.products_common"
-  end
-
   private
 
   def resource_params

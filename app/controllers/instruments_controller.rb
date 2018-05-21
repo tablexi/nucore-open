@@ -121,10 +121,4 @@ class InstrumentsController < ProductsCommonController
     end
   end
 
-  protected
-
-  def translation_scope
-    "controllers.instruments"
-  end
-
 end

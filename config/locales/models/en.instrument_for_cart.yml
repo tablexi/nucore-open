@@ -1,0 +1,22 @@
+en:
+  models:
+    instrument_for_cart:
+      requires_approval: |
+        The %{product_name} instrument requires approval to reserve;
+        please contact the !facility_downcase! for further information:
+
+        %{facility}
+
+        [%{email}](mailto:%{email})
+      not_available: |
+        The %{product_name} instrument is currently unavailable for reservation online.
+      no_accounts: Sorry, but we could not find a valid payment source that you can use to reserve this instrument
+      no_price_groups: |
+        You are not in a price group that may reserve instrument %{product_name};
+        please contact the !facility_downcase!.
+      not_authorized_to_order_on_behalf: |
+        You are not authorized to order instruments from this !facility_downcase! on behalf of a user.
+      pricing_not_available: |
+        Pricing for this instrument is currently unavailable. Please contact the facility manager for assistance.
+      schedule_not_available: |
+        A schedule for this instrument is currently unavailable. Please contact the facility manager for assistance.
