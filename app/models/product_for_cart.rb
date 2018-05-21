@@ -10,7 +10,7 @@ class ProductForCart
   end
 
   def purchasable_by?(acting_user, session_user)
-    raise NUCore::PermissionDenied unless product_is_accessible?(session_user)
+    raise NUCore::PermissionDenied unless product.is_accessible_to_user?(session_user)
     return false if acting_user.blank?
 
     case
@@ -56,11 +56,6 @@ class ProductForCart
 
   def price_group_ids_for_user(user)
     (user.price_groups + user.account_price_groups).flatten.uniq.map(&:id)
-  end
-
-  def product_is_accessible?(session_user)
-    is_operator = session_user&.operator_of?(product.facility)
-    !(product.is_archived? || (product.is_hidden? && !is_operator))
   end
 
   def associated_price_policies(product)
