@@ -20,9 +20,9 @@ class ProductForCart
       if SettingsHelper.feature_on?(:training_requests)
         if TrainingRequest.submitted?(session_user, product)
           @error_message = controller.text("controllers.products_common.already_requested_access", i18n_params)
-          @error_path = controller.facility_path(product.facility)
+          @error_path = url_helpers.facility_path(product.facility)
         else
-          @error_path = controller.new_facility_product_training_request_path(product.facility, product)
+          @error_path = url_helpers.new_facility_product_training_request_path(product.facility, product)
         end
       else
         @error_message = controller.html(".requires_approval", i18n_params)
@@ -69,5 +69,9 @@ class ProductForCart
       product_type: product_type,
       product_type_plural: product_type.pluralize,
     }
+  end
+
+  def url_helpers
+    Rails.application.routes.url_helpers
   end
 end
