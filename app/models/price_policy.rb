@@ -21,7 +21,7 @@ class PricePolicy < ApplicationRecord
   end
 
   before_save :set_default_subsidy
-  before_create :set_expire_date
+  before_validation :set_expire_date
   before_create :truncate_existing_policies
 
   scope :for_date, ->(start_date) { where("start_date >= ? AND start_date <= ?", start_date.beginning_of_day, start_date.end_of_day) if start_date }
