@@ -33,12 +33,12 @@ RSpec.describe OrderDetail do
 
     let!(:previous_price_policy) do
       create(:item_price_policy,
-        product: item,
-        unit_cost: 10.00,
-        unit_subsidy: 2.00,
-        price_group: price_group,
-        start_date: 8.years.ago,
-      )
+             product: item,
+             unit_cost: 10.00,
+             unit_subsidy: 2.00,
+             price_group: price_group,
+             start_date: 8.years.ago,
+            )
     end
 
     let!(:current_price_policy) do
@@ -48,7 +48,7 @@ RSpec.describe OrderDetail do
              unit_subsidy: 3.00,
              price_group: price_group,
              start_date: 6.weeks.ago,
-      )
+            )
     end
   end
 

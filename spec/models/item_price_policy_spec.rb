@@ -51,11 +51,11 @@ RSpec.describe ItemPricePolicy do
     it "is valid for for today if no active price policy already exists" do
       is_expected.to allow_value(Date.today).for(:start_date)
       ipp = @item.item_price_policies.create!(unit_cost: 1, unit_subsidy: 0, start_date: Date.today - 7, expire_date: Date.today - 6,
-                                             price_group: @price_group)
+                                              price_group: @price_group)
       ipp.save(validate: false)
 
       ipp_new = @item.item_price_policies.build(unit_cost: 1, unit_subsidy: 0, start_date: Date.today, expire_date: 1.day.from_now,
-                                                 price_group: @price_group)
+                                                price_group: @price_group)
       expect(ipp_new).to be_valid
     end
 
@@ -74,7 +74,7 @@ RSpec.describe ItemPricePolicy do
     end
 
     it "calculates the cost for multiple item when given a quantity" do
-      ipp  = build(:item_price_policy, product: @item, unit_cost: 10.75, unit_subsidy: 0.75, price_group: @price_group)
+      ipp = build(:item_price_policy, product: @item, unit_cost: 10.75, unit_subsidy: 0.75, price_group: @price_group)
       costs = ipp.calculate_cost_and_subsidy(2)
       expect(costs[:cost].to_f).to eq(21.5)
       expect(costs[:subsidy].to_f).to eq(1.5)
