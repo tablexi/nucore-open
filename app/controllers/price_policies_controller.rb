@@ -34,8 +34,7 @@ class PricePoliciesController < ApplicationController
     # If there are active policies, start tomorrow. If none, start today
     @start_date = Date.today + (active_policies? ? 1 : 0)
 
-    @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(@product, @start_date, @max_expire_date)
-
+    @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(@product, @start_date)
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
   end
 

@@ -27,6 +27,8 @@ class PricePolicyBuilder
     end
     return new_price_policies if price_policies != new_price_policies
     make_all_price_policies_purchaseable
+    set_expiration_dates
+
     price_policies
   end
 
@@ -57,6 +59,11 @@ class PricePolicyBuilder
 
   def make_all_price_policies_purchaseable
     price_policies.each { |price_policy| price_policy.can_purchase = true }
+  end
+
+  def set_expiration_dates
+    expire_date = PricePolicy.generate_expire_date(start_date)
+    price_policies.each { |price_policy| price_policy.expire_date = expire_date }
   end
 
 
