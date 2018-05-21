@@ -13,12 +13,11 @@ class ProductForCart
     raise NUCore::PermissionDenied unless product.is_accessible_to_user?(session_user)
     return false if acting_user.blank?
 
-    case
-    when !product.available_for_purchase?
+    if !product.available_for_purchase?
       @error_message = text(".not_available", i18n_params)
-    when associated_price_policies(product).none?
+    elsif associated_price_policies(product).none?
       @error_message = text(".pricing_not_available", i18n_params)
-    when !product.can_be_used_by?(acting_user) && !user_can_override_restrictions_on_product?(session_user, product)
+    elsif !product.can_be_used_by?(acting_user) && !user_can_override_restrictions_on_product?(session_user, product)
       if SettingsHelper.feature_on?(:training_requests)
         if TrainingRequest.submitted?(session_user, product)
           @error_message = text("models.product_for_cart.already_requested_access", i18n_params)
@@ -29,11 +28,11 @@ class ProductForCart
       else
         @error_message = html(".requires_approval", i18n_params)
       end
-    when !product.can_purchase?(price_group_ids_for_user(acting_user))
+    elsif !product.can_purchase?(price_group_ids_for_user(acting_user))
       @error_message = text(".no_price_groups", i18n_params)
-    when acting_user.accounts_for_product(product).blank?
+    elsif acting_user.accounts_for_product(product).blank?
       @error_message = text(".no_accounts", i18n_params)
-    when acting_as?(acting_user, session_user) && !session_user.operator_of?(product.facility)
+    elsif acting_as?(acting_user, session_user) && !session_user.operator_of?(product.facility)
       @error_message = text(".not_authorized_to_order_on_behalf", i18n_params)
     end
 

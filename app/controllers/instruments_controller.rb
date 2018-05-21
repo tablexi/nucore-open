@@ -26,7 +26,7 @@ class InstrumentsController < ProductsCommonController
     if @add_to_cart
       redirect_to add_order_path(
         acting_user.cart(session_user),
-        order: { order_details: [ { product_id: @product.id, quantity: 1 } ] }
+        order: { order_details: [{ product_id: @product.id, quantity: 1 }] },
       )
     else
       redirect_to instrument_for_cart.error_path, notice: instrument_for_cart.error_message
