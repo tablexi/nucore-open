@@ -9,7 +9,7 @@ class InstrumentForCart < ProductForCart
       end
 
       # If an instrument is not purchasable, we always redirect. If ProductForCart
-      # didn’t set an error path due to some specific error, we should redirect
+      # didn't set an error path due to some specific error, we should redirect
       # back to the facility path.
       @error_path ||= url_helpers.facility_path(product.facility) unless success
     end
