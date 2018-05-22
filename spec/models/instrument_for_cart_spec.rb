@@ -6,7 +6,7 @@ RSpec.describe InstrumentForCart do
   let(:facility_account) { facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account)) }
 
   let(:instrument) do
-    FactoryBot.create(:instrument, facility: facility, facility_account: facility_account, no_relay: true).tap do |instrument|
+    FactoryBot.create(:instrument, facility: facility, facility_account: facility_account, no_relay: true) do |instrument|
       FactoryBot.create(:instrument_price_policy, product: instrument, price_group: @nupg)
     end
   end
