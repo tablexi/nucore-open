@@ -31,32 +31,32 @@ class ProductForCart
 
   def checks(acting_user, session_user)
     [
-      user_is_present?(acting_user),
-      product_available_for_purchase?,
-      product_has_price_policies?,
-      product_can_be_used?(acting_user, session_user),
-      product_has_price_groups_accessible_to_user?(acting_user),
-      user_has_accounts_for_product?(acting_user),
-      session_user_can_order_on_behalf_of_assumed_user?(acting_user, session_user),
+      check_that_user_is_present(acting_user),
+      check_that_product_is_available_for_purchase,
+      check_that_product_has_price_policies,
+      check_that_product_can_be_used(acting_user, session_user),
+      check_that_product_has_price_groups_accessible_to_user(acting_user),
+      check_that_user_has_accounts_for_product(acting_user),
+      check_that_session_user_can_order_on_behalf_of_assumed_user(acting_user, session_user),
     ]
   end
 
-  def user_is_present?(user)
+  def check_that_user_is_present(user)
     -> { user.present? }
   end
 
-  def product_available_for_purchase?
+  def check_that_product_is_available_for_purchase
     -> { @error_message = text(".not_available", i18n_params) unless product.available_for_purchase? }
   end
 
-  def product_has_price_policies?
+  def check_that_product_has_price_policies
     proc do
       price_policies = product.is_a?(Bundle) ? product.products.flat_map(&:price_policies) : product.price_policies
       @error_message = text(".pricing_not_available", i18n_params) if price_policies.none?
     end
   end
 
-  def product_can_be_used?(acting_user, session_user)
+  def check_that_product_can_be_used(acting_user, session_user)
     proc do
       if !product.can_be_used_by?(acting_user) && !(session_user.present? && session_user.can_override_restrictions?(product))
         if SettingsHelper.feature_on?(:training_requests)
@@ -73,18 +73,18 @@ class ProductForCart
     end
   end
 
-  def product_has_price_groups_accessible_to_user?(user)
+  def check_that_product_has_price_groups_accessible_to_user(user)
     proc do
       price_group_ids = (user.price_groups + user.account_price_groups).flatten.uniq.map(&:id)
       @error_message = text(".no_price_groups", i18n_params) unless product.can_purchase?(price_group_ids)
     end
   end
 
-  def user_has_accounts_for_product?(user)
+  def check_that_user_has_accounts_for_product(user)
     -> { @error_message = text(".no_accounts", i18n_params) if user.accounts_for_product(product).none? }
   end
 
-  def session_user_can_order_on_behalf_of_assumed_user?(acting_user, session_user)
+  def check_that_session_user_can_order_on_behalf_of_assumed_user(acting_user, session_user)
     proc do
       if acting_as?(acting_user, session_user) && !session_user.operator_of?(product.facility)
         @error_message = text(".not_authorized_to_order_on_behalf", i18n_params)

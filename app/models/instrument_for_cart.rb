@@ -12,14 +12,14 @@ class InstrumentForCart < ProductForCart
   private
 
   def checks(acting_user, session_user)
-    [user_is_present?(acting_user), product_has_schedule_rules?] + super
+    [check_that_user_is_present(acting_user), check_that_product_has_schedule_rules] + super
   end
 
-  def user_is_present?(user)
+  def check_that_user_is_present(user)
     -> { @error_path = url_helpers.new_user_session_path if user.blank? }
   end
 
-  def product_has_schedule_rules?
+  def check_that_product_has_schedule_rules
     -> { @error_message = text(".schedule_not_available", i18n_params) if product.schedule_rules.none? }
   end
 
