@@ -55,8 +55,7 @@ RSpec.describe ItemsController do
       @action = :show
     end
 
-    it_should_support_purchasing
-    it_should_communicate_to_the_user_when_purchasing_is_not_possible
+    include_examples "a purchasable product"
   end
 
   context "new" do
