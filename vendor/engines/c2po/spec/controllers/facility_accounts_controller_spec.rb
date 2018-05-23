@@ -74,11 +74,10 @@ RSpec.describe FacilityAccountsController do
 
       before do
         sign_in director
-        get :new, params: {
+        get :new,
           facility_id: facility.url_name,
           account_type: account_type,
-          owner_user_id: account_owner.id,
-        }
+          owner_user_id: account_owner.id
       end
 
       context "PurchaseOrderAccount" do
@@ -105,11 +104,10 @@ RSpec.describe FacilityAccountsController do
 
       before do
         sign_in account_manager
-        get :new, params: {
+        get :new,
           facility_id: "all",
           account_type: account_type,
-          owner_user_id: account_owner.id,
-        }
+          owner_user_id: account_owner.id
       end
 
       context "PurchaseOrderAccount" do
