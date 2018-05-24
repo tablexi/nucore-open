@@ -6,9 +6,6 @@
       # TODO: move some of this logic to the model?
       next unless od.account.account_number.start_with? "KFS" # do we need this
       prod = journal_row.order_detail.product
-      raise "couldn't figure out where to return revenue for #{prod.facility.name}'s #{prod.name}" unless
-        prod.facility_account and prod.facility_account.account_number.start_with? "KFS"
-
       facility_initials = od.facility.name.scan(/([A-Z])/).join
       date = od.created_at.strftime("%Y%m%d")
       orgRef = "#{facility_initials}#{date}"
