@@ -66,6 +66,7 @@ class Reports::AccountTransactionsReport
       Account.human_attribute_name(:owner),
       Account.human_attribute_name(:expires_at),
       OrderDetail.human_attribute_name(:order_status),
+      OrderDetail.human_attribute_name(:note),
     ]
   end
 
@@ -94,6 +95,7 @@ class Reports::AccountTransactionsReport
       order_detail.account.owner_user,
       format_usa_date(order_detail.account.expires_at),
       order_detail.order_status,
+      order_detail.note,
     ]
   end
 
