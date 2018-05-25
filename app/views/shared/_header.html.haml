@@ -3,7 +3,7 @@
     .container
       = link_to :root, class: "brand" do
         - if ActionController::Base.helpers.resolve_asset_path('logo-header.png')
-          = image_tag('logo-header.png')
+          = image_tag "logo-header.png", class: "img__brand"
         %span= app_name
       - if session_user.nil?
         %ul.nav.pull-right.hide-from-print
