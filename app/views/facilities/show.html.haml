@@ -22,18 +22,19 @@
 
 .wysiwyg= current_facility.description
 
-- if @order_form
-  = form_for @order_form, url: add_order_path(acting_user.cart(session_user)), html: {method: :put } do |f|
-    = render partial: 'product_list', locals: {products: instruments, f: f, title_extra: daily_view_link }
-    = render partial: 'product_list', locals: {products: services, f: f}
-    = render partial: 'product_list', locals: {products: timed_services, f: f}
-    = render partial: 'product_list', locals: {products: items, f: f}
-    = render partial: 'product_list', locals: {products: bundles, f: f}
+.product_list_container
+  - if @order_form
+    = form_for @order_form, url: add_order_path(acting_user.cart(session_user)), html: {method: :put } do |f|
+      = render partial: 'product_list', locals: {products: instruments, f: f, title_extra: daily_view_link }
+      = render partial: 'product_list', locals: {products: services, f: f}
+      = render partial: 'product_list', locals: {products: timed_services, f: f}
+      = render partial: 'product_list', locals: {products: items, f: f}
+      = render partial: 'product_list', locals: {products: bundles, f: f}
 
-    = f.submit class: ['btn', 'btn-primary']
-- else
-  = render partial: 'product_list', locals: {products: instruments, title_extra: daily_view_link }
-  = render partial: 'product_list', locals: {products: services}
-  = render partial: 'product_list', locals: {products: timed_services}
-  = render partial: 'product_list', locals: {products: items}
-  = render partial: 'product_list', locals: {products: bundles}
+      = f.submit class: ['btn', 'btn-primary']
+  - else
+    = render partial: 'product_list', locals: {products: instruments, title_extra: daily_view_link }
+    = render partial: 'product_list', locals: {products: services}
+    = render partial: 'product_list', locals: {products: timed_services}
+    = render partial: 'product_list', locals: {products: items}
+    = render partial: 'product_list', locals: {products: bundles}

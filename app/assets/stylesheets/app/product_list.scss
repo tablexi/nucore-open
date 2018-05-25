@@ -1,0 +1,11 @@
+//Used existing class names such as:
+//vendor/engines/secure_rooms/app/views/secure_rooms/card_readers/index.html.haml
+//and
+//app/views/facilities/_product_list.html.haml
+.product_list_container{
+    display: flex;
+    justify-content: space-between;
+}
+.product_list{
+    flex: 0 0 calc(25% - 2em);
+}
