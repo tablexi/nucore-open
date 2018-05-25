@@ -122,7 +122,7 @@ en:
 
     purchase: Purchase
     sidenav_admin:
-      overhome: "Overhome"
+      overview: "Overview"
     tabnav_account:
       details: "Payment Source Details"
       transact: "Transactions"
