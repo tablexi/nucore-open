@@ -1,0 +1,21 @@
+en:
+  models:
+    product_for_cart:
+      already_requested_access: |
+        You have requested that the !facility_downcase! contact you regarding
+        access or training for %{product_type_plural}.
+      not_available: This %{product_type} is currently unavailable for purchase online.
+      not_authorized_to_order_on_behalf: |
+        You are not authorized to order %{product_type_plural} from this !facility_downcase!
+        on behalf of a user.
+      no_accounts: |
+        Sorry, but we could not find a valid payment source that you can use to
+        purchase this %{product_type}
+      no_price_groups: |
+        You are not in a price group that may purchase this %{product_type}; please contact
+        the !facility_downcase!.
+      requires_approval: |
+        This %{product_type} requires approval to purchase; please contact the !facility_downcase!.
+      pricing_not_available: |
+        Pricing for this %{product_type} is currently unavailable. Please contact the facility manager for assistance.
+

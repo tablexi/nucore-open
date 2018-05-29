@@ -205,7 +205,10 @@ RSpec.describe InstrumentsController do
     end
 
     context "when the instrument is hidden" do
-      before { instrument.update_attribute(:is_hidden, true) }
+      before do
+        FactoryBot.create(:schedule_rule, product: instrument)
+        instrument.update!(is_hidden: true)
+      end
 
       it_should_allow_operators_only(:redirect) {}
 
