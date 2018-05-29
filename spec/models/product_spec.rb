@@ -679,4 +679,40 @@ RSpec.describe Product do
       expect(item.user_notes_field_mode).to be_required
     end
   end
+
+  describe "#is_accessible_to_user?" do
+    let(:user) { User.new }
+
+    context "when the product is not archived" do
+      before(:each) { subject.is_archived = false }
+
+      context "and it is not hidden" do
+        before(:each) { subject.is_hidden = false }
+
+        it("returns true") { expect(subject.is_accessible_to_user?(user)).to be true }
+      end
+
+      context "and it is hidden" do
+        before(:each) { subject.is_hidden = true }
+
+        context "and the user is an operator of the product’s facility" do
+          before(:each) { allow(user).to receive(:operator_of?).and_return(true) }
+
+          it("returns true") { expect(subject.is_accessible_to_user?(user)).to be true }
+        end
+
+        context "and the user is not an operator of the product’s facility" do
+          before(:each) { allow(user).to receive(:operator_of?).and_return(false) }
+
+          it("returns false") { expect(subject.is_accessible_to_user?(user)).to be false }
+        end
+      end
+    end
+
+    context "when the product is archived" do
+      before(:each) { subject.is_archived = true }
+
+      it("returns false") { expect(subject.is_accessible_to_user?(user)).to be false }
+    end
+  end
 end

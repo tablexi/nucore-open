@@ -34,65 +34,17 @@ class ProductsCommonController < ApplicationController
   end
 
   # GET /facilities/:facility_id/(services|items|bundles)/:(service|item|bundle)_id
-  # TODO InstrumentsController#show has a lot in common; refactor/extract/consolidate
   def show
-    assert_product_is_accessible!
-    add_to_cart = true
-    @login_required = false
-
-    # does the product have active price policies?
-    unless @product.available_for_purchase?
-      add_to_cart = false
-      @error = "not_available"
-    end
-
-    # is user logged in?
-    if add_to_cart && acting_user.blank?
-      @login_required = true
-      add_to_cart = false
-    end
-
-    # when ordering on behalf of, does the staff have permissions for this facility?
-    if add_to_cart && acting_as? && !session_user.operator_of?(@product.facility)
-      add_to_cart = false
-      @error = "not_authorized_acting_as"
-    end
-
-    # does the user have a valid payment source for purchasing this reservation?
-    if add_to_cart && acting_user.accounts_for_product(@product).blank?
-      add_to_cart = false
-      @error = "no_accounts"
-    end
-
-    # does the product have any price policies for any of the groups the user is a member of?
-    if add_to_cart && !price_policy_available_for_product?
-      add_to_cart = false
-      @error = "not_in_price_group"
-    end
-
-    # is the user approved?
-    if add_to_cart && !@product.can_be_used_by?(acting_user) && !session_user_can_override_restrictions?(@product)
-      if SettingsHelper.feature_on?(:training_requests)
-        if TrainingRequest.submitted?(session_user, @product)
-          flash[:notice] = text(".already_requested_access", product: @product)
-          return redirect_to facility_path(current_facility)
-        else
-          return redirect_to new_facility_product_training_request_path(current_facility, @product)
-        end
-      else
-        add_to_cart = false
-        @error = "requires_approval"
-      end
-    end
-
-    if @error
-      flash.now[:notice] = text(@error, singular: @product.class.model_name.to_s.downcase,
-                                        plural: @product.class.model_name.human(count: 2).downcase)
-    end
-
-    @add_to_cart = add_to_cart
     @active_tab = "home"
-    render layout: "application"
+    product_for_cart = ProductForCart.new(@product)
+    @add_to_cart = product_for_cart.purchasable_by?(acting_user, session_user)
+
+    if product_for_cart.error_path
+      redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
+    else
+      flash.now[:notice] = product_for_cart.error_message if product_for_cart.error_message
+      render layout: "application"
+    end
   end
 
   # GET /services/new
@@ -144,12 +96,6 @@ class ProductsCommonController < ApplicationController
     @active_tab = "admin_products"
   end
 
-  protected
-
-  def translation_scope
-    "controllers.products_common"
-  end
-
   private
 
   def resource_params
@@ -163,15 +109,6 @@ class ProductsCommonController < ApplicationController
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
                                                       relay_attributes: [:ip, :port, :username, :password, :type,
                                                                          :auto_logout, :auto_logout_minutes, :id])
-  end
-
-  def assert_product_is_accessible!
-    raise NUCore::PermissionDenied unless product_is_accessible?
-  end
-
-  def product_is_accessible?
-    is_operator = session_user&.operator_of?(current_facility)
-    !(@product.is_archived? || (@product.is_hidden? && !is_operator))
   end
 
   def current_facility_products
