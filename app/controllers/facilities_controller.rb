@@ -43,6 +43,7 @@ class FacilitiesController < ApplicationController
     @order_form = nil
     @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @active_tab = "home"
+    @columns = SettingsHelper.feature_on?(:product_list_columns) ? "columns" : ""
     render layout: "application"
   end
 

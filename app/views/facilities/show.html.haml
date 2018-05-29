@@ -22,7 +22,7 @@
 
 .wysiwyg= current_facility.description
 
-.product_list_container
+.product_list_container{class: @columns}
   - if @order_form
     = form_for @order_form, url: add_order_path(acting_user.cart(session_user)), html: {method: :put } do |f|
       = render partial: 'product_list', locals: {products: instruments, f: f, title_extra: daily_view_link }
