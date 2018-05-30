@@ -1,7 +1,7 @@
 class PricePolicyUpdater
 
-  def self.update_all!(price_policies, start_date, expire_date, params)
-    new(price_policies, start_date, expire_date, params).update_all!
+  def self.update_all(price_policies, start_date, expire_date, params)
+    new(price_policies, start_date, expire_date, params).update_all
   end
 
   def self.destroy_all_for_product!(product, start_date)
@@ -23,8 +23,8 @@ class PricePolicyUpdater
     end
   end
 
-  def update_all!
-    update && save!
+  def update_all
+    update && save
   end
 
   private
@@ -35,7 +35,7 @@ class PricePolicyUpdater
     end
   end
 
-  def save!
+  def save
     ActiveRecord::Base.transaction do
       @price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
     end

@@ -41,19 +41,19 @@ RSpec.describe PricePolicyMassAssigner do
       end
 
       let!(:previous_price_policy) do
-        product.item_price_policies.create(attributes_for(:item_price_policy,
-                                                          price_group_id: price_group.id,
-                                                          start_date: 8.years.ago,
-                                                          expire_date: nil,
-                                                         ))
+        create(:item_price_policy,
+               product: product,
+               price_group: price_group,
+               start_date: 8.years.ago,
+              )
       end
 
       let!(:current_price_policy) do
-        product.item_price_policies.create(attributes_for(:item_price_policy,
-                                                          price_group_id: price_group.id,
-                                                          start_date: 1.day.ago,
-                                                          expire_date: nil,
-                                                         ))
+        create(:item_price_policy,
+               product: product,
+               price_group: price_group,
+               start_date: 1.day.ago,
+              )
       end
 
       context "when order details are fulfilled" do

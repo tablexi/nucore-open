@@ -8,7 +8,7 @@ FactoryBot.define do
     minimum_cost 1
     can_purchase true
     start_date { Time.zone.now.beginning_of_day }
-    expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }
+    expire_date { PricePolicy.generate_expire_date(start_date) }
   end
 
   factory :instrument_usage_price_policy, parent: :instrument_price_policy do
@@ -24,7 +24,7 @@ FactoryBot.define do
     unit_cost 1
     unit_subsidy 0
     start_date { Time.zone.now.beginning_of_day }
-    expire_date { PricePolicy.generate_expire_date(Date.today) }
+    expire_date { PricePolicy.generate_expire_date(start_date) }
   end
 
   factory :service_price_policy do
@@ -32,7 +32,7 @@ FactoryBot.define do
     unit_cost 1
     unit_subsidy 0
     start_date { Time.zone.now.beginning_of_day }
-    expire_date { PricePolicy.generate_expire_date(Date.today) }
+    expire_date { PricePolicy.generate_expire_date(start_date) }
   end
 
   factory :timed_service_price_policy do
@@ -42,6 +42,6 @@ FactoryBot.define do
     minimum_cost 1
     can_purchase true
     start_date { Time.zone.now.beginning_of_day }
-    expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }
+    expire_date { PricePolicy.generate_expire_date(start_date) }
   end
 end

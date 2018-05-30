@@ -73,7 +73,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
       it "sets the expiration date to when the fiscal year ends" do
         do_request
-        expect(assigns[:expire_date]).to eq(PricePolicy.generate_expire_date(Date.today))
+        expected = PricePolicy.generate_expire_date(Date.today)
+        expect(assigns[:price_policies].map(&:expire_date)).to all(be_within(1.second).of(expected))
       end
 
       it "has a new price policy for each group" do
@@ -168,7 +169,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       end
 
       it "assigns start date" do
-        expect(assigns[:start_date]).to eq(@price_policy.start_date.to_date)
+        expect(assigns[:start_date]).to eq(@price_policy.start_date)
       end
 
       it "returns the existing policies" do
@@ -196,7 +197,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       UserPriceGroupMember.create!(price_group: @price_group, user: @director)
       maybe_grant_always_sign_in :director
       do_request
-      expect(assigns[:start_date]).to eq(Date.strptime(@params[:id], "%Y-%m-%d"))
+      expect(assigns[:start_date]).to eq(Time.zone.parse(@params[:id]))
       expect(assigns[:price_policies]).to be_empty
       is_expected.to render_template "404"
     end
@@ -286,6 +287,24 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           assigns[:price_policies].each do |pp|
             expect(pp).to be_new_record
           end
+        end
+
+        it "rejects and renders an error if expires date is invalid" do
+          @params[:start_date] = "5/0/2018"
+          do_request
+          expect(response).to render_template :new
+          expect(assigns[:start_date]).to be_blank
+          expect(assigns[:price_policies].first.errors).to be_added(:start_date, :blank)
+          expect(assigns[:price_policies]).to all(be_new_record)
+        end
+
+        it "rejects and renders an error if expires date is invalid" do
+          @params[:expire_date] = "5/0/2018"
+          do_request
+          expect(response).to render_template :new
+          expect(assigns[:expire_date]).to be_blank
+          expect(assigns[:price_policies].first.errors).to be_added(:expire_date, :blank)
+          expect(assigns[:price_policies]).to all(be_new_record)
         end
       end
     end
@@ -423,6 +442,22 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           end
 
           it_behaves_like "it rejects expire_date changes"
+        end
+
+        it "rejects and renders an error if start date is invalid" do
+          @params[:start_date] = "5/0/2018"
+          do_request
+          expect(response).to render_template :edit
+          expect(assigns[:price_policies].map(&:start_date)).to all(be_blank)
+          expect(assigns[:price_policies].first.errors).to be_added(:start_date, :blank)
+        end
+
+        it "rejects and renders an error if expires date is invalid" do
+          @params[:expire_date] = "5/0/2018"
+          do_request
+          expect(response).to render_template :edit
+          expect(assigns[:price_policies].map(&:expire_date)).to all(be_blank)
+          expect(assigns[:price_policies].first.errors).to be_added(:expire_date, :blank)
         end
       end
     end

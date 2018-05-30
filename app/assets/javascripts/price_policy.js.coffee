@@ -1,8 +1,4 @@
 $(document).ready ->
-  $ ->
-    $("#start_datepicker").datepicker minDate: null
-    $("#expire_datepicker").datepicker minDate: null
-
   $interval = $("#interval")
 
   $interval.change ->
