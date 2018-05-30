@@ -5,6 +5,7 @@
     
 }
 .facility_listing.tile{
-    flex-basis: calc(33% - 10px);
+    flex: 1 0 calc(33% - 10px);
+    min-width: 250px;
     margin-right:10px;
 }
