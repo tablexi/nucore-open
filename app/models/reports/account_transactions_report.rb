@@ -51,21 +51,22 @@ class Reports::AccountTransactionsReport
       OrderDetail.model_name.human,
       OrderDetail.human_attribute_name(@date_range_field),
       Facility.model_name.human,
-      OrderDetail.human_attribute_name("description"),
-      Reservation.human_attribute_name("reserve_start_at"),
-      Reservation.human_attribute_name("reserve_end_at"),
-      Reservation.human_attribute_name("actual_start_at"),
-      Reservation.human_attribute_name("actual_end_at"),
-      OrderDetail.human_attribute_name("quantity"),
-      OrderDetail.human_attribute_name("user"),
-      OrderDetail.human_attribute_name("cost"),
-      OrderDetail.human_attribute_name("subsidy"),
-      OrderDetail.human_attribute_name("total"),
+      OrderDetail.human_attribute_name(:description),
+      Reservation.human_attribute_name(:reserve_start_at),
+      Reservation.human_attribute_name(:reserve_end_at),
+      Reservation.human_attribute_name(:actual_start_at),
+      Reservation.human_attribute_name(:actual_end_at),
+      OrderDetail.human_attribute_name(:quantity),
+      OrderDetail.human_attribute_name(:user),
+      OrderDetail.human_attribute_name(:cost),
+      OrderDetail.human_attribute_name(:subsidy),
+      OrderDetail.human_attribute_name(:total),
       "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
       Account.model_name.human,
-      Account.human_attribute_name("owner"),
-      Account.human_attribute_name("expires_at"),
-      OrderDetail.human_attribute_name("order_status"),
+      Account.human_attribute_name(:owner),
+      Account.human_attribute_name(:expires_at),
+      OrderDetail.human_attribute_name(:order_status),
+      OrderDetail.human_attribute_name(:note),
     ]
   end
 
@@ -94,6 +95,7 @@ class Reports::AccountTransactionsReport
       order_detail.account.owner_user,
       format_usa_date(order_detail.account.expires_at),
       order_detail.order_status,
+      order_detail.note,
     ]
   end
 
