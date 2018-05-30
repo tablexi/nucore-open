@@ -31,8 +31,7 @@ class PricePoliciesController < ApplicationController
 
   # GET /facilities/:facility_id/{product_type}/:product_id/price_policies/new
   def new
-    # If there are active policies, start tomorrow. If none, start today
-    @start_date = Date.today + (active_policies? ? 1 : 0)
+    @start_date = active_policies? ? Date.tomorrow : Date.today
 
     @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(@product, @start_date)
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
@@ -40,7 +39,7 @@ class PricePoliciesController < ApplicationController
 
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
   def create
-    if update_policies_from_params!
+    if update_policies_from_params
       redirect_to facility_product_price_policies_path, notice: text("create.success")
     else
       flash.now[:error] = text("errors.save")
@@ -50,7 +49,7 @@ class PricePoliciesController < ApplicationController
 
   # PUT /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def update
-    if update_policies_from_params!
+    if update_policies_from_params
       redirect_to facility_product_price_policies_path, notice: text("update.success")
     else
       flash.now[:error] = text("errors.save")
@@ -121,8 +120,8 @@ class PricePoliciesController < ApplicationController
     @max_expire_date = PricePolicy.generate_expire_date(@start_date)
   end
 
-  def update_policies_from_params!
-    PricePolicyUpdater.update_all!(
+  def update_policies_from_params
+    PricePolicyUpdater.update_all(
       @price_policies,
       parse_usa_date(params[:start_date])&.beginning_of_day,
       parse_usa_date(params[:expire_date])&.end_of_day,
