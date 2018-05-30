@@ -83,7 +83,7 @@ group :development do
   gem "haml_lint"
   gem "letter_opener"
   gem "rails-erd"
-  gem "rubocop", "0.54", require: false # needs to be updated in sync with available codeclimate channels
+  gem "rubocop", "0.56.0", require: false # needs to be updated in sync with available codeclimate channels
   gem "web-console"
 end
 
