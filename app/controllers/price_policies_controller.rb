@@ -8,10 +8,8 @@ class PricePoliciesController < ApplicationController
   before_action :init_current_facility
   before_action :init_product
   before_action :init_price_policy, except: [:index, :new]
-  before_action :build_price_policies!, only: [:create, :update]
-  before_action :build_price_policies_for_edit!, only: :edit
-  before_action :set_expire_date_from_params, only: [:create, :update]
-  before_action :set_max_expire_date, only: [:edit, :update]
+  before_action :build_price_policies, only: [:create, :edit, :update]
+  before_action :set_max_expire_date, only: [:new, :edit, :update]
 
   load_and_authorize_resource instance_name: :price_policy
 
@@ -33,28 +31,35 @@ class PricePoliciesController < ApplicationController
 
   # GET /facilities/:facility_id/{product_type}/:product_id/price_policies/new
   def new
-    @start_date = new_start_date
-    @expire_date = set_max_expire_date
+    @start_date = active_policies? ? Date.tomorrow : Date.today
+
     @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(@product, @start_date)
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
-    render "price_policies/new"
   end
 
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
   def create
-    create_or_update(:new)
+    if update_policies_from_params
+      redirect_to facility_product_price_policies_path, notice: text("create.success")
+    else
+      flash.now[:error] = text("errors.save")
+      render :new
+    end
   end
 
   # PUT /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def update
-    create_or_update(:edit)
+    if update_policies_from_params
+      redirect_to facility_product_price_policies_path, notice: text("update.success")
+    else
+      flash.now[:error] = text("errors.save")
+      render :edit
+    end
   end
 
   # GET /facilities/:facility_id/{product_type}/:product_id/price_policies/:id/edit
   def edit
-    @expire_date = @price_policies.map(&:expire_date).compact.first
-
-    render "price_policies/edit"
+    raise ActiveRecord::RecordNotFound if @price_policies.blank?
   end
 
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
@@ -83,36 +88,13 @@ class PricePoliciesController < ApplicationController
     @price_policies ||= PricePolicyBuilder.get(@product, @start_date)
   end
 
-  def build_price_policies!
-    build_price_policies
-    if @price_policies.blank?
-      redirect_to facility_product_price_policies_path,
-                  alert: text("errors.same_start_date")
-    end
-  end
-
-  def build_price_policies_for_edit!
-    build_price_policies
-    raise ActiveRecord::RecordNotFound if @price_policies.blank?
-  end
-
-  def create_or_update(action)
-    if update_policies_from_params!
-      flash[:notice] = text("#{action}.success")
-      redirect_to facility_product_price_policies_path
-    else
-      flash[:error] = text("errors.save")
-      render "price_policies/#{action}"
-    end
-  end
-
   def facility_product_price_policies_path
     [current_facility, @product, PricePolicy]
   end
 
   # Override CanCan's find -- it won't properly search by zoned date
   def init_price_policy
-    @start_date = start_date_from_params
+    @start_date = parse_usa_date(params[:id] || params[:start_date])
 
     @price_policy = @product
                     .price_policies
@@ -128,36 +110,21 @@ class PricePoliciesController < ApplicationController
                                .find_by!(url_name: params[id_param])
   end
 
-  def new_start_date
-    # If there are active policies, start tomorrow. If none, start today
-    Date.today + (active_policies? ? 1 : 0)
-  end
-
   def flash_remove_active_policy_warning_and_redirect
     flash[:error] =
       text("errors.remove_active_policy")
     redirect_to facility_product_price_policies_path
   end
 
-  def set_expire_date_from_params
-    @expire_date = params[:expire_date]
-  end
-
   def set_max_expire_date
     @max_expire_date = PricePolicy.generate_expire_date(@start_date)
   end
 
-  def start_date_from_params
-    start_date = params[:id] || params[:start_date] || return
-    format = start_date.include?("/") ? :usa : :ymd
-    Date.strptime(start_date, I18n.t("date.formats.#{format}"))
-  end
-
-  def update_policies_from_params!
-    PricePolicyUpdater.update_all!(
+  def update_policies_from_params
+    PricePolicyUpdater.update_all(
       @price_policies,
-      parse_usa_date(params[:start_date]).beginning_of_day,
-      parse_usa_date(@expire_date).end_of_day,
+      parse_usa_date(params[:start_date])&.beginning_of_day,
+      parse_usa_date(params[:expire_date])&.end_of_day,
       params,
     )
   end

@@ -23,10 +23,14 @@ class PricePolicyBuilder
 
   def new_policies_based_on_most_recent
     new_price_policies = price_policies.map do |price_policy|
-      last_price_policy_for_price_group(price_policy.price_group) || price_policy
+      policy = last_price_policy_for_price_group(price_policy.price_group) || price_policy
+      policy.start_date = start_date
+      policy.expire_date = expire_date
+      policy
     end
     return new_price_policies if price_policies != new_price_policies
     make_all_price_policies_purchaseable
+
     price_policies
   end
 
@@ -57,6 +61,10 @@ class PricePolicyBuilder
 
   def make_all_price_policies_purchaseable
     price_policies.each { |price_policy| price_policy.can_purchase = true }
+  end
+
+  def expire_date
+    @expire_date ||= PricePolicy.generate_expire_date(start_date)
   end
 
   def model_class
@@ -90,6 +98,7 @@ class PricePolicyBuilder
   end
 
   def price_policies_for_start_date
+    return [] if start_date.blank?
     product.price_policies.for_date(start_date)
   end
 
