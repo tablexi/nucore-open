@@ -1,0 +1,10 @@
+.facility_list_container.tile{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    
+}
+.facility_listing.tile{
+    flex-basis: calc(33% - 10px);
+    margin-right:10px;
+}

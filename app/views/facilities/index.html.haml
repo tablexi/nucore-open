@@ -3,13 +3,31 @@
 
 .welcome= text(".welcome")
 
-- if azlist_on?
-  .az_list_container
-    = render "azlist"
-  = render "product_list", products: @recent_products, title: text("recently_purchased")
-  = render "recently_used_facilities"
-  = render "facilities_list"
+- if @facilities.any?
 
+  - if @recently_used_facilities.present?
+    %h4= text(".recently_used")
+    - @recently_used_facilities.each do |facility|
+      %h4.header-tight= link_to facility, facility_path(facility)
+    %hr
+
+  - if @recent_products.any?
+    %h4= text(".recently_purchased")
+    = render 'product_list', products: @recent_products
+    %hr
+
+  %h4= text(".all")
+  .facility_list_container{class: @list_layout}
+    - @facilities.each do |facility|
+      .facility_listing{class: @list_layout}
+        - if @list_layout == 'tile'
+          = link_to image_tag("https://picsum.photos/400/200"), facility_path(facility)
+          %h4= facility
+        - else
+          %h4= link_to facility, facility_path(facility)
+        %p= facility.short_description
+      
+    
 - else
   = render "recently_used_facilities"
   %hr
