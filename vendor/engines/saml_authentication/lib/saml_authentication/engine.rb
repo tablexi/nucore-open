@@ -11,9 +11,11 @@ module SamlAuthentication
       next if Settings.saml.blank?
 
       User.send(:devise, :saml_authenticatable)
-      ViewHook.add_hook "devise.sessions.new",
-                        "before_login_form",
-                        "saml_authentication/sessions/new"
+      if Settings.saml.login_enabled
+        ViewHook.add_hook "devise.sessions.new",
+                          "before_login_form",
+                          "saml_authentication/sessions/new"
+      end
 
       OneLogin::RubySaml::Logging.logger.level = Rails.env.production? ? Logger::INFO : Logger::DEBUG
     end
