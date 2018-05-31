@@ -32,23 +32,23 @@ RSpec.describe OrderDetail do
     before { create(:account_price_group_member, account: account, price_group: price_group) }
 
     let!(:previous_price_policy) do
-      item.item_price_policies.create(attributes_for(:item_price_policy,
-                                                     unit_cost: 10.00,
-                                                     unit_subsidy: 2.00,
-                                                     price_group_id: price_group.id,
-                                                     start_date: 8.years.ago,
-                                                     expire_date: nil,
-                                                    ))
+      create(:item_price_policy,
+             product: item,
+             unit_cost: 10.00,
+             unit_subsidy: 2.00,
+             price_group: price_group,
+             start_date: 8.years.ago,
+            )
     end
 
     let!(:current_price_policy) do
-      item.item_price_policies.create(attributes_for(:item_price_policy,
-                                                     unit_cost: 20.00,
-                                                     unit_subsidy: 3.00,
-                                                     price_group_id: price_group.id,
-                                                     start_date: 1.day.ago,
-                                                     expire_date: nil,
-                                                    ))
+      create(:item_price_policy,
+             product: item,
+             unit_cost: 20.00,
+             unit_subsidy: 3.00,
+             price_group: price_group,
+             start_date: 6.weeks.ago,
+            )
     end
   end
 
@@ -235,7 +235,7 @@ RSpec.describe OrderDetail do
       include_context "define price policies"
 
       it "re-assigns actual pricing" do
-        order_detail.backdate_to_complete!(Time.current)
+        order_detail.backdate_to_complete!(current_price_policy.expire_date - 1.week)
         order_detail.quantity = new_quantity
         order_detail.save!
         expect(order_detail.reload.quantity).to eq new_quantity

@@ -1,9 +1,5 @@
 module PricePoliciesHelper
 
-  def format_date(date)
-    date.is_a?(String) ? date : date.strftime("%m/%d/%Y")
-  end
-
   def price_policy_path(price_policy_or_product, url_date)
     product = price_policy_or_product.respond_to?(:product) ? price_policy_or_product.product : price_policy_or_product
     [current_facility, product, :price_policy, id: url_date]

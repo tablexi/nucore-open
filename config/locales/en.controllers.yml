@@ -147,14 +147,14 @@ en:
       destroy:
         success: Price Rules were successfully removed.
         failure: An error was encountered while trying to remove the Price Rules
-      edit:
-        success: Price Rules were successfully updated.
       errors:
         remove_active_policy: "Sorry, but you cannot remove an active price policy. If you really want to do so move the start date to the future and try again."
         save: There was an error saving the policy
         same_start_date: "You have chosen a start date that matches an active policy with existing orders. Please choose another start date."
-      new:
+      create:
         success: Price Rules were successfully created.
+      update:
+        success: Price Rules were successfully updated.
 
     product_users:
       new:
