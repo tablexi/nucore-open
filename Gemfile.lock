@@ -119,6 +119,7 @@ GEM
       activerecord (>= 4.0.0, < 5.3)
     awesome_print (1.8.0)
     bcrypt (3.1.11)
+    bcrypt_pbkdf (1.0.0)
     bindex (0.5.0)
     bootstrap-sass (2.3.2.2)
       sass (~> 3.2)
@@ -487,6 +488,10 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    rbnacl (4.0.2)
+      ffi
+    rbnacl-libsodium (1.0.16)
+      rbnacl (>= 3.0.1)
     redcarpet (3.4.0)
     ref (2.0.0)
     request_store (1.4.1)
@@ -637,6 +642,7 @@ DEPENDENCIES
   aasm
   awesome_nested_set
   awesome_print
+  bcrypt_pbkdf (>= 1.0, < 2.0)
   bootstrap-sass (~> 2.3.2)
   bulk_email!
   bullet
@@ -700,6 +706,8 @@ DEPENDENCIES
   rails-erd
   rails-observers
   rake
+  rbnacl (>= 3.2, < 5.0)
+  rbnacl-libsodium
   rollbar (= 2.15.5)
   rspec-activejob
   rspec-collection_matchers
@@ -734,4 +742,4 @@ RUBY VERSION
    ruby 2.4.1p111
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
