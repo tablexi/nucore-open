@@ -2,7 +2,7 @@
   .navbar-inner
     .container
       = link_to :root, class: "brand" do
-        - if Settings.header_logo_path.present? && ActionController::Base.helpers.resolve_asset_path(Settings.header_logo_path)
+        - if Settings.header_logo_path.present?
           = image_tag Settings.header_logo_path, class: "img__brand"
         %span= app_name
       - if session_user.nil?
