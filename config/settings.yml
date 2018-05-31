@@ -1,3 +1,5 @@
+header_logo_path: ~
+
 price_group:
   name:
     base: 'Base Rate'
