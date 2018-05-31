@@ -11,6 +11,22 @@
     = f.input :banner_notice, input_html: { class: "editor__simple" }, hint: text(".hints.banner_notice"), label: false
 
 %fieldset.well
+
+.well
+  %p= text("facilities.new.thumbnail")
+  = f.file_field :thumbnail, required: false
+  /- if @facility.thumbnail
+  /  Thumbnail Exists
+  /  = f.button :submit, "Cancel", class: %w(btn btn-error)
+  /- else 
+  /  No thumbnail
+  /= f.button :upload_thumbnail, "Upload", class: %w(btn btn-primary)
+  
+  /= f.button('Choose File', :disable_with => "Uploading...", :class => ['btn', 'btn-primary'])
+  
+    
+
+.well
   %p
     = f.input :accepts_multi_add,
       as: :boolean, label: false, inline_label: text(".labels.accepts_multi_add")

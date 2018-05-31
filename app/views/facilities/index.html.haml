@@ -21,7 +21,11 @@
     - @facilities.each do |facility|
       .facility_listing{class: @list_layout}
         - if @list_layout == 'tile'
-          = link_to image_tag("https://picsum.photos/400/200"), facility_path(facility)
+          - if facility.thumbnail.exists?
+            = link_to image_tag(facility.thumbnail(:thumb)), facility_path(facility)
+          - else 
+            = link_to facility_path(facility) do
+              .thumbnailFallback= facility.abbreviation
           %h4= facility
         - else
           %h4= link_to facility, facility_path(facility)

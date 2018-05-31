@@ -76,12 +76,47 @@ class FacilitiesController < ApplicationController
     @active_tab = "admin_facility"
   end
 
+  require "zip"
+
+  #Start
+
+  # GET /facilities/:facility_id/thumbnail
+  def thumbnail
+    raise ActiveRecord::RecordNotFound if @facility.thumbnail.template.empty?
+    @file = @facility.thumbnail.new(file_type: "img")
+  end
+
+  # POST /facilities/:facility_id/upload_thumbnail
+  def upload_thumbnail
+    @file = @facility.thumbnail.new(params[:stored_file]&.permit(:file))
+    @file.file_type  = "img"
+    @file.name       = @facility+"_thumbnail"
+    @file.facility = @facility
+    @file.created_by = session_user.id ## this is correct, session_user instead of acting_user
+
+    if @file.save
+      flash[:notice] = text("Uploaded thumbnail")
+    else
+      flash.now[:error] = text("Error Uploading")
+    end
+  end
+
+  # POST /facilities/:facility_id/remove_thumbnail
+  def remove_thumbnail
+    if @facility.thumbnail(&:destroy)
+      flash[:notice] = text("Successfully Removed Thumbnail")
+    else
+      flash[:error] = text("Error removing thumbnail")
+    end
+  end
+  #END
+
+
   # GET /facilities/new
   def new
     @active_tab = "manage_facilites"
     @facility = Facility.new
     @facility.is_active = true
-
     render layout: "application"
   end
 
@@ -210,6 +245,7 @@ class FacilitiesController < ApplicationController
         short_description
         show_instrument_availability
         url_name
+        thumbnail
       )
   end
 
