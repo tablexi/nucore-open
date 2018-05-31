@@ -93,12 +93,12 @@ group :development, :deployment do
   gem "capistrano-rvm",     require: false
   gem "capistrano-bundler", require: false
 
-  # net-ssh requires the gems below to support ed25519 keys
+  # net-ssh 4.2 requires the gems below to support ed25519 keys
   # for deploying via capistrano
   # more info at https://github.com/net-ssh/net-ssh/issues/478
-  gem "bcrypt_pbkdf", ">= 1.0", "< 2.0"
-  gem "rbnacl", ">= 3.2", "< 5.0"
-  gem "rbnacl-libsodium"
+  gem "bcrypt_pbkdf", ">= 1.0", "< 2.0", require: false
+  gem "rbnacl", ">= 3.2", "< 5.0", require: false
+  gem "rbnacl-libsodium", require: false
 end
 
 group :development, :test do
