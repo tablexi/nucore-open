@@ -134,6 +134,9 @@ paperclip:
 
 # saml:
 #   create_user: true
+#   # Use login_enabled: false if you want to allow access to metadata without yet
+#   # allowing login.
+#   login_enabled: true
 #   idp_metadata: "https://websso.example.com/idp/metadata"
 #   # certificate_file: path/to/file.p12 # Optional. Do not check in to version control.
 #   # driver: # Optional. Useful to override inferred SAML settings if need be.
