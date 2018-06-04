@@ -97,7 +97,7 @@ group :development, :deployment do
   # for deploying via capistrano
   # more info at https://github.com/net-ssh/net-ssh/issues/478
   gem "bcrypt_pbkdf", ">= 1.0", "< 2.0", require: false
-  gem "rbnacl", ">= 3.2", "< 5.0", require: false
+  gem "rbnacl", ">= 3.2", "< 6.0", require: false
   gem "rbnacl-libsodium", require: false
 end
 

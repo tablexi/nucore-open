@@ -293,7 +293,7 @@ GEM
     factory_bot_rails (4.10.0)
       factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
-    ffi (1.9.23)
+    ffi (1.9.25)
     fog-aws (3.0.0)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
@@ -488,7 +488,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
-    rbnacl (4.0.2)
+    rbnacl (5.0.0)
       ffi
     rbnacl-libsodium (1.0.16)
       rbnacl (>= 3.0.1)
@@ -706,7 +706,7 @@ DEPENDENCIES
   rails-erd
   rails-observers
   rake
-  rbnacl (>= 3.2, < 5.0)
+  rbnacl (>= 3.2, < 6.0)
   rbnacl-libsodium
   rollbar (= 2.15.5)
   rspec-activejob
