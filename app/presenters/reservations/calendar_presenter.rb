@@ -14,6 +14,7 @@ module Reservations
           {
             title: order.user.full_name,
             email: order.user.email,
+            orderId: order.id,
           }
         else
           {}
@@ -42,7 +43,6 @@ module Reservations
         title: model_name.human,
         product: product.name,
         id: id,
-        orderId: order.id,
       }
     end
 

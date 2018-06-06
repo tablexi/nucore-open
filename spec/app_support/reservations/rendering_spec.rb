@@ -83,7 +83,7 @@ RSpec.describe Reservations::Rendering do
 
         it "returns a hash with extra details about the order" do
           expect(reservation.as_calendar_object(with_details: true))
-            .to eq(base_hash.merge(email: user.email, title: user.full_name))
+            .to eq(base_hash.merge(email: user.email, title: user.full_name, orderId: order.id))
         end
       end
 
