@@ -42,6 +42,7 @@ module Reservations
         title: model_name.human,
         product: product.name,
         id: id,
+        orderId: order.id
       }
     end
 
