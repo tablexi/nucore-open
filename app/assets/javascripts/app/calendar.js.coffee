@@ -46,14 +46,14 @@ class window.FullCalendarConfig
     # Default for our tooltip is to show, even if data-attribute is undefined.
     # Only hide if explicitly set to false.
     if $("#calendar").data("show-tooltip") != false
-      tooltip += [
+      tooltip = [
         @formattedEventPeriod(event),
         event.title,
         event.email,
         event.product,
         event.expiration,
         event.user_note,
-        @linkToEditOrder(event.orderId)
+        @linkToEditOrder(event)
       ].filter(
         (e) -> e? # remove undefined values
       ).join("<br/>")
@@ -81,5 +81,5 @@ class window.FullCalendarConfig
       map((date) -> $.fullCalendar.formatDate(date, "h:mmA")).
       join("&ndash;")
 
-  linkToEditOrder: (orderId) ->
-    "<a href='#{orders_path_base}/#{orderId}'>Edit</a>"
+  linkToEditOrder: (event) ->
+    "<a href='#{orders_path_base}/#{event.orderId}'>Edit</a>"
