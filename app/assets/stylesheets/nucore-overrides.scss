@@ -9,3 +9,64 @@ Example of this to include here:
   $headerBackgroundColor: #571963;
   $headerColor: white;
 */
+$dark-grey: #3F3B26;
+$grey: #9B9B9B;
+$light-orange: #FFAE84;
+$orange: #FF7126;
+
+body {
+  
+  background: #ffffff; /* Old browsers */
+  background: -moz-linear-gradient(top, #ffffff 53%, #e4e4e4 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #ffffff 53%,#e4e4e4 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #ffffff 53%,#e4e4e4 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e4e4e4',GradientType=0 ); /* IE6-9 */
+}
+html,body{
+  min-height: 100%;
+}
+.nav{
+  border-bottom: 1px solid $orange;
+}
+.alert-info {
+  background-color: transparent;
+  border-color: transparent;
+  color: $orange;
+  font-size: 24px;
+  line-height: 1em;
+}
+
+.navbar-inner {
+  box-shadow: none !important;
+  background: none;
+  border: none;
+}
+.visible-with-nav .navbar-inner {
+  // border: 1px solid transparent;
+}
+.brand{
+  font-family: inherit !important;
+}
+.nav li:hover{
+  border: none !important;
+  margin-top: 0 !important;
+}
+.nav li a{
+  padding: 13px;
+  text-decoration: none;
+  color: black;
+  transition: ease 0.3s all;
+  margin-bottom: -1px;
+}
+.nav li.active{
+  border:none !important;
+  margin-top: 0 !important;
+  // border-top: none ;
+}
+.nav li.active a{
+  border: 1px solid $orange !important;
+  border-radius: 4px 4px 0 0;
+  border-bottom-color: transparent !important;
+  background-color: white !important;
+  box-shadow: none !important;
+}
