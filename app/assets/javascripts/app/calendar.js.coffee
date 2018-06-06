@@ -43,15 +43,11 @@ class window.FullCalendarConfig
       $(".fc-button-next").toggleClass("fc-state-disabled", endDate > window.maxDate)
 
   buildTooltip: (event, element) =>
-    tooltip = [
-      $.fullCalendar.formatDate(event.start, "h:mmA"),
-      $.fullCalendar.formatDate(event.end,   "h:mmA")
-    ].join("&ndash;") + "<br/>"
-
     # Default for our tooltip is to show, even if data-attribute is undefined.
     # Only hide if explicitly set to false.
     if $("#calendar").data("show-tooltip") != false
       tooltip += [
+        @formattedEventPeriod(event),
         event.title,
         event.email,
         event.product,
@@ -79,6 +75,11 @@ class window.FullCalendarConfig
   # window.minDate/maxDate are strings formatted like 20170714
   formatCalendarDate: (date) ->
     $.fullCalendar.formatDate(date, "yyyyMMdd")
+
+  formattedEventPeriod: (event) ->
+    [event.start, event.end].
+      map((date) -> $.fullCalendar.formatDate(date, "h:mmA")).
+      join("&ndash;")
 
   linkToEditOrder: (orderId) ->
     "<a href='#{orders_path_base}/#{orderId}'>Edit</a>"
