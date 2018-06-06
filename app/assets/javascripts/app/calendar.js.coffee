@@ -42,7 +42,7 @@ class window.FullCalendarConfig
       $(".fc-button-prev").toggleClass("fc-state-disabled", startDate < window.minDate)
       $(".fc-button-next").toggleClass("fc-state-disabled", endDate > window.maxDate)
 
-  buildTooltip: (event, element) ->
+  buildTooltip: (event, element) =>
     tooltip = [
       $.fullCalendar.formatDate(event.start, "h:mmA"),
       $.fullCalendar.formatDate(event.end,   "h:mmA")
@@ -57,6 +57,7 @@ class window.FullCalendarConfig
         event.product,
         event.expiration,
         event.user_note,
+        @linkToEditOrder(event.orderId)
       ].filter(
         (e) -> e? # remove undefined values
       ).join("<br/>")
@@ -78,3 +79,6 @@ class window.FullCalendarConfig
   # window.minDate/maxDate are strings formatted like 20170714
   formatCalendarDate: (date) ->
     $.fullCalendar.formatDate(date, "yyyyMMdd")
+
+  linkToEditOrder: (orderId) ->
+    "<a href='#{orders_path_base}/#{orderId}'>Edit</a>"
