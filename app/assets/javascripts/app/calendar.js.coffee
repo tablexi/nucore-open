@@ -70,6 +70,9 @@ class window.FullCalendarConfig
           position:
             at: "bottom left"
             my: "topRight"
+          hide:
+            fixed: true
+            delay: 300
         )
 
   # window.minDate/maxDate are strings formatted like 20170714
