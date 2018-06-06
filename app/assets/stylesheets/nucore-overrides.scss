@@ -1,4 +1,7 @@
 /*
+UCONN Fork Styling
+Unfortunately, many of our overrides require !important to apply correctly.
+
 Fork-specific styling should go in this file. This is included after Bootstrap,
 so you will have access to Bootstrap's variables and mixins.
 
@@ -41,9 +44,6 @@ html,body{
   background: none;
   border: none;
 }
-.visible-with-nav .navbar-inner {
-  // border: 1px solid transparent;
-}
 .brand{
   font-family: inherit !important;
 }
@@ -61,7 +61,6 @@ html,body{
 .nav li.active{
   border:none !important;
   margin-top: 0 !important;
-  // border-top: none ;
 }
 .nav li.active a{
   border: 1px solid $orange !important;
