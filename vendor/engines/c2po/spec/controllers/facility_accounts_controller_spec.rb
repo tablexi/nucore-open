@@ -102,6 +102,7 @@ RSpec.describe FacilityAccountsController do
 
     describe "as an account administrator" do
       let(:account_manager) { create(:user, :account_manager) }
+      let(:chartstring_class_name) { Account.config.account_types.first }
 
       before do
         sign_in account_manager
@@ -117,7 +118,7 @@ RSpec.describe FacilityAccountsController do
 
         it "falls back to using a chartstring" do
           expect(response).to be_success
-          expect(assigns(:account)).to be_a(NufsAccount)
+          expect(assigns(:account).class.name).to eq(chartstring_class_name)
         end
       end
 
@@ -126,7 +127,7 @@ RSpec.describe FacilityAccountsController do
 
         it "falls back to using a chartstring" do
           expect(response).to be_success
-          expect(assigns(:account)).to be_a(NufsAccount)
+          expect(assigns(:account).class.name).to eq(chartstring_class_name)
         end
       end
     end
