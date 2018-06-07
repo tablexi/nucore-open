@@ -121,7 +121,10 @@ RSpec.describe ProductForCart do
     end
 
     context "when the acting user does not have any accounts that can purchase the product" do
-      before(:each) { allow(user).to receive(:accounts_for_product).and_return([]) }
+      before(:each) do
+        allow(item).to receive(:can_purchase?).and_return(true)
+        allow(user).to receive(:accounts_for_product).and_return([])
+      end
 
       it "sets error_message explaining that we could not find a valid payment source" do
         product_for_cart.purchasable_by?(user, user)
