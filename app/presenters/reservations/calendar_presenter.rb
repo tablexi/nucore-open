@@ -14,6 +14,7 @@ module Reservations
           {
             title: order.user.full_name,
             email: order.user.email,
+            orderId: order.id,
           }
         else
           {}
