@@ -122,6 +122,11 @@ RSpec.describe ProductForCart do
 
     context "when the acting user does not have any accounts that can purchase the product" do
       before(:each) do
+        # Some of the school-specific forks override Product#can_purchase?, which can
+        # cause the call to purchasable_by? below to fail on that check, instead of the
+        # check we’re interested in exercising in this context. Since we test can_purchase?
+        # in the context above, here we stub it away so we ensure that the check we’re
+        # interested in gets exercised.
         allow(item).to receive(:can_purchase?).and_return(true)
         allow(user).to receive(:accounts_for_product).and_return([])
       end
