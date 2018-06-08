@@ -69,6 +69,20 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
     end
 
+    context "when auto-creation of users is disabled and a user does not exist" do
+      around :each do |example|
+        original_value = Devise.saml_create_user
+        Devise.saml_create_user = false
+        example.run
+        Devise.saml_create_user = original_value
+      end
+
+      it "sets a user-friendly error message in the flash" do
+        post :create, SAMLResponse: saml_response
+        expect(flash[:alert]).to eq(I18n.t("devise.failure.saml_invalid"))
+      end
+    end
+
     describe "an email-based user exists" do
       around :each do |example|
         original_value = Devise.saml_create_user
