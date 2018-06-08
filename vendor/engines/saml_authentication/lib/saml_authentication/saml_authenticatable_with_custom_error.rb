@@ -16,7 +16,7 @@ module Devise
       # causes Devise to use the error message defined in devise.failure.invalid. That
       # error message is used by other strategies, including the email and password strategy
       # that we also use, so if we change the message we'll incorrectly affect the other
-      # strategies as well. Therefore, we override the m ethod responsible for failing
+      # strategies as well. Therefore, we override the method responsible for failing
       # authentication to call fail!(:saml_invalid), which allows us to specify a separate
       # failure message for authentication via SAML.
       def failed_auth(msg)
