@@ -1852,4 +1852,15 @@ RSpec.describe OrderDetail do
       price_policy.update_attribute :cancellation_cost, cost
     end
   end
+
+  describe ".with_upcoming_reservation" do
+    before do
+      place_reservation facility, order_detail, 48.hours.from_now, reserve_end_at: 49.hours.from_now
+      order_detail.cancel_reservation(user, admin: true)
+    end
+
+    it "does not include canceled order details" do
+      expect(OrderDetail.with_upcoming_reservation).not_to include(order_detail)
+    end
+  end
 end
