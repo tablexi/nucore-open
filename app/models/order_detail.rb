@@ -291,7 +291,7 @@ class OrderDetail < ApplicationRecord
       where(reservations: { actual_start_at: nil }).
       merge(Reservation.ends_in_the_future)
   }
-  scope :with_in_progress_reservation, lambda { with_reservation.merge(Reservation.relay_in_progress) }
+  scope :with_in_progress_reservation, -> { non_canceled.with_reservation.merge(Reservation.relay_in_progress) }
 
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
