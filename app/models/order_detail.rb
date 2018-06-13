@@ -284,9 +284,9 @@ class OrderDetail < ApplicationRecord
 
   scope :pending, -> { joins(:order).where(state: %w(new inprocess)).purchased }
 
-  scope :all_reservations, -> { purchased.joins(:reservation).order("reservations.reserve_start_at DESC") }
-  scope :upcoming_reservations, -> { all_reservations.where(reservations: { actual_start_at: nil }).merge(Reservation.ends_in_the_future) }
-  scope :in_progress_reservations, lambda { all_reservations.merge(Reservation.relay_in_progress) }
+  scope :with_reservation, -> { purchased.joins(:reservation).order("reservations.reserve_start_at DESC") }
+  scope :with_upcoming_reservation, -> { with_reservation.where(reservations: { actual_start_at: nil }).merge(Reservation.ends_in_the_future) }
+  scope :with_in_progress_reservation, lambda { with_reservation.merge(Reservation.relay_in_progress) }
 
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
