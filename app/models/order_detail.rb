@@ -283,21 +283,15 @@ class OrderDetail < ApplicationRecord
   scope :purchased, -> { joins(:order).merge(Order.purchased) }
 
   scope :pending, -> { joins(:order).where(state: %w(new inprocess)).purchased }
-  scope :confirmed_reservations, -> { reservations.joins(:order).includes(:reservation).purchased }
 
-  scope :upcoming_reservations, lambda {
-                                  confirmed_reservations
-                                    .where("reservations.reserve_end_at > ? AND reservations.actual_start_at IS NULL", Time.zone.now)
-                                    .order("reservations.reserve_start_at ASC")
-                                }
-
-  scope :in_progress_reservations, lambda {
-    confirmed_reservations
-      .merge(Reservation.relay_in_progress)
-      .order("reservations.reserve_start_at ASC")
+  scope :with_reservation, -> { purchased.joins(:reservation).order("reservations.reserve_start_at DESC") }
+  scope :with_upcoming_reservation, lambda {
+    non_canceled
+      .with_reservation
+      .where(reservations: { actual_start_at: nil })
+      .merge(Reservation.ends_in_the_future)
   }
-
-  scope :all_reservations, -> { confirmed_reservations.order("reservations.reserve_start_at DESC") }
+  scope :with_in_progress_reservation, -> { non_canceled.with_reservation.merge(Reservation.relay_in_progress) }
 
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
