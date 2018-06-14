@@ -285,11 +285,11 @@ class OrderDetail < ApplicationRecord
   scope :pending, -> { joins(:order).where(state: %w(new inprocess)).purchased }
 
   scope :with_reservation, -> { purchased.joins(:reservation).order("reservations.reserve_start_at DESC") }
-  scope :with_upcoming_reservation, -> {
-    non_canceled.
-    with_reservation.
-      where(reservations: { actual_start_at: nil }).
-      merge(Reservation.ends_in_the_future)
+  scope :with_upcoming_reservation, lambda {
+    non_canceled
+      .with_reservation
+      .where(reservations: { actual_start_at: nil })
+      .merge(Reservation.ends_in_the_future)
   }
   scope :with_in_progress_reservation, -> { non_canceled.with_reservation.merge(Reservation.relay_in_progress) }
 
