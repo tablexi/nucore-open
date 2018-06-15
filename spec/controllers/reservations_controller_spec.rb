@@ -369,12 +369,12 @@ RSpec.describe ReservationsController do
         @params = { status: "all" }
       end
 
-      it "should respond with all reservations" do
+      it "should respond with all order details that have a reservation" do
         maybe_grant_always_sign_in :staff
         do_request
         expect(assigns(:status)).to eq("all")
         expect(assigns(:available_statuses).size).to eq(2)
-        expect(assigns(:order_details)).to eq(OrderDetail.all_reservations)
+        expect(assigns(:order_details)).to eq(OrderDetail.with_reservation)
         expect(assigns(:active_tab)).to eq("reservations")
         is_expected.to render_template("list")
       end
