@@ -18,7 +18,7 @@ RSpec.describe ProductAccessoriesController do
 
   describe "index" do
     let!(:unchosen_accessory) { FactoryBot.create(:setup_item, facility: facility) }
-    let!(:inactive_product) { FactoryBot.create(:setup_item, is_archived: true, facility: facility)}   
+    let!(:inactive_product) { FactoryBot.create(:setup_item, is_archived: true, facility: facility) }
     let!(:bundle) { FactoryBot.create(:bundle, facility: facility) }
 
     before :each do
