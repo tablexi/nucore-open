@@ -1,14 +1,10 @@
-//Used existing class names such as:
-//vendor/engines/secure_rooms/app/views/secure_rooms/card_readers/index.html.haml
-//and
-//app/views/facilities/_product_list.html.haml
-.product_list_container.columns{
-    display: flex;
-    justify-content: space-between;
-    flex-wrap:wrap;
-}
-.product_list.columns{
-    flex: 0 0 calc(25% - 2em);
-    min-width: 200px;
+.product_list_container.columns {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap:wrap;
 }
 
+.product_list.columns {
+  flex: 0 0 calc(25% - 2em);
+  min-width: 200px;
+}
