@@ -120,6 +120,7 @@ feature:
   price_change_reason_required_on: true
   can_manage_global_price_groups_on: true
   cross_facility_reports_on: false
+  product_list_columns_on: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
