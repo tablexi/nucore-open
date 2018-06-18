@@ -1,0 +1,10 @@
+.product_list_container.columns {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap:wrap;
+}
+
+.product_list.columns {
+  flex: 0 0 calc(25% - 2em);
+  min-width: 200px;
+}
