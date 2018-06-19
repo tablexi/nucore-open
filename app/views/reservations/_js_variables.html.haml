@@ -1,5 +1,6 @@
 :javascript
   var events_path     = "#{facility_instrument_reservations_path(@instrument.facility, @instrument, format: 'js', with_details: @instrument.show_details?)}";
+  var orders_path_base = "#{facility_orders_path(@instrument.facility)}";
   var minDate         = "#{@min_date}";
   var maxDate         = "#{@max_date}";
   var maxDaysFromNow  = #{@max_window};

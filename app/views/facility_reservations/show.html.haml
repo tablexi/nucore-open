@@ -2,6 +2,7 @@
   = javascript_include_tag 'fullcalendar.js'
   :javascript
     var events_path     = "#{facility_instrument_reservations_path(current_facility, @instrument, :format => 'js')}";
+    var orders_path_base = "#{facility_orders_path(current_facility)}";
     var maxDaysFromNow  = #{@instrument.max_reservation_window};
     var minTime         = #{@instrument.first_available_hour};
     var maxTime         = #{@instrument.last_available_hour+1};
