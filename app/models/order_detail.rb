@@ -281,12 +281,12 @@ class OrderDetail < ApplicationRecord
 
   scope :with_reservation, -> { purchased.joins(:reservation).order("reservations.reserve_start_at DESC") }
   scope :with_upcoming_reservation, lambda {
-    non_canceled
+    new_or_inprocess
       .with_reservation
       .where(reservations: { actual_start_at: nil })
       .merge(Reservation.ends_in_the_future)
   }
-  scope :with_in_progress_reservation, -> { non_canceled.with_reservation.merge(Reservation.relay_in_progress) }
+  scope :with_in_progress_reservation, -> { new_or_inprocess.with_reservation.merge(Reservation.relay_in_progress) }
 
   scope :for_accounts, ->(accounts) { where("order_details.account_id in (?)", accounts) unless accounts.nil? || accounts.empty? }
   scope :for_facilities, ->(facilities) { joins(:order).where("orders.facility_id in (?)", facilities) unless facilities.nil? || facilities.empty? }
