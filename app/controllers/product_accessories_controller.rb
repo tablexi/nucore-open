@@ -45,9 +45,9 @@ class ProductAccessoriesController < ApplicationController
   end
 
   def set_available_accessories
-    # Already set as an accessory, or is this instrument
+    # Exclude already included accessories as well as the current product.
     non_available_accessories = [@product.id] + Array(@product_accessories).map(&:accessory_id)
-    @available_accessories = current_facility.products.accessorizable.exclude(non_available_accessories).order(:name)
+    @available_accessories = current_facility.products.accessorizable.active.exclude(non_available_accessories).order(:name)
   end
 
 end
