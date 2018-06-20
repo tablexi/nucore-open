@@ -134,12 +134,7 @@ class OrderDetail < ApplicationRecord
 
   scope :by_ordered_at, -> { joins(:order).order("orders.ordered_at DESC") }
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
-  scope :new_or_inprocess, lambda {
-    where(state: %w(new inprocess))
-      .joins(:order)
-      .merge(Order.purchased)
-  }
-
+  scope :new_or_inprocess, -> { purchased.where(state: %w(new inprocess)) }
   scope :non_canceled, -> { where.not(state: "canceled") }
 
   def self.for_facility(facility)
