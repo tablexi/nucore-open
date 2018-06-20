@@ -82,4 +82,4 @@ class window.FullCalendarConfig
       join("&ndash;")
 
   linkToEditOrder: (event) ->
-    "<a href='#{orders_path_base}/#{event.orderId}'>Edit</a>" if event.orderId?
+    "<a href='#{orders_path_base}/#{event.orderId}'>Edit</a>" if event.orderId? and orders_path_base?

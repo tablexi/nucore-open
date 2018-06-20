@@ -2,7 +2,6 @@
   = javascript_include_tag "fullcalendar.js", "schedule_rules.js"
   :javascript
     var events_path = "#{url_for(:format => 'js')}";
-    var orders_path_base = "#{facility_orders_path(current_facility)}";
 
 = content_for :h1 do
   = current_facility
