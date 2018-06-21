@@ -1583,4 +1583,18 @@ RSpec.describe Reservation do
       it { is_expected.to be_blank }
     end
   end
+
+  describe "#can_switch_instrument_off?" do
+    context "when the reservation is canceled and has already started" do
+      before do
+        reservation.update!(actual_start_at: 5.minutes.ago)
+        reservation.order_detail.update!(canceled_at: Time.current)
+      end
+
+      it "returns false" do
+        expect(reservation.can_switch_instrument_off?).to be(false)
+      end
+    end
+  end
+
 end
