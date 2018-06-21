@@ -1856,10 +1856,15 @@ RSpec.describe OrderDetail do
   describe ".with_upcoming_reservation" do
     before do
       place_reservation facility, order_detail, 48.hours.from_now, reserve_end_at: 49.hours.from_now
-      order_detail.cancel_reservation(user, admin: true)
     end
 
     it "does not include canceled order details" do
+      order_detail.cancel_reservation(user, admin: true)
+      expect(OrderDetail.with_upcoming_reservation).not_to include(order_detail)
+    end
+
+    it "does not include order details canceled with a cost" do
+      order_detail.update!(state: "complete", canceled_at: 5.minutes.ago)
       expect(OrderDetail.with_upcoming_reservation).not_to include(order_detail)
     end
   end
@@ -1867,11 +1872,11 @@ RSpec.describe OrderDetail do
   describe ".with_in_progress_reservation" do
     before do
       place_reservation facility, order_detail, 10.minutes.ago, actual_start_at: 10.minutes.ago, reserve_end_at: 50.minutes.from_now
-      order_detail.cancel_reservation(user, admin: true)
     end
 
-    it "does not include canceled order details" do
-      expect(OrderDetail.with_in_progress_reservation).not_to include(order_detail)
+    it "does not include order details canceled with a cost" do
+      order_detail.update!(state: "complete", canceled_at: 5.minutes.ago)
+      expect(OrderDetail.with_upcoming_reservation).not_to include(order_detail)
     end
   end
 end
