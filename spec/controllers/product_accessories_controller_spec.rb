@@ -19,6 +19,7 @@ RSpec.describe ProductAccessoriesController do
   describe "index" do
     let!(:unchosen_accessory) { FactoryBot.create(:setup_item, facility: facility) }
     let!(:inactive_product) { FactoryBot.create(:setup_item, is_archived: true, facility: facility) }
+    let!(:hidden_product) { FactoryBot.create(:setup_item, is_hidden: true, facility: facility) }
     let!(:bundle) { FactoryBot.create(:bundle, facility: facility) }
 
     before :each do
@@ -55,6 +56,10 @@ RSpec.describe ProductAccessoriesController do
 
       it "does not include inactive products" do
         expect(assigns(:available_accessories)).not_to include(inactive_product)
+      end
+
+      it "includes hidden products" do
+        expect(assigns(:available_accessories)).to include(hidden_product)
       end
     end
 
