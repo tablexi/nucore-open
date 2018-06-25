@@ -11,7 +11,7 @@
       - indent_for_icon = products.any? { |p| p.respond_to? :reservations }
       - products.sort.each do |product|
         .product_listing
-          %li{ class: product.class.model_name.to_s.downcase }
+          %li{ class: product.class.model_name.to_s.downcase + '_title' }
             = product.name
             - if local_assigns[:f]
               = f.fields_for :order_details do |builder|
@@ -29,7 +29,7 @@
                   No payment source
               - else
                 Cannot purchase
-            .view_product
+            %li{class: [product.class.model_name.to_s.downcase, 'view_product']}
               = public_calendar_link(product, indent: indent_for_icon)
               = link_to 'View' + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(current_facility || product.facility, product)
               - if acting_user.present? && !product.can_be_used_by?(acting_user)
