@@ -157,13 +157,17 @@ li.nav-spacer {
   }
 }
 
-.product_listing{
+.quick_links {
   display: flex;
 }
-.product_listing .add_to_cart{
+
+.quick_links .add_to_cart {
   margin-left: 5px;
 }
 
+.quick_links .view_product {
+  margin-left: 5px;
+}
 /*
   Product View
 */
