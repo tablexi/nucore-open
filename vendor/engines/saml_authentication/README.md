@@ -30,7 +30,8 @@ saml:
 
 * `idp_metadata`: The URL for your IdP's metadata. This should be provided to you by the IdP.
 * `certificate_file` (Optional): A `.p12` certificate file for signing your requests.
-  _Do not check this in to version control_
+  _Do not check this in to version control_. See below for instructions on creating
+  a certificate.
 * `attribute_map`: A mapping from the IdP's attributes to the NUcore's `users` table
   columns. `username` and `email` are absolutely required while entries for `first_name`
   and `last_name` are recommended.
@@ -128,3 +129,16 @@ Example:
 5. The IdP logs the user out of any other applications that were authenticated as part of
    the same IdP session.
 6. User is redirected to somewhere on the IdP's site (e.g. the login page)
+
+### Generating a certificate
+
+On a Linux-based system, generate a self-signed certificate.
+
+```
+openssl x509 -text -noout -in cert.pem
+# You will be asked for Country Name, State, Organization and others.
+# When asked for a password, leave it blank.
+openssl pkcs12 -inkey key.pem -in cert.pem -export -out nucore-cert.p12
+rm cert.pem
+rm key.pem
+```
