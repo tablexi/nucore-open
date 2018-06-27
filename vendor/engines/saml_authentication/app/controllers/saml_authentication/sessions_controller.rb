@@ -68,7 +68,7 @@ module SamlAuthentication
     # This will be used to choose which Logout link is shown to the user.
     # https://github.com/apokalipto/devise_saml_authenticatable/wiki/Supporting-multiple-authentication-strategies
     def store_winning_strategy
-      warden.session(resource_name)[:strategy] = warden.winning_strategies[resource_name].class.name.demodulize.underscore.to_sym
+      warden.session(resource_name)[:strategy] = "saml_authenticatable"
     end
 
   end
