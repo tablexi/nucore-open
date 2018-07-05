@@ -32,7 +32,6 @@ RSpec.describe OrderImport, :time_travel do
   let(:account) do
     create(:nufs_account,
            description: "dummy account",
-           account_number: "111-2222222-33333333-01",
            account_users_attributes: account_users_attributes,
           )
   end
@@ -125,7 +124,7 @@ RSpec.describe OrderImport, :time_travel do
       args.each do |opts|
         row = CSV::Row.new(CSV_HEADERS, [
                              opts[:username] || "guest",
-                             opts[:account_number]     || "111-2222222-33333333-01",
+                             opts[:account_number]     || account.account_number,
                              opts[:product_name]       || "Example Item",
                              opts[:quantity]           || 1,
                              opts[:order_date]         || nucore_format_date(default_order_date),
