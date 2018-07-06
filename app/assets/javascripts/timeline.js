@@ -106,4 +106,14 @@ $(function() {
   $('.relay_checkbox').addClass('loading');
   // Only try to load relay statuses if there are relays to check
   if ($('.relay_checkbox :checkbox').length > 0) loadRelayStatuses();
+
+  $('#reservation_left, #reservation_right').on('click', function(event) {
+    var heightOfDateNav = $('.timeline_header').outerHeight();
+    var instrumentsBelowScroll = $('.timeline_instrument').filter(function() {
+      return $(window).scrollTop() < heightOfDateNav + $(this).offset().top;
+    })
+    var instrumentToScrollTo = instrumentsBelowScroll[0]
+    var urlWithoutFragment = this.href.split('#')[0]
+    this.href = urlWithoutFragment + '#' + instrumentToScrollTo.id
+  });
 });
