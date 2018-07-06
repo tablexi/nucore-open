@@ -160,16 +160,25 @@ body .unit {
 }
 
 .timeline_header {
+  background-color: white;
+  padding: 10px 0;
+  position: sticky;
   text-align: center;
-}
+  top: 0;
+  z-index: 100;
 
-/* Center the text excluding the calendar icon. The margin-left should be the width of the icon */
-.timeline_header h3 {
-  margin-left: 16px;
-}
+  form {
+    margin-bottom: 0
+  }
 
-.timeline_header i {
-  vertical-align: top;
+  /* Center the text excluding the calendar icon. The margin-left should be the width of the icon */
+  h3 {
+    margin-left: 16px;
+  }
+
+  i {
+    vertical-align: top;
+  }
 }
 
 .timeline_instrument {
