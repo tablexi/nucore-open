@@ -2,6 +2,14 @@ class UserForm < SimpleDelegator
 
   include ActiveModel::Validations
 
+  def model_name
+    ActiveModel::Name.new(user.class)
+  end
+
+  def to_model
+    self
+  end
+
   def user
     __getobj__
   end
