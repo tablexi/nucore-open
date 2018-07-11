@@ -7,9 +7,8 @@ RSpec.describe PriceGroupProductsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryBot.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-    @product = FactoryBot.create(:instrument, facility_account_id: @facility_account.id, facility: @authable)
+    @authable = FactoryBot.create(:setup_facility)
+    @product = FactoryBot.create(:instrument, facility: @authable)
     create_price_group_products
     @params = { facility_id: @authable.url_name, id: @product.url_name }
   end
@@ -79,7 +78,7 @@ RSpec.describe PriceGroupProductsController do
     end
 
     it "should not error if no reservation window given on non-instrument" do
-      @product = @authable.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @product = FactoryBot.create(:item, facility: @authable)
       create_price_group_products
       pg = @price_group_products.first.price_group
       @params[pg_key(pg)][:reservation_window] = ""

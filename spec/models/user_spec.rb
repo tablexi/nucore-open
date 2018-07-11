@@ -2,11 +2,10 @@ require "rails_helper"
 
 RSpec.describe User do
   subject(:user) { create(:user) }
-  let(:facility) { create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
-  let(:item) { facility.items.create(attributes_for(:item, facility_account_id: facility_account.id)) }
+  let(:facility) { create(:setup_facility) }
+  let(:item) { create(:item, facility: facility) }
   let(:price_group) { create(:price_group, facility: facility) }
-  let(:price_policy) { item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: price_group.id)) }
+  let(:price_policy) { create(:item_price_policy, product: item, price_group: price_group) }
 
   it "validates uniquess of username" do
     # we need at least 1 user to test validations

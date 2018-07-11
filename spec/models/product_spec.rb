@@ -19,8 +19,8 @@ RSpec.describe Product do
     end
 
     before(:example) do
-      @facility         = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:facility)
+      @facility_account = FactoryBot.create(:facility_account, facility: @facility)
     end
 
     it "should not create using factory" do
@@ -30,7 +30,7 @@ RSpec.describe Product do
 
     context "with item" do
       before :each do
-        @item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+        @item = FactoryBot.create(:item, facility: @facility, facility_account: @facility_account)
       end
 
       it "should create map to default price groups" do
@@ -519,7 +519,7 @@ RSpec.describe Product do
         let(:new_product) { build(:instrument_requiring_approval, url_name: "product_name", facility: facility) }
 
         before :each do
-          other_facility.facility_accounts.create(attributes_for(:facility_account))
+          create(:facility_account, facility: other_facility)
           create(:instrument_requiring_approval, url_name: "product_name", facility: other_facility)
         end
 

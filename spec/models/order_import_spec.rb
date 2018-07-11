@@ -56,9 +56,7 @@ RSpec.describe OrderImport, :time_travel do
       .count
   end
   let(:facility) { create(:facility) }
-  let(:facility_account) do
-    facility.facility_accounts.create!(attributes_for(:facility_account))
-  end
+  let(:facility_account) { create(:facility_account, facility: facility) }
   let(:fiscal_year_beginning) { SettingsHelper.fiscal_year_beginning }
   let(:guest) { @guest }
   let(:guest2) { create(:user, username: "guest2") }

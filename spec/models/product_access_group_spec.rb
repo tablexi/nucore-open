@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe ProductAccessGroup do
   before :each do
-    @facility         = FactoryBot.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @facility = FactoryBot.create(:facility)
+    @facility_account = FactoryBot.create(:facility_account, facility: @facility)
     @instrument = @product = FactoryBot.create(:instrument,
                                                facility: @facility,
                                                facility_account: @facility_account)

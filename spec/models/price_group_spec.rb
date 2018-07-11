@@ -26,8 +26,8 @@ RSpec.describe PriceGroup do
   context "can_purchase?" do
 
     before :each do
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-      @product = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @facility_account = FactoryBot.create(:facility_account, facility: @facility)
+      @product = FactoryBot.create(:item, facility: @facility, facility_account: @facility_account)
     end
 
     it "should not be able to purchase product" do
@@ -61,7 +61,7 @@ RSpec.describe PriceGroup do
 
     context "with price policy" do
       before :each do
-        @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+        @facility_account = FactoryBot.create(:facility_account, facility: @facility)
         @item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
         @price_policy = @item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group: @price_group))
       end

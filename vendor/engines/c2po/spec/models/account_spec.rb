@@ -4,7 +4,6 @@ RSpec.describe Account do
   let(:account_users_attributes) { [{ user: user, created_by: user.id, user_role: "Owner" }] }
   let(:cc_account) { create(:credit_card_account, account_users_attributes: account_users_attributes) }
   let(:facility) { create(:setup_facility) }
-  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
   let(:item) { create(:setup_item, facility: facility) }
   let(:po_account) { create(:purchase_order_account, account_users_attributes: account_users_attributes) }
   let(:user) { create(:user) }

@@ -12,10 +12,9 @@ RSpec.describe FileUploadsController do
   before(:all) { create_users }
 
   before :each do
-    @authable         = FactoryBot.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-    @service          = @authable.services.create(FactoryBot.attributes_for(:service, facility_account_id: @facility_account.id))
-    assert @service.valid?
+    @authable = FactoryBot.create(:setup_facility)
+    @service = FactoryBot.create(:service, facility: @authable)
+    expect(@service).to be_valid
   end
 
   context "index" do

@@ -52,12 +52,11 @@ RSpec.describe JournalRowBuilder, type: :service do
            )
     end
 
-    let(:facility) { create(:facility) }
-    let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
+    let(:facility) { create(:setup_facility) }
     let(:journal_date) { Time.zone.now }
     let(:order) { create(:purchased_order, product: product) }
     let(:order_details) { order.order_details }
-    let(:product) { create(:setup_item, facility: facility, facility_account: facility_account) }
+    let(:product) { create(:setup_item, facility: facility) }
 
     before do
       order_details.each(&:to_complete!)

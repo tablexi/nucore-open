@@ -5,22 +5,10 @@ RSpec.describe OrderRowImporter do
   include DateHelper
 
   subject { OrderRowImporter.new(row, order_import) }
-  let(:account) do
-    create(:nufs_account,
-           account_users_attributes: [attributes_for(:account_user, user: user)],
-          )
-  end
-  let(:facility) { create(:facility) }
-  let(:facility_account) do
-    facility.facility_accounts.create(attributes_for(:facility_account))
-  end
+  let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
+  let(:facility) { create(:setup_facility) }
   let(:order_import) { build(:order_import, creator: user, facility: facility) }
-  let(:service) do
-    create(:setup_service,
-           facility: facility,
-           facility_account: facility_account,
-          )
-  end
+  let(:service) { create(:setup_service, facility: facility) }
   let(:user) { create(:user) }
 
   shared_context "valid row values" do
@@ -59,7 +47,7 @@ RSpec.describe OrderRowImporter do
 
   describe "#import" do
     shared_examples_for "an order was created" do
-      it "creates an order" do
+      it "creates an order", :focus do
         expect { subject.import }.to change(Order, :count).by(1)
       end
 
@@ -268,12 +256,7 @@ RSpec.describe OrderRowImporter do
     describe "when the product is an instrument" do
       let(:chart_string) { account.account_number }
       let(:price_group) { create(:price_group, facility: facility) }
-      let(:product) do
-        create(:setup_instrument,
-               facility: facility,
-               facility_account: facility_account,
-              )
-      end
+      let(:product) { create(:setup_instrument, facility: facility) }
       let(:product_name) { product.name }
       let(:username) { user.username }
 

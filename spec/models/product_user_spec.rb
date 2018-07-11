@@ -1,18 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ProductUser do
-  let(:facility) { create(:facility) }
-  let(:facility_account) do
-    facility.facility_accounts.create(attributes_for(:facility_account))
-  end
-  let(:item) { facility.items.create(item_attributes) }
-  let(:item_attributes) do
-    attributes_for(
-      :item,
-      facility_account_id: facility_account.id,
-      requires_approval: true,
-    )
-  end
+  let(:facility) { create(:setup_facility) }
+  let(:item) { create(:setup_item, facility: facility, requires_approval: true) }
   let(:user) { create(:user) }
 
   context "when creating with valid attributes" do

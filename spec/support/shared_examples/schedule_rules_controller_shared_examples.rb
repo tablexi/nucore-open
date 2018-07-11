@@ -1,9 +1,8 @@
 RSpec.shared_examples_for "A product supporting ScheduleRulesController" do |product_sym|
   render_views
 
-  let(:facility) { FactoryBot.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account)) }
-  let(:product) { FactoryBot.create(product_sym, facility: facility, facility_account_id: facility_account.id) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:product) { FactoryBot.create(product_sym, facility: facility) }
   let(:senior_staff) { create(:user, :senior_staff, facility: facility) }
 
   let(:product_params) { { facility_id: facility.url_name, :"#{product_sym}_id" => product.url_name } }

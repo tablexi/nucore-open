@@ -15,16 +15,14 @@ RSpec.describe Reservation do
     )
   end
 
-  let(:facility) { create(:facility) }
-  let(:facility_account) do
-    facility.facility_accounts.create(attributes_for(:facility_account))
-  end
+  let(:facility) { create(:setup_facility) }
+  let(:facility_account) { create(:facility_account, facility: facility) }
   let(:instrument) { @instrument }
   let(:order) { FactoryBot.create(:setup_order, product: instrument) }
   let(:order_detail) { FactoryBot.create(:order_detail, account: order.account, order: order, product: instrument) }
 
   before(:each) do
-    @instrument = create(:instrument, facility_account_id: facility_account.id, facility: facility, reserve_interval: 15)
+    @instrument = create(:instrument, facility: facility, reserve_interval: 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
     @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 17))
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)

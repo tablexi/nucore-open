@@ -12,10 +12,10 @@ RSpec.describe PricePolicy do
   let(:facility) { @facility }
 
   before :each do
-    @facility         = FactoryBot.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @facility = FactoryBot.create(:facility)
+    @facility_account = FactoryBot.create(:facility_account, facility: @facility)
     @price_group = FactoryBot.create(:price_group, facility: facility)
-    @item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+    @item = FactoryBot.create(:item, facility: @facility, facility_account: @facility_account)
   end
 
   context "current and newest" do

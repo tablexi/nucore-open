@@ -2,9 +2,9 @@ module NotificationsHelper
 
   def create_merge_notification_subject
     @facility ||= FactoryBot.create(:facility)
-    @facility_account ||= @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-    @user           ||= FactoryBot.create(:user)
-    @item           ||= @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+    @facility_account ||= FactoryBot.create(:facility_account, facility: @facility)
+    @user ||= FactoryBot.create(:user)
+    @item ||= FactoryBot.create(:item, facility: @facility, facility_account: @facility_account)
 
     place_product_order @user, @facility, @item
     clone = @order.dup

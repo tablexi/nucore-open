@@ -2,12 +2,10 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   let(:account) { create(:setup_account, owner: user) }
   let!(:user) { FactoryBot.create(:user) }
   let(:product_type) { product_type }
-  let(:facility) { FactoryBot.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create!(FactoryBot.attributes_for(:facility_account)) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
   let(:product) do
     FactoryBot.create(product_type,
-                      facility: facility,
-                      facility_account: facility_account)
+                      facility: facility)
   end
   let(:order) { create(:order, account: account, created_by_user: user, user: user) }
   let(:order_detail) { order.order_details.create(attributes_for(:order_detail, account: account, product: product, quantity: 1)) }
@@ -115,12 +113,10 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
   let(:account) { create(:setup_account, owner: user) }
   let!(:user) { FactoryBot.create(:user) }
   let(:product_type) { product_type }
-  let(:facility) { FactoryBot.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create!(FactoryBot.attributes_for(:facility_account)) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
   let(:product) do
     FactoryBot.create(product_type,
-                      facility: facility,
-                      facility_account: facility_account)
+                      facility: facility)
   end
   let(:order) { create(:order, account: account, created_by_user: user, user: user) }
   let(:order_detail) { order.order_details.create(attributes_for(:order_detail, account: account, product: product)) }

@@ -6,11 +6,10 @@ RSpec.describe SurveysController do
 
   before(:all) { create_users }
 
-  let(:authable) { create :facility }
-  let(:facility_account) { authable.facility_accounts.create attributes_for(:facility_account) }
+  let(:authable) { create :setup_facility }
   let(:order) { @order }
   let(:order_status) { create :order_status }
-  let(:service) { authable.services.create attributes_for(:service, initial_order_status_id: order_status.id, facility_account_id: facility_account.id) }
+  let(:service) { create :service, facility: authable, initial_order_status_id: order_status.id }
   let(:external_service) { UrlService.create! location: "http://ext.service.com" }
   let(:external_service_passer) { ExternalServicePasser.create! passer: service, external_service: external_service }
   let(:external_service2) { UrlService.create! location: "http://ext.service2.com" }
@@ -121,7 +120,6 @@ RSpec.describe SurveysController do
 
   def create_order_detail
     @product = create(:item,
-                      facility_account: facility_account,
                       facility: authable,
                      )
     @account = create_nufs_account_with_owner

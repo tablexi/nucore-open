@@ -11,7 +11,7 @@ RSpec.describe Journal do
   end
 
   let(:facility) { create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
+  let(:facility_account) { create(:facility_account, facility: facility) }
   let(:journal_date) { Time.zone.now }
   let(:order) { create(:purchased_order, product: product) }
   let(:product) { create(:setup_item, facility: facility, facility_account: facility_account) }
@@ -350,10 +350,10 @@ RSpec.describe Journal do
   context "order_details_span_fiscal_years?" do
     before :each do
       Settings.financial.fiscal_year_begins = "06-01"
-      @owner    = FactoryBot.create(:user)
-      @account  = FactoryBot.create(:nufs_account, account_users_attributes: [FactoryBot.attributes_for(:account_user, user: @owner)])
-      @facility_account = facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-      @item = facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @owner = FactoryBot.create(:user)
+      @account = FactoryBot.create(:nufs_account, :with_account_owner, owner: @owner)
+      @facility_account = FactoryBot.create(:facility_account, facility: facility)
+      @item = FactoryBot.create(:item, facility: facility, facility_account_id: @facility_account.id)
       @price_group = FactoryBot.create(:price_group, facility: facility)
       FactoryBot.create(:user_price_group_member, user: @owner, price_group: @price_group)
       @pp = @item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group_id: @price_group.id))
