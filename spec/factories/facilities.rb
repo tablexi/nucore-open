@@ -15,7 +15,7 @@ FactoryBot.define do
 
   factory :setup_facility, class: Facility, parent: :facility do
     after(:create) do |facility|
-      facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      FactoryBot.create(:facility_account, facility: facility)
       # user is_internal => false so that we can just use .last to access it
       FactoryBot.create(:price_group, facility: facility, is_internal: false)
     end
