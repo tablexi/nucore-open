@@ -21,7 +21,7 @@ module Devise
       # failure message for authentication via SAML.
       def failed_auth(msg)
         DeviseSamlAuthenticatable::Logger.send(msg)
-        fail!(:saml_invalid)
+        fail!(I18n.t("devise.failure.saml_invalid").html_safe)
         Devise.saml_failed_callback.new.handle(@response, self) if Devise.saml_failed_callback # rubocop:disable Style/SafeNavigation
       end
 

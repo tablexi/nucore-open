@@ -81,6 +81,11 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
         post :create, SAMLResponse: saml_response
         expect(flash[:alert]).to eq(I18n.t("devise.failure.saml_invalid"))
       end
+
+      it "marks the message in :saml_invalid as html_safe to allow including links" do
+        post :create, SAMLResponse: saml_response
+        expect(flash[:alert].html_safe?).to be true
+      end
     end
 
     describe "an email-based user exists" do
