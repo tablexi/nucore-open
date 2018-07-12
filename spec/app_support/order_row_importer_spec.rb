@@ -47,7 +47,7 @@ RSpec.describe OrderRowImporter do
 
   describe "#import" do
     shared_examples_for "an order was created" do
-      it "creates an order", :focus do
+      it "creates an order" do
         expect { subject.import }.to change(Order, :count).by(1)
       end
 
