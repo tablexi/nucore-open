@@ -6,7 +6,7 @@ RSpec.describe ScheduleRule do
 
   it "should create using factory" do
     instrument = FactoryBot.create(:instrument,
-                                    facility: facility)
+                                   facility: facility)
     rule = FactoryBot.create(:schedule_rule, product: instrument)
     expect(rule).to be_valid
   end

@@ -4,7 +4,7 @@ RSpec.describe InstrumentForCart do
 
   let(:facility) { FactoryBot.create(:setup_facility) }
 
-  let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility, no_relay: true) }
+  let(:instrument) { FactoryBot.create(:instrument, facility: facility, no_relay: true) }
 
   let(:user) { FactoryBot.create(:user) }
 

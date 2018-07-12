@@ -16,9 +16,9 @@ RSpec.describe InstrumentsController do
 
   before(:each) do
     @authable = FactoryBot.create(:setup_facility)
-    @instrument       = FactoryBot.create(:instrument,
-                                          facility: @authable,
-                                          no_relay: true)
+    @instrument = FactoryBot.create(:instrument,
+                                    facility: @authable,
+                                    no_relay: true)
     @params = { id: @instrument.url_name, facility_id: @authable.url_name }
     @instrument_pp = create :instrument_price_policy, product: @instrument, price_group: @nupg
   end

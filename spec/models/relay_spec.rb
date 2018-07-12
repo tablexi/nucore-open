@@ -5,7 +5,7 @@ RSpec.describe Relay do
   context "with relay" do
 
     before :each do
-      @facility  = create(:setup_facility)
+      @facility = create(:setup_facility)
       @facility_account = @facility.facility_accounts.first
       @instrument = create(:instrument,
                            facility: @facility,

@@ -30,7 +30,7 @@ RSpec.describe ServicePricePolicy do
 
   context "test requiring services" do
     before(:each) do
-      @facility  = FactoryBot.create(:facility)
+      @facility = FactoryBot.create(:facility)
       @facility_account = FactoryBot.create(:facility_account, facility: @facility)
       @price_group = FactoryBot.create(:price_group, facility: @facility)
       @service = FactoryBot.create(:service, facility_account: @facility_account)
