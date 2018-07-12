@@ -19,12 +19,11 @@ RSpec.describe Product do
     end
 
     before(:example) do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = FactoryBot.create(:facility_account, facility: @facility)
+      @facility = FactoryBot.create(:setup_facility)
     end
 
     it "should not create using factory" do
-      @product = Product.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @product = FactoryBot.create(:item, facility: facility)
       expect(@product.errors[:type]).not_to be_nil
     end
 

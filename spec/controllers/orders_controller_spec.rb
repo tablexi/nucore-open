@@ -479,7 +479,7 @@ RSpec.describe OrdersController do
         before { sign_in @admin }
 
         context "when the facility has an order_notification_recipient" do
-          let(:facility) { create(:facility, :with_order_notification) }
+          let(:facility) { create(:setup_facility, :with_order_notification) }
 
           it "sends order notifications" do
             expect(PurchaseNotifier).to receive(:order_notification).once { DummyNotifier.new }
