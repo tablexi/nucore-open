@@ -9,10 +9,8 @@ RSpec.describe FacilityOrderDetailsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryBot.create(:facility)
-    @facility_account = FactoryBot.create(:facility_account, facility: @authable)
+    @authable = FactoryBot.create(:setup_facility)
     @product = FactoryBot.create(:item,
-                                 facility_account: @facility_account,
                                  facility: @authable,
                                 )
     @account = create_nufs_account_with_owner :director
@@ -61,8 +59,7 @@ RSpec.describe FacilityOrderDetailsController do
 
   def prepare_reservation
     @order_detail.update_attributes(price_policy: nil)
-    @instrument = FactoryBot.create(:instrument, facility: @authable,
-                                                 facility_account: @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account)))
+    @instrument = FactoryBot.create(:instrument, facility: @authable)
     @instrument_price_policy = FactoryBot.create(:instrument_price_policy,
                                                  product: @instrument,
                                                  price_group: @price_group,

@@ -1,7 +1,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on?(:recharge_accounts) do
+RSpec.xdescribe FacilityFacilityAccountsController, if: SettingsHelper.feature_on?(:recharge_accounts) do
   render_views
 
   before(:all) { create_users }

@@ -2,13 +2,8 @@ require "rails_helper"
 
 RSpec.describe ProductForCart do
 
-  let(:facility) { FactoryBot.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account)) }
-  let(:item) do
-    facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: facility_account.id)).tap do |item|
-      item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group: @nupg))
-    end
-  end
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:item) { FactoryBot.create(:setup_item, facility: facility) }
   let(:user) { FactoryBot.create(:user) }
 
   let(:product_for_cart) { ProductForCart.new(item) }
@@ -39,7 +34,7 @@ RSpec.describe ProductForCart do
       end
 
       context "and it is a bundle" do
-        let(:bundle) { FactoryBot.create(:bundle, facility_account: facility_account, facility: facility) }
+        let(:bundle) { FactoryBot.create(:bundle, facility: facility) }
         let(:bundle_product) { BundleProduct.new(bundle: @bundle, product: item, quantity: 1) }
         let(:product_for_cart) { ProductForCart.new(bundle) }
 
