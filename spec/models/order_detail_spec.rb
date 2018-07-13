@@ -1085,7 +1085,7 @@ RSpec.describe OrderDetail do
     context "reservations" do
       before :each do
         @now = Time.zone.now
-        setup_reservation @facility, @facility_account, @account, @user
+        setup_reservation @facility, @account, @user
       end
 
       it "should be upcoming" do
@@ -1258,7 +1258,7 @@ RSpec.describe OrderDetail do
 
     before :each do
       start_date = 1.day.from_now
-      setup_reservation(facility, user)
+      setup_reservation(facility, account, user)
       place_reservation(facility, order_detail, start_date)
       FactoryBot.create(:account_price_group_member, account: account, price_group: @price_group)
       order_detail.update_attribute(:statement_id, statement.id)
