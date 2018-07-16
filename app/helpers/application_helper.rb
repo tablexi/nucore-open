@@ -18,11 +18,6 @@ module ApplicationHelper
     (full_title + app_name).html_safe
   end
 
-  def order_detail_description_as_text(order_detail)
-    warn "Depecrated order_detail_description_as_text called. Use OrderDetailPresenter#description_as_text instead. At #{caller(1..1)}"
-    OrderDetailPresenter.new(order_detail).description_as_text
-  end
-
   def sortable(column, title = nil)
     title ||= column.titleize
     direction = column == sort_column && sort_direction == "asc" ? "desc" : "asc"
