@@ -18,11 +18,6 @@ module ApplicationHelper
     (full_title + app_name).html_safe
   end
 
-  def order_detail_description(order_detail)
-    warn "Depecrated order_detail_description called. Use OrderDetailPresenter#description_as_html instead. At #{caller(1..1)}"
-    OrderDetailPresenter.new(order_detail).description_as_html
-  end
-
   def order_detail_description_as_html(order_detail)
     warn "Depecrated order_detail_description_as_html called. Use OrderDetailPresenter#description_as_html instead. At #{caller(1..1)}"
     OrderDetailPresenter.new(order_detail).description_as_html
