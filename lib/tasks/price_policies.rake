@@ -1,7 +1,7 @@
 namespace :price_policies do
 
   desc "Duplicate the newest price policies for a facility's services to the current fiscal year"
-  task :duplicate_to_current_fiscal_year, [:url_name] => :environment do |t, args|
+  task :duplicate_to_current_fiscal_year, [:url_name] => :environment do |_t, args|
     facility = Facility.find_by!(url_name: args[:url_name])
 
     facility.services.active.each do |service|
