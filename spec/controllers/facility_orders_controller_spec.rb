@@ -102,7 +102,7 @@ RSpec.describe FacilityOrdersController do
       it "should not return reservations" do
         # setup_reservation overwrites @order_detail
         @order_detail_item = @order_detail
-        @order_detail_reservation = setup_reservation(@authable, @facility_account, @account, @director)
+        @order_detail_reservation = setup_reservation(@authable, @account, @director)
         @reservation = place_reservation(@authable, @order_detail_reservation, Time.zone.now + 1.hour)
 
         expect(@authable.reload.order_details).to contain_all [@order_detail_item, @order_detail_reservation]

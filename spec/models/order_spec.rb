@@ -1,9 +1,9 @@
 require "rails_helper"
 
 def define_purchasable_instrument
-  @instrument    = FactoryBot.create(:instrument,
-                                     facility: @facility,
-                                     facility_account: @facility_account)
+  @instrument = FactoryBot.create(:instrument,
+                                  facility: @facility,
+                                  facility_account: @facility_account)
   @instrument_pp = FactoryBot.create(:instrument_price_policy, product: @instrument, price_group: @price_group)
   FactoryBot.create(:price_group_product, product: @instrument, price_group: @price_group)
   # default rule, 9am - 5pm all days
@@ -34,13 +34,13 @@ RSpec.describe Order do
   it { is_expected.to belong_to :order_import }
 
   context "total cost" do
-    let(:account) { create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user)) }
+    let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
     let(:facility) { create(:facility) }
-    let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
-    let(:item) { facility.items.create(attributes_for(:item, facility_account_id: facility_account.id)) }
-    let(:order) { user.orders.create(attributes_for(:order, created_by: user.id)) }
-    let(:price_group) { FactoryBot.create(:price_group, facility: facility) }
-    let!(:price_policy) { item.item_price_policies.create(attributes_for(:item_price_policy, price_group_id: price_group.id)) }
+    let(:facility_account) { create(:facility_account, facility: facility) }
+    let(:item) { create(:item, facility: facility, facility_account: facility_account) }
+    let(:order) { create(:order, user: user, created_by: user.id) }
+    let(:price_group) { create(:price_group, facility: facility) }
+    let!(:price_policy) { create(:item_price_policy, product: item, price_group: price_group) }
     let(:user) { create(:user) }
 
     context "actual" do
@@ -101,7 +101,7 @@ RSpec.describe Order do
   context "validate_order state transition" do
     before(:each) do
       @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility_account = FactoryBot.create(:facility_account, facility: @facility)
       @price_group = FactoryBot.create(:price_group, facility: @facility)
       @order_status = FactoryBot.create(:order_status)
       @service      = @facility.services.create(FactoryBot.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account.id))
@@ -121,7 +121,7 @@ RSpec.describe Order do
   context "purchase state transition" do
     before(:each) do
       @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility_account = FactoryBot.create(:facility_account, facility: @facility)
       @price_group  = FactoryBot.create(:price_group, facility: @facility)
       @order_status = FactoryBot.create(:order_status)
       @service      = @facility.services.create(FactoryBot.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account.id))
@@ -228,27 +228,25 @@ RSpec.describe Order do
 
   context do # 'add, clear, adjust' do
     before(:each) do
-      @facility         = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility         = FactoryBot.create(:setup_facility)
       @price_group      = FactoryBot.create(:price_group, facility: @facility)
       @order_status     = FactoryBot.create(:order_status)
-      @service          = @facility.services.create(FactoryBot.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account.id))
+      @service          = FactoryBot.create(:service, facility: @facility, initial_order_status_id: @order_status.id)
       @service_pp       = FactoryBot.create(:service_price_policy, product: @service, price_group: @price_group)
-      @service_same     = @facility.services.create(FactoryBot.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account.id))
+      @service_same     = FactoryBot.create(:service, facility: @facility, initial_order_status_id: @order_status.id)
       @service_same_pp  = FactoryBot.create(:service_price_policy, product: @service_same, price_group: @price_group)
 
-      @facility2         = FactoryBot.create(:facility)
-      @facility_account2 = @facility2.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility2         = FactoryBot.create(:setup_facility)
       @price_group2      = FactoryBot.create(:price_group, facility: @facility2)
-      @service2          = @facility2.services.create(FactoryBot.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account2.id))
+      @service2          = FactoryBot.create(:service, facility: @facility2, initial_order_status_id: @order_status.id)
       @service2_pp       = FactoryBot.create(:service_price_policy, product: @service2, price_group: @price_group2)
 
       @user            = FactoryBot.create(:user)
       @account         = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user))
-      create(:account_price_group_member, account: @account, price_group: @price_group)
-      @cart = @user.orders.create(FactoryBot.attributes_for(:order, created_by: @user.id, account: @account))
+      FactoryBot.create(:account_price_group_member, account: @account, price_group: @price_group)
+      @cart = FactoryBot.create(:order, user: @user, created_by: @user.id, account: @account)
 
-      @item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @item = FactoryBot.create(:item, facility: @facility)
     end
 
     context "#add" do
@@ -256,7 +254,7 @@ RSpec.describe Order do
       context "bundle" do
         before :each do
           # make a bundle
-          @bundle = @facility.bundles.create(FactoryBot.attributes_for(:bundle, facility_account_id: @facility_account.id))
+          @bundle = FactoryBot.create(:bundle, facility: @facility)
           @bundle.bundle_products.create!(product: @item, quantity: 4)
           @bundle.bundle_products.create!(product: @service, quantity: 2)
 
@@ -289,7 +287,7 @@ RSpec.describe Order do
       context "service" do
         it "should add two order_details when has an active survey and a quantity of 2" do
           # setup
-          @service_w_active_survey = @facility.services.create!(FactoryBot.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account.id))
+          @service_w_active_survey = FactoryBot.create(:service, facility: @facility, initial_order_status: @order_status)
           allow(@service_w_active_survey).to receive(:active_survey?).and_return(true)
 
           # doit
@@ -302,7 +300,7 @@ RSpec.describe Order do
 
         it "should add two order_details when has an active template and a quantity of 2" do
           # setup
-          @service_w_active_template = @facility.services.create(FactoryBot.attributes_for(:service, initial_order_status_id: @order_status.id, facility_account_id: @facility_account.id))
+          @service_w_active_template = FactoryBot.create(:service, facility: @facility, initial_order_status: @order_status)
           @service_w_active_template.stored_files.create! FactoryBot.attributes_for(:stored_file, file_type: "template", created_by: @user.id)
 
           # doit

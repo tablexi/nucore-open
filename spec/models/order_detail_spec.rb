@@ -4,7 +4,7 @@ RSpec.describe OrderDetail do
   let(:account) { @account }
   let(:facility) { @facility }
   let(:facility_account) { @facility_account }
-  let(:instrument) { create(:instrument, facility: facility, facility_account_id: facility_account.id) }
+  let(:instrument) { create(:instrument, facility: facility) }
   let(:item) { @item }
   let(:order) { @order }
   let(:order_detail) { @order_detail }
@@ -14,9 +14,9 @@ RSpec.describe OrderDetail do
   before(:each) do
     Settings.order_details.status_change_hooks = nil
     @facility = create(:facility)
-    @facility_account = @facility.facility_accounts.create(attributes_for(:facility_account))
-    @user     = create(:user)
-    @item     = @facility.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
+    @facility_account = create(:facility_account, facility: @facility)
+    @user = create(:user)
+    @item = FactoryBot.create(:item, facility: @facility)
     expect(@item).to be_valid
     @user_accounts = create_list(:nufs_account, 5, account_users_attributes: account_users_attributes_hash(user: @user))
     @account = @user_accounts.first
@@ -1068,10 +1068,9 @@ RSpec.describe OrderDetail do
       assert @order.save
 
       # extra facility records to make sure we scope properly
-      @facility2 = create(:facility)
-      @facility_account2 = @facility2.facility_accounts.create(attributes_for(:facility_account))
+      @facility2 = create(:setup_facility)
       @user2     = create(:user)
-      @item2     = @facility2.items.create(attributes_for(:item, facility_account_id: @facility_account2.id))
+      @item2     = create(:item, facility: @facility2)
       @account2  = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user2))
       @order2    = @user2.orders.create(attributes_for(:order, created_by: @user2.id, facility: @facility2))
       @order_detail2 = @order2.order_details.create(attributes_for(:order_detail).update(product_id: @item2.id, account_id: @account2.id))
@@ -1086,7 +1085,7 @@ RSpec.describe OrderDetail do
     context "reservations" do
       before :each do
         @now = Time.zone.now
-        setup_reservation @facility, @facility_account, @account, @user
+        setup_reservation @facility, @account, @user
       end
 
       it "should be upcoming" do
@@ -1259,7 +1258,7 @@ RSpec.describe OrderDetail do
 
     before :each do
       start_date = 1.day.from_now
-      setup_reservation(facility, facility_account, account, user)
+      setup_reservation(facility, account, user)
       place_reservation(facility, order_detail, start_date)
       FactoryBot.create(:account_price_group_member, account: account, price_group: @price_group)
       order_detail.update_attribute(:statement_id, statement.id)

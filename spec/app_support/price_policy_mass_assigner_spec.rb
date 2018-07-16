@@ -3,14 +3,7 @@ require "rails_helper"
 RSpec.describe PricePolicyMassAssigner do
   context ".assign_price_policies" do
     let(:account) { create(:setup_account, owner: user) }
-    let(:facility) { create(:facility) }
-    let(:facility_account) do
-      facility.facility_accounts.create(facility_account_attributes)
-    end
-    let(:facility_account_attributes) { attributes_for(:facility_account) }
-    let(:item_attributes) do
-      attributes_for(:item, facility_account_id: facility_account.id)
-    end
+    let(:facility) { create(:setup_facility) }
     let(:order) { user.orders.create(order_attributes) }
     let(:order_attributes) do
       attributes_for(:order,
@@ -28,7 +21,7 @@ RSpec.describe PricePolicyMassAssigner do
             )
     end
     let(:price_group) { create(:price_group, facility: facility) }
-    let(:product) { facility.items.create(item_attributes) }
+    let(:product) { create(:item, facility: facility) }
     let(:user) { create(:user) }
 
     def mass_assign_price_policies

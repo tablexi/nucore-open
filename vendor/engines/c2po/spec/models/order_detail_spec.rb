@@ -4,9 +4,8 @@ RSpec.describe OrderDetail do
   subject(:order_detail) { setup_order_detail(order, item, original_statement) }
 
   let(:account) { setup_account(:purchase_order_account, facility, user) }
-  let(:facility) { create :facility }
-  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
-  let(:item) { setup_item_from_facility_account(facility_account) }
+  let(:facility) { create(:setup_facility) }
+  let(:item) { create(:item, facility: facility) }
   let(:order) { create(:setup_order, account: account, product: item) }
   let(:original_statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
   let(:user) { create :user }

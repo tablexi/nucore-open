@@ -5,14 +5,14 @@ RSpec.describe Relay do
   context "with relay" do
 
     before :each do
-      @facility         = create(:facility)
-      @facility_account = @facility.facility_accounts.create(attributes_for(:facility_account))
-      @instrument       = create(:instrument,
-                                 facility: @facility,
-                                 facility_account: @facility_account,
-                                 no_relay: true)
+      @facility = create(:setup_facility)
+      @facility_account = @facility.facility_accounts.first
+      @instrument = create(:instrument,
+                           facility: @facility,
+                           facility_account: @facility_account,
+                           no_relay: true)
 
-      @relay            = create(:relay_syna, instrument: @instrument)
+      @relay = create(:relay_syna, instrument: @instrument)
     end
 
     describe "validating uniqueness" do

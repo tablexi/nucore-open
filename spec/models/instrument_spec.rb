@@ -5,8 +5,7 @@ RSpec.describe Instrument do
   it_should_behave_like "ReservationProduct", :instrument
 
   let(:facility) { FactoryBot.create(:setup_facility) }
-  let(:facility_account) { facility.facility_accounts.create attributes_for(:facility_account) }
-  subject(:instrument) { build :instrument, facility: facility, facility_account: facility_account }
+  subject(:instrument) { build :instrument, facility: facility }
 
   it "should create using factory" do
     expect(instrument).to be_valid
@@ -106,7 +105,6 @@ RSpec.describe Instrument do
     subject(:instrument) do
       FactoryBot.build(:instrument,
                        facility: facility,
-                       facility_account: facility_account,
                        schedule: schedule)
     end
 
@@ -155,7 +153,6 @@ RSpec.describe Instrument do
     before :each do
       @instrument = FactoryBot.create(:instrument,
                                       facility: facility,
-                                      facility_account: facility_account,
                                       no_relay: true)
     end
 
@@ -318,7 +315,6 @@ RSpec.describe Instrument do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument = FactoryBot.create(:instrument,
                                       facility: facility,
-                                      facility_account: facility_account,
                                       min_reserve_mins: 60,
                                       max_reserve_mins: 60)
       assert @instrument.valid?
@@ -428,7 +424,6 @@ RSpec.describe Instrument do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument = create(:instrument,
                            facility: facility,
-                           facility_account: facility_account,
                            min_reserve_mins: 60,
                            reserve_interval: 60,
                            max_reserve_mins: 60)
@@ -517,7 +512,6 @@ RSpec.describe Instrument do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument = FactoryBot.create(:instrument,
                                       facility: facility,
-                                      facility_account: facility_account,
                                       min_reserve_mins: 60,
                                       max_reserve_mins: 60)
       assert @instrument.valid?
@@ -562,7 +556,6 @@ RSpec.describe Instrument do
       # create instrument, min reserve time is 60 minutes, max is 60 minutes
       @instrument = FactoryBot.create(:instrument,
                                       facility: facility,
-                                      facility_account: facility_account,
                                       min_reserve_mins: 60,
                                       max_reserve_mins: 60)
       @price_group_product = FactoryBot.create(:price_group_product, product: @instrument, price_group: @price_group)
@@ -596,8 +589,7 @@ RSpec.describe Instrument do
 
     before :each do
       @instrument = FactoryBot.create(:instrument,
-                                      facility: facility,
-                                      facility_account: facility_account)
+                                      facility: facility)
       @price_group = FactoryBot.create(:price_group, facility: facility)
       @user = FactoryBot.create(:user)
       @price_group_member = create(:account_price_group_member, account: account, price_group: @price_group)

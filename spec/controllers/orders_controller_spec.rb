@@ -28,11 +28,17 @@ RSpec.describe OrdersController do
     expect(get: "/orders/1/choose_account").to route_to(controller: "orders", action: "choose_account", id: "1")
   end
 
+  let(:account) { @account }
+  let(:facility) { create(:setup_facility) }
+  let(:item) { @item }
+  let(:params) { @params }
+  let(:price_group) { @price_group }
+  let(:order) { @order }
+
   before(:each) do
     @authable = facility
-    @facility_account = facility.facility_accounts.create(attributes_for(:facility_account))
     @price_group = FactoryBot.create(:price_group, facility: facility)
-    @item = facility.items.create(attributes_for(:item, facility_account_id: @facility_account.id))
+    @item = FactoryBot.create(:item, facility: facility)
     @account = add_account_for_user(:staff, @item, @price_group)
     @order = @staff.orders.create(FactoryBot.attributes_for(:order, created_by: @staff.id, account: @account))
 
@@ -40,13 +46,6 @@ RSpec.describe OrdersController do
 
     @params = { id: @order.id, order_id: @order.id }
   end
-
-  let(:account) { @account }
-  let(:facility) { create(:facility) }
-  let(:item) { @item }
-  let(:params) { @params }
-  let(:price_group) { @price_group }
-  let(:order) { @order }
 
   context "cart" do
     before :each do
@@ -374,7 +373,6 @@ RSpec.describe OrdersController do
       before :each do
         @instrument = FactoryBot.create(:instrument,
                                         facility: @authable,
-                                        facility_account: @facility_account,
                                         no_relay: true)
         @instrument_pp = create :instrument_price_policy, price_group: @nupg, product: @instrument
         define_open_account(@instrument.account, @account.account_number)
@@ -481,7 +479,7 @@ RSpec.describe OrdersController do
         before { sign_in @admin }
 
         context "when the facility has an order_notification_recipient" do
-          let(:facility) { create(:facility, :with_order_notification) }
+          let(:facility) { create(:setup_facility, :with_order_notification) }
 
           it "sends order notifications" do
             expect(PurchaseNotifier).to receive(:order_notification).once { DummyNotifier.new }
@@ -677,7 +675,7 @@ RSpec.describe OrdersController do
         end
 
         context "for a reservation-only instrument" do
-          let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility, facility_account: @facility_account) }
+          let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility) }
 
           before { setup_past_reservation }
 
@@ -689,7 +687,7 @@ RSpec.describe OrdersController do
         end
 
         context "for a non reservation-only instrument" do
-          let(:instrument) { FactoryBot.create(:setup_instrument, :timer, facility: facility, facility_account: @facility_account) }
+          let(:instrument) { FactoryBot.create(:setup_instrument, :timer, facility: facility) }
 
           before { setup_past_reservation }
 
@@ -803,7 +801,6 @@ RSpec.describe OrdersController do
         @order.clear_cart?
         @instrument = FactoryBot.create(:instrument,
                                         facility: @authable,
-                                        facility_account: @facility_account,
                                         min_reserve_mins: 60,
                                         max_reserve_mins: 60)
         @params[:id] = @order.id
@@ -869,10 +866,9 @@ RSpec.describe OrdersController do
 
       context "mixed facility" do
         it "should flash error message containing another" do # TODO: reword this
-          @facility2          = FactoryBot.create(:facility)
-          @facility_account2  = @facility2.facility_accounts.create!(FactoryBot.attributes_for(:facility_account))
-          @account2           = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
-          @item2              = @facility2.items.create!(FactoryBot.attributes_for(:item, facility_account_id: @facility_account2.id))
+          @facility2 = FactoryBot.create(:setup_facility)
+          @account2 = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
+          @item2 = FactoryBot.create(:item, facility: @facility2)
           # add first item to cart
           maybe_grant_always_sign_in :staff
           do_request
@@ -892,10 +888,9 @@ RSpec.describe OrdersController do
       before :each do
         @order.account = @account
         @order.save!
-        @facility2          = FactoryBot.create(:facility)
-        @facility_account2  = @facility2.facility_accounts.create!(FactoryBot.attributes_for(:facility_account))
-        @account2           = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
-        @item2              = @facility2.items.create!(FactoryBot.attributes_for(:item, facility_account_id: @facility_account2.id))
+        @facility2 = FactoryBot.create(:setup_facility)
+        @account2 = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @staff))
+        @item2 = FactoryBot.create(:item, facility: @facility2)
       end
 
       context "in the right facility" do
@@ -1041,14 +1036,13 @@ RSpec.describe OrdersController do
   context "cart meta data" do
     before(:each) do
       @instrument = FactoryBot.create(:instrument,
-                                      facility: @authable,
-                                      facility_account: @facility_account)
+                                      facility: @authable)
 
       @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule, start_hour: 0, end_hour: 24))
       @instrument_pp = @instrument.instrument_price_policies.create(FactoryBot.attributes_for(:instrument_price_policy, price_group_id: @price_group.id))
       @instrument_pp.restrict_purchase = false
       define_open_account(@instrument.account, @account.account_number)
-      @service = @authable.services.create(FactoryBot.attributes_for(:service, facility_account_id: @facility_account.id))
+      @service = FactoryBot.create(:service, facility: facility)
       @method = :get
       @action = :show
     end

@@ -10,6 +10,8 @@ FactoryBot.define do
     after(:build) do |product|
       if product.facility_account.present?
         product.facility ||= product.facility_account.facility
+      else
+        product.facility_account = product.facility&.facility_accounts&.first
       end
     end
 
@@ -98,20 +100,19 @@ FactoryBot.define do
 
     factory :setup_timed_service, class: TimedService do
       after(:create) do |product|
-        product.timed_service_price_policies.create(FactoryBot.attributes_for(:timed_service_price_policy, price_group: product.facility.price_groups.last))
+        create(:timed_service_price_policy, product: product, price_group: product.facility.price_groups.last)
       end
     end
 
     factory :setup_item, class: Item do
       after(:create) do |product|
-        product.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group: product.facility.price_groups.last))
+        create(:item_price_policy, product: product, price_group: product.facility.price_groups.last)
       end
     end
 
     trait :with_facility_account do
       after(:build) do |product|
-        product.facility_account =
-          product.facility.facility_accounts.create(attributes_for(:facility_account))
+        product.facility_account = create(:facility_account, facility: product.facility)
       end
     end
 

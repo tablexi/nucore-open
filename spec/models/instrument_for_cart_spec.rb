@@ -2,14 +2,9 @@ require "rails_helper"
 
 RSpec.describe InstrumentForCart do
 
-  let(:facility) { FactoryBot.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account)) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
 
-  let(:instrument) do
-    FactoryBot.create(:instrument, facility: facility, facility_account: facility_account, no_relay: true) do |instrument|
-      FactoryBot.create(:instrument_price_policy, product: instrument, price_group: @nupg)
-    end
-  end
+  let(:instrument) { FactoryBot.create(:instrument, facility: facility, no_relay: true) }
 
   let(:user) { FactoryBot.create(:user) }
 

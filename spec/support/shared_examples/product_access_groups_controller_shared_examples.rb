@@ -1,16 +1,15 @@
 RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" do |product_sym|
   render_views
 
-  let(:facility) { FactoryBot.create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account)) }
-  let(:product) { FactoryBot.create(product_sym, facility: facility, facility_account: facility_account) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:product) { FactoryBot.create(product_sym, facility: facility) }
   let(:senior_staff) { FactoryBot.create(:user, :senior_staff, facility: facility) }
   let(:params) { { facility_id: facility.url_name, :"#{product_sym}_id" => product.url_name } }
 
   context "index" do
     let(:staff) { FactoryBot.create(:user, :staff, facility: facility) }
 
-    let(:product2) { FactoryBot.create(product_sym, facility: facility, facility_account: facility_account) }
+    let(:product2) { FactoryBot.create(product_sym, facility: facility) }
     let!(:product_groups) { FactoryBot.create_list(:product_access_group, 2, product: product) }
     let!(:other_product_group) { FactoryBot.create(:product_access_group, product: product2) }
 

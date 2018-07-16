@@ -20,7 +20,7 @@ RSpec.describe FacilityJournalsController do
     @order_detail2.update_attributes(reviewed_at: nil)
 
     @account2 = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user), facility_id: facility.id)
-    @authable_account2 = facility.facility_accounts.create(attributes_for(:facility_account))
+    @authable_account2 = FactoryBot.create(:facility_account, facility: facility)
     @order_detail3 = place_and_complete_item_order(user, facility, @account2, true)
 
     [@order_detail1, @order_detail3].each do |od|
@@ -348,7 +348,7 @@ RSpec.describe FacilityJournalsController do
     # SLOW
     # context "with over 1000 order details" do
     #   let(:facility_account) do
-    #     facility.facility_accounts.create(attributes_for(:facility_account))
+    #     FactoryBot.create(:facility_account, facility: facility)
     #   end
 
     #   let(:item) do

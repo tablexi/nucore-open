@@ -4,6 +4,7 @@ require "controller_spec_helper"
 RSpec.describe ItemsController do
   let(:item) { @item }
   let(:facility) { @authable }
+  let(:facility_account) { item.facility_account }
 
   render_views
 
@@ -15,10 +16,9 @@ RSpec.describe ItemsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = FactoryBot.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-    @item             = @authable.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
-    @item_pp          = @item.item_price_policies.create(FactoryBot.attributes_for(:item_price_policy, price_group: @nupg))
+    @authable = FactoryBot.create(:setup_facility)
+    @item = FactoryBot.create(:item, facility: @authable)
+    @item_pp = FactoryBot.create(:item_price_policy, product: item, price_group: @nupg)
     @params = { facility_id: @authable.url_name, id: @item.url_name }
   end
 
@@ -85,7 +85,7 @@ RSpec.describe ItemsController do
     before :each do
       @method = :post
       @action = :create
-      @params.merge!(item: FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @params.merge!(item: FactoryBot.attributes_for(:item, facility_account_id: facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do
@@ -99,7 +99,7 @@ RSpec.describe ItemsController do
     before :each do
       @method = :put
       @action = :update
-      @params.merge!(item: FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @params.merge!(item: FactoryBot.attributes_for(:item, facility_account_id: facility_account.id))
     end
 
     it_should_allow_managers_only :redirect do

@@ -30,10 +30,10 @@ RSpec.describe ItemPricePolicy do
 
   context "test requiring items" do
     before(:each) do
-      @facility         = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:facility)
+      @facility_account = FactoryBot.create(:facility_account, facility: @facility)
       @price_group = FactoryBot.create(:price_group, facility: @facility)
-      @item = @facility.items.create(FactoryBot.attributes_for(:item, facility_account: @facility_account))
+      @item = FactoryBot.create(:item, facility: @facility, facility_account: @facility_account)
       @price_group_product = FactoryBot.create(:price_group_product, product: @item, price_group: @price_group, reservation_window: nil)
     end
 

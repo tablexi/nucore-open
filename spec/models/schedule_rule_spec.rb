@@ -1,24 +1,20 @@
 require "rails_helper"
 
 RSpec.describe ScheduleRule do
-  let(:facility) { create(:facility) }
-  let(:facility_account) { facility.facility_accounts.create(attributes_for(:facility_account)) }
-  let(:instrument) { create(:instrument, facility: facility, facility_account: facility_account) }
+  let(:facility) { create(:setup_facility) }
+  let(:instrument) { create(:instrument, facility: facility) }
 
   it "should create using factory" do
-    @facility = FactoryBot.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-    @instrument = FactoryBot.create(:instrument,
-                                    facility: @facility,
-                                    facility_account: @facility_account)
-    @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
-    expect(@rule).to be_valid
+    instrument = FactoryBot.create(:instrument,
+                                   facility: facility)
+    rule = FactoryBot.create(:schedule_rule, product: instrument)
+    expect(rule).to be_valid
   end
 
   describe ".unavailable_for_date" do
     context "for an instrument available only from 9 AM to 5 PM" do
       before(:each) do
-        instrument.schedule_rules.create(attributes_for(:schedule_rule))
+        FactoryBot.create(:schedule_rule, product: instrument)
       end
 
       let(:now) { Time.zone.parse("2015-07-05T12:14:00") }
@@ -66,22 +62,18 @@ RSpec.describe ScheduleRule do
     end
 
     it "should allow all day rule" do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
-                                      facility: @facility,
-                                      facility_account: @facility_account)
+                                      facility: @facility)
       @options = { start_hour: 0, start_min: 0, end_hour: 24, end_min: 0 }
       @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule).merge(@options))
       assert @rule.valid?
     end
 
     it "should not allow end_hour == 24 and end_min != 0" do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
-                                      facility: @facility,
-                                      facility_account: @facility_account)
+                                      facility: @facility)
       @options = { start_hour: 0, start_min: 0, end_hour: 24, end_min: 1 }
       @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule).merge(@options))
       assert @rule.invalid?
@@ -89,29 +81,25 @@ RSpec.describe ScheduleRule do
     end
 
     it "should recognize inclusive datetimes" do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
-                                      facility: @facility,
-                                      facility_account: @facility_account)
+                                      facility: @facility)
       @rule = @instrument.schedule_rules.build(FactoryBot.attributes_for(:schedule_rule))
       expect(@rule).to be_cover(Time.zone.local(1981, 9, 15, 12, 0, 0))
     end
 
     it "should not recognize non-inclusive datetimes" do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
-                                      facility: @facility,
-                                      facility_account: @facility_account)
+                                      facility: @facility)
       @rule = @instrument.schedule_rules.build(FactoryBot.attributes_for(:schedule_rule))
       expect(@rule).not_to be_cover(Time.zone.local(1981, 9, 15, 3, 0, 0))
     end
   end
 
   it "should not allow rule conflicts" do
-    @facility = FactoryBot.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @facility = FactoryBot.create(:setup_facility)
+    @facility_account = FactoryBot.create(:facility_account, facility: @facility)
     @instrument = FactoryBot.create(:instrument,
                                     facility: @facility,
                                     facility_account: @facility_account)
@@ -156,11 +144,9 @@ RSpec.describe ScheduleRule do
   end
 
   it "should allow adjacent rules" do
-    @facility = FactoryBot.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @facility = FactoryBot.create(:setup_facility)
     @instrument = FactoryBot.create(:instrument,
-                                    facility: @facility,
-                                    facility_account: @facility_account)
+                                    facility: @facility)
     # create rule every day from 9 am to 5 pm
     @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
     assert @rule.valid?
@@ -177,8 +163,8 @@ RSpec.describe ScheduleRule do
   end
 
   # it "should not conflict with existing reservation" do
-  #   @facility = FactoryBot.create(:facility)
-  #   @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+  #   @facility = FactoryBot.create(:setup_facility)
+  #   @facility_account = FactoryBot.create(:facility_account, facility: @facility)
   #   @instrument = @facility.instruments.create(FactoryBot.attributes_for(:instrument, :facility_account_id => @facility_account.id))
   #   # create rule every day from 9 am to 5 pm
   #   @rule1 = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
@@ -195,11 +181,9 @@ RSpec.describe ScheduleRule do
   # end
 
   it "should not be valid with an end time after the start time" do
-    @facility = FactoryBot.create(:facility)
-    @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @facility = FactoryBot.create(:setup_facility)
     @instrument = FactoryBot.create(:instrument,
-                                    facility: @facility,
-                                    facility_account: @facility_account)
+                                    facility: @facility)
     # create rule every day from 9 am to 5 pm
     @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
     assert @rule.valid?
@@ -217,11 +201,9 @@ RSpec.describe ScheduleRule do
 
   context "calendar object" do
     it "should build calendar object for 9-5 rule every day" do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
-                                      facility: @facility,
-                                      facility_account: @facility_account)
+                                      facility: @facility)
       # create rule every day from 9 am to 5 pm
       @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule, discount_percent: 5))
       assert @rule.valid?
@@ -272,12 +254,10 @@ RSpec.describe ScheduleRule do
     end
 
     it "should build calendar object using multiple rules on the same day" do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
                                       facility: @facility,
-                                      reserve_interval: 60,
-                                      facility_account: @facility_account)
+                                      reserve_interval: 60)
       # create rule tue 1 am - 3 am
       @options = {
         on_mon: false, on_tue: true, on_wed: false, on_thu: false, on_fri: false, on_sat: false, on_sun: false,
@@ -333,12 +313,10 @@ RSpec.describe ScheduleRule do
     end
 
     it "should build calendar object using adjacent rules across days" do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
                                       facility: @facility,
-                                      reserve_interval: 60,
-                                      facility_account: @facility_account)
+                                      reserve_interval: 60)
       # create rule tue 9 pm - 12 am
       @options = {
         on_mon: false, on_tue: true, on_wed: false, on_thu: false, on_fri: false, on_sat: false, on_sun: false,
@@ -376,11 +354,9 @@ RSpec.describe ScheduleRule do
     end
 
     it "should build calendar object using start date" do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
-                                      facility: @facility,
-                                      facility_account: @facility_account)
+                                      facility: @facility)
       # create rule every day from 9 am to 5 pm
       @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
       assert @rule.valid?
@@ -397,11 +373,9 @@ RSpec.describe ScheduleRule do
 
   context "available_to_user" do
     before :each do
-      @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+      @facility = FactoryBot.create(:setup_facility)
       @instrument = FactoryBot.create(:instrument,
                                       facility: @facility,
-                                      facility_account: @facility_account,
                                       requires_approval: true)
       @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule))
       @user = FactoryBot.create(:user)

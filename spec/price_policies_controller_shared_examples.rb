@@ -6,8 +6,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
   before(:each) do
     @product_type = product_type
     @params_modifier = params_modifier
-    @authable         = FactoryBot.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+    @authable = FactoryBot.create(:setup_facility)
 
     # Delete the default price groups since they get in the way of testing
     UserPriceGroupMember.delete_all
@@ -15,8 +14,8 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
 
     @price_group = FactoryBot.create(:price_group, facility: facility)
     @price_group2 = FactoryBot.create(:price_group, facility: facility)
-    @product          = create product_type, facility_account_id: @facility_account.id, facility: @authable
-    @price_policy     = make_price_policy(@price_group)
+    @product = create(product_type, facility: @authable)
+    @price_policy = make_price_policy(@price_group)
     expect(@price_policy).to be_valid
     @params = { :facility_id => @authable.url_name, :"#{product_type}_id" => @product.url_name }
   end

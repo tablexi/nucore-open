@@ -89,7 +89,7 @@ end
 # [_reviewed_]
 #   true if the completed order should also be marked as reviewed, false by default
 def place_and_complete_item_order(ordered_by, facility, account = nil, reviewed = false)
-  @facility_account = facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
+  @facility_account = FactoryBot.create(:facility_account, facility: facility)
   @item = facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
   place_product_order(ordered_by, facility, @item, account)
 
@@ -160,7 +160,6 @@ def place_reservation(facility, order_detail, reserve_start, extra_reservation_a
   @instrument ||= FactoryBot.create(
     :instrument,
     facility: facility,
-    facility_account: facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account)),
     min_reserve_mins: 60,
     max_reserve_mins: 60)
 
@@ -203,11 +202,10 @@ end
 #   The account used to place @order
 # [_user_]
 #   The +User+ that creates the @order
-def setup_reservation(facility, facility_account, account, user)
+def setup_reservation(facility, account, user)
   # create instrument, min reserve time is 60 minutes, max is 60 minutes
   @instrument = FactoryBot.create(:instrument,
                                   facility: facility,
-                                  facility_account: facility_account,
                                   min_reserve_mins: 60,
                                   max_reserve_mins: 60)
   assert @instrument.valid?
@@ -283,12 +281,6 @@ def setup_account(factory, facility, user)
                     facility: facility,
                     account_users_attributes: account_users_attributes_hash(user: user),
                    )
-end
-
-def setup_item_from_facility_account(facility_account)
-  facility_account.facility.items.create(
-    FactoryBot.attributes_for(:item, facility_account_id: facility_account.id),
-  )
 end
 
 def setup_order_detail(order, product, statement = nil)

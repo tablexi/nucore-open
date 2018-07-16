@@ -65,11 +65,11 @@ RSpec.describe OrderDetailObserver do
       Settings.reload!
       Settings.order_details.status_change_hooks = nil
       @facility = FactoryBot.create(:facility)
-      @facility_account = @facility.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-      @user     = FactoryBot.create(:user)
-      @item     = @facility.items.create(FactoryBot.attributes_for(:item, facility_account_id: @facility_account.id))
+      @facility_account = FactoryBot.create(:facility_account, facility: @facility)
+      @item = FactoryBot.create(:item, facility: @facility, facility_account: @facility_account)
       expect(@item).to be_valid
       FactoryBot.create :item_price_policy, product: @item, price_group: PriceGroup.base
+      @user = FactoryBot.create(:user)
       @account = add_account_for_user(:user, @item)
       @order = @user.orders.create(FactoryBot.attributes_for(:order, created_by: @user.id, account: @account, facility: @facility))
       @order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail).update(product_id: @item.id, account_id: @account.id))

@@ -15,12 +15,10 @@ RSpec.describe InstrumentsController do
   before(:all) { create_users }
 
   before(:each) do
-    @authable         = FactoryBot.create(:facility)
-    @facility_account = @authable.facility_accounts.create(FactoryBot.attributes_for(:facility_account))
-    @instrument       = FactoryBot.create(:instrument,
-                                          facility: @authable,
-                                          facility_account: @facility_account,
-                                          no_relay: true)
+    @authable = FactoryBot.create(:setup_facility)
+    @instrument = FactoryBot.create(:instrument,
+                                    facility: @authable,
+                                    no_relay: true)
     @params = { id: @instrument.url_name, facility_id: @authable.url_name }
     @instrument_pp = create :instrument_price_policy, product: @instrument, price_group: @nupg
   end
@@ -261,7 +259,7 @@ RSpec.describe InstrumentsController do
       @action = :create
       @params.merge!(
         instrument: FactoryBot.attributes_for(:instrument,
-                                              facility_account_id: @facility_account.id,
+                                              facility_account_id: @authable.facility_accounts.first.id,
                                               control_mechanism: "manual",
                                              ),
       )
@@ -300,7 +298,7 @@ RSpec.describe InstrumentsController do
       end
 
       describe "relay validations" do
-        let!(:instrument2) { create(:instrument, facility: @authable, facility_account: @facility_account, no_relay: true) }
+        let!(:instrument2) { create(:instrument, facility: @authable, no_relay: true) }
         let!(:old_relay) { create(:relay_syna, instrument: instrument2) }
 
         before :each do
@@ -566,20 +564,17 @@ RSpec.describe InstrumentsController do
         @action = :instrument_statuses
         @instrument_with_relay = FactoryBot.create(:instrument,
                                                    facility: @authable,
-                                                   facility_account: @facility_account,
                                                    no_relay: true)
         FactoryBot.create(:relay_syna, instrument: @instrument_with_relay)
 
         @instrument_with_dummy_relay = FactoryBot.create(:instrument,
                                                          facility: @authable,
-                                                         facility_account: @facility_account,
                                                          no_relay: true)
         FactoryBot.create(:relay_dummy, instrument: @instrument_with_dummy_relay)
 
         @instrument_with_dummy_relay.instrument_statuses.create(is_on: true)
         @instrument_with_bad_relay = FactoryBot.create(:instrument,
                                                        facility: @authable,
-                                                       facility_account: @facility_account,
                                                        no_relay: true)
 
         FactoryBot.create(:relay_synb, instrument: @instrument_with_bad_relay)

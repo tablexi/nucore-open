@@ -38,7 +38,7 @@ RSpec.describe AccountTransactionReportMailer do
   #   let(:user) { create(:user) }
   #   let(:account) { create(:setup_account, owner: user) }
   #   let(:facility_account) do
-  #     facility.facility_accounts.create(attributes_for(:facility_account))
+  #     FactoryBot.create(:facility_account, facility: facility)
   #   end
 
   #   let(:item) do

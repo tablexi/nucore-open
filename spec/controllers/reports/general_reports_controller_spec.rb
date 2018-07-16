@@ -53,9 +53,8 @@ RSpec.describe Reports::GeneralReportsController do
       @complete = OrderStatus.complete
 
       @user = FactoryBot.create(:user)
-      @authable = FactoryBot.create(:facility)
-      @facility_account = @authable.facility_accounts.create!(FactoryBot.attributes_for(:facility_account))
-      @item = @authable.items.create!(FactoryBot.attributes_for(:item, facility_account: @facility_account))
+      @authable = FactoryBot.create(:setup_facility)
+      @item = FactoryBot.create(:item, facility: @authable)
 
       @account = create_nufs_account_with_owner :user
       define_open_account @item.account, @account.account_number

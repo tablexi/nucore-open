@@ -34,15 +34,9 @@ RSpec.describe StoredFile do
   end
 
   context "when uploading" do
-    let(:facility) { create(:facility) }
-    let(:facility_account) do
-      facility.facility_accounts.create(attributes_for(:facility_account))
-    end
-    let(:item) do
-      facility.items.create(
-        attributes_for(:item, facility_account_id: facility_account.id),
-      )
-    end
+    let(:facility) { create(:setup_facility) }
+    let(:item) { FactoryBot.create(:item, facility: facility) }
+
     let(:file1) { "#{Rails.root}/spec/files/template1.txt" }
     let(:file_upload) do
       item.stored_files.create(

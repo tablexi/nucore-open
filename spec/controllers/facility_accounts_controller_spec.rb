@@ -2,6 +2,7 @@ require "rails_helper"
 require "controller_spec_helper"
 
 RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: true } do
+
   let(:facility) { FactoryBot.create(:facility) }
   let(:account) { create_nufs_account_with_owner }
   let(:admin) { @admin }
