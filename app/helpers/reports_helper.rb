@@ -6,10 +6,6 @@ module ReportsHelper
     (minutes / 60.0).round(precision)
   end
 
-  def truncate_seconds(datetime)
-    datetime.change(sec: 0)
-  end
-
   def to_percent(decimal)
     (decimal * 100).round(1)
   end
