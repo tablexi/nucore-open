@@ -14,13 +14,4 @@ module OrderStatusesHelper
     result
   end
 
-  def root_options_for_facility(klass, facility_id)
-    roots = klass.roots.where(facility_id: [nil, facility_id])
-    result = []
-    roots.each do |root|
-      result.push [root.name, root.id]
-    end
-    result
-  end
-
 end
