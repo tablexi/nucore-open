@@ -1,0 +1,10 @@
+<%= text("body",
+  user: @user,
+  facility: @order_detail.facility.name,
+  order_detail: @order_detail,
+  order_detail_link: order_order_detail_url(@order_detail.order, @order_detail),
+  dispute_resolved_at: format_usa_date(@order_detail.dispute_resolved_at),
+  dispute_resolved_reason: @order_detail.dispute_resolved_reason,
+  facility_email: @order_detail.facility.email,
+  ).gsub("<br>", "")
+%>

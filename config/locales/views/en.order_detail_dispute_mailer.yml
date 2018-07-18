@@ -1,0 +1,21 @@
+en:
+  views:
+    order_detail_dispute_mailer:
+        dispute_resolved:
+          subject: "!app_name! Dispute Resolved: %{facility_abbreviation}"
+          body: |
+            Dear %{user},
+
+            Based on information provided, the %{facility} has resolved the following
+            disputed order in !app_name!:
+
+            Order Number: [#%{order_detail}](%{order_detail_link})<br>
+            Resolution Date: %{dispute_resolved_at}<br>
+            Resolution Note: %{dispute_resolved_reason}
+
+            The order will be billed against its designated payment source shortly.
+            Please [contact the %{facility}](mailto:%{facility_email}) if you have any questions.
+
+            Thank you,
+
+            %{facility}
