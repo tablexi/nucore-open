@@ -130,10 +130,10 @@ class OrderDetails::ParamUpdater
     @order_detail.reservation.errors.each do |field, message|
       field = Reservation.human_attribute_name(field) if field != :base
       @order_detail.errors.add(field, message)
-        end
+    end
   end
 
-   def order_detail_clean?
+  def order_detail_clean?
     @order_detail.errors.none?
   end
 

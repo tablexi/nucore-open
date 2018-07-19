@@ -8,8 +8,8 @@ class OrderDetailDisputeMailer < BaseMailer
     mail(
       to: @user.email,
       subject: text("subject",
-        facility_abbreviation: @order_detail.facility.abbreviation,
-      )
+                    facility_abbreviation: @order_detail.facility.abbreviation,
+                   ),
     )
   end
 

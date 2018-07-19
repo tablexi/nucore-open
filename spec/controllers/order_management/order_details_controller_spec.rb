@@ -792,8 +792,8 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
               it "triggers an email to the dispute by and the account owner" do
                 expect { do_request }.to change { ActionMailer::Base.deliveries.map(&:to) }
                   .by(containing_exactly(
-                    [dispute_by.email],
-                    [order_detail.account.owner_user.email]
+                        [dispute_by.email],
+                        [order_detail.account.owner_user.email],
                   ))
               end
 
