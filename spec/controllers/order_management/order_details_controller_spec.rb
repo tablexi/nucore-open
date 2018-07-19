@@ -755,7 +755,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
           end
         end
 
-        describe "resolving dispute", :mail_deliveries do
+        describe "resolving dispute" do
           let(:dispute_by) { create(:user, :facility_director, facility: facility) }
 
           before do

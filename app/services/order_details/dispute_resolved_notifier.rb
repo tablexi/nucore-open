@@ -14,7 +14,7 @@ module OrderDetails
     private
 
     def users_to_notify
-      ([dispute_by] + account.administrators).uniq.compact
+      ([dispute_by] + account.administrators).compact.uniq
     end
 
     def dispute_resolved_at_previously_was
