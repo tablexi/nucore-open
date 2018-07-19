@@ -57,8 +57,6 @@ class OrderDetails::ParamUpdater
 
     assign_attributes(params)
 
-    user_newly_assigned = @order_detail.assigned_user_id_changed? && @order_detail.assigned_user.present?
-
     @order_detail.manually_priced! # don't auto-reassign price
     assign_price_changed_by_user
 
@@ -70,14 +68,15 @@ class OrderDetails::ParamUpdater
         @order_detail.save_as_user(@editing_user) || raise(ActiveRecord::Rollback)
       end
     end
-
     merge_reservation_errors if @order_detail.reservation.present?
+    trigger_notifications if order_detail_clean?
 
-    if user_newly_assigned && SettingsHelper.feature_on?(:order_assignment_notifications)
-      OrderAssignmentMailer.notify_assigned_user(@order_detail).deliver_later
-    end
+    order_detail_clean?
+  end
 
-    is_order_detail_clean
+  def trigger_notifications
+    OrderDetails::DisputeResolvedNotifier.new(@order_detail).notify
+    OrderDetails::AssignmentNotifier.new(@order_detail).notify
   end
 
   private
@@ -131,10 +130,10 @@ class OrderDetails::ParamUpdater
     @order_detail.reservation.errors.each do |field, message|
       field = Reservation.human_attribute_name(field) if field != :base
       @order_detail.errors.add(field, message)
-    end
+        end
   end
 
-  def is_order_detail_clean
+   def order_detail_clean?
     @order_detail.errors.none?
   end
 

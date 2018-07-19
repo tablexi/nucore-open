@@ -102,6 +102,13 @@ RSpec.configure do |config|
 
   config.after(:all) { travel_back }
 
+  # Use when writing tests that depend on checking for mail deliveries
+  config.around(:each, :mail_deliveries) do |example|
+    ActionMailer::Base.deliveries.clear
+    example.call
+    ActionMailer::Base.deliveries.clear
+  end
+
   # rspec-rails 3 will no longer automatically infer an example group's spec type
   # from the file location. You can explicitly opt-in to the feature using this
   # config option.
