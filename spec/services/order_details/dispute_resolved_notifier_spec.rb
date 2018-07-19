@@ -32,9 +32,9 @@ RSpec.describe OrderDetails::DisputeResolvedNotifier do
     it "triggers an email to the dispute_by and the account administrators" do
       expect { resolve_dispute_and_notify }.to change { ActionMailer::Base.deliveries.map(&:to) }
         .by(containing_exactly(
-          [order_detail.dispute_by.email],
-          [order_detail.account.owner_user.email],
-          [business_administrator.email],
+              [order_detail.dispute_by.email],
+              [order_detail.account.owner_user.email],
+              [business_administrator.email],
         ))
     end
   end
