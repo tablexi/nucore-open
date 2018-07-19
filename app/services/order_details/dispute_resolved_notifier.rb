@@ -6,7 +6,7 @@ module OrderDetails
       if dispute_resolved_at_previously_changed? && dispute_resolved_at_previously_was.blank?
 
         users_to_notify.each do |user|
-          OrderDetailDisputeMailer.dispute_resolved(order_detail: self, user: user).deliver_now
+          OrderDetailDisputeMailer.dispute_resolved(order_detail: __getobj__, user: user).deliver_later
         end
       end
     end
@@ -14,7 +14,7 @@ module OrderDetails
     private
 
     def users_to_notify
-      ([dispute_by] + account.administrators).uniq
+      ([dispute_by] + account.administrators).uniq.compact
     end
 
     def dispute_resolved_at_previously_was

@@ -775,13 +775,14 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
                 resolve_dispute: "1",
                 dispute_resolved_reason: dispute_resolved_reason,
               )
-              do_request
             end
 
             context "with a resolved dispute reason" do
               let(:dispute_resolved_reason) { "dispute resolved" }
 
               it "resolves the dispute", :aggregate_failures do
+                do_request
+
                 expect(assigns(:order_detail).dispute_resolved_at).to be_present
                 expect(order_detail.reload.dispute_resolved_at).to be_present
                 expect(order_detail.dispute_resolved_reason)
@@ -789,16 +790,18 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
               end
 
               it "triggers an email to the dispute by and the account owner" do
-                to_list = [dispute_by.email, order_detail.account.owner_user.email]
-                # to is an Array
-                expect(ActionMailer::Base.deliveries.map(&:to).flatten).to match_array(to_list)
+                expect { do_request }.to change { ActionMailer::Base.deliveries.map(&:to) }
+                  .by(containing_exactly(
+                    [dispute_by.email],
+                    [order_detail.account.owner_user.email]
+                  ))
               end
 
               context "the dispute by is the same as the account owner" do
                 let(:dispute_by) { order_detail.account.owner_user }
 
                 it "only triggers one email" do
-                  expect(ActionMailer::Base.deliveries.count).to be(1)
+                  expect { do_request }.to change(ActionMailer::Base.deliveries, :count).by(1)
                 end
               end
             end
@@ -807,6 +810,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
               let(:dispute_resolved_reason) { "" }
 
               it "renders the edit template with errors", :aggregate_failures do
+                do_request
                 expect(response).to render_template(:edit)
                 expect(assigns(:order_detail).errors)
                   .to include(:dispute_resolved_reason)
@@ -814,7 +818,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
               end
 
               it "does not trigger an email" do
-                expect(ActionMailer::Base.deliveries).to be_empty
+                expect { do_request }.not_to change(ActionMailer::Base.deliveries, :count)
               end
             end
           end
@@ -822,16 +826,16 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
           context "when resolve_dispute is unchecked" do
             before do
               @params[:order_detail][:resolve_dispute] = "0"
-              do_request
             end
 
             it "does not resolve the dispute", :aggregate_failures do
+              do_request
               expect(assigns(:order_detail).dispute_resolved_at).to be_nil
               expect(order_detail.reload.dispute_resolved_at).to be_nil
             end
 
             it "does not trigger an email" do
-              expect(ActionMailer::Base.deliveries).to be_empty
+              expect { do_request }.not_to change(ActionMailer::Base.deliveries, :count)
             end
           end
         end
