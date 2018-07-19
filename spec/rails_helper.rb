@@ -6,13 +6,6 @@ ENV["RAILS_ENV"] ||= "test"
 require File.expand_path("../../config/environment", __FILE__)
 require "rspec/rails"
 require "shoulda/matchers"
-#
-# Check for engine factories. If they exist and the engine is in use load it up
-Dir[File.expand_path("vendor/engines/*", Rails.root)].each do |engine|
-  engine_name = File.basename engine
-  factory_file = File.join(engine, "spec/factories.rb")
-  require factory_file if File.exist?(factory_file) && EngineManager.engine_loaded?(engine_name)
-end
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.

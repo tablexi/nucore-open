@@ -1,0 +1,77 @@
+version: 2
+jobs:
+  build:
+    parallelism: 4
+    working_directory: ~/nucore
+    docker:
+      - image: circleci/ruby:2.4.1-node-browsers
+        environment:
+          - RAILS_ENV: "test"
+          - MYSQL_USER: root
+          - TZ: "/usr/share/zoneinfo/America/Chicago"
+      - image: circleci/mysql:5.7.22-ram
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ROOT_HOST: "%"
+
+    steps:
+      - checkout
+
+      # Bundle
+      - restore_cache:
+          keys:
+            - gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+            - gem-cache-{{ arch }}--{{ .Branch }}
+            - gem-cache
+
+      - run: bundle install --path vendor/bundle
+
+      - save_cache:
+          key: gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run: cp config/database.yml.mysql.template config/database.yml
+      - run: cp config/secrets.yml.template config/secrets.yml
+
+      # Database setup
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:schema:load
+
+      - run:
+          command: |
+            bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out /tmp/test-results/rspec.xml \
+                              --format documentation \
+                              $(circleci tests glob \
+                              "spec/**/*_spec.rb" \
+                              "vendor/engines/**/spec/**/*_spec.rb" \
+                              | circleci tests split --split-by=timings)
+      - run:
+          command: |
+            bundle exec teaspoon \
+              --suppress-log \
+              --format junit > /tmp/test-results/teaspoon.xml
+
+      - store_artifacts:
+         path: coverage/.resultset.json
+         prefix: coverage
+
+      - run: bundle exec report_coverage
+
+      # Save artifacts
+      - type: store_test_results
+        path: /tmp/test-results
+
+      - deploy:
+          name: Stage deploy of develop branch
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+                bundle exec cap staging deploy
+              fi
