@@ -1,9 +1,10 @@
 module TimeTravelHelpers
 
-  def travel(duration, safe: false)
-    # See rails_helper
+  def travel(duration, safe: false, &block)
     warn "Use of Rails's #travel is unsafe in NUcore due to the global time-lock. Use `travel_and_return` instead #{caller(1..1)}" unless safe
-    super(duration)
+    # Based on Rail's implementation. Calling `super` here would end up calling
+    # our `travel_to`, which triggers the warning
+    travel_to Time.now + duration, safe: true, &block
   end
 
   def travel_to(date_or_time, safe: false)
