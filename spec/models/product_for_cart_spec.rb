@@ -69,8 +69,7 @@ RSpec.describe ProductForCart do
         allow(SettingsHelper).to receive(:feature_on?).and_return(true)
       end
 
-      context "and training requests are turned on" do
-        before(:each) { allow(SettingsHelper).to receive(:feature_on?).with(:training_requests).and_return(true) }
+      context "and training requests are turned on", feature_setting: { training_requests: true } do
 
         context "and the user has already submitted a training request" do
           before(:each) { allow(TrainingRequest).to receive(:submitted?).and_return(true) }
