@@ -2,7 +2,7 @@ en:
   views:
     order_detail_dispute_mailer:
         dispute_resolved:
-          subject: "!app_name! Dispute Resolved: %{facility_abbreviation}"
+          subject: "!app_name! Disputed Order Resolved: %{facility_abbreviation}"
           body: |
             Dear %{user},
 
