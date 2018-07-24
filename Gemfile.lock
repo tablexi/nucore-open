@@ -345,7 +345,7 @@ GEM
     i18n (1.0.1)
       concurrent-ruby (~> 1.0)
     icalendar (2.4.1)
-    ice_cube (0.16.2)
+    ice_cube (0.16.3)
     inflecto (0.0.2)
     ipaddress (0.8.3)
     jquery-rails (4.3.3)
