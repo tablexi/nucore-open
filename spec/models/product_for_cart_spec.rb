@@ -15,7 +15,7 @@ RSpec.describe ProductForCart do
 
       it("returns false") { expect(product_for_cart.purchasable_by?(user, user)).to be false }
 
-      it "sets error_message explaining that the product can’t be purchased online" do
+      it "sets error_message explaining that the product can't be purchased online" do
         product_for_cart.purchasable_by?(user, user)
         expect(product_for_cart.error_message).to match(/unavailable for purchase online/)
       end
@@ -62,11 +62,10 @@ RSpec.describe ProductForCart do
       end
     end
 
-    context "when a product can’t be used by the acting user and can’t be overridden by the session user" do
+    context "when a product can't be used by the acting user and can't be overridden by the session user" do
       before(:each) do
         allow(item).to receive(:can_be_used_by?).and_return(false)
         allow(user).to receive(:can_override_restrictions?).and_return(false)
-        allow(SettingsHelper).to receive(:feature_on?).and_return(true)
       end
 
       context "and training requests are turned on", feature_setting: { training_requests: true } do
@@ -105,7 +104,7 @@ RSpec.describe ProductForCart do
     context "when the acting user does not belong to any price groups that can purchase the product" do
       before(:each) { allow(item).to receive(:can_purchase?).and_return(false) }
 
-      it "sets error_message explaining why they can’t purchase the product" do
+      it "sets error_message explaining why they can't purchase the product" do
         product_for_cart.purchasable_by?(user, user)
         expect(product_for_cart.error_message).to match(/You are not in a price group that may/)
       end
