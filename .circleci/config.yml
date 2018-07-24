@@ -2,7 +2,6 @@ version: 2
 jobs:
   build:
     parallelism: 4
-    working_directory: ~/nucore
     docker:
       - image: circleci/ruby:2.4.1-node-browsers
         environment:
@@ -59,19 +58,19 @@ jobs:
               --suppress-log \
               --format junit > /tmp/test-results/teaspoon.xml
 
+      # Save artifacts
+      - store_test_results:
+          path: /tmp/test-results
+
       - store_artifacts:
          path: coverage/.resultset.json
          prefix: coverage
 
       - run: bundle exec report_coverage
 
-      # Save artifacts
-      - type: store_test_results
-        path: /tmp/test-results
-
       - deploy:
-          name: Stage deploy of develop branch
+          name: Stage deploy of master branch
           command: |
-              if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
                 bundle exec cap staging deploy
               fi
