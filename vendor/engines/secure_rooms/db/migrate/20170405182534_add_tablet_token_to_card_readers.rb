@@ -1,6 +1,6 @@
 class AddTabletTokenToCardReaders < ActiveRecord::Migration
 
-  class SecureRooms::CardReader < ActiveRecord::Base
+  class SecureRooms::CardReader < ApplicationRecord
   end
 
   def change
