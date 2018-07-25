@@ -69,9 +69,9 @@ class OrderDetails::ParamUpdater
       end
     end
     merge_reservation_errors if @order_detail.reservation.present?
-    trigger_notifications if order_detail_clean?
+    trigger_notifications if @order_detail.errors.none?
 
-    order_detail_clean?
+    @order_detail.errors.none?
   end
 
   def trigger_notifications
@@ -131,10 +131,6 @@ class OrderDetails::ParamUpdater
       field = Reservation.human_attribute_name(field) if field != :base
       @order_detail.errors.add(field, message)
     end
-  end
-
-  def order_detail_clean?
-    @order_detail.errors.none?
   end
 
 end
