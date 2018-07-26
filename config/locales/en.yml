@@ -221,6 +221,7 @@ en:
       instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 
   facility_account_orders:
+    cannot_purcahse: "Cannot Purchase"
     index:
       h3: Purchased Orders
       no_orders: No transactions exist for this period.
