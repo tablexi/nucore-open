@@ -1,11 +1,11 @@
 .azlist
 
-    - @azlist.each do |listing|
-        - if listing.getFacilities.empty?
-            %p= listing.getLetter
+    - @azlist.to_a.map.with_index do | value, index|
+        - if value[1].empty?
+            %p= value[0]
         - else
-            %a.azListing{:class=>listing.getLetter} 
-                = listing.getLetter
+            %a.azListing{:class=>get_Classname_For_Facility(index, value[0])} 
+                = value[0]
 
     %a.azListing.all 
         = text('views.facilities.index.all_short')

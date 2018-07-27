@@ -1,40 +1,13 @@
 module AZHelper
-    ALPHABET = ('A'..'Z').to_a
 
-    def getAZList (facilities)
-        azlist = Array.new(26)
-        ALPHABET.each do |letter|
-            setFacilitiesForLetter(letter, facilities, azlist)
-        end
-        return azlist
-    end
+  # Generates empty hash with keys for each letter
+  ALPHABET = ('A'..'Z').to_a.map { |x| [x, []] }.to_h
+  def get_AZList(facilities)
+    ALPHABET.merge(facilities.group_by { |row| row.name[0] })
+  end
 
-    def  setFacilitiesForLetter(letter, facilities, azlist)
-        index = ALPHABET.index(letter)
-        azlist[index]= A_Z_Listing.new(letter, [])
-        facilities.each do |facility|
-            upperName = facility.name.upcase
-            if upperName.start_with?(letter)
-                azlist[index].pushFacility(facility)
-            end
-        end
-    end
-end
-class A_Z_Listing
-    def initialize(letter, facilities)
-        @letter = letter
-        @facilities = facilities
-    end
+  def get_Classname_For_Facility(index, letter)
+    'azlist' + index.to_s
+  end
 
-    def pushFacility(facility)
-        @facilities.push(facility)
-    end
-
-    def getLetter
-        return @letter
-    end
-
-    def getFacilities
-        return @facilities
-    end
 end

@@ -31,10 +31,12 @@
           %h4.header-tight= link_to facility, facility_path(facility)
 
   %h4{:class=>'facilityListing allHeader'}= text(".all")
-  - @facilities.each do |facility|
-    .facilityListing{:class=>facility.name.upcase[0]}
-      %h4.header-tight= link_to facility, facility_path(facility)
-      %p= facility.short_description
+  -# value[0] = letter, value[1] = facilities, index = number
+  - @azlist.to_a.map.with_index do | value, index|
+    - value[1].each do |facility|
+      .facilityListing{:class=>get_Classname_For_Facility(index, value[0])}
+        %h4.header-tight= link_to facility, facility_path(facility)
+        %p= facility.short_description
 
 - else
   .alert.alert-info= t(".empty", items: Facility.model_name.human(count: 2))
