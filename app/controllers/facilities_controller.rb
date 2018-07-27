@@ -44,7 +44,6 @@ class FacilitiesController < ApplicationController
     @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @active_tab = "home"
     set_column_class
-    set_quicklinks
     render layout: "application"
   end
 
@@ -255,8 +254,9 @@ class FacilitiesController < ApplicationController
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
   end
 
-  def set_quicklinks
-    @quicklinks = SettingsHelper.feature_on?(:product_quicklinks)
+  def quicklinks?
+    SettingsHelper.feature_on?(:product_quicklinks)
   end
+  helper_method :quicklinks?
 
 end
