@@ -391,3 +391,9 @@ textarea.wide {
 .productListLine__lastItem {
   display: flex-end;
 }
+
+.azlist {
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 2em;
+}

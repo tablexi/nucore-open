@@ -3,6 +3,9 @@
 
 .alert.alert-info= text(".welcome")
 
+.azlistcontainer
+  = render "azlist"
+
 - if @facilities.any?
 
   - if @recently_used_facilities.present?
@@ -19,8 +22,9 @@
 
   %h4= text(".all")
   - @facilities.each do |facility|
-    %h4.header-tight= link_to facility, facility_path(facility)
-    %p= facility.short_description
+    .facilityListing{:class=>facility.name.upcase[0]}
+      %h4.header-tight= link_to facility, facility_path(facility)
+      %p= facility.short_description
 
 - else
   .alert.alert-info= t(".empty", items: Facility.model_name.human(count: 2))

@@ -1,0 +1,8 @@
+.azlist
+    - @azlist.each do |listing|
+        - if listing.getFacilities.empty?
+            %p= listing.getLetter
+        - else
+            %a.azListing 
+                = listing.getLetter
+                
