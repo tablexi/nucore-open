@@ -3,25 +3,16 @@
 
 .alert.alert-info= text(".welcome")
 
-- if @facilities.any?
-
-  - if @recently_used_facilities.present?
-    %h4= text(".recently_used")
-    - @recently_used_facilities.each do |facility|
-      %h4.header-tight= link_to facility, facility_path(facility)
-    %hr
-
-  - if @recent_products.any?
-
-    %h4= text(".recently_purchased")
-    = render 'product_list', products: @recent_products
-    %hr
-
-  %h4= text(".all")
-  - @facilities.each do |facility|
-    %h4.header-tight= link_to facility, facility_path(facility)
-    %p= facility.short_description
+- if azlist_on?
+  .az_list_container
+    = render "azlist"
+  = render "product_list", products: @recent_products, title: text("recently_purchased")
+  = render "recently_used_facilities"
+  = render "facilities_list"
 
 - else
-  .alert.alert-info= t(".empty", items: Facility.model_name.human(count: 2))
-
+  = render "recently_used_facilities"
+  %hr
+  = render "product_list", products: @recent_products, title: text("recently_purchased")
+  %hr
+  = render "facilities_list"

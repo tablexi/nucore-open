@@ -1,0 +1,13 @@
+.az_list
+  - @azlist.map.with_index do |(letter, matched_facilities), index|
+    - if matched_facilities.any?
+      %a.az_listing.js--az_listing{ class: az_classname_for_facility(index, letter) }
+        = letter
+    - else
+      %p.az_listing= letter
+
+  %a.az_listing.js--az_listing.all
+    = text("views.facilities.azlist.all_short")
+    - if @recently_used_facilities.present?
+      %a.az_listing.js--az_listing.recent
+        = text("views.facilities.azlist.recently_used_short")
