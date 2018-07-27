@@ -3,7 +3,7 @@
     - if not session_user
       = link_to text("add_to_cart") + ' ' + text("require_login"), new_user_session_path
     - elsif session_user.can_override_restrictions?(product) || product.can_be_used_by?(acting_user)
-      - if not session_user.accounts.empty?
+      - if session_user.accounts.any?
         = link_to text("add_to_cart"), add_order_path(acting_user.cart(session_user), order: {order_details: [{product_id: product.id, quantity: 1}] }), method: :put
       - else
         .label.label-important= text("no_payment")
