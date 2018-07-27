@@ -133,3 +133,8 @@ $navbarActiveBorderColor: #aaa;
     display: none !important;
   }
 }
+@media screen and (max-width: 600px) {
+  .azlist {
+    display: none;
+  }
+}
