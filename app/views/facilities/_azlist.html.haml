@@ -1,8 +1,14 @@
 .azlist
+
     - @azlist.each do |listing|
         - if listing.getFacilities.empty?
             %p= listing.getLetter
         - else
-            %a.azListing 
+            %a.azListing{:class=>listing.getLetter} 
                 = listing.getLetter
-                
+
+    %a.azListing.all 
+        = text('views.facilities.index.all_short')
+    - if @recently_used_facilities.present?
+        %a.azListing.recent
+            = text('views.facilities.index.recently_used_short')

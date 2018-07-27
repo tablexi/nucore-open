@@ -35,6 +35,7 @@ class FacilitiesController < ApplicationController
     @active_tab = "home"
     @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.includes(:facility).alphabetized
     @azlist = getAZList(@facilities)
+    @azlist_on = SettingsHelper.feature_on?(:azlist)
     render layout: "application"
   end
 

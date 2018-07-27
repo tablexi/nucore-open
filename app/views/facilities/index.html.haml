@@ -3,24 +3,34 @@
 
 .alert.alert-info= text(".welcome")
 
-.azlistcontainer
-  = render "azlist"
+- if @azlist_on
+  .azlistcontainer
+    = render "azlist"
 
 - if @facilities.any?
-
-  - if @recently_used_facilities.present?
-    %h4= text(".recently_used")
+  - if not @azlist_on
+    - if @recently_used_facilities.present?
+      %h4{:class=>'facilityListing recent'}= text(".recently_used")
     - @recently_used_facilities.each do |facility|
-      %h4.header-tight= link_to facility, facility_path(facility)
+      .facilityListing{:class=>'recent'}
+        %h4.header-tight= link_to facility, facility_path(facility)
     %hr
-
+    
   - if @recent_products.any?
-
     %h4= text(".recently_purchased")
     = render 'product_list', products: @recent_products
-    %hr
 
-  %h4= text(".all")
+  - if not @azlist_on
+    %hr
+    
+  - if @azlist_on
+    - if @recently_used_facilities.present?
+      %h4{:class=>'facilityListing recent'}= text(".recently_used")
+      - @recently_used_facilities.each do |facility|
+        .facilityListing{:class=>'recent'}
+          %h4.header-tight= link_to facility, facility_path(facility)
+
+  %h4{:class=>'facilityListing allHeader'}= text(".all")
   - @facilities.each do |facility|
     .facilityListing{:class=>facility.name.upcase[0]}
       %h4.header-tight= link_to facility, facility_path(facility)
