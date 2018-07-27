@@ -9,3 +9,9 @@ en:
           Welcome to !app_name!, the centralized ordering system for shared !facilities_downcase!.
           Please select the shared !facility_downcase! below to view and purchase services
           and products offered by the !facility_downcase!.
+      quicklinks:
+        cannot_purchase: Cannot Purchase.
+        no_payment: No Payment Sources Found.
+        add_to_cart: Add to Cart
+        view: View
+        require_login: (Requires Login)
