@@ -1,11 +1,12 @@
 .azlist
 
     - @azlist.to_a.map.with_index do | value, index|
-        - if value[1].empty?
-            %p= value[0]
-        - else
+        - if value[1].any?
             %a.azListing{:class=>get_Classname_For_Facility(index, value[0])} 
                 = value[0]
+        - else
+            %p= value[0]
+            
 
     %a.azListing.all 
         = text('views.facilities.index.all_short')
