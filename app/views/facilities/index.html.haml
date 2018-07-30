@@ -10,9 +10,9 @@
 - if @facilities.any?
   - if not @azlist_on
     - if @recently_used_facilities.present?
-      %h4{:class=>'facilityListing recent'}= text(".recently_used")
+      %h4.facilityListing.recent= text(".recently_used")
     - @recently_used_facilities.each do |facility|
-      .facilityListing{:class=>'recent'}
+      .facilityListing.recent
         %h4.header-tight= link_to facility, facility_path(facility)
     %hr
     
@@ -25,12 +25,12 @@
     
   - if @azlist_on
     - if @recently_used_facilities.present?
-      %h4{:class=>'facilityListing recent'}= text(".recently_used")
+      %h4.facilityListing.recent= text(".recently_used")
       - @recently_used_facilities.each do |facility|
-        .facilityListing{:class=>'recent'}
+        .facilityListing.recent
           %h4.header-tight= link_to facility, facility_path(facility)
 
-  %h4{:class=>'facilityListing allHeader'}= text(".all")
+  %h4.facilityListing.allHeader= text(".all")
   -# value[0] = letter, value[1] = facilities, index = number
   - @azlist.to_a.map.with_index do | value, index|
     - value[1].each do |facility|
