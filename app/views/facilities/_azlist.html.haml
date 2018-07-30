@@ -1,15 +1,13 @@
-.azlist
-
-    - @azlist.to_a.map.with_index do | value, index|
-        - if value[1].any?
-            %a.azListing{:class=>get_Classname_For_Facility(index, value[0])} 
-                = value[0]
-        - else
-            %p= value[0]
-            
-
-    %a.azListing.all 
-        = text('views.facilities.index.all_short')
+.az_list
+  - @azlist.to_a.map.with_index do | value, index|
+    - if value[1].any?
+      %a.az_listing.js--az_listing{:class=>get_classname_for_facility(index, value[0])} 
+        = value[0]
+    - else
+      %p= value[0]
+          
+  %a.az_listing.js--az_listing.all 
+    = text('views.facilities.index.all_short')
     - if @recently_used_facilities.present?
-        %a.azListing.recent
-            = text('views.facilities.index.recently_used_short')
+      %a.az_listing.js--az_listing.recent
+        = text('views.facilities.index.recently_used_short')
