@@ -52,11 +52,14 @@ jobs:
                               "spec/**/*_spec.rb" \
                               "vendor/engines/**/spec/**/*_spec.rb" \
                               | circleci tests split --split-by=timings)
+
       - run:
           command: |
-            bundle exec teaspoon \
-              --suppress-log \
-              --format junit > /tmp/test-results/teaspoon.xml
+            if [ "${CIRCLE_NODE_INDEX}" == "0" ]; then
+              bundle exec teaspoon \
+                --suppress-log \
+                --format junit > /tmp/test-results/teaspoon.xml
+            fi
 
       # Save artifacts
       - store_test_results:
