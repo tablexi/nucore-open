@@ -18,7 +18,7 @@
     
   - if @recent_products.any?
     %h4= text(".recently_purchased")
-    = render 'product_list', products: @recent_products
+    = render "product_list", products: @recent_products
 
   - if not @azlist_on
     %hr
