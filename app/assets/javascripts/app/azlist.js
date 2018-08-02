@@ -1,27 +1,32 @@
 
-var oldText = "All Facilities"
+$(function () {
+  var oldText = $(".allHeader").text();
 
-function removeExtraClasses(classlist) {
-    if (classlist.includes("all")) return "all"
-    else if(classlist.includes("recent")) return "recent"
-    return "js--azlist" + classlist.replace(" ", "").split("js--azlist")[1]
-}
+  function removeExtraClasses(classlist) {
+    classes = classlist.split(" ");
+    if (classes.includes("all")) return "all";
+    else if (classes.includes("recent")) return "recent";
+    var identifier = classes.filter(function (element) {
+      return element.startsWith("js--azlist")
+    })
+    return identifier[0];
+  }
 
-$(document).ready(function () {
-    oldText = $(".allHeader").text()
-})
-$(document).on("click", ".js--az_listing", function () {
+  $(document).on("click", ".js--az_listing", function () {
     $(".js--facility_listing").hide();
-    var category = removeExtraClasses( $(this).attr("class") )
-    console.log(category)
-    if (category === "recent") $(".recent").show()
-    else if (category === "all") {
-        $(".allHeader").text(oldText)
-        $(".js--facility_listing").show()
+    var category = removeExtraClasses($(this).attr("class"));
+    switch (category) {
+      case "recent":
+        $(".recent").show();
+        break;
+      case "all":
+        $(".allHeader").text(oldText);
+        $(".js--facility_listing").show();
+        break;
+      default:
+        $("." + category).show();
+        $(".allHeader").show();
+        $(".allHeader").text($(this).text());
     }
-    else {
-        $("." + category).show()
-        $(".allHeader").show()
-        $(".allHeader").text($(this).text())
-    }
+  });
 });
