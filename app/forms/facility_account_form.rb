@@ -7,8 +7,12 @@ class FacilityAccountForm < SimpleDelegator
 
   validate :validate_chart_string
 
-  def model_name
-    ActiveModel::Name.new(facility_account.class)
+  def self.model_name
+    ActiveModel::Name.new(FacilityAccount)
+  end
+
+  def self.i18n_scope
+    :activerecord
   end
 
   def to_model
@@ -16,6 +20,7 @@ class FacilityAccountForm < SimpleDelegator
   end
 
   def valid?
+    # Don't bother validating ourself if the object is already invalid
     if facility_account.valid? && super
       true
     else

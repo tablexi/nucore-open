@@ -20,15 +20,11 @@
   %table.table.table-striped.table-hover
     %thead
       %tr
-        %th
         %th= FacilityAccount.human_attribute_name(:account_number)
     %tbody
       - @accounts.each do |account|
         %tr
           %td
-            = link_to t("shared.edit"),
-              edit_facility_facility_account_path(current_facility, account)
-          %td
-            = account
+            = link_to account, edit_facility_facility_account_path(current_facility, account)
             - unless account.is_active?
               = text("inactive")
