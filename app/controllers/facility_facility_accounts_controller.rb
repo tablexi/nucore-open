@@ -24,14 +24,14 @@ class FacilityFacilityAccountsController < ApplicationController
   # GET /facilities/:facility_id/facility_accounts/new(.:format)
   def new
     @facility_account = form_class.new(
-      current_facility.facility_accounts.new(is_active: true, revenue_account: Settings.accounts.revenue_account_default)
+      current_facility.facility_accounts.new(is_active: true, revenue_account: Settings.accounts.revenue_account_default),
     )
   end
 
   # POST /facilities/:facility_id/facility_accounts(.:format)
   def create
     @facility_account = form_class.new(
-      current_facility.facility_accounts.new(create_params)
+      current_facility.facility_accounts.new(create_params),
     )
     @facility_account.created_by = session_user.id
 

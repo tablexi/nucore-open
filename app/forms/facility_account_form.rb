@@ -56,4 +56,5 @@ class FacilityAccountForm < SimpleDelegator
   rescue ValidatorError => e
     errors.add(:base, e.message)
   end
+
 end
