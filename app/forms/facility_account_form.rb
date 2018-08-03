@@ -41,6 +41,7 @@ class FacilityAccountForm < SimpleDelegator
     __getobj__
   end
 
+  # Hook into the callbacks by declaring `before_validate_chart_string :my_method_to_run`
   def validate_chart_string
     run_callbacks :validate_chart_string do
       ValidatorFactory.instance(account_number, revenue_account).account_is_open!

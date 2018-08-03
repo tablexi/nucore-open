@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :facility_account do
     facility
-    revenue_account 51_234
+    revenue_account { Settings.accounts.revenue_account_default }
     sequence(:account_number) do |n|
       # This sequence was often running into blacklist problems
       # s = "1#{n%10}#{rand(10)}-7777777" # fund3-dept7
@@ -12,7 +12,7 @@ FactoryBot.define do
     created_by 1
 
     after(:build) do |facility_account|
-      define_open_account(51_234, facility_account.account_number)
+      define_open_account(facility_account.revenue_account, facility_account.account_number)
     end
   end
 end
