@@ -17,6 +17,11 @@ module OrderDetails
       ([dispute_by] + account.administrators).compact.uniq
     end
 
+    # In Rails 5, this method exists, but not in Rails 4.2.
+    def dispute_resolved_at_previously_changed?
+      previous_changes.key?(:dispute_resolved_at)
+    end
+
     def dispute_resolved_at_previously_was
       previous_changes[:dispute_resolved_at].first
     end
