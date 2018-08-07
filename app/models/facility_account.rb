@@ -5,11 +5,12 @@ class FacilityAccount < ApplicationRecord
   belongs_to :facility
 
   validates :revenue_account, numericality: { only_integer: true }
-  validates_uniqueness_of :account_number, scope: [:revenue_account, :facility_id]
-  validate :validate_chartstring
+  validates :account_number, presence: true, uniqueness: { scope: [:revenue_account, :facility_id] }
 
   scope :active, -> { where(is_active: true) }
   scope :inactive, -> { where(is_active: false) }
+
+  alias_attribute :active, :is_active
 
   def to_s
     "#{account_number} (#{revenue_account})"
@@ -32,14 +33,6 @@ class FacilityAccount < ApplicationRecord
     rescue
       return false
     end
-  end
-
-  def validate_chartstring
-    ValidatorFactory.instance(account_number, revenue_account).account_is_open!
-  rescue AccountNumberFormatError => e
-    e.apply_to_model(self)
-  rescue ValidatorError => e
-    errors.add(:account_number, e.message)
   end
 
 end

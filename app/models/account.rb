@@ -192,7 +192,7 @@ class Account < ApplicationRecord
     return "The #{type_string} has insufficient price groups" unless product.can_purchase?((price_groups + user.price_groups).flatten.uniq.collect(&:id))
 
     # check chart string account number
-    if is_a?(NufsAccount)
+    if respond_to?(:account_open?)
       accts = product.is_a?(Bundle) ? product.products.collect(&:account) : [product.account]
       accts.uniq.each { |acct| return "The #{type_string} is not open for the required account" unless account_open?(acct) }
     end

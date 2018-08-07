@@ -10,6 +10,7 @@
         = p.text_field section,
           size: (options[:length] || 30) + 2,
           maxlength: options[:length] || 30,
-          tabindex: i + 1
+          tabindex: i + 1,
+          readonly: local_assigns[:readonly]
 
         = "-&nbsp;".html_safe unless i >= fields.size - 1

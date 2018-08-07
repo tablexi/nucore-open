@@ -1,7 +1,7 @@
 .well
-  = render "shared/account_fields", f: f, account_class: FacilityAccount
+  = render "shared/account_fields", f: f, account_class: FacilityAccount, readonly: local_assigns[:readonly]
   = f.label :revenue_account, class: "require"
-  = f.text_field :revenue_account, maxLength: 5, size: 10
+  = f.text_field :revenue_account, maxLength: 5, size: 10, readonly: local_assigns[:readonly]
 
   = f.label :is_active do
     = f.check_box :is_active

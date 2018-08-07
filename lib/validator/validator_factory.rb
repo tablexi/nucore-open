@@ -1,10 +1,6 @@
 class ValidatorFactory
 
-  @@validator_class = Settings.validator.class_name.constantize
-
-  def self.validator_class
-    @@validator_class
-  end
+  cattr_accessor(:validator_class) { Settings.validator.class_name.constantize }
 
   def self.instance(*args)
     validator_class.new(*args)

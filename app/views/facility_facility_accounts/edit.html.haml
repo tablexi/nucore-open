@@ -11,7 +11,7 @@
 %p= text(".main")
 = form_for @facility_account, url: facility_facility_account_path do |f|
   = f.error_messages
-  = render "facility_account_fields", f: f
+  = render "facility_account_fields", f: f, readonly: true
   %ul.inline
     %li= f.submit t("shared.save"), class: "btn"
     %li= link_to t("shared.cancel"), facility_facility_accounts_path
