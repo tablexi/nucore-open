@@ -1,6 +1,6 @@
 
 $(function () {
-  var oldText = $(".allHeader").text();
+  var oldText = $(".all_header").text();
 
   function removeExtraClasses(classlist) {
     classes = classlist.split(" ");

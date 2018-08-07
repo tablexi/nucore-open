@@ -6,38 +6,14 @@
 - if @azlist_on
   .az_list_container
     = render "azlist"
+  - if @recent_products.any?
+    = render "product_list", products: @recent_products
+  = render "facilities_list"
+  
 
-- if @facilities.any?
-  - if not @azlist_on
-    - if @recently_used_facilities.present?
-      %h4.facility_listing.js--facility_listing.recent= text(".recently_used")
-    - @recently_used_facilities.each do |facility|
-      .facility_listing.js--facility_listing.recent
-        %h4.header-tight= link_to facility, facility_path(facility)
-    %hr
-    
+- else
   - if @recent_products.any?
     %h4= text(".recently_purchased")
     = render "product_list", products: @recent_products
-
-  - if not @azlist_on
-    %hr
-    
-  - if @azlist_on
-    - if @recently_used_facilities.present?
-      %h4.facility_listing.js--facility_listing.recent= text(".recently_used")
-      - @recently_used_facilities.each do |facility|
-        .facility_listing.js--facility_listing.recent
-          %h4.header-tight= link_to facility, facility_path(facility)
-
-  %h4.facility_listing.js--facility_listing.all_header= text(".all")
-  -# value[0] = letter, value[1] = facilities, index = number
-  - @azlist.to_a.map.with_index do | value, index|
-    - value[1].each do |facility|
-      .facility_listing.js--facility_listing{:class=>get_classname_for_facility(index, value[0])}
-        %h4.header-tight= link_to facility, facility_path(facility)
-        %p= facility.short_description
-
-- else
-  .alert.alert-info= t(".empty", items: Facility.model_name.human(count: 2))
-
+  %hr
+  = render "facilities_list"
