@@ -1,7 +1,8 @@
 - if products.any?
-  .product_list{ class: [products.first.class.model_name.to_s.pluralize.downcase, 
-  @columns] }
+  - if local_assigns[:title]
+    %h4= local_assigns[:title]
 
+  .product_list{ class: [products.first.class.model_name.to_s.pluralize.downcase, @columns] }
     - if current_facility.present?
       %h3= product_list_title products, local_assigns[:title_extra]
 

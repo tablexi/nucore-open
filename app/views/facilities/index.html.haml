@@ -3,17 +3,16 @@
 
 .alert.alert-info= text(".welcome")
 
-- if @azlist_on
+- if azlist_on?
   .az_list_container
     = render "azlist"
-  - if @recent_products.any?
-    = render "product_list", products: @recent_products
+  = render "product_list", products: @recent_products, title: text("recently_purchased")
+  = render "recently_used_facilities"
   = render "facilities_list"
-  
 
 - else
-  - if @recent_products.any?
-    %h4= text(".recently_purchased")
-    = render "product_list", products: @recent_products
+  = render "recently_used_facilities"
+  %hr
+  = render "product_list", products: @recent_products, title: text("recently_purchased")
   %hr
   = render "facilities_list"
