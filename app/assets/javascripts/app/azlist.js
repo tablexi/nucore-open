@@ -20,13 +20,13 @@ $(function () {
         $(".recent").show();
         break;
       case "all":
-        $(".allHeader").text(oldText);
+        $(".all_header").text(oldText);
         $(".js--facility_listing").show();
         break;
       default:
         $("." + category).show();
-        $(".allHeader").show();
-        $(".allHeader").text($(this).text());
+        $(".all_header").show();
+        $(".all_header").text($(this).text());
     }
   });
 });
