@@ -14,6 +14,7 @@ class FacilitiesController < ApplicationController
   skip_load_and_authorize_resource only: [:index, :show]
 
   include FacilitiesHelper
+  include AZHelper
   include OrderDetailsCsvExport
 
   layout lambda {
@@ -33,6 +34,7 @@ class FacilitiesController < ApplicationController
     @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities.alphabetized
     @active_tab = "home"
     @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.includes(:facility).alphabetized
+    @azlist = get_az_list(@facilities)
     render layout: "application"
   end
 
@@ -253,5 +255,10 @@ class FacilitiesController < ApplicationController
     @columns = ""
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
   end
+
+  def azlist_on?
+    SettingsHelper.feature_on?(:azlist)
+  end
+  helper_method :azlist_on?
 
 end

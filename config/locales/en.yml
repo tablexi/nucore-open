@@ -810,9 +810,6 @@ en:
       head: Disputed Orders
       no_orders: There are no disputed orders for this !facility_downcase!
 
-    index:
-      empty: "No %{items} are available at this time."
-
     show:
       daily_view: 'daily view'
       timed_services_note: "Please Note: Quantities below are individual orders, not minutes per order."
