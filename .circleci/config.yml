@@ -70,10 +70,3 @@ jobs:
          prefix: coverage
 
       - run: bundle exec report_coverage
-
-      - deploy:
-          name: Stage deploy of master branch
-          command: |
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                bundle exec cap staging deploy
-              fi
