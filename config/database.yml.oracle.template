@@ -1,15 +1,13 @@
 defaults: &defaults
   adapter: oracle_enhanced
-  username: nucore_open_development
-  password: password
-  database: localhost:1521/xe
+  database: <%= ENV["ORACLE_DATABASE"] || "localhost:1521/xe" %>
 
 development:
   <<: *defaults
-  username: nucore_open_development
-  password: password
+  username: <%= ENV["ORACLE_USERNAME"] || "nucore_open_development" %>
+  password: <%= ENV["ORACLE_PASSWORD"] || "password" %>
 
 test:
   <<: *defaults
-  username: nucore_open_test
-  password: password
+  username: <%= ENV["ORACLE_USERNAME"] || "nucore_open_test" %>
+  password: <%= ENV["ORACLE_PASSWORD"] || "password" %>

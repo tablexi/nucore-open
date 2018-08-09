@@ -129,8 +129,12 @@ rake demo:seed
 
 #### Restore from a backup
 
-Copy the `.dmp` file into your Oracle container (put it in a shared volume like `~/oracle_data`)
-and then move it to `/u01/app/oracle/admin/xe/dpdump/`.
+Run `bundle exec rake db:oracle_drop_severe`. This will ensure that your database
+is clean. Without it the import might skip tables due to them already existing.
+
+Assuming you used `$HOME/oracle_data` as the volume location when you did `docker run`:
+
+Copy the `.dmp` file to `$HOME/oracle_data/admin/xe/dpdump/`
 
 Get a bash shell inside your container:
 
@@ -140,5 +144,5 @@ docker exec -it nucore_db bash
 
 Run this (replacing the DUMPFILE filename and the second part of REMAP_SCHEMA with your database's username):
 ```
-impdp system/oracle@//localhost:1521/xe.oracle.docker DIRECTORY=data_pump_dir DUMPFILE=expdp_schema_COR1PRD_201708191913.dmp REMAP_SCHEMA=bc_nucore:nucore_nu_development
+impdp system/oracle@//localhost:1521/xe DIRECTORY=data_pump_dir DUMPFILE=expdp_schema_COR1PRD_201708191913.dmp REMAP_SCHEMA=bc_nucore:nucore_nu_development
 ```
