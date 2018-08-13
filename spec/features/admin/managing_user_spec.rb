@@ -15,7 +15,7 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
       end
 
       it "allows admin to edit internal/external pricing" do
-        expect(page).to have_content("Internal Pricing\n")
+        expect(page).to have_content("Internal Pricing")
 
         click_link "Edit"
 
