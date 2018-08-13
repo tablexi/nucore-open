@@ -1,11 +1,5 @@
 alter profile default limit password_life_time unlimited;
 
-
--- create tablespace BC_NUCORE
---     DATAFILE 'bc_nucore.dat'
---     SIZE 100M
---     AUTOEXTEND ON;
-
 CREATE USER nucore_open_development
     IDENTIFIED BY password
     DEFAULT TABLESPACE users
