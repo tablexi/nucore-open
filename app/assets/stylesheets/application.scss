@@ -4,10 +4,6 @@ $baseFontSize: 12px;
 @import "bootstrap";
 @import "bootstrap-responsive";
 @import "font-awesome";
-// Temporary fix until the chosen gem is fixed
-// https://github.com/tsechingho/chosen-rails/issues/97
-$chosen-sprite: image-url("chosen-sprite.png");
-$chosen-sprite-retina: image-url("chosen-sprite@2x.png");
 @import "chosen";
 
 @import "nucore-variables";
