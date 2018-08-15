@@ -11,16 +11,15 @@
     %table.table.table-striped.table-hover
       %thead
         %tr
-          %th Account Number
-          %th Owner
-          %th Email
+          %th= Account.human_attribute_name(:account_number)
+          %th= Account.human_attribute_name(:owner)
+          %th= Account.human_attribute_name(:expires_at)
       %tbody
         - @accounts.each do |account|
           %tr
-            %td= link_to account.account_number, facility_price_group_account_price_group_members_path(current_facility, @price_group, account_id: account.id), method: :post
-            - owner=account.owner_user
-            %td= owner.full_name if owner
-            %td= owner.email if owner
+            %td= link_to account, facility_price_group_account_price_group_members_path(current_facility, @price_group, account_id: account.id), method: :post
+            %td= account.owner_user.full_name if account.owner_user
+            %td= human_date(account.expires_at)
     - if @accounts.count > @limit
       %p.notice= t(".notice", count: @count - @limit)
 - else
