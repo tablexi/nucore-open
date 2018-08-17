@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :product do
-    description "Lorem ipsum..."
-    account 71_234
-    requires_approval false
-    is_archived false
-    is_hidden false
+    description { "Lorem ipsum..." }
+    account { 71_234 }
+    requires_approval { false }
+    is_archived { false }
+    is_hidden { false }
     initial_order_status_id { FactoryBot.create(:order_status, name: "New").id }
 
     after(:build) do |product|
@@ -17,14 +17,14 @@ FactoryBot.define do
 
     factory :instrument, class: Instrument do
       transient do
-        no_relay false
+        no_relay { false }
       end
 
       sequence(:name) { |n| "Instrument #{n}" }
       sequence(:url_name) { |n| "instrument#{n}" }
-      min_reserve_mins 60
-      max_reserve_mins 120
-      reserve_interval 1
+      min_reserve_mins { 60 }
+      max_reserve_mins { 120 }
+      reserve_interval { 1 }
 
       after(:create) do |inst, evaluator|
         inst.relay = FactoryBot.create(:relay_dummy, instrument: inst) unless evaluator.no_relay
@@ -48,10 +48,10 @@ FactoryBot.define do
 
     factory :bundle, class: Bundle do
       transient do
-        bundle_products []
+        bundle_products { [] }
       end
 
-      account nil # bundles don't have accounts
+      account { nil } # bundles don't have accounts
       sequence(:name) { |n| "Bundle #{n}" }
       sequence(:url_name) { |n| "bundle-#{n}" }
 
@@ -63,11 +63,11 @@ FactoryBot.define do
     end
 
     trait :archived do
-      is_archived true
+      is_archived { true }
     end
 
     trait :hidden do
-      is_hidden true
+      is_hidden { true }
     end
   end
 
@@ -76,14 +76,14 @@ FactoryBot.define do
 
     sequence(:name) { |n| "Product #{n}" }
     sequence(:url_name) { |n| "product-#{n}" }
-    description "Product description"
-    account 71_234
-    requires_approval false
-    is_archived false
-    is_hidden false
+    description { "Product description" }
+    account { 71_234 }
+    requires_approval { false }
+    is_archived { false }
+    is_hidden { false }
     initial_order_status { FactoryBot.create(:order_status, name: "New") }
-    min_reserve_mins 60
-    max_reserve_mins 120
+    min_reserve_mins { 60 }
+    max_reserve_mins { 120 }
 
     after(:build) do |product|
       product.facility_account ||= product.facility.facility_accounts.first
@@ -124,7 +124,7 @@ FactoryBot.define do
   end
 
   factory :setup_instrument, class: Instrument, parent: :setup_product do
-    reserve_interval 1
+    reserve_interval { 1 }
 
     schedule { create :schedule, facility: facility }
 
@@ -136,12 +136,12 @@ FactoryBot.define do
 
     trait :timer do
       transient do
-        no_relay false
+        no_relay { false }
       end
 
-      min_reserve_mins 60
-      max_reserve_mins 120
-      reserve_interval 1
+      min_reserve_mins { 60 }
+      max_reserve_mins { 120 }
+      reserve_interval { 1 }
 
       after(:create) do |inst, evaluator|
         inst.relay = FactoryBot.create(:relay_dummy, instrument: inst) unless evaluator.no_relay

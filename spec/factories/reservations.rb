@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :reservation do
     transient do
-      duration nil
+      duration { nil }
     end
 
     after(:build) do |reservation, evaluator|
@@ -46,7 +46,7 @@ FactoryBot.define do
     trait :long_running do
       yesterday
       actual_start_at { reserve_start_at }
-      actual_end_at nil
+      actual_end_at { nil }
     end
 
     trait :started_early do
@@ -68,18 +68,18 @@ FactoryBot.define do
   end
 
   factory :admin_reservation, class: AdminReservation, parent: :reservation do
-    order_detail nil
+    order_detail { nil }
     category { AdminReservation::CATEGORIES.sample }
   end
 
   factory :offline_reservation, class: OfflineReservation, parent: :reservation do
-    admin_note "Out of order"
-    category "out_of_order"
-    order_detail nil
+    admin_note { "Out of order" }
+    category { "out_of_order" }
+    order_detail { nil }
 
     OfflineReservation::CATEGORIES.each do |category_label|
       trait category_label.to_sym do
-        category category_label
+        category { category_label }
       end
     end
   end
@@ -97,7 +97,7 @@ FactoryBot.define do
   end
 
   factory :purchased_reservation, parent: :validated_reservation do
-    transient { user nil }
+    transient { user { nil } }
 
     after(:create) do |reservation, evaluator|
       reservation.order.update_attribute(:user_id, evaluator.user.id) if evaluator.user
@@ -107,7 +107,7 @@ FactoryBot.define do
     factory :completed_reservation do
       reserve_start_at { Time.zone.parse("#{Date.today} 10:00:00") - 1.day }
       reserve_end_at { Time.zone.parse("#{Date.today} 10:00:00") - 23.hours }
-      reserved_by_admin true
+      reserved_by_admin { true }
 
       after(:create) do |reservation|
         reservation.order_detail.backdate_to_complete! reservation.reserve_end_at

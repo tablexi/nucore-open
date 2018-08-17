@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :user do
     sequence(:username) { |n| "username#{n}" }
-    first_name "User"
-    password "password"
-    password_confirmation "password"
+    first_name { "User" }
+    password { "password" }
+    password_confirmation { "password" }
     sequence(:last_name, &:to_s)
     sequence(:email) { |n| "user#{n}@example.com" }
 
@@ -39,8 +39,8 @@ FactoryBot.define do
 
     trait :business_administrator do
       transient do
-        account nil
-        administrator nil
+        account { nil }
+        administrator { nil }
       end
 
       after(:create) do |user, evaluator|
@@ -54,7 +54,7 @@ FactoryBot.define do
     end
 
     trait :facility_administrator do
-      transient { facility nil }
+      transient { facility { nil } }
 
       after(:create) do |user, evaluator|
         UserRole.create!(
@@ -66,7 +66,7 @@ FactoryBot.define do
     end
 
     trait :facility_director do
-      transient { facility nil }
+      transient { facility { nil } }
 
       after(:create) do |user, evaluator|
         UserRole.create!(
@@ -79,8 +79,8 @@ FactoryBot.define do
 
     trait :purchaser do
       transient do
-        account nil
-        administrator nil
+        account { nil }
+        administrator { nil }
       end
 
       after(:create) do |user, evaluator|
@@ -94,7 +94,7 @@ FactoryBot.define do
     end
 
     trait :senior_staff do
-      transient { facility nil }
+      transient { facility { nil } }
 
       after(:create) do |user, evaluator|
         UserRole.create!(
@@ -106,7 +106,7 @@ FactoryBot.define do
     end
 
     trait :staff do
-      transient { facility nil }
+      transient { facility { nil } }
 
       after(:create) do |user, evaluator|
         UserRole.create!(
