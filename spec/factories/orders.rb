@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :order do
-    account nil
+    account { nil }
   end
 
   # Must define product or facility
@@ -15,7 +15,7 @@ FactoryBot.define do
 
     trait :purchased do
       ordered_at { 1.week.ago }
-      state "purchased"
+      state { "purchased" }
     end
 
     after(:create) do |order, evaluator|

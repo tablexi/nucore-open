@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :payment do
-    source :check
+    source { :check }
   end
 end

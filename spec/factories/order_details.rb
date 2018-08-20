@@ -1,20 +1,20 @@
 FactoryBot.define do
   factory :order_detail do
-    quantity 1
-    created_by 0
+    quantity { 1 }
+    created_by { 0 }
 
     trait :completed do
-      state "complete"
+      state { "complete" }
     end
 
     trait :canceled do
-      state "canceled"
+      state { "canceled" }
     end
 
     trait :canceled_with_cost do
-      state "complete"
+      state { "complete" }
       canceled_at { 30.minutes.ago }
-      actual_cost 5
+      actual_cost { 5 }
     end
 
     trait :disputed do
@@ -22,7 +22,7 @@ FactoryBot.define do
       reviewed_at { 5.days.ago }
       dispute_at { 3.days.ago }
       association :dispute_by, factory: :user
-      dispute_reason "No, sir. I don't like it."
+      dispute_reason { "No, sir. I don't like it." }
     end
   end
 

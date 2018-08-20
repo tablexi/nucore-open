@@ -1,14 +1,14 @@
 FactoryBot.define do
   factory :journal do
-    is_successful true
-    created_by 1
+    is_successful { true }
+    created_by { 1 }
     journal_date { Time.zone.now }
 
     trait :with_completed_order do
       facility
 
       transient do
-        quantities [1]
+        quantities { [1] }
 
         facility_account { FactoryBot.create(:facility_account, facility: facility) }
         order { FactoryBot.create(:purchased_order, product: product) }

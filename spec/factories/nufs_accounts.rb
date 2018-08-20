@@ -14,7 +14,7 @@ FactoryBot.modify do
       with_account_owner
 
       transient do
-        product nil
+        product { nil }
       end
 
       account_users_attributes { [FactoryBot.attributes_for(:account_user, user: owner)] }

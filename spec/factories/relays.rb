@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :relay do
-    type "RelaySynaccessRevA"
-    ip "192.168.1.1"
+    type { "RelaySynaccessRevA" }
+    ip { "192.168.1.1" }
     sequence(:port) { |p| p }
     sequence(:username) { |n| "username#{n}" }
     sequence(:password) { |n| "password#{n}" }
@@ -10,11 +10,11 @@ FactoryBot.define do
     end
 
     factory :relay_synb, class: RelaySynaccessRevB do
-      type "RelaySynaccessRevB"
+      type { "RelaySynaccessRevB" }
     end
   end
 
   factory :relay_dummy, class: RelayDummy do
-    type "RelayDummy"
+    type { "RelayDummy" }
   end
 end
