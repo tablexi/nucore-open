@@ -23,7 +23,7 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
 
         click_button "Update"
 
-        expect(page).to have_content("Internal PricingNo")
+        expect(page).to have_content("Internal Pricing\nNo")
 
         click_link "Edit"
 
@@ -31,7 +31,7 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
 
         click_button "Update"
 
-        expect(page).to have_content("Internal PricingYes")
+        expect(page).to have_content("Internal Pricing\nYes")
       end
 
     end

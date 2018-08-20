@@ -20,9 +20,9 @@ en:
   time:
     formats:
       default: "%a, %m/%d/%Y %-l:%M %p"
-      receipt: "%b %e, %Y %l:%M %p"
+      receipt: "%b %e, %Y %-l:%M %p"
       timeonly: "%-l:%M %p"
-      usa: "%m/%d/%Y %l:%M %p"
+      usa: "%m/%d/%Y %-l:%M %p"
 
   Facility: "!activerecord.models.facility.one!"
   Facilities: "!activerecord.models.facility.other!"

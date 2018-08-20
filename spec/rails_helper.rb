@@ -21,6 +21,7 @@ RSpec.configure do |config|
 
   require "capybara/poltergeist"
   Capybara.javascript_driver = :poltergeist
+  Capybara.server = :webrick
   require "capybara/email/rspec"
 
   config.include Devise::Test::ControllerHelpers, type: :controller
