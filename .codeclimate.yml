@@ -26,7 +26,7 @@ plugins:
       - javascript
   rubocop:
     enabled: true
-    channel: rubocop-0-54
+    channel: rubocop-0-58
     config:
       file: ".rubocop.yml"
 exclude_patterns:
