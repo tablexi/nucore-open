@@ -3,10 +3,10 @@ FactoryBot.define do
     occurred_at { Time.current }
     card_reader
     user
-    outcome :deny
+    outcome { :deny }
 
     trait :successful do
-      outcome :grant
+      outcome { :grant }
     end
   end
 end

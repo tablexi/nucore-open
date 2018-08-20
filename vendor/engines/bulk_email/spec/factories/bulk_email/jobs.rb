@@ -2,9 +2,9 @@ FactoryBot.define do
   factory :bulk_email_job, class: BulkEmail::Job do
     facility
     user
-    subject "Bulk Email Subject Line"
-    body "Bulk Email Message Body"
-    recipients %w(r1@example.com r2@example.net r3@example.org)
+    subject { "Bulk Email Subject Line" }
+    body { "Bulk Email Message Body" }
+    recipients { %w(r1@example.com r2@example.net r3@example.org) }
     search_criteria do
       {
         "bulk_email" => {

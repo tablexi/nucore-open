@@ -3,11 +3,11 @@ FactoryBot.define do
     product factory: :setup_service
 
     trait :default do
-      group :default
+      group { :default }
     end
 
     trait :fragment do
-      group :fragment
+      group { :fragment }
     end
   end
 end

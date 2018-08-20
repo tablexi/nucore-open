@@ -4,7 +4,7 @@ FactoryBot.define do
     facility
 
     trait :inactive do
-      active false
+      active { false }
     end
   end
 end
