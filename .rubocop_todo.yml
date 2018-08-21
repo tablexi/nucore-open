@@ -27,15 +27,6 @@ Layout/EmptyLinesAroundBlockBody:
     - 'config/initializers/devise.rb'
     - 'vendor/engines/secure_rooms/spec/features/facility_occupancies_search_spec.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines, beginning_only, ending_only
-Layout/EmptyLinesAroundClassBody:
-  Exclude:
-    - 'db/**/*'
-    - 'config/application.rb'
-
 # Offense count: 7
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyleAlignWith, AutoCorrect, Severity.
