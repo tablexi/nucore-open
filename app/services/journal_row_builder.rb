@@ -108,7 +108,7 @@ class JournalRowBuilder
                                              "activerecord.errors.models.journal.pending_overlap",
                                              label: order_detail.to_s,
                                              facility: Facility.find(facility_id),
-        ))
+                                           ))
       else
         journaled_facility_ids.add(facility_id)
       end

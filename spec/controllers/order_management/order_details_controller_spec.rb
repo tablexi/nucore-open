@@ -794,7 +794,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
                   .by(containing_exactly(
                         [dispute_by.email],
                         [order_detail.account.owner_user.email],
-                  ))
+                      ))
               end
 
               context "the dispute by is the same as the account owner" do

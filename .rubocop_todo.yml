@@ -14,22 +14,6 @@ Bundler/OrderedGems:
   Exclude:
     - 'Gemfile'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/ClosingHeredocIndentation:
-  Exclude:
-    - 'db/migrate/20110403013939_add_order_detail_note.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-Layout/ClosingParenthesisIndentation:
-  Exclude:
-    - 'app/services/journal_row_builder.rb'
-    - 'spec/controllers/order_management/order_details_controller_spec.rb'
-    - 'spec/models/product_spec.rb'
-    - 'spec/services/order_details/dispute_resolved_notifier_spec.rb'
-    - 'vendor/engines/split_accounts/spec/controllers/instrument_day_reports_controller_spec.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
