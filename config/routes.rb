@@ -18,7 +18,7 @@ Nucore::Application.routes.draw do
 
   # shared searches
   get "/user_search_results", to: 'search#user_search_results'
-  get "/#{I18n.t("facilities_downcase")}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
+  get "/#{I18n.t('facilities_downcase')}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
 
   post "global_search" => 'global_search#index', as: "global_search"
 
@@ -119,7 +119,7 @@ Nucore::Application.routes.draw do
 
     resources :order_statuses, except: [:show]
 
-    resources :facility_users, controller: "facility_users", only: [:index, :destroy], path: "#{I18n.t("facility_downcase")}_users" do
+    resources :facility_users, controller: "facility_users", only: [:index, :destroy], path: "#{I18n.t('facility_downcase')}_users" do
       collection do
         get "search"
       end
@@ -157,7 +157,7 @@ Nucore::Application.routes.draw do
     if SettingsHelper.feature_on? :recharge_accounts
       resources :facility_accounts,
                 controller: "facility_facility_accounts",
-                only: [:index, :new, :create, :edit, :update], path: "#{I18n.t("facility_downcase")}_accounts"
+                only: [:index, :new, :create, :edit, :update], path: "#{I18n.t('facility_downcase')}_accounts"
     end
 
     resources :orders, controller: "facility_orders", only: [:index, :update, :show] do
@@ -354,13 +354,13 @@ Nucore::Application.routes.draw do
   resources :my_files, only: [:index] if SettingsHelper.feature_on?(:my_files)
 
   # file upload routes
-  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/sample_results", to: 'file_uploads#upload_sample_results', as: "add_uploader_file"
-  get   "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/product_survey", to: 'file_uploads#product_survey', as: "product_survey"
-  post  "/#{I18n.t("facilities_downcase")}/:facility_id/:product/:product_id/files/create_product_survey", to: 'file_uploads#create_product_survey', as: "create_product_survey"
+  post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/sample_results", to: 'file_uploads#upload_sample_results', as: "add_uploader_file"
+  get   "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/product_survey", to: 'file_uploads#product_survey', as: "product_survey"
+  post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/create_product_survey", to: 'file_uploads#create_product_survey', as: "create_product_survey"
 
-  put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
-  put   "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
-  get "/#{I18n.t("facilities_downcase")}/:facility_id/services/:service_id/surveys/:external_service_id/complete", to: "surveys#complete", as: "complete_survey"
+  put   "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
+  put   "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
+  get "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_id/complete", to: "surveys#complete", as: "complete_survey"
 
   namespace :admin do
     namespace :services do

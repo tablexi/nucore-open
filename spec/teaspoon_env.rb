@@ -83,7 +83,7 @@ Teaspoon.configure do |config|
 
   config.suite :engines do |suite|
     engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
-    suite.matcher = "vendor/engines/{#{engine_names.join(",")}}/spec/javascripts/**/*_spec.{js,js.coffee,coffee}"
+    suite.matcher = "vendor/engines/{#{engine_names.join(',')}}/spec/javascripts/**/*_spec.{js,js.coffee,coffee}"
   end
 
   # CONSOLE RUNNER SPECIFIC
