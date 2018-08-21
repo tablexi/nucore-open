@@ -1,6 +1,6 @@
 module NUCore
 
-  class PermissionDenied < SecurityError
+  class PermissionDenied < RuntimeError
   end
 
   class Error < StandardError
