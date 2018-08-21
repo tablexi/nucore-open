@@ -65,7 +65,7 @@ RSpec.describe "Managing an order detail" do
 
       it "cancels with a fee" do
         select "Canceled", from: "Status"
-        check "Add reservation cost"
+        check I18n.t("facility_order_details.edit.label.with_cancel_fee")
         click_button "Save"
 
         expect(page).to have_content("Complete")
