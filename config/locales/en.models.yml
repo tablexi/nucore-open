@@ -262,7 +262,6 @@ en:
       price_group:
         is_internal: Is Internal?
       price_policy:
-        cancellation_cost: Reservation cost
         type: Type
         can_purchase: Can Purchase?
         minimum_cost: Minimum Cost
