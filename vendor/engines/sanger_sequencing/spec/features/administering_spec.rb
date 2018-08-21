@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 require_relative "../support/shared_contexts/setup_sanger_service"
 

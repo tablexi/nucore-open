@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StatementPdf
 
   include ActionView::Helpers::NumberHelper

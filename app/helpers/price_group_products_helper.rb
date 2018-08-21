@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PriceGroupProductsHelper
 
   def can_purchase?(price_group)

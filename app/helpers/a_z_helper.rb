@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AZHelper
 
   # Generates empty hash with keys for each letter

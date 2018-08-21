@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddFieldsToAccounts < ActiveRecord::Migration
 
   class Account < ActiveRecord::Base

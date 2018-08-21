@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameExtraPennyToApplyRemainder < ActiveRecord::Migration
 
   def change

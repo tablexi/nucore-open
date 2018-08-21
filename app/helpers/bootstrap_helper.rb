@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BootstrapHelper
 
   def modal_close_button

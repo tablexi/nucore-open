@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # DateTimeInput
 class TimeDropdownInput < SimpleForm::Inputs::Base
 

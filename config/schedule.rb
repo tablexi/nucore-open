@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV['RAILS_ENV'] = @environment
 require File.expand_path(File.dirname(__FILE__) + "/environment")
 

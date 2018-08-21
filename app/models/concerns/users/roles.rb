@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # There are many roles that can be assigned to users.
 # Mix this module into the +User+ class to include
 # convenience methods for testing the role status of users.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OrdersHelper
 
   def display_cost_prefix_for_order(order)

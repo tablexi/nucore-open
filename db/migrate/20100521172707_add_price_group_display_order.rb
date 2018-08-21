@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPriceGroupDisplayOrder < ActiveRecord::Migration
 
   def self.up

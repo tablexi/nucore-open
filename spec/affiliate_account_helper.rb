@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Include in specs for classes that are +AffiliateAccount+s.
 # Tests here expect an instance variable +@account_attrs+ to

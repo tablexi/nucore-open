@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TransactionSearch
 
   # Register a TransactionSearch::BaseSearcher. Unless specified otherwise,

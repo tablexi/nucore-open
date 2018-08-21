@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CsvReportMailer < BaseMailer
 
   def csv_report_email(to_address, report)

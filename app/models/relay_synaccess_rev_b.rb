@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RelaySynaccessRevB < Relay
 
   # Supports Synaccess Models: NP-02B

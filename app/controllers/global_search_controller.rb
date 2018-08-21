@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GlobalSearchController < ApplicationController
 
   customer_tab :all

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TrainingRequestMailer < BaseMailer
 
   def notify_facility_staff(user, product)

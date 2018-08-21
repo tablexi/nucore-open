@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OrderDetailsCsvExport
 
   def handle_csv_search

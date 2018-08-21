@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Override the devise_saml_authenticatable routes because their names conflict
 # with the database routes.
 # See:

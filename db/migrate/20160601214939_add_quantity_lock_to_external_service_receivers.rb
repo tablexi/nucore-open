@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddQuantityLockToExternalServiceReceivers < ActiveRecord::Migration
 
   def change

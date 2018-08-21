@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AlterOrderDetailsDropDisputeResolvedCredit < ActiveRecord::Migration
 
   def self.up

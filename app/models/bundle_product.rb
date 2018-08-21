@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BundleProduct < ApplicationRecord
 
   belongs_to :bundle, foreign_key: :bundle_product_id

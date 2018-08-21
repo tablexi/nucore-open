@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Users::ActiveUserFinder
 
   # Format active users as a CSV

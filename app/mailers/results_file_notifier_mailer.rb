@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ResultsFileNotifierMailer < BaseMailer
 
   def file_uploaded(file)

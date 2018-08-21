@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameFileUploads < ActiveRecord::Migration
 
   def self.up

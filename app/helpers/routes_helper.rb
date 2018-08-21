@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # For having more conveniently named route helpers so you don't always
 # have to include current_facility, etc.
 module RoutesHelper

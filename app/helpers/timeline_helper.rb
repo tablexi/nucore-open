@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TimelineHelper
 
   def reservation_classes(reservation, product = nil)

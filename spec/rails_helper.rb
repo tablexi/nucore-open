@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'

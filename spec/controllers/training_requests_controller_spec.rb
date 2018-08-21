@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe TrainingRequestsController, feature_setting: { training_requests: true } do

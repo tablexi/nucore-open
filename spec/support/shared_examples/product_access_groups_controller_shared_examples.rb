@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for "A product supporting ProductAccessGroupsController" do |product_sym|
   render_views
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "ldap_authentication/user_updater"
 
 module LdapAuthentication

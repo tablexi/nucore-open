@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCanceledToOrderDetail < ActiveRecord::Migration
 
   class Reservation < ActiveRecord::Base

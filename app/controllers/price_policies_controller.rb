@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PricePoliciesController < ApplicationController
 
   include DateHelper

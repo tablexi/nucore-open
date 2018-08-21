@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCreatedByIdToReservations < ActiveRecord::Migration
   def change
     add_column :reservations, :created_by_id, :integer

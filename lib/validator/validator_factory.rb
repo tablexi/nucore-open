@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ValidatorFactory
 
   cattr_accessor(:validator_class) { Settings.validator.class_name.constantize }

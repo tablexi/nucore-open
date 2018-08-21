@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountSuspendActions
 
   # GET /facilities/:facility_id/accounts/:account_id/suspend

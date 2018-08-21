@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountTransactionReportMailer < CsvReportMailer
 
   def csv_report_email(to_address, order_detail_ids, date_range_field)

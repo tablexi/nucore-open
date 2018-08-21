@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddTokenToSecureRoom < ActiveRecord::Migration
 
   class Product < ActiveRecord::Base

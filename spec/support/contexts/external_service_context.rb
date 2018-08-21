@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_context "external service" do
 
   let(:external_service_passer) { create :external_service_passer, active: true }

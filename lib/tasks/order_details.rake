@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :order_details do
   desc "mark order_details with past reservations as complete"
   task expire_reservations: :environment do

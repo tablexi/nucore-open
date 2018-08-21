@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProductRequiresApprovalValidator < ActiveModel::Validator
 
   def validate(record)

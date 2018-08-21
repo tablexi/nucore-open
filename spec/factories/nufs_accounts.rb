@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 overridable_factory :nufs_account do
   sequence(:account_number, "0000000") do |n|
     "999-#{n}" # fund3-dept7

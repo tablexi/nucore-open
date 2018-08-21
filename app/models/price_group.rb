@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PriceGroup < ApplicationRecord
 
   belongs_to :facility

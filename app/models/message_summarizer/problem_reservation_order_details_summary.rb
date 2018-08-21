@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MessageSummarizer::ProblemReservationOrderDetailsSummary < MessageSummarizer::FacilityMessageSummary
 
   private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StatementCreator
 
   attr_accessor :order_detail_ids, :errors, :to_statement, :account_statements, :session_user, :current_facility

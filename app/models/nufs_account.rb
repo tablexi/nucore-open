@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NufsAccount < Account
 
   validates_uniqueness_of :account_number, message: "already exists"

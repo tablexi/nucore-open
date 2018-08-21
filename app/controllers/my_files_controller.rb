@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MyFilesController < ApplicationController
 
   customer_tab :all

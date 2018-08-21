@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StatementPresenter < SimpleDelegator
 
   include Rails.application.routes.url_helpers

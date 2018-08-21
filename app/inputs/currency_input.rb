@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CurrencyInput < SimpleForm::Inputs::Base
 
   include ActionView::Helpers::NumberHelper

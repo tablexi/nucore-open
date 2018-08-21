@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeJournalRowsValuesToStrings < ActiveRecord::Migration
 
   def self.up

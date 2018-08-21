@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "devise_ldap_authenticatable"
 require "ldap_authentication/user_entry"
 require "ldap_authentication/user_converter"

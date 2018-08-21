@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StandardizeCanceledSpelling < ActiveRecord::Migration
 
   def up

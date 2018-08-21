@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LogEventSearcher
 
   ALLOWED_EVENTS = ["account.create", "account.update",

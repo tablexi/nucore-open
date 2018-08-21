@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddJournalsTable < ActiveRecord::Migration
 
   def self.up

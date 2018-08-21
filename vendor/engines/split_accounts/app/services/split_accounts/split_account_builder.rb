@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SplitAccounts
 
   # Contains overrides for building a `SplitAccounts::SplitAccount` from params.

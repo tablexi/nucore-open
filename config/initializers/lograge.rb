@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless Rails.env.test? || Rails.env.development?
   Nucore::Application.configure do
     config.lograge.enabled = true

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSangerSequencingBatches < ActiveRecord::Migration
 
   def change

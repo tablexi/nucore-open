@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :stored_file do
     swf_uploaded_data { fixture_file_upload("#{Rails.root}/spec/files/flash_file.swf", "application/x-shockwave-flash") }

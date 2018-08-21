@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def assert_true(x)
   assert(x)
 end

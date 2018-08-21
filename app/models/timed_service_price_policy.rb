@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TimedServicePricePolicy < PricePolicy
 
   include PricePolicies::Usage

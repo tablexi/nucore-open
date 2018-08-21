@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderPurchaseValidator
 
   # The AllOrderDetailsValidator will validate each individual OrderDetail

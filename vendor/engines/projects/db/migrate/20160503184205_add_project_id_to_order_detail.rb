@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddProjectIdToOrderDetail < ActiveRecord::Migration
 
   def change

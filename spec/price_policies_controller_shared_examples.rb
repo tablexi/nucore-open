@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for PricePoliciesController do |product_type, params_modifier = nil|
   let(:facility) { @authable }
   let(:price_policy) { @price_policy }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Contains overrides for building a `PurchaseOrderAccount` from params.
 # Dynamically called via the `AccountBuilder.for()` factory.
 class PurchaseOrderAccountBuilder < AccountBuilder

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPreferenceOption
 
   def initialize(user)

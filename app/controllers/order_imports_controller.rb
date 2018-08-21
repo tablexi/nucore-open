@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderImportsController < ApplicationController
 
   include ActionView::Helpers::TextHelper

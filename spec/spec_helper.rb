@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # run coverage when on CI
 if ENV["CI"]
   require "simplecov"

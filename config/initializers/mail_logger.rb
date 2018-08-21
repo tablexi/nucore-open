@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MailLogger < ActiveSupport::LogSubscriber
 
   def deliver(event)

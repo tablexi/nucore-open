@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ReassignChartStringsHelper
 
   def available_account_select_tag(form, accounts)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "it does not complete order" do
   it "leaves fulfilled_at nil" do
     expect(order_detail.fulfilled_at).to be_nil

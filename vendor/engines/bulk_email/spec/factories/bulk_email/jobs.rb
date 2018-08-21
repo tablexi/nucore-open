@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :bulk_email_job, class: BulkEmail::Job do
     facility

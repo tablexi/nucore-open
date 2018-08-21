@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddJournalCutoffs < ActiveRecord::Migration
 
   def change

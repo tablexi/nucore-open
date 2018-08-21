@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 class AccountUser < ApplicationRecord
 
   belongs_to :user
   belongs_to :account, inverse_of: :account_users
   has_many :log_events, as: :loggable
 
-  ACCOUNT_PURCHASER = "Purchaser".freeze
-  ACCOUNT_OWNER = "Owner".freeze
-  ACCOUNT_ADMINISTRATOR = "Business Administrator".freeze
+  ACCOUNT_PURCHASER = "Purchaser"
+  ACCOUNT_OWNER = "Owner"
+  ACCOUNT_ADMINISTRATOR = "Business Administrator"
 
   def self.read_only_user_roles
     [ACCOUNT_PURCHASER]

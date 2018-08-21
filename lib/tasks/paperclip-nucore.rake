@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :paperclip do
   def paperclip_allow_task?
     if Settings.paperclip.storage == "fog"

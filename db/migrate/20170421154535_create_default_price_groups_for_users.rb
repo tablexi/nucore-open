@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDefaultPriceGroupsForUsers < ActiveRecord::Migration
 
   def up

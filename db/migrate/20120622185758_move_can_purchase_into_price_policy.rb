@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MoveCanPurchaseIntoPricePolicy < ActiveRecord::Migration
 
   def self.up

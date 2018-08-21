@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FacilityAccount < ApplicationRecord
 
   include Accounts::AccountNumberSectionable

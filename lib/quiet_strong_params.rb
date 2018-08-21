@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QuietStrongParams
 
   # Generally we want to protect ourselves against forgetting to add new fields to strong params.

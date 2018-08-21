@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :occupancy, class: SecureRooms::Occupancy do
     secure_room

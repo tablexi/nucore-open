@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetails::PriceChecker
 
   include ActionView::Helpers::NumberHelper

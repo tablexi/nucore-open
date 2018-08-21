@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do

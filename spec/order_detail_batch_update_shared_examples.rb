@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for "it supports order_detail POST #batch_update" do
   context "POST #batch_update" do
     before do

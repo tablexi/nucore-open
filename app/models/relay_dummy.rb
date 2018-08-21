@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RelayDummy < Relay
 
   def get_status

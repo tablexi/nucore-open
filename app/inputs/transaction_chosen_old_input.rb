@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class is deprecated in favor of TransactionChosenInput. This class
 # is still being used by BulkEmailController for searching.
 class TransactionChosenOldInput < SimpleForm::Inputs::Base # CollectionSelectInput

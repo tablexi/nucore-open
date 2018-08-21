@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "date_helper" # parse_usa_import_date
 
 class OrderRowImporter

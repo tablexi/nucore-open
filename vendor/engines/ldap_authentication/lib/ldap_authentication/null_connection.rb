@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LdapAuthentication
 
   # Used in test mode to simulate requests that return nothing.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddShowDetailsToInstruments < ActiveRecord::Migration
 
   def self.up

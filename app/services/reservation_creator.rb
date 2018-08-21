@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReservationCreator
 
   attr_reader :order, :order_detail, :params, :error

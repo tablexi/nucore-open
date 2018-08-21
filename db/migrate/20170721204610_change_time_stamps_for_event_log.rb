@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeTimeStampsForEventLog < ActiveRecord::Migration
   def change
     change_table :log_events do |t|

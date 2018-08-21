@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderStatus < ApplicationRecord
 
   acts_as_nested_set

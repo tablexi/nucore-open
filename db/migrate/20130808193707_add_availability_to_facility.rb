@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAvailabilityToFacility < ActiveRecord::Migration
 
   def change

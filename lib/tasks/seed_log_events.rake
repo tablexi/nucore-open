@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This is here mostly to seed the LogEvents table so the UI can be tested.
 # We might also want to run it in production to give partial historical
 # data

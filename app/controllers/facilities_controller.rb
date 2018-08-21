@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FacilitiesController < ApplicationController
 
   customer_tab :index, :list, :show

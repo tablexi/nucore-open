@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Gem::Specification.new do |gem|
   gem.name    = "dataprobe"
   gem.version = "1.0.0"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountCleaner
 
   def self.clean_expires_at(account)

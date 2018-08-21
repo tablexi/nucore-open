@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # A polymorphic join class between an +ExternalService+
 # and a class that passes off work to that service

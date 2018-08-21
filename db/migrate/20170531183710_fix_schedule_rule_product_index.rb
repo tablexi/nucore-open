@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FixScheduleRuleProductIndex < ActiveRecord::Migration
 
   def up

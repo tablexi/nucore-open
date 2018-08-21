@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This is the default placeholder transformer which does nothing.
 # Modify settings to use a different transformer to modify/tranform order
 # detail results before sending them to get reported.

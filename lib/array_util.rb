@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ArrayUtil
 
   def self.insert_before(array, new_element, element)

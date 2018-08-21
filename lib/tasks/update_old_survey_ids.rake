@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 task zero_pad_survey_ids: :environment do
   ExternalServiceReceiver.where("external_id IS NOT NULL").each do |receiver|
     print "#{receiver.class} #{receiver.id} external_id: "

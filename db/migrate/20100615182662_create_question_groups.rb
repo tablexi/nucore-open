@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateQuestionGroups < ActiveRecord::Migration
 
   def self.up

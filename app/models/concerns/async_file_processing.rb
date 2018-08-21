@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Include this module in one of your models to support asynchronous file processing
 # via ActiveJob. It will only allow one instance of the model to be in process at
 # a time.

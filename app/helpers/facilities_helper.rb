@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FacilitiesHelper
 
   def daily_view_link

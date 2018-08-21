@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :secure_room, class: SecureRoom, parent: :setup_product do
     sequence(:name) { |n| "Room #{n}" }

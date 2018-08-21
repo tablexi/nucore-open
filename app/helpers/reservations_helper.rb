@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ReservationsHelper
 
   def add_accessories_link(reservation)

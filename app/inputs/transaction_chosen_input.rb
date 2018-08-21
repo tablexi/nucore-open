@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TransactionChosenInput < SimpleForm::Inputs::CollectionInput
 
   disable :required

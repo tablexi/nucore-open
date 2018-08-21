@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OrderStatusesHelper
 
   def children_for_facility(class_or_item, facility_id, mover = nil)

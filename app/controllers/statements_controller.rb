@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StatementsController < ApplicationController
 
   customer_tab  :all

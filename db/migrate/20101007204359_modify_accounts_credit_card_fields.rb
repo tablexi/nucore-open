@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ModifyAccountsCreditCardFields < ActiveRecord::Migration
 
   def self.up

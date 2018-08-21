@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Here we setup the factory *environment*, not factories themselves (do that in factories.rb)
 # Allows us to separate factory definitions from setup

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InstrumentsController < ProductsCommonController
 
   customer_tab :show, :public_schedule, :public_list

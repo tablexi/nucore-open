@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAccountTransactionIdToJournalRows < ActiveRecord::Migration
 
   def self.up

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/BarePercentLiterals, Style/RescueModifier, Layout/SpaceInsideStringInterpolation, Style/UnneededPercentQ
 module ActiveRecord
 

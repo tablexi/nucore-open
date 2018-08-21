@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AvailableAccountsFinder
 
   def initialize(user, facility, current: nil, current_user: nil)

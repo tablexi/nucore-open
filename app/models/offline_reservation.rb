@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OfflineReservation < Reservation
 
   CATEGORIES = I18n.t("offline_reservations.categories").keys.map(&:to_s).freeze

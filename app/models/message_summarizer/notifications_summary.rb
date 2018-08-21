@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MessageSummarizer::NotificationsSummary < MessageSummarizer::MessageSummary
 
   def in_context?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Orders::ItemAdder
 
   # timed services default to 1 minute (arbitrary)

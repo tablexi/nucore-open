@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Accessories::UpdateResponse
 
   attr_reader :order_details

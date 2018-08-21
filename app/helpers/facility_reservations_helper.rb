@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FacilityReservationsHelper
 
   def offline_category_collection

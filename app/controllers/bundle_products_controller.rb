@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BundleProductsController < ApplicationController
 
   customer_tab  :show

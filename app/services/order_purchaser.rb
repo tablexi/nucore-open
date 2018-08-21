@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderPurchaser
 
   attr_reader :acting_as, :order, :order_in_past, :params, :user

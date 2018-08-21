@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AffiliatesHelper
 
   def delete_affiliate_link(affiliate)

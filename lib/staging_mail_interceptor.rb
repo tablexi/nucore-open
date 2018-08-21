@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # MailInterceptor intercepts email delivery, preventing messages from being sent
 # to non-developers, and re-routing messages intended for other recipients to
 # the development team. This allows us to play around in the staging and testing

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LengthenJournalRowDescriptionColumn < ActiveRecord::Migration
 
   def up

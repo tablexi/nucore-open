@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PurchaseNotifierPreview < ActionMailer::Preview
 
   def product_order_notification

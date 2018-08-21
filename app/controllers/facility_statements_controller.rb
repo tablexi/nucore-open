@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FacilityStatementsController < ApplicationController
 
   admin_tab     :all

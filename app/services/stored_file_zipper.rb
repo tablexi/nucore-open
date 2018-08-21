@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StoredFileZipper
 
   attr_reader :files

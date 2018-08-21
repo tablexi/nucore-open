@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Contains overrides for building a `NufsAccount` from params.
 # Dynamically called via the `AccountBuilder.for()` factory.
 class NufsAccountBuilder < AccountBuilder

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateExternalServicePassers < ActiveRecord::Migration
 
   def self.up

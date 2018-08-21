@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Service < Product
 
   has_many :service_price_policies, foreign_key: :product_id

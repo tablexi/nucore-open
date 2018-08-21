@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BreadcrumbHelper
 
   def order_reservation_breadcrumb

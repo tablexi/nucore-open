@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :split_account, class: SplitAccounts::SplitAccount, aliases: ["split_accounts/split_account"] do
     with_account_owner

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ####################################################################
 # We only want to validate reservation duration changes made through
 # the UI but not in specs

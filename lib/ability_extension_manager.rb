@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class is used by the Ability class in order for you to customize the
 # ability behavior inside of an engines. Extensions should take the ability as
 # an initialization argument and implement `extend`.

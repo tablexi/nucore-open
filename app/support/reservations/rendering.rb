@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Support for displaying Reservations in various formats
 module Reservations::Rendering
 

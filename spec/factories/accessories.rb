@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :instrument_with_accessory, parent: :setup_instrument do
     transient do

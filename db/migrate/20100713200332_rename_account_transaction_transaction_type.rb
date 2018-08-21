@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameAccountTransactionTransactionType < ActiveRecord::Migration
 
   def self.up

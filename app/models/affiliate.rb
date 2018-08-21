@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Affiliate < ApplicationRecord
 
   validates_presence_of :name

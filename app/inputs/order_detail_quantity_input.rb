@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailQuantityInput < SimpleForm::Inputs::FileInput
 
   def input(_wrapper_options)

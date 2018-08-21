@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This migration creates the `versions` table, the only schema PT requires.
 # All other migrations PT provides are optional.
 class CreateVersions < ActiveRecord::Migration

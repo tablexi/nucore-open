@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.expand_path("factories_env", File.dirname(__FILE__))
 
 FactoryBot.define do

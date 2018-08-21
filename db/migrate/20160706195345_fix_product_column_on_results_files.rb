@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FixProductColumnOnResultsFiles < ActiveRecord::Migration
 
   class StoredFile < ActiveRecord::Base

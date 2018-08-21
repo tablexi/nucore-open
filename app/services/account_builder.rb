@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Builds a subclassed Account object given params.
 #
 # This class supports extensions from engines via subclassing `AccountBuilder`

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :sanger_sequencing_submission, class: SangerSequencing::Submission do
     transient do

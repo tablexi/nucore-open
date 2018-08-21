@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveSupport::Notifications.subscribe("background_error") do |_name, _start, _finish, _id, payload|
   exception = payload[:exception]
   options = payload[:information] ? { data: { message: payload[:information] } } : {}

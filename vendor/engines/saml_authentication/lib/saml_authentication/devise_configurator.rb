@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "saml_authentication/user_locator"
 require "saml_authentication/user_updater"
 require "saml_authentication/idp_entity_id_reader"

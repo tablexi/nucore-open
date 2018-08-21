@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :db do
   def db_allow_task?
     if Rails.env.test? || Rails.env.development?

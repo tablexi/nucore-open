@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :schedule_rule do
     discount_percent { 0.00 }

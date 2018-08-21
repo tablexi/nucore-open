@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPriceChangeReasonToOrderDetails < ActiveRecord::Migration
   def change
     add_column :order_details, :price_change_reason, :string

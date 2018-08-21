@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JournalRowUpdater
 
   attr_accessor :order_detail, :journal_rows

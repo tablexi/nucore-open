@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if NUCore::Database.oracle?
 
   def timestamp_pattern(field, operator, time)

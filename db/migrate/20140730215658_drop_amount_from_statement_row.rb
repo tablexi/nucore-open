@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DropAmountFromStatementRow < ActiveRecord::Migration
 
   def up

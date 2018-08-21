@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for "the user must log in" do
   it "redirects to the login screen" do
     expect(response).to be_redirect

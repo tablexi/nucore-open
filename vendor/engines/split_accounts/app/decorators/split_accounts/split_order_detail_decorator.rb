@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SplitAccounts
 
   # This decorator permits us to assign decimals to quantity (rather than ints)

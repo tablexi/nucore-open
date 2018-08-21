@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DateHelper
 
   USA_DATE_FORMAT = %r(\A\d{1,2}/\d{1,2}/\d{4}\z)

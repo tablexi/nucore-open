@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProductUserCreator
 
   def self.create(user:, product:, approver:)

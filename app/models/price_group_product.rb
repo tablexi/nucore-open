@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PriceGroupProduct < ApplicationRecord
 
   DEFAULT_RESERVATION_WINDOW = 14

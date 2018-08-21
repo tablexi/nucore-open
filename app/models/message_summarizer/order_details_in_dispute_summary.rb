@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MessageSummarizer::OrderDetailsInDisputeSummary < MessageSummarizer::FacilityMessageSummary
 
   private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailBatchUpdater
 
   # TODO: Extracted from the OrderDetail model almost as-is and needs refactoring

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSubaffiliatesEnabledFlagToAffiliates < ActiveRecord::Migration
 
   def up

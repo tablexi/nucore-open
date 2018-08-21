@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeNoteLimitForOrderDetails < ActiveRecord::Migration
 
   def up

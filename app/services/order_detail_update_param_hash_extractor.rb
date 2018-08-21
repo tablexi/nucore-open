@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailUpdateParamHashExtractor
 
   attr_reader :params

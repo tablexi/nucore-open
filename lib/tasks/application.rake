@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :daemon do
 
   desc "start daemon found in lib/daemons"

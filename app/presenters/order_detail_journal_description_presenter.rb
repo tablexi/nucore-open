@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailJournalDescriptionPresenter < SimpleDelegator
 
   def long_description

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotifierPreview < ActionMailer::Preview
 
   def review_orders

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Survey
 
   attr_reader :service, :params

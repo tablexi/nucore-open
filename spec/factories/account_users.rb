@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :account_user do
     user_role { "Owner" } # TODO: explicitly use the :owner trait

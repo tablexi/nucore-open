@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Keeper of this app's loaded engines
 class EngineManager
 

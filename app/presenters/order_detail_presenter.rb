@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailPresenter < SimpleDelegator
 
   include ActionView::Helpers::NumberHelper

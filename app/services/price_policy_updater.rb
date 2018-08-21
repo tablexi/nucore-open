@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PricePolicyUpdater
 
   def self.update_all(price_policies, start_date, expire_date, params)

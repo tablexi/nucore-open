@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Statement < ApplicationRecord
 
   has_many :order_details, inverse_of: :statement

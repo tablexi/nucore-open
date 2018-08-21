@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FormHelper
 
   def readonly_form_for(record_name, record = nil, options = {}, &block)

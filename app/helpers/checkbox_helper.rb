@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CheckboxHelper
 
   def select_all_link(start_none: false)

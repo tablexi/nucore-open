@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AlterProductAccessoriesAddDeletedAt < ActiveRecord::Migration
 
   def change

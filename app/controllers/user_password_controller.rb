@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPasswordController < ApplicationController
 
   before_action :authenticate_user!, only: :edit_current

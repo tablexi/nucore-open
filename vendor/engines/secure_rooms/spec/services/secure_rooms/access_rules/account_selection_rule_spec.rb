@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe SecureRooms::AccessRules::AccountSelectionRule, type: :service do

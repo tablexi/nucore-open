@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAdminEditableToPriceGroup < ActiveRecord::Migration
 
   def up

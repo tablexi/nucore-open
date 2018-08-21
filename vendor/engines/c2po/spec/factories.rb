@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :credit_card_account do
     sequence(:account_number) { |_n| "5276-4400-6542-1319" }

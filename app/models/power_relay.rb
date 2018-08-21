@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Including class must implement #relay_connection
 # Port refers to the outlet, not the IP port
 module PowerRelay

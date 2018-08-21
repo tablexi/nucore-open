@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveLegacyInstrumentPricePolicyColumns < ActiveRecord::Migration
 
   COLUMNS = {

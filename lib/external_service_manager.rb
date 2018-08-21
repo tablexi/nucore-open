@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # This class manages all of the +ExternalService+s used by
 # the system. It should be the only code aware of the actual

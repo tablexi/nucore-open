@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PricePolicyMassAssigner
 
   def self.assign_price_policies(order_details)

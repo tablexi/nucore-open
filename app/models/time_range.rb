@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TimeRange
 
   attr_reader :start_at, :end_at
