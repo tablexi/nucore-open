@@ -8,7 +8,7 @@ class AddOrderDetailNote < ActiveRecord::Migration
     # why doesn't oracle_enhanced support remove_column? we'll never know.
     execute <<-SQL
        ALTER TABLE order_details DROP COLUMN note
-     SQL
+    SQL
   end
 
 end

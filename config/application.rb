@@ -37,6 +37,7 @@ module Nucore
     config.time_zone = "Central Time (US & Canada)" # move to settings
 
     config.active_record.observers = :order_detail_observer
+
   end
 
 end

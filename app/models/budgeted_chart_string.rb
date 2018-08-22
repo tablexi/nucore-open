@@ -43,7 +43,7 @@ class BudgetedChartString < ApplicationRecord
         while line = file.readline.strip
           # parse, import line
           case
-          when line =~ /^\d{4,4}\|/
+          when /^\d{4,4}\|/.match?(line)
             # chart string with fiscal year
             tokens = line.split("|").map { |s| s.delete("-") }
             # build start_at, expires_at from fiscal year
@@ -56,7 +56,7 @@ class BudgetedChartString < ApplicationRecord
             project = tokens[3]
             activity = tokens[4]
             account = tokens[5]
-          when line =~ /\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/
+          when /\d{2,2}-[A-Z]{3,3}-\d{2,2}\|\d{2,2}-[A-Z]{3,3}-\d{2,2}$/.match?(line)
             # chart string with start and expire dates
             tokens = line.split("|").map { |s| s.delete("-") }
             # parse fields

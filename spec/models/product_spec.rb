@@ -60,7 +60,7 @@ RSpec.describe Product do
                     product: instrument,
                     start_date: 3.days.ago,
                     expire_date: 3.days.from_now
-                   )
+                  )
       end
 
       let!(:past_price_policies) do

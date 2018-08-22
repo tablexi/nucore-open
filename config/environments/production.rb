@@ -47,7 +47,7 @@ Rails.application.configure do
   config.log_level = :info
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -63,7 +63,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method       = :smtp
   Rails.application.routes.default_url_options =
     config.action_mailer.default_url_options   = { host: "nucore.example.com", protocol: "https" }
-  config.action_mailer.smtp_settings         = {
+  config.action_mailer.smtp_settings = {
     address: "mail.example.com",
     port: 25,
     domain: "example.com",
@@ -102,4 +102,4 @@ Rails.application.configure do
 end
 
 # What's this for?
-GOOGLE_ANALYTICS_KEY = nil  # move to secrets
+GOOGLE_ANALYTICS_KEY = nil # move to secrets
