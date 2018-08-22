@@ -1,0 +1,17 @@
+en:
+  views:
+    cancellation_mailer:
+      notify_facility:
+        subject: "%{facility} - Reservation #%{order_detail} has been canceled"
+        body: |
+          The following reservation has been canceled:
+
+          **Order:** [#%{order_detail}](%{order_detail_link})
+
+          **Instrument:** %{product}
+
+          **Reservation time:** %{times}
+
+          **Canceled by:** %{canceler}
+
+

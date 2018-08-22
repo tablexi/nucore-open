@@ -28,6 +28,14 @@ class Instrument < Product
            :maximum_reservation_is_multiple_of_interval,
            :max_reservation_not_less_than_min
 
+  validate do |record|
+    # Simple validation that all emails contain an @ followed by a word character,
+    # and is not at the start of the string.
+    unless cancellation_notification_contacts.all? { |email| email =~ /.@\w/ }
+      record.errors.add(:cancellation_notification_contacts)
+    end
+  end
+
   # Callbacks
   # --------
 
@@ -81,6 +89,14 @@ class Instrument < Product
 
   def quantity_as_time?
     true
+  end
+
+  def cancellation_notification_contacts
+    CsvArrayString.new(self[:cancellation_notification_contacts])
+  end
+
+  def cancellation_notification_contacts=(str)
+    self[:cancellation_notification_contacts] = CsvArrayString.new(str).to_s
   end
 
   private
