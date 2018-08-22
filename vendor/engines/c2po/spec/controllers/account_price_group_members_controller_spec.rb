@@ -4,6 +4,9 @@ RSpec.describe AccountPriceGroupMembersController do
   let(:facility) { create(:facility) }
 
   describe "search_results" do
+    # Ignore validation errors, e.g. number format
+    before { allow(ValidatorFactory).to receive(:instance).and_return(ValidatorDefault.new) }
+
     let(:price_group) { create(:price_group, facility: facility) }
     let!(:global_account) { create(:nufs_account, :with_account_owner, account_number: "TESTING123") }
     let!(:facility_purchase_order) { create(:purchase_order_account, :with_account_owner, account_number: "TESTING1234", facility: facility) }
