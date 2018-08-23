@@ -18,6 +18,7 @@ RSpec.describe EmailListAttribute do
     def [](key)
       instance_variable_get("@#{key}")
     end
+
   end
 
   describe "setting the values" do

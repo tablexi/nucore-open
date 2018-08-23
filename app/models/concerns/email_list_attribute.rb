@@ -3,7 +3,7 @@
 #
 # class Product < ApplicationRecord
 #   include EmailListAttribute
-#.  email_list_attribute :contact_emails
+#   email_list_attribute :contact_emails
 # end
 #
 # > product = Product.new
