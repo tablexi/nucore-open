@@ -9,6 +9,10 @@ class ProductNotificationsController < ApplicationController
   layout "two_column"
 
   # GET /facilities/:facility_url/products/:product_url/notifications
+  def index
+  end
+
+  # GET /facilities/:facility_url/products/:product_url/notifications/edit
   def edit
     authorize!(:edit, @product)
   end
