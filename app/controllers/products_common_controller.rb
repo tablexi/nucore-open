@@ -101,13 +101,11 @@ class ProductsCommonController < ApplicationController
   def resource_params
     params.require(:"#{singular_object_name}").permit(:name, :url_name, :contact_email, :description,
                                                       :facility_account_id, :account, :initial_order_status_id,
-                                                      :requires_approval, :training_request_contacts,
-                                                      :is_archived, :is_hidden, :order_notification_recipient,
+                                                      :requires_approval,  :is_archived, :is_hidden,
                                                       :user_notes_field_mode, :user_notes_label, :show_details,
                                                       :schedule_id, :control_mechanism, :reserve_interval,
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
-                                                      :cancellation_notification_contacts,
                                                       relay_attributes: [:ip, :port, :username, :password, :type,
                                                                          :auto_logout, :auto_logout_minutes, :id])
   end

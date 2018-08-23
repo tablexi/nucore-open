@@ -5,12 +5,9 @@
 
   = f.input :initial_order_status_id, collection: OrderStatus.initial_statuses(current_facility).collect {|cf| [cf.name_with_level, cf.id] }, hint: text("hints.initial_order_status"), include_blank: false
   = f.input :requires_approval, as: :boolean, label: false, inline_label: text("hints.requires_approval")
-  - if SettingsHelper.feature_on?(:training_requests)
-    = f.input :training_request_contacts, as: :string, hint: text("hints.training_request_contacts")
 
 = f.input :is_archived, as: :boolean, label: false, inline_label: text("hints.is_archived")
 = f.input :is_hidden, as: :boolean, label: false, inline_label: text("hints.is_hidden", field: f.object.class.model_name.human.downcase)
-= f.input :order_notification_recipient, as: :email, hint: text("hints.order_notification")
 
 - unless f.object.is_a?(Bundle)
   = f.input :user_notes_field_mode, collection: Products::UserNoteMode.all, include_blank: false
