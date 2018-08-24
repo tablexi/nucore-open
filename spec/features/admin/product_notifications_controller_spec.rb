@@ -15,12 +15,12 @@ RSpec.describe ProductNotificationsController, feature_setting: { training_reque
 
       fill_in "Order Notification Recipient", with: "user1@example.com"
       fill_in "Cancellation Notification Recipients", with: "user2@example.com, user3@example.com"
-      fill_in "Training Request Contacts", with: "user4@example.com, user5@example.com"
+      fill_in "Training Request Recipients", with: "user4@example.com, user5@example.com"
       click_button "Save"
 
       expect(page).to have_content("Order Notification Recipient\nuser1@example.com")
       expect(page).to have_content("Cancellation Notification Recipients\nuser2@example.com, user3@example.com")
-      expect(page).to have_content("Training Request Contacts\nuser4@example.com, user5@example.com")
+      expect(page).to have_content("Training Request Recipients\nuser4@example.com, user5@example.com")
     end
   end
 
