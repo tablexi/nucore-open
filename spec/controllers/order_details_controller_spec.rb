@@ -124,8 +124,8 @@ RSpec.describe OrderDetailsController do
           it { expect(order_detail.reload).to be_canceled }
         end
 
-        context "and the cancellation notification contacts is set" do
-          before { reservation.product.update(cancellation_notification_contacts: "cancel@example.com") }
+        context "and the cancellation notification recipients is set" do
+          before { reservation.product.update(cancellation_notification_recipients: "cancel@example.com") }
 
           it "triggers an email" do
             expect { put :cancel, params: { order_id: order.id, id: order_detail.id } }.to change(ActionMailer::Base.deliveries, :count).by(1)
