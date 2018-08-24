@@ -21,11 +21,8 @@
 
     = f.input :initial_order_status
     = f.input :requires_approval
-    - if SettingsHelper.feature_on?(:training_requests) && f.object.training_request_contacts?
-      = f.input :training_request_contacts
   = f.input :is_archived
   = f.input :is_hidden
-  = f.input :order_notification_recipient, default_value: text("none_entered")
   - unless @product.is_a?(Bundle)
     = f.input :user_notes_field_mode, value_method: :to_label
     = f.input :user_notes_label if f.object.user_notes_label? && f.object.user_notes_field_mode.visible?
