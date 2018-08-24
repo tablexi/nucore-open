@@ -219,8 +219,8 @@ ActiveRecord::Schema.define(version: 20180822191538) do
   end
 
   create_table "log_events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "loggable_type"
     t.integer  "loggable_id"
+    t.string   "loggable_type"
     t.string   "event_type"
     t.integer  "user_id"
     t.datetime "created_at",    null: false
@@ -276,13 +276,13 @@ ActiveRecord::Schema.define(version: 20180822191538) do
     t.integer  "product_accessory_id"
     t.boolean  "problem",                                                         default: false, null: false
     t.datetime "reconciled_at"
+    t.integer  "project_id"
     t.text     "note",                     limit: 65535
     t.datetime "canceled_at"
     t.integer  "canceled_by"
     t.string   "canceled_reason"
     t.string   "price_change_reason"
     t.integer  "price_changed_by_user_id"
-    t.integer  "project_id"
     t.index ["account_id"], name: "fk_od_accounts", using: :btree
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id", using: :btree
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id", using: :btree
@@ -472,11 +472,11 @@ ActiveRecord::Schema.define(version: 20180822191538) do
     t.integer  "lock_window",                                      default: 0,        null: false
     t.text     "training_request_contacts",          limit: 65535
     t.integer  "cutoff_hours",                                     default: 0,        null: false
+    t.string   "dashboard_token"
     t.string   "user_notes_field_mode",                            default: "hidden", null: false
     t.string   "user_notes_label"
     t.string   "order_notification_recipient"
     t.text     "cancellation_notification_contacts", limit: 65535
-    t.string   "dashboard_token"
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token", using: :btree
     t.index ["facility_account_id"], name: "fk_facility_accounts", using: :btree
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe", using: :btree
@@ -763,10 +763,10 @@ ActiveRecord::Schema.define(version: 20180822191538) do
   end
 
   create_table "vestal_versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "versioned_type"
     t.integer  "versioned_id"
-    t.string   "user_type"
+    t.string   "versioned_type"
     t.integer  "user_id"
+    t.string   "user_type"
     t.string   "user_name"
     t.text     "modifications",     limit: 65535
     t.integer  "version_number"
