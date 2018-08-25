@@ -86,7 +86,7 @@ module BulkEmail
     def product_ids_from_params
       # if we don't have any products, get all for the facility
       search_fields[:products].presence ||
-        Facility.find(search_fields[:facility_id]).products.pluck(:id)
+        Product.for_facility(search_fields[:facility]).pluck(:id)
     end
 
     def selected_user_types
@@ -101,7 +101,7 @@ module BulkEmail
     def find_order_details
       OrderDetail
         .for_products(search_fields[:products])
-        .for_facility_id(search_fields[:facility_id].presence)
+        .for_facility_id(search_fields[:facility].id)
         .ordered_or_reserved_in_range(start_date, end_date)
     end
 

@@ -60,7 +60,7 @@ module BulkEmail
       return if params[:bulk_email_delivery_form].blank?
       search_criteria = JSON.parse(params[:bulk_email_delivery_form][:search_criteria])
       params.merge!(search_criteria.slice("bulk_email", "start_date", "end_date", "products"))
-      params.merge!(params[:bulk_email_delivery_form].slice(:product_id, :recipient_ids))
+      params.merge!(params[:bulk_email_delivery_form].permit(:product_id, :recipient_ids))
     end
 
     def bulk_email_cancel_path
@@ -106,7 +106,7 @@ module BulkEmail
     def init_search_options
       @products = Product.for_facility(current_facility).active_plus_hidden.order("products.name").includes(:facility)
       @search_options = { products: @products }
-      @search_fields = params.merge(facility_id: current_facility.id)
+      @search_fields = params.merge(facility: current_facility)
       @user_types = user_types
       @user_types.delete(:authorized_users) unless @products.exists?(requires_approval: true)
     end
