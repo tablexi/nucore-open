@@ -46,7 +46,7 @@ RSpec.describe BulkEmail::BulkEmailController do
           let(:user_types) { %i(customers) }
 
           it "sets products, in order" do
-            expect(assigns[:products])
+            expect(assigns[:search_options][:products])
               .to eq([item, service, instrument, restricted_item].sort)
           end
 
@@ -102,7 +102,7 @@ RSpec.describe BulkEmail::BulkEmailController do
             FactoryBot.create(:item, :hidden, facility_account: facility_account)
           end
 
-          it { expect(assigns[:products]).to include(hidden_product) }
+          it { expect(assigns[:search_options][:products]).to include(hidden_product) }
         end
 
         context "when there is an archived product" do
@@ -112,7 +112,7 @@ RSpec.describe BulkEmail::BulkEmailController do
             FactoryBot.create(:item, :archived, facility_account: facility_account)
           end
 
-          it { expect(assigns[:products]).not_to include(archived_product) }
+          it { expect(assigns[:search_options][:products]).not_to include(archived_product) }
         end
       end
 
