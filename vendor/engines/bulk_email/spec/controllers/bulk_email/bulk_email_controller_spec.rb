@@ -70,8 +70,7 @@ RSpec.describe BulkEmail::BulkEmailController do
                   commit: "Search",
                   bulk_email: {
                     user_types: %w[customers],
-                  },
-                }
+                  } }
               end
 
               it "finds users" do
@@ -85,8 +84,7 @@ RSpec.describe BulkEmail::BulkEmailController do
                   commit: "Search",
                   bulk_email: {
                     user_types: %w[authorized_users],
-                  },
-                }
+                  } }
               end
 
               it "finds users" do

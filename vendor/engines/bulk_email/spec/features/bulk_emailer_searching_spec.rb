@@ -77,5 +77,4 @@ RSpec.describe "Bulk email search", feature_setting: { training_requests: true }
       expect(page).to have_content([facility, facility2].join(", "))
     end
   end
-
 end

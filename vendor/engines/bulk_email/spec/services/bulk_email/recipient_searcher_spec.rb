@@ -254,7 +254,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
       let!(:order_details) do
         [
           place_order(purchaser: purchaser, product: product, account: account),
-          place_order(purchaser: purchaser2, product: product_facility2, account: account)
+          place_order(purchaser: purchaser2, product: product_facility2, account: account),
         ]
       end
 
