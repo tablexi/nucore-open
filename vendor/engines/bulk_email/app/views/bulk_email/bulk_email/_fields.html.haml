@@ -12,7 +12,7 @@
           = label_text
 
     .span4.full-width
-      - if @facilities.present?
+      - if @search_options[:facilities].present?
         = f.input :facilities, as: :transaction_chosen_old
       = f.input :products, as: :transaction_chosen_old, data_method: :product_options
 

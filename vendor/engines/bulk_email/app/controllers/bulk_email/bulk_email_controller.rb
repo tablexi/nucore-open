@@ -104,12 +104,12 @@ module BulkEmail
     end
 
     def init_search_options
-      @products = Product.for_facility(current_facility).active_plus_hidden.alphabetized.includes(:facility)
-      @facilities = Facility.active.alphabetized if current_facility.cross_facility?
-      @search_options = { products: @products, facilities: @facilities }
+      products = Product.for_facility(current_facility).active_plus_hidden.alphabetized.includes(:facility)
+      facilities = Facility.active.alphabetized if current_facility.cross_facility?
+      @search_options = { products: products, facilities: facilities }
       @search_fields = params
       @user_types = user_types
-      @user_types.delete(:authorized_users) unless @products.exists?(requires_approval: true)
+      @user_types.delete(:authorized_users) unless products.exists?(requires_approval: true)
     end
 
     def datepicker_field_input(form, key)
