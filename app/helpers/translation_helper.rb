@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TranslationHelper
 
   def t_manage_models(clazz)

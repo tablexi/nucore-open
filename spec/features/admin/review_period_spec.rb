@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe "Review period - Sending notifications and marking as reviewed", billing_review_period: 7.days do

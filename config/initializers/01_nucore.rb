@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "nucore"
 
 ActiveRecord::Base.class_eval do

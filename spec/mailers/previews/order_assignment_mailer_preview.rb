@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderAssignmentMailerPreview < ActionMailer::Preview
 
   def order_assignment

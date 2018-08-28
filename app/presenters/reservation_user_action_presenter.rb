@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReservationUserActionPresenter
 
   attr_accessor :reservation, :controller

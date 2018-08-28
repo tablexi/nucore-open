@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddForeignKeysToProjects < ActiveRecord::Migration
 
   def change

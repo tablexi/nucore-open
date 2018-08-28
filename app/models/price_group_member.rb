@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PriceGroupMember < ApplicationRecord
 
   belongs_to :price_group

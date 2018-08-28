@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveReferenceFromAccountTransactions < ActiveRecord::Migration
 
   def self.up

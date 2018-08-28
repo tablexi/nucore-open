@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveUnitSizeAndRenameColumnInProducts < ActiveRecord::Migration
 
   def self.up

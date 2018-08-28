@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Cart
 
   def initialize(user, created_by_user = nil)

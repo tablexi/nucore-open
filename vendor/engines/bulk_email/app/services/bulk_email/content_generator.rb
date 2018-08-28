@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module BulkEmail
 
   class ContentGenerator
 
     include TextHelpers::Translation
 
-    DEFAULT_RECIPIENT_NAME = "Firstname Lastname".freeze
+    DEFAULT_RECIPIENT_NAME = "Firstname Lastname"
 
     attr_reader :facility, :subject_product
 

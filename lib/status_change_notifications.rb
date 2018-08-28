@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # These will use the order_status_changed_to_STATUS templates
 
 module StatusChangeNotifications

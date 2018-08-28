@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MigrateDurationMins < ActiveRecord::Migration
 
   def up

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAccountUsersTable < ActiveRecord::Migration
 
   def self.up

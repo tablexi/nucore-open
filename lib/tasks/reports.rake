@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :reports do
   desc "Gives report for concatenated price rules"
   task concatenated_price_rules: :environment do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InstrumentStatus < ApplicationRecord
 
   belongs_to :instrument

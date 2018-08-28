@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "facility_product_routing_concern"
 
 Nucore::Application.routes.draw do

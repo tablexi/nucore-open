@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # A UrlService is an +ExternalService+ that is
 # accessed via HTTP/URLs.

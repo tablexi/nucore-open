@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ScheduleRulesController < ApplicationController
 
   include BelongsToProductController

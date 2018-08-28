@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Facility < ApplicationRecord
 
   before_validation :set_journal_mask, on: :create

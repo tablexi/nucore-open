@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :schedule do
     sequence(:name) { |n| "Schedule #{n}" }

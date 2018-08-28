@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddOrdersMergeWithOrderId < ActiveRecord::Migration
 
   def self.up

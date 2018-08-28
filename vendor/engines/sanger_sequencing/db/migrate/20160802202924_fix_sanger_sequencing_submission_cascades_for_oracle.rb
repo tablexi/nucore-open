@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FixSangerSequencingSubmissionCascadesForOracle < ActiveRecord::Migration
 
   def change

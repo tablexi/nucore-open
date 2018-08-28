@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HashHelper
 
   # Inserts one hash into another after it finds a specific key

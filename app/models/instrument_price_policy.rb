@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InstrumentPricePolicy < PricePolicy
 
   include InstrumentPricePolicyCalculations

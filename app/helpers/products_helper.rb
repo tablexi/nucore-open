@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProductsHelper
 
   def price_policy_errors(product)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :engines do
 
   namespace :db do

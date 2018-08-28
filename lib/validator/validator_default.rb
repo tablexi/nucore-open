@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # This class defines an interface for validating
 # payment source account strings. It is also the default

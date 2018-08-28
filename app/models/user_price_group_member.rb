@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPriceGroupMember < PriceGroupMember
 
   belongs_to :user

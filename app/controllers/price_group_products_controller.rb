@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PriceGroupProductsController < ApplicationController
 
   admin_tab     :all

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TimedService < Product
 
   has_many :timed_service_price_policies, foreign_key: :product_id

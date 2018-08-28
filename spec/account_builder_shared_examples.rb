@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for "AccountBuilder#build" do
   subject(:account) { builder.build }
   let(:builder) { described_class.new(options) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountConfig
 
   # Returns an array of all subclassed Account object names - including global,

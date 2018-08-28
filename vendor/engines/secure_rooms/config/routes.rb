@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   resources :facilities, only: [], path: I18n.t("facilities_downcase") do
     resources :secure_rooms, except: [:show] do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DropCanceledFromReservations < ActiveRecord::Migration
   def change
     remove_column :reservations, :canceled_at, :datetime

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :be_allowed_to do |action, object|
   description do
     "be allowed to #{action} " +

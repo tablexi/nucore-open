@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe "Passwords", :aggregate_failures, feature_setting: { password_update: true } do

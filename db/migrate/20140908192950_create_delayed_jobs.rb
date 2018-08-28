@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDelayedJobs < ActiveRecord::Migration
 
   def change

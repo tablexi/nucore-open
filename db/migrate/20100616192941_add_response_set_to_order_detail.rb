@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddResponseSetToOrderDetail < ActiveRecord::Migration
 
   def self.up

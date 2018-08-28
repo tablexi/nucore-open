@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Accessories::Accessorizer
 
   def initialize(order_detail)

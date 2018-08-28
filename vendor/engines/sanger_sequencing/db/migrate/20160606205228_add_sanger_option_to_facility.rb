@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSangerOptionToFacility < ActiveRecord::Migration
 
   def change

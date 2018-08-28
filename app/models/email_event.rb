@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Never instantiate this class directly. Use the `notify` method.
 class EmailEvent < ApplicationRecord
 

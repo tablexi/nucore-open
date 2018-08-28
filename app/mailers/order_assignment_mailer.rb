@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderAssignmentMailer < BaseMailer
 
   def notify_assigned_user(order_details)

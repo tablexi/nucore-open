@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Defaults to the duration length of the reservation,
 # but does not get auto-updated
 class Accessories::Scaling::Manual < Accessories::Scaling::Default

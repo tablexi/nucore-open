@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailNoticePresenter < DelegateClass(OrderDetail)
 
   include ActionView::Helpers::TagHelper

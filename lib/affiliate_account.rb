@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Should be included by any +Account+ that requires an +Affiliate+
 module AffiliateAccount
 

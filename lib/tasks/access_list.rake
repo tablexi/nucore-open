@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :access_list do
 
   # `rake access_list:import[filename.csv]`

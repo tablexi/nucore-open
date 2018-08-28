@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file contains a base set of data appropriate for development or testing.
 # The data can then be loaded with the rake db:bi_seed.
 #

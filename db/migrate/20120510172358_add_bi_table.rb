@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddBiTable < ActiveRecord::Migration
 
   def self.up

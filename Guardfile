@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 guard :rspec, cmd: "bundle exec rspec", spec_paths: ["spec", "vendor/engines/*/spec"] do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^vendor/engines/\w+/spec/.+_spec\.rb$})

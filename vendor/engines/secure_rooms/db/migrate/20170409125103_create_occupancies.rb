@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateOccupancies < ActiveRecord::Migration
 
   def change

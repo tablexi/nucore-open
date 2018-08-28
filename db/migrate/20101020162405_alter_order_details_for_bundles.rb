@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AlterOrderDetailsForBundles < ActiveRecord::Migration
 
   def self.up

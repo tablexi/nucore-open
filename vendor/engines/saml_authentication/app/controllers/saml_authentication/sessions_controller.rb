@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SamlAuthentication
 
   class SessionsController < Devise::SamlSessionsController

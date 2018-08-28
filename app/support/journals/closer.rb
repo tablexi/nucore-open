@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Journals::Closer
 
   attr_reader :journal, :params

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NavTab::Link
 
   include ActionView::Helpers::UrlHelper

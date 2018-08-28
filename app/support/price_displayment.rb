@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Module for use by OrderDetail for easier interface to costs and subsidies
 #

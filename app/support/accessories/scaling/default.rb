@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Accessories::Scaling::Default < SimpleDelegator
 
   attr_accessor :enabled

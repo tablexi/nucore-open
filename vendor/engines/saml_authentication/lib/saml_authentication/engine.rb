@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "devise_saml_authenticatable"
 require "saml_authentication/routes"
 require "saml_authentication/model"

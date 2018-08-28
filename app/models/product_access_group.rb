@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProductAccessGroup < ApplicationRecord
 
   belongs_to :product

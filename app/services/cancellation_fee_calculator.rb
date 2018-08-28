@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CancellationFeeCalculator
 
   def initialize(reservation)

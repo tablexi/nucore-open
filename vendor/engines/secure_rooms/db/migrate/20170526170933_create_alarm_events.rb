@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAlarmEvents < ActiveRecord::Migration
 
   def change

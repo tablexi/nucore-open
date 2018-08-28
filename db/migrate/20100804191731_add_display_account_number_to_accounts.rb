@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddDisplayAccountNumberToAccounts < ActiveRecord::Migration
 
   def self.up

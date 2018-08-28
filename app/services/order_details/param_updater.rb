@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetails::ParamUpdater
 
   def self.permitted_attributes

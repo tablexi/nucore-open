@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddActiveFacilitiesIndex < ActiveRecord::Migration
 
   def change

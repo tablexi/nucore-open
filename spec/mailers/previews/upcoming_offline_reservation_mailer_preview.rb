@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpcomingOfflineReservationMailerPreview < ActionMailer::Preview
 
   def upcoming_offline_reservation

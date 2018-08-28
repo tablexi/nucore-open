@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddDeactivatedToUser < ActiveRecord::Migration
 
   def change

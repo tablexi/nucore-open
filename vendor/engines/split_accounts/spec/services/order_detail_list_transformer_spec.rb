@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe SplitAccounts::OrderDetailListTransformer, type: :service do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ConvertExternalServiceReceiverData < ActiveRecord::Migration
 
   def up

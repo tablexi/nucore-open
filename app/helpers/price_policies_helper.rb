@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PricePoliciesHelper
 
   def price_policy_path(price_policy_or_product, url_date)

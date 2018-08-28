@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProblemOrderDetailsHelper
 
   def problem_order_date_header(show_reservation_start_at)

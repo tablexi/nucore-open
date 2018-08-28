@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
@@ -164,7 +166,7 @@ class ApplicationController < ActionController::Base
   # to facility_account_path(current_facility, @account), while if you are not, it will
   # just go to account_path(@account).
   def open_or_facility_path(path, *options)
-    path << "_path"
+    path += "_path"
     if current_facility
       path = "facility_" + path
       send(path, current_facility, *options)

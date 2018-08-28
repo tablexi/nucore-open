@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Reports::InstrumentDayReport
 
   def initialize(reservations)

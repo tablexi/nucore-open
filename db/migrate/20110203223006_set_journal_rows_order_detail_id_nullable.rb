@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SetJournalRowsOrderDetailIdNullable < ActiveRecord::Migration
 
   def self.up

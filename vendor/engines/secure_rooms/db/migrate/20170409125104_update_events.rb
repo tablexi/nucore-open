@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateEvents < ActiveRecord::Migration
 
   def change

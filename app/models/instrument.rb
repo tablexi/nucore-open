@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Instrument < Product
 
   include Products::RelaySupport

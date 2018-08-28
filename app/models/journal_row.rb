@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JournalRow < ApplicationRecord
 
   belongs_to :journal

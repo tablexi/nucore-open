@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BudgetedChartString < ApplicationRecord
 
   include NUCore::Database::DateHelper

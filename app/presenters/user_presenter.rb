@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPresenter < SimpleDelegator
 
   include ActionView::Helpers::FormOptionsHelper

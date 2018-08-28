@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SettingsHelper
 
   def self.fiscal_year_end(date = nil)

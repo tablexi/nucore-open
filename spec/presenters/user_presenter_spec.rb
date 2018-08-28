@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe UserPresenter, feature_setting: { billing_administrator: true } do

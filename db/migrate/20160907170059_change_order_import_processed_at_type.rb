@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This has no effect in MySQL, but corrects a timezone issue in Oracle.
 class ChangeOrderImportProcessedAtType < ActiveRecord::Migration
 

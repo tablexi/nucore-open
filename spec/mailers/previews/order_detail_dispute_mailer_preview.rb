@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailDisputeMailerPreview < ActionMailer::Preview
 
   def dispute_resolved

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddDescriptionToAccount < ActiveRecord::Migration
 
   def self.up

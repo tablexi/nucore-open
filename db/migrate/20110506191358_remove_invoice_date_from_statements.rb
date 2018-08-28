@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveInvoiceDateFromStatements < ActiveRecord::Migration
 
   def self.up

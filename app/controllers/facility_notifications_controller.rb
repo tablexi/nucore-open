@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FacilityNotificationsController < ApplicationController
 
   admin_tab     :all

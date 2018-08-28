@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InstrumentForCart < ProductForCart
 
   def purchasable_by?(acting_user, session_user)

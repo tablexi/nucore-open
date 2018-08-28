@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Takes a string that is a comma-separated list
 # the #to_a and any Enumerable methods will run only
 # over values that exist.

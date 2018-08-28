@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AllOrderDetailsValidator
 
   cattr_accessor :order_detail_validator_class

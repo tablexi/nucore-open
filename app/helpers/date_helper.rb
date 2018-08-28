@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DateHelper
 
   USA_DATE_FORMAT = %r(\A\d{1,2}/\d{1,2}/\d{4}\z)
@@ -68,24 +70,24 @@ module DateHelper
 
   def time_select_tag(field, default_time = Time.zone.now, html_options = {})
     output = ""
-    output << select_tag("#{field}[hour]", options_for_select(hour_options, default_time.strftime("%I").to_i), html_options)
-    output << select_tag("#{field}[minute]", options_for_select(minute_options, default_time.min), html_options)
-    output << select_tag("#{field}[ampm]", options_for_select(%w(AM PM), default_time.strftime("%p")), html_options)
+    output += select_tag("#{field}[hour]", options_for_select(hour_options, default_time.strftime("%I").to_i), html_options)
+    output += select_tag("#{field}[minute]", options_for_select(minute_options, default_time.min), html_options)
+    output += select_tag("#{field}[ampm]", options_for_select(%w(AM PM), default_time.strftime("%p")), html_options)
     output.html_safe
   end
 
   # This is to DRY up many of the legacy places where hour/min/meridian is used in forms
   def time_select(f, field, options_tag = {}, html_options = {})
     output =  f.select(:"#{field}_hour", (1..12).to_a, {}, html_options)
-    output << f.select(:"#{field}_min", minute_options(options_tag[:minute_step]), {}, html_options)
-    output << f.select(:"#{field}_meridian", %w(AM PM), {}, html_options)
+    output += f.select(:"#{field}_min", minute_options(options_tag[:minute_step]), {}, html_options)
+    output += f.select(:"#{field}_meridian", %w(AM PM), {}, html_options)
     content_tag :div, output.html_safe, class: "time-select"
   end
 
   def time_select24(f, field, options = {})
     options.reverse_merge! hours: (0..23)
     output =  f.select(:"#{field}_hour", options[:hours].to_a)
-    output << f.select(:"#{field}_min", minute_options(options[:minute_step]))
+    output += f.select(:"#{field}_min", minute_options(options[:minute_step]))
     content_tag :div, output, class: "time-select"
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddFieldsToSecureRoomCardReaders < ActiveRecord::Migration
 
   def change

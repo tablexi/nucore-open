@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "ldap_authentication/user_extension"
 require "ldap_authentication/users_controller_extension"
 

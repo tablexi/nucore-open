@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReadonlyInput < SimpleForm::Inputs::Base
 
   include DateHelper

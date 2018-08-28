@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 class UserRole < ApplicationRecord
 
   belongs_to :user
   belongs_to :facility
 
-  ACCOUNT_MANAGER = "Account Manager".freeze
-  ADMINISTRATOR = "Administrator".freeze
-  BILLING_ADMINISTRATOR = "Billing Administrator".freeze
-  FACILITY_DIRECTOR = "Facility Director".freeze
-  FACILITY_ADMINISTRATOR = "Facility Administrator".freeze
-  FACILITY_STAFF = "Facility Staff".freeze
-  FACILITY_SENIOR_STAFF = "Facility Senior Staff".freeze
+  ACCOUNT_MANAGER = "Account Manager"
+  ADMINISTRATOR = "Administrator"
+  BILLING_ADMINISTRATOR = "Billing Administrator"
+  FACILITY_DIRECTOR = "Facility Director"
+  FACILITY_ADMINISTRATOR = "Facility Administrator"
+  FACILITY_STAFF = "Facility Staff"
+  FACILITY_SENIOR_STAFF = "Facility Senior Staff"
 
   scope :facility_director, -> { where(role: FACILITY_DIRECTOR) }
 

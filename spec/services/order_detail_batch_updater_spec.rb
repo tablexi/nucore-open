@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 # TODO: These specs are incomplete and document existing behavior

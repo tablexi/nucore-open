@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :price_policies do
 
   desc "Duplicate the newest price policies for a facility's services to the current fiscal year"

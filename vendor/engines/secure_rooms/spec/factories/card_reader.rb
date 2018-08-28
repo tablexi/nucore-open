@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :card_reader, class: SecureRooms::CardReader do
     secure_room

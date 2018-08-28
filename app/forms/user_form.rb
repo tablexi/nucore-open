@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserForm < SimpleDelegator
 
   include ActiveModel::Validations

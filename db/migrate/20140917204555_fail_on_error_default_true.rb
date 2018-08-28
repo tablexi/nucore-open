@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FailOnErrorDefaultTrue < ActiveRecord::Migration
 
   def up

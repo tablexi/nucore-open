@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TabCountHelper
 
   ACTIONS_TO_COUNT_TYPE = {

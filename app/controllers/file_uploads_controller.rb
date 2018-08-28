@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FileUploadsController < ApplicationController
 
   admin_tab           :all

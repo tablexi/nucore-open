@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module C2po
 
   C2PO_ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount).freeze

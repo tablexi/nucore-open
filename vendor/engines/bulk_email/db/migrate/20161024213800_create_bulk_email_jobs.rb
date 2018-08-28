@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateBulkEmailJobs < ActiveRecord::Migration
 
   def change

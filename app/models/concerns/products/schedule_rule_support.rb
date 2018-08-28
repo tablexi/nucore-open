@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Products::ScheduleRuleSupport
 
   extend ActiveSupport::Concern

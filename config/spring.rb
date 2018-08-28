@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Spring.after_fork { FactoryBot.reload }
 
 %w(

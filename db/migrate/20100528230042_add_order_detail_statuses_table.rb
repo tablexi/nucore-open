@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddOrderDetailStatusesTable < ActiveRecord::Migration
 
   def self.up

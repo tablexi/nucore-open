@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TrainingRequestMailerPreview < ActionMailer::Preview
 
   def notify_facility_staff

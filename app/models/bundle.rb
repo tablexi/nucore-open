@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Bundle < Product
 
   has_many :products, through: :bundle_products

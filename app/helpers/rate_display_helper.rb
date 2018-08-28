@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RateDisplayHelper
 
   def hidden_price_policy_tag(price_group_id, cost, cost_field, policy_param)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This engine should be mounted at "/" in order to support both the front-end
 # /sanger_sequencing/submissions/new and the back end /facilities/xxx/sanger_sequencing/submissions
 Rails.application.routes.draw do

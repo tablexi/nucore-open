@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JournalDateMustBeAfterCutoffs < ActiveModel::Validator
 
   def validate(record)

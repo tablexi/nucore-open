@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChargeMode
 
   def self.for_order_detail(order_detail)

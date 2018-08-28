@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NotificationsHelper
 
   def create_merge_notification_subject

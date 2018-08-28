@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # From https://github.com/railscasts/391-testing-javascript-with-phantomjs/blob/master/checkout-after/spec/support/share_db_connection.rb
 # https://gist.github.com/josevalim/470808 has good discussions and possible enhancements
 #

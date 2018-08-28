@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OrderSearchHelper
 
   def order_detail_result_link(order_detail)

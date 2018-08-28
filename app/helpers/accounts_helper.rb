@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountsHelper
 
   def account_input(form)

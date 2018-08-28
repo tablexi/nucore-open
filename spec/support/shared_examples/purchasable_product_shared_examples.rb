@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for "a purchasable product" do
   context "when the product is purchasable" do
     before(:each) do

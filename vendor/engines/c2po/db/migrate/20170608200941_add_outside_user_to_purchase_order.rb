@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddOutsideUserToPurchaseOrder < ActiveRecord::Migration
 
   def change

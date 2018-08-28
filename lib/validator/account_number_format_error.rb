@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Use in the validator when there are ActiveModel validation error
 # on the validator. This is used to copy errors from the Validator

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserRoleFacilityValidator < ActiveModel::Validator
 
   def validate(record)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Reports::InstrumentUtilizationReport
 
   attr_accessor :key_length

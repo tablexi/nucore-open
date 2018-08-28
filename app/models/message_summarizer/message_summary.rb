@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MessageSummarizer::MessageSummary
 
   attr_reader :controller

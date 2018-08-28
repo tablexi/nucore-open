@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # No effect on MySQL, but important for oracle so times are returned with zones.
 class UpdateTimestampTypes < ActiveRecord::Migration
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddContactEmailForTrainingRequests < ActiveRecord::Migration
 
   def change

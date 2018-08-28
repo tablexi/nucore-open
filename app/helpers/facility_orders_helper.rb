@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FacilityOrdersHelper
 
   def order_detail_badges(order_detail)

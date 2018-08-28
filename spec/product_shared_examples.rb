@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   let(:account) { create(:setup_account, owner: user) }
   let!(:user) { FactoryBot.create(:user) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ViewHookHelper
 
   # Look up the current path and render the view hooks for a specific placement

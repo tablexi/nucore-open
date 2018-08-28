@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Models that produce messages for +Notification+s should include this module.
 # In addition to the defined methods it makes the named route methods used in

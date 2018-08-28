@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :cleanup do
   namespace :accounts do
     desc "clean up accounts.expires_at column"

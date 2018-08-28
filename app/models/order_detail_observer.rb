@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailObserver < ActiveRecord::Observer
 
   def after_destroy(order_detail)

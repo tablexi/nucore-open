@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GlobalUserRolesController < GlobalSettingsController
 
   before_action :load_user, only: [:destroy, :edit, :update]

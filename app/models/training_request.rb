@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TrainingRequest < ApplicationRecord
 
   belongs_to :user

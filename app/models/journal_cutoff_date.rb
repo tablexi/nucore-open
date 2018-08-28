@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JournalCutoffDate < ApplicationRecord
 
   include DateTimeInput::Model

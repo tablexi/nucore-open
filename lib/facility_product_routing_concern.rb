@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FacilityProductRoutingConcern
 
   def facility_product_routing_concern

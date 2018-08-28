@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddFacilitiesJournalMaskColumn < ActiveRecord::Migration
 
   def self.up

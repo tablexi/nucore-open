@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SplitAccounts
 
   # When an order detail is tied to a split account, return a collection of

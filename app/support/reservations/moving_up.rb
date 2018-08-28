@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Support for finding the next available time and moving a reservation
 # up to that next time slot
 module Reservations::MovingUp

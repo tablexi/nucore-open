@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetail < ApplicationRecord
 
   include NUCore::Database::SortHelper

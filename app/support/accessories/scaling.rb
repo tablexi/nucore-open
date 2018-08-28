@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Accessories::Scaling
 
   def self.decorate(order_detail)

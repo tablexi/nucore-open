@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddStatementFields < ActiveRecord::Migration
 
   def self.up

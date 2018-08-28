@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 # This is intended as an API-level feature spec. It uses the controller testing

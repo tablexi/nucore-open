@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailJournalRemover
 
   def self.remove_from_journal(order_detail)

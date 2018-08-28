@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TransactionHistoryHelper
 
   def row_class(order_detail)

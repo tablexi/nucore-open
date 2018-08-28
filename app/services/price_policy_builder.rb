@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PricePolicyBuilder
 
   attr_reader :product, :start_date

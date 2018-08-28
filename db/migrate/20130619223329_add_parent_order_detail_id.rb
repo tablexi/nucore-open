@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddParentOrderDetailId < ActiveRecord::Migration
 
   def change

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :sanger_sequencing_sample, class: SangerSequencing::Sample do
     after(:stub) do |sample, _evaluator|

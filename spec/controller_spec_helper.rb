@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Call this method in a before(:all) block at the top of your +describe+
 def create_users

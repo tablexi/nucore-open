@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do

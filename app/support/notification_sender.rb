@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotificationSender
 
   attr_reader :errors, :current_facility, :account_ids_to_notify

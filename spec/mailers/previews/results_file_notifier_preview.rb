@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ResultsFileNotifierPreview < ActionMailer::Preview
 
   def file_uploaded

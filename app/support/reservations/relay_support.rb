@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reservations::RelaySupport
 
   def can_switch_instrument_on?(check_off = true)

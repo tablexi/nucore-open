@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrderDetailDisputeMailer < BaseMailer
 
   add_template_helper DateHelper

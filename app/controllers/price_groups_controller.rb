@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PriceGroupsController < ApplicationController
 
   # TODO: refactor to use PriceGroupMembersController concern, maybe with a new name?

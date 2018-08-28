@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProductAccessGroupsController < ApplicationController
 
   include BelongsToProductController

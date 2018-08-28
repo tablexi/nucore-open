@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module C2po
 
   class C2poAccountValidator < FacilityAccountValidator

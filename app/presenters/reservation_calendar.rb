@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReservationCalendar < SimpleDelegator
 
   attr_accessor :url, :ical

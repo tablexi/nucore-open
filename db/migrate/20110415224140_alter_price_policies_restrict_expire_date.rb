@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AlterPricePoliciesRestrictExpireDate < ActiveRecord::Migration
 
   def self.up

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DefaultFacilityHomepageRedirector
 
   def self.redirect_path(facility, _user)

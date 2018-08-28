@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TimeTravelHelpers
 
   def travel(duration, safe: false, &block)

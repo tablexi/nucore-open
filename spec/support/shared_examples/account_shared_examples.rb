@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for "an Account" do
   context "#to_s" do
     context "when not suspended" do

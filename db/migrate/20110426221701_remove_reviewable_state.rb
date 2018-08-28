@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveReviewableState < ActiveRecord::Migration
 
   def self.up

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReservationInstrumentSwitcher
 
   attr_reader :reservation

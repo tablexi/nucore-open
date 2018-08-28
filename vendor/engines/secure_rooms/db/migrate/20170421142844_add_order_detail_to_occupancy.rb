@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddOrderDetailToOccupancy < ActiveRecord::Migration
 
   def change

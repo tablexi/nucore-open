@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Support for reading/writing reservation and actual start and
 # end times using values split across text inputs
 module Reservations::DateSupport

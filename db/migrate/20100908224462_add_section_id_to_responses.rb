@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSectionIdToResponses < ActiveRecord::Migration
 
   def self.up
