@@ -12,6 +12,8 @@ AllCops:
     - "bin/**/*"     # Auto-generated
     # Some forks have schema.rb files in their custom engines
     - "vendor/engines/*/db/schema.rb"
+    # Exclude any paperclip uploaded files
+    - "public/files/**/*"
 
 # Project-specific overrides go here, but try to conform to TXI standards as
 # specified in .rubocop-txi.yml when possible.
