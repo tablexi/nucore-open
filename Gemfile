@@ -80,7 +80,7 @@ gem "synaccess_connect"
 group :development do
   gem "bullet" # Detect N+1s and recommends eager loading
   gem "coffeelint"
-  gem "haml_lint"
+  gem "haml_lint", require: false
   gem "letter_opener"
   gem "rails-erd"
   gem "rubocop", "0.58", require: false # needs to be updated in sync with available codeclimate channels
