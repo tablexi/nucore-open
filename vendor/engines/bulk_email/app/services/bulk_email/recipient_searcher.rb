@@ -5,12 +5,13 @@ module BulkEmail
     include DateHelper
     include ActionView::Helpers::FormTagHelper
 
-    attr_reader :search_fields
+    attr_reader :search_fields, :facility
 
     DEFAULT_SORT = [:last_name, :first_name].freeze
 
-    def initialize(search_fields)
+    def initialize(facility, search_fields)
       @search_fields = search_fields
+      @facility = facility
     end
 
     def self.user_types
@@ -41,6 +42,7 @@ module BulkEmail
         hidden_tags_for(:end_date, search_fields[:end_date]),
         hidden_tags_for("bulk_email[user_types][]", search_fields[:bulk_email][:user_types]),
         hidden_tags_for("products[]", search_fields[:products]),
+        hidden_tags_for("facilities[]", search_fields[:facilities]),
       ].flatten
     end
 
@@ -65,7 +67,7 @@ module BulkEmail
       users
         .joins(:product_users)
         .distinct
-        .where(product_users: { product_id: product_ids_from_params })
+        .where(product_users: { product: products_from_params })
         .reorder(*self.class::DEFAULT_SORT)
     end
 
@@ -73,7 +75,7 @@ module BulkEmail
       users
         .joins(:training_requests)
         .distinct
-        .where(training_requests: { product_id: product_ids_from_params })
+        .where(training_requests: { product: products_from_params })
         .reorder(*self.class::DEFAULT_SORT)
     end
 
@@ -83,10 +85,11 @@ module BulkEmail
       Array(values).map { |value| hidden_field_tag(key, value, id: nil) }
     end
 
-    def product_ids_from_params
-      # if we don't have any products, get all for the facility
-      search_fields[:products].presence ||
-        Product.for_facility(search_fields[:facility]).pluck(:id)
+    def products_from_params
+      query = Product.for_facility(facility)
+      query = query.where(facility: search_fields[:facilities]) if search_fields[:facilities].present?
+      query = query.where(id: search_fields[:products]) if search_fields[:products].present?
+      query
     end
 
     def selected_user_types
@@ -101,7 +104,8 @@ module BulkEmail
     def find_order_details
       OrderDetail
         .for_products(search_fields[:products])
-        .for_facility_id(search_fields[:facility].id)
+        .for_facility(facility) # If cross_facility, will not add any restrictions
+        .for_facilities(search_fields[:facilities])
         .ordered_or_reserved_in_range(start_date, end_date)
     end
 
