@@ -36,6 +36,7 @@ module BulkEmail
                       :product_id,
                       :facility_id,
                       products: [],
+                      facilities: [],
                       bulk_email: { user_types: [] })
       end
     end

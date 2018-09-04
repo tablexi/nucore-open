@@ -23,6 +23,10 @@ RSpec.describe BulkEmail::BulkEmailController do
       let(:params) { super().merge(bulk_email: { user_types: user_types }) }
       let!(:hidden_product) { nil }
       let(:user_types) { [] }
+      let!(:order) { FactoryBot.create(:purchased_order, product: service) }
+      let(:customer) { order.user }
+      let!(:authorized_user) { FactoryBot.create(:user) }
+      let!(:product_user) { FactoryBot.create(:product_user, user: authorized_user, product_id: restricted_item.id) if restricted_item }
 
       before do
         sign_in user
@@ -44,7 +48,7 @@ RSpec.describe BulkEmail::BulkEmailController do
           let(:user_types) { %i(customers) }
 
           it "sets products, in order" do
-            expect(assigns[:products])
+            expect(assigns[:search_options][:products])
               .to eq([item, service, instrument, restricted_item].sort)
           end
 
@@ -53,15 +57,41 @@ RSpec.describe BulkEmail::BulkEmailController do
               .to eq(%i(customers authorized_users training_requested account_owners))
           end
 
-          it "sets the facility_id as the id, not url_name" do
-            expect(assigns[:search_fields][:facility_id]).to eq(facility.id)
-          end
-
           context "when where are no restricted instruments" do
             let!(:restricted_item) { nil }
 
             it "does not include authorized_users as a user_type" do
               expect(assigns[:user_types]).not_to include(:authorized_users)
+            end
+          end
+
+          describe "finding users" do
+            context "searching for customers" do
+              let(:params) do
+                { facility_id: facility.url_name,
+                  commit: "Search",
+                  bulk_email: {
+                    user_types: %w[customers],
+                  } }
+              end
+
+              it "finds users" do
+                expect(assigns[:users]).to eq([customer])
+              end
+            end
+
+            context "searching for authorized users" do
+              let(:params) do
+                { facility_id: facility.url_name,
+                  commit: "Search",
+                  bulk_email: {
+                    user_types: %w[authorized_users],
+                  } }
+              end
+
+              it "finds users" do
+                expect(assigns[:users]).to eq([authorized_user])
+              end
             end
           end
         end
@@ -72,7 +102,7 @@ RSpec.describe BulkEmail::BulkEmailController do
             FactoryBot.create(:item, :hidden, facility_account: facility_account)
           end
 
-          it { expect(assigns[:products]).to include(hidden_product) }
+          it { expect(assigns[:search_options][:products]).to include(hidden_product) }
         end
 
         context "when there is an archived product" do
@@ -82,7 +112,7 @@ RSpec.describe BulkEmail::BulkEmailController do
             FactoryBot.create(:item, :archived, facility_account: facility_account)
           end
 
-          it { expect(assigns[:products]).not_to include(archived_product) }
+          it { expect(assigns[:search_options][:products]).not_to include(archived_product) }
         end
       end
 
@@ -108,6 +138,13 @@ RSpec.describe BulkEmail::BulkEmailController do
           let(:facility) { Facility.cross_facility }
           it { is_expected.to render_template("403") }
         end
+      end
+
+      context "when logged in as an admin in the cross facility context" do
+        let(:user) { FactoryBot.create(:user, :administrator) }
+        let(:facility) { Facility.cross_facility }
+        let(:params) { super().merge(facility_id: "all") }
+        it_behaves_like "it can search for recipients"
       end
     end
   end

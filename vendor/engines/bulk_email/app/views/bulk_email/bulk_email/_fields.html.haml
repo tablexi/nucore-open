@@ -12,9 +12,9 @@
           = label_text
 
     .span4.full-width
-      = f.input :products,
-        as: :transaction_chosen_old,
-        data_method: :product_options
+      - if @search_options[:facilities].present?
+        = f.input :facilities, as: :transaction_chosen_old
+      = f.input :products, as: :transaction_chosen_old, data_method: :product_options
 
   .row
     %h4.span8= t("bulk_email.dates.label")

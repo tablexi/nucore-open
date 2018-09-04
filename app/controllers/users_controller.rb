@@ -99,6 +99,9 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/:user_id/access_list
   def access_list
+    # Unsupported in cross-facility mode
+    raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+
     @facility = current_facility
     @products_by_type = Product.for_facility(@facility).requiring_approval_by_type
     @training_requested_product_ids = @user.training_requests.pluck(:product_id)
@@ -106,6 +109,9 @@ class UsersController < ApplicationController
 
   # POST /facilities/:facility_id/users/:user_id/access_list/approvals
   def access_list_approvals
+    # Unsupported in cross-facility mode
+    raise ActiveRecord::RecordNotFound if current_facility.cross_facility?
+
     update_access_list_approvals
     redirect_to facility_user_access_list_path(current_facility, @user)
   end

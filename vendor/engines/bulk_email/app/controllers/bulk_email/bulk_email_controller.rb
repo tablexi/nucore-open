@@ -23,7 +23,7 @@ module BulkEmail
     helper_method :user_type_selected?
 
     def search
-      @searcher = RecipientSearcher.new(@search_fields)
+      @searcher = RecipientSearcher.new(current_facility, @search_fields)
       @users = @searcher.do_search
     end
 
@@ -61,8 +61,8 @@ module BulkEmail
     def populate_flow_state_params
       return if params[:bulk_email_delivery_form].blank?
       search_criteria = JSON.parse(params[:bulk_email_delivery_form][:search_criteria])
-      params.merge!(search_criteria.slice("bulk_email", "start_date", "end_date", "products"))
-      params.merge!(params[:bulk_email_delivery_form].slice(:product_id, :recipient_ids))
+      params.merge!(search_criteria.slice("bulk_email", "start_date", "end_date", "products", "facilities"))
+      params.merge!(params[:bulk_email_delivery_form].permit(:product_id, :recipient_ids))
     end
 
     def bulk_email_cancel_path
@@ -106,11 +106,12 @@ module BulkEmail
     end
 
     def init_search_options
-      @products = Product.for_facility(current_facility).active_plus_hidden.order("products.name").includes(:facility)
-      @search_options = { products: @products }
-      @search_fields = params.merge(facility_id: current_facility.id)
+      products = Product.for_facility(current_facility).active_plus_hidden.alphabetized.includes(:facility)
+      facilities = Facility.active.alphabetized if current_facility.cross_facility?
+      @search_options = { products: products, facilities: facilities }
+      @search_fields = params
       @user_types = user_types
-      @user_types.delete(:authorized_users) unless @products.exists?(requires_approval: true)
+      @user_types.delete(:authorized_users) unless products.exists?(requires_approval: true)
     end
 
     def datepicker_field_input(form, key)

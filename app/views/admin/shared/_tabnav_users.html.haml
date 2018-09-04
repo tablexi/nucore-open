@@ -18,7 +18,7 @@
       facility_user_accounts_path(current_facility, @user),
       secondary_tab == "accounts"
 
-  - if current_ability.can?(:administer, Product)
+  - if current_ability.can?(:access_list, User) && current_facility.single_facility?
     = tab t(".access_list"),
       facility_user_access_list_path(current_facility, @user),
       secondary_tab == "access_list"

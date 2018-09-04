@@ -19,7 +19,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
     end
   end
 
-  subject(:searcher) { described_class.new(params) }
+  subject(:searcher) { described_class.new(facility, params) }
 
   let(:users) { searcher.do_search }
   let(:owner) { FactoryBot.create(:user) }
@@ -27,8 +27,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
   let(:purchaser2) { FactoryBot.create(:user) }
   let(:purchaser3) { FactoryBot.create(:user) }
 
-  let(:facility) { facility_account.facility }
-  let(:facility_account) { FactoryBot.create(:facility_account) }
+  let(:facility) { FactoryBot.create(:setup_facility) }
 
   let(:product) { create_item }
   let(:product2) { create_item }
@@ -42,16 +41,13 @@ RSpec.describe BulkEmail::RecipientSearcher do
     {
       bulk_email: { user_types: [:customers] },
       commit: "Submit",
-      facility_id: facility.id,
     }
   end
 
   before { ignore_order_detail_account_validations }
 
   def create_item
-    FactoryBot.create(:item, facility_account: facility_account).tap do |item|
-      FactoryBot.create(:item_price_policy, product: item, price_group: price_group)
-    end
+    FactoryBot.create(:setup_item, facility: facility)
   end
 
   def place_order(purchaser:, product:, account:)
@@ -163,7 +159,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
     context "when filtering by reservation dates" do
       let(:instrument) do
         FactoryBot.create(:instrument,
-                          facility_account: facility_account,
+                          facility: facility,
                           min_reserve_mins: 60,
                           max_reserve_mins: 60)
       end
@@ -250,6 +246,41 @@ RSpec.describe BulkEmail::RecipientSearcher do
 
         it "returns only the users that purchased those two products" do
           expect(users).to contain_exactly(purchaser, purchaser2)
+        end
+      end
+    end
+
+    context "filtered by facilities" do
+      let!(:facility2) { FactoryBot.create(:setup_facility) }
+      let!(:product_facility2) { FactoryBot.create(:item, facility: facility2) }
+      let!(:order_details) do
+        [
+          place_order(purchaser: purchaser, product: product, account: account),
+          place_order(purchaser: purchaser2, product: product_facility2, account: account),
+        ]
+      end
+
+      describe "when we're searching from within facility 1" do
+        before { params[:facilities] = [facility.id, facility2.id] }
+
+        it "does find anything in facility 2" do
+          expect(users).to contain_exactly(purchaser)
+        end
+      end
+
+      describe "when searching in cross-facility" do
+        subject(:searcher) { described_class.new(Facility.cross_facility, params) }
+
+        it "finds everything by default" do
+          expect(users).to contain_exactly(purchaser, purchaser2)
+        end
+
+        describe "when searching for a single facility" do
+          before { params[:facilities] = [facility2.id] }
+
+          it "filters to that facility" do
+            expect(users).to contain_exactly(purchaser2)
+          end
         end
       end
     end

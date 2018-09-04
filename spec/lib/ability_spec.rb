@@ -132,7 +132,7 @@ RSpec.describe Ability do
 
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
-    it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
+    it { is_expected.to be_allowed_to(:manage_users, Facility.cross_facility) }
 
     context "in a single facility" do
       let(:internal_user) { FactoryBot.create(:user) }
@@ -172,7 +172,7 @@ RSpec.describe Ability do
     context "in cross-facility" do
       let(:facility) { Facility.cross_facility }
 
-      it { is_expected.not_to be_allowed_to(:manage, User) }
+      it { is_expected.to be_allowed_to(:manage, User) }
       it { is_expected.not_to be_allowed_to(:manage_accounts, facility) }
       it { is_expected.not_to be_allowed_to(:manage_billing, facility) }
     end

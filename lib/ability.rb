@@ -24,10 +24,10 @@ class Ability
       else
         can :manage, :all
         unless user.billing_administrator?
-          cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
+          cannot [:manage_accounts, :manage_billing], Facility.cross_facility
         end
         unless user.account_manager?
-          cannot :manage, User unless resource.is_a?(Facility) && resource.single_facility?
+          cannot :manage, User unless resource.is_a?(Facility)
           if SettingsHelper.feature_off?(:create_users)
             cannot([:edit, :update], User)
           end

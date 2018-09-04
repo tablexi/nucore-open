@@ -21,6 +21,11 @@ module BulkEmail
         Product.where(id: selected_product_ids).pluck(:name).join(", ")
     end
 
+    def facilities
+      @facilities ||=
+        Facility.where(id: search_criteria["facilities"]).join(", ")
+    end
+
     def start_date
       search_criteria["start_date"] || I18n.t("bulk_email.dates.unset")
     end

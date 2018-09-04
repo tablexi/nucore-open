@@ -21,7 +21,7 @@
   .row.span6
     %div
       = label_tag text("bulk_email.recipients")
-      = text_area_tag nil,
+      = text_area_tag text("bulk_email.recipients"),
         @users.map(&:email).join(", "),
         disabled: true,
         class: "input-xxlarge"
