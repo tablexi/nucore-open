@@ -6,7 +6,7 @@
   = render "admin/shared/tabnav_product", secondary_tab: "notifications"
 
 %h2= @product
-= simple_form_for([current_facility, @product], url: facility_product_notifications_path(current_facility, @product), method: :post, as: :product) do |f|
+= simple_form_for([current_facility, @product], url: facility_product_notifications_path(current_facility, @product), method: :patch, as: :product) do |f|
   %p= text("instructions")
   = f.error_messages
   .form-inputs

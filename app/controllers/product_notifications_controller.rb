@@ -9,7 +9,7 @@ class ProductNotificationsController < ApplicationController
   layout "two_column"
 
   # GET /facilities/:facility_url/products/:product_url/notifications
-  def index
+  def show
   end
 
   # GET /facilities/:facility_url/products/:product_url/notifications/edit
@@ -22,7 +22,7 @@ class ProductNotificationsController < ApplicationController
     authorize!(:update, @product)
 
     if @product.update(notification_params)
-      redirect_to({ action: :index }, notice: text("success"))
+      redirect_to({ action: :show }, notice: text("success"))
     else
       render :index
     end
