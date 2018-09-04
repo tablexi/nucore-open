@@ -1,0 +1,6 @@
+en:
+  activerecord:
+    errors:
+      models:
+        account:
+          not_open: "The %{model} is not open for the required account"
