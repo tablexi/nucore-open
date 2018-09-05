@@ -1,5 +1,12 @@
 #!/bin/sh
-git log develop.. | egrep '\(#\d+\)$' | while read LINE; do
+# Usage:
+# Compare your current branch to develop:
+# bin/merge_describer
+#
+# Compare your current branch to master:
+# bin/merge_describer master
+target_branch=${1:-develop}
+git log $target_branch.. | egrep '\(#\d+\)$' | while read LINE; do
   pr=$(echo $LINE | sed -E 's/^.+\(#//' | sed -E 's/\)$//')
   desc=$(echo $LINE | sed -E 's/ *\(#[0-9]+\)$//')
   echo "$pr\t$desc"
