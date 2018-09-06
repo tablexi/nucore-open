@@ -3,11 +3,11 @@
 class AutoLogout
 
   def perform
-    order_details.to_a.each do |od|
+    order_details.find_each do |od|
       next unless should_auto_logout?(od)
 
       od.transaction do
-        complete_reservation(od)
+        logout_and_move_to_problem_queue(od)
       end
     end
   end
@@ -36,17 +36,13 @@ class AutoLogout
     configured && (reserve_end_at < auto_logout_minutes.minutes.ago)
   end
 
-  def complete_status
-    @complete_status ||= OrderStatus.find_by!(name: "Complete")
-  end
-
-  def complete_reservation(od)
-    reservation = od.reservation
+  def logout_and_move_to_problem_queue(order_detail)
+    reservation = order_detail.reservation
     reservation.product.relay.deactivate unless reservation.other_reservation_using_relay?
-    reservation.order_detail.complete!
+    MoveToProblemQueue.move!(order_detail)
   rescue => e
     ActiveSupport::Notifications.instrument("background_error",
-                                            exception: e, information: "Error on Order # #{od} - #{e}")
+                                            exception: e, information: "Error on Order # #{order_detail} - #{e}")
     raise ActiveRecord::Rollback
   end
 

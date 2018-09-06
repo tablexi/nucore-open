@@ -22,7 +22,7 @@ class OfflineReservationsController < ApplicationController
     @reservation.assign_attributes(created_by: current_user)
 
     if @reservation.save
-      flag_ongoing_reservations_as_problem
+      move_ongoing_reservations_to_problem_queue
       flash[:notice] = text("create.success")
       redirect_to facility_instrument_schedule_path
     else
@@ -56,10 +56,10 @@ class OfflineReservationsController < ApplicationController
 
   private
 
-  def flag_ongoing_reservations_as_problem
-    OrderDetail
-      .where(id: @instrument.reservations.ongoing.pluck(:order_detail_id))
-      .each(&:force_complete!)
+  def move_ongoing_reservations_to_problem_queue
+    OrderDetail.where(id: @instrument.reservations.ongoing.select(:order_detail_id)).find_each do |order_detail|
+      MoveToProblemQueue.move!(order_detail)
+    end
   end
 
   def load_instrument
