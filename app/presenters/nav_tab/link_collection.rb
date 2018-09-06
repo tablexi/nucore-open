@@ -38,6 +38,10 @@ class NavTab::LinkCollection
     [home]
   end
 
+  def manager
+    [use,manage] + [orders, reservations, payment_sources, files]
+  end
+
   private
 
   def payment_sources
@@ -133,6 +137,14 @@ class NavTab::LinkCollection
 
   def home
     NavTab::Link.new(tab: :home, url: root_path)
+  end
+
+  def use
+    NavTab::Link.new(tab: :use, url: root_path)
+  end
+
+  def manage
+    NavTab::Link.new(text: I18n.t("pages.manage", model: facility), url: manage_facility_path(facility))
   end
 
   def instrument_utilization_reports
