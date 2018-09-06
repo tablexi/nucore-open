@@ -196,7 +196,9 @@ class Account < ApplicationRecord
     # check chart string account number
     if respond_to?(:account_open?)
       accts = product.is_a?(Bundle) ? product.products.collect(&:account) : [product.account]
-      accts.uniq.each { |acct| return "The #{type_string} is not open for the required account" unless account_open?(acct) }
+      accts.uniq.each do |acct|
+        return I18n.t("not_open", model: type_string, scope: "activerecord.errors.models.account") unless account_open?(acct)
+      end
     end
 
     nil
