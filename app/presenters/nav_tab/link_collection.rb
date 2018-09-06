@@ -35,11 +35,11 @@ class NavTab::LinkCollection
   end
 
   def default
-    [home]
+    [orders, reservations, payment_sources, files]
   end
 
-  def manager
-    [use,manage] + [orders, reservations, payment_sources, files]
+  def use_button
+    [use]
   end
 
   private
@@ -133,10 +133,6 @@ class NavTab::LinkCollection
       text: I18n.t("pages.general_reports"),
       url: facility_general_reports_path(facility, report_by: :product),
     )
-  end
-
-  def home
-    NavTab::Link.new(tab: :home, url: root_path)
   end
 
   def use

@@ -2,6 +2,9 @@
   - if responsive?
     -# .hidden-with-nav is hidden > 979px
     %li.hidden-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.count})", :cart
+    %li{class: [use_button[0].tab_class(controller), "useButton"], id: use_button[0].tab_id }
+      = use_button[0].to_html
+    = render "shared/nav/manage_facilities"
   - navigation_links.each do |link|
     %li{class: link.tab_class(controller), id: link.tab_id }
       - if link.subnav.present?
@@ -14,6 +17,7 @@
               %li= subnav_link.to_html
       - else
         = link.to_html
+  
 
 -# .visible-with-nav is visible > 979px
 = form_tag global_search_path, class: "navbar-search pull-right visible-with-nav" do
@@ -21,6 +25,6 @@
 
 -# trailing "<" enables use of .nav-collapse .nav:empty in boostrap-responsive-overrides.scss
 %ul.nav.pull-right<
-  -#= render "shared/nav/manage_facilities"
+  
   - global_navigation_links.each do |link|
     %li{class: link.tab_class(controller)}= link.to_html

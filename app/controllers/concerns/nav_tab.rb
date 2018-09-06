@@ -12,6 +12,7 @@ module NavTab
     helper_method(:admin_tab?)
     helper_method(:global_navigation_links)
     helper_method(:navigation_links)
+    helper_method(:use_button)
   end
 
   module ClassMethods
@@ -35,7 +36,7 @@ module NavTab
 
   def navigation_links
     case
-    when customer_tab? && acting_user.present? && !current_facility.present?
+    when customer_tab? && acting_user.present?
       link_collection.customer.compact
     when customer_tab? && acting_user.present? && current_facility.present? && current_facility != Facility.cross_facility
       link_collection.manager
@@ -44,6 +45,9 @@ module NavTab
     else
       link_collection.default
     end
+  end
+  def use_button
+    link_collection.use_button
   end
 
   def global_navigation_links
