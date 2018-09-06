@@ -141,9 +141,7 @@ class NavTab::LinkCollection
   end
 
   def use
-    # Do we want use to go to current facility or list of all?
-    #url = facility ? facility_path(facility) : root_path
-    url = root_path
+    url = facility ? facility_path(facility) : root_path
     NavTab::Link.new(tab: :use, url: url)
   end
 
