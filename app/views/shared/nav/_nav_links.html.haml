@@ -2,8 +2,8 @@
   - if responsive?
     -# .hidden-with-nav is hidden > 979px
     %li.hidden-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.count})", :cart
-    %li{class: [use_button[0].tab_class(controller), "useButton"], id: use_button[0].tab_id }
-      = use_button[0].to_html
+    %li{class: [home_button[0].tab_class(controller), "useButton"], id: home_button[0].tab_id }
+      = home_button[0].to_html
     = render "shared/nav/manage_facilities"
   - navigation_links.each do |link|
     %li{class: link.tab_class(controller), id: link.tab_id }

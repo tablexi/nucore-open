@@ -27,11 +27,11 @@ class NavTab::LinkCollection
   end
 
   def admin
-    default + admin_only
+    use_button + admin_only
   end
 
   def customer
-    default + [orders, reservations, payment_sources, files]
+    default
   end
 
   def default
@@ -39,7 +39,12 @@ class NavTab::LinkCollection
   end
 
   def use_button
-    [use]
+    [use] + [manage]
+  end
+
+  def home_button
+    return use_button if SettingsHelper.feature_on?(:use_manage)
+    return [home]
   end
 
   private
@@ -136,11 +141,15 @@ class NavTab::LinkCollection
   end
 
   def use
-    NavTab::Link.new(tab: :use, url: root_path)
+    # Do we want use to go to current facility or list of all?
+    #url = facility ? facility_path(facility) : root_path
+    url = root_path
+    NavTab::Link.new(tab: :use, url: url)
   end
 
   def manage
-    NavTab::Link.new(text: I18n.t("pages.manage", model: facility), url: manage_facility_path(facility))
+    url = facility ? dashboard_facility_path(facility) : root_path
+    NavTab::Link.new(text: I18n.t("pages.manage", model: facility), url: url)
   end
 
   def instrument_utilization_reports
@@ -160,6 +169,10 @@ class NavTab::LinkCollection
       text: t_my(Reservation),
       url: reservations_path,
     )
+  end
+
+  def home
+    NavTab::Link.new(tab: :home, url: root_path)
   end
 
 end
