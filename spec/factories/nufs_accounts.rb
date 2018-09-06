@@ -7,7 +7,7 @@ overridable_factory :nufs_account do
 
   sequence(:description, "aaaaaaaa") { |n| "nufs account #{n}" }
   expires_at { Time.zone.now + 1.month }
-  created_by 0
+  created_by { 0 }
 end
 
 FactoryBot.modify do
