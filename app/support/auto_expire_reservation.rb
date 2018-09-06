@@ -31,7 +31,7 @@ class AutoExpireReservation
   def expire_reservation(order_detail)
     MoveToProblemQueue.move!(order_detail)
 
-    # fulfilled_at gets set as part of the previous process, so we have to reset them.
+    # fulfilled_at gets set to Time.current but we want it to be the end of the reservation
     order_detail.update!(fulfilled_at: order_detail.reservation.reserve_end_at)
   rescue => e
     ActiveSupport::Notifications.instrument("background_error",

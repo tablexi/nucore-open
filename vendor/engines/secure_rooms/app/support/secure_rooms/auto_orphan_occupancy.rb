@@ -27,8 +27,9 @@ module SecureRooms
       SecureRooms::AccessHandlers::OrderHandler.process(occupancy)
       MoveToProblemQueue.move!(occupancy.order_detail) if occupancy.order_detail
     rescue => e
+      binding.pry
       ActiveSupport::Notifications.instrument("background_error",
-                                              exception: e, information: "Failed orphan occupancy order detail with id: #{od.id}")
+                                              exception: e, information: "Failed orphan occupancy #{occupancy.id}")
       raise ActiveRecord::Rollback
     end
 

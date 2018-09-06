@@ -11,8 +11,10 @@ class MoveToProblemQueue
   end
 
   def move!
-    @order_detail.force_complete!
-    raise "It's not a problem!" unless @order_detail.problem? # TODO: Remove me
+    @order_detail.complete!
+    # TODO: Can probably remove this at some point, but it's a safety check for now
+    raise "Trying to move Order ##{@order_detail} to problem queue, but it's not a problem" unless @order_detail.problem?
+    ProblemOrderMailer.notify_user(@order_detail).deliver_later
   end
 
 end
