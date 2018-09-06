@@ -155,8 +155,11 @@ class Reservation < ApplicationRecord
   end
 
   def start_reservation!
-    # Mark running reservations as complete, which will move them to problem orders
-    product.schedule.products.flat_map(&:started_reservations).each(&:complete!)
+    # If there are any reservations running over their time on the shared schedule,
+    # kick them over to the problem queue.
+    product.schedule.products.flat_map(&:started_reservations).each do |reservation|
+      MoveToProblemQueue.move!(reservation.order_detail)
+    end
     update!(actual_start_at: Time.current)
   end
 

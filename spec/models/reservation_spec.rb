@@ -1073,7 +1073,7 @@ RSpec.describe Reservation do
                           actual_start_at: start_time)
       end
 
-      before do
+      def perform
         order = running.order_detail.order
         order.state = "validated"
         order.purchase!
@@ -1082,15 +1082,20 @@ RSpec.describe Reservation do
       end
 
       it "completes the running reservation" do
-        expect(running.reload).to be_complete
+        expect { perform }.to change { running.reload.complete? }.to be(true)
       end
 
       it "sets the orders as a problem order" do
-        expect(running.reload.order_detail).to be_problem
+        expect { perform }.to change { running.order_detail.reload.problem? }.to be(true)
       end
 
       it "does not set actual_end_at" do
+        perform
         expect(running.reload.actual_end_at).to be_nil
+      end
+
+      it "triggers an email" do
+        expect { perform }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
     end
 
@@ -1098,7 +1103,7 @@ RSpec.describe Reservation do
       let(:running_instrument) { create(:setup_instrument, schedule: reservation.product.schedule, min_reserve_mins: 1) }
       let!(:running) { create :setup_reservation, product: running_instrument, reserve_start_at: 30.minutes.ago, reserve_end_at: 1.minute.ago, actual_start_at: 30.minutes.ago }
 
-      before do
+      def perform
         order = running.order_detail.order
         order.state = "validated"
         order.purchase!
@@ -1110,15 +1115,20 @@ RSpec.describe Reservation do
       end
 
       it "completes the running reservation" do
-        expect(running.reload).to be_complete
+        expect { perform }.to change { running.reload.complete? }.to be(true)
       end
 
       it "sets the orders as a problem order" do
-        expect(running.reload.order_detail).to be_problem
+        expect { perform }.to change { running.order_detail.reload.problem? }.to be(true)
       end
 
       it "does not set actual_end_at" do
+        perform
         expect(running.reload.actual_end_at).to be_nil
+      end
+
+      it "triggers an email" do
+        expect { perform }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
     end
 
