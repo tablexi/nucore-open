@@ -5,6 +5,7 @@ class Instrument < Product
   include Products::RelaySupport
   include Products::ScheduleRuleSupport
   include Products::SchedulingSupport
+  include EmailListAttribute
 
   RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
 
@@ -14,6 +15,8 @@ class Instrument < Product
   has_many :instrument_price_policies, foreign_key: "product_id"
   has_many :admin_reservations, foreign_key: "product_id"
   has_many :offline_reservations, foreign_key: "product_id"
+
+  email_list_attribute :cancellation_notification_recipients
 
   # Validations
   # --------

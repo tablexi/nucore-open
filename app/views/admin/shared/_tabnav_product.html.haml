@@ -24,5 +24,6 @@
     = tab "Order Forms", product_survey_path(current_facility, @product.parameterize, @product.url_name), (secondary_tab == "surveys")
   - if @product.respond_to?(:reservations)
     = tab "Accessories", facility_product_product_accessories_path(current_facility, @product), (secondary_tab == "accessories")
+  = tab "Notifications", facility_product_notifications_path(current_facility, @product), (secondary_tab == "notifications")
 
   = render_view_hook "additional_tabs", secondary_tab: secondary_tab

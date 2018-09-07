@@ -28,10 +28,6 @@ en:
             initial_order_status: "Default status for new orders"
             is_archived: "Inactivate the product, disallowing purchase and viewing"
             is_hidden: "Hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
-            order_notification: |
-              This email address will be notified when an order is placed by a user
-              (if left blank, notifications will not be sent)
-            training_request_contacts: Comma separated list of email addresses to be notified when a training request is placed.
 
       services:
         index:

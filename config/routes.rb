@@ -64,7 +64,9 @@ Nucore::Application.routes.draw do
     resources :products, only: [:index] do
       resources :product_accessories, only: [:index, :create, :destroy], path: "accessories"
       resources :training_requests, only: [:new, :create] if SettingsHelper.feature_on?(:training_requests)
-    end
+
+      resource :product_notification, only: [:show, :edit, :update], path: "notifications", as: "notifications"
+   end
 
     get "instrument_statuses", to: 'instruments#instrument_statuses', as: "instrument_statuses"
 

@@ -248,10 +248,11 @@ en:
         is_archived: Is Inactive?
         is_hidden: Is Hidden?
         facility_account: Recharge Chart String
-        training_request_contacts: Training Request Contacts
         user_notes_field_mode: Users may submit a note when purchasing?
         user_notes_label: Label for Notes Field
+        training_request_contacts: Training Request Recipients
         order_notification_recipient: Order Notification Recipient
+        cancellation_notification_recipients: Cancellation Notification Recipients
       product_accessory:
         scaling_type: Scaling Type
       instrument:

@@ -3,6 +3,7 @@
 class Product < ApplicationRecord
 
   include TextHelpers::Translation
+  include EmailListAttribute
 
   belongs_to :facility
   belongs_to :initial_order_status, class_name: "OrderStatus"
@@ -16,6 +17,8 @@ class Product < ApplicationRecord
   has_many :accessories, through: :product_accessories, class_name: "Product"
   has_many :price_policies
   has_many :training_requests, dependent: :destroy
+
+  email_list_attribute :training_request_contacts
 
   # Allow us to use `product.hidden?`
   alias_attribute :hidden, :is_hidden
@@ -49,14 +52,6 @@ class Product < ApplicationRecord
   # Use lambda so we can dynamically enable/disable in specs
   validate if: -> { SettingsHelper.feature_on?(:product_specific_contacts) } do
     errors.add(:contact_email, text("errors.models.product.attributes.contact_email.required")) unless email.present?
-  end
-
-  validate do |record|
-    # Simple validation that all emails contain an @ followed by a word character,
-    # and is not at the start of the string.
-    unless training_request_contacts.all? { |email| email =~ /.@\w/ }
-      record.errors.add(:training_request_contacts)
-    end
   end
 
   scope :active, -> { where(is_archived: false, is_hidden: false) }
@@ -289,14 +284,6 @@ class Product < ApplicationRecord
 
   def online?
     !offline?
-  end
-
-  def training_request_contacts
-    CsvArrayString.new(self[:training_request_contacts])
-  end
-
-  def training_request_contacts=(str)
-    self[:training_request_contacts] = CsvArrayString.new(str).to_s
   end
 
   def user_notes_field_mode

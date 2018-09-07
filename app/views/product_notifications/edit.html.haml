@@ -1,0 +1,21 @@
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: @product.class.name.pluralize.underscore
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product", secondary_tab: "notifications"
+
+%h2= @product
+= simple_form_for([current_facility, @product], url: facility_product_notifications_path(current_facility, @product), method: :patch, as: :product) do |f|
+  %p= text("instructions")
+  = f.error_messages
+  .form-inputs
+    - if SettingsHelper.feature_on?(:training_requests)
+      = f.input :training_request_contacts, as: :string, hint: text("hints.training_request_contacts")
+    - key = current_facility.order_notification_recipient.present? ? "hints.order_notification_with_facility" : "hints.order_notification"
+    = f.input :order_notification_recipient, as: :email, hint: text(key, email: current_facility.order_notification_recipient)
+    = f.input :cancellation_notification_recipients, as: :string, hint: text("hints.cancellation_notification_recipients") if @product.is_a?(Instrument)
+
+  %ul.inline
+    %li= f.submit text("shared.save"), class: ["btn", "btn-primary"]
+    %li= link_to text("shared.cancel"), facility_product_notifications_path(current_facility, @product)
