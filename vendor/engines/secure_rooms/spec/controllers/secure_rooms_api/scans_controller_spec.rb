@@ -34,7 +34,7 @@ RSpec.describe SecureRoomsApi::ScansController do
         context "when card does not exist" do
           let(:user) { build(:user) }
 
-          it { is_expected.to have_http_status(:not_found) }
+          it { is_expected.to have_http_status(:forbidden) }
           it "responds with JSON" do
             expect(response.content_type).to eq("application/json")
           end
