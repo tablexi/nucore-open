@@ -7,7 +7,7 @@ RSpec.describe SecureRooms::AccessManager, type: :service do
   let(:card_reader) { create :card_reader }
 
   let(:verdict) do
-    SecureRooms::AccessRules::Verdict.new(:grant, :no_accounts, user, card_reader)
+    SecureRooms::AccessRules::Verdict.new(:grant, :no_accounts, user, card_reader, card_number: "123456")
   end
 
   describe "#process" do

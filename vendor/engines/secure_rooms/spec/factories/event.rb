@@ -6,6 +6,7 @@ FactoryBot.define do
     card_reader
     user
     outcome { :deny }
+    card_number { "12345" }
 
     trait :successful do
       outcome { :grant }

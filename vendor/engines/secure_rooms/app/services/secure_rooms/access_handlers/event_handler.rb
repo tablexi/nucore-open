@@ -14,6 +14,7 @@ module SecureRooms
           account: verdict.selected_account,
           outcome: verdict.result_code,
           outcome_details: verdict.reason,
+          card_number: verdict.user&.card_number || verdict.card_number,
         )
       end
 

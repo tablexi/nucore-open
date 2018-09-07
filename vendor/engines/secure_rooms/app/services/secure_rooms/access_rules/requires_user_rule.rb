@@ -5,7 +5,7 @@ module SecureRooms
     class RequiresUserRule < BaseRule
 
       def evaluate
-        deny!(:user_not_found) if user.nil?
+        deny!(:user_not_found, card_number: params[:card_number]) if user.nil?
       end
 
     end
