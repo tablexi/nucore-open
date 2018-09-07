@@ -13,6 +13,7 @@ module SecureRoomsApi
         @user,
         @card_reader,
         requested_account_id: params[:account_identifier],
+        card_number: params[:card_number],
       )
 
       SecureRooms::AccessManager.process(verdict)
