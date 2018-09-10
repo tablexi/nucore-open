@@ -12,7 +12,7 @@
       = f.input :training_request_contacts, as: :string
     - hint = current_facility.order_notification_recipient.present? ? text("hints.already_configured", email: current_facility.order_notification_recipient) : nil
     = f.input :order_notification_recipient, as: :email, hint: hint
-    = f.input :cancellation_notification_recipients, as: :string if @product.is_a?(Instrument)
+    = f.input :cancellation_email_recipients, as: :string if @product.is_a?(Instrument)
 
 - if can?(:edit, @product)
   = link_to text("shared.edit"), edit_facility_product_notifications_path(current_facility, @product), class: "btn"

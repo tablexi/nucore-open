@@ -14,7 +14,7 @@ en:
             !views.product_notifications.edit.hints.order_notification!
             !views.product_notifications.show.hints.already_configured!
           training_request_contacts: Comma separated list of email addresses to be notified when a training request is placed.
-          cancellation_notification_recipients: |
+          cancellation_email_recipients: |
             Comma separated list of email addresses to be notified when a reservation is canceled.
 
 

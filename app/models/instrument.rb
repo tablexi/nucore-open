@@ -16,7 +16,7 @@ class Instrument < Product
   has_many :admin_reservations, foreign_key: "product_id"
   has_many :offline_reservations, foreign_key: "product_id"
 
-  email_list_attribute :cancellation_notification_recipients
+  email_list_attribute :cancellation_email_recipients
 
   # Validations
   # --------
