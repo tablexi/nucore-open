@@ -288,10 +288,10 @@ GEM
     eye-patch (0.5.1)
       chronic_duration
       eye (>= 0.6.2)
-    factory_bot (4.11.0)
+    factory_bot (4.11.1)
       activesupport (>= 3.0.0)
-    factory_bot_rails (4.11.0)
-      factory_bot (~> 4.11.0)
+    factory_bot_rails (4.11.1)
+      factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
     ffi (1.9.25)
     fog-aws (3.0.0)
