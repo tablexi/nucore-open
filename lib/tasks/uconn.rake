@@ -23,12 +23,12 @@ namespace :uconn do
     for i in 1..pagecount
       data = JSON.parse(do_kennel_call("/export?page=#{i}").body)
       data.each { |record|
-        User.find_or_create_by!(username: record["netid"]) do |user|
-          user.username = record["netid"]
-          user.first_name = record["first_name"]
-          user.last_name = record["last_name"]
-          user.email = "#{record["netid"]}@uconn.edu" # TODO: does this actually work?
-        end
+        User.find_or_initialize_by(username: record["netid"]).update!(
+          :username => record["netid"],
+          :first_name => record["first_name"],
+          :last_name => record["last_name"],
+          :email => "#{record["netid"]}@ad.uconn.edu" # haha this apparently works
+        )
         # TODO: add user to billing group based on `group_affil`/`dept_id`, too
       }
       print "imported page #{i} of #{pagecount} (#{i*100/pagecount}%)\r"
