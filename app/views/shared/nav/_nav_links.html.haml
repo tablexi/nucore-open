@@ -2,8 +2,8 @@
   - if responsive?
     -# .hidden-with-nav is hidden > 979px
     %li.hidden-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.count})", :cart
-    %li{class: [use_button.tab_class(controller), "useButton"], id: use_button.tab_id }
-      = use_button.to_html
+    %li{class: [home_button.tab_class(controller), "useButton"], id: home_button.tab_id }
+      = home_button.to_html
     = render "shared/nav/manage_facilities"
   - navigation_links.each do |link|
     %li{class: link.tab_class(controller), id: link.tab_id }
@@ -25,6 +25,7 @@
 
 -# trailing "<" enables use of .nav-collapse .nav:empty in boostrap-responsive-overrides.scss
 %ul.nav.pull-right<
-  
+  - if not SettingsHelper.feature_on?(:use_manage)
+    = render "shared/nav/manage_facilities"
   - global_navigation_links.each do |link|
     %li{class: link.tab_class(controller)}= link.to_html
