@@ -34,7 +34,7 @@ class ProductNotificationsController < ApplicationController
     params.require(:product).permit(
       :training_request_contacts,
       :order_notification_recipient,
-      :cancellation_notification_recipients,
+      :cancellation_email_recipients,
     )
   end
 

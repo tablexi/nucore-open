@@ -252,7 +252,7 @@ en:
         user_notes_label: Label for Notes Field
         training_request_contacts: Training Request Recipients
         order_notification_recipient: Order Notification Recipient
-        cancellation_notification_recipients: Cancellation Notification Recipients
+        cancellation_email_recipients: Cancellation Notification Recipients
       product_accessory:
         scaling_type: Scaling Type
       instrument:

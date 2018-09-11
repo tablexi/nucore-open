@@ -476,7 +476,7 @@ ActiveRecord::Schema.define(version: 20180822191538) do
     t.string   "user_notes_field_mode",                              default: "hidden", null: false
     t.string   "user_notes_label"
     t.string   "order_notification_recipient"
-    t.text     "cancellation_notification_recipients", limit: 65535
+    t.text     "cancellation_email_recipients", limit: 65535
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token", using: :btree
     t.index ["facility_account_id"], name: "fk_facility_accounts", using: :btree
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe", using: :btree
