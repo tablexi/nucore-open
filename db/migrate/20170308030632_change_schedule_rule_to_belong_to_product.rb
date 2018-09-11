@@ -5,7 +5,7 @@ class ChangeScheduleRuleToBelongToProduct < ActiveRecord::Migration
   def up
     # MySQL 5.6+ will rename the foreign key with the column, but Mariadb 5.5
     # (which Dartmouth uses) triggers contraint validation errors.
-    remove_foreign_key :schedule_rules, :instruments
+    remove_foreign_key :schedule_rules, column: :instrument_id
     rename_column :schedule_rules, :instrument_id, :product_id
     add_foreign_key :schedule_rules, :products
   end
