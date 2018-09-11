@@ -12,7 +12,7 @@ module NavTab
     helper_method(:admin_tab?)
     helper_method(:global_navigation_links)
     helper_method(:navigation_links)
-    helper_method(:home_button)
+    helper_method(:use_button)
   end
 
   module ClassMethods
@@ -46,8 +46,9 @@ module NavTab
       link_collection.default
     end
   end
-  def home_button
-    link_collection.home_button
+  
+  def use_button
+    link_collection.use_button
   end
 
   def global_navigation_links

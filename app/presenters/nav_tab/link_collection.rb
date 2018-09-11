@@ -39,12 +39,13 @@ class NavTab::LinkCollection
   end
 
   def use_button
-    [use] + [manage]
+    use
   end
 
   def home_button
-    return use_button if SettingsHelper.feature_on?(:use_manage)
-    return [home]
+    if SettingsHelper.feature_on?(:use_manage) then use_button
+    else home
+    end
   end
 
   private
