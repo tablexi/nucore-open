@@ -1880,4 +1880,19 @@ RSpec.describe OrderDetail do
       expect(OrderDetail.with_upcoming_reservation).not_to include(order_detail)
     end
   end
+
+  describe ".where_ids_in" do
+    it "finds the items" do
+      od2 = order_detail.dup.tap(&:save)
+      od3 = order_detail.dup.tap(&:save)
+      od4 = order_detail.dup.tap(&:save) # not looked up
+
+      expect(described_class.where_ids_in([order_detail.id, od2.id, od3.id], batch_size: 2))
+        .to contain_exactly(order_detail, od2, od3)
+    end
+
+    it "doesn't blow up on 1000+ entries" do
+      described_class.where_ids_in((0..1001).to_a).to_a
+    end
+  end
 end
