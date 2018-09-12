@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180822191538) do
+ActiveRecord::Schema.define(version: 20180907155501) do
 
   create_table "account_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "account_id",            null: false
@@ -627,13 +627,14 @@ ActiveRecord::Schema.define(version: 20180822191538) do
 
   create_table "secure_rooms_events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "card_reader_id",  null: false
-    t.integer  "user_id",         null: false
+    t.integer  "user_id"
     t.datetime "occurred_at"
     t.string   "outcome"
     t.string   "outcome_details"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.integer  "account_id"
+    t.string   "card_number",     null: false
     t.index ["account_id"], name: "index_secure_rooms_events_on_account_id", using: :btree
     t.index ["card_reader_id"], name: "index_secure_rooms_events_on_card_reader_id", using: :btree
     t.index ["user_id"], name: "index_secure_rooms_events_on_user_id", using: :btree

@@ -13,14 +13,15 @@ RSpec.describe SecureRoomsApi::ScansController do
 
     subject { response }
 
+    let(:card_number) { "123456" }
     let(:secure_room) { create(:secure_room, :with_schedule_rule) }
     let(:card_reader) { create(:card_reader, tablet_token: "TABLETID", secure_room: secure_room, control_device_number: "FF:FF:FF:FF:FF:FF") }
-    let(:user) { create(:user, card_number: "123456") }
+    let(:user) { create(:user, card_number: card_number) }
 
     describe "negative responses" do
       before do
         post :scan, params: {
-          card_number: user.card_number,
+          card_number: card_number,
           reader_identifier: card_reader.card_reader_number,
           controller_identifier: card_reader.control_device_number,
         }
@@ -30,11 +31,11 @@ RSpec.describe SecureRoomsApi::ScansController do
         it { is_expected.to have_http_status(:forbidden) }
       end
 
-      describe "not found response" do
+      describe "not allowed response" do
         context "when card does not exist" do
-          let(:user) { build(:user) }
+          let(:card_number) { "789123" }
 
-          it { is_expected.to have_http_status(:not_found) }
+          it { is_expected.to have_http_status(:forbidden) }
           it "responds with JSON" do
             expect(response.content_type).to eq("application/json")
           end

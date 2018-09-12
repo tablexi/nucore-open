@@ -13,6 +13,7 @@ module SecureRoomsApi
         @user,
         @card_reader,
         requested_account_id: params[:account_identifier],
+        card_number: params[:card_number],
       )
 
       SecureRooms::AccessManager.process(verdict)
@@ -23,7 +24,7 @@ module SecureRoomsApi
     private
 
     def load_user_and_reader
-      @user = User.find_by!(card_number: params[:card_number])
+      @user = User.find_by(card_number: params[:card_number])
 
       @card_reader = SecureRooms::CardReader.find_by!(
         card_reader_number: params[:reader_identifier],

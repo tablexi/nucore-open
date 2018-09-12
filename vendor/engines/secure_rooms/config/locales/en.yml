@@ -14,6 +14,7 @@ en:
       no_accounts: "User has no valid accounts for this Product"
       selection_needed: "Must select Account"
       rules_failed: "No rule generated a verdict"
+      user_not_found: "User is not found"
 
   pages:
     admin_occupancies: Occupancies
