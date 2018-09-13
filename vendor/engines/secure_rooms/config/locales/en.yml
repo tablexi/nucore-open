@@ -138,6 +138,7 @@ en:
         secure_rooms_dashboard:
           time_label: Occupancy Data Taken At
           current: Current Occupants
+          current_continued: Current Occupants (Continued)
           recent: Recent Occupants
 
   simple_form:

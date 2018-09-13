@@ -1,0 +1,11 @@
+%h4= header
+%table.table.table-striped.table-hover.current_occupants
+  %thead
+    %tr
+      %th= User.human_attribute_name(:full_name)
+      %th= SecureRooms::Occupancy.human_attribute_name(timestamp)
+  %tbody
+    - occupancies.each do |occupancy|
+      %tr
+        %td= occupancy.user.full_name(suspended_label: false)
+        %td= format_usa_datetime(occupancy.public_send(timestamp))

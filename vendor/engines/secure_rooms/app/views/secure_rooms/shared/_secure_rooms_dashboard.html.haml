@@ -1,27 +1,10 @@
 %label= text(:time_label)
 .refreshed_at= format_usa_datetime(Time.current)
+- current_occupancies = room.occupancies.current
 .row
-  .span6
-    %h4= text(:current)
-    %table.table.table-striped.table-hover.current_occupants
-      %thead
-        %tr
-          %th= User.human_attribute_name(:full_name)
-          %th= SecureRooms::Occupancy.human_attribute_name(:entry_at)
-      %tbody
-        - room.occupancies.current.each do |occupancy|
-          %tr
-            %td= occupancy.user.full_name(suspended_label: false)
-            %td= format_usa_datetime(occupancy.entry_at)
-  .span6
-    %h4= text(:recent)
-    %table.table.table-striped.table-hover.recent_occupants
-      %thead
-        %tr
-          %th= User.human_attribute_name(:full_name)
-          %th= SecureRooms::Occupancy.human_attribute_name(:exit_at)
-      %tbody
-        - room.occupancies.recent.each do |occupancy|
-          %tr
-            %td= occupancy.user.full_name(suspended_label: false)
-            %td= format_usa_datetime(occupancy.exit_at)
+  .span4= render "secure_rooms/shared/dashboard_column", occupancies: current_occupancies.limit(10), header: text(:current), timestamp: :entry_at
+  - second_column_occupancies = current_occupancies.offset(10)
+  .span4
+    = render "secure_rooms/shared/dashboard_column", occupancies: second_column_occupancies, header: text(:current_continued), timestamp: :entry_at if second_column_occupancies.any?
+
+  .span4= render "secure_rooms/shared/dashboard_column", occupancies: room.occupancies.recent, header: text(:recent), timestamp: :exit_at
