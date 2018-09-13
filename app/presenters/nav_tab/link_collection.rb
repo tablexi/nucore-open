@@ -27,7 +27,7 @@ class NavTab::LinkCollection
   end
 
   def admin
-    [use_button] + admin_only
+    [home_button] + [manage] + admin_only
   end
 
   def customer
@@ -38,13 +38,9 @@ class NavTab::LinkCollection
     [orders, reservations, payment_sources, files]
   end
 
-  def use_button
-    use
-  end
-
   def home_button
     if SettingsHelper.feature_on?(:use_manage)
-      use_button
+      use
     else
       home
     end
@@ -149,8 +145,9 @@ class NavTab::LinkCollection
   end
 
   def manage
-    url = facility ? dashboard_facility_path(facility) : root_path
-    NavTab::Link.new(text: I18n.t("pages.manage", model: facility), url: url)
+    # url = facility ? dashboard_facility_path(facility) : root_path
+    # model = facility
+    NavTab::Link.new(text: I18n.t("pages.manage", model: Facility.model_name.human(count: 2)), url: list_facilities_url)
   end
 
   def instrument_utilization_reports
