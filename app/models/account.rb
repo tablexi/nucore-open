@@ -285,35 +285,6 @@ class Account < ApplicationRecord
     end
   end
 
-  def add_or_update_member(user, new_role, session_user)
-    Account.transaction do
-      # expire old owner if new
-      if new_role == AccountUser::ACCOUNT_OWNER
-        # expire old owner record
-        @old_owner = owner
-        if @old_owner
-          @old_owner.deleted_at = Time.zone.now
-          @old_owner.deleted_by = session_user.id
-          @old_owner.save!
-        end
-      end
-
-      # find non-deleted record for this user and account or init new one
-      # deleted_at MUST be nil to preserve existing audit trail
-      @account_user = AccountUser.find_or_initialize_by(account_id: id, user_id: user.id, deleted_at: nil)
-      # set (new?) role
-      @account_user.user_role = new_role
-      # set creation information
-      @account_user.created_by = session_user.id
-
-      account_users << @account_user
-
-      raise ActiveRecord::Rollback unless save
-    end
-
-    @account_user
-  end
-
   # Optionally override this method for models that inherit from Account.
   # Forces journal rows to be destroyed and recreated when an order detail is
   # updated.

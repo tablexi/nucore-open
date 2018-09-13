@@ -179,6 +179,17 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
         end
       end
     end
+
+    describe "adding to an account that does not pass validation" do
+      before do
+        allow_any_instance_of(ValidatorFactory.validator_class)
+          .to receive(:account_is_open!).and_raise(ValidatorError)
+      end
+
+      it_should_allow(:director) do
+        expect(assigns(:account_user)).to be_persisted
+      end
+    end
   end
 
   context "destroy" do

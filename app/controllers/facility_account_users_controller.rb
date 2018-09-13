@@ -37,7 +37,7 @@ class FacilityAccountUsersController < ApplicationController
     @user = User.find(params[:user_id])
     role = create_params[:user_role]
 
-    @account_user = @account.add_or_update_member(@user, role, session_user)
+    @account_user = AccountUser.grant(@user, role, @account, by: session_user)
     # account owner might've changed by earlier operation... reload it
     @account.reload
 
