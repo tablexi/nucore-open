@@ -46,10 +46,8 @@ module NavTab
       link_collection.default
     end
   end
-  
-  def home_button
-    link_collection.home_button
-  end
+
+  delegate :home_button, to: :link_collection
 
   def global_navigation_links
     acting_as? ? [] : global_link_collection.links
