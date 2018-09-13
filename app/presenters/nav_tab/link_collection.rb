@@ -27,7 +27,7 @@ class NavTab::LinkCollection
   end
 
   def admin
-    use_button + admin_only
+    [use_button] + admin_only
   end
 
   def customer
