@@ -32,7 +32,7 @@ class Reservation < ApplicationRecord
 
   # Used when we want to force the order to complete even if it doesn't meet the
   # requirements of order_completeable?, e.g. the reservation time isn't over yet.
-  attr_accessor :force_completable
+  attr_accessor :force_completion
 
   # Delegations
   #####
@@ -151,7 +151,7 @@ class Reservation < ApplicationRecord
 
   # Is there enough information to move an associated order to complete/problem?
   def order_completable?
-    force_completable || actual_end_at || reserve_end_at < Time.current
+    force_completion || actual_end_at || reserve_end_at < Time.current
   end
 
   def start_reservation!
