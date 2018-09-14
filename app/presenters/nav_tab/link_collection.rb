@@ -145,8 +145,6 @@ class NavTab::LinkCollection
   end
 
   def manage
-    # url = facility ? dashboard_facility_path(facility) : root_path
-    # model = facility
     NavTab::Link.new(text: I18n.t("pages.manage", model: Facility.model_name.human(count: 2)), url: list_facilities_url)
   end
 
