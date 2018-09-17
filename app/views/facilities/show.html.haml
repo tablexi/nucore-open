@@ -1,5 +1,8 @@
 = content_for :h1 do
   = current_facility
+- if SettingsHelper.feature_on?(:facility_banner_notice) && strip_tags(current_facility.banner_notice).present?
+  = content_for :banner do
+    .global-alert-banner= sanitize current_facility.banner_notice
 
 - if acting_as? || session_user.try(:operator_of?, current_facility)
   - instruments = current_facility.instruments.active_plus_hidden
@@ -20,7 +23,7 @@
     %li== &raquo;
     %li= current_facility
 
-.wysiwyg= current_facility.description
+.wysiwyg= sanitize current_facility.description
 
 .product_list_container{class: @columns}
   - if @order_form

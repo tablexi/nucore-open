@@ -6,6 +6,7 @@
     %header
       = render "/shared/acting_as"
       = render_view_hook("banner")
+      = yield(:banner)
       = render "/shared/header"
     %nav
       = render "/shared/nav"

@@ -198,6 +198,7 @@ class FacilitiesController < ApplicationController
         abbreviation
         accepts_multi_add
         address
+        banner_notice
         description
         email
         fax_number
