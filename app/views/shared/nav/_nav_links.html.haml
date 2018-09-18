@@ -1,4 +1,8 @@
 %ul.nav
+  %li{class: [home_button.tab_class(controller), "useButton"], id: home_button.tab_id }  
+    = home_button.to_html
+  - if SettingsHelper.feature_on?(:use_manage)
+    = render "shared/nav/manage_facilities"
   - if responsive?
     -# .hidden-with-nav is hidden > 979px
     %li.hidden-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.count})", :cart
