@@ -31,11 +31,7 @@ class NavTab::LinkCollection
   end
 
   def customer
-    default + [orders, reservations, payment_sources, files]
-  end
-
-  def default
-    []
+    [orders, reservations, payment_sources, files]
   end
 
   def home_button

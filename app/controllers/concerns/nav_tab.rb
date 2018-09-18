@@ -35,12 +35,11 @@ module NavTab
 
   def navigation_links
     case
-    when customer_tab? && acting_user.present?
+    when customer_tab? && !acting_as?
       link_collection.customer.compact
     when admin_tab? && current_facility.present? && current_facility != Facility.cross_facility
       link_collection.admin
-    else
-      link_collection.default
+    else []
     end
   end
 
