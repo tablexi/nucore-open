@@ -15,8 +15,8 @@ class ReadonlyInput < SimpleForm::Inputs::Base
       value = process_boolean(value)  if !!value == value # is it a boolean
       value = options.delete(:value_method).call(value) if options[:value_method].is_a?(Proc)
       value = value.send(options[:value_method] || :to_s)
-      value = sanitize(value)
-      value.to_s.presence || options[:default_value] # extra to_s is in case value is integer 0
+      value = sanitize(value.to_s)
+      value.presence || options[:default_value]
     end
   end
 
