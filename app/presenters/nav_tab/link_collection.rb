@@ -27,7 +27,11 @@ class NavTab::LinkCollection
   end
 
   def admin
-    [home_button] + [manage] + admin_only
+    if SettingsHelper.feature_on?(:use_manage)
+      [home_button] + [manage] + admin_only
+    else
+      [home_button] + admin_only
+    end
   end
 
   def customer
