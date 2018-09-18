@@ -34,7 +34,7 @@ class FacilitiesController < ApplicationController
   def index
     @facilities = Facility.active.alphabetized
     @recently_used_facilities = MostRecentlyUsedSearcher.new(acting_user).recently_used_facilities.alphabetized
-    @active_tab = "home"
+    @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
     @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.includes(:facility).alphabetized
     @azlist = get_az_list(@facilities)
     render layout: "application"
@@ -48,6 +48,7 @@ class FacilitiesController < ApplicationController
     @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @active_tab = "home"
     set_column_class
+    @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
     render layout: "application"
   end
 
