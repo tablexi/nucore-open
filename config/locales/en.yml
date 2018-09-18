@@ -47,6 +47,8 @@ en:
         statements: Statements
 
   pages:
+    home: Home
+    use: Use
     admin_billing: Billing
     admin_facility: Admin
     admin_orders: Orders
@@ -62,7 +64,6 @@ en:
     global_billing: Billing
     global_settings: Global Settings
     global_user_roles: Global User Roles
-    home: Home
     instrument_utilization_reports: Instrument Utilization
     login: Login
     logout: Logout

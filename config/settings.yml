@@ -122,6 +122,7 @@ feature:
   cross_facility_reports_on: false
   product_list_columns_on: false
   azlist_on: false
+  use_manage_on: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts

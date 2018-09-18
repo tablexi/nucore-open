@@ -135,8 +135,13 @@ class NavTab::LinkCollection
     )
   end
 
-  def home
-    NavTab::Link.new(tab: :home, url: root_path)
+  def use
+    url = facility ? facility_path(facility) : root_path
+    NavTab::Link.new(tab: :use, url: url)
+  end
+
+  def manage
+    NavTab::Link.new(text: I18n.t("pages.manage", model: Facility.model_name.human(count: 2)), url: list_facilities_url)
   end
 
   def instrument_utilization_reports
@@ -156,6 +161,10 @@ class NavTab::LinkCollection
       text: t_my(Reservation),
       url: reservations_path,
     )
+  end
+
+  def home
+    NavTab::Link.new(tab: :home, url: root_path)
   end
 
 end
