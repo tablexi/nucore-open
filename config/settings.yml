@@ -124,6 +124,7 @@ feature:
   azlist_on: false
   use_manage_on: false
   facility_banner_notice_on: true
+  full_cancellation_cost_on: true
 
 split_accounts:
   # Roles are allowed to create Split Accounts

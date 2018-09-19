@@ -17,3 +17,8 @@
     = pp.text_field :cancellation_cost, value: number_to_currency(price_policy.cancellation_cost, unit: "", delimiter: ""),
       size: 8,
       class: price_group.master_internal? ? "master_cancellation_cost" : ""
+    - if SettingsHelper.feature_on?(:full_cancellation_cost)
+      = label_tag(nil, class: "checkbox normal-weight") do
+        = pp.check_box :full_cancellation_cost, class: "js--full_cancellation_cost"
+        = price_policy.class.human_attribute_name(:full_cancellation_cost)
+        = tooltip_hint_icon t("price_policies.full_cancellation_cost_hint")

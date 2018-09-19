@@ -846,6 +846,7 @@ en:
       missing_for_bundle: Product missing current price policies
       fewer_than_price_groups: Some price groups are missing price policies
     rate: Rate
+    full_cancellation_cost_hint: Charge the entire amount for a reservation if the user cancels within the minimum cancellation window.
 
   price_groups:
     price_group_fields:

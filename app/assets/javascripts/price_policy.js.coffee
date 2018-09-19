@@ -11,16 +11,20 @@ $(document).ready ->
 
   isFiniteAndPositive = (number)-> isFinite(number) && number > 0
 
+  hardToggleField = ($inputElement, isDisabled)->
+    # If we're hiding the value, store it so we can retreive it later
+    $inputElement.data "original-value", $inputElement.val() if $inputElement.val()
+    $inputElement.val(if isDisabled then "" else $inputElement.data("original-value"))
+    $inputElement.prop "disabled", isDisabled
+
   toggleGroupFields = ($checkbox)->
     $cells = $checkbox.parents("tr").find("td")
     isDisabled = !$checkbox.prop "checked"
     $cells.toggleClass "disabled", isDisabled
-    $cells.find("input[type=text], input[type=hidden]").each ->
-      # If we're hiding the value, store it so we can retreive it later
-      $inputElement = $(this)
-      $inputElement.data "original-value", $inputElement.val() if $inputElement.val()
-      $inputElement.val(if isDisabled then "" else $inputElement.data("original-value"))
-      $inputElement.prop "disabled", isDisabled
+    $cells.find("input[type=text], input[type=hidden], input[type=checkbox]").not($checkbox).each ->
+      hardToggleField($(this), isDisabled)
+    # If we are enabling the row, make sure the cancellation cost field gets the correct state
+    $cells.find(".js--full_cancellation_cost").trigger("change") unless isDisabled
 
   getMasterUsageRate = ->
     rate = parseFloat $("input.master_usage_cost.usage_rate").val()
@@ -47,6 +51,11 @@ $(document).ready ->
         0
     refreshCosts()
 
+  toggleFullCancellationCost = ($checkbox)->
+    isChecked = $checkbox.prop "checked"
+    $inputElement = $checkbox.parents(".js--full_cancellation_cost_container").find("input[type=text]")
+    hardToggleField($inputElement, isChecked)
+
   setInternalCost = (o)->
     if o.className.match /master_(\S+_cost)/
       desiredClass = RegExp.$1
@@ -54,6 +63,11 @@ $(document).ready ->
         $costElement = $(this)
         $costElement.html(o.value)
         $costElement.siblings("input[type=hidden].#{desiredClass}").val(o.value)
+
+
+  $(".js--full_cancellation_cost").change(->
+    toggleFullCancellationCost($(this))
+  ).trigger("change")
 
   $(".can_purchase").change(->
     toggleGroupFields $(this)
