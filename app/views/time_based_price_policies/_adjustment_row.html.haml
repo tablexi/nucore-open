@@ -1,22 +1,23 @@
 %td
-  = hidden_field_tag "price_policy_#{price_group.id}[usage_rate]",
-    display_usage_rate(price_group, price_policy),
+  = pp.hidden_field :usage_rate, value: display_usage_rate(price_group, price_policy),
     class: "usage_cost"
-  = t("price_policies.adjustment")
-  %br
-  = text_field_tag "price_policy_#{price_group.id}[usage_subsidy]",
-    display_usage_subsidy(price_group, price_policy), size: 8, class: "usage_adjustment"
+  = pp.label :usage_subsidy, t("price_policies.adjustment"), class: "normal-weight"
+  = pp.text_field :usage_subsidy, value: display_usage_subsidy(price_group, price_policy),
+    size: 8,
+    class: "usage_adjustment"
 
 - if local_assigns[:minimum_cost]
   %td
-    = t("price_policies.amount")
-    %br
+    = pp.label :minimum_cost, t("price_policies.amount"), class: "normal-weight"
     %span.minimum_cost{ data: { usage_subsidy: price_policy.usage_subsidy } }
-    = hidden_price_policy_tag(price_group.id, price_policy.minimum_cost, :minimum_cost, params["price_policy_#{price_group.id}"])
+    = pp.hidden_field :minimum_cost, value: number_to_currency(price_policy.minimum_cost, unit: "", delimiter: ""),
+      size: 8,
+      class: "minimum_cost"
 
 - if local_assigns[:cancellation]
   %td
-    = t("price_policies.amount")
-    %br
+    = pp.label :cancellation_cost, t("price_policies.amount"), class: "normal-weight"
     %span.cancellation_cost
-    = hidden_price_policy_tag(price_group.id, price_policy.cancellation_cost, :cancellation_cost, params["price_policy_#{price_group.id}"])
+    = pp.hidden_field :cancellation_cost, value: number_to_currency(price_policy.cancellation_cost, unit: "", delimiter: ""),
+      size: 8,
+      class: "cancellation_cost"
