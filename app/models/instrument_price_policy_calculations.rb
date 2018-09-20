@@ -66,7 +66,10 @@ module InstrumentPricePolicyCalculations
   end
 
   def calculate_cancellation_costs(reservation)
-    if cancellation_penalty?(reservation)
+    return unless cancellation_penalty?(reservation)
+    if SettingsHelper.feature_on?(:full_cancellation_cost) && full_cancellation_cost?
+      calculate_reservation(reservation)
+    else
       { cost: cancellation_cost, subsidy: 0 }
     end
   end
