@@ -36,8 +36,8 @@ RSpec.describe "Facility Orders Search" do
 
       select item, from: "Products"
       click_button "Filter"
-      expect(page).to have_css('.order-detail-description', text: item.name, count: 2)
-      expect(page).not_to have_css('.order-detail-description', text: item2.name)
+      expect(page).to have_css(".order-detail-description", text: item.name, count: 2)
+      expect(page).not_to have_css(".order-detail-description", text: item2.name)
     end
   end
 
@@ -48,8 +48,8 @@ RSpec.describe "Facility Orders Search" do
 
       select item, from: "Products"
       click_button "Filter"
-      expect(page).to have_css('td', text: item.name, count: 2)
-      expect(page).not_to have_css('td', text: item2.name)
+      expect(page).to have_css("td", text: item.name, count: 2)
+      expect(page).not_to have_css("td", text: item2.name)
     end
   end
 end

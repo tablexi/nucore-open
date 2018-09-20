@@ -10,7 +10,7 @@ RSpec.describe Reservations::Validations do
 
   it { is_expected.to validate_presence_of(:reserve_start_at) }
 
-  it 'validates with #duration_is_interval' do
+  it "validates with #duration_is_interval" do
     expect(reservation).to receive :duration_is_interval
     reservation.save
   end

@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe AccountTransactionReportMailer do
-  context '#csv_report_email' do
+  context "#csv_report_email" do
     let(:email) { ActionMailer::Base.deliveries.last }
     describe "mailer" do
       let(:report) { double Reports::AccountTransactionsReport, to_csv: "1,2,3\n", description: "test" }

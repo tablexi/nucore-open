@@ -12,7 +12,7 @@ RSpec.describe ChartStringReassignmentForm do
   let(:product) { create(:setup_item) }
   let(:users) { create_list(:user, 9) }
 
-  describe '#available_accounts' do
+  describe "#available_accounts" do
     def grant_account_to_user(account, user)
       AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, account, account_owner)
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CancellationMailer < BaseMailer
 
   def notify_facility(order_detail)

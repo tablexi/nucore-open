@@ -7,7 +7,7 @@ RSpec.describe ReservationInstrumentSwitcher do
   let(:reservation) { FactoryBot.create(:purchased_reservation, product: instrument) }
   let(:action) { described_class.new(reservation) }
 
-  describe '#switch_on!' do
+  describe "#switch_on!" do
     def do_action
       action.switch_on!
     end

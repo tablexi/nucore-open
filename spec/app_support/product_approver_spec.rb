@@ -21,7 +21,7 @@ RSpec.describe ProductApprover do
     product_user.save
   end
 
-  context '#approve_access' do
+  context "#approve_access" do
     it "grants usage approval to a product" do
       expect { product_approver.approve_access(product) }
         .to change { product.can_be_used_by?(user) }.from(false).to(true)
@@ -33,7 +33,7 @@ RSpec.describe ProductApprover do
     end
   end
 
-  context '#revoke_access' do
+  context "#revoke_access" do
     before :each do
       product_approver.approve_access(product)
     end
@@ -44,7 +44,7 @@ RSpec.describe ProductApprover do
     end
   end
 
-  context '#update_approvals' do
+  context "#update_approvals" do
 
     def verify_approvals(approved_products)
       all_products.each do |product|

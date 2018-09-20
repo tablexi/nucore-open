@@ -49,7 +49,7 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-  describe 'validation using #subsidy_less_than_rate?' do
+  describe "validation using #subsidy_less_than_rate?" do
     it "gives an error if usage_subsidy > usage_rate" do
       expect(policy).to be_valid
       policy.usage_subsidy = 15
@@ -126,7 +126,7 @@ RSpec.describe InstrumentPricePolicy do
     expect(next_dates).to include ipp3.start_date.to_date
   end
 
-  describe '#reservation_window' do
+  describe "#reservation_window" do
     it "returns 0 if there is no PriceGroupProduct" do
       expect(policy.reservation_window).to eq 0
     end
@@ -138,7 +138,7 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-  describe '#has_subsidy?' do
+  describe "#has_subsidy?" do
     it "has a subsidy if the attribute is greater than 0" do
       policy.usage_subsidy = 9.0
       expect(policy).to have_subsidy

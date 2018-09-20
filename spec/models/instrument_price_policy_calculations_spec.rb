@@ -13,14 +13,14 @@ RSpec.describe InstrumentPricePolicyCalculations do
   let(:duration) { (end_at - start_at) / 60 }
   let(:reservation) { create :setup_reservation, product: policy.product }
 
-  it 'uses the given order detail to #calculate_cost_and_subsidy' do
+  it "uses the given order detail to #calculate_cost_and_subsidy" do
     fake_order_detail = double "OrderDetail", reservation: double("Reservation")
     expect(policy).to receive(:calculate_cost_and_subsidy).with fake_order_detail.reservation
     policy.calculate_cost_and_subsidy_from_order_detail fake_order_detail
   end
 
   describe "estimating cost and subsidy from an order detail" do
-    it 'uses the given order detail to #estimate_cost_and_subsidy' do
+    it "uses the given order detail to #estimate_cost_and_subsidy" do
       fake_reservation = double "Reservation", reserve_start_at: now, reserve_end_at: now + 1.hour
       fake_order_detail = double "OrderDetail", reservation: fake_reservation
       expect(policy).to receive(:estimate_cost_and_subsidy).with fake_reservation.reserve_start_at, fake_reservation.reserve_end_at
@@ -147,7 +147,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
       reservation.actual_end_at = now + 1.hour
     end
 
-    it 'returns #calculate_cancellation_costs if the reservation was canceled' do
+    it "returns #calculate_cancellation_costs if the reservation was canceled" do
       expect(reservation.order_detail).to receive(:canceled_at?).and_return true
       expect(policy).to receive(:calculate_cancellation_costs).with reservation
       expect(policy).to_not receive :calculate_overage
@@ -161,7 +161,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
         policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:usage]
       end
 
-      it 'returns #calculate_usage' do
+      it "returns #calculate_usage" do
         expect(policy).to receive(:calculate_usage).with reservation
         expect(policy).to_not receive :calculate_overage
         expect(policy).to_not receive :calculate_reservation
@@ -180,7 +180,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
         policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:overage]
       end
 
-      it 'returns #calculate_overage when configured to charge for overage' do
+      it "returns #calculate_overage when configured to charge for overage" do
         expect(policy).to receive(:calculate_overage).with reservation
         expect(policy).to_not receive :calculate_usage
         expect(policy).to_not receive :calculate_reservation
@@ -204,7 +204,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
         policy.charge_for = InstrumentPricePolicy::CHARGE_FOR[:reservation]
       end
 
-      it 'returns #calculate_reservation when configured to charge for reservation' do
+      it "returns #calculate_reservation when configured to charge for reservation" do
         expect(policy).to receive(:calculate_reservation).with reservation
         expect(policy).to_not receive :calculate_overage
         expect(policy).to_not receive :calculate_usage
@@ -221,7 +221,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
     describe "zero usage rate" do
       describe "with a minimum cost" do
         let(:options) { { usage_rate: 0, minimum_cost: 10 } }
-        it 'returns minimum cost if instrument is #free?' do
+        it "returns minimum cost if instrument is #free?" do
           expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: 10, subsidy: 0)
         end
       end
@@ -229,7 +229,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
       describe "without a minimum cost" do
         let(:options) { { usage_rate: 0, minimum_cost: 0 } }
 
-        it 'returns 0' do
+        it "returns 0" do
           expect(policy.calculate_cost_and_subsidy reservation).to eq(cost: 0, subsidy: 0)
         end
       end

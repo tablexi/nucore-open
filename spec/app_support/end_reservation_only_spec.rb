@@ -8,7 +8,7 @@ RSpec.describe EndReservationOnly, :time_travel do
   let(:action) { described_class.new }
   let(:order_detail) { reservation.order_detail }
 
-  describe '#perform' do
+  describe "#perform" do
     context "an unpurchased reservation" do
       let!(:reservation) { create(:setup_reservation, :yesterday) }
 

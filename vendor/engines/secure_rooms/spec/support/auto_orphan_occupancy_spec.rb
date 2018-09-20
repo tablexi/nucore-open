@@ -15,7 +15,7 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
 
   before { secure_room.product_users.create!(user: user, approved_by: 0) }
 
-  describe '#perform' do
+  describe "#perform" do
     context "with a very long-running occupancy" do
       let(:event) { create :event, :successful, occurred_at: 3.days.ago, card_reader: card_reader, user: user }
       let!(:occupancy) do

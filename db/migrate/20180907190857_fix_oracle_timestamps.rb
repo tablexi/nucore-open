@@ -11,7 +11,6 @@ class FixOracleTimestamps < ActiveRecord::Migration[5.0]
       dir.up { change_all_columns_types(:date, :datetime) }
       dir.down { change_all_columns_types(:datetime, :date) }
     end
-
   end
 
   private

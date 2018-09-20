@@ -112,7 +112,7 @@ RSpec.describe Account do
     end
   end
 
-  context '#unreconciled_total' do
+  context "#unreconciled_total" do
     context "without unreconciled order_details" do
       it "should total 0" do
         expect(account.unreconciled_total(facility)).to eq 0

@@ -148,7 +148,7 @@ RSpec.describe OrderDetail do
   context "account reassignment" do
     let(:unassociated_account) { build_stubbed(:setup_account) }
 
-    describe '#can_be_assigned_to_account?' do
+    describe "#can_be_assigned_to_account?" do
       it "may be reassigned to its current account" do
         expect(@order_detail.can_be_assigned_to_account?(@order_detail.account))
           .to be true
@@ -1255,7 +1255,7 @@ RSpec.describe OrderDetail do
     end
   end
 
-  context '#cancel_reservation' do
+  context "#cancel_reservation" do
     let(:statement) { create(:statement, facility: facility, created_by: user.id, account: account) }
 
     before :each do
@@ -1279,7 +1279,7 @@ RSpec.describe OrderDetail do
         expect(order_detail.statement).to be_blank
       end
 
-      it 'should have no #statement_date' do
+      it "should have no #statement_date" do
         expect(order_detail.statement_date).to be_blank
       end
     end
@@ -1404,7 +1404,7 @@ RSpec.describe OrderDetail do
     end
   end
 
-  context '#cancellation_fee' do
+  context "#cancellation_fee" do
     shared_examples_for "it charges a cancellation fee" do
       it "has a cancellation fee" do
         expect(order_detail.cancellation_fee).to be > 0
@@ -1567,7 +1567,7 @@ RSpec.describe OrderDetail do
     end
   end
 
-  context '#update_order_status!' do
+  context "#update_order_status!" do
     context "when setting order status to Canceled" do
 
       def cancel_order_detail(options)
@@ -1825,7 +1825,7 @@ RSpec.describe OrderDetail do
     end
   end
 
-  describe '#complete!' do
+  describe "#complete!" do
     before { order_detail.complete! }
 
     it "saved" do

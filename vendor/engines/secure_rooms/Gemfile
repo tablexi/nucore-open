@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 # Declare your gem's dependencies in secure_rooms.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and

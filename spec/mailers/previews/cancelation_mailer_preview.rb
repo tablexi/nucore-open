@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CancellationMailerPreview < ActionMailer::Preview
 
   def notify_facility

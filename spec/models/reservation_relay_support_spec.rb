@@ -24,12 +24,12 @@ RSpec.describe Reservation do
       expect(subject.product.relay).to be_a RelayDummy
     end
 
-    describe '#actual_end_at' do
+    describe "#actual_end_at" do
       subject { super().actual_end_at }
       it { is_expected.to be_nil }
     end
 
-    describe '#actual_start_at' do
+    describe "#actual_start_at" do
       subject { super().actual_start_at }
       it { is_expected.to be }
     end
@@ -38,7 +38,7 @@ RSpec.describe Reservation do
     it { is_expected.not_to be_can_switch_instrument_off }
   end
 
-  context '#other_reservations_using_relay' do
+  context "#other_reservations_using_relay" do
     let!(:reservation_done) { create(:purchased_reservation, :yesterday, actual_start_at: 1.day.ago) }
 
     context "with no other running reservations" do
