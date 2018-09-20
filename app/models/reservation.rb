@@ -158,6 +158,9 @@ class Reservation < ApplicationRecord
     # If there are any reservations running over their time on the shared schedule,
     # kick them over to the problem queue.
     product.schedule.products.flat_map(&:started_reservations).each do |reservation|
+      # If we're in the grace period for this reservation, but the other reservation
+      # has not finished its reserved time, this will fail and this reservation will
+      # not start.
       MoveToProblemQueue.move!(reservation.order_detail)
     end
     update!(actual_start_at: Time.current)

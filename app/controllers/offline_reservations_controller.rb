@@ -58,7 +58,10 @@ class OfflineReservationsController < ApplicationController
 
   def move_ongoing_reservations_to_problem_queue
     OrderDetail.where(id: @instrument.reservations.ongoing.select(:order_detail_id)).find_each do |order_detail|
-      MoveToProblemQueue.move!(order_detail)
+      # We need to force completion because a default completion requirement is that
+      # the current time is after the reserve_end_at. In this offline case, the reservation
+      # might not be over yet.
+      MoveToProblemQueue.move!(order_detail, force: true)
     end
   end
 
