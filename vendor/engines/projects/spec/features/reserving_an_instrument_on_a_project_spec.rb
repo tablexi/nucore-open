@@ -30,8 +30,8 @@ RSpec.describe "Reserving an instrument on a project" do
       click_button "Create"
     end
 
-    it "returns to My Reservations" do
-      expect(page).to have_content "My Reservations"
+    it "takes you to the receipt and has the project set" do
+      expect(page).to have_content "Order Receipt"
       expect(OrderDetail.last.project).to eq(project)
     end
   end
