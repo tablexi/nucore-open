@@ -12,13 +12,17 @@ Example of this to include here:
   $headerBackgroundColor: #571963;
   $headerColor: white;
 */
+// Shared
 $dark-grey: #3F3B26;
 $grey: #9B9B9B;
+// Manage Mode
 $light-orange: #FFAE84;
 $orange: #FF7126;
+// Use mode
+$light-blue: #CDE4FC;
+$blue: #4A9FF7;
 
 body {
-  
   background: #ffffff; /* Old browsers */
   background: -moz-linear-gradient(top, #ffffff 53%, #e4e4e4 100%); /* FF3.6-15 */
   background: -webkit-linear-gradient(top, #ffffff 53%,#e4e4e4 100%); /* Chrome10-25,Safari5.1-6 */
@@ -28,8 +32,11 @@ body {
 html,body{
   min-height: 100%;
 }
-.nav{
-  border-bottom: 1px solid $orange;
+body nav .navbar-inner .container .nav, .nav-tabs{
+  border-bottom: 1px solid $blue;
+}
+.manage-mode .nav {
+  border-color: $orange
 }
 .alert-info {
   background-color: transparent;
@@ -44,6 +51,7 @@ html,body{
   background: none;
   border: none;
 }
+
 .brand{
   font-family: inherit !important;
 }
@@ -60,11 +68,16 @@ html,body{
 .nav li.active{
   border:none !important;
   margin-top: 0 !important;
+  margin-bottom: -1px;
 }
 .nav li.active a{
-  border: 1px solid $orange !important;
+  border: 1px solid $blue !important;
   border-radius: 4px 4px 0 0;
   border-bottom-color: transparent !important;
   background-color: white !important;
   box-shadow: none !important;
+}
+.manage-mode .nav li.active a{
+  border-color: $orange;
+
 }
