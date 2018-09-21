@@ -83,10 +83,19 @@ body nav .navbar-inner .container .nav, .nav-tabs{
   border-bottom-color: transparent !important;
 }
 
+#use_tab, .manage-button {
+  text-align: center;
+}
+
+#use_tab {
+  width: 44px;
+  height: 23px;
+}
+
 #use_tab a{
   border: solid $orange 1px !important;
-  border-radius: 10px;
-  padding: 4px 20px;
+  border-radius: 8px;
+  padding: 3px 8px;
   margin-top: 5px;
 }
 
@@ -105,13 +114,15 @@ body nav .navbar-inner .container .nav, .nav-tabs{
 }
 
 .manage-button {
-  margin: 0 1em;
+  margin: 0 10px;
+  width: 76px;
+  height: 23px;
 }
 
 .manage-button a{
   border: solid $orange 1px !important;
-  border-radius: 10px;
-  padding: 4px 20px !important;
+  border-radius: 8px;
+  padding: 3px 8px !important;
   margin-top: 5px;
 }
 
