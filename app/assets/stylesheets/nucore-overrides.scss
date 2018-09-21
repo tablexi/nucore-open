@@ -33,16 +33,16 @@ html,body{
   min-height: 100%;
 }
 body nav .navbar-inner .container .nav, .nav-tabs{
-  border-bottom: 1px solid $blue;
+  border-bottom: 1px solid $orange;
 }
 .manage-mode nav .navbar-inner .container .nav, 
 .manage-mode .nav-tabs {
-  border-color: $orange;
+  border-color: $blue;
 }
 .alert-info {
   background-color: transparent;
   border-color: transparent;
-  color: $orange;
+  color: $blue;
   font-size: 24px;
   line-height: 1em;
 }
@@ -72,36 +72,36 @@ body nav .navbar-inner .container .nav, .nav-tabs{
   margin-bottom: -1px;
 }
 .nav li.active a{
-  border: 1px solid $blue !important;
+  border: 1px solid $orange !important;
   border-radius: 4px 4px 0 0;
   border-bottom-color: transparent !important;
   background-color: white !important;
   box-shadow: none !important;
 }
 .manage-mode .nav li.active a{
-  border-color: $orange !important;
+  border-color: $blue !important;
   border-bottom-color: transparent !important;
 }
 
 #use_tab a{
-  border: solid $blue 1px !important;
+  border: solid $orange 1px !important;
   border-radius: 10px;
   padding: 4px 20px;
   margin-top: 5px;
 }
 
 .manage-mode #use_tab a{
-  border-color: $orange !important;
+  border-color: $blue !important;
 }
 
 #use_tab.active a{
   text-shadow: none;
-  background-color: $blue !important;
+  background-color: $orange !important;
   color: white;
 }
 
 .manage-mode #use_tab.active a{
-  background-color: $orange !important;
+  background-color: $blue !important;
 }
 
 .manage-button {
@@ -109,19 +109,19 @@ body nav .navbar-inner .container .nav, .nav-tabs{
 }
 
 .manage-button a{
-  border: solid $blue 1px !important;
+  border: solid $orange 1px !important;
   border-radius: 10px;
   padding: 4px 20px !important;
   margin-top: 5px;
 }
 
 .manage-mode .manage-button a{
-  border-color: $orange !important;
-  background-color: $orange !important;
+  border-color: $blue !important;
+  background-color: $blue !important;
   text-shadow: none !important;
   color: white !important;
 }
 
 .manage-mode .manage-button.active a{
-  background-color: $orange !important;
+  background-color: $blue !important;
 }
