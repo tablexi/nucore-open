@@ -35,8 +35,8 @@ html,body{
 body nav .navbar-inner .container .nav, .nav-tabs{
   border-bottom: 1px solid $blue;
 }
-.manage-mode .nav {
-  border-color: $orange
+.manage-mode nav .navbar-inner .container .nav, .nav-tabs {
+  border-color: $orange;
 }
 .alert-info {
   background-color: transparent;
@@ -78,6 +78,6 @@ body nav .navbar-inner .container .nav, .nav-tabs{
   box-shadow: none !important;
 }
 .manage-mode .nav li.active a{
-  border-color: $orange;
-
+  border-color: $orange !important;
+  border-bottom-color: transparent !important;
 }
