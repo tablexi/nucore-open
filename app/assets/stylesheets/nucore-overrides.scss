@@ -84,7 +84,7 @@ body nav .navbar-inner .container .nav, .nav-tabs{
 
 #use_tab a{
   border: solid $blue 1px !important;
-  border-radius: 6px;
+  border-radius: 10px;
   padding: 4px 20px;
   margin-top: 5px;
 }
@@ -100,5 +100,27 @@ body nav .navbar-inner .container .nav, .nav-tabs{
 }
 
 .manage-mode #use_tab.active a{
+  background-color: $orange !important;
+}
+
+.manage-button {
+  margin: 0 1em;
+}
+
+.manage-button a{
+  border: solid $blue 1px !important;
+  border-radius: 10px;
+  padding: 4px 20px !important;
+  margin-top: 5px;
+}
+
+.manage-mode .manage-button a{
+  border-color: $orange !important;
+  background-color: $orange !important;
+  text-shadow: none !important;
+  color: white !important;
+}
+
+.manage-mode .manage-button.active a{
   background-color: $orange !important;
 }
