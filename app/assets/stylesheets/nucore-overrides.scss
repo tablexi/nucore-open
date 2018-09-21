@@ -35,7 +35,8 @@ html,body{
 body nav .navbar-inner .container .nav, .nav-tabs{
   border-bottom: 1px solid $blue;
 }
-.manage-mode nav .navbar-inner .container .nav, .nav-tabs {
+.manage-mode nav .navbar-inner .container .nav, 
+.manage-mode .nav-tabs {
   border-color: $orange;
 }
 .alert-info {
