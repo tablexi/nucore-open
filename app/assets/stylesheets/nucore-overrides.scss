@@ -81,3 +81,24 @@ body nav .navbar-inner .container .nav, .nav-tabs{
   border-color: $orange !important;
   border-bottom-color: transparent !important;
 }
+
+#use_tab a{
+  border: solid $blue 1px !important;
+  border-radius: 6px;
+  padding: 4px 20px;
+  margin-top: 5px;
+}
+
+.manage-mode #use_tab a{
+  border-color: $orange !important;
+}
+
+#use_tab.active a{
+  text-shadow: none;
+  background-color: $blue !important;
+  color: white;
+}
+
+.manage-mode #use_tab.active a{
+  background-color: $orange !important;
+}
