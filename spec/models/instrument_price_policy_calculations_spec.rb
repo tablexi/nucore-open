@@ -176,7 +176,6 @@ RSpec.describe InstrumentPricePolicyCalculations do
 
         expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 1.23, subsidy: 0)
       end
->>>>>>> Charge reservation rate if enabled
     end
 
     context "when configured to charge for usage" do
