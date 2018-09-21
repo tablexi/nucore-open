@@ -19,5 +19,7 @@
     = pp.label :cancellation_cost, t("price_policies.amount"), class: "normal-weight"
     %span.cancellation_cost
     = pp.hidden_field :cancellation_cost, value: number_to_currency(price_policy.cancellation_cost, unit: "", delimiter: ""),
-      size: 8,
       class: "cancellation_cost"
+
+    = pp.hidden_field :full_cancellation_cost, class: "adjustment_full_cancellation_cost"
+

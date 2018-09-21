@@ -86,14 +86,11 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_field("price_policy_#{external_price_group.id}[cancellation_cost]", disabled: true)
 
       click_button "Add Pricing Rules"
-  save_and_open_screenshot
 
       expect(page).to have_content("$60.00\n- $30.00\n= $30.00") # Cancer Center Usage Rate
       expect(page).to have_content("$120.00\n- $60.00\n= $60.00") # Cancer Center Minimum Cost
       expect(page).not_to have_content("$15.00")
       expect(page).to have_content(PricePolicy.human_attribute_name(:full_cancellation_cost), count: 3)
-
-      expect
     end
   end
 end

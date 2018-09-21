@@ -2,8 +2,9 @@ $(document).ready ->
 
   isFiniteAndPositive = (number) -> isFinite(number) && number > 0
 
+  # In addition to disabling the field, also hide its value. But still store it
+  # so we can display it again if it gets renabled
   hardToggleField = ($inputElement, isDisabled) ->
-    # If we're hiding the value, store it so we can retreive it later
     $inputElement.data "original-value", $inputElement.val() if $inputElement.val()
     $inputElement.val(if isDisabled then "" else $inputElement.data("original-value"))
     $inputElement.prop "disabled", isDisabled
@@ -47,24 +48,28 @@ $(document).ready ->
     $inputElement = $checkbox.parents(".js--full_cancellation_cost_container").find("input[type=text]")
     hardToggleField($inputElement, isChecked)
 
-  setInternalCost = (o) ->
-    if o.className.match /master_(\S+_cost)/
-      desiredClass = RegExp.$1
-      $("span.#{desiredClass}").each (i, elem) ->
-        $costElement = $(elem)
-        $costElement.html(o.value)
-        $costElement.siblings("input[type=hidden].#{desiredClass}").val(o.value)
+  setInternalCost = (sourceElement) ->
+    if sourceElement.className.match /master_(\S+_cost)/
+      targetClass = RegExp.$1
+      $("span.#{targetClass}").each (i, targetElement) ->
+        $(targetElement).html(sourceElement.value)
+        .siblings("input[type=hidden].#{targetClass}").val(sourceElement.value)
 
-
-  $(".js--full_cancellation_cost").change((evt) ->
-    toggleFullCancellationCost($(evt.target))
-  ).trigger("change")
 
   $(".can_purchase").change((evt) ->
     toggleGroupFields $(evt.target)
   ).trigger("change")
 
+  $(".js--full_cancellation_cost").change((evt) ->
+    toggleFullCancellationCost($(evt.target))
+  ).trigger("change")
+
   $("input[type=text]").keyup((evt) ->
     setInternalCost evt.target
-    $(".usage_adjustment").each (adjustment_elem) -> updateUsageSubsidy(adjustment_elem)
+    $(".usage_adjustment").each(updateUsageSubsidy)
   ).trigger("keyup")
+
+  $(".master_full_cancellation_cost").change((evt) ->
+    val = if $(evt.target).is(":checked") then "1" else "0"
+    $(".adjustment_full_cancellation_cost").val(val)
+  ).trigger("change")
