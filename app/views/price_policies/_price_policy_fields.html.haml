@@ -16,10 +16,10 @@
     - @price_policies.each do |price_policy|
       - price_group = price_policy.price_group
       = fields_for "price_policy_#{price_group.id}", price_policy do |pp|
-        %tr
+        %tr{class: price_group.master_internal? ? "js--masterInternalRow" : ""}
           %td= price_group.name
           %td= price_group.type_string
-          %td= pp.check_box :can_purchase, class: "can_purchase"
+          %td= pp.check_box :can_purchase, class: "js--canPurchase"
           - if price_group.external?
             %td.centered
               = pp.text_field :unit_cost, value: number_to_currency(price_policy.unit_cost, unit: "", delimiter: ""),
