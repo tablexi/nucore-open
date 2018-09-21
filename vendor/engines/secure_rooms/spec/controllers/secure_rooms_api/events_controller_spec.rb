@@ -7,7 +7,7 @@ RSpec.describe SecureRoomsApi::EventsController do
     name = Rails.application.secrets.secure_rooms_api["basic_auth_name"]
     password = Rails.application.secrets.secure_rooms_api["basic_auth_password"]
     encoded_auth_credentials = ActionController::HttpAuthentication::Basic.encode_credentials(name, password)
-    request.env['HTTP_AUTHORIZATION'] = encoded_auth_credentials
+    request.env["HTTP_AUTHORIZATION"] = encoded_auth_credentials
   end
 
   describe "create" do

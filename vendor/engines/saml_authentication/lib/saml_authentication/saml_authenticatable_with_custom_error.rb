@@ -39,4 +39,4 @@ Devise.add_module(:saml_authenticatable_with_custom_error,
                   route: :saml_authenticatable,
                   strategy: true,
                   controller: :saml_sessions,
-                  model: 'devise_saml_authenticatable/model')
+                  model: "devise_saml_authenticatable/model")

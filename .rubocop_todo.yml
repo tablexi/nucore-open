@@ -799,13 +799,6 @@ Style/Semicolon:
     - 'spec/controllers/reports/general_reports_controller_spec.rb'
     - 'spec/controllers/reports/instrument_reports_controller_spec.rb'
 
-# Offense count: 205
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiterals:
-  Enabled: false
-
 # Offense count: 1
 Style/StructInheritance:
   Exclude:

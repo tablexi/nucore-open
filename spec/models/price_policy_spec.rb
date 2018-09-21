@@ -117,7 +117,7 @@ RSpec.describe PricePolicy do
       expect(@pp.can_purchase).to be false
     end
 
-    it 'should alias #restrict with query method' do
+    it "should alias #restrict with query method" do
       expect(@pp).to be_respond_to :restrict_purchase?
       expect(@pp.restrict_purchase).to eq(@pp.restrict_purchase?)
     end
@@ -184,12 +184,12 @@ RSpec.describe PricePolicy do
         @sp = PricePolicy.new
       end
 
-      it 'should abstract #calculate_cost_and_subsidy' do
+      it "should abstract #calculate_cost_and_subsidy" do
         expect(@sp).to be_respond_to(:calculate_cost_and_subsidy)
         expect { @sp.calculate_cost_and_subsidy }.to raise_error RuntimeError
       end
 
-      it 'should abstract #estimate_cost_and_subsidy' do
+      it "should abstract #estimate_cost_and_subsidy" do
         expect(@sp).to be_respond_to(:estimate_cost_and_subsidy)
         expect { @sp.estimate_cost_and_subsidy }.to raise_error RuntimeError
       end

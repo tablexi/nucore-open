@@ -48,7 +48,7 @@ module ActiveRecord
             # Read directly instance variable as otherwise migrations with table column default values are failing
             # as migrations pass ColumnDefinition object to this method.
             # Check if instance variable is defined to avoid warnings about accessing undefined instance variable.
-            column.instance_variable_defined?('@nchar') && column.instance_variable_get('@nchar') ? 'N' << super : super
+            column.instance_variable_defined?("@nchar") && column.instance_variable_get("@nchar") ? "N" << super : super
           else
             super
           end

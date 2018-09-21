@@ -1058,7 +1058,7 @@ RSpec.describe Reservation do
     expect(reservation).to be_can_start_early
   end
 
-  describe '#start_reservation!' do
+  describe "#start_reservation!" do
     it "sets actual start time", :time_travel do
       reservation.start_reservation!
       expect(reservation.actual_start_at).to eq(Time.current)

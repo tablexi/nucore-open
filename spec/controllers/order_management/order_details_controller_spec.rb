@@ -86,16 +86,16 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
         end
 
         it "has estimated fields disabled" do
-          cost = dom.css('#order_detail_estimated_cost').first
+          cost = dom.css("#order_detail_estimated_cost").first
           expect(cost).to be_has_attribute("disabled")
           expect(cost["value"]).to_not be_blank
 
-          expect(dom.css('#order_detail_estimated_subsidy').first).to be_has_attribute("disabled")
-          expect(dom.css('#order_detail_estimated_total').first).to be_has_attribute("disabled")
+          expect(dom.css("#order_detail_estimated_subsidy").first).to be_has_attribute("disabled")
+          expect(dom.css("#order_detail_estimated_total").first).to be_has_attribute("disabled")
         end
 
         it "has assigned user enabled" do
-          expect(dom.css('#order_detail_assigned_user_id').first).to_not be_has_attribute("disabled")
+          expect(dom.css("#order_detail_assigned_user_id").first).to_not be_has_attribute("disabled")
         end
       end
 
@@ -114,13 +114,13 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
             end
 
             it "has actual fields" do
-              cost = dom.css('#order_detail_actual_cost').first
+              cost = dom.css("#order_detail_actual_cost").first
               expect(cost).to be_present
               expect(cost["value"]).to_not be_blank
             end
 
             it "has the subsidy field enabled" do
-              subsidy = dom.css('#order_detail_actual_subsidy').first
+              subsidy = dom.css("#order_detail_actual_subsidy").first
               expect(subsidy).to be_present
               expect(subsidy["value"]).to_not be_blank
               expect(subsidy).to_not be_has_attribute("disabled")
@@ -136,7 +136,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
             end
 
             it "has the subsidy field disabled" do
-              subsidy = dom.css('#order_detail_actual_subsidy').first
+              subsidy = dom.css("#order_detail_actual_subsidy").first
               expect(subsidy).to be_has_attribute("disabled")
             end
           end
@@ -157,7 +157,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
           end
 
           it "has estimated fields disabled" do
-            cost = dom.css('#order_detail_estimated_cost').first
+            cost = dom.css("#order_detail_estimated_cost").first
             expect(cost).to be_has_attribute("disabled")
             expect(cost["value"]).to be_blank
           end
@@ -1071,7 +1071,7 @@ RSpec.describe OrderManagement::OrderDetailsController, feature_setting: { price
     end
   end
 
-  context '#remove_from_journal' do
+  context "#remove_from_journal" do
     let(:journal) do
       create(:journal, facility: facility, updated_by: 1, reference: "xyz")
     end

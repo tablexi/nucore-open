@@ -9,7 +9,7 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
   describe "edit" do
     describe "as a facility admin" do
       let(:admin) { FactoryBot.create(:user, :administrator) }
-      let(:user) { FactoryBot.create(:user, username: 'user123') }
+      let(:user) { FactoryBot.create(:user, username: "user123") }
 
       before do
         login_as admin

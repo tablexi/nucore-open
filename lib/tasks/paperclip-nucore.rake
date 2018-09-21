@@ -52,7 +52,7 @@ namespace :paperclip do
     stored_files.each do |stored_file|
       file_index += 1
       puts "File #{file_index} of #{file_count}"
-      push_to_s3(stored_file, stored_file.file_file_name.tr('#', "-"))
+      push_to_s3(stored_file, stored_file.file_file_name.tr("#", "-"))
     end
   end
 

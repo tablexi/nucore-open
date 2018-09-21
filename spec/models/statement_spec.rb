@@ -98,7 +98,7 @@ RSpec.describe Statement do
       end
     end
 
-    context '#remove_order_detail' do
+    context "#remove_order_detail" do
       it "is destroyed when it no longer has any statement_rows" do
         @order_details.each do |order_detail|
           statement.remove_order_detail(order_detail)

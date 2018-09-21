@@ -8,21 +8,21 @@ Nucore::Application.routes.draw do
   mount SangerSequencing::Engine => "/" if defined?(SangerSequencing)
 
   if SettingsHelper.feature_on?(:password_update)
-    match "/users/password/edit_current", to: 'user_password#edit_current', as: "edit_current_password", via: [:get, :post]
-    match "/users/password/reset", to: 'user_password#reset', as: "reset_password", via: [:get, :post]
+    match "/users/password/edit_current", to: "user_password#edit_current", as: "edit_current_password", via: [:get, :post]
+    match "/users/password/reset", to: "user_password#reset", as: "reset_password", via: [:get, :post]
   end
 
   # root route
-  root to: 'public#index'
+  root to: "public#index"
 
   # authentication
-  get "switch_back", to: 'public#switch_back'
+  get "switch_back", to: "public#switch_back"
 
   # shared searches
-  get "/user_search_results", to: 'search#user_search_results'
-  get "/#{I18n.t('facilities_downcase')}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: 'account_price_group_members#search_results'
+  get "/user_search_results", to: "search#user_search_results"
+  get "/#{I18n.t('facilities_downcase')}/:facility_id/price_group/:price_group_id/account_price_group_members/search_results", to: "account_price_group_members#search_results"
 
-  post "global_search" => 'global_search#index', as: "global_search"
+  post "global_search" => "global_search#index", as: "global_search"
 
   resources :users, only: [] do
     resources :user_preferences, only: [:index, :edit, :update], shallow: true
@@ -36,8 +36,8 @@ Nucore::Application.routes.draw do
     end
 
     if SettingsHelper.feature_on? :suspend_accounts
-      get "suspend", to: 'accounts#suspend', as: "suspend"
-      get "unsuspend", to: 'accounts#unsuspend', as: "unsuspend"
+      get "suspend", to: "accounts#suspend", as: "suspend"
+      get "unsuspend", to: "accounts#unsuspend", as: "unsuspend"
     end
 
     resources :account_users, only: [:new, :destroy, :create, :index] do
@@ -66,21 +66,21 @@ Nucore::Application.routes.draw do
       resources :training_requests, only: [:new, :create] if SettingsHelper.feature_on?(:training_requests)
 
       resource :product_notification, only: [:show, :edit, :update], path: "notifications", as: "notifications"
-   end
+    end
 
-    get "instrument_statuses", to: 'instruments#instrument_statuses', as: "instrument_statuses"
+    get "instrument_statuses", to: "instruments#instrument_statuses", as: "instrument_statuses"
 
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
     resources :instruments do
       collection do
-        get "list", to: 'instruments#public_list'
+        get "list", to: "instruments#public_list"
       end
       facility_product_routing_concern
-      get "public_schedule", to: 'instruments#public_schedule'
-      get "schedule",        to: 'instruments#schedule'
-      get "status",          to: 'instruments#instrument_status'
-      get "switch",          to: 'instruments#switch'
+      get "public_schedule", to: "instruments#public_schedule"
+      get "schedule",        to: "instruments#schedule"
+      get "status",          to: "instruments#instrument_status"
+      get "switch",          to: "instruments#switch"
 
       put "bring_online", to: "offline_reservations#bring_online"
       resources :offline_reservations, only: [:new, :create, :edit, :update]
@@ -89,8 +89,8 @@ Nucore::Application.routes.draw do
       resources :product_access_groups
       resources :price_policies, controller: "instrument_price_policies", except: [:show]
       resources :reservations, only: [:new, :create, :destroy], controller: "facility_reservations" do
-        get "edit_admin", to: 'facility_reservations#edit_admin'
-        patch "update_admin", to: 'facility_reservations#update_admin'
+        get "edit_admin", to: "facility_reservations#edit_admin"
+        patch "update_admin", to: "facility_reservations#update_admin"
       end
 
       resources :reservations, only: [:index]
@@ -116,7 +116,7 @@ Nucore::Application.routes.draw do
       get :manage, on: :member
       resources :bundle_products, controller: "bundle_products", except: [:show]
       resources :file_uploads, path: "files", only: [:index, :create, :destroy]
-      get "/files/:file_type/:id", to: 'file_uploads#download', as: "download_product_file"
+      get "/files/:file_type/:id", to: "file_uploads#download", as: "download_product_file"
     end
 
     resources :price_group_products, only: [:edit, :update]
@@ -127,7 +127,7 @@ Nucore::Application.routes.draw do
       collection do
         get "search"
       end
-      match "map_user", to: 'facility_users#map_user', via: [:get, :post]
+      match "map_user", to: "facility_users#map_user", via: [:get, :post]
     end
 
     users_options = if SettingsHelper.feature_on?(:create_users)
@@ -146,16 +146,16 @@ Nucore::Application.routes.draw do
         patch "unsuspend", on: :member
       end
 
-      get "switch_to",    to: 'users#switch_to'
-      get "orders",       to: 'users#orders'
+      get "switch_to",    to: "users#switch_to"
+      get "orders",       to: "users#orders"
       resources :reservations, only: [:index], param: :order_detail_id, controller: "facility_user_reservations" do
         member do
           put "cancel"
         end
       end
-      get "accounts",     to: 'users#accounts'
-      get "access_list",  to: 'users#access_list'
-      post "access_list/approvals", to: 'users#access_list_approvals'
+      get "accounts",     to: "users#accounts"
+      get "access_list",  to: "users#access_list"
+      post "access_list/approvals", to: "users#access_list_approvals"
     end
 
     if SettingsHelper.feature_on? :recharge_accounts
@@ -180,14 +180,14 @@ Nucore::Application.routes.draw do
         resources :reservations, controller: "facility_reservations", only: [:edit, :update, :show]
         resources :accessories, only: [:new, :create]
         member do
-          get "manage", to: 'order_management/order_details#edit'
+          get "manage", to: "order_management/order_details#edit"
           patch "manage", to: "order_management/order_details#update"
-          put "manage", to: 'order_management/order_details#update'
-          get "pricing", to: 'order_management/order_details#pricing'
-          get "files", to: 'order_management/order_details#files'
-          post "remove_from_journal", to: 'order_management/order_details#remove_from_journal'
-          get "sample_results/:stored_file_id", to: 'order_management/order_details#sample_results', as: "sample_results"
-          get "template_results/:stored_file_id", to: 'order_management/order_details#template_results', as: "template_results"
+          put "manage", to: "order_management/order_details#update"
+          get "pricing", to: "order_management/order_details#pricing"
+          get "files", to: "order_management/order_details#files"
+          post "remove_from_journal", to: "order_management/order_details#remove_from_journal"
+          get "sample_results/:stored_file_id", to: "order_management/order_details#sample_results", as: "sample_results"
+          get "template_results/:stored_file_id", to: "order_management/order_details#template_results", as: "template_results"
         end
       end
     end
@@ -206,8 +206,8 @@ Nucore::Application.routes.draw do
       end
     end
 
-    get "public_timeline", to: 'reservations#public_timeline', as: "public_timeline" if SettingsHelper.feature_on?(:daily_view)
-    get "accounts_receivable", to: 'facility_accounts#accounts_receivable'
+    get "public_timeline", to: "reservations#public_timeline", as: "public_timeline" if SettingsHelper.feature_on?(:daily_view)
+    get "accounts_receivable", to: "facility_accounts#accounts_receivable"
 
     ### Feature Toggle Editing Accounts ###
     if SettingsHelper.feature_on?(:edit_accounts)
@@ -227,14 +227,14 @@ Nucore::Application.routes.draw do
       get "search_results", via: [:post], on: :collection
 
       if SettingsHelper.feature_on?(:suspend_accounts)
-        get "suspend",   to: 'facility_accounts#suspend',   as: "suspend"
-        get "unsuspend", to: 'facility_accounts#unsuspend', as: "unsuspend"
+        get "suspend",   to: "facility_accounts#suspend",   as: "suspend"
+        get "unsuspend", to: "facility_accounts#unsuspend", as: "unsuspend"
       end
 
-      get "/members", to: 'facility_accounts#members', as: "members"
+      get "/members", to: "facility_accounts#members", as: "members"
 
       if Account.config.statements_enabled?
-        get "/statements", to: 'facility_accounts#statements', as: :statements
+        get "/statements", to: "facility_accounts#statements", as: :statements
         get "/statements/:statement_id", to: "facility_accounts#show_statement", as: :statement
       end
 
@@ -251,7 +251,7 @@ Nucore::Application.routes.draw do
     ######
 
     resources :journals, controller: "facility_journals", only: [:index, :new, :create, :update, :show] do
-      post "reconcile", to: 'facility_journals#reconcile'
+      post "reconcile", to: "facility_journals#reconcile"
     end
 
     resources :price_groups do
@@ -266,15 +266,15 @@ Nucore::Application.routes.draw do
     end
 
     get "disputed_orders", to: "facilities#disputed_orders"
-    get "notifications",       to: 'facility_notifications#index'
-    post "notifications/send", to: 'facility_notifications#send_notifications', as: "send_notifications"
-    get "transactions",        to: 'facilities#transactions'
-    get "in_review",           to: 'facility_notifications#in_review',          as: "notifications_in_review"
-    post "in_review/mark",     to: 'facility_notifications#mark_as_reviewed',   as: "notifications_mark_as_reviewed"
-    get "movable_transactions", to: 'facilities#movable_transactions'
-    post "movable_transactions/reassign_chart_strings", to: 'facilities#reassign_chart_strings'
-    post "movable_transactions/confirm", to: 'facilities#confirm_transactions'
-    post "movable_transactions/move", to: 'facilities#move_transactions'
+    get "notifications",       to: "facility_notifications#index"
+    post "notifications/send", to: "facility_notifications#send_notifications", as: "send_notifications"
+    get "transactions",        to: "facilities#transactions"
+    get "in_review",           to: "facility_notifications#in_review",          as: "notifications_in_review"
+    post "in_review/mark",     to: "facility_notifications#mark_as_reviewed",   as: "notifications_mark_as_reviewed"
+    get "movable_transactions", to: "facilities#movable_transactions"
+    post "movable_transactions/reassign_chart_strings", to: "facilities#reassign_chart_strings"
+    post "movable_transactions/confirm", to: "facilities#confirm_transactions"
+    post "movable_transactions/move", to: "facilities#move_transactions"
 
     resources :statements, controller: "facility_statements", only: [:index, :new, :show, :create]
 
@@ -287,7 +287,7 @@ Nucore::Application.routes.draw do
     get "instrument_unavailable_reports/:report_by",
         to: "reports/instrument_unavailable_reports#index",
         as: "instrument_unavailable_reports"
-    get "instrument_day_reports/:report_by", to: 'reports/instrument_day_reports#index', as: "instrument_day_reports"
+    get "instrument_day_reports/:report_by", to: "reports/instrument_day_reports#index", as: "instrument_day_reports"
   end
 
   # global settings
@@ -299,11 +299,11 @@ Nucore::Application.routes.draw do
   resources :log_events, only: :index
 
   # order process
-  get "/orders/cart", to: 'orders#cart', as: "cart"
-  get "/orders(\/:status)", to: 'orders#index', as: "orders_status", constraints: { status: /pending|all/ } ## emacs quoting \/
+  get "/orders/cart", to: "orders#cart", as: "cart"
+  get "/orders(\/:status)", to: "orders#index", as: "orders_status", constraints: { status: /pending|all/ } ## emacs quoting \/
 
-  put "/orders/:id/remove/:order_detail_id", to: 'orders#remove', as: "remove_order"
-  get "/order/:id/add_account", to: 'orders#add_account', as: "add_account"
+  put "/orders/:id/remove/:order_detail_id", to: "orders#remove", as: "remove_order"
+  get "/order/:id/add_account", to: "orders#add_account", as: "add_account"
 
   resources :orders do
     member do
@@ -331,9 +331,9 @@ Nucore::Application.routes.draw do
       get "template_results/:id", to: "order_detail_stored_files#template_results", as: "template_results"
 
       resources :reservations, except: [:index] do
-        get "/move",               to: 'reservations#earliest_move_possible'
-        post "/move",              to: 'reservations#move',              as: "move_reservation"
-        get "/switch_instrument",  to: 'reservations#switch_instrument', as: "switch_instrument"
+        get "/move",               to: "reservations#earliest_move_possible"
+        post "/move",              to: "reservations#move",              as: "move_reservation"
+        get "/switch_instrument",  to: "reservations#switch_instrument", as: "switch_instrument"
       end
 
       resources :accessories, only: [:new, :create]
@@ -352,18 +352,18 @@ Nucore::Application.routes.draw do
   end
 
   # reservations
-  get "reservations", to: 'reservations#list', as: "reservations"
-  get "reservations(/:status)", to: 'reservations#list', as: "reservations_status"
+  get "reservations", to: "reservations#list", as: "reservations"
+  get "reservations(/:status)", to: "reservations#list", as: "reservations_status"
 
   resources :my_files, only: [:index] if SettingsHelper.feature_on?(:my_files)
 
   # file upload routes
-  post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/sample_results", to: 'file_uploads#upload_sample_results', as: "add_uploader_file"
-  get   "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/product_survey", to: 'file_uploads#product_survey', as: "product_survey"
-  post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/create_product_survey", to: 'file_uploads#create_product_survey', as: "create_product_survey"
+  post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/sample_results", to: "file_uploads#upload_sample_results", as: "add_uploader_file"
+  get   "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/product_survey", to: "file_uploads#product_survey", as: "product_survey"
+  post  "/#{I18n.t('facilities_downcase')}/:facility_id/:product/:product_id/files/create_product_survey", to: "file_uploads#create_product_survey", as: "create_product_survey"
 
-  put   "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: 'surveys#activate',                 as: "activate_survey"
-  put   "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: 'surveys#deactivate',               as: "deactivate_survey"
+  put   "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_passer_id/activate",   to: "surveys#activate",                 as: "activate_survey"
+  put   "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_passer_id/deactivate", to: "surveys#deactivate",               as: "deactivate_survey"
   get "/#{I18n.t('facilities_downcase')}/:facility_id/services/:service_id/surveys/:external_service_id/complete", to: "surveys#complete", as: "complete_survey"
 
   namespace :admin do

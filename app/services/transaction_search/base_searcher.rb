@@ -7,7 +7,7 @@ module TransactionSearch
     attr_reader :order_details
 
     def self.key
-      to_s.sub(/\ATransactionSearch::/, '').sub(/Searcher\z/, '').pluralize.underscore
+      to_s.sub(/\ATransactionSearch::/, "").sub(/Searcher\z/, "").pluralize.underscore
     end
 
     def initialize(order_details)

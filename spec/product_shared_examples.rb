@@ -25,7 +25,7 @@ RSpec.shared_examples_for "NonReservationProduct" do |product_type|
   let!(:account_price_group_member) { FactoryBot.create(:account_price_group_member, account: order.account, price_group: price_group) }
   let!(:account_price_group_member2) { FactoryBot.create(:account_price_group_member, account: order.account, price_group: price_group2) }
 
-  context '#cheapest_price_policy' do
+  context "#cheapest_price_policy" do
     context "current policies" do
       it "should find the cheapest price policy" do
         expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)
@@ -145,7 +145,7 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
                       order_detail: order_detail)
   end
 
-  context '#cheapest_price_policy' do
+  context "#cheapest_price_policy" do
     context "current policies" do
       it "should find the cheapest price policy" do
         expect(product.cheapest_price_policy(order_detail)).to eq(pp_g1)

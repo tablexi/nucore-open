@@ -27,7 +27,7 @@ RSpec.describe FacilityOrdersController do
     @params = { facility_id: @authable.url_name }
   end
 
-  context '#assign_price_policies_to_problem_orders' do
+  context "#assign_price_policies_to_problem_orders" do
     let(:order_details) do
       Array.new(3) do
         order_detail = place_and_complete_item_order(@director, facility)
@@ -79,7 +79,7 @@ RSpec.describe FacilityOrdersController do
 
   it_behaves_like "it supports order_detail POST #batch_update"
 
-  context '#index' do
+  context "#index" do
     before :each do
       @method = :get
       @action = :index
@@ -114,7 +114,7 @@ RSpec.describe FacilityOrdersController do
     end
   end
 
-  describe '#show' do
+  describe "#show" do
     before do
       maybe_grant_always_sign_in :admin
       @method = :get
@@ -131,7 +131,7 @@ RSpec.describe FacilityOrdersController do
     end
   end
 
-  context '#show_problems' do
+  context "#show_problems" do
     before :each do
       @method = :get
       @action = :show_problems
@@ -140,7 +140,7 @@ RSpec.describe FacilityOrdersController do
     it_should_allow_managers_only
   end
 
-  context '#send_receipt' do
+  context "#send_receipt" do
     before :each do
       @method = :post
       @action = :send_receipt
@@ -497,7 +497,7 @@ RSpec.describe FacilityOrdersController do
     end
   end
 
-  context '#tab_counts' do
+  context "#tab_counts" do
     before :each do
       @method = :get
       @action = :tab_counts

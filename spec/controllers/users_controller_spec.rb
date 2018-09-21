@@ -192,7 +192,7 @@ RSpec.describe UsersController do
         context "external user" do
           context "with successful parameters" do
             before :each do
-              user_params = FactoryBot.attributes_for(:user, username: 'user123').except(:password, :password_confirmation)
+              user_params = FactoryBot.attributes_for(:user, username: "user123").except(:password, :password_confirmation)
               @params.merge!(user: user_params)
             end
 
