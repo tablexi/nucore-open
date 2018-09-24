@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe TimedServicePricePoliciesController, :js do
@@ -9,7 +11,7 @@ RSpec.describe TimedServicePricePoliciesController, :js do
   let(:external_price_group) { PriceGroup.external }
   let!(:cancer_center) { create(:price_group, :cancer_center) }
 
-    before do
+  before do
     login_as director
     facility.price_groups.destroy_all # get rid of the price groups created by the factories
   end

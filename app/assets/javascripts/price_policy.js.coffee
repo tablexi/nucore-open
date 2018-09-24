@@ -48,11 +48,10 @@ $(document).ready ->
     if $elem.parents(".js--masterInternalRow").length
       toggleFullCancellationInAdjustmentRows($elem.is(":checked"))
       # Update trigger the adjustment rows to be updated off of the value
-      $elem.parents(".js--cancellationCostContainer").find(".js--cancellationCost").trigger("keyup") unless $elem.is(":checked")
+      $elem.parents(".js--cancellationCostContainer").find(".js--cancellationCost")
+        .trigger("keyup") unless $elem.is(":checked")
   ).trigger("change")
 
   $(".js--masterInternalRow input[type=text]").keyup((evt) ->
     updateAdjustmentFields($(evt.target))
-    # setInternalCost evt.target
-    # refreshCosts()
   ).trigger("keyup")
