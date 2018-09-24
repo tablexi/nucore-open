@@ -30,6 +30,10 @@ class Reservation < ApplicationRecord
   # used for overriding certain restrictions
   attr_accessor :reserved_by_admin
 
+  # Used when we want to force the order to complete even if it doesn't meet the
+  # requirements of order_completeable?, e.g. the reservation time isn't over yet.
+  attr_accessor :force_completion
+
   # Delegations
   #####
   delegate :note, :note=, :ordered_on_behalf_of?, :complete?, :account, :order,
@@ -147,12 +151,18 @@ class Reservation < ApplicationRecord
 
   # Is there enough information to move an associated order to complete/problem?
   def order_completable?
-    actual_end_at || reserve_end_at < Time.current
+    force_completion || actual_end_at || reserve_end_at < Time.current
   end
 
   def start_reservation!
-    # Mark running reservations as complete, which will move them to problem orders
-    product.schedule.products.flat_map(&:started_reservations).each(&:complete!)
+    # If there are any reservations running over their time on the shared schedule,
+    # kick them over to the problem queue.
+    product.schedule.products.flat_map(&:started_reservations).each do |reservation|
+      # If we're in the grace period for this reservation, but the other reservation
+      # has not finished its reserved time, this will fail and this reservation will
+      # not start.
+      MoveToProblemQueue.move!(reservation.order_detail)
+    end
     update!(actual_start_at: Time.current)
   end
 

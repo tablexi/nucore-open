@@ -26,6 +26,9 @@ module SecureRooms
     validates :secure_room, :user, presence: true
     validate :entry_and_exit_are_valid, if: :editing_time_data
 
+    # Not used internally, but implemented for API compatibility with Reservation
+    attr_writer :force_completion
+
     def self.valid
       where(orphaned_at: nil)
     end

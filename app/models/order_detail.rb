@@ -443,10 +443,6 @@ class OrderDetail < ApplicationRecord
     change_status!(OrderStatus.complete)
   end
 
-  def force_complete!
-    update(state: "complete", order_status: OrderStatus.complete)
-  end
-
   def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to compete, automatically set the actuals for a reservation
     if reservation

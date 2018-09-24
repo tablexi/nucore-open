@@ -10,7 +10,7 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
   let(:user) { create(:user, card_number: "123456") }
   let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
 
-  let(:order) { create(:order, account: account, created_by_user: user, user: user) }
+  let(:order) { create(:order, account: account, created_by_user: user, user: user, facility: secure_room.facility) }
   let(:order_detail) { order.order_details.create(attributes_for(:order_detail, account: account, product: secure_room)) }
 
   before { secure_room.product_users.create!(user: user, approved_by: 0) }
@@ -53,6 +53,10 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
         action.perform
         expect(order_detail.reload.fulfilled_at).to eq occupancy.reload.orphaned_at
       end
+
+      it "triggers an email" do
+        expect { action.perform }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
     end
 
     context "with a long-running non-order occupancy" do
@@ -80,6 +84,10 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
       it "does not generate an order" do
         action.perform
         expect(user.orders).to be_blank
+      end
+
+      it "does not trigger an email" do
+        expect { action.perform }.not_to change(ActionMailer::Base.deliveries, :count)
       end
     end
 

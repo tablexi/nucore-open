@@ -48,6 +48,10 @@ RSpec.describe AutoLogout, :time_travel do
       # see before block for deactivate expectation
       action.perform
     end
+
+    it "triggers an email" do
+      expect { action.perform }.to change(ActionMailer::Base.deliveries, :count).by(1)
+    end
   end
 
   describe "a new reservation prior to log out time" do

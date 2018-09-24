@@ -3,9 +3,9 @@
 class AutoExpireReservation
 
   def perform
-    order_details.each do |od|
-      od.transaction do
-        expire_reservation(od)
+    order_details.find_each do |order_detail|
+      order_detail.transaction do
+        expire_reservation(order_detail)
       end
     end
   end
@@ -28,16 +28,14 @@ class AutoExpireReservation
                .readonly(false)
   end
 
-  def expire_reservation(od)
-    od.complete!
+  def expire_reservation(order_detail)
+    MoveToProblemQueue.move!(order_detail)
 
-    # OrderDetail#complete! sets fulfilled_at and price policy,
-    # so we have to reset them.
-    od.fulfilled_at = od.reservation.reserve_end_at
-    od.save!
+    # fulfilled_at gets set to Time.current but we want it to be the end of the reservation
+    order_detail.update!(fulfilled_at: order_detail.reservation.reserve_end_at)
   rescue => e
     ActiveSupport::Notifications.instrument("background_error",
-                                            exception: e, information: "Failed expire reservation order detail with id: #{od.id}")
+                                            exception: e, information: "Failed expire reservation order detail ##{order_detail}")
     raise ActiveRecord::Rollback
   end
 

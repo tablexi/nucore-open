@@ -38,6 +38,10 @@ RSpec.describe AutoExpireReservation, :time_travel do
       it "sets the reservation fulfilled at time" do
         expect { action.perform }.to change { order_detail.reload.fulfilled_at }.to(reservation.reserve_end_at)
       end
+
+      it "triggers an email" do
+        expect { action.perform }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
     end
 
     context "an unpurchased reservation" do
