@@ -29,6 +29,6 @@
           %td= price_group.type_string
           %td= pp.check_box :can_purchase, class: "can_purchase"
           - if price_group.external? || price_group.master_internal?
-            = render "time_based_price_policies/amount_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: true, minimum_cost: true
+            = render "time_based_price_policies/amount_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: cancellation, minimum_cost: minimum_cost
           - else
-            = render "time_based_price_policies/adjustment_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: true, minimum_cost: true
+            = render "time_based_price_policies/adjustment_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: cancellation, minimum_cost: minimum_cost
