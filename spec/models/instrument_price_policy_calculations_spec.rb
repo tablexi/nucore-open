@@ -163,15 +163,15 @@ RSpec.describe InstrumentPricePolicyCalculations do
         expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 1.23, subsidy: 0)
       end
 
-      it "returns the full reservation costs if full_cancellation_cost is set", feature_setting: { full_cancellation_cost: true } do
-        policy.full_cancellation_cost = true
+      it "returns the full reservation costs if charge_full_price_on_cancellation is set", feature_setting: { charge_full_price_on_cancellation: true } do
+        policy.charge_full_price_on_cancellation = true
         reservation.order_detail.canceled_at = reservation.reserve_start_at - 30.minutes
 
         expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 60, subsidy: 0)
       end
 
-      it "still returns the cancellation_cost even if full_cancellation_cost with the feature off", feature_setting: { full_cancellation_cost: false } do
-        policy.full_cancellation_cost = true
+      it "still returns the cancellation_cost even if charge_full_price_on_cancellation with the feature off", feature_setting: { charge_full_price_on_cancellation: false } do
+        policy.charge_full_price_on_cancellation = true
         reservation.order_detail.canceled_at = reservation.reserve_start_at - 30.minutes
 
         expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 1.23, subsidy: 0)
