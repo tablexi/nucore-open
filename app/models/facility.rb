@@ -63,10 +63,6 @@ class Facility < ApplicationRecord
     # super
   end
 
-  def description
-    self[:description]&.html_safe
-  end
-
   def order_statuses
     OrderStatus.for_facility(self)
   end

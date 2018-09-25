@@ -228,6 +228,7 @@ en:
         full_name: Full Name
         suspended: SUSPENDED
       facility:
+        banner_notice: Banner Notice
         fax_number: Fax Number
         is_active: Is Active?
         journal_mask: CoreID

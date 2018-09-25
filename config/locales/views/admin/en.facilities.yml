@@ -7,6 +7,7 @@ en:
           abbreviation: "Abbreviated name or acronym for the !facility_downcase!"
           short_description: "Description as it will appear on the home page"
           description: "Description as it will appear on the !facility_downcase! main page"
+          banner_notice: Highly visible banner that will display when a user visits your homepage. Banner will be hidden if blank.
           show_instrument_availability: Public schedule icon on !facility_downcase! page will show current availability.
         labels:
           is_active: "Is Active?"
