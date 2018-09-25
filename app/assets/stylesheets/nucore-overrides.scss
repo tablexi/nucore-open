@@ -114,7 +114,7 @@ body nav .navbar-inner .container .nav, .nav-tabs{
 }
 
 .manage-mode #use_tab a{
-  border-color: $blue !important;
+  border-color: $grey !important;
 }
 
 #use_tab.active a{
@@ -134,7 +134,7 @@ body nav .navbar-inner .container .nav, .nav-tabs{
 }
 
 .manage-button a{
-  border: solid $orange 1px !important;
+  border: solid $grey 1px !important;
   border-radius: 8px;
   padding: 1px 1px !important;
   margin-top: 9px;
