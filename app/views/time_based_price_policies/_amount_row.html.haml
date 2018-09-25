@@ -1,23 +1,19 @@
 %td
-  = t("price_policies.rate")
-  %br
-  = text_field_tag "price_policy_#{price_group.id}[usage_rate]",
-    display_usage_rate(price_group, price_policy), size: 8, class: "#{price_group.master_internal? ? 'master_usage_cost' : ''} usage_rate"
+  = pp.label :usage_rate, t("price_policies.rate"), class: "normal-weight"
+  = pp.text_field :usage_rate, value: display_usage_rate(price_group, price_policy),
+    size: 8,
+    class: "#{price_group.master_internal? ? 'master_usage_cost' : ''} usage_rate"
 
 - if local_assigns[:minimum_cost]
   %td
-    = t("price_policies.amount")
-    %br
-    = text_field_tag "price_policy_#{price_group.id}[minimum_cost]",
-      params["price_policy_#{price_group.id}"] ? params["price_policy_#{price_group.id}"][:minimum_cost] : number_to_currency(price_policy.minimum_cost, unit: "", delimiter: ""),
+    = pp.label :minimum_cost, t("price_policies.amount"), class: "normal-weight"
+    = pp.text_field :minimum_cost, value: number_to_currency(price_policy.minimum_cost, unit: "", delimiter: ""),
       size: 8,
       class: price_group.master_internal? ? "master_minimum_cost" : ""
 
 - if local_assigns[:cancellation]
-  %td
-    = t("price_policies.amount")
-    %br
-    = text_field_tag "price_policy_#{price_group.id}[cancellation_cost]",
-      params["price_policy_#{price_group.id}"] ? params["price_policy_#{price_group.id}"][:cancellation_cost] : number_to_currency(price_policy.cancellation_cost, unit: "", delimiter: ""),
+  %td.js--full_cancellation_cost_container
+    = pp.label :cancellation_cost, t("price_policies.amount"), class: "normal-weight"
+    = pp.text_field :cancellation_cost, value: number_to_currency(price_policy.cancellation_cost, unit: "", delimiter: ""),
       size: 8,
       class: price_group.master_internal? ? "master_cancellation_cost" : ""

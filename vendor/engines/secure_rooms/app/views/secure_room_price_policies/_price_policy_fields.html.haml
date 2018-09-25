@@ -16,12 +16,12 @@
   %tbody
     - @price_policies.each do |price_policy|
       - price_group = price_policy.price_group
-      %tr
-        %td= price_group.name
-        %td= price_group.type_string
-        %td= check_box_tag "price_policy_#{price_group.id}[can_purchase]",
-          "1", price_policy.can_purchase?, class: "can_purchase"
-        - if price_group.external? || price_group.master_internal?
-          = render "time_based_price_policies/amount_row", price_group: price_group, price_policy: price_policy, cancellation: false, minimum_cost: true
-        - else
-          = render "time_based_price_policies/adjustment_row", price_group: price_group, price_policy: price_policy, cancellation: false, minimum_cost: true
+      = fields_for "price_policy_#{price_group.id}", price_policy do |pp|
+        %tr
+          %td= price_group.name
+          %td= price_group.type_string
+          %td= pp.check_box :can_purchase, class: "can_purchase"
+          - if price_group.external? || price_group.master_internal?
+            = render "time_based_price_policies/amount_row", price_group: price_group, price_policy: price_policy, cancellation: false, minimum_cost: true, pp: pp
+          - else
+            = render "time_based_price_policies/adjustment_row", price_group: price_group, price_policy: price_policy, cancellation: false, minimum_cost: true, pp: pp
