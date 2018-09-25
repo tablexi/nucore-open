@@ -26,7 +26,7 @@ class ProductNotificationsController < ApplicationController
     if @product.update(notification_params)
       redirect_to({ action: :show }, notice: text("success"))
     else
-      render :index
+      render :edit
     end
   end
 
