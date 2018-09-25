@@ -29,7 +29,13 @@ body {
   background: linear-gradient(to bottom, #ffffff 53%,#e4e4e4 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e4e4e4',GradientType=0 ); /* IE6-9 */
 }
-
+.manage-mode {
+  background: #ffffff; /* Old browsers */
+  background: -moz-linear-gradient(top, #ffffff 53%, $light-blue 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #ffffff 53%,$light-blue 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #ffffff 53%, $light-blue 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='$light-blue',GradientType=0 ); /* IE6-9 */
+}
 html,body{
   min-height: 100%;
 }
