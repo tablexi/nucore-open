@@ -25,10 +25,6 @@ module BootstrapHelper
     content_tag :span, order_detail.order_status, class: classes
   end
 
-  def tooltip_hint_icon(text)
-    tooltip_icon "fa fa-question-circle-o", text
-  end
-
   def tooltip_icon(icon_class, tooltip)
     content_tag :i, "", class: icon_class, data: { toggle: "tooltip" }, title: tooltip
   end

@@ -24,4 +24,4 @@
         = pp.check_box :charge_full_price_on_cancellation,
           class: "js--fullCancellationCost"
         = price_policy.class.human_attribute_name(:charge_full_price_on_cancellation)
-        = tooltip_hint_icon t("price_policies.charge_full_price_on_cancellation_hint")
+        = tooltip_icon "fa fa-question-circle-o", t("price_policies.charge_full_price_on_cancellation_hint")
