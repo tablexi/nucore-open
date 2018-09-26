@@ -20,7 +20,7 @@ class CancellationFeeCalculator
       order_detail.canceled_at = Time.current
       @calculated_fee = order_detail.cancellation_fee
       # OrderDetail#cancellation_fee updates the actual costs. Now reset everything.
-      order_detail.reload
+      order_detail.restore_attributes
     end
 
     @calculated_fee
