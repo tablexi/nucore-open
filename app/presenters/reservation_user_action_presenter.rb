@@ -38,6 +38,18 @@ class ReservationUserActionPresenter
     link_to reservation, view_edit_path
   end
 
+  def cancel_link(path = cancel_order_order_detail_path(order, order_detail))
+    canceler = CancellationFeeCalculator.new(reservation)
+
+    confirm_text = if canceler.fee > 0
+                     I18n.t("reservations.delete.confirm_with_fee", fee: number_to_currency(canceler.fee))
+                   else
+                     I18n.t("reservations.delete.confirm")
+                   end
+
+    link_to I18n.t("reservations.delete.link"), path, method: :put, data: { confirm: confirm_text }
+  end
+
   private
 
   def accessories?
@@ -72,35 +84,10 @@ class ReservationUserActionPresenter
     end
   end
 
-  def cancel_link
-    fee = with_cancelation_now { order_detail.cancellation_fee }
-
-    if fee > 0
-      link_to I18n.t("reservations.delete.link"), cancel_order_order_detail_path(order, order_detail),
-              method: :put,
-              data: { confirm: I18n.t("reservations.delete.confirm_with_fee", fee: number_to_currency(fee)) }
-    else
-      link_to I18n.t("reservations.delete.link"), cancel_order_order_detail_path(order, order_detail),
-              method: :put,
-              data: { confirm: I18n.t("reservations.delete.confirm") }
-    end
-  end
-
   def move_link
     link_to I18n.t("reservations.moving_up.link"), order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
             class: "move-res",
             data: { reservation_id: reservation.id }
-  end
-
-  private
-
-  # Yields with canceled_at set to now, but returns it to the previous value
-  def with_cancelation_now
-    old_value = order_detail.canceled_at
-    order_detail.canceled_at = Time.zone.now
-    result = yield
-    order_detail.canceled_at = old_value
-    result
   end
 
 end
