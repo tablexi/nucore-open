@@ -42,6 +42,7 @@ html,body{
 
 body nav .navbar-inner .container .nav, .nav-tabs{
   border-bottom: 1px solid $orange;
+  min-height: 40px;
 }
 
 .manage-mode nav .navbar-inner .container .nav, 
