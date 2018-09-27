@@ -1,5 +1,5 @@
-a {
-  text-decoration: underline;
+a { /* "links" */
+  text-decoration: none;
 }
 
 a:hover {
@@ -19,20 +19,38 @@ a {
 
 h1, h2, h3, h4, h5 {
   font-weight: normal;
-  color: black;
+  color: $headerColor;
 }
 
-h1 {
+h1 { /* "page title" */
+  font-size: 3.167em;
   margin-top: 0.5em;
-  border-bottom: 1px solid #ddd;
 }
 
-h3 {
+.welcome { /* "welcome text" */
+  font-size: 2em;
+  color: #A3A3A3;
+  line-height: 1.25em;
+}
+
+h2 { /* "instrument title" */
+  font-size: 2.417em;
+}
+
+h3, th { /* "static title" */
   margin-bottom: 0;
+  font-weight: bold;
+  font-size: 1em;
 }
 
-h4 {
+h4 { /* "smaller subtitles" */
   font-weight: bold;
+  font-size: 1.333em;
+}
+
+.fc-left > h2 { /* "calendar date" */
+  font-weight: bold;
+  font-size: 1.333em;
 }
 
 label {
