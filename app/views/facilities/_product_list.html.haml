@@ -11,17 +11,29 @@
     %ul
       - indent_for_icon = products.any? { |p| p.respond_to? :reservations }
       - products.sort.each do |product|
-        %li{ class: product.class.model_name.to_s.downcase }
-          - if local_assigns[:f]
-            = f.fields_for :order_details do |builder|
-              - if session_user.can_override_restrictions?(product) || product.can_be_used_by?(acting_user)
-                = builder.text_field :quantity, value: 0, class: "product_quantity", index: nil
-                = builder.hidden_field :product_id, value: product.id, index: nil
-          = public_calendar_link(product, indent: indent_for_icon)
-          = link_to product.name + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(current_facility || product.facility, product)
-          - if acting_user.present? && !product.can_be_used_by?(acting_user)
-            %i.fa.fa-lock
-            = " (#{product.class.human_attribute_name(:requires_approval_show)})"
+        .product_listing
+          %li{ class: product.class.model_name.to_s.downcase }
+            - if local_assigns[:f]
+              = f.fields_for :order_details do |builder|
+                - if session_user.can_override_restrictions?(product) || product.can_be_used_by?(acting_user)
+                  = builder.text_field :quantity, value: 0, class: "product_quantity", index: nil
+                  = builder.hidden_field :product_id, value: product.id, index: nil
+                  
+            = public_calendar_link(product, indent: indent_for_icon)
+            = link_to product.name + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(current_facility || product.facility, product)
+            - if acting_user.present? && !product.can_be_used_by?(acting_user)
+              %i.fa.fa-lock
+              = " (#{product.class.human_attribute_name(:requires_approval_show)})"
 
-          - if product.offline?
-            = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
+            - if product.offline?
+              = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
+          %li{class: 'add_to_cart' }
+            - if not session_user
+              = link_to "Add to cart (requires login)", new_user_session_path
+            - elsif session_user.can_override_restrictions?(product) || product.can_be_used_by?(acting_user)
+              - if not session_user.accounts.empty?
+                = link_to "Add to cart", add_order_path(acting_user.cart(session_user), order: {order_details: [{product_id: product.id, quantity: 1}] }), method: :put
+              - else
+                No payment source
+            - else
+              Cannot purchase

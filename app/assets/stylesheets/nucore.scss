@@ -157,6 +157,13 @@ li.nav-spacer {
   }
 }
 
+.product_listing{
+  display: flex;
+}
+.product_listing .add_to_cart{
+  margin-left: 5px;
+}
+
 /*
   Product View
 */
