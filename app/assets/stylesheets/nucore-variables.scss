@@ -20,3 +20,23 @@ $sidebarActiveBackgroundColor: $linkColor;
 $sidebarActiveBackgroundColorHighlight: darken($sidebarActiveBackgroundColor, 5%);
 
 $sidebarActiveColor: $white;
+
+// Shared
+$darkGrey: #3F3B26;
+$grey: #9B9B9B;
+$lightGrey: #D4D1D1;
+$lighterGrey: #F3F3F3;
+
+// Manage Mode
+$darkOrange: #FF7126;
+$orange: #F89662;
+$lightOrange: #FFAE84;
+
+// Use mode
+$darkBlue: #4A9FF7;
+$blue: #C2DCF8;
+$lightBlue: #CDE4FC;
+
+$headerColor: $darkGrey;
+$manageColor: $blue;
+$useColor: $orange;
