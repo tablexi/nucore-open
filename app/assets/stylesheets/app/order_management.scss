@@ -13,7 +13,8 @@
     margin-top: 0;
 
     dt {
-      font-weight: bold;
+      text-transform: uppercase;
+      color: $grey;
     }
     dd {
       margin-left: 0;
@@ -40,8 +41,9 @@
   }
 
   label {
-    font-weight: bold;
     margin-bottom: 1px;
+    text-transform: uppercase;
+    color: $grey;
   }
 
   .timeinput {
