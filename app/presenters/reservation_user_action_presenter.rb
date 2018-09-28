@@ -39,7 +39,7 @@ class ReservationUserActionPresenter
   end
 
   def cancel_link(path = cancel_order_order_detail_path(order, order_detail))
-    canceler = CancellationFeeCalculator.new(reservation)
+    canceler = CancellationFeeCalculator.new(order_detail)
 
     confirm_text = if canceler.fee > 0
                      I18n.t("reservations.delete.confirm_with_fee", fee: number_to_currency(canceler.fee))

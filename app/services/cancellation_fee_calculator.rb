@@ -2,28 +2,22 @@
 
 class CancellationFeeCalculator
 
-  attr_accessor :reservation
-  delegate :order_detail, to: :reservation
+  attr_accessor :order_detail
+  delegate :reservation, :product, :price_policy, to: :order_detail, allow_nil: true
 
-  def initialize(reservation)
-    @reservation = reservation
+  def initialize(order_detail)
+    # Use a dupped version so that any changes don't get applied to the original
+    @order_detail = order_detail.dup
+    @order_detail.time_data = order_detail.time_data.dup
   end
 
   def fee
-    reservation.blank? ? 0 : calculated_fee
-  end
+    return 0 unless reservation && product.min_cancel_hours.to_i > 0
 
-  private
-
-  def calculated_fee
-    unless defined?(@calculated_fee)
-      order_detail.canceled_at = Time.current
-      @calculated_fee = order_detail.cancellation_fee
-      # OrderDetail#cancellation_fee updates the actual costs. Now reset everything.
-      order_detail.restore_attributes
-    end
-
-    @calculated_fee
+    return @fee if defined?(@fee)
+    order_detail.canceled_at = Time.current
+    order_detail.assign_price_policy
+    @fee = order_detail.actual_cost.to_f
   end
 
 end

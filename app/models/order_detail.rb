@@ -735,18 +735,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def cancellation_fee
-    assign_price_policy unless price_policy
-
-    return 0 unless reservation && price_policy && product.min_cancel_hours.to_i > 0
-    if outside_cancellation_window?
-      0
-    else
-      price_policy.cancellation_cost.to_f
-    end
-  end
-
-  def outside_cancellation_window?(time = Time.current)
-    reservation.reserve_start_at - time > product.min_cancel_hours.hours
+    CancellationFeeCalculator.new(self).fee
   end
 
   def has_subsidies?
