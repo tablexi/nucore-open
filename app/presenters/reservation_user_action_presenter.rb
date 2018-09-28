@@ -41,12 +41,16 @@ class ReservationUserActionPresenter
   def cancel_link(path = cancel_order_order_detail_path(order, order_detail))
     canceler = CancellationFeeCalculator.new(order_detail)
 
-    confirm_text = if canceler.fee > 0
-                     I18n.t("reservations.delete.confirm_with_fee", fee: number_to_currency(canceler.fee))
-                   else
-                     I18n.t("reservations.delete.confirm")
-                   end
-
+    confirm_key = if canceler.fee > 0
+                    if canceler.charge_full_price?
+                      "reservations.delete.confirm_with_full_price"
+                    else
+                      "reservations.delete.confirm_with_fee"
+                    end
+                 else
+                   "reservations.delete.confirm"
+                 end
+    confirm_text = I18n.t(confirm_key, fee: number_to_currency(canceler.fee))
     link_to I18n.t("reservations.delete.link"), path, method: :put, data: { confirm: confirm_text }
   end
 

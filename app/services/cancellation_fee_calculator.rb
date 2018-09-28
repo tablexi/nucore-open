@@ -20,4 +20,9 @@ class CancellationFeeCalculator
     @fee = order_detail.actual_cost.to_f
   end
 
+  def charge_full_price?
+    fee # make sure fee has been initialized in case this gets called first
+    order_detail.price_policy&.charge_full_price_on_cancellation?
+  end
+
 end

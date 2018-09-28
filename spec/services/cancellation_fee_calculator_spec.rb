@@ -43,11 +43,19 @@ RSpec.describe CancellationFeeCalculator do
       context "when there is a cancellation_cost" do
         before { instrument.price_policies.update_all(cancellation_cost: 45.75) }
         it { is_expected.to eq(45.75) }
+
+        it "is not the full price charge" do
+          expect(calculator).not_to be_charge_full_price
+        end
       end
 
       context "when the price policy is set to charge for full reservation" do
         before { instrument.price_policies.update_all(usage_rate: 1, charge_full_price_on_cancellation: true) }
         it { is_expected.to eq(60) } # usage_rate is per minute
+
+        it "is the full price charge" do
+          expect(calculator).to be_charge_full_price
+        end
       end
     end
   end
