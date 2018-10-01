@@ -179,6 +179,7 @@ Nucore::Application.routes.draw do
       resources :order_details, controller: "facility_order_details", only: [:show, :destroy] do
         resources :reservations, controller: "facility_reservations", only: [:edit, :update, :show]
         resources :accessories, only: [:new, :create]
+        resource :reconcilliation, only: [:destroy]
         member do
           get "manage", to: "order_management/order_details#edit"
           patch "manage", to: "order_management/order_details#update"
