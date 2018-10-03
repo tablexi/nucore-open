@@ -2,6 +2,10 @@
 
 class AffiliatesController < GlobalSettingsController
 
+  def index
+    @affiliates = Affiliate.alphabetical.destroyable
+  end
+
   def new
     @affiliate = Affiliate.new
   end
