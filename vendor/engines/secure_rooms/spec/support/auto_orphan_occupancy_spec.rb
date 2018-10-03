@@ -10,7 +10,7 @@ RSpec.describe SecureRooms::AutoOrphanOccupancy, :time_travel do
   let(:user) { create(:user, card_number: "123456") }
   let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
 
-  let(:order) { create(:order, account: account, created_by_user: user, user: user, facility: secure_room.facility) }
+  let(:order) { create(:order, :purchased, account: account, created_by_user: user, user: user, facility: secure_room.facility) }
   let(:order_detail) { order.order_details.create(attributes_for(:order_detail, account: account, product: secure_room)) }
 
   before { secure_room.product_users.create!(user: user, approved_by: 0) }
