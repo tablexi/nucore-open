@@ -551,7 +551,7 @@ en:
     delete:
       confirm: Are you sure you wish to cancel this reservation?
       confirm_with_fee: "Canceling this reservation will incur a %{fee} fee.  Are you sure you wish to cancel this reservation?"
-      confirm_with_full_price: Canceling this reservation incur the full reservation cost. Are you sure you wish to cancel this reservation?
+      confirm_with_full_price: Canceling this reservation incur the full reservation cost of %{fee}. Are you sure you wish to cancel this reservation?
       link: Cancel
     finished: Reservation Ended
     moving_up:

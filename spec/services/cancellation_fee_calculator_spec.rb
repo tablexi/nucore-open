@@ -6,8 +6,8 @@ RSpec.describe CancellationFeeCalculator do
   let(:order_detail) { reservation.order_detail }
   let(:calculator) { described_class.new(order_detail) }
 
-  describe "#fee" do
-    subject { calculator.fee }
+  describe "#total_cost" do
+    subject { calculator.total_cost }
 
     context "when there is no reservation" do
       let(:order_detail) { build(:order_detail) }
@@ -61,7 +61,7 @@ RSpec.describe CancellationFeeCalculator do
 
         describe "with the feature off", feature_setting: { charge_full_price_on_cancellation: false } do
           it { is_expected.to eq(0) }
-          it "is the full price charge"  do
+          it "is the full price charge" do
             expect(calculator).not_to be_charge_full_price
           end
         end
