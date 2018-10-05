@@ -14,7 +14,7 @@
       %th= Affiliate.model_name.human
       %th= Affiliate.human_attribute_name(:subaffiliates_enabled)
   %tbody
-    - Affiliate.destroyable.each do |affiliate|
+    - @affiliates.each do |affiliate|
       %tr
         %td= delete_affiliate_link(affiliate)
         %td.indented_lots
