@@ -56,7 +56,7 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
     context "event was successful" do
       let(:event) { create :event, :successful, card_reader: card_reader }
 
-      context "current_occupant?" do
+      context "when there is current_occupant" do
         let(:account) { create :account, :with_account_owner, owner: event.user }
         let!(:existing_occupancy) do
           create(
@@ -140,6 +140,12 @@ RSpec.describe SecureRooms::AccessHandlers::OccupancyHandler, type: :service do
         end
 
         context "exiting" do
+          # orders need to be "purchased" but we don't care about the details
+          before do
+            allow_any_instance_of(OrderDetail).to receive(:valid_for_purchase?).and_return(true)
+            allow_any_instance_of(SecureRooms::AccessHandlers::OrderHandler).to receive(:user_exempt_from_purchase?).and_return(false)
+          end
+
           let(:card_reader) { create :card_reader, ingress: false }
 
           describe "the new occupancy" do

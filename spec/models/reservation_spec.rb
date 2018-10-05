@@ -1145,6 +1145,49 @@ RSpec.describe Reservation do
         expect { reservation.start_reservation! }
           .to_not change { complete.reload.attributes }
       end
+
+      it "does not trigger an email" do
+        expect { reservation.start_reservation! }.not_to change(ActionMailer::Base.deliveries, :count)
+      end
+    end
+
+    context "with a problem reservation (already moved to the problem queue)" do
+      let!(:problem) { create :setup_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 2.hours.ago }
+
+      before do
+        order = problem.order_detail.order
+        order.state = "validated"
+        order.purchase!
+        problem.complete!
+        expect(problem.order_detail).to be_problem
+      end
+
+      it "does nothing" do
+        expect { reservation.start_reservation! }
+          .to_not change { problem.reload.attributes }
+      end
+
+      it "does not trigger an email" do
+        expect { reservation.start_reservation! }.not_to change(ActionMailer::Base.deliveries, :count)
+      end
+    end
+
+    context "with an order that was problematic, but is canceled" do
+      let!(:problem) { create :setup_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 2.hours.ago }
+
+      before do
+        order = problem.order_detail.order
+        order.state = "validated"
+        order.purchase!
+        problem.complete!
+        expect(problem.order_detail).to be_problem
+        problem.order_detail.update_order_status!(create(:user), OrderStatus.canceled, admin: true)
+        expect(problem.order_detail).not_to be_problem
+      end
+
+      it "does not trigger an email" do
+        expect { reservation.start_reservation! }.not_to change(ActionMailer::Base.deliveries, :count)
+      end
     end
   end
 

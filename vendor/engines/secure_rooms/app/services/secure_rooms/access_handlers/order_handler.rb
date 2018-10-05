@@ -20,7 +20,7 @@ module SecureRooms
         return if user_exempt_from_purchase?
 
         find_or_create_order
-        complete_order
+        complete_order if occupancy.order_completable?
 
         order
       end
@@ -37,7 +37,11 @@ module SecureRooms
       end
 
       def complete_order
-        order_detail.complete! if occupancy.order_completable?
+        if occupancy.orphaned_at?
+          MoveToProblemQueue.move!(order_detail)
+        else
+          order_detail.complete!
+        end
       end
 
       def create_order

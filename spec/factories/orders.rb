@@ -5,6 +5,11 @@ FactoryBot.define do
     account { nil }
   end
 
+  trait :purchased do
+    ordered_at { 1.week.ago }
+    state { "purchased" }
+  end
+
   # Must define product or facility
   factory :setup_order, class: Order do
     transient do
@@ -14,11 +19,6 @@ FactoryBot.define do
     association :account, factory: :setup_account
     user { account.owner.user }
     created_by { account.owner.user.id }
-
-    trait :purchased do
-      ordered_at { 1.week.ago }
-      state { "purchased" }
-    end
 
     after(:create) do |order, evaluator|
       # build().save will allow an already existing relation without raising an error

@@ -168,9 +168,7 @@ class OrderDetail < ApplicationRecord
       .where("order_details.state != ?", "canceled")
   end
 
-  def self.purchased_active_reservations
-    pending.joins(:reservation).merge(Reservation.not_canceled)
-  end
+  scope :purchased_active_reservations, -> { new_or_inprocess.joins(:reservation).merge(Reservation.not_canceled) }
 
   scope :with_price_policy, -> { where.not(price_policy_id: nil) }
 
@@ -278,8 +276,6 @@ class OrderDetail < ApplicationRecord
   scope :reservations, -> { for_product_type("Instrument") }
 
   scope :purchased, -> { joins(:order).merge(Order.purchased) }
-
-  scope :pending, -> { joins(:order).where(state: %w(new inprocess)).purchased }
 
   scope :with_reservation, -> { purchased.joins(:reservation).order("reservations.reserve_start_at DESC") }
   scope :with_upcoming_reservation, lambda {
@@ -480,6 +476,10 @@ class OrderDetail < ApplicationRecord
   def cancelable?
     # can't cancel if the reservation isn't already canceled or if this OD has been added to a journal
     state_is_cancelable? && journal.nil? && !has_uncanceled_reservation?
+  end
+
+  def pending?
+    order.purchased? && state.in?(%w[new inprocess])
   end
 
   delegate :ordered_on_behalf_of?, to: :order

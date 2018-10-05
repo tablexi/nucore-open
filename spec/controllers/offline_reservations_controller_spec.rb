@@ -29,7 +29,7 @@ RSpec.describe OfflineReservationsController do
 
     context "when an ongoing reservation exists for the instrument" do
       let!(:reservation) do
-        FactoryBot.create(:setup_reservation, :running, product: instrument)
+        FactoryBot.create(:purchased_reservation, :running, product: instrument)
       end
 
       it "becomes a problem reservation" do
@@ -43,6 +43,26 @@ RSpec.describe OfflineReservationsController do
 
       it "triggers an email" do
         expect { post :create, params: params }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+    end
+
+    context "when a canceled problem reservation exists for the instrument" do
+      let!(:reservation) do
+        FactoryBot.create(:purchased_reservation, :running, product: instrument)
+      end
+
+      before do
+        reservation.order_detail.update_order_status!(reservation.user, OrderStatus.canceled, admin: true)
+        expect(reservation.order_detail).not_to be_problem
+      end
+
+      it "does not change the reservation" do
+        expect { post :create, params: params }
+          .not_to change { reservation.order_detail.reload.problem? }
+      end
+
+      it "does not triggers an email" do
+        expect { post :create, params: params }.not_to change(ActionMailer::Base.deliveries, :count)
       end
     end
   end
