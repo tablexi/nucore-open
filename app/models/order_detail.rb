@@ -735,18 +735,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def cancellation_fee
-    assign_price_policy unless price_policy
-
-    return 0 unless reservation && price_policy && product.min_cancel_hours.to_i > 0
-    if outside_cancellation_window?
-      0
-    else
-      price_policy.cancellation_cost.to_f
-    end
-  end
-
-  def outside_cancellation_window?(time = Time.current)
-    reservation.reserve_start_at - time > product.min_cancel_hours.hours
+    CancellationFeeCalculator.new(self).total_cost
   end
 
   def has_subsidies?
@@ -918,12 +907,23 @@ class OrderDetail < ApplicationRecord
   end
 
   def cancel_with_fee(order_status)
-    fee = cancellation_fee
-    self.actual_cost = fee
-    self.actual_subsidy = 0
-    change_status!(fee > 0 ? OrderStatus.complete : order_status)
-    save! if changed? # If the cancel goes from complete => complete, change status doesn't save
-    true
+    assign_price_policy unless price_policy
+
+    calculator = CancellationFeeCalculator.new(self)
+
+    change_status!(calculator.total_cost > 0 ? OrderStatus.complete : order_status)
+
+    if calculator.costs.present?
+      assign_attributes(
+        actual_cost: calculator.costs[:cost],
+        actual_subsidy: calculator.costs[:subsidy],
+      )
+    end
+
+    # If the status did not change in change_status! (e.g. it was complete, but
+    # then changed to complete with cancellation fee), then it doesn't trigger a save,
+    # so we need to do it ourselves.
+    save!
   end
 
   def mark_dispute_resolved

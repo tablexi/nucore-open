@@ -552,6 +552,7 @@ en:
     delete:
       confirm: Are you sure you wish to cancel this reservation?
       confirm_with_fee: "Canceling this reservation will incur a %{fee} fee.  Are you sure you wish to cancel this reservation?"
+      confirm_with_full_price: Canceling this reservation incur the full reservation cost of %{fee}. Are you sure you wish to cancel this reservation?
       link: Cancel
     finished: Reservation Ended
     moving_up:
@@ -847,6 +848,7 @@ en:
       missing_for_bundle: Product missing current price policies
       fewer_than_price_groups: Some price groups are missing price policies
     rate: Rate
+    charge_full_price_on_cancellation_hint: Charge the entire amount for a reservation if the user cancels within the minimum cancellation window.
 
   price_groups:
     price_group_fields:

@@ -21,6 +21,10 @@ class InstrumentPricePolicy < PricePolicy
     pgp.try(:reservation_window) || 0
   end
 
+  def charge_full_price_on_cancellation?
+    SettingsHelper.feature_on?(:charge_full_price_on_cancellation) && self[:charge_full_price_on_cancellation]
+  end
+
   private
 
   def ensure_reservation_window

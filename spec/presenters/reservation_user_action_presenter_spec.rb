@@ -137,7 +137,7 @@ RSpec.describe ReservationUserActionPresenter do
         end
 
         before :each do
-          expect(order_detail).to receive(:cancellation_fee).and_return 10
+          allow(presenter.canceler).to receive(:total_cost).and_return 10
         end
 
         it_behaves_like "it has a cancellation link with a confirmation"
@@ -153,7 +153,7 @@ RSpec.describe ReservationUserActionPresenter do
         end
 
         before :each do
-          expect(order_detail).to receive(:cancellation_fee).and_return 0
+          allow(presenter.canceler).to receive(:total_cost).and_return 0
         end
 
         it_behaves_like "it has a cancellation link with a confirmation"

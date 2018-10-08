@@ -1298,11 +1298,11 @@ RSpec.describe OrderDetail do
       end
 
       it "has no actual cost" do
-        expect(order_detail.actual_cost).to be_blank
+        expect(order_detail.actual_cost.to_f).to be_zero
       end
 
       it "has no actual subsidy" do
-        expect(order_detail.actual_subsidy).to be_blank
+        expect(order_detail.actual_subsidy.to_f).to be_zero
       end
     end
 
@@ -1609,6 +1609,19 @@ RSpec.describe OrderDetail do
                 expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
                   .not_to change { order_detail.statement }
               end
+            end
+          end
+
+          context "has full cost cancellation fee", feature_setting: { charge_full_price_on_cancellation_on: true } do
+            before do
+              PricePolicy.update_all(charge_full_price_on_cancellation: true, usage_rate: 3, usage_subsidy: 1)
+              order_detail.price_policy.reload
+            end
+
+            it "has the correct costs" do
+              expect { cancel_order_detail(admin: true, apply_cancel_fee: true) }
+                .to change { order_detail.reload.actual_cost }.to(180)
+                                                              .and change { order_detail.actual_subsidy }.to(60)
             end
           end
 

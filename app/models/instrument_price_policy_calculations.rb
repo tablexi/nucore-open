@@ -38,6 +38,15 @@ module InstrumentPricePolicyCalculations
     minutes_canceled_before.minutes <= product.min_cancel_hours.hours
   end
 
+  def calculate_cancellation_costs(reservation)
+    return unless cancellation_penalty?(reservation)
+    if charge_full_price_on_cancellation?
+      calculate_reservation(reservation)
+    else
+      { cost: cancellation_cost.to_f, subsidy: 0 }
+    end
+  end
+
   private
 
   # CHARGE_FOR[:reservation] uses reserve start and end time for calculation
@@ -63,12 +72,6 @@ module InstrumentPricePolicyCalculations
 
   def calculate_for_time(start_at, end_at)
     PricePolicies::TimeBasedPriceCalculator.new(self).calculate(start_at, end_at)
-  end
-
-  def calculate_cancellation_costs(reservation)
-    if cancellation_penalty?(reservation)
-      { cost: cancellation_cost, subsidy: 0 }
-    end
   end
 
 end
