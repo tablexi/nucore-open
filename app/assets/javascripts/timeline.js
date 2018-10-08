@@ -52,26 +52,27 @@ $(function() {
   // no animation when first loading
   $('.status_canceled').toggle($('#show_canceled').is(':checked'));
 
-
-  $('.relay_checkbox :checkbox')
-  .bind('click', function(e) {
-    if (confirm("Are you sure you want to toggle the relay?")) {
-      $(this).parent().addClass("loading");
-      $.ajax({
-        url: $(this).data("relay-url"),
-        success: function(data) {
-          updateRelayStatus(data.instrument_status);
-        },
-        data: {
-          switch: $(this).is(":checked") ? "on" : "off"
-        },
-        dataType: 'json'
-      });
-    } else {
-      return false;
-    }
-  })
-  .toggleSwitch();
+  relayCheckboxes = $('.relay_checkbox :checkbox')
+  if (relayCheckboxes.length > 0) {
+    relayCheckboxes.bind('click', function(e) {
+      if (confirm("Are you sure you want to toggle the relay?")) {
+        $(this).parent().addClass("loading");
+        $.ajax({
+          url: $(this).data("relay-url"),
+          success: function(data) {
+            updateRelayStatus(data.instrument_status);
+          },
+          data: {
+            switch: $(this).is(":checked") ? "on" : "off"
+          },
+          dataType: 'json'
+        });
+      } else {
+        return false;
+      }
+    })
+    .toggleSwitch();
+  }
 
   function loadRelayStatuses() {
     $.ajax({
