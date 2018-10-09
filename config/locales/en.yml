@@ -805,6 +805,11 @@ en:
         name: Name (username)
         email: Email
         role: Role
+      role:
+        owner: Owner
+        business_administrator: Business Administrator
+        purchaser: Purchaser
+      
     show:
       head: "Payment Source Details"
 
