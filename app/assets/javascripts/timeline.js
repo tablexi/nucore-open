@@ -20,7 +20,10 @@ $(function() {
     showOn: "button",
     buttonText: "<i class='fa fa-calendar icon-large'>",
   }).change(function() {
-    $(this).parents("form").submit();
+    var form = $(this).parents('form');
+    var formUrl = form.attr('action');
+    form.attr('action', formUrl + '#' + lastHiddenInstrumentId());
+    form.submit();
   });
 
   //Get the Current Hour, create a class and add it the time div
@@ -108,13 +111,16 @@ $(function() {
   // Only try to load relay statuses if there are relays to check
   if ($('.relay_checkbox :checkbox').length > 0) loadRelayStatuses();
 
-  $('#reservation_left, #reservation_right').on('click', function(event) {
-    var heightOfDateNav = $('.timeline_header').outerHeight();
+  function lastHiddenInstrumentId() {
     var hiddenInstruments = $('.timeline_instrument').filter(function() {
       return $(window).scrollTop() > $(this).offset().top;
-    })
-    var urlFragment = hiddenInstruments.last().attr('id');
+    });
+
+    return hiddenInstruments.last().attr('id');
+  }
+
+  $('#reservation_left, #reservation_right').on('click', function(event) {
     var urlWithoutFragment = this.href.split('#')[0]
-    this.href = urlWithoutFragment + '#' + urlFragment
+    this.href = urlWithoutFragment + '#' + lastHiddenInstrumentId()
   });
 });
