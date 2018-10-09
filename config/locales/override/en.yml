@@ -10,4 +10,4 @@ en:
 
   testing: # DO NOT DELETE: these are used to verify proper file loading in the specs
     locale_loading: This is here to verify the file is loaded in the specs
-overriding: This overrides the version in en.yml
+    overriding: This overrides the version in en.yml
