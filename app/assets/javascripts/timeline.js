@@ -110,11 +110,11 @@ $(function() {
 
   $('#reservation_left, #reservation_right').on('click', function(event) {
     var heightOfDateNav = $('.timeline_header').outerHeight();
-    var instrumentsBelowScroll = $('.timeline_instrument').filter(function() {
-      return $(window).scrollTop() < heightOfDateNav + $(this).offset().top;
+    var hiddenInstruments = $('.timeline_instrument').filter(function() {
+      return $(window).scrollTop() > $(this).offset().top;
     })
-    var instrumentToScrollTo = instrumentsBelowScroll[0]
+    var urlFragment = hiddenInstruments.last().attr('id');
     var urlWithoutFragment = this.href.split('#')[0]
-    this.href = urlWithoutFragment + '#' + instrumentToScrollTo.id
+    this.href = urlWithoutFragment + '#' + urlFragment
   });
 });
