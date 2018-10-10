@@ -1,0 +1,14 @@
+- docs = product.stored_files.info
+.container
+  .row
+    - if docs.any?
+      .wysiwyg.span8= product.description
+      .span4
+        .well
+          %h3= text("documentation")
+          %ul.unstyled
+            - docs.each do |stored_file|
+              %li.document
+                = link_to stored_file.name, product_file_path(stored_file)
+    - else
+      .wysiwyg.span12= product.description
