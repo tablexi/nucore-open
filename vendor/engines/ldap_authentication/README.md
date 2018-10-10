@@ -25,18 +25,18 @@ which should work for the test LDAP server described below.
 
 Change the `host:` value if you are using an external LDAP server.
 
-## Cofigure a local LDAP server.
+## Cofigure a local LDAP server
 
 ### Configuring The LDAP dn
 
 LDAP authenticates users with a distinguished name (`dn`), which is typically
 composed of multiple LDIF attributes. One of the attributes of the `dn` will
-specify the user’s login. The additional attributes, for NUcore, are expected
+specify the user's login. The additional attributes, for NUcore, are expected
 to be consistent across all users.
 
 LDAP users allowed to access NUcore must have a password-less record in
-NUcore’s users table. The record’s username attribute must correspond to the
-login part of the user’s LDAP `dn`. The LDIF attribute identifying the login
+NUcore's users table. The record's username attribute must correspond to the
+login part of the user's LDAP `dn`. The LDIF attribute identifying the login
 must be the value of `ldap.yml`'s `attribute: key`.
 The additional LDIF attributes that make up the remainder of the LDAP `dn` must
 be the value of the `base: key`.
@@ -48,142 +48,26 @@ docker run --name ldap-service --hostname ldap-service -p 389:389 -p 636:636 --d
 ```
 
 Optionally, you can run an administrative site.
+
 ```
 docker run --name phpldapadmin-service --hostname phpldapadmin-service --link ldap-service:ldap-host --env PHPLDAPADMIN_LDAP_HOSTS=ldap-host --detach -p 8081:443 osixia/phpldapadmin
-
-echo "Go to: https://localhost:8081"
-echo "Login DN: cn=admin,dc=example,dc=org"
-echo "Password: admin"
 ```
 
-Using this site, you can copy and paste the user's `ldif` config into the "Import" feature.
-
-### Setting up an LDAP Server on Mac OS
-
-As root, copy this configuration to `/etc/openldap/slapd.conf`:
-
-```
-### Sample slapd.conf
-#
-# See slapd.conf(5) for details on configuration options.
-# This file should NOT be world readable.
-#
-include /private/etc/openldap/schema/core.schema
-include /private/etc/openldap/schema/cosine.schema
-include /private/etc/openldap/schema/inetorgperson.schema
-
-# Define global ACLs to disable default read access.
-
-# Do not enable referrals until AFTER you have a working directory
-# service AND an understanding of referrals.
-#referral ldap://root.openldap.org
-
-pidfile /private/var/db/openldap/run/slapd.pid
-argsfile /private/var/db/openldap/run/slapd.args
-
-# Load dynamic backend modules:
-# modulepath /usr/libexec/openldap
-# moduleload back_bdb.la
-# moduleload back_hdb.la
-# moduleload back_ldap.la
-
-# Sample security restrictions
-# Require integrity protection (prevent hijacking)
-# Require 112-bit (3DES or better) encryption for updates
-# Require 63-bit encryption for simple bind
-# security ssf=1 update_ssf=112 simple_bind=64
-
-# Sample access control policy:
-# Root DSE: allow anyone to read it
-# Subschema (sub)entry DSE: allow anyone to read it
-# Other DSEs:
-#   Allow self write access
-#   Allow authenticated users read access
-#   Allow anonymous users to authenticate
-# Directives needed to implement policy:
-# access to dn.base="" by * read
-# access to dn.base="cn=Subschema" by * read
-# access to *
-# by self write
-# by users read
-# by anonymous auth
-#
-# if no access controls are present, the default policy
-# allows anyone and everyone to read anything but restricts
-# updates to rootdn.  (e.g., "access to * by * read")
-#
-# rootdn can always read and write EVERYTHING!
-
-#######################################################################
-# BDB database definitions
-#######################################################################
-
-database bdb
-suffix "dc=example,dc=com"
-rootdn "cn=admin,dc=example,dc=com"
-# Cleartext passwords, especially for the rootdn, should
-# be avoid.  See slappasswd(8) and slapd.conf(5) for details.
-# Use of strong authentication encouraged.
-# rootpw secret
-rootpw {SSHA}bLqKkdr2MxXPLLpU4d7bvSYgM0D6zlh/
-
-access to attr=userPassword
-       by dn="cn=admin,dc=example,dc=org" write
-       by self write
-       by * auth
-
-access to *
-       by dn="cn=admin,dc=example,dc=org"  write
-       by dn="cn=cgreen,dc=example,dc=org" read
-       by users read
-       by self write
-       by * auth
-
-# The database directory MUST exist prior to running slapd AND
-# should only be accessible by the slapd and slap tools.
-# Mode 700 recommended.
-directory /private/var/db/openldap/openldap-data
-# Indices to maintain
-index objectClass eq
-```
-
-The configuration above sets `rootpw` (the root password) to "secret".
-To use a different password, encrypt it with `slappasswd` and use its output to
-replace the `rootpw` value in the config:
-
-```bash
-slappasswd -s "another_password"
-```
-
-Make sure `slapd.conf` is `root`-owned and mode `0600` (meaning only `root` may read and write):
-
-```bash
-sudo chown root:wheel /etc/openldap/slapd.conf &&
-sudo chmod 0600 /etc/openldap/slapd.conf
-```
-
-### Running the LDAP Server
-
-```bash
-sudo /usr/libexec/slapd -d -1
-```
-
-This will start the server, keeping it in the foreground while sending logs to
-standard output. If you need to see more verbose logging, including the protocol
-back-and-forth, change the `-1` to `-7`.
+* Go to: https://localhost:8081
+* Note: the https certificate is invalid, so you will need to manually proceed in the browser.
+* Login DN: cn=admin,dc=example,dc=org
+* Password: admin
 
 ### Seed the directory
 
 #### Add an organization
 
-For testing you’ll need at least one organization in the LDAP directory.
-To create the organization:
+For testing you'll need at least one organization in the LDAP directory. If you are using
+the `phpldapadmin-service`, the organization should already exist for you.
 
-```bash
-ldapadd -x -D "cn=admin,dc=example,dc=com" -w secret -f org.ldif
-```
+To create an organization:
 
-`org.ldif` is a file in LDAP data interchange format. Here's an example:
+Create a `org.ldif` file in LDAP data interchange format. Here's an example:
 
 ```
 dn: dc=example,dc=com
@@ -194,15 +78,15 @@ dc: example
 o: Table XI
 ```
 
+```bash
+ldapadd -x -D "cn=admin,dc=example,dc=com" -w secret -f org.ldif
+```
+
 #### Add a user
 
 You will also need at least one user in the LDAP directory. To create a user:
 
-```bash
-ldapadd -x -D "cn=admin,dc=example,dc=org" -w secret -f usr.ldif
-```
-
-`usr.ldif` is a file in LDAP data interchange format. Here's an example:
+Create a `usr.ldif` is a file in LDAP data interchange format. Here's an example:
 
 ```
 dn: uid=cgreen,dc=example,dc=org
@@ -215,6 +99,13 @@ userPassword: secret
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
+```
+
+If you are using `phpldapadmin-service`, you can copy and paste an `ldif` configuration
+using the "Import" feature.
+
+```bash
+ldapadd -x -D "cn=admin,dc=example,dc=org" -w secret -f usr.ldif
 ```
 
 ### Search the LDAP Directory
