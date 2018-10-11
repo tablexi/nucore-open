@@ -16,7 +16,7 @@
     = u.input :full_name, as: :readonly, label: Account.human_attribute_name(:user)
   = f.input :user_id, as: :hidden, input_html: { value: @user.id, name: "user_id" }
 
-  = f.input :user_role, collection: AccountUser.selectable_user_roles, selected: "Purchaser"
+  = f.input :user_role, collection: AccountUserPresenter.selectable_user_roles(current_user, current_facility), selected: "Purchaser"
 
   %ul.inline
     %li= f.submit "Create", class: "btn"

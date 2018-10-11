@@ -798,6 +798,10 @@ en:
       transaction_in_review:
         one: You have one transaction in review
         other: You have %{count} transactions in review
+    role:
+        owner: Owner
+        business_administrator: Business Administrator
+        purchaser: Purchaser
     member_table:
       add_access: Add Access
       remove_access: Remove Access
