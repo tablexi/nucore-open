@@ -36,7 +36,7 @@ class Reservations::DurationChangeValidations
   end
 
   def duration_not_shortened
-    return unless reservation.reserve_start_at && reservation.reserve_end_at
+    return unless reservation.has_reserved_times?
 
     duration_was = TimeRange.new(reservation.reserve_start_at_was, reservation.reserve_end_at_was).duration_mins
     duration_is = TimeRange.new(reservation.reserve_start_at, reservation.reserve_end_at).duration_mins
