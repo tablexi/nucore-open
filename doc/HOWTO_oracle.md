@@ -54,27 +54,13 @@ docker start --interactive oracle
 
 ### Install Oracle Instant Client
 
-* Download Basic, SqlPlus, and SDK from: `http://www.oracle.com/technetwork/topics/intel-macsoft-096467.html`
-
-* Install with:
-
-```
-sudo mkdir -p /opt/oracle/
-cd /opt/oracle
-
-sudo mv ~/Downloads/instantclient-* /opt/oracle
-sudo unzip instantclient-basic-macos.x64-12.1.0.2.0.zip
-sudo unzip instantclient-sdk-macos.x64-12.1.0.2.0.zip
-sudo unzip instantclient-sqlplus-macos.x64-12.1.0.2.0.zip
-
-sudo ln -s instantclient_12_1 instantclient
-
-cd instantclient
-sudo ln -s libclntsh.dylib.12.1 libclntsh.dylib
-sudo ln -s libocci.dylib.12.1   libocci.dylib
-
-sudo ln -s /opt/oracle/instantclient/sqlplus /usr/local/bin/sqlplus
-```
+1. Enable the homebrew tap for Oracle Instant Client by running `brew tap InstantClientTap/instantclient`.
+1. Run each of these commands, following the displayed instructions for how to download the appropriate .zip files from Oracle’s website. After you download the files and place them in Homebrew’s cache directory, brew will take care of the rest:
+    ```
+    brew install instantclient-basic
+    brew install instantclient-sqlplus
+    brew install instantclient-sdk
+    ```
 
 ### Set Up Environment Variables
 
