@@ -129,12 +129,20 @@ Assuming you used `$HOME/oracle_data` as the volume location when you did `docke
       bash
     ```
 
+1. Run the following command to ensure that the file you copied is available in the `DATA_PUMP_LOCATION` configured on the server:
+
+    ````
+    ln -fsn /ORCL/u01/app/oracle/admin /u01/app/oracle/admin
+    ````
+
+  This only needs to be done once, but if you’re having trouble, rerun it.
+
 1. Import the dump, replacing DUMPFILE with the name of your dump file, and REMAP_SCHEMA with your database’s username if necessary:
 
 ```
 impdp \
-  system/Oradoc_db1@//localhost:1521/ORCLCDB \
-  DIRECTORY=data_pump_dir \
+  system/Oradoc_db1 \
+  DIRECTORY=DATA_PUMP_DIR \
   DUMPFILE=expdp_schema_COR1PRD_201810021913.dmp \
-  REMAP_SCHEMA=nucore_open_development
+  REMAP_SCHEMA=bc_nucore:nucore_open_development
 ```
