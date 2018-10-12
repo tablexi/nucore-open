@@ -450,18 +450,28 @@ body nav .navbar-inner .container .nav, .nav-tabs{
 }
 
 .navbar-inner {
-  box-shadow: none !important;
   background: none;
   border: none;
 }
 
-.brand {
-  font-family: inherit !important;
+.navbar-static-top .navbar-inner {
+  box-shadow: none;
 }
 
-.nav li:hover {
-  border: none !important;
-  margin-top: 0 !important;
+nav ul.nav > li.active, nav ul.sidebar-nav > 
+li.active, nav ul.nav > li:hover, nav ul.sidebar-nav > 
+li {
+  border:none;
+  margin-top: 0;
+  margin-bottom: -1px;
+}
+
+nav ul.nav > li.active, nav ul.sidebar-nav > 
+li.active, nav ul.nav > li:hover, nav ul.sidebar-nav > 
+li:hover {
+  border: none;
+  margin-top: 0;
+  background-color: white;
 }
 
 .nav li a {
@@ -471,21 +481,19 @@ body nav .navbar-inner .container .nav, .nav-tabs{
   transition: ease 0.3s all;
 }
 
-.nav li.active {
-  border:none !important;
-  margin-top: 0 !important;
-  margin-bottom: -1px;
-}
-
-.nav li.active a {
-  border: 1px solid $useColor !important;
+.nav li.active a, .sidebar-nav li.active a {
+  border: 1px solid $useColor;
   border-radius: 4px 4px 0 0;
-  border-bottom-color: transparent !important;
-  background-color: white !important;
-  box-shadow: none !important;
+  border-bottom-color: transparent;
+  background-color: white;
+  
+}
+.navbar .nav > .active > a {
+  box-shadow: none;
+  background-color: white;
 }
 
-.manage-mode .nav li.active a {
+.manage-mode .nav li.active a, .manage-mode .sidebar-nav li.active a {
   border-color: $manageColor !important;
   border-bottom-color: transparent !important;
 }
