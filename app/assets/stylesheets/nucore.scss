@@ -494,8 +494,8 @@ li:hover {
 }
 
 .manage-mode .nav li.active a, .manage-mode .sidebar-nav li.active a {
-  border-color: $manageColor !important;
-  border-bottom-color: transparent !important;
+  border-color: $manageColor;
+  border-bottom-color: transparent;
 }
 
 #use_tab, .manage-button {
