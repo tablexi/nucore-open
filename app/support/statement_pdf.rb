@@ -25,6 +25,12 @@ class StatementPdf
     raise NotImplementedError
   end
 
+  def render
+    pdf = Prawn::Document.new(options)
+    generate(pdf)
+    pdf.render
+  end
+
   def download?
     @download
   end
