@@ -2,37 +2,20 @@
 
 class PdfFontHelper
 
-  class << self
+  FONT_DIR = Rails.root.join("app/assets/fonts")
 
-    delegate :set_fonts, to: :new
-
-  end
-
-  def set_fonts(pdf)
+  def self.set_fonts(pdf)
+    font_name = Settings.statement_pdf.font_name
     return if font_name.blank?
 
-    pdf.font_families.update(font_name => file_mappings)
+    pdf.font_families.update(
+      font_name => {
+        normal: FONT_DIR.join("#{font_name}-Regular.ttf"),
+        bold: FONT_DIR.join("#{font_name}-Bold.ttf"),
+        italic: FONT_DIR.join("#{font_name}-Italic.ttf"),
+      }
+    )
     pdf.font(font_name)
-  end
-
-  private
-
-  def font_name
-    Settings.statement_pdf.font_name
-  end
-
-  def mappings
-    {
-      normal: "Regular",
-      italic: "Italic",
-      bold: "Bold",
-    }
-  end
-
-  def file_mappings
-    mappings.each_with_object({}) do |(k, v), hash|
-      hash[k] = Rails.root.join("app/assets/fonts/#{font_name}-#{v}.ttf") if v.present?
-    end
   end
 
 end
