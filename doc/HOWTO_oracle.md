@@ -112,10 +112,7 @@ SQL>
 
 ## Restore From Backup
 
-Run `bundle exec rake db:oracle_drop_severe`. This will ensure that your database
-is clean. Without it the import might skip tables due to them already existing.
-
-Assuming you used `$HOME/oracle_data` as the volume location when you did `docker run`:
+1. Run `bundle exec rake db:drop db:create`. This will ensure that your database exists, and that it is empty. Without this step, the import may skip tables which already exist, and it may fail if the database does not exist.
 
 1. Copy the `.dmp` file to `$ORACLE_DATA_DIR/u01/app/oracle/admin/ORCL/dpdump/` (assuming you set `ORACLE_DATA_DIR` above), so it is located in the server’s default data pump directory.
 
