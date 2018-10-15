@@ -1,8 +1,26 @@
+= content_for :breadcrumb do
+  %ul.breadcrumb
+    %li= link_to t("pages.home"), facilities_path
+    %li &raquo;
+    %li= link_to @product.facility, facility_path(@product.facility)
+    %li &raquo;
+    %li= @product
+    %li &raquo;
+    %li= TrainingRequest.model_name.human
+
 = content_for :h1 do
   = current_facility
 
-= text(".requires_approval", product: @product)
+%h2= @product
 
-= form_tag facility_product_training_requests_path do
-  = submit_tag t("boolean.true"), class: "btn"
-  = link_to t("boolean.false"), facility_path(current_facility), class: "btn"
+= render "products_common/description", product: @product
+
+.well
+  %p
+    %i.fa.fa-lock
+    = text("requires_approval", product: @product)
+
+  = form_tag facility_product_training_requests_path do
+    %p
+      = submit_tag t("boolean.true"), class: "btn btn-primary"
+      = link_to t("boolean.false"), facility_path(current_facility), class: "btn"
