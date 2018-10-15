@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PdfFontHelper
 
   class << self
@@ -28,9 +30,8 @@ class PdfFontHelper
   end
 
   def file_mappings
-    mappings.reduce({}) do |hash, (k, v)|
+    mappings.each_with_object({}) do |(k, v), hash|
       hash[k] = Rails.root.join("app/assets/fonts/#{font_name}-#{v}.ttf") if v.present?
-      hash
     end
   end
 

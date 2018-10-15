@@ -21,12 +21,13 @@ class StatementPdf
     @download = download
   end
 
-  def generate(pdf)
+  def generate(_pdf)
     raise NotImplementedError
   end
 
   def render
     pdf = Prawn::Document.new(options)
+    PdfFontHelper.set_fonts(pdf)
     generate(pdf)
     pdf.render
   end

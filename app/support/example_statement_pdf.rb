@@ -1,4 +1,6 @@
-class StatementPdfDefault < StatementPdf
+# frozen_string_literal: true
+
+class ExampleStatementPdf < StatementPdf
 
   def generate(pdf)
     generate_document_header(pdf)
