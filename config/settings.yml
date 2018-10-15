@@ -25,7 +25,8 @@ converters:
   order_detail_to_journal_rows: Converters::OrderDetailToJournalRowAttributes
 
 statement_pdf:
-  class_name: StatementPdf
+  class_name: ExampleStatementPdf
+  font_name: Roboto
 
 validator:
   class_name: ValidatorDefault
