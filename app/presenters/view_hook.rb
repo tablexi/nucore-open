@@ -8,7 +8,7 @@ class ViewHook
       @instance ||= new
     end
 
-    delegate :add_hook, :remove_hook, :render_view_hook, to: :instance
+    delegate :add_hook, :remove_hook, :render_view_hook, :exists?, to: :instance
 
   end
 
@@ -25,6 +25,10 @@ class ViewHook
 
   def remove_hook(view, placement, partial)
     _view_hooks[view.to_s][placement.to_s].delete partial.to_s
+  end
+
+  def exists?(view, placement)
+    find(view, placement).any?
   end
 
   def find(view, placement)
