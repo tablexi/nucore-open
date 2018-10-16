@@ -52,13 +52,21 @@ class PricePolicyUpdater
   end
 
   def initial_price_group_attributes(price_group)
-    @params["price_policy_#{price_group.id}"]&.permit(:can_purchase,
-                                                      :usage_rate,
-                                                      :usage_subsidy,
-                                                      :minimum_cost,
-                                                      :cancellation_cost,
-                                                      :unit_cost,
-                                                      :unit_subsidy) || { can_purchase: false }
+    @params["price_policy_#{price_group.id}"]&.permit(*allowed_attributes) || { can_purchase: false }
+  end
+
+  def allowed_attributes
+    [
+      :can_purchase,
+      :usage_rate,
+      :usage_subsidy,
+      :minimum_cost,
+      :cancellation_cost,
+      :unit_cost,
+      :unit_subsidy,
+    ].tap do |attributes|
+      attributes << :charge_full_price_on_cancellation if SettingsHelper.feature_on?(:charge_full_price_on_cancellation)
+    end
   end
 
 end

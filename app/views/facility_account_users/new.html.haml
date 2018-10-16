@@ -26,7 +26,7 @@
   = f.input :user_id, as: :hidden, input_html: { value: @user.id, name: "user_id" }
 
   = f.input :user_role,
-    collection: AccountUser.selectable_user_roles(current_user, current_facility),
+    collection: AccountUserPresenter.selectable_user_roles(current_user, current_facility),
     selected: @account_user.user_role,
     disabled: current_owner?
 

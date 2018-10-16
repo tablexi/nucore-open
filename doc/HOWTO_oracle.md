@@ -4,145 +4,142 @@ Follow these instructions to set up the Oracle database to run in Docker, but th
 
 ## Setting up the Oracle Server with Docker
 
-##### Install Docker
+### Set up Docker and Docker Hub
 
-* Download Docker for Mac from: `https://docs.docker.com/docker-for-mac/install/#download-docker-for-mac`
+1. Install Docker for Mac by running `brew cask install docker`
+1. Sign up for a Docker Hub account at https://hub.docker.com/. If you already have a Docker Hub account, you can skip this step and use your existing account.
+1. Go to https://store.docker.com/images/oracle-database-enterprise-edition and click the button **Proceed to Checkout**. Complete and submit the form in order to get access to the free container that Oracle provides.
+1. In your terminal, make sure that you are logged in with your Docker Hub credentials by running `docker login`.
 
-* Install into `/Applications`
-
-* Start the oracle container:
-
-```
-mkdir $HOME/oracle_data
-docker run -p 1521:1521 --name nucore_db -v $HOME/oracle_data:/u01/app/oracle sath89/oracle-12c
-# This will take several minutes as the database initializes.
-# Wait for "Database ready to use. Enjoy! ;)"
-```
-
-`$HOME/oracle_data` is just a recommended location where your oracle data files will
-be saved. This will allow them to remain persistent even across re-creations of
-the container.
-
-* Next time you want to start the server, run:
+### Start an Oracle container
 
 ```
-docker start nucore_db
-# wait, it sometimes takes a few minutes to come up
-# "ORA-01033: ORACLE initialization or shutdown in progress" means wait.
+# Feel free to change this to a more suitable directory on your computer.
+# Specifying a directory for the container allows you to reuse the development
+# data, and skips the initialization of an empty database every time you
+# restart the container.
+ORACLE_DATA_DIR=$HOME/oracle_data
+
+# Run the Oracle image as a container named oracle, storing data
+# in the directory specified above. When you run this for the first time,
+# it will take a while to download the image and initialize the database.
+#
+# When the output in the terminal includes a line like:
+#
+#   Done ! The database is ready for use .
+#
+# you can use the database
+docker run \
+  --interactive \
+  --name oracle \
+  --publish 1521:1521 \
+  --tty \
+  --volume $ORACLE_DATA_DIR:/ORCL \
+  store/oracle/database-enterprise:12.2.0.1
+```
+
+When you no longer need the database, in another terminal tab run:
+
+```
+docker stop oracle
+```
+
+The next time you need the database, start it just by running:
+
+```
+docker start --interactive oracle
 ```
 
 ## Setting up the Oracle Client Drivers
 
-##### Install Oracle 11.2 Instant Client
+### Install Oracle Instant Client
 
-* Download Basic, SqlPlus, and SDK from: `http://www.oracle.com/technetwork/topics/intel-macsoft-096467.html`
+1. Enable the homebrew tap for Oracle Instant Client by running `brew tap InstantClientTap/instantclient`.
+1. Run each of these commands, following the displayed instructions for how to download the appropriate .zip files from Oracle’s website. After you download the files and place them in Homebrew’s cache directory, brew will take care of the rest:
+    ```
+    brew install instantclient-basic
+    brew install instantclient-sqlplus
+    brew install instantclient-sdk
+    ```
 
-* Install with:
+### Set Up Environment Variables
 
-```
-sudo mkdir -p /opt/oracle/
-cd /opt/oracle
-
-sudo mv ~/Downloads/instantclient-* /opt/oracle
-sudo unzip instantclient-basic-macos.x64-12.1.0.2.0.zip
-sudo unzip instantclient-sdk-macos.x64-12.1.0.2.0.zip
-sudo unzip instantclient-sqlplus-macos.x64-12.1.0.2.0.zip
-
-sudo ln -s instantclient_12_1 instantclient
-
-cd instantclient
-sudo ln -s libclntsh.dylib.12.1 libclntsh.dylib
-sudo ln -s libocci.dylib.12.1   libocci.dylib
-
-sudo ln -s /opt/oracle/instantclient/sqlplus /usr/local/bin/sqlplus
-```
-
-##### Add Environment Variables to profile
-
-* Add to `~/.profile` (bash) or `~/.zprofile` (zsh)
+1. Add to `~/.profile` (bash) or `~/.zprofile` (zsh)
 
 ```
-export NLS_LANG="AMERICAN_AMERICA.AL32UTF8"
-export ORACLE_HOME=/opt/oracle/instantclient
-export OCI_DIR=$ORACLE_HOME
+# The Oracle adapter for ActiveRecord uses this password to connect as a
+# system user, to be able to create and drop databases appropriately.
+export ORACLE_SYSTEM_PASSWORD=Oradoc_db1
+
+# This is used to specify the default language and encoding for Oracle clients
+export NLS_LANG="AMERICAN_AMERICA.UTF8"
 ```
 
-* `source ~/.profile` or `source ~/.zprofile`, respectively
+1. `source ~/.profile` or `source ~/.zprofile`, to load the changes you just made
 
 
-##### Test your installation:
+### Test Your Installation
 
-* Run this command:
-
-```
-sqlplus myuser/mypassword@//myserver:1521/mydatabase.mydomain.com
-```
-
-* Verify you see an output like this:
+To connect to the Oracle server, run:
 
 ```
-SQL*Plus: Release 12.1.0.2.0 Production on Fri Mar 3 13:48:51 2017
-
-Copyright (c) 1982, 2016, Oracle.  All rights reserved.
-
-ERROR:
-ORA-12154: TNS:could not resolve the connect identifier specified
-
-
-Enter user-name:
+sqlplus "sys/Oradoc_db1@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=ORCLCDB.localdomain)))" as sysdba
 ```
 
-* `^D` out of that and carry on.
+Your output should show something like this:
+
+```
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+
+SQL> 
+```
 
 ## Setting up the Database
 
-##### Install Required Gems
-
-* Make sure you have the `activerecord-oracle_enhanced-adapter` and `ruby-oci8` gems
-enabled.
-
-##### Set up database configuration
-
-* Copy from oracle settings template
-
-```
-cp config/database.yml.oracle.template config/database.yml
-```
-
-* Validate keys in settings are correct for your current application
-
-* Start, setup, and seed the oracle container:
-
-```
-docker/oracle/setup.sh
-# demo:seed is optional
-rake demo:seed
-```
+1. Make sure you have the `activerecord-oracle_enhanced-adapter` and `ruby-oci8` gems enabled in your `Gemfile`.
+1. Copy the Oracle template for `database.yml` by running `cp config/database.yml.oracle.template config/database.yml`.
+1. Run `bundle exec rake db:setup`.
+1. Optionally, run `bundle exec rake demo:seed` if you want to populate the database with demo data.
 
 # Optional Extras
 
-##### Install Oracle SQL Developer
+## Install Oracle SQL Developer
 
 * Download from: `http://www.oracle.com/technetwork/developer-tools/sql-developer/overview/index.html`
 
 * Install into `/Applications`
 
-#### Restore from a backup
+## Restore From Backup
 
-Run `bundle exec rake db:oracle_drop_severe`. This will ensure that your database
-is clean. Without it the import might skip tables due to them already existing.
+1. Run `bundle exec rake db:drop db:create`. This will ensure that your database exists, and that it is empty. Without this step, the import may skip tables which already exist, and it may fail if the database does not exist.
 
-Assuming you used `$HOME/oracle_data` as the volume location when you did `docker run`:
+1. Copy the `.dmp` file to `$ORACLE_DATA_DIR/u01/app/oracle/admin/ORCL/dpdump/` (assuming you set `ORACLE_DATA_DIR` above), so it is located in the server’s default data pump directory.
 
-Copy the `.dmp` file to `$HOME/oracle_data/admin/xe/dpdump/`
+1. Start a bash shell in the `oracle` container:
 
-Get a bash shell inside your container:
+    ```
+    docker exec \
+      --interactive \
+      --tty \
+      oracle \
+      bash
+    ```
+
+1. Run the following command to ensure that the file you copied is available in the `DATA_PUMP_LOCATION` configured on the server:
+
+    ````
+    ln -fsn /ORCL/u01/app/oracle/admin /u01/app/oracle/admin
+    ````
+
+  This only needs to be done once, but if you’re having trouble, rerun it.
+
+1. Import the dump, replacing DUMPFILE with the name of your dump file, and REMAP_SCHEMA with your database’s username if necessary:
 
 ```
-docker exec -it nucore_db bash
-```
-
-Run this (replacing the DUMPFILE filename and the second part of REMAP_SCHEMA with your database's username):
-```
-impdp system/oracle@//localhost:1521/xe DIRECTORY=data_pump_dir DUMPFILE=expdp_schema_COR1PRD_201708191913.dmp REMAP_SCHEMA=bc_nucore:nucore_nu_development
+impdp \
+  system/Oradoc_db1 \
+  DIRECTORY=DATA_PUMP_DIR \
+  DUMPFILE=expdp_schema_COR1PRD_201810021913.dmp \
+  REMAP_SCHEMA=bc_nucore:nucore_open_development
 ```

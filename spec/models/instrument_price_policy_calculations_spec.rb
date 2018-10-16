@@ -147,13 +147,35 @@ RSpec.describe InstrumentPricePolicyCalculations do
       reservation.actual_end_at = now + 1.hour
     end
 
-    it "returns #calculate_cancellation_costs if the reservation was canceled" do
-      expect(reservation.order_detail).to receive(:canceled_at?).and_return true
-      expect(policy).to receive(:calculate_cancellation_costs).with reservation
-      expect(policy).to_not receive :calculate_overage
-      expect(policy).to_not receive :calculate_reservation
-      expect(policy).to_not receive :calculate_usage
-      policy.calculate_cost_and_subsidy reservation
+    describe "cancellation" do
+      let(:options) { { usage_rate: 60, cancellation_cost: 1.23 } }
+      before do
+        policy.product.min_cancel_hours = 1
+      end
+
+      it "charges nothing if canceled far enough in advance" do
+        reservation.order_detail.canceled_at = reservation.reserve_start_at - 3.hours
+        expect(policy.calculate_cost_and_subsidy(reservation)).to be_blank
+      end
+
+      it "charges the cancellation_cost if not far enough in advance" do
+        reservation.order_detail.canceled_at = reservation.reserve_start_at - 30.minutes
+        expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 1.23, subsidy: 0)
+      end
+
+      it "returns the full reservation costs if charge_full_price_on_cancellation is set", feature_setting: { charge_full_price_on_cancellation: true } do
+        policy.charge_full_price_on_cancellation = true
+        reservation.order_detail.canceled_at = reservation.reserve_start_at - 30.minutes
+
+        expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 60, subsidy: 0)
+      end
+
+      it "still returns the cancellation_cost even if charge_full_price_on_cancellation with the feature off", feature_setting: { charge_full_price_on_cancellation: false } do
+        policy.charge_full_price_on_cancellation = true
+        reservation.order_detail.canceled_at = reservation.reserve_start_at - 30.minutes
+
+        expect(policy.calculate_cost_and_subsidy(reservation)).to eq(cost: 1.23, subsidy: 0)
+      end
     end
 
     context "when configured to charge for usage" do

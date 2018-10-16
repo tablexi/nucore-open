@@ -12,11 +12,11 @@
         = safe_join(@searcher.search_params_as_hidden_fields)
 
         = submit_tag t("bulk_email.compose_mail"),
-          data: { format: :html },
+          data: { format: :html, disable_with: false },
           class: "btn btn-primary js--bulk-email-submit-button js--bulk-email-compose-button"
 
       = submit_tag t("bulk_email.export"),
-        data: { format: :csv },
+        data: { format: :csv, disable_with: false },
         class: "btn btn-primary js--bulk-email-submit-button js--bulk-email-download-csv-button"
 
     .clear

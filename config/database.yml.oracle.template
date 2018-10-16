@@ -1,13 +1,13 @@
 defaults: &defaults
   adapter: oracle_enhanced
-  database: <%= ENV["ORACLE_DATABASE"] || "localhost:1521/xe" %>
+  database: (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=ORCLCDB.localdomain)))
+  encoding: utf8
+  password: password
 
 development:
   <<: *defaults
-  username: <%= ENV["ORACLE_USERNAME"] || "nucore_open_development" %>
-  password: <%= ENV["ORACLE_PASSWORD"] || "password" %>
+  username: "c##nucore_open_development"
 
 test:
   <<: *defaults
-  username: <%= ENV["ORACLE_USERNAME"] || "nucore_open_test" %>
-  password: <%= ENV["ORACLE_PASSWORD"] || "password" %>
+  username: "c##nucore_open_test"

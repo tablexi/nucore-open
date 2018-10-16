@@ -12,6 +12,10 @@ class MoveToProblemQueue
   end
 
   def move!
+    # Some scopes may accidentally try send already-complete orders to the queue.
+    # This protects against sending duplicate emails to things already in the queue.
+    return unless @order_detail.pending?
+
     @order_detail.time_data.force_completion = @force
     @order_detail.complete!
     # TODO: Can probably remove this at some point, but it's a safety check for now

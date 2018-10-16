@@ -28,7 +28,9 @@
         - else
           = f.label :order_status
           = @order_detail.order_status
-          = l(@order_detail.reconciled_at.to_date, format: :usa) if @order_detail.reconciled_at
+          - if f.object.reconciled? && current_user.administrator?
+            = l(@order_detail.reconciled_at.to_date, format: :usa)
+            = link_to t("facility_order_details.edit.label.unreconcile"), facility_order_order_detail_reconcilliation_path(current_facility, @order, @order_detail), method: :delete
 
         - if @order_detail.reservation
           .cancel-fee-option

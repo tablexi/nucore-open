@@ -20,7 +20,10 @@ $(function() {
     showOn: "button",
     buttonText: "<i class='fa fa-calendar icon-large'>",
   }).change(function() {
-    $(this).parents("form").submit();
+    var form = $(this).parents('form');
+    var formUrl = form.attr('action');
+    form.attr('action', formUrl + '#' + lastHiddenInstrumentId());
+    form.submit();
   });
 
   //Get the Current Hour, create a class and add it the time div
@@ -52,26 +55,27 @@ $(function() {
   // no animation when first loading
   $('.status_canceled').toggle($('#show_canceled').is(':checked'));
 
-
-  $('.relay_checkbox :checkbox')
-  .bind('click', function(e) {
-    if (confirm("Are you sure you want to toggle the relay?")) {
-      $(this).parent().addClass("loading");
-      $.ajax({
-        url: $(this).data("relay-url"),
-        success: function(data) {
-          updateRelayStatus(data.instrument_status);
-        },
-        data: {
-          switch: $(this).is(":checked") ? "on" : "off"
-        },
-        dataType: 'json'
-      });
-    } else {
-      return false;
-    }
-  })
-  .toggleSwitch();
+  relayCheckboxes = $('.relay_checkbox :checkbox')
+  if (relayCheckboxes.length > 0) {
+    relayCheckboxes.bind('click', function(e) {
+      if (confirm("Are you sure you want to toggle the relay?")) {
+        $(this).parent().addClass("loading");
+        $.ajax({
+          url: $(this).data("relay-url"),
+          success: function(data) {
+            updateRelayStatus(data.instrument_status);
+          },
+          data: {
+            switch: $(this).is(":checked") ? "on" : "off"
+          },
+          dataType: 'json'
+        });
+      } else {
+        return false;
+      }
+    })
+    .toggleSwitch();
+  }
 
   function loadRelayStatuses() {
     $.ajax({
@@ -106,4 +110,17 @@ $(function() {
   $('.relay_checkbox').addClass('loading');
   // Only try to load relay statuses if there are relays to check
   if ($('.relay_checkbox :checkbox').length > 0) loadRelayStatuses();
+
+  function lastHiddenInstrumentId() {
+    var hiddenInstruments = $('.timeline_instrument').filter(function() {
+      return $(window).scrollTop() > $(this).offset().top;
+    });
+
+    return hiddenInstruments.last().attr('id');
+  }
+
+  $('#reservation_left, #reservation_right').on('click', function(event) {
+    var urlWithoutFragment = this.href.split('#')[0]
+    this.href = urlWithoutFragment + '#' + lastHiddenInstrumentId()
+  });
 });

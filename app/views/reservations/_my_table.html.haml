@@ -31,7 +31,7 @@
 
         %td.centered= od.order_status.name
         %td.currency
-          = OrderDetailPresenter.new(od.reload).wrapped_total
+          = OrderDetailPresenter.new(od).wrapped_total
 
 = render "/price_display_footnote"
 = will_paginate(order_details)

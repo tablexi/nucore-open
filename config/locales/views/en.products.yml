@@ -1,5 +1,7 @@
 en:
   views:
     products_common:
+      description:
+        documentation: "Documentation"
       manage:
         none_entered: None Entered

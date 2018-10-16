@@ -50,7 +50,11 @@
                 %strong= "= #{number_to_currency price_policy.subsidized_minimum_cost}"
 
           - if local_assigns[:cancellation]
-            %td.currency= number_to_currency(price_policy.cancellation_cost)
+            %td.currency
+              - if price_policy.charge_full_price_on_cancellation?
+                = price_policy.class.human_attribute_name(:charge_full_price_on_cancellation)
+              - else
+                = number_to_currency(price_policy.cancellation_cost)
 
         - else
           %td.centered{ colspan: 5 }

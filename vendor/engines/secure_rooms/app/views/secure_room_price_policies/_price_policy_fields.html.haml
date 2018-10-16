@@ -17,10 +17,13 @@
     - @price_policies.each do |price_policy|
       - price_group = price_policy.price_group
       = fields_for "price_policy_#{price_group.id}", price_policy do |pp|
-        %tr
+        - row_class = []
+        - row_class << "js--masterInternalRow" if price_group.master_internal?
+        - row_class << "js--adjustmentRow" unless price_group.external? || price_group.master_internal?
+        %tr{class: row_class}
           %td= price_group.name
           %td= price_group.type_string
-          %td= pp.check_box :can_purchase, class: "can_purchase"
+          %td= pp.check_box :can_purchase, class: "js--canPurchase"
           - if price_group.external? || price_group.master_internal?
             = render "time_based_price_policies/amount_row", price_group: price_group, price_policy: price_policy, cancellation: false, minimum_cost: true, pp: pp
           - else

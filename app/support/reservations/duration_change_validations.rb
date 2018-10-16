@@ -10,7 +10,6 @@ class Reservations::DurationChangeValidations
   include ActiveModel::Validations::Callbacks
 
   attr_reader :reservation
-
   validate :start_time_not_changed, unless: "reservation.in_cart?"
   validate :duration_not_shortened, unless: "reservation.in_cart?"
 
@@ -37,6 +36,8 @@ class Reservations::DurationChangeValidations
   end
 
   def duration_not_shortened
+    return unless reservation.has_reserved_times?
+
     duration_was = TimeRange.new(reservation.reserve_start_at_was, reservation.reserve_end_at_was).duration_mins
     duration_is = TimeRange.new(reservation.reserve_start_at, reservation.reserve_end_at).duration_mins
 

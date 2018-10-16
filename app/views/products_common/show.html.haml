@@ -9,19 +9,11 @@
 = content_for :h1 do
   = @product.name
 
-.wysiwyg.pull-left
-  = @product.description
-  - if acting_user.blank?
-    = link_to "Login", new_user_session_path, class: "btn"
-  - elsif @add_to_cart
-    = link_to "Add to cart", add_order_path(acting_user.cart(session_user), order: {order_details: [{product_id: @product.id, quantity: 1}] }), method: :put, class: "btn"
+= render "description", product: @product
 
-- docs = @product.stored_files.info
-- unless docs.empty?
-  .well.pull-right.span4
-    %h3 Documentation
-    %ul.unstyled
-      - docs.each do |stored_file|
-        %li.document
-          = link_to stored_file.name, product_file_path(stored_file)
+- if acting_user.blank?
+  = link_to "Login", new_user_session_path, class: "btn"
+- elsif @add_to_cart
+  = link_to "Add to cart", add_order_path(acting_user.cart(session_user), order: {order_details: [{product_id: @product.id, quantity: 1}] }), method: :put, class: "btn btn-primary"
+
 

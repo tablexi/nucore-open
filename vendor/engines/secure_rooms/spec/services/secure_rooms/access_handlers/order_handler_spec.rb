@@ -85,6 +85,27 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
           end
         end
       end
+
+      context "when orphaned" do
+        let(:occupancy) do
+          create(
+            :occupancy,
+            :orphan,
+            user: user,
+            secure_room: secure_room,
+            account: account,
+          )
+        end
+
+        subject(:order_detail) { described_class.process(occupancy).order_details.first }
+
+        it { is_expected.to be_complete }
+        it { is_expected.to be_problem }
+
+        it "triggers an email" do
+          expect { described_class.process(occupancy) }.to change(ActionMailer::Base.deliveries, :count).by(1)
+        end
+      end
     end
 
     context "without an occupancy account" do

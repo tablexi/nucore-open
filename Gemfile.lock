@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:thoughtbot/shoulda-matchers.git
-  revision: a465e796e88c8e73be67b9b739473e67707674ef
+  revision: e2154f9e4e789fef5011245024b9e4a4eb830ffb
   specs:
-    shoulda-matchers (3.1.2)
+    shoulda-matchers (4.0.0.rc1)
       activesupport (>= 4.2.0)
 
 PATH
@@ -143,7 +143,7 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
-    capybara (3.8.1)
+    capybara (3.9.0)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -402,13 +402,13 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.0.1)
     nio4r (2.3.0)
-    nokogiri (1.8.4)
+    nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
     numerizer (0.1.1)
-    oj (3.6.10)
+    oj (3.6.11)
     orm_adapter (0.5.0)
     paper_trail (9.2.0)
       activerecord (>= 4.2, < 5.3)
@@ -541,7 +541,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    rubocop-rspec (1.29.1)
+    rubocop-rspec (1.30.0)
       rubocop (>= 0.58.0)
     ruby-graphviz (1.2.3)
     ruby-ole (1.2.12.1)
