@@ -508,24 +508,24 @@ li:hover {
 }
 
 #use_tab a {
-  border: solid $useColor 1px !important;
+  border: solid $useColor 1px;
   border-radius: 8px;
   padding: 1px 1px;
   margin-top: 9px;
 }
 
 .manage-mode #use_tab a {
-  border-color: $grey !important;
+  border-color: $grey;
 }
 
 #use_tab.active a {
   text-shadow: none;
-  background-color: $useColor !important;
+  background-color: $useColor;
   color: white;
 }
 
 .manage-mode #use_tab.active a {
-  background-color: $manageColor !important;
+  background-color: $manageColor;
 }
 
 .manage-button {
@@ -534,20 +534,20 @@ li:hover {
   height: 23px;
 }
 
-.manage-button a {
-  border: solid $grey 1px !important;
+.container .nav .manage-button a {
+  border: solid $grey 1px;
   border-radius: 8px;
-  padding: 1px 1px !important;
+  padding: 1px 1px;
   margin-top: 9px;
 }
 
-.manage-mode .manage-button a {
-  border-color: $manageColor !important;
-  background-color: $manageColor !important;
-  text-shadow: none !important;
-  color: white !important;
+.manage-mode .nav .manage-button a {
+  border-color: $manageColor ;
+  background-color: $manageColor;
+  text-shadow: none;
+  color: white;
 }
 
-.manage-mode .manage-button.active a {
-  background-color: $manageColor !important;
+.manage-mode .nav .manage-button.active a {
+  background-color: $manageColor ;
 }
