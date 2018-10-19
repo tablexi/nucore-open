@@ -524,6 +524,12 @@ li:hover {
   color: white;
 }
 
+#use_tab.active > a:hover {
+  background-color: transparent;
+  box-shadow: none;
+  color: $darkGrey;
+}
+
 .manage-mode #use_tab.active a {
   background-color: $manageColor;
 }
