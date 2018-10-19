@@ -507,14 +507,14 @@ li:hover {
   height: 23px;
 }
 
-#use_tab a {
+#use_tab > a {
   border: solid $useColor 1px;
   border-radius: 8px;
   padding: 1px 1px;
   margin-top: 9px;
 }
 
-.manage-mode #use_tab a {
+.manage-mode #use_tab > a {
   border-color: $grey;
 }
 
@@ -534,14 +534,14 @@ li:hover {
   height: 23px;
 }
 
-.container .nav .manage-button a {
+.container .nav .manage-button > a {
   border: solid $grey 1px;
   border-radius: 8px;
   padding: 1px 1px;
   margin-top: 9px;
 }
 
-.manage-mode .nav .manage-button a {
+.manage-mode .nav .manage-button > a {
   border-color: $manageColor ;
   background-color: $manageColor;
   text-shadow: none;
