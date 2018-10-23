@@ -1,0 +1,8 @@
+en:
+  views:
+    devise:
+      sessions:
+        new:
+          title: "!pages.login!"
+          submit: "!pages.login!"
+          forgot_password: Forgot password?

@@ -12,4 +12,9 @@ module ViewHookHelper
     ViewHook.render_view_hook(path, placement, self, args)
   end
 
+  def view_hook_exists?(placement)
+    path = @virtual_path.gsub(%r{/_?}, ".")
+    ViewHook.find(path, placement).any?
+  end
+
 end
