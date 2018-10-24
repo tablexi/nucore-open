@@ -65,7 +65,7 @@ class PricePolicyUpdater
       :unit_cost,
       :unit_subsidy,
     ].tap do |attributes|
-      attributes << :charge_full_price_on_cancellation if SettingsHelper.feature_on?(:charge_full_price_on_cancellation)
+      attributes << :full_price_cancellation if SettingsHelper.feature_on?(:charge_full_price_on_cancellation)
     end
   end
 

@@ -21,7 +21,7 @@
       data: { target: ".js--cancellationCost" }
     - if SettingsHelper.feature_on?(:charge_full_price_on_cancellation)
       = label_tag(nil, class: "checkbox normal-weight") do
-        = pp.check_box :charge_full_price_on_cancellation,
+        = pp.check_box :full_price_cancellation,
           class: "js--fullCancellationCost"
-        = price_policy.class.human_attribute_name(:charge_full_price_on_cancellation)
+        = price_policy.class.human_attribute_name(:full_price_cancellation)
         = tooltip_icon "fa fa-question-circle-o", t("price_policies.charge_full_price_on_cancellation_hint")

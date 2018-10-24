@@ -269,7 +269,7 @@ en:
         minimum_cost: Minimum Cost
         hourly_usage_rate: Rate Per Hour
         cancellation_cost: Reservation Cost
-        charge_full_price_on_cancellation: Full reservation cost
+        full_price_cancellation: Full reservation cost
         unit_cost: Unit Cost
         unit_adjustment: Unit Adjustment
         unit_net_cost: Unit Net Cost
