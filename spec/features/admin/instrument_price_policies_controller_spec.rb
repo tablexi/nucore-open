@@ -76,7 +76,7 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "price_policy_#{base_price_group.id}[minimum_cost]", with: "120"
       fill_in "price_policy_#{base_price_group.id}[cancellation_cost]", with: "15"
 
-      check "price_policy_#{base_price_group.id}[charge_full_price_on_cancellation]"
+      check "price_policy_#{base_price_group.id}[full_price_cancellation]"
       expect(page).to have_field("price_policy_#{base_price_group.id}[cancellation_cost]", disabled: true)
 
       fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "30"
@@ -84,7 +84,7 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "price_policy_#{external_price_group.id}[usage_rate]", with: "120.11"
       fill_in "price_policy_#{external_price_group.id}[minimum_cost]", with: "122"
       fill_in "price_policy_#{external_price_group.id}[cancellation_cost]", with: "31"
-      check "price_policy_#{external_price_group.id}[charge_full_price_on_cancellation]"
+      check "price_policy_#{external_price_group.id}[full_price_cancellation]"
       expect(page).to have_field("price_policy_#{external_price_group.id}[cancellation_cost]", disabled: true)
 
       click_button "Add Pricing Rules"
@@ -92,7 +92,7 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_content("$60.00\n- $30.00\n= $30.00") # Cancer Center Usage Rate
       expect(page).to have_content("$120.00\n- $60.00\n= $60.00") # Cancer Center Minimum Cost
       expect(page).not_to have_content("$15.00")
-      expect(page).to have_content(PricePolicy.human_attribute_name(:charge_full_price_on_cancellation), count: 3)
+      expect(page).to have_content(PricePolicy.human_attribute_name(:full_price_cancellation), count: 3)
     end
   end
 end

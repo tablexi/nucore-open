@@ -1614,7 +1614,7 @@ RSpec.describe OrderDetail do
 
           context "has full cost cancellation fee", feature_setting: { charge_full_price_on_cancellation: true } do
             before do
-              PricePolicy.update_all(charge_full_price_on_cancellation: true, usage_rate: 3, usage_subsidy: 1)
+              PricePolicy.update_all(full_price_cancellation: true, usage_rate: 3, usage_subsidy: 1)
               order_detail.price_policy.reload
             end
 

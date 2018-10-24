@@ -408,7 +408,7 @@ ActiveRecord::Schema.define(version: 20180919211201) do
     t.datetime "expire_date",                                                                           null: false
     t.string   "charge_for"
     t.string   "legacy_rates"
-    t.boolean  "charge_full_price_on_cancellation",                                     default: false, null: false
+    t.boolean  "full_price_cancellation",                                               default: false, null: false
     t.index ["price_group_id"], name: "fk_rails_74aa223960", using: :btree
     t.index ["product_id"], name: "index_price_policies_on_product_id", using: :btree
   end
