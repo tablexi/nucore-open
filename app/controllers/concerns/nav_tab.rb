@@ -36,7 +36,7 @@ module NavTab
   end
 
   def manage_mode?
-    admin_tab? && current_facility.present? && current_facility != Facility.cross_facility
+    admin_tab?
   end
 
   def navigation_links
