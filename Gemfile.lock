@@ -273,6 +273,7 @@ GEM
       dry-logic (~> 0.4, >= 0.4.0)
       dry-types (~> 0.12.0)
     dynamic_form (1.1.4)
+    ed25519 (1.2.4)
     erubis (2.7.0)
     eventmachine (1.2.5)
     exception_notification (4.2.2)
@@ -493,10 +494,6 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
-    rbnacl (4.0.2)
-      ffi
-    rbnacl-libsodium (1.0.16)
-      rbnacl (>= 3.0.1)
     redcarpet (3.4.0)
     ref (2.0.0)
     regexp_parser (1.2.0)
@@ -677,6 +674,7 @@ DEPENDENCIES
   devise
   devise-encryptable
   dynamic_form
+  ed25519 (>= 1.2, < 2.0)
   exception_notification
   eye-patch
   factory_bot_rails
@@ -715,8 +713,6 @@ DEPENDENCIES
   rails-erd
   rails-observers
   rake
-  rbnacl (>= 3.2, < 5.0)
-  rbnacl-libsodium
   rollbar (= 2.15.5)
   rspec-activejob
   rspec-collection_matchers
@@ -752,4 +748,4 @@ RUBY VERSION
    ruby 2.4.1p111
 
 BUNDLED WITH
-   1.16.2
+   1.16.6
