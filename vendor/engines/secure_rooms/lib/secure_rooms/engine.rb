@@ -26,6 +26,8 @@ module SecureRooms
 
       Admin::ServicesController.five_minute_tasks << SecureRooms::AutoOrphanOccupancy
 
+      UserFinder.searchable_columns << "card_number"
+
       ViewHook.add_hook "users.show",
                         "additional_user_fields",
                         "secure_rooms/shared/card_number_form_field"
