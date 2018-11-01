@@ -28,6 +28,10 @@ en:
         badge: Missing Exit
         alert: This order's occupancy does not have an exit time. Please ensure that all times are set and there is a price policy for the date this order was fulfilled.
 
+  search:
+    extra_headers:
+      card_number: Card Number
+
   secure_rooms:
     facility_occupancies:
       table_controls:

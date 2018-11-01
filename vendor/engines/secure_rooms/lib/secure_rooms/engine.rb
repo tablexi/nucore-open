@@ -39,6 +39,9 @@ module SecureRooms
       ViewHook.add_hook "admin.shared.tabnav_users",
                         "after",
                         "secure_rooms/shared/tabnav_users"
+
+      ViewHook.add_hook "search.results_table", "extra_headers", "search/extra_headers"
+      ViewHook.add_hook "search.results_table", "extra_columns", "search/extra_columns"
     end
 
     initializer "secure_rooms.action_controller" do
