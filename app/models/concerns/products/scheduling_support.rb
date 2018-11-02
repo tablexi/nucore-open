@@ -14,10 +14,6 @@ module Products::SchedulingSupport
     before_save :update_schedule_name, if: :name_changed?
   end
 
-  def active_reservations
-    reservations.active
-  end
-
   def purchased_reservations
     reservations.joins(order_detail: :order).merge(Order.purchased)
   end
