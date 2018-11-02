@@ -14,9 +14,7 @@ class Schedule < ApplicationRecord
   # --------
   validates_presence_of :facility
 
-  def self.active
-    where(id: Product.not_archived.with_schedule.select(:schedule_id)).order(:name)
-  end
+  scope :active, -> { where(id: Product.not_archived.with_schedule.select(:schedule_id)).order(:name) }
 
   # Instance methods
   # --------
