@@ -14,17 +14,8 @@ class Schedule < ApplicationRecord
   # --------
   validates_presence_of :facility
 
-  # Scopes
-  # -------
-
   def self.active
-    where("schedules.id in
-      (select schedule_id
-       from products
-       where is_archived = :archived
-       and schedule_id is not null
-       group by schedule_id)",
-          archived: false)
+    where(id: Product.not_archived.with_schedule.select(:schedule_id))
   end
 
   def self.ordered
