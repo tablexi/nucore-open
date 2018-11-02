@@ -41,10 +41,6 @@ module Products::SchedulingSupport
     purchased + admin + offline
   end
 
-  def active_schedule_reservations
-    schedule.reservations.active
-  end
-
   def walkup_available?(time = Time.zone.now)
     # zero and nil should default to 1 minute
     reservation_length = [min_reserve_mins.to_i, reserve_interval.to_i].max
