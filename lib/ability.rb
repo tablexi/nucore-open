@@ -141,7 +141,7 @@ class Ability
         end
 
         can [:administer], User
-        can(:switch_to, User) { |target_user| target_user.active? }
+        can(:switch_to, User, &:active?)
 
         if controller.is_a?(UsersController)
           can [:read, :create, :search, :access_list, :access_list_approvals, :new_external, :orders, :accounts], User

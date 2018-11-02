@@ -1,5 +1,6 @@
-namespace :ldap_authentication do
+# frozen_string_literal: true
 
+namespace :ldap_authentication do
   desc "Check status of LDAP users"
   task user_status: :environment do
     User.authenticated_externally.find_each do |user|
