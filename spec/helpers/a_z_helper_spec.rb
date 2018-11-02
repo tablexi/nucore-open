@@ -10,7 +10,7 @@ RSpec.describe AZHelper do
         FactoryBot.build(:facility, name: "Alpha"),
         FactoryBot.build(:facility, name: "Alpha2"),
         FactoryBot.build(:facility, name: "Delta"),
-        FactoryBot.build(:facility, name: "delta2")
+        FactoryBot.build(:facility, name: "delta2"),
       ]
     end
 
