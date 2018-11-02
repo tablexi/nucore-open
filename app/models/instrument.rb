@@ -49,10 +49,6 @@ class Instrument < Product
   # Instance methods
   # -------
 
-  def time_data_for(order_detail)
-    order_detail.reservation
-  end
-
   def time_data_field
     :reservation
   end
