@@ -4,6 +4,16 @@ class UserFinder
 
   include SearchHelper
 
+  class_attribute :searchable_columns
+
+  self.searchable_columns = [
+    "first_name",
+    "last_name",
+    "username",
+    "CONCAT(first_name, last_name)",
+    "email",
+  ]
+
   def self.search(search_term, limit)
     if search_term.present?
       new(search_term, limit).result
@@ -23,23 +33,11 @@ class UserFinder
 
   private
 
-  def condition_sql
-    <<-SQL
-      (
-          LOWER(first_name) LIKE :search_term
-        OR
-          LOWER(last_name) LIKE :search_term
-        OR
-          LOWER(username) LIKE :search_term
-        OR
-          LOWER(CONCAT(first_name, last_name)) LIKE :search_term
-        OR
-          LOWER(email) LIKE :search_term
-      )
-    SQL
-  end
-
   def relation
+    condition_sql = searchable_columns
+                    .map { |column| "LOWER(#{column}) LIKE :search_term" }
+                    .join(" OR ")
+
     @relation ||= User.where(condition_sql, search_term: @search_term)
   end
 
