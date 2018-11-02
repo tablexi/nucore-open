@@ -315,6 +315,33 @@ RSpec.describe UsersController do
 
   end
 
+  describe "unexpire", feature_setting: { create_users: true } do
+    let(:expired_user) { create(:user, :expired) }
+    let(:facility) { create(:facility) }
+
+    describe "as a facility admin" do
+      let(:facility_admin) { create(:user, :facility_administrator, facility: facility) }
+
+      it "cannot be accessed" do
+        sign_in facility_admin
+        patch :unexpire, params: { facility_id: facility.url_name, id: expired_user.id }
+        expect(response.code).to eq("403")
+        expect(expired_user.reload).to be_expired
+      end
+    end
+
+    describe "as a global admin" do
+      let(:admin) { create(:user, :administrator) }
+
+      it "can mark the user as not expired" do
+        sign_in admin
+        patch :unexpire, params: { facility_id: facility.url_name, id: expired_user.id }
+        expect(expired_user.reload).not_to be_expired
+        expect(expired_user).to be_active
+      end
+    end
+  end
+
   context "orders" do
     before :each do
       @method = :get

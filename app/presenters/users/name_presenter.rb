@@ -21,7 +21,13 @@ module Users
     def render(name)
       parts = Array(name)
       parts << "(#{username})" if username_label?
-      parts << "(#{user.class.human_attribute_name(:suspended)})" if suspended_label? && suspended?
+      if suspended_label?
+        if suspended?
+          parts << "(#{user.class.human_attribute_name(:suspended)})"
+        elsif expired?
+          parts << "(#{user.class.human_attribute_name(:expired)})"
+        end
+      end
       parts.join(" ")
     end
 
