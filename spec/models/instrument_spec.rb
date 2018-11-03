@@ -849,4 +849,16 @@ RSpec.describe Instrument do
       it { expect(subject.offline_category).to eq("out_of_order") }
     end
   end
+
+  describe "#partially_available?" do
+    it "returns true when the instrument has an associated partial_availability" do
+      subject.build_partial_availability
+      expect(subject.partially_available?).to be true
+    end
+
+    it "returns false when the instrument does not have associated partial_availability" do
+      subject.partial_availability = nil
+      expect(subject.partially_available?).to be false
+    end
+  end
 end

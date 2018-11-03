@@ -85,6 +85,10 @@ class Instrument < Product
     true
   end
 
+  def partially_available?
+    partial_availability.present?
+  end
+
   private
 
   def minimum_reservation_is_multiple_of_interval
