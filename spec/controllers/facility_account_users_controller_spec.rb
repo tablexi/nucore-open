@@ -113,16 +113,16 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
 
         before :each do
           @account_user = @account.owner
-          AccountUser.delete(@account_user.id)
+          @account_user.destroy!
 
           @params[:account_user][:user_role] = AccountUser::ACCOUNT_OWNER
-          expect(@account.account_users.owners).not_to be_any
+          expect(@account.account_users.owners).to be_empty
           do_request
         end
 
         it "adds the owner" do
           expect(assigns(:account)).to eq(@account)
-          expect(@account.account_users.owners.count).to eq(1)
+          expect(@account.reload.owner_user).to eq(@purchaser)
           is_expected.to set_flash
           assert_redirected_to facility_account_members_path(@authable, @account)
         end
@@ -215,6 +215,17 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
       expect(assigns(:account_user).deleted_by).to eq(user.id)
       is_expected.to set_flash
       assert_redirected_to facility_account_members_path(@authable, @account)
+    end
+
+    describe "adding to an account that does not pass validation" do
+      before do
+        allow_any_instance_of(ValidatorFactory.validator_class)
+          .to receive(:account_is_open!).and_raise(ValidatorError)
+      end
+
+      it_should_allow(:director) do
+        expect(@account_user.reload.deleted_at).to be_present
+      end
     end
 
   end

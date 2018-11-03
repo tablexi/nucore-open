@@ -80,27 +80,7 @@ class AccountUser < ApplicationRecord
   # [_by_]
   #   the user who is granting the privilege
   def self.grant(user, role, account, by:)
-    transaction do
-      # expire old owner if new
-      if role == AccountUser::ACCOUNT_OWNER
-        # Soft-delete the old owner record
-        account.owner&.update!(
-          deleted_at: Time.current,
-          deleted_by: by.id,
-        )
-      end
-
-      # find non-deleted record for this user and account or init new one
-      # deleted_at MUST be nil to preserve existing audit trail
-      account_user = find_or_initialize_by(account: account, user: user, deleted_at: nil)
-      account_user.update!(
-        user_role: role,
-        created_by_user: by
-      )
-      account_user
-    end
-  rescue ActiveRecord::RecordInvalid
-    # return nothing
+    AccountRoleGrantor.new(account, by: by).grant(user, role)
   end
 
   def can_administer?

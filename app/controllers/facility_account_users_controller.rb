@@ -41,7 +41,7 @@ class FacilityAccountUsersController < ApplicationController
     # account owner might've changed by earlier operation... reload it
     @account.reload
 
-    if @account.errors.any?
+    if @account_user.errors.any?
       flash.now[:error] = "An error was encountered while trying to add #{@user.full_name} to the #{@account.type_string} Account"
       render(action: "new")
     else

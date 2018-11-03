@@ -199,7 +199,7 @@ RSpec.describe AccountUser do
     it "does not persist if there's something wrong with it" do
       old_owner_role = account.owner
       result = described_class.grant(nil, AccountUser::ACCOUNT_OWNER, account, by: account_manager)
-      expect(result).to be_blank
+      expect(result).to be_new_record
       expect(old_owner_role.reload.deleted_at).to be_blank
     end
   end
