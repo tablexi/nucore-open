@@ -44,6 +44,9 @@
             - if order_detail.product.offline?
               = tooltip_icon "fa fa-exclamation-triangle icon-large",
                 text("instruments.offline.note")
+            - elsif order_detail.product.partially_available?
+              = tooltip_icon "fa fa-exclamation-triangle partially-available-warning icon-large", order_detail.product.partial_availability.note
+
 
             - if order_detail.note.present?
               .order-detail-extra.order-detail-note

@@ -25,3 +25,5 @@
 
           - if product.offline?
             = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
+          - elsif product.partially_available?
+            = tooltip_icon "fa fa-exclamation-triangle partially-available-warning icon-large", product.partial_availability.note

@@ -45,10 +45,11 @@
 
 - if @admin_reservations.empty?
   %p.notice= t(".no_upcoming_admin_reservations")
-
 - else
   - if @product.offline?
     %p.alert.alert-danger= t(".instrument_is_offline")
+  - elsif @product.partially_available?
+    %p.alert.alert-warning= t(".instrument_is_partially_available", note: @product.partial_availability.note)
 
   %table.table.table-striped.table-hover
     %thead
