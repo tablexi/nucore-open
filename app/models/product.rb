@@ -62,6 +62,7 @@ class Product < ApplicationRecord
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
   scope :in_active_facility, -> { joins(:facility).where(facilities: { is_active: true }) }
   scope :of_type, ->(type) { where(type: type) }
+  scope :with_schedule, -> { where.not(schedule_id: nil) }
 
   def self.types
     @types ||= [Instrument, Item, Service, TimedService, Bundle]
