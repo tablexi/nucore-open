@@ -89,6 +89,10 @@ en:
         success: The downtime note has been updated
         error: An error occurred while attempting to update the downtime note
 
+    partial_availabilities:
+      created: The instrument has been marked partially available
+      destroyed: The instrument has been marked fully available
+
     order_details:
       cancel:
         success: The reservation has been canceled successfully

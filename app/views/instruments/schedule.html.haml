@@ -25,15 +25,20 @@
     class: "btn-add"
 
   - if current_ability.can?(:create, OfflineReservation)
-    - if @product.online?
+    - if @product.offline?
+      = link_to t(".bring_instrument_online"),
+        facility_instrument_bring_online_path(current_facility, @product),
+        method: :put, class: "btn-add"
+    - elsif @product.partially_available?
+      = link_to t(".mark_instrument_fully_available"),
+        facility_instrument_partial_availability_path(current_facility, @product),
+        method: :delete, class: "btn-add"
+    - else
       = link_to t(".mark_instrument_offline"),
         new_facility_instrument_offline_reservation_path(current_facility, @product),
         class: "btn-add"
-
-    - else
-      = link_to t(".bring_instrument_online"),
-        facility_instrument_bring_online_path(current_facility, @product),
-        method: :put,
+      = link_to t(".mark_instrument_partially_available"),
+        new_facility_instrument_partial_availability_path(current_facility, @product),
         class: "btn-add"
 
   = render_view_hook "after_offline_toggle"
