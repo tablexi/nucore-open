@@ -41,7 +41,7 @@ class Account < ApplicationRecord
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, maximum: 50
 
-  validate :require_owner
+  validate { errors.add(:base, "Must have an account owner") if missing_owner? }
 
   delegate :administrators, to: :account_users
 
@@ -286,12 +286,9 @@ class Account < ApplicationRecord
     false
   end
 
-  def require_owner
-    # a current account owner if required
+  def missing_owner?
     # don't use a scope so we can validate on nested attributes
-    if account_users.none? { |au| au.active? && au.owner? }
-      errors.add(:base, "Must have an account owner")
-    end
+    account_users.none? { |au| au.active? && au.owner? }
   end
 
   private

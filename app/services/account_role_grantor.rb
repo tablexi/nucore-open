@@ -21,8 +21,9 @@ class AccountRoleGrantor
 
       # In order to allow changes once an account is closed (i.e. becomes invalid
       # per the Validator) we cannot run the validations directly on the account.
-      account.require_owner
-      raise ActiveRecord::Rollback if account.errors.any?
+      account_user.errors.add(:base, "Must have an account owner") if account.missing_owner?
+
+      raise ActiveRecord::Rollback if account_user.errors.any?
     end
 
     account_user
