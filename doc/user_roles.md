@@ -82,6 +82,8 @@
 ## Global Roles
   - Administrator
     * Virtually equivalent to being a Facility Administrator for all facilities
+    * May suspend/activate accounts
+    * May suspend/activate users
     * Has no restrictions except in some cross-facility contexts
       - They may not manage billing cross-facility (as Billing Administrators may do)
 
@@ -94,7 +96,7 @@
 
   - Account Manager
     * This role manages accounts and users in a cross-facility context
-    * May add or remove uesrs to virtually any account
-    * May suspend/active accounts
+    * May add or remove users to virtually any account
+    * May suspend/activate accounts
     * May provision new users
     * The Account Manager role has some incompatibilities with the Administrator role
