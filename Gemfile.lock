@@ -617,7 +617,7 @@ GEM
     ttfunk (1.5.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.19)
+    uglifier (4.1.18)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.4.0)
     unicorn (5.4.1)
@@ -737,7 +737,7 @@ DEPENDENCIES
   text_helpers
   therubyracer
   thin
-  uglifier
+  uglifier (= 4.1.18)
   unicorn
   vuejs-rails (~> 1.0.26)
   web-console
