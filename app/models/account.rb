@@ -41,13 +41,7 @@ class Account < ApplicationRecord
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, maximum: 50
 
-  validate do |acct|
-    # a current account owner if required
-    # don't use a scope so we can validate on nested attributes
-    unless acct.account_users.any? { |au| au.deleted_at.nil? && au.user_role == AccountUser::ACCOUNT_OWNER }
-      acct.errors.add(:base, "Must have an account owner")
-    end
-  end
+  validate :require_owner
 
   delegate :administrators, to: :account_users
 
@@ -290,6 +284,14 @@ class Account < ApplicationRecord
   # updated.
   def recreate_journal_rows_on_order_detail_update?
     false
+  end
+
+  def require_owner
+    # a current account owner if required
+    # don't use a scope so we can validate on nested attributes
+    if account_users.none? { |au| au.active? && au.owner? }
+      errors.add(:base, "Must have an account owner")
+    end
   end
 
   private

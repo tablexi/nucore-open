@@ -91,4 +91,8 @@ class AccountUser < ApplicationRecord
     user_role == ACCOUNT_OWNER
   end
 
+  def active?
+    deleted_at.blank?
+  end
+
 end
