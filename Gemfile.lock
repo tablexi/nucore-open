@@ -737,7 +737,7 @@ DEPENDENCIES
   text_helpers
   therubyracer
   thin
-  uglifier
+  uglifier (= 4.1.18)
   unicorn
   vuejs-rails (~> 1.0.26)
   web-console
