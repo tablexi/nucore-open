@@ -54,7 +54,7 @@ class AccountRoleGrantor
     account.transaction do
       yield
     end
-  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid # rubocop:disable Lint/HandleExceptions
     # do nothing
   end
 

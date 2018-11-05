@@ -26,7 +26,7 @@ class FacilityAccountUsersController < ApplicationController
 
   # GET /facilities/:facility_id/accounts/:account_id/account_users/new
   def new
-    @user         = User.find(params[:user_id])
+    @user = User.find(params[:user_id])
     role = current_owner? ? AccountUser::ACCOUNT_OWNER : AccountUser::ACCOUNT_PURCHASER
     @account_user = AccountUser.new(user_role: role)
   end

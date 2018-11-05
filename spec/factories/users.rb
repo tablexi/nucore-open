@@ -55,7 +55,6 @@ FactoryBot.define do
       end
     end
 
-
     trait :purchaser do
       transient do
         account { nil }
