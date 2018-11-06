@@ -85,7 +85,7 @@ class Instrument < Product
     true
   end
 
-  def partially_available?
+  def has_alert?
     partial_availability.present?
   end
 

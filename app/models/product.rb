@@ -300,7 +300,7 @@ class Product < ApplicationRecord
     !(is_archived? || (is_hidden? && !is_operator))
   end
 
-  def partially_available?
+  def has_alert?
     false
   end
 
