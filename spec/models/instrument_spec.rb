@@ -851,13 +851,13 @@ RSpec.describe Instrument do
   end
 
   describe "#has_alert?" do
-    it "returns true when the instrument has an associated partial_availability" do
-      subject.build_partial_availability
+    it "returns true when the instrument has an associated alert" do
+      subject.build_alert
       expect(subject.has_alert?).to be true
     end
 
-    it "returns false when the instrument does not have associated partial_availability" do
-      subject.partial_availability = nil
+    it "returns false when the instrument does not have an associated alert" do
+      subject.alert = nil
       expect(subject.has_alert?).to be false
     end
   end

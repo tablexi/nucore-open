@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreatePartialAvailabilities < ActiveRecord::Migration[5.0]
+class CreateInstrumentAlerts < ActiveRecord::Migration[5.0]
   def change
-    create_table :partial_availabilities do |t|
+    create_table :instrument_alerts do |t|
       t.belongs_to :instrument, null: false, index: true
       t.string :note, limit: 256, null: false
       t.timestamps

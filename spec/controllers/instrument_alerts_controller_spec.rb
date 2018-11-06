@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe PartialAvailabilitiesController do
+RSpec.describe InstrumentAlertsController do
   render_views
 
   let(:user) { FactoryBot.create(:user, :administrator) }
@@ -16,14 +16,14 @@ RSpec.describe PartialAvailabilitiesController do
         post :create, params: {
           facility_id: instrument.facility.url_name,
           instrument_id: instrument.url_name,
-          partial_availability: {
+          instrument_alert: {
             note: "Only accessories A, B, and D work currently.",
           },
         }
       end
 
-      it "creates a partial_availability on the instrument with the specified note" do
-        expect(instrument.partial_availability).not_to be nil
+      it "creates an alert on the instrument with the specified note" do
+        expect(instrument.alert).not_to be nil
       end
 
       it "redirects back to the instrument’s schedule path" do
@@ -40,7 +40,7 @@ RSpec.describe PartialAvailabilitiesController do
         post :create, params: {
           facility_id: instrument.facility.url_name,
           instrument_id: instrument.url_name,
-          partial_availability: {
+          instrument_alert: {
             note: "",
           },
         }
@@ -54,7 +54,7 @@ RSpec.describe PartialAvailabilitiesController do
 
   context "DELETE to :destroy" do
     before do
-      instrument.create_partial_availability(note: "Only the microscope’s left mirror works.")
+      instrument.create_alert(note: "The microscope is using configuration 17 this week.")
       sign_in user
       delete :destroy, params: {
         facility_id: instrument.facility.url_name,

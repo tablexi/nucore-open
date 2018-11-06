@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class PartialAvailability < ApplicationRecord
+class InstrumentAlert < ApplicationRecord
 
-  belongs_to :instrument
+  belongs_to :instrument, inverse_of: :alert
 
   validates :note, presence: true, length: { maximum: 256 }
 

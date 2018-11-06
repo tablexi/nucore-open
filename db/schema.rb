@@ -177,6 +177,14 @@ ActiveRecord::Schema.define(version: 20181102150242) do
     t.index ["facility_id"], name: "fk_facilities", using: :btree
   end
 
+  create_table "instrument_alerts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "instrument_id",             null: false
+    t.string   "note",          limit: 256, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.index ["instrument_id"], name: "index_instrument_alerts_on_instrument_id", using: :btree
+  end
+
   create_table "instrument_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "instrument_id", null: false
     t.boolean  "is_on",         null: false
@@ -347,14 +355,6 @@ ActiveRecord::Schema.define(version: 20181102150242) do
     t.index ["order_import_id"], name: "index_orders_on_order_import_id", using: :btree
     t.index ["state"], name: "index_orders_on_state", using: :btree
     t.index ["user_id"], name: "index_orders_on_user_id", using: :btree
-  end
-
-  create_table "partial_availabilities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "instrument_id",             null: false
-    t.string   "note",          limit: 256, null: false
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.index ["instrument_id"], name: "index_partial_availabilities_on_instrument_id", using: :btree
   end
 
   create_table "payments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

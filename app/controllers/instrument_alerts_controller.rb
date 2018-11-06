@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PartialAvailabilitiesController < ApplicationController
+class InstrumentAlertsController < ApplicationController
 
   admin_tab :all
   layout "two_column"
@@ -10,13 +10,13 @@ class PartialAvailabilitiesController < ApplicationController
   before_action :load_instrument
 
   def new
-    @partial_availability = @instrument.build_partial_availability
+    @instrument_alert = @instrument.build_alert
   end
 
   def create
-    @partial_availability = @instrument.build_partial_availability(partial_availability_params)
+    @instrument_alert = @instrument.build_alert(instrument_alert_params)
 
-    if @partial_availability.save
+    if @instrument_alert.save
       redirect_to facility_instrument_schedule_path(current_facility, @instrument), notice: text("created")
     else
       render action: "new"
@@ -24,7 +24,7 @@ class PartialAvailabilitiesController < ApplicationController
   end
 
   def destroy
-    @instrument.partial_availability.destroy
+    @instrument.alert.destroy
     redirect_to facility_instrument_schedule_path(current_facility, @instrument), notice: text("destroyed")
   end
 
@@ -34,8 +34,8 @@ class PartialAvailabilitiesController < ApplicationController
     @instrument = current_facility.instruments.find_by!(url_name: params[:instrument_id])
   end
 
-  def partial_availability_params
-    params.require(:partial_availability).permit(:note)
+  def instrument_alert_params
+    params.require(:instrument_alert).permit(:note)
   end
 
 end

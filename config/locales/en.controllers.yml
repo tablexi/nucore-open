@@ -89,9 +89,9 @@ en:
         success: The downtime note has been updated
         error: An error occurred while attempting to update the downtime note
 
-    partial_availabilities:
-      created: The instrument has been marked partially available
-      destroyed: The instrument has been marked fully available
+    instrument_alerts:
+      created: An instrument alert has been created
+      destroyed: The instrument alert has been deactivated
 
     order_details:
       cancel:

@@ -15,7 +15,7 @@ class Instrument < Product
   has_many :instrument_price_policies, foreign_key: "product_id"
   has_many :admin_reservations, foreign_key: "product_id"
   has_many :offline_reservations, foreign_key: "product_id"
-  has_one :partial_availability, dependent: :destroy
+  has_one :alert, dependent: :destroy, class_name: "InstrumentAlert"
 
   email_list_attribute :cancellation_email_recipients
 
@@ -86,7 +86,7 @@ class Instrument < Product
   end
 
   def has_alert?
-    partial_availability.present?
+    alert.present?
   end
 
   private
