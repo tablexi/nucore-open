@@ -121,9 +121,9 @@ feature:
   price_change_reason_required_on: true
   can_manage_global_price_groups_on: true
   cross_facility_reports_on: false
-  product_list_columns_on: false
-  azlist_on: false
-  use_manage_on: false
+  product_list_columns_on: true
+  azlist_on: true
+  use_manage_on: true
   facility_banner_notice_on: true
   charge_full_price_on_cancellation_on: true
 
