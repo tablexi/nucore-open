@@ -30,21 +30,21 @@
         facility_instrument_bring_online_path(current_facility, @product),
         method: :put, class: "btn-add"
     - elsif @product.partially_available?
-      = link_to t(".mark_instrument_fully_available"),
+      = link_to t(".deactivate_instrument_alert"),
         facility_instrument_partial_availability_path(current_facility, @product),
         method: :delete, class: "btn-add"
     - else
       = link_to t(".mark_instrument_offline"),
         new_facility_instrument_offline_reservation_path(current_facility, @product),
         class: "btn-add"
-      = link_to t(".mark_instrument_partially_available"),
+      = link_to t(".setup_instrument_alert"),
         new_facility_instrument_partial_availability_path(current_facility, @product),
         class: "btn-add"
 
   = render_view_hook "after_offline_toggle"
 
 - if @product.partially_available?
-  %p.alert.alert-warning= t(".instrument_is_partially_available", note: @product.partial_availability.note)
+  %p.alert.alert-warning= t(".instrument_alert_is_active", note: @product.partial_availability.note)
 
 - if @admin_reservations.empty?
   %p.notice= t(".no_upcoming_admin_reservations")
