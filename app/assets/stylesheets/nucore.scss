@@ -43,26 +43,32 @@ nav ul.nav > li:hover {
 .sidebar-nav {
   @extend .well;
   @extend .well-small;
-  @extend .nav;
-  @extend .nav-list;
 
   margin-bottom: 10px;
+  background-color: $lighterGrey;
+  border-radius: 4px;
+  box-shadow: none;
+  border:none;
+  list-style-type: none;
+
+  
 
   li {
-    line-height: 1.3em;
+    line-height: 2em;
+    color: manageColor;
+    border: none;
+    border-radius: 4px;
+    a {
+      border: none;
+    }
     &.nav-header {
       line-height: 2em;
       margin-top: 0;
     }
     &.divider {
       margin: 0.5em 1px;
+      border: solid $grey 0.5px;
     }
-  }
-
-
-  > .active > a,
-  > .active > a:hover {
-    @extend .highlighted;
   }
 }
 
@@ -458,16 +464,16 @@ body nav .navbar-inner .container .nav, .nav-tabs{
   box-shadow: none;
 }
 
-nav ul.nav > li.active, nav ul.sidebar-nav > 
-li.active, nav ul.nav > li:hover, nav ul.sidebar-nav > 
+nav ul.nav > li.active, nav  > 
+li.active, nav ul.nav > li:hover > 
 li {
   border:none;
   margin-top: 0;
   margin-bottom: -1px;
 }
 
-nav ul.nav > li.active, nav ul.sidebar-nav > 
-li.active, nav ul.nav > li:hover, nav ul.sidebar-nav > 
+nav ul.nav > li.active, nav  > 
+li.active, nav ul.nav > li:hover, nav > 
 li:hover {
   border: none;
   margin-top: 0;
@@ -481,7 +487,7 @@ li:hover {
   transition: ease 0.3s all;
 }
 
-.nav li.active a, .sidebar-nav li.active a {
+.nav > li.active a {
   border: 1px solid $useColor;
   border-radius: 4px 4px 0 0;
   border-bottom-color: transparent;
@@ -493,7 +499,7 @@ li:hover {
   background-color: white;
 }
 
-.manage-mode .nav li.active a, .manage-mode .sidebar-nav li.active a {
+.manage-mode > .nav li.active a, .manage-mode li.active a {
   border-color: $manageColor;
   border-bottom-color: transparent;
 }
