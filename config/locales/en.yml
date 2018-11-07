@@ -1041,6 +1041,9 @@ en:
       mark_instrument_offline: Mark Instrument Offline
       no_upcoming_admin_reservations: There are no upcoming administrative holds.
       reservations_calendar: Reservations Calendar
+      setup_instrument_alert: Setup Instrument Alert
+      deactivate_instrument_alert: Deactivate Instrument Alert
+      instrument_alert_is_active: "An instrument alert is currently active with the note: %{note}"
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"

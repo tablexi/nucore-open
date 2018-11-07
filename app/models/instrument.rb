@@ -15,6 +15,7 @@ class Instrument < Product
   has_many :instrument_price_policies, foreign_key: "product_id"
   has_many :admin_reservations, foreign_key: "product_id"
   has_many :offline_reservations, foreign_key: "product_id"
+  has_one :alert, dependent: :destroy, class_name: "InstrumentAlert"
 
   email_list_attribute :cancellation_email_recipients
 
@@ -82,6 +83,10 @@ class Instrument < Product
 
   def quantity_as_time?
     true
+  end
+
+  def has_alert?
+    alert.present?
   end
 
   private

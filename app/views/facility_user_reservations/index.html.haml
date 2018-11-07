@@ -41,9 +41,7 @@
             - else
               = order_detail.description_as_html_with_facility_prefix
 
-            - if order_detail.product.offline?
-              = tooltip_icon "fa fa-exclamation-triangle icon-large",
-                text("instruments.offline.note")
+            = warning_if_instrument_is_offline_or_partially_available(order_detail.product)
 
             - if order_detail.note.present?
               .order-detail-extra.order-detail-note
