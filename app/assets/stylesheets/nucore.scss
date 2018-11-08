@@ -50,12 +50,9 @@ nav ul.nav > li:hover {
   border:none;
   list-style-type: none;
 
-  
-
   li {
-    line-height: 2em;
+    line-height: 1.9em;
     font-size: 14px;
-    color: $useColor;
     border: none;
     border-radius: 8px;
     padding: 2px 15px;
@@ -67,21 +64,35 @@ nav ul.nav > li:hover {
       margin-top: 0;
     }
     &.divider {
-      margin: 0.5em 1px;
+      margin: 0.5em 1em;
       padding: 0;
       border: solid $grey 0.5px;
     }
   }
 }
-.manage-mode .sidebar-nav > li {
+
+.sidebar-nav > li > a{
+  color: $useColorDark;
+}
+
+.manage-mode .sidebar-nav > li > a{
   color: $manageColorDark;
 }
+
+.sidebar-nav > li.active {
+  background-color: $useColorLight;
+  a {
+    color: $sidebarActiveColor;
+  }
+}
+
 .manage-mode .sidebar-nav > li.active {
   background-color: $manageColorLight;
   a {
     color:$sidebarActiveColor;
   }
 }
+
 li.nav-spacer {
   margin: 1em;
 }
