@@ -16,7 +16,7 @@ namespace :ldap_authentication do
         user.last_name,
         user.created_at&.iso8601,
         user.last_sign_in_at&.iso8601,
-        user.suspended_at&.iso8601
+        user.suspended_at&.iso8601,
       ].join("\t")
     end
   end
