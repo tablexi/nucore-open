@@ -52,7 +52,7 @@
           - if local_assigns[:cancellation]
             %td.currency
               - if price_policy.charge_full_price_on_cancellation?
-                = price_policy.class.human_attribute_name(:charge_full_price_on_cancellation)
+                = price_policy.class.human_attribute_name(:full_price_cancellation)
               - else
                 = number_to_currency(price_policy.cancellation_cost)
 

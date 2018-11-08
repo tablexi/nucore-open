@@ -7,8 +7,7 @@
       = link_to instrument,
         facility_instrument_schedule_path(current_facility, instrument)
 
-    - if instrument.offline?
-      = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
+    = warning_if_instrument_is_offline_or_partially_available(instrument)
 
   .timeline
     .unit_container

@@ -19,12 +19,12 @@
 
 %h2= @instrument
 
-.wysiwyg= @instrument.description
-
 - if @instrument.offline?
   %p.alert.alert-danger= text("instruments.offline.notice")
+- elsif @instrument.has_alert?
+  %p.alert.alert-warning= text("instruments.schedule.instrument_alert_is_active", note: @instrument.alert.note)
 
-= render "documentation"
+= render "products_common/description", product: @instrument
 
 = simple_form_for [@order, @order_detail, @reservation], html: { class: "js--reservationForm js--reservationUpdateCreateAndStart" } do |f|
   = f.error_messages

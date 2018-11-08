@@ -5,6 +5,9 @@
 }
 
 .product_list.columns {
-  flex: 0 0 calc(25% - 2em);
+  flex: 2 0 calc(25% - 2em);
   min-width: 200px;
+}
+.button_row {
+  flex-basis: 100%;
 }

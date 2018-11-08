@@ -849,4 +849,16 @@ RSpec.describe Instrument do
       it { expect(subject.offline_category).to eq("out_of_order") }
     end
   end
+
+  describe "#has_alert?" do
+    it "returns true when the instrument has an associated alert" do
+      subject.build_alert
+      expect(subject.has_alert?).to be true
+    end
+
+    it "returns false when the instrument does not have an associated alert" do
+      subject.alert = nil
+      expect(subject.has_alert?).to be false
+    end
+  end
 end

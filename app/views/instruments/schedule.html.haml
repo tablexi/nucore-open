@@ -25,22 +25,29 @@
     class: "btn-add"
 
   - if current_ability.can?(:create, OfflineReservation)
-    - if @product.online?
+    - if @product.offline?
+      = link_to t(".bring_instrument_online"),
+        facility_instrument_bring_online_path(current_facility, @product),
+        method: :put, class: "btn-add"
+    - elsif @product.has_alert?
+      = link_to t(".deactivate_instrument_alert"),
+        facility_instrument_alert_path(current_facility, @product),
+        method: :delete, class: "btn-add"
+    - else
       = link_to t(".mark_instrument_offline"),
         new_facility_instrument_offline_reservation_path(current_facility, @product),
         class: "btn-add"
-
-    - else
-      = link_to t(".bring_instrument_online"),
-        facility_instrument_bring_online_path(current_facility, @product),
-        method: :put,
+      = link_to t(".setup_instrument_alert"),
+        new_facility_instrument_alert_path(current_facility, @product),
         class: "btn-add"
 
   = render_view_hook "after_offline_toggle"
 
+- if @product.has_alert?
+  %p.alert.alert-warning= t(".instrument_alert_is_active", note: @product.alert.note)
+
 - if @admin_reservations.empty?
   %p.notice= t(".no_upcoming_admin_reservations")
-
 - else
   - if @product.offline?
     %p.alert.alert-danger= t(".instrument_is_offline")

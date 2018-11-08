@@ -280,5 +280,22 @@ RSpec.describe Reservations::DurationChangeValidations do
         it { expect(validator).to be_invalid }
       end
     end
+
+    context "with invalid data" do
+      before { allow(reservation).to receive(:in_cart?).and_return(false) }
+
+      # Validation errors will be on the reservation for being blank
+      it "does not trigger the errors on the start date" do
+        reservation.assign_times_from_params(reserve_start_at: "10/0/2018")
+        expect(reservation.reserve_start_at).to be_blank
+        expect(validator).to be_valid
+      end
+
+      it "does not trigger the errors on the end date" do
+        reservation.assign_times_from_params(reserve_end_at: "10/0/2018")
+        expect(reservation.reserve_start_at).to be_blank
+        expect(validator).to be_valid
+      end
+    end
   end
 end

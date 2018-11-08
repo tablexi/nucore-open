@@ -10,7 +10,7 @@ class NavTab::LinkCollection
   delegate :single_facility?, to: :facility
 
   def initialize(facility, ability)
-    @facility = facility
+    @facility = facility || Facility.cross_facility
     @ability = ability
   end
 

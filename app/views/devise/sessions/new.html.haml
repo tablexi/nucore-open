@@ -1,17 +1,20 @@
 = content_for :h1 do
-  = t("pages.login")
+  = text("title")
 
 = render_view_hook "before_login_form"
 
-= simple_form_for resource, as: resource_name, url: session_path(resource_name) do |f|
-  .form-inputs
-    = f.input :username, required: false, autofocus: true
-    = f.input :password, required: false
-    = f.input :remember_me, as: :boolean if devise_mapping.rememberable?
+- if view_hook_exists?("login_form")
+  = render_view_hook("login_form")
+- else
+  = simple_form_for resource, as: resource_name, url: session_path(resource_name) do |f|
+    .form-inputs
+      = f.input :username, required: false, autofocus: true
+      = f.input :password, required: false
+      = f.input :remember_me, as: :boolean if devise_mapping.rememberable?
 
-    = f.button :submit, t("pages.login"), class: ["btn", "btn-primary"]
+      = f.button :submit, text("submit"), class: ["btn", "btn-primary"]
 
-- if SettingsHelper.feature_on? :password_update
-  = link_to "Forgot password?", :reset_password
+  - if SettingsHelper.feature_on? :password_update
+    %p= link_to text("forgot_password"), :reset_password
 
 = render_view_hook("login_screen_announcement")

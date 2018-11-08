@@ -1,0 +1,22 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: "instruments"
+
+= content_for :tabnav do
+  = render "admin/shared/tabnav_product", secondary_tab: "reservations"
+
+%h2= @instrument
+
+= simple_form_for @instrument_alert, url: facility_instrument_alert_path do |f|
+  = f.error_messages
+
+  %ul.inline
+    %li= f.input :note, as: :text, input_html: { class: "span4", rows: 6 }
+
+  .clearfix
+
+  %ul.inline
+    %li= f.submit t("instruments.schedule.setup_instrument_alert"), class: "btn btn-warning"
+    %li= link_to t("shared.cancel"), facility_instrument_schedule_path

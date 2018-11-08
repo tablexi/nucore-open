@@ -10,6 +10,7 @@
       %th= t(".name")
       %th= t(".username")
       %th= t(".email")
+      = render_view_hook "extra_headers"
   %tbody
     - users.each do |user|
       %tr
@@ -22,3 +23,4 @@
           = render "search/#{search_type}_link", user: UserPresenter.new(user)
         %td= user.username
         %td= user.email
+        = render_view_hook "extra_columns", user: user

@@ -89,6 +89,10 @@ en:
         success: The downtime note has been updated
         error: An error occurred while attempting to update the downtime note
 
+    instrument_alerts:
+      created: An instrument alert has been created
+      destroyed: The instrument alert has been deactivated
+
     order_details:
       cancel:
         success: The reservation has been canceled successfully

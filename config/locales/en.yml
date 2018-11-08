@@ -536,7 +536,6 @@ en:
       cancel: "Stay logged in"
     new:
       label: "Payment source"
-      documentation: "Documentation"
       crumb: "Create Reservation"
       notify: Send Notification
     list:
@@ -798,6 +797,10 @@ en:
       transaction_in_review:
         one: You have one transaction in review
         other: You have %{count} transactions in review
+    role:
+        owner: Owner
+        business_administrator: Business Administrator
+        purchaser: Purchaser
     member_table:
       add_access: Add Access
       remove_access: Remove Access
@@ -1038,6 +1041,9 @@ en:
       mark_instrument_offline: Mark Instrument Offline
       no_upcoming_admin_reservations: There are no upcoming administrative holds.
       reservations_calendar: Reservations Calendar
+      setup_instrument_alert: Setup Instrument Alert
+      deactivate_instrument_alert: Deactivate Instrument Alert
+      instrument_alert_is_active: "An instrument alert is currently active with the note: %{note}"
 
     instrument_fields:
       show_details: "Show reservation details (name, email, etc) on schedule"

@@ -62,6 +62,7 @@ class Product < ApplicationRecord
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
   scope :in_active_facility, -> { joins(:facility).where(facilities: { is_active: true }) }
   scope :of_type, ->(type) { where(type: type) }
+  scope :with_schedule, -> { where.not(schedule_id: nil) }
 
   def self.types
     @types ||= [Instrument, Item, Service, TimedService, Bundle]
@@ -297,6 +298,10 @@ class Product < ApplicationRecord
   def is_accessible_to_user?(user)
     is_operator = user&.operator_of?(facility)
     !(is_archived? || (is_hidden? && !is_operator))
+  end
+
+  def has_alert?
+    false
   end
 
   protected

@@ -25,17 +25,18 @@
 
 .wysiwyg= sanitize current_facility.description
 
-.product_list_container{class: @columns}
-  - if @order_form
-    = form_for @order_form, url: add_order_path(acting_user.cart(session_user)), html: {method: :put } do |f|
-      = render partial: 'product_list', locals: {products: instruments, f: f, title_extra: daily_view_link }
-      = render partial: 'product_list', locals: {products: services, f: f}
-      = render partial: 'product_list', locals: {products: timed_services, f: f}
-      = render partial: 'product_list', locals: {products: items, f: f}
-      = render partial: 'product_list', locals: {products: bundles, f: f}
 
+- if @order_form
+  = form_for @order_form, url: add_order_path(acting_user.cart(session_user)), html: {method: :put, class:['product_list_container', @columns]} do |f|
+    = render partial: 'product_list', locals: {products: instruments, f: f, title_extra: daily_view_link }
+    = render partial: 'product_list', locals: {products: services, f: f}
+    = render partial: 'product_list', locals: {products: timed_services, f: f}
+    = render partial: 'product_list', locals: {products: items, f: f}
+    = render partial: 'product_list', locals: {products: bundles, f: f}
+    .button_row
       = f.submit class: ['btn', 'btn-primary']
-  - else
+- else
+  .product_list_container{class: @columns}
     = render partial: 'product_list', locals: {products: instruments, title_extra: daily_view_link }
     = render partial: 'product_list', locals: {products: services}
     = render partial: 'product_list', locals: {products: timed_services}

@@ -15,6 +15,7 @@ class Instrument < Product
   has_many :instrument_price_policies, foreign_key: "product_id"
   has_many :admin_reservations, foreign_key: "product_id"
   has_many :offline_reservations, foreign_key: "product_id"
+  has_one :alert, dependent: :destroy, class_name: "InstrumentAlert"
 
   email_list_attribute :cancellation_email_recipients
 
@@ -49,10 +50,6 @@ class Instrument < Product
   # Instance methods
   # -------
 
-  def time_data_for(order_detail)
-    order_detail.reservation
-  end
-
   def time_data_field
     :reservation
   end
@@ -86,6 +83,10 @@ class Instrument < Product
 
   def quantity_as_time?
     true
+  end
+
+  def has_alert?
+    alert.present?
   end
 
   private

@@ -14,10 +14,6 @@ module Products::SchedulingSupport
     before_save :update_schedule_name, if: :name_changed?
   end
 
-  def active_reservations
-    reservations.active
-  end
-
   def purchased_reservations
     reservations.joins(order_detail: :order).merge(Order.purchased)
   end
@@ -39,10 +35,6 @@ module Products::SchedulingSupport
       offline = offline.for_date(date)
     end
     purchased + admin + offline
-  end
-
-  def active_schedule_reservations
-    schedule.reservations.active
   end
 
   def walkup_available?(time = Time.zone.now)

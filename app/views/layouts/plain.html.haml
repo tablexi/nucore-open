@@ -2,7 +2,7 @@
 %html
   %head
     = render "/shared/head"
-  %body
+  %body{ class: SettingsHelper.feature_on?(:use_manage) && manage_mode? ? "manage-mode" : "" }
     #content
       .container
         .row
