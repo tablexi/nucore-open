@@ -41,12 +41,11 @@ nav ul.nav > li:hover {
   Sidebar navigation
 */
 .sidebar-nav {
-  @extend .well;
-  @extend .well-small;
 
-  margin-bottom: 10px;
+  margin: 0 0 11px 0;
   background-color: $lighterGrey;
-  border-radius: 4px;
+  border-radius: 8px;
+  padding: 12px 7px 11px 7px;
   box-shadow: none;
   border:none;
   list-style-type: none;
@@ -55,9 +54,11 @@ nav ul.nav > li:hover {
 
   li {
     line-height: 2em;
-    color: manageColor;
+    font-size: 14px;
+    color: $useColor;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    padding: 2px 15px;
     a {
       border: none;
     }
@@ -67,11 +68,20 @@ nav ul.nav > li:hover {
     }
     &.divider {
       margin: 0.5em 1px;
+      padding: 0;
       border: solid $grey 0.5px;
     }
   }
 }
-
+.manage-mode .sidebar-nav > li {
+  color: $manageColorDark;
+}
+.manage-mode .sidebar-nav > li.active {
+  background-color: $manageColorLight;
+  a {
+    color:$sidebarActiveColor;
+  }
+}
 li.nav-spacer {
   margin: 1em;
 }
@@ -444,13 +454,13 @@ body nav .navbar-inner .container .nav, .nav-tabs{
 
 .manage-mode nav .navbar-inner .container .nav, 
 .manage-mode .nav-tabs {
-  border-color: $manageColor;
+  border-color: $manageColorDark;
 }
 
 .alert-info {
   background-color: transparent;
   border-color: transparent;
-  color: $manageColor;
+  color: $manageColorDark;
   font-size: 24px;
   line-height: 1em;
 }
@@ -500,7 +510,7 @@ li:hover {
 }
 
 .manage-mode > .nav li.active a, .manage-mode li.active a {
-  border-color: $manageColor;
+  border-color: $manageColorDark;
   border-bottom-color: transparent;
 }
 
@@ -537,7 +547,7 @@ li:hover {
 }
 
 .manage-mode #use_tab.active a {
-  background-color: $manageColor;
+  background-color: $manageColorDark;
 }
 
 .manage-button {
@@ -554,12 +564,12 @@ li:hover {
 }
 
 .manage-mode .nav .manage-button > a {
-  border-color: $manageColor ;
-  background-color: $manageColor;
+  border-color: $manageColorDark ;
+  background-color: $manageColorDark;
   text-shadow: none;
   color: white;
 }
 
 .manage-mode .nav .manage-button.active a {
-  background-color: $manageColor ;
+  background-color: $manageColorDark ;
 }
