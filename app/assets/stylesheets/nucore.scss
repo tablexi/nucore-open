@@ -58,13 +58,14 @@ nav ul.nav > li:hover {
     padding: 2px 15px;
     a {
       border: none;
+      letter-spacing: -0.6px;
     }
     &.nav-header {
       line-height: 2em;
       margin-top: 0;
     }
     &.divider {
-      margin: 0.5em 1em;
+      margin: 0.4em 1.4em;
       padding: 0;
       border: solid $grey 0.5px;
     }
