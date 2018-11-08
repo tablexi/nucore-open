@@ -501,32 +501,51 @@ li:hover {
   background-color: white;
 }
 
-.nav li a {
-  padding: 13px;
+.container > .nav > li > a , .nav.nav-tabs > li > a{
+  padding: 11px 12px 11px 12px;
   text-decoration: none;
-  color: black;
+  color: $useColorDark;
   transition: ease 0.3s all;
+}
+
+.manage-mode .container > .nav > li > a , .manage-mode .nav.nav-tabs > li > a{
+  color: $manageColorDark;
+}
+
+.container > .nav > li:hover > a {
+  font-weight: bold;
+  color: $useColorDark;
+}
+
+.manage-mode .container > .nav > li:hover > a {
+  color: $manageColorDark;
 }
 
 .nav > li.active a {
   border: 1px solid $useColor;
   border-radius: 4px 4px 0 0;
   border-bottom-color: transparent;
-  background-color: white;
-  
+  background-color: $headerBackgroundColor;
+  font-weight: bold;
 }
-.navbar .nav > .active > a {
+.navbar .nav > li.active > a {
   box-shadow: none;
-  background-color: white;
+  background-color: $headerBackgroundColor;
+  color: $useColorDark;
 }
 
-.manage-mode > .nav li.active a, .manage-mode li.active a {
+.manage-mode .navbar .nav > li.active > a, .manage-mode li.active > a {
   border-color: $manageColorDark;
+  color: $manageColorDark;
   border-bottom-color: transparent;
 }
 
-#use_tab, .manage-button {
+#use_tab, .container > .nav > li.manage-button a{
   text-align: center;
+}
+
+.manage-mode .container > .nav > li.manage-button:hover a{
+  color: $headerBackgroundColor;
 }
 
 #use_tab {
@@ -548,7 +567,7 @@ li:hover {
 #use_tab.active a {
   text-shadow: none;
   background-color: $useColor;
-  color: white;
+  color: $headerBackgroundColor;
 }
 
 #use_tab.active > a:hover {
@@ -574,11 +593,11 @@ li:hover {
   margin-top: 9px;
 }
 
-.manage-mode .nav .manage-button > a {
+.manage-mode .nav > li.manage-button > a {
   border-color: $manageColorDark ;
   background-color: $manageColorDark;
   text-shadow: none;
-  color: white;
+  color: $headerBackgroundColor;
 }
 
 .manage-mode .nav .manage-button.active a {
