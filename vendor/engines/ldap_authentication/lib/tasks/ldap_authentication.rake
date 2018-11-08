@@ -3,9 +3,21 @@
 namespace :ldap_authentication do
   desc "Check status of LDAP users"
   task user_status: :environment do
-    User.authenticated_externally.find_each do |user|
+    # TODO: NU has some users without passwords, but are email-based users. Awaiting
+    # more info from them. I hope to be able to disable them separately.
+    User.authenticated_externally.where("lower(username) <> lower(email)").unexpired.find_each do |user|
       entry = LdapAuthentication::UserEntry.find(user.username)
-      puts "#{user.username} : #{entry ? 'active' : 'inactive'}"
+
+      puts [
+        entry.present? ? "active" : "inactive",
+        user.username,
+        user.email,
+        user.first_name,
+        user.last_name,
+        user.created_at&.iso8601,
+        user.last_sign_in_at&.iso8601,
+        user.suspended_at&.iso8601
+      ].join("\t")
     end
   end
 
