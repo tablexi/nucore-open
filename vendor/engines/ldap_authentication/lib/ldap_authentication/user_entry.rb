@@ -7,7 +7,14 @@ module LdapAuthentication
     # Returns an Array of `LdapAuthentication::UserEntry`s
     def self.search(uid)
       return [] unless uid
-      ldap_entries = admin_ldap.search(filter: Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid))
+
+      ldap_entries = nil
+      ActiveSupport::Notifications.instrument "search.ldap_authentication" do |payload|
+        ldap_entries = admin_ldap.search(filter: Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid))
+        payload[:uid] = uid
+        payload[:results] = ldap_entries
+      end
+
       ldap_entries.map { |entry| new(entry) }
     end
 
