@@ -31,6 +31,7 @@ nav ul.nav > li:hover {
   font-size: 85%;
   border-bottom: 1px solid #ddd;
 }
+
 #breadcrumb .breadcrumb {
   margin: 1em 0;
   padding: 0;
@@ -543,6 +544,7 @@ li:hover {
 
 #use_tab, .container > .nav > li.manage-button a{
   text-align: center;
+  color: $headerColor;
 }
 
 .manage-mode .container > .nav > li.manage-button:hover a{
@@ -603,4 +605,8 @@ li:hover {
 
 .manage-mode .nav .manage-button.active a {
   background-color: $manageColorDark ;
+}
+
+.nav.pull-right {
+  letter-spacing: -0.6px;
 }
