@@ -761,6 +761,7 @@ ActiveRecord::Schema.define(version: 20181102173232) do
     t.string   "expired_note"
     t.index ["card_number"], name: "index_users_on_card_number", using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.index ["expired_at"], name: "index_users_on_expired_at", using: :btree
     t.index ["uid"], name: "index_users_on_uid", using: :btree
     t.index ["username"], name: "index_users_on_username", unique: true, using: :btree
   end
