@@ -13,7 +13,7 @@ en:
         update: Update
         internal: Internal Pricing
       show:
-        unexpire: Un-expire
+        unexpire: Remove Expiration
 
   controllers:
     users:
@@ -28,6 +28,6 @@ en:
       suspend:
         success: User suspended
       unsuspend:
-        success: User re-activated
+        success: User reactivated
       unexpire:
-        success: User un-expired
+        success: Expiration removed from user
