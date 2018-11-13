@@ -110,9 +110,11 @@ en:
             name:
               taken: "Filename already exists for this order"
         account_user:
+          account_missing_owner: Must have an account owner
           attributes:
             user_id:
               taken: "is already a member of this payment source"
+
         journal:
           attributes:
             journal_date:

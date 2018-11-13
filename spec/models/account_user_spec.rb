@@ -175,7 +175,7 @@ RSpec.describe AccountUser do
       )
     end
 
-    it "will still create the purchaser if the account is invalid" do
+    it "will still create the purchaser if the account is invalid per the validator" do
       allow_any_instance_of(ValidatorFactory.validator_class)
         .to receive(:account_is_open!).and_raise(ValidatorError)
 
@@ -201,6 +201,14 @@ RSpec.describe AccountUser do
       result = described_class.grant(nil, AccountUser::ACCOUNT_OWNER, account, by: account_manager)
       expect(result).to be_new_record
       expect(old_owner_role.reload.deleted_at).to be_blank
+    end
+
+    it "creates a new row and deletes the old one when changing the role" do
+      purchaser_account_user = described_class.grant(new_purchaser, AccountUser::ACCOUNT_PURCHASER, account, by: account_manager)
+      ba_account_user = described_class.grant(new_purchaser, AccountUser::ACCOUNT_ADMINISTRATOR, account, by: account_manager)
+
+      expect(purchaser_account_user).not_to eq(ba_account_user)
+      expect(purchaser_account_user.reload.deleted_at).to be_present
     end
   end
 end

@@ -34,15 +34,12 @@ class FacilityAccountUsersController < ApplicationController
   # POST /facilities/:facility_id/accounts/:account_id/account_users
   def create
     @user = User.find(params[:user_id])
-
     @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
-    # account owner might've changed by earlier operation... reload it
-    @account.reload
 
-    if @account_user.errors.none? && @account.errors.none?
+    if @account_user.persisted?
       flash[:notice] = text("create.success", user: @user.full_name, account_type: @account.type_string)
       LogEvent.log(@account_user, :create, current_user)
-      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver_now
+      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver_later
       redirect_to facility_account_members_path(current_facility, @account)
     else
       flash.now[:error] = text("create.error", user: @user.full_name, account_type: @account.type_string)

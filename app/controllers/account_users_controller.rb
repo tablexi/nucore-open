@@ -30,7 +30,7 @@ class AccountUsersController < ApplicationController
     @user = User.find(params[:user_id])
     @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
 
-    if @account_user.errors.none?
+    if @account_user.persisted?
       LogEvent.log(@account_user, :create, current_user)
       flash[:notice] = text("create.success", user: @user.full_name, account_type: @account.type_string)
       redirect_to account_account_users_path(@account)

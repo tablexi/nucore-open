@@ -12,50 +12,39 @@ class AccountRoleGrantor
   def grant(user, role)
     account_user = nil
 
-    within_transaction do
-      # Remove the old owner if we're assigning a new one
-      remove_old_user if role == AccountUser::ACCOUNT_OWNER
+    begin
+      AccountUser.transaction do
+        # Remove the old owner if we're assigning a new one
+        destroy(account.owner) if role == AccountUser::ACCOUNT_OWNER
 
-      account_user = find_or_build_user_role(user, role)
-      account_user.save!
+        # Delete any previous role the user might have had
+        old_account_user = AccountUser.find_by(account: account, user: user, deleted_at: nil)
+        destroy(old_account_user)
 
-      # In order to allow changes once an account is closed (i.e. becomes invalid
-      # per the Validator) we cannot run the validations directly on the account.
-      account_user.errors.add(:base, "Must have an account owner") if account.missing_owner?
+        account_user = account.account_users.build(
+          account: account,
+          user: user,
+          deleted_at: nil,
+          user_role: role,
+          created_by_user: by,
+        )
 
-      raise ActiveRecord::Rollback if account_user.errors.any?
+        account_user.save!
+      end
+    rescue ActiveRecord::RecordInvalid # rubocop:disable Lint/HandleExceptions
+      # do nothing
     end
-
     account_user
   end
 
   private
 
-  def remove_old_user
-    # Soft-delete the old owner record
-    account.owner&.update!(
+  def destroy(account_user)
+    return unless account_user
+    account_user.update!(
       deleted_at: Time.current,
       deleted_by: by.id,
     )
-  end
-
-  def find_or_build_user_role(user, role)
-    # find non-deleted record for this user and account or init new one
-    # deleted_at MUST be nil to preserve existing audit trail
-    account_user = AccountUser.find_or_initialize_by(account: account, user: user, deleted_at: nil)
-    account_user.assign_attributes(
-      user_role: role,
-      created_by_user: by,
-    )
-    account_user
-  end
-
-  def within_transaction
-    account.transaction do
-      yield
-    end
-  rescue ActiveRecord::RecordInvalid # rubocop:disable Lint/HandleExceptions
-    # do nothing
   end
 
 end

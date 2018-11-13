@@ -161,6 +161,11 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
             expect(@account.account_users.purchasers).not_to be_any
           end
 
+          it "has the correct error" do
+            do_request
+            expect(assigns(:account_user).errors).to be_added(:base, "Must have an account owner")
+          end
+
           it "should be prevented" do
             do_request
             expect(assigns(:account)).to eq(@account)
