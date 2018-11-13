@@ -39,6 +39,14 @@ module ApplicationHelper
     send(method, facility, product)
   end
 
+  def warning_if_instrument_is_offline_or_partially_available(instrument)
+    if instrument.offline?
+      tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
+    elsif instrument.has_alert?
+      tooltip_icon "fa fa-exclamation-triangle partially-available-warning icon-large", instrument.alert.note
+    end
+  end
+
   private
 
   def show_currency(order_detail, method)

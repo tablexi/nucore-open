@@ -8,7 +8,7 @@ class ViewHook
       @instance ||= new
     end
 
-    delegate :add_hook, :remove_hook, :render_view_hook, to: :instance
+    delegate :add_hook, :remove_hook, :render_view_hook, :find, to: :instance
 
   end
 

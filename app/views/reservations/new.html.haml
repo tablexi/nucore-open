@@ -21,6 +21,8 @@
 
 - if @instrument.offline?
   %p.alert.alert-danger= text("instruments.offline.notice")
+- elsif @instrument.has_alert?
+  %p.alert.alert-warning= text("instruments.schedule.instrument_alert_is_active", note: @instrument.alert.note)
 
 = render "products_common/description", product: @instrument
 

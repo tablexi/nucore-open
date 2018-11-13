@@ -23,5 +23,4 @@
             %i.fa.fa-lock
             = " (#{product.class.human_attribute_name(:requires_approval_show)})"
 
-          - if product.offline?
-            = tooltip_icon "fa fa-exclamation-triangle icon-large", t("instruments.offline.note")
+          = warning_if_instrument_is_offline_or_partially_available(product)
