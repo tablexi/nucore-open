@@ -517,8 +517,21 @@ li:hover {
 }
 
 .container > .nav > li:hover > a {
-  font-weight: bold;
+  text-shadow: 0 0 0.5px $useColorDark;
   color: $useColorDark;
+}
+
+
+.navbar .nav > .active > a:hover{
+  background: none;
+  background-color: $headerBackgroundColor;
+  box-shadow: none;
+  color: $useColorDark;
+}
+
+.manage-mode .navbar .nav > .active > a:hover{
+  color: $manageColorDark;
+  text-shadow: 0 0 0.5px $manageColorDark;
 }
 
 .manage-mode .container > .nav > li:hover > a {
@@ -532,6 +545,7 @@ li:hover {
   background-color: $headerBackgroundColor;
   font-weight: bold;
 }
+
 .navbar .nav > li.active > a {
   box-shadow: none;
   background-color: $headerBackgroundColor;
