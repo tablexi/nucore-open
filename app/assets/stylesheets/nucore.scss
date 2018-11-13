@@ -122,7 +122,11 @@ li.nav-spacer {
 .footer__logo {
   float: left;
   margin-bottom: 10px;
-  mix-blend-mode: multiply;
+
+  img {
+    height: 21px;
+    mix-blend-mode: multiply;
+  }
 }
 
 /* Acting As Banner */
