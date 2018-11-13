@@ -634,3 +634,44 @@ li:hover {
 .nav.pull-right {
   letter-spacing: $fontSpacing;
 }
+
+
+/*
+ UCONN Redesign Table View
+*/
+td, tr, {
+  transition: ease 0.2s all;
+  border-bottom: solid  $grey 1px;
+}
+.table-striped tbody > tr:nth-child(2n+1) {
+  td {
+    background-color: $lighterGrey;
+  }
+  th {
+    background-color: $lighterGrey;
+  }
+} 
+
+.table {
+  td {
+    background-color: $headerBackgroundColor;
+  }
+
+  th {
+    background-color: $headerBackgroundColor;
+  }
+}
+
+.table tbody > tr:hover, table-striped tbody > tr:hover {
+  td,th {
+    background-color: $lightGrey;
+    border:  none;
+    border-bottom: solid  $grey 1.5px;
+  }
+}
+
+thead {
+  color: $grey;
+  text-transform: uppercase;
+  font-weight: bold;
+}
