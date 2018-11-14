@@ -47,4 +47,9 @@ RSpec.describe WhitespaceNormalizer do
     input = "with\u2028a line separator"
     expect(described_class.normalize(input)).to eq("with\na line separator")
   end
+
+  it "doesn't choke on nil" do
+    input = nil
+    expect(described_class.normalize(input)).to eq(nil)
+  end
 end
