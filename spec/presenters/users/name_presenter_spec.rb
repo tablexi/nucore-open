@@ -6,11 +6,13 @@ RSpec.describe Users::NamePresenter do
   let(:active_user) { build(:user, first_name: "First", last_name: "Lasterson", username: "me@test.com") }
   let(:suspended_user) { build(:user, first_name: "Del", last_name: "Leted", username: "del@test.com", suspended_at: 1.day.ago) }
   let(:expired_user) { build(:user, first_name: "Exp", last_name: "Ired", username: "expired@test.com", expired_at: 1.day.ago) }
+  let(:expired_and_suspended_user) { build(:user, first_name: "Exp", last_name: "Susp", username: "both@test.com", expired_at: 1.day.ago, suspended_at: 1.day.ago) }
 
   describe "defaults" do
     let(:active_name) { described_class.new(active_user) }
     let(:suspended_name) { described_class.new(suspended_user) }
     let(:expired_name) { described_class.new(expired_user) }
+    let(:expired_and_suspended_name) { described_class.new(expired_and_suspended_user) }
 
     describe "full_name" do
       it "renders the active user properly" do
@@ -23,6 +25,10 @@ RSpec.describe Users::NamePresenter do
 
       it "renders the expired user with a tag" do
         expect(expired_name.full_name).to eq("Exp Ired (EXPIRED)")
+      end
+
+      it "renders the suspended and expired with the suspended tag" do
+        expect(expired_and_suspended_name.full_name).to eq("Exp Susp (SUSPENDED)")
       end
     end
 
@@ -37,6 +43,10 @@ RSpec.describe Users::NamePresenter do
 
       it "renders the expired user with a tag" do
         expect(expired_name.last_first_name).to eq("Ired, Exp (EXPIRED)")
+      end
+
+      it "renders the suspended and expired with the suspended tag" do
+        expect(expired_and_suspended_name.last_first_name).to eq("Susp, Exp (SUSPENDED)")
       end
     end
   end
