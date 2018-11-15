@@ -521,6 +521,9 @@ li:hover {
   color: $useColorDark;
 }
 
+.manage-mode .container > .nav > li:hover > a {
+  text-shadow: 0 0 0.5px $manageColorDark;
+}
 
 .navbar .nav > .active > a:hover{
   background: none;
@@ -531,7 +534,6 @@ li:hover {
 
 .manage-mode .navbar .nav > .active > a:hover{
   color: $manageColorDark;
-  text-shadow: 0 0 0.5px $manageColorDark;
 }
 
 .manage-mode .container > .nav > li:hover > a {
