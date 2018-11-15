@@ -14,7 +14,7 @@ RSpec.describe ChartStringReassignmentForm do
 
   describe "#available_accounts" do
     def grant_account_to_user(account, user)
-      AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, account, account_owner)
+      AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, account, by: account_owner)
     end
 
     def grant_accounts_to_user(accounts, user)

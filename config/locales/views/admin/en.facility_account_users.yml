@@ -1,0 +1,9 @@
+en:
+  controllers:
+    facility_account_users:
+      create:
+        success: "%{user} was added to the %{account_type} Account"
+        error: An error was encountered while trying to add %{user} to the %{account_type} Account
+      destroy:
+        success: The user was successfully removed from the payment method
+        error: An error was encountered while attempting to remove the user from the payment method

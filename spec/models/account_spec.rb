@@ -209,6 +209,15 @@ RSpec.describe Account do
       expect(@account.errors[:base]).to eq(["Must have an account owner"])
     end
 
+    it "autosaves the association to the account owner" do
+      user = FactoryBot.create(:user)
+      account = FactoryBot.build(:account)
+      account_user = account.account_users.build(user: user, user_role: AccountUser::ACCOUNT_OWNER, created_by_user: user)
+
+      expect(account.save).to be_truthy
+      expect(account_user).to be_persisted
+    end
+
     it "should find the non-deleted account owner" do
       @user1   = FactoryBot.create(:user)
       @user2   = FactoryBot.create(:user)

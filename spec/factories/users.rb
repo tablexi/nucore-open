@@ -50,7 +50,23 @@ FactoryBot.define do
           user,
           AccountUser::ACCOUNT_ADMINISTRATOR,
           evaluator.account,
-          evaluator.administrator || user,
+          by: evaluator.administrator || user,
+        )
+      end
+    end
+
+    trait :purchaser do
+      transient do
+        account { nil }
+        administrator { nil }
+      end
+
+      after(:create) do |user, evaluator|
+        AccountUser.grant(
+          user,
+          AccountUser::ACCOUNT_PURCHASER,
+          evaluator.account,
+          by: evaluator.administrator,
         )
       end
     end
@@ -75,22 +91,6 @@ FactoryBot.define do
           user: user,
           role: UserRole::FACILITY_DIRECTOR,
           facility: evaluator.facility,
-        )
-      end
-    end
-
-    trait :purchaser do
-      transient do
-        account { nil }
-        administrator { nil }
-      end
-
-      after(:create) do |user, evaluator|
-        AccountUser.grant(
-          user,
-          AccountUser::ACCOUNT_PURCHASER,
-          evaluator.account,
-          evaluator.administrator,
         )
       end
     end

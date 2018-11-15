@@ -6,6 +6,7 @@ class FacilityAccountUsersController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_current_facility
+  before_action :init_account
 
   load_and_authorize_resource class: AccountUser
 
@@ -25,30 +26,24 @@ class FacilityAccountUsersController < ApplicationController
 
   # GET /facilities/:facility_id/accounts/:account_id/account_users/new
   def new
-    @account      = Account.find(params[:account_id])
-    @user         = User.find(params[:user_id])
+    @user = User.find(params[:user_id])
     role = current_owner? ? AccountUser::ACCOUNT_OWNER : AccountUser::ACCOUNT_PURCHASER
     @account_user = AccountUser.new(user_role: role)
   end
 
   # POST /facilities/:facility_id/accounts/:account_id/account_users
   def create
-    @account = Account.find(params[:account_id])
     @user = User.find(params[:user_id])
-    role = create_params[:user_role]
+    @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
 
-    @account_user = @account.add_or_update_member(@user, role, session_user)
-    # account owner might've changed by earlier operation... reload it
-    @account.reload
-
-    if @account.errors.any?
-      flash.now[:error] = "An error was encountered while trying to add #{@user.full_name} to the #{@account.type_string} Account"
-      render(action: "new")
-    else
-      flash[:notice] = "#{@user.full_name} was added to the #{@account.type_string} Account"
+    if @account_user.persisted?
+      flash[:notice] = text("create.success", user: @user.full_name, account_type: @account.type_string)
       LogEvent.log(@account_user, :create, current_user)
-      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver_now
+      Notifier.user_update(account: @account, user: @user, created_by: session_user).deliver_later
       redirect_to facility_account_members_path(current_facility, @account)
+    else
+      flash.now[:error] = text("create.error", user: @user.full_name, account_type: @account.type_string)
+      render(action: "new")
     end
   end
 
@@ -61,14 +56,18 @@ class FacilityAccountUsersController < ApplicationController
 
     if @account_user.save
       LogEvent.log(@account_user, :delete, current_user)
-      flash[:notice] = "The user was successfully removed from the payment method"
+      flash[:notice] = text("destroy.success")
     else
-      flash[:error] = "An error was encountered while attempting to remove the user from the payment method"
+      flash[:error] = text("destroy.error")
     end
     redirect_to facility_account_members_path(current_facility, @account)
   end
 
   private
+
+  def init_account
+    @account = Account.find(params[:account_id])
+  end
 
   def create_params
     params.require(:account_user).permit(:user_role)

@@ -2,9 +2,16 @@
 
 class AccountUser < ApplicationRecord
 
-  belongs_to :user
-  belongs_to :account, inverse_of: :account_users
+  belongs_to :user, required: true
+  belongs_to :account, inverse_of: :account_users, required: true
+  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
   has_many :log_events, as: :loggable
+
+  validates :created_by, presence: true
+  validates :user_role, inclusion: { in: ->(record) { record.class.user_roles }, message: "is invalid" }
+  validates :user_id, uniqueness: { scope: [:account_id, :deleted_at] }, unless: :deleted_at?
+  validates :user_role, uniqueness: { scope: [:account_id, :deleted_at] }, if: -> { owner? && !deleted_at? }
+  validate :validate_account_has_owner
 
   ACCOUNT_PURCHASER = "Purchaser"
   ACCOUNT_OWNER = "Owner"
@@ -71,19 +78,26 @@ class AccountUser < ApplicationRecord
   #   one of this class' constants
   # [_account_]
   #   the account that you want to grant permissions on.
-  # [_granting_user_]
+  # [_by_]
   #   the user who is granting the privilege
-  def self.grant(user, role, account, granting_user)
-    create!(user: user, user_role: role, account: account, created_by: granting_user.id)
+  def self.grant(user, role, account, by:)
+    AccountRoleGrantor.new(account, by: by).grant(user, role)
   end
 
   def can_administer?
     deleted_at.nil? && AccountUser.admin_user_roles.any? { |r| r == user_role }
   end
 
-  validates_presence_of :created_by
-  validates_inclusion_of :user_role, in: user_roles, message: "is invalid"
-  validates_uniqueness_of :user_id, scope: [:account_id, :deleted_at]
-  validates_uniqueness_of :user_role, scope: [:account_id, :deleted_at], if: ->(o) { o.user_role == ACCOUNT_OWNER }
+  def owner?
+    user_role == ACCOUNT_OWNER
+  end
+
+  def active?
+    deleted_at.blank?
+  end
+
+  def validate_account_has_owner
+    errors.add(:base, :account_missing_owner) if account&.missing_owner?
+  end
 
 end
