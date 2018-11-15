@@ -591,11 +591,4 @@ namespace :demo do
     order_detail.actual_subsidy = costs[:subsidy]
     order_detail.save!
   end
-
-  def dump_record(model)
-    if model.new_record?
-      puts "#{model.class.name} CREATE FAILED!"
-      model.errors.full_messages.each { |m| puts m }
-    end
-  end
 end
