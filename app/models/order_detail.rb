@@ -499,12 +499,6 @@ class OrderDetail < ApplicationRecord
     groups.uniq
   end
 
-  # set the object's response_set
-  def response_set!(response_set)
-    self.response_set = response_set
-    save
-  end
-
   # returns true if the associated survey response set has been completed
   def survey_completed?
     external_service_receiver.present?
