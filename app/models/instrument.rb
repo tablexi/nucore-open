@@ -67,10 +67,6 @@ class Instrument < Product
     true
   end
 
-  def restriction_levels_for(user)
-    product_access_groups.joins(:product_users).where(product_users: { user_id: user.id })
-  end
-
   def set_default_pricing
     PriceGroup.globals.find_each do |pg|
       PriceGroupProduct.create!(product: self, price_group: pg, reservation_window: PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
