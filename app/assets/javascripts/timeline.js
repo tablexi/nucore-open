@@ -113,7 +113,7 @@ $(function() {
 
   function lastHiddenInstrumentId() {
     var hiddenInstruments = $('.timeline_instrument').filter(function() {
-      return $(window).scrollTop() > $(this).offset().top;
+      return $(window).scrollTop() + $('.timeline_header').height() > $(this).offset().top;
     });
 
     return hiddenInstruments.last().attr('id');
