@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-def assert_nil(x)
-  assert_equal nil, x
-end
-
 #
 # Asserts that the model +var+
 # no longer exists in the DB
