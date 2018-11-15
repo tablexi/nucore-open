@@ -7,6 +7,7 @@ tmp/
 sqlnet.log
 config/database.yml
 config/ldap.yml
+oracle/
 public/plugin_assets/
 public/files/
 public/assets/

@@ -14,15 +14,10 @@ Follow these instructions to set up the Oracle database to run in Docker, but th
 ### Start an Oracle container
 
 ```
-# Feel free to change this to a more suitable directory on your computer.
-# Specifying a directory for the container allows you to reuse the development
-# data, and skips the initialization of an empty database every time you
-# restart the container.
-ORACLE_DATA_DIR=$HOME/oracle_data
-
 # Run the Oracle image as a container named oracle, storing data
-# in the directory specified above. When you run this for the first time,
-# it will take a while to download the image and initialize the database.
+# in the directory oracle/, which is ignored in git.
+# When you run this for the first time, it will take a while to download
+# the image and initialize the database.
 #
 # When the output in the terminal includes a line like:
 #
@@ -34,7 +29,7 @@ docker run \
   --name oracle \
   --publish 1521:1521 \
   --tty \
-  --volume $ORACLE_DATA_DIR:/ORCL \
+  --volume oracle:/ORCL \
   store/oracle/database-enterprise:12.2.0.1
 ```
 
@@ -114,7 +109,7 @@ SQL>
 
 1. Run `bundle exec rake db:drop db:create`. This will ensure that your database exists, and that it is empty. Without this step, the import may skip tables which already exist, and it may fail if the database does not exist.
 
-1. Copy the `.dmp` file to `$ORACLE_DATA_DIR/u01/app/oracle/admin/ORCL/dpdump/` (assuming you set `ORACLE_DATA_DIR` above), so it is located in the server’s default data pump directory.
+1. Copy the `.dmp` file to `oracle/u01/app/oracle/admin/ORCL/dpdump/` (assuming you are using `oracle/` as the data directory, per above), so it is located in the server’s default data pump directory.
 
 1. Start a bash shell in the `oracle` container:
 
