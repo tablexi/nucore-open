@@ -151,17 +151,6 @@ class OrderDetail < ApplicationRecord
     end
   end
 
-  def self.for_facility_url(facility_url)
-    details = all.joins(:order)
-
-    unless facility_url.nil?
-      details = details.joins(order: :facility)
-      details = details.where(facilities: { url_name: facility_url })
-    end
-
-    details
-  end
-
   def self.in_dispute
     where("dispute_at IS NOT NULL")
       .where(dispute_resolved_at: nil)
