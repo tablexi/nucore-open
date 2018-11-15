@@ -59,7 +59,7 @@ nav ul.nav > li:hover {
     padding: 2px 15px;
     a {
       border: none;
-      letter-spacing: -0.6px;
+      letter-spacing: $fontSpacing;
     }
     &.nav-header {
       line-height: 2em;
@@ -626,5 +626,5 @@ li:hover {
 }
 
 .nav.pull-right {
-  letter-spacing: -0.6px;
+  letter-spacing: $fontSpacing;
 }

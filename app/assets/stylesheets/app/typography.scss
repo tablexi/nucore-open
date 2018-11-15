@@ -1,6 +1,8 @@
+$fontSpacing: -0.6px;
+
 a { /* "links" */
   text-decoration: none;
-  letter-spacing: -0.6px;
+  letter-spacing: $fontSpacing;
 }
 
 a:hover {
