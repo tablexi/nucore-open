@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-def assert_false(x)
-  assert(!x)
-end
-
 def assert_not_valid(x)
   assert !x.valid?
 end
