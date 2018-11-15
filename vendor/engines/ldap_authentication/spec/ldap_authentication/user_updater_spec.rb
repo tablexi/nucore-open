@@ -12,10 +12,6 @@ RSpec.describe LdapAuthentication::UserUpdater do
     allow(LdapAuthentication::UserEntry).to receive(:find).with("xyz789").and_return(nil)
   end
 
-  def update_user(user)
-    described_class.new(user).update_from_ldap
-  end
-
   it "updates the attributes after successful ldap authentication" do
     user = create(:user, username: "abc123")
     described_class.new(user).update_from_ldap
