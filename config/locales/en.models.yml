@@ -229,6 +229,7 @@ en:
         last_sign_in_at: Last Login
         full_name: Full Name
         suspended: SUSPENDED
+        expired: EXPIRED
       facility:
         banner_notice: Banner Notice
         fax_number: Fax Number

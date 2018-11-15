@@ -13,6 +13,11 @@ FactoryBot.define do
       suspended_at { 1.day.ago }
     end
 
+    trait :expired do
+      expired_at { 1.day.ago }
+      expired_note { "Expired" }
+    end
+
     after(:create) do |user, _|
       user.create_default_price_group!
     end

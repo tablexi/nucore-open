@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181102150242) do
+ActiveRecord::Schema.define(version: 20181102173232) do
 
   create_table "account_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "account_id",            null: false
@@ -757,8 +757,11 @@ ActiveRecord::Schema.define(version: 20181102150242) do
     t.integer  "uid"
     t.datetime "suspended_at"
     t.string   "card_number"
+    t.datetime "expired_at"
+    t.string   "expired_note"
     t.index ["card_number"], name: "index_users_on_card_number", using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.index ["expired_at"], name: "index_users_on_expired_at", using: :btree
     t.index ["uid"], name: "index_users_on_uid", using: :btree
     t.index ["username"], name: "index_users_on_username", unique: true, using: :btree
   end

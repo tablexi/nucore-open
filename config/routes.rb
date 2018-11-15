@@ -146,6 +146,7 @@ Nucore::Application.routes.draw do
         end
         patch "suspend", on: :member
         patch "unsuspend", on: :member
+        patch "unexpire", on: :member
       end
 
       get "switch_to",    to: "users#switch_to"

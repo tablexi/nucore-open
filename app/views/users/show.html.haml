@@ -15,16 +15,23 @@
   = f.input :email
   = f.input :last_sign_in_at, default_value: "none"
   = f.input :internal?, label: text("views.users.edit.internal") if SettingsHelper.feature_on?(:user_based_price_groups)
-  = f.input :suspended_at unless f.object.active?
+  = f.input :suspended_at if f.object.suspended?
+  = f.input :expired_at if f.object.expired?
+  -# Only show to global admins per future ticket for suspended note #141852
+  = f.input :expired_note if f.object.expired? && current_user.administrator?
   = render_view_hook "additional_user_fields", f: f
 
 - if can? :edit, @user
   %ul.inline
     %li= link_to text("shared.edit"), edit_facility_user_path(current_facility, @user), class: "btn btn-primary"
 
-    - if can? :deactivate, @user
-      - if @user.active?
-        %li= link_to t("shared.suspend"), suspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
-      - else
+    - if can?(:unexpire, @user) && @user.expired?
+      %li= link_to text("unexpire"), unexpire_facility_user_path(current_facility, @user), class: "btn", method: :patch
+    - elsif can? :deactivate, @user
+      - if @user.suspended?
         %li= link_to t("shared.activate"), unsuspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
+      - else
+        %li= link_to t("shared.suspend"), suspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
+
+
 
