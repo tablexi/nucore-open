@@ -56,8 +56,4 @@ RSpec.describe Reports::InstrumentDayReportsController do
     end
   end
 
-  def assert_report_data_init(_label)
-    expect(assigns(:report_data)).to eq(Reservation.all)
-  end
-
 end

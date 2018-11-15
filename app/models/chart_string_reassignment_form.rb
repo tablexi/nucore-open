@@ -12,10 +12,6 @@ class ChartStringReassignmentForm
     @available_accounts = available_accounts
   end
 
-  def available_accounts?
-    @available_accounts.any?
-  end
-
   def available_accounts
     @order_details.map(&:available_accounts).flatten.uniq.sort_by(&:description)
   end

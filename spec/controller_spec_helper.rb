@@ -250,12 +250,3 @@ def maybe_grant_always_sign_in(user_sym)
   user = instance_variable_get("@#{user_sym}")
   grant_and_sign_in(user)
 end
-
-def split_date_to_params(key, date)
-  {
-    :"#{key}_date" => format_usa_date(date),
-    :"#{key}_hour" => date.strftime("%I"),
-    :"#{key}_min" => date.min.to_s,
-    :"#{key}_meridian" => date.strftime("%p"),
-  }
-end

@@ -123,12 +123,4 @@ RSpec.describe AffiliatesController do
     expect(assigns(:affiliate).name).to be_blank
     is_expected.to render_template template
   end
-
-  def no_attrs_test
-    @params[:affiliate] = nil
-    maybe_grant_always_sign_in :admin
-    do_request
-    expect(flash[:error]).to be_present
-    yield if block_given?
-  end
 end

@@ -172,10 +172,6 @@ class Account < ApplicationRecord
     self.expires_at = parse_usa_date(str) if str
   end
 
-  def account_pretty
-    to_s true
-  end
-
   def account_list_item
     "#{account_number} #{description}"
   end

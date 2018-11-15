@@ -48,20 +48,4 @@ RSpec.describe Reports::InstrumentReportsController do
     # further testing in spec/models/reports/instrument_utilization_report_spec.rb
   end
 
-  def assert_report_data_init(_label)
-    reservations = Reservation.all
-    expect(assigns(:report_data)).to eq(reservations)
-    expect(assigns(:totals)).to be_is_a Array
-
-    reserved_hours = 0
-    actual_hours = 0
-    reservations.each do |res|
-      reserved_hours += to_hours(res.duration_mins)
-      actual_hours += to_hours(res.actual_duration_mins)
-    end
-
-    expect(assigns(:totals)[0]).to eq(reserved_hours)
-    expect(assigns(:totals)[1]).to eq(actual_hours)
-  end
-
 end

@@ -16,10 +16,6 @@ module NUCore
 
   class PurchaseException < NUCore::Error; end
 
-  def self.portal
-    "nucore"
-  end
-
   module Database
 
     def self.oracle?
