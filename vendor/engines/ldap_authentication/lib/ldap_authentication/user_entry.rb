@@ -52,11 +52,11 @@ module LdapAuthentication
       UserConverter.new(self).to_user
     end
 
-    def self.with_retry(errors = [Net::LDAP::Error], max_attempts: 3)
+    def self.with_retry(max_attempts = 3)
       tries = 0
       begin
         yield
-      rescue *errors => e
+      rescue Net::LDAP::Error => e
         tries += 1
         tries >= max_attempts ? raise : retry
       end
