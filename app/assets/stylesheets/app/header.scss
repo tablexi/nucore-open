@@ -74,3 +74,8 @@ header {
   }
 }
 
+@media screen and (max-width: 767px) { 
+  .navbar.navbar-static-top.hide-from-print.visible-with-nav {
+    margin-top: 50px;
+  }
+}
