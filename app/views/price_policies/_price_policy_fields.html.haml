@@ -2,7 +2,7 @@
   = javascript_include_tag "price_policy"
 
 - price_policy = @price_policies.first
-= render "price_policies/dates", f: f, price_policy: price_policy
+= render "price_policies/common_fields", f: f, price_policy: price_policy
 
 %table.table.table-striped.table-hover.price-policy-table
   %thead
