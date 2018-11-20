@@ -209,11 +209,6 @@ class FacilityReservationsController < ApplicationController
       (@reservation.reserve_start_at_changed? || @reservation.reserve_end_at_changed?)
   end
 
-  def actual_changed?
-    @reservation.can_edit_actuals? &&
-      (@reservation.actual_start_at_changed? || @reservation.actual_end_at_changed?)
-  end
-
   def problem_order_details
     current_facility
       .problem_reservation_order_details
