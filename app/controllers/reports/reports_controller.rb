@@ -132,10 +132,6 @@ module Reports
       render template: "reports/report", layout: false
     end
 
-    def report_data_request?
-      params[:export_id] && params[:export_id] == "report_data"
-    end
-
   end
 
 end
