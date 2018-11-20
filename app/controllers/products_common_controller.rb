@@ -137,8 +137,4 @@ class ProductsCommonController < ApplicationController
   end
   helper_method :singular_object_name
 
-  def session_user_can_override_restrictions?(product)
-    session_user.present? && session_user.can_override_restrictions?(product)
-  end
-
 end
