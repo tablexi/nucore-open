@@ -9,7 +9,7 @@ module Reports
 
     attr_reader :order_status_id, :current_facility, :date_range_field,
                 :date_range_start, :date_range_end,
-                :extra_joins, :extra_preloads, :batch_size, :options
+                :extra_preloads, :batch_size, :options
 
     def initialize(options = {})
       @options = options
