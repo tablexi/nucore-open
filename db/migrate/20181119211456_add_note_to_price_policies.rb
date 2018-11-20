@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddNoteToPricePolicies < ActiveRecord::Migration[5.0]
   def change
     change_table :price_policies do |t|

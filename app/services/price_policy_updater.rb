@@ -51,14 +51,14 @@ class PricePolicyUpdater
   end
 
   def permitted_price_group_attributes(price_group)
-    @params["price_policy_#{price_group.id}"]&.permit(*allowed_attributes) || { can_purchase: false }
+    @params["price_policy_#{price_group.id}"]&.permit(*permitted_params) || { can_purchase: false }
   end
 
   def permitted_common_params
     @params.permit(:charge_for, :note)
   end
 
-  def allowed_attributes
+  def permitted_params
     [
       :can_purchase,
       :usage_rate,
