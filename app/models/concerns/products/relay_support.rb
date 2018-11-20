@@ -26,10 +26,6 @@ module Products::RelaySupport
     instrument_statuses.order("created_at DESC").first
   end
 
-  def has_relay?
-    relay && (relay.is_a?(RelayDummy) || relay.ip && relay.port)
-  end
-
   def has_real_relay?
     relay && !relay.is_a?(RelayDummy) && relay.ip && relay.port
   end
