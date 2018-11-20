@@ -153,7 +153,7 @@ RSpec.describe ProductAccessoriesController do
       end
 
       it "soft deletes the accessory" do
-        expect(assigns(:product_accessory).deleted_at).not_to be_nil
+        expect(assigns(:product_accessory).deleted_at).to be_present
       end
 
       it "redirects to index" do
