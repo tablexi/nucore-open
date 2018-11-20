@@ -55,7 +55,7 @@ class PricePolicyUpdater
   end
 
   def permitted_common_params
-    @params.permit(:charge_for, :note)
+    @params.permit(:charge_for, :note, :created_by_id)
   end
 
   def permitted_params

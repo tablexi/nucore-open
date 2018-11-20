@@ -84,6 +84,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         price_groups = assigns[:price_policies].map(&:price_group)
         expect(price_groups).to contain_all PriceGroup.all
       end
+
       it "sets the policies in the correct order" do
         @price_group.update_attributes(display_order: 2)
         @price_group2.update_attributes(display_order: 1)
@@ -306,6 +307,11 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           expect(assigns[:expire_date]).to be_blank
           expect(assigns[:price_policies].first.errors).to be_added(:expire_date, :blank)
           expect(assigns[:price_policies]).to all(be_new_record)
+        end
+
+        it "sets the created_by" do
+          do_request
+          expect(assigns[:price_policies].map(&:created_by)).to all eq(@director)
         end
       end
     end

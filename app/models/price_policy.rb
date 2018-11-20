@@ -6,6 +6,7 @@ class PricePolicy < ApplicationRecord
 
   belongs_to :price_group
   belongs_to :product
+  belongs_to :created_by, class_name: "User"
   has_many :order_details
 
   validates :start_date, :expire_date, presence: true
