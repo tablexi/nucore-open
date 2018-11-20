@@ -116,11 +116,6 @@ class ProductsCommonController < ApplicationController
     product_class.where(facility: current_facility).alphabetized
   end
 
-  def price_policy_available_for_product?
-    groups = (acting_user.price_groups + acting_user.account_price_groups).flatten.uniq.collect(&:id)
-    @product.can_purchase?(groups)
-  end
-
   # Dynamically get the proper object from the database based on the controller name
   def init_product
     @product = current_facility_products.find_by!(url_name: params[:"#{singular_object_name}_id"] || params[:id])
