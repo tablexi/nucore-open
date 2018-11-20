@@ -8,8 +8,7 @@ module Reports
     BATCH_SIZE = 500
 
     attr_reader :order_status_id, :current_facility, :date_range_field,
-                :date_range_start, :date_range_end,
-                :extra_preloads, :batch_size, :options
+                :date_range_start, :date_range_end, :batch_size, :options
 
     def initialize(options = {})
       @options = options
