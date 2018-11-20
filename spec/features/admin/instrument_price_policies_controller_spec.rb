@@ -54,6 +54,8 @@ RSpec.describe InstrumentPricePoliciesController do
     click_link "Pricing"
     click_link "Add Pricing Rules"
 
+    fill_in "Note", with: "This is my note"
+
     fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
     fill_in "price_policy_#{base_price_group.id}[minimum_cost]", with: "120"
     fill_in "price_policy_#{base_price_group.id}[cancellation_cost]", with: "15"
@@ -101,6 +103,8 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "price_policy_#{external_price_group.id}[cancellation_cost]", with: "31"
       check "price_policy_#{external_price_group.id}[full_price_cancellation]"
       expect(page).to have_field("price_policy_#{external_price_group.id}[cancellation_cost]", disabled: true)
+
+      fill_in "Note", with: "This is my note"
 
       click_button "Add Pricing Rules"
 

@@ -44,6 +44,8 @@ RSpec.describe TimedServicePricePoliciesController, :js do
     click_link "Pricing"
     click_link "Add Pricing Rules"
 
+    fill_in "Note", with: "This is my note"
+
     fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "100.00"
     fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "25.25"
     uncheck "price_policy_#{external_price_group.id}[can_purchase]"
