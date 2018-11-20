@@ -318,12 +318,6 @@ class Reservation < ApplicationRecord
     1
   end
 
-  protected
-
-  def has_order_detail?
-    !order_detail.nil?
-  end
-
   private
 
   def auto_save_order_detail
