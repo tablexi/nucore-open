@@ -259,10 +259,6 @@ class Reservation < ApplicationRecord
     Time.current < reserve_start_at - product_lock_window.hours
   end
 
-  def outside_lock_window?
-    before_lock_window? || Time.current >= reserve_start_at || in_grace_period?
-  end
-
   def inside_lock_window?
     !before_lock_window?
   end
