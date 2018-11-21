@@ -74,3 +74,14 @@ header {
   }
 }
 
+@media screen and (max-width: 660px) { 
+  .navbar.navbar-static-top.hide-from-print.visible-with-nav {
+    margin-top: 50px;
+  }
+}
+
+@media screen and (max-width: 580px) { 
+  .navbar.navbar-static-top.hide-from-print.visible-with-nav {
+    margin-top: 80px;
+  }
+}

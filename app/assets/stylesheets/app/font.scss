@@ -1,7 +1,11 @@
 /* define fonts */
 
 /*
-Copyright (c) [year] [fullname] ([email])
+Works Sans
+Copyright (c) [2015] [Wei Huang] ([https://fonts.google.com/specimen/Work+Sans])
+
+Inter
+Copyright (c) [2018] [Rasmus Andersson] ([rasmus@notion.se])
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
@@ -102,6 +106,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   src: font-url('Inter-UI-Regular.woff2') format('woff2'),
   font-url('Inter-UI-Regular.woff') format('woff');
 }
+
 @font-face {
   font-family: 'Inter UI';
   font-style:  normal;
@@ -109,12 +114,21 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   src: font-url('Inter-UI-Medium.woff2') format('woff2'),
   font-url('Inter-UI-Medium.woff') format('woff');
 }
+
 @font-face {
   font-family: 'Inter UI';
   font-style:  normal;
   font-weight: 700;
   src: font-url('Inter-UI-Bold.woff2') format('woff2'),
   font-url('Inter-UI-Bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'WorkSans';
+  font-style:  regular;
+  font-weight: 500;
+  src: font-url('WorkSans-Regular.ttf') format('truetype'),
+  font-url('WorkSans-Regular.ttf') format('truetype');
 }
 
 /* use them */

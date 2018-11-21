@@ -31,6 +31,7 @@ nav ul.nav > li:hover {
   font-size: 85%;
   border-bottom: 1px solid #ddd;
 }
+
 #breadcrumb .breadcrumb {
   margin: 1em 0;
   padding: 0;
@@ -41,28 +42,56 @@ nav ul.nav > li:hover {
   Sidebar navigation
 */
 .sidebar-nav {
-  @extend .well;
-  @extend .well-small;
-  @extend .nav;
-  @extend .nav-list;
 
-  margin-bottom: 10px;
+  margin: 0 0 11px 0;
+  background-color: $lighterGrey;
+  border-radius: 8px;
+  padding: 12px 7px 11px 7px;
+  box-shadow: none;
+  border:none;
+  list-style-type: none;
 
   li {
-    line-height: 1.3em;
+    line-height: 1.9em;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    padding: 2px 15px;
+    a {
+      border: none;
+      letter-spacing: $fontSpacing;
+    }
     &.nav-header {
       line-height: 2em;
       margin-top: 0;
     }
     &.divider {
-      margin: 0.5em 1px;
+      margin: 0.4em 1.4em;
+      padding: 0;
+      border: solid $grey 0.5px;
     }
   }
+}
 
+.sidebar-nav > li > a{
+  color: $useColorDark;
+}
 
-  > .active > a,
-  > .active > a:hover {
-    @extend .highlighted;
+.manage-mode .sidebar-nav > li > a{
+  color: $manageColorDark;
+}
+
+.sidebar-nav > li.active {
+  background-color: $useColorLight;
+  a {
+    color: $sidebarActiveColor;
+  }
+}
+
+.manage-mode .sidebar-nav > li.active {
+  background-color: $manageColorLight;
+  a {
+    color:$sidebarActiveColor;
   }
 }
 
@@ -89,6 +118,7 @@ li.nav-spacer {
 .footer__logo {
   float: left;
   margin-bottom: 10px;
+  mix-blend-mode: multiply;
 }
 
 /* Acting As Banner */
@@ -407,4 +437,194 @@ textarea.wide {
   display: inline-block;
   padding: 0.4em;
   box-sizing: border-box;
+}
+
+/* Use/Manage CSS */
+body {
+  background: #ffffff; /* Old browsers */
+  background: -moz-linear-gradient(top, #ffffff 53%, #e4e4e4 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #ffffff 53%,#e4e4e4 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #ffffff 53%,#e4e4e4 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e4e4e4',GradientType=0 ); /* IE6-9 */
+}
+
+.manage-mode {
+  background: #ffffff; /* Old browsers */
+  background: -moz-linear-gradient(top, #ffffff 53%, $manageGradient 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #ffffff 53%,$manageGradient 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #ffffff 53%, $manageGradient 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='$manageGradient',GradientType=0 ); /* IE6-9 */
+}
+
+html,body{
+  min-height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body nav .navbar-inner .container .nav, .nav-tabs{
+  border-bottom: 1px solid $useColor;
+  min-height: 40px;
+}
+
+.manage-mode nav .navbar-inner .container .nav, 
+.manage-mode .nav-tabs {
+  border-color: $manageColorDark;
+}
+
+.alert-info {
+  background-color: transparent;
+  border-color: transparent;
+  color: $manageColorDark;
+  font-size: 24px;
+  line-height: 1em;
+}
+
+.navbar-inner {
+  background: none;
+  border: none;
+}
+
+.navbar-static-top .navbar-inner {
+  box-shadow: none;
+}
+
+nav ul.nav > li.active, nav  > 
+li.active, nav ul.nav > li:hover > 
+li {
+  border:none;
+  margin-top: 0;
+  margin-bottom: -1px;
+}
+
+nav ul.nav > li.active, nav  > 
+li.active, nav ul.nav > li:hover, nav > 
+li:hover {
+  border: none;
+  margin-top: 0;
+  background-color: white;
+}
+
+.container > .nav > li > a , .nav.nav-tabs > li > a{
+  padding: 11px 12px 11px 12px;
+  text-decoration: none;
+  color: $useColorDark;
+  transition: ease 0.3s all;
+}
+
+.manage-mode .container > .nav > li > a , .manage-mode .nav.nav-tabs > li > a{
+  color: $manageColorDark;
+}
+
+.container > .nav > li:hover > a {
+  text-shadow: 0 0 0.5px $useColorDark;
+  color: $useColorDark;
+}
+
+.manage-mode .container > .nav > li:hover > a {
+  text-shadow: 0 0 0.5px $manageColorDark;
+}
+
+.navbar .nav > .active > a:hover{
+  background: none;
+  background-color: $headerBackgroundColor;
+  box-shadow: none;
+  color: $useColorDark;
+}
+
+.manage-mode .navbar .nav > .active > a:hover{
+  color: $manageColorDark;
+}
+
+.manage-mode .container > .nav > li:hover > a {
+  color: $manageColorDark;
+}
+
+.nav > li.active a {
+  border: 1px solid $useColor;
+  border-radius: 4px 4px 0 0;
+  border-bottom-color: transparent;
+  background-color: $headerBackgroundColor;
+  font-weight: bold;
+}
+
+.navbar .nav > li.active > a {
+  box-shadow: none;
+  background-color: $headerBackgroundColor;
+  color: $useColorDark;
+}
+
+.manage-mode .navbar .nav > li.active > a, .manage-mode li.active > a {
+  border-color: $manageColorDark;
+  color: $manageColorDark;
+  border-bottom-color: transparent;
+}
+
+#use_tab, .container > .nav > li.manage-button a{
+  text-align: center;
+  color: $headerColor;
+}
+
+.manage-mode .container > .nav > li.manage-button:hover a{
+  color: $headerBackgroundColor;
+}
+
+#use_tab {
+  width: 44px;
+  height: 23px;
+}
+
+#use_tab > a {
+  border: solid $useColor 1px;
+  border-radius: 8px;
+  padding: 1px 1px;
+  margin-top: 9px;
+}
+
+.manage-mode #use_tab > a {
+  border-color: $grey;
+}
+
+#use_tab.active a {
+  text-shadow: none;
+  background-color: $useColor;
+  color: $headerBackgroundColor;
+}
+
+#use_tab.active > a:hover {
+  background-color: transparent;
+  box-shadow: none;
+  color: $darkGrey;
+}
+
+.manage-mode #use_tab.active a {
+  background-color: $manageColorDark;
+}
+
+.manage-button {
+  margin: 0 10px;
+  width: 76px;
+  height: 23px;
+}
+
+.container .nav .manage-button > a {
+  border: solid $grey 1px;
+  border-radius: 8px;
+  padding: 1px 1px;
+  margin-top: 9px;
+}
+
+.manage-mode .nav > li.manage-button > a {
+  border-color: $manageColorDark ;
+  background-color: $manageColorDark;
+  text-shadow: none;
+  color: $headerBackgroundColor;
+}
+
+.manage-mode .nav .manage-button.active a {
+  background-color: $manageColorDark ;
+}
+
+.nav.pull-right {
+  letter-spacing: $fontSpacing;
 }

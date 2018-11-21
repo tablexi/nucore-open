@@ -2,6 +2,7 @@ log/
 tmp/
 .bundle/
 .idea/
+.vscode
 .rvmrc
 .ruby-gemset
 sqlnet.log
