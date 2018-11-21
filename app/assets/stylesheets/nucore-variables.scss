@@ -1,7 +1,7 @@
 /* These are default vaules. Override them in nucore-overrides.scss */
 
 /* Header */
-$headerFont: Georgia, 'Times New Roman', Times, serif;
+$headerFont: 'WorkSans', 'Times New Roman', Times, serif;
 $headerColor: black;
 $headerBackgroundColor: white;
 $headerBackgroundColorHighLight: darken($headerBackgroundColor, 5%);
@@ -38,5 +38,15 @@ $blue: #C2DCF8;
 $lightBlue: #CDE4FC;
 
 $headerColor: $darkGrey;
+
+$manageColorLight: $lightBlue;
 $manageColor: $blue;
+$manageColorDark: $darkBlue;
+
+$useColorLight: $lightOrange;
 $useColor: $orange;
+$useColorDark: $darkOrange;
+
+$manageGradient: $lightBlue;
+
+$fontSpacing: -0.6px;

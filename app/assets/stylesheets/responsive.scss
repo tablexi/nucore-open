@@ -34,6 +34,9 @@ $navbarActiveBorderColor: #aaa;
       border-top: 0;
     }
   }
+  .sidebar-nav {
+    width: 150px;
+  }
   header .navbar .nav > li > a, .nav-collapse .dropdown-menu a {
     padding: 10px;
     border-radius: 0;
@@ -132,6 +135,9 @@ $navbarActiveBorderColor: #aaa;
   }
   .hidden-with-nav {
     display: none !important;
+  }
+  .sidebar-nav {
+    width: 182px;
   }
 }
 @media screen and (max-width: 600px) {

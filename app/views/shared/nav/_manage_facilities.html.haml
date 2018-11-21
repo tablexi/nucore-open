@@ -1,10 +1,10 @@
 - if !acting_as? && current_user.try(:administrator?)
-  %li= link_to text("pages.manage", model: Facility.model_name.human(count: 2)), :list_facilities
+  %li.manage-button= link_to text("pages.manage_short"), :list_facilities
 
 - elsif !acting_as? && menu_facilities.any?
-  %li.dropdown.pull-right{class: controller.active_tab == "manage_facilites" ? "active" : ""}
+  %li.manage-button.dropdown.pull-right{class: controller.active_tab == "manage_facilites" ? "active" : ""}
     = link_to "#", class: "dropdown-toggle", data: { toggle: :dropdown, target: "#" } do
-      = t("pages.manage", model: t("activerecord.models.facility", count: 2))
+      = t("pages.manage_short")
       %b.caret
     %ul.dropdown-menu
       - menu_facilities.each do |facility|

@@ -70,6 +70,7 @@ en:
     login: Login
     logout: Logout
     manage: Manage %{model}
+    manage_short: Manage
     my_tab: My %{model}
     transactions: My Transactions
     notices: Notices
