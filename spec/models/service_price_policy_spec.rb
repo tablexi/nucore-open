@@ -53,10 +53,10 @@ RSpec.describe ServicePricePolicy do
     it "is valid for today if no active price policy already exists" do
       is_expected.to allow_value(Date.today).for(:start_date)
       ipp = create(:service_price_policy, product: @service, start_date: Date.today - 7, expire_date: Date.today - 6,
-                                                    price_group: @price_group)
+                                          price_group: @price_group)
       ipp.save(validate: false)
       ipp_new = build(:service_price_policy, product: @service, start_date: Date.today, expire_date: 1.day.from_now,
-                                                      price_group: @price_group)
+                                             price_group: @price_group)
       expect(ipp_new).to be_valid
       expect(ipp_new.errors_on(:start_date)).not_to be_nil
     end
