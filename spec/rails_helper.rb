@@ -15,6 +15,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
 
+  config.filter_rails_from_backtrace!
+  config.filter_gems_from_backtrace("spring")
   # rspec-rails by default excludes stack traces from within vendor Lots of our
   # engines are under vendor, so we don't want to exclude them
   config.backtrace_exclusion_patterns.delete(%r{vendor/})
@@ -29,33 +31,25 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include FactoryBot::Syntax::Methods
 
-  config.around(:each) do |example|
-    if example.metadata[:feature_setting]
-      example.metadata[:feature_setting].each do |feature, value|
-        SettingsHelper.enable_feature(feature, value)
-      end
-      Nucore::Application.reload_routes!
-
-      example.run
-
-      Settings.reload!
-      Nucore::Application.reload_routes!
-    else
-      example.run
+  config.around(:each, :feature_setting) do |example|
+    example.metadata[:feature_setting].each do |feature, value|
+      SettingsHelper.enable_feature(feature, value)
     end
+    Nucore::Application.reload_routes!
+
+    example.call
+
+    Settings.reload!
+    Nucore::Application.reload_routes!
   end
 
-  config.around(:each) do |example|
-    if example.metadata[:billing_review_period]
-      original_review_period = Settings.billing.review_period
-      Settings.billing.review_period = example.metadata[:billing_review_period]
+  config.around(:each, :billing_review_period) do |example|
+    original_review_period = Settings.billing.review_period
+    Settings.billing.review_period = example.metadata[:billing_review_period]
 
-      example.run
+    example.call
 
-      Settings.billing.review_period = original_review_period
-    else
-      example.run
-    end
+    Settings.billing.review_period = original_review_period
   end
 
   config.before(:all) do
@@ -132,7 +126,6 @@ RSpec.configure do |config|
 
   require "rspec/active_job"
   config.include(RSpec::ActiveJob)
-  config.filter_gems_from_backtrace("activesupport", "activemodel", "activerecord", "spring")
 end
 
 FactoryBot::SyntaxRunner.class_eval do
