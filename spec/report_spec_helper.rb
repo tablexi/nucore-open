@@ -87,10 +87,6 @@ module ReportSpecHelper
     raise "Including class must implement!"
   end
 
-  def assert_report_data_init(_label)
-    raise "Including class must implement!"
-  end
-
   def export_all_request?
     @params.key?(:export_id) && @params[:export_id] == "report_data"
   end

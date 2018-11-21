@@ -58,18 +58,4 @@ RSpec.describe FacilityOrderDetailsController do
       end
     end
   end
-
-  def prepare_reservation
-    @order_detail.update_attributes(price_policy: nil)
-    @instrument = FactoryBot.create(:instrument, facility: @authable)
-    @instrument_price_policy = FactoryBot.create(:instrument_price_policy,
-                                                 product: @instrument,
-                                                 price_group: @price_group,
-                                                 usage_rate: 10,
-                                                 usage_subsidy: 0)
-    expect(@instrument_price_policy).to be_persisted
-    allow_any_instance_of(Instrument).to receive(:cheapest_price_policy).and_return(@instrument_price_policy)
-    @reservation = place_reservation @authable, @order_detail, 1.day.ago
-    @order_detail.backdate_to_complete! @reservation.reserve_end_at
-  end
 end

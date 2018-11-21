@@ -43,21 +43,13 @@ class User < ApplicationRecord
 
   cattr_accessor(:default_price_group_finder) { ::Users::DefaultPriceGroupSelector.new }
 
-  # Scopes
+  scope :authenticated_externally, -> { where(encrypted_password: nil, password_salt: nil) }
+  scope :active, -> { unexpired.where(suspended_at: nil) }
+  scope :unexpired, -> { where(expired_at: nil) }
 
-  def self.with_global_roles
-    where(id: UserRole.global.select("distinct user_id"))
-  end
-
-  def self.with_recent_orders(facility)
-    distinct
-      .joins(:orders)
-      .merge(Order.recent.for_facility(facility))
-  end
-
-  def self.sort_last_first
-    order("LOWER(users.last_name), LOWER(users.first_name)")
-  end
+  scope :with_global_roles, -> { where(id: UserRole.global.select("distinct user_id")) }
+  scope :with_recent_orders, ->(facility) { distinct.joins(:orders).merge(Order.recent.for_facility(facility)) }
+  scope :sort_last_first, -> { order("LOWER(users.last_name), LOWER(users.first_name)") }
 
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
@@ -166,15 +158,15 @@ class User < ApplicationRecord
   end
 
   def active?
-    !suspended?
+    !suspended? && !expired?
   end
 
   def suspended?
     suspended_at.present?
   end
 
-  def self.active
-    where(suspended_at: nil)
+  def expired?
+    expired_at.present?
   end
 
   def internal?

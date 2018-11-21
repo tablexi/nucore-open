@@ -52,7 +52,7 @@ class ExampleStatementPdf < StatementPdf
   def generate_remittance_information(pdf)
     pdf.move_down(10)
     pdf.text "Bill To:", font_style: :bold
-    pdf.text @account.remittance_information
+    pdf.text normalize_whitespace(@account.remittance_information)
   end
 
   def order_detail_headers
@@ -63,7 +63,7 @@ class ExampleStatementPdf < StatementPdf
     @statement.order_details.includes(:product).order("fulfilled_at DESC").map do |order_detail|
       [
         format_usa_datetime(order_detail.fulfilled_at),
-        "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? "" : "\n#{order_detail.note}"),
+        "##{order_detail}: #{order_detail.product}" + (order_detail.note.blank? ? "" : "\n#{normalize_whitespace(order_detail.note)}"),
         OrderDetailPresenter.new(order_detail).wrapped_quantity,
         number_to_currency(order_detail.actual_total),
       ]

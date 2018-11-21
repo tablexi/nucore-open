@@ -226,13 +226,13 @@ def grant_role(user, authable = nil)
     # Creating a NufsAccount requires an owner to be present, and some pre-Rails3 tests try to add the same user
     # to the same account with the same role of owner. That's a uniqueness error on AccountUser. Avoid it.
     existing = AccountUser.find_by(user_id: user.id, account_id: authable.id, user_role: AccountUser::ACCOUNT_OWNER)
-    AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, @admin) unless existing
+    AccountUser.grant(user, AccountUser::ACCOUNT_OWNER, authable, by: @admin) unless existing
     expect(user.reload).to be_owner_of(authable)
   when "purchaser"
-    AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, @admin)
+    AccountUser.grant(user, AccountUser::ACCOUNT_PURCHASER, authable, by: @admin)
     expect(user.reload).to be_purchaser_of(authable)
   when "business_admin"
-    AccountUser.grant(user, AccountUser::ACCOUNT_ADMINISTRATOR, authable, @admin)
+    AccountUser.grant(user, AccountUser::ACCOUNT_ADMINISTRATOR, authable, by: @admin)
     expect(user.reload).to be_business_administrator_of(authable)
   when "senior_staff"
     UserRole.grant(user, UserRole::FACILITY_SENIOR_STAFF, authable)
@@ -249,13 +249,4 @@ end
 def maybe_grant_always_sign_in(user_sym)
   user = instance_variable_get("@#{user_sym}")
   grant_and_sign_in(user)
-end
-
-def split_date_to_params(key, date)
-  {
-    :"#{key}_date" => format_usa_date(date),
-    :"#{key}_hour" => date.strftime("%I"),
-    :"#{key}_min" => date.min.to_s,
-    :"#{key}_meridian" => date.strftime("%p"),
-  }
 end

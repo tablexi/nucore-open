@@ -141,12 +141,13 @@ class Ability
         end
 
         can [:administer], User
+        can(:switch_to, User, &:active?)
 
-        if controller.is_a?(UsersController) || controller.is_a?(SearchController)
-          can :manage, User
-          cannot([:edit, :update], User)
-          cannot(:switch_to, User) { |target_user| !target_user.active? }
+        if controller.is_a?(UsersController)
+          can [:read, :create, :search, :access_list, :access_list_approvals, :new_external, :orders, :accounts], User
         end
+
+        can :user_search_results, User if controller.is_a?(SearchController)
 
         can [:list, :dashboard, :show], Facility
         can :act_as, Facility

@@ -132,7 +132,7 @@ RSpec.configure do |config|
 
   require "rspec/active_job"
   config.include(RSpec::ActiveJob)
-
+  config.filter_gems_from_backtrace("activesupport", "activemodel", "activerecord", "spring")
 end
 
 FactoryBot::SyntaxRunner.class_eval do

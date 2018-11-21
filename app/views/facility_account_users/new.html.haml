@@ -12,7 +12,7 @@
   = f.error_messages
 
   - if current_owner?
-    %p.error= t(".messages.current_user")
+    %p.alert.alert-danger= t(".messages.current_user")
 
   = f.simple_fields_for @account do |account|
     = account.input :type_string, as: :readonly
@@ -31,5 +31,6 @@
     disabled: current_owner?
 
   %ul.inline
-    %li= f.submit "Create", class: "btn" unless current_owner?
-    %li= link_to "Cancel", facility_account_path(current_facility, @account)
+    - unless current_owner?
+      %li= f.submit t("shared.create"), class: "btn btn-primary"
+    %li= link_to t("shared.cancel"), facility_account_path(current_facility, @account)

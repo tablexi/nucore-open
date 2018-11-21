@@ -7,7 +7,14 @@ module LdapAuthentication
     # Returns an Array of `LdapAuthentication::UserEntry`s
     def self.search(uid)
       return [] unless uid
-      ldap_entries = admin_ldap.search(filter: Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid))
+
+      ldap_entries = nil
+      ActiveSupport::Notifications.instrument "search.ldap_authentication" do |payload|
+        ldap_entries = with_retry { admin_ldap.search(filter: Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid)) }
+        payload[:uid] = uid
+        payload[:results] = ldap_entries
+      end
+
       ldap_entries.map { |entry| new(entry) }
     end
 
@@ -43,6 +50,16 @@ module LdapAuthentication
 
     def to_user
       UserConverter.new(self).to_user
+    end
+
+    def self.with_retry(max_attempts = 3)
+      tries = 0
+      begin
+        yield
+      rescue Net::LDAP::Error => e
+        tries += 1
+        tries >= max_attempts ? raise : retry
+      end
     end
 
   end
