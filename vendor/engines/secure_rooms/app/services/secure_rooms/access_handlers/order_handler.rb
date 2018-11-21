@@ -17,11 +17,12 @@ module SecureRooms
       end
 
       def process
-        Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessHandlers::OrderHandler#process")
+        Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessHandlers::OrderHandler#process (occupancy id #{occupancy.id})")
         return if user_exempt_from_purchase?
 
         find_or_create_order
-        Rails.logger.info("occupancy.order_completable? = #{occupancy.order_completable?}")
+        Rails.logger.info("[SecureRooms] order id #{order.id}; order detail id #{@order_detail.id}")
+        Rails.logger.info("[SecureRooms] occupancy.order_completable? = #{occupancy.order_completable?}")
         complete_order if occupancy.order_completable?
 
         Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::OrderHandler#process")
