@@ -11,7 +11,7 @@ FactoryBot.define do
     can_purchase { true }
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }
-    note { "A note" }
+    note { "This is note" }
   end
 
   factory :instrument_usage_price_policy, parent: :instrument_price_policy do
@@ -28,7 +28,7 @@ FactoryBot.define do
     unit_subsidy { 0 }
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }
-    note { "A note" }
+    note { "This is note" }
   end
 
   factory :service_price_policy do
@@ -37,7 +37,7 @@ FactoryBot.define do
     unit_subsidy { 0 }
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }
-    note { "A note" }
+    note { "This is note" }
   end
 
   factory :timed_service_price_policy do
@@ -48,6 +48,6 @@ FactoryBot.define do
     can_purchase { true }
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }
-    note { "A note" }
+    note { "This is note" }
   end
 end
