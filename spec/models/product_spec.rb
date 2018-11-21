@@ -218,7 +218,7 @@ RSpec.describe Product do
         end
 
         def note
-          "present"
+          "I am a note and I am present"
         end
 
       end

@@ -48,7 +48,7 @@ RSpec.describe "Creating a SecureRoom" do
       uncheck "price_policy_#{facility_price_group.id}[can_purchase]"
       fill_in "price_policy_#{global_price_group.id}[usage_subsidy]", with: "60"
 
-      fill_in "Note", with: "My note"
+      fill_in "Note", with: "This is a note"
 
       click_button "Add Pricing Rules"
     end
@@ -59,7 +59,7 @@ RSpec.describe "Creating a SecureRoom" do
       expect(page).to have_content("$120.00")
       expect(page).to have_content("$22.50") # minimum cost, subsidized
 
-      expect(page).to have_content("My note")
+      expect(page).to have_content("This is a note")
     end
   end
 end
