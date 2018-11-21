@@ -21,7 +21,7 @@ module SecureRooms
 
         return unless event.success?
 
-        if current_occupant? && exiting?
+        result = if current_occupant? && exiting?
           Rails.logger.info("[SecureRooms] Processing branch current_occupant? && exiting? (existing occupancy id: #{existing_occupancy.id})")
           existing_occupancy.associate_exit!(event)
         elsif new_occupant? && entering?
@@ -41,6 +41,7 @@ module SecureRooms
         end
 
         Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::EventHandler#process")
+        result
       end
 
       private

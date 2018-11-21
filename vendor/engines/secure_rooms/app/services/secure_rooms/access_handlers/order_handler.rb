@@ -41,7 +41,7 @@ module SecureRooms
           Rails.logger.info("[SecureRooms] Processing branch else")
           create_order
         end
-        Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::OrderHandler#find_or_create_order and returning #{result}")
+        Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::OrderHandler#find_or_create_order")
       end
 
       def complete_order
