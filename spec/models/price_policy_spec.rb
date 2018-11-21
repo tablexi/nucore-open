@@ -245,6 +245,12 @@ RSpec.describe PricePolicy do
         note.valid?
         expect(note.errors).not_to include(:note)
       end
+
+      it "requires it be short enough" do
+        note = described_class.new(note: "x" * 257)
+        expect(note).to be_invalid
+        expect(note.errors).to be_added(:note, :too_long, count: 256)
+      end
     end
 
     context "when the required note feature is disabled", feature_setting: { price_policy_requires_note: false } do
@@ -252,6 +258,12 @@ RSpec.describe PricePolicy do
         note = described_class.new(note: "")
         note.valid?
         expect(note.errors).not_to include(:note)
+      end
+
+      it "requires it be short enough" do
+        note = described_class.new(note: "x" * 257)
+        expect(note).to be_invalid
+        expect(note.errors).to be_added(:note, :too_long, count: 256)
       end
     end
   end

@@ -223,7 +223,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         @expire_date = PricePolicy.generate_expire_date(@start_date)
         @params[:start_date] = @start_date.to_s
         @params[:expire_date] = @expire_date.to_s
-        @params[:note] = "A note"
+        @params[:note] = "This is a note"
 
         @params_modifier.before_create @params if @params_modifier.try :respond_to?, :before_create
       end
@@ -324,7 +324,7 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
           id: price_policy.start_date.to_s,
           start_date: price_policy.start_date.to_s,
           expire_date: price_policy.expire_date.to_s,
-          note: "A note",
+          note: "This is a note",
         )
 
         if @params_modifier.respond_to?(:before_update)

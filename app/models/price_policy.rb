@@ -19,6 +19,7 @@ class PricePolicy < ApplicationRecord
     # Length of 10 is defined by Dartmouth.
     validates :note, presence: true, length: { minimum: 10, allow_blank: true }
   end
+  validates :note, length: { maximum: 256 }
 
   validates_each :expire_date do |record, _attr, value|
     start_date = record.start_date
