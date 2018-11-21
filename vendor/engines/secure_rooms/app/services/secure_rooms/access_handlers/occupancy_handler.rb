@@ -17,22 +17,30 @@ module SecureRooms
       end
 
       def process
+        Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessHandlers::EventHandler#process")
+
         return unless event.success?
 
         if current_occupant? && exiting?
+          Rails.logger.info("[SecureRooms] Processing branch current_occupant? && exiting?")
           existing_occupancy.associate_exit!(event)
         elsif new_occupant? && entering?
+          Rails.logger.info("[SecureRooms] Processing branch new_occupant? && entering?")
           new_occupancy.associate_exit!(event) if entry_only?
           new_occupancy.associate_entry!(event)
         elsif new_occupant? && exiting?
+          Rails.logger.info("[SecureRooms] Processing branch new_occupant? && exiting?")
           new_occupancy.mark_orphaned!
           new_occupancy.associate_exit!(event)
         elsif current_occupant? && entering?
+          Rails.logger.info("[SecureRooms] Processing branch current_occupant? && entering?")
           complete_existing_occupancy!
           new_occupancy.associate_entry!(event)
         else
           raise NotImplementedError, "Encountered unexpected scan context"
         end
+
+        Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::EventHandler#process")
       end
 
       private
