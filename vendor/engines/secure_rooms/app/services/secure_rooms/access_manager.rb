@@ -11,10 +11,14 @@ module SecureRooms
     ].freeze
 
     def self.process(verdict)
+      Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessManager.process")
+
       PROCESSING_CHAIN.inject(verdict) do |result, handler|
         result = handler.process(result)
         result || break
       end
+
+      Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessManager.process")
     end
 
   end

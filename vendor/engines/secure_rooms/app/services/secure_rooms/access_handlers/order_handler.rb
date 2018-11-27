@@ -17,31 +17,43 @@ module SecureRooms
       end
 
       def process
+        Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessHandlers::OrderHandler#process (occupancy id #{occupancy.id})")
         return if user_exempt_from_purchase?
 
         find_or_create_order
+        Rails.logger.info("[SecureRooms] order id #{order.id}; order detail id #{@order_detail.id}")
+        Rails.logger.info("[SecureRooms] occupancy.order_completable? = #{occupancy.order_completable?}")
         complete_order if occupancy.order_completable?
 
+        Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::OrderHandler#process")
         order
       end
 
       private
 
       def find_or_create_order
+        Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessHandlers::OrderHandler#find_or_create_order")
         if occupancy.order_detail_id?
+          Rails.logger.info("[SecureRooms] Processing branch occupancy.order_detail_id?")
           @order_detail = occupancy.order_detail
           @order = order_detail.order
         else
+          Rails.logger.info("[SecureRooms] Processing branch else")
           create_order
         end
+        Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::OrderHandler#find_or_create_order")
       end
 
       def complete_order
+        Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessHandlers::OrderHandler#complete_order")
         if occupancy.orphaned_at?
+          Rails.logger.info("Processing branch occupancy.orphaned_at?")
           MoveToProblemQueue.move!(order_detail)
         else
+          Rails.logger.info("[SecureRooms] Processing branch else")
           order_detail.complete!
         end
+        Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::OrderHandler#complete_order")
       end
 
       def create_order
@@ -65,8 +77,11 @@ module SecureRooms
       # to find what the verdict would have been. A verdict returning accounts
       # signifies the user would have needed to select one to enter.
       def user_exempt_from_purchase?
+        Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessHandlers::OrderHandler#user_exempt_from_purchase?")
         in_reader = occupancy.secure_room.card_readers.ingress.first
-        SecureRooms::CheckAccess.new.authorize(occupancy.user, in_reader).accounts.blank?
+        result = SecureRooms::CheckAccess.new.authorize(occupancy.user, in_reader).accounts.blank?
+        Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::OrderHandler#user_exempt_from_purchase? and returning #{result}")
+        result
       end
 
       def create_order_and_detail
