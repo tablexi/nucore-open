@@ -14,24 +14,14 @@ class UrlService < ExternalService
   #   relationship. Useful for providing pass-thru HTTP param data
   #   to the external service.
   def new_url(receiver, request = nil)
-    merge_queries(location, additional_query_params(receiver, request))
+    "#{location}?#{query_string(receiver, request)}"
   end
 
-  def edit_url(receiver, request = nil)
-    merge_queries(receiver.edit_url, additional_query_params(receiver, request))
+  def edit_url(receiver, request)
+    "#{receiver.edit_url}?#{query_string(receiver, request)}"
   end
 
-  private
-
-  def merge_queries(url, additional_hash)
-    uri = URI(url)
-    query_hash = Rack::Utils.parse_query(uri.query)
-    query_hash.merge!(additional_hash)
-    uri.query = query_hash.to_query
-    uri.to_s
-  end
-
-  def additional_query_params(receiver, request)
+  def query_string(receiver, request)
     query = {
       success_url: success_path(receiver, request),
       referer: referer_url(request),
@@ -40,8 +30,10 @@ class UrlService < ExternalService
 
     query[:order_number] = receiver.order_number if receiver.respond_to?(:order_number)
     query[:quantity] = receiver.quantity if receiver.respond_to?(:quantity)
-    query
+    query.to_query
   end
+
+  private
 
   def referer_url(request)
     "#{request.protocol}#{request.host_with_port}#{request.fullpath}" if request
