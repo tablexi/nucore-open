@@ -54,6 +54,10 @@ class Statement < ApplicationRecord
     order_details.where("state <> ?", "reconciled").empty?
   end
 
+  def paid_in_full?
+    payments.sum(:amount) >= total_cost
+  end
+
   def add_order_detail(order_detail)
     statement_rows << StatementRow.new(order_detail: order_detail)
     order_details << order_detail
