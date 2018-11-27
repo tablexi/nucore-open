@@ -1,2 +1,3 @@
 = f.input :start_date, input_html: { value: format_usa_date(price_policy.start_date), class: "datepicker__data" }, label: "Effective"
 = f.input :expire_date, input_html: { value: format_usa_date(price_policy.expire_date), class: "datepicker__data" }, label: "Expires"
+= f.input :note, as: :text, input_html: { value: price_policy.note }, required: SettingsHelper.feature_on?(:price_policy_requires_note)

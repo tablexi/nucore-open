@@ -9,5 +9,6 @@ FactoryBot.define do
     can_purchase { true }
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(Time.zone.now.beginning_of_day) }
+    note { "This is note" }
   end
 end

@@ -224,4 +224,48 @@ RSpec.describe PricePolicy do
 
   end
 
+  describe "note" do
+    context "when the required note feature is enabled", feature_setting: { price_policy_requires_note: true } do
+      it "requires the note" do
+        note = described_class.new(note: "")
+        expect(note).to be_invalid
+        expect(note.errors).to be_added(:note, :blank)
+        expect(note.errors).not_to be_added(:note, :too_short, count: 10)
+      end
+
+      it "requires the note be long enough" do
+        note = described_class.new(note: "a")
+        expect(note).to be_invalid
+        expect(note.errors).not_to be_added(:note, :blank)
+        expect(note.errors).to be_added(:note, :too_short, count: 10)
+      end
+
+      it "is fine when it is present and long enough" do
+        note = described_class.new(note: "12345678910")
+        note.valid?
+        expect(note.errors).not_to include(:note)
+      end
+
+      it "requires it be short enough" do
+        note = described_class.new(note: "x" * 257)
+        expect(note).to be_invalid
+        expect(note.errors).to be_added(:note, :too_long, count: 256)
+      end
+    end
+
+    context "when the required note feature is disabled", feature_setting: { price_policy_requires_note: false } do
+      it "is fine with a blank value" do
+        note = described_class.new(note: "")
+        note.valid?
+        expect(note.errors).not_to include(:note)
+      end
+
+      it "requires it be short enough" do
+        note = described_class.new(note: "x" * 257)
+        expect(note).to be_invalid
+        expect(note.errors).to be_added(:note, :too_long, count: 256)
+      end
+    end
+  end
+
 end

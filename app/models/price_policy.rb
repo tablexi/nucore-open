@@ -6,6 +6,7 @@ class PricePolicy < ApplicationRecord
 
   belongs_to :price_group
   belongs_to :product
+  belongs_to :created_by, class_name: "User"
   has_many :order_details
 
   validates :start_date, :expire_date, presence: true
@@ -13,6 +14,12 @@ class PricePolicy < ApplicationRecord
   validate :start_date_is_unique, if: :start_date?
 
   validate :subsidy_less_than_rate, unless: :restrict_purchase?
+
+  with_options if: -> { SettingsHelper.feature_on?(:price_policy_requires_note) } do
+    # Length of 10 is defined by Dartmouth.
+    validates :note, presence: true, length: { minimum: 10, allow_blank: true }
+  end
+  validates :note, length: { maximum: 256 }
 
   validates_each :expire_date do |record, _attr, value|
     start_date = record.start_date
