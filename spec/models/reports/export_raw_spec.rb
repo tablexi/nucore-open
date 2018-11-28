@@ -65,6 +65,7 @@ RSpec.describe Reports::ExportRaw do
         "Difference Total" => "$7.00",
         "Charge For" => "Quantity",
         "Assigned Staff" => user.full_name,
+        "Bundle" => "",
       )
     end
 
@@ -149,6 +150,21 @@ RSpec.describe Reports::ExportRaw do
       it "exports correct number of line items" do
         expect(report.to_csv.split("\n").length).to eq(2)
       end
+    end
+  end
+
+  describe "with a bundle" do
+    let(:items) { FactoryBot.create_list(:setup_item, 2, facility: facility) }
+    let(:bundle) { FactoryBot.create(:bundle, facility: facility, bundle_products: items) }
+
+    let!(:order) { FactoryBot.create(:purchased_order, product: bundle) }
+    let(:order_detail) { order.order_details.first }
+
+    it "has the bundle name" do
+      expect(report).to have_column_values(
+        "Product" => items.map(&:name),
+        "Bundle" => [bundle.name, bundle.name],
+      )
     end
   end
 end

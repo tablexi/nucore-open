@@ -59,7 +59,7 @@ module Reports
         product_type: ->(od) { od.product.class.model_name.human },
         product: ->(od) { od.product.name },
         quantity: :quantity,
-        bundled_products: ->(od) { od.product.is_a?(Bundle) ? od.product.products.collect(&:name).join(" & ") : nil },
+        bundle: ->(od) { od.bundle.name if od.bundled? },
         account_type: ->(od) { od.account.type.underscore.humanize },
         affiliate: ->(od) { od.account.affiliate_to_s },
         account: ->(od) { od.account.account_number },
