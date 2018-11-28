@@ -118,16 +118,6 @@ class ScheduleRule < ApplicationRecord
     end_hour * 100 + end_min
   end
 
-  # Compare the start time of this with another schedule rule's
-  def cmp_start(other)
-    start_time_int <=> other.start_time_int
-  end
-
-  # Compare the end time of this with another schedule rule's
-  def cmp_end(other)
-    end_time_int <=> other.end_time_int
-  end
-
   def start_time
     "#{start_hour}:#{sprintf '%02d', start_min}"
   end

@@ -117,23 +117,10 @@ module Reports
       "reports/report"
     end
 
-    def render_report_download(report_prefix)
-      @reportables = yield
-
-      respond_to do |format|
-        format.html
-        format.csv { render_csv(report_prefix) }
-      end
-    end
-
     def render_csv(filename)
       filename += "_#{@date_start.strftime('%Y%m%d')}-#{@date_end.strftime('%Y%m%d')}.csv"
       set_csv_headers(filename)
       render template: "reports/report", layout: false
-    end
-
-    def report_data_request?
-      params[:export_id] && params[:export_id] == "report_data"
     end
 
   end

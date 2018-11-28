@@ -96,10 +96,6 @@ module PriceDisplayment
     end
   end
 
-  def display_quantity
-    build_quantity_presenter.value
-  end
-
   def wrapped_quantity
     build_quantity_presenter.html
   end

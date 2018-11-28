@@ -228,10 +228,6 @@ class Account < ApplicationRecord
     end
   end
 
-  def latest_facility_statement(facility)
-    statements.latest(facility).first
-  end
-
   def update_order_details_with_statement(statement)
     details = order_details.joins(:order)
                            .where("orders.facility_id = ? AND order_details.reviewed_at < ? AND order_details.statement_id IS NULL", statement.facility.id, Time.zone.now)
