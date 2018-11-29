@@ -439,7 +439,10 @@ textarea.wide {
   box-sizing: border-box;
 }
 
-/* Use/Manage CSS */
+/*
+  UCONN Design Changes: Nav
+*/
+
 body {
   background: #ffffff; /* Old browsers */
   background: -moz-linear-gradient(top, #ffffff 53%, #e4e4e4 100%); /* FF3.6-15 */
@@ -635,10 +638,10 @@ li:hover {
   letter-spacing: $fontSpacing;
 }
 
-
 /*
- UCONN Redesign Table View
+  UCONN Design Changes: Table
 */
+
 td, tr {
   transition: ease 0.2s all;
   border-bottom: solid  $grey 1.2px;
@@ -674,6 +677,10 @@ thead {
   text-transform: uppercase;
   font-weight: bold;
 }
+
+/*
+  UCONN Design Changes: Buttons
+*/
 
 .btn, .btn-add {
   transition: ease 0.2s all;
@@ -718,4 +725,45 @@ thead {
     background-color: $manageColorDark;
     color: $headerBackgroundColor;
   }
+}
+
+/*
+  UCONN Design Changes: Form
+*/
+
+label {
+  text-transform: uppercase;
+  color: $darkGrey;
+}
+
+textarea:focus, input[type="text"]:focus {
+  border-color: $darkGrey;
+  box-shadow: none;
+}
+
+.chosen-container-multi .chosen-choices {
+  border: solid $grey 1px;
+  border-radius: 2px;
+  background: none;
+  transition: ease 0.1s all;
+
+  li.search-choice {
+    transition: ease 0.1s all;
+    border: solid grey 1px;
+    border-radius: 8px;
+    background: none;
+    color: $grey;
+  }
+}
+
+.chosen-container-active .chosen-choices {
+  box-shadow: none;
+  li.search-choice {
+    color: $headerColor;
+    background: $lighterGrey;
+  }
+}
+
+.chosen-container-multi.chosen-disabled .chosen-choices {
+  background: $lighterGrey;
 }
