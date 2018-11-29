@@ -643,6 +643,7 @@ td, tr {
   transition: ease 0.2s all;
   border-bottom: solid  $grey 1.2px;
 }
+
 .table-striped tbody > tr:nth-child(2n+1) {
   td {
     background-color: $tableRowOdd;
