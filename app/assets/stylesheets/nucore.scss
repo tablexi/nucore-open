@@ -639,34 +639,32 @@ li:hover {
 /*
  UCONN Redesign Table View
 */
-td, tr, {
+td, tr {
   transition: ease 0.2s all;
-  border-bottom: solid  $grey 1px;
+  border-bottom: solid  $grey 1.2px;
 }
 .table-striped tbody > tr:nth-child(2n+1) {
   td {
-    background-color: $lighterGrey;
+    background-color: $tableRowOdd;
   }
   th {
-    background-color: $lighterGrey;
+    background-color: $tableRowOdd;
   }
 } 
 
 .table {
   td {
-    background-color: $headerBackgroundColor;
+    background-color: $tableRowEven;
   }
 
   th {
-    background-color: $headerBackgroundColor;
+    background-color: $tableRowEven;
   }
 }
 
 .table tbody > tr:hover, table-striped tbody > tr:hover {
-  td,th {
-    background-color: $lightGrey;
-    border:  none;
-    border-bottom: solid  $grey 1.5px;
+  td, th {
+    background-color: $tableRowHover;
   }
 }
 
