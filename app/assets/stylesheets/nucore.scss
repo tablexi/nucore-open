@@ -673,4 +673,21 @@ thead {
   color: $grey;
   text-transform: uppercase;
   font-weight: bold;
+.btn-add {
+  border: solid $useColorDark 1px;
+  outline: none;
+  background: transparent;
+  border-radius: 8px;
+  box-shadow: none;
+  color: $useColorDark;
+  text-shadow: none;
+}
+
+.btn-add:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.manage-mode .btn-add {
+  border-color: $manageColorDark;
+  color: $manageColorDark;
 }
