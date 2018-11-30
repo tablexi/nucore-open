@@ -673,7 +673,9 @@ thead {
   color: $grey;
   text-transform: uppercase;
   font-weight: bold;
-.btn-add {
+}
+
+.btn, .btn-add {
   border: solid $useColorDark 1px;
   outline: none;
   background: transparent;
@@ -683,11 +685,19 @@ thead {
   text-shadow: none;
 }
 
-.btn-add:hover {
+.btn:hover, .btn-add:hover {
   background-color: rgba(0, 0, 0, 0.05);
+  color: $useColorDark;
 }
 
-.manage-mode .btn-add {
-  border-color: $manageColorDark;
-  color: $manageColorDark;
+.manage-mode {
+  .btn, .btn-add {
+    border-color: $manageColorDark;
+    color: $manageColorDark;
+  }
+
+  .btn:hover, .btn-add:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: $manageColorDark;
+  } 
 }
