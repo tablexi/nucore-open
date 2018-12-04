@@ -676,6 +676,7 @@ thead {
 }
 
 .btn, .btn-add {
+  transition: ease-in-out 0.2s all;
   border: solid $useColorDark 1px;
   outline: none;
   background: transparent;
