@@ -731,6 +731,10 @@ thead {
   UCONN Design Changes: Form
 */
 
+input {
+  transition: ease 0.2s all;
+}
+
 label {
   text-transform: uppercase;
   color: $darkGrey;
@@ -810,7 +814,7 @@ textarea:focus, input[type="text"]:focus {
     border-radius: 8px;
     padding: 2px 15px;
   }
-  
+
   li.highlighted {
     background: none;
     background-color: rgba(0,0,0,0.05);
@@ -838,6 +842,21 @@ input[type="search"], input[type="tel"],
 input[type="color"], .uneditable-input {
   border-radius: 8px;
   padding: 2px 8px;
+}
+
+.input-prepend .add-on:first-child, 
+.input-prepend .btn:first-child, 
+.input-prepend .btn-add:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.input-append input, 
+.input-append select, 
+.input-append .uneditable-input, 
+.input-prepend input, 
+.input-prepend select, 
+.input-prepend .uneditable-input {
+  border-radius: 0 8px 8px 0;
 }
 
 select::-ms-expand {
