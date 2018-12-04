@@ -19,15 +19,33 @@ namespace :uconn do
       http.request(request)
     end
 
+    logger = Logger.new(STDOUT)
     pagecount = JSON.parse(do_kennel_call("/count").body)["pages"]
     for i in 1..pagecount
       data = JSON.parse(do_kennel_call("/export?page=#{i}").body)
       data.each { |record|
+        drop = false
+        if record["group_affil"] == "Affiliate"
+          drop = true
+        end
+        if not record["email"] or record["email"] == ""
+          logger.warn "user \"#{record["netid"]}\", a \"#{record["group_affil"]}\", had no email address and was not inserted"
+          drop = true
+        end
+        if drop
+          users = User.find_by(username: record["netid"])
+          if users
+            logger.info "user #{record["netid"]} once existed but is being removed"
+            users.delete
+          end
+          next
+        end
+
         User.find_or_initialize_by(username: record["netid"]).update!(
           :username => record["netid"],
           :first_name => record["first_name"],
           :last_name => record["last_name"],
-          :email => "#{record["netid"]}@ad.uconn.edu" # haha this apparently works
+          :email => record["email"],
         )
         # TODO: add user to billing group based on `group_affil`/`dept_id`, too
       }
