@@ -1,0 +1,14 @@
+- if Settings.favicon_paths.x16.present?
+  = favicon_link_tag Settings.favicon_paths.x16, rel: 'shortcut icon', type: 'image/png'
+- if Settings.favicon_paths.x32.present?
+  = favicon_link_tag Settings.favicon_paths.x32, rel: 'shortcut icon', type: 'image/png'
+- if Settings.favicon_paths.x150.present?
+  = favicon_link_tag Settings.favicon_paths.x150, rel: 'shortcut icon', type: 'image/png'
+- if Settings.favicon_paths.x192.present?
+  = favicon_link_tag Settings.favicon_paths.x192, rel: 'shortcut icon', type: 'image/xpng'
+- if Settings.favicon_paths.x512.present?
+  = favicon_link_tag Settings.favicon_paths.x512, rel: 'shortcut icon', type: 'image/png'
+- if Settings.favicon_paths.xATI.present?
+  = favicon_link_tag Settings.favicon_paths.xATI, rel: 'apple-touch-icon', type: 'image/png'
+- if Settings.favicon_paths.xSPT.present?
+  = favicon_link_tag Settings.favicon_paths.xSPT, rel: 'shortcut icon', type: 'image/svg'

@@ -1,5 +1,15 @@
 header_logo_path: ~
 
+favicon_paths:
+  x16: ~ #General
+  x32: ~ #General
+  x150: ~ #Used for IE/Edge
+  x192: ~ #Used for Android
+  x512: ~ #Used for Android
+  xATI: ~ #Apple Touch Icon
+  xSPT: ~ # Safari Pinned Tab
+
+
 price_group:
   name:
     base: 'Base Rate'

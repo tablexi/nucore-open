@@ -228,8 +228,8 @@ ActiveRecord::Schema.define(version: 20181119211456) do
   end
 
   create_table "log_events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "loggable_id"
     t.string   "loggable_type"
+    t.integer  "loggable_id"
     t.string   "event_type"
     t.integer  "user_id"
     t.datetime "created_at",    null: false
@@ -780,10 +780,10 @@ ActiveRecord::Schema.define(version: 20181119211456) do
   end
 
   create_table "vestal_versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "versioned_id"
     t.string   "versioned_type"
-    t.integer  "user_id"
+    t.integer  "versioned_id"
     t.string   "user_type"
+    t.integer  "user_id"
     t.string   "user_name"
     t.text     "modifications",     limit: 65535
     t.integer  "version_number"
@@ -802,8 +802,6 @@ ActiveRecord::Schema.define(version: 20181119211456) do
     t.index ["versioned_id", "versioned_type"], name: "index_vestal_versions_on_versioned_id_and_versioned_type", using: :btree
   end
 
-  add_foreign_key "account_users", "accounts", name: "fk_accounts"
-  add_foreign_key "account_users", "users"
   add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
