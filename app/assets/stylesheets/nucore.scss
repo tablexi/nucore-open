@@ -821,10 +821,6 @@ textarea:focus, input[type="text"]:focus {
     background-color: rgba(0,0,0,0.05);
     color: $headerColor;
   }
-
-  li.result-selected {
-
-  }
 }
 
 select {
@@ -862,6 +858,10 @@ input[type="color"], .uneditable-input {
 .input-prepend select, 
 .input-prepend .uneditable-input {
   border-radius: 0 8px 8px 0;
+}
+
+input[type="text"].order_detail_quantity {
+  border-radius: 2px;
 }
 
 select::-ms-expand {
