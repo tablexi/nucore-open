@@ -1,0 +1,13 @@
+en:
+  views:
+    instrument_issue_mailer:
+      create:
+        subject: "!app_name! Instrument Issue Reported: %{instrument}"
+        body: |
+          A user has reported in issue with the **%{instrument}** at %{facility}.
+
+          Reported by %{user} (<%{email}>)
+
+          They said:
+
+          > *%{message}*
