@@ -676,19 +676,31 @@ thead {
 }
 
 .btn, .btn-add {
-  transition: ease-in-out 0.2s all;
+  transition: ease 0.2s all;
   border: solid $useColorDark 1px;
   outline: none;
-  background: transparent;
+  background: none;
+  background-color: transparent;
   border-radius: 8px;
   box-shadow: none;
   color: $useColorDark;
   text-shadow: none;
 }
 
+.btn-primary {
+  font-weight: bold;
+  border-width: 1.5px;
+}
+
 .btn:hover, .btn-add:hover {
+  transition: ease 0.2s all;
   background-color: rgba(0, 0, 0, 0.05);
   color: $useColorDark;
+}
+
+.btn-primary:hover {
+  background-color: $useColorDark;
+  color: $headerBackgroundColor;
 }
 
 .manage-mode {
@@ -701,4 +713,9 @@ thead {
     background-color: rgba(0, 0, 0, 0.05);
     color: $manageColorDark;
   } 
+
+  .btn-primary:hover {
+    background-color: $manageColorDark;
+    color: $headerBackgroundColor;
+  }
 }
