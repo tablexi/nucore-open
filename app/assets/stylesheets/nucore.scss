@@ -756,12 +756,13 @@ textarea:focus, input[type="text"]:focus {
     border: solid grey 1px;
     border-radius: 8px;
     background: none;
-    color: $grey;
+    color: $darkGrey;
   }
 }
 
 .chosen-container-active .chosen-choices {
   box-shadow: none;
+  border-radius: 8px 8px 0 0;
   li.search-choice {
     color: $headerColor;
     background: $lighterGrey;
@@ -790,7 +791,7 @@ textarea:focus, input[type="text"]:focus {
     border-radius: 8px;
 }
 
-.chosen-container-single .chosen-drop {
+.chosen-container .chosen-drop {
   border-radius: 0 0 8px 8px;
   box-shadow: none;
 }
@@ -803,22 +804,26 @@ textarea:focus, input[type="text"]:focus {
   li {
     transition: ease 0.2s all;
     color: $headerColor;
+    font-size: 14px;
+    line-height: 1.9em;
+    padding: 2px 15px;
   }
 
   li.active-result {
     box-shadow: none;
     background: none;
-    line-height: 1.9em;
-    font-size: 14px;
     border: none;
     border-radius: 8px;
-    padding: 2px 15px;
   }
 
   li.highlighted {
     background: none;
     background-color: rgba(0,0,0,0.05);
     color: $headerColor;
+  }
+
+  li.result-selected {
+
   }
 }
 
