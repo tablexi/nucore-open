@@ -34,6 +34,7 @@ module NewInprocessController
       "product_name" => ["products.name", "order_details.state", "orders.ordered_at"],
       "reserve_range" => ["reservations.reserve_start_at", "reservations.reserve_end_at"],
       "status" => "order_statuses.name",
+      "payment_source" => "accounts.description",
     }
   end
 
