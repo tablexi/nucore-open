@@ -17,7 +17,13 @@ class InstrumentIssue
       product: product,
       user: user,
       message: message,
+      recipients: recipients,
     ).deliver_later
+  end
+
+  def recipients
+    all = product.facility.director_and_admins.pluck(:email) + product.training_request_contacts
+    all.uniq
   end
 
 end
