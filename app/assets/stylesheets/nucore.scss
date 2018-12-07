@@ -597,6 +597,12 @@ li:hover {
   color: $darkGrey;
 }
 
+#use_tab.active > a:hover {
+  background-color: transparent;
+  box-shadow: none;
+  color: $darkGrey;
+}
+
 .manage-mode #use_tab.active a {
   background-color: $manageColorDark;
 }
@@ -627,4 +633,44 @@ li:hover {
 
 .nav.pull-right {
   letter-spacing: $fontSpacing;
+}
+
+
+/*
+ UCONN Redesign Table View
+*/
+td, tr {
+  transition: ease 0.2s all;
+  border-bottom: solid  $grey 1.2px;
+}
+
+.table-striped tbody > tr:nth-child(2n+1) {
+  td {
+    background-color: $tableRowOdd;
+  }
+  th {
+    background-color: $tableRowOdd;
+  }
+} 
+
+.table {
+  td {
+    background-color: $tableRowEven;
+  }
+
+  th {
+    background-color: $tableRowEven;
+  }
+}
+
+.table tbody > tr:hover, table-striped tbody > tr:hover {
+  td, th {
+    background-color: $tableRowHover;
+  }
+}
+
+thead {
+  color: $grey;
+  text-transform: uppercase;
+  font-weight: bold;
 }
