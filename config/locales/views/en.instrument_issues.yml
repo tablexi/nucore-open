@@ -1,0 +1,24 @@
+en:
+  views:
+    instrument_issues:
+      new:
+        title: Report an Issue
+        instructions: When reporting an issue, and email will be sent to the facility.
+        submit: Report Issue
+
+    instrument_issue_mailer:
+      create:
+        subject: "!app_name! Instrument Issue Reported: %{product}"
+        body: |
+          A user has reported in issue with the **%{product}** at %{facility}.
+
+          Reported by %{user} (<%{email}>)
+
+          They said:
+
+          > *%{message}*
+
+  controllers:
+    instrument_issues:
+      create:
+        success: Thank you. Your issue has been reported.

@@ -13,6 +13,7 @@ class CsvArrayString < SimpleDelegator
   def to_a
     __getobj__.to_s.split(",").select(&:present?).map(&:strip)
   end
+  alias to_ary to_a
 
   def to_s
     to_a.join(", ")

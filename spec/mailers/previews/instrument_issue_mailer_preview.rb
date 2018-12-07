@@ -5,9 +5,9 @@ class InstrumentIssueMailerPreview < ActionMailer::Preview
   def create
     reservation = NUCore::Database.random(Reservation.user)
     InstrumentIssueMailer.create(
-      instrument: reservation.product,
+      product: reservation.product,
       user: reservation.user,
-      message: "I am having a problem with the #{reservation.product}. Please help!"
+      message: "I am having a problem with the #{reservation.product}. Please help!",
     )
   end
 

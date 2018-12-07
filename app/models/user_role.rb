@@ -14,6 +14,7 @@ class UserRole < ApplicationRecord
   FACILITY_SENIOR_STAFF = "Facility Senior Staff"
 
   scope :facility_director, -> { where(role: FACILITY_DIRECTOR) }
+  scope :director_and_admins, -> { where(role: [FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR]) }
 
   module AssociationExtension
 
