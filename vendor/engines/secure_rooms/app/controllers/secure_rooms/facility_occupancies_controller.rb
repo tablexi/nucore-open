@@ -6,6 +6,7 @@ module SecureRooms
 
     include OrderDetailsCsvExport
     include SortableColumnController
+    include NewInprocessController
     include ProblemOrderDetailsController
     include TabCountHelper
 
@@ -62,12 +63,9 @@ module SecureRooms
     end
 
     def sort_lookup_hash
-      {
+      super.merge(
         "entry_at" => "secure_rooms_occupancies.entry_at",
-        "user_name" => ["users.last_name", "users.first_name"],
-        "product_name" => "products.name",
-        "payment_source" => "accounts.description",
-      }
+      )
     end
 
   end

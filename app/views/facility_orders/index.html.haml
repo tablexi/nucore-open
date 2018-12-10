@@ -18,23 +18,23 @@
         %thead
           %tr
             %th
-            %th.order_num_width.centered= sortable "order_number", Order.model_name.human
-            %th.order_num_width.centered= OrderDetail.model_name.human
-            %th.ordered_on_width= sortable "date", Order.human_attribute_name(:ordered_at)
-            %th= Order.human_attribute_name(:user)
-            %th= OrderDetail.human_attribute_name(:quantity)
-            %th.order-note= sortable "product"
-            %th= sortable "assigned_to"
-            %th= sortable "status"
-            %th.currency= OrderDetail.human_attribute_name(:actual_cost)
+            %th.nowrap= sortable "order_number", Order.model_name.human
+            %th.nowrap= OrderDetail.model_name.human
+            %th.nowrap= sortable "ordered_for", Order.human_attribute_name(:user)
+            %th.nowrap= sortable "date", Order.human_attribute_name(:ordered_at)
+            %th.nowrap= OrderDetail.human_attribute_name(:quantity)
+            %th.nowrap.order-note= sortable "product"
+            %th.nowrap= sortable "assigned_to", OrderDetail.human_attribute_name(:assigned_user)
+            %th.nowrap= sortable "status"
+            %th.nowrap.currency= OrderDetail.human_attribute_name(:actual_cost)
         %tbody
           - @order_details.each do |od|
             %tr
               %td.centered= check_box_tag("order_detail_ids[]", od.id, false, {class: "toggle", id: nil })
               %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
               %td.centered= link_to od.id, manage_order_detail_path(od), class: "manage-order-detail"
-              %td= format_usa_datetime(od.order.ordered_at)
               %td= od.order.user.full_name
+              %td= format_usa_datetime(od.order.ordered_at)
               %td.centered= OrderDetailPresenter.new(od).wrapped_quantity
               = render partial: "shared/order_detail_cell", locals: { od: od }
               %td= od.assigned_user
