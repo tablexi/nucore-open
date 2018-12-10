@@ -60,5 +60,58 @@ RSpec.describe UrlService do
     it "returns a blank referer" do
       expect(query_hash["referer"]).to be_blank
     end
+
+    describe "when the location already has a ? in it" do
+      before { url_service.location = "http://www.survey.com/survey1?q=true&other=false" }
+
+      it "sets the currect uri" do
+        expect(uri.to_s).to start_with("http://www.survey.com/survey1?")
+        expect(query_hash).to include(
+          "q" => "true",
+          "other" => "false",
+          "receiver_id" => order_detail.id.to_s,
+        )
+      end
+    end
+  end
+
+  describe "edit_url" do
+    let(:edit_url) { url_service.edit_url(order_detail) }
+    let(:query_hash) { Rack::Utils.parse_query(URI(edit_url).query) }
+
+    describe "when the url already has a ?" do
+      before { allow(order_detail).to receive(:edit_url).and_return("http://www.survey.com/surveys/edit?id=123") }
+
+      it "sets the query string correctly if the link already has a ?" do
+        expect(edit_url).to start_with("http://www.survey.com/surveys/edit?")
+        expect(query_hash).to include(
+          "id" => "123",
+          "receiver_id" => order_detail.id.to_s,
+        )
+      end
+    end
+
+    describe "when the URL has some whitespace around it" do
+      before { allow(order_detail).to receive(:edit_url).and_return("\thttp://www.survey.com/surveys/edit?id=123") }
+
+      it "sets the query string correctly if the link already has a ?" do
+        expect(edit_url).to start_with("http://www.survey.com/surveys/edit?")
+        expect(query_hash).to include(
+          "id" => "123",
+          "receiver_id" => order_detail.id.to_s,
+        )
+      end
+    end
+
+    describe "when the url is blank (should be prevented by validations)" do
+      before { allow(order_detail).to receive(:edit_url).and_return(nil) }
+
+      it "treats it as a relative path with a receiver_id" do
+        expect(edit_url).to start_with("?")
+        expect(query_hash).to include(
+          "receiver_id" => order_detail.id.to_s,
+        )
+      end
+    end
   end
 end
