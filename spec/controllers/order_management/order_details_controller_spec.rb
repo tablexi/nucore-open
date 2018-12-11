@@ -521,10 +521,22 @@ RSpec.describe OrderManagement::OrderDetailsController do
                 @params[:order_detail] = {
                   actual_cost: "10",
                   actual_subsidy: order_detail.actual_subsidy,
+                  price_change_reason: "",
                 }
                 do_request
 
-                expect(assigns[:order_detail].errors).to include :price_change_reason
+                expect(assigns[:order_detail].errors).to be_added(:price_change_reason, :blank)
+                expect(assigns[:order_detail].errors).not_to be_added(:price_change_reason, :too_short, count: 10)
+              end
+
+              it "requires the reason to be at least 10 characters long" do
+                @params[:order_detail] = {
+                  actual_cost: "10",
+                  price_change_reason: "123456789",
+                }
+                do_request
+
+                expect(assigns[:order_detail].errors).to be_added(:price_change_reason, :too_short, count: 10)
               end
 
               it "does not require a reason if the price matches the expected price" do
@@ -549,7 +561,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
                   @params[:order_detail] = {
                     actual_cost: order_detail.actual_cost,
                     actual_subsidy: order_detail.actual_subsidy,
-                    price_change_reason: "because",
+                    price_change_reason: "this is a reason",
                   }
                   do_request
 
@@ -562,7 +574,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
                   @params[:order_detail] = {
                     actual_cost: "10",
                     actual_subsidy: order_detail.actual_subsidy,
-                    price_change_reason: "because",
+                    price_change_reason: "this is a reason",
                   }
                   do_request
 
@@ -575,7 +587,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
                   @params[:order_detail] = {
                     actual_cost: order_detail.actual_cost,
                     actual_subsidy: "0.5",
-                    price_change_reason: "because",
+                    price_change_reason: "this is a reason",
                   }
                   do_request
 
@@ -586,7 +598,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
 
             context "when price has been changed once (at manually set price)" do
               before do
-                order_detail.update_attributes(actual_cost: "10", price_change_reason: "because", price_changed_by_user: create(:user))
+                order_detail.update_attributes(actual_cost: "10", price_change_reason: "i am a reason", price_changed_by_user: create(:user))
               end
 
               context "when changing the note" do
@@ -606,9 +618,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
                   @params[:order_detail] = {
                     actual_cost: order_detail.actual_cost,
                     actual_subsidy: order_detail.actual_subsidy,
-                    price_change_reason: "i am a reason",
+                    price_change_reason: "i am a new reason",
                   }
-
                   expect { do_request }.to change { order_detail.reload.price_changed_by_user }.to @admin
                 end
               end
