@@ -37,6 +37,8 @@ module SplitAccounts
         :actual_subsidy,
         :estimated_cost,
         :estimated_subsidy,
+        :calculated_cost,
+        :calculated_subsidy,
       )
     end
 

@@ -39,7 +39,7 @@ module Reports
 
     private
 
-    def default_report_hash
+    def default_report_hash # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       hash = {
         facility: :facility,
         order: :to_s,
@@ -74,9 +74,15 @@ module Reports
         estimated_cost: ->(od) { as_currency(od.estimated_cost) },
         estimated_subsidy: ->(od) { as_currency(od.estimated_subsidy) },
         estimated_total: ->(od) { as_currency(od.estimated_total) },
+        calculated_cost: ->(od) { as_currency(od.calculated_cost) },
+        calculated_subsidy: ->(od) { as_currency(od.calculated_subsidy) },
+        calculated_total: ->(od) { as_currency(od.calculated_total) },
         actual_cost: ->(od) { as_currency(od.actual_cost) },
         actual_subsidy: ->(od) { as_currency(od.actual_subsidy) },
         actual_total: ->(od) { as_currency(od.actual_total) },
+        difference_cost: ->(od) { as_currency_difference(od.actual_cost, od.calculated_cost) },
+        difference_subsidy: ->(od) { as_currency_difference(od.actual_subsidy, od.calculated_subsidy) },
+        difference_total: ->(od) { as_currency_difference(od.actual_total, od.calculated_total) },
         reservation_start_time: ->(od) { od.reservation.reserve_start_at if od.reservation },
         reservation_end_time: ->(od) { od.reservation.reserve_end_at if od.reservation },
         reservation_minutes: ->(od) { od.time_data.try(:duration_mins) },
@@ -118,6 +124,12 @@ module Reports
         preloads: [:created_by_user, :journal, order: [:facility], account: [:affiliate, :owner_user], price_policy: [:price_group]],
         transformer_options: { time_data: true },
       ).perform
+    end
+
+    def as_currency_difference(minuend, subtrahend)
+      return "" unless minuend && subtrahend
+
+      as_currency(minuend - subtrahend)
     end
 
     def as_currency(number)
