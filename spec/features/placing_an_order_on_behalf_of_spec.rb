@@ -54,7 +54,7 @@ RSpec.describe "Placing an item order" do
     click_button "Purchase"
 
     expect(page).to have_content "Order Receipt"
-    expect(page).to have_content /Ordered For\n#{user.full_name}/i
+    expect(page).to have_content(/Ordered For\n#{user.full_name}/i)
     expect(page).to have_css(".currency .estimated_cost", count: 0)
     expect(page).to have_css(".currency .actual_cost", count: 2) # Cost and Total
   end
