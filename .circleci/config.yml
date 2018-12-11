@@ -16,6 +16,8 @@ jobs:
     steps:
       - checkout
 
+      - run: shopt -u globstar
+
       # Bundle
       - restore_cache:
           keys:
