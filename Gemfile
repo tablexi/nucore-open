@@ -93,7 +93,7 @@ end
 group :development, :deployment do
   gem "capistrano",         require: false
   gem "capistrano-rails",   require: false
-  gem "capistrano-rvm",     require: false
+  gem "capistrano-chruby"   ,  require: false
   gem "capistrano-bundler", require: false
 
   # These gems are required to support ed25519 SSH keys for deploying via capistrano
