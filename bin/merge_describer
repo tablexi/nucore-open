@@ -1,11 +1,11 @@
 #!/bin/sh
 # Usage:
-# Compare your current branch to develop:
+# Compare your current branch to master:
 # bin/merge_describer
 #
 # Compare your current branch to master:
 # bin/merge_describer master
-target_branch=${1:-develop}
+target_branch=${1:-master}
 git log $target_branch.. | egrep '\(#\d+\)$' | while read LINE; do
   pr=$(echo $LINE | sed -E 's/^.+\(#//' | sed -E 's/\)$//')
   desc=$(echo $LINE | sed -E 's/ *\(#[0-9]+\)$//')
