@@ -108,19 +108,7 @@ class OrderDetail < ApplicationRecord
   validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.order.ordered_at.nil? }
   validates_length_of :note, maximum: 1000, allow_blank: true, allow_nil: true
   validate :valid_manual_fulfilled_at
-  validate :require_pricing_note
-
-  def require_pricing_note
-    return unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
-    return if cost_estimated?
-    return if canceled_at?
-
-    errors.add(:price_change_reason, :blank) if price_change_reason.blank? && actual_costs_differ_from_calculated?
-  end
-
-  def actual_costs_differ_from_calculated?
-    !actual_costs_match_calculated?
-  end
+  validates :price_change_reason, presence: true, length: { minimum: 10, allow_blank: true }, if: :pricing_note_required?
 
   def actual_costs_match_calculated?
     dup_od = dup
@@ -949,6 +937,13 @@ class OrderDetail < ApplicationRecord
   def set_reconciled_at
     # Do not override it if it has been set by something already (e.g. journaling)
     self.reconciled_at ||= Time.current
+  end
+
+  def pricing_note_required?
+    return false unless @manually_priced && SettingsHelper.feature_on?(:price_change_reason_required)
+    return false if cost_estimated? || canceled_at?
+
+    !actual_costs_match_calculated?
   end
 
 end
