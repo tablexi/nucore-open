@@ -1,7 +1,11 @@
-.product_list_container.columns {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap:wrap;
+.product_list_container {
+  margin-top: 2em;
+
+  &.columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap:wrap;
+  }
 }
 
 .product_list.columns {
