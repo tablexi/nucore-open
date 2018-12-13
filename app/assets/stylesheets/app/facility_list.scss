@@ -14,13 +14,13 @@
 
 /*Use container with bottom padding to maintain aspect ratio exactly like an img with height: auto*/
 
-.thumbnailFallBackContainer{
+.thumbnailFallBackContainer {
   width: 100%;
   padding-bottom: 50%;
   position: relative;
 }
 
-.thumbnailFallback{
+.thumbnailFallback {
   position: absolute;
   top: 0; bottom: 0; left: 0; right: 0;
   text-decoration: none;
@@ -32,18 +32,18 @@
   color: rgb(110, 110, 110);
 }
 
-.thumbnailFallback:hover{
+.thumbnailFallback:hover {
   color: rgb(71, 71, 71);
 }
 
-.facility_listing.tile a{
+.facility_listing.tile a {
   text-decoration: none;
 }
 
 @supports (display: grid) {
-    .facility_list_container.tile{
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        grid-gap: 1rem;
-    }
+  .facility_list_container.tile{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-gap: 1rem;
+  }
 }
