@@ -90,7 +90,6 @@ class FacilitiesController < ApplicationController
   def upload_thumbnail
     @file = @facility.thumbnail.new(params[:stored_file]&.permit(:file))
     @file.file_type  = "img"
-    @file.name       = @facility+"_thumbnail"
     @file.facility = @facility
     @file.created_by = session_user.id ## this is correct, session_user instead of acting_user
 
