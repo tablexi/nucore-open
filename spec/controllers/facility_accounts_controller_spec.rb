@@ -3,7 +3,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-RSpec.describe FacilityAccountsController, feature_setting: { recharge_accounts: true, reload_routes: true } do
+RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: true, suspend_accounts: true, reload_routes: true } do
 
   let(:facility) { FactoryBot.create(:facility) }
   let(:account) { create_nufs_account_with_owner }
