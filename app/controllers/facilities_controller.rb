@@ -95,9 +95,9 @@ class FacilitiesController < ApplicationController
     @file.created_by = session_user.id ## this is correct, session_user instead of acting_user
 
     if @file.save
-      flash[:notice] = text("Uploaded thumbnail")
+      flash[:notice] = I18n.t("controllers.facilities.thumbnail.success")
     else
-      flash.now[:error] = text("Error Uploading")
+      flash.now[:error] = I18n.t("controllers.facilities.thumbnail.failure")
     end
   end
 

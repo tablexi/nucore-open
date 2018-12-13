@@ -20,6 +20,9 @@ en:
         move:
           success: "%{count} transactions were reassigned."
           failure: "No transactions were reassigned. %{reassignment_error} on Order Detail #%{order_detail_id}."
+      thumbnail:
+        success: "Thumbnail uploaded."
+        failure: "Error uploading thumbnail."
     facility_accounts:
       create:
         success: "Account was successfully created."
