@@ -439,7 +439,10 @@ textarea.wide {
   box-sizing: border-box;
 }
 
-/* Use/Manage CSS */
+/*
+  UCONN Design Changes: Nav
+*/
+
 body {
   background: #ffffff; /* Old browsers */
   background: -moz-linear-gradient(top, #ffffff 53%, #e4e4e4 100%); /* FF3.6-15 */
@@ -635,10 +638,10 @@ li:hover {
   letter-spacing: $fontSpacing;
 }
 
-
 /*
- UCONN Redesign Table View
+  UCONN Design Changes: Table
 */
+
 td, tr {
   transition: ease 0.2s all;
   border-bottom: solid  $grey 1.2px;
@@ -674,6 +677,10 @@ thead {
   text-transform: uppercase;
   font-weight: bold;
 }
+
+/*
+  UCONN Design Changes: Buttons
+*/
 
 .btn, .btn-add {
   transition: ease 0.2s all;
@@ -718,4 +725,152 @@ thead {
     background-color: $manageColorDark;
     color: $headerBackgroundColor;
   }
+}
+
+/*
+  UCONN Design Changes: Form
+*/
+
+input {
+  transition: ease 0.2s all;
+}
+
+label {
+  text-transform: uppercase;
+  color: $darkGrey;
+}
+
+textarea:focus, input[type="text"]:focus {
+  border-color: $darkGrey;
+  box-shadow: none;
+}
+
+.chosen-container-multi .chosen-choices {
+  border: solid $grey 1px;
+  border-radius: 2px;
+  background: none;
+  transition: ease 0.1s all;
+
+  li.search-choice {
+    transition: ease 0.1s all;
+    border: solid grey 1px;
+    border-radius: 8px;
+    background: none;
+    color: $darkGrey;
+  }
+}
+
+.chosen-container-active .chosen-choices {
+  box-shadow: none;
+  border-radius: 8px 8px 0 0;
+  li.search-choice {
+    color: $headerColor;
+    background: $lighterGrey;
+  }
+}
+
+.chosen-container-multi.chosen-disabled .chosen-choices {
+  background: $lighterGrey;
+}
+
+.chosen-container-single .chosen-single {
+  background: none;
+  box-shadow: none;
+  border-radius: 8px;
+}
+
+.chosen-container-active.chosen-with-drop .chosen-single {
+  background: white;
+  box-shadow: none;
+  border-radius: 8px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.chosen-container-single .chosen-search input[type="text"] {
+    border-radius: 8px;
+}
+
+.chosen-container .chosen-drop {
+  border-radius: 0 0 8px 8px;
+  box-shadow: none;
+}
+
+.chosen-single {
+  color: $headerColor;
+}
+
+.chosen-container .chosen-results {
+  li {
+    transition: ease 0.2s all;
+    color: $headerColor;
+    font-size: 14px;
+    line-height: 1.9em;
+    padding: 2px 15px;
+  }
+
+  li.active-result {
+    box-shadow: none;
+    background: none;
+    border: none;
+    border-radius: 8px;
+  }
+
+  li.highlighted {
+    background: none;
+    background-color: rgba(0,0,0,0.05);
+    color: $headerColor;
+  }
+}
+
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  padding: 0 0 0 0.5em;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAA3klEQVRIS+3VMU9CMRTF8d8zBL+aizoQFhx0kUk33RzdYMNFXUFnYeGrYYyaJiUxJHDLSxodbNKpfeffc9/pbaPyaCrr+3OA++z4rtT5Pg5GuMnCY9yWQEoBE1xhlUUP8YDrCBIB0vojLvGO0yz4hm4JJAKcYYoPHGOZAUdYoIMBXrc5iQAHeMlzviFygj7O8dkWEJU4XI8chALRhn9AVKHf70VRTHu4wFfbmKZLNKt50dLBnna0imcMd/2I0phWa3Y/D1e1Xa9BCZJG0VuQNpaWKMx72xS1Fl5/WN3BN+AgJhnZQlq4AAAAAElFTkSuQmCC');
+  background-position: calc(100% - .5rem), 100% 0;
+  background-size: 1.5em 1.5em;
+  background-repeat: no-repeat;
+}
+
+textarea, input[type="text"], 
+input[type="password"], input[type="datetime"], 
+input[type="datetime-local"], input[type="date"], 
+input[type="month"], input[type="time"], 
+input[type="week"], input[type="number"], 
+input[type="email"], input[type="url"], 
+input[type="search"], input[type="tel"], 
+input[type="color"], .uneditable-input {
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+
+.input-prepend .add-on:first-child, 
+.input-prepend .btn:first-child, 
+.input-prepend .btn-add:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.input-append input, 
+.input-append select, 
+.input-append .uneditable-input, 
+.input-prepend input, 
+.input-prepend select, 
+.input-prepend .uneditable-input {
+  border-radius: 0 8px 8px 0;
+}
+
+input[type="text"].order_detail_quantity {
+  border-radius: 2px;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+.well {
+  border-radius: 8px;
+  box-shadow: none;
+  border: none;
+  background: white;
 }
