@@ -24,3 +24,15 @@ table {
 tfoot.cart {
   border-top: 3px solid $navbarActiveBorderColor;
 }
+
+@media screen and (min-width: 980px) {
+  .table-product-results {
+    .name, .type, .facility {
+      max-width: 124px;
+    }
+
+    .description {
+      max-width: 444px;
+    }
+  }
+}
