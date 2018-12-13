@@ -3,7 +3,7 @@
 require "rails_helper"
 require "controller_spec_helper"
 
-RSpec.describe FacilityFacilityAccountsController, if: SettingsHelper.feature_on?(:recharge_accounts) do
+RSpec.describe FacilityFacilityAccountsController, feature_setting: { recharge_accounts: true, reload_routes: true } do
   render_views
 
   around(:each) do |example|

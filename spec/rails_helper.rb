@@ -31,15 +31,16 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include FactoryBot::Syntax::Methods
 
-  config.before(:each, :feature_setting) do |example|
-    example.metadata[:feature_setting].except(:routes).each do |feature, value|
-      allow(Settings.feature).to receive("#{feature}_on").and_return(value)
+  config.around(:each, :feature_setting) do |example|
+    example.metadata[:feature_setting].except(:reload_routes).each do |feature, value|
+      Settings.feature.public_send("#{feature}_on=", value)
     end
-    # Necessary since some routes are enabled/disabled
-    Nucore::Application.reload_routes! if example.metadata[:feature_setting][:reload_routes]
-  end
 
-  config.after(:each, :feature_setting) do |example|
+    Nucore::Application.reload_routes! if example.metadata[:feature_setting][:reload_routes]
+
+    example.call
+
+    Settings.reload!
     Nucore::Application.reload_routes! if example.metadata[:feature_setting][:reload_routes]
   end
 

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe TrainingRequestsController, feature_setting: { training_requests: true } do
+RSpec.describe TrainingRequestsController, feature_setting: { training_requests: true, reload_routes: true } do
   let(:facility) { FactoryBot.create(:setup_facility) }
   let(:product) do
     FactoryBot.create(:setup_item, facility: facility,
