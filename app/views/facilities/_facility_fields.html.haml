@@ -10,8 +10,6 @@
     %label.legend= f.label :banner_notice
     = f.input :banner_notice, input_html: { class: "editor__simple" }, hint: text(".hints.banner_notice"), label: false
 
-%fieldset.well
-
 .well
   %p= text("facilities.new.thumbnail")
   = f.file_field :thumbnail, required: false
