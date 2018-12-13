@@ -84,6 +84,14 @@ RSpec.describe SecureRooms::AccessHandlers::OrderHandler, type: :service do
             expect(order_detail.cost).to be_present
           end
         end
+
+        context "when the user scans out after the schedules permits" do
+          before { allow_any_instance_of(ScheduleRule).to receive(:cover?).and_return false }
+
+          subject(:order_detail) { described_class.process(occupancy).order_details.first }
+
+          it { is_expected.to be_complete }
+        end
       end
 
       context "when orphaned" do

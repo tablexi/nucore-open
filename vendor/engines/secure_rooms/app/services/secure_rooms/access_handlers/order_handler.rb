@@ -78,8 +78,7 @@ module SecureRooms
       # signifies the user would have needed to select one to enter.
       def user_exempt_from_purchase?
         Rails.logger.info("[SecureRooms] Entered SecureRooms::AccessHandlers::OrderHandler#user_exempt_from_purchase?")
-        in_reader = occupancy.secure_room.card_readers.ingress.first
-        result = SecureRooms::CheckAccess.new.authorize(occupancy.user, in_reader).accounts.blank?
+        result = occupancy.user.user_roles.operator?(occupancy.facility)
         Rails.logger.info("[SecureRooms] Exiting SecureRooms::AccessHandlers::OrderHandler#user_exempt_from_purchase? and returning #{result}")
         result
       end
