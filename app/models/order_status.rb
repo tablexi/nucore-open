@@ -59,10 +59,6 @@ class OrderStatus < ApplicationRecord
     rgt < o.lft
   end
 
-  def is_right_of?(o)
-    lft > o.rgt
-  end
-
   def name_with_level
     "#{'-' * level} #{name}".strip
   end

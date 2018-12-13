@@ -259,10 +259,6 @@ class Reservation < ApplicationRecord
     Time.current < reserve_start_at - product_lock_window.hours
   end
 
-  def outside_lock_window?
-    before_lock_window? || Time.current >= reserve_start_at || in_grace_period?
-  end
-
   def inside_lock_window?
     !before_lock_window?
   end
@@ -316,12 +312,6 @@ class Reservation < ApplicationRecord
   # Used in instrument utilization reports
   def quantity
     1
-  end
-
-  protected
-
-  def has_order_detail?
-    !order_detail.nil?
   end
 
   private

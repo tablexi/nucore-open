@@ -24,7 +24,7 @@ class UrlService < ExternalService
   private
 
   def merge_queries(url, additional_hash)
-    uri = URI(url)
+    uri = URI(url.to_s.strip)
     query_hash = Rack::Utils.parse_query(uri.query)
     query_hash.merge!(additional_hash)
     uri.query = query_hash.to_query

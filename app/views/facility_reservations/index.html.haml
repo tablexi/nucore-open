@@ -19,14 +19,14 @@
         %thead
           %tr
             %th
-            %th= Order.model_name.human
-            %th= OrderDetail.model_name.human
-            %th= sortable "reserved_by"
-            %th{colspan: 2}= sortable "date", Order.human_attribute_name(:ordered_at)
-            %th{colspan: 2}= sortable "reserve_range", Reservation.human_attribute_name(:reserve_range)
-            %th.order-note= sortable "product_name", OrderDetail.human_attribute_name(:product)
-            %th= sortable "assigned_to", OrderDetail.human_attribute_name(:assigned_user)
-            %th= sortable "status"
+            %th.nowrap= sortable "order_number", Order.model_name.human
+            %th.nowrap= OrderDetail.model_name.human
+            %th.nowrap= sortable "ordered_for", Order.human_attribute_name(:user)
+            %th.nowrap{colspan: 2}= sortable "ordered_at", Order.human_attribute_name(:ordered_at)
+            %th.nowrap{colspan: 2}= sortable "reserve_range", Reservation.human_attribute_name(:reserve_range)
+            %th.nowrap.order-note= sortable "product_name", OrderDetail.human_attribute_name(:product)
+            %th.nowrap= sortable "assigned_to", OrderDetail.human_attribute_name(:assigned_user)
+            %th.nowrap= sortable "status"
             %th.currency= OrderDetail.human_attribute_name(:actual_cost)
         %tbody
           - @order_details.each do |od|

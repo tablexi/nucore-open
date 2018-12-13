@@ -126,6 +126,7 @@ feature:
   use_manage_on: false
   facility_banner_notice_on: true
   charge_full_price_on_cancellation_on: true
+  price_policy_requires_note_on: true
 
 split_accounts:
   # Roles are allowed to create Split Accounts

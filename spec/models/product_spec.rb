@@ -217,6 +217,10 @@ RSpec.describe Product do
           :unit_cost
         end
 
+        def note
+          "I am a note and I am present"
+        end
+
       end
 
       before :each do

@@ -2,8 +2,8 @@
 
 class FacilityReservationsController < ApplicationController
 
-  include NewInprocessController
   include SortableColumnController
+  include NewInprocessController
   include ProblemOrderDetailsController
   include TabCountHelper
   include Timelineable
@@ -209,11 +209,6 @@ class FacilityReservationsController < ApplicationController
       (@reservation.reserve_start_at_changed? || @reservation.reserve_end_at_changed?)
   end
 
-  def actual_changed?
-    @reservation.can_edit_actuals? &&
-      (@reservation.actual_start_at_changed? || @reservation.actual_end_at_changed?)
-  end
-
   def problem_order_details
     current_facility
       .problem_reservation_order_details
@@ -223,17 +218,6 @@ class FacilityReservationsController < ApplicationController
   def new_or_in_process_orders
     current_facility.order_details.new_or_inprocess.reservations
                     .includes(:reservation)
-  end
-
-  def sort_lookup_hash
-    {
-      "date" => "orders.ordered_at",
-      "reserve_range" => ["reservations.reserve_start_at", "reservations.reserve_end_at"],
-      "product_name"  => "products.name",
-      "status"        => "order_statuses.name",
-      "assigned_to"   => ["assigned_users.last_name", "assigned_users.first_name"],
-      "reserved_by"   => ["#{User.table_name}.first_name", "#{User.table_name}.last_name"],
-    }
   end
 
   def set_windows

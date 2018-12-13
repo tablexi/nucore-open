@@ -52,12 +52,12 @@ RSpec.describe ItemPricePolicy do
 
     it "is valid for for today if no active price policy already exists" do
       is_expected.to allow_value(Date.today).for(:start_date)
-      ipp = @item.item_price_policies.create!(unit_cost: 1, unit_subsidy: 0, start_date: Date.today - 7, expire_date: Date.today - 6,
-                                              price_group: @price_group)
+      ipp = create(:item_price_policy, product: @item, start_date: Date.today - 7, expire_date: Date.today - 6,
+                                       price_group: @price_group)
       ipp.save(validate: false)
 
-      ipp_new = @item.item_price_policies.build(unit_cost: 1, unit_subsidy: 0, start_date: Date.today, expire_date: 1.day.from_now,
-                                                price_group: @price_group)
+      ipp_new = build(:item_price_policy, product: @item, start_date: Date.today, expire_date: 1.day.from_now,
+                                          price_group: @price_group)
       expect(ipp_new).to be_valid
     end
 

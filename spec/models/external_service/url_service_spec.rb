@@ -90,5 +90,28 @@ RSpec.describe UrlService do
         )
       end
     end
+
+    describe "when the URL has some whitespace around it" do
+      before { allow(order_detail).to receive(:edit_url).and_return("\thttp://www.survey.com/surveys/edit?id=123") }
+
+      it "sets the query string correctly if the link already has a ?" do
+        expect(edit_url).to start_with("http://www.survey.com/surveys/edit?")
+        expect(query_hash).to include(
+          "id" => "123",
+          "receiver_id" => order_detail.id.to_s,
+        )
+      end
+    end
+
+    describe "when the url is blank (should be prevented by validations)" do
+      before { allow(order_detail).to receive(:edit_url).and_return(nil) }
+
+      it "treats it as a relative path with a receiver_id" do
+        expect(edit_url).to start_with("?")
+        expect(query_hash).to include(
+          "receiver_id" => order_detail.id.to_s,
+        )
+      end
+    end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181102173232) do
+ActiveRecord::Schema.define(version: 20181119211456) do
 
   create_table "account_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "account_id",            null: false
@@ -402,21 +402,24 @@ ActiveRecord::Schema.define(version: 20181102173232) do
   end
 
   create_table "price_policies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "type",                    limit: 50,                                          null: false
+    t.string   "type",                    limit: 50,                                           null: false
     t.integer  "product_id"
-    t.integer  "price_group_id",                                                              null: false
-    t.boolean  "can_purchase",                                                default: false, null: false
-    t.datetime "start_date",                                                                  null: false
-    t.decimal  "unit_cost",                          precision: 10, scale: 2
-    t.decimal  "unit_subsidy",                       precision: 10, scale: 2
-    t.decimal  "usage_rate",                         precision: 12, scale: 4
-    t.decimal  "minimum_cost",                       precision: 10, scale: 2
-    t.decimal  "cancellation_cost",                  precision: 10, scale: 2
-    t.decimal  "usage_subsidy",                      precision: 12, scale: 4
-    t.datetime "expire_date",                                                                 null: false
+    t.integer  "price_group_id",                                                               null: false
+    t.boolean  "can_purchase",                                                 default: false, null: false
+    t.datetime "start_date",                                                                   null: false
+    t.decimal  "unit_cost",                           precision: 10, scale: 2
+    t.decimal  "unit_subsidy",                        precision: 10, scale: 2
+    t.decimal  "usage_rate",                          precision: 12, scale: 4
+    t.decimal  "minimum_cost",                        precision: 10, scale: 2
+    t.decimal  "cancellation_cost",                   precision: 10, scale: 2
+    t.decimal  "usage_subsidy",                       precision: 12, scale: 4
+    t.datetime "expire_date",                                                                  null: false
     t.string   "charge_for"
     t.string   "legacy_rates"
-    t.boolean  "full_price_cancellation",                                     default: false, null: false
+    t.boolean  "full_price_cancellation",                                      default: false, null: false
+    t.string   "note",                    limit: 256
+    t.integer  "created_by_id"
+    t.index ["created_by_id"], name: "index_price_policies_on_created_by_id", using: :btree
     t.index ["price_group_id"], name: "fk_rails_74aa223960", using: :btree
     t.index ["product_id"], name: "index_price_policies_on_product_id", using: :btree
   end
@@ -840,6 +843,7 @@ ActiveRecord::Schema.define(version: 20181102173232) do
   add_foreign_key "price_group_members", "users"
   add_foreign_key "price_groups", "facilities"
   add_foreign_key "price_policies", "price_groups"
+  add_foreign_key "price_policies", "users", column: "created_by_id"
   add_foreign_key "product_users", "products", name: "fk_products"
   add_foreign_key "product_users", "users"
   add_foreign_key "products", "facilities"

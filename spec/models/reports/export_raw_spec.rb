@@ -33,7 +33,7 @@ RSpec.describe Reports::ExportRaw do
           actual_subsidy: BigDecimal("9.99"),
           estimated_cost: BigDecimal("39.99"),
           estimated_subsidy: BigDecimal("29.99"),
-          price_change_reason: "note",
+          price_change_reason: "this is a reason",
           assigned_user: user,
         )
       end

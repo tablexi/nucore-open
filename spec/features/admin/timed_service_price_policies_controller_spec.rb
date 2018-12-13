@@ -26,12 +26,16 @@ RSpec.describe TimedServicePricePoliciesController, :js do
     fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "25.25"
     fill_in "price_policy_#{external_price_group.id}[usage_rate]", with: "125.15"
 
+    fill_in "Note", with: "This is my note"
+
     click_button "Add Pricing Rules"
 
     expect(page).to have_content("$2.0000 / minute") # Base rate
     expect(page).to have_content("$120.00\n- $25.25\n= $94.75") # Cancer center
     expect(page).to have_content("$1.5792 / minute") # Cancer center
     expect(page).to have_content("$2.0858 / minute") # External
+
+    expect(page).to have_content("This is my note")
   end
 
   it "can allow only some groups to purchase" do
@@ -39,6 +43,8 @@ RSpec.describe TimedServicePricePoliciesController, :js do
     click_link timed_service.name
     click_link "Pricing"
     click_link "Add Pricing Rules"
+
+    fill_in "Note", with: "This is my note"
 
     fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "100.00"
     fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "25.25"
@@ -49,5 +55,17 @@ RSpec.describe TimedServicePricePoliciesController, :js do
     expect(page).to have_content(base_price_group.name)
     expect(page).to have_content(cancer_center.name)
     expect(page).not_to have_content(external_price_group.name)
+  end
+
+  describe "with required note enabled", feature_setting: { price_policy_requires_note: true } do
+    it "requires the field" do
+      visit facility_timed_services_path(facility, timed_service)
+      click_link timed_service.name
+      click_link "Pricing"
+      click_link "Add Pricing Rules"
+
+      click_button "Add Pricing Rules"
+      expect(page).to have_content("Note may not be blank")
+    end
   end
 end

@@ -1,3 +1,7 @@
+.nowrap {
+  white-space: nowrap;
+}
+
 .highlighted {
   @include gradient-vertical($sidebarActiveBackgroundColorHighlight, $sidebarActiveBackgroundColor);
   color: $sidebarActiveColor;
@@ -324,10 +328,6 @@ th.currency {
 }
 
 /* Price policies */
-
-p.charge-for {
-  font-style: italic;
-}
 
 p.per-minute {
   font-style: italic;

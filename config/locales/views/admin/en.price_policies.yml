@@ -10,6 +10,7 @@ en:
         past: Past Pricing Rules
         dates: "Effective: %{start}, Expires: %{expires}"
         charges_for: "Charges for %{charge_for}"
+        note: "Note: %{note}"
       edit:
         instructional_text: |
           All users must be charged the same base rate. You may define adjustments

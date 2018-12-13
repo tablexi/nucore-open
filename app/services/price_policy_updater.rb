@@ -26,14 +26,14 @@ class PricePolicyUpdater
   end
 
   def update_all
-    update && save
+    assign_attributes && save
   end
 
   private
 
-  def update
+  def assign_attributes
     @price_policies.each do |price_policy|
-      price_policy.attributes = price_group_attributes(price_policy.price_group)
+      price_policy.assign_attributes(price_group_attributes(price_policy.price_group))
     end
   end
 
@@ -44,18 +44,21 @@ class PricePolicyUpdater
   end
 
   def price_group_attributes(price_group)
-    initial_price_group_attributes(price_group).tap do |attributes|
-      attributes[:charge_for] = @params[:charge_for] if @params[:charge_for].present?
-      attributes[:expire_date] = @expire_date
-      attributes[:start_date] = @start_date
-    end
+    permitted_price_group_attributes(price_group).merge(
+      start_date: @start_date,
+      expire_date: @expire_date,
+    ).merge(permitted_common_params)
   end
 
-  def initial_price_group_attributes(price_group)
-    @params["price_policy_#{price_group.id}"]&.permit(*allowed_attributes) || { can_purchase: false }
+  def permitted_price_group_attributes(price_group)
+    @params["price_policy_#{price_group.id}"]&.permit(*permitted_params) || { can_purchase: false }
   end
 
-  def allowed_attributes
+  def permitted_common_params
+    @params.permit(:charge_for, :note, :created_by_id)
+  end
+
+  def permitted_params
     [
       :can_purchase,
       :usage_rate,

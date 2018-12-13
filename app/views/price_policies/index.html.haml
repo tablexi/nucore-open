@@ -21,7 +21,10 @@
   - policy = @current_price_policies.first
   %h4= text("dates", start: human_date(@current_start_date), expires: human_date(policy.expire_date))
   - if policy.charge_for.present?
-    %p.charge-for= text("charges_for", charge_for: policy.charge_for)
+    %p
+      %em= text("charges_for", charge_for: policy.charge_for)
+  %p
+    %em= text("note", note: policy.note)
   = render "table",
     price_policies: @current_price_policies,
     url_date: @current_start_date.strftime("%Y-%m-%d"),

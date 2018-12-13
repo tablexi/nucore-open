@@ -19,12 +19,12 @@
         = render "table_controls"
         %thead
           %tr
-            %th= Order.model_name.human
-            %th= OrderDetail.model_name.human
-            %th= sortable "entry_at", SecureRooms::Occupancy.human_attribute_name(:entry_at)
-            %th= sortable "user_name", User.model_name.human
-            %th.order-note= sortable "product_name", SecureRoom.model_name.human
-            %th= sortable "payment_source", Account.model_name.human
+            %th.nowrap= sortable "order_number", Order.model_name.human
+            %th.nowrap= OrderDetail.model_name.human
+            %th.nowrap= sortable "ordered_for", User.model_name.human
+            %th.nowrap= sortable "entry_at", SecureRooms::Occupancy.human_attribute_name(:entry_at)
+            %th.nowrap.order-note= sortable "product_name", SecureRoom.model_name.human
+            %th.nowrap= sortable "payment_source", Account.model_name.human
         %tbody
           - @order_details.each do |od|
             - order = od.order
@@ -32,8 +32,8 @@
             %tr
               %td.centered= link_to od.order_id, facility_order_path(current_facility, order)
               %td.centered= link_to od.id, manage_order_detail_path(od), class: "manage-order-detail"
-              %td= format_usa_datetime(occ.entry_at)
               %td= od.user&.full_name
+              %td= format_usa_datetime(occ.entry_at)
               = render partial: "shared/order_detail_cell", locals: { od: od, show_occupancy: false }
               %td= od.account
 

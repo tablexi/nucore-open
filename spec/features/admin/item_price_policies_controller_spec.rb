@@ -26,11 +26,15 @@ RSpec.describe ItemPricePoliciesController, :js do
     fill_in "price_policy_#{cancer_center.id}[unit_subsidy]", with: "25.25"
     fill_in "price_policy_#{external_price_group.id}[unit_cost]", with: "125.15"
 
+    fill_in "Note", with: "This is my note"
+
     click_button "Add Pricing Rules"
 
     expect(page).to have_content(table_row("#{base_price_group.name} (Internal)", "$100.00", "$0.00", "$100.00"))
     expect(page).to have_content(table_row("#{cancer_center.name} (Internal)", "$100.00", "$25.25", "$74.75"))
     expect(page).to have_content(table_row("#{external_price_group.name} (External)", "$125.15", "$0.00", "$125.15"))
+
+    expect(page).to have_content("This is my note")
   end
 
   it "can allow only some groups to purchase" do
@@ -38,6 +42,8 @@ RSpec.describe ItemPricePoliciesController, :js do
     click_link item.name
     click_link "Pricing"
     click_link "Add Pricing Rules"
+
+    fill_in "Note", with: "This is my note"
 
     fill_in "price_policy_#{base_price_group.id}[unit_cost]", with: "100.00"
     fill_in "price_policy_#{cancer_center.id}[unit_subsidy]", with: "25.25"
@@ -48,6 +54,18 @@ RSpec.describe ItemPricePoliciesController, :js do
     expect(page).to have_content(base_price_group.name)
     expect(page).to have_content(cancer_center.name)
     expect(page).not_to have_content(external_price_group.name)
+  end
+
+  describe "with required note enabled", feature_setting: { price_policy_requires_note: true } do
+    it "requires the field" do
+      visit facility_items_path(facility, item)
+      click_link item.name
+      click_link "Pricing"
+      click_link "Add Pricing Rules"
+
+      click_button "Add Pricing Rules"
+      expect(page).to have_content("Note may not be blank")
+    end
   end
 
   def table_row(*columns)
