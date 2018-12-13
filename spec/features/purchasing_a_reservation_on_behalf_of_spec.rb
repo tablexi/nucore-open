@@ -70,7 +70,7 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
   describe "creating multiple reservations" do
     it "can create reservations in the future" do
       fill_in "order[order_details][][quantity]", with: "2"
-      click_button "Create Order"
+      click_button "Create Order", match: :first
       choose account.to_s
       click_button "Continue"
 
@@ -91,7 +91,7 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
 
     it "can create reservations in the past" do
       fill_in "order[order_details][][quantity]", with: "2"
-      click_button "Create Order"
+      click_button "Create Order", match: :first
       choose account.to_s
       click_button "Continue"
 
@@ -112,7 +112,7 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
 
     it "can modify a reservation in the future" do
       fill_in "order[order_details][][quantity]", with: "2"
-      click_button "Create Order"
+      click_button "Create Order", match: :first
       choose account.to_s
       click_button "Continue"
 
@@ -134,7 +134,7 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
 
     it "can modify a reservation in the past" do
       fill_in "order[order_details][][quantity]", with: "2"
-      click_button "Create Order"
+      click_button "Create Order", match: :first
       choose account.to_s
       click_button "Continue"
 

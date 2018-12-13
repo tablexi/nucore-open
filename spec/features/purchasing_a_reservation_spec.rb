@@ -119,7 +119,7 @@ RSpec.describe "Purchasing a reservation" do
   describe "ordering on an order form" do
     before do
       fill_in "order[order_details][][quantity]", with: "2"
-      click_button "Create Order"
+      click_button "Create Order", match: :first
       choose account.to_s
       click_button "Continue"
     end
