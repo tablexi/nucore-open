@@ -45,7 +45,7 @@ class FacilitiesController < ApplicationController
     return redirect_to(facilities_path) if current_facility.try(:cross_facility?)
     raise ActiveRecord::RecordNotFound unless current_facility.try(:is_active?)
     @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
-    set_column_class
+    @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
     render layout: "application"
   end
@@ -251,11 +251,6 @@ class FacilitiesController < ApplicationController
 
   def set_admin_billing_tab
     @active_tab = "admin_billing"
-  end
-
-  def set_column_class
-    @columns = ""
-    @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
   end
 
   def azlist_on?
