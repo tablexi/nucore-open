@@ -31,16 +31,16 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include FactoryBot::Syntax::Methods
 
-  config.around(:each, :feature_setting) do |example|
-    example.metadata[:feature_setting].each do |feature, value|
-      SettingsHelper.enable_feature(feature, value)
+  config.before(:each, :feature_setting) do |example|
+    example.metadata[:feature_setting].except(:routes).each do |feature, value|
+      allow(Settings.feature).to receive("#{feature}_on").and_return(value)
     end
-    Nucore::Application.reload_routes!
+    # Necessary since some routes are enabled/disabled
+    Nucore::Application.reload_routes! if example.metadata[:feature_setting][:reload_routes]
+  end
 
-    example.call
-
-    Settings.reload!
-    Nucore::Application.reload_routes!
+  config.after(:each, :feature_setting) do |example|
+    Nucore::Application.reload_routes! if example.metadata[:feature_setting][:reload_routes]
   end
 
   config.around(:each, :billing_review_period) do |example|

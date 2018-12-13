@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-RSpec.describe StatusChangeNotifications do
+RSpec.describe StatusChangeNotifications, feature_setting: { product_specific_contacts: true } do
   before :each do
     @order_status = FactoryBot.create(:order_status)
-    Settings.order_details ||= {}
-    Settings.order_details.status_change_hooks = {
+    allow(Settings).to receive_message_chain(:order_details, :status_change_hooks).and_return(
       :"#{@order_status.downcase_name}" => "StatusChangeNotifications::#{self.class.description}",
-    }
-    SettingsHelper.enable_feature(:product_specific_contacts)
+    )
     @user = FactoryBot.create(:user)
     @facility = FactoryBot.create(:facility, email: "notify-facility@example.org")
     @order_detail = place_and_complete_item_order(@user, @facility)
