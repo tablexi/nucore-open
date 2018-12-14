@@ -3,6 +3,7 @@
 class Facility < ApplicationRecord
 
   before_validation :set_journal_mask, on: :create
+  before_validation { thumbnail.clear if remove_thumbnail }
 
   has_many :items
   has_many :services
@@ -26,8 +27,7 @@ class Facility < ApplicationRecord
   has_many :user_roles, dependent: :destroy
   has_many :users, -> { distinct }, through: :user_roles
   has_attached_file :thumbnail, styles: {thumb: "400x200#"}, dependent: :destroy
-
-  validates_presence_of :name, :short_description, :abbreviation
+  validates_presence_of :name, :short_description, :abbreviation, :remove_thumbnail
   validate_url_name :url_name
   validates_uniqueness_of :abbreviation, :journal_mask, case_sensitive: false
   validates_format_of :abbreviation, with: /\A[a-zA-Z\d\-\.\s]+\z/, message: "may include letters, numbers, hyphens, spaces, or periods only"
@@ -50,6 +50,7 @@ class Facility < ApplicationRecord
   scope :alphabetized, -> { order(:name) }
 
   cattr_accessor(:facility_account_validators) { [] }
+
 
   def can_pay_with_account?(account)
     return true unless account
@@ -124,6 +125,14 @@ class Facility < ApplicationRecord
     order_details.problem_orders.complete
   end
 
+  def remove_thumbnail
+    @remove_thumbnail ||= false
+  end
+
+  def remove_thumbnail=(value)
+    @remove_thumbnail  = !value.to_i.zero?
+  end
+
   private
 
   def set_journal_mask
@@ -134,5 +143,4 @@ class Facility < ApplicationRecord
                           "C01"
                         end
   end
-
 end

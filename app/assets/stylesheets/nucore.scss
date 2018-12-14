@@ -881,3 +881,8 @@ input[type="file"]{
   cursor: pointer;
   margin-top: 1em;
 }
+
+#thumbnail_preview {
+  display: flex;
+  margin: 1em 0
+}
