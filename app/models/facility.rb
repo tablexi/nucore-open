@@ -27,7 +27,7 @@ class Facility < ApplicationRecord
   has_many :user_roles, dependent: :destroy
   has_many :users, -> { distinct }, through: :user_roles
   has_attached_file :thumbnail, styles: {thumb: "400x200#"}, dependent: :destroy
-  validates_presence_of :name, :short_description, :abbreviation, :remove_thumbnail
+  validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
   validates_uniqueness_of :abbreviation, :journal_mask, case_sensitive: false
   validates_format_of :abbreviation, with: /\A[a-zA-Z\d\-\.\s]+\z/, message: "may include letters, numbers, hyphens, spaces, or periods only"

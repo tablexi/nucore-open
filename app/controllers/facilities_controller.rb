@@ -76,13 +76,6 @@ class FacilitiesController < ApplicationController
     @active_tab = "admin_facility"
   end
 
-  def remove_thumbnail
-    @facility.thumbnail.destroy #Will remove the attachment and save the model
-    @facility.thumbnail.clear #Will queue the attachment to be deleted
-    @facility.save
-  end
-
-
   # GET /facilities/new
   def new
     @active_tab = "manage_facilites"
