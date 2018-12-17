@@ -32,8 +32,6 @@ config/secrets.yml
 
 public/images/bg-search-form.pxm
 
-app/assets/images/favicons/*
-
 # Ignore RSpec's persistence file:
 spec/examples.txt
 .DS_Store

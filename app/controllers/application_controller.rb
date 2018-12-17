@@ -14,12 +14,25 @@ class ApplicationController < ActionController::Base
   helper_method :cross_facility?
   helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?
   helper_method :open_or_facility_path
+  helper_method :favicons
 
   before_action :set_paper_trail_whodunnit
 
   # Navigation tabs configuration
   attr_accessor :active_tab
   include NavTab
+
+  def favicons
+    images = []
+    Dir.glob("app/assets/images/favicons/*.png").each  do |png|
+      rel = (png.include? "apple-touch-icon") ? "apple-touch-icon" : "shortcut icon"
+      images.push({path: File.basename(png), rel: rel, type: "image/png"})
+    end
+    Dir.glob("app/assets/images/favicons/*.svg").each  do |svg|
+      images.push({path: File.basename(svg), rel: 'shortcut icon', type: "image/svg"})
+    end
+    return images
+  end
 
   # return whatever facility is indicated by the :facility_id or :id url parameter
   # UNLESS that url parameter has the value of 'all'
