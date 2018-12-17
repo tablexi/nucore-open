@@ -21,17 +21,10 @@ class ApplicationController < ActionController::Base
   # Navigation tabs configuration
   attr_accessor :active_tab
   include NavTab
+  include FaviconsHelper
 
   def favicons
-    images = []
-    Dir.glob("app/assets/images/favicons/*.png").each  do |png|
-      rel = (png.include? "apple-touch-icon") ? "apple-touch-icon" : "shortcut icon"
-      images.push({path: File.basename(png), rel: rel, type: "image/png"})
-    end
-    Dir.glob("app/assets/images/favicons/*.svg").each  do |svg|
-      images.push({path: File.basename(svg), rel: 'shortcut icon', type: "image/svg"})
-    end
-    return images
+    load_favicons
   end
 
   # return whatever facility is indicated by the :facility_id or :id url parameter
