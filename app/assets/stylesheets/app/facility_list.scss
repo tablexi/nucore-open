@@ -1,10 +1,10 @@
-.facility_list_container.tile{
+.facility_list_container.tile {
   display:flex;
   flex-wrap: wrap;
   justify-content: left; 
 }
 
-.facility_listing.tile{
+.facility_listing.tile {
   flex: 1 1 calc(33% - 10px);
   height: 300px;
   min-width: 250px;

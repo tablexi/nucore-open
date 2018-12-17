@@ -2,6 +2,8 @@
 
 class Facility < ApplicationRecord
 
+  attr_reader :remove_thumbnail
+
   before_validation :set_journal_mask, on: :create
   before_validation { thumbnail.clear if remove_thumbnail }
 
@@ -26,7 +28,7 @@ class Facility < ApplicationRecord
   has_many :training_requests, through: :products
   has_many :user_roles, dependent: :destroy
   has_many :users, -> { distinct }, through: :user_roles
-  has_attached_file :thumbnail, styles: {thumb: "400x200#"}, dependent: :destroy
+  has_attached_file :thumbnail, styles: { thumb: "400x200#" }, dependent: :destroy
   validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
   validates_uniqueness_of :abbreviation, :journal_mask, case_sensitive: false
@@ -42,15 +44,12 @@ class Facility < ApplicationRecord
             length: { maximum: 300 },
             if: -> { SettingsHelper.feature_on?(:limit_short_description) }
 
-  
-
   delegate :in_dispute, to: :order_details, prefix: true
 
   scope :active, -> { where(is_active: true) }
   scope :alphabetized, -> { order(:name) }
 
   cattr_accessor(:facility_account_validators) { [] }
-
 
   def can_pay_with_account?(account)
     return true unless account
@@ -125,12 +124,8 @@ class Facility < ApplicationRecord
     order_details.problem_orders.complete
   end
 
-  def remove_thumbnail
-    @remove_thumbnail ||= false
-  end
-
   def remove_thumbnail=(value)
-    @remove_thumbnail  = !value.to_i.zero?
+    @remove_thumbnail = !value.to_i.zero?
   end
 
   private
@@ -143,4 +138,5 @@ class Facility < ApplicationRecord
                           "C01"
                         end
   end
+
 end
