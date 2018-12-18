@@ -35,7 +35,7 @@ module SettingsHelper
   #   If you want to check setting 'feature.password_update_on'
   #   then this parameter would be :password_update
   def self.feature_on?(feature)
-    !!Settings.feature["#{feature}_on"]
+    !!Settings.feature[feature]
   end
 
   def self.feature_off?(feature)

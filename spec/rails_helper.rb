@@ -33,7 +33,7 @@ RSpec.configure do |config|
 
   config.around(:each, :feature_setting) do |example|
     example.metadata[:feature_setting].except(:reload_routes).each do |feature, value|
-      Settings.feature.public_send("#{feature}_on=", value)
+      Settings.feature[feature] = value
     end
 
     Nucore::Application.reload_routes! if example.metadata[:feature_setting][:reload_routes]
