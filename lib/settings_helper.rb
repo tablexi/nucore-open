@@ -32,10 +32,10 @@ module SettingsHelper
   #
   # Used to query the +Settings+ under feature:
   # [_feature_]
-  #   If you want to check setting 'feature.password_update_on'
-  #   then this parameter would be :password_update
+  #   If you want to check setting 'feature.password_update' then this parameter
+  #.  would be :password_update. Will raise an error if the setting does not exist.
   def self.feature_on?(feature)
-    !!Settings.feature[feature]
+    !!Settings.feature.to_h.fetch(feature)
   end
 
   def self.feature_off?(feature)
