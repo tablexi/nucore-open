@@ -54,9 +54,15 @@ RSpec.describe Reports::ExportRaw do
         "Estimated Cost" => "$39.99",
         "Estimated Subsidy" => "$29.99",
         "Estimated Total" => "$10.00",
+        "Calculated Cost" => "$3.00", # Default price policy is $1/each
+        "Calculated Subsidy" => "$0.00",
+        "Calculated Total" => "$3.00",
         "Actual Cost" => "$19.99",
         "Actual Subsidy" => "$9.99",
         "Actual Total" => "$10.00",
+        "Difference Cost" => "$16.99",
+        "Difference Subsidy" => "$9.99",
+        "Difference Total" => "$7.00",
         "Charge For" => "Quantity",
         "Assigned Staff" => user.full_name,
       )

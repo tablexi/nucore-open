@@ -8,7 +8,7 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
     FactoryBot.build(:split_account, :with_account_owner, without_splits: true, owner: user).tap do |account|
       account.splits << build(:split, percent: 50, apply_remainder: true, subaccount: subaccounts[0], parent_split_account: account)
       account.splits << build(:split, percent: 50, apply_remainder: false, subaccount: subaccounts[1], parent_split_account: account)
-      account.save
+      account.save!
     end
   end
 
@@ -29,15 +29,18 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
   end
 
   describe "with an item" do
+    before { item.price_policies.update_all(unit_cost: 11, unit_subsidy: 1) }
+
     let(:item) { FactoryBot.create(:setup_item, facility: facility) }
+    let(:order) { create(:complete_order, product: item, account: account) }
     let(:order_detail) do
-      place_product_order(user, facility, item, account).tap do |order_detail|
+      order.order_details.first.tap do |order_detail|
         order_detail.update_attributes!(
           quantity: 1,
-          actual_subsidy: BigDecimal("9.99"),
           actual_cost: BigDecimal("19.99"),
-          estimated_subsidy: BigDecimal("29.99"),
+          actual_subsidy: BigDecimal("9.99"),
           estimated_cost: BigDecimal("39.99"),
+          estimated_subsidy: BigDecimal("29.99"),
         )
       end
     end
@@ -49,6 +52,8 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
         "Actual Subsidy" => ["$5.00", "$4.99"],
         "Estimated Cost" => ["$20.00", "$19.99"],
         "Estimated Subsidy" => ["$15.00", "$14.99"],
+        "Calculated Cost" => ["$5.50", "$5.50"],
+        "Calculated Subsidy" => ["$0.50", "$0.50"],
         "Account" => subaccounts.map(&:account_number),
         "Split Percent" => ["50%", "50%"],
       )

@@ -14,6 +14,7 @@ FactoryBot.define do
   factory :setup_order, class: Order do
     transient do
       product { nil }
+      quantity { 1 }
     end
     facility { product.facility }
     association :account, factory: :setup_account
@@ -24,7 +25,7 @@ FactoryBot.define do
       # build().save will allow an already existing relation without raising an error
       build(:account_price_group_member, account: order.account, price_group: evaluator.product.facility.price_groups.last).save
       build(:user_price_group_member, user: evaluator.user, price_group: evaluator.product.facility.price_groups.last).save
-      order.add(evaluator.product)
+      order.add(evaluator.product, evaluator.quantity)
     end
 
     factory :purchased_order do
