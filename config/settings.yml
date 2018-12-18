@@ -92,41 +92,41 @@ relays:
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
-  billing_administrator_on: true
-  billing_administrator_users_tab_on: true
-  create_users_on: true
-  netids_on: true
-  limit_short_description_on: true
-  manage_payment_sources_with_users_on: true
-  order_assignment_notifications_on: true
-  password_update_on: true
-  recharge_accounts_on: true
-  expense_accounts_on: true
-  edit_accounts_on: true
-  suspend_accounts_on: true
-  product_specific_contacts_on: true
-  training_requests_on: true
-  daily_view_on: true
-  split_accounts_on: true
-  print_order_detail_on: false
-  user_based_price_groups_on: true
-  my_files_on: true
+  billing_administrator: true
+  billing_administrator_users_tab: true
+  create_users: true
+  netids: true
+  limit_short_description: true
+  manage_payment_sources_with_users: true
+  order_assignment_notifications: true
+  password_update: true
+  recharge_accounts: true
+  expense_accounts: true
+  edit_accounts: true
+  suspend_accounts: true
+  product_specific_contacts: true
+  training_requests: true
+  daily_view: true
+  split_accounts: true
+  print_order_detail: false
+  user_based_price_groups: true
+  my_files: true
   # results file notifications requires that my_files be on as well
-  results_file_notifications_on: true
-  set_statement_search_start_date_on: false
-  send_statement_emails_on: true
-  ready_for_journal_notice_on: true
-  journals_may_span_fiscal_years_on: false
-  equipment_list_on: true
-  price_change_reason_required_on: true
-  can_manage_global_price_groups_on: true
-  cross_facility_reports_on: false
-  product_list_columns_on: false
-  azlist_on: false
-  use_manage_on: false
-  facility_banner_notice_on: true
-  charge_full_price_on_cancellation_on: true
-  price_policy_requires_note_on: true
+  results_file_notifications: true
+  set_statement_search_start_date: false
+  send_statement_emails: true
+  ready_for_journal_notice: true
+  journals_may_span_fiscal_years: false
+  equipment_list: true
+  price_change_reason_required: true
+  can_manage_global_price_groups: true
+  cross_facility_reports: false
+  product_list_columns: false
+  azlist: false
+  use_manage: false
+  facility_banner_notice: true
+  charge_full_price_on_cancellation: true
+  price_policy_requires_note: true
 
 split_accounts:
   # Roles are allowed to create Split Accounts

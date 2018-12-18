@@ -33,4 +33,10 @@ RSpec.describe SettingsHelper do
     end
   end
 
+  describe "feature_on" do
+    it "raises an error if the feature does not exist" do
+      expect { SettingsHelper.feature_on?(:nonexistent_feature) }.to raise_error(KeyError)
+    end
+  end
+
 end
