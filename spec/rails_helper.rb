@@ -32,15 +32,16 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   config.around(:each, :feature_setting) do |example|
-    example.metadata[:feature_setting].each do |feature, value|
-      SettingsHelper.enable_feature(feature, value)
+    example.metadata[:feature_setting].except(:reload_routes).each do |feature, value|
+      Settings.feature[feature] = value
     end
-    Nucore::Application.reload_routes!
+
+    Nucore::Application.reload_routes! if example.metadata[:feature_setting][:reload_routes]
 
     example.call
 
     Settings.reload!
-    Nucore::Application.reload_routes!
+    Nucore::Application.reload_routes! if example.metadata[:feature_setting][:reload_routes]
   end
 
   config.around(:each, :billing_review_period) do |example|

@@ -3,12 +3,8 @@
 require "rails_helper"
 
 RSpec.describe PricePolicy do
-  before :all do
-    # Settings should be 09-01 or 08-01
-    Settings.financial.fiscal_year_begins = "10-01"
-  end
-  after :all do
-    Settings.reload!
+  before(:each) do
+    allow(Settings.financial).to receive(:fiscal_year_begins).and_return("10-01")
   end
 
   let(:facility) { @facility }

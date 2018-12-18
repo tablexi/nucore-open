@@ -24,7 +24,7 @@ RSpec.describe BudgetedChartString do
   # year setting anyways. -Jason
   context "import" do
     before :each do
-      Settings.financial.fiscal_year_begins = "04-01"
+      allow(Settings.financial).to receive(:fiscal_year_begins).and_return("04-01")
       filename = "#{Rails.root}/spec/files/budgeted_chart_strings1.txt"
       BudgetedChartString.delete_all
       BudgetedChartString.import(filename)
@@ -33,9 +33,6 @@ RSpec.describe BudgetedChartString do
       # should properly parse account fields and dates
       @bcs1 = BudgetedChartString.all[4]
       @bcs2 = BudgetedChartString.last
-    end
-    after :each do
-      Settings.reload!
     end
 
     it "should set fields correctly" do

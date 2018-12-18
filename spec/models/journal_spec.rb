@@ -351,7 +351,7 @@ RSpec.describe Journal do
 
   context "order_details_span_fiscal_years?" do
     before :each do
-      Settings.financial.fiscal_year_begins = "06-01"
+      allow(Settings.financial).to receive(:fiscal_year_begins).and_return("06-01")
       @owner = FactoryBot.create(:user)
       @account = FactoryBot.create(:nufs_account, :with_account_owner, owner: @owner)
       @facility_account = FactoryBot.create(:facility_account, facility: facility)
