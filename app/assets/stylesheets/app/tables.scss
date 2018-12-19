@@ -26,13 +26,11 @@ tfoot.cart {
 }
 
 @media screen and (min-width: 980px) {
-  .table-product-results {
-    .name, .type, .facility {
-      max-width: 124px;
-    }
+  .table-product-results__name, .table-product-results__type, .table-product-results__facility {
+    max-width: 124px;
+  }
 
-    .description {
-      max-width: 444px;
-    }
+  .table-product-results__description {
+    max-width: 444px;
   }
 }

@@ -10,13 +10,13 @@
   %tbody
     - results.take(20).each do |product|
       %tr
-        %td.name
+        %td.table-product-results__name
           = link_to product.name + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(product.facility, product)
-        %td.type
+        %td.table-product-results__type
           = product.model_name.human
-        %td.facility
+        %td.table-product-results__facility
           = link_to product.facility, facility_path(product.facility)
-        %td.description
+        %td.table-product-results__description
           = truncate(strip_tags(product.description), length: 300)
 
 - if results.count >= 20
