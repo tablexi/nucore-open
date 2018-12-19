@@ -5,10 +5,10 @@
       - matched_facilities.each do |facility|
         .facility_listing.js--facility_listing{ class: [az_classname_for_facility(index, letter), @list_layout] }
           - if @list_layout == 'tile'
-            - if facility.thumbnail.exists?
-              = image_tag(facility.thumbnail(:thumb))
-            - else
-              = link_to facility_path(facility) do
+            = link_to facility_path(facility) do
+              - if facility.thumbnail.exists?
+                = image_tag(facility.thumbnail(:thumb))
+              - else
                 .thumbnailFallBackContainer
                   .thumbnailFallback= facility.abbreviation
             %h4.header-tight= link_to facility, facility_path(facility)
