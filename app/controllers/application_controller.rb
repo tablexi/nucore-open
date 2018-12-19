@@ -14,18 +14,12 @@ class ApplicationController < ActionController::Base
   helper_method :cross_facility?
   helper_method :current_facility, :session_user, :manageable_facilities, :operable_facilities, :acting_user, :acting_as?, :check_acting_as, :current_cart, :backend?
   helper_method :open_or_facility_path
-  helper_method :favicons
 
   before_action :set_paper_trail_whodunnit
 
   # Navigation tabs configuration
   attr_accessor :active_tab
   include NavTab
-  include FaviconsHelper
-
-  def favicons
-    load_favicons
-  end
 
   # return whatever facility is indicated by the :facility_id or :id url parameter
   # UNLESS that url parameter has the value of 'all'
