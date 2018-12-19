@@ -802,7 +802,7 @@ class OrderDetail < ApplicationRecord
   #
   # Returns true if this order detail is part of a bundle purchase, false otherwise
   def bundled?
-    !bundle.nil?
+    bundle.present?
   end
 
   # Useful when sorting so we don't get `nil` to number comparisons
