@@ -1,22 +1,22 @@
 %h3= Product.model_name.human(count: 2)
 
-%table.table.table-striped.table-hover.js--responsive_table
+%table.table.table-striped.table-hover.js--responsive_table.table-product-results
   %thead
     %tr
-      %th= Product.model_name.human
-      %th= Product.human_attribute_name("type")
-      %th= Facility.model_name.human
-      %th= Product.human_attribute_name("description")
+      %th.table-product-results__name= Product.model_name.human
+      %th.table-product-results__type= Product.human_attribute_name("type")
+      %th.table-product-results__facility= Facility.model_name.human
+      %th.table-product-results__description= Product.human_attribute_name("description")
   %tbody
     - results.take(20).each do |product|
       %tr
-        %td.nowrap.span2
+        %td.table-product-results__name
           = link_to product.name + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(product.facility, product)
-        %td.span2
+        %td.table-product-results__type
           = product.model_name.human
-        %td.span2
+        %td.table-product-results__facility
           = link_to product.facility, facility_path(product.facility)
-        %td.span6
+        %td.table-product-results__description
           = truncate(strip_tags(product.description), length: 300)
 
 - if results.count >= 20
