@@ -3,10 +3,10 @@
 %table.table.table-striped.table-hover.js--responsive_table.table-product-results
   %thead
     %tr
-      %th.name= Product.model_name.human
-      %th.type= Product.human_attribute_name("type")
-      %th.facility= Facility.model_name.human
-      %th.description= Product.human_attribute_name("description")
+      %th.table-product-results__name= Product.model_name.human
+      %th.table-product-results__type= Product.human_attribute_name("type")
+      %th.table-product-results__facility= Facility.model_name.human
+      %th.table-product-results__description= Product.human_attribute_name("description")
   %tbody
     - results.take(20).each do |product|
       %tr
