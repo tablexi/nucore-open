@@ -8,6 +8,7 @@
       - if session_user.nil?
         %ul.nav.pull-right.hide-from-print
           %li= link_to t("pages.login"), :new_user_session
+          = render "/shared/support"
       - else
         - if responsive?
           %a.btn.btn-navbar.hide-from-print{ data: { target: ".nav-collapse", toggle: "collapse" } }
@@ -21,6 +22,7 @@
           %ul.nav.pull-right.hide-from-print
             - if acting_as?
               %li.navbar-text= "#{acting_user.full_name} (#{acting_user.username})"
+              = render "/shared/support"
               %li= link_to "#{t('pages.cart')} (#{current_cart.order_details.count})", :cart
             - else
               - if UserPreference.options_for(current_user).any?
@@ -32,6 +34,7 @@
                 %li= link_to t("user_password.edit.head"), :edit_current_password
                 %li.divider-vertical
               -# .visible-with-nav is visible > 979px
+              = render "/shared/support"
               %li.visible-with-nav= link_to t('pages.cart') + " (#{current_cart.order_details.count})", :cart
               %li.divider-vertical
               = render "shared/message_summary"
