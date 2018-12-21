@@ -44,6 +44,8 @@ email:
     sender: 'noreply@example.com'
     recipients: [ 'warn@example.com', 'error@example.com' ]
 
+support_email: ~
+
 order_details:
   # These hooks are triggered when an order detail enters into the status
   # The hooks can be configured with settings. Here are several formats you can use:
