@@ -3,7 +3,7 @@
 class ReservationUserActionPresenter
 
   attr_accessor :reservation, :controller
-  delegate :order_detail, :order,
+  delegate :order_detail, :order, :facility, :product,
            :can_switch_instrument?, :can_switch_instrument_on?, :can_switch_instrument_off?,
            :can_cancel?, :startable_now?, :can_customer_edit?, :started?, :ongoing?, to: :reservation
 
@@ -28,6 +28,8 @@ class ReservationUserActionPresenter
     elsif startable_now?
       actions << move_link
     end
+
+    actions << report_an_issue_link
 
     actions << cancel_link if can_cancel?
 
@@ -90,6 +92,10 @@ class ReservationUserActionPresenter
     link_to I18n.t("reservations.moving_up.link"), order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
             class: "move-res",
             data: { reservation_id: reservation.id }
+  end
+
+  def report_an_issue_link
+    link_to(I18n.t("views.instrument_issues.new.title"), new_facility_instrument_issue_path(facility, product))
   end
 
 end
