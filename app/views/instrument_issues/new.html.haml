@@ -9,10 +9,15 @@
 = content_for :h1 do
   = @product.name
 
-%h2= text("title")
 
-%p= text("instructions")
+.row
+  .span12
+    %h2= text("title")
 
-= simple_form_for([current_facility, @instrument_issue]) do |f|
-  = f.input :message, as: :text
-  = f.submit text("submit"), class: "btn btn-primary"
+    %p= text("instructions")
+
+.row
+  .span6
+    = simple_form_for([current_facility, @instrument_issue]) do |f|
+      = f.input :message, as: :text, input_html: { class: "input-xxlarge", rows: 6 }
+      = f.submit text("submit"), class: "btn btn-primary"

@@ -16,8 +16,6 @@ en:
 
           They said:
 
-          > *%{message}*
-
   controllers:
     instrument_issues:
       create:

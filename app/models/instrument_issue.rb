@@ -22,6 +22,7 @@ class InstrumentIssue
   end
 
   def recipients
+    # Per NU, `Facility#email` is intentionally left out #137686
     all = product.facility.director_and_admins.pluck(:email) + product.training_request_contacts
     all.uniq
   end
