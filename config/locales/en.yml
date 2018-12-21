@@ -71,6 +71,7 @@ en:
     my_tab: My %{model}
     transactions: My Transactions
     notices: Notices
+    support: Support
 
   affiliates:
     add: Add Affiliate

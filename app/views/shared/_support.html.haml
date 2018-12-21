@@ -1,0 +1,3 @@
+- if Settings.support_email.present?
+  %li.visible-with-nav= mail_to Settings.support_email, t('pages.support')
+  %li.divider-vertical
