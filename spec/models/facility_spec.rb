@@ -78,6 +78,18 @@ RSpec.describe Facility do
     end
   end
 
+  describe ".director_and_admins" do
+    let(:facility) { create(:facility) }
+    let!(:staff) { create(:user, :staff, facility: facility) }
+    let!(:senior_staff) { create(:user, :senior_staff, facility: facility) }
+    let!(:admin) { create(:user, :facility_administrator, facility: facility) }
+    let!(:director) { create(:user, :facility_director, facility: facility) }
+
+    it "returns only the director and administrators" do
+      expect(facility.director_and_admins).to contain_exactly(admin, director)
+    end
+  end
+
   context "url_name" do
     it "is only valid with alphanumeric and -_ characters" do
       is_expected.not_to allow_value("abc 123").for(:url_name)

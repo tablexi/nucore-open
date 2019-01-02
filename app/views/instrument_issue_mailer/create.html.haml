@@ -1,0 +1,7 @@
+= html("body",
+  product: @product,
+  facility: @product.facility,
+  user: @user,
+  email: @user.email)
+
+%blockquote= simple_format @message

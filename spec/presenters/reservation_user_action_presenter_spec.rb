@@ -6,9 +6,10 @@ RSpec.describe ReservationUserActionPresenter do
   include Rails.application.routes.url_helpers
 
   let(:facility) { build_stubbed(:facility) }
+  let(:instrument) { build_stubbed(:instrument, facility: facility) }
   let(:order) { build_stubbed(:order, facility: facility, user: user) }
   let(:order_detail) { build_stubbed(:order_detail, order: order) }
-  let(:reservation) { build_stubbed(:reservation, order_detail: order_detail) }
+  let(:reservation) { build_stubbed(:reservation, order_detail: order_detail, product: instrument) }
   let(:template) { double("template") }
   let(:user) { build_stubbed(:user) }
 
@@ -67,8 +68,10 @@ RSpec.describe ReservationUserActionPresenter do
 
     subject(:text) { presenter.user_actions.join("|") }
 
-    it "is blank by default" do
-      expect(text).to be_blank
+    it "has only report an issue" do
+      parts = text.split("|")
+      expect(parts).to be_one
+      expect(parts.first).to include("Report an Issue")
     end
 
     describe "switching" do

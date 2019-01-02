@@ -93,6 +93,13 @@ RSpec.configure do |config|
 
   config.after(:all) { travel_back }
 
+  config.around(:each, :active_job) do |example|
+    old_value = ActiveJob::Base.queue_adapter
+    ActiveJob::Base.queue_adapter = :test
+    example.call
+    ActiveJob::Base.queue_adapter = old_value
+  end
+
   # rspec-rails 3 will no longer automatically infer an example group's spec type
   # from the file location. You can explicitly opt-in to the feature using this
   # config option.

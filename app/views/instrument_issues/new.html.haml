@@ -1,0 +1,23 @@
+= content_for :breadcrumb do
+  %ul.breadcrumb
+    %li= link_to "Home", :root
+    %li &raquo;
+    %li= link_to current_facility, current_facility
+    %li &raquo;
+    %li= @product.name
+
+= content_for :h1 do
+  = @product.name
+
+
+.row
+  .span12
+    %h2= text("title")
+
+    %p= text("instructions")
+
+.row
+  .span6
+    = simple_form_for([current_facility, @instrument_issue]) do |f|
+      = f.input :message, as: :text, input_html: { class: "input-xxlarge", rows: 6 }
+      = f.submit text("submit"), class: "btn btn-primary"
