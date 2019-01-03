@@ -20,6 +20,7 @@ class OrderAppender
 
       attributes = {
         note: params[:note].presence,
+        account_id: params[:account_id],
         duration: params[:duration],
         created_by: user.id,
       }

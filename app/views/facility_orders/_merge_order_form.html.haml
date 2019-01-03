@@ -8,6 +8,12 @@
         class: "js--edit-order__product"
       = text_field_tag :product_add_duration, 1, class: "js--edit-order__duration"
 
+      = label_tag :account_id
+      = select_tag :account_id,
+        options_for_select(AvailableAccountsFinder.new(@order.user, current_facility).accounts.map { |a| [a, a.id] }, @order.account.id),
+        include_blank: true,
+        class: "js--chosen optional"
+
       = label_tag :order_status_id, OrderDetail.human_attribute_name(:order_status)
       = select_tag :order_status_id,
         options_for_select(OrderStatus.add_to_order_statuses(current_facility).map { |s| [s.name_with_level, s.id] }),
