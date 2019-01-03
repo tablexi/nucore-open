@@ -3,16 +3,17 @@ en:
     instrument_issues:
       new:
         title: Report an Issue
-        instructions: When reporting an issue, and email will be sent to the facility.
+        instructions: |
+          Complete this form to alert facility staff about any serious equipment
+          issues discovered before, during, or after usage.
         submit: Report Issue
 
     instrument_issue_mailer:
       create:
         subject: "!app_name! Instrument Issue Reported: %{product}"
         body: |
-          A user has reported in issue with the **%{product}** at %{facility}.
-
-          Reported by %{user} (<%{email}>)
+          %{user} (<%{email}>) has reported an issue with the **%{product}** at the
+          %{facility}.
 
           They said:
 
