@@ -37,6 +37,7 @@ class FacilitiesController < ApplicationController
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
     @recent_products = MostRecentlyUsedSearcher.new(acting_user).recently_used_products.includes(:facility).alphabetized
     @azlist = build_az_list(@facilities)
+    @list_layout = SettingsHelper.feature_on?(:facility_tile_list) ? "tile" : "list"
     render layout: "application"
   end
 
@@ -80,7 +81,6 @@ class FacilitiesController < ApplicationController
     @active_tab = "manage_facilites"
     @facility = Facility.new
     @facility.is_active = true
-
     render layout: "application"
   end
 
@@ -209,6 +209,8 @@ class FacilitiesController < ApplicationController
         short_description
         show_instrument_availability
         url_name
+        thumbnail
+        remove_thumbnail
       )
   end
 

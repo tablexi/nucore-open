@@ -1,0 +1,49 @@
+.facility_list_container.tile {
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: left; 
+}
+
+.facility_listing.tile {
+  flex: 1 1 calc(33% - 10px);
+  height: 300px;
+  min-width: 250px;
+  margin-right:10px;
+  max-width: 400px;
+}
+
+/*Use container with bottom padding to maintain aspect ratio exactly like an img with height: auto*/
+
+.thumbnailFallBackContainer {
+  width: 100%;
+  padding-bottom: 50%;
+  position: relative;
+}
+
+.thumbnailFallback {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  text-decoration: none;
+  background-color: rgb(231, 231, 231);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5em;
+  color: rgb(110, 110, 110);
+}
+
+.thumbnailFallback:hover {
+  color: rgb(71, 71, 71);
+}
+
+.facility_listing.tile a {
+  text-decoration: none;
+}
+
+@supports (display: grid) {
+  .facility_list_container.tile{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-gap: 1rem;
+  }
+}

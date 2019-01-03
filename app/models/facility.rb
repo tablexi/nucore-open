@@ -2,7 +2,10 @@
 
 class Facility < ApplicationRecord
 
+  attr_reader :remove_thumbnail
+
   before_validation :set_journal_mask, on: :create
+  before_validation { thumbnail.clear if remove_thumbnail }
 
   has_many :items
   has_many :services
@@ -25,12 +28,13 @@ class Facility < ApplicationRecord
   has_many :training_requests, through: :products
   has_many :user_roles, dependent: :destroy
   has_many :users, -> { distinct }, through: :user_roles
-
+  has_attached_file :thumbnail, styles: { thumb: "400x200#" }, dependent: :destroy
   validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
   validates_uniqueness_of :abbreviation, :journal_mask, case_sensitive: false
   validates_format_of :abbreviation, with: /\A[a-zA-Z\d\-\.\s]+\z/, message: "may include letters, numbers, hyphens, spaces, or periods only"
   validates_format_of :journal_mask, with: /\AC\d{2}\z/, message: "must be in the format C##"
+  validates_attachment :thumbnail, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
 
   validates :order_notification_recipient,
             email_format: true,
@@ -118,6 +122,10 @@ class Facility < ApplicationRecord
 
   def complete_problem_order_details
     order_details.problem_orders.complete
+  end
+
+  def remove_thumbnail=(value)
+    @remove_thumbnail = !value.to_i.zero?
   end
 
   private

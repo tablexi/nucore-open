@@ -161,6 +161,10 @@ ActiveRecord::Schema.define(version: 20181119211456) do
     t.string   "order_notification_recipient"
     t.boolean  "sanger_sequencing_enabled",                  default: false, null: false
     t.text     "banner_notice",                limit: 65535
+    t.string   "thumbnail_file_name"
+    t.string   "thumbnail_content_type"
+    t.bigint   "thumbnail_file_size"
+    t.datetime "thumbnail_updated_at"
     t.index ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true, using: :btree
     t.index ["is_active", "name"], name: "index_facilities_on_is_active_and_name", using: :btree
     t.index ["name"], name: "index_facilities_on_name", unique: true, using: :btree

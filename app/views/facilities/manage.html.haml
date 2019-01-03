@@ -10,6 +10,9 @@
   = f.input :short_description
   = f.input :description
   = f.input :banner_notice if SettingsHelper.feature_on?(:facility_banner_notice)
+  - if SettingsHelper.feature_on?(:facility_tile_list) && @facility.thumbnail?
+    = f.label text("facilities.thumbnail.thumbnail")
+    = image_tag (@facility.thumbnail.url), class: 'thumbnail_preview'
   = f.input :accepts_multi_add, label: text("views.facilities.facility_fields.labels.accepts_multi_add")
   = f.input :show_instrument_availability, label: text("views.facilities.facility_fields.labels.show_instrument_availability")
   = render_view_hook("before_is_active", f: f)

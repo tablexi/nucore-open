@@ -10,7 +10,16 @@
     %label.legend= f.label :banner_notice
     = f.input :banner_notice, input_html: { class: "editor__simple" }, hint: text(".hints.banner_notice"), label: false
 
-%fieldset.well
+- if SettingsHelper.feature_on?(:facility_tile_list)
+  .well
+    - if @facility.thumbnail?
+      %label= text("facilities.thumbnail.thumbnail")
+      = image_tag (@facility.thumbnail.url), class: 'thumbnail_preview'
+      = f.input :remove_thumbnail, as: :boolean, label:false, inline_label: text("facilities.thumbnail.remove")
+    %label= text("facilities.thumbnail.new")
+    = f.file_field :thumbnail, required: false, class: "thumbnail"
+
+.well
   %p
     = f.input :accepts_multi_add,
       as: :boolean, label: false, inline_label: text(".labels.accepts_multi_add")

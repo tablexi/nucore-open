@@ -841,6 +841,11 @@ en:
 
     transactions:
       no_orders: There are no orders in this !facility_downcase! matching the search parameters
+    
+    thumbnail:
+      thumbnail: "Thumbnail"
+      new: "New Image"
+      remove: "Remove Thumbnail"
 
   price_policies:
     adjustment: Adjustment

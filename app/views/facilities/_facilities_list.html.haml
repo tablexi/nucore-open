@@ -1,9 +1,19 @@
 - if @facilities.any?
   %h4.facility_listing.js--facility_listing.all_header= text(".all")
-  - @azlist.map.with_index do |(letter, matched_facilities), index|
-    - matched_facilities.each do |facility|
-      .facility_listing.js--facility_listing{ class: az_classname_for_facility(index, letter) }
-        %h4.header-tight= link_to facility, facility_path(facility)
-        %p= facility.short_description
+  .facility_list_container{ class: @list_layout }
+    - @azlist.map.with_index do |(letter, matched_facilities), index|
+      - matched_facilities.each do |facility|
+        .facility_listing.js--facility_listing{ class: [az_classname_for_facility(index, letter), @list_layout] }
+          - if @list_layout == 'tile'
+            = link_to facility_path(facility) do
+              - if facility.thumbnail.exists?
+                = image_tag(facility.thumbnail(:thumb))
+              - else
+                .thumbnailFallBackContainer
+                  .thumbnailFallback= facility.abbreviation
+            %h4.header-tight= link_to facility, facility_path(facility)
+          - else
+            %h4= link_to facility, facility_path(facility)
+          %p= facility.short_description
 - else
   .alert.alert-info= text("none")
