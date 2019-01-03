@@ -114,22 +114,22 @@ feature:
   user_based_price_groups: true
   my_files: true
   # results file notifications requires that my_files be on as well
-  results_file_notifications: true
-  set_statement_search_start_date: false
-  send_statement_emails: true
-  ready_for_journal_notice: true
-  journals_may_span_fiscal_years: false
-  equipment_list: true
-  price_change_reason_required: true
-  can_manage_global_price_groups: true
-  cross_facility_reports: false
-  product_list_columns: false
-  azlist: false
-  use_manage: false
-  facility_banner_notice: true
-  charge_full_price_on_cancellation: true
-  price_policy_requires_note: true
-  multi_facility_accounts: true
+  results_file_notifications_on: true
+  set_statement_search_start_date_on: false
+  send_statement_emails_on: true
+  ready_for_journal_notice_on: true
+  journals_may_span_fiscal_years_on: false
+  equipment_list_on: true
+  price_change_reason_required_on: true
+  can_manage_global_price_groups_on: true
+  cross_facility_reports_on: false
+  product_list_columns_on: false
+  azlist_on: false
+  use_manage_on: false
+  facility_banner_notice_on: true
+  charge_full_price_on_cancellation_on: true
+  price_policy_requires_note_on: true
+  facility_tile_list_on: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
