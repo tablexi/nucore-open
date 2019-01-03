@@ -21,9 +21,9 @@
             %th.nowrap= sortable "order_number", Order.model_name.human
             %th.nowrap= OrderDetail.model_name.human
             %th.nowrap= sortable "ordered_for", Order.human_attribute_name(:user)
-            %th.nowrap= sortable "date", Order.human_attribute_name(:ordered_at)
+            %th.nowrap= sortable "ordered_at", Order.human_attribute_name(:ordered_at)
             %th.nowrap= OrderDetail.human_attribute_name(:quantity)
-            %th.nowrap.order-note= sortable "product"
+            %th.nowrap.order-note= sortable "product_name", OrderDetail.human_attribute_name(:product)
             %th.nowrap= sortable "assigned_to", OrderDetail.human_attribute_name(:assigned_user)
             %th.nowrap= sortable "status"
             %th.nowrap.currency= OrderDetail.human_attribute_name(:actual_cost)

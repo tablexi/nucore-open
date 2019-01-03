@@ -28,6 +28,7 @@ module NewInprocessController
 
   def sort_lookup_hash
     {
+      "order_number" => ["order_details.order_id", "order_details.id"],
       "assigned_to" => ["assigned_users.last_name", "assigned_users.first_name", "order_statuses.name", "orders.ordered_at"],
       "ordered_at" => "orders.ordered_at",
       "ordered_for" => ["#{User.table_name}.last_name", "#{User.table_name}.first_name"],
