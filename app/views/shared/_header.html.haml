@@ -7,8 +7,8 @@
         %span= app_name
       - if session_user.nil?
         %ul.nav.pull-right.hide-from-print
-          %li= link_to t("pages.login"), :new_user_session
           = render "/shared/support"
+          %li= link_to t("pages.login"), :new_user_session
       - else
         - if responsive?
           %a.btn.btn-navbar.hide-from-print{ data: { target: ".nav-collapse", toggle: "collapse" } }
