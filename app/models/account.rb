@@ -15,6 +15,7 @@ class Account < ApplicationRecord
   include DateHelper
   include NUCore::Database::WhereIdsIn
 
+  belongs_to :facility, required: false
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
   has_many :deleted_account_users, -> { where.not("account_users.deleted_at" => nil) }, class_name: "AccountUser"
   # Using a basic hash doesn't work with the `owner_user` :through association. It would
@@ -102,22 +103,6 @@ class Account < ApplicationRecord
 
   def self.with_orders_for_facility(facility)
     where(id: ids_with_orders(facility))
-  end
-
-  # The subclassed Account objects will be cross facility by default; override
-  # this method with `belongs_to :facility` if the subclassed Account object is
-  # always scoped to a single facility.
-  def facility
-    nil
-  end
-
-  def facilities
-    if facility_id
-      # return a relation
-      Facility.active.where(id: facility_id)
-    else
-      Facility.active
-    end
   end
 
   def type_string
