@@ -25,7 +25,7 @@ module SplitAccounts
 
     def floored_amount(percent, value)
       return BigDecimal(0) if percent == 0 || value.blank?
-      amount = BigDecimal(value) * BigDecimal(percent) / 100
+      amount = value.to_d * percent.to_d / 100
       amount.floor(2)
     end
 
