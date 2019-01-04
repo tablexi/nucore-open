@@ -23,7 +23,7 @@ RSpec.describe ProductUsersController do
     it "should only return the two users" do
       sign_in admin
       do_request
-      expect(assigns[:product_users]).to eq([user_product, staff_product])
+      expect(assigns[:product_users]).to contain_exactly(user_product, staff_product)
     end
 
     it "should return empty and a flash if the product is not restricted" do
