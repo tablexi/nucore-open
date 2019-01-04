@@ -25,6 +25,7 @@ $navbarActiveBorderColor: #aaa;
     background-color: $navCollapseBackgroundColor;
     position: relative;
     width: 100%;
+    z-index: 1;
   }
   .nav-collapse .nav {
     margin: 0;
