@@ -9,7 +9,7 @@ RSpec.shared_examples_for "an Account" do
     end
 
     context "when suspended" do
-      before { account.update_attribute(:suspended_at, Time.zone.now) }
+      before { account.suspended_at = Time.current }
 
       it "appends '(SUSPENDED)'" do
         expect(account.to_s).to match(/\s+\(SUSPENDED\)\Z/)

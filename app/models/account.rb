@@ -15,7 +15,25 @@ class Account < ApplicationRecord
   include DateHelper
   include NUCore::Database::WhereIdsIn
 
-  belongs_to :facility, required: false
+  # belongs_to :facility, required: false
+  has_many :account_facility_joins
+  has_many :facilities, -> { merge(Facility.active) }, through: :account_facility_joins
+
+  # Temporary methods
+  def facility
+    facilities.first
+  end
+
+  def facility_id=(facility_id)
+    self[:facility_id] = facility_id
+    self.account_facility_joins = [AccountFacilityJoin.new(facility_id: facility_id, account: self)] if facility_id
+  end
+
+  def facility=(facility)
+    self.facility_id = facility&.id
+  end
+  # Temporary methods
+
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
   has_many :deleted_account_users, -> { where.not("account_users.deleted_at" => nil) }, class_name: "AccountUser"
   # Using a basic hash doesn't work with the `owner_user` :through association. It would
@@ -81,10 +99,11 @@ class Account < ApplicationRecord
 
   def self.for_facility(facility)
     if facility.single_facility?
-      where(
-        "accounts.type in (:allow_all) or (accounts.type in (:limit_one) and accounts.facility_id = :facility)",
-        allow_all: config.global_account_types,
-        limit_one: config.facility_account_types,
+      left_outer_joins(:facilities)
+      .where(
+        "accounts.type in (:global_account_types) or (accounts.type in (:facility_account_types) and account_facility_joins.facility_id = :facility)",
+        global_account_types: config.global_account_types,
+        facility_account_types: config.facility_account_types,
         facility: facility,
       )
     else
@@ -97,8 +116,7 @@ class Account < ApplicationRecord
   end
 
   def self.for_order_detail(order_detail)
-    for_user(order_detail.user)
-      .where(facility_id: [nil, order_detail.facility.id])
+    for_user(order_detail.user).for_facility(order_detail.facility)
   end
 
   def self.with_orders_for_facility(facility)
