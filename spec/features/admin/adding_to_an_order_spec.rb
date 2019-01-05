@@ -16,9 +16,8 @@ RSpec.describe "Adding to an existing order" do
 
     before do
       visit facility_order_path(facility, order)
-
-      fill_in "product_add_quantity", with: "2"
-      select product.name, from: "product_add"
+      fill_in "add_to_order_form[quantity]", with: "2"
+      select product.name, from: "add_to_order_form[product_id]"
       fill_in "Note", with: "My Note"
     end
 
@@ -28,7 +27,7 @@ RSpec.describe "Adding to an existing order" do
       end
 
       it "has a new order detail" do
-        expect(order.reload.order_details.count).to be(2)
+        expect(order.reload.order_details.count).to eq(2)
         expect(order.order_details.last.note).to eq("My Note")
       end
     end
@@ -37,13 +36,13 @@ RSpec.describe "Adding to an existing order" do
       let(:fulfilled_at_string) { I18n.l(1.day.ago.to_date, format: :usa) }
 
       before do
-        select "Complete", from: "order_status_id"
-        fill_in "fulfilled_at", with: fulfilled_at_string
+        select "Complete", from: "Order Status"
+        fill_in "add_to_order_form[fulfilled_at]", with: fulfilled_at_string
         click_button "Add To Order"
       end
 
       it "has a new order detail with the right status and fulfilled_at" do
-        expect(order.reload.order_details.count).to be(2)
+        expect(order.reload.order_details.count).to eq(2)
         expect(order.order_details.last).to be_complete
         expect(I18n.l(order.order_details.last.fulfilled_at.to_date, format: :usa)).to eq(fulfilled_at_string)
       end
@@ -57,10 +56,10 @@ RSpec.describe "Adding to an existing order" do
     before do
       visit facility_order_path(facility, order)
 
-      fill_in "product_add_quantity", with: "1"
-      select product.name, from: "product_add"
-      select "Complete", from: "order_status_id"
-      fill_in "fulfilled_at", with: fulfilled_at_string
+      fill_in "add_to_order_form[quantity]", with: "1"
+      select product.name, from: "add_to_order_form[product_id]"
+      select "Complete", from: "Order Status"
+      fill_in "add_to_order_form[fulfilled_at]", with: fulfilled_at_string
       click_button "Add To Order"
     end
 
@@ -83,8 +82,8 @@ RSpec.describe "Adding to an existing order" do
 
     before do
       visit facility_order_path(facility, order)
-      fill_in "product_add_quantity", with: "1"
-      select instrument.name, from: "product_add"
+      fill_in "add_to_order_form[quantity]", with: "1"
+      select instrument.name, from: "add_to_order_form[product_id]"
       click_button "Add To Order"
     end
 
@@ -104,8 +103,8 @@ RSpec.describe "Adding to an existing order" do
 
     before do
       visit facility_order_path(facility, order)
-      select product.name, from: "product_add"
-      fill_in "product_add_duration", with: "31"
+      select product.name, from: "add_to_order_form[product_id]"
+      fill_in "add_to_order_form[duration]", with: "31"
       click_button "Add To Order"
     end
 

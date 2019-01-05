@@ -1,37 +1,35 @@
 - if @merge_orders.blank?
   .well
-    = simple_form_for [current_facility, @order], method: :put, html: { class: "js--edit-order" } do |f|
-      = text_field_tag :product_add_quantity, 1, class: "js--edit-order__quantity"
+    = simple_form_for [current_facility, @add_to_order_form], url: facility_order_path(current_facility, @order), method: :put, html: { class: "js--edit-order" } do |f|
+      = f.input_field :quantity, class: "js--edit-order__quantity", style: "width: 3em;"
 
-      = select_tag :product_add,
-        options_for_select(current_facility.products.mergeable_into_order.alphabetized.map { |p| [p.name, p.id, {"data-timed-product" => p.order_quantity_as_time?}] }),
-        class: "js--edit-order__product"
-      = text_field_tag :product_add_duration, 1, class: "js--edit-order__duration"
+      = f.input_field :product_id,
+        collection: current_facility.products.mergeable_into_order.alphabetized.map { |p| [p.name, p.id, {"data-timed-product" => p.order_quantity_as_time?}] },
+        class: "js--edit-order__product",
+        include_blank: false
 
-      = label_tag :account_id
-      = select_tag :account_id,
-        options_for_select(AvailableAccountsFinder.new(@order.user, current_facility).accounts.map { |a| [a, a.id] }, @order.account.id),
-        include_blank: true,
-        class: "js--chosen optional"
+      = f.input_field :duration, class: "js--edit-order__duration"
 
-      = label_tag :order_status_id, OrderDetail.human_attribute_name(:order_status)
-      = select_tag :order_status_id,
-        options_for_select(OrderStatus.add_to_order_statuses(current_facility).map { |s| [s.name_with_level, s.id] }),
-        class: "js--chosen optional"
+      = f.input :account_id,
+        collection: AvailableAccountsFinder.new(@order.user, current_facility),
+        input_html: { class: "js--chosen optional" },
+        label: Account.model_name.human
 
-      = text_field_tag :fulfilled_at,
-        nil,
+      = f.input :order_status_id,
+        collection: OrderStatus.add_to_order_statuses(current_facility),
+        label_method: :name_with_level,
+        input_html: { class: "js--chosen optional" },
+        include_blank: false,
+        label: OrderDetail.human_attribute_name(:order_status)
+
+      = f.input_field :fulfilled_at,
         placeholder: OrderDetail.human_attribute_name(:fulfilled_at),
         data: { min_date: ValidFulfilledAtDate.min.iso8601,
            max_date: ValidFulfilledAtDate.max.iso8601,
-           complete_target: "#order_status_id" },
+           complete_target: "#add_to_order_form_order_status_id" },
         class: "datepicker__data string optional js--showOnCompleteStatus"
 
-      = label_tag :note, OrderDetail.human_attribute_name(:note)
-      = text_area_tag :note,
-        nil,
-        maxlength: 1000,
-        class: "string optional wide"
+      = f.input :note, as: :text, input_html: { class: "wide", maxlength: 1000 }
 
       %br
 

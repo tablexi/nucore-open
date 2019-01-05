@@ -27,6 +27,8 @@ class FacilityOrdersController < ApplicationController
   # def index
   # end
 
+  before_action(only: %w[show update]) { @add_to_order_form = AddToOrderForm.new(@order) }
+
   def show
     @order_details = @order.order_details.ordered_by_parents
     @order_details = @order_details.includes(:reservation, :order_status, :product, :order)
@@ -56,30 +58,14 @@ class FacilityOrdersController < ApplicationController
 
   # PUT/PATCH /facilities/:facility_id/orders/:id
   def update
-    product = current_facility.products.find(params[:product_add])
-    quantity = params.fetch(:product_add_quantity, 1).to_i
-    params[:duration] = params[:product_add_duration]
-
-    if quantity <= 0
-      flash[:notice] = text("update.zero_quantity")
+    @add_to_order_form.assign_attributes(add_to_order_params.merge(created_by: current_user))
+    if @add_to_order_form.save
+      redirect_to facility_order_path(current_facility, @order)
     else
-      begin
-        if order_appender.add!(product, quantity, params)
-          flash[:error] = text("update.notices", product: product.name)
-        else
-          flash[:notice] = text("update.success", product: product.name)
-        end
-      rescue AASM::InvalidTransition
-        flash[:error] = invalid_transition_message(product, params[:order_status_id])
-      rescue ActiveRecord::RecordInvalid => e
-        flash[:error] = e.record.errors.full_messages.to_sentence
-      rescue => e
-        Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-        flash[:error] = text("update.error", product: product.name)
-      end
+      flash[:error] = @add_to_order_form.errors.full_messages.to_sentence
+      show # set @order_details
+      render :show
     end
-
-    redirect_to facility_order_path(current_facility, @order)
   end
 
   protected
@@ -90,14 +76,12 @@ class FacilityOrdersController < ApplicationController
 
   private
 
-  def batch_updater
-    @batch_updater ||= OrderDetailBatchUpdater.new(params[:order_detail_ids], current_facility, session_user, params)
+  def add_to_order_params
+    params.require(:add_to_order_form).permit(:quantity, :product_id, :account_id, :order_status_id, :note, :fulfilled_at, :duration)
   end
 
-  def invalid_transition_message(product, order_status_id)
-    text("update.invalid_status",
-         product: product,
-         status: OrderStatus.find(order_status_id))
+  def batch_updater
+    @batch_updater ||= OrderDetailBatchUpdater.new(params[:order_detail_ids], current_facility, session_user, params)
   end
 
   def load_order
@@ -106,10 +90,6 @@ class FacilityOrdersController < ApplicationController
 
   def load_merge_orders
     @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id)
-  end
-
-  def order_appender
-    @order_appender ||= OrderAppender.new(@order, current_user)
   end
 
   def new_or_in_process_orders

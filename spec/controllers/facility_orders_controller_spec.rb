@@ -165,21 +165,21 @@ RSpec.describe FacilityOrdersController do
     before do
       @method = :put
       @action = :update
-      @params.merge!(id: order.id, product_add: product.id)
+      @params.merge!(id: order.id, add_to_order_form: { product_id: product.id, order_status_id: OrderStatus.new_status.id })
     end
 
     context "with a product_add_quantity of 0" do
-      before { @params[:product_add_quantity] = 0 }
+      before { @params[:add_to_order_form][:quantity] = 0 }
 
-      it_should_allow_operators_only :redirect, "to get a failure notice" do
-        expect(flash[:notice]).to include("enter a quantity")
-        expect(response).to redirect_to(facility_order_path(facility, order))
+      it_should_allow_operators_only do
+        expect(flash[:error]).to include("Quantity must be greater than 0")
+        expect(response).to render_template(:show)
       end
     end
 
     context "with a product_add_quantity of 1" do
       before do
-        @params[:product_add_quantity] = 1
+        @params[:add_to_order_form][:quantity] = 1
         order.order_details.destroy_all
       end
 
@@ -193,14 +193,14 @@ RSpec.describe FacilityOrdersController do
         let(:merge_order) { Order.find_by(merge_with_order_id: order.id) }
         let(:order_detail) { merge_order.order_details.last }
 
-        before { @params[:product_add] = instrument.id }
+        before { @params[:add_to_order_form][:product_id] = instrument.id }
 
         it_should_allow :director, "to add an instrument to existing order via merge" do
           assert_merge_order(order, instrument)
         end
 
         context "when setting a note" do
-          before { @params[:note] = "This is a note" }
+          before { @params[:add_to_order_form][:note] = "This is a note" }
 
           it_should_allow :director, "to add an instrument to existing order via merge" do
             expect(order_detail.note).to eq("This is a note")
@@ -208,7 +208,7 @@ RSpec.describe FacilityOrdersController do
         end
 
         context "when setting an order status" do
-          before { @params[:order_status_id] = order_status.id.to_s }
+          before { @params[:add_to_order_form][:order_status_id] = order_status.id.to_s }
 
           context "of 'In Process'" do
             let(:order_status) { OrderStatus.in_process }
@@ -242,14 +242,14 @@ RSpec.describe FacilityOrdersController do
         let(:item) { FactoryBot.create(:item, facility_account: facility_account) }
         let(:order_detail) { order.order_details.last }
 
-        before { @params[:product_add] = item.id }
+        before { @params[:add_to_order_form][:product_id] = item.id }
 
         it_should_allow :director, "to add an item to existing order directly" do
           assert_no_merge_order(order, item, 1)
         end
 
         context "when setting a note" do
-          before { @params[:note] = "This is a note" }
+          before { @params[:add_to_order_form][:note] = "This is a note" }
 
           it_should_allow :director, "to add an item to existing order with a note" do
             expect(order_detail.note).to eq("This is a note")
@@ -258,10 +258,10 @@ RSpec.describe FacilityOrdersController do
 
         context "when setting the order status to 'Complete'" do
           let(:complete_status) { OrderStatus.complete }
-          before { @params[:order_status_id] = complete_status.id.to_s }
+          before { @params[:add_to_order_form][:order_status_id] = complete_status.id.to_s }
 
           context "and setting fulfilled_at" do
-            before { @params[:fulfilled_at] = fulfilled_at.strftime("%m/%d/%Y") }
+            before { @params[:add_to_order_form][:fulfilled_at] = fulfilled_at.strftime("%m/%d/%Y") }
 
             context "to today" do
               let(:fulfilled_at) { Date.today }
@@ -305,7 +305,7 @@ RSpec.describe FacilityOrdersController do
 
         context "when not setting an order status" do
           context "and setting fulfilled_at" do
-            before { @params[:fulfilled_at] = fulfilled_at.strftime("%m/%d/%Y") }
+            before { @params[:add_to_order_form][:fulfilled_at] = fulfilled_at.strftime("%m/%d/%Y") }
             let(:fulfilled_at) { Date.today }
 
             it_should_allow :director, "to add an item to existing order with status and fulfilled_at set to defaults" do
@@ -316,7 +316,7 @@ RSpec.describe FacilityOrdersController do
         end
 
         context "when setting an order status" do
-          before { @params[:order_status_id] = OrderStatus.in_process.id }
+          before { @params[:add_to_order_form][:order_status_id] = OrderStatus.in_process.id }
 
           it_should_allow :director, "to add an item to existing order via merge" do
             expect(order_detail.order_status).to eq(OrderStatus.in_process)
@@ -331,7 +331,7 @@ RSpec.describe FacilityOrdersController do
           allow_any_instance_of(OrderDetail).to receive(:valid_service_meta?).and_return(false)
           allow_any_instance_of(Service).to receive(:active_survey?).and_return(active_survey?)
           allow_any_instance_of(Service).to receive(:active_template?).and_return(active_template?)
-          @params[:product_add] = service.id
+          @params[:add_to_order_form][:product_id] = service.id
         end
 
         shared_examples_for "directors may add via merge" do
@@ -384,7 +384,7 @@ RSpec.describe FacilityOrdersController do
           FactoryBot.create(bundled_product_type, facility_account: facility_account)
         end
 
-        before { @params[:product_add] = bundle.id }
+        before { @params[:add_to_order_form][:product_id] = bundle.id }
 
         context "containing an item" do
           let(:bundled_product_type) { :item }
