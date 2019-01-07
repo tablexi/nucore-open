@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # These shared examples require a `let(:account)`
 
 RSpec.shared_examples_for "AffiliateAccount" do

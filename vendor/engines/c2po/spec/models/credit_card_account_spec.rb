@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe CreditCardAccount do
-
   let(:facility) { FactoryBot.create(:facility) }
   subject(:account) { FactoryBot.create(:credit_card_account, :with_account_owner, facility: facility) }
 
@@ -17,5 +16,4 @@ RSpec.describe CreditCardAccount do
   it "has the facility association" do
     expect(account.facility).to eq facility
   end
-
 end

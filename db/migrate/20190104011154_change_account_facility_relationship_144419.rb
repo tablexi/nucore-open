@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeAccountFacilityRelationship144419 < ActiveRecord::Migration[5.0]
   def up
     create_table :account_facility_joins do |t|
@@ -14,7 +16,6 @@ class ChangeAccountFacilityRelationship144419 < ActiveRecord::Migration[5.0]
       FROM accounts
       WHERE facility_id IS NOT NULL
     SQL
-
   end
 
   def down

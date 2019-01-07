@@ -100,12 +100,12 @@ class Account < ApplicationRecord
   def self.for_facility(facility)
     if facility.single_facility?
       left_outer_joins(:facilities)
-      .where(
-        "accounts.type in (:global_account_types) or (accounts.type in (:facility_account_types) and account_facility_joins.facility_id = :facility)",
-        global_account_types: config.global_account_types,
-        facility_account_types: config.facility_account_types,
-        facility: facility,
-      )
+        .where(
+          "accounts.type in (:global_account_types) or (accounts.type in (:facility_account_types) and account_facility_joins.facility_id = :facility)",
+          global_account_types: config.global_account_types,
+          facility_account_types: config.facility_account_types,
+          facility: facility,
+        )
     else
       all
     end

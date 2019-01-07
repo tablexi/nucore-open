@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe PurchaseOrderAccount do
-
   let(:facility) { FactoryBot.create(:facility) }
   subject(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
 
@@ -21,5 +20,4 @@ RSpec.describe PurchaseOrderAccount do
   it "has the facility association" do
     expect(account.facility).to eq facility
   end
-
 end
