@@ -55,7 +55,8 @@ class Account < ApplicationRecord
   scope :administered_by, lambda { |user|
     for_user(user).where("account_users.user_role" => AccountUser.admin_user_roles)
   }
-  scope :global_account_types, -> { where(accounts: { type: config.global_account_types }) }
+  scope :global, -> { where(type: config.global_account_types) }
+  scope :per_facility, -> { where(type: config.facility_account_types) }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, maximum: 50
@@ -99,13 +100,10 @@ class Account < ApplicationRecord
 
   def self.for_facility(facility)
     if facility.single_facility?
-      left_outer_joins(:facilities)
-        .where(
-          "accounts.type in (:global_account_types) or (accounts.type in (:facility_account_types) and account_facility_joins.facility_id = :facility)",
-          global_account_types: config.global_account_types,
-          facility_account_types: config.facility_account_types,
-          facility: facility,
-        )
+      # In order to use `or`, the structures of both sides need to be identical
+      structure = left_outer_joins(:facilities).references(:account_facility_joins)
+      structure.global
+        .or(structure.per_facility.where(account_facility_joins: { facility_id: facility.id }))
     else
       all
     end

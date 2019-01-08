@@ -10,7 +10,7 @@ module SplitAccounts
       has_many :parent_splits, class_name: "SplitAccounts::Split", foreign_key: :subaccount_id, inverse_of: :subaccount
       has_many :parent_split_accounts, through: :parent_splits
 
-      scope :excluding_split_accounts, -> { where("accounts.type != ?", "SplitAccounts::SplitAccount") }
+      scope :excluding_split_accounts, -> { where.not(type: "SplitAccounts::SplitAccount") }
 
       after_save :update_suspended_at_for_parent_split_accounts
       after_save :update_expires_at_for_parent_split_accounts
