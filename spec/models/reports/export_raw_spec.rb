@@ -151,6 +151,25 @@ RSpec.describe Reports::ExportRaw do
         expect(report.to_csv.split("\n").length).to eq(2)
       end
     end
+
+    # There was a bug from the Rails 5 upgrade where reservations on split accounts
+    # got deleted. We want to make sure the reports don't break on them.
+    describe "with a broken reservation" do
+      before do
+        instrument.price_policies.each { |pp| pp.update(start_date: 3.days.ago, usage_rate: 60) }
+        order_detail.update_attributes!(account: account)
+        reservation.really_destroy!
+      end
+
+      it "displays the information" do
+        expect(report).to have_column_values(
+          "Reservation Start Time" => "",
+          "Actual Cost" => "$60.00",
+          "Calculated Cost" => "",
+          "Quantity" => "1",
+        )
+      end
+    end
   end
 
   describe "with a bundle" do
