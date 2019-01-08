@@ -27,8 +27,12 @@ module PriceDisplayment
     format(actual_subsidy) || format(estimated_subsidy) || empty_display
   end
 
+  def actual_or_estimated_total
+    actual_total || estimated_total
+  end
+
   def display_total
-    format(actual_total) || format(estimated_total) || empty_display
+    format(actual_or_estimated_total) || empty_display
   end
 
   def wrapped_cost

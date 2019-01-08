@@ -272,6 +272,14 @@ th.currency {
   tr.reconcile-warning td {
     background-color: $errorBackground !important;
   }
+
+  tfoot {
+    font-weight: bold;
+
+    .total {
+      text-align: right;
+    }
+  }
 }
 
 .table tr.row-warning {
