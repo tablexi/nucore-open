@@ -1,6 +1,6 @@
 GIT
-  remote: git@github.com:thoughtbot/shoulda-matchers.git
-  revision: 64d0381671d2626d665c75bc5a376b8c96ce51e9
+  remote: https://github.com/thoughtbot/shoulda-matchers.git
+  revision: f951455f0f66ebc09a80bb20089b1b253c2ac0fb
   specs:
     shoulda-matchers (4.0.0.rc1)
       activesupport (>= 4.2.0)
@@ -740,7 +740,7 @@ DEPENDENCIES
   will_paginate
 
 RUBY VERSION
-   ruby 2.4.1p111
+   ruby 2.4.5p335
 
 BUNDLED WITH
    1.17.3

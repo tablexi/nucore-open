@@ -23,4 +23,4 @@ set :rollbar_token, ENV["ROLLBAR_ACCESS_TOKEN"]
 set :rollbar_env, Proc.new { fetch :rails_env }
 set :rollbar_role, Proc.new { :app }
 
-set :chruby_ruby, "ruby-2.4.1"
+set :chruby_ruby, "ruby-2.4.5"

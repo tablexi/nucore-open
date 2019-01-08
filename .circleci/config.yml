@@ -3,10 +3,11 @@ jobs:
   build:
     parallelism: 4
     docker:
-      - image: circleci/ruby:2.4.1-node-browsers
+      - image: circleci/ruby:2.4.5-node-browsers-legacy
         environment:
           - RAILS_ENV: "test"
           - MYSQL_USER: root
+          - BUNDLER_VERSION: 2.0.1
       - image: circleci/mysql:5.7.22-ram
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
