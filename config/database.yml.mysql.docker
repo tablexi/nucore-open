@@ -1,0 +1,16 @@
+defaults: &defaults
+  adapter: mysql2
+  host: db
+  username: root
+  password: root
+  encoding: utf8
+  pool: 5
+  timeout: 5000
+
+development:
+  <<: *defaults
+  database: nucore_open_development
+
+test:
+  <<: *defaults
+  database: nucore_open_test
