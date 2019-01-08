@@ -1,4 +1,3 @@
-- order_details = local_assigns.key?(:order_details) ? order_details : @order_details
 #table_billing
   - if @export_enabled
     = link_to t('reports.account_transactions.export'), url_for(format: :csv), class: 'js--exportSearchResults pull-right', data: { form: '.search_form' }

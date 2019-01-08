@@ -8,6 +8,6 @@
 = content_for :top_block do
   = render "shared/transactions/top", tab: "transactions"
 - if @order_details.any?
-  = render "shared/transactions/table"
+  = render "shared/transactions/table", order_details: @order_details
 - else
   %p.alert.alert-info= text("facilities.transactions.no_orders")
