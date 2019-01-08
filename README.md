@@ -4,7 +4,29 @@ Open source version of Northwestern University Core Facility Management Software
 
 ## Quickstart
 
-Welcome to NUcore! This guide will help you get a development environment up and running. It makes a few assumptions:
+Welcome to NUcore! This guide will help you get a development environment up and running.
+
+### Development within Docker Environment
+
+We recommend running within a docker environment.
+Benefits:
+- All daemons, processes are running at all times (easier to develop features)
+
+To do this:
+1. install docker (https://docs.docker.com/docker-for-mac/install/)
+1. run `./docker-setup.sh` to set up some files
+1. install `docker `and `docker-compose`.
+1. run `docker-compose up`
+1. Create the database schema with `docker-compose exec app bundle exec rake db:create db:schema:load`
+1. open http://localhost:3000
+
+To seed the database (optional):
+1. Attach to the instance with `docker-compose exec app bash`, and run `bundle exec rake demo:seed` to create seed data.
+1. Log in with admin@example.com/password
+
+### Development locally
+
+It makes a few assumptions:
 
 1. You write code on a Mac.
 2. You have a running Oracle or MySQL instance with two brand new databases. (Oracle setup instructions [here](doc/HOWTO_oracle.txt).)
