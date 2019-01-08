@@ -19,9 +19,9 @@ jobs:
       # Bundle
       - restore_cache:
           keys:
-            - gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-            - gem-cache-{{ arch }}--{{ .Branch }}
-            - gem-cache
+            - gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}--{{ checksum ".ruby-version" }}
+            - gem-cache-{{ arch }}--{{ .Branch }}--{{ checksum ".ruby-version" }}
+            - gem-cache--{{ checksum ".ruby-version" }}
 
       - run: bundle install --path vendor/bundle
 
