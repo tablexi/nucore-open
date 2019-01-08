@@ -139,6 +139,16 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
       expect(results.map(&:actual_start_at)).to all(eq(start_at))
       expect(results.map(&:actual_end_at)).to all(eq(start_at + 45.minutes))
     end
+
+    it "splits calculated cost" do
+      allow(order_detail).to receive(:calculated_cost).and_return(BigDecimal("6.66"))
+      expect(order_detail_results.map(&:calculated_cost)).to eq([2.24, 2.21, 2.21])
+    end
+
+    it "splits the calculated cost if it's a Float" do
+      allow(order_detail).to receive(:calculated_cost).and_return(6.66)
+      expect(order_detail_results.map(&:calculated_cost)).to eq([2.24, 2.21, 2.21])
+    end
   end
 
   # Fix for #135513 - Reservations were getting deleted when Export Raw was run.

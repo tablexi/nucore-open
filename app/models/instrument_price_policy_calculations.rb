@@ -43,7 +43,9 @@ module InstrumentPricePolicyCalculations
     if charge_full_price_on_cancellation?
       calculate_reservation(reservation)
     else
-      { cost: cancellation_cost.to_f, subsidy: 0 }
+      # To be consistent with to other calculations, we should return BigDecimals
+      # or Integers.
+      { cost: cancellation_cost&.to_d || 0, subsidy: 0 }
     end
   end
 
