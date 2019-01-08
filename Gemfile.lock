@@ -154,7 +154,7 @@ GEM
     capybara-email (3.0.1)
       capybara (>= 2.4, < 4.0)
       mail
-    celluloid (0.17.3)
+    celluloid (0.17.4)
       celluloid-essentials
       celluloid-extras
       celluloid-fsm
@@ -285,9 +285,9 @@ GEM
       kostya-sigar (~> 2.0.0)
       state_machines
       thor
-    eye-patch (0.5.1)
+    eye-patch (1.1.0)
       chronic_duration
-      eye (>= 0.6.2)
+      eye (>= 0.10.0)
     factory_bot (4.11.1)
       activesupport (>= 3.0.0)
     factory_bot_rails (4.11.1)
@@ -341,8 +341,7 @@ GEM
       rake (>= 10, < 13)
       rubocop (>= 0.50.0)
       sysexits (~> 1.1)
-    hitimes (1.2.6)
-    i18n (1.5.3)
+    i18n (1.1.1)
       concurrent-ruby (~> 1.0)
     icalendar (2.5.2)
       ice_cube (~> 0.16)
@@ -357,7 +356,7 @@ GEM
       railties (>= 3.2.16)
     json (2.1.0)
     kgio (2.11.2)
-    kostya-sigar (2.0.1)
+    kostya-sigar (2.0.5)
     launchy (2.4.3)
       addressable (~> 2.3)
     letter_opener (1.7.0)
@@ -401,8 +400,8 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.0.2)
     nio4r (2.3.1)
-    nokogiri (1.10.1)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.8.5)
+      mini_portile2 (~> 2.3.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -607,8 +606,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.8)
-    timers (4.1.2)
-      hitimes
+    timers (4.2.0)
     ttfunk (1.5.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
