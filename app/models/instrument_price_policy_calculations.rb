@@ -20,6 +20,7 @@ module InstrumentPricePolicyCalculations
   end
 
   def calculate_cost_and_subsidy(reservation)
+    return if reservation.blank?
     return calculate_cancellation_costs(reservation) if reservation.canceled?
 
     case charge_for
