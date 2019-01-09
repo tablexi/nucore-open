@@ -11,12 +11,15 @@ module SplitAccounts
 
     # By default, for performance reasons, we won't also split timedata
     # (reservations/occupancies).
-    def initialize(order_detail, split_time_data: false)
+    # We only care about calculated costs for export_raw, so we'll exclude doing
+    # that calculation by default as well.
+    def initialize(order_detail, split_time_data: false, reporting: false)
       @order_detail = order_detail
       @account = order_detail.account
       @splits = account.splits
       @split_order_details = []
       @split_time_data = split_time_data
+      @reporting = reporting
     end
 
     def split
@@ -31,15 +34,15 @@ module SplitAccounts
     private
 
     def order_detail_attribute_splitter
-      AttributeSplitter.new(
+      attributes = [
         :quantity,
         :actual_cost,
         :actual_subsidy,
         :estimated_cost,
         :estimated_subsidy,
-        :calculated_cost,
-        :calculated_subsidy,
-      )
+      ]
+      attributes += [:calculated_cost, :calculated_subsidy] if @reporting
+      AttributeSplitter.new(*attributes)
     end
 
     def time_data_splitter

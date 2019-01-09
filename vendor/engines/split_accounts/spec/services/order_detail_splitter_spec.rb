@@ -111,7 +111,7 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
                                   reserve_end_at: start_at + 30.minutes, actual_start_at: start_at,
                                   actual_end_at: start_at + 45.minutes)
     end
-    let(:order_detail_results) { described_class.new(order_detail, split_time_data: true).split }
+    let(:order_detail_results) { described_class.new(order_detail, split_time_data: true, reporting: true).split }
     let(:results) { order_detail_results.map(&:time_data) }
 
     it "splits the reservation minutes" do
