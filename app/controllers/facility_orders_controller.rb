@@ -12,8 +12,9 @@ class FacilityOrdersController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
 
-  before_action :load_order, only: [:edit, :show, :update, :send_receipt]
-  before_action :load_merge_orders, only: [:edit, :show]
+  before_action :load_order, only: [:show, :update, :send_receipt]
+  before_action :load_merge_orders, only: [:show, :update]
+  before_action :load_add_to_order_form, only: [:show, :update]
 
   load_and_authorize_resource class: Order
 
@@ -26,8 +27,6 @@ class FacilityOrdersController < ApplicationController
   # Provided by NewInprocessController
   # def index
   # end
-
-  before_action(only: %w[show update]) { @add_to_order_form = AddToOrderForm.new(@order) }
 
   def show
     @order_details = @order.order_details.ordered_by_parents
@@ -60,10 +59,14 @@ class FacilityOrdersController < ApplicationController
   def update
     @add_to_order_form.assign_attributes(add_to_order_params.merge(created_by: current_user))
     if @add_to_order_form.save
-      flash.merge!(@add_to_order_form.flash)
+      if @add_to_order_form.notifications?
+        flash[:error] = @add_to_order_form.notifications_message
+      else
+        flash[:notice] = @add_to_order_form.success_message
+      end
       redirect_to facility_order_path(current_facility, @order)
     else
-      flash.now[:error] = @add_to_order_form.flash[:error]
+      flash.now[:error] = @add_to_order_form.error_message
       show # set @order_details
       render :show
     end
@@ -91,6 +94,10 @@ class FacilityOrdersController < ApplicationController
 
   def load_merge_orders
     @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id)
+  end
+
+  def load_add_to_order_form
+    @add_to_order_form = AddToOrderForm.new(@order)
   end
 
   def new_or_in_process_orders
