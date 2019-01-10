@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddToOrderForm
 
   include ActiveModel::Model
@@ -91,16 +93,16 @@ class AddToOrderForm
 
     products = product.is_a?(Bundle) ? product.products : [product]
     @merge_order = if products.any?(&:mergeable?)
-      Order.create!(
-        merge_with_order_id: original_order.id,
-        facility_id: original_order.facility_id,
-        account_id: original_order.account_id,
-        user_id: original_order.user_id,
-        created_by: created_by.id,
-      )
-    else
-      original_order
-    end
+                     Order.create!(
+                       merge_with_order_id: original_order.id,
+                       facility_id: original_order.facility_id,
+                       account_id: original_order.account_id,
+                       user_id: original_order.user_id,
+                       created_by: created_by.id,
+                     )
+                   else
+                     original_order
+                   end
   end
 
 end
