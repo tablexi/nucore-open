@@ -10,11 +10,6 @@
 
       = f.input_field :duration, class: "js--edit-order__duration"
 
-      = f.input :account_id,
-        collection: AvailableAccountsFinder.new(@order.user, current_facility),
-        input_html: { class: "js--chosen optional" },
-        label: Account.model_name.human
-
       = f.input :order_status_id,
         collection: OrderStatus.add_to_order_statuses(current_facility),
         label_method: :name_with_level,

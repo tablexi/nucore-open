@@ -1,42 +1,51 @@
 class AddToOrderForm
 
   include ActiveModel::Model
+  include TextHelpers::Translation
 
-  attr_accessor :original_order
-  attr_accessor :quantity, :product_id, :order_status_id, :note, :account_id, :duration, :created_by, :fulfilled_at
+  attr_reader :original_order, :current_facility
+  attr_accessor :quantity, :product_id, :order_status_id, :note, :duration, :created_by, :fulfilled_at
+  attr_accessor :flash
 
-  validates :account_id, presence: true
   validates :product_id, presence: true
   validates :order_status_id, presence: true
   validates :quantity, numericality: { greater_than: 0, only_integer: true }
 
   def initialize(original_order)
     @original_order = original_order
-    @account_id = original_order.account_id
+    @current_facility = original_order.facility
     @quantity = 1
     @duration = 1
   end
 
   def save
-    return unless valid?
-    order_appender = OrderAppender.new(original_order, created_by)
+    @flash = {}
+    raise(ActiveRecord::RecordInvalid, self) unless valid?
 
-    begin
-      notifications = order_appender.add!(product, quantity, params)
-      if notifications
-        errors.add :base, "there are notifications"
-      else
-        errors.add :base, "no notifications"
-      end
-      true
-    rescue AASM::InvalidTransition
-      errors.add :base, invalid_transition_message(product, params[:order_status_id])
-    rescue ActiveRecord::RecordInvalid => e
-      errors.add :base, e.record.errors.full_messages.to_sentence
-    rescue => e
-      Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-      errors.add :base, "an update error" #text("update.error", product: product.name)
+    order_appender = OrderAppender.new(original_order, created_by)
+    notifications = order_appender.add!(product, quantity, params)
+    if notifications
+      flash[:error] = text("update.notices", product: product.name)
+    else
+      flash[:notice] = text("update.success", product: product.name)
     end
+    true
+  rescue AASM::InvalidTransition
+    flash[:error] = invalid_transition_message(product, params[:order_status_id])
+    false
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:error] = e.record.errors.full_messages.to_sentence
+    false
+  rescue => e
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    flash[:error] = text("update.error", product: product.name)
+    false
+  end
+
+  protected
+
+  def translation_scope
+    "controllers.facility_orders"
   end
 
   private
@@ -44,7 +53,6 @@ class AddToOrderForm
   def params
     {
       note: note,
-      account_id: account_id,
       duration: duration,
       order_status_id: order_status_id,
       fulfilled_at: fulfilled_at,
@@ -52,7 +60,7 @@ class AddToOrderForm
   end
 
   def product
-    @product ||= Product.find(product_id)
+    @product ||= current_facility.products.find(product_id)
   end
 
   def invalid_transition_message(product, order_status_id)

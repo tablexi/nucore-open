@@ -60,9 +60,10 @@ class FacilityOrdersController < ApplicationController
   def update
     @add_to_order_form.assign_attributes(add_to_order_params.merge(created_by: current_user))
     if @add_to_order_form.save
+      flash.merge!(@add_to_order_form.flash)
       redirect_to facility_order_path(current_facility, @order)
     else
-      flash[:error] = @add_to_order_form.errors.full_messages.to_sentence
+      flash.now[:error] = @add_to_order_form.flash[:error]
       show # set @order_details
       render :show
     end
@@ -77,7 +78,7 @@ class FacilityOrdersController < ApplicationController
   private
 
   def add_to_order_params
-    params.require(:add_to_order_form).permit(:quantity, :product_id, :account_id, :order_status_id, :note, :fulfilled_at, :duration)
+    params.require(:add_to_order_form).permit(:quantity, :product_id, :order_status_id, :note, :fulfilled_at, :duration)
   end
 
   def batch_updater
