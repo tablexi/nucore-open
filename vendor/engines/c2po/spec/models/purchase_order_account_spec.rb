@@ -9,8 +9,12 @@ RSpec.describe PurchaseOrderAccount do
   include_examples "AffiliateAccount"
   include_examples "an Account"
 
-  it "is limited to a single facility" do
-    expect(described_class).to be_single_facility
+  it "is a per-facility account" do
+    expect(described_class).to be_per_facility
+  end
+
+  it "is not a global account" do
+    expect(described_class).not_to be_global
   end
 
   it "includes the facility in the description" do
