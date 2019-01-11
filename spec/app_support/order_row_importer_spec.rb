@@ -287,7 +287,7 @@ RSpec.describe OrderRowImporter do
       end
 
       context "and the account is active" do
-        before { allow_any_instance_of(Account).to receive(:is_active?).and_return(true) }
+        before { allow_any_instance_of(Account).to receive(:active?).and_return(true) }
 
         context "and the account is invalid for the product" do
           before(:each) do
