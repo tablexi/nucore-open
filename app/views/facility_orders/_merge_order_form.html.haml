@@ -5,7 +5,7 @@
 
       = f.input_field :product_id,
         collection: current_facility.products.mergeable_into_order.alphabetized.map { |p| [p.name, p.id, {"data-timed-product" => p.order_quantity_as_time?}] },
-        class: "js--edit-order__product",
+        class: "js--edit-order__product js--chosen",
         include_blank: false
 
       = f.input_field :duration, class: "js--edit-order__duration"
