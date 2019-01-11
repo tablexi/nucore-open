@@ -10,6 +10,7 @@ class AddToOrderForm
   attr_accessor :error_message
 
   validates :account_id, presence: true
+  validates :account, presence: true, if: :account_id
   validates :product_id, presence: true
   validates :order_status_id, presence: true
   validates :quantity, numericality: { greater_than: 0, only_integer: true }
@@ -55,6 +56,17 @@ class AddToOrderForm
     @product ||= current_facility.products.find(product_id)
   end
 
+  # Will be blank if the account_id is suspended or expired. That should only happen
+  # if someone is hacking the form since they should be excluded from being available
+  # in the dropdown.
+  def account
+    @account ||= available_accounts.to_a.find { |a| a.id.to_s == account_id.to_s }
+  end
+
+  def available_accounts
+    AvailableAccountsFinder.new(original_order.user, current_facility)
+  end
+
   protected
 
   def translation_scope
@@ -83,7 +95,7 @@ class AddToOrderForm
       note: note.presence,
       duration: duration,
       created_by: created_by.id,
-      account: Account.find(account_id),
+      account: account,
     }
   end
 

@@ -66,14 +66,13 @@ RSpec.describe "Adding to an existing order" do
         before do
           order.account.update!(expires_at: 1.day.ago)
           page.refresh
-          save_and_open_page
         end
 
         it "is blank and cannot be added" do
           expect(page).to have_select("Payment Source", selected: nil)
           expect(page).to have_content("is suspended or expired")
           click_button "Add To Order"
-          expect(page).to have_content("Account can't be blank")
+          expect(page).to have_content("Payment Source can't be blank")
         end
       end
     end

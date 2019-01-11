@@ -11,8 +11,7 @@
       = f.input_field :duration, class: "js--edit-order__duration"
 
       = f.input :account_id,
-        collection: AvailableAccountsFinder.new(@order.user, current_facility),
-        label: Account.model_name.human,
+        collection: @add_to_order_form.available_accounts,
         include_blank: !@order.account.active?,
         hint: @order.account.active? ? "" : t(".original_account_inactive", account: @order.account),
         input_html: { class: "js--chosen" }

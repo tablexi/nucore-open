@@ -6,3 +6,8 @@ en:
       notices: "%{product} needs your attention before it is added to the order."
       invalid_status: |
         %{product} may not be set initially to an order status of %{status}.
+  activemodel:
+    attributes:
+      add_to_order_form:
+        account: Payment Source
+        account_id: Payment Source
