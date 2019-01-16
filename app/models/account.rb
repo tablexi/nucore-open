@@ -103,7 +103,7 @@ class Account < ApplicationRecord
       # In order to use `or`, the structures of both sides need to be identical
       structure = left_outer_joins(:facilities).references(:account_facility_joins)
       structure.global
-        .or(structure.per_facility.where(account_facility_joins: { facility_id: facility.id }))
+               .or(structure.per_facility.where(account_facility_joins: { facility_id: facility.id }))
     else
       all
     end
