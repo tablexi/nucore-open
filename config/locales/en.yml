@@ -138,6 +138,9 @@ en:
         admin_reservation: Administrative Hold
         offline_reservation: Instrument Offline
         expiration: Expires %{time} prior
+    transactions:
+      table_inside:
+        total: Total
     update: Update
 
   global_search:

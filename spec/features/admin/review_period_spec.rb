@@ -59,6 +59,16 @@ RSpec.describe "Review period - Sending notifications and marking as reviewed", 
     expect(page).to have_content("OD ##{order_details.second.order_number}")
   end
 
+  it "shows a total cost at the bottom of the table" do
+    login_as director
+    visit facility_notifications_path(facility)
+
+    within(".old-table tfoot") do
+      expect(page).to have_selector("th", text: "Total")
+      expect(page).to have_selector("td", text: "$2.0")
+    end
+  end
+
   describe "marking as reviewed" do
     before do
       order_details.each { |od| od.update!(reviewed_at: 1.week.from_now) }

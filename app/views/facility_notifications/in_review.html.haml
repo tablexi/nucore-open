@@ -11,7 +11,7 @@
   = content_for :action_instructions do
     %p.alert.alert-info= t(".instructions")
 
-  = render "shared/transactions/table"
+  = render "shared/transactions/table", order_details: @order_details
   = render "shared/reconcile_footnote"
 - else
   %p.alert.alert-info= text("facility_notifications.in_review.no_orders")

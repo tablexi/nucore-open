@@ -10,7 +10,7 @@
   = render "shared/transactions/top", tab: "notifications"
 
 - if @order_details.any?
-  = render "shared/transactions/table"
+  = render "shared/transactions/table", order_details: @order_details
   = render "shared/reconcile_footnote"
 - else
   %p.alert.alert-info= text("facility_notifications.index.no_orders")
