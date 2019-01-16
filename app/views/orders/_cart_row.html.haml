@@ -20,7 +20,7 @@
       - if order_detail.product.is_a?(Instrument)
         %td
       - elsif order_detail.bundle
-        %td.centered= order_detail.quantity
+        %td.centered= QuantityPresenter.new(order_detail.product, order_detail.quantity)
       - else
         %td.centered
           = odf.input :quantity,

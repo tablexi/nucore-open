@@ -9,11 +9,10 @@ class Bundle < Product
 
   def products_for_group_select
     products = facility.products.where(type: bundleable_product_types).order(:type, :name)
-    options = Hash.new { |h, k| h[k] = [] }
-    products.group_by { |product| product.class.model_name.human.pluralize }.each do |cname, ps|
-      options[cname] = ps.map { |p| [p.to_s_with_status, p.id] }
+
+    products.group_by { |product| product.class.model_name.human.pluralize }.each_with_object({}) do |(group, group_products), options|
+      options[group] = group_products.map { |product| [product.to_s_with_status, product.id] }
     end
-    options
   end
 
   def products_active?
