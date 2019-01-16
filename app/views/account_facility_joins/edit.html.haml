@@ -9,5 +9,6 @@
 %h2= @account
 
 = simple_form_for @account_facility_joins_form, url: facility_account_account_facility_joins_path, method: :patch do |f|
-  = f.input :facility_ids, collection: Facility.alphabetized, as: :check_boxes, label: false, wrapper_html: { class: "checkbox-group" }
-  = f.submit "Submit", class: "btn btn-primary"
+
+  = f.input :facility_ids, collection: Facility.alphabetized, input_html: { multiple: true, class: "js--chosen half-width" }, label_method: :to_s
+  = f.submit text("shared.save"), class: "btn btn-primary"
