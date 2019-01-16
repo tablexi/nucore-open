@@ -1,0 +1,11 @@
+en:
+  views:
+    accounts:
+      index:
+        empty: You do not have any %{models}
+        all: "*All*"
+        transaction_in_review:
+          one: You have one transaction in review
+          other: You have %{count} transactions in review
+        transactions: Transactions
+        members: Members

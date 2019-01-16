@@ -797,10 +797,6 @@ en:
         search: "Search by name, NetID, or username"
 
   accounts:
-    index:
-      transaction_in_review:
-        one: You have one transaction in review
-        other: You have %{count} transactions in review
     role:
         owner: Owner
         business_administrator: Business Administrator
