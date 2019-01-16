@@ -18,10 +18,10 @@ RSpec.describe PurchaseOrderAccount do
   end
 
   it "includes the facility in the description" do
-    expect(account.to_s).to include account.facility.name
+    expect(account.to_s).to include facility.to_s
   end
 
   it "has the facility association" do
-    expect(account.facility).to eq facility
+    expect(account.facilities).to eq([facility])
   end
 end

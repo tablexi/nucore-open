@@ -185,10 +185,10 @@ class Ability
         cannot([:edit, :update], User)
         cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
 
-        # A facility admin can manage an account if it has no facility (i.e. it's a chart string) or the account
+        # A facility admin can manage an account if it is global (i.e. it's a chart string) or the account
         # is attached to the current facility.
         can :manage, Account do |account|
-          account.facility.nil? || account.facility == resource
+          account.global? || account.account_facility_joins.any? { |af| af.facility_id == resource.id }
         end
 
         can [:show_problems], [Order, Reservation]

@@ -7,11 +7,11 @@ RSpec.describe "Creating a journal" do
   let(:admin) { FactoryBot.create(:user, :administrator) }
   let(:user) { FactoryBot.create(:user) }
   let(:facility) { FactoryBot.create(:facility) }
-  let(:account) { FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user), facility_id: facility.id) }
+  let(:account) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user, facility: facility) }
   let!(:reviewed_order_detail) { place_and_complete_item_order(user, facility, account, true) }
   let!(:unreviewed_order_detail) { place_and_complete_item_order(user, facility, account) }
   let(:expiry_date) { Time.zone.now - 1.year }
-  let(:expired_payment_source) { FactoryBot.create(:nufs_account, expires_at: expiry_date, account_users_attributes: account_users_attributes_hash(user: user), facility_id: facility.id) }
+  let(:expired_payment_source) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user, expires_at: expiry_date, facility: facility) }
   let!(:problem_order_detail) { place_and_complete_item_order(user, facility, expired_payment_source, true) }
 
   before do
