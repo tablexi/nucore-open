@@ -175,7 +175,7 @@ class AccountBuilder
 
   # Set the facility if the account type is scoped to facility.
   def set_facility
-    account.facility_id = account.class.per_facility? ? facility.try(:id) : nil
+    account.facility_id = account.per_facility? ? facility.try(:id) : nil
     account
   end
 

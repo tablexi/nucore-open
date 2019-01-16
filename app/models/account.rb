@@ -64,6 +64,7 @@ class Account < ApplicationRecord
   validate { errors.add(:base, :missing_owner) if missing_owner? }
 
   delegate :administrators, to: :account_users
+  delegate :global?, :per_facility?, to: :class
 
   # The @@config class variable stores account configuration details via a
   # seperate `AccountConfig` class. This way downstream repositories can use
