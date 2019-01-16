@@ -129,6 +129,7 @@ feature:
   facility_banner_notice: true
   charge_full_price_on_cancellation: true
   price_policy_requires_note: true
+  multi_facility_accounts: true
 
 split_accounts:
   # Roles are allowed to create Split Accounts

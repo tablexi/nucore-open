@@ -1,0 +1,13 @@
+= content_for :tabnav do
+  = render "admin/shared/tabnav_payment_method", secondary_tab: "facilities"
+
+= content_for :h1 do
+  = current_facility
+
+= render "facility_accounts/sidebar"
+
+%h2= @account
+
+= simple_form_for @account_facility_joins_form, url: facility_account_account_facility_joins_path, method: :patch do |f|
+  = f.input :facility_ids, collection: Facility.alphabetized, as: :check_boxes, label: false, wrapper_html: { class: "checkbox-group" }
+  = f.submit "Submit", class: "btn btn-primary"

@@ -208,6 +208,13 @@ ul.unstyled {
 
 form.compact { margin: 0 }
 
+.checkbox-group {
+  .checkbox {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+}
+
 .modal form,
 .well form {
   margin-bottom: 0;
