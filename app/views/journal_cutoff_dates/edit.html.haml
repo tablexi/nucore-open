@@ -6,7 +6,7 @@
 
 %h2= t(".header")
 
-= link_to t(".delete"), journal_cutoff_date_path(@journal_cutoff_date), confirm: t(".delete_confirm"), class: "btn btn-danger pull-right", method: :delete
+= link_to t(".delete"), journal_cutoff_date_path(@journal_cutoff_date), data: { confirm: t(".delete_confirm") }, class: "btn btn-danger pull-right", method: :delete
 
 = render "form"
 
