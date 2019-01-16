@@ -71,7 +71,7 @@ class AccountConfig
   # and the NullObject always returns `true` for cross_facility?.
   def account_types_for_facility(facility, action)
     types = account_types
-    types = types.select { |type| type.constantize.cross_facility? } if facility.try(:cross_facility?)
+    types = types.select { |type| type.constantize.global? } if facility.try(:cross_facility?)
     types -= creation_disabled_types if action == :create
     types
   end
@@ -94,12 +94,12 @@ class AccountConfig
   end
 
   # Returns true if this account type is limited to a single facility.
-  def single_facility?(account_type)
+  def per_facility?(account_type)
     facility_account_types.include?(account_type.to_s.classify)
   end
 
   # Returns true if this account type can cross multiple facilities.
-  def cross_facility?(account_type)
+  def global?(account_type)
     global_account_types.include?(account_type.to_s.classify)
   end
 

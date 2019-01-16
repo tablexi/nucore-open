@@ -74,13 +74,13 @@ class Account < ApplicationRecord
   end
 
   # Returns true if this account type is limited to a single facility.
-  def self.single_facility?
-    config.single_facility?(name)
+  def self.per_facility?
+    config.per_facility?(name)
   end
 
   # Returns true if this account type can cross multiple facilities.
-  def self.cross_facility?
-    config.cross_facility?(name)
+  def self.global?
+    config.global?(name)
   end
 
   # Returns true if this account type supports affiliate.

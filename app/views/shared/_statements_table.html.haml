@@ -9,7 +9,7 @@
         %th= Statement.human_attribute_name(:sent_to)
         - unless @account
           %th= Account.model_name.human
-        - unless current_facility.try(:single_facility?)
+        - if current_facility&.cross_facility?
           %th= Facility.model_name.human
         %th.currency # of #{Order.model_name.human.pluralize}
         %th.currency= Statement.human_attribute_name(:total_cost)
@@ -26,7 +26,7 @@
           %td= s.account.notify_users.map(&:full_name).join(', ')
           - unless @account
             %td= link_to s.account, facility_account_path(current_facility, s.account)
-          - unless current_facility.try(:single_facility?)
+          - if current_facility&.cross_facility?
             %td= s.facility.name
           %td.currency= s.order_details.count
           %td.currency= number_to_currency(s.total_cost)

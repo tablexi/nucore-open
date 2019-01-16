@@ -118,20 +118,20 @@ RSpec.describe AccountConfig, type: :model do
     end
   end
 
-  describe "#single_facility?" do
+  describe "#per_facility?" do
     context "when account_type is included in facility_account_types" do
       it "returns true" do
         allow(instance).to receive(:facility_account_types).and_return(["FooAccount"])
-        expect(instance.single_facility?("FooAccount")).to eq(true)
+        expect(instance.per_facility?("FooAccount")).to eq(true)
       end
     end
   end
 
-  describe "#cross_facility?" do
+  describe "#global?" do
     context "when account_type is included in global_account_types" do
       it "returns true" do
         allow(instance).to receive(:global_account_types).and_return(["FooAccount"])
-        expect(instance.cross_facility?("FooAccount")).to eq(true)
+        expect(instance.global?("FooAccount")).to eq(true)
       end
     end
   end
