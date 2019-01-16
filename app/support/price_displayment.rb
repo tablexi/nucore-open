@@ -27,8 +27,12 @@ module PriceDisplayment
     format(actual_subsidy) || format(estimated_subsidy) || empty_display
   end
 
+  def actual_or_estimated_total
+    actual_total || estimated_total
+  end
+
   def display_total
-    format(actual_total) || format(estimated_total) || empty_display
+    format(actual_or_estimated_total) || empty_display
   end
 
   def wrapped_cost
@@ -57,45 +61,6 @@ module PriceDisplayment
     actual_cost.present?
   end
 
-  class QuantityDisplay < Struct.new(:value)
-
-    def html
-      value
-    end
-
-    def csv
-      value.to_s
-    end
-
-  end
-
-  class TimeQuantityDisplay < QuantityDisplay
-
-    include ActionView::Helpers::TagHelper
-
-    def csv
-      # equal sign and quotes prevent Excel from formatting as a date/time
-      %(="#{MinutesToTimeFormatter.new(value)}")
-    end
-
-    def html
-      MinutesToTimeFormatter.new(value).to_s
-    end
-
-  end
-
-  def build_quantity_presenter
-    if time_data.try(:actual_duration_mins) && time_data.actual_duration_mins.to_i > 0
-      TimeQuantityDisplay.new(time_data.actual_duration_mins)
-    elsif time_data.try(:duration_mins)
-      TimeQuantityDisplay.new(time_data.duration_mins)
-    elsif quantity_as_time?
-      TimeQuantityDisplay.new(quantity)
-    else
-      QuantityDisplay.new(quantity)
-    end
-  end
-
   def wrapped_quantity
     build_quantity_presenter.html
   end
@@ -105,6 +70,17 @@ module PriceDisplayment
   end
 
   private
+
+  def build_quantity_presenter
+    quantity_to_display = if time_data.try(:actual_duration_mins) && time_data.actual_duration_mins.to_i > 0
+                            time_data.actual_duration_mins
+                          elsif time_data.try(:duration_mins)
+                            time_data.duration_mins
+                          else
+                            quantity
+                          end
+    QuantityPresenter.new(product, quantity_to_display)
+  end
 
   def empty_display
     "Unassigned"

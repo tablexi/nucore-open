@@ -67,7 +67,7 @@
             %td
               = link_to t("shared.remove"),
                 facility_instrument_reservation_path(current_facility, @product, reservation),
-                confirm: t("shared.confirm_message"),
+                data: { confirm: t("shared.confirm_message") },
                 method: :delete
 
             %td= reservation.class.model_name.human

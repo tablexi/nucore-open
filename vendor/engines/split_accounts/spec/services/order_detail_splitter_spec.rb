@@ -111,7 +111,7 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
                                   reserve_end_at: start_at + 30.minutes, actual_start_at: start_at,
                                   actual_end_at: start_at + 45.minutes)
     end
-    let(:order_detail_results) { described_class.new(order_detail, split_time_data: true).split }
+    let(:order_detail_results) { described_class.new(order_detail, split_time_data: true, reporting: true).split }
     let(:results) { order_detail_results.map(&:time_data) }
 
     it "splits the reservation minutes" do
@@ -138,6 +138,16 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
     it "copies the actual start and end times" do
       expect(results.map(&:actual_start_at)).to all(eq(start_at))
       expect(results.map(&:actual_end_at)).to all(eq(start_at + 45.minutes))
+    end
+
+    it "splits calculated cost" do
+      allow(order_detail).to receive(:calculated_cost).and_return(BigDecimal("6.66"))
+      expect(order_detail_results.map(&:calculated_cost)).to eq([2.24, 2.21, 2.21])
+    end
+
+    it "splits the calculated cost if it's a Float" do
+      allow(order_detail).to receive(:calculated_cost).and_return(6.66)
+      expect(order_detail_results.map(&:calculated_cost)).to eq([2.24, 2.21, 2.21])
     end
   end
 

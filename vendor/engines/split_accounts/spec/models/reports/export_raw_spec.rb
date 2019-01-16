@@ -88,4 +88,31 @@ RSpec.describe Reports::ExportRaw, :enable_split_accounts do
       )
     end
   end
+
+  # There was a bug from the Rails 5 upgrade where reservations on split accounts
+  # got deleted. We want to make sure the reports don't break on them.
+  describe "with a broken reservation" do
+    let(:instrument) { FactoryBot.create(:setup_instrument, :always_available, facility: facility) }
+    let(:reservation) do
+      FactoryBot.create(:completed_reservation,
+                        user: user,
+                        product: instrument
+                        )
+    end
+    let(:order_detail) { reservation.order_detail }
+    before do
+      instrument.price_policies.each { |pp| pp.update(start_date: 3.days.ago, usage_rate: 60) }
+      order_detail.update_attributes!(account: account)
+      reservation.really_destroy!
+    end
+
+    it "displays the information" do
+      expect(report).to have_column_values(
+        "Reservation Start Time" => ["", ""],
+        "Actual Cost" => ["$30.00", "$30.00"],
+        "Calculated Cost" => ["$0.00", "$0.00"],
+        "Quantity" => ["0.5", "0.5"],
+      )
+    end
+  end
 end

@@ -20,7 +20,11 @@ module SplitAccounts
       # See https://github.com/tablexi/nucore-open/pull/1341 for more details
       nested_map(order_details) do |order_detail|
         if order_detail.account.try(:splits).try(:present?)
-          SplitAccounts::OrderDetailSplitter.new(order_detail, split_time_data: options[:time_data]).split
+          SplitAccounts::OrderDetailSplitter.new(
+            order_detail,
+            split_time_data: options[:time_data],
+            reporting: options[:reporting],
+          ).split
         else
           order_detail
         end

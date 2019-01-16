@@ -21,12 +21,18 @@
       - if local_assigns[:show_statements]
         %th= Statement.model_name.human
   %tbody
+    / We need to keep track of how many columns there are to the left of the Cost column,
+    / so we can position the Total correctly.
+    - colspan_for_total = 5
     - order_details.each do |order_detail|
+      - colspan_for_total = 5
       %tr{ class: row_class(order_detail) }
         - if @order_detail_action
           %td= check_box_tag "order_detail_ids[]", order_detail.id, false, {:class => 'toggle'}
+          - colspan_for_total += 1
         - if @order_detail_link
           %td.nowrap= link_to @order_detail_link[:text], @order_detail_link[:proc].call(order_detail) if @order_detail_link[:display?].call(order_detail)
+          - colspan_for_total += 1
         - if backend?
           %td.nowrap= link_to order_detail.order.id, facility_order_path(order_detail.order.facility, order_detail.order)
           %td.nowrap= link_to order_detail.id, manage_order_detail_path(order_detail), :class => 'manage-order-detail'
@@ -36,9 +42,10 @@
         %td= order_detail.send(:"#{@date_range_field}").try(:strftime, "%m/%d/%Y")
         - if @extra_date_column and order_detail.send(@extra_date_column)
           %td= order_detail.send(@extra_date_column).strftime("%m/%d/%Y")
+          - colspan_for_total += 1
         - if current_facility.blank? || cross_facility?
-
           %td= order_detail.order.facility
+          - colspan_for_total += 1
         %td.user-order-detail.order-note
           .order-detail-description
             = OrderDetailPresenter.new(order_detail).description_as_html
@@ -50,12 +57,11 @@
           - if order_detail.note.present?
             .order-detail-extra.order-detail-note
               = render "shared/order_detail_note", order_detail: order_detail
-
-
         %td= order_detail.order.user.full_name
         - unless @account
           %td= order_detail.account
           %td= order_detail.account.owner_user
+          - colspan_for_total += 2
         %td.currency
           = OrderDetailPresenter.new(order_detail).wrapped_total
         %td.nowrap
@@ -63,4 +69,9 @@
           = order_detail_status_badges(order_detail)
         - if local_assigns[:show_statements]
           %td= link_to "Download", account_statement_path(order_detail.account, order_detail.statement_id, format: :pdf) if order_detail.statement
+  - unless order_details.respond_to? :total_pages
+    %tfoot
+      %th.total{colspan: colspan_for_total, scope: "row"}= t(".total")
+      %td.currency= number_to_currency(order_details.sum(&:actual_or_estimated_total))
+      %td{colspan: local_assigns[:show_statements] ? 2 : 1}
 = will_paginate(order_details) if order_details.respond_to? :total_pages

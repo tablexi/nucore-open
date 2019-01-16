@@ -16,7 +16,7 @@
     - else
       %p.notice.notice-info= text("instructions_without_email")
 
-  = render "shared/transactions/table"
+  = render "shared/transactions/table", order_details: @order_details
   = render "shared/reconcile_footnote"
 - else
   %p.alert.alert-info= t(".no_transactions")

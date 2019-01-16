@@ -13,11 +13,17 @@
   = f.error_messages
 
   .form-inputs
-    = f.label :product_id, nil, class: "require"
-    = f.select :product_id,
-      grouped_options_for_select(@bundle.products_for_group_select, @bundle_product.product_id, prompt: "")
+    = f.input :product_id,
+      as: :grouped_select,
+      required: true,
+      collection: @bundle.products_for_group_select,
+      group_method: :last,
+      input_html: { class: "js--bundleProducts__productSelect", data: { timed_quantity_types: TimedService.model_name.human(count: 2) } }
 
-    = f.input :quantity, required: true
+    .js--bundleProducts__quantityField
+      = f.input :quantity, required: true
+    .js--bundleProducts__timedQuantityField
+      = f.input :quantity, required: true, input_html: { class: "timeinput" }
 
   %ul.inline
     %li= f.submit t("shared.create"), class: "btn"
