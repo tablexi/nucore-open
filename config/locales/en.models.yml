@@ -11,6 +11,9 @@ en:
         expires?: Release In Advance
         expires_mins_before: "Release hh:mm Prior To Start"
         user_note: Note for users
+      account_facility_joins_form:
+        facility_ids: Facilities
+
     errors:
       messages:
         record_invalid: "Validation failed: %{errors}"
@@ -32,6 +35,8 @@ en:
               blank: must be a valid date
               too_far_in_future: Cannot be dated more than %{time} in the future
               must_be_after_initial_reservation: must occur after initial reservation
+        account_facility_joins_form:
+          missing_current_facility: can't remove the current facility
 
 
 

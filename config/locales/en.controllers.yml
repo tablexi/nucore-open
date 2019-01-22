@@ -6,6 +6,11 @@ en:
       create:
         success: "%{accessories} added"
 
+    account_facility_joins:
+      update:
+        success: Payment source was successfully updated.
+        error: There was a problem updating the payment source
+
     account_price_group_members:
       create:
         notice: "%{account_number} was added to the %{price_group_name} Price Group"

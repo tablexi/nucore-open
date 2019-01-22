@@ -2,12 +2,11 @@
   = t_my(Account)
 
 - if @account_users.empty?
-  %p.notice= "You do not have any #{Account.model_name.human.pluralize.downcase}."
+  %p.notice= text("empty", models: Account.model_name.human.pluralize.downcase)
 - else
   - if @administered_order_details_in_review.any?
-    = link_to t(".transaction_in_review", count: @administered_order_details_in_review.count),
+    = link_to text("transaction_in_review", count: @administered_order_details_in_review.count),
       in_review_transactions_path
-
   %table.table.table-striped.table-hover.js--responsive_table
     %thead
       %tr
@@ -30,11 +29,11 @@
           %td= account.description_to_s
           %td= account.type_string
           %td= human_date(account.expires_at)
-          %td= account.facility || '<i>All</i>'.html_safe
+          %td= account.per_facility? ? account.facilities.alphabetized.join(", ") : html("all", inline: true)
           - if au.can_administer? || session_user.administrator?
-            - show_th=true
-            %td= link_to "Transactions", transactions_path(search: { accounts: [account] })
-            %td= link_to "Members", account_account_users_path(account)
+            - show_th = true
+            %td= link_to text("transactions"), transactions_path(search: { accounts: [account] })
+            %td= link_to text("members"), account_account_users_path(account)
 
     - if show_th
       = javascript_tag "$(function(){ $('th.hidden').show(); });"

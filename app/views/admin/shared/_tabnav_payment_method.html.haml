@@ -6,3 +6,5 @@
   = tab t(".members"), facility_account_members_path(current_facility, @account), (secondary_tab == "members")
   - if current_ability.can?(:orders, @account)
     = tab t(".orders"), facility_account_orders_path(current_facility, @account), (secondary_tab == "orders")
+  - if @account.per_facility? && current_ability.can?(:edit, AccountFacilityJoinsForm.new(account: @account))
+    = tab Facility.model_name.human(count: :other), edit_facility_account_account_facility_joins_path(current_facility, @account), (secondary_tab == "facilities")

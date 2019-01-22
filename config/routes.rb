@@ -225,6 +225,8 @@ Nucore::Application.routes.draw do
             get "user_search"
           end
         end
+
+        resource :account_facility_joins, only: [:edit, :update], path: "facilities" if SettingsHelper.feature_on?(:multi_facility_accounts)
       end
     end
 
