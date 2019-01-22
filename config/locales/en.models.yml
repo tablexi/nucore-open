@@ -12,6 +12,8 @@ en:
         expires_mins_before: "Release hh:mm Prior To Start"
         user_note: Note for users
     errors:
+      messages:
+        record_invalid: "Validation failed: %{errors}"
       models:
         order_details/reconciler:
           must_be_in_past: "Reconciliation Date cannot be in the future"

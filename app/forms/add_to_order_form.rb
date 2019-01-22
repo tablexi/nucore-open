@@ -1,0 +1,108 @@
+# frozen_string_literal: true
+
+class AddToOrderForm
+
+  include ActiveModel::Model
+  include TextHelpers::Translation
+
+  attr_reader :original_order, :current_facility
+  attr_accessor :quantity, :product_id, :order_status_id, :note, :duration, :created_by, :fulfilled_at
+  attr_accessor :error_message
+
+  validates :product_id, presence: true
+  validates :order_status_id, presence: true
+  validates :quantity, numericality: { greater_than: 0, only_integer: true }
+
+  def initialize(original_order)
+    @original_order = original_order
+    @current_facility = original_order.facility
+    @quantity = 1
+    @duration = 1
+  end
+
+  def save
+    raise(ActiveRecord::RecordInvalid, self) unless valid?
+
+    add_to_order!
+    true
+  rescue AASM::InvalidTransition
+    @error_message = text("invalid_status", product: product, status: order_status)
+    false
+  rescue ActiveRecord::RecordInvalid => e
+    @error_message = e.record.errors.full_messages.to_sentence
+    false
+  rescue => e
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    @error_message = text("error", product: product.name)
+    false
+  end
+
+  def notifications?
+    @notifications
+  end
+
+  def success_message
+    text("success", product: product.name)
+  end
+
+  def notifications_message
+    text("notices", product: product.name)
+  end
+
+  def product
+    @product ||= current_facility.products.find(product_id)
+  end
+
+  protected
+
+  def translation_scope
+    "forms.add_to_order_form"
+  end
+
+  private
+
+  def add_to_order!
+    OrderDetail.transaction do
+      merge_order.add(product, quantity, params).each do |order_detail|
+        order_detail.manual_fulfilled_at = fulfilled_at
+        order_detail.set_default_status!
+        order_detail.change_status!(order_status) if order_status.present?
+
+        if merge_order.to_be_merged? && !order_detail.valid_for_purchase?
+          @notifications = true
+          MergeNotification.create_for!(created_by, order_detail)
+        end
+      end
+    end
+  end
+
+  def params
+    {
+      note: note.presence,
+      duration: duration,
+      created_by: created_by.id,
+    }
+  end
+
+  def order_status
+    @order_status ||= OrderStatus.for_facility(current_facility).find(order_status_id) if order_status_id
+  end
+
+  def merge_order
+    return @merge_order if defined?(@merge_order)
+
+    products = product.is_a?(Bundle) ? product.products : [product]
+    @merge_order = if products.any?(&:mergeable?)
+                     Order.create!(
+                       merge_with_order_id: original_order.id,
+                       facility_id: original_order.facility_id,
+                       account_id: original_order.account_id,
+                       user_id: original_order.user_id,
+                       created_by: created_by.id,
+                     )
+                   else
+                     original_order
+                   end
+  end
+
+end

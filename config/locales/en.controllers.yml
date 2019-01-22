@@ -59,15 +59,6 @@ en:
         notice: "The journal file has been created successfully"
         more_errors: "There are more errors. Please resolve those above to see those that remain."
 
-    facility_orders:
-      update:
-        zero_quantity: "Please enter a quantity for the product you'd like to add"
-        error: "An error was encountered while adding the product %{product}."
-        success: "%{product} was successfully added to this order."
-        notices: "%{product} needs your attention before it is added to the order."
-        invalid_status: |
-          %{product} may not be set initially to an order status of %{status}.
-
     facility_order_details:
       destroy:
         notice: "You cannot delete an order detail that isn't being merged"
