@@ -242,7 +242,7 @@ class Account < ApplicationRecord
     !account_users.where("user_id = ? AND deleted_at IS NULL", user.id).first.nil?
   end
 
-  def is_active?
+  def active?
     !expired? && !suspended?
   end
 

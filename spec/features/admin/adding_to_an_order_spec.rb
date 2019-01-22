@@ -6,6 +6,7 @@ RSpec.describe "Adding to an existing order" do
   let(:facility) { product.facility }
   let(:order) { create(:purchased_order, product: product) }
   let(:user) { create(:user, :staff, facility: facility) }
+  let!(:other_account) { create(:nufs_account, :with_account_owner, owner: order.user, description: "Other Account") }
 
   before do
     login_as user
@@ -45,6 +46,34 @@ RSpec.describe "Adding to an existing order" do
         expect(order.reload.order_details.count).to eq(2)
         expect(order.order_details.last).to be_complete
         expect(I18n.l(order.order_details.last.fulfilled_at.to_date, format: :usa)).to eq(fulfilled_at_string)
+      end
+    end
+
+    describe "adding it to another account" do
+      describe "while the original account is still active" do
+        before do
+          select other_account, from: "Payment Source"
+          click_button "Add To Order"
+        end
+
+        it "creates the order detail with the new account" do
+          click_link(order.reload.order_details.last)
+          expect(page).to have_select("Payment Source", selected: other_account.to_s)
+        end
+      end
+
+      describe "when the original account is expired" do
+        before do
+          order.account.update!(expires_at: 1.day.ago)
+          page.refresh
+        end
+
+        it "is blank and cannot be added" do
+          expect(page).to have_select("Payment Source", selected: nil)
+          expect(page).to have_content("is suspended or expired")
+          click_button "Add To Order"
+          expect(page).to have_content("Payment Source can't be blank")
+        end
       end
     end
   end

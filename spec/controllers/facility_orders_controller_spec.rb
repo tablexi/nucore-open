@@ -256,6 +256,24 @@ RSpec.describe FacilityOrdersController do
           end
         end
 
+        context "when specifying an account" do
+          let(:other_account) { create(:nufs_account, :with_account_owner, owner: order.user) }
+          before { @params[:add_to_order_form][:account_id] = other_account.id }
+
+          it_should_allow :director, "to add the item to that account" do
+            expect(order.order_details.last.account).to eq(other_account)
+          end
+
+          context "and that account is suspended" do
+            before { other_account.suspend }
+
+            it_should_allow :director, "to error on that account" do
+              expect(order.order_details).to be_empty
+              expect(flash[:error]).to be_present
+            end
+          end
+        end
+
         context "when setting the order status to 'Complete'" do
           let(:complete_status) { OrderStatus.complete }
           before { @params[:add_to_order_form][:order_status_id] = complete_status.id.to_s }

@@ -379,6 +379,8 @@ en:
       no_problem_orders: There are no problem orders.
     table_controls:
       update_orders: Update Orders
+    merge_order_form:
+      original_account_inactive: "The original account used for this order is suspended or expired: %{account}"
 
   facility_reservations:
     index:

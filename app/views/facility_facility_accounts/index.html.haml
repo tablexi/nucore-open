@@ -26,5 +26,5 @@
         %tr
           %td
             = link_to account, edit_facility_facility_account_path(current_facility, account)
-            - unless account.is_active?
+            - unless account.active?
               = text("inactive")

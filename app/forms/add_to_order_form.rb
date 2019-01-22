@@ -6,9 +6,11 @@ class AddToOrderForm
   include TextHelpers::Translation
 
   attr_reader :original_order, :current_facility
-  attr_accessor :quantity, :product_id, :order_status_id, :note, :duration, :created_by, :fulfilled_at
+  attr_accessor :quantity, :product_id, :order_status_id, :note, :duration, :created_by, :fulfilled_at, :account_id
   attr_accessor :error_message
 
+  validates :account_id, presence: true
+  validates :account, presence: true, if: :account_id
   validates :product_id, presence: true
   validates :order_status_id, presence: true
   validates :quantity, numericality: { greater_than: 0, only_integer: true }
@@ -16,6 +18,7 @@ class AddToOrderForm
   def initialize(original_order)
     @original_order = original_order
     @current_facility = original_order.facility
+    @account_id = original_order.account_id
     @quantity = 1
     @duration = 1
   end
@@ -53,6 +56,17 @@ class AddToOrderForm
     @product ||= current_facility.products.find(product_id)
   end
 
+  # Will be blank if the account_id is suspended or expired. That should only happen
+  # if someone is hacking the form since they should be excluded from being available
+  # in the dropdown.
+  def account
+    @account ||= available_accounts.to_a.find { |a| a.id.to_s == account_id.to_s }
+  end
+
+  def available_accounts
+    AvailableAccountsFinder.new(original_order.user, current_facility)
+  end
+
   protected
 
   def translation_scope
@@ -81,6 +95,7 @@ class AddToOrderForm
       note: note.presence,
       duration: duration,
       created_by: created_by.id,
+      account: account,
     }
   end
 
@@ -96,7 +111,7 @@ class AddToOrderForm
                      Order.create!(
                        merge_with_order_id: original_order.id,
                        facility_id: original_order.facility_id,
-                       account_id: original_order.account_id,
+                       account_id: account_id,
                        user_id: original_order.user_id,
                        created_by: created_by.id,
                      )
