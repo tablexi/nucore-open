@@ -34,6 +34,8 @@ en:
       add: "Add %{model}"
       add_to: "Add To %{model}"
       edit: "Edit %{model}"
+      turn_all_relays_on: Turn All Relays ON
+      turn_all_relays_off: Turn All Relays OFF
       tabnav_users:
         details: "Details"
         orders: "Orders"

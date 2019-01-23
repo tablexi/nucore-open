@@ -12,7 +12,10 @@
 %p= text("views.admin.#{plural_object_name}.index.description")
 
 - if current_user.manager_of?(current_facility)
-  %p= link_to text("admin.shared.add", model: product_class.model_name.human), [:new, current_facility, singular_object_name], class: "btn-add"
+  %p
+    = link_to text("admin.shared.add", model: product_class.model_name.human), [:new, current_facility, singular_object_name], class: "btn-add"
+    = link_to text("admin.shared.turn_all_relays_on"), facility_relays_activation_path(current_facility), method: :post, class: "btn btn-primary"
+    = link_to text("admin.shared.turn_all_relays_off"), facility_relays_activation_path(current_facility), method: :delete, class: "btn btn-danger"
 
 - if @products.empty?
   %p.notice= text(".none.#{active_key}", models: product_class.model_name.human(count: 2).downcase)

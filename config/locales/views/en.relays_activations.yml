@@ -1,0 +1,5 @@
+en:
+  controllers:
+    relays_activations:
+      turned_on: Turned on!!!
+      turned_off: Turned off!!!
