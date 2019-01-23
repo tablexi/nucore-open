@@ -70,7 +70,7 @@ RSpec.describe ProductForCart do
         allow(user).to receive(:can_override_restrictions?).and_return(false)
       end
 
-      context "and training requests are turned on", feature_setting: { training_requests: true } do
+      context "and training requests are turned on", feature_setting: { training_requests: true, reload_routes: true } do
         context "and the user has already submitted a training request" do
           before(:each) { allow(TrainingRequest).to receive(:submitted?).and_return(true) }
 
@@ -95,7 +95,7 @@ RSpec.describe ProductForCart do
         end
       end
 
-      context "and training requests are turned off", feature_setting: { training_requests: false } do
+      context "and training requests are turned off", feature_setting: { training_requests: false, reload_routes: true } do
         it "sets error_message explaining that the product requires approval" do
           product_for_cart.purchasable_by?(user, user)
           expect(product_for_cart.error_message).to match(/requires approval to purchase/)

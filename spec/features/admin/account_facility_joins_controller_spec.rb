@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe AccountFacilityJoinsController do
+RSpec.describe AccountFacilityJoinsController, feature_setting: { edit_accounts: true, multi_facility_accounts: true, reload_routes: true } do
 
   # Not all implementations have facility-specific account types, so build our own for this
   # set of specs.
