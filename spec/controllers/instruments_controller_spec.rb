@@ -545,17 +545,6 @@ RSpec.describe InstrumentsController do
 
     end
 
-    context "status" do
-
-      before :each do
-        @method = :get
-        @action = :instrument_status
-      end
-
-      it_should_allow_operators_only
-
-    end
-
     context "instrument statuses" do
       before :each do
         # So it doesn't try to actually connect

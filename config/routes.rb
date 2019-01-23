@@ -79,7 +79,6 @@ Nucore::Application.routes.draw do
       facility_product_routing_concern
       get "public_schedule", to: "instruments#public_schedule"
       get "schedule",        to: "instruments#schedule"
-      get "status",          to: "instruments#instrument_status"
       get "switch",          to: "instruments#switch"
       resources :issues, only: [:new, :create], controller: "instrument_issues"
 

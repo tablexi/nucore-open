@@ -55,22 +55,6 @@ class InstrumentsController < ProductsCommonController
     end
   end
 
-  # GET /facilities/:facility_id/instruments/:instrument_id/status
-  def instrument_status
-    begin
-      @relay = @product.relay
-      status = SettingsHelper.relays_enabled_for_admin? ? instrument.relay.get_status : true
-      @status = @product.instrument_statuses.create!(is_on: status)
-    rescue => e
-      logger.error e
-      raise ActiveRecord::RecordNotFound
-    end
-    respond_to do |format|
-      format.html  { render layout: false }
-      format.json  { render json: @status }
-    end
-  end
-
   def instrument_statuses
     @instrument_statuses = []
     current_facility.instruments.order(:id).includes(:relay).each do |instrument|
@@ -117,10 +101,7 @@ class InstrumentsController < ProductsCommonController
       @status = InstrumentStatus.new(instrument: @product, error_message: e.message)
       # raise ActiveRecord::RecordNotFound
     end
-    respond_to do |format|
-      format.html { render action: :instrument_status, layout: false }
-      format.json { render json: @status }
-    end
+    render json: @status
   end
 
 end
