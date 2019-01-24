@@ -42,7 +42,7 @@ FactoryBot.define do
 
   factory :timed_service_price_policy do
     charge_for { "usage" }
-    usage_rate { 15 / 60.0 }
+    usage_rate { 60.0 } # $1/minute
     usage_subsidy { 0 }
     minimum_cost { 1 }
     can_purchase { true }
