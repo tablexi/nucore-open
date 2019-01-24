@@ -14,8 +14,9 @@
 - if current_user.manager_of?(current_facility)
   %p
     = link_to text("admin.shared.add", model: product_class.model_name.human), [:new, current_facility, singular_object_name], class: "btn-add"
-    = link_to text("admin.shared.turn_all_relays_on"), facility_relays_activation_path(current_facility), method: :post, class: "btn btn-primary"
-    = link_to text("admin.shared.turn_all_relays_off"), facility_relays_activation_path(current_facility), method: :delete, class: "btn btn-danger"
+    - if show_buttons_to_control_all_relays?(@products)
+      = link_to text("admin.shared.turn_all_relays_on"), facility_relays_activation_path(current_facility), method: :post, class: "btn btn-primary", data: { confirm: t("shared.confirm_message") }
+      = link_to text("admin.shared.turn_all_relays_off"), facility_relays_activation_path(current_facility), method: :delete, class: "btn btn-danger", data: { confirm: t("shared.confirm_message") }
 
 - if @products.empty?
   %p.notice= text(".none.#{active_key}", models: product_class.model_name.human(count: 2).downcase)

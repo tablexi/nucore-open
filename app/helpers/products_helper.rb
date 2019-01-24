@@ -44,6 +44,10 @@ module ProductsHelper
     )
   end
 
+  def show_buttons_to_control_all_relays?(products)
+    products.first.is_a?(Instrument) && products.includes(:relay).select(&:has_real_relay?).any?
+  end
+
   private
 
   def public_calendar_options(product)
