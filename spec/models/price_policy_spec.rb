@@ -247,6 +247,12 @@ RSpec.describe PricePolicy do
         expect(note).to be_invalid
         expect(note.errors).to be_added(:note, :too_long, count: 256)
       end
+
+      it "does not require the note for existing records" do
+        price_policy = FactoryBot.create(:item_price_policy, product: @item, price_group: @price_group)
+        price_policy.note = ""
+        expect(price_policy).to be_valid
+      end
     end
 
     context "when the required note feature is disabled", feature_setting: { price_policy_requires_note: false } do
