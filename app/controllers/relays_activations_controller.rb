@@ -7,21 +7,23 @@ class RelaysActivationsController < ApplicationController
   authorize_resource :facility
 
   def create
-    current_facility.instruments.includes(:relay).select(&:has_real_relay?).each do |instrument|
-      instrument.relay.activate
-      instrument.instrument_statuses.create(is_on: true)
-    end
-
+    relays.each(&:activate)
     redirect_to facility_instruments_path(current_facility), flash: { notice: text("turned_on") }
+  rescue NetBooter::Error
+    redirect_to facility_instruments_path(current_facility), flash: { notice: text("connection_error") }
   end
 
   def destroy
-    current_facility.instruments.includes(:relay).select(&:has_real_relay?).each do |instrument|
-      instrument.relay.deactivate
-      instrument.instrument_statuses.create(is_on: false)
-    end
-
+    relays.each(&:deactivate)
     redirect_to facility_instruments_path(current_facility), flash: { notice: text("turned_off") }
+  rescue NetBooter::Error
+    redirect_to facility_instruments_path(current_facility), flash: { notice: text("connection_error") }
+  end
+
+  private
+
+  def relays
+    current_facility.instruments.includes(:relay).select(&:has_real_relay?).map(&:relay)
   end
 
 end

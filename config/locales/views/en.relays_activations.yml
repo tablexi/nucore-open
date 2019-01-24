@@ -1,5 +1,6 @@
 en:
   controllers:
     relays_activations:
-      turned_on: Turned on!!!
-      turned_off: Turned off!!!
+      turned_on: Successfully turned on all relays.
+      turned_off: Successfully turned off all relays.
+      connection_error: There was an error connecting to one or more relays. Please try again.
