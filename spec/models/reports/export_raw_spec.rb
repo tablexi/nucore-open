@@ -157,7 +157,7 @@ RSpec.describe Reports::ExportRaw do
     describe "with a broken reservation" do
       before do
         instrument.price_policies.each { |pp| pp.update(start_date: 3.days.ago, usage_rate: 60) }
-        order_detail.update_attributes!(account: account)
+        order_detail.reassign_price && order_detail.save!
         reservation.really_destroy!
       end
 
