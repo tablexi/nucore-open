@@ -52,7 +52,7 @@ def place_product_order(ordered_by, facility, product, account = nil, purchased 
 
   FactoryBot.create(:user_price_group_member, user: ordered_by, price_group: @price_group)
   create(:account_price_group_member, account: account, price_group: @price_group) if account.present?
-  @item_pp = product.send(:"#{product.class.name.downcase}_price_policies").create(FactoryBot.attributes_for(:"#{product.class.name.downcase}_price_policy", price_group_id: @price_group.id))
+  @item_pp = product.send(:"#{product.class.name.underscore.downcase}_price_policies").create(FactoryBot.attributes_for(:"#{product.class.name.underscore.downcase}_price_policy", price_group_id: @price_group.id))
   @item_pp.reload.restrict_purchase = false
   od_attrs = { product_id: product.id }
   od_attrs[:account_id] = account.id if account
