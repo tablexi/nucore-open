@@ -10,14 +10,14 @@ class RelaysActivationsController < ApplicationController
     relays.each(&:activate)
     redirect_to facility_instruments_path(current_facility), flash: { notice: text("turned_on") }
   rescue NetBooter::Error
-    redirect_to facility_instruments_path(current_facility), flash: { notice: text("connection_error") }
+    redirect_to facility_instruments_path(current_facility), flash: { alert: text("connection_error") }
   end
 
   def destroy
     relays.each(&:deactivate)
     redirect_to facility_instruments_path(current_facility), flash: { notice: text("turned_off") }
   rescue NetBooter::Error
-    redirect_to facility_instruments_path(current_facility), flash: { notice: text("connection_error") }
+    redirect_to facility_instruments_path(current_facility), flash: { alert: text("connection_error") }
   end
 
   private
