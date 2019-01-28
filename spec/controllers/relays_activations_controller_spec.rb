@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe RelaysActivationsController do
-  let(:user) { FactoryBot.create(:user, :administrator) }
   let(:instrument) { FactoryBot.create(:setup_instrument) }
+  let(:user) { FactoryBot.create(:user, :facility_director, facility: instrument.facility) }
   let(:relay) { build_stubbed(:relay) }
 
   before do
