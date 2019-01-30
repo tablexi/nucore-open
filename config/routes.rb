@@ -99,6 +99,8 @@ Nucore::Application.routes.draw do
       resource :alert, controller: "instrument_alerts", only: [:new, :create, :destroy]
     end
 
+    resource :relays_activation, only: [:create, :destroy]
+
     resources :services do
       facility_product_routing_concern
       resources :price_policies, controller: "service_price_policies", except: [:show]
