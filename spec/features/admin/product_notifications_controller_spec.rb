@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe ProductNotificationsController, feature_setting: { training_requests: true } do
+RSpec.describe ProductNotificationsController, feature_setting: { training_requests: true, reload_routes: true } do
   let(:facility) { create(:setup_facility) }
   let!(:instrument) { create(:instrument, facility: facility) }
 
