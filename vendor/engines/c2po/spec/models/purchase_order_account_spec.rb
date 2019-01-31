@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe PurchaseOrderAccount do
+  include TextHelpers
+
   let(:facility) { FactoryBot.create(:facility) }
   subject(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
 
@@ -24,4 +26,11 @@ RSpec.describe PurchaseOrderAccount do
   it "has the facility association" do
     expect(account.facility).to eq facility
   end
+
+  it "rolls the facilities up in the description of there are more than one" do
+    facility2 = FactoryBot.create(:facility)
+    account.facilities << facility2
+    expect(account.to_s).to include "2 #{Facility.model_name.human.pluralize}"
+  end
+
 end

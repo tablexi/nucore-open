@@ -32,6 +32,9 @@ en:
     credit_card: Credit Card
     po: Purchase Order
 
+  purchase_order_account:
+    shared_facility_description: Shared (%{count} %{facilities})
+
   activerecord:
     models:
       credit_card_account:
