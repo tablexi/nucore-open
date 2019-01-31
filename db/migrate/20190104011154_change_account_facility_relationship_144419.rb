@@ -3,8 +3,8 @@
 class ChangeAccountFacilityRelationship144419 < ActiveRecord::Migration[5.0]
   def up
     create_table :account_facility_joins do |t|
-      t.references :facility, index: true, null: false, foreign_key: true
-      t.references :account, index: true, null: false, foreign_key: true
+      t.references :facility, index: { name: "idx_afj_on_facility_id" }, null: false, foreign_key: true
+      t.references :account, index: { name: "idx_afj_on_account_id" }, null: false, foreign_key: true
       t.datetime :deleted_at
       t.timestamps
     end
