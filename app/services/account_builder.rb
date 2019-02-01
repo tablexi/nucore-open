@@ -176,6 +176,7 @@ class AccountBuilder
   # Set the facility if the account type is scoped to facility.
   def set_facility
     return unless account.per_facility? && facility&.id
+    account.facility_id = facility.id
     account.account_facility_joins.build(facility: facility)
     account
   end
