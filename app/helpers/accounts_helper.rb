@@ -17,6 +17,10 @@ module AccountsHelper
     end
   end
 
+  def show_account_facilities_tab?(ability, account)
+    SettingsHelper.feature_on?(:multi_facility_accounts) && account.per_facility? && ability.can?(:edit, AccountFacilityJoinsForm.new(account: account))
+  end
+
   private
 
   def available_accounts_array

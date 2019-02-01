@@ -1377,7 +1377,7 @@ RSpec.describe ReservationsController do
     end
   end
 
-  describe "timeline as guest", feature_setting: { daily_view: true } do
+  describe "timeline as guest", feature_setting: { daily_view: true, reload_routes: true } do
     let!(:hidden_instrument) do
       create(
         :instrument,

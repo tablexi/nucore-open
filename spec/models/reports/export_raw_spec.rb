@@ -95,7 +95,51 @@ RSpec.describe Reports::ExportRaw do
         expect(report.to_csv.split("\n").length).to eq(2)
       end
     end
+  end
 
+  describe "for a timed service" do
+    let(:timed_service) { FactoryBot.create(:setup_timed_service, facility: facility) }
+    let(:order_detail) do
+      place_product_order(user, facility, timed_service, account).tap do |od|
+        od.complete!
+        od.manually_priced!
+        od.update_attributes!(
+          quantity: 60,
+          actual_cost: BigDecimal("199.99"),
+          actual_subsidy: BigDecimal("29.99"),
+          estimated_cost: BigDecimal("39.99"),
+          estimated_subsidy: BigDecimal("29.99"),
+          price_change_reason: "this is a reason",
+          assigned_user: user,
+        )
+      end
+    end
+
+    it "populates the report" do
+      expect(report).to have_column_values(
+        Facility.model_name.human => "My Facility (MF)",
+        "Order" => order_detail.to_s,
+        "Ordered By" => user.username,
+        "First Name" => user.first_name,
+        "Last Name" => user.last_name,
+        "Quantity" => "60",
+        "Estimated Cost" => "$39.99",
+        "Estimated Subsidy" => "$29.99",
+        "Estimated Total" => "$10.00",
+        "Calculated Cost" => "$60.00", # default is $1/minute
+        "Calculated Subsidy" => "$0.00",
+        "Calculated Total" => "$60.00",
+        "Actual Cost" => "$199.99",
+        "Actual Subsidy" => "$29.99",
+        "Actual Total" => "$170.00",
+        "Difference Cost" => "$139.99",
+        "Difference Subsidy" => "$29.99",
+        "Difference Total" => "$110.00",
+        "Charge For" => "Usage",
+        "Assigned Staff" => user.full_name,
+        "Bundle" => "",
+      )
+    end
   end
 
   describe "with a reservation", :time_travel do
@@ -157,7 +201,7 @@ RSpec.describe Reports::ExportRaw do
     describe "with a broken reservation" do
       before do
         instrument.price_policies.each { |pp| pp.update(start_date: 3.days.ago, usage_rate: 60) }
-        order_detail.update_attributes!(account: account)
+        order_detail.reassign_price && order_detail.save!
         reservation.really_destroy!
       end
 

@@ -9,13 +9,24 @@ class ChangeAccountFacilityRelationship144419 < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    execute <<~SQL
-      INSERT INTO account_facility_joins
-      (account_id, facility_id, created_at, updated_at)
-      SELECT id, facility_id, created_at, updated_at
-      FROM accounts
-      WHERE facility_id IS NOT NULL
-    SQL
+    if NUCore::Database.oracle?
+      execute <<~SQL
+        INSERT INTO account_facility_joins (id, account_id, facility_id, created_at, updated_at)
+        SELECT ACCOUNT_FACILITY_JOINS_SEQ.NEXTVAL, account_id, facility_id, created_at, updated_at
+        FROM (
+          SELECT id account_id, facility_id, created_at, updated_at
+          FROM accounts
+          WHERE facility_id IS NOT NULL
+        )
+      SQL
+    else
+      execute <<~SQL
+        INSERT INTO account_facility_joins (account_id, facility_id, created_at, updated_at)
+        SELECT id, facility_id, created_at, updated_at
+        FROM accounts
+        WHERE facility_id IS NOT NULL
+      SQL
+    end
   end
 
   def down
