@@ -9,9 +9,23 @@ class PurchaseOrderAccount < Account
 
   def to_s(with_owner = false, flag_suspended = true)
     desc = super(with_owner, false)
-    desc += " / #{facility.name}" if facility
+    desc += " / #{facility_description}" if facilities.present?
     desc += " (#{display_status.upcase})" if flag_suspended && suspended?
     desc
+  end
+
+  private
+
+  def facility_description
+    if facilities.length > 1
+      I18n.t(
+        "purchase_order_account.shared_facility_description",
+        count: facilities.length,
+        facilities: Facility.model_name.human(count: facilities.length)
+      )
+    else
+      facilities.first.name
+    end
   end
 
 end
