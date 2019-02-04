@@ -388,6 +388,15 @@ textarea.wide {
   margin-right: 2.5em;
 }
 
+.inline-form-controls {
+  display: flex;
+  flex-wrap: wrap;
+
+  .control-group {
+    margin-right: 3rem;
+  }
+}
+
 .productListLine {
   display: flex;
 }
