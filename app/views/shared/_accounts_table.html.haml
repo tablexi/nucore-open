@@ -7,5 +7,4 @@
     - @accounts.each do |account|
       %tr
         %td= payment_source_link_or_text(account)
-        %td{style: "padding-left: 50px"}
-          = account.facility || "<i>All</i>".html_safe
+        %td= account.per_facility? ? account.facilities.join(", ") :  content_tag(:i, t("shared.all"))
