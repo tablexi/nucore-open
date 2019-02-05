@@ -20,6 +20,7 @@ class RemoveFacilityIdFromAccounts < ActiveRecord::Migration[5.0]
         SELECT facility_id
         FROM account_facility_joins
         WHERE accounts.id = account_facility_joins.account_id
+        ORDER BY account_facility_joins.created_at
         LIMIT 1
       )
     SQL
