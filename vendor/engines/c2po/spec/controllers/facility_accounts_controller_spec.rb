@@ -18,6 +18,41 @@ RSpec.describe FacilityAccountsController do
     @authable = facility # controller_spec_helper requires @authable to be set
   end
 
+  context "GET #edit" do
+    let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
+
+    before do
+      @method = :get
+      @action = :edit
+
+      @params = {
+        facility_id: facility.url_name,
+        id: account.id,
+      }
+    end
+
+    it_should_allow :director, "to view the edit form" do
+      expect(assigns(:account)).to eq(account)
+      expect(response).to be_success
+      expect(response).to render_template("edit")
+    end
+
+    context "but it belongs to another facility" do
+      let(:other_facility) { FactoryBot.create(:facility, name: "other") }
+      let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: other_facility) }
+
+      it_should_deny :director
+
+      context "even if I am also a director of that facility" do
+        before { UserRole.grant(@director, UserRole::FACILITY_DIRECTOR, other_facility) }
+
+        it_should_deny :director
+      end
+    end
+
+
+  end
+
   context "PUT #update" do
     context "with affiliate" do
       let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
