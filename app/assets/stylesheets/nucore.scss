@@ -379,6 +379,13 @@ textarea.wide {
   position: static;
 }
 
+/* Bootstrap turns the text options in the dropdown red in Firefox. This behavior
+ * is fine for regular inputs, but looks very strange in selects.
+ */
+select:focus:invalid {
+  color: inherit;
+}
+
 .checkboxControl {
   display: flex;
   min-height: 6em;
@@ -386,6 +393,15 @@ textarea.wide {
 
 .checkboxControl__checkbox {
   margin-right: 2.5em;
+}
+
+.inline-form-controls {
+  display: flex;
+  flex-wrap: wrap;
+
+  .control-group {
+    margin-right: 3rem;
+  }
 }
 
 .productListLine {
