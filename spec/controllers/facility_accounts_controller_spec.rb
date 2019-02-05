@@ -62,6 +62,23 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
       is_expected.to render_template("show")
     end
 
+    context "the account was created in another facility" do
+      let(:other_facility) { create(:facility, name: "other_facility") }
+      let(:other_account) { create(:account, :with_account_owner, description: "Other Account", facility: other_facility) }
+
+      before do
+        other_account.facilities = [facility, other_facility]
+        allow(other_account).to receive(:global?).and_return(false)
+        @params[:id] = other_account.id
+      end
+
+      it_should_allow_all facility_managers do
+        expect(response).to be_success
+        expect(assigns(:account)).to eq(other_account)
+        is_expected.to render_template("show")
+      end
+    end
+
     context "when the multi_facility_accounts feature is turned off", feature_setting: { multi_facility_accounts: false, reload_routes: true } do
       let(:purchase_order) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
 

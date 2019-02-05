@@ -6,7 +6,6 @@ require "controller_spec_helper"
 RSpec.describe FacilityAccountsController do
   render_views
 
-  let(:account) { @account }
   let(:facility) { facility_account.facility }
   let(:facility_account) { FactoryBot.create(:facility_account) }
   let(:item) { FactoryBot.create(:item, facility_account: facility_account) }
@@ -17,26 +16,54 @@ RSpec.describe FacilityAccountsController do
 
   before do
     @authable = facility # controller_spec_helper requires @authable to be set
-    @account = FactoryBot.create(:credit_card_account, account_users_attributes: [FactoryBot.attributes_for(:account_user, user: account_owner)])
-    grant_role(purchaser, @account)
-    grant_role(account_owner, @account)
-    order = FactoryBot.create(:order, user: purchaser, created_by: purchaser.id, facility: facility)
-    FactoryBot.create(:order_detail, product: item, order: order, account: @account)
+  end
+
+  context "GET #edit" do
+    let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
+
+    before do
+      @method = :get
+      @action = :edit
+
+      @params = {
+        facility_id: facility.url_name,
+        id: account.id,
+      }
+    end
+
+    it_should_allow :director, "to view the edit form" do
+      expect(assigns(:account)).to eq(account)
+      expect(response).to be_success
+      expect(response).to render_template("edit")
+    end
+
+    context "but it belongs to another facility" do
+      let(:other_facility) { FactoryBot.create(:facility, name: "other") }
+      let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: other_facility) }
+
+      it_should_deny :director
+
+      context "even if I am also a director of that facility" do
+        before { UserRole.grant(@director, UserRole::FACILITY_DIRECTOR, other_facility) }
+
+        it_should_deny :director
+      end
+    end
+
+
   end
 
   context "PUT #update" do
     context "with affiliate" do
-      let(:creator) { FactoryBot.create(:user) }
+      let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
 
       before do
         @method = :put
         @action = :update
 
-        @account = FactoryBot.create(:purchase_order_account, :with_account_owner, owner: creator)
-
         @params = {
           facility_id: facility.url_name,
-          id: @account.id,
+          id: account.id,
           account_type: "PurchaseOrderAccount",
           purchase_order_account: {
             affiliate_id: Affiliate.OTHER.id.to_s,
@@ -46,7 +73,7 @@ RSpec.describe FacilityAccountsController do
       end
 
       it_should_allow :director, "to change affiliate to other" do
-        expect(assigns(:account)).to eq(@account)
+        expect(assigns(:account)).to eq(account)
         expect(assigns(:account).affiliate).to be_other
         expect(assigns(:account).affiliate_other).to eq("Jesus Charisma")
         is_expected.to set_flash
@@ -54,14 +81,14 @@ RSpec.describe FacilityAccountsController do
       end
 
       context "not other" do
+        let(:affiliate) { Affiliate.create!(name: "Rod Blagojevich") }
         before do
-          @affiliate = Affiliate.create!(name: "Rod Blagojevich")
-          @params[:purchase_order_account][:affiliate_id] = @affiliate.id
+          @params[:purchase_order_account][:affiliate_id] = affiliate.id
         end
 
         it_should_allow :director do
-          expect(assigns(:account)).to eq(@account)
-          expect(assigns(:account).affiliate).to eq(@affiliate)
+          expect(assigns(:account)).to eq(account)
+          expect(assigns(:account).affiliate).to eq(affiliate)
           expect(assigns(:account).affiliate_other).to be_nil
           is_expected.to set_flash
           assert_redirected_to facility_account_url
@@ -148,7 +175,6 @@ RSpec.describe FacilityAccountsController do
       @acct_attrs.delete :expires_at
 
       @params = {
-        id: @account.id,
         facility_id: facility.url_name,
         owner_user_id: account_owner.id,
         purchase_order_account: @acct_attrs,
@@ -168,8 +194,8 @@ RSpec.describe FacilityAccountsController do
       it_should_allow :director do
         expect(assigns(:account).expires_at)
           .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-12-05").end_of_day)
-        expect(assigns(:account).reload.facility).to eq(facility)
         expect(assigns(:account).facility_id).to eq(facility.id)
+        expect(assigns(:account).facilities).to eq([facility])
         expect(assigns(:account)).to be_kind_of PurchaseOrderAccount
         expect(assigns(:account).affiliate)
           .to eq(Affiliate.find(@acct_attrs[:affiliate_id]))
@@ -194,8 +220,8 @@ RSpec.describe FacilityAccountsController do
         expect(assigns(:account)).to be_persisted
         expect(assigns(:account).expires_at)
           .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-5-1").end_of_month.end_of_day)
+        expect(assigns(:account).facilities).to eq([facility])
         expect(assigns(:account).facility_id).to eq(facility.id)
-        expect(assigns(:account).reload.facility).to eq(facility)
       end
     end
   end
