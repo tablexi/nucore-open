@@ -95,6 +95,7 @@ en:
     training_requests: Training Requests
 
   shared:
+    all: All
     cancel: Cancel
     create: Create
     confirm_message: Are you sure?
