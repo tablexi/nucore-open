@@ -499,7 +499,7 @@ body nav .navbar-inner .container .nav, .nav-tabs{
   min-height: 40px;
 }
 
-.manage-mode nav .navbar-inner .container .nav,
+.manage-mode nav .navbar-inner .container .nav, 
 .manage-mode .nav-tabs {
   border-color: $manageColorDark;
 }
@@ -521,16 +521,16 @@ body nav .navbar-inner .container .nav, .nav-tabs{
   box-shadow: none;
 }
 
-nav ul.nav > li.active, nav  >
-li.active, nav ul.nav > li:hover >
+nav ul.nav > li.active, nav  > 
+li.active, nav ul.nav > li:hover > 
 li {
   border:none;
   margin-top: 0;
   margin-bottom: -1px;
 }
 
-nav ul.nav > li.active, nav  >
-li.active, nav ul.nav > li:hover, nav >
+nav ul.nav > li.active, nav  > 
+li.active, nav ul.nav > li:hover, nav > 
 li:hover {
   border: none;
   margin-top: 0;
@@ -683,7 +683,7 @@ td, tr {
   th {
     background-color: $tableRowOdd;
   }
-}
+} 
 
 .table {
   td {
@@ -748,7 +748,7 @@ thead {
   .btn:hover, .btn-add:hover {
     background-color: rgba(0, 0, 0, 0.05);
     color: $manageColorDark;
-  }
+  } 
 
   .btn-primary:hover {
     background-color: $manageColorDark;
@@ -862,29 +862,29 @@ select {
   background-repeat: no-repeat;
 }
 
-textarea, input[type="text"],
-input[type="password"], input[type="datetime"],
-input[type="datetime-local"], input[type="date"],
-input[type="month"], input[type="time"],
-input[type="week"], input[type="number"],
-input[type="email"], input[type="url"],
-input[type="search"], input[type="tel"],
+textarea, input[type="text"], 
+input[type="password"], input[type="datetime"], 
+input[type="datetime-local"], input[type="date"], 
+input[type="month"], input[type="time"], 
+input[type="week"], input[type="number"], 
+input[type="email"], input[type="url"], 
+input[type="search"], input[type="tel"], 
 input[type="color"], .uneditable-input {
   border-radius: 8px;
   padding: 2px 8px;
 }
 
-.input-prepend .add-on:first-child,
-.input-prepend .btn:first-child,
+.input-prepend .add-on:first-child, 
+.input-prepend .btn:first-child, 
 .input-prepend .btn-add:first-child {
     border-radius: 8px 0 0 8px;
 }
 
-.input-append input,
-.input-append select,
-.input-append .uneditable-input,
-.input-prepend input,
-.input-prepend select,
+.input-append input, 
+.input-append select, 
+.input-append .uneditable-input, 
+.input-prepend input, 
+.input-prepend select, 
 .input-prepend .uneditable-input {
   border-radius: 0 8px 8px 0;
 }
