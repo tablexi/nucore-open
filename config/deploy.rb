@@ -10,7 +10,7 @@ set :repo_url, "git@github.com:SquaredLabs/nucore-uconn.git"
 set :bundle_without, "#{fetch(:bundle_without)} oracle"
 
 set :linked_files, fetch(:linked_files, []).concat(
-  %w(config/database.yml config/secrets.yml config/eye.yml.erb),
+  %w(config/database.yml config/secrets.yml config/eye.yml.erb config/settings.local.yml ),
 )
 set :linked_dirs, fetch(:linked_dirs, []).concat(
   %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/files),
