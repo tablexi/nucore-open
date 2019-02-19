@@ -9,10 +9,10 @@ module TransactionSearch
     # to SearchForm) that `register` handles.
     cattr_accessor(:default_searchers) do
       [
-        TransactionSearch::FacilitySearcher,
         TransactionSearch::AccountSearcher,
         TransactionSearch::ProductSearcher,
         TransactionSearch::AccountOwnerSearcher,
+        TransactionSearch::OrderedForSearcher,
         TransactionSearch::OrderStatusSearcher,
         TransactionSearch::DateRangeSearcher,
       ]
