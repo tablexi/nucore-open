@@ -16,7 +16,9 @@ en:
           training_request_contacts: Comma separated list of email addresses to be notified when a training request is placed.
           cancellation_email_recipients: |
             Comma separated list of email addresses to be notified when a reservation is canceled.
-
+          issue_report_recipients: |
+            Comma separated list of email addresses to be notified when an issue is reported. Facility Directors,
+            Facility Administrators, and Training Request Recipients will receive each issue report if not designated.
 
   controllers:
     product_notifications:

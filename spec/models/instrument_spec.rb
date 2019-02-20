@@ -861,4 +861,18 @@ RSpec.describe Instrument do
       expect(subject.has_alert?).to be false
     end
   end
+
+  describe "issue_report_recipients" do
+    before do
+      instrument.issue_report_recipients = "test1@example.com, test2@example.com"
+    end
+
+    it "treats it as a string" do
+      expect(instrument.issue_report_recipients).to eq("test1@example.com, test2@example.com")
+    end
+
+    it "can interpret it as an array" do
+      expect(instrument.issue_report_recipients.to_a).to eq(["test1@example.com", "test2@example.com"])
+    end
+  end
 end
