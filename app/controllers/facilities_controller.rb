@@ -123,7 +123,8 @@ class FacilitiesController < ApplicationController
       },
     )
 
-    @search = TransactionSearch::Searcher.new.search(order_details, @search_form)
+    searchers = TransactionSearch::Searcher.billing_searchers(current_facility.cross_facility?)
+    @search = TransactionSearch::Searcher.search(searchers, order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 
@@ -138,7 +139,8 @@ class FacilitiesController < ApplicationController
     order_details = OrderDetail.in_dispute.for_facility(current_facility)
 
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    @search = TransactionSearch::Searcher.search(order_details, @search_form)
+    searchers = TransactionSearch::Searcher.billing_searchers(current_facility.cross_facility?)
+    @search = TransactionSearch::Searcher.search(searchers, order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.reorder(:dispute_at).paginate(page: params[:page])
   end
@@ -146,7 +148,8 @@ class FacilitiesController < ApplicationController
   # GET /facilities/:facility_id/movable_transactions
   def movable_transactions
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    @search = TransactionSearch::Searcher.new.search(
+    @search = TransactionSearch::Searcher.search(
+      TransactionSearch::Searcher.billing_searchers(current_facility.cross_facility?),
       OrderDetail.all_movable.for_facility(current_facility),
       @search_form,
     )

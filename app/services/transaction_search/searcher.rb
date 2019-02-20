@@ -26,22 +26,20 @@ module TransactionSearch
       ]
     end
 
-    # Shorthand method if you only want the default searchers
-    def self.search(order_details, params)
-      new.search(order_details, params)
+    # Searchers used on the billing page
+    def self.billing_searchers(include_facilities = false)
+      include_facilities ? default_searchers.dup.unshift(TransactionSearch::FacilitySearcher) : default_searchers
     end
 
-    # Expects an array of `TransactionSearch::BaseSearcher`s
-    def initialize(*searchers)
-      searchers = self.class.default_searchers if searchers.blank?
-
-      @searchers = Array(searchers)
+    # Shorthand method
+    def self.search(searchers, order_details, params)
+      new.search(searchers, order_details, params)
     end
 
-    def search(order_details, params)
+    def search(searchers, order_details, params)
       order_details = add_global_optimizations(order_details)
 
-      @searchers.reduce(Results.new(order_details)) do |results, searcher_class|
+      searchers.reduce(Results.new(order_details)) do |results, searcher_class|
         searcher = searcher_class.new(results.order_details)
 
         search_params = params[searcher_class.key.to_sym]

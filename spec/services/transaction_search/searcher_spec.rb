@@ -9,7 +9,7 @@ RSpec.describe TransactionSearch::Searcher, type: :service do
     let(:order) { create(:purchased_order, product: item) }
     let(:order_detail) { order.order_details.first }
     let(:account) { order.account }
-    let(:searcher) { described_class.new(TransactionSearch::AccountSearcher, TransactionSearch::DateRangeSearcher) }
+    let(:searchers) { [TransactionSearch::AccountSearcher, TransactionSearch::DateRangeSearcher] }
     let(:scope) { OrderDetail.all.joins(:order) }
     before do
       order_detail.to_complete!
@@ -17,23 +17,23 @@ RSpec.describe TransactionSearch::Searcher, type: :service do
     end
 
     it "can find the order detail with empty params" do
-      result = searcher.search(scope, {})
+      result = described_class.search(searchers, scope, {})
       expect(result.order_details).to include(order_detail)
     end
 
     describe "account searching" do
       it "can search by the account" do
-        result = searcher.search(scope, accounts: [account.id])
+        result = described_class.search(searchers, scope, accounts: [account.id])
         expect(result.order_details).to include(order_detail)
       end
 
       it "can search by the account with a blank" do
-        result = searcher.search(scope, accounts: ["", account.id])
+        result = described_class.search(searchers, scope, accounts: ["", account.id])
         expect(result.order_details).to include(order_detail)
       end
 
       it "does not find it with a different account" do
-        result = searcher.search(scope, accounts: [account.id + 1])
+        result = described_class.search(searchers, scope, accounts: [account.id + 1])
         expect(result.order_details).to be_empty
       end
     end
@@ -44,7 +44,7 @@ RSpec.describe TransactionSearch::Searcher, type: :service do
           field: "ordered_at",
           start: I18n.l(5.days.ago, format: :usa),
         }
-        result = searcher.search(scope, date_ranges: params)
+        result = described_class.search(searchers, scope, date_ranges: params)
         expect(result.order_details).to include(order_detail)
       end
 
@@ -53,7 +53,7 @@ RSpec.describe TransactionSearch::Searcher, type: :service do
           field: "ordered_at",
           start: I18n.l(1.day.ago.to_date, format: :usa),
         }
-        result = searcher.search(scope, date_ranges: params)
+        result = described_class.search(searchers, scope, date_ranges: params)
         expect(result.order_details).to be_empty
       end
 
@@ -63,7 +63,7 @@ RSpec.describe TransactionSearch::Searcher, type: :service do
           start: I18n.l(5.days.ago.to_date, format: :usa),
           end: I18n.l(4.days.ago.to_date, format: :usa),
         }
-        result = searcher.search(scope, date_ranges: params)
+        result = described_class.search(searchers, scope, date_ranges: params)
         expect(result.order_details).to be_empty
       end
 
@@ -71,7 +71,7 @@ RSpec.describe TransactionSearch::Searcher, type: :service do
         params = {
           field: "journal_or_statement_date",
         }
-        result = searcher.search(scope, date_ranges: params)
+        result = described_class.search(searchers, scope, date_ranges: params)
         expect(result.order_details).to be_empty
       end
     end
