@@ -33,8 +33,7 @@ class FacilityJournalsController < ApplicationController
 
     order_details = OrderDetail.for_facility(current_facility).need_journal
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    searchers = TransactionSearch::Searcher.billing_searchers(current_facility.cross_facility?)
-    @search = TransactionSearch::Searcher.search(searchers, order_details, @search_form)
+    @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 

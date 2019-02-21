@@ -36,7 +36,7 @@ class TransactionsController < ApplicationController
       },
     )
 
-    @search = TransactionSearch::Searcher.search(searchers, order_details, @search_form)
+    @search = TransactionSearch::Searcher.new(searchers).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 
@@ -51,7 +51,7 @@ class TransactionsController < ApplicationController
     order_details = current_user.administered_order_details.in_review
 
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    @search = TransactionSearch::Searcher.search(searchers, order_details, @search_form)
+    @search = TransactionSearch::Searcher.new(searchers).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 

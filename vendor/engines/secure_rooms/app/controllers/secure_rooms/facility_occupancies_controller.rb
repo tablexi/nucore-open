@@ -27,7 +27,7 @@ module SecureRooms
       order_details = new_or_in_process_orders.joins(:order)
 
       @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at" })
-      @search = TransactionSearch::Searcher.search([TransactionSearch::ProductSearcher], order_details, @search_form)
+      @search = TransactionSearch::Searcher.new(TransactionSearch::ProductSearcher).search(order_details, @search_form)
       @order_details = @search.order_details.includes(:order_status).joins_assigned_users.reorder(sort_clause)
 
       respond_to do |format|
