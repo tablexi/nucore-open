@@ -20,6 +20,7 @@ class FacilityAccountsReconciliationController < ApplicationController
                     .includes(:order, :product, :statement)
 
     @search_form = TransactionSearch::SearchForm.new(params[:search])
+
     @search = TransactionSearch::Searcher.new(
       TransactionSearch::AccountSearcher,
       TransactionSearch::AccountOwnerSearcher,

@@ -8,18 +8,6 @@ class TransactionsController < ApplicationController
 
   include OrderDetailsCsvExport
 
-  cattr_accessor(:searchers) do
-    [
-      TransactionSearch::FacilitySearcher,
-      TransactionSearch::AccountSearcher,
-      TransactionSearch::ProductSearcher,
-      TransactionSearch::DateRangeSearcher,
-      TransactionSearch::OrderStatusSearcher,
-      TransactionSearch::AccountOwnerSearcher,
-      TransactionSearch::OrderedForSearcher,
-    ]
-  end
-
   def initialize
     @active_tab = "accounts"
     super
@@ -36,7 +24,13 @@ class TransactionsController < ApplicationController
       },
     )
 
-    @search = TransactionSearch::Searcher.new(searchers).search(order_details, @search_form)
+    @search = TransactionSearch::Searcher.new(TransactionSearch::FacilitySearcher,
+                                              TransactionSearch::AccountSearcher,
+                                              TransactionSearch::ProductSearcher,
+                                              TransactionSearch::DateRangeSearcher,
+                                              TransactionSearch::OrderStatusSearcher,
+                                              TransactionSearch::AccountOwnerSearcher,
+                                              TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 
@@ -51,7 +45,13 @@ class TransactionsController < ApplicationController
     order_details = current_user.administered_order_details.in_review
 
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    @search = TransactionSearch::Searcher.new(searchers).search(order_details, @search_form)
+    @search = TransactionSearch::Searcher.new(TransactionSearch::FacilitySearcher,
+                                              TransactionSearch::AccountSearcher,
+                                              TransactionSearch::ProductSearcher,
+                                              TransactionSearch::DateRangeSearcher,
+                                              TransactionSearch::OrderStatusSearcher,
+                                              TransactionSearch::AccountOwnerSearcher,
+                                              TransactionSearch::OrderedForSearcher).search(order_details, @search_form)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 
