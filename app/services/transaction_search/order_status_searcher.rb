@@ -12,11 +12,7 @@ module TransactionSearch
     end
 
     def search(params)
-      order_details.for_order_statuses(params)
-    end
-
-    def optimized
-      order_details.preload(:order_status)
+      order_details.for_order_statuses(params).preload(:order_status)
     end
 
     def data_attrs(order_status)
