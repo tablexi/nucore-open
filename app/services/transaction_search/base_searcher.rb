@@ -43,11 +43,6 @@ module TransactionSearch
       raise NotImplementedError
     end
 
-    # Include any optimizations to `order_details` such as `includes` or `preload`
-    def optimized
-      order_details
-    end
-
   end
 
 end
