@@ -264,6 +264,7 @@ en:
         training_request_contacts: Training Request Recipients
         order_notification_recipient: Order Notification Recipient
         cancellation_email_recipients: Cancellation Notification Recipients
+        issue_report_recipients: Alternate Issue Report Recipients
       product_accessory:
         scaling_type: Scaling Type
       instrument:

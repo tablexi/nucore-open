@@ -5,6 +5,7 @@ en:
         none_entered: None
         hints:
           already_configured: "%{email} is already configured to receive all order notifications for the !facility_downcase!."
+          issue_report_recipients: Facility Directors, Facility Administrators, and Training Request Recipients will receive each issue report if not designated.
       edit:
         instructions: Leave blank to skip notifications for the event.
         hints:
@@ -16,7 +17,9 @@ en:
           training_request_contacts: Comma separated list of email addresses to be notified when a training request is placed.
           cancellation_email_recipients: |
             Comma separated list of email addresses to be notified when a reservation is canceled.
-
+          issue_report_recipients: |
+            Comma separated list of email addresses to be notified when an issue is reported.
+            !views.product_notifications.show.hints.issue_report_recipients!
 
   controllers:
     product_notifications:

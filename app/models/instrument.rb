@@ -18,6 +18,7 @@ class Instrument < Product
   has_one :alert, dependent: :destroy, class_name: "InstrumentAlert"
 
   email_list_attribute :cancellation_email_recipients
+  email_list_attribute :issue_report_recipients
 
   # Validations
   # --------
