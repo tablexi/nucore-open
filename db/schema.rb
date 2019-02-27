@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190220001838) do
+ActiveRecord::Schema.define(version: 20190227031006) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -477,10 +477,10 @@ ActiveRecord::Schema.define(version: 20190220001838) do
     t.string   "url_name",                      limit: 50,                       null: false
     t.text     "description",                   limit: 65535
     t.integer  "schedule_id"
-    t.boolean  "requires_approval",                                              null: false
+    t.boolean  "requires_approval",                           default: false,    null: false
     t.integer  "initial_order_status_id"
-    t.boolean  "is_archived",                                                    null: false
-    t.boolean  "is_hidden",                                                      null: false
+    t.boolean  "is_archived",                                 default: false,    null: false
+    t.boolean  "is_hidden",                                   default: false,    null: false
     t.datetime "created_at",                                                     null: false
     t.datetime "updated_at",                                                     null: false
     t.integer  "min_reserve_mins"
