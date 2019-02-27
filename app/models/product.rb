@@ -104,14 +104,6 @@ class Product < ApplicationRecord
   end
 
   ## AR Hooks
-  before_validation do
-    self.requires_approval ||= false
-    self.is_archived       ||= false
-    self.is_hidden         ||= false
-
-    # return true so validations will run
-    true
-  end
   after_create :set_default_pricing
 
   def initial_order_status
