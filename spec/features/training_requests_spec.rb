@@ -40,7 +40,6 @@ RSpec.describe "Training Requests" do
     let!(:item) { create(:setup_item, requires_approval: true, allows_training_requests: false, facility: facility) }
 
     it "just has a link if requests are disabled" do
-      pending "to implement"
       visit facility_path(facility.url_name)
       click_link item.name
       expect(page).not_to have_link("Add to cart")
@@ -79,7 +78,6 @@ RSpec.describe "Training Requests" do
     let!(:instrument) { create(:setup_instrument, requires_approval: true, allows_training_requests: false, facility: facility) }
 
     it "just has a link if requests are disabled" do
-      pending "to implement"
       visit facility_path(facility.url_name)
       click_link instrument.name
       expect(page).not_to have_field("Reserve Start")

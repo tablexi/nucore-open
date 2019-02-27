@@ -60,7 +60,7 @@ class ProductForCart
   def check_that_product_can_be_used(acting_user, session_user)
     proc do
       if !product.can_be_used_by?(acting_user) && !(session_user.present? && session_user.can_override_restrictions?(product))
-        if SettingsHelper.feature_on?(:training_requests)
+        if SettingsHelper.feature_on?(:training_requests) && product.allows_training_requests?
           if TrainingRequest.submitted?(session_user, product)
             @error_message = text("models.product_for_cart.already_requested_access", i18n_params)
             @error_path = url_helpers.facility_path(product.facility)
@@ -68,7 +68,7 @@ class ProductForCart
             @error_path = url_helpers.new_facility_product_training_request_path(product.facility, product)
           end
         else
-          @error_message = html(".requires_approval", i18n_params)
+          @error_message = html("requires_approval", i18n_params)
         end
       end
     end

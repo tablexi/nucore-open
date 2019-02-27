@@ -44,7 +44,7 @@ class ProductsCommonController < ApplicationController
     if product_for_cart.error_path
       redirect_to product_for_cart.error_path, notice: product_for_cart.error_message
     else
-      flash.now[:notice] = product_for_cart.error_message if product_for_cart.error_message
+      flash.now[:error] = product_for_cart.error_message if product_for_cart.error_message
       render layout: "application"
     end
   end
