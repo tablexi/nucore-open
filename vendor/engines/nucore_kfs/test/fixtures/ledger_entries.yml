@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  document_numer: 1
+  exported_on: 2019-02-25 14:47:13
+  kfs_status: 1
+  journal_id: 
+
+two:
+  document_numer: 1
+  exported_on: 2019-02-25 14:47:13
+  kfs_status: 1
+  journal_id: 
