@@ -52,15 +52,16 @@ class ProductsCommonController < ApplicationController
   # GET /services/new
   def new
     @product = current_facility_products.new(account: Settings.accounts.product_default)
+    @product_form = EditProductForm.for(@product)
   end
 
   # POST /services
   def create
     @product = current_facility_products.new(resource_params)
     @product.initial_order_status_id = OrderStatus.default_order_status.id
-
-    if @product.save
-      flash[:notice] = "#{@product.class.name} was successfully created."
+    @product_form = EditProductForm.for(@product)
+    if @product_form.save
+      flash[:notice] = "#{@product.model_name.human} was successfully created."
       redirect_to([:manage, current_facility, @product])
     else
       render action: "new"
@@ -69,13 +70,16 @@ class ProductsCommonController < ApplicationController
 
   # GET /facilities/alpha/(items|services|instruments)/1/edit
   def edit
+    @product_form = EditProductForm.for(@product)
   end
 
   # PUT /services/1
   def update
+    @product_form = EditProductForm.for(@product)
+
     respond_to do |format|
-      if @product.update_attributes(resource_params)
-        flash[:notice] = "#{@product.class.name.capitalize} was successfully updated."
+      if @product_form.update(resource_params)
+        flash[:notice] = "#{@product.model_name.human} was successfully updated."
         format.html { redirect_to([:manage, current_facility, @product]) }
       else
         format.html { render action: "edit" }
@@ -95,6 +99,7 @@ class ProductsCommonController < ApplicationController
 
   def manage
     authorize! :view_details, @product
+    @product_form = EditProductForm.for(@product)
     @active_tab = "admin_products"
   end
 
@@ -103,11 +108,11 @@ class ProductsCommonController < ApplicationController
   def resource_params
     params.require(:"#{singular_object_name}").permit(:name, :url_name, :contact_email, :description,
                                                       :facility_account_id, :account, :initial_order_status_id,
-                                                      :requires_approval, :allows_training_requests, :is_archived, :is_hidden,
+                                                      :is_archived, :is_hidden,
                                                       :user_notes_field_mode, :user_notes_label, :show_details,
                                                       :schedule_id, :control_mechanism, :reserve_interval,
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
-                                                      :auto_cancel_mins, :lock_window, :cutoff_hours,
+                                                      :auto_cancel_mins, :lock_window, :cutoff_hours, :access_control,
                                                       relay_attributes: [:ip, :port, :username, :password, :type,
                                                                          :auto_logout, :auto_logout_minutes, :id])
   end

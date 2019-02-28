@@ -6,7 +6,7 @@
   = render "admin/shared/tabnav_product", secondary_tab: "details"
 
 %h2= @product
-= readonly_form_for @product.class.name.underscore, @product do |f|
+= readonly_form_for @product_form.model_name.singular, @product_form do |f|
   = f.input :url_name, input_html: { value: link_to(polymorphic_url([current_facility, @product]), [current_facility, @product]) }
 
   - if SettingsHelper::feature_on? :product_specific_contacts
@@ -20,9 +20,7 @@
         input_html: { value: @product.facility_account.account_number + (@product.facility_account.is_active? ? "" : " (inactive)") }
 
     = f.input :initial_order_status
-    = f.input :requires_approval
-    - if f.object.requires_approval?
-      = f.input :allows_training_requests
+    = f.input :access_control, input_html: { value: f.object.access_control.to_s.titleize }
   = f.input :is_archived
   = f.input :is_hidden
   - unless @product.is_a?(Bundle)
