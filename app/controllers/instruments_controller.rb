@@ -32,7 +32,7 @@ class InstrumentsController < ProductsCommonController
     elsif instrument_for_cart.error_path
       redirect_to instrument_for_cart.error_path, notice: instrument_for_cart.error_message
     else
-      flash.now[:error] = instrument_for_cart.error_message if instrument_for_cart.error_message
+      flash.now[:notice] = instrument_for_cart.error_message if instrument_for_cart.error_message
       render layout: "application"
     end
   end
