@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Training Requests" do
+RSpec.describe "Training Requests", feature_setting: { training_requests: true, reload_routes: true } do
   let(:facility) { create(:setup_facility) }
 
   let(:user) { create(:user) }
