@@ -12,7 +12,7 @@ class ProductsCommonController < ApplicationController
 
   include TranslationHelper
 
-  load_resource except: [:show, :manage, :index], instance_name: :product
+  # load_resource except: [:show, :manage, :index], instance_name: :product
   authorize_resource except: [:show, :manage], instance_name: :product
 
   layout "two_column"
@@ -57,9 +57,9 @@ class ProductsCommonController < ApplicationController
 
   # POST /services
   def create
-    @product = current_facility_products.new(resource_params)
-    @product.initial_order_status_id = OrderStatus.default_order_status.id
+    @product = current_facility_products.new(initial_order_status: OrderStatus.default_order_status)
     @product_form = EditProductForm.for(@product)
+    @product_form.assign_attributes(resource_params)
     if @product_form.save
       flash[:notice] = "#{@product.model_name.human} was successfully created."
       redirect_to([:manage, current_facility, @product])
