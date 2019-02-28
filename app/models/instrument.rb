@@ -24,7 +24,7 @@ class Instrument < Product
   # --------
 
   validates :initial_order_status_id, presence: true
-  validates :reserve_interval, inclusion: { in: RESERVE_INTERVALS }
+  validates :reserve_interval, presence: true, inclusion: { in: RESERVE_INTERVALS, allow_blank: true }
   validates :min_reserve_mins,
             :max_reserve_mins,
             :auto_cancel_mins,
