@@ -28,6 +28,7 @@ class User < ApplicationRecord
   validates_presence_of :username, :first_name, :last_name
   validates :email, presence: true, email_format: true
   validates_uniqueness_of :username, :email
+  validates :suspension_note, length: { maximum: 255 }
 
   #
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
