@@ -146,9 +146,8 @@ Nucore::Application.routes.draw do
           get "new_external"
           post "search"
         end
-        patch "suspend", on: :member
-        patch "unsuspend", on: :member
         patch "unexpire", on: :member
+        resource :suspension, controller: :user_suspension, only: [:create, :destroy]
       end
 
       get "switch_to",    to: "users#switch_to"

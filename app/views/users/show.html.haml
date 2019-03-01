@@ -29,9 +29,9 @@
       %li= link_to text("unexpire"), unexpire_facility_user_path(current_facility, @user), class: "btn", method: :patch
     - elsif can? :deactivate, @user
       - if @user.suspended?
-        %li= link_to t("shared.activate"), unsuspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
+        %li= link_to t("shared.activate"), facility_user_suspension_path(current_facility, @user), class: "btn", method: :delete
       - else
-        %li= link_to t("shared.suspend"), suspend_facility_user_path(current_facility, @user), class: "btn", method: :patch
+        %li= link_to t("shared.suspend"), facility_user_suspension_path(current_facility, @user), class: "btn", method: :post
 
 
 
