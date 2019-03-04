@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190227031006) do
+ActiveRecord::Schema.define(version: 20190301022930) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -770,6 +770,7 @@ ActiveRecord::Schema.define(version: 20190227031006) do
     t.datetime "reset_password_sent_at"
     t.integer  "uid"
     t.datetime "suspended_at"
+    t.string   "suspension_note"
     t.string   "card_number"
     t.datetime "expired_at"
     t.string   "expired_note"
