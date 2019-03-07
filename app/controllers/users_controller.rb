@@ -133,19 +133,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # PATCH /facilities/:facility_id/users/:id/suspend
-  def suspend
-    @user.suspended_at ||= Time.current
-    @user.save!
-    redirect_to facility_user_path(current_facility, @user), notice: text("suspend.success")
-  end
-
-  # PATCH /facilities/:facility_id/users/:id/unsuspend
-  def unsuspend
-    @user.update!(suspended_at: nil)
-    redirect_to facility_user_path(current_facility, @user), notice: text("unsuspend.success")
-  end
-
   def unexpire
     @user.update!(expired_at: nil, expired_note: nil)
     redirect_to facility_user_path(current_facility, @user), notice: text("unexpire.success")

@@ -235,6 +235,8 @@ en:
         current_password: Current password
         last_sign_in_at: Last Login
         full_name: Full Name
+        suspended_at: Suspended
+        suspension_note: Suspension Note
         suspended: SUSPENDED
         expired: EXPIRED
       facility:
