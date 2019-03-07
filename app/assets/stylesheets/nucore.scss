@@ -135,6 +135,10 @@ li.nav-spacer {
   @extend .alert-info;
 }
 
+.alert p:last-child {
+  margin-bottom: 0;
+}
+
 /*
   Product List
 */

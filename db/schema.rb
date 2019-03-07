@@ -478,6 +478,7 @@ ActiveRecord::Schema.define(version: 20190301022930) do
     t.text     "description",                   limit: 65535
     t.integer  "schedule_id"
     t.boolean  "requires_approval",                           default: false,    null: false
+    t.boolean  "allows_training_requests",                    default: true,     null: false
     t.integer  "initial_order_status_id"
     t.boolean  "is_archived",                                 default: false,    null: false
     t.boolean  "is_hidden",                                   default: false,    null: false

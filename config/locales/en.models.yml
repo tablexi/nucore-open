@@ -256,6 +256,7 @@ en:
         url: URL
         url_name: URL Name
         requires_approval: Requires Approval?
+        allows_training_requests: Allows Training Requests?
         requires_approval_show: Requires Approval
         initial_order_status: Initial Order Status
         is_archived: Is Inactive?

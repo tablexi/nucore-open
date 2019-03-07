@@ -36,14 +36,6 @@ module ProductsHelper
     end
   end
 
-  def product_url_hint(product)
-    public_send(
-      "facility_#{product.class.name.underscore}_url",
-      current_facility.url_name,
-      "URL_NAME".html_safe,
-    )
-  end
-
   def show_buttons_to_control_all_relays?(products)
     products.first.is_a?(Instrument) && products.includes(:relay).select(&:has_real_relay?).any?
   end
