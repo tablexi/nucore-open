@@ -28,6 +28,9 @@ class Facility < ApplicationRecord
   has_many :training_requests, through: :products
   has_many :user_roles, dependent: :destroy
   has_many :users, -> { distinct }, through: :user_roles
+  has_many :director_and_admin_roles, -> { merge(UserRole.director_and_admins) }, class_name: "UserRole"
+  has_many :director_and_admins, -> { distinct }, through: :director_and_admin_roles, source: :user
+
   has_attached_file :thumbnail, styles: { thumb: "400x200#" }, dependent: :destroy
   validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
