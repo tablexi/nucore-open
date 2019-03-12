@@ -24,6 +24,10 @@ jobs:
             - gem-cache-{{ arch }}--{{ .Branch }}--{{ checksum ".ruby-version" }}
             - gem-cache--{{ checksum ".ruby-version" }}
 
+      - run:
+          name: Install Correct Bundler Version
+          command: gem install bundler
+
       - run: bundle install --path vendor/bundle
 
       - save_cache:
