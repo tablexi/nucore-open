@@ -27,7 +27,7 @@ jobs:
       - run: bundle install --path vendor/bundle
 
       - save_cache:
-          key: gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          key: gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}--{{ checksum ".ruby-version" }}
           paths:
             - vendor/bundle
 
