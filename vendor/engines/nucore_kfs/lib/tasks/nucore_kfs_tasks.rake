@@ -5,7 +5,9 @@
 
 
 desc "Generate an export file for the KFS Collector"
-task :kfs_collector_export => :environment do
+task :kfs_collector_export, [:export_file_path] => :environment do |_t, args|
+  export_file = args.export_file_path
+  puts("Exporting to #{export_file}")
 
   all_journals = Journal.all
 
@@ -40,8 +42,6 @@ task :kfs_collector_export => :environment do
   exporter = NucoreKfs::CollectorExport.new
   export_content = exporter.generate_export_file(rows_to_export)
 
-  # puts(export_content)
-  export_file = "/vagrant/workspace/kfs-out.dat"
   File.open(export_file, "w") { |file| file.write export_content }
 
 end
