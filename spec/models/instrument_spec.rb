@@ -850,18 +850,6 @@ RSpec.describe Instrument do
     end
   end
 
-  describe "#has_alert?" do
-    it "returns true when the instrument has an associated alert" do
-      subject.build_alert
-      expect(subject.has_alert?).to be true
-    end
-
-    it "returns false when the instrument does not have an associated alert" do
-      subject.alert = nil
-      expect(subject.has_alert?).to be false
-    end
-  end
-
   describe "issue_report_recipients" do
     before do
       instrument.issue_report_recipients = "test1@example.com, test2@example.com"

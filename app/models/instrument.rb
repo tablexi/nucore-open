@@ -82,10 +82,6 @@ class Instrument < Product
     true
   end
 
-  def has_alert?
-    alert.present?
-  end
-
   private
 
   def minimum_reservation_is_multiple_of_interval

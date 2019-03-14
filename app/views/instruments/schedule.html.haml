@@ -29,7 +29,7 @@
       = link_to t(".bring_instrument_online"),
         facility_instrument_bring_online_path(current_facility, @product),
         method: :put, class: "btn-add"
-    - elsif @product.has_alert?
+    - elsif @product.alert
       = link_to t(".deactivate_instrument_alert"),
         facility_instrument_alert_path(current_facility, @product),
         method: :delete, class: "btn-add"
@@ -43,7 +43,7 @@
 
   = render_view_hook "after_offline_toggle"
 
-- if @product.has_alert?
+- if @product.alert
   %p.alert.alert-warning= t(".instrument_alert_is_active", note: @product.alert.note)
 
 - if @admin_reservations.empty?

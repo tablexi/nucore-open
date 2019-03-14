@@ -292,8 +292,8 @@ class Product < ApplicationRecord
     !(is_archived? || (is_hidden? && !is_operator))
   end
 
-  def has_alert?
-    false
+  def alert
+    nil
   end
 
   protected
