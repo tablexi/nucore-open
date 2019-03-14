@@ -6,7 +6,7 @@ class FacilityReservationsController < ApplicationController
   include NewInprocessController
   include ProblemOrderDetailsController
   include TabCountHelper
-  include Timelineable
+  helper TimelineHelper
 
   admin_tab     :all
   before_action :authenticate_user!
@@ -154,6 +154,14 @@ class FacilityReservationsController < ApplicationController
     @reservation.destroy
     flash[:notice] = "The reservation has been removed successfully"
     redirect_to facility_instrument_schedule_url
+  end
+
+  def timeline
+    @display_datetime = parse_usa_date(params[:date]) || Time.current.beginning_of_day
+    @schedules = current_facility.schedules
+                                 .active
+                                 .includes(facility_visible_products: [:alert, :relay])
+                                 .order(:name)
   end
 
   protected

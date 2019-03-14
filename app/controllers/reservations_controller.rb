@@ -2,8 +2,6 @@
 
 class ReservationsController < ApplicationController
 
-  include Timelineable
-
   customer_tab  :all
   before_action :authenticate_user!, except: [:index]
   before_action :check_acting_as, only: [:switch_instrument, :list]
@@ -13,6 +11,7 @@ class ReservationsController < ApplicationController
 
   include TranslationHelper
   include FacilityReservationsHelper
+  helper TimelineHelper
 
   def initialize
     super
@@ -21,7 +20,11 @@ class ReservationsController < ApplicationController
 
   def public_timeline
     @public_timeline = true
-    timeline
+    @display_datetime = parse_usa_date(params[:date]) || Time.current.beginning_of_day
+    @schedules = current_facility.schedules
+                                 .active
+                                 .includes(publicly_visible_products: :alert)
+                                 .order(:name)
   end
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000

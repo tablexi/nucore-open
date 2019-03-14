@@ -9,12 +9,12 @@ class Instrument < Product
 
   RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
 
-  # Associations
-  # -------
-
-  has_many :instrument_price_policies, foreign_key: "product_id"
-  has_many :admin_reservations, foreign_key: "product_id"
-  has_many :offline_reservations, foreign_key: "product_id"
+  with_options foreign_key: "product_id" do |instrument|
+    instrument.has_many :admin_reservations
+    instrument.has_many :instrument_price_policies
+    instrument.has_many :offline_reservations
+    instrument.has_many :current_offline_reservations, -> { current }, class_name: "OfflineReservation"
+  end
   has_one :alert, dependent: :destroy, class_name: "InstrumentAlert"
 
   email_list_attribute :cancellation_email_recipients
@@ -80,10 +80,6 @@ class Instrument < Product
 
   def quantity_as_time?
     true
-  end
-
-  def has_alert?
-    alert.present?
   end
 
   private
