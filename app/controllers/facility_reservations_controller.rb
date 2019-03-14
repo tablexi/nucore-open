@@ -159,7 +159,7 @@ class FacilityReservationsController < ApplicationController
   def timeline
     @display_datetime = parse_usa_date(params[:date]) || Time.current.beginning_of_day
     @schedules = current_facility.schedules.active
-                 .includes(facility_visible_products: :alert)
+                 .includes(facility_visible_products: [:alert, :relay])
                  .order(:name)
   end
 
