@@ -21,9 +21,10 @@ class ReservationsController < ApplicationController
   def public_timeline
     @public_timeline = true
     @display_datetime = parse_usa_date(params[:date]) || Time.current.beginning_of_day
-    @schedules = current_facility.schedules.active
-                 .includes(publicly_visible_products: :alert)
-                 .order(:name)
+    @schedules = current_facility.schedules
+                                 .active
+                                 .includes(publicly_visible_products: :alert)
+                                 .order(:name)
   end
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
