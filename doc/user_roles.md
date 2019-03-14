@@ -85,13 +85,13 @@
     * May suspend/activate accounts
     * May suspend/activate users
     * Has no restrictions except in some cross-facility contexts
-      - They may not manage billing cross-facility (as Billing Administrators may do)
+      - They may not manage billing cross-facility (as Global Billing Administrators may do)
 
-  - Billing Administrator
+  - Global Billing Administrator
     * This role can manage billing in a cross-facility context where a user may:
       - View and manage orders, including disputed orders
       - Create and manage journals
-    * The Billing Administrator role has some incompatibilities with other user roles, and
+    * The Global Billing Administrator role has some incompatibilities with other user roles, and
       if used, should be assigned to a dedicated user login
 
   - Account Manager

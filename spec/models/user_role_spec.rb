@@ -7,9 +7,9 @@ RSpec.describe UserRole do
     subject(:user_role) { described_class.new(user: user, role: role, facility: facility) }
     let(:user) { create(:user) }
 
-    context "when the role is Billing Administrator" do
+    context "when the role is Global Billing Administrator" do
       let(:facility) { nil }
-      let(:role) { described_class::BILLING_ADMINISTRATOR }
+      let(:role) { described_class::GLOBAL_BILLING_ADMINISTRATOR }
 
       context "and the billing_administrator feature is enabled", feature_setting: { billing_administrator: true } do
         it { is_expected.to be_valid }

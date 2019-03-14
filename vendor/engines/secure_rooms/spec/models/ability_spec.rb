@@ -46,8 +46,8 @@ RSpec.describe Ability do
                           :assign_price_policies_to_problem_orders], SecureRooms::Occupancy)
   end
 
-  describe "billing admin" do
-    let(:user) { FactoryBot.create(:user, :billing_administrator) }
+  describe "global billing administrator" do
+    let(:user) { FactoryBot.create(:user, :global_billing_administrator) }
 
     it_is_not_allowed_to([:index, :dashboard, :tab_counts, :show_problems,
                           :assign_price_policies_to_problem_orders], SecureRooms::Occupancy)

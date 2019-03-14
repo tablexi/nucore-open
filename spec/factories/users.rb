@@ -38,9 +38,9 @@ FactoryBot.define do
       end
     end
 
-    trait :billing_administrator do
+    trait :global_billing_administrator do
       after(:create) do |user, _|
-        UserRole.create!(user: user, role: UserRole::BILLING_ADMINISTRATOR)
+        UserRole.create!(user: user, role: UserRole::GLOBAL_BILLING_ADMINISTRATOR)
       end
     end
 

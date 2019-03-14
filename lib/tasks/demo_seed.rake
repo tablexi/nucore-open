@@ -293,21 +293,21 @@ namespace :demo do
     UserRole.grant(user_account_manager, UserRole::ACCOUNT_MANAGER)
 
     if SettingsHelper.feature_on?(:billing_administrator)
-      user_billing_administrator = User.find_by(email: "bba123@example.com")
+      user_global_billing_administrator = User.find_by(email: "bba123@example.com")
 
-      if user_billing_administrator.blank?
-        user_billing_administrator =
+      if user_global_billing_administrator.blank?
+        user_global_billing_administrator =
           User.new(
             username: "bba123@example.com",
             email: "bba123@example.com",
             first_name: "Billy",
             last_name: "Billing",
           )
-        user_billing_administrator.password = "password"
-        user_billing_administrator.save
+        user_global_billing_administrator.password = "password"
+        user_global_billing_administrator.save
       end
 
-      UserRole.grant(user_billing_administrator, UserRole::BILLING_ADMINISTRATOR)
+      UserRole.grant(user_global_billing_administrator, UserRole::GLOBAL_BILLING_ADMINISTRATOR)
     end
 
     UserPriceGroupMember.find_or_create_by!(user_id: user_pi.id, price_group_id: pgnu.id)

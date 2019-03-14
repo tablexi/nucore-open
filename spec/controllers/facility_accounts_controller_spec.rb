@@ -290,8 +290,8 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         expect(response.code).to eq("403")
       end
 
-      it "allows billing administrator to access the statement" do
-        user = create(:user, :billing_administrator)
+      it "allows global billing administrator to access the statement" do
+        user = create(:user, :global_billing_administrator)
         sign_in user
         do_request
         expect(response).to be_success

@@ -7,7 +7,7 @@ class UserRole < ApplicationRecord
 
   ACCOUNT_MANAGER = "Account Manager"
   ADMINISTRATOR = "Administrator"
-  BILLING_ADMINISTRATOR = "Billing Administrator"
+  GLOBAL_BILLING_ADMINISTRATOR = "Global Billing Administrator"
   FACILITY_DIRECTOR = "Facility Director"
   FACILITY_ADMINISTRATOR = "Facility Administrator"
   FACILITY_STAFF = "Facility Staff"
@@ -36,8 +36,8 @@ class UserRole < ApplicationRecord
     [ADMINISTRATOR]
   end
 
-  def self.billing_administrator
-    [BILLING_ADMINISTRATOR]
+  def self.global_billing_administrator
+    [GLOBAL_BILLING_ADMINISTRATOR]
   end
 
   def self.facility_roles
@@ -50,7 +50,7 @@ class UserRole < ApplicationRecord
 
   def self.global_roles
     if SettingsHelper.feature_on?(:billing_administrator)
-      account_manager + administrator + billing_administrator
+      account_manager + administrator + global_billing_administrator
     else
       account_manager + administrator
     end
@@ -92,7 +92,7 @@ class UserRole < ApplicationRecord
   end
 
   # Supports a single item or an array of symbols (:account_manager), strings
-  # both underscored ("billing_administrator") and title cased ("Facility Staff).
+  # both underscored ("global_billing_administrator") and title cased ("Facility Staff).
   def in?(roles)
     role.in? Array(roles).map(&:to_s).map(&:titleize)
   end

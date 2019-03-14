@@ -27,7 +27,7 @@ class Ability
       facility_administrator_abilities(user, resource, controller)
       facility_director_abilities(user, resource, controller)
       account_manager_abilities(user, resource)
-      billing_administrator_abilities(user, resource)
+      global_billing_administrator_abilities(user, resource)
 
       account_administrator_abilities(user, resource, controller)
     end
@@ -48,7 +48,7 @@ class Ability
       can :manage, AccountPriceGroupMember
     else
       can :manage, :all
-      unless user.billing_administrator?
+      unless user.global_billing_administrator?
         cannot [:manage_accounts, :manage_billing], Facility.cross_facility
       end
       unless user.account_manager?
@@ -115,8 +115,8 @@ class Ability
   end
 
 
-  def billing_administrator_abilities(user, resource)
-    return unless user.billing_administrator?
+  def global_billing_administrator_abilities(user, resource)
+    return unless user.global_billing_administrator?
 
     can :manage, [Account, Journal, OrderDetail]
     can :manage, Statement if resource.is_a?(Facility)
