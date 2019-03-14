@@ -20,4 +20,6 @@
         .current_time{style: "left: #{datetime_left_position(@display_datetime, Time.current)}"}
 
     - if !public_timeline? && instrument.has_real_relay?
-      = render "shared/timeline/relay_switch", instrument: instrument
+      .relay_checkbox
+        = check_box_tag "relay[#{instrument.id}]", 1, false, :disabled => true, :"data-relay-url" => facility_instrument_switch_path(instrument.facility, instrument)
+        .loading_box
