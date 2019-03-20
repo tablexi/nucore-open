@@ -87,12 +87,6 @@ class UsersController < ApplicationController
                           .paginate(page: params[:page])
   end
 
-  # GET /facilities/:facility_id/users/:user_id/accounts
-  def accounts
-    # accounts for this facility
-    @accounts = @user.accounts.for_facility(current_facility)
-  end
-
   # GET /facilities/:facility_id/users/:id
   def show
   end

@@ -1000,7 +1000,9 @@ en:
         h2: "Search Users"
       label:
         search_term: "Search by name, NetID, or username"
-    accounts:
+
+  user_accounts:
+    show:
       h1: "%{user_name} Payment Sources"
       link: "Add Payment Source"
       notice: "%{user_name} does not have any payment sources."

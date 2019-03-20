@@ -355,17 +355,4 @@ RSpec.describe UsersController do
     end
   end
 
-  context "accounts" do
-    before :each do
-      @method = :get
-      @action = :accounts
-      @params.merge!(user_id: @guest.id)
-    end
-
-    it_should_allow_operators_only do
-      expect(assigns(:user)).to eq(@guest)
-      expect(assigns(:accounts)).to be_kind_of ActiveRecord::Relation
-    end
-  end
-
 end
