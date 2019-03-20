@@ -248,11 +248,11 @@ namespace :demo do
     end
     UserRole.grant(user_staff, UserRole::FACILITY_STAFF, facility)
 
-    user_senior_staff = User.find_by(username: "sst123@example.com")
+    user_senior_staff = User.find_by(username: "jss123@example.com")
     unless user_senior_staff
-      user_senior_staff = User.new(username: "sst123@example.com",
-                                   email: "sst123@example.com",
-                                   first_name: "Serena",
+      user_senior_staff = User.new(username: "jss123@example.com",
+                                   email: "jss123@example.com",
+                                   first_name: "Jennifer",
                                    last_name: "Senior Staff")
       user_senior_staff.password = "password"
       user_senior_staff.save!
@@ -301,7 +301,7 @@ namespace :demo do
             username: "bba123@example.com",
             email: "bba123@example.com",
             first_name: "Billy",
-            last_name: "Billing",
+            last_name: "Global Billing Admin",
           )
         user_billing_administrator.password = "password"
         user_billing_administrator.save
