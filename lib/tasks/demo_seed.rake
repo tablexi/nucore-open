@@ -301,7 +301,7 @@ namespace :demo do
             username: "bba123@example.com",
             email: "bba123@example.com",
             first_name: "Billy",
-            last_name: "Global Billing Admin",
+            last_name: "Billing",
           )
         user_billing_administrator.password = "password"
         user_billing_administrator.save
