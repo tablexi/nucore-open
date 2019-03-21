@@ -121,11 +121,7 @@ class NavTab::LinkCollection
   end
 
   def billing_tab_landing_path
-    if SettingsHelper.has_review_period?
-      facility_notifications_path(facility)
-    else
-      facility_transactions_path(facility)
-    end
+    facility_transactions_path(facility)
   end
 
   def general_reports
