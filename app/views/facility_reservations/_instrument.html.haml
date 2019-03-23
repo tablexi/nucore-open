@@ -1,12 +1,6 @@
 .timeline_instrument[instrument]
   %h4
-    - if public_timeline?
-      = link_to instrument,
-        facility_instrument_path(current_facility, instrument)
-    - else
-      = link_to instrument,
-        facility_instrument_schedule_path(current_facility, instrument)
-
+    = link_to instrument, facility_instrument_schedule_path(current_facility, instrument)
     = warning_if_instrument_is_offline_or_partially_available(instrument)
 
   .timeline
@@ -19,7 +13,7 @@
       - if @display_datetime.beginning_of_day == Time.current.beginning_of_day
         .current_time{style: "left: #{datetime_left_position(@display_datetime, Time.current)}"}
 
-    - if !public_timeline? && instrument.has_real_relay?
+    - if instrument.has_real_relay?
       .relay_checkbox
         = check_box_tag "relay[#{instrument.id}]", 1, false, :disabled => true, :"data-relay-url" => facility_instrument_switch_path(instrument.facility, instrument)
         .loading_box
