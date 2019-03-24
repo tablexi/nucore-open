@@ -136,11 +136,6 @@ en:
       accounts: "Payment Sources"
       users: "Users"
       edit: "Edit"
-    timeline:
-      facility_tooltip:
-        admin_reservation: Administrative Hold
-        offline_reservation: Instrument Offline
-        expiration: Expires %{time} prior
     transactions:
       table_inside:
         total: Total
@@ -398,6 +393,10 @@ en:
       no_problem_reservations: There are no problem reservations.
     table_controls:
       update_reservations: Update Reservations
+    reservation:
+      admin_reservation: Administrative Hold
+      offline_reservation: Instrument Offline
+      expiration: Expires %{time} prior
 
   global_user_roles:
     destroy:

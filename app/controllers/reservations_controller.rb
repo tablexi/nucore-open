@@ -19,7 +19,6 @@ class ReservationsController < ApplicationController
   end
 
   def public_timeline
-    @public_timeline = true
     @display_datetime = parse_usa_date(params[:date]) || Time.current.beginning_of_day
 
     @schedules = current_facility

@@ -75,10 +75,6 @@ module TimelineHelper
     end
   end
 
-  def public_timeline?
-    @public_timeline ||= false
-  end
-
   def display_status_class(order_detail)
     order_detail.canceled_at ? "canceled" : order_detail.order_status.to_s.downcase
   end

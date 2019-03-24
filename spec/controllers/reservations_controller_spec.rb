@@ -1393,7 +1393,6 @@ RSpec.describe ReservationsController do
       @action = :public_timeline
       @params = { facility_id: @authable.url_name }
       do_request
-      expect(assigns[:public_timeline]).to be true
       expect(response).to render_template :public_timeline
     end
 
