@@ -23,15 +23,10 @@ module Products::SchedulingSupport
       .merge(Reservation.relay_in_progress)
   end
 
-  def visible_reservations(date = nil)
-    purchased = purchased_reservations.order(:reserve_start_at)
-    admin = admin_reservations
-    offline = offline_reservations
-    if date
-      purchased = purchased.for_date(date)
-      admin = admin.for_date(date)
-      offline = offline.for_date(date)
-    end
+  def visible_reservations(date)
+    purchased = purchased_reservations.for_date(date).order(:reserve_start_at)
+    admin = admin_reservations.for_date(date)
+    offline = offline_reservations.for_date(date)
     purchased + admin + offline
   end
 
