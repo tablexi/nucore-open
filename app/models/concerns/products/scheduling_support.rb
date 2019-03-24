@@ -12,19 +12,16 @@ module Products::SchedulingSupport
     before_save :update_schedule_name, if: :name_changed?
   end
 
-  def purchased_reservations
-    reservations.joins(order_detail: :order).merge(Order.purchased)
-  end
-
   def started_reservations
-    purchased_reservations
+    reservations
+      .purchased
       .not_canceled
       .merge(OrderDetail.unreconciled)
       .merge(Reservation.relay_in_progress)
   end
 
   def visible_reservations(date)
-    purchased = purchased_reservations.for_date(date).order(:reserve_start_at)
+    purchased = reservations.purchased.for_date(date).order(:reserve_start_at)
     admin = admin_reservations.for_date(date)
     offline = offline_reservations.for_date(date)
     purchased + admin + offline
