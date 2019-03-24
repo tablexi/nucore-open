@@ -8,8 +8,6 @@ module Products::SchedulingSupport
     belongs_to :schedule, inverse_of: :products
     has_many :reservations, foreign_key: "product_id"
 
-    delegate :reservations, to: :schedule, prefix: true
-
     before_save :create_default_schedule, unless: :schedule
     before_save :update_schedule_name, if: :name_changed?
   end

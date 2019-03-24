@@ -81,10 +81,6 @@ RSpec.describe Schedule do
         it "should have both reservations under the schedule" do
           expect(schedule.reservations).to eq([reservation, reservation2])
         end
-
-        it "should be able to access the schedule reservations through the instrument" do
-          expect(instruments[0].schedule_reservations).to eq([reservation, reservation2])
-        end
       end
     end
   end
