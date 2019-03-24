@@ -23,7 +23,7 @@ class ReservationsController < ApplicationController
     @display_datetime = parse_usa_date(params[:date]) || Time.current.beginning_of_day
     @schedules = current_facility.schedules
                                  .active
-                                 .includes(public_instruments: [:alert, :current_offline_reservations, :relay])
+                                 .includes(public_instruments: [:alert, :current_offline_reservations, :relay, :schedule_rules])
                                  .order(:name)
   end
 
