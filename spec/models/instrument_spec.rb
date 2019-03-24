@@ -863,4 +863,36 @@ RSpec.describe Instrument do
       expect(instrument.issue_report_recipients.to_a).to eq(["test1@example.com", "test2@example.com"])
     end
   end
+
+  describe "#blackout_reservations" do
+    context "for an instrument available only from 9 AM to 5 PM" do
+      let(:now) { Time.zone.parse("2015-07-05T12:14:00") }
+      let(:reservations) { instrument.blackout_reservations(now) }
+
+      before(:each) do
+        instrument.save!
+        instrument.schedule_rules.create!(FactoryBot.attributes_for(:schedule_rule))
+      end
+
+      it "returns two dummy reservations" do
+        expect(reservations.size).to eq(2)
+
+        reservations.each do |reservation|
+          expect(reservation).to be_kind_of(Reservation)
+          expect(reservation).to be_blackout
+          expect(reservation).not_to be_persisted
+        end
+      end
+
+      it "reserves midnight to 9 AM as unavailable" do
+        expect(reservations.first.reserve_start_at).to eq(now.beginning_of_day)
+        expect(reservations.first.reserve_end_at).to eq(Time.zone.parse("2015-07-05T09:00:00"))
+      end
+
+      it "reserves 5 PM to midnight as unavailable" do
+        expect(reservations.last.reserve_start_at).to eq(Time.zone.parse("2015-07-05T17:00:00"))
+        expect(reservations.last.reserve_end_at).to eq(Time.zone.parse("2015-07-06T00:00:00"))
+      end
+    end
+  end
 end

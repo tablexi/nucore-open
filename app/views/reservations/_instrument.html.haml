@@ -6,7 +6,7 @@
   .timeline
     .unit_container
       = render partial: "shared/timeline/reservation",
-        collection: (instrument.visible_reservations(@display_datetime) + ScheduleRule.unavailable_for_date(instrument, @display_datetime)),
+        collection: (instrument.visible_reservations(@display_datetime) + instrument.blackout_reservations(@display_datetime)),
         as: :reservation,
         locals: { product: instrument }
 

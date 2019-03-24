@@ -26,20 +26,6 @@ class ScheduleRule < ApplicationRecord
          and product_access_schedule_rules.schedule_rule_id = schedule_rules.id)))")
   end
 
-  def self.unavailable_for_date(product, day)
-    rules = where(product_id: product.id)
-    rules = unavailable(rules)
-    rules = rules.select { |rule| rule.on_day?(day) }
-    rules.each_with_object([]) do |rule, reservations|
-      reservations << Reservation.new(
-        product: product,
-        reserve_start_at: day.change(hour: rule.start_hour, min: rule.start_min),
-        reserve_end_at: day.change(hour: rule.end_hour, min: rule.end_min),
-        blackout: true,
-      )
-    end
-  end
-
   # Use this on an ActiveRecord::Relation. Is every minute within the range covered
   # by one of the rules?
   def self.cover?(start_at, end_at = start_at)
