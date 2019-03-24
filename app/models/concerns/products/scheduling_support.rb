@@ -20,13 +20,6 @@ module Products::SchedulingSupport
       .merge(Reservation.relay_in_progress)
   end
 
-  def visible_reservations(date)
-    purchased = reservations.purchased.for_date(date).order(:reserve_start_at)
-    admin = admin_reservations.for_date(date)
-    offline = offline_reservations.for_date(date)
-    purchased + admin + offline
-  end
-
   def walkup_available?(time = Time.zone.now)
     # zero and nil should default to 1 minute
     reservation_length = [min_reserve_mins.to_i, reserve_interval.to_i].max

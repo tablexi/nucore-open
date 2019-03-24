@@ -55,7 +55,7 @@ class Reservation < ApplicationRecord
   # Scopes
   #####
 
-  scope :non_user, -> { where(type: %w(AdminReservation OfflineReservation)) }
+  scope :admin_and_offline, -> { where(type: %w(AdminReservation OfflineReservation)) }
   scope :purchased, -> { joins(order_detail: :order).merge(Order.purchased) }
 
   def self.active

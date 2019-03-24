@@ -21,10 +21,21 @@ class ReservationsController < ApplicationController
   def public_timeline
     @public_timeline = true
     @display_datetime = parse_usa_date(params[:date]) || Time.current.beginning_of_day
-    @schedules = current_facility.schedules
-                                 .active
-                                 .includes(public_instruments: [:alert, :current_offline_reservations, :relay, :schedule_rules])
-                                 .order(:name)
+
+    @schedules = current_facility
+                 .schedules
+                 .active
+                 .includes(public_instruments: [:alert, :current_offline_reservations, :relay, :schedule_rules])
+                 .order(:name)
+
+    instrument_ids = @schedules.flat_map { |schedule| schedule.public_instruments.map(&:id) }
+
+    admin_and_offline_reservations = Reservation.admin_and_offline.for_date(@display_datetime).where(product_id: instrument_ids)
+    purchased_reservations = Reservation.purchased.for_date(@display_datetime).where(product_id: instrument_ids)
+
+    @reservations_by_instrument = (admin_and_offline_reservations + purchased_reservations)
+                                 .sort_by(&:reserve_start_at)
+                                 .group_by(&:product)
   end
 
   # GET /facilities/1/instruments/1/reservations.js?_=1279579838269&start=1279429200&end=1280034000
