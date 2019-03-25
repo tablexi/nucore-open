@@ -117,6 +117,13 @@ class Facility < ApplicationRecord
     order_details.problem_orders.complete
   end
 
+  def schedules_for_timeline(instruments_association)
+    schedules
+    .active
+    .includes(instruments_association => [:alert, :current_offline_reservations, :relay, :schedule_rules])
+    .order(:name)
+  end
+
   private
 
   def set_journal_mask

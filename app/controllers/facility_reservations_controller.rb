@@ -159,12 +159,7 @@ class FacilityReservationsController < ApplicationController
   def timeline
     @display_datetime = parse_usa_date(params[:date]) || Time.current.beginning_of_day
 
-    @schedules = current_facility
-                 .schedules
-                 .active
-                 .includes(facility_instruments: [:alert, :current_offline_reservations, :relay, :schedule_rules])
-                 .order(:name)
-
+    @schedules = current_facility.schedules_for_timeline(:facility_instruments)
     instrument_ids = @schedules.flat_map { |schedule| schedule.facility_instruments.map(&:id) }
     @reservations_by_instrument = Reservation.for_timeline(@display_datetime, instrument_ids).group_by(&:product)
   end
