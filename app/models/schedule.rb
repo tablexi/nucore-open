@@ -10,11 +10,6 @@ class Schedule < ApplicationRecord
     schedule.has_many :public_instruments, -> { active }
   end
 
-  with_options class_name: "Reservation", source: :reservations do |schedule|
-    schedule.has_many :facility_reservations, through: :facility_instruments
-    schedule.has_many :public_reservations, through: :public_instruments
-  end
-
   with_options through: :products do |schedule|
     schedule.has_many :admin_reservations
     schedule.has_many :reservations
