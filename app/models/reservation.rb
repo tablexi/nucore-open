@@ -143,6 +143,12 @@ class Reservation < ApplicationRecord
 
   scope :user, -> { where(type: nil) }
 
+  def self.for_timeline(date, instrument_ids)
+    admin_and_offline_reservations = admin_and_offline.for_date(date).where(product_id: instrument_ids)
+    purchased_reservations = purchased.for_date(date).where(product_id: instrument_ids)
+    (admin_and_offline_reservations + purchased_reservations).sort_by(&:reserve_start_at)
+  end
+
   # Instance Methods
   #####
 
