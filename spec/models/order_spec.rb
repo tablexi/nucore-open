@@ -159,7 +159,7 @@ RSpec.describe Order do
       it "should add to facility.orders collection" do
         expect(@order.purchase!).to be true
         expect(@facility.orders).to eq([@order])
-        expect(@facility.order_details.accounts).to eq([@account])
+        expect(@facility.order_details.map(&:account)).to eq([@account])
       end
       it "purchase should mark the initial state to the products default" do
         expect(@order.purchase!).to be true
