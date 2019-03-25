@@ -13,12 +13,7 @@ class Facility < ApplicationRecord
   has_many :products
   has_many :schedules
   has_many :statements
-  has_many :order_details, through: :products do
-    # extend to find all accounts that have ordered from the facility
-    def accounts
-      collect(&:account).compact.uniq
-    end
-  end
+  has_many :order_details, through: :products
   has_many :order_imports, dependent: :destroy
   has_many :orders, -> { where.not(ordered_at: nil) }
   has_many :facility_accounts
