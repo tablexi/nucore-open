@@ -1,7 +1,7 @@
-- if schedule.facility_visible_products.size > 1
+- if schedule.facility_instruments.size > 1
   .timeline-schedule
     %h3= schedule.name
-    = render partial: "shared/timeline/instrument", collection: schedule.facility_visible_products, as: :instrument
+    = render partial: "instrument", collection: schedule.facility_instruments, as: :instrument
 - else
   .timeline-single
-    = render partial: "shared/timeline/instrument", collection: schedule.facility_visible_products, as: :instrument
+    = render partial: "instrument", collection: schedule.facility_instruments, as: :instrument

@@ -82,6 +82,17 @@ class Instrument < Product
     true
   end
 
+  def blackout_reservations(date)
+    ScheduleRule.unavailable(schedule_rules).select { |rule| rule.on_day?(date) }.map do |rule|
+      Reservation.new(
+        product: self,
+        reserve_start_at: date.change(hour: rule.start_hour, min: rule.start_min),
+        reserve_end_at: date.change(hour: rule.end_hour, min: rule.end_min),
+        blackout: true,
+      )
+    end
+  end
+
   private
 
   def minimum_reservation_is_multiple_of_interval

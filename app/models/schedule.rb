@@ -4,11 +4,16 @@ class Schedule < ApplicationRecord
 
   belongs_to :facility
 
-  has_many :products, class_name: "Instrument"
-  has_many :reservations, through: :products
-  has_many :admin_reservations, through: :products
-  has_many :publicly_visible_products, -> { active }, class_name: "Instrument"
-  has_many :facility_visible_products, -> { not_archived }, class_name: "Instrument"
+  with_options class_name: "Instrument" do |schedule|
+    schedule.has_many :facility_instruments, -> { not_archived }
+    schedule.has_many :products
+    schedule.has_many :public_instruments, -> { active }
+  end
+
+  with_options through: :products do |schedule|
+    schedule.has_many :admin_reservations
+    schedule.has_many :reservations
+  end
 
   validates_presence_of :facility
 

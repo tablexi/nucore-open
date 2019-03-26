@@ -55,7 +55,8 @@ class Reservation < ApplicationRecord
   # Scopes
   #####
 
-  scope :non_user, -> { where(type: %w(AdminReservation OfflineReservation)) }
+  scope :admin_and_offline, -> { where(type: %w(AdminReservation OfflineReservation)) }
+  scope :purchased, -> { joins(order_detail: :order).merge(Order.purchased) }
 
   def self.active
     not_canceled
@@ -141,6 +142,12 @@ class Reservation < ApplicationRecord
   end
 
   scope :user, -> { where(type: nil) }
+
+  def self.for_timeline(date, instrument_ids)
+    admin_and_offline_reservations = admin_and_offline.for_date(date).where(product_id: instrument_ids)
+    purchased_reservations = purchased.for_date(date).where(product_id: instrument_ids)
+    (admin_and_offline_reservations + purchased_reservations).sort_by(&:reserve_start_at)
+  end
 
   # Instance Methods
   #####
