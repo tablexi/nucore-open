@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190301022930) do
+ActiveRecord::Schema.define(version: 20190328133218) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -238,8 +238,8 @@ ActiveRecord::Schema.define(version: 20190301022930) do
   end
 
   create_table "log_events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "loggable_type"
     t.integer  "loggable_id"
+    t.string   "loggable_type"
     t.string   "event_type"
     t.integer  "user_id"
     t.datetime "created_at",    null: false
@@ -507,6 +507,7 @@ ActiveRecord::Schema.define(version: 20190301022930) do
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe", using: :btree
     t.index ["initial_order_status_id"], name: "index_products_on_initial_order_status_id", using: :btree
     t.index ["schedule_id"], name: "i_instruments_schedule_id", using: :btree
+    t.index ["type", "is_archived", "schedule_id"], name: "index_products_on_type_and_is_archived_and_schedule_id", using: :btree
     t.index ["url_name"], name: "index_products_on_url_name", using: :btree
   end
 
@@ -555,6 +556,7 @@ ActiveRecord::Schema.define(version: 20190301022930) do
     t.index ["group_id"], name: "index_reservations_on_group_id", using: :btree
     t.index ["order_detail_id"], name: "res_od_uniq_fk", unique: true, using: :btree
     t.index ["product_id", "reserve_start_at"], name: "index_reservations_on_product_id_and_reserve_start_at", using: :btree
+    t.index ["type", "deleted_at", "product_id", "reserve_start_at", "reserve_end_at"], name: "reservations_for_timeline", using: :btree
   end
 
   create_table "sanger_seq_product_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -793,10 +795,10 @@ ActiveRecord::Schema.define(version: 20190301022930) do
   end
 
   create_table "vestal_versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "versioned_type"
     t.integer  "versioned_id"
-    t.string   "user_type"
+    t.string   "versioned_type"
     t.integer  "user_id"
+    t.string   "user_type"
     t.string   "user_name"
     t.text     "modifications",     limit: 65535
     t.integer  "version_number"
@@ -817,6 +819,8 @@ ActiveRecord::Schema.define(version: 20190301022930) do
 
   add_foreign_key "account_facility_joins", "accounts"
   add_foreign_key "account_facility_joins", "facilities"
+  add_foreign_key "account_users", "accounts", name: "fk_accounts"
+  add_foreign_key "account_users", "users"
   add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
