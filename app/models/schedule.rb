@@ -17,7 +17,7 @@ class Schedule < ApplicationRecord
 
   validates_presence_of :facility
 
-  scope :active, -> { where(id: Product.not_archived.with_schedule.select(:schedule_id)).order(:name) }
+  scope :active, -> { where(id: Instrument.not_archived.with_schedule.select(:schedule_id)).order(:name) }
 
   def shared?
     products.count > 1
