@@ -819,8 +819,6 @@ ActiveRecord::Schema.define(version: 20190328133218) do
 
   add_foreign_key "account_facility_joins", "accounts"
   add_foreign_key "account_facility_joins", "facilities"
-  add_foreign_key "account_users", "accounts", name: "fk_accounts"
-  add_foreign_key "account_users", "users"
   add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
