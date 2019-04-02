@@ -160,7 +160,7 @@ Nucore::Application.routes.draw do
       get "access_list",  to: "users#access_list"
       post "access_list/approvals", to: "users#access_list_approvals"
 
-      resource :accounts, controller: "user_accounts", only: [:show, :update]
+      resource :accounts, controller: "user_accounts", only: [:show, :edit, :update]
     end
 
     if SettingsHelper.feature_on? :recharge_accounts
