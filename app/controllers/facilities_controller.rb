@@ -51,11 +51,11 @@ class FacilitiesController < ApplicationController
     instruments_scope = current_facility.instruments.includes(:alert, :facility, :current_offline_reservations)
 
     if acting_as? || session_user.try(:operator_of?, current_facility)
-      @instruments = instruments_scope.active_plus_hidden
-      @items = current_facility.items.active_plus_hidden
-      @services = current_facility.services.active_plus_hidden
-      @timed_services = current_facility.timed_services.active_plus_hidden
-      @bundles = current_facility.bundles.active_plus_hidden
+      @instruments = instruments_scope.not_archived
+      @items = current_facility.items.not_archived
+      @services = current_facility.services.not_archived
+      @timed_services = current_facility.timed_services.not_archived
+      @bundles = current_facility.bundles.not_archived
     else
       @instruments = instruments_scope.active
       @items = current_facility.items.active

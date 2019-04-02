@@ -37,7 +37,7 @@ module SecureRooms
     end
 
     def dashboard
-      @secure_rooms = current_facility.secure_rooms.active_plus_hidden.alphabetized
+      @secure_rooms = current_facility.secure_rooms.not_archived.alphabetized
     end
 
     protected

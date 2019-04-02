@@ -49,7 +49,7 @@ class ProductAccessoriesController < ApplicationController
   def set_available_accessories
     # Exclude already included accessories as well as the current product.
     non_available_accessories = [@product.id] + Array(@product_accessories).map(&:accessory_id)
-    @available_accessories = current_facility.products.accessorizable.active_plus_hidden.exclude(non_available_accessories).order(:name)
+    @available_accessories = current_facility.products.accessorizable.not_archived.exclude(non_available_accessories).order(:name)
   end
 
 end
