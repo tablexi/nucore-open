@@ -30,7 +30,8 @@ class User < ApplicationRecord
   validates_uniqueness_of :username, :email
   validates :suspension_note, length: { maximum: 255 }
 
-  #
+  accepts_nested_attributes_for :accounts, allow_destroy: true
+
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
   alias_attribute :login, :username
 
@@ -38,7 +39,6 @@ class User < ApplicationRecord
   # those are cleaned up, remove me.
   alias_attribute :deactivated_at, :suspended_at
 
-  #
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
 
