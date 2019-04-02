@@ -47,6 +47,23 @@ class FacilitiesController < ApplicationController
     @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
+
+    instruments_scope = current_facility.instruments.includes(:alert, :facility, :current_offline_reservations)
+
+    if acting_as? || session_user.try(:operator_of?, current_facility)
+      @instruments = instruments_scope.active_plus_hidden
+      @items = current_facility.items.active_plus_hidden
+      @services = current_facility.services.active_plus_hidden
+      @timed_services = current_facility.timed_services.active_plus_hidden
+      @bundles = current_facility.bundles.active_plus_hidden
+    else
+      @instruments = instruments_scope.active
+      @items = current_facility.items.active
+      @services = current_facility.services.active
+      @timed_services = current_facility.timed_services.active
+      @bundles = current_facility.bundles.active.reject{|b| !b.products_active?}
+    end
+
     render layout: "application"
   end
 
@@ -258,5 +275,4 @@ class FacilitiesController < ApplicationController
     SettingsHelper.feature_on?(:azlist)
   end
   helper_method :azlist_on?
-
 end
