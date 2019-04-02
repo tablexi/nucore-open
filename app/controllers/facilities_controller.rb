@@ -48,7 +48,7 @@ class FacilitiesController < ApplicationController
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
 
-    instruments_scope = current_facility.instruments.includes(:alert, :facility, :current_offline_reservations)
+    instruments_scope = current_facility.instruments.includes(:alert, :current_offline_reservations)
 
     if acting_as? || session_user.try(:operator_of?, current_facility)
       @instruments = instruments_scope.not_archived

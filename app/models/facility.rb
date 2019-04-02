@@ -4,21 +4,21 @@ class Facility < ApplicationRecord
 
   before_validation :set_journal_mask, on: :create
 
-  has_many :bundles
+  has_many :bundles, inverse_of: :facility
   has_many :director_and_admin_roles, -> { merge(UserRole.director_and_admins) }, class_name: "UserRole"
   has_many :director_and_admins, -> { distinct }, through: :director_and_admin_roles, source: :user
   has_many :facility_accounts
-  has_many :instruments
-  has_many :items
+  has_many :instruments, inverse_of: :facility
+  has_many :items, inverse_of: :facility
   has_many :journals
   has_many :order_details, through: :products
   has_many :order_imports, dependent: :destroy
   has_many :orders, -> { where.not(ordered_at: nil) }
   has_many :products
   has_many :schedules
-  has_many :services
+  has_many :services, inverse_of: :facility
   has_many :statements
-  has_many :timed_services
+  has_many :timed_services, inverse_of: :facility
   has_many :training_requests, through: :products
   has_many :user_roles, dependent: :destroy
   has_many :users, -> { distinct }, through: :user_roles
