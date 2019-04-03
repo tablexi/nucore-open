@@ -30,7 +30,7 @@ RSpec.describe "Training Requests", feature_setting: { training_requests: true, 
       visit facility_path(facility.url_name)
       click_link item.name
       expect(page).not_to have_link("Add to cart")
-      expect(page).to have_content("Would you like to be contacted by the facility for access")
+      expect(page).to have_content("Would you like to be contacted by the #{I18n.t('facility_downcase')} for access")
       click_button "Yes"
       expect(page).to have_content("has been submitted")
     end
@@ -43,7 +43,7 @@ RSpec.describe "Training Requests", feature_setting: { training_requests: true, 
       visit facility_path(facility.url_name)
       click_link item.name
       expect(page).not_to have_link("Add to cart")
-      expect(page).to have_content("Please contact the facility to request access")
+      expect(page).to have_content("Please contact the #{I18n.t('facility_downcase')} to request access")
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe "Training Requests", feature_setting: { training_requests: true, 
       visit facility_path(facility.url_name)
       click_link instrument.name
       expect(page).not_to have_field("Reserve Start")
-      expect(page).to have_content("Would you like to be contacted by the facility for access")
+      expect(page).to have_content("Would you like to be contacted by the #{I18n.t('facility_downcase')} for access")
       click_button "Yes"
       expect(page).to have_content("has been submitted")
     end
@@ -81,7 +81,7 @@ RSpec.describe "Training Requests", feature_setting: { training_requests: true, 
       visit facility_path(facility.url_name)
       click_link instrument.name
       expect(page).not_to have_field("Reserve Start")
-      expect(page).to have_content("Please contact the facility to request access")
+      expect(page).to have_content("Please contact the #{I18n.t('facility_downcase')} to request access")
     end
   end
 end
