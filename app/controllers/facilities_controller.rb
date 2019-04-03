@@ -44,7 +44,6 @@ class FacilitiesController < ApplicationController
   def show
     return redirect_to(facilities_path) if current_facility.try(:cross_facility?)
     raise ActiveRecord::RecordNotFound unless current_facility.try(:is_active?)
-    @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
 
