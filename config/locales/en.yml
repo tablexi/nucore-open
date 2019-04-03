@@ -1000,10 +1000,19 @@ en:
         h2: "Search Users"
       label:
         search_term: "Search by name, NetID, or username"
-    accounts:
+
+  user_accounts:
+    show:
       h1: "%{user_name} Payment Sources"
-      link: "Add Payment Source"
       notice: "%{user_name} does not have any payment sources."
+      edit: Edit Payment Sources
+    edit:
+      h1: "%{user_name} Payment Sources"
+      remove: Remove?
+      update: Update Payment Sources
+    update:
+      updated: Successfully updated %{user_name}’s payment sources.
+      could_not_update: Could not update %{user_name}’s payment sources. Please try again.
 
   user_preferences:
     index:

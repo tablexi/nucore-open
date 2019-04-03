@@ -1,0 +1,26 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_users', locals: { sidenav_tab: 'users' }
+
+= content_for :tabnav do
+  = render :partial => 'admin/shared/tabnav_users', locals: { secondary_tab: 'accounts' }
+
+%h1= t('.h1', user_name: @user.full_name)
+
+- if @accounts.empty?
+  %p.notice= t('.notice', user_name: @user.full_name)
+- else
+  = link_to t(".edit"), edit_facility_user_accounts_path(current_facility, @user), class: "btn btn-primary"
+
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th= Account.model_name.human
+        %th.centered= Facility.model_name.human
+    %tbody
+      - @accounts.each do |account|
+        %tr
+          %td= payment_source_link_or_text(account)
+          %td= account.per_facility? ? account.facilities.join(", ") :  content_tag(:i, t("shared.all"))

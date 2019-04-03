@@ -157,9 +157,10 @@ Nucore::Application.routes.draw do
           put "cancel"
         end
       end
-      get "accounts",     to: "users#accounts"
       get "access_list",  to: "users#access_list"
       post "access_list/approvals", to: "users#access_list_approvals"
+
+      resource :accounts, controller: "user_accounts", only: [:show, :edit, :update]
     end
 
     if SettingsHelper.feature_on? :recharge_accounts
