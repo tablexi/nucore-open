@@ -18,7 +18,7 @@ RSpec.describe UserAccountsController do
       @params = { facility_id: facility.url_name, user_id: @guest.id }
     end
 
-    it_should_allow_admin_only do
+    it_should_allow_managers_only do
       expect(assigns(:user)).to eq(@guest)
       expect(assigns(:accounts)).to be_kind_of ActiveRecord::Relation
     end

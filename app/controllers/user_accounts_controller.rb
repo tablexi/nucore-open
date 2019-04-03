@@ -2,22 +2,22 @@
 
 class UserAccountsController < ApplicationController
   admin_tab :all
-  before_action :init_current_facility
   layout "two_column"
-  load_and_authorize_resource class: "User", id_param: :user_id, instance_name: :user
+
+  before_action :init_current_facility
+  load_resource class: "User", id_param: :user_id, instance_name: :user
+  authorize_resource class: AccountUser
+  before_action { @active_tab = "admin_users" }
 
   def show
-    @active_tab = "admin_users"
     @accounts = @user.accounts.for_facility(current_facility)
   end
 
   def edit
-    @active_tab = "admin_users"
     @accounts = @user.accounts.for_facility(current_facility)
   end
 
   def update
-    @active_tab = "admin_users"
     if @user.update(user_params)
       redirect_to facility_user_accounts_path(current_facility, @user), flash: { notice: t(".updated", user_name: @user.full_name) }
     else
