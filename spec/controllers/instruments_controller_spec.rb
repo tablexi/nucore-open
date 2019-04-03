@@ -95,7 +95,7 @@ RSpec.describe InstrumentsController do
         it "fails" do
           expect(response).to render_template("show")
           expect(assigns(:add_to_cart)).to be(false)
-          expect(flash[:notice]).to include("could not find a valid payment source")
+          expect(flash[:notice]).to be_present
         end
       end
 
