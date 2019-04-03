@@ -6,7 +6,7 @@
     - if current_facility.present?
       %h3= product_list_title products, local_assigns[:title_extra]
 
-      - if products.first.class.model_name == "TimedService"
+      - if products.first.is_a?(TimedService)
         %p= t("facilities.show.timed_services_note")
     %ul
       - products.each do |product|
