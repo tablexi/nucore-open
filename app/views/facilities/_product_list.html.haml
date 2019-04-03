@@ -6,4 +6,4 @@
       %p= t("facilities.show.timed_services_note")
 
     %ul
-      = render partial: "product", collection: products, locals: { f: f }
+      = render partial: "product", collection: products, locals: { f: local_assigns[:f] }
