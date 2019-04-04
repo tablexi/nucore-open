@@ -44,9 +44,25 @@ class FacilitiesController < ApplicationController
   def show
     return redirect_to(facilities_path) if current_facility.try(:cross_facility?)
     raise ActiveRecord::RecordNotFound unless current_facility.try(:is_active?)
-    @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
+
+    instruments_scope = current_facility.instruments.includes(:alert, :current_offline_reservations)
+
+    if acting_as? || session_user.try(:operator_of?, current_facility)
+      @instruments = instruments_scope.not_archived.alphabetized
+      @items = current_facility.items.not_archived.alphabetized
+      @services = current_facility.services.not_archived.alphabetized
+      @timed_services = current_facility.timed_services.not_archived.alphabetized
+      @bundles = current_facility.bundles.not_archived.alphabetized
+    else
+      @instruments = instruments_scope.active.alphabetized
+      @items = current_facility.items.active.alphabetized
+      @services = current_facility.services.active.alphabetized
+      @timed_services = current_facility.timed_services.active.alphabetized
+      @bundles = current_facility.bundles.active.alphabetized.reject{|b| !b.products_active?}
+    end
+
     render layout: "application"
   end
 
@@ -258,5 +274,4 @@ class FacilitiesController < ApplicationController
     SettingsHelper.feature_on?(:azlist)
   end
   helper_method :azlist_on?
-
 end
