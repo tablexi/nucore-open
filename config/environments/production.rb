@@ -66,9 +66,9 @@ Rails.application.configure do
   Rails.application.routes.default_url_options = { host: "cider.uconn.edu", protocol: "https" }
   config.action_mailer.default_url_options   = { host: "cider.uconn.edu", protocol: "https" }
   config.action_mailer.smtp_settings = {
-    address: "mail.example.com",
+    address: "smtp.uconn.edu",
     port: 25,
-    domain: "example.com",
+    domain: "cider.uconn.edu",
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

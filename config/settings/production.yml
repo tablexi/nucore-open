@@ -1,0 +1,6 @@
+email:
+  from: "noreply@cider.uconn.edu"
+  fake:
+    enabled: true
+    to: ["joseph.oshea@uconn.edu", "courtney.wiley@uconn.edu"]
+    whitelist: []
