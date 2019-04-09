@@ -94,8 +94,8 @@ relays:
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
-  billing_administrator: true
-  billing_administrator_users_tab: true
+  global_billing_administrator: true
+  global_billing_administrator_users_tab: true
   create_users: true
   netids: true
   limit_short_description: true

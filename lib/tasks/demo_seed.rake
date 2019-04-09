@@ -292,7 +292,7 @@ namespace :demo do
     end
     UserRole.grant(user_account_manager, UserRole::ACCOUNT_MANAGER)
 
-    if SettingsHelper.feature_on?(:billing_administrator)
+    if SettingsHelper.feature_on?(:global_billing_administrator)
       user_global_billing_administrator = User.find_by(email: "bba123@example.com")
 
       if user_global_billing_administrator.blank?

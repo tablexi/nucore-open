@@ -35,7 +35,7 @@ module Users
 
     # Returns relation of facilities for which this user is a director or admin
     def manageable_facilities
-      if administrator? || billing_administrator?
+      if administrator? || global_billing_administrator?
         Facility.alphabetized
       else
         facilities.alphabetized.where(user_roles: { role: UserRole.facility_management_roles })
