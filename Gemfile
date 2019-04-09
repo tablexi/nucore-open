@@ -142,4 +142,5 @@ group :stage, :production do
   gem "rollbar", "2.15.5"
   gem "unicorn", require: false
   gem "whenever", require: false
+  gem "rack-tracker"
 end

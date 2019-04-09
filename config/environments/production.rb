@@ -101,6 +101,12 @@ Rails.application.configure do
                           exception_recipients: Settings.email.exceptions.recipients,
                         }
 
+  if Settings.has_key?(:hotjar)
+    config.middleware.use(Rack::Tracker) do
+      handler :hotjar, { site_id: Settings.hotjar.site_id }
+    end
+  end
+
 end
 
 # What's this for?

@@ -4,3 +4,6 @@ email:
     enabled: true
     to: ["joseph.oshea@uconn.edu", "courtney.wiley@uconn.edu"]
     whitelist: []
+
+hotjar:
+  site_id: override-me
