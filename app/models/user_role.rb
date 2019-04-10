@@ -12,6 +12,7 @@ class UserRole < ApplicationRecord
   FACILITY_ADMINISTRATOR = "Facility Administrator"
   FACILITY_STAFF = "Facility Staff"
   FACILITY_SENIOR_STAFF = "Facility Senior Staff"
+  FACILITY_BILLING_ADMINISTRATOR = "Facility Billing Administrator"
 
   scope :facility_director, -> { where(role: FACILITY_DIRECTOR) }
   scope :director_and_admins, -> { where(role: [FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR]) }
@@ -40,12 +41,12 @@ class UserRole < ApplicationRecord
     [GLOBAL_BILLING_ADMINISTRATOR]
   end
 
-  def self.facility_roles
-    [FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR, FACILITY_STAFF, FACILITY_SENIOR_STAFF]
+  def self.facility_management_roles
+    [FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR]
   end
 
-  def self.facility_management_roles
-    facility_roles - [FACILITY_STAFF, FACILITY_SENIOR_STAFF]
+  def self.facility_roles
+    facility_management_roles + [FACILITY_STAFF, FACILITY_SENIOR_STAFF, FACILITY_BILLING_ADMINISTRATOR]
   end
 
   def self.global_roles
