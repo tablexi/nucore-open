@@ -2,10 +2,10 @@
   = current_facility
 
 = content_for :sidebar do
-  = render :partial => 'admin/shared/sidenav_users', locals: { sidenav_tab: 'users' }
+  = render partial: 'admin/shared/sidenav_users', locals: { sidenav_tab: 'users' }
 
 = content_for :tabnav do
-  = render :partial => 'admin/shared/tabnav_users', locals: { secondary_tab: 'accounts' }
+  = render partial: 'admin/shared/tabnav_users', locals: { secondary_tab: 'accounts' }
 
 %h1= t('.h1', user_name: @user.full_name)
 
@@ -13,14 +13,20 @@
   %table.table.table-striped.table-user-accounts
     %thead
       %tr
-        %th.centered.table-user-accounts__remove= t('.remove')
+        %th.centered.table-user-accounts__remove
+          = t('.remove')
+          = select_all_link
         %th= Account.model_name.human
         %th.centered= Facility.model_name.human
     %tbody
-      = f.fields_for :accounts do |f|
+      = f.fields_for :accounts do |af|
         %tr
-          %td.centered.table-user-accounts__remove= f.check_box :_destroy
-          %td= payment_source_link_or_text(f.object)
-          %td= f.object.per_facility? ? f.object.facilities.join(", ") :  content_tag(:i, t("shared.all"))
+          %td.centered.table-user-accounts__remove
+            - if af.object.owner_user == @user
+              = af.check_box :_destroy, disabled: true, title: t('.not_allowed')
+            - else
+              = af.check_box :_destroy, class: "toggle"
+          %td= payment_source_link_or_text(af.object)
+          %td= af.object.per_facility? ? af.object.facilities.join(", ") : content_tag(:i, t("shared.all"))
 
   = f.submit t(".update"), class: "btn btn-primary"

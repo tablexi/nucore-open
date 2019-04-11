@@ -25,6 +25,14 @@ table {
   }
 }
 
+.table-user-accounts {
+  thead {
+    th {
+      vertical-align: top;
+    }
+  }
+}
+
 tfoot.cart {
   border-top: 3px solid $navbarActiveBorderColor;
 }

@@ -8,14 +8,7 @@ class UserAccountsController < ApplicationController
   load_resource class: "User", id_param: :user_id, instance_name: :user
   authorize_resource class: AccountUser
   before_action { @active_tab = "admin_users" }
-
-  def show
-    @accounts = @user.accounts.for_facility(current_facility)
-  end
-
-  def edit
-    @accounts = @user.accounts.for_facility(current_facility)
-  end
+  before_action :load_accounts
 
   def update
     if @user.update(user_params)
@@ -30,5 +23,9 @@ class UserAccountsController < ApplicationController
 
   def user_params
     params.require(:user).permit(accounts_attributes: [:id, :_destroy])
+  end
+
+  def load_accounts
+    @accounts = @user.accounts.includes(:owner_user).for_facility(current_facility)
   end
 end
