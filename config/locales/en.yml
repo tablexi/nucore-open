@@ -1010,6 +1010,7 @@ en:
       h1: "%{user_name} Payment Sources"
       remove: Remove?
       update: Update Payment Sources
+      not_allowed: This account is owned by the user, so they cannot be removed from it.
     update:
       updated: Successfully updated %{user_name}’s payment sources.
       could_not_update: Could not update %{user_name}’s payment sources. Please try again.
