@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190328133218) do
+ActiveRecord::Schema.define(version: 20190416205054) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -199,6 +199,7 @@ ActiveRecord::Schema.define(version: 20190328133218) do
     t.integer  "instrument_id", null: false
     t.boolean  "is_on",         null: false
     t.datetime "created_at",    null: false
+    t.index ["instrument_id", "created_at"], name: "index_instrument_statuses_on_instrument_id_and_created_at", using: :btree
     t.index ["instrument_id"], name: "fk_int_stats_product", using: :btree
   end
 
