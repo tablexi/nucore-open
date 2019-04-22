@@ -6,7 +6,7 @@ namespace :price_policies do
   task :duplicate_to_current_fiscal_year, [:url_name] => :environment do |_t, args|
     facility = Facility.find_by!(url_name: args[:url_name])
 
-    facility.services.active_plus_hidden.each do |service|
+    facility.services.not_archived.each do |service|
       service.price_policies.newest.each do |price_policy|
         next unless price_policy.expired? # Don't duplicate a current policy
 

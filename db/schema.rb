@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190104011154) do
+ActiveRecord::Schema.define(version: 20190416205054) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -199,6 +199,7 @@ ActiveRecord::Schema.define(version: 20190104011154) do
     t.integer  "instrument_id", null: false
     t.boolean  "is_on",         null: false
     t.datetime "created_at",    null: false
+    t.index ["instrument_id", "created_at"], name: "index_instrument_statuses_on_instrument_id_and_created_at", using: :btree
     t.index ["instrument_id"], name: "fk_int_stats_product", using: :btree
   end
 
@@ -238,8 +239,8 @@ ActiveRecord::Schema.define(version: 20190104011154) do
   end
 
   create_table "log_events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "loggable_type"
     t.integer  "loggable_id"
+    t.string   "loggable_type"
     t.string   "event_type"
     t.integer  "user_id"
     t.datetime "created_at",    null: false
@@ -477,10 +478,11 @@ ActiveRecord::Schema.define(version: 20190104011154) do
     t.string   "url_name",                      limit: 50,                       null: false
     t.text     "description",                   limit: 65535
     t.integer  "schedule_id"
-    t.boolean  "requires_approval",                                              null: false
+    t.boolean  "requires_approval",                           default: false,    null: false
+    t.boolean  "allows_training_requests",                    default: true,     null: false
     t.integer  "initial_order_status_id"
-    t.boolean  "is_archived",                                                    null: false
-    t.boolean  "is_hidden",                                                      null: false
+    t.boolean  "is_archived",                                 default: false,    null: false
+    t.boolean  "is_hidden",                                   default: false,    null: false
     t.datetime "created_at",                                                     null: false
     t.datetime "updated_at",                                                     null: false
     t.integer  "min_reserve_mins"
@@ -500,11 +502,13 @@ ActiveRecord::Schema.define(version: 20190104011154) do
     t.string   "user_notes_label"
     t.string   "order_notification_recipient"
     t.text     "cancellation_email_recipients", limit: 65535
+    t.text     "issue_report_recipients",       limit: 65535
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token", using: :btree
     t.index ["facility_account_id"], name: "fk_facility_accounts", using: :btree
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe", using: :btree
     t.index ["initial_order_status_id"], name: "index_products_on_initial_order_status_id", using: :btree
     t.index ["schedule_id"], name: "i_instruments_schedule_id", using: :btree
+    t.index ["type", "is_archived", "schedule_id"], name: "index_products_on_type_and_is_archived_and_schedule_id", using: :btree
     t.index ["url_name"], name: "index_products_on_url_name", using: :btree
   end
 
@@ -553,6 +557,7 @@ ActiveRecord::Schema.define(version: 20190104011154) do
     t.index ["group_id"], name: "index_reservations_on_group_id", using: :btree
     t.index ["order_detail_id"], name: "res_od_uniq_fk", unique: true, using: :btree
     t.index ["product_id", "reserve_start_at"], name: "index_reservations_on_product_id_and_reserve_start_at", using: :btree
+    t.index ["type", "deleted_at", "product_id", "reserve_start_at", "reserve_end_at"], name: "reservations_for_timeline", using: :btree
   end
 
   create_table "sanger_seq_product_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -769,6 +774,7 @@ ActiveRecord::Schema.define(version: 20190104011154) do
     t.datetime "reset_password_sent_at"
     t.integer  "uid"
     t.datetime "suspended_at"
+    t.string   "suspension_note"
     t.string   "card_number"
     t.datetime "expired_at"
     t.string   "expired_note"
@@ -790,10 +796,10 @@ ActiveRecord::Schema.define(version: 20190104011154) do
   end
 
   create_table "vestal_versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "versioned_type"
     t.integer  "versioned_id"
-    t.string   "user_type"
+    t.string   "versioned_type"
     t.integer  "user_id"
+    t.string   "user_type"
     t.string   "user_name"
     t.text     "modifications",     limit: 65535
     t.integer  "version_number"

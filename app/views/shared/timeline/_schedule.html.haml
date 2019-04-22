@@ -1,8 +1,0 @@
-- products = public_timeline? ? schedule.publicly_visible_products : schedule.facility_visible_products
-- if products.count > 1
-  .timeline-schedule
-    %h3= schedule.name
-    = render partial: "shared/timeline/instrument", collection: products, as: :instrument
-- else
-  .timeline-single
-    = render partial: "shared/timeline/instrument", collection: products, as: :instrument

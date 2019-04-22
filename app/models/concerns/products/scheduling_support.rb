@@ -8,33 +8,16 @@ module Products::SchedulingSupport
     belongs_to :schedule, inverse_of: :products
     has_many :reservations, foreign_key: "product_id"
 
-    delegate :reservations, to: :schedule, prefix: true
-
     before_save :create_default_schedule, unless: :schedule
     before_save :update_schedule_name, if: :name_changed?
   end
 
-  def purchased_reservations
-    reservations.joins(order_detail: :order).merge(Order.purchased)
-  end
-
   def started_reservations
-    purchased_reservations
+    reservations
+      .purchased
       .not_canceled
       .merge(OrderDetail.unreconciled)
       .merge(Reservation.relay_in_progress)
-  end
-
-  def visible_reservations(date = nil)
-    purchased = purchased_reservations.order(:reserve_start_at)
-    admin = admin_reservations
-    offline = offline_reservations
-    if date
-      purchased = purchased.for_date(date)
-      admin = admin.for_date(date)
-      offline = offline.for_date(date)
-    end
-    purchased + admin + offline
   end
 
   def walkup_available?(time = Time.zone.now)
@@ -59,7 +42,7 @@ module Products::SchedulingSupport
   end
 
   def offline?
-    offline_reservations.current.any?
+    current_offline_reservations.present?
   end
 
   def offline_category

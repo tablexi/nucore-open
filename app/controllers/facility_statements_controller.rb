@@ -31,7 +31,7 @@ class FacilityStatementsController < ApplicationController
 
     defaults = SettingsHelper.feature_on?(:set_statement_search_start_date) ? { date_range_start: format_usa_date(1.month.ago.beginning_of_month) } : {}
     @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: defaults)
-    @search = TransactionSearch::Searcher.search(order_details, @search_form)
+    @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
   end

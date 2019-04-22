@@ -173,6 +173,10 @@ FactoryBot.define do
 
   factory :instrument_requiring_approval, parent: :setup_instrument do
     requires_approval { true }
+
+    trait :disallowing_training_request do
+      allows_training_requests { false }
+    end
   end
 
 end

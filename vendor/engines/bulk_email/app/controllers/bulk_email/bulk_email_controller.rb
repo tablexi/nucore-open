@@ -106,7 +106,7 @@ module BulkEmail
     end
 
     def init_search_options
-      products = Product.for_facility(current_facility).active_plus_hidden.alphabetized.includes(:facility)
+      products = Product.for_facility(current_facility).not_archived.alphabetized.includes(:facility)
       facilities = Facility.active.alphabetized if current_facility.cross_facility?
       @search_options = { products: products, facilities: facilities }
       @search_fields = params

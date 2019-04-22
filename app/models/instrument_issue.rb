@@ -17,14 +17,18 @@ class InstrumentIssue
       product: product,
       user: user,
       message: message,
-      recipients: recipients,
+      recipients: recipients.to_a,
     ).deliver_later
   end
 
   def recipients
-    # Per NU, `Facility#email` is intentionally left out #137686
-    all = product.facility.director_and_admins.pluck(:email) + product.training_request_contacts
-    all.uniq
+    if product.issue_report_recipients.present?
+      product.issue_report_recipients
+    else
+      # Per NU, `Facility#email` is intentionally left out #137686
+      all = product.facility.director_and_admins.pluck(:email) + product.training_request_contacts
+      all.uniq
+    end
   end
 
 end

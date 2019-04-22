@@ -7,7 +7,7 @@ module SecureRooms
     extend ActiveSupport::Concern
 
     included do
-      has_many :secure_rooms
+      has_many :secure_rooms, inverse_of: :facility
     end
 
   end

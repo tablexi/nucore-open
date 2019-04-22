@@ -136,11 +136,6 @@ en:
       accounts: "Payment Sources"
       users: "Users"
       edit: "Edit"
-    timeline:
-      facility_tooltip:
-        admin_reservation: Administrative Hold
-        offline_reservation: Instrument Offline
-        expiration: Expires %{time} prior
     transactions:
       table_inside:
         total: Total
@@ -398,6 +393,10 @@ en:
       no_problem_reservations: There are no problem reservations.
     table_controls:
       update_reservations: Update Reservations
+    reservation:
+      admin_reservation: Administrative Hold
+      offline_reservation: Instrument Offline
+      expiration: Expires %{time} prior
 
   global_user_roles:
     destroy:
@@ -1001,10 +1000,20 @@ en:
         h2: "Search Users"
       label:
         search_term: "Search by name, NetID, or username"
-    accounts:
+
+  user_accounts:
+    show:
       h1: "%{user_name} Payment Sources"
-      link: "Add Payment Source"
       notice: "%{user_name} does not have any payment sources."
+      edit: Edit Payment Sources
+    edit:
+      h1: "%{user_name} Payment Sources"
+      remove: Remove?
+      update: Update Payment Sources
+      not_allowed: This account is owned by the user, so they cannot be removed from it.
+    update:
+      updated: Successfully updated %{user_name}’s payment sources.
+      could_not_update: Could not update %{user_name}’s payment sources. Please try again.
 
   user_preferences:
     index:

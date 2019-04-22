@@ -11,11 +11,7 @@ module TransactionSearch
     end
 
     def search(params)
-      order_details.for_products(params)
-    end
-
-    def optimized
-      order_details.includes(:product)
+      order_details.for_products(params).includes(:product)
     end
 
     def data_attrs(product)

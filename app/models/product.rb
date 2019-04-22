@@ -55,7 +55,6 @@ class Product < ApplicationRecord
   end
 
   scope :active, -> { where(is_archived: false, is_hidden: false) }
-  scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: phase out in favor of the .not_archived scope
   scope :alphabetized, -> { order("lower(products.name)") }
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
@@ -104,14 +103,6 @@ class Product < ApplicationRecord
   end
 
   ## AR Hooks
-  before_validation do
-    self.requires_approval ||= false
-    self.is_archived       ||= false
-    self.is_hidden         ||= false
-
-    # return true so validations will run
-    true
-  end
   after_create :set_default_pricing
 
   def initial_order_status
@@ -300,8 +291,8 @@ class Product < ApplicationRecord
     !(is_archived? || (is_hidden? && !is_operator))
   end
 
-  def has_alert?
-    false
+  def alert
+    nil
   end
 
   protected

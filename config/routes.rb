@@ -146,9 +146,8 @@ Nucore::Application.routes.draw do
           get "new_external"
           post "search"
         end
-        patch "suspend", on: :member
-        patch "unsuspend", on: :member
         patch "unexpire", on: :member
+        resource :suspension, controller: :user_suspension, only: [:create, :destroy]
       end
 
       get "switch_to",    to: "users#switch_to"
@@ -158,9 +157,10 @@ Nucore::Application.routes.draw do
           put "cancel"
         end
       end
-      get "accounts",     to: "users#accounts"
       get "access_list",  to: "users#access_list"
       post "access_list/approvals", to: "users#access_list_approvals"
+
+      resource :accounts, controller: "user_accounts", only: [:show, :edit, :update]
     end
 
     if SettingsHelper.feature_on? :recharge_accounts

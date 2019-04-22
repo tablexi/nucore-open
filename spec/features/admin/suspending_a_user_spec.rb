@@ -14,11 +14,14 @@ RSpec.describe "User suspension", feature_setting: { create_users: true, reload_
       visit facility_user_path(facility, user)
 
       expect(page).to have_content("todelete@example.com")
-      click_link "Suspend"
+      fill_in "Suspension Note", with: "User was naughty"
+      click_button "Suspend"
       expect(page).to have_content("Del User (SUSPENDED)")
+      expect(page).to have_content("Suspension Note\nUser was naughty")
 
       click_link "Activate"
       expect(page).not_to have_content("(SUSPENDED)")
+      expect(page).not_to have_content("naughty")
     end
   end
 
@@ -30,7 +33,7 @@ RSpec.describe "User suspension", feature_setting: { create_users: true, reload_
       visit facility_user_path(facility, user)
 
       expect(page).to have_content("todelete@example.com")
-      expect(page).not_to have_link("Suspend")
+      expect(page).not_to have_button("Suspend")
       expect(page).not_to have_link("Activate")
     end
   end

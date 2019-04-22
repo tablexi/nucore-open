@@ -13,41 +13,6 @@ RSpec.describe ScheduleRule do
     expect(rule).to be_valid
   end
 
-  describe ".unavailable_for_date" do
-    context "for an instrument available only from 9 AM to 5 PM" do
-      before(:each) do
-        FactoryBot.create(:schedule_rule, product: instrument)
-      end
-
-      let(:now) { Time.zone.parse("2015-07-05T12:14:00") }
-      let(:reservations) { ScheduleRule.unavailable_for_date(instrument, now) }
-
-      it "returns two dummy reservations" do
-        expect(reservations.size).to eq(2)
-
-        reservations.each do |reservation|
-          expect(reservation).to be_kind_of(Reservation)
-          expect(reservation).to be_blackout
-          expect(reservation).not_to be_persisted
-        end
-      end
-
-      it "reserves midnight to 9 AM as unavailable" do
-        expect(reservations.first.reserve_start_at)
-          .to eq(now.beginning_of_day)
-        expect(reservations.first.reserve_end_at)
-          .to eq(Time.zone.parse("2015-07-05T09:00:00"))
-      end
-
-      it "reserves 5 PM to midnight as unavailable" do
-        expect(reservations.last.reserve_start_at)
-          .to eq(Time.zone.parse("2015-07-05T17:00:00"))
-        expect(reservations.last.reserve_end_at)
-          .to eq(Time.zone.parse("2015-07-06T00:00:00"))
-      end
-    end
-  end
-
   context "times" do
     it "should not be valid with start hours outside 0-24" do
       is_expected.not_to allow_value(-1).for(:start_hour)

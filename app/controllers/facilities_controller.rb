@@ -44,9 +44,25 @@ class FacilitiesController < ApplicationController
   def show
     return redirect_to(facilities_path) if current_facility.try(:cross_facility?)
     raise ActiveRecord::RecordNotFound unless current_facility.try(:is_active?)
-    @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
+
+    instruments_scope = current_facility.instruments.includes(:alert, :current_offline_reservations)
+
+    if acting_as? || session_user.try(:operator_of?, current_facility)
+      @instruments = instruments_scope.not_archived.alphabetized
+      @items = current_facility.items.not_archived.alphabetized
+      @services = current_facility.services.not_archived.alphabetized
+      @timed_services = current_facility.timed_services.not_archived.alphabetized
+      @bundles = current_facility.bundles.not_archived.alphabetized
+    else
+      @instruments = instruments_scope.active.alphabetized
+      @items = current_facility.items.active.alphabetized
+      @services = current_facility.services.active.alphabetized
+      @timed_services = current_facility.timed_services.active.alphabetized
+      @bundles = current_facility.bundles.active.alphabetized.reject{|b| !b.products_active?}
+    end
+
     render layout: "application"
   end
 
@@ -123,7 +139,7 @@ class FacilitiesController < ApplicationController
       },
     )
 
-    @search = TransactionSearch::Searcher.new.search(order_details, @search_form)
+    @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 
@@ -138,7 +154,7 @@ class FacilitiesController < ApplicationController
     order_details = OrderDetail.in_dispute.for_facility(current_facility)
 
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    @search = TransactionSearch::Searcher.search(order_details, @search_form)
+    @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.reorder(:dispute_at).paginate(page: params[:page])
   end
@@ -146,9 +162,10 @@ class FacilitiesController < ApplicationController
   # GET /facilities/:facility_id/movable_transactions
   def movable_transactions
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    @search = TransactionSearch::Searcher.new.search(
+    @search = TransactionSearch::Searcher.billing_search(
       OrderDetail.all_movable.for_facility(current_facility),
       @search_form,
+      include_facilities: current_facility.cross_facility?,
     )
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.paginate(page: params[:page], per_page: 100)
@@ -257,5 +274,4 @@ class FacilitiesController < ApplicationController
     SettingsHelper.feature_on?(:azlist)
   end
   helper_method :azlist_on?
-
 end

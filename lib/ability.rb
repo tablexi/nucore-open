@@ -180,6 +180,9 @@ class Ability
           StoredFile,
           TrainingRequest,
         ]
+        if user.facility_director_of?(resource) && SettingsHelper.feature_off?(:facility_directors_can_manage_price_groups) 
+          cannot [:create, :edit, :update, :destroy], PriceGroup
+        end
 
         can :manage, User if controller.is_a?(FacilityUsersController)
         cannot([:edit, :update], User)

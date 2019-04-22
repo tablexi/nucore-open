@@ -223,4 +223,21 @@ RSpec.describe FacilityAccountsController do
       end
     end
   end
+
+  context "GET #show" do
+    context "when the multi_facility_accounts feature is turned off", feature_setting: { multi_facility_accounts: false, reload_routes: true } do
+      let(:admin) { @admin }
+      let(:purchase_order) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
+
+      before do
+        sign_in admin
+      end
+
+      it "does not show the facilities tab for a per-facility account to global admins" do
+        get :show, params: { facility_id: facility.to_param, id: purchase_order.to_param }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("/accounts/#{purchase_order.id}/facilities/edit")
+      end
+    end
+  end
 end
