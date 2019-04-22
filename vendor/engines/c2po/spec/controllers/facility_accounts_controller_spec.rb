@@ -18,6 +18,39 @@ RSpec.describe FacilityAccountsController do
     @authable = facility # controller_spec_helper requires @authable to be set
   end
 
+  context "GET #edit" do
+    let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
+
+    before do
+      @method = :get
+      @action = :edit
+
+      @params = {
+        facility_id: facility.url_name,
+        id: account.id,
+      }
+    end
+
+    it_should_allow :director, "to view the edit form" do
+      expect(assigns(:account)).to eq(account)
+      expect(response).to be_success
+      expect(response).to render_template("edit")
+    end
+
+    context "but it belongs to another facility" do
+      let(:other_facility) { FactoryBot.create(:facility, name: "other") }
+      let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: other_facility) }
+
+      it_should_deny :director
+
+      context "even if I am also a director of that facility" do
+        before { UserRole.grant(@director, UserRole::FACILITY_DIRECTOR, other_facility) }
+
+        it_should_deny :director
+      end
+    end
+  end
+
   context "PUT #update" do
     context "with affiliate" do
       let(:account) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
@@ -159,6 +192,7 @@ RSpec.describe FacilityAccountsController do
       it_should_allow :director do
         expect(assigns(:account).expires_at)
           .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-12-05").end_of_day)
+        expect(assigns(:account).facility_id).to eq(facility.id)
         expect(assigns(:account).facilities).to eq([facility])
         expect(assigns(:account)).to be_kind_of PurchaseOrderAccount
         expect(assigns(:account).affiliate)
@@ -185,6 +219,24 @@ RSpec.describe FacilityAccountsController do
         expect(assigns(:account).expires_at)
           .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-5-1").end_of_month.end_of_day)
         expect(assigns(:account).facilities).to eq([facility])
+        expect(assigns(:account).facility_id).to eq(facility.id)
+      end
+    end
+  end
+
+  context "GET #show" do
+    context "when the multi_facility_accounts feature is turned off", feature_setting: { multi_facility_accounts: false, reload_routes: true } do
+      let(:admin) { @admin }
+      let(:purchase_order) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
+
+      before do
+        sign_in admin
+      end
+
+      it "does not show the facilities tab for a per-facility account to global admins" do
+        get :show, params: { facility_id: facility.to_param, id: purchase_order.to_param }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("/accounts/#{purchase_order.id}/facilities/edit")
       end
     end
   end

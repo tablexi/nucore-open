@@ -87,12 +87,6 @@ class UsersController < ApplicationController
                           .paginate(page: params[:page])
   end
 
-  # GET /facilities/:facility_id/users/:user_id/accounts
-  def accounts
-    # accounts for this facility
-    @accounts = @user.accounts.for_facility(current_facility)
-  end
-
   # GET /facilities/:facility_id/users/:id
   def show
   end
@@ -131,19 +125,6 @@ class UsersController < ApplicationController
       flash[:error] = text("update.error", message: @user_form.errors.full_messages.to_sentence)
       render action: "edit"
     end
-  end
-
-  # PATCH /facilities/:facility_id/users/:id/suspend
-  def suspend
-    @user.suspended_at ||= Time.current
-    @user.save!
-    redirect_to facility_user_path(current_facility, @user), notice: text("suspend.success")
-  end
-
-  # PATCH /facilities/:facility_id/users/:id/unsuspend
-  def unsuspend
-    @user.update!(suspended_at: nil)
-    redirect_to facility_user_path(current_facility, @user), notice: text("unsuspend.success")
   end
 
   def unexpire

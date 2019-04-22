@@ -13,11 +13,23 @@ table {
       display: none;
     }
   }
+
+  .centered {
+    text-align: center;
+  }
 }
 
 table {
   .first-in-bundle {
     border-top: 3px solid $navbarActiveBorderColor;
+  }
+}
+
+.table-user-accounts {
+  thead {
+    th {
+      vertical-align: top;
+    }
   }
 }
 
@@ -32,5 +44,9 @@ tfoot.cart {
 
   .table-product-results__description {
     max-width: 444px;
+  }
+
+  .table-user-accounts__remove {
+    max-width: 45px;
   }
 }

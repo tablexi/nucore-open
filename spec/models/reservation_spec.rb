@@ -1346,7 +1346,7 @@ RSpec.describe Reservation do
 
       # Order against the first account
       @order = Order.create(FactoryBot.attributes_for(:order).merge(user: @user, account: @account1, created_by: @user.id))
-      @order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail).merge(product: @instrument, order_status: @os_new))
+      @order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail).merge(product: @instrument, order_status: OrderStatus.new_status))
       reservation.order_detail = @order_detail
       reservation.save
     end

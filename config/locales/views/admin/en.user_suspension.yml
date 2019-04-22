@@ -1,0 +1,7 @@
+en:
+  controllers:
+    user_suspension:
+      create:
+        success: User suspended
+      destroy:
+        success: User reactivated

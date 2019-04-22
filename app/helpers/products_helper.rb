@@ -27,21 +27,16 @@ module ProductsHelper
     }
   end
 
-  def public_calendar_link(product, indent: false)
-    if product.respond_to? :reservations
-      opts = public_calendar_options(product)
-      link_to "", facility_instrument_public_schedule_path(product.facility, product), opts
-    elsif indent
-      content_tag :span, "", class: "fa-lg fa-fw", style: "display: inline-block"
-    end
-  end
+  def public_calendar_link(product)
+    return unless product.respond_to? :reservations
 
-  def product_url_hint(product)
-    public_send(
-      "facility_#{product.class.name.underscore}_url",
-      current_facility.url_name,
-      "URL_NAME".html_safe,
-    )
+    opts = if product.facility.show_instrument_availability?
+      public_calendar_availability_options(product)
+    else
+      { class: ["fa fa-calendar fa-lg fa-fw"], title: t("instruments.public_schedule.icon") }
+    end
+
+    link_to "", facility_instrument_public_schedule_path(product.facility, product), opts
   end
 
   def show_buttons_to_control_all_relays?(products)
@@ -49,15 +44,6 @@ module ProductsHelper
   end
 
   private
-
-  def public_calendar_options(product)
-    if current_facility&.show_instrument_availability? || !current_facility && product.facility.show_instrument_availability?
-      public_calendar_availability_options(product)
-    else
-      { class: ["fa fa-calendar fa-lg fa-fw"],
-        title: t("instruments.public_schedule.icon") }
-    end
-  end
 
   def public_calendar_availability_options(product)
     if product.offline?

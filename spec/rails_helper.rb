@@ -60,11 +60,11 @@ RSpec.configure do |config|
     User.delete_all
 
     # initialize order status constants
-    @os_new        = OrderStatus.find_or_create_by(name: "New")
-    @os_in_process = OrderStatus.find_or_create_by(name: "In Process")
-    @os_complete   = OrderStatus.find_or_create_by(name: "Complete")
-    @os_canceled   = OrderStatus.find_or_create_by(name: "Canceled")
-    @os_reconciled = OrderStatus.find_or_create_by(name: "Reconciled")
+    OrderStatus.find_or_create_by(name: "New")
+    OrderStatus.find_or_create_by(name: "In Process")
+    OrderStatus.find_or_create_by(name: "Complete")
+    OrderStatus.find_or_create_by(name: "Canceled")
+    OrderStatus.find_or_create_by(name: "Reconciled")
 
     # initialize affiliates
     Affiliate.OTHER
@@ -72,8 +72,7 @@ RSpec.configure do |config|
     # initialize price groups
     @nupg = PriceGroup.find_or_create_by(name: Settings.price_group.name.base, is_internal: true, display_order: 1)
     @nupg.save(validate: false)
-    @epg = PriceGroup.find_or_create_by(name: Settings.price_group.name.external, is_internal: false, display_order: 3)
-    @epg.save(validate: false)
+    PriceGroup.find_or_create_by(name: Settings.price_group.name.external, is_internal: false, display_order: 3).save(validate: false)
 
     # Because many specs rely on not crossing a fiscal year boundary we lock the
     # time globally. Rails's `travel_to` helper does not work well with nesting, so

@@ -11,11 +11,7 @@ module TransactionSearch
     end
 
     def search(params)
-      order_details.for_owners(params)
-    end
-
-    def optimized
-      order_details.preload(account: :owner_user)
+      order_details.for_owners(params).preload(account: :owner_user)
     end
 
     def label_method

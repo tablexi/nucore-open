@@ -235,6 +235,8 @@ en:
         current_password: Current password
         last_sign_in_at: Last Login
         full_name: Full Name
+        suspended_at: Suspended
+        suspension_note: Suspension Note
         suspended: SUSPENDED
         expired: EXPIRED
       facility:
@@ -254,6 +256,7 @@ en:
         url: URL
         url_name: URL Name
         requires_approval: Requires Approval?
+        allows_training_requests: Allows Training Requests?
         requires_approval_show: Requires Approval
         initial_order_status: Initial Order Status
         is_archived: Is Inactive?
@@ -264,6 +267,7 @@ en:
         training_request_contacts: Training Request Recipients
         order_notification_recipient: Order Notification Recipient
         cancellation_email_recipients: Cancellation Notification Recipients
+        issue_report_recipients: Alternate Issue Report Recipients
       product_accessory:
         scaling_type: Scaling Type
       instrument:

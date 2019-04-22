@@ -1,13 +1,7 @@
 en:
   models:
     instrument_for_cart:
-      requires_approval: |
-        The %{product_name} instrument requires approval to reserve;
-        please contact the !facility_downcase! for further information:
-
-        %{facility}
-
-        [%{email}](mailto:%{email})
+      requires_approval: "!models.product_for_cart.requires_approval!"
       not_available: |
         The %{product_name} instrument is currently unavailable for reservation online.
       no_accounts: Sorry, but we could not find a valid payment source that you can use to reserve this instrument

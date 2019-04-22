@@ -1,26 +1,9 @@
 - if products.any?
-  - if local_assigns[:title]
-    %h4= local_assigns[:title]
+  .product_list{ class: @columns }
+    %h3= product_list_title products, local_assigns[:title_extra]
 
-  .product_list{ class: [products.first.class.model_name.to_s.pluralize.downcase, @columns] }
-    - if current_facility.present?
-      %h3= product_list_title products, local_assigns[:title_extra]
+    - if products.first.is_a?(TimedService)
+      %p= t("facilities.show.timed_services_note")
 
-      - if products.first.class.model_name == "TimedService"
-        %p= t("facilities.show.timed_services_note")
     %ul
-      - indent_for_icon = products.any? { |p| p.respond_to? :reservations }
-      - products.sort.each do |product|
-        %li{ class: product.class.model_name.to_s.downcase }
-          - if local_assigns[:f]
-            = f.fields_for :order_details do |builder|
-              - if session_user.can_override_restrictions?(product) || product.can_be_used_by?(acting_user)
-                = builder.text_field :quantity, value: 0, class: "product_quantity", index: nil
-                = builder.hidden_field :product_id, value: product.id, index: nil
-          = public_calendar_link(product, indent: indent_for_icon)
-          = link_to product.name + (product.is_hidden? ? ' (hidden)' : ''), facility_product_path(current_facility || product.facility, product)
-          - if acting_user.present? && !product.can_be_used_by?(acting_user)
-            %i.fa.fa-lock
-            = " (#{product.class.human_attribute_name(:requires_approval_show)})"
-
-          = warning_if_instrument_is_offline_or_partially_available(product)
+      = render partial: "product", collection: products, locals: { f: local_assigns[:f] }

@@ -155,7 +155,7 @@ class OrderRowImporter
       @order_import
       .facility
       .products
-      .active_plus_hidden
+      .not_archived
       .find_by(name: product_field)
   end
 

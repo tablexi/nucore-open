@@ -1,5 +1,0 @@
-%div[reservation, :tooltip]
-  - if public_timeline?
-    %span= reservation_date_range_display(@display_datetime, reservation)
-  - else
-    = render partial: 'shared/timeline/facility_tooltip', locals: { reservation: reservation }

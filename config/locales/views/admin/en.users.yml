@@ -25,9 +25,5 @@ en:
       update:
         error: There was an error updating the user. %{message}
         success: The user has been updated successfully.
-      suspend:
-        success: User suspended
-      unsuspend:
-        success: User reactivated
       unexpire:
         success: Expiration removed from user
