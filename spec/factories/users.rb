@@ -123,5 +123,17 @@ FactoryBot.define do
         )
       end
     end
+
+    trait :facility_billing_administrator do
+      transient { facility { nil } }
+
+      after(:create) do |user, evaluator|
+        UserRole.create!(
+          user: user,
+          role: UserRole::FACILITY_BILLING_ADMINISTRATOR,
+          facility: evaluator.facility,
+        )
+      end
+    end
   end
 end

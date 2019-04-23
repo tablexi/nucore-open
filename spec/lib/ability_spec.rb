@@ -245,6 +245,49 @@ RSpec.describe Ability do
     end
   end
 
+  describe "facility billing administrator" do
+    let(:user) { create(:user, :facility_billing_administrator, facility: facility) }
+
+    it { is_expected.to be_allowed_to(:manage, Account) }
+    it { is_expected.to be_allowed_to(:manage, Journal) }
+    it { is_expected.to be_allowed_to(:manage, Statement) }
+    it { is_expected.to be_allowed_to(:manage, OrderDetail) }
+    it_is_not_allowed_to([:edit, :update]) { FactoryBot.create(:user) }
+    it_is_not_allowed_to([:accounts, :index, :orders, :show, :create, :switch_to], User)
+
+    context "in a single facility" do
+      let(:subject_resource) { facility }
+
+      %i(disputed_orders movable_transactions transactions).each do |action|
+        it { is_expected.to be_allowed_to(action, subject_resource) }
+      end
+      it { is_expected.to be_allowed_to(:manage_billing, subject_resource) }
+      it { is_expected.to be_allowed_to(:manage_users, subject_resource) }
+      it_is_allowed_to([:accounts, :index, :show], User)
+      it_is_not_allowed_to([:create, :orders, :switch_to], User)
+      it_is_allowed_to([:send_receipt, :show], Order)
+      it_is_not_allowed_to([:send_receipt, :show], Order)
+      it_is_allowed_to([:show], Reservation)
+      it_is_not_allowed_to([:edit, :update, :destroy], Reservation)
+      it { is_expected.to be_allowed_to(:administer, :index, :show, Product) }
+      it { is_expected.not_to be_allowed_to(:edit, :update, :destroy, Product) }
+    end
+
+    context "in cross-facility" do
+      let(:subject_resource) { Facility.cross_facility }
+
+      %i(disputed_orders movable_transactions transactions).each do |action|
+        it { is_expected.to_not be_allowed_to(action, subject_resource) }
+      end
+      it { is_expected.to_not be_allowed_to(:manage_billing, subject_resource) }
+      it { is_expected.to_not be_allowed_to(:manage_users, subject_resource) }
+      it_is_not_allowed_to([:accounts, :index, :orders, :show, :create, :switch_to], User)
+      it { is_expected.not_to be_allowed_to(:show, Order) }
+      it { is_expected.not_to be_allowed_to(:manage, Reservation) }
+      it { is_expected.not_to be_allowed_to(:administer, Product) }
+    end
+  end
+
   describe "facility administrator" do
     let(:user) { create(:user, :facility_administrator, facility: facility) }
 
