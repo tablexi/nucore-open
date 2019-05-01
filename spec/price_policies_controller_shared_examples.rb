@@ -44,7 +44,13 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       @action = :new
     end
 
-    it_should_allow_managers_only {}
+    context "when facility_directors_can_manage_price_groups on", feature_setting: { facility_directors_can_manage_price_groups: true } do
+      it_should_allow_managers_only {}
+    end
+
+    context "when facility_directors_can_manage_price_groups off", feature_setting: { facility_directors_can_manage_price_groups: false } do
+      it_should_allow_admin_only {}
+    end
 
     context "signed in" do
       before :each do
@@ -162,7 +168,13 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
       @params.merge!(id: @price_policy.start_date.to_s)
     end
 
-    it_should_allow_managers_only {}
+    context "when facility_directors_can_manage_price_groups on", feature_setting: { facility_directors_can_manage_price_groups: true } do
+      it_should_allow_managers_only {}
+    end
+
+    context "when facility_directors_can_manage_price_groups off", feature_setting: { facility_directors_can_manage_price_groups: false } do
+      it_should_allow_admin_only {}
+    end
 
     context "signed in" do
       before :each do
@@ -228,7 +240,13 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         @params_modifier.before_create @params if @params_modifier.try :respond_to?, :before_create
       end
 
-      it_should_allow_managers_only(:redirect) {}
+      context "when facility_directors_can_manage_price_groups on", feature_setting: { facility_directors_can_manage_price_groups: true } do
+        it_should_allow_managers_only(:redirect) {}
+      end
+
+      context "when facility_directors_can_manage_price_groups off", feature_setting: { facility_directors_can_manage_price_groups: false } do
+        it_should_allow_admin_only(:redirect) {}
+      end
 
       context "signed in" do
         before :each do
@@ -332,7 +350,13 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         end
       end
 
-      it_should_allow_managers_only(:redirect) {}
+      context "when facility_directors_can_manage_price_groups on", feature_setting: { facility_directors_can_manage_price_groups: true } do
+        it_should_allow_managers_only(:redirect) {}
+      end
+
+      context "when facility_directors_can_manage_price_groups off", feature_setting: { facility_directors_can_manage_price_groups: false } do
+        it_should_allow_admin_only(:redirect) {}
+      end
 
       context "when signed in as a director" do
         before { maybe_grant_always_sign_in(:director) }
@@ -478,7 +502,13 @@ RSpec.shared_examples_for PricePoliciesController do |product_type, params_modif
         expect(price_policy.start_date).to be > Time.zone.now
       end
 
-      it_should_allow_managers_only(:redirect) {}
+      context "when facility_directors_can_manage_price_groups on", feature_setting: { facility_directors_can_manage_price_groups: true } do
+        it_should_allow_managers_only(:redirect) {}
+      end
+
+      context "when facility_directors_can_manage_price_groups off", feature_setting: { facility_directors_can_manage_price_groups: false } do
+        it_should_allow_admin_only(:redirect) {}
+      end
 
       context "when signed in as a director" do
         let!(:price_policies) { product.price_policies.for_date(price_policy.start_date) }
