@@ -296,6 +296,14 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"
+
+    context "when facility_directors_can_manage_price_groups on", feature_setting: { facility_directors_can_manage_price_groups: false } do
+      it_is_not_allowed_to([:create, :edit, :update, :destroy], PriceGroup)
+      it_is_not_allowed_to([:create, :edit, :update, :destroy], PricePolicy)
+      it_is_not_allowed_to([:create, :edit, :update, :destroy], InstrumentPricePolicy)
+      it_is_not_allowed_to([:create, :edit, :update, :destroy], ItemPricePolicy)
+      it_is_not_allowed_to([:create, :edit, :update, :destroy], ServicePricePolicy)
+    end
   end
 
   shared_examples_for "it has common staff abilities" do
