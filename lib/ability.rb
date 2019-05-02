@@ -180,9 +180,6 @@ class Ability
           StoredFile,
           TrainingRequest,
         ]
-        if user.facility_director_of?(resource) && SettingsHelper.feature_off?(:facility_directors_can_manage_price_groups) 
-          cannot [:create, :edit, :update, :destroy], PriceGroup
-        end
 
         can :manage, User if controller.is_a?(FacilityUsersController)
         cannot([:edit, :update], User)
@@ -212,6 +209,11 @@ class Ability
         # they can get to reports controller, but they're not allowed to export all
         can :manage, Reports::ReportsController
         cannot :export_all, Reports::ReportsController
+      end
+
+      if user.facility_director_of?(resource) && SettingsHelper.feature_off?(:facility_directors_can_manage_price_groups)
+        cannot [:create, :edit, :update, :destroy], PriceGroup
+        cannot [:create, :edit, :update, :destroy], [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
       end
 
     elsif resource.is_a?(Account)
