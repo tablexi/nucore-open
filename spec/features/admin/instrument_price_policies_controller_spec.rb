@@ -16,7 +16,7 @@ RSpec.describe InstrumentPricePoliciesController do
     facility.price_groups.destroy_all # get rid of the price groups created by the factories
   end
 
-  it "can set up the price policies", :js do
+  it "can set up the price policies", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
     visit facility_instruments_path(facility, instrument)
     click_link instrument.name
     click_link "Pricing"
@@ -48,7 +48,7 @@ RSpec.describe InstrumentPricePoliciesController do
     expect(page).to have_content("This is my note")
   end
 
-  it "can only allow some to purchase", :js do
+  it "can only allow some to purchase", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
     visit facility_instruments_path(facility, instrument)
     click_link instrument.name
     click_link "Pricing"
@@ -70,7 +70,7 @@ RSpec.describe InstrumentPricePoliciesController do
     expect(page).not_to have_content(cancer_center.name)
   end
 
-  describe "with required note enabled", feature_setting: { price_policy_requires_note: true } do
+  describe "with required note enabled", feature_setting: { price_policy_requires_note: true, facility_directors_can_manage_price_groups: true } do
     it "requires the field" do
       visit facility_instruments_path(facility, instrument)
       click_link instrument.name
@@ -82,7 +82,7 @@ RSpec.describe InstrumentPricePoliciesController do
     end
   end
 
-  describe "with full cancellation cost enabled", :js, feature_setting: { charge_full_price_on_cancellation: true } do
+  describe "with full cancellation cost enabled", :js, feature_setting: { charge_full_price_on_cancellation: true, facility_directors_can_manage_price_groups: true } do
     it "can set up the price policies", :js do
       visit facility_instruments_path(facility, instrument)
       click_link instrument.name
