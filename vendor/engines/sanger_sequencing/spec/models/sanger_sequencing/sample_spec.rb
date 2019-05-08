@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe SangerSequencing::Sample do
   it "belongs to a submission" do
     submission = SangerSequencing::Submission.create!
-    sample = described_class.create!(submission: submission)
+    sample = described_class.create!(submission: submission, customer_sample_id: "1234")
     expect(sample.submission).to eq(submission)
   end
 
@@ -21,7 +21,10 @@ RSpec.describe SangerSequencing::Sample do
 
     describe "when ID is nil (before being persisted)" do
       let(:id) { nil }
-      it { is_expected.to be_blank }
+
+      it "returns a 4-digit number" do
+        expect(subject.length).to eq 4
+      end
     end
 
     describe "when the ID is large" do

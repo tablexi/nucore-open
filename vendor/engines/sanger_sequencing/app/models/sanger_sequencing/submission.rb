@@ -39,16 +39,6 @@ module SangerSequencing
       end
     end
 
-    def create_samples!(quantity)
-      quantity = quantity.to_i
-      # Always create at least one sample, even if input was invalid
-      quantity = [1, quantity].max
-
-      transaction do
-        Array.new(quantity) { samples.create! }
-      end
-    end
-
     def has_results_files?
       order_detail.sample_results_files.present?
     end
