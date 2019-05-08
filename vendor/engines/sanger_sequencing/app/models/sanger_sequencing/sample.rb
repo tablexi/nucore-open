@@ -7,7 +7,7 @@ module SangerSequencing
     self.table_name = "sanger_sequencing_samples"
     belongs_to :submission
 
-    validates :customer_sample_id, presence: true, on: :update
+    validates :customer_sample_id, presence: true
 
     default_scope { order(:id) }
 
@@ -26,9 +26,8 @@ module SangerSequencing
     private
 
     def default_customer_sample_id
-      return "" unless id
-      # last four digits of the id as a zero-padded string
-      format("%04d", id).last(4)
+      number = id || Time.now.to_i
+      ("%04d" % number).last(4)
     end
 
   end

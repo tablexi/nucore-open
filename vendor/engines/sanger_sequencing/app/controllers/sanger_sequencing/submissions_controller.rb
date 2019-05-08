@@ -27,8 +27,13 @@ module SangerSequencing
     end
 
     def new
-      clean_samples
-      @submission.create_samples!(params[:quantity]) if @submission.samples.empty?
+      if @submission.samples.empty?
+        starting_customer_sample_id = Time.now.to_i
+        params[:quantity].to_i.times do |n|
+          sample_id = ("%04d" % (starting_customer_sample_id + n)).last(4)
+          @submission.samples.new(customer_sample_id: sample_id)
+        end
+      end
       render :edit
     end
 
@@ -36,20 +41,15 @@ module SangerSequencing
     end
 
     def edit
-      clean_samples
+      @submission.samples.new if @submission.samples.empty?
     end
 
     def update
-      if SubmissionUpdater.new(@submission).update_attributes(submission_params)
+      if @submission.update(submission_params)
         redirect_to "#{params[:success_url]}&#{external_return_options.to_query}"
       else
         render :edit
       end
-    end
-
-    def fetch_ids
-      new_samples = @submission.create_samples!(NEW_IDS_COUNT)
-      render json: new_samples.map { |s| { id: s.id, customer_sample_id: s.form_customer_sample_id } }
     end
 
     def current_ability
@@ -68,11 +68,6 @@ module SangerSequencing
 
     def current_facility
       @current_facility ||= @submission.try(:facility)
-    end
-
-    def clean_samples
-      # Clean up from abandoned submissions that might have requested extra IDs
-      @submission.samples.where(customer_sample_id: nil).delete_all
     end
 
     def submission_params

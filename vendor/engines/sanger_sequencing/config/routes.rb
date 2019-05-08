@@ -4,9 +4,7 @@
 # /sanger_sequencing/submissions/new and the back end /facilities/xxx/sanger_sequencing/submissions
 Rails.application.routes.draw do
   namespace :sanger_sequencing, path: I18n.t("sanger_sequencing.route") do
-    resources :submissions, only: [:new, :show, :edit, :update] do
-      get :fetch_ids, on: :member
-    end
+    resources :submissions, only: [:new, :show, :edit, :update]
   end
 
   resources :facilities, only: [] do

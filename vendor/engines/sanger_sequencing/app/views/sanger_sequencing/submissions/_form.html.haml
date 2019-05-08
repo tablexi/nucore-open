@@ -1,4 +1,4 @@
-= simple_form_for @submission, html: { data: { fetch_ids_url: fetch_ids_sanger_sequencing_submission_path(@submission) } } do |f|
+= simple_form_for @submission do |f|
   = hidden_field_tag :referer, params[:referer]
   = hidden_field_tag :success_url, params[:success_url]
   %table.table.table-striped.table-tight
