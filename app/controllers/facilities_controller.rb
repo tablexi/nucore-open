@@ -51,16 +51,11 @@ class FacilitiesController < ApplicationController
 
     if acting_as? || session_user.try(:operator_of?, current_facility)
       @instruments = instruments_scope.not_archived.alphabetized
-      @items = current_facility.items.not_archived.alphabetized
-      @services = current_facility.services.not_archived.alphabetized
-      @timed_services = current_facility.timed_services.not_archived.alphabetized
-      @bundles = current_facility.bundles.not_archived.alphabetized
+      @non_instrument_products_by_type = current_facility.non_instrument_products.not_archived.group_by(&:type)
     else
       @instruments = instruments_scope.active.alphabetized
-      @items = current_facility.items.active.alphabetized
-      @services = current_facility.services.active.alphabetized
-      @timed_services = current_facility.timed_services.active.alphabetized
-      @bundles = current_facility.bundles.active.alphabetized.reject{|b| !b.products_active?}
+      @non_instrument_products_by_type = current_facility.non_instrument_products.active.group_by(&:type)
+      @non_instrument_products_by_type["Bundle"].select!(&:products_active?)
     end
 
     render layout: "application"
