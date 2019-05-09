@@ -55,7 +55,7 @@ class FacilitiesController < ApplicationController
     else
       @instruments = instruments_scope.active.alphabetized
       @non_instrument_products_by_type = current_facility.non_instrument_products.active.group_by(&:type)
-      @non_instrument_products_by_type["Bundle"].select!(&:products_active?)
+      @non_instrument_products_by_type["Bundle"].try(:select!, &:products_active?)
     end
 
     render layout: "application"
