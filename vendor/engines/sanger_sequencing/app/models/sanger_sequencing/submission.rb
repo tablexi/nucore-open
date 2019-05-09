@@ -49,6 +49,16 @@ module SangerSequencing
       order_detail.bundle.blank?
     end
 
+    def create_prefilled_sample
+      transaction do
+        sample = samples.new
+        sample.save(validate: false)
+        customer_sample_id = ("%04d" % sample.id).last(4)
+        sample.update_column(:customer_sample_id, customer_sample_id)
+        sample
+      end
+    end
+
     private
 
     def savable_samples
