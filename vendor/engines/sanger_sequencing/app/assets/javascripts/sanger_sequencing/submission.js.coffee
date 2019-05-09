@@ -1,5 +1,9 @@
 $ ->
   $(document).on "fields_added.nested_form_fields", (event) ->
-    lastCustomerSampleId = $(".js--customerSampleId").last().val() || Date.now().valueOf()
-    newCustomerSampleId = (lastCustomerSampleId + 1) % 10000
-    $(event.target).find(".js--customerSampleId").val(newCustomerSampleId)
+    url = $(".edit_sanger_sequencing_submission").data("create-sample-url")
+    row = $(event.target)
+    customerSampleIdField = row.find(".js--customerSampleId")
+    customerSampleIdField.prop("disabled", true).val("Loading...")
+    $.post(url).done (sample) ->
+      customerSampleIdField.prop("disabled", false).val(sample.customer_sample_id)
+      row.find(".js--sampleId").val(sample.id).text(sample.id)

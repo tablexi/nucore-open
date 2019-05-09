@@ -27,13 +27,7 @@ module SangerSequencing
     end
 
     def new
-      if @submission.samples.empty?
-        starting_customer_sample_id = Time.now.to_i
-        params[:quantity].to_i.times do |n|
-          sample_id = ("%04d" % (starting_customer_sample_id + n)).last(4)
-          @submission.samples.new(customer_sample_id: sample_id)
-        end
-      end
+      5.times { @submission.create_prefilled_sample } if @submission.samples.none?
       render :edit
     end
 
@@ -41,7 +35,6 @@ module SangerSequencing
     end
 
     def edit
-      @submission.samples.new if @submission.samples.empty?
     end
 
     def update
@@ -50,6 +43,11 @@ module SangerSequencing
       else
         render :edit
       end
+    end
+
+    def create_sample
+      sample = @submission.create_prefilled_sample
+      render json: sample.slice(:id, :customer_sample_id)
     end
 
     def current_ability
