@@ -17,16 +17,12 @@
     .button_row
       = f.submit class: ['btn', 'btn-primary']
     = render partial: 'product_list', locals: { products: @instruments, f: f, title_extra: daily_view_link }
-    = render partial: 'product_list', locals: { products: @services, f: f }
-    = render partial: 'product_list', locals: { products: @timed_services, f: f }
-    = render partial: 'product_list', locals: { products: @items, f: f }
-    = render partial: 'product_list', locals: { products: @bundles, f: f }
+    - ["Service", "TimedService", "Item", "Bundle"].each do |type|
+      = render partial: 'product_list', locals: { products: @non_instrument_products_by_type.fetch(type, []), f: f }
     .button_row
       = f.submit class: ['btn', 'btn-primary']
 - else
   .product_list_container{class: @columns}
     = render partial: 'product_list', locals: { products: @instruments, title_extra: daily_view_link }
-    = render partial: 'product_list', locals: { products: @services }
-    = render partial: 'product_list', locals: { products: @timed_services }
-    = render partial: 'product_list', locals: { products: @items }
-    = render partial: 'product_list', locals: { products: @bundles }
+    - ["Service", "TimedService", "Item", "Bundle"].each do |type|
+      = render partial: 'product_list', locals: { products: @non_instrument_products_by_type.fetch(type, []) }
