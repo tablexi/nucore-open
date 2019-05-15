@@ -266,7 +266,7 @@ RSpec.describe Ability do
       it_is_allowed_to([:accounts, :index, :show], User)
       it_is_not_allowed_to([:create, :orders, :switch_to], User)
       it_is_allowed_to([:send_receipt, :show], Order)
-      it_is_not_allowed_to([:send_receipt, :show], Order)
+      it_is_not_allowed_to([:update, :edit, :new, :destroy], Order)
       it_is_allowed_to([:show], Reservation)
       it_is_not_allowed_to([:edit, :update, :destroy], Reservation)
       it { is_expected.to be_allowed_to(:administer, :index, :show, Product) }
