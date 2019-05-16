@@ -50,6 +50,9 @@ class Ability
   end
 
 
+  # This method is the only role-specific method called for administrators because `can :manage, :all`
+  # grants all abilities.  If an administrator has another role, calling its role-specific method could
+  # only reduce the number of abilities (if that method had a `cannot`)
   def administrator_abilities(user, resource)
     if resource.is_a?(PriceGroup)
       can :manage, UserPriceGroupMember if resource.admin_editable?
@@ -135,113 +138,6 @@ class Ability
     if resource.is_a?(TrainingRequest)
       can :create, TrainingRequest
     end
-  end
-
-
-  def operator_abilities_for_facility(user, resource, controller)
-    can :manage, [
-      AccountPriceGroupMember,
-      OrderDetail,
-      ProductUser,
-      TrainingRequest,
-      UserPriceGroupMember,
-    ]
-
-    can :read, Notification
-
-    can [
-      :administer,
-      :assign_price_policies_to_problem_orders,
-      :batch_update,
-      :cancel,
-      :create,
-      :edit,
-      :edit_admin,
-      :index,
-      :show,
-      :tab_counts,
-      :timeline,
-      :update,
-      :update_admin,
-    ], Reservation
-
-    can(:destroy, Reservation, &:admin?)
-    cannot :manage, OfflineReservation  # ideally we don't use `cannot` as it adds a dependency on the order of assigning abilities for multiple roles
-
-    can [
-      :administer,
-      :assign_price_policies_to_problem_orders,
-      :batch_update,
-      :create,
-      :index,
-      :order_in_past,
-      :send_receipt,
-      :show,
-      :tab_counts,
-      :update,
-    ], Order
-
-    can [:administer, :index, :view_details, :schedule, :show], Product
-
-    can [:index], StoredFile
-    can [:upload_sample_results, :destroy], StoredFile do |fileupload|
-      fileupload.file_type == "sample_result"
-    end
-
-    can [:administer], User
-    can(:switch_to, User, &:active?)
-
-    if controller.is_a?(UsersController)
-      can [:read, :create, :search, :access_list, :access_list_approvals, :new_external, :orders, :accounts], User
-    end
-
-    can :user_search_results, User if controller.is_a?(SearchController)
-
-    can [:list, :dashboard, :show], Facility
-    can :act_as, Facility
-    can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
-    can [:instrument_status, :instrument_statuses, :switch], Instrument
-    can :edit, [PriceGroupProduct]
-  end
-
-
-  def manager_abilities_for_facility(user, facility, controller)
-    operator_abilities_for_facility(user, facility, controller)
-
-    can :manage, [
-      AccountUser,
-      BundleProduct,
-      Facility,
-      FacilityAccount,
-      Journal,
-      OrderImport,
-      OrderStatus,
-      PriceGroupProduct,
-      Product,
-      ProductAccessGroup,
-      ProductAccessory,
-      Reports::ReportsController,
-      ScheduleRule,
-      Statement,
-      StoredFile,
-      TrainingRequest,
-      OfflineReservation,
-    ]
-
-    can :manage, User if controller.is_a?(FacilityUsersController)
-
-    # ideally we don't use `cannot` as it adds a dependency on the order of assigning abilities for multiple roles
-    cannot([:edit, :update], User)
-    cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
-
-    # A facility admin can manage an account if it is global (i.e. it's a chart string) or the account
-    # is attached to the current facility.
-    can :manage, Account do |account|
-      account.global? || account.account_facility_joins.any? { |af| af.facility_id == facility.id }
-    end
-
-    can [:show_problems], [Order, Reservation]
-    can [:activate, :deactivate], ExternalService
   end
 
 
@@ -364,6 +260,113 @@ class Ability
       can :manage, AccountUser
       can [:show, :suspend, :unsuspend, :user_search, :user_accounts, :statements, :show_statement, :index], Statement
     end
+  end
+
+
+  def operator_abilities_for_facility(user, resource, controller)
+    can :manage, [
+      AccountPriceGroupMember,
+      OrderDetail,
+      ProductUser,
+      TrainingRequest,
+      UserPriceGroupMember,
+    ]
+
+    can :read, Notification
+
+    can [
+      :administer,
+      :assign_price_policies_to_problem_orders,
+      :batch_update,
+      :cancel,
+      :create,
+      :edit,
+      :edit_admin,
+      :index,
+      :show,
+      :tab_counts,
+      :timeline,
+      :update,
+      :update_admin,
+    ], Reservation
+
+    can(:destroy, Reservation, &:admin?)
+    cannot :manage, OfflineReservation  # ideally we don't use `cannot` as it adds a dependency on the order of assigning abilities for multiple roles
+
+    can [
+      :administer,
+      :assign_price_policies_to_problem_orders,
+      :batch_update,
+      :create,
+      :index,
+      :order_in_past,
+      :send_receipt,
+      :show,
+      :tab_counts,
+      :update,
+    ], Order
+
+    can [:administer, :index, :view_details, :schedule, :show], Product
+
+    can [:index], StoredFile
+    can [:upload_sample_results, :destroy], StoredFile do |fileupload|
+      fileupload.file_type == "sample_result"
+    end
+
+    can [:administer], User
+    can(:switch_to, User, &:active?)
+
+    if controller.is_a?(UsersController)
+      can [:read, :create, :search, :access_list, :access_list_approvals, :new_external, :orders, :accounts], User
+    end
+
+    can :user_search_results, User if controller.is_a?(SearchController)
+
+    can [:list, :dashboard, :show], Facility
+    can :act_as, Facility
+    can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
+    can [:instrument_status, :instrument_statuses, :switch], Instrument
+    can :edit, [PriceGroupProduct]
+  end
+
+
+  def manager_abilities_for_facility(user, facility, controller)
+    operator_abilities_for_facility(user, facility, controller)
+
+    can :manage, [
+      AccountUser,
+      BundleProduct,
+      Facility,
+      FacilityAccount,
+      Journal,
+      OrderImport,
+      OrderStatus,
+      PriceGroupProduct,
+      Product,
+      ProductAccessGroup,
+      ProductAccessory,
+      Reports::ReportsController,
+      ScheduleRule,
+      Statement,
+      StoredFile,
+      TrainingRequest,
+      OfflineReservation,
+    ]
+
+    can :manage, User if controller.is_a?(FacilityUsersController)
+
+    # ideally we don't use `cannot` as it adds a dependency on the order of assigning abilities for multiple roles
+    cannot([:edit, :update], User)
+    cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
+
+    # A facility admin can manage an account if it is global (i.e. it's a chart string) or the account
+    # is attached to the current facility.
+    can :manage, Account do |account|
+      account.global? || account.account_facility_joins.any? { |af| af.facility_id == facility.id }
+    end
+
+    can [:show_problems], [Order, Reservation]
+    can [:activate, :deactivate], ExternalService
   end
 
 end
