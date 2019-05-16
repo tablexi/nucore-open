@@ -17,24 +17,22 @@ class Ability
   def initialize(user, resource, controller = nil)
     return unless user
 
-    # common abilities
-    non_administrator_abilities(user, resource, controller) unless user.administrator?
-
-    # global abilities
     if user.administrator?
       administrator_abilities(user, resource)
-      ability_extender.extend(user, resource)
-      return
-    end
-    account_manager_abilities(user, resource) if user.account_manager?
-    billing_administrator_abilities(user, resource) if user.billing_administrator?
 
-    # resource abilities
-    operator_abilities(user, resource, controller)
-    manager_abilities(user, resource, controller)
-    facility_director_abilities(user, resource)
-    facility_senior_staff_abilities(user, resource)
-    account_administrator_abilities(user, resource)
+    else
+      account_manager_abilities(user, resource) if user.account_manager?
+      billing_administrator_abilities(user, resource) if user.billing_administrator?
+
+      common_abilities(user, resource, controller)
+
+      operator_abilities(user, resource, controller)
+      manager_abilities(user, resource, controller)
+      facility_director_abilities(user, resource)
+      facility_administrator_abilities(user, resource)
+      facility_senior_staff_abilities(user, resource)
+      account_administrator_abilities(user, resource)
+    end
 
     ability_extender.extend(user, resource)    #!!!!!!!!!!!!!!!!!!!  skipped for account_manager & billing_administrator
   end
@@ -55,50 +53,16 @@ class Ability
   end
 
 
-  def non_administrator_abilities(user, resource, controller)
-    can :list, Facility if user.facilities.size > 0 && controller.is_a?(FacilitiesController)
-    can :read, Notification if user.notifications.active.any?
-    can :complete, ExternalService if resource.is_a?(Facility)
-    can :create, TrainingRequest if resource.is_a?(Facility)
-
-    if resource.is_a?(OrderDetail)
-      # Purchaser
-      can [:add_accessories, :sample_results, :sample_results_zip, :show, :update, :cancel, :template_results,
-           :order_file, :upload_order_file, :remove_order_file], OrderDetail, order: { user_id: user.id }
-    end
-
-    if resource.is_a?(PriceGroup)
-      if user_has_facility_role?(user) && editable_global_group?(resource)      # !!!!!!!!!!!!!!!!!!!!!!!
-        can :read, UserPriceGroupMember
-      end
-    end
-
-    if resource.is_a?(Reservation)
-      # TODO: Add :accessory hash back in to hide hidden accessories from non-admin users
-      # See task #55479
-      can :read, ProductAccessory # , :accessory => { :is_hidden => false }
-
-      if resource.order.try(:user_id) == user.id
-        can [:read, :create, :update, :destroy, :start_stop, :move], Reservation
-      end
-    end
-
-    if resource.is_a?(TrainingRequest)
-      can :create, TrainingRequest
-    end
-  end
-
-
   def administrator_abilities(user, resource)
     if resource.is_a?(PriceGroup)
       can :manage, UserPriceGroupMember if resource.admin_editable?
       can :manage, AccountPriceGroupMember
     else
       can :manage, :all
-      unless user.billing_administrator?     # !!!!!!!!!!!!!!!!!!!!!!!
+      unless user.billing_administrator?
         cannot [:manage_accounts, :manage_billing], Facility.cross_facility
       end
-      unless user.account_manager?            # !!!!!!!!!!!!!!!!!!!!!!!
+      unless user.account_manager?
         cannot :manage, User unless resource.is_a?(Facility)
         if SettingsHelper.feature_off?(:create_users)
           cannot([:edit, :update], User)
@@ -134,6 +98,39 @@ class Ability
     can :manage_users, Facility.cross_facility if SettingsHelper.feature_on?(:billing_administrator_users_tab)
     can :manage_billing, Facility.cross_facility
     can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
+  end
+
+
+  def common_abilities(user, resource, controller)
+    can :list, Facility if user.facilities.size > 0 && controller.is_a?(FacilitiesController)
+    can :read, Notification if user.notifications.active.any?
+    can :complete, ExternalService if resource.is_a?(Facility)
+    can :create, TrainingRequest if resource.is_a?(Facility)
+
+    if resource.is_a?(OrderDetail)
+      can [:add_accessories, :sample_results, :sample_results_zip, :show, :update, :cancel, :template_results,
+           :order_file, :upload_order_file, :remove_order_file], OrderDetail, order: { user_id: user.id }
+    end
+
+    if resource.is_a?(PriceGroup)
+      if user_has_facility_role?(user) && editable_global_group?(resource)      # !!!!!!!!!!!!!!!!!!!!!!!
+        can :read, UserPriceGroupMember
+      end
+    end
+
+    if resource.is_a?(Reservation)
+      # TODO: Add :accessory hash back in to hide hidden accessories from non-admin users
+      # See task #55479
+      can :read, ProductAccessory # , :accessory => { :is_hidden => false }
+
+      if resource.order.try(:user_id) == user.id
+        can [:read, :create, :update, :destroy, :start_stop, :move], Reservation
+      end
+    end
+
+    if resource.is_a?(TrainingRequest)
+      can :create, TrainingRequest
+    end
   end
 
 
@@ -233,27 +230,19 @@ class Ability
         BundleProduct,
         Facility,
         FacilityAccount,
-        InstrumentPricePolicy,
-        ItemPricePolicy,
         Journal,
         OrderImport,
         OrderStatus,
-        PriceGroup,
         PriceGroupProduct,
-        PricePolicy,
         Product,
         ProductAccessGroup,
         ProductAccessory,
         Reports::ReportsController,
         ScheduleRule,
-        ServicePricePolicy,
         Statement,
         StoredFile,
         TrainingRequest,
       ]
-      if user.facility_director_of?(resource) && SettingsHelper.feature_off?(:facility_directors_can_manage_price_groups)   # !!!!!!!!!!!!!!!!!!!!!!!
-        cannot [:create, :edit, :update, :destroy], PriceGroup
-      end
 
       can :manage, User if controller.is_a?(FacilityUsersController)
       cannot([:edit, :update], User)
@@ -274,6 +263,24 @@ class Ability
   def facility_director_abilities(user, resource)
     if resource.is_a?(TrainingRequest) && user.facility_director_of?(resource.product.facility)
       can :manage, TrainingRequest
+    end
+
+    if resource.is_a?(Facility) && user.facility_director_of?(resource)
+      if SettingsHelper.feature_on?(:facility_directors_can_manage_price_groups)
+        can :manage, PriceGroup
+        can :manage, [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
+      else
+        can [:show, :index], PriceGroup
+        can [:show, :index], [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
+      end
+    end
+  end
+
+
+  def facility_administrator_abilities(user, resource)
+    if resource.is_a?(Facility) && user.facility_administrator_of?(resource)
+      can :manage, PriceGroup
+      can :manage, [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
     end
   end
 
