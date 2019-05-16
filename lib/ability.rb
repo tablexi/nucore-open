@@ -37,18 +37,6 @@ class Ability
 
   private
 
-  def user_has_facility_role?(user)
-    (user.user_roles.map(&:role) & UserRole.facility_roles).any?
-  end
-
-  def editable_global_group?(resource)
-    resource.global? && resource.admin_editable?
-  end
-
-  def ability_extender
-    @extender ||= AbilityExtensionManager.new(self)
-  end
-
 
   # This method is the only role-specific method called for administrators because `can :manage, :all`
   # grants all abilities.  If an administrator has another role, calling its role-specific method could
@@ -71,37 +59,6 @@ class Ability
     end
 
     cannot(:switch_to, User) { |target_user| !target_user.active? }
-  end
-
-
-  def account_manager_abilities(user, resource)
-    return unless user.account_manager?
-
-    can [:manage_accounts, :manage_users], Facility.cross_facility
-
-    if resource.blank? || resource == Facility.cross_facility
-      can :manage, AccountUser
-      can [:create, :read, :administer, :accounts, :new_external, :search], User
-      can [:create, :read, :update, :suspend, :unsuspend], Account
-      if SettingsHelper.feature_off?(:create_users)
-        cannot([:create, :update], User)
-      end
-    end
-  end
-
-
-  def billing_administrator_abilities(user, resource)
-    return unless user.billing_administrator?
-
-    can :manage, [Account, Journal, OrderDetail]
-    can :manage, Statement if resource.is_a?(Facility)
-    can [:send_receipt, :show], Order
-    if resource == Facility.cross_facility
-      can [:accounts, :index, :orders, :show, :administer], User
-    end
-    can :manage_users, Facility.cross_facility if SettingsHelper.feature_on?(:billing_administrator_users_tab)
-    can :manage_billing, Facility.cross_facility
-    can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
   end
 
 
@@ -138,6 +95,37 @@ class Ability
     if resource.is_a?(TrainingRequest)
       can :create, TrainingRequest
     end
+  end
+
+
+  def account_manager_abilities(user, resource)
+    return unless user.account_manager?
+
+    can [:manage_accounts, :manage_users], Facility.cross_facility
+
+    if resource.blank? || resource == Facility.cross_facility
+      can :manage, AccountUser
+      can [:create, :read, :administer, :accounts, :new_external, :search], User
+      can [:create, :read, :update, :suspend, :unsuspend], Account
+      if SettingsHelper.feature_off?(:create_users)
+        cannot([:create, :update], User)
+      end
+    end
+  end
+
+
+  def billing_administrator_abilities(user, resource)
+    return unless user.billing_administrator?
+
+    can :manage, [Account, Journal, OrderDetail]
+    can :manage, Statement if resource.is_a?(Facility)
+    can [:send_receipt, :show], Order
+    if resource == Facility.cross_facility
+      can [:accounts, :index, :orders, :show, :administer], User
+    end
+    can :manage_users, Facility.cross_facility if SettingsHelper.feature_on?(:billing_administrator_users_tab)
+    can :manage_billing, Facility.cross_facility
+    can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
   end
 
 
@@ -367,6 +355,21 @@ class Ability
 
     can [:show_problems], [Order, Reservation]
     can [:activate, :deactivate], ExternalService
+  end
+
+
+  def user_has_facility_role?(user)
+    (user.user_roles.map(&:role) & UserRole.facility_roles).any?
+  end
+
+
+  def editable_global_group?(resource)
+    resource.global? && resource.admin_editable?
+  end
+
+
+  def ability_extender
+    @extender ||= AbilityExtensionManager.new(self)
   end
 
 end
