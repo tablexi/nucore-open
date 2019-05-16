@@ -22,12 +22,13 @@ class Ability
 
     else
       all_role_abilities(user, resource, controller)
+      facility_staff_abilities(user, resource, controller)
+      facility_senior_staff_abilities(user, resource, controller)
+      facility_administrator_abilities(user, resource, controller)
+      facility_director_abilities(user, resource, controller)
       account_manager_abilities(user, resource)
       billing_administrator_abilities(user, resource)
-      facility_director_abilities(user, resource, controller)
-      facility_administrator_abilities(user, resource, controller)
-      facility_senior_staff_abilities(user, resource, controller)
-      facility_staff_abilities(user, resource, controller)
+
       account_administrator_abilities(user, resource, controller)
     end
 
