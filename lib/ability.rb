@@ -34,7 +34,7 @@ class Ability
       account_administrator_abilities(user, resource)
     end
 
-    ability_extender.extend(user, resource)    #!!!!!!!!!!!!!!!!!!!  skipped for account_manager & billing_administrator
+    ability_extender.extend(user, resource)
   end
 
 
