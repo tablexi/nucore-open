@@ -21,17 +21,14 @@ class Ability
       administrator_abilities(user, resource)
 
     else
+      all_role_abilities(user, resource, controller)
       account_manager_abilities(user, resource) if user.account_manager?
       billing_administrator_abilities(user, resource) if user.billing_administrator?
-
-      common_abilities(user, resource, controller)
-
       operator_abilities(user, resource, controller)
-      manager_abilities(user, resource, controller)
-      facility_director_abilities(user, resource)
-      facility_administrator_abilities(user, resource)
-      facility_senior_staff_abilities(user, resource)
-      account_administrator_abilities(user, resource)
+      facility_director_abilities(user, resource, controller)
+      facility_administrator_abilities(user, resource, controller)
+      facility_senior_staff_abilities(user, resource, controller)
+      account_administrator_abilities(user, resource, controller)
     end
 
     ability_extender.extend(user, resource)
@@ -101,7 +98,7 @@ class Ability
   end
 
 
-  def common_abilities(user, resource, controller)
+  def all_role_abilities(user, resource, controller)
     can :list, Facility if user.facilities.size > 0 && controller.is_a?(FacilitiesController)
     can :read, Notification if user.notifications.active.any?
 
@@ -172,10 +169,10 @@ class Ability
         :timeline,
         :update,
         :update_admin,
-      ], Reservation
+      ], Reservation, &:offline?
 
-      cannot :manage, OfflineReservation
       can(:destroy, Reservation, &:admin?)
+      cannot :manage, OfflineReservation
 
       can [
         :administer,
@@ -215,56 +212,56 @@ class Ability
   end
 
 
-  def manager_abilities(user, resource, controller)
-    if resource.is_a?(PriceGroup) && user.manager_of?(resource.facility)
+  def manager_abilities_for_facility(user, facility, controller)
+    can :manage, [
+      AccountUser,
+      BundleProduct,
+      Facility,
+      FacilityAccount,
+      Journal,
+      OrderImport,
+      OrderStatus,
+      PriceGroupProduct,
+      Product,
+      ProductAccessGroup,
+      ProductAccessory,
+      Reports::ReportsController,
+      ScheduleRule,
+      Statement,
+      StoredFile,
+      TrainingRequest,
+      OfflineReservation,
+    ]
+
+    can :manage, User if controller.is_a?(FacilityUsersController)
+    cannot([:edit, :update], User)
+    cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
+
+    # A facility admin can manage an account if it is global (i.e. it's a chart string) or the account
+    # is attached to the current facility.
+    can :manage, Account do |account|
+      account.global? || account.account_facility_joins.any? { |af| af.facility_id == facility.id }
+    end
+
+    can [:show_problems], [Order, Reservation]
+    can [:activate, :deactivate], ExternalService
+  end
+
+
+  def facility_director_abilities(user, resource, controller)
+    if resource.is_a?(PriceGroup) && user.facility_director_of?(resource.facility)
       if !resource.global?
         can :manage, [AccountPriceGroupMember, UserPriceGroupMember]
       end
     end
 
-    if resource.is_a?(Facility) && user.manager_of?(resource)
-      can :manage, [
-        AccountUser,
-        BundleProduct,
-        Facility,
-        FacilityAccount,
-        Journal,
-        OrderImport,
-        OrderStatus,
-        PriceGroupProduct,
-        Product,
-        ProductAccessGroup,
-        ProductAccessory,
-        Reports::ReportsController,
-        ScheduleRule,
-        Statement,
-        StoredFile,
-        TrainingRequest,
-        OfflineReservation,
-      ]
-
-      can :manage, User if controller.is_a?(FacilityUsersController)
-      cannot([:edit, :update], User)
-      cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
-
-      # A facility admin can manage an account if it is global (i.e. it's a chart string) or the account
-      # is attached to the current facility.
-      can :manage, Account do |account|
-        account.global? || account.account_facility_joins.any? { |af| af.facility_id == resource.id }
-      end
-
-      can [:show_problems], [Order, Reservation]
-      can [:activate, :deactivate], ExternalService
-    end
-  end
-
-
-  def facility_director_abilities(user, resource)
     if resource.is_a?(TrainingRequest) && user.facility_director_of?(resource.product.facility)
       can :manage, TrainingRequest
     end
 
     if resource.is_a?(Facility) && user.facility_director_of?(resource)
+      manager_abilities_for_facility(user, resource, controller)
+
       if SettingsHelper.feature_on?(:facility_directors_can_manage_price_groups)
         can :manage, PriceGroup
         can :manage, [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
@@ -276,15 +273,22 @@ class Ability
   end
 
 
-  def facility_administrator_abilities(user, resource)
+  def facility_administrator_abilities(user, resource, controller)
+    if resource.is_a?(PriceGroup) && user.facility_administrator_of?(resource.facility)
+      if !resource.global?
+        can :manage, [AccountPriceGroupMember, UserPriceGroupMember]
+      end
+    end
+
     if resource.is_a?(Facility) && user.facility_administrator_of?(resource)
+      manager_abilities_for_facility(user, resource, controller)
       can :manage, PriceGroup
       can :manage, [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
     end
   end
 
 
-  def facility_senior_staff_abilities(user, resource)
+  def facility_senior_staff_abilities(user, resource, controller)
     if resource.is_a?(TrainingRequest) && user.facility_senior_staff_of?(resource.product.facility)
       can :manage, TrainingRequest
     end
@@ -307,7 +311,7 @@ class Ability
   end
 
 
-  def account_administrator_abilities(user, resource)
+  def account_administrator_abilities(user, resource, controller)
     if resource.is_a?(OrderDetail) && user.account_administrator_of?(resource.account)
       can [:show, :update, :dispute], OrderDetail, account: { id: resource.account_id }
     end
