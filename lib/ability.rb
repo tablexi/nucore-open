@@ -166,7 +166,7 @@ class Ability
     ], Reservation
 
     can(:destroy, Reservation, &:admin?)
-    cannot :manage, OfflineReservation
+    cannot :manage, OfflineReservation  # ideally we don't use `cannot` as it adds a dependency on the order of assigning abilities for multiple roles
 
     can [
       :administer,
@@ -229,6 +229,8 @@ class Ability
     ]
 
     can :manage, User if controller.is_a?(FacilityUsersController)
+
+    # ideally we don't use `cannot` as it adds a dependency on the order of assigning abilities for multiple roles
     cannot([:edit, :update], User)
     cannot [:manage_accounts, :manage_billing, :manage_users], Facility.cross_facility
 
@@ -329,6 +331,7 @@ class Ability
       ]
 
       # they can get to reports controller, but they're not allowed to export all
+      # ideally we don't use `cannot` as it adds a dependency on the order of assigning abilities for multiple roles
       can :manage, Reports::ReportsController
       cannot :export_all, Reports::ReportsController
     end
