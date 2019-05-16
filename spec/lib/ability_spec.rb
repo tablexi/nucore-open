@@ -362,13 +362,12 @@ RSpec.describe Ability do
   describe "staff" do
     let(:user) { create(:user, :staff, facility: facility) }
 
-    # it_behaves_like "it has common staff abilities"
-    it_is_not_allowed_to([:bring_online, :create], OfflineReservation)
-    # it_is_not_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
-    # it { is_expected.to be_allowed_to(:create, TrainingRequest) }
-    # it_behaves_like "it can not manage training requests"
-    # it_is_not_allowed_to([:create, :update, :destroy], ScheduleRule)
-    # it_is_not_allowed_to([:create, :update, :destroy], ProductAccessGroup)
+    it_behaves_like "it has common staff abilities"
+    it_is_not_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
+    it { is_expected.to be_allowed_to(:create, TrainingRequest) }
+    it_behaves_like "it can not manage training requests"
+    it_is_not_allowed_to([:create, :update, :destroy], ScheduleRule)
+    it_is_not_allowed_to([:create, :update, :destroy], ProductAccessGroup)
   end
 
   describe "unprivileged user" do

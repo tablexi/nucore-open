@@ -22,12 +22,12 @@ class Ability
 
     else
       all_role_abilities(user, resource, controller)
-      account_manager_abilities(user, resource) if user.account_manager?
-      billing_administrator_abilities(user, resource) if user.billing_administrator?
-      operator_abilities(user, resource, controller)
+      account_manager_abilities(user, resource)
+      billing_administrator_abilities(user, resource)
       facility_director_abilities(user, resource, controller)
       facility_administrator_abilities(user, resource, controller)
       facility_senior_staff_abilities(user, resource, controller)
+      facility_staff_abilities(user, resource, controller)
       account_administrator_abilities(user, resource, controller)
     end
 
@@ -72,6 +72,8 @@ class Ability
 
 
   def account_manager_abilities(user, resource)
+    return unless user.account_manager?
+
     can [:manage_accounts, :manage_users], Facility.cross_facility
 
     if resource.blank? || resource == Facility.cross_facility
@@ -86,6 +88,8 @@ class Ability
 
 
   def billing_administrator_abilities(user, resource)
+    return unless user.billing_administrator?
+
     can :manage, [Account, Journal, OrderDetail]
     can :manage, Statement if resource.is_a?(Facility)
     can [:send_receipt, :show], Order
@@ -134,85 +138,76 @@ class Ability
   end
 
 
-  def operator_abilities(user, resource, controller)
-    if resource.is_a?(Reservation) && user.operator_of?(resource.product.facility)
-      can :read, ProductAccessory
-      can :manage, Reservation
+  def operator_abilities_for_facility(user, resource, controller)
+    can :manage, [
+      AccountPriceGroupMember,
+      OrderDetail,
+      ProductUser,
+      TrainingRequest,
+      UserPriceGroupMember,
+    ]
+
+    can :read, Notification
+
+    can [
+      :administer,
+      :assign_price_policies_to_problem_orders,
+      :batch_update,
+      :cancel,
+      :create,
+      :edit,
+      :edit_admin,
+      :index,
+      :show,
+      :tab_counts,
+      :timeline,
+      :update,
+      :update_admin,
+    ], Reservation
+
+    can(:destroy, Reservation, &:admin?)
+    cannot :manage, OfflineReservation
+
+    can [
+      :administer,
+      :assign_price_policies_to_problem_orders,
+      :batch_update,
+      :create,
+      :index,
+      :order_in_past,
+      :send_receipt,
+      :show,
+      :tab_counts,
+      :update,
+    ], Order
+
+    can [:administer, :index, :view_details, :schedule, :show], Product
+
+    can [:index], StoredFile
+    can [:upload_sample_results, :destroy], StoredFile do |fileupload|
+      fileupload.file_type == "sample_result"
     end
 
-    if resource.is_a?(OrderDetail) && user.operator_of?(resource.facility)
-      can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
+    can [:administer], User
+    can(:switch_to, User, &:active?)
+
+    if controller.is_a?(UsersController)
+      can [:read, :create, :search, :access_list, :access_list_approvals, :new_external, :orders, :accounts], User
     end
 
-    if resource.is_a?(Facility) && user.operator_of?(resource)
-      can :manage, [
-        AccountPriceGroupMember,
-        OrderDetail,
-        ProductUser,
-        TrainingRequest,
-        UserPriceGroupMember,
-      ]
+    can :user_search_results, User if controller.is_a?(SearchController)
 
-      can :read, Notification
-
-      can [
-        :administer,
-        :assign_price_policies_to_problem_orders,
-        :batch_update,
-        :cancel,
-        :create,
-        :edit,
-        :edit_admin,
-        :index,
-        :show,
-        :tab_counts,
-        :timeline,
-        :update,
-        :update_admin,
-      ], Reservation, &:offline?
-
-      can(:destroy, Reservation, &:admin?)
-      cannot :manage, OfflineReservation
-
-      can [
-        :administer,
-        :assign_price_policies_to_problem_orders,
-        :batch_update,
-        :create,
-        :index,
-        :order_in_past,
-        :send_receipt,
-        :show,
-        :tab_counts,
-        :update,
-      ], Order
-
-      can [:administer, :index, :view_details, :schedule, :show], Product
-
-      can [:index], StoredFile
-      can [:upload_sample_results, :destroy], StoredFile do |fileupload|
-        fileupload.file_type == "sample_result"
-      end
-
-      can [:administer], User
-      can(:switch_to, User, &:active?)
-
-      if controller.is_a?(UsersController)
-        can [:read, :create, :search, :access_list, :access_list_approvals, :new_external, :orders, :accounts], User
-      end
-
-      can :user_search_results, User if controller.is_a?(SearchController)
-
-      can [:list, :dashboard, :show], Facility
-      can :act_as, Facility
-      can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
-      can [:instrument_status, :instrument_statuses, :switch], Instrument
-      can :edit, [PriceGroupProduct]
-    end
+    can [:list, :dashboard, :show], Facility
+    can :act_as, Facility
+    can :index, [BundleProduct, PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
+    can [:instrument_status, :instrument_statuses, :switch], Instrument
+    can :edit, [PriceGroupProduct]
   end
 
 
   def manager_abilities_for_facility(user, facility, controller)
+    operator_abilities_for_facility(user, facility, controller)
+
     can :manage, [
       AccountUser,
       BundleProduct,
@@ -259,6 +254,15 @@ class Ability
       can :manage, TrainingRequest
     end
 
+    if resource.is_a?(Reservation) && user.facility_director_of?(resource.product.facility)
+      can :read, ProductAccessory
+      can :manage, Reservation
+    end
+
+    if resource.is_a?(OrderDetail) && user.facility_director_of?(resource.facility)
+      can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
+    end
+
     if resource.is_a?(Facility) && user.facility_director_of?(resource)
       manager_abilities_for_facility(user, resource, controller)
 
@@ -280,6 +284,15 @@ class Ability
       end
     end
 
+    if resource.is_a?(Reservation) && user.facility_administrator_of?(resource.product.facility)
+      can :read, ProductAccessory
+      can :manage, Reservation
+    end
+
+    if resource.is_a?(OrderDetail) && user.facility_administrator_of?(resource.facility)
+      can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
+    end
+
     if resource.is_a?(Facility) && user.facility_administrator_of?(resource)
       manager_abilities_for_facility(user, resource, controller)
       can :manage, PriceGroup
@@ -293,7 +306,18 @@ class Ability
       can :manage, TrainingRequest
     end
 
+    if resource.is_a?(Reservation) && user.facility_senior_staff_of?(resource.product.facility)
+      can :read, ProductAccessory
+      can :manage, Reservation
+    end
+
+    if resource.is_a?(OrderDetail) && user.facility_senior_staff_of?(resource.facility)
+      can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
+    end
+
     if resource.is_a?(Facility) && user.facility_senior_staff_of?(resource)
+      operator_abilities_for_facility(user, resource, controller)
+
       can :manage, [
         ProductAccessGroup,
         ProductAccessory,
@@ -307,6 +331,22 @@ class Ability
       # they can get to reports controller, but they're not allowed to export all
       can :manage, Reports::ReportsController
       cannot :export_all, Reports::ReportsController
+    end
+  end
+
+
+  def facility_staff_abilities(user, resource, controller)
+    if resource.is_a?(Reservation) && user.facility_staff_of?(resource.product.facility)
+      can :read, ProductAccessory
+      can :manage, Reservation
+    end
+
+    if resource.is_a?(OrderDetail) && user.facility_staff_of?(resource.facility)
+      can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
+    end
+
+    if resource.is_a?(Facility) && user.facility_staff_of?(resource)
+      operator_abilities_for_facility(user, resource, controller)
     end
   end
 
