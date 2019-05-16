@@ -104,8 +104,11 @@ class Ability
   def common_abilities(user, resource, controller)
     can :list, Facility if user.facilities.size > 0 && controller.is_a?(FacilitiesController)
     can :read, Notification if user.notifications.active.any?
-    can :complete, ExternalService if resource.is_a?(Facility)
-    can :create, TrainingRequest if resource.is_a?(Facility)
+
+    if resource.is_a?(Facility)
+      can :complete, ExternalService
+      can :create, TrainingRequest
+    end
 
     if resource.is_a?(OrderDetail)
       can [:add_accessories, :sample_results, :sample_results_zip, :show, :update, :cancel, :template_results,
