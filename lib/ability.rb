@@ -113,7 +113,7 @@ class Ability
     end
 
     if resource.is_a?(PriceGroup)
-      if user_has_facility_role?(user) && editable_global_group?(resource)      # !!!!!!!!!!!!!!!!!!!!!!!
+      if user_has_facility_role?(user) && editable_global_group?(resource)
         can :read, UserPriceGroupMember
       end
     end
@@ -171,12 +171,7 @@ class Ability
         :update_admin,
       ], Reservation
 
-      if user.manager_of?(resource) || user.facility_senior_staff_of?(resource)   # !!!!!!!!!!!!!!!!!!!!!!!
-        can :bring_online, OfflineReservation
-      else
-        cannot :manage, OfflineReservation
-      end
-
+      cannot :manage, OfflineReservation
       can(:destroy, Reservation, &:admin?)
 
       can [
@@ -242,6 +237,7 @@ class Ability
         Statement,
         StoredFile,
         TrainingRequest,
+        OfflineReservation,
       ]
 
       can :manage, User if controller.is_a?(FacilityUsersController)
@@ -298,11 +294,12 @@ class Ability
         ScheduleRule,
         StoredFile,
         TrainingRequest,
+        OfflineReservation,
       ]
 
       # they can get to reports controller, but they're not allowed to export all
       can :manage, Reports::ReportsController
-      cannot :export_all, Reports::ReportsController           # !!!!!!!!!!!!!!!!!!!!!!!
+      cannot :export_all, Reports::ReportsController
     end
   end
 
