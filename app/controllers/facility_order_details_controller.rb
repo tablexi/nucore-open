@@ -12,7 +12,6 @@ class FacilityOrderDetailsController < ApplicationController
 
   def initialize
     @active_tab = "admin_orders"
-binding.pry
     super
   end
 
