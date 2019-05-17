@@ -1,6 +1,7 @@
 
 
 require "nucore_kfs/collector_export"
+require "nucore_kfs/chart_of_accounts"
 
 module NucoreKfs
   class Engine < ::Rails::Engine

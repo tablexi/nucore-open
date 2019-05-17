@@ -45,3 +45,28 @@ task :kfs_collector_export, [:export_file_path] => :environment do |_t, args|
   File.open(export_file, "w") { |file| file.write export_content }
 
 end
+
+desc "Perform ETL of KFS ChartOfAccounts SOAP API"
+task :kfs_chart_of_accounts => :environment do
+  subfunds = [
+    # 'OPAUX',
+    # 'OPOTF',
+    # 'OPOTP',
+    'OPTUI',
+    'RFNDA',
+    'RFNDO',
+    'RSFAD',
+    'RSNSF',
+    'RSNSP',
+    'RSTSP',
+    'UDEBT',
+    'UNRSF',
+    'UNRSP',
+  ]
+  api = NucoreKfs::ChartOfAccounts.new
+
+  for subfund in subfunds
+    api.upsert_accounts_for_subfund(subfund)
+  end
+
+end

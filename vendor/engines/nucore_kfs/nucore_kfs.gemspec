@@ -7,8 +7,8 @@ require "nucore_kfs/version"
 Gem::Specification.new do |s|
   s.name        = "nucore_kfs"
   s.version     = NucoreKfs::VERSION
-  s.authors     = ["UConn"]
-  s.email       = []
+  s.authors     = ["UConn SquaredLabs"]
+  s.email       = ["joseph.oshea@uconn.edu"]
   s.homepage    = "https://github.com/SquaredLabs/nucore-uconn"
   s.summary     = "Integrates UConn KFS with NUcore"
   s.description = "Integrates UConn KFS with NUcore"
@@ -19,4 +19,5 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 5.0.7.1"
+  s.add_dependency 'savon', '~> 2.12.0'
 end
