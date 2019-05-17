@@ -11,7 +11,7 @@ module Projects
     end
 
     def extend(user, resource)
-      if user.operator_of?(resource)
+      if user.operator_of?(resource) && !user.facility_billing_administrator_of?(resource)
         ability.can([:create, :edit, :inactive, :index, :new, :show, :update], Projects::Project)
       end
     end

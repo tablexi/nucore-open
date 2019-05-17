@@ -9,7 +9,10 @@ module SecureRooms
     def initialize(user, facility)
       return unless user && facility
 
-      can :edit, User if user.administrator? || user.operator_of?(facility)
+      if user.administrator? || user.facility_director_of?(facility) || user.facility_administrator_of?(facility) ||
+      	 user.facility_senior_staff_of?(facility) || user.facility_staff_of?(facility)
+      	can :edit, User
+      end
     end
 
   end

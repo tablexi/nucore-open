@@ -50,6 +50,11 @@ RSpec.describe Projects::AbilityExtension do
     it_behaves_like "it has full access"
   end
 
+  describe "facility billing administrator" do
+    let(:user) { FactoryBot.create(:user, :facility_billing_administrator, facility: facility) }
+    it_behaves_like "it has no access"
+  end
+
   describe "senior staff" do
     let(:user) { FactoryBot.create(:user, :senior_staff, facility: facility) }
     it_behaves_like "it has full access"

@@ -24,6 +24,7 @@ class Ability
       all_role_abilities(user, resource, controller)
       facility_staff_abilities(user, resource, controller)
       facility_senior_staff_abilities(user, resource, controller)
+      facility_billing_administrator_abilities(user, resource, controller)
       facility_administrator_abilities(user, resource, controller)
       facility_director_abilities(user, resource, controller)
       account_manager_abilities(user, resource)
@@ -184,6 +185,34 @@ class Ability
       manager_abilities_for_facility(user, resource, controller)
       can :manage, PriceGroup
       can :manage, [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
+    end
+  end
+
+
+  def facility_billing_administrator_abilities(user, resource, controller)
+    if resource.is_a?(OrderDetail) && user.facility_billing_administrator_of?(resource.facility)
+      can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
+    end
+
+    if resource.is_a?(Facility) && user.facility_billing_administrator_of?(resource)
+      can [:list, :dashboard, :show], Facility
+      can [:index, :show, :timeline], Reservation
+      can [:administer, :index, :view_details, :schedule, :show], Product
+      can [:show, :index], PriceGroup
+      can [:show, :index], [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
+
+      can :manage, [Journal, Statement, OrderDetail]
+      can [:send_receipt, :show], Order
+      can [:accounts, :index, :orders, :show, :administer], User
+      can :manage_users, resource
+      can :manage_billing, resource
+      can [:disputed_orders, :movable_transactions, :transactions], Facility
+
+      # Can manage an account if it is global (i.e. it's a chart string) or the account
+      # is attached to the current facility.
+      can :manage, Account do |account|
+        account.global? || account.account_facility_joins.any? { |af| af.facility_id == resource.id }
+      end
     end
   end
 
