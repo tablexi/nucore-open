@@ -78,26 +78,20 @@ gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "synaccess_connect"
 
 group :development do
+  gem "bcrypt_pbkdf", ">= 1.0", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "bullet" # Detect N+1s and recommends eager loading
+  gem "capistrano", require: false
+  gem "capistrano-bundler", require: false
+  gem "capistrano-rails", require: false
+  gem "capistrano-rvm", require: false
   gem "coffeelint"
+  gem "ed25519", ">= 1.2", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "haml_lint", require: false
   gem "letter_opener"
   gem "rails-erd"
   gem "rubocop", "0.58", require: false # needs to be updated in sync with available codeclimate channels
   gem "rubocop-rspec"
   gem "web-console"
-end
-
-group :development, :deployment do
-  gem "capistrano",         require: false
-  gem "capistrano-rails",   require: false
-  gem "capistrano-rvm",     require: false
-  gem "capistrano-bundler", require: false
-
-  # These gems are required to support ed25519 SSH keys for deploying via capistrano
-  # See https://github.com/net-ssh/net-ssh/issues/565 for more information
-  gem "bcrypt_pbkdf", ">= 1.0", "< 2.0", require: false
-  gem "ed25519", ">= 1.2", "< 2.0", require: false
 end
 
 group :development, :test do
