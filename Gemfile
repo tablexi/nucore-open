@@ -131,8 +131,6 @@ end
 group :stage, :production do
   gem "eye-patch", require: false
   gem "exception_notification"
-  gem "lograge"
-  gem "logstash-event"
   gem "oj"
   # 2.15.6 has a problem during cap deploy
   # https://github.com/rollbar/rollbar-gem/issues/713
