@@ -702,7 +702,7 @@ DEPENDENCIES
   rails-erd
   rails-observers
   rake
-  rollbar (= 2.15.5)
+  rollbar
   rspec-activejob
   rspec-collection_matchers
   rspec-rails
