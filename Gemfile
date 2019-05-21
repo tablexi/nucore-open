@@ -125,8 +125,6 @@ end
 group :stage, :production do
   gem "exception_notification"
   gem "eye-patch", require: false
-  gem "lograge"
-  gem "logstash-event"
   gem "oj"
   gem "rollbar"
   gem "unicorn", require: false
