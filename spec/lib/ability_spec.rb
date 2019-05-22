@@ -17,6 +17,12 @@ RSpec.describe Ability do
     end
   end
 
+  shared_examples_for "it can manage training requests" do
+    let(:subject_resource) { create(:training_request, product: instrument) }
+
+    it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
+  end
+
   shared_examples_for "it can destroy admistrative reservations" do
     let(:order) { build_stubbed(:order) }
     let(:order_detail) { build_stubbed(:order_detail, order: order) }
@@ -219,6 +225,7 @@ RSpec.describe Ability do
       it { is_expected.to be_allowed_to(:show, Order) }
       it_is_not_allowed_to([:edit, :update], Reservation)
       it { is_expected.not_to be_allowed_to(:administer, Product) }
+      it_is_allowed_to(:manage, Statement)
     end
 
     context "in no facility" do
@@ -234,6 +241,7 @@ RSpec.describe Ability do
 
       it { is_expected.to be_allowed_to(:manage_billing, Facility.cross_facility) }
       it_is_not_allowed_to([:create, :switch_to], User)
+      it_is_not_allowed_to(:manage, Statement)
     end
   end
 
@@ -296,6 +304,7 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:manage_users, Facility.cross_facility) }
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"
+    it_behaves_like "it can manage training requests"
 
     context "when facility_directors_can_manage_price_groups on", feature_setting: { facility_directors_can_manage_price_groups: false } do
       it_is_not_allowed_to([:create, :edit, :update, :destroy], PriceGroup)
@@ -321,6 +330,22 @@ RSpec.describe Ability do
 
     it_behaves_like "it can destroy admistrative reservations"
     it_behaves_like "it allows switch_to on active, but not deactivated users"
+
+    it { is_expected.not_to be_allowed_to(:manage, Reservation) }
+    context "when managing reservations" do
+      let(:instrument) { create(:instrument, facility: facility) }
+      let(:subject_resource) { create(:reservation, product: instrument) }
+
+      it { is_expected.to be_allowed_to(:read, ProductAccessory) }
+      it { is_expected.to be_allowed_to(:manage, Reservation) }
+    end
+
+    context "when managing order details" do
+      let(:order) { build_stubbed(:order, facility: facility) }
+      let(:subject_resource) { build_stubbed(:order_detail, order: order) }
+
+      it { is_expected.to be_allowed_to(:manage, OrderDetail) }
+    end
   end
 
   describe "senior staff" do
@@ -331,6 +356,7 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
     it { is_expected.to be_allowed_to(:manage, ScheduleRule) }
     it { is_expected.to be_allowed_to(:manage, ProductAccessGroup) }
+    it_behaves_like "it can manage training requests"
   end
 
   describe "staff" do
@@ -409,5 +435,25 @@ RSpec.describe Ability do
     it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.not_to be_allowed_to(:disputed, Order) }
     it { is_expected.not_to be_allowed_to(:manage, User) }
+  end
+
+  describe "account administrator" do
+    let(:user) { create(:user) }
+    let(:account) { create(:setup_account, owner: user) }
+
+    context "managing accounts" do
+      let(:subject_resource) { account }
+
+      it_is_allowed_to([:manage], Account)
+      it_is_allowed_to([:manage], AccountUser)
+      it_is_allowed_to [:show, :suspend, :unsuspend, :user_search, :user_accounts, :statements, :show_statement, :index], Statement
+    end
+
+    context "when managing order details of own account" do
+      let(:order) { build_stubbed(:order, facility: facility) }
+      let(:subject_resource) { build_stubbed(:order_detail, order: order, account: account) }
+
+      it_is_allowed_to([:show, :update, :dispute], OrderDetail)
+    end
   end
 end
