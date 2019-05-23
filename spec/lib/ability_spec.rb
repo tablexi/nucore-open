@@ -294,7 +294,6 @@ RSpec.describe Ability do
     it { is_expected.to be_allowed_to(:read, Notification) }
     it { is_expected.to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.to be_allowed_to(:batch_update, Order) }
-    it { is_expected.to be_allowed_to(:manage, PriceGroup) }
     it_is_allowed_to([:batch_update, :cancel, :index], Reservation)
     it { is_expected.to be_allowed_to(:manage, ScheduleRule) }
     it { is_expected.to be_allowed_to(:manage, ProductAccessGroup) }
@@ -306,11 +305,24 @@ RSpec.describe Ability do
     it_behaves_like "it allows switch_to on active, but not deactivated users"
     it_behaves_like "it can manage training requests"
 
-    context "when facility_directors_can_manage_price_groups on", feature_setting: { facility_directors_can_manage_price_groups: false } do
+    context "when facility_directors_can_manage_price_groups enabled", feature_setting: { facility_directors_can_manage_price_groups: true } do
+      it_is_allowed_to(:manage, PriceGroup)
+      it_is_allowed_to(:manage, PricePolicy)
+      it_is_allowed_to(:manage, InstrumentPricePolicy)
+      it_is_allowed_to(:manage, ItemPricePolicy)
+      it_is_allowed_to(:manage, ServicePricePolicy)
+    end
+
+    context "when facility_directors_can_manage_price_groups disabled", feature_setting: { facility_directors_can_manage_price_groups: false } do
+      it_is_allowed_to([:show, :index], PriceGroup)
       it_is_not_allowed_to([:create, :edit, :update, :destroy], PriceGroup)
+      it_is_allowed_to([:show, :index], PricePolicy)
       it_is_not_allowed_to([:create, :edit, :update, :destroy], PricePolicy)
+      it_is_allowed_to([:show, :index], InstrumentPricePolicy)
       it_is_not_allowed_to([:create, :edit, :update, :destroy], InstrumentPricePolicy)
+      it_is_allowed_to([:show, :index], ItemPricePolicy)
       it_is_not_allowed_to([:create, :edit, :update, :destroy], ItemPricePolicy)
+      it_is_allowed_to([:show, :index], ServicePricePolicy)
       it_is_not_allowed_to([:create, :edit, :update, :destroy], ServicePricePolicy)
     end
   end
