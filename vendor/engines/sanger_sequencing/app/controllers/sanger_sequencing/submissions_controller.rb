@@ -27,7 +27,7 @@ module SangerSequencing
     end
 
     def new
-      5.times { @submission.create_prefilled_sample } if @submission.samples.none?
+      number_of_samples.times { @submission.create_prefilled_sample } if @submission.samples.none?
       render :edit
     end
 
@@ -96,6 +96,12 @@ module SangerSequencing
 
     def prevent_after_purchase
       raise ActiveRecord::RecordNotFound if @submission.purchased?
+    end
+
+    def number_of_samples
+      Integer(params[:quantity])
+    rescue ArgumentError
+      5
     end
 
   end
