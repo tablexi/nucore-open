@@ -675,7 +675,7 @@ DEPENDENCIES
   jquery-ui-rails
   ldap_authentication!
   letter_opener
-  mysql2 (~> 0.4.10)
+  mysql2
   nested_form_fields
   nokogiri
   oj

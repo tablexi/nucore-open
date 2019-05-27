@@ -9,7 +9,7 @@ gem "rails", "5.0.7.2"
 gem "config"
 
 ## database
-gem "mysql2", "~> 0.4.10"
+gem "mysql2"
 # To use Oracle, remove the mysql2 gem above and uncomment these lines
 # gem "ruby-oci8"
 # gem "activerecord-oracle_enhanced-adapter"
