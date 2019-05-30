@@ -91,7 +91,7 @@ class AccountBuilder
   end
 
   # Needs to be overridable by engines
-  cattr_accessor(:common_permitted_account_params) { [:description] }
+  cattr_accessor(:common_permitted_account_params) { [:description, :reference] }
 
   # Override in subclassed builder to define additional strong_param attributes
   # for build action. Returns an array of "permitted" params.
