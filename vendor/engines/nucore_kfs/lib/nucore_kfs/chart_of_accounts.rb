@@ -76,7 +76,7 @@ module NucoreKfs
       account_number = "KFS-#{object_code}-#{kfs_account_number}"
 
       # user roles
-      account_owner_netid = kfs_soap_data[:account_manager_system_identifier]
+      account_owner_netid = kfs_soap_data[:accounts_supervisory_systems_identifier]
       business_admin_netid = kfs_soap_data[:fiscal_officer_identifier]
       puts("account_owner_netid = #{account_owner_netid}")
       puts("business_admin_netid = #{business_admin_netid}")
