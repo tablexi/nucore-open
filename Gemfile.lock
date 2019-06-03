@@ -189,7 +189,7 @@ GEM
       coffee-script
       railties (>= 3.1)
       sass
-    codeclimate-test-reporter (1.0.8)
+    codeclimate-test-reporter (1.0.9)
       simplecov (<= 0.13)
     codeclimate_circle_ci_coverage (0.2.2)
       codeclimate-test-reporter (>= 1.0, < 2)
@@ -347,7 +347,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
-    json (2.1.0)
+    json (2.2.0)
     kgio (2.11.2)
     kostya-sigar (2.0.1)
     launchy (2.4.3)
