@@ -269,7 +269,7 @@ GEM
     exception_notification (4.3.0)
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
-    excon (0.62.0)
+    excon (0.64.0)
     execjs (2.7.0)
     eye (0.10.0)
       celluloid (~> 0.17.3)
