@@ -120,7 +120,7 @@ GEM
     bullet (6.0.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
-    byebug (11.0.0)
+    byebug (11.0.1)
     cancancan (2.3.0)
     capistrano (3.11.0)
       airbrussh (>= 1.0.0)
