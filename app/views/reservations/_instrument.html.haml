@@ -7,8 +7,7 @@
     .unit_container
       = render partial: "reservation",
         collection: (@reservations_by_instrument.fetch(instrument, []) + instrument.blackout_reservations(@display_datetime)),
-        as: :reservation,
         locals: { product: instrument }
 
-      - if @display_datetime.beginning_of_day == Time.current.beginning_of_day
+      - if @display_datetime.today?
         .current_time{style: "left: #{datetime_left_position(@display_datetime, Time.current)}"}
