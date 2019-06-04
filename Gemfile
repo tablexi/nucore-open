@@ -106,7 +106,6 @@ group :development, :test do
   gem "spring"
   gem "spring-commands-rspec"
   gem "teaspoon-jasmine"
-  gem "thin"
 end
 
 group :test do
