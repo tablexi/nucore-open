@@ -50,6 +50,7 @@ class Reservation < ApplicationRecord
   end
 
   ## AR Hooks
+  before_save :set_billable_minutes
   after_update :auto_save_order_detail, if: :order_detail
 
   # Scopes
@@ -341,6 +342,9 @@ class Reservation < ApplicationRecord
 
   def grace_period_duration
     SettingsHelper.setting("reservations.grace_period") || 5.minutes
+  end
+
+  def set_billable_minutes
   end
 
 end
