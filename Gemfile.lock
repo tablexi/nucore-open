@@ -326,8 +326,8 @@ GEM
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.31.0)
-      haml (>= 4.0, < 5.1)
+    haml_lint (0.32.0)
+      haml (>= 4.0, < 5.2)
       rainbow
       rake (>= 10, < 13)
       rubocop (>= 0.50.0)
@@ -524,7 +524,7 @@ GEM
       rubocop (>= 0.58.0)
     ruby-graphviz (1.2.4)
     ruby-ole (1.2.12.2)
-    ruby-progressbar (1.10.0)
+    ruby-progressbar (1.10.1)
     ruby-saml (1.8.0)
       nokogiri (>= 1.5.10)
     ruby_dep (1.5.0)
