@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190416205054) do
+ActiveRecord::Schema.define(version: 20190610112539) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -552,6 +552,7 @@ ActiveRecord::Schema.define(version: 20190416205054) do
     t.datetime "deleted_at"
     t.string   "group_id"
     t.string   "user_note"
+    t.integer  "billable_minutes"
     t.index ["created_by_id"], name: "index_reservations_on_created_by_id", using: :btree
     t.index ["deleted_at"], name: "index_reservations_on_deleted_at", using: :btree
     t.index ["group_id"], name: "index_reservations_on_group_id", using: :btree
@@ -820,6 +821,8 @@ ActiveRecord::Schema.define(version: 20190416205054) do
 
   add_foreign_key "account_facility_joins", "accounts"
   add_foreign_key "account_facility_joins", "facilities"
+  add_foreign_key "account_users", "accounts", name: "fk_accounts"
+  add_foreign_key "account_users", "users"
   add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
