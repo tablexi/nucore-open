@@ -127,7 +127,7 @@ class Ability
     end
     can :manage_users, Facility.cross_facility if SettingsHelper.feature_on?(:global_billing_administrator_users_tab)
     can :manage_billing, Facility.cross_facility
-    can [:disputed_orders, :movable_transactions, :transactions], Facility, &:cross_facility?
+    can [:disputed_orders, :movable_transactions, :transactions, :reassign_chart_strings, :confirm_transactions, :move_transactions], Facility, &:cross_facility?
   end
 
 
@@ -201,12 +201,18 @@ class Ability
       can [:show, :index], PriceGroup
       can [:show, :index], [PricePolicy, InstrumentPricePolicy, ItemPricePolicy, ServicePricePolicy]
 
+      can :manage, AccountUser
+
+      can :index, [BundleProduct, ScheduleRule, ServicePricePolicy, ProductAccessory, ProductAccessGroup]
+      can :edit, [PriceGroupProduct]
+      can [:index], StoredFile
+
       can :manage, [Journal, Statement, OrderDetail]
       can [:send_receipt, :show], Order
       can [:accounts, :index, :orders, :show, :administer], User
       can :manage_users, resource
       can :manage_billing, resource
-      can [:disputed_orders, :movable_transactions, :transactions], Facility
+      can [:disputed_orders, :movable_transactions, :transactions, :reassign_chart_strings, :confirm_transactions, :move_transactions], Facility
 
       # Can manage an account if it is global (i.e. it's a chart string) or the account
       # is attached to the current facility.
@@ -336,6 +342,9 @@ class Ability
 
     if controller.is_a?(UsersController)
       can [:read, :create, :search, :access_list, :access_list_approvals, :new_external, :orders, :accounts], User
+    end
+    if controller.is_a?(UserAccountsController) || controller.is_a?(FacilityUserReservationsController)
+      can [:access_list], User
     end
 
     can :user_search_results, User if controller.is_a?(SearchController)
