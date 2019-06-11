@@ -345,7 +345,7 @@ class Reservation < ApplicationRecord
   end
 
   def set_billable_minutes
-    if order_detail&.complete?
+    if order_detail&.complete? && price_policy.present?
       case price_policy.charge_for
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
         self.billable_minutes = TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
