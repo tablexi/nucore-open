@@ -49,9 +49,9 @@ end
 desc "Perform ETL of KFS ChartOfAccounts SOAP API"
 task :kfs_chart_of_accounts => :environment do
   subfunds = [
-    # 'OPAUX',
-    # 'OPOTF',
-    # 'OPOTP',
+    'OPAUX',
+    'OPOTF',
+    'OPOTP',
     'OPTUI',
     'RFNDA',
     'RFNDO',
@@ -59,7 +59,6 @@ task :kfs_chart_of_accounts => :environment do
     'RSNSF',
     'RSNSP',
     'RSTSP',
-    'UDEBT',
     'UNRSF',
     'UNRSP',
   ]
