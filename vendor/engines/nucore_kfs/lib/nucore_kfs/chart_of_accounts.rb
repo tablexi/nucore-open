@@ -64,16 +64,28 @@ module NucoreKfs
     end
 
     def create_business_admin_record(account, business_admin_user)
-      account.business_admins.create(
+      puts("create_business_admin_record for account = #{account.id} and user = #{business_admin_user.username}")
+      # If this user was previously listed on the account in another role, delete that association
+      existing_user = account.account_users.where(user_id: business_admin_user.id).first
+      if existing_user != nil
+        existing_user.touch(:deleted_at)
+      end
+      account.account_users.create(
         user: business_admin_user,
-        created_by_user: @created_by_user
+        created_by_user: @created_by_user,
+        user_role: AccountUser::ACCOUNT_ADMINISTRATOR
       )
-      account.save!
     end
 
     def set_business_admin_for_account(account, business_admin_user)
       # is there already a business_admin on the account?
       if account.business_admins.count > 0
+        # we assume there can only be 1 business admin per account (at this time)
+        if account.business_admins.count > 1
+          puts("WARNING: Found #{account.business_admins.count} Business Admins for account id = #{account.id}")
+          puts("This is unexpected at this time, so no changes will be made to the Business Admins on this account.")
+          return nil
+        end
         # is it the same person?
         existing_admin = account.business_admins.first
         puts("set_business_admin_for_account - existing_admin = #{existing_admin.user.username}")
@@ -89,12 +101,17 @@ module NucoreKfs
     end
 
     def create_accout_owner_record(account, owner)
+      puts("create_accout_owner_record for account = #{account.id} and user = #{owner.username}")
+      # If this user was previously listed on the account in another role, delete that association
+      existing_user = account.account_users.where(user_id: owner.id).first
+      if existing_user != nil
+        existing_user.touch(:deleted_at)
+      end
       account.account_users.create(
         user: owner,
         created_by_user: @created_by_user,
         user_role: AccountUser::ACCOUNT_OWNER
       )
-      account.save!
     end
 
     def set_owner_for_account(account, owner_user)
@@ -106,7 +123,6 @@ module NucoreKfs
       elsif existing_owner.user.username != owner_user.username
         puts("set_owner_for_account - existing_owner = #{existing_owner.user.username}")
         puts("set_owner_for_account - replacing existing_owner with owner_user = #{owner_user.username}")
-
         existing_owner.touch(:deleted_at)
         create_accout_owner_record(account, owner_user)
       end
@@ -148,9 +164,16 @@ module NucoreKfs
       end
 
       if account != nil
-        # set the correct "Business Admin" for the account
-        set_business_admin_for_account(account, business_admin)
+        # set the correct "Business Admin" and Owners for the account
         set_owner_for_account(account, account_owner)
+        set_business_admin_for_account(account, business_admin)
+
+        puts("users for account = #{account.id}")
+        for user in account.account_users
+          puts("user_id = #{user.user_id} role = #{user.user_role}")
+        end
+
+        account.save!
 
         # ensure the account is flagged as open/closed as appropriate
         if account.suspended? && account_open
