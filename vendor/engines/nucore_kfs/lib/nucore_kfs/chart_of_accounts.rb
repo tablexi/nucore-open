@@ -22,12 +22,13 @@ module NucoreKfs
 
       @account_type = 'NufsAccount'
       @joey = User.find_by(username: 'jpo08003')
+      @created_by_user = @joey # TODO: replace this with some sort of "Robot Account"
     end
 
     def upsert_accounts_for_subfund(subfund_id)
       response = do_call_for_subfund(subfund_id)
       puts("response for subfund '#{subfund_id}':")
-      # puts(response.body)
+      puts(response.body)
       accounts = response.body[:get_accounts_response][:return][:account]
       for account in accounts
         upsert_account(account)
@@ -53,14 +54,62 @@ module NucoreKfs
       })
       account = AccountBuilder.for(@account_type).new(
         account_type: @account_type,
-        # facility: current_facility,
-        current_user: @joey,
+        current_user: @created_by_user,
         owner_user: account_owner,
         facility: nil,
         params: params
       ).build
       account.save!
       account
+    end
+
+    def create_business_admin_record(account, business_admin_user)
+      account.business_admins.create(
+        user: business_admin_user,
+        created_by_user: @created_by_user
+      )
+      account.save!
+    end
+
+    def set_business_admin_for_account(account, business_admin_user)
+      # is there already a business_admin on the account?
+      if account.business_admins.count > 0
+        # is it the same person?
+        existing_admin = account.business_admins.first
+        puts("set_business_admin_for_account - existing_admin = #{existing_admin.user.username}")
+        if existing_admin.user.username != business_admin_user.username
+          puts("set_business_admin_for_account - replacing existing_admin with business_admin_user = #{business_admin_user.username}")
+          existing_admin.touch(:deleted_at)
+          existing_admin.save!
+          create_business_admin_record(account, business_admin_user)
+        end
+      else
+        create_business_admin_record(account, business_admin_user)
+      end
+    end
+
+    def create_accout_owner_record(account, owner)
+      account.account_users.create(
+        user: owner,
+        created_by_user: @created_by_user,
+        user_role: AccountUser::ACCOUNT_OWNER
+      )
+      account.save!
+    end
+
+    def set_owner_for_account(account, owner_user)
+      existing_owner = account.owner
+
+      if existing_owner == nil
+        puts("set_owner_for_account - account had no owner")
+        create_accout_owner_record(account, owner_user)
+      elsif existing_owner.user.username != owner_user.username
+        puts("set_owner_for_account - existing_owner = #{existing_owner.user.username}")
+        puts("set_owner_for_account - replacing existing_owner with owner_user = #{owner_user.username}")
+
+        existing_owner.touch(:deleted_at)
+        create_accout_owner_record(account, owner_user)
+      end
     end
 
     def upsert_account(kfs_soap_data)
@@ -99,12 +148,15 @@ module NucoreKfs
       end
 
       if account != nil
+        # set the correct "Business Admin" for the account
+        set_business_admin_for_account(account, business_admin)
+        set_owner_for_account(account, account_owner)
+
         # ensure the account is flagged as open/closed as appropriate
         if account.suspended? && account_open
           account.unsuspend
           puts("unsuspending account: #{account_number}")
         end
-
         if !account.suspended? && !account_open
           account.suspend
           puts("suspending account: #{account_number}")
