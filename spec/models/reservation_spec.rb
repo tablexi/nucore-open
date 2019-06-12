@@ -1650,4 +1650,78 @@ RSpec.describe Reservation do
     end
   end
 
+  it "delegates #price_policy to its #order_detail" do
+    expect(subject.price_policy).to eq(subject.order_detail.price_policy)
+  end
+
+  describe "before saving" do
+    context "with a complete order detail" do
+      before do
+        allow(subject.order_detail).to receive(:complete?).and_return(true)
+      end
+
+      context "and a price policy that charges for the reserved time" do
+        before do
+          subject.order_detail.build_price_policy(charge_for: InstrumentPricePolicy::CHARGE_FOR[:reservation])
+        end
+
+        it "sets billable_minutes to the number of reserved minutes" do
+          subject.assign_attributes(reserve_start_at: 74.minutes.ago, reserve_end_at: 25.minutes.ago)
+          subject.run_callbacks(:save) { false }
+          expect(subject.billable_minutes).to eq 49
+        end
+      end
+
+      context "and a price policy that charges for the used time" do
+        before do
+          subject.order_detail.build_price_policy(charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage])
+        end
+
+        it "sets billable_minutes to the number of actually used minutes" do
+          subject.assign_attributes(actual_start_at: 80.minutes.ago, actual_end_at: 15.minutes.ago)
+          subject.run_callbacks(:save) { false }
+          expect(subject.billable_minutes).to eq 65
+        end
+      end
+
+      context "and a price policy that charges for overages" do
+        before do
+          subject.order_detail.build_price_policy(charge_for: InstrumentPricePolicy::CHARGE_FOR[:overage])
+        end
+
+        it "sets billable_minutes to the number of reserved minutes when actual usage was less than the reservation" do
+          subject.assign_attributes(
+            actual_end_at: 15.minutes.ago,
+            actual_start_at: 80.minutes.ago,
+            reserve_end_at: 11.minutes.ago,
+            reserve_start_at: 90.minutes.ago,
+          )
+          subject.run_callbacks(:save) { false }
+          expect(subject.billable_minutes).to eq 79
+        end
+
+        it "sets billable_minutes to the number of actual minutes when actual usage was more than the reservation" do
+          subject.assign_attributes(
+            actual_end_at: 2.minutes.ago,
+            actual_start_at: 99.minutes.ago,
+            reserve_end_at: 11.minutes.ago,
+            reserve_start_at: 90.minutes.ago,
+          )
+          subject.run_callbacks(:save) { false }
+          expect(subject.billable_minutes).to eq 88
+        end
+      end
+    end
+
+    context "with a non-complete order detail" do
+      before do
+        allow(subject.order_detail).to receive(:complete?).and_return(false)
+      end
+
+      it "sets billable_minutes to nil" do
+        expect(subject).to receive(:billable_minutes=).with(nil)
+        subject.run_callbacks(:save) { false }
+      end
+    end
+  end
 end

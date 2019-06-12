@@ -37,7 +37,7 @@ class Reservation < ApplicationRecord
   # Delegations
   #####
   delegate :note, :note=, :ordered_on_behalf_of?, :complete?, :account, :order,
-           :complete!, to: :order_detail, allow_nil: true
+           :complete!, :price_policy, to: :order_detail, allow_nil: true
 
   delegate :account, :in_cart?, :user, to: :order, allow_nil: true
   delegate :facility, to: :product, allow_nil: true
@@ -50,6 +50,7 @@ class Reservation < ApplicationRecord
   end
 
   ## AR Hooks
+  before_save :set_billable_minutes
   after_update :auto_save_order_detail, if: :order_detail
 
   # Scopes
@@ -341,6 +342,22 @@ class Reservation < ApplicationRecord
 
   def grace_period_duration
     SettingsHelper.setting("reservations.grace_period") || 5.minutes
+  end
+
+  def set_billable_minutes
+    if order_detail&.complete? && price_policy.present?
+      case price_policy.charge_for
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
+        self.billable_minutes = TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
+        self.billable_minutes = TimeRange.new(actual_start_at, actual_end_at).duration_mins
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
+        end_time = [reserve_end_at, actual_end_at].max
+        self.billable_minutes = TimeRange.new(reserve_start_at, end_time).duration_mins
+      end
+    else
+      self.billable_minutes = nil
+    end
   end
 
 end
