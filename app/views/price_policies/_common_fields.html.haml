@@ -1,3 +1,7 @@
 = f.input :start_date, input_html: { value: format_usa_date(price_policy.start_date), class: "datepicker__data" }, label: "Effective"
 = f.input :expire_date, input_html: { value: format_usa_date(price_policy.expire_date), class: "datepicker__data" }, label: "Expires"
-= f.input :note, as: :text, input_html: { value: price_policy.note }, required: SettingsHelper.feature_on?(:price_policy_requires_note)
+- if Settings.price_policy_note_options.present?
+  = f.input :note_option, as: :select, collection: Settings.price_policy_note_options + ["Other"], selected: price_policy.note_option, include_blank: false, label: "Note", input_html: { class: "js--price-policy-note-select", name: nil, id: nil }
+  = f.input :note, as: :text, label: false, input_html: { value: price_policy.note, class: "js--price-policy-note", hidden: price_policy.note_option != "Other" }, required: SettingsHelper.feature_on?(:price_policy_requires_note)
+- else
+  = f.input :note, as: :text, input_html: { value: price_policy.note }, required: SettingsHelper.feature_on?(:price_policy_requires_note)
