@@ -42,6 +42,8 @@ class OrderDetail < ApplicationRecord
     true # problem might be false; we need the callback chain to continue
   end
 
+  after_save :update_billable_minutes_on_reservation, if: :reservation
+
   belongs_to :product
   belongs_to :price_policy
   belongs_to :statement, inverse_of: :order_details
@@ -966,4 +968,7 @@ class OrderDetail < ApplicationRecord
     !actual_costs_match_calculated?
   end
 
+  def update_billable_minutes_on_reservation
+    reservation.update_billable_minutes
+  end
 end

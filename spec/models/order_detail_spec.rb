@@ -1901,4 +1901,10 @@ RSpec.describe OrderDetail do
       described_class.where_ids_in((0..1001).to_a).to_a
     end
   end
+
+  it "calls #update_billable_minutes on the associated reservation after saving" do
+    order_detail.build_reservation
+    expect(order_detail.reservation).to receive(:update_billable_minutes)
+    order_detail.run_callbacks(:save) { true }
+  end
 end
