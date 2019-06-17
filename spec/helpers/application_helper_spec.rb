@@ -72,8 +72,8 @@ RSpec.describe ApplicationHelper do
       it_behaves_like "it returns only facilities with a role"
     end
 
-    context "when the user is a billing_admin", feature_setting: { billing_administrator: true } do
-      let(:user) { create(:user, :billing_administrator) }
+    context "when the user is a global billing_admin", feature_setting: { global_billing_administrator: true } do
+      let(:user) { create(:user, :global_billing_administrator) }
       it_behaves_like "it returns only facilities with a role"
     end
   end

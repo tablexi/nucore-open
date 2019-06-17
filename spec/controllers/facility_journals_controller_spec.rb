@@ -335,10 +335,10 @@ RSpec.describe FacilityJournalsController do
       end
     end
 
-    context "in cross facility", feature_setting: { billing_administrator: true } do
+    context "in cross facility", feature_setting: { global_billing_administrator: true } do
       before :each do
         @params[:facility_id] = "all"
-        sign_in create(:user, :billing_administrator)
+        sign_in create(:user, :global_billing_administrator)
         do_request
       end
 
@@ -445,10 +445,10 @@ RSpec.describe FacilityJournalsController do
       expect(assigns(:order_detail_action)).to be_nil
     end
 
-    context "in cross facility", feature_setting: { billing_administrator: true } do
+    context "in cross facility", feature_setting: { global_billing_administrator: true } do
       before :each do
         @params[:facility_id] = "all"
-        sign_in create(:user, :billing_administrator)
+        sign_in create(:user, :global_billing_administrator)
         do_request
       end
 

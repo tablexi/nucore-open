@@ -7,11 +7,12 @@ class UserRole < ApplicationRecord
 
   ACCOUNT_MANAGER = "Account Manager"
   ADMINISTRATOR = "Administrator"
-  BILLING_ADMINISTRATOR = "Billing Administrator"
+  GLOBAL_BILLING_ADMINISTRATOR = "Global Billing Administrator"
   FACILITY_DIRECTOR = "Facility Director"
   FACILITY_ADMINISTRATOR = "Facility Administrator"
   FACILITY_STAFF = "Facility Staff"
   FACILITY_SENIOR_STAFF = "Facility Senior Staff"
+  FACILITY_BILLING_ADMINISTRATOR = "Facility Billing Administrator"
 
   scope :facility_director, -> { where(role: FACILITY_DIRECTOR) }
   scope :director_and_admins, -> { where(role: [FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR]) }
@@ -36,21 +37,21 @@ class UserRole < ApplicationRecord
     [ADMINISTRATOR]
   end
 
-  def self.billing_administrator
-    [BILLING_ADMINISTRATOR]
-  end
-
-  def self.facility_roles
-    [FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR, FACILITY_STAFF, FACILITY_SENIOR_STAFF]
+  def self.global_billing_administrator
+    [GLOBAL_BILLING_ADMINISTRATOR]
   end
 
   def self.facility_management_roles
-    facility_roles - [FACILITY_STAFF, FACILITY_SENIOR_STAFF]
+    [FACILITY_DIRECTOR, FACILITY_ADMINISTRATOR]
+  end
+
+  def self.facility_roles
+    facility_management_roles + [FACILITY_STAFF, FACILITY_SENIOR_STAFF, FACILITY_BILLING_ADMINISTRATOR]
   end
 
   def self.global_roles
-    if SettingsHelper.feature_on?(:billing_administrator)
-      account_manager + administrator + billing_administrator
+    if SettingsHelper.feature_on?(:global_billing_administrator)
+      account_manager + administrator + global_billing_administrator
     else
       account_manager + administrator
     end
@@ -92,7 +93,7 @@ class UserRole < ApplicationRecord
   end
 
   # Supports a single item or an array of symbols (:account_manager), strings
-  # both underscored ("billing_administrator") and title cased ("Facility Staff).
+  # both underscored ("global_billing_administrator") and title cased ("Facility Staff).
   def in?(roles)
     role.in? Array(roles).map(&:to_s).map(&:titleize)
   end
