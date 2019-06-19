@@ -873,6 +873,12 @@ class OrderDetail < ApplicationRecord
     time_data_problem_key || price_policy_problem_key
   end
 
+  def price_change_reason_option
+    if price_change_reason.present?
+      Settings.order_detail_price_change_reason_options.include?(price_change_reason) ? price_change_reason : "Other"
+    end
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?

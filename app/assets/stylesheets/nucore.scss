@@ -439,5 +439,5 @@ select:focus:invalid {
 }
 
 [hidden] {
-  display: none;
+  display: none !important;
 }
