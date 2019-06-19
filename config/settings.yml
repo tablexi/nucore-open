@@ -161,3 +161,6 @@ paperclip:
 #     "User.FirstName": "first_name"
 #     "User.LastName": "last_name"
 #  # user_updater_class_name: SamlAuthentication::UserUpdater
+
+price_policy_note_options: ~
+order_detail_price_change_reason_options: ~
