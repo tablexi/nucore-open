@@ -22,6 +22,11 @@ RSpec.describe SecureRooms::CardNumberAbility do
     it { is_expected.to be_allowed_to(:edit, card_user) }
   end
 
+  describe "facility billing administrator" do
+    let(:current_user) { FactoryBot.create(:user, :facility_billing_administrator, facility: facility) }
+    it { is_expected.not_to be_allowed_to(:edit, card_user) }
+  end
+
   describe "senior staff" do
     let(:current_user) { FactoryBot.create(:user, :senior_staff, facility: facility) }
     it { is_expected.to be_allowed_to(:edit, card_user) }

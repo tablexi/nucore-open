@@ -75,7 +75,7 @@ if Account.config.statements_enabled?
         let(:billing_admin) { create(:user) }
 
         before do
-          UserRole.grant(billing_admin, UserRole::BILLING_ADMINISTRATOR)
+          UserRole.grant(billing_admin, UserRole::GLOBAL_BILLING_ADMINISTRATOR)
           sign_in billing_admin
           get :index, params: { facility_id: "all" }
         end

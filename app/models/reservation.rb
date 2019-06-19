@@ -322,6 +322,10 @@ class Reservation < ApplicationRecord
     1
   end
 
+  def update_billable_minutes
+    update_column(:billable_minutes, calculated_billable_minutes)
+  end
+
   private
 
   def auto_save_order_detail
@@ -345,18 +349,20 @@ class Reservation < ApplicationRecord
   end
 
   def set_billable_minutes
+    self.billable_minutes = calculated_billable_minutes
+  end
+
+  def calculated_billable_minutes
     if order_detail&.complete? && price_policy.present?
       case price_policy.charge_for
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
-        self.billable_minutes = TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
+        TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
-        self.billable_minutes = TimeRange.new(actual_start_at, actual_end_at).duration_mins
+        TimeRange.new(actual_start_at, actual_end_at).duration_mins
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
         end_time = [reserve_end_at, actual_end_at].max
-        self.billable_minutes = TimeRange.new(reserve_start_at, end_time).duration_mins
+        TimeRange.new(reserve_start_at, end_time).duration_mins
       end
-    else
-      self.billable_minutes = nil
     end
   end
 
