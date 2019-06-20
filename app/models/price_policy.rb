@@ -174,6 +174,10 @@ class PricePolicy < ApplicationRecord
     !expired? && !assigned_to_order?
   end
 
+  def note_option
+    Settings.price_policy_note_options.include?(note) ? note : "Other"
+  end
+
   private
 
   # TODO: Refactor

@@ -60,7 +60,11 @@
 
       .span4
         - if @order_detail.actual_cost?
-          = f.input :price_change_reason
+          - if Settings.order_detail_price_change_reason_options.present?
+            = f.input :price_change_reason_option, as: :select, collection: Settings.order_detail_price_change_reason_options + ["Other"], input_html: { class: "js--order-detail-price-change-reason-select", name: nil, id: nil }
+            = f.input :price_change_reason, label: false, input_html: { class: "js--order-detail-price-change-reason", hidden: @order_detail.price_change_reason_option != "Other" }
+          - else
+            = f.input :price_change_reason
 
       .span4
         = render "assigned_user", f: f
