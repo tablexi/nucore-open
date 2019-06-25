@@ -324,7 +324,7 @@ GEM
     guard-teaspoon (0.8.0)
       guard (~> 2.2)
       teaspoon (>= 0.8.0)
-    haml (5.0.4)
+    haml (5.1.1)
       temple (>= 0.8.0)
       tilt
     haml_lint (0.32.0)
