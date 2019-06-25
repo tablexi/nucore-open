@@ -56,7 +56,7 @@ $(document).ready ->
     updateAdjustmentFields($(evt.target))
   ).trigger("keyup")
 
-  $(".js--price-policy-note-select").on "input", (event) ->
+  $(".js--price-policy-note-select").on "change", (event) ->
     selectedOption = event.target.options[event.target.selectedIndex]
     noteTextField = $(".js--price-policy-note")
     if selectedOption.value == "Other"
