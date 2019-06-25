@@ -1655,9 +1655,10 @@ RSpec.describe Reservation do
   end
 
   describe "before saving" do
-    context "with a complete order detail" do
+    context "with a complete order detail that has a nil canceled_at" do
       before do
         allow(subject.order_detail).to receive(:complete?).and_return(true)
+        allow(subject.order_detail).to receive(:canceled_at).and_return(nil)
       end
 
       context "and a price policy that charges for the reserved time" do
@@ -1710,6 +1711,19 @@ RSpec.describe Reservation do
           subject.run_callbacks(:save) { false }
           expect(subject.billable_minutes).to eq 88
         end
+      end
+    end
+
+    context "with a complete order detail whose canceled_at is set" do
+      before do
+        allow(subject.order_detail).to receive(:complete?).and_return(true)
+        allow(subject.order_detail).to receive(:canceled_at).and_return(5.minutes.ago)
+        subject.order_detail.build_price_policy(charge_for: InstrumentPricePolicy::CHARGE_FOR[:reservation])
+      end
+
+      it "sets billable_minutes to nil" do
+        expect(subject).to receive(:billable_minutes=).with(nil)
+        subject.run_callbacks(:save) { false }
       end
     end
 
