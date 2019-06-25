@@ -28,7 +28,7 @@ class OrderDetailManagement
     @initResolutionNote()
     @initAccountOwnerUpdate()
     @disableForm() if @$element.hasClass('disabled')
-    @$element.find(".js--order-detail-price-change-reason-select").on "input", (event) ->
+    @$element.find(".js--order-detail-price-change-reason-select").on "change", (event) ->
       selectedOption = event.target.options[event.target.selectedIndex]
       noteTextField = $(".js--order-detail-price-change-reason")
       if selectedOption.value == "Other"
