@@ -117,7 +117,7 @@ GEM
     bootstrap-sass (2.3.2.2)
       sass (~> 3.2)
     builder (3.2.3)
-    bullet (6.0.0)
+    bullet (6.0.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.0.0)
