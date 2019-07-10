@@ -580,7 +580,7 @@ GEM
     temple (0.8.1)
     terrapin (0.6.0)
       climate_control (>= 0.0.3, < 1.0)
-    text_helpers (0.7.0)
+    text_helpers (0.7.2)
       activesupport
       i18n (>= 0.6.8)
       redcarpet (>= 3.3.3)
