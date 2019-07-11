@@ -10,7 +10,7 @@ class Service < Product
 
   def active_survey
     active = external_service_passers.joins(:external_service)
-                                     .where("active = 1 AND external_services.type = ?", ExternalServiceManager.survey_service.name)
+                                     .where("active = 1 AND external_services.type = ?", UrlService.name)
                                      .first
 
     active ? active.external_service : nil
