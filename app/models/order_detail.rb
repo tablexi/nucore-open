@@ -100,8 +100,6 @@ class OrderDetail < ApplicationRecord
     journal_date || statement_date
   end
 
-  alias merge! save!
-
   validates_presence_of :product_id, :order_id, :created_by
   validates_numericality_of :quantity, only_integer: true, greater_than_or_equal_to: 1
   validates_numericality_of :actual_cost, greater_than_or_equal_to: 0, if: ->(o) { o.actual_cost_changed? && !o.actual_cost.nil? }
