@@ -16,27 +16,15 @@ RSpec.describe ExternalServiceReceiver do
   it { is_expected.to validate_presence_of :external_service_id }
   it { is_expected.to validate_presence_of :response_data }
 
-  it "responds to keys in the response data" do
-    parsed_response_data.each do |key, _|
-      expect(receiver).to respond_to key
+  describe "#show_url" do
+    it "returns the show url from the response_data attribute" do
+      expect(subject.show_url).to eq "http://survey.test.local/show"
     end
   end
 
-  it "returns the values of keys in the response data when the keys are called as methods" do
-    parsed_response_data.each do |key, value|
-      expect(receiver.send(key)).to eq value
-    end
-  end
-
-  describe "error handling" do
-    it "does not raise an error when response_data is nil" do
-      receiver.response_data = nil
-      expect(receiver).to_not respond_to :foo
-    end
-
-    it "does not raise an error when response_data is not JSON" do
-      receiver.response_data = "a random string"
-      expect(receiver).to_not respond_to :foo
+  describe "#edit_url" do
+    it "returns the edit url from the response_data attribute" do
+      expect(subject.edit_url).to eq "http://survey.test.local/edit"
     end
   end
 end
