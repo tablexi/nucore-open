@@ -128,29 +128,6 @@ RSpec.describe OrderDetailPresenter do
     it { is_expected.to eq("/orders/#{order.id}/order_details/#{order_detail.id}") }
   end
 
-  describe "#survey_url" do
-    subject { presented.survey_url }
-
-    before(:each) do
-      allow(order_detail).to receive(:external_service_receiver) do
-        external_service_receiver
-      end
-    end
-
-    context "when a survey has been completed" do
-      let(:external_service_receiver) { OpenStruct.new(show_url: show_url) }
-      let(:show_url) { "https://example.org/survey.html" }
-
-      it { is_expected.to eq("https://example.org/survey.html") }
-    end
-
-    context "when a survey has not been completed" do
-      let(:external_service_receiver) { nil }
-
-      it { is_expected.to eq("") }
-    end
-  end
-
   describe "#wrapped_total" do
     subject { presented.wrapped_total }
     let(:order) { FactoryBot.create(:setup_order, product: product) }
