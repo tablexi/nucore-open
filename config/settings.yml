@@ -74,9 +74,6 @@ occupancies:
 billing:
   review_period: <%= 7.days %>
 
-external_services:
-  survey: UrlService
-
 relays:
   test:
     admin_enabled: false
