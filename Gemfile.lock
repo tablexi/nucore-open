@@ -349,7 +349,7 @@ GEM
       railties (>= 3.2.16)
     json (2.1.0)
     kgio (2.11.2)
-    kostya-sigar (2.0.1)
+    kostya-sigar (2.0.6)
     launchy (2.4.3)
       addressable (~> 2.3)
     letter_opener (1.7.0)
