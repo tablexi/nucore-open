@@ -65,7 +65,7 @@ class Reports::InstrumentUtilizationReport
     end
 
     def safe_divide(a, b)
-      return 0 if b == 0
+      return 0.0 if b.zero?
       a.to_f / b.to_f
     end
 
