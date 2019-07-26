@@ -1,0 +1,23 @@
+:plain
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
+  <style>
+    #formio {
+      margin: 2em auto;
+      max-width: 960px;
+    }
+  </style>
+  <script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
+  <div id="formio"></div>
+
+:javascript
+  window.onload = function() {
+    Formio
+      .createForm(document.getElementById('formio'), '#{@formio_url}')
+      .then(function(form) {
+        form.on('submitDone', function(submission) {
+          var surveyUrl = encodeURIComponent('#{@formio_url}/submission/' + submission._id);
+          window.location = '#{raw @redirect_url}&survey_url=' + surveyUrl + '&survey_edit_url=' + surveyUrl;
+        });
+      });
+  };

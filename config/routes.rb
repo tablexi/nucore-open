@@ -385,4 +385,8 @@ Nucore::Application.routes.draw do
   namespace :api do
     resources :order_details, only: [:show, :index]
   end
+
+  namespace :formio do
+    resource :submission, only: [:new, :show, :edit]
+  end
 end
