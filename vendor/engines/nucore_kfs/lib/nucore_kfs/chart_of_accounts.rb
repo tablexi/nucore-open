@@ -81,6 +81,10 @@ module NucoreKfs
       # is there already a business_admin on the account?
       if account.business_admins.count > 0
         # we assume there can only be 1 business admin per account (at this time)
+        # TODO: fix this by using the following logic:
+        #   - track who makess the account_users entry (robot vs human)
+        #   - if existing business admin was added by human: do NOT replace it
+        #   - if existing business admin was added by robot: robot can replace it
         if account.business_admins.count > 1
           puts("WARNING: Found #{account.business_admins.count} Business Admins for account id = #{account.id}")
           puts("This is unexpected at this time, so no changes will be made to the Business Admins on this account.")
