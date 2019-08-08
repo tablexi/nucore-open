@@ -47,21 +47,6 @@ email:
 support_email: ~
 
 order_details:
-  # These hooks are triggered when an order detail enters into the status
-  # The hooks can be configured with settings. Here are several formats you can use:
-  #   new:
-  #     - ApprovalNotification::NotifyPurchaser
-  #     - ApprovalNotification::NotifyFacility
-  #   inprocess:
-  #     -
-  #       class: ApprovalNotification::NotifyPurchaser
-  #       setting_1: test3
-  #     - ApprovalNotification::NotifyFacility
-  #   completed: ApprovalNotification::NotifyPurchaser
-  #   reconciled: ["ApprovalNotification::NotifyPurchaser", "ApprovalNotification::NotifyFacility"]
-  status_change_hooks:
-    pending_approval: StatusChangeNotifications::NotifyFacilityHook
-    approved: StatusChangeNotifications::NotifyPurchaserHook
   list_transformer: SplitAccounts::OrderDetailListTransformer
 
 reservations:
