@@ -17,11 +17,6 @@ en:
           Password: %{password}
         outro_html: ""
         outro_text: ""
-      order_status_changed_to_approved:
-        subject: "Order #%{order_detail} has been approved"
-        header: "The following order has been approved."
-      order_status_changed_to_pending_approval:
-        subject: "%{user} has placed an order for %{product}. Please approve."
       review_orders:
         subject: "!app_name! Orders For Review: %{abbreviation}"
         body_text_intro: "New transactions from %{facility} have been posted to the following payment sources:"

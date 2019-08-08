@@ -53,14 +53,6 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
   end
 
-  def order_detail_status_change(order_detail, old_status, new_status, to)
-    @order_detail = order_detail
-    @old_status = old_status
-    @new_status = new_status
-    template = "order_status_changed_to_#{new_status.downcase_name}"
-    send_nucore_mail to, t("views.notifier.#{template}.subject", order_detail: order_detail, user: order_detail.order.user, product: order_detail.product), template
-  end
-
   private
 
   def attach_statement_pdf

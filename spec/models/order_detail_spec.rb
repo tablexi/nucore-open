@@ -14,7 +14,6 @@ RSpec.describe OrderDetail do
   let(:user) { @user }
 
   before(:each) do
-    allow(Settings).to receive_message_chain(:order_details, :status_change_hooks).and_return(nil)
     @facility = create(:facility)
     @facility_account = create(:facility_account, facility: @facility)
     @user = create(:user)
