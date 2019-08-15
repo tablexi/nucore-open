@@ -4,21 +4,20 @@ module Formio
     before_action :authenticate_user!
     before_action :check_acting_as
 
+    layout "formio"
+
     def new
       @formio_url = params[:formio_url]
       @redirect_url = redirect_url
-      render layout: false
     end
 
     def show
       @formio_url = params[:formio_url]
-      render layout: false
     end
 
     def edit
       @formio_url = params[:formio_url]
       @redirect_url = redirect_url
-      render layout: false
     end
 
     private
