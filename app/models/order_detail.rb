@@ -74,11 +74,14 @@ class OrderDetail < ApplicationRecord
   has_many   :vestal_versions, as: :versioned
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
+  delegate :in_cart?, :facility, :ordered_at, :user, to: :order
   delegate :invoice_number, to: :statement, prefix: true
+  delegate :journal_date, to: :journal, allow_nil: true
+  delegate :ordered_on_behalf_of?, to: :order
+  delegate :price_group, to: :price_policy, allow_nil: true
+  delegate :reference, to: :journal, prefix: true, allow_nil: true
   delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
-  delegate :in_cart?, :facility, :ordered_at, :user, to: :order
-  delegate :price_group, to: :price_policy, allow_nil: true
   def estimated_price_group
     estimated_price_policy.try(:price_group)
   end
@@ -88,9 +91,6 @@ class OrderDetail < ApplicationRecord
   def current_journal_rows
     journal_rows.where(journal_id: journal_id)
   end
-
-  delegate :journal_date, to: :journal, allow_nil: true
-  delegate :reference, to: :journal, prefix: true, allow_nil: true
 
   def statement_date
     statement.try(:created_at)
@@ -462,8 +462,6 @@ class OrderDetail < ApplicationRecord
   def pending?
     order.purchased? && state.in?(%w[new inprocess])
   end
-
-  delegate :ordered_on_behalf_of?, to: :order
 
   def cost
     actual_cost || estimated_cost || 0
