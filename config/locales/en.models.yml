@@ -263,6 +263,7 @@ en:
         is_hidden: Is Hidden?
         facility_account: Recharge Chart String
         user_notes_field_mode: Users may submit a note when purchasing?
+        email_purchasers_on_order_status_changes: Email purchasers when the status of an order changes?
         user_notes_label: Label for Notes Field
         training_request_contacts: Training Request Recipients
         order_notification_recipient: Order Notification Recipient

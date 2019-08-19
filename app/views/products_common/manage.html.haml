@@ -28,6 +28,7 @@
   - unless @product.is_a?(Bundle)
     = f.input :user_notes_field_mode, value_method: :to_label
     = f.input :user_notes_label if f.object.user_notes_label? && f.object.user_notes_field_mode.visible?
+  = f.input :email_purchasers_on_order_status_changes
 
   = render_if_exists "#{@product.class.name.underscore}_manage_fields", f: f
 - if can? :edit, @product
