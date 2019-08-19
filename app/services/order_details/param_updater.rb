@@ -115,16 +115,13 @@ class OrderDetails::ParamUpdater
     @order_detail.assign_estimated_price unless @order_detail.price_policy && @order_detail.actual_cost
   end
 
-  def change_order_status(order_status_id, apply_cancel_fee)
-    status = OrderStatus.find(order_status_id)
-    @order_detail.update_order_status! @editing_user,
-                                       status,
-                                       admin: true,
-                                       apply_cancel_fee: apply_cancel_fee
+  def change_order_status(new_order_status_id, apply_cancel_fee)
+    new_order_status = OrderStatus.find(new_order_status_id)
+    @order_detail.update_order_status!(@editing_user, new_order_status, admin: true, apply_cancel_fee: apply_cancel_fee)
+    @order_detail.notify_purchaser_of_order_status
     true
   rescue => e
     @order_detail.errors.add(:base, :changing_status)
-    # returns nil
   end
 
   # Occupancies use accepts_nested_attributes which handles this.

@@ -875,6 +875,12 @@ class OrderDetail < ApplicationRecord
     end
   end
 
+  def notify_purchaser_of_order_status
+    if product.email_purchasers_on_order_status_changes? && !reconciled?
+      Notifier.order_detail_status_changed(id).deliver_later
+    end
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?

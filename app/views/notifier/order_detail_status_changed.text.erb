@@ -1,0 +1,9 @@
+The status of your NUcore order <%= @order_detail.order_number %>
+has changed to <b><%= @order_detail.order_status.name %></b>.
+
+You can access your NUcore orders at any time by going to <%= link_to(orders_url, orders_url) %>.
+
+If you have any questions, please do not hesitate to contact us at <%= mail_to(@order_detail.facility.email) %>.
+
+Sincerely,
+<%= @order_detail.facility.name %>
