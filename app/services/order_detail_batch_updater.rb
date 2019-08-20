@@ -150,6 +150,7 @@ class OrderDetailBatchUpdater
       else
         order_detail.change_status!(order_status)
       end
+      order_detail.notify_purchaser_of_order_status
     end
   rescue => e
     msg_hash[:error] =
