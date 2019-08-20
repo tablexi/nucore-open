@@ -57,7 +57,7 @@ class Notifier < ActionMailer::Base
     @order_detail = OrderDetail.includes(:order, :order_status).find(order_detail_id)
     mail(
       to: @order_detail.order.user.email,
-      subject: "Order #{@order_detail.order_number} status changed to: #{@order_detail.order_status.name}"
+      subject: "[NUcore #{@order_detail.facility.abbreviation}] Order Status Changed To: #{@order_detail.order_status.name}"
     )
   end
 

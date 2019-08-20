@@ -1,9 +1,10 @@
-The status of your NUcore order <%= @order_detail.order_number %>
-has changed to <b><%= @order_detail.order_status.name %></b>.
+Hello <%= @order_detail.user.name %>,
 
-You can access your NUcore orders at any time by going to <%= link_to(orders_url, orders_url) %>.
+The <%= @order_detail.facility.name %> has updated the status of NUcore order <%= @order_detail.er_number %> to <b><%= @order_detail.order_status.name %></b>.
 
-If you have any questions, please do not hesitate to contact us at <%= mail_to(@order_detail.facility.email) %>.
+To view all your NUcore orders, please visit: <%= link_to(orders_url, orders_url) %>.
+
+If you have any questions, please contact us at <%= @order_detail.facility.email %>.
 
 Sincerely,
 <%= @order_detail.facility.name %>
