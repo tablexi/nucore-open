@@ -51,10 +51,6 @@ class OrderStatus < ApplicationRecord
     root.name.downcase.delete(" ").to_sym
   end
 
-  def downcase_name
-    name.downcase.gsub(/\s+/, "_")
-  end
-
   def is_left_of?(o)
     rgt < o.lft
   end

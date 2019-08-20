@@ -1906,4 +1906,37 @@ RSpec.describe OrderDetail do
     expect(order_detail.reservation).to receive(:update_billable_minutes)
     order_detail.run_callbacks(:save) { true }
   end
+
+  describe "#notify_purchaser_of_order_status" do
+    context "when the order detail’s product is configured to email purchasers" do
+      before do
+        @order_detail.product.email_purchasers_on_order_status_changes = true
+      end
+
+      it "does not notify when the order detail is reconciled" do
+        allow(@order_detail).to receive(:reconciled?).and_return(true)
+        expect(Notifier).not_to receive(:order_detail_status_changed)
+        @order_detail.notify_purchaser_of_order_status
+      end
+
+      it "notifies when the order detail is not reconciled" do
+        allow(@order_detail).to receive(:reconciled?).and_return(false)
+        mail_double = instance_double(ActionMailer::MessageDelivery)
+        expect(mail_double).to receive(:deliver_later)
+        expect(Notifier).to receive(:order_detail_status_changed).and_return(mail_double)
+        @order_detail.notify_purchaser_of_order_status
+      end
+    end
+
+    context "when the order detail’s product is not configured to email purchasers" do
+      before do
+        @order_detail.product.email_purchasers_on_order_status_changes = false
+      end
+
+      it "does not notify" do
+        expect(Notifier).not_to receive(:order_detail_status_changed)
+        @order_detail.notify_purchaser_of_order_status
+      end
+    end
+  end
 end
