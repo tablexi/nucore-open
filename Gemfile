@@ -79,6 +79,7 @@ gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "synaccess_connect"
 gem "nucore_kfs", path: "vendor/engines/nucore_kfs"
+gem "uconn_cider", path: "vendor/engines/uconn_cider"
 
 group :development do
   gem "bullet" # Detect N+1s and recommends eager loading

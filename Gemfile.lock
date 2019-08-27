@@ -74,6 +74,12 @@ PATH
   specs:
     split_accounts (0.0.1)
 
+PATH
+  remote: vendor/engines/uconn_cider
+  specs:
+    uconn_cider (0.1.0)
+      rails (~> 5.0.7, >= 5.0.7.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -764,6 +770,7 @@ DEPENDENCIES
   text_helpers
   therubyracer
   thin
+  uconn_cider!
   uglifier (= 4.1.18)
   unicorn
   vuejs-rails (~> 1.0.26)

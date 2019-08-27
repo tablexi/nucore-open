@@ -1,0 +1,7 @@
+en:
+  views:
+    uconn_cider:
+      login_form:
+        username_signin: External Non-UConn Users Sign in
+        username_warning: Only sign in with Username/Password if you do not have a NetID
+        sso_button: Internal UConn Users, NetID Login
