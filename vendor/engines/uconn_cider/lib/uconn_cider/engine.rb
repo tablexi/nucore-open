@@ -6,6 +6,9 @@ module UconnCider
       ViewHook.add_hook("devise.sessions.new",
                         "login_form",
                         "uconn_cider/login_form")
+      ViewHook.remove_hook "devise.sessions.new",
+                        "before_login_form",
+                        "saml_authentication/sessions/new"
     end
   end
 end
