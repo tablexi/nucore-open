@@ -393,7 +393,6 @@ RSpec.describe Ability do
   shared_examples_for "it has common staff abilities" do
     it { is_expected.not_to be_allowed_to(:disputed, Order) }
     it { is_expected.not_to be_allowed_to(:manage, Account) }
-    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
     it { is_expected.to be_allowed_to(:batch_update, Order) }
     it_is_allowed_to([:batch_update, :cancel, :index], Reservation)
     it { is_expected.to be_allowed_to(:read, Notification) }
@@ -427,6 +426,8 @@ RSpec.describe Ability do
     let(:user) { create(:user, :senior_staff, facility: facility) }
 
     it_behaves_like "it has common staff abilities"
+    it { is_expected.to be_allowed_to(:show_problems, Reservation) }
+    it { is_expected.to be_allowed_to(:show_problems, Order) }
     it_is_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
     it { is_expected.to be_allowed_to(:manage, TrainingRequest) }
     it { is_expected.to be_allowed_to(:manage, ScheduleRule) }
@@ -438,6 +439,7 @@ RSpec.describe Ability do
     let(:user) { create(:user, :staff, facility: facility) }
 
     it_behaves_like "it has common staff abilities"
+    it { is_expected.not_to be_allowed_to(:show_problems, Reservation) }
     it_is_not_allowed_to([:bring_online, :create, :edit, :new, :update], OfflineReservation)
     it { is_expected.to be_allowed_to(:create, TrainingRequest) }
     it_behaves_like "it can not manage training requests"
