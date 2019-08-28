@@ -11,8 +11,6 @@ module SecureRooms
     end
 
     def extend(user, resource)
-      ability.can :manage, CardReader if user.manager_of?(resource) || user.facility_senior_staff_of?(resource)
-
       if user.operator_of?(resource)
         ability.can [
           :index,
@@ -23,9 +21,13 @@ module SecureRooms
 
       if user.manager_of?(resource)
         ability.can [
-          :show_problems,
           :assign_price_policies_to_problem_orders,
         ], Occupancy
+      end
+
+      if user.manager_of?(resource) || user.facility_senior_staff_of?(resource)
+        ability.can :manage, CardReader
+        ability.can :show_problems, Occupancy
       end
     end
 

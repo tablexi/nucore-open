@@ -250,6 +250,8 @@ class Ability
         OfflineReservation,
       ]
 
+      can :show_problems, [Reservation, Order]
+
       # they can get to reports controller, but they're not allowed to export all
       # ideally we don't use `cannot` as it adds a dependency on the order of assigning abilities for multiple roles
       can :manage, Reports::ReportsController
