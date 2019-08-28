@@ -123,6 +123,7 @@ class FacilitiesController < ApplicationController
   end
 
   # GET /facilities/:facility_id/transactions
+  #
   def transactions
     order_details = OrderDetail.purchased.for_facility(current_facility)
     @export_enabled = true

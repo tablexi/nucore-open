@@ -22,6 +22,15 @@ class FacilityStatementsController < ApplicationController
   def index
     statements = current_facility.cross_facility? ? Statement.all : current_facility.statements
     @statements = statements.order(created_at: :desc).paginate(page: params[:page])
+
+    @search_form = StatementSearch::SearchForm.new(
+      params[:search],
+      defaults: {
+        date_range_start: format_usa_date(1.month.ago.beginning_of_month),
+      },
+    )
+
+    @search = StatementSearch::Searcher.search(@statements, @search_form)
   end
 
   # GET /facilities/:facility_id/statements/new

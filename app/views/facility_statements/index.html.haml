@@ -6,4 +6,6 @@
 
 %h2= text("head")
 
+= content_for :top_block do
+  = render "search"
 = render partial: "shared/statements_table"

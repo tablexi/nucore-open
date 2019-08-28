@@ -34,6 +34,7 @@ module TransactionSearch
     # Shorthand method for searchers used on the billing page
     def self.billing_search(order_details, params, include_facilities: false)
       searchers = default_searchers.dup
+      # do we need the below for statements?
       searchers.unshift(TransactionSearch::FacilitySearcher) if include_facilities
       new(*searchers).search(order_details, params)
     end
