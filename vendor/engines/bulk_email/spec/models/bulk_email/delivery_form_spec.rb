@@ -27,7 +27,6 @@ RSpec.describe BulkEmail::DeliveryForm do
       form.search_criteria = { this: "is", a: "test" }
 
       allow(content_generator).to receive(:greeting).and_return("Greeting")
-      allow(content_generator).to receive(:signoff).and_return(signoff)
       allow(content_generator).to receive(:subject_prefix).and_return("Prefix")
     end
 
@@ -44,8 +43,7 @@ RSpec.describe BulkEmail::DeliveryForm do
     end
 
     context "when in a single-facility context" do
-      let(:expected_body) { "Greeting\n\nCustom message\n\n#{signoff}" }
-      let(:signoff) { "If you have any questions, etc." }
+      let(:expected_body) { "Greeting\n\nCustom message" }
 
       it_behaves_like "it delivers mail"
     end
@@ -53,11 +51,6 @@ RSpec.describe BulkEmail::DeliveryForm do
     context "when in a cross-facility context" do
       let(:expected_body) { "Greeting\n\nCustom message" }
       let(:facility) { Facility.cross_facility }
-      let(:signoff) { nil }
-
-      before do
-        allow(content_generator).to receive(:signoff).and_return(nil)
-      end
 
       it_behaves_like "it delivers mail"
     end
