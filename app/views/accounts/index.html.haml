@@ -4,9 +4,6 @@
 - if @account_users.empty?
   %p.notice= text("empty", models: Account.model_name.human.pluralize.downcase)
 - else
-  - if @administered_order_details_in_review.any?
-    = link_to text("transaction_in_review", count: @administered_order_details_in_review.count),
-      in_review_transactions_path
   %table.table.table-striped.table-hover.js--responsive_table
     %thead
       %tr
