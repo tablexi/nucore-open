@@ -33,18 +33,6 @@ RSpec.describe BulkEmail::ContentGenerator do
     end
   end
 
-  describe "#signoff" do
-    context "when in a single-facility context" do
-      it { expect(subject.signoff).to be_present }
-    end
-
-    context "when in a cross-facility context" do
-      let(:facility) { Facility.cross_facility }
-
-      it { expect(subject.signoff).to be_blank }
-    end
-  end
-
   describe "#subject_prefix" do
     context "when in a single-facility context", :locales do
       before do
@@ -72,11 +60,10 @@ RSpec.describe BulkEmail::ContentGenerator do
   describe "#wrap_text" do
     subject { described_class.new(facility, instrument) }
 
-    it "wraps content with the greeting and signoff" do
+    it "prefixes content with the greeting" do
       expect(subject.wrap_text("This is some text"))
         .to include(subject.greeting)
         .and include("This is some text")
-        .and include(subject.signoff)
     end
   end
 end
