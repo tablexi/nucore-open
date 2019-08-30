@@ -17,7 +17,8 @@ RSpec.describe Ability do
     let(:user) { FactoryBot.create(:user, :senior_staff, facility: facility) }
 
     it_is_allowed_to([:index, :dashboard, :tab_counts], SecureRooms::Occupancy)
-    it_is_not_allowed_to([:show_problems, :assign_price_policies_to_problem_orders], SecureRooms::Occupancy)
+    it_is_not_allowed_to(:assign_price_policies_to_problem_orders, SecureRooms::Occupancy)
+    it_is_allowed_to(:show_problems, SecureRooms::Occupancy)
   end
 
   describe "facility billing administrator" do
