@@ -40,14 +40,14 @@ module BulkEmail
     private
 
     def custom_subject_present_if_required
-      return if product.offline?
+      return if product&.offline?
       return if custom_subject.present?
 
       errors.add(:custom_subject, "can't be blank")
     end
 
     def custom_message_present_if_required
-      return if product.offline?
+      return if product&.offline?
       return if custom_message.present?
 
       errors.add(:custom_message, "can't be blank")
