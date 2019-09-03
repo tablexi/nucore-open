@@ -40,21 +40,19 @@ RSpec.describe PricePolicy do
   end
 
   context "expire date" do
-    before :each do
-      @start_date = Time.zone.parse("2020-5-5")
-    end
+    let(:start_date) { 1.year.from_now.change(month: 5, day: 5) }
 
     it "should not allow an expire date the same as start date" do
       pp = ItemPricePolicy.new(
         FactoryBot.attributes_for(:item_price_policy,
                                   price_group_id: @price_group.id,
                                   product_id: @item.id,
-                                  start_date: @start_date,
-                                  expire_date: @start_date),
+                                  start_date: start_date,
+                                  expire_date: start_date),
       )
 
-      assert !pp.save
-      assert pp.errors[:expire_date]
+      expect(pp).not_to be_valid
+      expect(pp.errors[:expire_date]).to be_present
     end
 
     it "should not allow an expire date after a generated date" do
@@ -62,30 +60,38 @@ RSpec.describe PricePolicy do
         FactoryBot.attributes_for(:item_price_policy,
                                   price_group_id: @price_group.id,
                                   product_id: @item.id,
-                                  start_date: @start_date,
-                                  expire_date: PricePolicy.generate_expire_date(@start_date) + 1.month),
+                                  start_date: start_date,
+                                  expire_date: PricePolicy.generate_expire_date(start_date) + 1.month),
       )
-      assert !pp.save
-      assert pp.errors[:expire_date]
+      expect(pp).not_to be_valid
+      expect(pp.errors[:expire_date]).to be_present
     end
 
     it "should not set default expire_date if one is given" do
-      expire_date = @start_date + 3.months
-      pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+      expire_date = start_date + 3.months
+      pp = FactoryBot.create(:item_price_policy,
+                             price_group_id: @price_group.id,
+                             product_id: @item.id, start_date: start_date,
+                             expire_date: expire_date
+                            )
       expect(pp.expire_date).not_to be_nil
       expect(pp.expire_date).to eq(expire_date)
     end
 
     it "should not be expired" do
-      expire_date = @start_date + 3.months
-      pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+      expire_date = start_date + 3.months
+      pp = FactoryBot.create(:item_price_policy,
+                             price_group_id: @price_group.id,
+                             product_id: @item.id,
+                             start_date: start_date,
+                             expire_date: expire_date)
       expect(pp).not_to be_expired
     end
 
-    it "should be expired" do
-      @start_date = Time.zone.parse("2000-5-5")
-      expire_date = @start_date + 1.month
-      pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: @start_date, expire_date: expire_date)
+    it "should be expired when in the past" do
+      start_date = Time.zone.parse("2000-5-5")
+      expire_date = start_date + 1.month
+      pp = FactoryBot.create(:item_price_policy, price_group_id: @price_group.id, product_id: @item.id, start_date: start_date, expire_date: expire_date)
       expect(pp).to be_expired
     end
 
