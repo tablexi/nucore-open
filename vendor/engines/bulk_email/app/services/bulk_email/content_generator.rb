@@ -24,7 +24,7 @@ module BulkEmail
     end
 
     def wrap_text(text, recipient_name = nil)
-      [greeting(recipient_name), text, signoff].compact.join("\n\n")
+      [greeting(recipient_name), text].compact.join("\n\n")
     end
 
     def greeting(recipient_name = nil)
@@ -32,12 +32,6 @@ module BulkEmail
         text("body.greeting", recipient_name: recipient_name || DEFAULT_RECIPIENT_NAME),
         reason_statement,
       ].compact.join("\n\n")
-    end
-
-    def signoff
-      if facility.single_facility?
-        text("body.signoff", facility_name: facility.name)
-      end
     end
 
     def translation_scope
