@@ -10,8 +10,7 @@ module BulkEmail
     attr_reader :facility, :user, :content_generator
 
     validates :recipient_ids, presence: true
-    validate :custom_message_present_if_required
-    validate :custom_subject_present_if_required
+    validates :custom_subject, :custom_message, presence: true, unless: :product_offline?
 
     def initialize(user, facility, content_generator)
       @user = user
@@ -39,18 +38,8 @@ module BulkEmail
 
     private
 
-    def custom_subject_present_if_required
-      return if product&.offline?
-      return if custom_subject.present?
-
-      errors.add(:custom_subject, "can't be blank")
-    end
-
-    def custom_message_present_if_required
-      return if product&.offline?
-      return if custom_message.present?
-
-      errors.add(:custom_message, "can't be blank")
+    def product_offline?
+      product&.offline?
     end
 
     def subject
