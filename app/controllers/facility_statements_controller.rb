@@ -13,6 +13,8 @@ class FacilityStatementsController < ApplicationController
     action_name.in?(%w(new)) ? "two_column_head" : "two_column"
   }
 
+  include CsvEmailAction
+
   def initialize
     @active_tab = "admin_billing"
     super
@@ -20,9 +22,18 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements
   def index
-    search_params = (params[:statement_search_form] || empty_params).permit(:date_range_start, :date_range_end, accounts: [], sent_to: [])
-    @search_form = StatementSearchForm.new(search_params.merge(facility: current_facility))
-    @statements = @search_form.search.order(created_at: :desc).paginate(page: params[:page])
+    search_params = (params[:statement_search_form] || empty_params).permit(:date_range_start, :date_range_end, accounts: [], sent_to: []).merge(facility: current_facility)
+    @search_form = StatementSearchForm.new(search_params)
+    @statements = @search_form.search.order(created_at: :desc)
+
+    respond_to do |format|
+      format.html { @statements = @statements.paginate(page: params[:page]) }
+      format.csv do
+        send_csv_email_and_respond do |email|
+          StatementSearchResultMailer.search_result(email, search_params.to_h).deliver_later
+        end
+      end
+    end
   end
 
   # GET /facilities/:facility_id/statements/new

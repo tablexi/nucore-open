@@ -16,6 +16,9 @@
       = f.input :date_range_end, input_html: { class: "datepicker__data" }
 
     .submit_button.span12
+      = hidden_field_tag :email, current_user.email, disabled: true
+      = hidden_field_tag :format, params[:format], disabled: true
       = f.submit t("shared.filter"), class: "btn float-left"
 
+= link_to t('reports.account_transactions.export'), url_for(format: :csv), class: 'js--exportSearchResults pull-right', data: { form: '.search_form' }
 = render partial: "shared/statements_table"
