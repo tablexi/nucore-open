@@ -21,7 +21,7 @@ class Statement < ApplicationRecord
 
   scope :created_between, lambda { |start_at, end_at|
     if start_at
-      where(created_at: start_at..(end_at || DateTime::Infinity))
+      where(created_at: start_at..(end_at || DateTime::Infinity.new))
     elsif end_at
       where(arel_table[:created_at].lt(end_at))
     end
