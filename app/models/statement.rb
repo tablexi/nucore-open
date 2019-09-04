@@ -27,6 +27,10 @@ class Statement < ApplicationRecord
     end
   }
 
+  RECONCILED_SQL = OrderDetail.unreconciled.where("order_details.statement_id = statements.id").select(1).to_sql
+  scope :unreconciled, -> { joins(:order_details).where("EXISTS (#{RECONCILED_SQL})") }
+  scope :reconciled, -> { joins(:order_details).where("NOT EXISTS (#{RECONCILED_SQL})") }
+
   # Used in NU branch
   def first_order_detail_date
     min_order = order_details.min { |a, b| a.order.ordered_at <=> b.order.ordered_at }
@@ -64,7 +68,7 @@ class Statement < ApplicationRecord
   end
 
   def reconciled?
-    order_details.where("state <> ?", "reconciled").empty?
+    order_details.unreconciled.empty?
   end
 
   def paid_in_full?
