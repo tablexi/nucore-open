@@ -20,8 +20,9 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements
   def index
-    statements = current_facility.cross_facility? ? Statement.all : current_facility.statements
-    @statements = statements.order(created_at: :desc).paginate(page: params[:page])
+    search_params = (params[:statement_search_form] || empty_params).permit(:date_range_start, :date_range_end, accounts: [], sent_to: [])
+    @search_form = StatementSearchForm.new(search_params.merge(facility: current_facility))
+    @statements = @search_form.search.order(created_at: :desc).paginate(page: params[:page])
   end
 
   # GET /facilities/:facility_id/statements/new

@@ -6,4 +6,16 @@
 
 %h2= text("head")
 
+= simple_form_for @search_form, url: url_for, method: :get, html: { class: "search_form" }, defaults: { required: false } do |f|
+  .row
+    %fieldset.span6#search
+      = f.input :accounts, collection: @search_form.available_accounts, as: :transaction_chosen, input_html: { class: "js--chosen" }
+      = f.input :sent_to, collection: @search_form.available_sent_to, as: :transaction_chosen, input_html: { class: "js--chosen" }, label: Statement.human_attribute_name(:sent_to)
+    %fieldset.span2
+      = f.input :date_range_start, input_html: { class: "datepicker__data" }
+      = f.input :date_range_end, input_html: { class: "datepicker__data" }
+
+    .submit_button.span12
+      = f.submit t("shared.filter"), class: "btn float-left"
+
 = render partial: "shared/statements_table"

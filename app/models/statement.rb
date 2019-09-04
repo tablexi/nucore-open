@@ -14,6 +14,19 @@ class Statement < ApplicationRecord
 
   default_scope -> { order(created_at: :desc) }
 
+  scope :for_accounts, ->(accounts) { where(account_id: accounts) if accounts.present? }
+  scope :for_sent_to, lambda { |sent_to|
+    where(account: Account.joins(:notify_users).where(account_users: { user_id: sent_to })) if sent_to.present?
+  }
+
+  scope :created_between, lambda { |start_at, end_at|
+    if start_at
+      where(created_at: start_at..(end_at || DateTime::Infinity))
+    elsif end_at
+      where(arel_table[:created_at].lt(end_at))
+    end
+  }
+
   # Used in NU branch
   def first_order_detail_date
     min_order = order_details.min { |a, b| a.order.ordered_at <=> b.order.ordered_at }
