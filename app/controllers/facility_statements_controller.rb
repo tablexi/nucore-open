@@ -22,7 +22,7 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements
   def index
-    @search_form = StatementSearchForm.new(permitted_search_params.merge(facility: current_facility))
+    @search_form = StatementSearchForm.new(permitted_search_params.merge(current_facility: current_facility))
     @statements = @search_form.search.order(created_at: :desc)
 
     respond_to do |format|
@@ -36,7 +36,7 @@ class FacilityStatementsController < ApplicationController
   end
 
   def permitted_search_params
-    (params[:statement_search_form] || empty_params).permit(:date_range_start, :date_range_end, :status, accounts: [], sent_to: [])
+    (params[:statement_search_form] || empty_params).permit(:date_range_start, :date_range_end, :status, accounts: [], sent_to: [], facilities: [])
   end
 
   # GET /facilities/:facility_id/statements/new
