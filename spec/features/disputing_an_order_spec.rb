@@ -15,8 +15,7 @@ RSpec.describe "Disputing an order" do
 
   it "can dispute an order" do
     login_as owner
-    visit accounts_path
-    click_link "You have one transaction in review"
+    visit in_review_transactions_path
 
     click_link "Dispute"
     fill_in "Dispute Reason", with: "It's bad"

@@ -30,7 +30,6 @@ en:
     subject_prefix_with_facility: "[!app_name! %{abbreviation}]"
     body:
       greeting: Hello %{recipient_name},
-      signoff: If you have any questions, please contact %{facility_name}.
     delivery:
       success:
         one: "%{count} email message queued successfully."
