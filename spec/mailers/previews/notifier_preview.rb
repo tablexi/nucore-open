@@ -25,4 +25,9 @@ class NotifierPreview < ActionMailer::Preview
     Notifier.new_user(user: user, password: "password")
   end
 
+  def order_detail_status_changed
+    order_detail = NUCore::Database.random(OrderDetail.complete)
+    Notifier.order_detail_status_changed(order_detail)
+  end
+
 end

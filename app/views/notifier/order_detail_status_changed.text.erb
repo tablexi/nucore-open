@@ -1,11 +1,1 @@
-Hello <%= @order_detail.user.name %>,
-
-The <%= @order_detail.facility.name %> has updated the status of NUcore order
-<%= @order_detail.order_number %> to <b><%= @order_detail.order_status.name %></b>.
-
-To view all your NUcore orders, please visit: <%= link_to(orders_url, orders_url) %>.
-
-If you have any questions, please contact us at <%= @order_detail.facility.email %>.
-
-Sincerely,
-<%= @order_detail.facility.name %>
+<%= text("body", facility: @order_detail.facility, user: @order_detail.user, product: @order_detail.product, new_status: @order_detail.order_status, order_detail: @order_detail, link: orders_url, facility_mailto: @order_detail.facility.email) %>

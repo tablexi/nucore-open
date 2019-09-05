@@ -17,6 +17,21 @@ en:
           Password: %{password}
         outro_html: ""
         outro_text: ""
+      order_detail_status_changed:
+        subject:
+        body: |
+          Hello %{user},
+
+          The %{facility} has updated the status of your order for %{product} (NUcore order %{order_detail}) to **%{new_status}**.
+
+          To view all your NUcore orders, please visit: <%{link}>
+
+          If you have any questions, please contact us at <%{facility_mailto}>.
+
+          Sincerely,
+
+          %{facility}
+
       review_orders:
         subject: "!app_name! Orders For Review: %{abbreviation}"
         body_text_intro: "New transactions from %{facility} have been posted to the following payment sources:"
