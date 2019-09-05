@@ -5,7 +5,7 @@ module SangerSequencing
   class Sample < ApplicationRecord
 
     self.table_name = "sanger_sequencing_samples"
-    belongs_to :submission
+    belongs_to :submission, inverse_of: :samples
 
     validates :customer_sample_id, presence: true
 
