@@ -13,7 +13,7 @@ module SangerSequencing
     has_one :order, through: :order_detail
     has_one :user, through: :order
     has_one :facility, through: :order
-    has_many :samples
+    has_many :samples, inverse_of: :submission
 
     accepts_nested_attributes_for :samples, allow_destroy: true
 
