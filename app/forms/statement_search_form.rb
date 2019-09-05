@@ -8,11 +8,13 @@ class StatementSearchForm
   attr_accessor :accounts, :current_facility, :facilities, :sent_to, :status, :date_range_start, :date_range_end
 
   def available_accounts
-    Account.where(id: all_statements.select(:account_id).distinct).order(:account_number, :description)
+    # Oracle throws an error if there is an ORDER in a subquery and Statements have a default scope/order
+    Account.where(id: all_statements.unscope(:order).distinct.select(:account_id)).order(:account_number, :description)
   end
 
   def available_sent_to
-    User.where(id: available_accounts.joins(:notify_users).select("account_users.user_id").distinct).order(:last_name, :first_name)
+    # Oracle throws an error if there is an ORDER in a subquery
+    User.where(id: available_accounts.unscope(:order).joins(:notify_users).select("account_users.user_id").distinct).order(:last_name, :first_name)
   end
 
   def available_statuses

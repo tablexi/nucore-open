@@ -13,10 +13,10 @@
         = f.input :facilities, collection: @search_form.available_facilities, as: :transaction_chosen, input_html: { class: "js--chosen" }
       = f.input :accounts, collection: @search_form.available_accounts, as: :transaction_chosen, input_html: { class: "js--chosen" }, label_method: :account_list_item
       = f.input :sent_to, collection: @search_form.available_sent_to, as: :transaction_chosen, input_html: { class: "js--chosen" }, label: Statement.human_attribute_name(:sent_to)
-      = f.input :status, collection: @search_form.available_statuses, input_html: { class: "js--chosen" }
     %fieldset.span2
       = f.input :date_range_start, input_html: { class: "datepicker__data" }
       = f.input :date_range_end, input_html: { class: "datepicker__data" }
+      = f.input :status, collection: @search_form.available_statuses
 
     .submit_button.span12
       = hidden_field_tag :email, current_user.email, disabled: true
