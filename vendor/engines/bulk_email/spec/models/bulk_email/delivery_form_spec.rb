@@ -10,9 +10,29 @@ RSpec.describe BulkEmail::DeliveryForm do
   let(:user) { FactoryBot.create(:user) }
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:custom_subject) }
-    it { is_expected.to validate_presence_of(:custom_message) }
     it { is_expected.to validate_presence_of(:recipient_ids) }
+
+    context "there is no product" do
+      it { is_expected.to validate_presence_of(:custom_subject) }
+      it { is_expected.to validate_presence_of(:custom_message) }
+    end
+
+    context "there is an online instrument" do
+      before do
+        allow(form).to receive(:product).and_return double("Instrument", offline?: false)
+      end
+      it { is_expected.to validate_presence_of(:custom_subject) }
+      it { is_expected.to validate_presence_of(:custom_message) }
+    end
+
+    context "when there is an offline instrument" do
+      before do
+        allow(form).to receive(:product).and_return double("Instrument", offline?: true)
+      end
+
+      it { is_expected.not_to validate_presence_of(:custom_subject) }
+      it { is_expected.not_to validate_presence_of(:custom_message) }
+    end
   end
 
   describe "#deliver_all" do
