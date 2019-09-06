@@ -14,6 +14,28 @@ class Statement < ApplicationRecord
 
   default_scope -> { order(created_at: :desc) }
 
+  scope :for_accounts, ->(accounts) { where(account_id: accounts) if accounts.present? }
+  scope :for_sent_to, lambda { |sent_to|
+    where(account: Account.joins(:notify_users).where(account_users: { user_id: sent_to })) if sent_to.present?
+  }
+
+  scope :created_between, lambda { |start_at, end_at|
+    if start_at
+      where(created_at: start_at..(end_at || DateTime::Infinity.new))
+    elsif end_at
+      where(arel_table[:created_at].lt(end_at))
+    end
+  }
+
+  RECONCILED_SQL = OrderDetail.unreconciled.where("order_details.statement_id = statements.id").select(1).to_sql
+  scope :unreconciled, -> { joins(:order_details).where("EXISTS (#{RECONCILED_SQL})").distinct }
+  scope :reconciled, -> { joins(:order_details).where("NOT EXISTS (#{RECONCILED_SQL})").distinct }
+
+  # Use this for restricting the the current facility
+  scope :for_facility, ->(facility) { where(facility: facility) if facility.single_facility? }
+  # Use this for restricting based on search parameters
+  scope :for_facilities, ->(facilities) { where(facility: facilities) if facilities.present? }
+
   # Used in NU branch
   def first_order_detail_date
     min_order = order_details.min { |a, b| a.order.ordered_at <=> b.order.ordered_at }
@@ -38,20 +60,12 @@ class Statement < ApplicationRecord
     find_by(id: id, account_id: account_id)
   end
 
-  def self.for_facility(facility)
-    if facility.single_facility?
-      where(facility: facility)
-    else
-      all
-    end
-  end
-
   def invoice_date
     created_at.to_date
   end
 
   def reconciled?
-    order_details.where("state <> ?", "reconciled").empty?
+    order_details.unreconciled.empty?
   end
 
   def paid_in_full?

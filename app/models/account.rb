@@ -35,13 +35,15 @@ class Account < ApplicationRecord
   # Temporary methods
 
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
-  has_many :deleted_account_users, -> { where.not("account_users.deleted_at" => nil) }, class_name: "AccountUser"
-  # Using a basic hash doesn't work with the `owner_user` :through association. It would
-  # only include the last item in the hash as part of the scoping.
-  # TODO Consider changing when we get to Rails 4.
-  has_one :owner, -> { where("account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL") }, class_name: "AccountUser"
+  has_many :deleted_account_users, -> { where.not(deleted_at: nil) }, class_name: "AccountUser"
+
+  has_one :owner, -> { where(user_role: AccountUser::ACCOUNT_OWNER, deleted_at: nil) }, class_name: "AccountUser"
   has_one :owner_user, through: :owner, source: :user
   has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"
+
+  has_many :notify_user_roles, -> { where(user_role: AccountUser.admin_user_roles, deleted_at: nil) }, class_name: "AccountUser"
+  has_many :notify_users, through: :notify_user_roles, source: :user
+
   has_many   :price_group_members
   has_many   :order_details
   has_many   :orders
@@ -136,10 +138,6 @@ class Account < ApplicationRecord
 
   def business_admin_users
     business_admins.collect(&:user)
-  end
-
-  def notify_users
-    [owner_user] + business_admin_users
   end
 
   def suspend
