@@ -90,5 +90,9 @@ RSpec.describe "Facility Statement Admin" do
       expect(page).not_to have_content(statement1.invoice_number)
       expect(page).to have_content(statement2.invoice_number)
     end
+
+    it "sends a csv in an email" do
+      expect { click_link "Export as CSV" }.to change(ActionMailer::Base.deliveries, :count)
+    end
   end
 end
