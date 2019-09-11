@@ -26,8 +26,8 @@ RSpec.describe "Facility Statement Admin" do
       select accounts.first.account_list_item, from: "Payment Sources"
       click_button "Filter"
 
-      expect(page).to have_link(order_details.first.id, href: manage_facility_order_order_detail_path(facility, orders.first, order_details.first))
-      expect(page).not_to have_link(order_details.second.id, href: manage_facility_order_order_detail_path(facility, orders.second, order_details.second))
+      expect(page).to have_link(order_details.first.id.to_s, href: manage_facility_order_order_detail_path(facility, orders.first, order_details.first))
+      expect(page).not_to have_link(order_details.second.id.to_s, href: manage_facility_order_order_detail_path(facility, orders.second, order_details.second))
     end
   end
 
@@ -77,18 +77,22 @@ RSpec.describe "Facility Statement Admin" do
     end
 
     it "can filter by dates" do
-      fill_in "Created At Start", with: I18n.l(4.days.ago.to_date, format: :usa)
+      fill_in "Start Date", with: I18n.l(4.days.ago.to_date, format: :usa)
       click_button "Filter"
 
       expect(page).to have_content(statement1.invoice_number)
       expect(page).not_to have_content(statement2.invoice_number)
 
-      fill_in "Created At Start", with: ""
-      fill_in "Created At End", with: I18n.l(4.days.ago.to_date, format: :usa)
+      fill_in "Start Date", with: ""
+      fill_in "End Date", with: I18n.l(4.days.ago.to_date, format: :usa)
 
       click_button "Filter"
       expect(page).not_to have_content(statement1.invoice_number)
       expect(page).to have_content(statement2.invoice_number)
+    end
+
+    it "sends a csv in an email" do
+      expect { click_link "Export as CSV" }.to change(ActionMailer::Base.deliveries, :count)
     end
   end
 end

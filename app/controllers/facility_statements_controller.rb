@@ -22,7 +22,9 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements
   def index
-    @search_form = StatementSearchForm.new(permitted_search_params.merge(current_facility: current_facility))
+    search_params = permitted_search_params.merge(current_facility: current_facility)
+
+    @search_form = StatementSearchForm.new(search_params)
     @statements = @search_form.search.order(created_at: :desc)
 
     respond_to do |format|
