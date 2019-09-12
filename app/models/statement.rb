@@ -27,9 +27,8 @@ class Statement < ApplicationRecord
     end
   }
 
-  RECONCILED_SQL = OrderDetail.unreconciled.where("order_details.statement_id = statements.id").select(1).to_sql
-  scope :unreconciled, -> { joins(:order_details).where("EXISTS (#{RECONCILED_SQL})").distinct }
-  scope :reconciled, -> { joins(:order_details).where("NOT EXISTS (#{RECONCILED_SQL})").distinct }
+  scope :reconciled, -> { where.not(id: OrderDetail.unreconciled.where.not(statement_id: nil).select(:statement_id)) }
+  scope :unreconciled, -> { where(id: OrderDetail.unreconciled.where.not(statement_id: nil).select(:statement_id)) }
 
   # Use this for restricting the the current facility
   scope :for_facility, ->(facility) { where(facility: facility) if facility.single_facility? }
