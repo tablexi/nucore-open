@@ -8,6 +8,7 @@ module Formio
 
     def new
       @formio_url = params[:formio_url]
+      @prefill_data = prefill_data
       @redirect_url = redirect_url
     end
 
@@ -33,6 +34,18 @@ module Formio
         success_url_params = Rack::Utils.parse_query(success_url.query)
         success_url.query = success_url_params.merge(referer: referer_url.to_s).to_query
       end.to_s
+    end
+
+    def prefill_data
+      order_detail = OrderDetail.find(params[:receiver_id])
+      {
+        accountOwnerEmail: order_detail.account.owner_user.email,
+        accountOwnerName: order_detail.account.owner_user.full_name,
+        nucoreOrderNumber: order_detail.order_number,
+        orderedAtDate: order_detail.created_at.to_date.to_s,
+        orderedForEmail: order_detail.user.email,
+        orderedForName: order_detail.user.email,
+      }
     end
 
   end
