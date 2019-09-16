@@ -44,7 +44,7 @@ module Formio
         nucoreOrderNumber: order_detail.order_number,
         orderedAtDate: order_detail.created_at.to_date.to_s,
         orderedForEmail: order_detail.user.email,
-        orderedForName: order_detail.user.email,
+        orderedForName: order_detail.user.full_name,
       }
     end
 
