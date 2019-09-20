@@ -2,7 +2,6 @@ module Formio
   class SubmissionsController < ApplicationController
 
     before_action :authenticate_user!
-    before_action :check_acting_as
 
     layout "formio"
 
