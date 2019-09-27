@@ -13,5 +13,6 @@
       </style>
       <script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
   %body
-    #formio
+    / Prevent dragged files from being opened, so that Form.IO’s file component can accept drag & drop
+    #formio{ "ondragover" => "event.preventDefault();" }
     = yield
