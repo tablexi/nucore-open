@@ -327,10 +327,9 @@ GEM
     haml (5.1.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.33.0)
+    haml_lint (0.34.0)
       haml (>= 4.0, < 5.2)
       rainbow
-      rake (>= 10, < 13)
       rubocop (>= 0.50.0)
       sysexits (~> 1.1)
     i18n (1.6.0)
@@ -403,10 +402,10 @@ GEM
       mime-types
       mimemagic (~> 0.3.0)
       terrapin (~> 0.6.0)
-    parallel (1.17.0)
+    parallel (1.18.0)
     paranoia (2.4.2)
       activerecord (>= 4.0, < 6.1)
-    parser (2.6.3.0)
+    parser (2.6.5.0)
       ast (~> 2.4.0)
     pdf-core (0.7.0)
     poltergeist (1.18.1)
@@ -580,7 +579,7 @@ GEM
       railties (>= 3.2.5, < 6)
     teaspoon-jasmine (2.3.4)
       teaspoon (>= 1.0.0)
-    temple (0.8.1)
+    temple (0.8.2)
     terrapin (0.6.0)
       climate_control (>= 0.0.3, < 1.0)
     text_helpers (0.7.2)
@@ -592,7 +591,7 @@ GEM
       ref
     thor (0.20.3)
     thread_safe (0.3.6)
-    tilt (2.0.9)
+    tilt (2.0.10)
     timers (4.3.0)
     ttfunk (1.5.1)
     tzinfo (1.2.5)
