@@ -47,7 +47,13 @@ module Formio
         orderedForName: order_detail.user.full_name,
         orderedForUsernname: order_detail.user.username,
         paymentSourceAccountNumber: order_detail.account.account_number
-      }
+      }.merge(extra_prefill_data)
+    end
+
+    # Hook for university-specific forks to override this method and provide extra
+    # data that doesn’t come from nucore-open
+    def extra_prefill_data
+      {}
     end
 
   end
