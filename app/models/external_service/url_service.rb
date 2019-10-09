@@ -28,7 +28,7 @@ class UrlService < ExternalService
   private
 
   def formio_form?
-    URI(location).host.ends_with?("form.io")
+    URI(location).host.try(:ends_with?, "form.io")
   end
 
   def merge_queries(url, additional_hash)
