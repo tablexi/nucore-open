@@ -40,10 +40,13 @@ module Formio
       {
         accountOwnerEmail: order_detail.account.owner_user.email,
         accountOwnerName: order_detail.account.owner_user.full_name,
+        accountOwnerUsername: order_detail.account.owner_user.username,
         nucoreOrderNumber: order_detail.order_number,
         orderedAtDate: order_detail.created_at.to_date.to_s,
         orderedForEmail: order_detail.user.email,
         orderedForName: order_detail.user.full_name,
+        orderedForUsernname: order_detail.user.username,
+        paymentSourceAccountNumber: order_detail.account.account_number
       }
     end
 
