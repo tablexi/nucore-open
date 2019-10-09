@@ -35,8 +35,11 @@ module Formio
       end.to_s
     end
 
+    def order_detail
+      @order_detail ||= OrderDetail.find(params[:receiver_id])
+    end
+
     def prefill_data
-      order_detail = OrderDetail.find(params[:receiver_id])
       {
         accountOwnerEmail: order_detail.account.owner_user.email,
         accountOwnerName: order_detail.account.owner_user.full_name,
