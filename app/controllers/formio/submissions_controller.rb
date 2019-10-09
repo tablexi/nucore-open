@@ -46,7 +46,7 @@ module Formio
         orderedForEmail: order_detail.user.email,
         orderedForName: order_detail.user.full_name,
         orderedForUsernname: order_detail.user.username,
-        paymentSourceAccountNumber: order_detail.account.account_number
+        paymentSourceAccountNumber: order_detail.account.account_number,
       }.merge(extra_prefill_data)
     end
 
