@@ -16,7 +16,7 @@ To do this:
 1. [Install Docker and Docker Compose](https://docs.docker.com/docker-for-mac/install/)
 1. Run `./docker-setup.sh`. This sets up your `database.yml` and `secrets.yml` files. It also does an intial `bundle install`.
 1. The output of the previous set is a randomly generated secret. Copy and paste it into your `secrets.yml` file as the `secret_key_base`.
-1. Run `docker-compose run app bundle exec rake db:setup` to
+1. This will also finish setting up the database
 1. Seed the database with demo data (optional) `docker-compose run app bundle exec rake demo:seed`
 1. Run `docker-compose up`
 1. Open http://localhost:3000
