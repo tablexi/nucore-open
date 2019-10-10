@@ -49,8 +49,12 @@ Welcome to NUcore! This guide will help you get a development environment up and
 5. Set up databases
 
     ```
-    rake db:setup
+    rake db:create
+    rake db:schema:load
+    rake db:seed
     ```
+
+_Known issue: if you run `db:setup` or all three in one rake command, the next time you run `db:migrate`, you will receive a `Table 'splits' already exists` error. Use the separate commands instead._
 
 6. Seed your development database
 
