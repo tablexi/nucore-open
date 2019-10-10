@@ -17,14 +17,17 @@ To do this:
 1. Run `./docker-setup.sh`. This sets up your `database.yml` and `secrets.yml` files. It also does an intial `bundle install`.
 1. The output of the previous set is a randomly generated secret. Copy and paste it into your `secrets.yml` file as the `secret_key_base`.
 1. Run `docker-compose run app bundle exec rake db:setup` to
-1. run `docker-compose up`
-1. open http://localhost:3000
+1. Seed the database with demo data (optional) `docker-compose run app bundle exec rake demo:seed`
+1. Run `docker-compose up`
+1. Open http://localhost:3000
 
-To seed the database with demo data (optional):
-1. Attach to the instance with `docker-compose exec app bundle exec rake demo:seed`
-1. Log in with admin@example.com/password
+If you seeded the demo data, you can log in with admin@example.com/password
 
-Accessing Rails console: `docker-compose exec app bundle exec rails c`
+#### Useful Commands
+
+* **Rails Console:** `docker-compose exec app bundle exec rails c`
+* **Command line in the container:** `docker-compose exec app bash`
+* **Running tests:** Get a command line in the container and `bundle exec rspec`
 
 ### Development locally
 
