@@ -1,6 +1,8 @@
 #!/bin/sh
 
-cp config/database.yml.mysql.docker config/database.yml
-cp config/secrets.yml.template config/secrets.yml
+cp --no-clobber config/database.yml.mysql.template config/database.yml
+cp --no-clobber config/secrets.yml.template config/secrets.yml
 
-echo "Please copy your github ssh key to ssh/id_rsa so that we can download private github repos."
+docker-compose run app bundle install
+docker-compose run app bundle exec rake secret
+echo "Add this to secrets.yml as your secret_key_base"

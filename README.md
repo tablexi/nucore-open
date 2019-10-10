@@ -13,16 +13,18 @@ Benefits:
 - All daemons, processes are running at all times (easier to develop features)
 
 To do this:
-1. install docker (https://docs.docker.com/docker-for-mac/install/)
-1. run `./docker-setup.sh` to set up some files
-1. install `docker `and `docker-compose`.
+1. [Install Docker and Docker Compose](https://docs.docker.com/docker-for-mac/install/)
+1. Run `./docker-setup.sh`. This sets up your `database.yml` and `secrets.yml` files. It also does an intial `bundle install`.
+1. The output of the previous set is a randomly generated secret. Copy and paste it into your `secrets.yml` file as the `secret_key_base`.
+1. Run `docker-compose run app bundle exec rake db:setup` to
 1. run `docker-compose up`
-1. Create the database schema with `docker-compose exec app bundle exec rake db:create db:schema:load`
 1. open http://localhost:3000
 
-To seed the database (optional):
-1. Attach to the instance with `docker-compose exec app bash`, and run `bundle exec rake demo:seed` to create seed data.
+To seed the database with demo data (optional):
+1. Attach to the instance with `docker-compose exec app bundle exec rake demo:seed`
 1. Log in with admin@example.com/password
+
+Accessing Rails console: `docker-compose exec app bundle exec rails c`
 
 ### Development locally
 
