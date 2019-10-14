@@ -73,6 +73,18 @@ RSpec.describe UrlService do
         )
       end
     end
+
+    context "for a Form.IO form" do
+      before { url_service.location = "https://nucore-development-12ea0e74.form.io/labitsupport" }
+
+      it "returns a URL for a new formio submission" do
+        expect(uri.to_s).to start_with("/formio/submission/new")
+      end
+
+      it "includes the location as a formio_url parameter" do
+        expect(query_hash).to include("formio_url" => url_service.location)
+      end
+    end
   end
 
   describe "edit_url" do
