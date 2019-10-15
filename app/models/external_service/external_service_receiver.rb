@@ -28,7 +28,7 @@ class ExternalServiceReceiver < ApplicationRecord
   private
 
   def formio_submission?(url)
-    URI(url).host.try(:include?, "form.io")
+    URI(url).host.try(:ends_with?, "form.io")
   end
 
   def parsed_response_data
