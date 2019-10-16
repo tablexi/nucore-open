@@ -1,6 +1,9 @@
 email:
-  from: "nucore-noreply@nucore.stage.tablexi.com"
+  from: "noreply@test.cider.core.uconn.edu"
   fake:
     enabled: true
-    to: ["jason@tablexi.com", "meara@tablexi.com"]
+    to: ["joseph.oshea@uconn.edu", "courtney.wiley@uconn.edu", "ronny.heredia@uconn.edu"]
     whitelist: []
+
+saml:
+  idp_metadata: "vendor/engines/saml_authentication/spec/fixtures/idp_metadata.xml"
