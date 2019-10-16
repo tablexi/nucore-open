@@ -2,8 +2,11 @@ email:
   from: "noreply@cider.uconn.edu"
   fake:
     enabled: true
-    to: ["joseph.oshea@uconn.edu", "courtney.wiley@uconn.edu"]
+    to: ["joseph.oshea@uconn.edu", "courtney.wiley@uconn.edu", "ronny.heredia@uconn.edu"]
     whitelist: []
 
 hotjar:
   site_id: override-me
+
+saml:
+  idp_metadata: "vendor/engines/saml_authentication/spec/fixtures/idp_metadata.xml"
