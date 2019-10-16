@@ -126,4 +126,16 @@ RSpec.describe UrlService do
       end
     end
   end
+
+  describe "#new_url" do
+    context "when the location contains invalid space characters" do
+      before do
+        url_service.location = " \thttps://nucore-staging.northwestern.edu/acgt/submissions/new"
+      end
+
+      it "does not raise an error" do
+        expect(url_service.new_url(order_detail)).to be_a(String)
+      end
+    end
+  end
 end
