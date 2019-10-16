@@ -14,7 +14,11 @@ class UrlService < ExternalService
   #   relationship. Useful for providing pass-thru HTTP param data
   #   to the external service.
   def new_url(receiver, request = nil)
-    merge_queries(location, additional_query_params(receiver, request))
+    if formio_form?
+      new_formio_submission_path({ formio_url: location }.merge(additional_query_params(receiver, request)))
+    else
+      merge_queries(location, additional_query_params(receiver, request))
+    end
   end
 
   def edit_url(receiver, request = nil)
@@ -22,6 +26,10 @@ class UrlService < ExternalService
   end
 
   private
+
+  def formio_form?
+    URI(location).host.try(:ends_with?, "form.io")
+  end
 
   def merge_queries(url, additional_hash)
     uri = URI(url.to_s.strip)
