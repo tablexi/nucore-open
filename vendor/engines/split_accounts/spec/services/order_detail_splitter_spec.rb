@@ -109,7 +109,7 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
     let(:reservation) do
       build_stubbed(:reservation, reserve_start_at: start_at,
                                   reserve_end_at: start_at + 30.minutes, actual_start_at: start_at,
-                                  actual_end_at: start_at + 45.minutes)
+                                  actual_end_at: start_at + 45.minutes, billable_minutes: 45)
     end
     let(:order_detail_results) { described_class.new(order_detail, split_time_data: true, reporting: true).split }
     let(:results) { order_detail_results.map(&:time_data) }
@@ -120,6 +120,10 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
 
     it "splits the actual minutes" do
       expect(results.map(&:actual_duration_mins)).to eq([15.02, 14.99, 14.99])
+    end
+
+    it "splits the billable minutes" do
+      expect(results.map(&:billable_minutes)).to eq([17, 14, 14])
     end
 
     it "splits the order detail's accounts" do

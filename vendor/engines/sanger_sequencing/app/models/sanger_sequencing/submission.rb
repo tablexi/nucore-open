@@ -13,7 +13,7 @@ module SangerSequencing
     has_one :order, through: :order_detail
     has_one :user, through: :order
     has_one :facility, through: :order
-    has_many :samples
+    has_many :samples, inverse_of: :submission
 
     accepts_nested_attributes_for :samples, allow_destroy: true
 
@@ -39,16 +39,6 @@ module SangerSequencing
       end
     end
 
-    def create_samples!(quantity)
-      quantity = quantity.to_i
-      # Always create at least one sample, even if input was invalid
-      quantity = [1, quantity].max
-
-      transaction do
-        Array.new(quantity) { samples.create! }
-      end
-    end
-
     def has_results_files?
       order_detail.sample_results_files.present?
     end
@@ -57,6 +47,16 @@ module SangerSequencing
     # placed via a bundle, then we should not be able to edit the quantity.
     def quantity_editable?
       order_detail.bundle.blank?
+    end
+
+    def create_prefilled_sample
+      transaction do
+        sample = samples.new
+        sample.save(validate: false)
+        customer_sample_id = ("%04d" % sample.id).last(4)
+        sample.update_column(:customer_sample_id, customer_sample_id)
+        sample
+      end
     end
 
     private

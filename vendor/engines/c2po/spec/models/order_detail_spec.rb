@@ -13,8 +13,6 @@ RSpec.describe OrderDetail do
   let(:user) { create :user }
 
   before :each do
-    Settings.order_details.status_change_hooks = nil
-
     expect(item).to be_valid
     expect(order).to be_valid
     expect(order_detail.state).to eq "new"

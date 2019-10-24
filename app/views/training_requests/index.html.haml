@@ -23,7 +23,11 @@
         %tr
           %td= link_to user.to_s, facility_user_access_list_path(current_facility, user)
           %td= mail_to user.email
-          %td= product.name
+          %td
+            - if product.is_a?(Instrument)
+              = link_to product.name, [current_facility, product, :schedule]
+            - else
+              = link_to product.name, [:manage, current_facility, product]
           %td= l(requested_at)
           %td
             = form_for([current_facility, training_request], method: :delete, html: { class: "compact" }) do

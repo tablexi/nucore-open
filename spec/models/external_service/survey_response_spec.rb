@@ -36,10 +36,10 @@ RSpec.describe SurveyResponse do
     expect(esr.response_data).to eq deserialized_response_data.to_json
   end
 
-  it "merges the order detail" do
+  it "saves the order detail" do
     od = external_service_receiver.receiver
     expect(OrderDetail).to receive(:find).and_return od
-    expect(od).to receive :merge!
+    expect(od).to receive :save!
     survey_response.save!
   end
 

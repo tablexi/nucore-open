@@ -80,7 +80,7 @@ class FileUploadsController < ApplicationController
   # GET /facilities/1/services/3/files/survey_upload
   def product_survey
     @file = @product.stored_files.new(file_type: "template")
-    @survey = ExternalServiceManager.survey_service.new
+    @survey = UrlService.new
   end
 
   def create_product_survey
@@ -150,19 +150,19 @@ class FileUploadsController < ApplicationController
         raise ActiveRecord::Rollback
       end
     end
-    @survey = ExternalServiceManager.survey_service.new
+    @survey = UrlService.new
   end
 
   def create_product_survey_from_url
-    survey_param = ExternalServiceManager.survey_service.name.underscore.to_sym
+    survey_param = UrlService.name.underscore.to_sym
 
     if params[survey_param].blank? || params[survey_param][:location].blank?
-      @survey = ExternalServiceManager.survey_service.new
+      @survey = UrlService.new
       @survey.errors.add(:base, "No location specified")
     else
       begin
         url = params[survey_param][:location]
-        ext = ExternalServiceManager.survey_service.find_or_create_by(location: url)
+        ext = UrlService.find_or_create_by(location: url)
         esp = ExternalServicePasser.where(passer_id: @product.id, external_service_id: ext.id).first
 
         if esp
@@ -174,7 +174,7 @@ class FileUploadsController < ApplicationController
 
         redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) && return
       rescue => e
-        @survey ||= ExternalServiceManager.survey_service.new
+        @survey ||= UrlService.new
         @survey.errors.add(:base, "Online Order Form add error: #{e.message}")
       end
     end

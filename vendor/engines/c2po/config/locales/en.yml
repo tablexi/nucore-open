@@ -49,3 +49,10 @@ en:
       credit_card_account:
         account_number: Payment Source
         name_on_card: Name On Card
+
+  simple_form:
+    labels:
+      purchase_order_account:
+        reference: Reference (optional)
+      credit_card_account:
+        reference: Reference (optional)

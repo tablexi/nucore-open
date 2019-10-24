@@ -42,6 +42,8 @@ class OrderDetail < ApplicationRecord
     true # problem might be false; we need the callback chain to continue
   end
 
+  after_save :update_billable_minutes_on_reservation, if: :reservation
+
   belongs_to :product
   belongs_to :price_policy
   belongs_to :statement, inverse_of: :order_details
@@ -72,11 +74,14 @@ class OrderDetail < ApplicationRecord
   has_many   :vestal_versions, as: :versioned
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
+  delegate :in_cart?, :facility, :ordered_at, :user, to: :order
   delegate :invoice_number, to: :statement, prefix: true
+  delegate :journal_date, to: :journal, allow_nil: true
+  delegate :ordered_on_behalf_of?, to: :order
+  delegate :price_group, to: :price_policy, allow_nil: true
+  delegate :reference, to: :journal, prefix: true, allow_nil: true
   delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
-  delegate :in_cart?, :facility, :ordered_at, :user, to: :order
-  delegate :price_group, to: :price_policy, allow_nil: true
   def estimated_price_group
     estimated_price_policy.try(:price_group)
   end
@@ -87,9 +92,6 @@ class OrderDetail < ApplicationRecord
     journal_rows.where(journal_id: journal_id)
   end
 
-  delegate :journal_date, to: :journal, allow_nil: true
-  delegate :reference, to: :journal, prefix: true, allow_nil: true
-
   def statement_date
     statement.try(:created_at)
   end
@@ -97,8 +99,6 @@ class OrderDetail < ApplicationRecord
   def journal_or_statement_date
     journal_date || statement_date
   end
-
-  alias merge! save!
 
   validates_presence_of :product_id, :order_id, :created_by
   validates_numericality_of :quantity, only_integer: true, greater_than_or_equal_to: 1
@@ -462,8 +462,6 @@ class OrderDetail < ApplicationRecord
   def pending?
     order.purchased? && state.in?(%w[new inprocess])
   end
-
-  delegate :ordered_on_behalf_of?, to: :order
 
   def cost
     actual_cost || estimated_cost || 0
@@ -871,6 +869,18 @@ class OrderDetail < ApplicationRecord
     time_data_problem_key || price_policy_problem_key
   end
 
+  def price_change_reason_option
+    if price_change_reason.present?
+      Settings.order_detail_price_change_reason_options.include?(price_change_reason) ? price_change_reason : "Other"
+    end
+  end
+
+  def notify_purchaser_of_order_status
+    if product.email_purchasers_on_order_status_changes? && !reconciled?
+      Notifier.order_detail_status_changed(id).deliver_later
+    end
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
@@ -966,4 +976,7 @@ class OrderDetail < ApplicationRecord
     !actual_costs_match_calculated?
   end
 
+  def update_billable_minutes_on_reservation
+    reservation.update_billable_minutes
+  end
 end

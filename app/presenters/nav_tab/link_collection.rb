@@ -5,13 +5,14 @@ class NavTab::LinkCollection
   include Rails.application.routes.url_helpers
   include TranslationHelper
 
-  attr_reader :ability, :facility
+  attr_reader :ability, :facility, :user
 
   delegate :single_facility?, to: :facility
 
-  def initialize(facility, ability)
+  def initialize(facility, ability, user)
     @facility = facility || Facility.cross_facility
     @ability = ability
+    @user = user
   end
 
   def self.tab_methods
@@ -48,7 +49,7 @@ class NavTab::LinkCollection
     NavTab::Link.new(
       tab: :payment_sources,
       text: t_my(Account),
-      subnav: [accounts, transactions],
+      subnav: [accounts, transactions, transactions_in_review],
     )
   end
 
@@ -58,6 +59,11 @@ class NavTab::LinkCollection
 
   def transactions
     NavTab::Link.new(tab: :transactions, text: I18n.t("pages.transactions"), url: transactions_path)
+  end
+
+  def transactions_in_review
+    count = user.administered_order_details.in_review.count
+    NavTab::Link.new(tab: :transactions_in_review, text: I18n.t("pages.transactions_in_review", count: count), url: in_review_transactions_path)
   end
 
   def files

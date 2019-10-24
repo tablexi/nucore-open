@@ -9,7 +9,7 @@
 
 %p= text("description")
 
-- if session_user.manager_of?(current_facility)
+- if can?(:create, PricePolicy)
   %ul.inline
     %li= link_to text("add"), [:new, current_facility, @product, :price_policy], class: "btn-add"
 

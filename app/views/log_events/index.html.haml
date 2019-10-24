@@ -20,7 +20,7 @@
   .row
     .span3
       = label_tag(text(:event_filter))
-      - option_list = LogEvent::LogEventSearcher::ALLOWED_EVENTS.map { |event| [text(event), event] }
+      - option_list = LogEventSearcher::ALLOWED_EVENTS.map { |event| [text(event), event] }
       = select_tag(:events,
         options_for_select(option_list, params[:events]),
         multiple: true,

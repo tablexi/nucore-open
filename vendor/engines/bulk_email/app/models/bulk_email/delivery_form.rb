@@ -9,7 +9,8 @@ module BulkEmail
     attr_accessor :custom_subject, :custom_message, :recipient_ids, :product_id, :search_criteria
     attr_reader :facility, :user, :content_generator
 
-    validates :custom_subject, :custom_message, :recipient_ids, presence: true
+    validates :recipient_ids, presence: true
+    validates :custom_subject, :custom_message, presence: true, unless: :product_offline?
 
     def initialize(user, facility, content_generator)
       @user = user
@@ -36,6 +37,10 @@ module BulkEmail
     end
 
     private
+
+    def product_offline?
+      product&.offline?
+    end
 
     def subject
       "#{content_generator.subject_prefix} #{custom_subject}"

@@ -47,21 +47,6 @@ email:
 support_email: ~
 
 order_details:
-  # These hooks are triggered when an order detail enters into the status
-  # The hooks can be configured with settings. Here are several formats you can use:
-  #   new:
-  #     - ApprovalNotification::NotifyPurchaser
-  #     - ApprovalNotification::NotifyFacility
-  #   inprocess:
-  #     -
-  #       class: ApprovalNotification::NotifyPurchaser
-  #       setting_1: test3
-  #     - ApprovalNotification::NotifyFacility
-  #   completed: ApprovalNotification::NotifyPurchaser
-  #   reconciled: ["ApprovalNotification::NotifyPurchaser", "ApprovalNotification::NotifyFacility"]
-  status_change_hooks:
-    pending_approval: StatusChangeNotifications::NotifyFacilityHook
-    approved: StatusChangeNotifications::NotifyPurchaserHook
   list_transformer: SplitAccounts::OrderDetailListTransformer
 
 reservations:
@@ -73,9 +58,6 @@ occupancies:
 
 billing:
   review_period: <%= 7.days %>
-
-external_services:
-  survey: UrlService
 
 relays:
   test:
@@ -94,8 +76,8 @@ relays:
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
-  billing_administrator: true
-  billing_administrator_users_tab: true
+  global_billing_administrator: true
+  global_billing_administrator_users_tab: true
   create_users: true
   netids: true
   limit_short_description: true
@@ -131,6 +113,7 @@ feature:
   price_policy_requires_note: true
   multi_facility_accounts: true
   facility_directors_can_manage_price_groups: true
+  account_reference_field: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
@@ -160,3 +143,6 @@ paperclip:
 #     "User.FirstName": "first_name"
 #     "User.LastName": "last_name"
 #  # user_updater_class_name: SamlAuthentication::UserUpdater
+
+price_policy_note_options: ~
+order_detail_price_change_reason_options: ~
