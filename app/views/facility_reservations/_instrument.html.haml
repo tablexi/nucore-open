@@ -7,13 +7,12 @@
     .unit_container
       = render partial: "reservation",
         collection: (@reservations_by_instrument.fetch(instrument, []) + instrument.blackout_reservations(@display_datetime)),
-        as: :reservation,
         locals: { product: instrument }
 
-      - if @display_datetime.beginning_of_day == Time.current.beginning_of_day
+      - if @display_datetime.today?
         .current_time{style: "left: #{datetime_left_position(@display_datetime, Time.current)}"}
 
-    - if instrument.has_real_relay?
+    - if @display_datetime.today? && instrument.has_real_relay?
       .relay_checkbox
         = check_box_tag "relay[#{instrument.id}]", 1, false, :disabled => true, :"data-relay-url" => facility_instrument_switch_path(instrument.facility, instrument)
         .loading_box

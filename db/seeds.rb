@@ -29,8 +29,3 @@ PriceGroup.reset_column_information
   price_group.display_order = index + 1
   price_group.save(validate: false)
 end
-
-new_status = OrderStatus.new_status
-OrderDetailObserver.status_change_hooks.keys.each do |status|
-  OrderStatus.find_or_create_by(name: status.to_s.titleize, facility_id: nil, parent_id: new_status.id)
-end

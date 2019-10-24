@@ -1,4 +1,4 @@
-- if products.any?
+- if products.present?
   .product_list{ class: @columns }
     %h3= product_list_title products, local_assigns[:title_extra]
 

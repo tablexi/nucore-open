@@ -32,14 +32,14 @@ RSpec.describe SangerSequencing::WellPlatePresenter do
 
       it "renders" do
         expect(sample_rows[0]).to match(["A01", "", "", expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
-        expect(sample_rows[1]).to match(["B01", samples[0].id.to_s, samples[0].customer_sample_id, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
-        expect(sample_rows[2]).to match(["C01", samples[1].id.to_s, samples[1].customer_sample_id, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
-        expect(sample_rows[3]).to match(["D01", samples[2].id.to_s, samples[2].customer_sample_id, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
-        expect(sample_rows[4]).to match(["E01", samples[3].id.to_s, samples[3].customer_sample_id, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
-        expect(sample_rows[5]).to match(["F01", samples[4].id.to_s, samples[4].customer_sample_id, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
-        expect(sample_rows[6]).to match(["G01", samples[5].id.to_s, samples[5].customer_sample_id, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
-        expect(sample_rows[7]).to match(["H01", samples[6].id.to_s, samples[6].customer_sample_id, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
-        expect(sample_rows[8]).to match(["A03", samples[7].id.to_s, samples[7].customer_sample_id, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
+        expect(sample_rows[1]).to match(["B01", samples[0].id.to_s, samples[0].customer_sample_id.to_s, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
+        expect(sample_rows[2]).to match(["C01", samples[1].id.to_s, samples[1].customer_sample_id.to_s, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
+        expect(sample_rows[3]).to match(["D01", samples[2].id.to_s, samples[2].customer_sample_id.to_s, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
+        expect(sample_rows[4]).to match(["E01", samples[3].id.to_s, samples[3].customer_sample_id.to_s, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
+        expect(sample_rows[5]).to match(["F01", samples[4].id.to_s, samples[4].customer_sample_id.to_s, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
+        expect(sample_rows[6]).to match(["G01", samples[5].id.to_s, samples[5].customer_sample_id.to_s, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
+        expect(sample_rows[7]).to match(["H01", samples[6].id.to_s, samples[6].customer_sample_id.to_s, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
+        expect(sample_rows[8]).to match(["A03", samples[7].id.to_s, samples[7].customer_sample_id.to_s, expected_results_group, expected_instrument_protocol, expected_analysis_protocol])
       end
     end
 
@@ -49,14 +49,14 @@ RSpec.describe SangerSequencing::WellPlatePresenter do
 
       it "renders" do
         expect(sample_rows[0]).to match(["A01", "", ""] + extra_columns)
-        expect(sample_rows[1]).to match(["B01", samples[0].id.to_s, samples[0].customer_sample_id] + extra_columns)
-        expect(sample_rows[2]).to match(["C01", samples[1].id.to_s, samples[1].customer_sample_id] + extra_columns)
-        expect(sample_rows[3]).to match(["D01", samples[2].id.to_s, samples[2].customer_sample_id] + extra_columns)
-        expect(sample_rows[4]).to match(["E01", samples[3].id.to_s, samples[3].customer_sample_id] + extra_columns)
-        expect(sample_rows[5]).to match(["F01", samples[4].id.to_s, samples[4].customer_sample_id] + extra_columns)
-        expect(sample_rows[6]).to match(["G01", samples[5].id.to_s, samples[5].customer_sample_id] + extra_columns)
-        expect(sample_rows[7]).to match(["H01", samples[6].id.to_s, samples[6].customer_sample_id] + extra_columns)
-        expect(sample_rows[8]).to match(["A03", samples[7].id.to_s, samples[7].customer_sample_id] + extra_columns)
+        expect(sample_rows[1]).to match(["B01", samples[0].id.to_s, samples[0].customer_sample_id.to_s] + extra_columns)
+        expect(sample_rows[2]).to match(["C01", samples[1].id.to_s, samples[1].customer_sample_id.to_s] + extra_columns)
+        expect(sample_rows[3]).to match(["D01", samples[2].id.to_s, samples[2].customer_sample_id.to_s] + extra_columns)
+        expect(sample_rows[4]).to match(["E01", samples[3].id.to_s, samples[3].customer_sample_id.to_s] + extra_columns)
+        expect(sample_rows[5]).to match(["F01", samples[4].id.to_s, samples[4].customer_sample_id.to_s] + extra_columns)
+        expect(sample_rows[6]).to match(["G01", samples[5].id.to_s, samples[5].customer_sample_id.to_s] + extra_columns)
+        expect(sample_rows[7]).to match(["H01", samples[6].id.to_s, samples[6].customer_sample_id.to_s] + extra_columns)
+        expect(sample_rows[8]).to match(["A03", samples[7].id.to_s, samples[7].customer_sample_id.to_s] + extra_columns)
       end
     end
   end

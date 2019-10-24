@@ -1,4 +1,4 @@
-= simple_form_for @submission, html: { data: { fetch_ids_url: fetch_ids_sanger_sequencing_submission_path(@submission) } } do |f|
+= simple_form_for @submission, html: { data: { create_sample_url: create_sample_sanger_sequencing_submission_path(@submission) } } do |f|
   = hidden_field_tag :referer, params[:referer]
   = hidden_field_tag :success_url, params[:success_url]
   %table.table.table-striped.table-tight
@@ -9,7 +9,7 @@
     %tbody
       = f.nested_fields_for :samples, wrapper: false, class_name: "SangerSequencing::Sample", wrapper_tag: :tr do |sf|
         %td
-          = sf.input :customer_sample_id, label: false, input_html: { value: sf.object.form_customer_sample_id, class: "js--customerSampleId" }
+          = sf.input :customer_sample_id, label: false, input_html: { class: "js--customerSampleId" }
           = sf.input :id, as: :hidden, input_html: { class: "js--sampleId" }
         %td.js--sampleId= sf.object.id
         - if @submission.quantity_editable?

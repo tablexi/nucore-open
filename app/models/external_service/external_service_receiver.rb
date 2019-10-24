@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-#
-# A polymorphic join class between an +ExternalService+
-# and a class that receives the results of that service
-# (the receiver).
 class ExternalServiceReceiver < ApplicationRecord
 
   belongs_to :external_service
@@ -11,20 +7,32 @@ class ExternalServiceReceiver < ApplicationRecord
 
   validates_presence_of :external_service_id, :receiver_id, :response_data
 
-  def respond_to?(symbol, include_private = false)
-    super || parsed_response_data.key?(symbol)
+  def show_url
+    url = parsed_response_data[:show_url]
+    if formio_submission?(url)
+      Rails.application.routes.url_helpers.formio_submission_path(formio_url: url)
+    else
+      url
+    end
+  end
+
+  def edit_url
+    url = parsed_response_data[:edit_url]
+    if formio_submission?(url)
+      Rails.application.routes.url_helpers.edit_formio_submission_path(formio_url: url)
+    else
+      url
+    end
   end
 
   private
 
-  def method_missing(symbol, *args)
-    parsed = parsed_response_data
-    return parsed[symbol] if parsed.key? symbol
-    super
+  def formio_submission?(url)
+    URI(url).host.try(:ends_with?, "form.io")
   end
 
   def parsed_response_data
-    JSON.parse(self[:response_data]).symbolize_keys
+    JSON.parse(response_data).symbolize_keys
   rescue TypeError, JSON::ParserError
     {}
   end

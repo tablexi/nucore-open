@@ -214,8 +214,8 @@ namespace :demo do
                             last_name: "Istrator")
       user_admin.password = "password"
       user_admin.save!
+      UserRole.grant(user_admin, UserRole::ADMINISTRATOR)
     end
-    UserRole.grant(user_admin, UserRole::ADMINISTRATOR)
 
     user_pi = User.find_by(username: "ppi123@example.com")
     unless user_pi
@@ -242,22 +242,22 @@ namespace :demo do
       user_staff = User.new(username: "ast123@example.com",
                             email: "ast123@example.com",
                             first_name: "Alice",
-                            last_name: "Staff")
+                            last_name: "Facility Staff")
       user_staff.password = "password"
       user_staff.save!
+      UserRole.grant(user_staff, UserRole::FACILITY_STAFF, facility)
     end
-    UserRole.grant(user_staff, UserRole::FACILITY_STAFF, facility)
 
     user_senior_staff = User.find_by(username: "jss123@example.com")
     unless user_senior_staff
       user_senior_staff = User.new(username: "jss123@example.com",
                                    email: "jss123@example.com",
                                    first_name: "Jennifer",
-                                   last_name: "Senior Staff")
+                                   last_name: "Facility Senior Staff")
       user_senior_staff.password = "password"
       user_senior_staff.save!
+      UserRole.grant(user_senior_staff, UserRole::FACILITY_SENIOR_STAFF, facility)
     end
-    UserRole.grant(user_senior_staff, UserRole::FACILITY_SENIOR_STAFF, facility)
 
     user_facility_administrator = User.find_by(username: "mfa123@example.com")
     unless user_facility_administrator
@@ -267,19 +267,19 @@ namespace :demo do
                                              last_name: "Facility Administator")
       user_facility_administrator.password = "password"
       user_facility_administrator.save!
+      UserRole.grant(user_facility_administrator, UserRole::FACILITY_ADMINISTRATOR, facility)
     end
-    UserRole.grant(user_facility_administrator, UserRole::FACILITY_ADMINISTRATOR, facility)
 
     user_director = User.find_by(username: "ddi123@example.com")
     unless user_director
       user_director = User.new(username: "ddi123@example.com",
                                email: "ddi123@example.com",
                                first_name: "Dave",
-                               last_name: "Director")
+                               last_name: "Facililty Director")
       user_director.password = "password"
       user_director.save
+      UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
     end
-    UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
 
     user_account_manager = User.find_by(username: "aam123@example.com")
     unless user_account_manager
@@ -289,25 +289,31 @@ namespace :demo do
                                       last_name: "Account Manager")
       user_account_manager.password = "password"
       user_account_manager.save!
+      UserRole.grant(user_account_manager, UserRole::ACCOUNT_MANAGER)
     end
-    UserRole.grant(user_account_manager, UserRole::ACCOUNT_MANAGER)
 
-    if SettingsHelper.feature_on?(:billing_administrator)
-      user_billing_administrator = User.find_by(email: "bba123@example.com")
-
-      if user_billing_administrator.blank?
-        user_billing_administrator =
-          User.new(
-            username: "bba123@example.com",
-            email: "bba123@example.com",
-            first_name: "Billy",
-            last_name: "Billing",
-          )
-        user_billing_administrator.password = "password"
-        user_billing_administrator.save
+    if SettingsHelper.feature_on?(:global_billing_administrator)
+      user_global_billing_administrator = User.find_by(email: "bba123@example.com")
+      if user_global_billing_administrator.blank?
+        user_global_billing_administrator = User.new(username: "bba123@example.com",
+                                                     email: "bba123@example.com",
+                                                     first_name: "Billy",
+                                                     last_name: "Global Billing Administator")
+        user_global_billing_administrator.password = "password"
+        user_global_billing_administrator.save
+        UserRole.grant(user_global_billing_administrator, UserRole::GLOBAL_BILLING_ADMINISTRATOR)
       end
+    end
 
-      UserRole.grant(user_billing_administrator, UserRole::BILLING_ADMINISTRATOR)
+    user_facility_billing_administrator = User.find_by(username: "ffba123@example.com")
+    unless user_facility_billing_administrator
+      user_facility_billing_administrator = User.new(username: "ffba123@example.com",
+                                                     email: "ffba123@example.com",
+                                                     first_name: "Felix",
+                                                     last_name: "Facility Billing Administator")
+      user_facility_billing_administrator.password = "password"
+      user_facility_billing_administrator.save!
+      UserRole.grant(user_facility_billing_administrator, UserRole::FACILITY_BILLING_ADMINISTRATOR, facility)
     end
 
     UserPriceGroupMember.find_or_create_by!(user_id: user_pi.id, price_group_id: pgnu.id)

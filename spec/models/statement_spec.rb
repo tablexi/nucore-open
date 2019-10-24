@@ -78,6 +78,14 @@ RSpec.describe Statement do
       expect(statement).to_not be_reconciled
     end
 
+    it "is not in the reconciled scope" do
+      expect(described_class.reconciled).not_to include(statement)
+    end
+
+    it "is in the unreconciled scope" do
+      expect(described_class.unreconciled).to include(statement)
+    end
+
     context "with one order detail reconciled" do
       before :each do
         @order_details.first.to_reconciled!
@@ -85,6 +93,14 @@ RSpec.describe Statement do
 
       it "should not be reconciled" do
         expect(statement).to_not be_reconciled
+      end
+
+      it "is not in the reconciled scope" do
+        expect(Statement.reconciled).not_to include(statement)
+      end
+
+      it "is in the unreconciled scope" do
+        expect(described_class.unreconciled).to include(statement)
       end
     end
 
@@ -95,6 +111,14 @@ RSpec.describe Statement do
 
       it "should be reconciled" do
         expect(statement).to be_reconciled
+      end
+
+      it "is in the reconciled scope" do
+        expect(described_class.reconciled).to include(statement)
+      end
+
+      it "is not in the unreconciled scope" do
+        expect(described_class.unreconciled).not_to include(statement)
       end
     end
 

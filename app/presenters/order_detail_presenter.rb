@@ -45,10 +45,6 @@ class OrderDetailPresenter < SimpleDelegator
     facility_order_path(facility, order)
   end
 
-  def survey_url
-    survey_completed? ? external_service_receiver.show_url : ""
-  end
-
   private
 
   # Is a fulfilled order detail nearing the end of the 90 day reconcile period?

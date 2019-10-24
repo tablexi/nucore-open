@@ -138,8 +138,8 @@ RSpec.describe GlobalSearchController do
       it_should_have_customer_paths
     end
 
-    context "when signed in as a billing administrator", feature_setting: { billing_administrator: true } do
-      before { sign_in create(:user, :billing_administrator) }
+    context "when signed in as a global billing administrator", feature_setting: { global_billing_administrator: true } do
+      before { sign_in create(:user, :global_billing_administrator) }
 
       it_should_find_the_order
       it_should_have_admin_edit_paths

@@ -33,4 +33,10 @@ class OfflineReservation < Reservation
     end
   end
 
+  private
+
+  def set_billable_minutes
+    self.billable_minutes = nil
+  end
+
 end

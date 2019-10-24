@@ -437,3 +437,7 @@ select:focus:invalid {
   padding: 0.4em;
   box-sizing: border-box;
 }
+
+[hidden] {
+  display: none !important;
+}

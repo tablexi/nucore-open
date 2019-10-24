@@ -131,8 +131,8 @@ RSpec.describe BulkEmail::BulkEmailController do
         it_behaves_like "it can search for recipients"
       end
 
-      context "when logged in as a billing administrator" do
-        let(:user) { FactoryBot.create(:user, :billing_administrator) }
+      context "when logged in as a global billing administrator" do
+        let(:user) { FactoryBot.create(:user, :global_billing_administrator) }
 
         context "in a cross-facility context" do
           let(:facility) { Facility.cross_facility }

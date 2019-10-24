@@ -40,20 +40,4 @@ RSpec.describe SangerSequencing::SubmissionsController do
       end
     end
   end
-
-  describe "#fetch_ids" do
-    before { sign_in user }
-
-    let(:data) { JSON.parse(response.body) }
-
-    it "gets an array of ids" do
-      get :fetch_ids, params: { id: submission.id }
-      expect(data).to be_a(Array)
-      expect(data.length).to eq(described_class::NEW_IDS_COUNT)
-      expect(data).to all match(
-        a_hash_including("id" => a_kind_of(Integer),
-                         "customer_sample_id" => a_string_matching(/\A\d{4}\z/)),
-      )
-    end
-  end
 end

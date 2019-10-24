@@ -97,7 +97,7 @@ class ApplicationController < ActionController::Base
   end
 
   # return an ActiveRecord:Relation of facilities where this user has a role (ie is staff or higher)
-  # Administrator and Billing Administrator get a relation of all facilities
+  # Administrator and Global Billing Administrator get a relation of all facilities
   def operable_facilities
     @operable_facilities ||= (session_user.blank? ? [] : session_user.operable_facilities)
   end

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe UserPresenter, feature_setting: { billing_administrator: true } do
+RSpec.describe UserPresenter, feature_setting: { global_billing_administrator: true } do
   subject { described_class.new(user) }
   let(:global_role_list) { subject.global_role_list }
   let(:global_role_select_options) { subject.global_role_select_options }
@@ -26,16 +26,16 @@ RSpec.describe UserPresenter, feature_setting: { billing_administrator: true } d
         expect(global_role_select_options)
           .to include('selected="selected" value="Administrator">Administrator')
         expect(global_role_select_options)
-          .not_to include('selected="selected" value="Billing Administrator">Billing Administrator')
+          .not_to include('selected="selected" value="Global Billing Administrator">Global Billing Administrator')
       end
     end
   end
 
   context "when the user has multiple global roles" do
-    let(:user) { create(:user, :administrator, :billing_administrator) }
+    let(:user) { create(:user, :administrator, :global_billing_administrator) }
 
     describe "#global_role_list" do
-      it { expect(global_role_list).to eq("Administrator, Billing Administrator") }
+      it { expect(global_role_list).to eq("Administrator, Global Billing Administrator") }
     end
 
     describe "#global_role_select_options" do
@@ -43,7 +43,7 @@ RSpec.describe UserPresenter, feature_setting: { billing_administrator: true } d
         expect(global_role_select_options)
           .to include('selected="selected" value="Administrator">Administrator')
         expect(global_role_select_options)
-          .to include('selected="selected" value="Billing Administrator">Billing Administrator')
+          .to include('selected="selected" value="Global Billing Administrator">Global Billing Administrator')
       end
     end
   end

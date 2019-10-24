@@ -93,18 +93,6 @@ RSpec.describe "Purchasing a Sanger Sequencing service", :aggregate_failures do
         end
       end
 
-      describe "and more samples were created in another page" do
-        before do
-          SangerSequencing::Submission.first.create_samples!(5)
-          page.all(customer_id_selector).each_with_index { |textbox, i| textbox.set(i + 1) }
-          click_button "Save Submission"
-        end
-
-        it "does removes the extra ones" do
-          expect(SangerSequencing::Sample.pluck(:customer_sample_id)).to eq(%w(1 2 3 4 5))
-        end
-      end
-
       describe "saving and returning to the form" do
         before do
           page.first(customer_id_selector).set("TEST123")

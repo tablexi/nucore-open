@@ -5,7 +5,7 @@
 Rails.application.routes.draw do
   namespace :sanger_sequencing, path: I18n.t("sanger_sequencing.route") do
     resources :submissions, only: [:new, :show, :edit, :update] do
-      get :fetch_ids, on: :member
+      post :create_sample, on: :member
     end
   end
 
