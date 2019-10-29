@@ -67,8 +67,6 @@ jobs:
          path: coverage/.resultset.json
          prefix: coverage
 
-      - run: bundle exec report_coverage
-
       - deploy:
           name: Stage deploy of master branch
           command: |
