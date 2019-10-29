@@ -556,7 +556,7 @@ GEM
     simplecov-html (0.10.2)
     single_test (0.6.0)
       rake
-    spreadsheet (1.2.4)
+    spreadsheet (1.2.5)
       ruby-ole (>= 1.0)
     spring (2.1.0)
     spring-commands-rspec (1.0.4)
