@@ -326,6 +326,8 @@ GEM
       rainbow
       rubocop (>= 0.50.0)
       sysexits (~> 1.1)
+    health_check (3.0.0)
+      railties (>= 5.0)
     i18n (1.7.0)
       concurrent-ruby (~> 1.0)
     icalendar (2.5.3)
@@ -653,6 +655,7 @@ DEPENDENCIES
   guard-teaspoon
   haml
   haml_lint
+  health_check
   icalendar
   ice_cube
   jquery-rails

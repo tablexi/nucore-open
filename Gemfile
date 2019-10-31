@@ -60,6 +60,7 @@ gem "prawn-table"
 ## other
 gem "delayed_job_active_record"
 gem "fog-aws"
+gem "health_check"
 gem "rake"
 gem "spreadsheet"
 gem "daemons"
