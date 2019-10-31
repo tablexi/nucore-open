@@ -389,4 +389,6 @@ Nucore::Application.routes.draw do
   namespace :formio do
     resource :submission, only: [:new, :show, :edit]
   end
+
+  health_check_routes
 end
