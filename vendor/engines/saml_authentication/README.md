@@ -28,7 +28,7 @@ saml:
     "User.LastName": "last_name"
 ```
 
-* `idp_metadata`: The URL for your IdP's metadata. This should be provided to you by the IdP.
+* `idp_metadata`: The URL for your IdP's metadata. This should be provided to you by the IdP. This URL is fetched at application startup.
 * `certificate_file` (Optional): A `.p12` certificate file for signing your requests.
   _Do not check this in to version control_. See below for instructions on creating
   a certificate.
@@ -52,11 +52,9 @@ When a user logs in one of three things will happen (in this order):
    password will be cleared, and they will no longer be able to log in via
    username/password. They will always need to log in via SSO in the future.
 3. If the user's username or email does not match an existing a user, a new `User`
-   will be created. They will not be able to do much at this point because they
+   will be created (and `create_user` is turned on). They will not be able to do much at this point because they
    will have no payment sources. A facility staff/director/administrator will need
    to set that up for them.
-
-_TODO: Determine recommended process for proactive user creation by facility staff_
 
 ## Testing and Development
 
@@ -135,10 +133,10 @@ Example:
 On a Linux-based system, generate a self-signed certificate.
 
 ```
-openssl x509 -text -noout -in cert.pem
-# You will be asked for Country Name, State, Organization and others.
-# When asked for a password, leave it blank.
-openssl pkcs12 -inkey key.pem -in cert.pem -export -out nucore-cert.p12
-rm cert.pem
-rm key.pem
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -nodes
+# Enter country name, common name, etc.
+openssl pkcs12 -inkey key.pem -in cert.pem -export -out saml-certificate.p12
+# Leave passphrase blank
+chmod 640 saml-certificate.p12
+rm *.pem
 ```
