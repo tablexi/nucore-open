@@ -4,6 +4,14 @@ NUcore uses [Devise](https://github.com/plataformatec/devise) for authentication
 and uses the [`saml_authenticatable`](https://github.com/apokalipto/devise_saml_authenticatable)
 module for SAML integration.
 
+## General steps for setting up
+
+1. Get the URL of the IdP's metadata
+1. Enable this gem, generate a certificate, and update the settings as described in "Enabling SAML Authentication"
+1. Deploy the application
+1. Import the app's (SP) metadata into the IdP (at `https://yourhost.edu/users/saml/auth`)
+1. Debug
+
 ## Enabling SAML Authentication
 
 Add the following line to your `Gemfile` if it is not already present:
@@ -17,6 +25,7 @@ as necessary to connect with your Identity Provider (IdP).
 
 ```yaml
 saml:
+  login_enabled: true
   idp_metadata: "https://websso.example.com/idp/metadata"
   certificate_file: path/to/file.p12
   driver:
@@ -28,8 +37,9 @@ saml:
     "User.LastName": "last_name"
 ```
 
+* During the initial phase of development, you might want to set `login_enabled` to false so the metadata is exposed, but the big "Single Sign On" button is not yet available.
 * `idp_metadata`: The URL for your IdP's metadata. This should be provided to you by the IdP. This URL is fetched at application startup.
-* `certificate_file` (Optional): A `.p12` certificate file for signing your requests.
+* `certificate_file` (Optional, but highly recommended): A `.p12` certificate file for signing your requests.
   _Do not check this in to version control_. See below for instructions on creating
   a certificate.
 * `attribute_map`: A mapping from the IdP's attributes to the NUcore's `users` table
