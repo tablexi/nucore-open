@@ -21,14 +21,22 @@ module NucoreKfs
       )
 
       @account_type = 'NufsAccount'
-      @joey = User.find_by(username: 'jpo08003')
-      @created_by_user = @joey # TODO: replace this with some sort of "Robot Account"
+      @kfs_bot = User.find_or_create_by(
+        username: NucoreKfs::KFS_BOT_ACCOUNT_USERNAME,
+        email: NucoreKfs::KFS_BOT_ACCOUNT_EMAIL,
+        first_name: "KFS",
+        last_name: "Bot"
+      )
+
+      @kfs_bot = User.find_or_create_by( username: NucoreKfs::KFS_BOT_ACCOUNT_USERNAME, email: NucoreKfs::KFS_BOT_ACCOUNT_EMAIL, first_name: "KFS", last_name: "Bot")
+      @created_by_user = @kfs_bot
     end
 
     def upsert_accounts_for_subfund(subfund_id)
       response = do_call_for_subfund(subfund_id)
       puts("response for subfund '#{subfund_id}':")
       puts(response.body)
+      puts('-------')
       accounts = response.body[:get_accounts_response][:return][:account]
       for account in accounts
         upsert_account(account)
@@ -69,6 +77,7 @@ module NucoreKfs
       existing_user = account.account_users.where(user_id: business_admin_user.id).first
       if existing_user != nil
         existing_user.touch(:deleted_at)
+        existing_user.save!
       end
       account.account_users.create(
         user: business_admin_user,
@@ -78,44 +87,43 @@ module NucoreKfs
     end
 
     def set_business_admin_for_account(account, business_admin_user)
-      # is there already a business_admin on the account?
-      if account.business_admins.count > 0
-        # we assume there can only be 1 business admin per account (at this time)
-        # TODO: fix this by using the following logic:
-        #   - track who makess the account_users entry (robot vs human)
-        #   - if existing business admin was added by human: do NOT replace it
-        #   - if existing business admin was added by robot: robot can replace it
-        if account.business_admins.count > 1
-          puts("WARNING: Found #{account.business_admins.count} Business Admins for account id = #{account.id}")
-          puts("This is unexpected at this time, so no changes will be made to the Business Admins on this account.")
-          return nil
+      puts("set_business_admin_for_account - business_admin_user = #{business_admin_user.username}")
+      # see if there is an existing business_admin created by the bot
+      bot_added_admins = account.business_admins.where(created_by_user: @created_by_user)
+      puts("bot_added_admins.count = #{bot_added_admins.count}")
+      if bot_added_admins.count > 0
+        # delete any that are different from the current one in the data feed
+        for current_admin in bot_added_admins
+          puts("set_business_admin_for_account - current_admin = #{current_admin.user.username}")
+          if current_admin.user.username != business_admin_user.username
+            current_admin.touch(:deleted_at)
+            current_admin.save!
+          end
         end
-        # is it the same person?
-        existing_admin = account.business_admins.first
-        puts("set_business_admin_for_account - existing_admin = #{existing_admin.user.username}")
-        if existing_admin.user.username != business_admin_user.username
-          puts("set_business_admin_for_account - replacing existing_admin with business_admin_user = #{business_admin_user.username}")
-          existing_admin.touch(:deleted_at)
-          existing_admin.save!
-          create_business_admin_record(account, business_admin_user)
-        end
-      else
+      end
+      # if business_admin_user is not on the account, add them
+      if account.business_admins.where(user_id: business_admin_user.id).count == 0
         create_business_admin_record(account, business_admin_user)
       end
     end
 
-    def create_accout_owner_record(account, owner)
-      puts("create_accout_owner_record for account = #{account.id} and user = #{owner.username}")
+    def create_account_owner_record(account, owner)
+      puts("create_account_owner_record for account = #{account.id} and user = #{owner.username}")
       # If this user was previously listed on the account in another role, delete that association
       existing_user = account.account_users.where(user_id: owner.id).first
       if existing_user != nil
         existing_user.touch(:deleted_at)
+        puts("pre - existing_user.save!")
+        existing_user.save!
       end
-      account.account_users.create(
+      result = account.account_users.create(
         user: owner,
         created_by_user: @created_by_user,
         user_role: AccountUser::ACCOUNT_OWNER
       )
+      puts("pre - result.save!")
+      result.save!
+      puts("create_account_owner_record for result = #{result}")
     end
 
     def set_owner_for_account(account, owner_user)
@@ -123,12 +131,13 @@ module NucoreKfs
 
       if existing_owner == nil
         puts("set_owner_for_account - account had no owner")
-        create_accout_owner_record(account, owner_user)
+        create_account_owner_record(account, owner_user)
       elsif existing_owner.user.username != owner_user.username
         puts("set_owner_for_account - existing_owner = #{existing_owner.user.username}")
         puts("set_owner_for_account - replacing existing_owner with owner_user = #{owner_user.username}")
         existing_owner.touch(:deleted_at)
-        create_accout_owner_record(account, owner_user)
+        create_account_owner_record(account, owner_user)
+        existing_owner.save!
       end
     end
 
@@ -154,13 +163,13 @@ module NucoreKfs
       account_owner = User.find_by(username: account_owner_netid)
       business_admin = User.find_by(username: business_admin_netid)
 
-      puts("account_owner = #{account_owner}")
-      puts("business_admin = #{business_admin}")
-
       if account_owner == nil || business_admin == nil
         puts("Found nil for account_owner or business_admin. This account will not be added.")
         return
       end
+
+      puts("account_owner = #{account_owner.id}")
+      puts("business_admin = #{business_admin.id}")
 
       account = Account.find_by(account_number: account_number)
       # if the account is not in our DB yet, and it is 'OPEN', then build a record for it
