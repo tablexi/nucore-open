@@ -8,6 +8,9 @@ module SamlAuthentication
 
     def call(model, saml_response, _auth_value)
       attributes = SamlAttributes.new(saml_response)
+      Rails.logger.debug("[SAML] Parsed attributes: #{attributes.to_h}")
+      Rails.logger.debug("[SAML] Raw attributes: #{attributes.to_raw_h}")
+
       username = attributes[:username]
       email = attributes[:email]
 
