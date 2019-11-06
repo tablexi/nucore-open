@@ -43,13 +43,16 @@ module SamlAuthentication
     end
 
     def fetch_metadata_config(options)
-      Rails.logger.debug("[SAML] Fetching metadata from #{Settings.saml.idp_metadata} config with #{options}")
-      idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
-      # Can be either remote or local
-      if Settings.saml.idp_metadata.start_with?("https://")
-        idp_metadata_parser.parse_remote(Settings.saml.idp_metadata, true, options)
-      else
-        idp_metadata_parser.parse(File.open(File.expand_path(Settings.saml.idp_metadata)), options)
+      ActiveSupport::Notifications.instrument "fetching_metadata.saml_authentication" do |payload|
+        payload[:location] = Settings.saml.idp_metadata
+
+        idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
+        # Can be either remote or local
+        if Settings.saml.idp_metadata.start_with?("https://")
+          idp_metadata_parser.parse_remote(Settings.saml.idp_metadata, true, options)
+        else
+          idp_metadata_parser.parse(File.open(File.expand_path(Settings.saml.idp_metadata)), options)
+        end
       end
     end
 

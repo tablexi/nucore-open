@@ -1,23 +1,13 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require_relative "../../saml_spec_helper.rb"
 require "saml_authentication/saml_attributes"
-require "devise_saml_authenticatable/saml_response"
 
 RSpec.describe SamlAuthentication::SamlAttributes do
-  let(:response_string) { Base64.encode64(File.read(File.expand_path("../../fixtures/login_response.xml", __dir__))) }
-  let(:base_response) { OneLogin::RubySaml::Response.new(response_string) }
-  let(:response) { ::SamlAuthenticatable::SamlResponse.new(base_response, attribute_map) }
-  let(:attribute_map) do
-    {
-      "PersonImmutableID" => "username",
-      "User.email" => "email",
-      "User.FirstName" => "first_name",
-      "User.LastName" => "last_name",
-    }
-  end
 
-  subject(:attributes) { described_class.new(response) }
+  include_context "With SAML response"
+
+  subject(:attributes) { described_class.new(saml_response) }
 
   it "makes the hash" do
     expect(attributes.to_h).to eq(
