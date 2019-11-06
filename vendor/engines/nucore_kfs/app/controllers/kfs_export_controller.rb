@@ -8,8 +8,8 @@ class KfsExportController < ApplicationController
       aan_out = od.account.account_number
       fan_out = prod.facility_account.account_number
 
-      flash[:error] = "for id #{od.id}: order account not a kfs account: #{aan_out}" unless aan_out.match(/^KFS-(?<obj_code>\d{4})-(?<acct_num>\d{0,7})$/)
-      flash[:error] = "for id #{od.id}: recharge account not a kfs account: #{fan_out}" unless fan_out.match(/^KFS-(?<obj_code>\d{4})-(?<acct_num>\d{0,7})$/)
+      flash[:error] = "for id #{od.id}: order account not a kfs account: #{aan_out}" unless aan_out.match(/^KFS-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
+      flash[:error] = "for id #{od.id}: recharge account not a kfs account: #{fan_out}" unless fan_out.match(/^KFS-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
       if flash[:error]
         redirect_to facility_journals_path(current_facility)
         return

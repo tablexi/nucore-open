@@ -142,7 +142,8 @@ module NucoreKfs
       # build the account_number in the correct format
       object_code = '6610' # always 6610 for the accounts paying
       kfs_account_number = kfs_soap_data[:account_number]
-      account_number = "KFS-#{object_code}-#{kfs_account_number}"
+      account_number = "KFS-#{kfs_account_number}-#{object_code}"
+      puts("account_number = #{account_number}")
 
       # user roles
       account_owner_netid = kfs_soap_data[:accounts_supervisory_systems_identifier]

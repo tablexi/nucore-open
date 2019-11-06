@@ -49,8 +49,8 @@
     aan_out = od.account.account_number
     fan_out = prod.facility_account.account_number
 
-    raise "not a kfs account: #{aan_out}" unless aan_match = aan_out.match(/^KFS-(?<obj_code>\d{4})-(?<acct_num>\d{0,7})$/)
-    raise "not a kfs account: #{fan_out}" unless fan_match = fan_out.match(/^KFS-(?<obj_code>\d{4})-(?<acct_num>\d{0,7})$/)
+    raise "not a kfs account: #{aan_out}" unless aan_match = aan_out.match(/^KFS-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
+    raise "not a kfs account: #{fan_out}" unless fan_match = fan_out.match(/^KFS-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
 
     bal_record_type = "AC"
     doc_type = "CLTR"

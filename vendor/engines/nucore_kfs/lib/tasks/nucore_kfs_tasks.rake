@@ -21,8 +21,8 @@ task :kfs_collector_export, [:export_file_path] => :environment do |_t, args|
       aan_out = od.account.account_number
       fan_out = prod.facility_account.account_number
 
-      aan_match = aan_out.match(/^KFS-(?<obj_code>\d{4})-(?<acct_num>\d{0,7})$/)
-      fan_match = fan_out.match(/^KFS-(?<obj_code>\d{4})-(?<acct_num>\d{0,7})$/)
+      aan_match = aan_out.match(/^KFS-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
+      fan_match = fan_out.match(/^KFS-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
 
       if !aan_match
         # logger.info("for id #{od.id}: order account not a kfs account: #{aan_out}")
