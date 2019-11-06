@@ -12,7 +12,7 @@ namespace :uconn do
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
-      print "Kennel base uri: #{uri}"
+      puts "Kennel base uri: #{uri}"
 
       request = Net::HTTP::Get.new(uri.request_uri)
       request["User-Agent"] = "nucore"
@@ -42,12 +42,19 @@ namespace :uconn do
           next
         end
 
-        User.find_or_initialize_by(username: record["netid"]).update!(
-          :username => record["netid"],
-          :first_name => record["first_name"],
-          :last_name => record["last_name"],
-          :email => record["email"],
-        )
+        logger.info "Upserting user: #{record["netid"]}"
+
+        begin
+          User.find_or_initialize_by(username: record["netid"]).update!(
+            :username => record["netid"],
+            :first_name => record["first_name"],
+            :last_name => record["last_name"],
+            :email => record["email"],
+          )
+        rescue ActiveRecord::RecordInvalid => e
+          logger.info "Skipping this row due to RecordInvalid exception: #{e.message}"
+        end
+
         # TODO: add user to billing group based on `group_affil`/`dept_id`, too
       }
     end
@@ -57,10 +64,9 @@ namespace :uconn do
       for i in 1..pagecount
         data = JSON.parse(do_kennel_call("/export?page=#{i}").body)
         process_kennel_data(data)
-        print "imported faculty page #{i} of #{pagecount} (#{i*100/pagecount}%)\r"
-        STDOUT.flush
+        puts "imported faculty page #{i} of #{pagecount} (#{i*100/pagecount}%)\r"
       end
-      print "\n"
+      puts "\n"
     end
 
     def pull_kennel_students()
@@ -68,10 +74,9 @@ namespace :uconn do
       for i in 1..pagecount
         data = JSON.parse(do_kennel_call("/student?page=#{i}").body)
         process_kennel_data(data)
-        print "imported student page #{i} of #{pagecount} (#{i*100/pagecount}%)\r"
-        STDOUT.flush
+        puts "imported student page #{i} of #{pagecount} (#{i*100/pagecount}%)\r"
       end
-      print "\n"
+      puts "\n"
     end
 
     pull_kennel_faculty()
