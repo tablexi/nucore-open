@@ -79,7 +79,7 @@ feature:
   global_billing_administrator: true
   global_billing_administrator_users_tab: true
   create_users: true
-  netids: true
+  lookup_netids: true
   limit_short_description: true
   manage_payment_sources_with_users: true
   order_assignment_notifications: true
