@@ -43,6 +43,10 @@ be the value of the `base: key`.
 
 ### Using Docker
 
+The easiest thing to do is enable LDAP in `docker-compose`.
+
+You may also run it standalone:
+
 ```
 docker run --name ldap-service --hostname ldap-service -p 389:389 -p 636:636 --detach osixia/openldap
 ```
