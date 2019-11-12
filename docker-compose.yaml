@@ -29,22 +29,24 @@ services:
       - db-data:/var/lib/mysql
     logging:
       driver: none
-  # ldap:
-  #   image: osixia/openldap
-  #   command: "--copy-service"
-  #   volumes:
-  #     - "ldap-data:/var/lib/ldap"
-  #     # Loads some default users into the database
-  #     - "./vendor/engines/ldap_authentication/spec/fixtures:/container/service/slapd/assets/config/bootstrap/ldif/custom"
-  # ldap-admin:
-  #   image: osixia/phpldapadmin
-  #   ports:
-  #     - "8081:80"
-  #   depends_on:
-  #     - ldap
-  #   environment:
-  #     - PHPLDAPADMIN_LDAP_HOSTS=ldap
-  #     - PHPLDAPADMIN_HTTPS=false
+  ldap:
+    image: osixia/openldap
+    command: "--copy-service"
+    ports:
+      - "389:389"
+    volumes:
+      - "ldap-data:/var/lib/ldap"
+      # Loads some default users into the database
+      - "./vendor/engines/ldap_authentication/spec/fixtures:/container/service/slapd/assets/config/bootstrap/ldif/custom"
+  ldap-admin:
+    image: osixia/phpldapadmin
+    ports:
+      - "8081:80"
+    depends_on:
+      - ldap
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=ldap
+      - PHPLDAPADMIN_HTTPS=false
 
 volumes:
   db-data:
