@@ -149,3 +149,5 @@ paperclip:
 
 price_policy_note_options: ~
 order_detail_price_change_reason_options: ~
+
+time_zone: "Central Time (US & Canada)"
