@@ -8,6 +8,9 @@ namespace :users do
   end
 
   namespace :convert do
+    # Usage:
+    # Dry run: rake users:convert:external_to_internal[sst123@example.org,netid123]
+    # Commit: rake users:convert:external_to_internal[sst123@example.org,netid123,true]
     desc "Convert an external user to internal"
     task :external_to_internal, [:email, :netid, :commit] => :environment do |_t, args|
       options = { dryrun: !args[:commit], logger: Logger.new(STDOUT) }
@@ -15,6 +18,8 @@ namespace :users do
       Users::ConvertExternalToInternalUser.new(args[:email], args[:netid], **options).convert!
     end
 
+    # Dry run: rake users:convert:external_to_internal[netid123]
+    # Commit: rake users:convert:external_to_internal[netid123,true]
     desc "Convert an internal user to external"
     task :internal_to_external, [:netid, :commit] => :environment do |_t, args|
       options = { dryrun: !args[:commit], logger: Logger.new(STDOUT) }
