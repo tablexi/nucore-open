@@ -15,6 +15,8 @@ module Users
     def convert!
       user = User.find_by!(username: @username)
 
+      raise "#{@username} is already an external user" if user.email_user?
+
       user.assign_attributes(
         username: user.email,
         password: SecureRandom.hex,
