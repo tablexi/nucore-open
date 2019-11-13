@@ -175,11 +175,6 @@ GEM
     chronic (0.10.2)
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
-    ci_reporter (2.0.0)
-      builder (>= 2.1.2)
-    ci_reporter_rspec (1.0.0)
-      ci_reporter (~> 2.0)
-      rspec (>= 2.14, < 4)
     ckeditor (4.3.0)
       orm_adapter (~> 0.5.0)
       terrapin
@@ -631,7 +626,6 @@ DEPENDENCIES
   capybara
   capybara-email
   chosen-rails
-  ci_reporter_rspec
   ckeditor
   clockpunch
   coffee-rails
