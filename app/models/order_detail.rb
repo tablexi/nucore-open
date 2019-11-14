@@ -283,14 +283,6 @@ class OrderDetail < ApplicationRecord
   scope :for_order_statuses, ->(statuses) { where("order_details.order_status_id in (?)", statuses) unless statuses.nil? || statuses.empty? }
   scope :joins_assigned_users, -> { joins("LEFT OUTER JOIN users assigned_users ON assigned_users.id = order_details.assigned_user_id") }
 
-  # TODO: Target for removal
-  scope :in_date_range, lambda { |start_date, end_date|
-    search = all
-    search = search.where("orders.ordered_at > ?", start_date.beginning_of_day) if start_date
-    search = search.where("orders.ordered_at < ?", end_date.end_of_day) if end_date
-    search
-  }
-
   scope :fulfilled_in_date_range, lambda { |start_date, end_date|
     action_in_date_range :fulfilled_at, start_date, end_date
   }
