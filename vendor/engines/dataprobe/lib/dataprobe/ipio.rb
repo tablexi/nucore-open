@@ -57,7 +57,7 @@ module Dataprobe
     def read(socket, bytes)
       socket.read_nonblock(bytes)
     rescue IO::WaitReadable
-      IO.select([@socket], nil, nil, READ_TIMEOUT)
+      IO.select([socket], nil, nil, READ_TIMEOUT)
       retry
     end
 
