@@ -108,7 +108,7 @@ class Order < ApplicationRecord
   end
 
   def set_order_details_ordered_at
-    self.ordered_at = Time.current
+    self.order_details_ordered_at = Time.current
   end
   #####
   # END acts_as_state_machine
@@ -121,8 +121,7 @@ class Order < ApplicationRecord
     ods
   end
 
-  def ordered_at=(datetime)
-    raise "Cannot assign ordered_at after purchase" if purchased?
+  def order_details_ordered_at=(datetime)
     order_details.each { |od| od.ordered_at ||= datetime }
   end
 

@@ -27,7 +27,7 @@ class OrderPurchaser
       return
     end
 
-    order.ordered_at = backdate_to if backdate_to
+    order.order_details_ordered_at = backdate_to if backdate_to
 
     validate_order!
     return unless do_additional_validations

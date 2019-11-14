@@ -510,7 +510,7 @@ RSpec.describe OrdersController do
     context "backdating" do
       before :each do
         @order_detail = place_product_order(@staff, @authable, @item, @account, false)
-        @order.update_attribute(:ordered_at, nil)
+        @order_detail.update_attribute(:ordered_at, nil)
         @params.merge!(id: @order.id)
       end
 

@@ -425,7 +425,6 @@ RSpec.describe OrderDetail do
                user: user,
                created_by: user.id,
                account: account,
-               ordered_at: Time.zone.now,
               )
       end
 

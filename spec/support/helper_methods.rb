@@ -203,7 +203,7 @@ def setup_reservation(facility, account, user)
   # create price policy with default window of 1 day
   @instrument.instrument_price_policies.create(FactoryBot.attributes_for(:instrument_price_policy).update(price_group_id: @price_group.id))
   # create order, order detail
-  @order = user.orders.create(FactoryBot.attributes_for(:order, created_by: user.id, account: account, ordered_at: Time.zone.now))
+  @order = user.orders.create(FactoryBot.attributes_for(:order, created_by: user.id, account: account))
   @order.add(@instrument, 1)
   @order_detail = @order.order_details.first
 end
