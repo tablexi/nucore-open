@@ -109,7 +109,7 @@ class OrderDetail < ApplicationRecord
   validates_presence_of :dispute_resolved_at, :dispute_resolved_reason, if: proc { dispute_resolved_reason.present? || dispute_resolved_at.present? }
   # only do this validation if it hasn't been ordered yet. Update errors caused by notification sending
   # were being triggered on orders where the orderer had been removed from the account.
-  validate :account_usable_by_order_owner?, if: ->(o) { o.account_id_changed? || o.order.nil? || o.ordered_at.blank? }
+  validate :account_usable_by_order_owner?, if: ->(order_detail) { order_detail.account_id_changed? || order_detail.order.nil? || order_detail.ordered_at.blank? }
   validates_length_of :note, maximum: 1000, allow_blank: true, allow_nil: true
   validate :valid_manual_fulfilled_at
   validates :price_change_reason, presence: true, length: { minimum: 10, allow_blank: true }, if: :pricing_note_required?
