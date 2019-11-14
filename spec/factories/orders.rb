@@ -6,8 +6,13 @@ FactoryBot.define do
   end
 
   trait :purchased do
-    ordered_at { 1.week.ago }
+    transient do
+      ordered_at { 1.week.ago }
+    end
     state { "purchased" }
+    after(:create) do |order, evaluator|
+      order.order_details.update_all(ordered_at: evaluator.ordered_at)
+    end
   end
 
   # Must define product or facility
