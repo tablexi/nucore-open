@@ -126,7 +126,6 @@ class OrderDetail < ApplicationRecord
   ## TODO validate order status is global or a member of the product's facility
   ## TODO validate which fields can be edited for which states
 
-  scope :by_ordered_at, -> { order(ordered_at: :desc) }
   scope :batch_updatable, -> { where(dispute_at: nil, state: %w(new inprocess)) }
   scope :new_or_inprocess, -> { purchased.where(state: %w(new inprocess)) }
   scope :non_canceled, -> { where.not(state: "canceled") }
