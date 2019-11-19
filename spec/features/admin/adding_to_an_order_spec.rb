@@ -58,12 +58,12 @@ RSpec.describe "Adding to an existing order" do
     describe "adding it to another account" do
       describe "while the original account is still active" do
         before do
-          select other_account, from: "Payment Source"
+          select other_account.to_s, from: "Payment Source"
           click_button "Add To Order"
         end
 
         it "creates the order detail with the new account" do
-          click_link(order.reload.order_details.last)
+          click_link(order.reload.order_details.last.to_s)
           expect(page).to have_select("Payment Source", selected: other_account.to_s)
         end
       end
