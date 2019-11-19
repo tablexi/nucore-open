@@ -79,6 +79,10 @@ class AddToOrderForm
     OrderDetail.transaction do
       merge_order.add(product, quantity, params).each do |order_detail|
         order_detail.manual_fulfilled_at = fulfilled_at
+        # `fulfilled_at` is a string which might get misinterpretted as DD/MM instead of MM/DD
+        if order_detail.valid_for_purchase?
+          order_detail.ordered_at = order_detail.manual_fulfilled_at_time || Time.current
+        end
         order_detail.set_default_status!
         order_detail.change_status!(order_status) if order_status.present?
 

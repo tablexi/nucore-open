@@ -839,6 +839,10 @@ class OrderDetail < ApplicationRecord
     errors.add(:fulfilled_at, @manual_fulfilled_at.error) if @manual_fulfilled_at&.invalid?
   end
 
+  def manual_fulfilled_at_time
+    @manual_fulfilled_at&.to_time
+  end
+
   def time_data
     if product.respond_to?(:time_data_field)
       public_send(product.time_data_field) || TimeData::RequiredTimeData.new
