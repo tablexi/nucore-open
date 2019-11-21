@@ -1,0 +1,12 @@
+= content_for :h1 do
+  = @order_detail.facility
+
+%h2= @order_detail.product
+
+= simple_form_for([:problem, @reservation], defaults: { readonly: !editable? }) do |f|
+  = f.error_messages
+
+  - unless editable?
+    %p.alert.alert-danger You cannot edit this order
+
+  = "Form TBD"
