@@ -1,25 +1,27 @@
 # frozen_string_literal: true
 
-require_relative "boot"
+require_relative 'boot'
 
-require "rails/all"
-require "will_paginate/array"
+require 'rails/all'
+require 'will_paginate/array'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
 module Nucore
-
   class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 5.0
 
     # Rails 5 disables autoloading in production by default.
     # https://blog.bigbinary.com/2016/08/29/rails-5-disables-autoloading-after-booting-the-app-in-production.html
     config.enable_dependency_loading = true
 
     # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # Application configuration can go into files in config/initializers
+    # -- all .rb files in that directory are automatically loaded after loading
+    # the framework and any gems in your application.
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.autoload_paths += Dir["#{config.root}/app/models/**/"]
     config.autoload_paths += Dir["#{config.root}/app/controllers/concerns"]
