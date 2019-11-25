@@ -2,19 +2,19 @@ require "rails_helper"
 
 RSpec.describe "Fixing a problem reservation" do
   let(:facility) { create(:setup_facility) }
-  let(:instrument) { create(:setup_instrument, :always_available, facility: facility) }
+  let(:instrument) { create(:setup_instrument, :timer, :always_available, facility: facility) }
 
   before { login_as reservation.user }
   describe "a problem reservation" do
-    let(:reservation) { create(:completed_reservation, product: instrument, actual_end_at: nil) }
+    let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 1.hour.ago, actual_end_at: nil) }
+    before { MoveToProblemQueue.move!(reservation.order_detail) }
 
     it "can edit the reservation" do
-      skip "not ready yet"
       expect(reservation.order_detail).to be_problem
       visit edit_problem_reservation_path(reservation)
-
-      fill_in :actual_end_at_date, with: "2019-01-01"
-
+      fill_in "Actual Duration", with: "0:45"
+      click_button "Save"
+      save_and_open_page
     end
   end
 

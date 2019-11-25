@@ -5,7 +5,7 @@ module Reservations::Validations
   extend ActiveSupport::Concern
 
   included do
-    delegate :editing_time_data, to: :order_detail, allow_nil: true
+    delegate :editing_time_data, :editing_time_data=, to: :order_detail, allow_nil: true
 
     validates_uniqueness_of :order_detail_id, allow_nil: true
     validates :product_id, presence: true
