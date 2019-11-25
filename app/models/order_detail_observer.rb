@@ -13,12 +13,12 @@ class OrderDetailObserver < ActiveRecord::Observer
     product = order_detail.product
 
     # Is the order 100% ready to be merged?
-    # TODO: Can this be changed to `order.to_be_merged? && order_detail.valid_for_purchase?
     if order.to_be_merged? && (product.is_a?(Item) ||
                               (product.is_a?(Service) && order_detail.valid_service_meta?) ||
                               (product.is_a?(Instrument) && order_detail.valid_reservation?))
 
-      # move this detail to the original order and update its ordered_at
+      # move this detail to the original order and backdate its ordered_at if
+      # it was ordered in the past.
       order_detail.order_id = order.merge_order.id
       order_detail.ordered_at = order_detail.fulfilled_at || Time.current
     end

@@ -835,12 +835,12 @@ class OrderDetail < ApplicationRecord
     @manual_fulfilled_at = ValidFulfilledAtDate.new(string)
   end
 
-  def valid_manual_fulfilled_at
-    errors.add(:fulfilled_at, @manual_fulfilled_at.error) if @manual_fulfilled_at&.invalid?
-  end
-
   def manual_fulfilled_at_time
     @manual_fulfilled_at&.to_time
+  end
+
+  def valid_manual_fulfilled_at
+    errors.add(:fulfilled_at, @manual_fulfilled_at.error) if @manual_fulfilled_at&.invalid?
   end
 
   def time_data
