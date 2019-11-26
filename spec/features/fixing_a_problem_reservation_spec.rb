@@ -18,6 +18,16 @@ RSpec.describe "Fixing a problem reservation" do
       expect(page).not_to have_content("Fix Usage")
     end
 
+    it "updates the order detail's fields" do
+      visit edit_problem_reservation_path(reservation)
+      fill_in "Actual Duration", with: "45"
+      click_button "Save"
+
+      expect(reservation.order_detail.reload.problem_description_key_was).to eq("missing_actuals")
+      expect(reservation.order_detail.problem_resolved_at).to be_present
+      expect(reservation.order_detail.problem_resolved_by).to eq(reservation.user)
+    end
+
     it "errors if zero" do
       visit edit_problem_reservation_path(reservation)
       fill_in "Actual Duration", with: "0"

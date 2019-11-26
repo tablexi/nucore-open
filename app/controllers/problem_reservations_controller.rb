@@ -12,7 +12,13 @@ class ProblemReservationsController < ApplicationController
   def update
     raise "Attempting to edit Reservation #{@reservation.id} while not editable" unless editable?
 
+    @order_detail.assign_attributes(
+      problem_description_key_was: @order_detail.problem_description_key,
+      problem_resolved_at: Time.current,
+      problem_resolved_by: current_user,
+    )
     @reservation.assign_times_from_params(update_params)
+
     if @reservation.save
       redirect_to reservations_status_path(status: "all"), notice: "Your reservation has been updated"
     else

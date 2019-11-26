@@ -57,6 +57,7 @@ class OrderDetail < ApplicationRecord
   belongs_to :account
   belongs_to :bundle, foreign_key: "bundle_product_id"
   belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
+  belongs_to :problem_resolved_by, class_name: "User"
   has_one    :reservation, inverse_of: :order_detail
   # for some reason, dependent: :delete on reservation isn't working with paranoia, hitting foreign key constraints
   before_destroy { reservation.try(:really_destroy!) }
