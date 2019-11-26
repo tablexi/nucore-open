@@ -80,7 +80,6 @@ class OrderDetail < ApplicationRecord
   delegate :ordered_on_behalf_of?, to: :order
   delegate :price_group, to: :price_policy, allow_nil: true
   delegate :reference, to: :journal, prefix: true, allow_nil: true
-  delegate :requires_but_missing_actuals?, to: :reservation, allow_nil: true
 
   def estimated_price_group
     estimated_price_policy.try(:price_group)
@@ -856,12 +855,20 @@ class OrderDetail < ApplicationRecord
   end
 
   def problem_description_key
+    Array(problem_description_keys).first
+  end
+
+  def problem_description_keys
     return unless complete?
 
     time_data_problem_key = time_data.problem_description_key
     price_policy_problem_key = :missing_price_policy if price_policy.blank?
 
-    time_data_problem_key || price_policy_problem_key
+    [time_data_problem_key, price_policy_problem_key].compact
+  end
+
+  def requires_but_missing_actuals?
+    problem_description_keys.include?(:missing_actuals)
   end
 
   def price_change_reason_option

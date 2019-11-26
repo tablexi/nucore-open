@@ -10,9 +10,10 @@ class ProblemReservationsController < ApplicationController
   end
 
   def update
-    form = ProblemReservationForm.new(@reservation)
-    form.assign_attributes(update_params)
-    if form.save
+    raise "Attempting to edit Reservation #{@reservation.id} while not editable" unless editable?
+
+    @reservation.assign_times_from_params(update_params)
+    if @reservation.save
       redirect_to reservations_status_path(status: "all"), notice: "Your reservation has been updated"
     else
       render :edit
@@ -28,7 +29,7 @@ class ProblemReservationsController < ApplicationController
   end
 
   def editable?
-    @order_detail.problem? && @order_detail.problem_description_key == :missing_actuals
+    @order_detail.problem? && @order_detail.requires_but_missing_actuals?
   end
   helper_method :editable?
 

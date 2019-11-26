@@ -5,16 +5,38 @@ RSpec.describe "Fixing a problem reservation" do
   let(:instrument) { create(:setup_instrument, :timer, :always_available, facility: facility) }
 
   before { login_as reservation.user }
+
   describe "a problem reservation" do
     let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 1.hour.ago, actual_end_at: nil) }
-    before { MoveToProblemQueue.move!(reservation.order_detail) }
+    before { MoveToProblemQueue.move!(reservation.order_detail, force: true) }
 
     it "can edit the reservation" do
+      visit reservations_path(status: :all)
+      click_link "Fix Usage"
+      fill_in "Actual Duration", with: "45"
+      click_button "Save"
+      expect(page).not_to have_content("Fix Usage")
+    end
+
+    it "errors if zero" do
+      visit edit_problem_reservation_path(reservation)
+      fill_in "Actual Duration", with: "0"
+      click_button "Save"
+      expect(page).to have_content("at least 1 minute")
+    end
+  end
+
+  describe "is both missing actuals and missing price policy" do
+    let(:reservation) { create(:purchased_reservation, product: instrument) }
+    before do
+      reservation.update(actual_start_at: reservation.reserve_start_at)
+      MoveToProblemQueue.move!(reservation.order_detail, force: true)
+    end
+
+    it "can view the page" do
       expect(reservation.order_detail).to be_problem
       visit edit_problem_reservation_path(reservation)
-      fill_in "Actual Duration", with: "0:45"
-      click_button "Save"
-      save_and_open_page
+      expect(page).to have_field("Actual Duration")
     end
   end
 

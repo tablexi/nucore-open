@@ -105,7 +105,7 @@ class ReservationUserActionPresenter
   end
 
   def can_fix_problem?
-    order_detail.problem? && order_detail.problem_description_key == :missing_actuals
+    order_detail.problem? && order_detail.requires_but_missing_actuals?
   end
 
 end
