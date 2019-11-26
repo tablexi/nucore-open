@@ -191,6 +191,7 @@ module Reservations::DateSupport
 
 
     reserve_attrs.reject! { |_key, value| value.blank? }
+
     self.actual_start_at = nil if reserve_attrs.keys.any? { |k| k.to_s.start_with?("actual_start") }
     self.actual_end_at = nil if reserve_attrs.keys.any? { |k| k.to_s.start_with?("actual_end") } || reserve_attrs.key?(:actual_duration_mins)
 
@@ -207,7 +208,7 @@ module Reservations::DateSupport
 
   # set reserve_end_at based on duration_mins
   def set_reserve_end_at
-    return if reserve_end_at.present? || reserve_start_at.blank?
+    return if reserve_end_at.present? || reserve_start_at.blank? || @duration_mins.nil?
 
     self.reserve_end_at = reserve_start_at + @duration_mins.to_i.minutes
   end
