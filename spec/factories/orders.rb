@@ -34,8 +34,13 @@ FactoryBot.define do
     end
 
     factory :purchased_order do
-      after(:create) do |order|
+      transient do
+        ordered_at { Time.current }
+      end
+
+      after(:create) do |order, evaluator|
         allow(order).to receive(:cart_valid?).and_return(true) # so we don't have to worry about defining price groups, etc
+        order.order_details_ordered_at = evaluator.ordered_at
         order.validate_order!
         order.purchase!
       end
