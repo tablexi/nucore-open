@@ -105,7 +105,7 @@ class ReservationUserActionPresenter
   end
 
   def can_fix_problem?
-    order_detail.problem? && order_detail.requires_but_missing_actuals?
+    OrderDetails::ProblemResolutionPolicy.new(order_detail).user_can_resolve?
   end
 
 end

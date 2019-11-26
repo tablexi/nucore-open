@@ -35,7 +35,7 @@ class ProblemReservationsController < ApplicationController
   end
 
   def editable?
-    @order_detail.problem? && @order_detail.requires_but_missing_actuals?
+    OrderDetails::ProblemResolutionPolicy.new(@order_detail).user_can_resolve?
   end
   helper_method :editable?
 

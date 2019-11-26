@@ -860,7 +860,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def problem_description_keys
-    return unless complete?
+    return [] unless complete?
 
     time_data_problem_key = time_data.problem_description_key
     price_policy_problem_key = :missing_price_policy if price_policy.blank?
@@ -869,7 +869,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def requires_but_missing_actuals?
-    problem_description_keys.include?(:missing_actuals)
+    Array(problem_description_keys).include?(:missing_actuals)
   end
 
   def price_change_reason_option
