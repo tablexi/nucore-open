@@ -20,6 +20,7 @@ FactoryBot.define do
     transient do
       product { nil }
       quantity { 1 }
+      ordered_at { Time.current }
     end
     facility { product.facility }
     association :account, factory: :setup_account
@@ -43,6 +44,7 @@ FactoryBot.define do
         order.order_details_ordered_at = evaluator.ordered_at
         order.validate_order!
         order.purchase!
+        order.order_details.update_all(ordered_at: evaluator.ordered_at)
       end
     end
 
