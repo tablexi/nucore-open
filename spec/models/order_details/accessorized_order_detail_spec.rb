@@ -78,9 +78,9 @@ RSpec.describe OrderDetail do
       expect(accessory_order_detail.quantity).to eq(reservation.actual_duration_mins)
     end
 
-    skip "defaults to 1 if less than a minute" do
-      reservation.update_attributes(actual_end_at: reservation.actual_start_at + 30.seconds)
-      expect(reservation.actual_duration_mins).to eq(0)
+    it "defaults to 1 if less than a minute" do
+      reservation.update_attributes(actual_end_at: reservation.actual_start_at + 29.seconds)
+      expect(reservation.actual_duration_mins).to eq(1)
       expect(accessory_order_detail.reload.quantity).to eq(1)
     end
 
@@ -118,9 +118,9 @@ RSpec.describe OrderDetail do
       expect(accessory_order_detail.quantity).to eq(reservation.actual_duration_mins)
     end
 
-    skip "defaults to 1 if less than a minute" do
-      reservation.update_attributes(actual_end_at: reservation.actual_start_at + 30.seconds)
-      expect(reservation.actual_duration_mins).to eq(0)
+    it "defaults to 1 if less than a minute" do
+      reservation.update_attributes(actual_end_at: reservation.actual_start_at + 29.seconds)
+      expect(reservation.actual_duration_mins).to eq(1)
       expect(accessory_order_detail.reload.quantity).to eq(1)
     end
 
