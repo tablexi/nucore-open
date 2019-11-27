@@ -115,7 +115,8 @@ class Accessories::Accessorizer
                 note: options[:note],
                 quantity: options[:quantity],
                 product_accessory: product_accessory(accessory),
-                state: "new")
+                state: "new",
+                ordered_at: Time.current)
   end
 
   def current_accessories

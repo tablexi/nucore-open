@@ -44,6 +44,10 @@ RSpec.describe OrderDetail do
       order_detail.update_attributes(account: new_account)
       expect(accessory_order_detail.reload.account).to eq new_account
     end
+
+    it "has an ordered_at" do
+      expect(accessory_order_detail.ordered_at).to be_present
+    end
   end
 
   context "quantity based accessory" do
