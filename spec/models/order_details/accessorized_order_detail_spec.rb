@@ -6,7 +6,7 @@ RSpec.describe OrderDetail do
   let(:instrument) { FactoryBot.create(:setup_instrument, :timer) }
   let(:facility) { instrument.facility }
   let(:reservation) { FactoryBot.create(:completed_reservation, product: instrument) }
-  let(:order_detail) { reservation.order_detail.tap { |od| od.update(note: "original") } }
+  let(:order_detail) { reservation.order_detail.tap { |od| od.update(note: "original", ordered_at: 1.day.ago) } }
   let(:accessorizer) { Accessories::Accessorizer.new(order_detail) }
 
   before :each do
@@ -45,8 +45,8 @@ RSpec.describe OrderDetail do
       expect(accessory_order_detail.reload.account).to eq new_account
     end
 
-    it "has an ordered_at" do
-      expect(accessory_order_detail.ordered_at).to be_present
+    it "takes the ordered_at of the original order" do
+      expect(accessory_order_detail.ordered_at).to eq(order_detail.ordered_at)
     end
   end
 
