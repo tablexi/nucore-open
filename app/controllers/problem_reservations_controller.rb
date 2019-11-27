@@ -4,6 +4,7 @@ class ProblemReservationsController < ApplicationController
 
   before_action :authenticate_user!
   before_action :load_and_authorize_reservation
+  before_action :prevent_double_update, only: :update
   before_action { @active_tab = "reservations" }
 
   def edit
@@ -11,8 +12,6 @@ class ProblemReservationsController < ApplicationController
   end
 
   def update
-    redirect_to action: :edit unless editable?
-
     @order_detail.assign_attributes(
       problem_description_key_was: @order_detail.problem_description_key,
       problem_resolved_at: Time.current,
@@ -28,6 +27,10 @@ class ProblemReservationsController < ApplicationController
   end
 
   private
+
+  def prevent_double_update
+    redirect_to order_order_detail_path(@order_detail.order, @order_detail) unless editable?
+  end
 
   def update_params
     params.require(:reservation).permit(
