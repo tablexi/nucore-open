@@ -20,7 +20,11 @@ class ProblemReservationsController < ApplicationController
     @reservation.assign_times_from_params(update_params)
 
     if @reservation.save
-      redirect_to reservations_status_path(status: "all"), notice: "Your reservation has been updated"
+      if @order_detail.accessories?
+        redirect_to new_order_order_detail_accessory_path(@order_detail.order, @order_detail), notice: "Your reservation has been updated"
+      else
+        redirect_to reservations_status_path(status: "all"), notice: "Your reservation has been updated"
+      end
     else
       render :edit
     end
