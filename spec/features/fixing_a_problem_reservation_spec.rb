@@ -40,7 +40,7 @@ RSpec.describe "Fixing a problem reservation" do
 
       it "cannot edit the reservation" do
         visit edit_problem_reservation_path(reservation)
-        expect(page).to have_content("You cannot edit this order")
+        expect(page.status_code).to eq(404)
       end
     end
   end
@@ -65,7 +65,16 @@ RSpec.describe "Fixing a problem reservation" do
     it "cannot view the page" do
       expect(reservation.order_detail).not_to be_problem
       visit edit_problem_reservation_path(reservation)
-      expect(page).to have_content("You cannot edit this order")
+      expect(page.status_code).to eq(404)
+    end
+
+    describe "but it was a problem" do
+      before { reservation.order_detail.update(problem_resolved_at: 1.day.ago) }
+
+      it "has a helpful message" do
+        visit edit_problem_reservation_path(reservation)
+        expect(page).to have_content("This reservation has already been fixed")
+      end
     end
   end
 
@@ -75,7 +84,7 @@ RSpec.describe "Fixing a problem reservation" do
     it "cannot view the page" do
       expect(reservation.order_detail).to be_problem
       visit edit_problem_reservation_path(reservation)
-      expect(page).to have_content("You cannot edit this order")
+      expect(page.status_code).to eq(404)
     end
   end
 end

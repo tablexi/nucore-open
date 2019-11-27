@@ -7,10 +7,11 @@ class ProblemReservationsController < ApplicationController
   before_action { @active_tab = "reservations" }
 
   def edit
+    render :resolved if !editable? && resolved?
   end
 
   def update
-    raise "Attempting to edit Reservation #{@reservation.id} while not editable" unless editable?
+    redirect_to action: :edit unless editable?
 
     @order_detail.assign_attributes(
       problem_description_key_was: @order_detail.problem_description_key,
@@ -37,11 +38,16 @@ class ProblemReservationsController < ApplicationController
   def editable?
     OrderDetails::ProblemResolutionPolicy.new(@order_detail).user_can_resolve?
   end
-  helper_method :editable?
+
+  def resolved?
+    OrderDetails::ProblemResolutionPolicy.new(@order_detail).user_did_resolve?
+  end
 
   def load_and_authorize_reservation
     @reservation = Reservation.find(params[:id])
     @order_detail = @reservation.order_detail
+
+    raise ActiveRecord::RecordNotFound unless editable? || resolved?
     authorize! :update, @reservation
   end
 

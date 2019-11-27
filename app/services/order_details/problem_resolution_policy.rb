@@ -16,6 +16,13 @@ module OrderDetails
       ].all?
     end
 
+    def user_did_resolve?
+      [
+        order_detail.problem_resolved_at.present?,
+        order_detail.product.problems_resolvable_by_user?,
+      ].all?
+    end
+
   end
 
 end
