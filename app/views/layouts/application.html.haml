@@ -15,7 +15,10 @@
       .container
         .row
           .span12
-            %h1= yield :h1
+            - if content_for?(:h1)
+              %h1= yield :h1
+            - else
+              %hr
             = yield :tabnav
             = render partial: "shared/flashes"
 
