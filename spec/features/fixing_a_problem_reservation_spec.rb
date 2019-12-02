@@ -6,6 +6,7 @@ RSpec.describe "Fixing a problem reservation" do
 
   before { login_as reservation.user }
 
+  # Permissions and some other failure cases are covered in controllers/problem_reservations_controller_spec
   describe "a problem reservation" do
     let(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 1.hour.ago, actual_end_at: nil) }
     before { MoveToProblemQueue.move!(reservation.order_detail, force: true) }
@@ -46,15 +47,6 @@ RSpec.describe "Fixing a problem reservation" do
         check accessory.name
         click_button "Save Changes"
         expect(page).to have_content "1 accessory added"
-      end
-    end
-
-    describe "the product is not resolvable" do
-      before { instrument.update(problems_resolvable_by_user: false) }
-
-      it "cannot edit the reservation" do
-        visit edit_problem_reservation_path(reservation)
-        expect(page.status_code).to eq(404)
       end
     end
   end

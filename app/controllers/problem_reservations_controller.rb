@@ -53,7 +53,7 @@ class ProblemReservationsController < ApplicationController
   end
 
   def load_and_authorize_reservation
-    @reservation = Reservation.find(params[:id])
+    @reservation = current_user.reservations.find(params[:id])
     @order_detail = @reservation.order_detail
 
     raise ActiveRecord::RecordNotFound unless editable? || resolved?
