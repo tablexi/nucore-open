@@ -8,7 +8,9 @@
 $linkColor: darken(#0088cc, 4.5%);
 
 /***
- * Alerts. The raw colors represent Bootstrap's default colors. The darken/lighten
+ * Alerts
+ *
+ * The raw colors represent Bootstrap's default colors. The darken/lighten
  * percentages were largely trial and error to reach a 4.5:1 contrast;
  ***/
 $warningText: darken(#c09853, 16%);
@@ -23,3 +25,10 @@ $successBackground: lighten(#dff0d8, 3%);
 $infoText: darken(#3a87ad, 6.7%);
 $infoBackground: lighten(#d9edf7, 2.2%);
 
+/***
+ * Badges/Labels
+ *
+ * Badges/labels with white text such as warnings (orange background) may technically
+ * fail the contrast ratio checks, but are more readable than with  dark text.
+ * See https://modus.medium.com/the-myths-of-color-contrast-accessibility-4b7fcba77317
+ ***/
