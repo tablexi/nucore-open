@@ -3,7 +3,9 @@
 
 %h2= @order_detail.product
 
-%p.alert.alert-danger= text("instructions")
+%p.alert.alert-danger
+  = text("instructions")
+  = text("accessories") if @order_detail.accessories?
 
 = simple_form_for([:problem, @reservation]) do |f|
   = f.error_messages
@@ -33,4 +35,3 @@
   %ul.inline
     %li= f.submit t("shared.save"), class: 'btn'
     %li= link_to t("shared.cancel"), reservations_path
-    %li= add_accessories_link(@reservation)

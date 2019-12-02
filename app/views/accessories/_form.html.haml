@@ -22,5 +22,5 @@
                               data: { always_disabled: !od.quantity_editable? } }
 
   .modal-footer
-    = f.button :submit, class: "btn-primary", value: t("product_accessories.button.submit")
+    = f.submit t("product_accessories.button.submit"), class: "btn btn-primary"
     = modal_cancel_button text: t("product_accessories.button.cancel")

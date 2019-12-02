@@ -35,6 +35,20 @@ RSpec.describe "Fixing a problem reservation" do
       expect(page).to have_content("at least 1 minute")
     end
 
+    describe "when the product has available accessories" do
+      let!(:accessory) { create(:time_based_accessory, parent: instrument) }
+
+      it "allows you to add the accessory" do
+        visit edit_problem_reservation_path(reservation)
+        fill_in "Actual Duration", with: "45"
+        click_button "Save"
+
+        check accessory.name
+        click_button "Save Changes"
+        expect(page).to have_content "1 accessory added"
+      end
+    end
+
     describe "the product is not resolvable" do
       before { instrument.update(problems_resolvable_by_user: false) }
 
