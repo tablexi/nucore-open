@@ -21,9 +21,9 @@ class ProblemReservationsController < ApplicationController
 
     if @reservation.save
       if @order_detail.accessories?
-        redirect_to new_order_order_detail_accessory_path(@order_detail.order, @order_detail), notice: "Your reservation has been updated"
+        redirect_to new_order_order_detail_accessory_path(@order_detail.order, @order_detail), notice: text("update.success")
       else
-        redirect_to reservations_status_path(status: "all"), notice: "Your reservation has been updated"
+        redirect_to reservations_status_path(status: "all"), notice: text("update.success")
       end
     else
       render :edit

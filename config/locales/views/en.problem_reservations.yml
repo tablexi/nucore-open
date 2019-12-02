@@ -1,4 +1,8 @@
 en:
+  controllers:
+    problem_reservations:
+      update:
+        success: Your reservation has been updated
   views:
     problem_reservations:
       edit:
