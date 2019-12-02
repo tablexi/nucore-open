@@ -3,8 +3,9 @@
  * color contrast.
  ***/
 
-// Darken the default color to reach 4.5:1 against a white background
-$linkColor: darken(#0088cc, 3.5%);
+// Darken the default color to reach 4.5:1 against both a white background and
+// a light gray background like we use in some of our tables
+$linkColor: darken(#0088cc, 4.5%);
 
 /***
  * Alerts. The raw colors represent Bootstrap's default colors. The darken/lighten
