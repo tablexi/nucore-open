@@ -11,8 +11,8 @@ class Product < ApplicationRecord
   has_many :product_users
   has_many :order_details
   has_many :stored_files
-  has_many :price_groups, through: :price_group_products
   has_many :price_group_products
+  has_many :price_groups, through: :price_group_products
   has_many :product_accessories, -> { where(deleted_at: nil) }, dependent: :destroy
   has_many :accessories, through: :product_accessories, class_name: "Product"
   has_many :price_policies
