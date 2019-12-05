@@ -56,9 +56,6 @@ Rails.application.configure do
   # Raises error for missing translations
   config.action_view.raise_on_missing_translations = true
 
-  # Raise exceptions when dropping parameters
-  config.action_controller.raise_on_unfiltered_parameters = true
-
   config.after_initialize do
     Bullet.enable = false
     Bullet.bullet_logger = true
