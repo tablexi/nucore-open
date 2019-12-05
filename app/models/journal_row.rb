@@ -2,8 +2,8 @@
 
 class JournalRow < ApplicationRecord
 
-  belongs_to :journal
-  belongs_to :order_detail
+  belongs_to :journal, optional: true
+  belongs_to :order_detail, optional: true
 
   validates_presence_of :journal_id, :amount
   validates_presence_of :account if SettingsHelper.feature_on? :expense_accounts

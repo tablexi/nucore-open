@@ -2,8 +2,8 @@
 
 class LogEvent < ApplicationRecord
 
-  belongs_to :user
-  belongs_to :loggable, polymorphic: true
+  belongs_to :user, optional: true
+  belongs_to :loggable, polymorphic: true, optional: true
 
   def self.log(loggable, event_type, user, event_time: Time.current)
     create(

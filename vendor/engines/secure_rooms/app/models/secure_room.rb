@@ -7,7 +7,7 @@ class SecureRoom < Product
   has_many :card_readers, foreign_key: :product_id, class_name: "SecureRooms::CardReader"
   has_many :events, foreign_key: :product_id, class_name: "SecureRooms::Event"
   has_many :occupancies, foreign_key: :product_id, class_name: "SecureRooms::Occupancy"
-  belongs_to :facility
+  belongs_to :facility, optional: true
 
   before_validation :set_secure_room_defaults, on: :create
   validates :dashboard_token, presence: true

@@ -6,8 +6,8 @@
 # (the passer).
 class ExternalServicePasser < ApplicationRecord
 
-  belongs_to :external_service
-  belongs_to :passer, polymorphic: true
+  belongs_to :external_service, optional: true
+  belongs_to :passer, polymorphic: true, optional: true
 
   validates_presence_of :external_service_id, :passer_id
 

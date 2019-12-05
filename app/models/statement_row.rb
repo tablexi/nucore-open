@@ -2,8 +2,8 @@
 
 class StatementRow < ApplicationRecord
 
-  belongs_to :statement
-  belongs_to :order_detail
+  belongs_to :statement, optional: true
+  belongs_to :order_detail, optional: true
 
   validates_presence_of :order_detail_id, :statement_id
 

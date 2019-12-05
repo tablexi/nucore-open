@@ -8,8 +8,8 @@ module SangerSequencing
 
     self.table_name = "sanger_sequencing_batches"
 
-    belongs_to :created_by, class_name: "User"
-    belongs_to :facility
+    belongs_to :created_by, class_name: "User", optional: true
+    belongs_to :facility, optional: true
     has_many :submissions, class_name: "SangerSequencing::Submission", inverse_of: :batch, dependent: :nullify
     has_many :samples, class_name: "SangerSequencing::Sample", through: :submissions
 

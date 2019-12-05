@@ -2,12 +2,12 @@
 
 class Order < ApplicationRecord
 
-  belongs_to :user
-  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
-  belongs_to :merge_order, class_name: "Order", foreign_key: :merge_with_order_id
-  belongs_to :account
-  belongs_to :facility
-  belongs_to :order_import
+  belongs_to :account, optional: true
+  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by, optional: true
+  belongs_to :facility, optional: true
+  belongs_to :merge_order, class_name: "Order", foreign_key: :merge_with_order_id, optional: true
+  belongs_to :order_import, optional: true
+  belongs_to :user, optional: true
   has_many   :order_details, dependent: :destroy
 
   validates_presence_of :user_id, :created_by

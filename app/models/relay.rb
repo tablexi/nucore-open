@@ -4,7 +4,7 @@ require "net/http"
 
 class Relay < ApplicationRecord
 
-  belongs_to :instrument, inverse_of: :relay
+  belongs_to :instrument, inverse_of: :relay, optional: true
 
   validates_presence_of :instrument_id, on: :update
   validate :unique_ip

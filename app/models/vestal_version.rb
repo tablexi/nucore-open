@@ -8,7 +8,7 @@
 
 class VestalVersion < ApplicationRecord
 
-  belongs_to :versioned, polymorphic: true
+  belongs_to :versioned, polymorphic: true, optional: true
 
   serialize :modifications
 

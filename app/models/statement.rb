@@ -6,9 +6,9 @@ class Statement < ApplicationRecord
   has_many :statement_rows, dependent: :destroy
   has_many :payments, inverse_of: :statement
 
-  belongs_to :account
-  belongs_to :facility
-  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
+  belongs_to :account, optional: true
+  belongs_to :facility, optional: true
+  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by, optional: true
 
   validates_numericality_of :account_id, :facility_id, :created_by, only_integer: true
 

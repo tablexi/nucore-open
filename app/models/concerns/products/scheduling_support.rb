@@ -5,7 +5,7 @@ module Products::SchedulingSupport
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :schedule, inverse_of: :products
+    belongs_to :schedule, inverse_of: :products, optional: true
     has_many :reservations, foreign_key: "product_id"
 
     before_save :create_default_schedule, unless: :schedule

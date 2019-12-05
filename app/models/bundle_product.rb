@@ -2,8 +2,8 @@
 
 class BundleProduct < ApplicationRecord
 
-  belongs_to :bundle, foreign_key: :bundle_product_id
-  belongs_to :product
+  belongs_to :bundle, foreign_key: :bundle_product_id, optional: true
+  belongs_to :product, optional: true
 
   delegate :quantity_as_time?, to: :product
 

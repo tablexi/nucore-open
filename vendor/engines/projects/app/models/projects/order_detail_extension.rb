@@ -7,10 +7,7 @@ module Projects
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :project,
-                 class_name: "Projects::Project",
-                 foreign_key: :project_id,
-                 inverse_of: :order_details
+      belongs_to :project, class_name: "Projects::Project", foreign_key: :project_id, inverse_of: :order_details, optional: true
 
       validate :project_facility_must_match
       validate :project_must_be_active, if: :project_id_changed?

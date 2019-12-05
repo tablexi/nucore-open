@@ -2,7 +2,7 @@
 
 class AccountFacilityJoin < ApplicationRecord
 
-  belongs_to :facility
-  belongs_to :account
+  belongs_to :facility, optional: true
+  belongs_to :account, optional: true
 
 end

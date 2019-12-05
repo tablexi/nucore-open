@@ -5,9 +5,9 @@ class Product < ApplicationRecord
   include TextHelpers::Translation
   include EmailListAttribute
 
-  belongs_to :facility
-  belongs_to :initial_order_status, class_name: "OrderStatus"
-  belongs_to :facility_account
+  belongs_to :facility, optional: true
+  belongs_to :facility_account, optional: true
+  belongs_to :initial_order_status, class_name: "OrderStatus", optional: true
   has_many :product_users
   has_many :order_details
   has_many :stored_files

@@ -3,7 +3,7 @@
 # Never instantiate this class directly. Use the `notify` method.
 class EmailEvent < ApplicationRecord
 
-  belongs_to :user
+  belongs_to :user, optional: true
   validates :user, presence: true
   validates :key, presence: true, uniqueness: { scope: :user_id }
 

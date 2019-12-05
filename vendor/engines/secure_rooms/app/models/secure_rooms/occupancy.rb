@@ -6,12 +6,12 @@ module SecureRooms
 
     include DateTimeInput::Model
 
-    belongs_to :secure_room, foreign_key: :product_id
-    belongs_to :user
-    belongs_to :account
-    belongs_to :order_detail
-    belongs_to :entry_event, class_name: "SecureRooms::Event"
-    belongs_to :exit_event, class_name: "SecureRooms::Event"
+    belongs_to :secure_room, foreign_key: :product_id, optional: true
+    belongs_to :user, optional: true
+    belongs_to :account, optional: true
+    belongs_to :order_detail, optional: true
+    belongs_to :entry_event, class_name: "SecureRooms::Event", optional: true
+    belongs_to :exit_event, class_name: "SecureRooms::Event", optional: true
 
     delegate :facility, to: :secure_room
     delegate :to_s, to: :range

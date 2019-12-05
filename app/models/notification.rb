@@ -2,8 +2,8 @@
 
 class Notification < ApplicationRecord
 
-  belongs_to :user
-  belongs_to :subject, polymorphic: true
+  belongs_to :user, optional: true
+  belongs_to :subject, polymorphic: true, optional: true
 
   validates_presence_of :user_id, :subject_id, :notice
 

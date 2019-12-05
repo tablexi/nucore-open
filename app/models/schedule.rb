@@ -2,7 +2,7 @@
 
 class Schedule < ApplicationRecord
 
-  belongs_to :facility
+  belongs_to :facility, optional: true
 
   with_options class_name: "Instrument" do |schedule|
     schedule.has_many :facility_instruments, -> { not_archived }

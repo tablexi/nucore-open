@@ -2,7 +2,7 @@
 
 class AccountPriceGroupMember < PriceGroupMember
 
-  belongs_to :account
+  belongs_to :account, optional: true
 
   validates_presence_of :account_id
   validates_uniqueness_of :account_id, scope: [:price_group_id]

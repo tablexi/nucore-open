@@ -8,8 +8,8 @@ module SangerSequencing
 
     validates :savable_samples, length: { minimum: 1 }, on: :update
 
-    belongs_to :order_detail, class_name: "::OrderDetail"
-    belongs_to :batch, class_name: "SangerSequencing::Batch", inverse_of: :submissions
+    belongs_to :order_detail, class_name: "::OrderDetail", optional: true
+    belongs_to :batch, class_name: "SangerSequencing::Batch", inverse_of: :submissions, optional: true
     has_one :order, through: :order_detail
     has_one :user, through: :order
     has_one :facility, through: :order

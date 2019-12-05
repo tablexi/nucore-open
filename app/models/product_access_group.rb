@@ -2,7 +2,7 @@
 
 class ProductAccessGroup < ApplicationRecord
 
-  belongs_to :product
+  belongs_to :product, optional: true
   has_many :product_users, dependent: :nullify
   has_many :users, through: :product_users
 

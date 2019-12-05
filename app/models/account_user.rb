@@ -4,7 +4,7 @@ class AccountUser < ApplicationRecord
 
   belongs_to :user, required: true
   belongs_to :account, inverse_of: :account_users, required: true
-  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
+  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by, optional: true
   has_many :log_events, as: :loggable
 
   validates :created_by, presence: true

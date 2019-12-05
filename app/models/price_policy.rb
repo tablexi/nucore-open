@@ -4,9 +4,9 @@ class PricePolicy < ApplicationRecord
 
   include NUCore::Database::DateHelper
 
-  belongs_to :price_group
-  belongs_to :product
-  belongs_to :created_by, class_name: "User"
+  belongs_to :created_by, class_name: "User", optional: true
+  belongs_to :price_group, optional: true
+  belongs_to :product, optional: true
   has_many :order_details
 
   validates :start_date, :expire_date, presence: true

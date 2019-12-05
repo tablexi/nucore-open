@@ -8,7 +8,7 @@ module SangerSequencing
     self.table_name = "sanger_seq_product_groups"
     GROUPS = WellPlateConfiguration::CONFIGS.keys
 
-    belongs_to :product
+    belongs_to :product, optional: true
 
     validates :group, presence: true, inclusion: { in: GROUPS }
     validates :product, presence: true, uniqueness: true

@@ -4,7 +4,7 @@ module Projects
 
   class Project < ApplicationRecord
 
-    belongs_to :facility, foreign_key: :facility_id
+    belongs_to :facility, foreign_key: :facility_id, optional: true
     has_many :order_details, inverse_of: :project
 
     validates :facility_id, presence: true

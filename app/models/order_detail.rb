@@ -44,27 +44,25 @@ class OrderDetail < ApplicationRecord
 
   after_save :update_billable_minutes_on_reservation, if: :reservation
 
-  belongs_to :product
-  belongs_to :price_policy
-  belongs_to :statement, inverse_of: :order_details
-  belongs_to :journal
-  belongs_to :order, inverse_of: :order_details
-  belongs_to :assigned_user, class_name: "User", foreign_key: "assigned_user_id"
-  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
-  belongs_to :dispute_by, class_name: "User"
-  belongs_to :price_changed_by_user, class_name: "User"
-  belongs_to :order_status
-  belongs_to :account
-  belongs_to :bundle, foreign_key: "bundle_product_id"
-  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User"
-  has_one    :reservation, inverse_of: :order_detail
-  # for some reason, dependent: :delete on reservation isn't working with paranoia, hitting foreign key constraints
-  before_destroy { reservation.try(:really_destroy!) }
-  has_one    :external_service_receiver, as: :receiver, dependent: :destroy
+  belongs_to :account, optional: true
+  belongs_to :assigned_user, class_name: "User", foreign_key: "assigned_user_id", optional: true
+  belongs_to :bundle, foreign_key: "bundle_product_id", optional: true
+  belongs_to :canceled_by_user, foreign_key: :canceled_by, class_name: "User", optional: true
+  belongs_to :created_by_user, class_name: "User", foreign_key: :created_by, optional: true
+  belongs_to :dispute_by, class_name: "User", optional: true
+  belongs_to :journal, optional: true
+  belongs_to :order, inverse_of: :order_details, optional: true
+  belongs_to :order_status, optional: true
+  belongs_to :price_changed_by_user, class_name: "User", optional: true
+  belongs_to :price_policy, optional: true
+  belongs_to :product, optional: true
+  belongs_to :statement, inverse_of: :order_details, optional: true
   has_many   :journal_rows, inverse_of: :order_detail
   has_many   :notifications, as: :subject, dependent: :destroy
-  has_many   :stored_files, dependent: :destroy
   has_many   :sample_results_files, -> { sample_result }, class_name: "StoredFile"
+  has_many   :stored_files, dependent: :destroy
+  has_one    :external_service_receiver, as: :receiver, dependent: :destroy
+  has_one    :reservation, inverse_of: :order_detail
 
   # This is a _temporary_ associaton to make up for the fact that the
   # vestal versions gem is no longer in the project. It's here to
@@ -72,6 +70,9 @@ class OrderDetail < ApplicationRecord
   # once that data is no longer needed, this line and the
   # associated class can be removed
   has_many   :vestal_versions, as: :versioned
+
+  # for some reason, dependent: :delete on reservation isn't working with paranoia, hitting foreign key constraints
+  before_destroy { reservation.try(:really_destroy!) }
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :in_cart?, :facility, :user, to: :order

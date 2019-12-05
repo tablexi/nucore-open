@@ -4,7 +4,7 @@ class FacilityAccount < ApplicationRecord
 
   include Accounts::AccountNumberSectionable
 
-  belongs_to :facility
+  belongs_to :facility, optional: true
 
   validates :revenue_account, numericality: { only_integer: true }
   validates :account_number, presence: true, uniqueness: { scope: [:revenue_account, :facility_id] }

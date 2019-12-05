@@ -9,7 +9,7 @@ class OfflineReservation < Reservation
   validates :category,
             inclusion: { in: CATEGORIES, allow_blank: false }
 
-  belongs_to :product
+  belongs_to :product, optional: true
 
   scope :current, -> { where(reserve_end_at: nil).where("reserve_start_at < ?", Time.current) }
 

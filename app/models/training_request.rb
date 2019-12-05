@@ -2,8 +2,8 @@
 
 class TrainingRequest < ApplicationRecord
 
-  belongs_to :user
-  belongs_to :product
+  belongs_to :user, optional: true
+  belongs_to :product, optional: true
 
   validates_presence_of :user, :product
   validates :user_id, uniqueness: { scope: :product_id }

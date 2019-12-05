@@ -2,8 +2,8 @@
 
 class ExternalServiceReceiver < ApplicationRecord
 
-  belongs_to :external_service
-  belongs_to :receiver, polymorphic: true
+  belongs_to :external_service, optional: true
+  belongs_to :receiver, polymorphic: true, optional: true
 
   validates_presence_of :external_service_id, :receiver_id, :response_data
 

@@ -2,7 +2,7 @@
 
 class PriceGroupMember < ApplicationRecord
 
-  belongs_to :price_group
+  belongs_to :price_group, optional: true
 
   validates_presence_of :price_group_id
 

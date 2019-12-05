@@ -10,7 +10,7 @@ class AdminReservation < Reservation
     other
   ).freeze
 
-  belongs_to :product
+  belongs_to :product, optional: true
 
   validates :category,
             inclusion: { in: CATEGORIES, allow_blank: true }

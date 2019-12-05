@@ -6,7 +6,7 @@ module SecureRooms
 
     MAC_ADDRESS_FORMAT = /\A([0-9A-F]{2}:){5}([0-9A-F]{2})\z/
 
-    belongs_to :secure_room, foreign_key: :product_id
+    belongs_to :secure_room, foreign_key: :product_id, optional: true
 
     delegate :facility, to: :secure_room
 

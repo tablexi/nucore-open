@@ -6,8 +6,8 @@ module BulkEmail
 
     self.table_name = "bulk_email_jobs"
 
-    belongs_to :facility, foreign_key: :facility_id
-    belongs_to :user, foreign_key: :user_id
+    belongs_to :facility, foreign_key: :facility_id, optional: true
+    belongs_to :user, foreign_key: :user_id, optional: true
 
     serialize :recipients, Array
     serialize :search_criteria, Hash

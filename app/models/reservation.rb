@@ -13,15 +13,10 @@ class Reservation < ApplicationRecord
   include Reservations::RelaySupport
   include Reservations::MovingUp
 
-  # Associations
-  #####
-  belongs_to :product
-  belongs_to :order_detail, inverse_of: :reservation
-  belongs_to :created_by, class_name: "User"
+  belongs_to :created_by, class_name: "User", optional: true
+  belongs_to :order_detail, inverse_of: :reservation, optional: true
+  belongs_to :product, optional: true
   has_one :order, through: :order_detail
-
-  ## Virtual attributes
-  #####
 
   # Represents a resevation time that is unavailable, but is not an admin reservation
   # Used by timeline view

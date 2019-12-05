@@ -4,8 +4,8 @@ class PriceGroupProduct < ApplicationRecord
 
   DEFAULT_RESERVATION_WINDOW = 14
 
-  belongs_to :price_group
-  belongs_to :product
+  belongs_to :price_group, optional: true
+  belongs_to :product, optional: true
   validates_presence_of :price_group_id, :product_id
   validates_presence_of :reservation_window, if: proc { |pgp| pgp.product.is_a? Instrument }
 

@@ -10,8 +10,8 @@ class ProductAccessory < ApplicationRecord
   SCALING_TYPES.default = ["quantity"]
 
   ## relationships
-  belongs_to :product
-  belongs_to :accessory, class_name: "Product", foreign_key: :accessory_id
+  belongs_to :product, optional: true
+  belongs_to :accessory, class_name: "Product", foreign_key: :accessory_id, optional: true
 
   ## validations
   validates :product, presence: true

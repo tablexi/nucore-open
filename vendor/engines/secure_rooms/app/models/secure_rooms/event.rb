@@ -4,10 +4,10 @@ module SecureRooms
 
   class Event < ApplicationRecord
 
-    belongs_to :secure_room, foreign_key: :product_id
-    belongs_to :account
-    belongs_to :card_reader
-    belongs_to :user
+    belongs_to :secure_room, foreign_key: :product_id, optional: true
+    belongs_to :account, optional: true
+    belongs_to :card_reader, optional: true
+    belongs_to :user, optional: true
 
     validates :card_reader, :occurred_at, :outcome, presence: true
 
