@@ -65,6 +65,7 @@ gem "rake"
 gem "spreadsheet"
 gem "daemons"
 gem "ice_cube"
+gem "sprockets", "< 4"
 
 ## custom
 gem "bulk_email", path: "vendor/engines/bulk_email"
