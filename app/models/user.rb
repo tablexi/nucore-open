@@ -8,8 +8,8 @@ class User < ApplicationRecord
   # ldap_authenticatable is included via a to_prepare hook if ldap is enabled
   devise :database_authenticatable, :encryptable, :trackable, :recoverable
 
-  has_many :accounts, through: :account_users
   has_many :account_users, -> { where(deleted_at: nil) }
+  has_many :accounts, through: :account_users
   has_many :orders
   has_many :order_details, through: :orders
   has_many :price_group_members, class_name: "UserPriceGroupMember", dependent: :destroy
