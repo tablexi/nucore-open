@@ -20,8 +20,8 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
     context "with one invalid product" do
       before do
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
       end
 
       it { is_expected.not_to be_valid }
@@ -29,8 +29,8 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
     context "with both products valid" do
       before do
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(true)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(true)
       end
 
       it { is_expected.to be_valid }
@@ -41,7 +41,7 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
       context "with one invalid product" do
         before do
-          expect(NuResearchSafety::CertificationLookup).not_to receive(:certified?)
+          expect(ResearchSafetyCertificationLookup).not_to receive(:certified?)
         end
 
         it { is_expected.to be_valid }
@@ -54,8 +54,8 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
     context "with one invalid product" do
       before do
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
       end
 
       it "has the correct missing certs" do
@@ -72,8 +72,8 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
     context "with both products valid" do
       before do
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(true)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(true)
       end
 
       it "returns nothing" do

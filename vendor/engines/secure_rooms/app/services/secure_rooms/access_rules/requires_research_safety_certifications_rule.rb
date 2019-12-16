@@ -14,7 +14,7 @@ module SecureRooms
 
       def certified?
         secure_room.research_safety_certificates.all? do |certificate|
-          NuResearchSafety::CertificationLookup.certified?(user, certificate)
+          ResearchSafetyCertificationLookup.certified?(user, certificate)
         end
       end
 

@@ -16,7 +16,7 @@ class UserResearchSafetyCertificationsController < ApplicationController
 
   def index
     @user = User.find(params[:user_id])
-    @certificates = NuResearchSafety::CertificationLookup.certificates_with_status_for(@user)
+    @certificates = ResearchSafetyCertificationLookup.certificates_with_status_for(@user)
   end
 
   # During rendering, we want to use the Ability as if we were using the UsersController

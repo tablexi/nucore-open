@@ -50,7 +50,7 @@ class OrderResearchSafetyCertificationValidator
   def certificate_cache
     user = order_details.first.user
     @certificate_cache ||= Hash.new do |hash, certificate|
-      hash[certificate] = NuResearchSafety::CertificationLookup.certified?(user, certificate)
+      hash[certificate] = ResearchSafetyCertificationLookup.certified?(user, certificate)
     end
   end
 

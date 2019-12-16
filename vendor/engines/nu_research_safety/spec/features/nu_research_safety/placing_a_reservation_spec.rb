@@ -26,7 +26,7 @@ RSpec.describe "Placing a reservation with a certification requirement" do
 
     context "who does not have their certifications" do
       before do
-        allow(NuResearchSafety::CertificationLookup).to receive(:certified?).and_return(false)
+        allow(ResearchSafetyCertificationLookup).to receive(:certified?).and_return(false)
       end
 
       it "displays an error on the page" do
@@ -38,7 +38,7 @@ RSpec.describe "Placing a reservation with a certification requirement" do
 
     context "who does have their certifications" do
       before do
-        allow(NuResearchSafety::CertificationLookup).to receive(:certified?).and_return(true)
+        allow(ResearchSafetyCertificationLookup).to receive(:certified?).and_return(true)
       end
 
       it "saves the reservation and brings you back to My Reservations" do

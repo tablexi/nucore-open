@@ -10,8 +10,8 @@ RSpec.describe "Viewing a user's safety certifications" do
   before do
     login_as admin
 
-    expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-    expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
+    expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
+    expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
   end
 
   it "can see the user's certifications" do

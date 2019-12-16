@@ -17,7 +17,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
     it { is_expected.to be_granted }
 
     it "does not hit the certification api" do
-      expect(NuResearchSafety::CertificationLookup).not_to receive(:certified?)
+      expect(ResearchSafetyCertificationLookup).not_to receive(:certified?)
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
 
     describe "who has certification" do
       before do
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(card_user, certificate).and_return(true)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(card_user, certificate).and_return(true)
       end
 
       it { is_expected.to be_pending }
@@ -36,7 +36,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
 
     describe "who does not have the certification" do
       before do
-        expect(NuResearchSafety::CertificationLookup).to receive(:certified?).with(card_user, certificate).and_return(false)
+        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(card_user, certificate).and_return(false)
       end
 
       it "is denied for not having a certificaiton" do
@@ -49,7 +49,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
       let(:card_reader) { build(:card_reader, :exit, secure_room: secure_room) }
 
       it "does not check the api and is granted" do
-        expect(NuResearchSafety::CertificationLookup).not_to receive(:certified?)
+        expect(ResearchSafetyCertificationLookup).not_to receive(:certified?)
         expect(verdict).to be_granted
       end
     end
