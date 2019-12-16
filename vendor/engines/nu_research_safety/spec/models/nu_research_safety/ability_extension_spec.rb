@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe NuResearchSafety::AbilityExtension do
+RSpec.describe Ability do
   subject(:ability) { Ability.new(user, facility, stub_controller) }
   let(:common_actions) { %i(index create destroy) }
   let(:product_certification_requirement) { FactoryBot.create(:product_certification_requirement) }

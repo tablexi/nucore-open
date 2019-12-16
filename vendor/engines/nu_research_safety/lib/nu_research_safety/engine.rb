@@ -5,7 +5,6 @@ module NuResearchSafety
   class Engine < ::Rails::Engine
 
     config.to_prepare do
-      ::AbilityExtensionManager.extensions << "NuResearchSafety::AbilityExtension"
       OrderPurchaseValidator.additional_validations << NuResearchSafety::OrderCertificateValidator
 
       if EngineManager.engine_loaded?("SecureRooms")
