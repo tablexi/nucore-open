@@ -19,7 +19,7 @@ RSpec.describe "Managing Certificates" do
   describe "adding a new certification requirement" do
     it "adds the certification requirement" do
       visit product_certification_index
-      select other_certificate.name, from: NuResearchSafety::ProductCertificationRequirement.model_name.human
+      select other_certificate.name, from: ProductResearchSafetyCertificationRequirement.model_name.human
       click_button "Add Certification Requirement"
 
       expect(current_path).to eq product_certification_index
@@ -28,7 +28,7 @@ RSpec.describe "Managing Certificates" do
 
     it "does not display certificates in dropdown that have already been added", :aggregate_failures do
       visit product_certification_index
-      within '#new_nu_research_safety_product_certification_requirement' do
+      within '#new_product_research_safety_certification_requirement' do
         expect(page).to have_selector('option', text: other_certificate.name)
         expect(page).not_to have_selector('option', text: certificate.name)
       end

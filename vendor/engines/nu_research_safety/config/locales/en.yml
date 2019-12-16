@@ -4,7 +4,7 @@ en:
       research_safety_certificate:
         one: Certificate
         other: Certificates
-      nu_research_safety/product_certification_requirement:
+      product_research_safety_certification_requirement:
         one: Certification Requirement
         other: Certification Requirements
   views:

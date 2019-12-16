@@ -12,7 +12,7 @@ module NuResearchSafety
 
     def extend(user, resource)
       if user.operator_of?(resource)
-        ability.can([:index, :create, :destroy], NuResearchSafety::ProductCertificationRequirement)
+        ability.can([:index, :create, :destroy], ProductResearchSafetyCertificationRequirement)
       end
     end
 

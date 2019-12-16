@@ -12,7 +12,7 @@ RSpec.describe NuResearchSafety::AbilityExtension do
   shared_examples_for "it has full access" do
     it "has full access" do
       common_actions.each do |action|
-        is_expected.to be_allowed_to(action, NuResearchSafety::ProductCertificationRequirement)
+        is_expected.to be_allowed_to(action, ProductResearchSafetyCertificationRequirement)
       end
     end
   end
@@ -20,7 +20,7 @@ RSpec.describe NuResearchSafety::AbilityExtension do
   shared_examples_for "it has no access" do
     it "has no access" do
       common_actions.each do |action|
-        is_expected.not_to be_allowed_to(action, NuResearchSafety::ProductCertificationRequirement)
+        is_expected.not_to be_allowed_to(action, ProductResearchSafetyCertificationRequirement)
       end
     end
   end

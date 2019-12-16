@@ -13,7 +13,7 @@ class ResearchSafetyCertificate < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { scope: :deleted_at }
 
-  has_many :product_certification_requirements, class_name: NuResearchSafety::ProductCertificationRequirement,
+  has_many :product_certification_requirements, class_name: "ProductResearchSafetyCertificationRequirement",
                                                 foreign_key: "nu_safety_certificate_id",
                                                 dependent: :destroy
   has_many :products, through: :product_certification_requirements

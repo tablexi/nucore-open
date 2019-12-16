@@ -7,7 +7,7 @@ module NuResearchSafety
     extend ActiveSupport::Concern
 
     included do
-      has_many :product_certification_requirements, class_name: NuResearchSafety::ProductCertificationRequirement
+      has_many :product_certification_requirements, class_name: "ProductResearchSafetyCertificationRequirement"
       has_many :nu_safety_certificates, through: :product_certification_requirements
 
       alias_attribute :certificates, :nu_safety_certificates

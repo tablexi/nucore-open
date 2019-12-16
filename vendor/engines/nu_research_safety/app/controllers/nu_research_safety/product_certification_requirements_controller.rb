@@ -9,7 +9,7 @@ module NuResearchSafety
     before_action :check_acting_as
     before_action :init_current_facility
     before_action :init_product
-    load_and_authorize_resource through: :product
+    load_and_authorize_resource through: :product, class: ProductResearchSafetyCertificationRequirement
 
     layout "two_column"
 
@@ -19,7 +19,7 @@ module NuResearchSafety
     end
 
     def index
-      @product_certification_requirement = NuResearchSafety::ProductCertificationRequirement.new(product: @product)
+      @product_certification_requirement = ProductResearchSafetyCertificationRequirement.new(product: @product)
       @available_certificates = available_certificates
       @product_certification_requirements = @product.product_certification_requirements
     end
@@ -55,7 +55,7 @@ module NuResearchSafety
     end
 
     def product_certification_requirement_params
-      params.require(:nu_research_safety_product_certification_requirement).permit(:nu_safety_certificate_id)
+      params.require(:product_research_safety_certification_requirement).permit(:nu_safety_certificate_id)
     end
 
   end

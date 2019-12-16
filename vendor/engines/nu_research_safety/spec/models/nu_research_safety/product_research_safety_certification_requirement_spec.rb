@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NuResearchSafety::ProductCertificationRequirement, type: :model do
+RSpec.describe ProductResearchSafetyCertificationRequirement, type: :model do
   context "validations" do
     it { is_expected.to validate_presence_of(:product) }
     it { is_expected.to validate_presence_of(:nu_safety_certificate) }
