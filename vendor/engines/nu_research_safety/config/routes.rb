@@ -8,7 +8,7 @@ Rails.application.routes.draw do
                                                      controller: "nu_research_safety/product_certification_requirements"
     end
     resources :user, only: [] do
-      resources :user_certificates, only: [:index], controller: "nu_research_safety/user_certificates"
+      resources :user_research_safety_certifications, only: [:index]
     end
   end
 end

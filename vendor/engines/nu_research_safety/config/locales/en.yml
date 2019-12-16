@@ -14,6 +14,10 @@ en:
         remove:
           label: Remove
           confirm: Are you sure?
+    user_research_safety_certifications:
+      tab: "Certifications"
+      index:
+        title: "%{name} Research Safety Certifications"
     nu_research_safety:
       product_certification_requirements:
         index:
@@ -21,10 +25,6 @@ en:
           add: Add Certification Requirement
           none: No certification requirements currently defined for this product
           remove: Remove
-      user_certificates:
-        tab: "Certifications"
-        index:
-          title: "%{name} Research Safety Certifications"
 
   controllers:
     research_safety_certificates:
