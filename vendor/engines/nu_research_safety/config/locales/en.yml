@@ -18,13 +18,12 @@ en:
       tab: "Certifications"
       index:
         title: "%{name} Research Safety Certifications"
-    nu_research_safety:
-      product_certification_requirements:
-        index:
-          description: Here you may define one or more safety certifications that are required for use of this product.
-          add: Add Certification Requirement
-          none: No certification requirements currently defined for this product
-          remove: Remove
+    product_research_safety_certification_requirements:
+      index:
+        description: Here you may define one or more safety certifications that are required for use of this product.
+        add: Add Certification Requirement
+        none: No certification requirements currently defined for this product
+        remove: Remove
 
   controllers:
     research_safety_certificates:
@@ -36,7 +35,7 @@ en:
         notice: "Certificate %{certificate_name} removed"
         error: "Certificate %{certificate_name} could not be removed"
 
-    nu_research_safety/product_certification_requirements:
+    product_research_safety_certification_requirements:
       create:
         notice: "Certification requirement %{certificate_name} added"
         error: "Certification requirement %{certificate_name} could not be added"

@@ -13,7 +13,7 @@ RSpec.describe "Managing Certificates" do
   let(:product) { product_certification_requirement.product }
   let(:facility) { product.facility }
   let(:product_certification_index) do
-    facility_product_product_certification_requirements_path(facility, product)
+    facility_product_product_research_safety_certification_requirements_path(facility, product)
   end
 
   describe "adding a new certification requirement" do
