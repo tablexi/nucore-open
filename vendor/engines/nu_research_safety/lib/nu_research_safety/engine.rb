@@ -8,16 +8,6 @@ module NuResearchSafety
       ::AbilityExtensionManager.extensions << "NuResearchSafety::AbilityExtension"
       OrderPurchaseValidator.additional_validations << NuResearchSafety::OrderCertificateValidator
 
-      ViewHook.add_hook "admin.shared.sidenav_global",
-                        "after",
-                        "nu_research_safety/shared/certificates_tab"
-      ViewHook.add_hook "admin.shared.tabnav_product",
-                        "additional_tabs",
-                        "nu_research_safety/shared/product_certification_requirements_tab"
-      ViewHook.add_hook "admin.shared.tabnav_users",
-                        "after",
-                        "nu_research_safety/shared/user_certificates_tab"
-
       if EngineManager.engine_loaded?("SecureRooms")
         # This is in the lib path so it is not eager loaded
         require "nu_research_safety/secure_room_access_rule"
