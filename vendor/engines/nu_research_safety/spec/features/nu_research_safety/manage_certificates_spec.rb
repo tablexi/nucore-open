@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Managing Certificates" do
+RSpec.describe "Managing Research Safety Certificates" do
   before { login_as administrator }
 
   let(:administrator) { FactoryBot.create(:user, :administrator) }
@@ -10,40 +10,40 @@ RSpec.describe "Managing Certificates" do
 
   describe "adding a new certificate" do
     before do
-      visit certificates_path
+      visit research_safety_certificates_path
       click_link "Add Certificate"
       fill_in "research_safety_certificate[name]", with: "Test"
       click_button "Create Certificate"
     end
 
     it "adds the certificate" do
-      expect(current_path).to eq certificates_path
+      expect(current_path).to eq research_safety_certificates_path
       expect(page).to have_content("Certificate Test created")
     end
   end
 
   describe "editing a certificate", :aggregate_failures do
     before do
-      visit certificates_path
+      visit research_safety_certificates_path
       click_link "Edit Certificate"
       fill_in "research_safety_certificate[name]", with: "Edited-#{certificate.id}"
       click_button "Update Certificate"
     end
 
     it "updates the certificate" do
-      expect(current_path).to eq certificates_path
+      expect(current_path).to eq research_safety_certificates_path
       expect(page).to have_content("Certificate Edited-#{certificate.id} updated")
     end
   end
 
   describe "deleting a certificate", :aggregate_failures do
     before do
-      visit certificates_path
+      visit research_safety_certificates_path
       click_link "Remove"
     end
 
     it "deletes the certificate", :aggregate_failures do
-      expect(current_path).to eq certificates_path
+      expect(current_path).to eq research_safety_certificates_path
       expect(page).to have_content("Certificate #{certificate.name} removed")
     end
 

@@ -305,6 +305,7 @@ Nucore::Application.routes.draw do
     get "search", on: :collection
   end
   resources :log_events, only: :index
+  resources :research_safety_certificates, except: :show
 
   # order process
   get "/orders/cart", to: "orders#cart", as: "cart"
