@@ -4,10 +4,6 @@ module NuResearchSafety
 
   class Engine < ::Rails::Engine
 
-    config.to_prepare do
-      OrderPurchaseValidator.additional_validations << NuResearchSafety::OrderCertificateValidator
-    end
-
     initializer :append_migrations do |app|
       config.paths["db/migrate"].expanded.each do |expanded_path|
         app.config.paths["db/migrate"] << expanded_path

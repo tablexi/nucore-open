@@ -44,7 +44,7 @@ en:
         error: "Certification requirement %{certificate_name} could not be removed"
 
   validators:
-    nu_research_safety/order_certificate_validator:
+    order_research_safety_certification_validator:
       missing: "Missing Certificates: %{certificates}"
       missing_html: |
         Missing Certificates: %{certificates}. Please go to
