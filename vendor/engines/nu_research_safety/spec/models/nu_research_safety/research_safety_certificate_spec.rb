@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe NuResearchSafety::Certificate do
+RSpec.describe ResearchSafetyCertificate do
   let(:product_certification_requirement) { FactoryBot.create(:product_certification_requirement) }
   let(:certificate) { product_certification_requirement.certificate }
 

@@ -9,7 +9,7 @@ module NuResearchSafety
     acts_as_paranoid # soft-delete functionality
 
     belongs_to :product
-    belongs_to :nu_safety_certificate, class_name: NuResearchSafety::Certificate
+    belongs_to :nu_safety_certificate, class_name: "ResearchSafetyCertificate"
 
     validates :product, presence: true
     validates :nu_safety_certificate, presence: true

@@ -47,7 +47,7 @@ module NuResearchSafety
     private
 
     def available_certificates
-      NuResearchSafety::Certificate.order(:name) - @product.certificates
+      ResearchSafetyCertificate.order(:name) - @product.certificates
     end
 
     def init_product

@@ -5,13 +5,13 @@
   = render "admin/shared/sidenav_global", sidenav_tab: "certificates"
 
 %h2= text("title")
-= link_to text("admin.shared.add", model: NuResearchSafety::Certificate.model_name.human), new_certificate_path, class: "btn-add" #
+= link_to text("admin.shared.add", model: ResearchSafetyCertificate.model_name.human), new_certificate_path, class: "btn-add" #
 
 %table.table.table-striped.table-hover
   %thead
     %tr
       %th
-      %th= NuResearchSafety::Certificate.model_name.human
+      %th= ResearchSafetyCertificate.model_name.human
   %tbody
     - @certificates.each do |certificate|
       %tr

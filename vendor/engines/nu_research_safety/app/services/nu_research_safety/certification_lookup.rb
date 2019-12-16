@@ -7,7 +7,7 @@ module NuResearchSafety
     end
 
     def self.certificates_with_status_for(user)
-      NuResearchSafety::Certificate.ordered.each_with_object({}) do |certificate, hash|
+      ResearchSafetyCertificate.ordered.each_with_object({}) do |certificate, hash|
         hash[certificate] = certified?(user, certificate)
       end
     end

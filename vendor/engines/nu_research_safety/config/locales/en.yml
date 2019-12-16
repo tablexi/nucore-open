@@ -1,7 +1,7 @@
 en:
   activerecord:
     models:
-      nu_research_safety/certificate:
+      research_safety_certificate:
         one: Certificate
         other: Certificates
       nu_research_safety/product_certification_requirement:

@@ -14,7 +14,7 @@ module NuResearchSafety
     end
 
     def edit_certificate_link(certificate)
-      link_to(text("admin.shared.edit", model: NuResearchSafety::Certificate.model_name.human),
+      link_to(text("admin.shared.edit", model: ResearchSafetyCertificate.model_name.human),
               edit_certificate_path(certificate))
     end
 

@@ -12,7 +12,7 @@ RSpec.describe "Managing Certificates" do
     before do
       visit certificates_path
       click_link "Add Certificate"
-      fill_in "nu_research_safety_certificate[name]", with: "Test"
+      fill_in "research_safety_certificate[name]", with: "Test"
       click_button "Create Certificate"
     end
 
@@ -26,7 +26,7 @@ RSpec.describe "Managing Certificates" do
     before do
       visit certificates_path
       click_link "Edit Certificate"
-      fill_in "nu_research_safety_certificate[name]", with: "Edited-#{certificate.id}"
+      fill_in "research_safety_certificate[name]", with: "Edited-#{certificate.id}"
       click_button "Update Certificate"
     end
 

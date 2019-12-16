@@ -7,15 +7,15 @@ module NuResearchSafety
     before_action :load_certificate, only: [:edit, :update, :destroy]
 
     def index
-      @certificates = NuResearchSafety::Certificate.ordered
+      @certificates = ResearchSafetyCertificate.ordered
     end
 
     def new
-      @certificate = NuResearchSafety::Certificate.new
+      @certificate = ResearchSafetyCertificate.new
     end
 
     def create
-      @certificate = NuResearchSafety::Certificate.new(certificate_params)
+      @certificate = ResearchSafetyCertificate.new(certificate_params)
 
       if @certificate.save
         flash[:notice] = text('.create.notice', certificate_name: @certificate.name)
@@ -51,11 +51,11 @@ module NuResearchSafety
     private
 
     def certificate_params
-      params.require(:nu_research_safety_certificate).permit(:name)
+      params.require(:research_safety_certificate).permit(:name)
     end
 
     def load_certificate
-      @certificate = NuResearchSafety::Certificate.find(params[:id])
+      @certificate = ResearchSafetyCertificate.find(params[:id])
     end
 
   end

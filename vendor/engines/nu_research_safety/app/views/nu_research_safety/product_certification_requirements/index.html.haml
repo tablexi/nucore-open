@@ -24,7 +24,7 @@
     %thead
       %tr
         %th.actions
-        %th= NuResearchSafety::Certificate.model_name.human
+        %th= ResearchSafetyCertificate.model_name.human
     %tbody
       - @product_certification_requirements.each do |cert_req|
         - certificate = cert_req.certificate
