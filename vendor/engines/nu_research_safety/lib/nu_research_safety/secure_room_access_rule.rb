@@ -11,7 +11,7 @@ module NuResearchSafety
     private
 
     def certified?
-      secure_room.certificates.all? do |certificate|
+      secure_room.research_safety_certificates.all? do |certificate|
         NuResearchSafety::CertificationLookup.certified?(user, certificate)
       end
     end

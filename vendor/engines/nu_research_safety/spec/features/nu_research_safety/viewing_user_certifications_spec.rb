@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe "Viewing a user's safety certifications" do
   let(:user) { FactoryBot.create(:user) }
-  let!(:certificate_a) { FactoryBot.create(:certificate) }
-  let!(:certificate_b) { FactoryBot.create(:certificate) }
+  let!(:certificate_a) { FactoryBot.create(:research_safety_certificate) }
+  let!(:certificate_b) { FactoryBot.create(:research_safety_certificate) }
   let(:facility) { FactoryBot.create(:facility) }
   let(:admin) { FactoryBot.create(:user, :facility_director, facility: facility) }
 

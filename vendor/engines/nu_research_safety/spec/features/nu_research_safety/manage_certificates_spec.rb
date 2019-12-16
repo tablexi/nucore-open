@@ -6,7 +6,7 @@ RSpec.describe "Managing Research Safety Certificates" do
   before { login_as administrator }
 
   let(:administrator) { FactoryBot.create(:user, :administrator) }
-  let!(:certificate) { FactoryBot.create(:certificate) }
+  let!(:certificate) { FactoryBot.create(:research_safety_certificate) }
 
   describe "adding a new certificate" do
     before do

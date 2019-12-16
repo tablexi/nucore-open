@@ -6,7 +6,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
   let(:secure_room) { create(:secure_room, :with_schedule_rule, :with_base_price) }
   let(:card_reader) { build(:card_reader, secure_room: secure_room) }
   let(:certificate) do
-    create(:certificate).tap { |c| c.products << secure_room }
+    create(:research_safety_certificate).tap { |c| c.products << secure_room }
   end
 
   subject(:verdict) { described_class.new.authorize(card_user, card_reader) }

@@ -7,9 +7,9 @@ RSpec.describe "Managing Certificates" do
 
   let(:staff_member) { FactoryBot.create(:user, :staff, facility: facility) }
   let(:product_certification_requirement) { FactoryBot.create(:product_certification_requirement) }
-  let(:certificate) { product_certification_requirement.certificate }
-  let!(:other_certificate) { FactoryBot.create(:certificate) }
-  let!(:extra_certificate) { FactoryBot.create(:certificate) }
+  let(:certificate) { product_certification_requirement.research_safety_certificate }
+  let!(:other_certificate) { FactoryBot.create(:research_safety_certificate) }
+  let!(:extra_certificate) { FactoryBot.create(:research_safety_certificate) }
   let(:product) { product_certification_requirement.product }
   let(:facility) { product.facility }
   let(:product_certification_index) do

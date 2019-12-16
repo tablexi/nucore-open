@@ -25,9 +25,9 @@ class ProductResearchSafetyCertificationRequirementsController < ApplicationCont
   def create
     certification_requirement = @product.product_research_safety_certification_requirements.build(product_research_safety_certification_requirement_params)
     if certification_requirement.save
-      flash[:notice] = text("create.notice", certificate_name: certification_requirement.certificate.name)
+      flash[:notice] = text("create.notice", certificate_name: certification_requirement.research_safety_certificate.name)
     else
-      flash[:error] = text("create.error", certificate_name: certification_requirement.certificate.name)
+      flash[:error] = text("create.error", certificate_name: certification_requirement.research_safety_certificate.name)
     end
     redirect_to action: :index
   end
@@ -35,9 +35,9 @@ class ProductResearchSafetyCertificationRequirementsController < ApplicationCont
   def destroy
     if @product_research_safety_certification_requirement.destroy
       @product_research_safety_certification_requirement.update_attributes(deleted_by_id: current_user.id)
-      flash[:notice] = text("destroy.notice", certificate_name: @product_research_safety_certification_requirement.certificate.name)
+      flash[:notice] = text("destroy.notice", certificate_name: @product_research_safety_certification_requirement.research_safety_certificate.name)
     else
-      flash[:error] = text("destroy.error", certificate_name: @product_research_safety_certification_requirement.certificate.name)
+      flash[:error] = text("destroy.error", certificate_name: @product_research_safety_certification_requirement.research_safety_certificate.name)
     end
     redirect_to action: :index
   end
@@ -45,7 +45,7 @@ class ProductResearchSafetyCertificationRequirementsController < ApplicationCont
   private
 
   def available_certificates
-    ResearchSafetyCertificate.order(:name) - @product.certificates
+    ResearchSafetyCertificate.order(:name) - @product.research_safety_certificates
   end
 
   def init_product

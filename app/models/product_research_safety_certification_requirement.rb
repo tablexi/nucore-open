@@ -7,12 +7,10 @@ class ProductResearchSafetyCertificationRequirement < ApplicationRecord
   acts_as_paranoid # soft-delete functionality
 
   belongs_to :product
-  belongs_to :nu_safety_certificate, class_name: "ResearchSafetyCertificate"
+  belongs_to :research_safety_certificate, foreign_key: :nu_safety_certificate_id
 
   validates :product, presence: true
-  validates :nu_safety_certificate, presence: true
-  validates :nu_safety_certificate, uniqueness: { scope: [:deleted_at, :product_id] }
-
-  alias_attribute :certificate, :nu_safety_certificate
+  validates :research_safety_certificate, presence: true
+  validates :research_safety_certificate, uniqueness: { scope: [:deleted_at, :product_id] }
 
 end

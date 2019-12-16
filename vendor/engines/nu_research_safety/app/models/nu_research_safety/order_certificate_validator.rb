@@ -32,7 +32,7 @@ module NuResearchSafety
     private
 
     def missing_certificates_for(product)
-      product.certificates.reject do |cert|
+      product.research_safety_certificates.reject do |cert|
         certificate_cache[cert]
       end
     end

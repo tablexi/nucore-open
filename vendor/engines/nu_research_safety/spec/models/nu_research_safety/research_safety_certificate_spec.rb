@@ -4,14 +4,14 @@ require "rails_helper"
 
 RSpec.describe ResearchSafetyCertificate do
   let(:product_certification_requirement) { FactoryBot.create(:product_certification_requirement) }
-  let(:certificate) { product_certification_requirement.certificate }
+  let(:certificate) { product_certification_requirement.research_safety_certificate }
 
   context "validations" do
     it { is_expected.to validate_presence_of(:name) }
 
     describe "uniqueness" do
       # The uniqueness validation check needs an existing record because name is non-nullable
-      let!(:existing_certificate) { create(:certificate) }
+      let!(:existing_certificate) { create(:research_safety_certificate) }
       it { is_expected.to validate_uniqueness_of(:name).scoped_to(:deleted_at) }
     end
   end

@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "Placing a cart order" do
   let!(:item) { FactoryBot.create(:setup_item) }
   let(:facility) { item.facility }
-  let!(:cert1) { create(:product_certification_requirement, product: item).certificate }
-  let!(:cert2) { create(:product_certification_requirement, product: item).certificate }
+  let!(:cert1) { create(:product_certification_requirement, product: item).research_safety_certificate }
+  let!(:cert2) { create(:product_certification_requirement, product: item).research_safety_certificate }
   let(:user) { create(:user) }
   let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
   let!(:account_price_group_member) do

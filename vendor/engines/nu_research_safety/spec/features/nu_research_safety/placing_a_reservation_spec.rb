@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "Placing a reservation with a certification requirement" do
   let!(:instrument) { FactoryBot.create(:setup_instrument) }
   let(:facility) { instrument.facility }
-  let!(:cert1) { create(:product_certification_requirement, product: instrument).certificate }
-  let!(:cert2) { create(:product_certification_requirement, product: instrument).certificate }
+  let!(:cert1) { create(:product_certification_requirement, product: instrument).research_safety_certificate }
+  let!(:cert2) { create(:product_certification_requirement, product: instrument).research_safety_certificate }
   let(:user) { create(:user) }
   let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
   let!(:account_price_group_member) do
