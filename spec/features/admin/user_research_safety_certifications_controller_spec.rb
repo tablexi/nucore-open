@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Viewing a user's safety certifications" do
+  include ResearchSafetyTestHelpers
+
   let(:user) { FactoryBot.create(:user) }
   let(:facility) { FactoryBot.create(:facility) }
   let(:admin) { FactoryBot.create(:user, :facility_director, facility: facility) }
@@ -12,8 +14,7 @@ RSpec.describe "Viewing a user's safety certifications" do
     let!(:certificate_b) { FactoryBot.create(:research_safety_certificate) }
 
     before do
-      expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-      expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
+      stub_research_safety_lookup(user, valid: certificate_a, invalid: certificate_b)
     end
 
     it "can see the user's certifications" do
