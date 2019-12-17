@@ -4,6 +4,8 @@ class ResearchSafetyCertificate < ApplicationRecord
 
   include ActiveModel::ForbiddenAttributesProtection
 
+  # This class was formerly in an NU-specific engine.
+  # TODO: Rename the table
   self.table_name = "nu_safety_certificates"
 
   belongs_to :deleted_by, class_name: 'User'
