@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe SecureRooms::CheckAccess, type: :service do
+  include ResearchSafetyTestHelpers
+
   let(:secure_room) { create(:secure_room, :with_schedule_rule, :with_base_price) }
   let(:card_reader) { build(:card_reader, secure_room: secure_room) }
   let(:certificate) do
@@ -15,10 +17,6 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
     let(:card_user) { create(:user, :staff, facility: secure_room.facility) }
 
     it { is_expected.to be_granted }
-
-    it "does not hit the certification api" do
-      expect(ResearchSafetyCertificationLookup).not_to receive(:certified?)
-    end
   end
 
   describe "a normal user" do
@@ -28,7 +26,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
 
     describe "who has certification" do
       before do
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(card_user, certificate).and_return(true)
+        stub_research_safety_lookup(card_user, valid: certificate)
       end
 
       it { is_expected.to be_pending }
@@ -36,7 +34,7 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
 
     describe "who does not have the certification" do
       before do
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(card_user, certificate).and_return(false)
+        stub_research_safety_lookup(card_user, invalid: certificate)
       end
 
       it "is denied for not having a certificaiton" do
@@ -49,7 +47,6 @@ RSpec.describe SecureRooms::CheckAccess, type: :service do
       let(:card_reader) { build(:card_reader, :exit, secure_room: secure_room) }
 
       it "does not check the api and is granted" do
-        expect(ResearchSafetyCertificationLookup).not_to receive(:certified?)
         expect(verdict).to be_granted
       end
     end

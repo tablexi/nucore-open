@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe OrderResearchSafetyCertificationValidator do
+  include ResearchSafetyTestHelpers
+
   let(:product_one) { FactoryBot.create(:setup_item) }
   let(:certificate_a) { FactoryBot.create(:product_certification_requirement, product: product_one).research_safety_certificate }
   let(:user) { FactoryBot.create(:user) }
@@ -20,8 +22,7 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
     context "with one invalid product" do
       before do
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
+        stub_research_safety_lookup(user, valid: certificate_a, invalid: certificate_b)
       end
 
       it { is_expected.not_to be_valid }
@@ -29,8 +30,7 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
     context "with both products valid" do
       before do
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(true)
+        stub_research_safety_lookup(user, valid: [certificate_a, certificate_b])
       end
 
       it { is_expected.to be_valid }
@@ -41,7 +41,7 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
       context "with one invalid product" do
         before do
-          expect(ResearchSafetyCertificationLookup).not_to receive(:certified?)
+          stub_research_safety_lookup(user)
         end
 
         it { is_expected.to be_valid }
@@ -54,8 +54,7 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
     context "with one invalid product" do
       before do
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(false)
+        stub_research_safety_lookup(user, valid: certificate_a, invalid: certificate_b)
       end
 
       it "has the correct missing certs" do
@@ -72,8 +71,7 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
 
     context "with both products valid" do
       before do
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_a).and_return(true)
-        expect(ResearchSafetyCertificationLookup).to receive(:certified?).with(user, certificate_b).and_return(true)
+        stub_research_safety_lookup(user, valid: [certificate_a, certificate_b])
       end
 
       it "returns nothing" do
