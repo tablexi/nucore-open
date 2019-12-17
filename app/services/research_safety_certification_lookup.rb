@@ -2,7 +2,9 @@
 
 class ResearchSafetyCertificationLookup
 
-  cattr_accessor(:adapter_class) { UmassCorum::OwlApiAdapter }
+  # Replace the value of this attribute in your engine to connect to the school's
+  # custom API.
+  cattr_accessor(:adapter_class) { ResearchSafetyAlwaysCertifiedAdapter }
 
   # This is a class method for easier stubbing in specs
   def self.adapter(user)
@@ -22,6 +24,7 @@ class ResearchSafetyCertificationLookup
     @user = user
   end
 
+  # Allows either a single certificate or an array of certificates
   def certified?(certificates)
     Array(certificates).all? { |certificate| adapter.certified?(certificate) }
   end
@@ -38,8 +41,11 @@ class ResearchSafetyCertificationLookup
 
   private
 
+  # This is memoized so the adapter class can do its own internal caching/memoization
+  # For example, it might only make one HTTP request to return all of the user's
+  # certifications.
   def adapter
-    self.class.adapter(@user)
+    @adapter ||= self.class.adapter(@user)
   end
 
 end
