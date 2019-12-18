@@ -263,6 +263,27 @@ ActiveRecord::Schema.define(version: 20191126153900) do
     t.index ["user_id"], name: "index_notifications_on_user_id", using: :btree
   end
 
+  create_table "nu_product_cert_requirements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "product_id"
+    t.integer  "nu_safety_certificate_id"
+    t.datetime "deleted_at"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["nu_safety_certificate_id"], name: "index_nu_product_cert_requirements_on_nu_safety_certificate_id", using: :btree
+    t.index ["product_id"], name: "index_nu_product_cert_requirements_on_product_id", using: :btree
+  end
+
+  create_table "nu_safety_certificates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name",          null: false
+    t.datetime "deleted_at"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["deleted_by_id"], name: "index_nu_safety_certificates_on_deleted_by_id", using: :btree
+    t.index ["name"], name: "index_nu_safety_certificates_on_name", using: :btree
+  end
+
   create_table "order_details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "order_id",                                                                           null: false
     t.integer  "parent_order_detail_id"
@@ -841,6 +862,9 @@ ActiveRecord::Schema.define(version: 20191126153900) do
   add_foreign_key "journal_rows", "journals"
   add_foreign_key "journal_rows", "order_details"
   add_foreign_key "log_events", "users"
+  add_foreign_key "nu_product_cert_requirements", "nu_safety_certificates"
+  add_foreign_key "nu_product_cert_requirements", "products"
+  add_foreign_key "nu_safety_certificates", "users", column: "deleted_by_id"
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
   add_foreign_key "order_details", "journals"
   add_foreign_key "order_details", "order_details", column: "parent_order_detail_id"
