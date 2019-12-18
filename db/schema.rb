@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191114122118) do
+ActiveRecord::Schema.define(version: 20191126153900) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -285,27 +285,27 @@ ActiveRecord::Schema.define(version: 20191114122118) do
   end
 
   create_table "order_details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "order_id",                                                                        null: false
+    t.integer  "order_id",                                                                           null: false
     t.integer  "parent_order_detail_id"
-    t.integer  "product_id",                                                                      null: false
-    t.integer  "quantity",                                                                        null: false
+    t.integer  "product_id",                                                                         null: false
+    t.integer  "quantity",                                                                           null: false
     t.integer  "price_policy_id"
-    t.decimal  "actual_cost",                            precision: 10, scale: 2
-    t.decimal  "actual_subsidy",                         precision: 10, scale: 2
+    t.decimal  "actual_cost",                               precision: 10, scale: 2
+    t.decimal  "actual_subsidy",                            precision: 10, scale: 2
     t.integer  "assigned_user_id"
-    t.decimal  "estimated_cost",                         precision: 10, scale: 2
-    t.decimal  "estimated_subsidy",                      precision: 10, scale: 2
+    t.decimal  "estimated_cost",                            precision: 10, scale: 2
+    t.decimal  "estimated_subsidy",                         precision: 10, scale: 2
     t.integer  "response_set_id"
     t.integer  "account_id"
     t.datetime "dispute_at"
     t.integer  "dispute_by_id"
-    t.string   "dispute_reason",           limit: 200
+    t.string   "dispute_reason",              limit: 200
     t.datetime "dispute_resolved_at"
-    t.string   "dispute_resolved_reason",  limit: 200
+    t.string   "dispute_resolved_reason",     limit: 200
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "order_status_id"
-    t.string   "state",                    limit: 50
+    t.string   "state",                       limit: 50
     t.integer  "group_id"
     t.integer  "bundle_product_id"
     t.datetime "fulfilled_at"
@@ -313,17 +313,20 @@ ActiveRecord::Schema.define(version: 20191114122118) do
     t.integer  "statement_id"
     t.integer  "journal_id"
     t.string   "reconciled_note"
-    t.integer  "created_by",                                                                      null: false
+    t.integer  "created_by",                                                                         null: false
     t.integer  "product_accessory_id"
-    t.boolean  "problem",                                                         default: false, null: false
+    t.boolean  "problem",                                                            default: false, null: false
     t.datetime "reconciled_at"
     t.integer  "project_id"
-    t.text     "note",                     limit: 65535
+    t.text     "note",                        limit: 65535
     t.datetime "canceled_at"
     t.integer  "canceled_by"
     t.string   "canceled_reason"
     t.string   "price_change_reason"
     t.integer  "price_changed_by_user_id"
+    t.string   "problem_description_key_was"
+    t.datetime "problem_resolved_at"
+    t.integer  "problem_resolved_by_id"
     t.datetime "ordered_at"
     t.index ["account_id"], name: "fk_od_accounts", using: :btree
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id", using: :btree
@@ -337,6 +340,7 @@ ActiveRecord::Schema.define(version: 20191114122118) do
     t.index ["price_changed_by_user_id"], name: "index_order_details_on_price_changed_by_user_id", using: :btree
     t.index ["price_policy_id"], name: "fk_rails_555b721183", using: :btree
     t.index ["problem"], name: "index_order_details_on_problem", using: :btree
+    t.index ["problem_resolved_by_id"], name: "index_order_details_on_problem_resolved_by_id", using: :btree
     t.index ["product_accessory_id"], name: "fk_rails_e4f0ef56a6", using: :btree
     t.index ["product_id"], name: "fk_rails_4f2ac9473b", using: :btree
     t.index ["project_id"], name: "index_order_details_on_project_id", using: :btree
@@ -525,6 +529,7 @@ ActiveRecord::Schema.define(version: 20191114122118) do
     t.text     "cancellation_email_recipients",            limit: 65535
     t.text     "issue_report_recipients",                  limit: 65535
     t.boolean  "email_purchasers_on_order_status_changes",               default: false,    null: false
+    t.boolean  "problems_resolvable_by_user",                            default: false,    null: false
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token", using: :btree
     t.index ["facility_account_id"], name: "fk_facility_accounts", using: :btree
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe", using: :btree
@@ -873,6 +878,7 @@ ActiveRecord::Schema.define(version: 20191114122118) do
   add_foreign_key "order_details", "users", column: "assigned_user_id"
   add_foreign_key "order_details", "users", column: "dispute_by_id"
   add_foreign_key "order_details", "users", column: "price_changed_by_user_id"
+  add_foreign_key "order_details", "users", column: "problem_resolved_by_id"
   add_foreign_key "order_imports", "facilities", name: "fk_order_imports_facilities"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "facilities"
