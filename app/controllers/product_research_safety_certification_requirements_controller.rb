@@ -53,7 +53,7 @@ class ProductResearchSafetyCertificationRequirementsController < ApplicationCont
   end
 
   def product_research_safety_certification_requirement_params
-    params.require(:product_research_safety_certification_requirement).permit(:nu_safety_certificate_id)
+    params.require(:product_research_safety_certification_requirement).permit(:research_safety_certificate_id)
   end
 
 end

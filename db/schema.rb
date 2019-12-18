@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191114122118) do
+ActiveRecord::Schema.define(version: 20191218171859) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -263,27 +263,6 @@ ActiveRecord::Schema.define(version: 20191114122118) do
     t.index ["user_id"], name: "index_notifications_on_user_id", using: :btree
   end
 
-  create_table "nu_product_cert_requirements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "product_id"
-    t.integer  "nu_safety_certificate_id"
-    t.datetime "deleted_at"
-    t.integer  "deleted_by_id"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.index ["nu_safety_certificate_id"], name: "index_nu_product_cert_requirements_on_nu_safety_certificate_id", using: :btree
-    t.index ["product_id"], name: "index_nu_product_cert_requirements_on_product_id", using: :btree
-  end
-
-  create_table "nu_safety_certificates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name",          null: false
-    t.datetime "deleted_at"
-    t.integer  "deleted_by_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.index ["deleted_by_id"], name: "index_nu_safety_certificates_on_deleted_by_id", using: :btree
-    t.index ["name"], name: "index_nu_safety_certificates_on_name", using: :btree
-  end
-
   create_table "order_details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "order_id",                                                                        null: false
     t.integer  "parent_order_detail_id"
@@ -480,6 +459,17 @@ ActiveRecord::Schema.define(version: 20191114122118) do
     t.index ["product_id"], name: "index_product_accessories_on_product_id", using: :btree
   end
 
+  create_table "product_research_safety_certification_requirements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "product_id"
+    t.integer  "research_safety_certificate_id"
+    t.datetime "deleted_at"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.index ["product_id"], name: "index_nu_product_cert_req_on_product_id", using: :btree
+    t.index ["research_safety_certificate_id"], name: "i_product_cert_req_on_cert_id", using: :btree
+  end
+
   create_table "product_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "product_id",              null: false
     t.integer  "user_id",                 null: false
@@ -557,6 +547,16 @@ ActiveRecord::Schema.define(version: 20191114122118) do
     t.datetime "updated_at",                                  null: false
     t.integer  "auto_logout_minutes",            default: 60
     t.index ["instrument_id"], name: "index_relays_on_instrument_id", using: :btree
+  end
+
+  create_table "research_safety_certificates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name",          null: false
+    t.datetime "deleted_at"
+    t.integer  "deleted_by_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["deleted_by_id"], name: "index_research_safety_certificates_on_deleted_by_id", using: :btree
+    t.index ["name"], name: "index_research_safety_certificates_on_name", using: :btree
   end
 
   create_table "reservations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -857,9 +857,6 @@ ActiveRecord::Schema.define(version: 20191114122118) do
   add_foreign_key "journal_rows", "journals"
   add_foreign_key "journal_rows", "order_details"
   add_foreign_key "log_events", "users"
-  add_foreign_key "nu_product_cert_requirements", "nu_safety_certificates"
-  add_foreign_key "nu_product_cert_requirements", "products"
-  add_foreign_key "nu_safety_certificates", "users", column: "deleted_by_id"
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
   add_foreign_key "order_details", "journals"
   add_foreign_key "order_details", "order_details", column: "parent_order_detail_id"
@@ -888,12 +885,15 @@ ActiveRecord::Schema.define(version: 20191114122118) do
   add_foreign_key "price_groups", "facilities"
   add_foreign_key "price_policies", "price_groups"
   add_foreign_key "price_policies", "users", column: "created_by_id"
+  add_foreign_key "product_research_safety_certification_requirements", "products"
+  add_foreign_key "product_research_safety_certification_requirements", "research_safety_certificates"
   add_foreign_key "product_users", "products", name: "fk_products"
   add_foreign_key "product_users", "users"
   add_foreign_key "products", "facilities"
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
   add_foreign_key "projects", "facilities"
+  add_foreign_key "research_safety_certificates", "users", column: "deleted_by_id"
   add_foreign_key "reservations", "order_details"
   add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"
   add_foreign_key "reservations", "users", column: "created_by_id"
