@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_14_122118) do
+ActiveRecord::Schema.define(version: 2019_11_26_153900) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -263,6 +263,27 @@ ActiveRecord::Schema.define(version: 2019_11_14_122118) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "nu_product_cert_requirements", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "product_id"
+    t.integer "nu_safety_certificate_id"
+    t.datetime "deleted_at"
+    t.integer "deleted_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nu_safety_certificate_id"], name: "index_nu_product_cert_requirements_on_nu_safety_certificate_id"
+    t.index ["product_id"], name: "index_nu_product_cert_requirements_on_product_id"
+  end
+
+  create_table "nu_safety_certificates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "deleted_at"
+    t.integer "deleted_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_by_id"], name: "index_nu_safety_certificates_on_deleted_by_id"
+    t.index ["name"], name: "index_nu_safety_certificates_on_name"
+  end
+
   create_table "order_details", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "order_id", null: false
     t.integer "parent_order_detail_id"
@@ -304,6 +325,9 @@ ActiveRecord::Schema.define(version: 2019_11_14_122118) do
     t.string "price_change_reason"
     t.integer "price_changed_by_user_id"
     t.datetime "ordered_at"
+    t.string "problem_description_key_was"
+    t.timestamp "problem_resolved_at"
+    t.integer "problem_resolved_by_id"
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
@@ -316,6 +340,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_122118) do
     t.index ["price_changed_by_user_id"], name: "index_order_details_on_price_changed_by_user_id"
     t.index ["price_policy_id"], name: "fk_rails_555b721183"
     t.index ["problem"], name: "index_order_details_on_problem"
+    t.index ["problem_resolved_by_id"], name: "index_order_details_on_problem_resolved_by_id"
     t.index ["product_accessory_id"], name: "fk_rails_e4f0ef56a6"
     t.index ["product_id"], name: "fk_rails_4f2ac9473b"
     t.index ["project_id"], name: "index_order_details_on_project_id"
@@ -504,6 +529,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_122118) do
     t.text "cancellation_email_recipients"
     t.text "issue_report_recipients"
     t.boolean "email_purchasers_on_order_status_changes", default: false, null: false
+    t.boolean "problems_resolvable_by_user", default: false, null: false
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"
@@ -836,6 +862,9 @@ ActiveRecord::Schema.define(version: 2019_11_14_122118) do
   add_foreign_key "journal_rows", "journals"
   add_foreign_key "journal_rows", "order_details"
   add_foreign_key "log_events", "users"
+  add_foreign_key "nu_product_cert_requirements", "nu_safety_certificates"
+  add_foreign_key "nu_product_cert_requirements", "products"
+  add_foreign_key "nu_safety_certificates", "users", column: "deleted_by_id"
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
   add_foreign_key "order_details", "journals"
   add_foreign_key "order_details", "order_details", column: "parent_order_detail_id"
@@ -849,6 +878,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_122118) do
   add_foreign_key "order_details", "users", column: "assigned_user_id"
   add_foreign_key "order_details", "users", column: "dispute_by_id"
   add_foreign_key "order_details", "users", column: "price_changed_by_user_id"
+  add_foreign_key "order_details", "users", column: "problem_resolved_by_id"
   add_foreign_key "order_imports", "facilities", name: "fk_order_imports_facilities"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "facilities"

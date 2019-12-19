@@ -348,6 +348,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :problem_reservations, only: [:edit, :update]
+
   # notifications
   resources :notifications, only: [:index] do
     collection do
