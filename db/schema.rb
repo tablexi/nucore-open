@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191126153900) do
+ActiveRecord::Schema.define(version: 20191219162724) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -212,7 +212,7 @@ ActiveRecord::Schema.define(version: 20191126153900) do
   create_table "journal_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "journal_id",                                          null: false
     t.integer "order_detail_id"
-    t.string  "account",         limit: 5
+    t.string  "account"
     t.decimal "amount",                      precision: 9, scale: 2, null: false
     t.string  "description",     limit: 512
     t.integer "account_id"
