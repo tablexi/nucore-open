@@ -94,7 +94,7 @@ FactoryBot.define do
 
   factory :validated_reservation, parent: :setup_reservation do
     after(:create) do |reservation|
-      reservation.order.validate_order!
+      reservation.order.reload.validate_order!
     end
   end
 
