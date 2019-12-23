@@ -54,7 +54,7 @@ class Journal < ApplicationRecord
   validates_presence_of   :created_by
   validates_presence_of   :journal_date
   validates_length_of     :reference, maximum: 50
-  validate :journal_date_cannot_be_in_future, if: "journal_date.present?"
+  validate :journal_date_cannot_be_in_future
   validate :must_have_order_details, on: :create, if: :order_details_for_creation
   validate :must_not_span_fiscal_years, on: :create, if: :should_check_fiscal_years?
   validate :journal_date_cannot_be_before_last_fulfillment, on: :create, if: :has_order_details_for_creation?
@@ -189,7 +189,9 @@ class Journal < ApplicationRecord
   end
 
   def journal_date_cannot_be_in_future
-    errors.add(:journal_date, :cannot_be_in_future) if journal_date > Time.zone.now.end_of_day
+    if journal_date.present? && journal_date > Time.zone.now.end_of_day
+      errors.add(:journal_date, :cannot_be_in_future)
+    end
   end
 
   def journal_date_cannot_be_before_last_fulfillment
