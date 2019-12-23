@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "set"
-
 class Journal < ApplicationRecord
 
   class CreationError < NUCore::Error; end
