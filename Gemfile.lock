@@ -348,7 +348,7 @@ GEM
       addressable (~> 2.3)
     letter_opener (1.7.0)
       launchy (~> 2.2)
-    libv8 (3.16.14.19)
+    libv8 (7.3.492.27.1)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -366,6 +366,8 @@ GEM
     mimemagic (0.3.2)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
+    mini_racer (0.2.8)
+      libv8 (>= 6.9.411)
     minitest (5.13.0)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
@@ -470,7 +472,6 @@ GEM
     rb-inotify (0.10.0)
       ffi (~> 1.0)
     redcarpet (3.4.0)
-    ref (2.0.0)
     regexp_parser (1.6.0)
     request_store (1.4.1)
       rack (>= 1.4)
@@ -577,9 +578,6 @@ GEM
       activesupport
       i18n (>= 0.6.8)
       redcarpet (>= 3.3.3)
-    therubyracer (0.12.3)
-      libv8 (~> 3.16.14.15)
-      ref
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -661,6 +659,7 @@ DEPENDENCIES
   jquery-ui-rails
   ldap_authentication!
   letter_opener
+  mini_racer
   mysql2
   nested_form_fields
   nokogiri
@@ -703,7 +702,6 @@ DEPENDENCIES
   synaccess_connect
   teaspoon-jasmine
   text_helpers
-  therubyracer
   uglifier (= 4.1.18)
   unicorn
   vuejs-rails (~> 1.0.26)
