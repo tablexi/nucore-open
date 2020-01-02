@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_26_153900) do
+ActiveRecord::Schema.define(version: 2019_12_19_162724) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -212,7 +212,7 @@ ActiveRecord::Schema.define(version: 2019_11_26_153900) do
   create_table "journal_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "journal_id", null: false
     t.integer "order_detail_id"
-    t.string "account", limit: 5
+    t.string "account"
     t.decimal "amount", precision: 9, scale: 2, null: false
     t.string "description", limit: 512
     t.integer "account_id"
@@ -324,10 +324,10 @@ ActiveRecord::Schema.define(version: 2019_11_26_153900) do
     t.string "canceled_reason"
     t.string "price_change_reason"
     t.integer "price_changed_by_user_id"
-    t.datetime "ordered_at"
     t.string "problem_description_key_was"
-    t.timestamp "problem_resolved_at"
+    t.datetime "problem_resolved_at"
     t.integer "problem_resolved_by_id"
+    t.datetime "ordered_at"
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
