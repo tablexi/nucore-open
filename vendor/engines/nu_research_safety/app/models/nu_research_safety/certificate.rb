@@ -8,7 +8,7 @@ module NuResearchSafety
 
     self.table_name = "nu_safety_certificates"
 
-    belongs_to :deleted_by, class_name: "User"
+    belongs_to :deleted_by, class_name: "User", optional: true
 
     acts_as_paranoid # soft-delete functionality
 
