@@ -14,7 +14,7 @@ class Reservation < ApplicationRecord
   include Reservations::MovingUp
 
   belongs_to :created_by, class_name: "User", optional: true
-  belongs_to :order_detail, inverse_of: :reservation, optional: true
+  belongs_to :order_detail, inverse_of: :reservation, optional: true, autosave: true
   belongs_to :product, optional: true
   has_one :order, through: :order_detail
 
