@@ -3,12 +3,11 @@
 class PriceGroup < ApplicationRecord
 
   belongs_to :facility
+  has_many   :price_policies, dependent: :destroy
   has_many   :order_details, through: :price_policies, dependent: :restrict_with_exception
   has_many   :price_group_members, dependent: :destroy
   has_many   :user_price_group_members, class_name: "UserPriceGroupMember"
   has_many   :account_price_group_members, class_name: "AccountPriceGroupMember"
-
-  has_many   :price_policies, dependent: :destroy
 
   validates_presence_of   :facility_id # enforce facility constraint here, though it's not always required
   validates_presence_of   :name
