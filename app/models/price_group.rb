@@ -3,7 +3,7 @@
 class PriceGroup < ApplicationRecord
 
   belongs_to :facility
-  has_many   :price_policies, dependent: :destroy
+  has_many   :price_policies
   has_many   :order_details, through: :price_policies, dependent: :restrict_with_exception
   has_many   :price_group_members, dependent: :destroy
   has_many   :user_price_group_members, class_name: "UserPriceGroupMember"
@@ -16,6 +16,7 @@ class PriceGroup < ApplicationRecord
   default_scope -> { order(is_internal: :desc, display_order: :asc, name: :asc) }
 
   before_destroy { throw :abort if global? }
+  before_destroy { price_policies.destroy_all } # Cannot be a dependent: :destroy because of ordering of callbacks
   before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil? }
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]) }
