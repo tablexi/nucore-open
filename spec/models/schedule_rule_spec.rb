@@ -307,15 +307,15 @@ RSpec.describe ScheduleRule do
 
       # times should be tue 9 pm - 12 am
       @calendar1 = @rule1.as_calendar_objects
-      @calendar1.each_with_index do |hash, _i|
+      @calendar1.each do |hash|
         expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 21.hours)
         expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 24.hours)
       end
 
-      # times should be tue 12 am - 9 am
+      # times should be wed 12 am - 9 am
       @calendar2 = @rule2.as_calendar_objects
-      @calendar2.each_with_index do |hash, _i|
-        expect(Time.zone.parse(hash["start"])).to eq(@wednesday + 0.hours)
+      @calendar2.each do |hash|
+        expect(Time.zone.parse(hash["start"])).to eq(@wednesday.to_time)
         expect(Time.zone.parse(hash["end"])).to eq(@wednesday + 9.hours)
       end
     end
