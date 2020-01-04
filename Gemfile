@@ -8,6 +8,7 @@ ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| 
 gem "rails", "5.2.3"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
+gem "bootsnap", require: false
 
 ## database
 gem "mysql2"
