@@ -33,11 +33,6 @@ PATH
       rails (>= 4.2)
 
 PATH
-  remote: vendor/engines/nu_research_safety
-  specs:
-    nu_research_safety (0.0.1)
-
-PATH
   remote: vendor/engines/projects
   specs:
     projects (0.0.1)
@@ -663,7 +658,6 @@ DEPENDENCIES
   mysql2
   nested_form_fields
   nokogiri
-  nu_research_safety!
   oj
   paper_trail
   paperclip
