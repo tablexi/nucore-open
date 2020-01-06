@@ -4,7 +4,7 @@ class OrderResearchSafetyCertificationValidator
 
   include TextHelpers::Translation
 
-  attr_reader :order_details, :all_missing_certificates
+  attr_reader :order_details
 
   def initialize(order_details)
     @order_details = order_details
@@ -13,45 +13,41 @@ class OrderResearchSafetyCertificationValidator
   def valid?
     return true if order_details.first.ordered_on_behalf_of?
 
-    invalid_order_details = order_details.reject do |od|
-      valid_order_detail?(od)
+    order_details.each do |order_detail|
+      missing_certs = missing_certificates_for(order_detail)
+      # Add the missing certificates specifically for each order detail
+      order_detail.errors.add(:base, error_for(missing_certs)) if missing_certs.any?
     end
-    invalid_order_details.none?
+
+    all_missing_certificates.none?
   end
 
   def error_message
-    error_for(@all_missing_certificates)
+    error_for(all_missing_certificates)
   end
 
   def translation_scope
     "validators.#{self.class.name.underscore}"
   end
 
+  def all_missing_certificates
+    @all_missing_certificates ||= ResearchSafetyCertificationLookup.new(user).missing_from(all_required_certificates)
+  end
+
   private
 
-  def missing_certificates_for(product)
-    product.research_safety_certificates.reject do |cert|
-      certificate_cache[cert]
-    end
+  def all_required_certificates
+    @all_required_certificates ||= order_details.flat_map do |order_detail|
+      order_detail.product.research_safety_certificates
+    end.uniq
   end
 
-  def valid_order_detail?(od)
-    missing_certs = missing_certificates_for(od.product)
-    if missing_certs.none?
-      true
-    else
-      @all_missing_certificates ||= Set.new
-      @all_missing_certificates.merge(missing_certs)
-      od.errors.add(:base, error_for(missing_certs))
-      false
-    end
+  def user
+    order_details.first.user
   end
 
-  def certificate_cache
-    user = order_details.first.user
-    @certificate_cache ||= Hash.new do |hash, certificate|
-      hash[certificate] = ResearchSafetyCertificationLookup.certified?(user, certificate)
-    end
+  def missing_certificates_for(order_detail)
+    order_detail.product.research_safety_certificates & all_missing_certificates
   end
 
   def error_for(missing_certs)

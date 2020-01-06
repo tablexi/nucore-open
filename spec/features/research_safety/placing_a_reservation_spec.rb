@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Placing a reservation with a certification requirement" do
+  include ResearchSafetyTestHelpers
+
   let!(:instrument) { FactoryBot.create(:setup_instrument) }
   let(:facility) { instrument.facility }
   let!(:cert1) { create(:product_certification_requirement, product: instrument).research_safety_certificate }
@@ -26,7 +28,7 @@ RSpec.describe "Placing a reservation with a certification requirement" do
 
     context "who does not have their certifications" do
       before do
-        allow(ResearchSafetyCertificationLookup).to receive(:certified?).and_return(false)
+        stub_research_safety_lookup(user, invalid: [cert1, cert2])
       end
 
       it "displays an error on the page" do
@@ -38,7 +40,7 @@ RSpec.describe "Placing a reservation with a certification requirement" do
 
     context "who does have their certifications" do
       before do
-        allow(ResearchSafetyCertificationLookup).to receive(:certified?).and_return(true)
+        stub_research_safety_lookup(user, invalid: [cert1, cert2])
       end
 
       it "saves the reservation and brings you back to My Reservations" do
@@ -52,6 +54,8 @@ RSpec.describe "Placing a reservation with a certification requirement" do
       let(:facility_staff) { create(:user, :staff, facility: facility) }
 
       before do
+        stub_research_safety_lookup(user)
+
         login_as facility_staff
         visit facility_users_path(facility)
         fill_in "search_term", with: user.email

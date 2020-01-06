@@ -29,6 +29,6 @@
       - @product_certification_requirements.each do |cert_req|
         %tr
           %td.centered= link_to text("remove"), facility_product_product_research_safety_certification_requirement_path(current_facility, @product, cert_req), method: :delete if can? :destroy, cert_req
-          %td= cert_req.research_safety_certificate
+          %td= cert_req.research_safety_certificate.name
 - else
   %p.notice= text("none")
