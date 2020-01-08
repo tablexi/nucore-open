@@ -40,8 +40,11 @@ RSpec.describe UserAccountsController do
       end
 
       it "does not destroy" do
-        pending "not implemented"
         expect(account.owner.reload.deleted_at).to be_blank
+      end
+
+      it "does not create any log entries" do
+        expect(LogEvent).to be_none
       end
     end
 

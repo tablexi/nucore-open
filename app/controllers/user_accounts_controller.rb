@@ -17,6 +17,7 @@ class UserAccountsController < ApplicationController
     @user.assign_attributes(user_params)
 
     account_users_to_destroy = @user.account_users.select(&:marked_for_destruction?)
+    clear_owners(account_users_to_destroy)
     account_users_to_destroy.each { |account_user| account_user.deleted_by = current_user.id }
 
     if @user.save
@@ -39,4 +40,11 @@ class UserAccountsController < ApplicationController
   def load_accounts
     @accounts = @user.accounts.includes(:owner_user).for_facility(current_facility)
   end
+
+  def clear_owners(accounts)
+    # Unmark owner records for destruction
+    accounts.select(&:owner?).each { |au| au.reload }
+    accounts.reject!(&:owner?)
+  end
+
 end
