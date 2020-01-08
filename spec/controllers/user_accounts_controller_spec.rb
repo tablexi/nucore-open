@@ -35,13 +35,13 @@ RSpec.describe UserAccountsController do
           params: {
             facility_id: facility.url_name,
             user_id: owner.id,
-            user: { accounts_attributes: {"0" => { _destroy: "1", id: account.id } } },
+            user: { account_users_attributes: {"0" => { _destroy: "1", id: account.owner.id } } },
           }
       end
 
       it "does not destroy" do
-        pending "implement restrictions"
-        expect(account.reload.owner_user).to eq(owner)
+        pending "not implemented"
+        expect(account.owner.reload.deleted_at).to be_blank
       end
     end
 
@@ -54,16 +54,25 @@ RSpec.describe UserAccountsController do
           params: {
             facility_id: facility.url_name,
             user_id: purchaser.id,
-            user: { accounts_attributes: {"0" => { _destroy: "1", id: account.id } } },
+            user: { account_users_attributes: {"0" => { _destroy: "1", id: account_user.id } } },
           }
       end
 
-      it "updates the user’s accounts" do
-        expect(purchaser.accounts.reload).to be_empty
+      it "updates the user’s active accounts" do
+        expect(purchaser.accounts.active.reload).to be_empty
+      end
+
+      it "soft-deletes the account_user" do
+        expect(account_user.reload.deleted_at).to be_present
+        expect(account_user.deleted_by).to eq(director.id)
       end
 
       it "redirects back to the user’s accounts page" do
         expect(response).to redirect_to(facility_user_accounts_path(facility, purchaser))
+      end
+
+      it "adds a log event" do
+        expect(LogEvent.find_by(loggable: account_user, event_type: :delete, user: director)).to be_present
       end
     end
   end

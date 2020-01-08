@@ -117,7 +117,7 @@ RSpec.describe AccountUsersController do
         expect { do_request }.to change(account_user.log_events, :count).by(1)
         expect(account_user.log_events.last).to have_attributes(
         loggable: assigns(:account_user), event_type: "delete",
-        user_id: @owner.id)
+        user_id: owner.id)
       end
 
       it "sets the flash and redirects" do

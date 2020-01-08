@@ -2,6 +2,9 @@
 
 class AccountUser < ApplicationRecord
 
+  # Don't exclude them by default. Instead, make sure we're using the `active` scope
+  acts_as_paranoid without_default_scope: true
+
   belongs_to :user, required: true
   belongs_to :account, inverse_of: :account_users, required: true
   belongs_to :created_by_user, class_name: "User", foreign_key: :created_by
@@ -47,6 +50,10 @@ class AccountUser < ApplicationRecord
 
   def self.active
     where(deleted_at: nil)
+  end
+
+  def paranoia_destroy_attributes
+    super.merge(deleted_by: deleted_by)
   end
 
   #

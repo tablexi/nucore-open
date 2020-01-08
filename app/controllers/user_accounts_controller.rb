@@ -10,8 +10,19 @@ class UserAccountsController < ApplicationController
   before_action { @active_tab = "admin_users" }
   before_action :load_accounts
 
+  def edit
+  end
+
   def update
-    if @user.update(user_params)
+    @user.assign_attributes(user_params)
+
+    account_users_to_destroy = @user.account_users.select(&:marked_for_destruction?)
+    account_users_to_destroy.each { |account_user| account_user.deleted_by = current_user.id }
+
+    if @user.save
+      account_users_to_destroy.each do |account_user|
+        LogEvent.log(account_user, :delete, current_user)
+      end
       redirect_to facility_user_accounts_path(current_facility, @user), flash: { notice: t(".updated", user_name: @user.full_name) }
     else
       flash.now[:error] = t(".could_not_update", user_name: @user.full_name)
@@ -22,7 +33,7 @@ class UserAccountsController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(accounts_attributes: [:id, :_destroy])
+    params.require(:user).permit(account_users_attributes: [:id, :_destroy])
   end
 
   def load_accounts
