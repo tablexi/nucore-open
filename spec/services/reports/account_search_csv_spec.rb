@@ -20,7 +20,7 @@ RSpec.describe Reports::AccountSearchCsv do
       "Suspended" => [be_blank, "12/01/2019", anything],
       "Owner" => ["My Owner", "My Owner", anything],
       "Expiration" => ["01/01/2020", "01/02/2020", anything],
-      "Facility" => ["All", "All", "Single Facility (SF), Other Facility (OF)"],
+      "Facilities" => ["All", "All", "Single Facility (SF), Other Facility (OF)"],
     )
   end
 end
