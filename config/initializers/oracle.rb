@@ -7,6 +7,11 @@ if defined?(ActiveRecord::ConnectionAdapters::OracleEnhancedAdapter)
     # It is changed to 1 by default in the version of the adapter targeted at Rails 6
     # https://github.com/rsim/oracle-enhanced/pull/1636
     self.default_sequence_start_value = 1
+
+    # Without this, we get an error "Combination of limit and lock is not supported"
+    # whenever we use find_or_create_by.
+    # https://github.com/rsim/oracle-enhanced/issues/920
+    self.use_old_oracle_visitor = true
   end
 
   # OCI8 does not realize that SafeBuffer is a type of string, so we need to
