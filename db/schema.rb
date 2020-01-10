@@ -846,6 +846,8 @@ ActiveRecord::Schema.define(version: 20200106194222) do
 
   add_foreign_key "account_facility_joins", "accounts"
   add_foreign_key "account_facility_joins", "facilities"
+  add_foreign_key "account_users", "accounts", name: "fk_accounts"
+  add_foreign_key "account_users", "users"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
   add_foreign_key "bundle_products", "products", column: "bundle_product_id", name: "fk_bundle_prod_prod"
