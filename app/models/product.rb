@@ -17,6 +17,8 @@ class Product < ApplicationRecord
   has_many :accessories, through: :product_accessories, class_name: "Product"
   has_many :price_policies
   has_many :training_requests, dependent: :destroy
+  has_many :product_research_safety_certification_requirements
+  has_many :research_safety_certificates, through: :product_research_safety_certification_requirements
 
   email_list_attribute :training_request_contacts
 
@@ -37,11 +39,8 @@ class Product < ApplicationRecord
     validates(
       :account,
       presence: true,
-      numericality: {
-        only_integer: true,
-        greater_than_or_equal_to: 0,
-        less_than_or_equal_to: 99_999,
-      },
+      numericality: { only_integer: true },
+      length: { minimum: 1, maximum: Settings.accounts.product_default.to_s.length },
       if: :requires_account?,
     )
   end

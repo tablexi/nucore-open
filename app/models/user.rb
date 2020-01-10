@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :account_users, -> { where(deleted_at: nil) }
   has_many :orders
   has_many :order_details, through: :orders
+  has_many :reservations, through: :order_details
   has_many :price_group_members, class_name: "UserPriceGroupMember", dependent: :destroy
   has_many :price_groups, -> { SettingsHelper.feature_on?(:user_based_price_groups) ? distinct : none }, through: :price_group_members
   has_many :product_users
@@ -30,7 +31,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :username, :email
   validates :suspension_note, length: { maximum: 255 }
 
-  accepts_nested_attributes_for :accounts, allow_destroy: true
+  accepts_nested_attributes_for :account_users, allow_destroy: true
 
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
   alias_attribute :login, :username
@@ -49,7 +50,7 @@ class User < ApplicationRecord
   scope :unexpired, -> { where(expired_at: nil) }
 
   scope :with_global_roles, -> { where(id: UserRole.global.select("distinct user_id")) }
-  scope :with_recent_orders, ->(facility) { distinct.joins(:orders).merge(Order.recent.for_facility(facility)) }
+  scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
   scope :sort_last_first, -> { order("LOWER(users.last_name), LOWER(users.first_name)") }
 
   # finds all user role mappings for a this user in a facility
