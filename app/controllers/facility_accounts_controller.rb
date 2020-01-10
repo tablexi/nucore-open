@@ -115,12 +115,20 @@ class FacilityAccountsController < ApplicationController
                                 )
 
       # only show an account once.
-      @accounts = @accounts.uniq.paginate(page: params[:page]) # hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
+      @accounts = @accounts.uniq
     else
       flash.now[:errors] = "Search terms must be 3 or more characters."
     end
+
     respond_to do |format|
-      format.html { render layout: false }
+      format.html do
+        @accounts = @accounts.paginate(page: params[:page]) # hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
+        render layout: false
+      end
+      format.csv do
+        # TODO: Send via email
+        send_data Reports::AccountSearchCsv.new(@accounts).to_csv, disposition: 'inline'
+      end
     end
   end
 

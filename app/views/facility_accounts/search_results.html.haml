@@ -2,4 +2,6 @@
   %p.error= flash[:errors]
 
 - else
+  .pull-right
+    = link_to t("reports.export_as_csv"), format: :csv, search_term: params[:search_term]
   = render "account_table"

@@ -924,6 +924,7 @@ en:
       not_found: We cannot find %{email} in our records.
 
   reports:
+    export_as_csv: Export as CSV
     fields:
       between: between
       instrument_reports:
@@ -942,7 +943,7 @@ en:
       fail_continue_on_error: "The import failed. %{successes} line item(s) created successfully, %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
       success: "The import completed successfully. %{successes} line items were created."
     account_transactions:
-      export: Export as CSV
+      export: "!reports.export_as_csv!"
       subject: "!app_name! Transaction Export"
       body: Your export is ready. Please see the attached file.
 
