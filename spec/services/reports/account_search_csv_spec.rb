@@ -17,6 +17,8 @@ RSpec.describe Reports::AccountSearchCsv do
   it "has the right fields" do
     expect(report).to have_column_values(
       "Payment Source" => ["Testing / 12345", "Testing Susp / 54321 (SUSPENDED)", anything],
+      "Account Number" => ["12345", "54321", anything],
+      "Description" => ["Testing", "Testing Susp", anything],
       "Suspended" => [be_blank, "12/01/2019", anything],
       "Owner" => ["My Owner", "My Owner", anything],
       "Expiration" => ["01/01/2020", "01/02/2020", anything],

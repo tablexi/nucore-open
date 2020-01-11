@@ -19,6 +19,8 @@ module Reports
     def report_hash
       {
         account: :to_s,
+        account_number: :account_number,
+        description: :description,
         facilities: ->(account) { show_facilities(account) },
         suspended_at: ->(account) { format_usa_date(account.suspended_at) },
         owner: ->(account) { account.owner_user.to_s },
