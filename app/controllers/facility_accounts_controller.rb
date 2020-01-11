@@ -9,7 +9,7 @@ class FacilityAccountsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_current_facility
-  before_action :init_account
+  before_action :init_account, except: :search_results
   before_action :build_account, only: [:new, :create]
 
   authorize_resource :account
@@ -99,6 +99,7 @@ class FacilityAccountsController < ApplicationController
     end_of_where
 
     term = generate_multipart_like_search_term(params[:search_term])
+
     if params[:search_term].length >= 3
 
       # retrieve accounts matched on user for this facility
@@ -114,8 +115,7 @@ class FacilityAccountsController < ApplicationController
                           .order("type, account_number",
                                 )
 
-      # only show an account once.
-      @accounts = @accounts.uniq
+      @accounts = @accounts.uniq # only show an account once.
     else
       flash.now[:errors] = "Search terms must be 3 or more characters."
     end
@@ -126,7 +126,7 @@ class FacilityAccountsController < ApplicationController
         render layout: false
       end
       format.csv do
-        # TODO: Send via email
+
         send_data Reports::AccountSearchCsv.new(@accounts).to_csv, disposition: 'inline'
       end
     end

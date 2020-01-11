@@ -36,8 +36,6 @@ module Reports
       end
     end
 
-    private
-
     def show_facilities(account)
       account.facilities.any? ? account.facilities.join(", ") : I18n.t("shared.all")
     end
