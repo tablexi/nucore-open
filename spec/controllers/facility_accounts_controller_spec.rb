@@ -258,6 +258,12 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         get :search_results, params: { facility_id: facility.url_name, search_term: "GOBBLEDEGOOK" }
         expect(assigns(:accounts)).to be_empty
       end
+
+      it "returns a warning an no results if less than three characters" do
+        get :search_results, params: { facility_id: facility.url_name, search_term: "A" }
+        expect(assigns(:accounts)).to be_nil
+        expect(flash.now[:errors]).to be_present
+      end
     end
   end
 
