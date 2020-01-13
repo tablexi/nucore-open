@@ -80,12 +80,12 @@ RSpec.describe AccountSearcher do
       expect(described_class.new("myemail@example.com").results).to be_empty
     end
 
-    it "does not search by description" do
-      expect(described_class.new("mydesc").results).to be_empty
+    it "matches by description" do
+      expect(described_class.new("mydesc").results).to eq([account])
     end
 
-    it "does not search by AR number" do
-      expect(described_class.new("ARNUM").results).to be_empty
+    it "matches by AR number" do
+      expect(described_class.new("ARNUM").results).to eq([account])
     end
 
     it "returns nothing when nothing matches" do

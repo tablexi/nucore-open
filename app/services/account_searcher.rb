@@ -7,7 +7,7 @@ class AccountSearcher
   include SearchHelper
 
   def initialize(query, scope: Account.all)
-    @query = query.to_s.strip
+    @query = query
     @scope = scope
   end
 
@@ -16,14 +16,14 @@ class AccountSearcher
   end
 
   def results
-    owner_matches.or(
-      account_number_matches
-    ).order(:type, :account_number)
+    matches_owner
+      .or(matches_field(:account_number, :description, :ar_number))
+      .order(:type, :account_number)
   end
 
   private
 
-  def owner_matches
+  def matches_owner
     where_clause = <<~SQL
       LOWER(users.first_name) LIKE :term
       OR LOWER(users.last_name) LIKE :term
@@ -37,9 +37,11 @@ class AccountSearcher
     ).merge(AccountUser.owners)
   end
 
-  def account_number_matches
-    # joins is needed to keep the structures identical for the OR
-    @scope.joins(account_users: :user).where("LOWER(accounts.account_number) like ?", like_term)
+  def matches_field(*fields)
+    fields.map do |field|
+      # joins is needed to keep structures equivalent for ActiveRecord's OR
+      @scope.joins(account_users: :user).where(Account.arel_table[field].lower.matches(like_term))
+    end.inject(&:or)
   end
 
   # The @query, stripped of surrounding whitespace and wrapped in "%"
