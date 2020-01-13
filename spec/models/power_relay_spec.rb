@@ -11,7 +11,7 @@ end
 RSpec.describe SomeRelay do
 
   it { is_expected.to validate_presence_of :ip }
-  it { is_expected.to validate_presence_of :port }
+  it { is_expected.to validate_presence_of :outlet }
   it { is_expected.to validate_presence_of :username }
   it { is_expected.to validate_presence_of :password }
   it { is_expected.not_to validate_presence_of :auto_logout_minutes }

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :relay do
     type { "RelaySynaccessRevA" }
     ip { "192.168.1.1" }
-    sequence(:port) { |p| p }
+    sequence(:outlet) { |o| o }
     sequence(:username) { |n| "username#{n}" }
     sequence(:password) { |n| "password#{n}" }
 

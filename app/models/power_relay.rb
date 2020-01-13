@@ -8,7 +8,7 @@ module PowerRelay
 
   included do
     ## validations
-    validates_presence_of :ip, :port, :username, :password
+    validates_presence_of :ip, :outlet, :username, :password
     validates :auto_logout_minutes, presence: { if: :auto_logout }
   end
 
@@ -25,11 +25,11 @@ module PowerRelay
   end
 
   def toggle(status)
-    relay_connection.toggle(port, status)
+    relay_connection.toggle(outlet, status)
   end
 
   def query_status
-    relay_connection.status(port)
+    relay_connection.status(outlet)
   end
 
   def relay_connection
