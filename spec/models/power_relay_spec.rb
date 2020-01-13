@@ -16,19 +16,44 @@ RSpec.describe SomeRelay do
   it { is_expected.to validate_presence_of :password }
   it { is_expected.not_to validate_presence_of :auto_logout_minutes }
 
-  it "should allow a range of 1-16 outlets" do
-    relay = SomeRelay.new(ip: "123", username: "nucore", password: "password")
+  describe "outlet range" do
+    let(:relay) { SomeRelay.new(ip: "123", username: "nucore", password: "password") }
 
-    expect(relay.update(outlet: 16)).to be true
-    expect(relay.update(outlet: 17)).to be false
+    it "allows a range of 1-16 outlets" do
+      relay.outlet = 16
+
+      expect(relay).to be_valid
+    end
+
+    it "does not allow more than 17 outlets" do
+      relay.outlet = 17
+
+      expect(relay).to be_invalid
+      expect(relay.errors[:outlet]).to include(/less than or equal to/)
+    end
   end
 
-  it "allows a numerical or nil port allocation" do
-    relay = SomeRelay.new(ip: "123", username: "nucore", password: "password", outlet: 1, instrument_id: 1)
+  describe "ip port allocation" do
+    let(:relay) { SomeRelay.new(ip: "123", username: "nucore", password: "password", outlet: 1, instrument_id: 1) }
 
-    expect(relay.update(port: 3000)).to be true
-    expect(relay.update(port: "three thousand")).to be false
-    expect(relay.update(port: nil)).to be true
+    it "allows a numerical port allocation" do
+      relay.port = 3000
+
+      expect(relay).to be_valid
+    end
+
+    it "does not allow an alphanumeric port allocation" do
+      relay.port = "three thousand"
+
+      expect(relay).to be_invalid
+      expect(relay.errors[:port]).to include(/not a valid number/)
+    end
+
+    it "allows a nil value" do
+      relay.port = nil
+
+      expect(relay).to be_valid
+    end
   end
 
   context "with auto logout" do

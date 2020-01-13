@@ -5,14 +5,14 @@ module PowerRelay
 
   extend ActiveSupport::Concern
 
-  MAXIMUM_NUMBER_OF_OUTLETS = 1..16.freeze
+  MAXIMUM_OUTLETS = 16
 
   included do
     ## validations
     validates_presence_of :ip, :outlet, :username, :password
     validates :auto_logout_minutes, presence: { if: :auto_logout }
-    validates :outlet, inclusion: MAXIMUM_NUMBER_OF_OUTLETS
-    validates :port, numericality: { only_integer: true, allow_nil: true }
+    validates :outlet, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: MAXIMUM_OUTLETS }
+    validates :port, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
   end
 
   ## instance methods
