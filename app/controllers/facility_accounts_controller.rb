@@ -85,7 +85,6 @@ class FacilityAccountsController < ApplicationController
   end
 
   # GET/POST /facilities/:facility_id/accounts/search_results
-  # TODO: use a service object here
   def search_results
     searcher = AccountSearcher.new(Account.for_facility(current_facility), params[:search_term])
     if searcher.valid?
@@ -93,7 +92,7 @@ class FacilityAccountsController < ApplicationController
 
       respond_to do |format|
         format.html do
-          @accounts = @accounts.paginate(page: params[:page]) # hash options and defaults - :page (1), :per_page (30), :total_entries (arr.length)
+          @accounts = @accounts.paginate(page: params[:page])
           render layout: false
         end
         format.csv do
