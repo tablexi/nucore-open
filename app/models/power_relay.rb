@@ -22,8 +22,9 @@ module PowerRelay
 
   def connection_options
     options = {}
-    options[:username] = username if username.present?
-    options[:password] = password if password.present?
+    options[:username] = username if username?
+    options[:password] = password if password?
+    options[:port] = ip_port if ip_port?
     options
   end
 
