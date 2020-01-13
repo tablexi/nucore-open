@@ -6,9 +6,9 @@ class AccountSearcher
 
   include SearchHelper
 
-  def initialize(original_scope, query)
-    @original_scope = original_scope
-    @query = query
+  def initialize(query, scope: Account.all)
+    @query = query.to_s.strip
+    @scope = scope
   end
 
   def valid?
@@ -16,33 +16,35 @@ class AccountSearcher
   end
 
   def results
-    owner_where_clause = <<-end_of_where
-      (
-        LOWER(users.first_name) LIKE :term
-        OR LOWER(users.last_name) LIKE :term
-        OR LOWER(users.username) LIKE :term
-        OR LOWER(CONCAT(users.first_name, users.last_name)) LIKE :term
-      )
-      AND account_users.user_role = :acceptable_role
-      AND account_users.deleted_at IS NULL
-    end_of_where
+    owner_matches.or(
+      account_number_matches
+    ).order(:type, :account_number)
+  end
 
-    term = generate_multipart_like_search_term(@query)
+  private
 
-    # retrieve accounts matched on user for this facility
-    results = @original_scope.joins(account_users: :user).where(
-      owner_where_clause,
-      term: term,
-      acceptable_role: "Owner",
-    ).order("users.last_name, users.first_name")
+  def owner_matches
+    where_clause = <<~SQL
+      LOWER(users.first_name) LIKE :term
+      OR LOWER(users.last_name) LIKE :term
+      OR LOWER(users.username) LIKE :term
+      OR LOWER(CONCAT(users.first_name, users.last_name)) LIKE :term
+    SQL
 
-    # retrieve accounts matched on account_number for this facility
-    results += @original_scope.where(
-      "LOWER(account_number) LIKE ?", term)
-                        .order("type, account_number",
-                              )
+    @scope.joins(account_users: :user).where(
+      where_clause,
+      term: like_term,
+    ).merge(AccountUser.owners)
+  end
 
-    results.uniq
+  def account_number_matches
+    # joins is needed to keep the structures identical for the OR
+    @scope.joins(account_users: :user).where("LOWER(accounts.account_number) like ?", like_term)
+  end
+
+  # The @query, stripped of surrounding whitespace and wrapped in "%"
+  def like_term
+    generate_multipart_like_search_term(@query)
   end
 
 end
