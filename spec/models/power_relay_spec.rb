@@ -18,8 +18,17 @@ RSpec.describe SomeRelay do
 
   it "should allow a range of 1-16 outlets" do
     relay = SomeRelay.new(ip: "123", username: "nucore", password: "password")
+
     expect(relay.update(outlet: 16)).to be true
     expect(relay.update(outlet: 17)).to be false
+  end
+
+  it "allows a numerical or nil port allocation" do
+    relay = SomeRelay.new(ip: "123", username: "nucore", password: "password", outlet: 1, instrument_id: 1)
+
+    expect(relay.update(port: 3000)).to be true
+    expect(relay.update(port: "three thousand")).to be false
+    expect(relay.update(port: nil)).to be true
   end
 
   context "with auto logout" do

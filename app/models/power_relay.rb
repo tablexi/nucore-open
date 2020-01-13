@@ -13,6 +13,7 @@ module PowerRelay
     validates_presence_of :ip, :outlet, :username, :password
     validates :auto_logout_minutes, presence: { if: :auto_logout }
     validates :outlet, inclusion: MAXIMUM_NUMBER_OF_OUTLETS
+    validates :port, numericality: { only_integer: true, allow_nil: true }
   end
 
   ## instance methods

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200113094755) do
+ActiveRecord::Schema.define(version: 20200113131617) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id", null: false
@@ -561,6 +561,7 @@ ActiveRecord::Schema.define(version: 20200113094755) do
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
     t.integer  "auto_logout_minutes",            default: 60
+    t.integer  "port"
     t.index ["instrument_id"], name: "index_relays_on_instrument_id", using: :btree
   end
 
