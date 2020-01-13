@@ -37,20 +37,20 @@ RSpec.describe SomeRelay do
     let(:relay) { SomeRelay.new(ip: "123", username: "nucore", password: "password", outlet: 1, instrument_id: 1) }
 
     it "allows a numerical port allocation" do
-      relay.port = 3000
+      relay.ip_port = 3000
 
       expect(relay).to be_valid
     end
 
     it "does not allow an alphanumeric port allocation" do
-      relay.port = "three thousand"
+      relay.ip_port = "three thousand"
 
       expect(relay).to be_invalid
       expect(relay.errors[:port]).to include(/not a valid number/)
     end
 
     it "allows a nil value" do
-      relay.port = nil
+      relay.ip_port = nil
 
       expect(relay).to be_valid
     end

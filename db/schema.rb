@@ -561,7 +561,7 @@ ActiveRecord::Schema.define(version: 20200113131617) do
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
     t.integer  "auto_logout_minutes",            default: 60
-    t.integer  "port"
+    t.integer  "ip_port"
     t.index ["instrument_id"], name: "index_relays_on_instrument_id", using: :btree
   end
 
