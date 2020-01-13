@@ -334,7 +334,7 @@ GEM
     hashdiff (1.0.0)
     health_check (3.0.0)
       railties (>= 5.0)
-    i18n (1.7.1)
+    i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     icalendar (2.6.1)
       ice_cube (~> 0.16)
@@ -374,7 +374,7 @@ GEM
     mini_portile2 (2.4.0)
     mini_racer (0.2.9)
       libv8 (>= 6.9.411)
-    minitest (5.13.0)
+    minitest (5.14.0)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
     multi_json (1.13.1)
@@ -548,7 +548,7 @@ GEM
       sprockets-rails
       tilt
     shellany (0.0.1)
-    shoulda-matchers (4.1.2)
+    shoulda-matchers (4.2.0)
       activesupport (>= 4.2.0)
     simple_form (5.0.1)
       actionpack (>= 5.0)
