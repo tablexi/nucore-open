@@ -86,7 +86,7 @@ class FacilityAccountsController < ApplicationController
 
   # GET/POST /facilities/:facility_id/accounts/search_results
   def search_results
-    searcher = AccountSearcher.new(Account.for_facility(current_facility), params[:search_term])
+    searcher = AccountSearcher.new(params[:search_term], scope: Account.for_facility(current_facility))
     if searcher.valid?
       @accounts = searcher.results
 
