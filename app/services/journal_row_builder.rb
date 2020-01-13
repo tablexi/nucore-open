@@ -38,7 +38,7 @@ class JournalRowBuilder
     virtual_order_details = OrderDetailListTransformerFactory.instance(order_details).perform
     virtual_order_details.each do |virtual_order_detail|
       yield virtual_order_detail if block_given?
-      @journal_rows << order_detail_to_journal_row(virtual_order_detail)
+      @journal_rows.concat Array(order_detail_to_journal_row(virtual_order_detail))
     end
 
     journal_rows
@@ -139,8 +139,12 @@ class JournalRowBuilder
   # objects.
   def order_detail_to_journal_row(order_detail)
     klass = Converters::ConverterFactory.for("order_detail_to_journal_rows")
-    attributes = klass.new(journal, order_detail).convert
-    JournalRow.new(attributes)
+    attributes_or_array = klass.new(journal, order_detail).convert
+    if attributes_or_array.is_a?(Array)
+      attributes_or_array.map { |attributes| JournalRow.new(attributes) }
+    else
+      JournalRow.new(attributes_or_array)
+    end
   end
 
   # Given a product and total, return an array of one or more new JournalRow
@@ -148,7 +152,7 @@ class JournalRowBuilder
   def product_to_journal_row(product, total)
     klass = Converters::ConverterFactory.for("product_to_journal_rows")
     attributes = klass.new(journal, product, total).convert
-    JournalRow.new(attributes)
+    JournalRow.new(attributes) if attributes.present?
   end
 
   # If recharge_enabled, then sum up the product_recharges by product so each
@@ -168,7 +172,7 @@ class JournalRowBuilder
     product_recharges.each_pair do |product_id, total|
       product = Product.find(product_id)
       new_journal_row = product_to_journal_row(product, total)
-      @journal_rows << new_journal_row
+      @journal_rows << new_journal_row if new_journal_row
     end
   end
 
