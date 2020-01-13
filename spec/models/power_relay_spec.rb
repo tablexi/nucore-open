@@ -46,7 +46,7 @@ RSpec.describe SomeRelay do
       relay.ip_port = "three thousand"
 
       expect(relay).to be_invalid
-      expect(relay.errors[:port]).to include(/not a valid number/)
+      expect(relay.errors[:ip_port]).to include(/not a valid number/)
     end
 
     it "allows a nil value" do
