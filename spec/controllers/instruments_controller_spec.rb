@@ -275,7 +275,7 @@ RSpec.describe InstrumentsController do
         @params[:instrument].merge!(control_mechanism: "relay",
                                     relay_attributes: {
                                       ip: "192.168.1.2",
-                                      outlet: 1234,
+                                      outlet: 12,
                                       username: "username",
                                       password: "password",
                                       type: RelaySynaccessRevA.name,
@@ -410,7 +410,7 @@ RSpec.describe InstrumentsController do
       before :each do
         RelaySynaccessRevA.create!(
           ip: "192.168.1.2",
-          port: 1234,
+          outlet: 12,
           username: "username",
           password: "password",
           type: RelaySynaccessRevA.name,
@@ -429,7 +429,7 @@ RSpec.describe InstrumentsController do
         @params[:instrument].merge!(control_mechanism: "relay",
                                     relay_attributes: {
                                       ip: "192.168.1.2",
-                                      port: 1234,
+                                      outlet: 12,
                                       username: "username",
                                       password: "password",
                                       type: RelaySynaccessRevA.name,
