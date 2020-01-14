@@ -108,21 +108,21 @@ class FacilityJournalsController < ApplicationController
   # GET /facilities/journals/:id
   def show
     @journal_rows = @journal.journal_rows
-    @filename = "journal_#{@journal.id}_#{@journal.created_at.strftime('%Y%m%d')}"
-
     respond_to do |format|
-      format.xml do
-        headers["Content-Disposition"] = "attachment; filename=\"#{@filename}.xml\""
-      end
+      format.html {}
 
-      format.csv do
-        @show_uid = @journal_rows.joins(order_detail: { order: :user }).where("users.uid IS NOT NULL").any?
-        set_csv_headers("#{@filename}.csv")
+      format.xml do
+        @filename = "journal_#{@journal.id}_#{@journal.created_at.strftime('%Y%m%d')}"
+        headers["Content-Disposition"] = "attachment; filename=\"#{@filename}.xml\""
       end
 
       format.xls { redirect_to @journal.download_url }
 
-      format.any { @order_details = @journal.order_details }
+      # Fallback for other formats
+      format.any do
+        journal_format = Journals::JournalFormat.find(params[:format])
+        send_data journal_format.render(@journal), journal_format.options if journal_format
+      end
     end
   end
 
