@@ -44,9 +44,8 @@ class Product < ApplicationRecord
       if: :requires_account?,
     )
   end
-  if SettingsHelper.feature_on? :recharge_accounts
-    validates :facility_account_id, presence: true, if: :requires_account?
-  end
+
+  validates :facility_account_id, presence: true, if: :requires_account?
 
   # Use lambda so we can dynamically enable/disable in specs
   validate if: -> { SettingsHelper.feature_on?(:product_specific_contacts) } do
