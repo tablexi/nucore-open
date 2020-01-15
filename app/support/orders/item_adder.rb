@@ -27,7 +27,7 @@ class Orders::ItemAdder
             # products which have reservations (instruments) should each get their own order_detail
             add_instruments(product, quantity, attributes)
           else
-            [create_order_detail({ product_id: product.id, quantity: quantity }.merge(attributes))]
+            [create_order_detail({ product: product, quantity: quantity }.merge(attributes))]
           end
     ods || []
   end
@@ -48,13 +48,13 @@ class Orders::ItemAdder
     # result in
   def add_instruments(product, quantity, attributes)
     Array.new(quantity) do
-      create_order_detail({ product_id: product.id, quantity: 1 }.merge(attributes))
+      create_order_detail({ product: product, quantity: 1 }.merge(attributes))
     end
   end
 
   def add_timed_services(product, quantity, duration, attributes)
     Array.new(quantity) do
-      create_order_detail({ product_id: product.id, quantity: duration || DEFAULT_TIMED_SERVICES_DURATION }.merge(attributes))
+      create_order_detail({ product: product, quantity: duration || DEFAULT_TIMED_SERVICES_DURATION }.merge(attributes))
     end
   end
 
@@ -84,11 +84,11 @@ class Orders::ItemAdder
       # while all other types will result in a single line item. This is true even
       # for services which have an order form/survey.
       if bp.product.is_a?(Instrument)
-        add_instruments(bp.product, bp.quantity, { bundle_product_id: bp.product.id, group_id: group_id }.merge(attributes))
+        add_instruments(bp.product, bp.quantity, { bundle_product_id: product.id, group_id: group_id }.merge(attributes))
       else
         create_order_detail(
           {
-            product_id: bp.product.id,
+            product: bp.product,
             quantity: bp.quantity,
             bundle_product_id: product.id,
             group_id: group_id,
