@@ -69,7 +69,7 @@ class Orders::ItemAdder
     individual_quantity = separate ? 1 : quantity
 
     Array.new(repeat) do
-      create_order_detail({ product_id: product.id, quantity: individual_quantity }.merge(attributes))
+      create_order_detail({ product: product, quantity: individual_quantity }.merge(attributes))
     end
   end
 
@@ -84,13 +84,13 @@ class Orders::ItemAdder
       # while all other types will result in a single line item. This is true even
       # for services which have an order form/survey.
       if bp.product.is_a?(Instrument)
-        add_instruments(bp.product, bp.quantity, { bundle_product_id: product.id, group_id: group_id }.merge(attributes))
+        add_instruments(bp.product, bp.quantity, { bundle: product, group_id: group_id }.merge(attributes))
       else
         create_order_detail(
           {
             product: bp.product,
             quantity: bp.quantity,
-            bundle_product_id: product.id,
+            bundle: product,
             group_id: group_id,
           }.merge(attributes),
         )
