@@ -2,6 +2,8 @@
 
 class AccountSearcher
 
+  MINIMUM_SEARCH_LENGTH = 3
+
   include SearchHelper
 
   def initialize(original_scope, query)
@@ -10,7 +12,7 @@ class AccountSearcher
   end
 
   def valid?
-    @query.to_s.length >= 3
+    @query.to_s.length >= MINIMUM_SEARCH_LENGTH
   end
 
   def results
