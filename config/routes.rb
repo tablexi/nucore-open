@@ -165,11 +165,9 @@ Nucore::Application.routes.draw do
       resources :user_research_safety_certifications, only: [:index]
     end
 
-    if SettingsHelper.feature_on? :recharge_accounts
-      resources :facility_accounts,
-                controller: "facility_facility_accounts",
-                only: [:index, :new, :create, :edit, :update], path: "#{I18n.t('facility_downcase')}_accounts"
-    end
+    resources :facility_accounts,
+              controller: "facility_facility_accounts",
+              only: [:index, :new, :create, :edit, :update], path: "#{I18n.t('facility_downcase')}_accounts"
 
     resources :orders, controller: "facility_orders", only: [:index, :update, :show] do
       member do
