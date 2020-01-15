@@ -26,7 +26,7 @@ class OrderRowImporter
     :fulfillment_date,
   ].map { |k| HEADERS[k] }
 
-  cattr_accessor(:importable_product_types) { [Item, Service] }
+  cattr_accessor(:importable_product_types) { [Item, Service, TimedService] }
 
   def self.order_key_for_row(row)
     new(row, nil).order_key
@@ -100,7 +100,11 @@ class OrderRowImporter
   def add_product_to_order
     ActiveRecord::Base.transaction do
       begin
-        @order_details = order.add(product, quantity, note: note)
+        if product.quantity_as_time?
+          @order_details = order.add(product, 1, duration: quantity, note: note)
+        else
+          @order_details = order.add(product, quantity, note: note)
+        end
         purchase_order! unless order.purchased?
         backdate_order_details_to_complete!
       rescue ActiveRecord::RecordInvalid => e
@@ -173,7 +177,7 @@ class OrderRowImporter
   end
 
   def quantity
-    @quantity ||= @row[HEADERS[:quantity]].to_i
+    @quantity ||= @row[HEADERS[:quantity]]
   end
 
   def user_field
