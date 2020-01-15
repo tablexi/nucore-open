@@ -29,7 +29,14 @@ Rails.application.configure do
   end
 
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :letter_opener
+  if ENV["SMTP_HOST"]
+    # letter_opener doesn't work well with docker, so use mailcatcher instead when
+    # using docker.
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = { address: ENV["SMTP_HOST"], port: ENV.fetch("SMTP_PORT", 1025) }
+  else
+    config.action_mailer.delivery_method = :letter_opener
+  end
   config.action_mailer.perform_deliveries = true
   Rails.application.routes.default_url_options =
     config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
