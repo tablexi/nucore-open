@@ -74,13 +74,9 @@ RSpec.describe "Placing an item order" do
 
     describe "that has multiple items" do
       let!(:product2) { FactoryBot.create(:setup_item, facility: facility) }
-      let!(:price_policy2) do
-        FactoryBot.create(:item_price_policy,
-                          price_group: PriceGroup.base, product: product2,
-                          unit_cost: 12)
-      end
 
       before do
+        FactoryBot.create(:item_price_policy, price_group: PriceGroup.base, product: product2)
         bundle.bundle_products.create!(product: product, quantity: 2)
         bundle.bundle_products.create!(product: product2, quantity: 3)
       end
@@ -93,6 +89,33 @@ RSpec.describe "Placing an item order" do
 
         click_button "Purchase"
         expect(page).to have_content "Order Receipt"
+      end
+    end
+
+    describe "that has a service with an order form" do
+      let(:service) { FactoryBot.create(:setup_service, :with_order_form) }
+      before do
+        FactoryBot.create(:service_price_policy, price_group: PriceGroup.base, product: service)
+        bundle.bundle_products.create!(product: service, quantity: 2)
+      end
+
+      it "adds the item as a single line item" do
+        add_to_cart
+        expect(page).to have_content(service.name).once
+      end
+    end
+
+    describe "that has a timed service" do
+      let(:timed_service) { FactoryBot.create(:setup_timed_service) }
+      before do
+        FactoryBot.create(:timed_service_price_policy, price_group: PriceGroup.base, product: timed_service)
+        bundle.bundle_products.create!(product: timed_service, quantity: 90)
+      end
+
+      it "adds the item as a single line item" do
+        add_to_cart
+        expect(page).to have_content(timed_service.name).once
+        expect(page).to have_content("1:30")
       end
     end
 
