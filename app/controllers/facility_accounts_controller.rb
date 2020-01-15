@@ -96,7 +96,7 @@ class FacilityAccountsController < ApplicationController
           render layout: false
         end
         format.csv do
-          send_data Reports::AccountSearchCsv.new(@accounts).to_csv
+          render csv: Reports::AccountSearchCsv.new(@accounts), filename: "#{current_facility}_account_search_results.csv"
         end
       end
     else
