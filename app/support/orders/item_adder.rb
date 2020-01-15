@@ -79,17 +79,18 @@ class Orders::ItemAdder
 
   def create_bundle_order_detail(product, attributes = {})
     group_id = @order.max_group_id + 1
-    product.bundle_products.flat_map do |bp|
+    product.bundle_products.flat_map do |bundle_product|
       # When inside a bundle, we want each reservation to end up on its own order detail,
       # while all other types will result in a single line item. This is true even
       # for services which have an order form/survey.
-      if bp.product.is_a?(Instrument)
-        add_instruments(bp.product, bp.quantity, { bundle: product, group_id: group_id }.merge(attributes))
+      case bundle_product.product
+      when Instrument
+        add_instruments(bundle_product.product, bundle_product.quantity, { bundle: product, group_id: group_id }.merge(attributes))
       else
         create_order_detail(
           {
-            product: bp.product,
-            quantity: bp.quantity,
+            product: bundle_product.product,
+            quantity: bundle_product.quantity,
             bundle: product,
             group_id: group_id,
           }.merge(attributes),
