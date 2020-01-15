@@ -17,14 +17,14 @@ class Orders::ItemAdder
 
     return [] if quantity <= 0
 
-    ods = if product.is_a? Bundle
+    ods = case product
+          when Bundle
             add_bundles(product, quantity, attributes)
-          elsif product.is_a? Service
+          when Service
             add_services(product, quantity, attributes)
-          elsif product.is_a? TimedService
+          when TimedService
             add_timed_services(product, quantity, duration, attributes)
-          elsif product.respond_to?(:reservations) && quantity > 1
-            # products which have reservations (instruments) should each get their own order_detail
+          when Instrument
             add_instruments(product, quantity, attributes)
           else
             [create_order_detail({ product: product, quantity: quantity }.merge(attributes))]
