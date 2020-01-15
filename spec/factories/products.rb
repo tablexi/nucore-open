@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :product do
     description { "Lorem ipsum..." }
-    account { 71_234 }
+    account { Settings.accounts.product_default }
     requires_approval { false }
     is_archived { false }
     is_hidden { false }
@@ -79,7 +79,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Product #{n}" }
     sequence(:url_name) { |n| "product-#{n}" }
     description { "Product description" }
-    account { 71_234 }
+    account { Settings.accounts.product_default }
     requires_approval { false }
     is_archived { false }
     is_hidden { false }
