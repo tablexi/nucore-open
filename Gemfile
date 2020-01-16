@@ -119,6 +119,7 @@ group :test do
   gem "rspec_junit_formatter"
   gem "shoulda-matchers"
   gem "single_test"
+  gem "webmock"
 end
 
 group :stage, :production do

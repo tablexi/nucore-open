@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191219162724) do
+ActiveRecord::Schema.define(version: 20200113131617) do
 
   create_table "account_facility_joins", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "facility_id", null: false
@@ -514,7 +514,7 @@ ActiveRecord::Schema.define(version: 20191219162724) do
     t.integer "max_reserve_mins"
     t.integer "min_cancel_hours"
     t.integer "facility_account_id"
-    t.string "account", limit: 5
+    t.string "account"
     t.boolean "show_details", default: false, null: false
     t.integer "auto_cancel_mins"
     t.string "contact_email"
@@ -553,7 +553,7 @@ ActiveRecord::Schema.define(version: 20191219162724) do
   create_table "relays", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "instrument_id"
     t.string "ip", limit: 15
-    t.integer "port"
+    t.integer "outlet"
     t.string "username", limit: 50
     t.string "password", limit: 50
     t.boolean "auto_logout"
@@ -561,6 +561,7 @@ ActiveRecord::Schema.define(version: 20191219162724) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "auto_logout_minutes", default: 60
+    t.integer "ip_port"
     t.index ["instrument_id"], name: "index_relays_on_instrument_id"
   end
 

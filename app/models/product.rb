@@ -39,17 +39,13 @@ class Product < ApplicationRecord
     validates(
       :account,
       presence: true,
-      numericality: {
-        only_integer: true,
-        greater_than_or_equal_to: 0,
-        less_than_or_equal_to: 99_999,
-      },
+      numericality: { only_integer: true },
+      length: { minimum: 1, maximum: Settings.accounts.product_default.to_s.length },
       if: :requires_account?,
     )
   end
-  if SettingsHelper.feature_on? :recharge_accounts
-    validates :facility_account_id, presence: true, if: :requires_account?
-  end
+
+  validates :facility_account_id, presence: true, if: :requires_account?
 
   # Use lambda so we can dynamically enable/disable in specs
   validate if: -> { SettingsHelper.feature_on?(:product_specific_contacts) } do
