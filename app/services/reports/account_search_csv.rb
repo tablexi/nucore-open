@@ -16,7 +16,7 @@ module Reports
 
     private
 
-    def report_hash
+    def default_report_hash
       {
         account: :to_s,
         account_number: :account_number,
