@@ -51,8 +51,8 @@ class OrderRowImporter
     @account ||=
       user
       .accounts
-      .for_facility(product.facility)
-      .active.find_by(account_number: account_number)
+      .for_facility(facility)
+      .active.find_by(account_number: field(:chart_string))
   end
 
   def errors?
@@ -68,11 +68,11 @@ class OrderRowImporter
   end
 
   def order_date
-    @order_date ||= parse_usa_import_date(order_date_field)
+    @order_date ||= parse_usa_import_date(field(:order_date))
   end
 
   def order_key
-    @order_key ||= [user_field, chart_string_field, order_date_field]
+    @order_key ||= [field(:user), field(:chart_string), field(:order_date)]
   end
 
   def row_with_errors
@@ -86,7 +86,7 @@ class OrderRowImporter
   end
 
   def user
-    @user ||= User.find_by(username: user_field) || User.find_by(email: user_field)
+    @user ||= User.find_by(username: field(:user)) || User.find_by(email: field(:user))
   end
 
   def product
@@ -95,7 +95,7 @@ class OrderRowImporter
       .facility
       .products
       .not_archived
-      .find_by(name: product_field)
+      .find_by(name: field(:product_name))
   end
 
   def add_error(message)
@@ -104,51 +104,11 @@ class OrderRowImporter
 
   private
 
-  def account_number
-    @account_number ||= @row[HEADERS[:chart_string]].try(:strip)
-  end
-
-  def note
-    @note ||= @row[HEADERS[:notes]].try(:strip)
-  end
-
-  def order_date_field
-    @order_date_field ||= @row[HEADERS[:order_date]].try(:strip)
-  end
-
-  def product_field
-    @product_field ||= @row[HEADERS[:product_name]].try(:strip)
-  end
-
-  def quantity
-    @quantity ||= @row[HEADERS[:quantity]].to_i
-  end
-
-  def user_field
-    @user_field ||= @row[HEADERS[:user]].try(:strip)
-  end
-
-  def order_number_field
-    @row[HEADERS[:order_number]].try(:strip)
-  end
-
-  def chart_string_field
-    @chart_string_field ||= @row[HEADERS[:chart_string]].try(:strip)
-  end
-
-  def fulfillment_date
-    @fulfillment_date ||= parse_usa_import_date(fulfillment_date_field)
-  end
-
-  def fulfillment_date_field
-    @fulfillment_date_field ||= @row[HEADERS[:fulfillment_date]].try(:strip)
-  end
-
   def add_product_to_order
     ActiveRecord::Base.transaction do
       begin
-        @order = order_number_field.present? ? existing_order : @order_import.fetch_or_create_order!(self)
-        @order_details = order.add(product, quantity, note: note)
+        @order = field(:order_number).present? ? existing_order : @order_import.fetch_or_create_order!(self)
+        @order_details = order.add(product, field(:quantity), note: field(:notes))
         purchase_order!(order) unless order.purchased?
         backdate_order_details_to_complete!
       rescue ActiveRecord::RecordInvalid => e
@@ -171,6 +131,20 @@ class OrderRowImporter
       order_detail.ordered_at = order_date
       order_detail.backdate_to_complete!(fulfillment_date)
     end
+  end
+
+  def field(field)
+    @row[HEADERS[field]].to_s.try(:strip)
+  end
+
+  def fulfillment_date
+    @fulfillment_date ||= parse_usa_import_date(field(:fulfillment_date))
+  end
+
+  def existing_order
+    return @existing_order if defined?(@existing_order)
+
+    @existing_order = Order.find_by(id: field(:order_number))
   end
 
   def has_valid_headers?
@@ -220,7 +194,7 @@ class OrderRowImporter
 
   def validate_product
     if product.blank?
-      add_error("Couldn't find product by name '#{product_field}'")
+      add_error("Couldn't find product by name '#{field(:product_name)}'")
     else
       validate_product_is_importable
     end
@@ -228,7 +202,7 @@ class OrderRowImporter
 
   def validate_existing_order
     # Don't run these validations if we're not dealing with an existing order
-    return unless order_number_field.present?
+    return unless field(:order_number).present?
 
     if existing_order.blank?
       add_error("The order could not be found")
@@ -239,12 +213,6 @@ class OrderRowImporter
     elsif existing_order.user != user
       add_error("The user does not match the existing order's")
     end
-  end
-
-  def existing_order
-    return @existing_order if defined?(@existing_order)
-
-    @existing_order = Order.find_by(id: order_number_field)
   end
 
   def validate_product_is_importable
