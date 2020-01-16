@@ -23,7 +23,11 @@ RSpec.describe "Managing recharge accounts (FacilityFacilityAccountsController)"
     # Individual schools should implement a similar spec in their engine that
     # is more explicit in which fields it fills out.
     dummy_account.account_number_fields.each do |field, _values|
-      fill_in I18n.t("facility_account.account_fields.label.account_number.#{field}"), with: dummy_account.account_number_parts[field]
+      if field == :account_number
+        fill_in "Account Number", with: dummy_account.account_number
+      else
+        fill_in I18n.t("facility_account.account_fields.label.account_number.#{field}"), with: dummy_account.account_number_parts[field]
+      end
     end
 
     click_button "Create"
