@@ -11,7 +11,7 @@ class BundleProduct < ApplicationRecord
   validates_numericality_of :quantity, only_integer: true, greater_than: 0
   validates_uniqueness_of   :product_id, scope: [:bundle_product_id]
 
-  scope :alphabetized, -> { joins(:product).order("lower(products.name)") }
+  scope :alphabetized, -> { joins(:product).order(Arel.sql("LOWER(products.name)")) }
 
   # TODO: favor the alphabetized scope over relying on Array#sort
   def <=>(other)

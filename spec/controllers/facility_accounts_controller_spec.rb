@@ -73,7 +73,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
       end
 
       it_should_allow_all facility_managers do
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:account)).to eq(other_account)
         is_expected.to render_template("show")
       end
@@ -294,7 +294,7 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         user = create(:user, :global_billing_administrator)
         sign_in user
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
