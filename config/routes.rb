@@ -2,7 +2,7 @@
 
 require "facility_product_routing_concern"
 
-Nucore::Application.routes.draw do
+Rails.application.routes.draw do
   get "/users/sign_in.pdf" => redirect("/users/sign_in")
   devise_for :users
   mount SangerSequencing::Engine => "/" if defined?(SangerSequencing)
