@@ -66,12 +66,12 @@ class Product < ApplicationRecord
   end
 
   def self.mergeable_types
-    @mergeable_types ||= [Instrument, Item, Service, TimedService, Bundle]
+    @mergeable_types ||= ["Instrument", "Item", "Service", "TimedService", "Bundle"]
   end
 
   # Products that can be used as accessories
   def self.accessorizable
-    where(type: [Item, Service, TimedService])
+    where(type: ["Item", "Service", "TimedService"])
   end
 
   def self.exclude(products)
