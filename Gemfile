@@ -5,9 +5,10 @@ source "https://rubygems.org"
 ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| f.read.chomp }
 
 ## base
-gem "rails", "5.1.7"
+gem "rails", "5.2.3"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
+gem "bootsnap", require: false
 
 ## database
 gem "mysql2"

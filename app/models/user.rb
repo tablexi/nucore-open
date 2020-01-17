@@ -51,7 +51,7 @@ class User < ApplicationRecord
 
   scope :with_global_roles, -> { where(id: UserRole.global.select("distinct user_id")) }
   scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
-  scope :sort_last_first, -> { order("LOWER(users.last_name), LOWER(users.first_name)") }
+  scope :sort_last_first, -> { order(Arel.sql("LOWER(users.last_name), LOWER(users.first_name)")) }
 
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
