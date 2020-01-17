@@ -13,8 +13,9 @@ gem "bootsnap", require: false
 ## database
 gem "mysql2"
 # To use Oracle, remove the mysql2 gem above and uncomment these lines
-# gem "ruby-oci8"
 # gem "activerecord-oracle_enhanced-adapter"
+# gem "ruby-oci8" # only for CRuby users
+
 
 ## auth
 gem "cancancan"
