@@ -162,6 +162,8 @@ NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following fr
 
 #### Parallel Tests
 
+You can run specs in parallel during local development using the `parallel_tests` gem.
+
 * Create additional databases:
     rake parallel:create
 
@@ -181,6 +183,8 @@ NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following fr
     rake parallel:spec[user]  # run users_controller + user_helper + user specs
     rake parallel:spec['user|instrument']  # run user and product related specs
     rake parallel:spec['spec\/(?!features)'] # run RSpec tests except the tests in spec/features
+
+`parallel_tests' [README](https://github.com/grosser/parallel_tests/blob/master/Readme.md)
 
 
 ## Optional Modules
