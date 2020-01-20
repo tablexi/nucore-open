@@ -31,22 +31,26 @@ class AccountSearcher
       OR LOWER(CONCAT(users.first_name, users.last_name)) LIKE :term
     SQL
 
-    @scope.joins(account_users: :user).where(
+    base_scope.where(
       where_clause,
       term: like_term,
-    ).merge(AccountUser.owners)
+    )
   end
 
   def matches_field(*fields)
     fields.map do |field|
-      # joins is needed to keep structures equivalent for ActiveRecord's OR
-      @scope.joins(account_users: :user).where(Account.arel_table[field].lower.matches(like_term))
+      # All scopes must have equivalent structures for ActiveRecord's OR to work
+      base_scope.where(Account.arel_table[field].lower.matches(like_term))
     end.inject(&:or)
   end
 
   # The @query, stripped of surrounding whitespace and wrapped in "%"
   def like_term
     generate_multipart_like_search_term(@query)
+  end
+
+  def base_scope
+    @scope.joins(account_users: :user).merge(AccountUser.owners)
   end
 
 end

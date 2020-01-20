@@ -46,6 +46,10 @@ RSpec.describe AccountSearcher do
       it "does not find the account" do
         expect(described_class.new("purchaser").results).to be_blank
       end
+
+      it "returns only a single result" do
+        expect(described_class.new("last").results).to eq([account])
+      end
     end
 
     it "matches part of the owner's last name" do
@@ -94,7 +98,12 @@ RSpec.describe AccountSearcher do
 
     describe "when there's an account that matches another facility" do
       let(:facility) { FactoryBot.create(:facility) }
-      let!(:other_account) { FactoryBot.create(:nufs_account, :with_account_owner, account_number: account.account_number, facilities: [facility], owner: owner) }
+      let!(:other_account) { FactoryBot.create(:account, :with_account_owner, account_number: account.account_number, facilities: [facility], owner: owner) }
+
+      before(:each) do
+        allow(Account.config).to receive(:global_account_types).and_return([])
+        allow(Account.config).to receive(:facility_account_types).and_return(["Account"])
+      end
 
       it "returns both with no restrictions" do
         expect(described_class.new(account.account_number).results).to contain_exactly(account, other_account)
