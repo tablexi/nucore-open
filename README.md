@@ -165,6 +165,11 @@ NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following fr
 * Create additional databases:
     rake parallel:create
 
+* Run migrations (only needed if building from scratch):
+    rake parallel:create
+  OR
+    rake parallel:load_schema
+
 * Copy development schema (repeat after migrations):
     rake parallel:prepare
 
