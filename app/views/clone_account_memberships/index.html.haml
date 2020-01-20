@@ -1,0 +1,18 @@
+= content_for :tabnav do
+  = render partial: "admin/shared/tabnav_users", locals: {secondary_tab: "accounts"}
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_users', locals: { sidenav_tab: 'users' }
+
+= content_for :h1 do
+  = current_facility
+
+%header
+  %h2= "Clone Account Memberships to #{@user.full_name}"
+
+= form_tag url_for(action: :search), id: "ajax_form", method: :get do
+  = label_tag :search_term, "Search" # t(".label.search")
+  = text_field_tag :search_term, nil, size: 30, class: "search-query"
+  = submit_tag "Search", class: "btn"
+  = hidden_field_tag :user_id, @user.id
+%br
+#result
