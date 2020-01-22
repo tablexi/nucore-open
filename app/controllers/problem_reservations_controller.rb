@@ -20,6 +20,12 @@ class ProblemReservationsController < ApplicationController
       problem_resolved_by: current_user,
     )
     @reservation.assign_times_from_params(update_params)
+    # This would have been set to the reserve_end_at by the auto expirer, but it should
+    # be the actual_end_at.
+    @order_detail.fulfilled_at = @reservation.actual_end_at
+    # The changes we made above won't trigger an automatic repricing, so we need to
+    # do it manually.
+    @order_detail.assign_price_policy
 
     if @reservation.save
       if @order_detail.accessories?
