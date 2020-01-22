@@ -33,7 +33,7 @@ module Converters
       {
         # A journal has_many order_details through the journal rows. Only the expenses
         # should have an order detail so we don't double count the order details.
-        order_detail_id: order_detail.id,
+        order_detail: order_detail,
         account_id: order_detail.account_id,
         journal: journal,
         # Note: this is the expense account, not the Account association
