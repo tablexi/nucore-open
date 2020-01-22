@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe "Fixing a problem reservation" do
@@ -7,8 +9,18 @@ RSpec.describe "Fixing a problem reservation" do
   before { login_as reservation.user }
 
   # Permissions and some other failure cases are covered in controllers/problem_reservations_controller_spec
+  # and services/problem_reservation_resolver_spec
   describe "a problem reservation" do
-    let!(:reservation) { create(:purchased_reservation, product: instrument, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 1.hour.ago, actual_end_at: nil) }
+    let!(:reservation) do
+      create(
+        :purchased_reservation,
+        product: instrument,
+        reserve_start_at: 2.hours.ago,
+        reserve_end_at: 1.hour.ago,
+        actual_start_at: 1.hour.ago,
+        actual_end_at: nil
+      )
+    end
     before { MoveToProblemQueue.move!(reservation.order_detail) }
 
     it "can edit the reservation" do
@@ -16,42 +28,11 @@ RSpec.describe "Fixing a problem reservation" do
       click_link "Fix Usage"
       fill_in "Actual Duration", with: "45"
       click_button "Save"
+
       expect(page).not_to have_content("Fix Usage")
-    end
-
-    it "updates the order detail's fields" do
-      visit edit_problem_reservation_path(reservation)
-      fill_in "Actual Duration", with: "45"
-      click_button "Save"
-
       expect(reservation.order_detail.reload.problem_description_key_was).to eq("missing_actuals")
       expect(reservation.order_detail.problem_resolved_at).to be_present
       expect(reservation.order_detail.problem_resolved_by).to eq(reservation.user)
-
-      expect(reservation.order_detail.problem_description_key).to eq(nil)
-    end
-
-    it "moves the fulfilled_at to the actual end at" do
-      visit edit_problem_reservation_path(reservation)
-      fill_in "Actual Duration", with: "45"
-      click_button "Save"
-
-      expect(reservation.reload.actual_start_at).to eq(1.hour.ago)
-      expect(reservation.actual_end_at).to eq(15.minutes.ago)
-      expect(reservation.order_detail.reload.fulfilled_at).to eq(15.minutes.ago)
-    end
-
-    describe "when there is not a price policy" do
-      before { instrument.price_policies.destroy_all }
-
-      it "leaves it as a problem if it is still missing a price policy" do
-        visit edit_problem_reservation_path(reservation)
-        fill_in "Actual Duration", with: "45"
-        click_button "Save"
-
-        expect(reservation.order_detail.reload.problem_description_key_was).to eq("missing_actuals")
-        expect(reservation.order_detail.problem_description_key).to eq(:missing_price_policy)
-      end
     end
 
     it "errors if zero" do
