@@ -14,6 +14,10 @@ module Journals
       Array(Settings.financial.journal_format).map { |options| new(**options) }
     end
 
+    def self.exists?(key)
+      find(key).present?
+    end
+
     def initialize(key:, class_name: nil, mime_type: nil, filename: nil)
       @class_name = class_name
       @key = key

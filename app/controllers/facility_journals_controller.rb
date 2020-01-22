@@ -96,7 +96,7 @@ class FacilityJournalsController < ApplicationController
     response.headers["Referer"] = referer[0..referrer.index("?")] if referer.present?
 
     if @journal.errors.blank? && @journal.save
-      @journal.create_spreadsheet if Settings.financial.journal_format.xls
+      @journal.create_spreadsheet if Journals::JournalFormat.exists?(:xls)
       flash[:notice] = I18n.t("controllers.facility_journals.create.notice")
       redirect_to facility_journals_path(current_facility)
     else
