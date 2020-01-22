@@ -38,6 +38,7 @@ class JournalRowBuilder
     virtual_order_details = OrderDetailListTransformerFactory.instance(order_details).perform
     virtual_order_details.each do |virtual_order_detail|
       yield virtual_order_detail if block_given?
+      # Each individual order detail may result in multiple journal rows (e.g. double-entry)
       @journal_rows.concat Array(order_detail_to_journal_row(virtual_order_detail))
     end
 
@@ -140,6 +141,8 @@ class JournalRowBuilder
   def order_detail_to_journal_row(order_detail)
     klass = Converters::ConverterFactory.for("order_detail_to_journal_rows")
     attributes_or_array = klass.new(journal, order_detail).convert
+    # For backwards compatibility allow the converter to return either a single hash
+    # of attributes or an array of hashes
     if attributes_or_array.is_a?(Array)
       attributes_or_array.map { |attributes| JournalRow.new(attributes) }
     else
@@ -152,6 +155,8 @@ class JournalRowBuilder
   def product_to_journal_row(product, total)
     klass = Converters::ConverterFactory.for("product_to_journal_rows")
     attributes = klass.new(journal, product, total).convert
+    # Converters may return nothing here which is their way of saying we don't want to do
+    # product rollups.
     JournalRow.new(attributes) if attributes.present?
   end
 
