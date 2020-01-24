@@ -2,7 +2,7 @@
 
 class InstrumentStatus < ApplicationRecord
 
-  belongs_to :instrument
+  belongs_to :instrument, inverse_of: :instrument_statuses
 
   validates_numericality_of :instrument_id
 

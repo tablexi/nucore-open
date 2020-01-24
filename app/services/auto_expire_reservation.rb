@@ -2,6 +2,10 @@
 
 class AutoExpireReservation
 
+  def initialize(timeout_period: Settings.reservations.timeout_period)
+    @timeout_period = timeout_period
+  end
+
   def perform
     order_details.find_each do |order_detail|
       order_detail.transaction do
@@ -17,7 +21,7 @@ class AutoExpireReservation
   end
 
   def earliest_allowed_time
-    Settings.reservations.timeout_period.seconds.ago
+    @timeout_period.seconds.ago
   end
 
   def purchased_active_order_details

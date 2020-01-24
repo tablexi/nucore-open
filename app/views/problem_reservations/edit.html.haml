@@ -13,7 +13,8 @@
   .well.js--problemReservationForm
     .container
       .row
-        .span12= f.input :reserve_to_s, as: :readonly, label: text("reservation")
+        .span7= f.input :reserve_to_s, as: :readonly, label: text("reservation")
+        .span5= f.input :duration_mins, as: :readonly, label: text("reserved_duration_mins"), input_html: { class: "timeinput" }
       .row
         .span7
           = f.label :actual_start_date

@@ -27,6 +27,7 @@ RSpec.describe "Fixing a problem reservation" do
       visit reservations_path(status: :all)
       click_link "Fix Usage"
       fill_in "Actual Duration", with: "45"
+      save_and_open_page
       click_button "Save"
 
       expect(page).not_to have_content("Fix Usage")
