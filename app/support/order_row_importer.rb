@@ -108,6 +108,10 @@ class OrderRowImporter
     ActiveRecord::Base.transaction do
       begin
         @order = field(:order_number).present? ? existing_order : @order_import.fetch_or_create_order!(self)
+        # The order adding feature has some quirky behavior because of the "order form"
+        # feature: if you add multiple of a timed service, it creates multiple line items
+        # in your cart. Also, in the "add to order" feature, there is a separate `duration`
+        # field. To account for this idiosyncrocy, we need to handle it as a special case.
         if product.quantity_as_time?
           @order_details = order.add(product, 1, duration: field(:quantity), note: field(:notes))
         else
