@@ -146,26 +146,36 @@ _Known issue: if you run `db:setup` or all three in one rake command, the next t
     ./script/delayed_job run
     ```
 
-
 ### Test it
 
 NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following from NUcore's root directory.
 
 * To run all tests (this will take awhile!)
+
+    ```
     rake spec
-
+    ```
+    
 * To run just the model tests
-    rake spec:models
 
+    ```
+    rake spec:models
+    ```
+    
 * To run just the controller tests
+    ```
     rake spec:controllers
+    ```
 
 #### Parallel Tests
 
 You can run specs in parallel during local development using the [`parallel_tests`](https://github.com/grosser/parallel_tests) gem.
 
 * Create additional databases:
+
+    ```
     rake parallel:create
+    ```
 
 * Run migrations (only needed if building from scratch):
 
