@@ -29,15 +29,45 @@ module PowerRelay
   end
 
   def toggle(status)
-    relay_connection.toggle(outlet, status)
+    log_power_relay_connection(:toggle) do
+      relay_connection.toggle(outlet, status)
+    end
   end
 
   def query_status
-    relay_connection.status(outlet)
+    log_power_relay_connection(:status) do
+      relay_connection.status(outlet)
+    end
   end
 
   def relay_connection
     raise NotImplementedError.new("Subclass must define")
+  end
+
+  private
+
+  def log_power_relay_connection(event_type)
+    ActiveSupport::Notifications.instrument("#{event_type}.power_relays") do |payload|
+      payload.merge!(log_power_relay_options)
+      begin
+        payload[:status] = yield
+      rescue => e
+        payload[:status] = e
+        raise e
+      end
+    end
+  end
+
+  def log_power_relay_options
+    {
+      options: {
+        instrument: instrument.name,
+        type: type,
+        host: host,
+        ip_port: ip_port,
+        outlet: outlet,
+      }.merge(connection_options.except(:username, :password))
+    }
   end
 
 end
