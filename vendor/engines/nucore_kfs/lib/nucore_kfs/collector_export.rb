@@ -121,6 +121,8 @@ module NucoreKfs
       # An increasing sequential number beginning with zero. Should be the same for each Debit(D) and Credit(C) entry.
       doc_num = 0
 
+      puts("there are #{journal_rows.count} journal_rows")
+
       journal_rows.each do |journal_row|
           od = journal_row.order_detail
           next unless journal_row.order_detail
@@ -155,7 +157,7 @@ module NucoreKfs
               journal_row: journal_row
           )
           tracking_row.kfs_status = "pending"
-          # tracking_row.save!
+          tracking_row.save!
 
 
           # Comments indicate the corresponding fields specified in the
