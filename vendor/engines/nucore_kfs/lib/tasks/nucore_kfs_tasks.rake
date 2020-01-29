@@ -9,11 +9,11 @@ task :kfs_collector_export, [:export_file_path] => :environment do |_t, args|
   export_file = args.export_file_path
   puts("Exporting to #{export_file}")
 
-  all_journals = Journal.all
+  open_journals = Journal.where(is_successful: nil)
 
   rows_to_export = []
 
-  all_journals.each do |journal|
+  open_journals.each do |journal|
     journal.journal_rows.each do |journal_row|
       od = journal_row.order_detail
       next unless journal_row.order_detail
