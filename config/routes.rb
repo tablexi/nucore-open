@@ -162,7 +162,7 @@ Rails.application.routes.draw do
       post "access_list/approvals", to: "users#access_list_approvals"
 
       resource :accounts, controller: "user_accounts", only: [:show, :edit, :update]
-      resources :clone_account_memberships, only: [:index] do
+      resources :clone_account_memberships, only: %i[index new create] do
         get :search, on: :collection
       end
       resources :user_research_safety_certifications, only: [:index]
