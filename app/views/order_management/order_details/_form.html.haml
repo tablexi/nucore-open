@@ -50,6 +50,9 @@
         .span5.js--pricingUpdate
           = f.input :quantity, as: :order_detail_quantity, hint_html: { class: "help-inline" }
 
+      .span4
+        = f.input :reference_id
+
       .span5
         = render "costs", f: f
 
