@@ -1,0 +1,28 @@
+= content_for :tabnav do
+  = render partial: "admin/shared/tabnav_users", locals: {secondary_tab: "accounts"}
+= content_for :sidebar do
+  = render :partial => 'admin/shared/sidenav_users', locals: { sidenav_tab: 'users' }
+
+= content_for :h1 do
+  = current_facility
+
+= form_with url: facility_user_clone_account_memberships_path(user_to_clone_id: @user_to_clone), html: { id: "cloneAccountForm" } do |f|
+  - if @account_users.any?
+    %h2= t(:header, scope: "forms.clone_account_membership", first_name: @user_to_clone.first_name, last_name: @user_to_clone.last_name)
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th= link_to "Select All", 'javascript:;', id: "selectAllClone"
+          %th Account
+      %tbody
+        - @account_users.each do |account_user|
+          %tr
+            %td= f.check_box "account_user_ids[]", { class: "clone-checkbox", id: "accountId#{account_user.account_id}" }, account_user.id, nil
+            %td= t(:label, scope: "forms.clone_account_membership", account_description: account_user.account.description, account_number: account_user.account.account_number)
+
+    = f.submit "Clone", class: "btn btn-success"
+    = link_to "Back", facility_user_clone_account_memberships_path
+
+  - else
+    %p.alert.alert-info= t(:account_users_not_found, scope: "forms.clone_account_membership")
+    = link_to "Back", facility_user_clone_account_memberships_path

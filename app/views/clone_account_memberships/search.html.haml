@@ -1,2 +1,16 @@
-- @users.each do |user|
-  %p= user
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th
+      %th Username
+      %th Last Name
+      %th First Name
+      %th Email
+  - @users.each do |user|
+    %tbody
+      %tr
+        %td= link_to "Clone Account Memberships", new_facility_user_clone_account_membership_path(user_to_clone_id: user.id)
+        %td= user.username
+        %td= user.last_name
+        %td= user.first_name
+        %td= user.email
