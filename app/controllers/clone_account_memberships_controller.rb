@@ -26,6 +26,7 @@ class CloneAccountMembershipsController < ApplicationController
     cloner = AccountMembershipCloner.new(
       account_users_to_clone: @account_users.where(id: clone_account_membership_params[:account_user_ids]),
       clone_to_user: @clone_to_user,
+      acting_user: current_user,
     )
 
     if cloner.perform

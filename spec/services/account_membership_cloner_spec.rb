@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe AccountMembershipCloner, type: :service do
   let(:facility) { create(:facility) }
-  let(:admin) { create(:user, :administrator) }
+  let(:acting_user) { create(:user, :administrator) }
   let(:original_user) { create(:user) }
   let(:new_user) { create(:user) }
   let!(:owned_account) { create(:account, :with_account_owner, owner: original_user) }
@@ -13,7 +13,8 @@ RSpec.describe AccountMembershipCloner, type: :service do
   let(:cloner) {
     described_class.new(
       account_users_to_clone: account_users_to_clone,
-      clone_to_user: new_user
+      clone_to_user: new_user,
+      acting_user: acting_user,
     )
   }
 
@@ -31,13 +32,15 @@ RSpec.describe AccountMembershipCloner, type: :service do
     end
 
     it "saves the cloned AccountUser with the appropriate attributes" do
-      attributes_to_ignore = ["id", "user_id", "created_at"]
+      account_users = cloner.perform
 
-      cloner.perform
-      cloned_account_user_attributes = AccountUser.last.attributes.except(*attributes_to_ignore)
-      original_account_user_attributes = account_users_to_clone.first.attributes.except(*attributes_to_ignore)
-
-      expect(cloned_account_user_attributes).to match(original_account_user_attributes)
+      expect(account_users.first).to have_attributes(
+        user_id: new_user.id,
+        account_id: business_admin_account.id,
+        user_role: AccountUser::ACCOUNT_ADMINISTRATOR,
+        created_by_user: acting_user,
+        deleted_at: nil,
+      )
     end
   end
 
@@ -45,10 +48,9 @@ RSpec.describe AccountMembershipCloner, type: :service do
     let(:account_users_to_clone) { AccountUser.where(user: original_user, user_role: "owner") }
 
     it "assigns the cloned user the accepted alternate role" do
-      cloner.perform
-      account_user = AccountUser.last
+      account_users = cloner.perform
 
-      expect(account_user.user_role).to eq(AccountMembershipCloner::ALT_FOR_PROTECTED_ROLE)
+      expect(account_users.first.user_role).to eq(AccountMembershipCloner::ALT_FOR_PROTECTED_ROLE)
     end
   end
 

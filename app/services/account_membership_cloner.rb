@@ -1,13 +1,14 @@
 class AccountMembershipCloner
 
-  PROTECTED_USER_ROLE = "Owner".freeze
-  ALT_FOR_PROTECTED_ROLE = "Business Administrator".freeze
+  PROTECTED_USER_ROLE = AccountUser::ACCOUNT_OWNER
+  ALT_FOR_PROTECTED_ROLE = AccountUser::ACCOUNT_ADMINISTRATOR
 
   attr_reader :error
 
-  def initialize(account_users_to_clone:, clone_to_user:)
+  def initialize(account_users_to_clone:, clone_to_user:, acting_user:)
     @account_users_to_clone = account_users_to_clone
     @clone_to_user = clone_to_user
+    @acting_user = acting_user
   end
 
   def perform
@@ -21,21 +22,26 @@ class AccountMembershipCloner
 
   def perform!
     ActiveRecord::Base.transaction do
-      @account_users_to_clone.each do |au|
-        create_account_user(au.attributes)
+      @account_users_to_clone.map do |au|
+        create_account_user(
+          account_id: au.account_id,
+          original_role: au.user_role,
+        )
       end
     end
   end
 
-  def create_account_user(attributes)
+  def create_account_user(account_id:, original_role:)
     AccountUser.create!(
-      user_id: @clone_to_user.id,
-      account_id: attributes["account_id"],
-      created_by: attributes["created_by"],
-      user_role: assign_user_role(attributes["user_role"])
+      user: @clone_to_user,
+      account_id: account_id,
+      created_by_user: @acting_user,
+      user_role: assign_user_role(original_role)
     )
   end
 
+  # An account can have one and only one owner. If we're cloning an owner, we will
+  # clone it as a business admin
   def assign_user_role(role)
     role == PROTECTED_USER_ROLE ? ALT_FOR_PROTECTED_ROLE : role
   end
