@@ -42,6 +42,10 @@ RSpec.describe AccountMembershipCloner, type: :service do
         deleted_at: nil,
       )
     end
+
+    it "generates a LogEvent" do
+      expect { cloner.perform }.to change(LogEvent, :count).by(1)
+    end
   end
 
   describe "when invoked to clone an owned account" do

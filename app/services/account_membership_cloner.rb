@@ -23,10 +23,12 @@ class AccountMembershipCloner
   def perform!
     ActiveRecord::Base.transaction do
       @account_users_to_clone.map do |au|
-        create_account_user(
+        new_account_user = create_account_user(
           account_id: au.account_id,
           original_role: au.user_role,
         )
+        create_log_event(new_account_user)
+        new_account_user
       end
     end
   end
@@ -44,6 +46,10 @@ class AccountMembershipCloner
   # clone it as a business admin
   def assign_user_role(role)
     role == PROTECTED_USER_ROLE ? ALT_FOR_PROTECTED_ROLE : role
+  end
+
+  def create_log_event(account_user)
+    LogEvent.log(account_user, :create, @acting_user)
   end
 
 end
