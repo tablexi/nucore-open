@@ -567,7 +567,7 @@ GEM
       activemodel (>= 5.0)
     single_test (0.6.0)
       rake
-    spreadsheet (1.2.5)
+    spreadsheet (1.2.6)
       ruby-ole (>= 1.0)
     spring (2.1.0)
     spring-commands-rspec (1.0.4)
