@@ -4,6 +4,7 @@ class CloneAccountMembershipsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_current_facility
+  before_action { authorize! :clone_accounts, current_facility }
   before_action :init_clone_to_user
   before_action :init_clone_from_user, only: [:new, :create]
   before_action { @active_tab = "accounts" }
