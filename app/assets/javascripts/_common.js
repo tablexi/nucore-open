@@ -64,7 +64,9 @@ $(document).ready(function() {
       this.innerHTML = check ? $(this).data("select-none") : $(this).data("select-all");
     });
     $('.toggle:checkbox').each(function() {
-      this.checked = check;
+      if(!this.disabled) {
+        this.checked = check;
+      }
     });
     return false;
   });

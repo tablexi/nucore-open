@@ -11,6 +11,8 @@ RSpec.describe "Cloning account membership" do
   let(:purchaser_account_to_not_clone) { create(:account, :with_account_owner) }
 
   before do
+    allow(Account.config).to receive(:global_account_types).and_return(["Account"])
+
     create(:account_user, :business_administrator, user: original_user, account: business_admin_account)
     create(:account_user, :purchaser, user: original_user, account: purchaser_account)
     create(:account_user, :purchaser, user: new_user, account: purchaser_account_to_not_clone)
@@ -22,10 +24,10 @@ RSpec.describe "Cloning account membership" do
     visit facility_user_accounts_path(facility, new_user)
 
     click_link "Clone Payment Source Membership"
-    fill_in "Search by name or email", with: original_user.name
+    fill_in "search_term", with: original_user.name
     click_button "Search"
 
-    click_link "Clone Account Memberships"
+    click_link "Clone Payment Source Memberships"
 
     find(:css, "#accountId#{owned_account.id}").set(true)
     find(:css, "#accountId#{business_admin_account.id}").set(true)
@@ -38,6 +40,6 @@ RSpec.describe "Cloning account membership" do
 
     click_button "Clone"
 
-    expect(page).to have_content(I18n.t(:success, scope: "forms.clone_account_membership"))
+    expect(page).to have_content("Successfully cloned")
   end
 end

@@ -1,8 +1,0 @@
-en:
-  forms:
-    clone_account_membership:
-      account_users_not_found: "No available account memberships were found. Please try a different user."
-      error: "An error was encountered while cloning the account \"%{account_description}\": %{message}."
-      header: "Cloning Account Memberships From %{first_name} %{last_name}"
-      success: "Successfully cloned account memberships and roles."
-      label: "%{account_description} / %{account_number}"

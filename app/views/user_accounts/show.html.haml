@@ -12,7 +12,7 @@
 - if @accounts.present?
   - if current_facility.cross_facility? && current_ability.can?(:manage_users, current_facility)
     = link_to t(".edit"), edit_facility_user_accounts_path(current_facility, @user), class: "btn btn-primary"
-  = link_to "Clone Payment Source Membership", facility_user_clone_account_memberships_path(current_facility, @user), class: "btn"
+  = link_to text("views.clone_account_memberships.index.header"), facility_user_clone_account_memberships_path(current_facility, @user), class: "btn"
   %table.table.table-striped.table-hover
     %thead
       %tr
@@ -26,4 +26,4 @@
 - else
   %p.notice= t('.notice', user_name: @user.full_name)
 
-  = link_to "Clone Payment Source Membership", facility_user_clone_account_memberships_path(current_facility, @user), class: "btn"
+  = link_to text("views.clone_account_memberships.index.header"), facility_user_clone_account_memberships_path(current_facility, @user), class: "btn"
