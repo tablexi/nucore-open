@@ -20,7 +20,7 @@ class InstrumentStatusFetcher
 
   def instrument_status_for(instrument)
     # Always return true/on if the relay feature is disabled
-    current_on = SettingsHelper.relays_enabled_for_admin? ? instrument.relay.get_status : true
+    current_on = SettingsHelper.relays_enabled_for_admin? ? status_of(instrument.relay) : true
     previous_instrument_status = instrument.current_instrument_status
     # if the status hasn't changed, don't create a new status
     if previous_instrument_status && current_on == previous_instrument_status.on?
@@ -32,6 +32,19 @@ class InstrumentStatusFetcher
   rescue => e
     Rails.logger.error e.message
     InstrumentStatus.new(instrument: instrument, error_message: e.message)
+  end
+
+  def status_of(relay)
+    @cache ||= {}
+    # Shared schedules might use the same relay on multiple instruments. In these
+    # situations, we only want to fetch the status once.
+    key = [relay.ip, relay.ip_port, relay.outlet]
+
+    if @cache.key?(key)
+      @cache[key]
+    else
+      @cache[key] = relay.get_status
+    end
   end
 
 end
