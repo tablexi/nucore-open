@@ -61,7 +61,7 @@ module PowerRelay
   def log_power_relay_options
     {
       options: {
-        instrument: instrument.name,
+        instrument: instrument&.name,
         type: type,
         host: host,
         ip_port: ip_port,
