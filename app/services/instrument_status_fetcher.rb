@@ -15,7 +15,7 @@ class InstrumentStatusFetcher
   private
 
   def instruments
-    @facility.instruments.order(:id).includes(:relay).select { |instrument| instrument.relay.present? }
+    @facility.instruments.order(:id).includes(:relay).select { |instrument| instrument.relay&.networked_relay? }
   end
 
   def instrument_status_for(instrument)
