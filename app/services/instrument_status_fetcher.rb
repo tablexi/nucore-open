@@ -22,10 +22,7 @@ class InstrumentStatusFetcher
     # Always return true/on if the relay feature is disabled
     return InstrumentStatus.new(on: true, instrument: instrument) unless SettingsHelper.relays_enabled_for_admin?
 
-    # Shared schedules might use the same relay on multiple instruments. In these
-    # situations, we only want to fetch the status once.
-    key = [instrument.relay.ip, instrument.relay.ip_port, instrument.relay.outlet]
-
+    key = instrument.relay.status_cache_key
     return status_cache[key] if status_cache.key?(key)
 
     begin

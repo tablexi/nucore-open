@@ -44,6 +44,25 @@ module PowerRelay
     raise NotImplementedError.new("Subclass must define")
   end
 
+  # Shared schedules might use the same physical relay on multiple instruments, but
+  # each of these are a different database record. In these situations, we only want to
+  # fetch the status once.
+  # Note that if one has nil (e.g. default) and the other has "80", it will still do two
+  # network queries. This is so this model can be agnostic about the actual relay's default port
+  # (e.g. Synaccess is 80 while Dataprobe is 9200).
+  def status_cache_key
+    [
+      ip,
+      ip_port,
+      outlet,
+      # Include username/password so that if one of the shared schedule is right and
+      # the other is wrong we still do multiple queries: one gets an error and the other
+      # doesn't.
+      username,
+      password,
+    ]
+  end
+
   private
 
   def log_power_relay_connection(event_type)
