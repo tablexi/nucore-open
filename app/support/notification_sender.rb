@@ -72,14 +72,14 @@ class NotificationSender
 
     def notify_accounts(account_ids_to_notify, facility)
       notifications_hash(account_ids_to_notify).each do |user, accounts|
-        Notifier.review_orders(user: user, account: account_ids, facility: facility).deliver_now
+        Notifier.review_orders(user: user, accounts: accounts, facility: facility).deliver_now
       end
     end
 
     private
 
-    # This builds a Hash of account_id Arrays, keyed by user_id.
-    # The user_ids are the administrators (owners and business administrators)
+    # This builds a Hash of account Arrays, keyed by the user.
+    # The users are the administrators (owners and business administrators)
     # of the given accounts.
     def notifications_hash(account_ids_to_notify)
       account_ids_to_notify.each_with_object({}) do |account_id, notifications|
