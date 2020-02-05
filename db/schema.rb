@@ -327,7 +327,7 @@ ActiveRecord::Schema.define(version: 2020_01_30_153146) do
     t.string "problem_description_key_was"
     t.timestamp "problem_resolved_at"
     t.integer "problem_resolved_by_id"
-    t.string "reference_id", limit: 30
+    t.string "reference_id"
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
