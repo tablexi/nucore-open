@@ -125,6 +125,19 @@ class Facility < ApplicationRecord
     .order(:name)
   end
 
+  def dashboard_enabled
+    dashboard_token.present?
+  end
+  alias dashboard_enabled? dashboard_enabled
+
+  def dashboard_enabled=(value)
+    if ActiveModel::Type::Boolean.new.cast(value)
+      self.dashboard_token ||= SecureRandom.uuid
+    else
+      self.dashboard_token = nil
+    end
+  end
+
   private
 
   def set_journal_mask
