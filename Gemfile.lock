@@ -332,7 +332,7 @@ GEM
     haml (5.1.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.34.1)
+    haml_lint (0.34.2)
       haml (>= 4.0, < 5.2)
       rainbow
       rubocop (>= 0.50.0)
@@ -420,7 +420,7 @@ GEM
       parallel
     paranoia (2.4.2)
       activerecord (>= 4.0, < 6.1)
-    parser (2.6.5.0)
+    parser (2.7.0.2)
       ast (~> 2.4.0)
     pdf-core (0.7.0)
     poltergeist (1.18.1)
@@ -606,7 +606,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.1.18)
       execjs (>= 0.3.0, < 3)
-    unicode-display_width (1.6.0)
+    unicode-display_width (1.6.1)
     unicorn (5.4.1)
       kgio (~> 2.6)
       raindrops (~> 0.7)
