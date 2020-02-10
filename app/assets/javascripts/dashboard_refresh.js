@@ -28,7 +28,8 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   if (dashboard) {
-    const refreshInterval = dashboard.dataset["refreshInterval"] || 5000;
-    window.setInterval(fetchAndRefresh, refreshInterval);
+    // In seconds
+    const refreshInterval = dashboard.dataset["refreshInterval"] || 5;
+    window.setInterval(fetchAndRefresh, refreshInterval * 1000);
   }
 });

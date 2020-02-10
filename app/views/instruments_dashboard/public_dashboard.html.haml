@@ -2,5 +2,5 @@
   = javascript_include_tag "dashboard_refresh"
 
 %h1= current_facility.name
-.js--dashboardRefresh{ data: { refresh_interval: 1.minute * 1000 } }
+.js--dashboardRefresh{ data: { refresh_interval: 1.minute } }
   = render partial: "dashboard", locals: { reservations: @reservations }
