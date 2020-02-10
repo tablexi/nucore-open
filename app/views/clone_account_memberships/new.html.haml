@@ -17,7 +17,7 @@
         %tr
           %th= select_all_link
           %th= Account.model_name.human
-          %th
+          %th= AccountUser.human_attribute_name(:user_role)
           %th= Facility.model_name.human
       %tbody
         - @account_users.each do |account_user|
