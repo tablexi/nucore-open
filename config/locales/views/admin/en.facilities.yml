@@ -20,6 +20,9 @@ en:
           (if left blank, notifications will not be sent)
       manage:
         dashboard: Dashboard
+    instruments_dashboard:
+      dashboard:
+        time_label: Data Taken At
 
   controllers:
     facilities:

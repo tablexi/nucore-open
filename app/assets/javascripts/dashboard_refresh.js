@@ -12,8 +12,10 @@ document.addEventListener("DOMContentLoaded", function() {
   const dashboard = document.getElementsByClassName("js--dashboardRefresh")[0];
 
   function fetchAndRefresh() {
-    const url = dashboard.dataset["url"] || document.location;
+    const url = new URL(dashboard.dataset["url"] || document.location);
+    url.searchParams.set("refresh", "true");
     const headers = { Accept: "text/html" };
+
     fetch(url, { headers: headers })
     .then(function (response) {
       if (response.ok) {
