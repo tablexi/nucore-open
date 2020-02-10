@@ -10,7 +10,7 @@ class InstrumentsDashboardController < ApplicationController
   before_action { @active_tab = "admin_reservations" }
 
   def dashboard
-    authorize!(:read, Reservation)
+    authorize!(:show, Reservation)
   end
 
   def public_dashboard
