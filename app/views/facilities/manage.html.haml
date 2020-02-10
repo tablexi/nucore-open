@@ -1,3 +1,4 @@
+
 = content_for :h1 do
   = current_facility
 = content_for :sidebar do
@@ -13,8 +14,6 @@
   = f.input :accepts_multi_add, label: text("views.facilities.facility_fields.labels.accepts_multi_add")
   = f.input :show_instrument_availability, label: text("views.facilities.facility_fields.labels.show_instrument_availability")
   = f.input :dashboard_enabled
-  - if current_facility.dashboard_enabled?
-    %p= link_to text("dashboard"), dashboard_facility_instruments_path(f.object, token: current_facility.dashboard_token)
   = render_view_hook("before_is_active", f: f)
   = f.input :is_active
   = f.input :address, value_method: proc { |value| value.present? ? simple_format(value) : '<p>None Entered</p>'.html_safe }

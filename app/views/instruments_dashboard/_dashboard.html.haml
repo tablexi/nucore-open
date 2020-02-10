@@ -15,6 +15,6 @@
           = warning_if_instrument_is_offline_or_partially_available(reservation.product)
         %td
           = reservation.user || text(reservation.class.name.underscore, default: reservation.class.model_name.human)
-          = "(Active)" if reservation.started?
+          = text("active") if reservation.started?
         %td= format_usa_datetime(reservation.reserve_start_at)
         %td= format_usa_datetime(reservation.reserve_end_at)
