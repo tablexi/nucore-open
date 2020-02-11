@@ -4,7 +4,7 @@ class Product < ApplicationRecord
 
   include TextHelpers::Translation
   include EmailListAttribute
-  include NUCore::Database::FullTextSearchHelper
+  include Nucore::Database::FullTextSearchHelper
 
   belongs_to :facility
   belongs_to :initial_order_status, class_name: "OrderStatus"
