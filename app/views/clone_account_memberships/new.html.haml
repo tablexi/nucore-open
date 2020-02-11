@@ -29,9 +29,9 @@
             %td= account_user.user_role
             %td= account_user.account.per_facility? ? account_user.account.facilities.join(", ") : content_tag(:i, t("shared.all"))
 
-    = f.submit "Clone", class: "btn btn-success"
-    = link_to text("back"), facility_user_clone_account_memberships_path
+    = f.submit "Clone", class: "btn btn-success js--requireValueForSubmit"
+    = link_to text("shared.cancel"), facility_user_accounts_path
 
   - else
     %p.alert.alert-info= text("none", name: @clone_from_user.full_name)
-    = link_to text("back"), facility_user_clone_account_memberships_path
+    = link_to text("shared.cancel"), facility_user_accounts_path
