@@ -11,7 +11,11 @@ module GlobalSearch
     private
 
     def search
-      Product.includes(:facility).where("MATCH(products.name, products.description) AGAINST (?)", query)
+      if NUCore::Database.oracle?
+        Product.contains(:name, query).or(Product.contains(:description, query))
+      else
+        Product.includes(:facility).where("MATCH(products.name, products.description) AGAINST (?)", query)
+      end
       # name_search.or(description_search)
     end
 
