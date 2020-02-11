@@ -11,7 +11,8 @@ module GlobalSearch
     private
 
     def search
-      name_search.or(description_search)
+      Product.includes(:facility).where("MATCH(products.name, products.description) AGAINST (?)", query)
+      # name_search.or(description_search)
     end
 
     def restrict(products)
@@ -21,13 +22,13 @@ module GlobalSearch
     end
 
     def name_search
-      query_string = "%#{query}%"
-      Product.includes(:facility).where("LOWER(products.name) LIKE ?", query_string.downcase)
+      # query_string = "%#{query}%"
+      # Product.includes(:facility).where("LOWER(products.name) LIKE ?", query_string.downcase)
     end
 
     def description_search
-      query_string = "%#{query}%"
-      Product.includes(:facility).where("LOWER(products.description) LIKE ?", query_string.downcase)
+      # query_string = "%#{query}%"
+      # Product.includes(:facility).where("LOWER(products.description) LIKE ?", query_string.downcase)
     end
 
   end

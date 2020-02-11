@@ -9,7 +9,17 @@ RSpec.describe GlobalSearch::ProductSearcher do
   let(:facility) { nil }
   let(:searcher) { described_class.new(user, facility, query) }
   let(:user) { create(:user) }
-  let!(:item) { create(:setup_item, name: "Capitalized Item") }
+  let(:item) { Item.find_by!(url_name: "lsc-andor") }
+  before(:context) do
+    facility = create(:facility)
+    item = build(:item, url_name: "lsc-andor", name: "LSC Andor Spinning Disk", facility: facility)
+    item.save(validate: false)
+  end
+
+  after(:context) do
+    Item.delete_all
+    Facility.delete_all
+  end
 
   describe "#results" do
     context "when the query is nil" do
@@ -28,26 +38,39 @@ RSpec.describe GlobalSearch::ProductSearcher do
     end
 
     context "when the query case does not match the db case" do
-      let(:query) { "item" }
-      it { is_expected.to contain_exactly(item) }
+      let(:query) { "lsc" }
+      it {
+        is_expected.to contain_exactly(item)
+      }
     end
 
     context "when the query matches results the user doesn't have permissions to view" do
-      let(:query) { "item" }
+      let(:query) { "lsc" }
 
       before do
-        item.update_attributes(is_hidden: true)
+        item.is_hidden = true
+        item.save(validate: false)
       end
 
       it { is_expected.to be_empty }
     end
 
+    context "when it matches multiple words, but not exactly" do
+      let!(:item2) { create(:setup_item, name: "LSC Nikon A1RSi") }
+      let(:query) { "lsc spinning disk" }
+
+      it "matches both products with the one matching more words first" do
+        is_expected.to eq([item, item2])
+      end
+    end
+
     context "when query matches a hidden product that the user has permissions to view" do
       let(:user) { create(:user, :staff, facility: item.facility) }
-      let(:query) { "item" }
+      let(:query) { "lsc" }
 
       before do
-        item.update_attributes(is_hidden: true)
+        item.is_hidden = true
+        item.save(validate: false)
       end
 
       it { is_expected.to contain_exactly(item) }
@@ -55,10 +78,11 @@ RSpec.describe GlobalSearch::ProductSearcher do
 
     context "when query matches a product that belongs to an inactive facility" do
       let(:inactive_facility) { create(:facility, is_active: false) }
-      let(:query) { "item" }
+      let(:query) { "lsc" }
 
       before do
-        item.update_attributes(facility: inactive_facility)
+        item.facility = inactive_facility
+        item.save(validate: false)
       end
 
       it { is_expected.to be_empty }
