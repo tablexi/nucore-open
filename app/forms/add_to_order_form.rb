@@ -4,6 +4,7 @@ class AddToOrderForm
 
   include ActiveModel::Model
   include TextHelpers::Translation
+  include DateHelper
 
   attr_reader :original_order, :current_facility
   attr_accessor :quantity, :product_id, :order_status_id, :note, :duration, :created_by, :fulfilled_at, :account_id, :reference_id
@@ -96,8 +97,9 @@ class AddToOrderForm
     @duration = 1
 
     if previously_added_to?
-      # This is a string so it displays on the form correctly
-      @fulfilled_at = I18n.l(previously_added_order_detail.fulfilled_at.to_date, format: :usa)
+      # This is a string so it displays on the form correctly.
+      # It may be nil if the order is not complete
+      @fulfilled_at = format_usa_date(previously_added_order_detail.fulfilled_at)
       @order_status_id = previously_added_order_detail.order_status_id
     else
       @fulfilled_at = nil
@@ -119,8 +121,8 @@ class AddToOrderForm
     return @previously_added_order_detail if defined?(@previously_added_order_detail)
 
     order_details = @original_order.order_details.order(:id)
-    original_ordered_at = order_details.first.ordered_at
-    @previously_added_order_detail = order_details.reverse.find { |od| od.ordered_at != original_ordered_at }
+    original_order_detail = order_details.first
+    @previously_added_order_detail = order_details.reverse.find { |od| od.ordered_at != original_order_detail.ordered_at }
   end
 
   def params

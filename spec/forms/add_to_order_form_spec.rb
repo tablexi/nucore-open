@@ -54,30 +54,40 @@ RSpec.describe AddToOrderForm do
         create(:order_detail, order: order, account: other_account, product: product, note: "somenote", ordered_at: 1.day.ago)
       end
 
-      before do
-        order.reload
-        second_order_detail.backdate_to_complete!(1.day.ago)
+      before { order.reload }
+
+      describe "and it is still New" do
+        it "has a status of complete" do
+          expect(form.order_status_id).to eq(OrderStatus.new_status.id)
+        end
+
+        it "has the second order's fulfilled_at to the matching date" do
+          expect(form.fulfilled_at).to be_blank
+        end
+
+        it "still has the original order's account" do
+          expect(form.account_id).to eq(order.account_id)
+        end
+
+        it "has other default attributes" do
+          expect(form).to have_attributes(
+            quantity: 1,
+            note: be_blank,
+            reference_id: be_blank,
+            product_id: be_blank,
+          )
+        end
       end
 
-      it "has a status of complete" do
-        expect(form.order_status_id).to eq(OrderStatus.complete.id)
-      end
+      describe "and it is Complete" do
+        before { second_order_detail.backdate_to_complete!(1.day.ago) }
+        it "has a status of complete" do
+          expect(form.order_status_id).to eq(OrderStatus.complete.id)
+        end
 
-      it "has the second order's fulfilled_at to the matching date" do
-        expect(parse_usa_date(form.fulfilled_at)).to eq(second_order_detail.fulfilled_at.beginning_of_day)
-      end
-
-      it "still has the original order's account" do
-        expect(form.account_id).to eq(order.account_id)
-      end
-
-      it "has other default attributes" do
-        expect(form).to have_attributes(
-          quantity: 1,
-          note: be_blank,
-          reference_id: be_blank,
-          product_id: be_blank,
-        )
+        it "has the second order's fulfilled_at to the matching date" do
+          expect(parse_usa_date(form.fulfilled_at)).to eq(second_order_detail.fulfilled_at.beginning_of_day)
+        end
       end
     end
   end
