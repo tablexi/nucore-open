@@ -16,11 +16,9 @@ class OrderRowImporter
     :notes,
     :order_number,
     :errors,
-  ]
+  ].lazy.map { |k| header(k) }
 
-  HUMAN_HEADERS = HEADERS.lazy.map { |k| header(k) }
-
-  REQUIRED_HUMAN_HEADERS = [
+  REQUIRED_HEADERS = [
     :user,
     :chart_string,
     :product_name,
@@ -48,7 +46,7 @@ class OrderRowImporter
   end
 
   def self.headers_to_s
-    HUMAN_HEADERS.join(",")
+    HEADERS.join(",")
   end
 
   def initialize(row, order_import)
@@ -88,7 +86,7 @@ class OrderRowImporter
   def row_with_errors
     # Start with a hash of HEADERS keys with nil values to ensure optional columns
     # are included in the report even if they are not in the uploaded CSV.
-    new_row = HUMAN_HEADERS.each_with_object({}) { |header, hash| hash[header] = nil }
+    new_row = HEADERS.each_with_object({}) { |header, hash| hash[header] = nil }
     new_row.merge!(@row)
     new_row[header(:errors)] = errors.join(", ")
 
@@ -174,7 +172,7 @@ class OrderRowImporter
   end
 
   def validate_headers
-    missing_headers = REQUIRED_HUMAN_HEADERS.to_a - @row.headers
+    missing_headers = REQUIRED_HEADERS.to_a - @row.headers
     add_error(:missing_headers, headers: missing_headers.join(' | ')) if missing_headers.present?
   end
 

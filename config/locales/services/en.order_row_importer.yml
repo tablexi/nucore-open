@@ -3,8 +3,6 @@ en:
     headers:
       user: Netid / Email
       order_number: Order
-      order_date: Order Date
-      fulfillment_date: Fulfillment Date
       notes: Note
     errors:
       purchase_fail: Couldn't purchase order
