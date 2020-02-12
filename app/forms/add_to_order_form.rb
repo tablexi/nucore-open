@@ -18,10 +18,7 @@ class AddToOrderForm
 
   def initialize(original_order)
     @original_order = original_order
-    @current_facility = original_order.facility
-    @account_id = original_order.account_id
-    @quantity = 1
-    @duration = 1
+    set_default_values
   end
 
   def save
@@ -90,6 +87,40 @@ class AddToOrderForm
         end
       end
     end
+  end
+
+  def set_default_values
+    @current_facility = original_order.facility
+    @account_id = original_order.account_id
+    @quantity = 1
+    @duration = 1
+
+    if previously_added_to?
+      # This is a string so it displays on the form correctly
+      @fulfilled_at = I18n.l(previously_added_order_detail.fulfilled_at.to_date, format: :usa)
+      @order_status_id = previously_added_order_detail.order_status_id
+    else
+      @fulfilled_at = nil
+      @order_status_id = OrderStatus.new_status.id
+    end
+  end
+
+  def previously_added_to?
+    previously_added_order_detail.present?
+  end
+
+  # We're using the ordered_at of the order details to determine if additional OrderDetails
+  # have been added to the order. We find the most recently added order that does not
+  # match the original order's ordered_at and use that for our basis for defaults.
+  # There is an edge case: 1) Upload an order via bulk upload. 2) Add on to that order
+  # here. 3) Upload again via bulk upload matching the ordered_at of the original.
+  # In that situation, we will return the results of #2.
+  def previously_added_order_detail
+    return @previously_added_order_detail if defined?(@previously_added_order_detail)
+
+    order_details = @original_order.order_details.order(:id)
+    original_ordered_at = order_details.first.ordered_at
+    @previously_added_order_detail = order_details.reverse.find { |od| od.ordered_at != original_ordered_at }
   end
 
   def params
