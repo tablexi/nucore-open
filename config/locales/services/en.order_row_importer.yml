@@ -7,9 +7,9 @@ en:
     errors:
       purchase_fail: Couldn't purchase order
       validate_fail: Couldn't validate order
-      invalid_date_format: "Invalid %{field}: Please use MM/DD/YYYY format"
+      invalid_date: "Invalid %{field}: Please use MM/DD/YYYY format"
+      cannot_be_in_future: "Invalid %{field}: Cannot be in the future"
       missing_headers: "Missing headers: %{headers}"
-      invalid_date: "Invalid %{column}: Please use MM/DD/YYYY format"
       invalid_user: Invalid username or email
       product_not_found: Couldn't find product by name '%{product}'
       invalid_product_type: Import of %{type} orders not allowed at this time

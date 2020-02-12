@@ -46,7 +46,7 @@ class OrderRowImporter
   end
 
   def self.headers_to_s
-    HEADERS.join(",")
+    HEADERS.to_a.join(",")
   end
 
   def initialize(row, order_import)
@@ -108,7 +108,7 @@ class OrderRowImporter
 
   def add_error(message, options = {})
     if message.present?
-      message = t("errors.#{message}", options) if message.is_a?(Symbol)
+      message = I18n.t(message, options.reverse_merge(scope: "#{self.class.name.underscore}.errors")) if message.is_a?(Symbol)
       @errors.add(message)
     end
   end
@@ -192,13 +192,21 @@ class OrderRowImporter
 
   def validate_fulfillment_date
     if fulfillment_date.blank?
-      add_error(:invalid_date, column: header(:fulfillment_date))
+      add_error(:invalid_date, field: header(:fulfillment_date))
+    # Because it's parsed as a date, it gets parsed as midnight at the beginning of that day,
+    # which allows placing the order for today.
+    elsif fulfillment_date.future?
+      add_error(:cannot_be_in_future, field: header(:fulfillment_date))
     end
   end
 
   def validate_order_date
     if order_date.blank?
-      add_error(:invalid_date, column: header(:order_date))
+      add_error(:invalid_date, field: header(:order_date))
+    # Because it's parsed as a date, it gets parsed as midnight at the beginning of that day,
+    # which allows placing the order for today.
+    elsif order_date.future?
+      add_error(:cannot_be_in_future, field: header(:order_date))
     end
   end
 
@@ -248,9 +256,4 @@ class OrderRowImporter
       add_error(:order_user_mismatch)
     end
   end
-
-  def t(key, options = {})
-    I18n.t(key, options.reverse_merge(scope: self.class.name.underscore))
-  end
-
 end
