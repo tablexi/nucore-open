@@ -46,9 +46,7 @@ RSpec.describe GlobalSearch::ProductSearcher do
 
     context "when the query case does not match the db case" do
       let(:query) { "lsc" }
-      it {
-        is_expected.to contain_exactly(item)
-      }
+      it { is_expected.to contain_exactly(item) }
     end
 
     context "when the query matches results the user doesn't have permissions to view" do
@@ -67,6 +65,10 @@ RSpec.describe GlobalSearch::ProductSearcher do
         facility = Facility.find_by(url_name: "facility")
         Item.new(name: "LSC Nikon A1RSi", facility: facility, url_name: "lsc_nikon").save(validate: false)
       end
+      after(:context) do
+        Item.find_by(url_name: "lsc_nikon").destroy
+      end
+
       let(:item2) { Item.find_by(url_name: "lsc_nikon") }
       let(:query) { "lsc spinning disk" }
 

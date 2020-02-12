@@ -45,6 +45,11 @@ RSpec.describe GlobalSearchController do
   let(:product_results) { assigns[:searchers].find { |s| s.template == "products" }.results }
 
   describe "index" do
+    before do
+      # full_text searching doesn't work in specs because the index only gets updated
+      # ON COMMIT, and rspec runs each example within a transaction.
+      allow(Product).to receive(:full_text) { |_columns, query| Product.where(name: query) }
+    end
 
     context "when not signed in" do
       it "can search with the product searcher", :aggregate_failures do
