@@ -18,16 +18,7 @@ class FacilityAccountsController < ApplicationController
   before_action :check_billing_access, only: [:accounts_receivable]
 
   layout "two_column"
-
-  def initialize
-    @active_tab =
-      if SettingsHelper.feature_on?(:manage_payment_sources_with_users)
-        "admin_users"
-      else
-        "admin_billing"
-      end
-    super
-  end
+  before_action { @active_tab = "admin_users" }
 
   # GET /facilties/:facility_id/accounts
   def index
