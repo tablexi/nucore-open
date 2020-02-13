@@ -27,6 +27,3 @@
       - route_name = Account.config.account_type_to_route(account_type)
       = tab text("reconcile", model: account_type.constantize.model_name.human(count: 2)),
         [route_name, FacilityAccount], (sidenav_tab == route_name)
-
-  %li.divider
-  = tab text("accounts_receivable"), facility_accounts_receivable_path, (sidenav_tab == 'accounts_receivable')
