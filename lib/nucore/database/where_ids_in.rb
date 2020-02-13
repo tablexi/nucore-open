@@ -14,7 +14,7 @@ module Nucore
         # place of `where(id: ids)` when there might be more than 1000 ids.
         # Example: facility.order_details.complete.where_ids_in(ids)
         def where_ids_in(ids, batch_size: 999)
-          if NUCore::Database.oracle?
+          if Nucore::Database.oracle?
             return none if ids.blank?
 
             clauses = ids.each_slice(batch_size).map do |id_slice|
@@ -30,7 +30,7 @@ module Nucore
         # items in a WHERE IN. Raises an error if all the items are not
         # found, just like `find`
         def find_ids(ids)
-          if NUCore::Database.oracle?
+          if Nucore::Database.oracle?
             results = where_ids_in(ids)
             # This is the same method `find` uses to get an exception message like "(found 1 results, but was looking for 2)"
             all.raise_record_not_found_exception!(ids, results.size, ids.size) unless results.length == ids.length
