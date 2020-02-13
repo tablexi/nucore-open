@@ -11,7 +11,7 @@ module Nucore
 
     def self.mysql?
       return @is_mysql if defined?(@is_mysql)
-      @is_mysql = ActiveRecord::Base.connection.adapter_name == "mysql2"
+      @is_mysql = ActiveRecord::Base.connection_config[:adapter] == "mysql2"
     end
 
     def self.boolean(value)
