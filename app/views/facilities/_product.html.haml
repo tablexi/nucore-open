@@ -1,3 +1,6 @@
+-# Skip if it's a bundle and all the products are not active
+- return if product.respond_to?(:products_active?) && !product.products_active?
+
 %li{ class: product.model_name.singular }
   - if local_assigns[:f]
     = f.fields_for :order_details do |builder|

@@ -40,6 +40,18 @@ class FacilitiesController < ApplicationController
     render layout: "application"
   end
 
+  ProductDisplayGroupPresenter = Struct.new(:name, :products, keyword_init: true) do
+    def self.by_type(scope)
+      Product.types.map do |type|
+        new(name: type.model_name.human(count: :many), products: scope.where(type: type.to_s))
+      end
+    end
+
+    def to_s
+      name
+    end
+  end
+
   # GET /facilities/:facility_id
   def show
     return redirect_to(facilities_path) if current_facility.try(:cross_facility?)
@@ -47,16 +59,14 @@ class FacilitiesController < ApplicationController
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
 
-    instruments_scope = current_facility.instruments.includes(:alert, :current_offline_reservations)
-
+    @product_scope = Product.alphabetized
     if acting_as? || session_user.try(:operator_of?, current_facility)
-      @instruments = instruments_scope.not_archived.alphabetized
-      @non_instrument_products_by_type = current_facility.non_instrument_products.not_archived.group_by(&:type)
+      @product_scope = @product_scope.not_archived
     else
-      @instruments = instruments_scope.active.alphabetized
-      @non_instrument_products_by_type = current_facility.non_instrument_products.active.group_by(&:type)
-      @non_instrument_products_by_type["Bundle"].try(:select!, &:products_active?)
+      @product_scope = @product_scope.active # Active also excludes hidden
     end
+    @product_display_groups = current_facility.product_display_groups
+    @product_display_groups = @product_display_groups.to_a + ProductDisplayGroupPresenter.by_type(current_facility.products.without_display_group)
 
     render layout: "application"
   end

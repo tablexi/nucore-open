@@ -19,6 +19,8 @@ class Product < ApplicationRecord
   has_many :training_requests, dependent: :destroy
   has_many :product_research_safety_certification_requirements
   has_many :research_safety_certificates, through: :product_research_safety_certification_requirements
+  has_one :product_display_group_product
+  has_one :product_display_group, through: :product_display_group_product
 
   email_list_attribute :training_request_contacts
 
@@ -60,6 +62,9 @@ class Product < ApplicationRecord
   scope :in_active_facility, -> { joins(:facility).where(facilities: { is_active: true }) }
   scope :of_type, ->(type) { where(type: type) }
   scope :with_schedule, -> { where.not(schedule_id: nil) }
+  scope :without_display_group, -> {
+    left_outer_joins(:product_display_group_product).where(product_display_group_products: { id: nil })
+  }
 
   def self.types
     @types ||= [Instrument, Item, Service, TimedService, Bundle]
