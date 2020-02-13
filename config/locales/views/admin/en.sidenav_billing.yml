@@ -1,0 +1,14 @@
+en:
+  views:
+    admin:
+      shared:
+        sidenav_billing:
+          transactions_header: Transactions
+          all_transactions: All Transactions
+          send_notifications: "!facility_notifications.index.head!"
+          orders_in_review: "!facility_notifications.in_review.head!"
+          move_transactions: "!facilities.movable_transactions.head!"
+          disputed_orders: "!facilities.disputed_orders.head!"
+          accounts_receivable: "!facility_accounts.accounts_receivable.head!"
+          statement_history: "!views.facility_statements.index.head!"
+          reconcile: "!facility_accounts_reconciliation.index.head!"
