@@ -40,18 +40,6 @@ class FacilitiesController < ApplicationController
     render layout: "application"
   end
 
-  ProductDisplayGroupPresenter = Struct.new(:name, :products, keyword_init: true) do
-    def self.by_type(scope)
-      Product.types.map do |type|
-        new(name: type.model_name.human(count: :many), products: scope.where(type: type.to_s))
-      end
-    end
-
-    def to_s
-      name
-    end
-  end
-
   # GET /facilities/:facility_id
   def show
     return redirect_to(facilities_path) if current_facility.try(:cross_facility?)
@@ -66,7 +54,7 @@ class FacilitiesController < ApplicationController
       @product_scope = @product_scope.active # Active also excludes hidden
     end
     @product_display_groups = current_facility.product_display_groups
-    @product_display_groups = @product_display_groups.to_a + ProductDisplayGroupPresenter.by_type(current_facility.products.without_display_group)
+    @product_display_groups = @product_display_groups.to_a + ProductDisplayGroup.fake_groups_by_type(current_facility.products.without_display_group)
 
     render layout: "application"
   end
