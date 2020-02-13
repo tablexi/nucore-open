@@ -1,22 +1,21 @@
 %ul.sidebar-nav#menu_billing
   %li.nav-header= text("transactions_header")
   = tab text("all_transactions"), facility_transactions_path, (sidenav_tab == 'transactions')
-  = tab text("send_notifications"), facility_notifications_path, (sidenav_tab == 'notifications') if SettingsHelper::has_review_period?
-  = tab text("orders_in_review"), facility_notifications_in_review_path, (sidenav_tab == 'in_review') if SettingsHelper::has_review_period?
   = tab text("move_transactions"), facility_movable_transactions_path, (sidenav_tab == 'movable_transactions')
   = tab text("disputed_orders"), facility_disputed_orders_path, (sidenav_tab == "disputed_orders") if SettingsHelper::has_review_period?
 
-  %li.divider
-  = tab text("accounts_receivable"), facility_accounts_receivable_path, (sidenav_tab == 'accounts_receivable')
+  %li.nav-spacer
+  = tab text("send_notifications"), facility_notifications_path, (sidenav_tab == 'notifications') if SettingsHelper::has_review_period?
+  = tab text("orders_in_review"), facility_notifications_in_review_path, (sidenav_tab == 'in_review') if SettingsHelper::has_review_period?
 
   %li.divider
-  %li.nav-header= Journal.model_name.human.pluralize
+  %li.nav-header= text("internal_billing")
   = tab t_create_model(Journal), new_facility_journal_path, (sidenav_tab == 'new_journal') if current_facility.single_facility?
   = tab t_manage_models(Journal), facility_journals_path, (sidenav_tab == 'journals')
 
   - if Account.config.statements_enabled?
     %li.divider
-    %li.nav-header= Statement.model_name.human.pluralize
+    %li.nav-header= text("external_billing")
     = tab t_create_models(Statement), new_facility_statement_path(current_facility), (sidenav_tab == 'statements')
     = tab text("statement_history"), facility_statements_path(current_facility), (sidenav_tab == "statement_history")
 
@@ -28,3 +27,6 @@
       - route_name = Account.config.account_type_to_route(account_type)
       = tab text("reconcile", model: account_type.constantize.model_name.human(count: 2)),
         [route_name, FacilityAccount], (sidenav_tab == route_name)
+
+  %li.divider
+  = tab text("accounts_receivable"), facility_accounts_receivable_path, (sidenav_tab == 'accounts_receivable')
