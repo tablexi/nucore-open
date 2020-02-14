@@ -1,0 +1,8 @@
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: "product_display_groups"
+
+= simple_form_for [current_facility, @product_display_group] do |f|
+  = f.input :name
+  = f.submit class: "btn btn-primary"

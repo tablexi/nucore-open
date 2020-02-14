@@ -1,0 +1,12 @@
+en:
+  controllers:
+    product_display_groups:
+      create:
+        success: The Product Group was successfully added!
+        error: There was an error creating the Product Group
+      update:
+        success: The Product Group was successfully updated!
+        error: There was an error creating the Product Group
+      destroy:
+        success: The Product Group was successfully deleted!
+

@@ -17,4 +17,13 @@ RSpec.describe ProductDisplayGroup do
     expect(group.reload.products).to include(product)
   end
 
+  it "leaves the product ungrouped after delete" do
+    facility = create(:facility)
+    group = create(:product_display_group, facility: facility)
+    product = create(:item, :without_validation, facility: facility)
+    group.products << product
+
+    expect { group.destroy }.to change(ProductDisplayGroupProduct, :count).by(-1).and change(Product, :count).by(0)
+  end
+
 end

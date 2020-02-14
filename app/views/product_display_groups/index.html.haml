@@ -5,26 +5,24 @@
 
 %h2= ProductDisplayGroup.model_name.human(count: :many)
 
--# %table
--#   - current_facility.products.alphabetized.not_archived.each do |product|
--#     %tr
--#       %td= product
--#       %td= select_tag(:group, options_from_collection_for_select(@product_display_groups, :id, :name), include_blank: true)
-
-= simple_form_for :products, url: facility_product_display_groups_path do |f|
-  .container
+.container
+  - if can?(:create, ProductDisplayGroup)
     .row
-      .span4= f.submit class: "btn btn-primary"
-    .row
-      .span4
-        - @product_display_groups.each do |product_display_group|
-          .well.js--dropTarget{ data: { dropScope: "productDisplayGroups" } }
-            %legend.legend= product_display_group
-            %ul.js--dropTargetElement
-              - product_display_group.products.each do |product|
-                %li{ draggable: "true", data: { drag_id: product.id } }= product
-      .span4
-        %ul.js--dropTarget{ data: { dropScope: "productDisplayGroups" } }
-          - @ungrouped_products.alphabetized.each do |product|
-            %li{ draggable: "true", data: { drag_id: product.id } }= product
+      .span2
+        %p= link_to text("admin.shared.add", model: ProductDisplayGroup.model_name.human), new_facility_product_display_group_path, class: "btn btn-add"
+  .row
+    .span4
+      - @product_display_groups.each do |product_display_group|
+        .well.js--dropTarget{ data: { dropScope: "productDisplayGroups" } }
+          %legend.legend
+            = product_display_group
+            - if can?(:update, product_display_group)
+              .pull-right= link_to "Edit", edit_facility_product_display_group_path(current_facility, product_display_group), class: "btn"
+          %ul.js--dropTargetElement
+            - product_display_group.products.each do |product|
+              %li{ draggable: "true", data: { drag_id: product.id } }= product
+    .span4
+      %ul.js--dropTarget{ data: { dropScope: "productDisplayGroups" } }
+        - @ungrouped_products.alphabetized.each do |product|
+          %li{ draggable: "true", data: { drag_id: product.id } }= product
 
