@@ -6,6 +6,8 @@ class ProductDisplayGroup < ApplicationRecord
 
   validates :name, presence: true
 
+  scope :sorted, -> { order(:display_order) }
+
   def to_s
     name
   end

@@ -1,0 +1,30 @@
+= content_for :h1 do
+  = current_facility
+= content_for :sidebar do
+  = render "admin/shared/sidenav_product", sidenav_tab: "product_display_groups"
+
+%h2= ProductDisplayGroup.model_name.human(count: :many)
+
+-# %table
+-#   - current_facility.products.alphabetized.not_archived.each do |product|
+-#     %tr
+-#       %td= product
+-#       %td= select_tag(:group, options_from_collection_for_select(@product_display_groups, :id, :name), include_blank: true)
+
+= simple_form_for :products, url: facility_product_display_groups_path do |f|
+  .container
+    .row
+      .span4= f.submit class: "btn btn-primary"
+    .row
+      .span4
+        - @product_display_groups.each do |product_display_group|
+          .well.js--dropTarget{ data: { dropScope: "productDisplayGroups" } }
+            %legend.legend= product_display_group
+            %ul.js--dropTargetElement
+              - product_display_group.products.each do |product|
+                %li{ draggable: "true", data: { drag_id: product.id } }= product
+      .span4
+        %ul.js--dropTarget{ data: { dropScope: "productDisplayGroups" } }
+          - @ungrouped_products.alphabetized.each do |product|
+            %li{ draggable: "true", data: { drag_id: product.id } }= product
+
