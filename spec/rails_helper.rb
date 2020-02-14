@@ -23,8 +23,9 @@ RSpec.configure do |config|
 
   config.use_transactional_fixtures = true
 
-  require "capybara/poltergeist"
-  Capybara.javascript_driver = :poltergeist
+  require "selenium-webdriver"
+  Capybara.javascript_driver = :selenium_chrome_headless
+
   Capybara.server = :webrick
   require "capybara/email/rspec"
 
@@ -99,11 +100,16 @@ RSpec.configure do |config|
     ActiveJob::Base.queue_adapter = old_value
   end
 
-  # Poltergeist specs need to be able to talk to localhost
+  # Javascript specs need to be able to talk to localhost
   config.around(:each, :js) do |example|
     WebMock.disable_net_connect!(allow_localhost: true)
     example.call
     WebMock.disable_net_connect!(allow_localhost: false)
+  end
+
+  # Selenium needs to clean itself up once all the tests have been run
+  config.after(:all) do
+    WebMock.disable_net_connect!(allow_localhost: true)
   end
 
   # rspec-rails 3 will no longer automatically infer an example group's spec type
