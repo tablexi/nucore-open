@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "ProductDisplayGroups" do
   let(:facility) { create(:setup_facility) }
-  let(:items) { create_list(:item, 2, facility: facility) }
+  let!(:items) { create_list(:item, 2, facility: facility) }
 
   describe "as a director" do
     let(:director) { create(:user, :facility_director, facility: facility) }
@@ -16,12 +16,15 @@ RSpec.describe "ProductDisplayGroups" do
       click_link "Product Groups"
       click_link "Add Product Group"
       fill_in "Name", with: "My new group"
+      select items.first.name, from: "Products"
       click_button "Create Product Group"
       expect(page).to have_content("My new group")
+
+      expect(ProductDisplayGroup.last.products).to eq([items.first])
     end
 
     describe "editing" do
-      let!(:display_group) { create(:product_display_group, name: "My group", facility: facility) }
+      let!(:display_group) { create(:product_display_group, name: "My group", facility: facility, products: items.take(1)) }
 
       it "can edit the group's name" do
         visit facility_products_path(facility)
@@ -31,6 +34,17 @@ RSpec.describe "ProductDisplayGroups" do
         fill_in "Name", with: "New Name"
         click_button "Update Product Group"
         expect(page).to have_content("New Name")
+      end
+
+      it "can swap items" do
+        expect(ProductDisplayGroup.last.products).to eq([items.first])
+
+        visit edit_facility_product_display_group_path(facility, display_group)
+        unselect items.first.name, from: "Products"
+        select items.second.name, from: "Products"
+        click_button "Update Product Group"
+
+        expect(ProductDisplayGroup.last.products).to eq([items.second])
       end
     end
 

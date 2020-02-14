@@ -5,10 +5,10 @@ class ProductDisplayGroupsController < ApplicationController
   before_action :authenticate_user!
   before_action :init_current_facility
   load_and_authorize_resource through: :current_facility
+  before_action :load_ungrouped_products
 
   def index
     @product_display_groups = @product_display_groups.sorted
-    @ungrouped_products = current_facility.products.without_display_group
   end
 
   def new
@@ -41,7 +41,11 @@ class ProductDisplayGroupsController < ApplicationController
   private
 
   def product_display_group_params
-    params.require(:product_display_group).permit(:name)
+    params.require(:product_display_group).permit(:name, product_ids: [])
+  end
+
+  def load_ungrouped_products
+    @ungrouped_products = current_facility.products.without_display_group
   end
 
 end

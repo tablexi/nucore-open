@@ -5,4 +5,5 @@
 
 = simple_form_for [current_facility, @product_display_group] do |f|
   = f.input :name
+  = f.input :product_ids, collection: @product_display_group.products.alphabetized + @ungrouped_products.alphabetized, input_html: { multiple: true, class: "half-width js--chosen"}
   = f.submit class: "btn btn-primary"
