@@ -45,7 +45,7 @@ class ProductDisplayGroupsController < ApplicationController
   end
 
   def load_ungrouped_products
-    @ungrouped_products = current_facility.products.without_display_group
+    @ungrouped_products = current_facility.products.without_display_group.alphabetized
   end
 
 end

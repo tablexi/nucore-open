@@ -37,14 +37,26 @@ RSpec.describe "ProductDisplayGroups" do
       end
 
       it "can swap items" do
-        expect(ProductDisplayGroup.last.products).to eq([items.first])
+        expect(display_group.products).to eq([items.first])
 
         visit edit_facility_product_display_group_path(facility, display_group)
         unselect items.first.name, from: "Products"
         select items.second.name, from: "Products"
         click_button "Update Product Group"
 
-        expect(ProductDisplayGroup.last.products).to eq([items.second])
+        expect(display_group.reload.products).to eq([items.second])
+      end
+
+      it "can move items with javascript", :js do
+        pending "Does not work with current PhantomJS"
+
+        visit edit_facility_product_display_group_path(facility, display_group)
+        expect(page).to have_select("Products", options: [items.first.name])
+        select items.second.name, from: "Ungrouped"
+        click_link "Include"
+        click_button "Update Product Group"
+
+        expect(display_group.reload.products).to eq([items.second])
       end
     end
 

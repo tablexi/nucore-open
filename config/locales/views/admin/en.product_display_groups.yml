@@ -9,4 +9,9 @@ en:
         error: There was an error creating the Product Group
       destroy:
         success: The Product Group was successfully deleted!
+  views:
+    product_display_groups:
+      form:
+        include: Include
+        exclude: Exclude
 
