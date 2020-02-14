@@ -1,15 +1,16 @@
 document.addEventListener("DOMContentLoaded", function() {
-  function sortChildren(node) {
-    Array.from(node.children).sort(function(a, b) {
-      return a.textContent.localeCompare(b.textContent, 'en', {'sensitivity': 'base'});
-    }).forEach(function(element) {
-      node.appendChild(element);
+  function caseInsensitiveCompare(a, b) {
+    return a.textContent.localeCompare(b.textContent, 'en', {'sensitivity': 'base'});
+  }
+
+  function sortChildrenNodes(parent, sortBy) {
+    Array.from(parent.children).sort(sortBy).forEach(function(element) {
+      parent.appendChild(element);
     })
   }
 
   document.querySelectorAll("[draggable=true]").forEach(function(element) {
     element.addEventListener("dragstart", function(e) {
-      console.debug("dragstart", e.innerHTML);
       e.dataTransfer.setData('text/plain', this.dataset.dragId);
     });
   });
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const droppedNode = document.querySelector("[data-drag-id='" + e.dataTransfer.getData("text/plain") + "']");
       const dropTargetElement = this.querySelector(".js--dropTargetElement") || this;
       dropTargetElement.appendChild(droppedNode);
-      sortChildren(dropTargetElement);
+      sortChildrenNodes(dropTargetElement, caseInsensitiveCompare);
     });
   });
 });
