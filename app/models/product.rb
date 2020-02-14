@@ -66,18 +66,15 @@ class Product < ApplicationRecord
     left_outer_joins(:product_display_group_product).where(product_display_group_products: { id: nil })
   }
 
-  def self.types
-    @types ||= [Instrument, Item, Service, TimedService, Bundle]
-  end
-
-  def self.mergeable_types
-    @mergeable_types ||= ["Instrument", "Item", "Service", "TimedService", "Bundle"]
-  end
+  # All product types
+  cattr_accessor(:types) { [Instrument, Item, Service, TimedService, Bundle] }
+  # Those that can be added to an order by an administrator
+  cattr_accessor(:mergeable_types) { ["Instrument", "Item", "Service", "TimedService", "Bundle"] }
+  # Those that can be ordered via the NUcore homepage
+  cattr_accessor(:orderable_types) { ["Instrument", "Item", "Service", "TimedService", "Bundle"] }
 
   # Products that can be used as accessories
-  def self.accessorizable
-    where(type: ["Item", "Service", "TimedService"])
-  end
+  scope :accessorizable, -> { where(type: ["Item", "Service", "TimedService"]) }
 
   def self.exclude(products)
     where.not(id: products)
