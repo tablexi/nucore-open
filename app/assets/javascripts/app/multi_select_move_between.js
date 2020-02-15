@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
   function moveSelected(fromSelect, toSelect) {
+    clearSelected(toSelect);
     const selected = Array.from(fromSelect.options).filter(function(option) { return option.selected });
     selected.forEach(function(option) {
       toSelect.options.add(option);
-      option.selected = false;
     })
   }
 
