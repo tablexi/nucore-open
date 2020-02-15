@@ -1,22 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
-  function caseInsensitiveCompare(a, b) {
-    return a.textContent.localeCompare(b.textContent, 'en', {'sensitivity': 'base'});
-  }
-
-  function sortChildrenNodes(parent, sortBy) {
-    Array.from(parent.children).sort(sortBy).forEach(function(element) {
-      parent.appendChild(element);
-    })
-  }
-
   function moveSelected(fromBox, toBox) {
     const selected = Array.from(fromBox.options).filter(function(option) { return option.selected });
     selected.forEach(function(option) {
       toBox.options.add(option);
       option.selected = false;
     })
-    sortChildrenNodes(fromBox, caseInsensitiveCompare);
-    sortChildrenNodes(toBox, caseInsensitiveCompare);
   }
 
   function clearSelected(select) {
@@ -31,6 +19,26 @@ document.addEventListener("DOMContentLoaded", function() {
     Array.from(included.options).forEach(function(option) {
       if (!option.selected) {
         option.remove();
+      }
+    });
+  }
+
+  function moveSelectedUp(select) {
+    Array.from(select.selectedOptions).forEach(function(option) {
+      const index = option.index;
+      if (index > 0) {
+        select.removeChild(option);
+        select.add(option, index - 1);
+      }
+    });
+  }
+
+  function moveSelectedDown(select) {
+     Array.from(select.selectedOptions).reverse().forEach(function(option) {
+      const index = option.index;
+      if (index < select.options.length) {
+        select.removeChild(option);
+        select.add(option, index + 1);
       }
     });
   }
@@ -55,6 +63,16 @@ document.addEventListener("DOMContentLoaded", function() {
       evt.preventDefault();
       moveSelected(includedSelect, excludedSelect);
     })
+
+    parent.querySelector(".js--moveUp").addEventListener("click", function(evt) {
+      evt.preventDefault();
+      moveSelectedUp(includedSelect);
+    });
+
+    parent.querySelector(".js--moveDown").addEventListener("click", function(evt) {
+      evt.preventDefault();
+      moveSelectedDown(includedSelect);
+    });
 
     parent.closest("form").addEventListener("submit", function(evt) {
       evt.preventDefault();
