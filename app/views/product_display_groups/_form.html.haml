@@ -10,9 +10,9 @@
       -# Include both so the page still works without JS. The JS will clear anything in the excluded list from this.
       .span3
         = f.input :product_ids, collection: @product_display_group.products + @ungrouped_products, input_html: { multiple: true, class: "full-width tall js--included" }
-        = link_to "#", class: "btn js--moveUp pull-right" do
+        = link_to "#", class: "btn js--multiSelectReorder__moveUp", data: { target: "#product_display_group_product_ids" } do
           = content_tag :i, "", class: "fa fa-arrow-up"
-        = link_to "#", class: "btn js--moveDown pull-right" do
+        = link_to "#", class: "btn js--multiSelectReorder__moveDown ", data: { target: "#product_display_group_product_ids" } do
           = content_tag :i, "", class: "fa fa-arrow-down"
       .span2.centered
         = link_to "#", class: "btn js--include" do

@@ -23,31 +23,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  function moveSelectedUp(select) {
-    // Prevent movement if all the selected are at the beginning
-    const firstOpenIndex = Array.from(select.options).find(function(option) { return !option.selected }).index;
-    Array.from(select.selectedOptions).forEach(function(option) {
-      const index = option.index;
-      if (index > 0 && index > firstOpenIndex) {
-        select.removeChild(option);
-        lastIndex = index - 1;
-        select.add(option, index - 1);
-      }
-    });
-  }
-
-  function moveSelectedDown(select) {
-    // Prevent movement if all the selected are at the end
-    const lastOpenIndex = Array.from(select.options).reverse().find(function(option) { return !option.selected }).index;
-     Array.from(select.selectedOptions).reverse().forEach(function(option) {
-      const index = option.index;
-      if (index < select.options.length && index < lastOpenIndex) {
-        select.removeChild(option);
-        select.add(option, index + 1);
-      }
-    });
-  }
-
   Array.from(document.getElementsByClassName("js--moveBetweenSelects")).forEach(function(parent) {
     const includedSelect = parent.querySelector(".js--included");
     const excludedSelect = parent.querySelector(".js--excluded");
@@ -68,16 +43,6 @@ document.addEventListener("DOMContentLoaded", function() {
       evt.preventDefault();
       moveSelected(includedSelect, excludedSelect);
     })
-
-    parent.querySelector(".js--moveUp").addEventListener("click", function(evt) {
-      evt.preventDefault();
-      moveSelectedUp(includedSelect);
-    });
-
-    parent.querySelector(".js--moveDown").addEventListener("click", function(evt) {
-      evt.preventDefault();
-      moveSelectedDown(includedSelect);
-    });
 
     parent.closest("form").addEventListener("submit", function(evt) {
       evt.preventDefault();
