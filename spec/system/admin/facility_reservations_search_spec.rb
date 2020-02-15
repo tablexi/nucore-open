@@ -28,7 +28,7 @@ RSpec.describe "Facility Orders Search" do
       login_as director
       visit facility_reservations_path(facility)
 
-      select instrument, from: "Products"
+      select instrument.name, from: "Products"
       click_button "Filter"
       expect(page).to have_css(".order-detail-description", text: instrument.name, count: 1)
       expect(page).not_to have_css(".order-detail-description", text: instrument2.name)
@@ -40,7 +40,7 @@ RSpec.describe "Facility Orders Search" do
       login_as director
       visit show_problems_facility_reservations_path(facility)
 
-      select instrument, from: "Products"
+      select instrument.name, from: "Products"
       click_button "Filter"
       expect(page).to have_css("td", text: instrument.name, count: 1)
       expect(page).not_to have_css("td", text: instrument2.name)
