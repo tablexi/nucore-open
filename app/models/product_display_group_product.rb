@@ -3,7 +3,8 @@ class ProductDisplayGroupProduct < ApplicationRecord
   belongs_to :product_display_group, inverse_of: :product_display_group_products, required: true
   belongs_to :product, required: true
 
-  # validates :product_id, uniqueness: true
+  scope :sorted, -> { order(:display_order) }
+
   validate :validate_product_uniqueness
 
   private
@@ -13,5 +14,7 @@ class ProductDisplayGroupProduct < ApplicationRecord
 
     errors.add(:product_id, :taken, product: product.name) if self.class.where(product_id: product_id).exists?
   end
+
+
 
 end

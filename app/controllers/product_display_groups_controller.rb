@@ -16,6 +16,7 @@ class ProductDisplayGroupsController < ApplicationController
 
   def create
     if @product_display_group.save
+      set_display_orders
       redirect_to({ action: :index }, notice: text("create.success"))
     else
       # create and update behave differently with the associated product_ids. This
@@ -31,6 +32,7 @@ class ProductDisplayGroupsController < ApplicationController
 
   def update
     if @product_display_group.update(product_display_group_params)
+      set_display_orders
       redirect_to({ action: :index }, notice: text("update.success"))
     else
       flash[:now] = text("update.error")
@@ -58,6 +60,13 @@ class ProductDisplayGroupsController < ApplicationController
 
   def load_ungrouped_products
     @ungrouped_products = current_facility.products.without_display_group.alphabetized
+  end
+
+  def set_display_orders
+    @product_display_group.product_display_group_products.each do |join|
+      position = params[:product_display_group][:product_ids].index(join.product_id.to_s)
+      join.update_column(:display_order, position)
+    end
   end
 
 end
