@@ -89,6 +89,14 @@ RSpec.describe "ProductDisplayGroups" do
       expect(page).not_to have_link("Edit")
       expect(page).not_to have_link("Add Product Group")
     end
+
+    it "can't directly access the new or edit page", :aggregate_failures do
+      visit new_facility_product_display_group_path(facility)
+      expect(page.status_code).to eq(403)
+
+      visit edit_facility_product_display_group_path(facility, display_group)
+      expect(page.status_code).to eq(403)
+    end
   end
 
 end
