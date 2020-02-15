@@ -8,7 +8,7 @@
   .container
     .row.moveBetweenSelects.js--moveBetweenSelects
       -# Include both so the page still works without JS. The JS will clear anything in the excluded list from this.
-      .span3= f.input :product_ids, collection: @product_display_group.products + @ungrouped_products, input_html: { multiple: true, class: "full-width tall js--included" }
+      .span3= f.input :product_ids, collection: (@product_display_group.products + @ungrouped_products).uniq, input_html: { multiple: true, class: "full-width tall js--included" }
       .span2.centered
         = link_to "#", class: "btn js--include" do
           = content_tag :i, "", class: "fa fa-arrow-left"
@@ -18,5 +18,6 @@
           = text("exclude")
       .span3
         = simple_fields_for :ungrouped do |u|
-          = u.input :product_ids, collection: @ungrouped_products, input_html: { multiple: true, class: "full-width tall js--excluded" }, required: false, label: ProductDisplayGroup.human_attribute_name(:ungrouped_product_ids)
+          -# In the case of validation errors, ensure this collection does not include those added in the previous POST/PATCH
+          = u.input :product_ids, collection: @ungrouped_products - @product_display_group.products, input_html: { multiple: true, class: "full-width tall js--excluded" }, required: false, label: ProductDisplayGroup.human_attribute_name(:ungrouped_product_ids)
   = f.submit class: "btn btn-primary"

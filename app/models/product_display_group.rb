@@ -1,7 +1,7 @@
 class ProductDisplayGroup < ApplicationRecord
 
   belongs_to :facility
-  has_many :product_display_group_products, dependent: :destroy
+  has_many :product_display_group_products, inverse_of: :product_display_group, dependent: :destroy
   has_many :products,  -> { alphabetized }, through: :product_display_group_products
 
   validates :name, presence: true
