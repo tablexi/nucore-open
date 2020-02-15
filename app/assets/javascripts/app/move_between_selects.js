@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-  function moveSelected(fromBox, toBox) {
-    const selected = Array.from(fromBox.options).filter(function(option) { return option.selected });
+  function moveSelected(fromSelect, toSelect) {
+    const selected = Array.from(fromSelect.options).filter(function(option) { return option.selected });
     selected.forEach(function(option) {
-      toBox.options.add(option);
+      toSelect.options.add(option);
       option.selected = false;
     })
   }
@@ -24,19 +24,24 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function moveSelectedUp(select) {
+    // Prevent movement if all the selected are at the beginning
+    const firstOpenIndex = Array.from(select.options).find(function(option) { return !option.selected }).index;
     Array.from(select.selectedOptions).forEach(function(option) {
       const index = option.index;
-      if (index > 0) {
+      if (index > 0 && index > firstOpenIndex) {
         select.removeChild(option);
+        lastIndex = index - 1;
         select.add(option, index - 1);
       }
     });
   }
 
   function moveSelectedDown(select) {
+    // Prevent movement if all the selected are at the end
+    const lastOpenIndex = Array.from(select.options).reverse().find(function(option) { return !option.selected }).index;
      Array.from(select.selectedOptions).reverse().forEach(function(option) {
       const index = option.index;
-      if (index < select.options.length) {
+      if (index < select.options.length && index < lastOpenIndex) {
         select.removeChild(option);
         select.add(option, index + 1);
       }
