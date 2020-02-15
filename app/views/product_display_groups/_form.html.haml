@@ -7,9 +7,11 @@
   = f.input :name
   .container
     .row.moveBetweenSelects.js--moveBetweenSelects
-      -# Include both so the page still works without JS. The JS will clear anything in the excluded list from this.
       .span3
-        = f.input :product_ids, collection: @product_display_group.products + @ungrouped_products, input_html: { multiple: true, class: "full-width tall js--included" }
+        -# Include both so the page still works without JS. The JS will clear anything in
+        -# the excluded list from this. Uniq is to prevent duplicates in the case of validation
+        -# errors and a product might be in both places.
+        = f.input :product_ids, collection: (@product_display_group.products + @ungrouped_products).uniq, input_html: { multiple: true, class: "full-width tall js--included" }
         = link_to "#", class: "btn js--multiSelectReorder__moveUp", data: { target: "#product_display_group_product_ids" } do
           = content_tag :i, "", class: "fa fa-arrow-up"
         = link_to "#", class: "btn js--multiSelectReorder__moveDown ", data: { target: "#product_display_group_product_ids" } do
