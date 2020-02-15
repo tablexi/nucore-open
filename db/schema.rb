@@ -490,7 +490,7 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "position"
-    t.index ["product_display_group_id", "position"], name: "i_product_display_group_display_order"
+    t.index ["product_display_group_id", "position"], name: "i_product_display_group_position"
     t.index ["product_display_group_id"], name: "index_product_display_group_products_on_product_display_group_id"
     t.index ["product_id"], name: "index_product_display_group_products_on_product_id"
   end
