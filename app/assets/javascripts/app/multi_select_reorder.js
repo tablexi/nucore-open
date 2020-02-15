@@ -24,17 +24,18 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  document.querySelectorAll(".js--multiSelectReorder__moveUp").forEach(function(button) {
+  function addTargetedClickHandler(button, func) {
     button.addEventListener("click", function(evt) {
       evt.preventDefault();
-      moveSelectedUp(document.querySelector(button.dataset.target));
-    });
+      func(document.querySelector(button.dataset.target));
+    })
+  }
+
+  document.querySelectorAll(".js--multiSelectReorder__moveUp").forEach(function(button) {
+    addTargetedClickHandler(button, moveSelectedUp);
   });
 
   document.querySelectorAll(".js--multiSelectReorder__moveDown").forEach(function(button) {
-    button.addEventListener("click",  function(evt) {
-      evt.preventDefault();
-      moveSelectedDown(document.querySelector(button.dataset.target));
-    });
+    addTargetedClickHandler(button, moveSelectedDown);
   });
 });
