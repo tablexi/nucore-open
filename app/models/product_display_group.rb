@@ -6,7 +6,7 @@ class ProductDisplayGroup < ApplicationRecord
 
   validates :name, presence: true
 
-  before_save :set_default_display_order, on: :create
+  before_create :set_default_display_order
 
   scope :sorted, -> { order(:display_order) }
 
