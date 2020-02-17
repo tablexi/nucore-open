@@ -331,18 +331,18 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"
-    t.index ["dispute_by_id"], name: "order_details_dispute_by_id_fk"
+    t.index ["dispute_by_id"], name: "fk_rails_14de4f1c86"
     t.index ["group_id"], name: "index_order_details_on_group_id"
     t.index ["journal_id"], name: "index_order_details_on_journal_id"
-    t.index ["order_id"], name: "sys_c009172"
+    t.index ["order_id"], name: "fk_rails_e5976611fd"
     t.index ["order_status_id"], name: "index_order_details_on_order_status_id"
-    t.index ["parent_order_detail_id"], name: "order_details_parent_order_detail_id_fk"
+    t.index ["parent_order_detail_id"], name: "fk_rails_cc2adae8c3"
     t.index ["price_changed_by_user_id"], name: "index_order_details_on_price_changed_by_user_id"
-    t.index ["price_policy_id"], name: "sys_c009175"
+    t.index ["price_policy_id"], name: "fk_rails_555b721183"
     t.index ["problem"], name: "index_order_details_on_problem"
     t.index ["problem_resolved_by_id"], name: "index_order_details_on_problem_resolved_by_id"
-    t.index ["product_accessory_id"], name: "order_details_product_accessory_id_fk"
-    t.index ["product_id"], name: "sys_c009173"
+    t.index ["product_accessory_id"], name: "fk_rails_e4f0ef56a6"
+    t.index ["product_id"], name: "fk_rails_4f2ac9473b"
     t.index ["project_id"], name: "index_order_details_on_project_id"
     t.index ["response_set_id"], name: "index_order_details_on_response_set_id"
     t.index ["state"], name: "index_order_details_on_state"
@@ -385,7 +385,7 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.string "state", limit: 50
     t.integer "merge_with_order_id"
     t.integer "order_import_id"
-    t.index ["account_id"], name: "sys_c008808"
+    t.index ["account_id"], name: "fk_rails_144e25bef6"
     t.index ["facility_id"], name: "index_orders_on_facility_id"
     t.index ["merge_with_order_id"], name: "index_orders_on_merge_with_order_id"
     t.index ["order_import_id"], name: "index_orders_on_order_import_id"
@@ -414,7 +414,7 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.integer "user_id"
     t.integer "account_id"
     t.index ["account_id"], name: "index_price_group_members_on_account_id"
-    t.index ["price_group_id"], name: "sys_c008583"
+    t.index ["price_group_id"], name: "fk_rails_0425013e5b"
     t.index ["user_id"], name: "index_price_group_members_on_user_id"
   end
 
@@ -424,8 +424,8 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.integer "reservation_window"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["price_group_id"], name: "i_pri_gro_pro_pri_gro_id"
-    t.index ["product_id"], name: "i_pri_gro_pro_pro_id"
+    t.index ["price_group_id"], name: "index_price_group_products_on_price_group_id"
+    t.index ["product_id"], name: "index_price_group_products_on_product_id"
   end
 
   create_table "price_groups", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -434,7 +434,7 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.integer "display_order", null: false
     t.boolean "is_internal", null: false
     t.boolean "admin_editable", default: true, null: false
-    t.index ["facility_id", "name"], name: "sys_c008577", unique: true
+    t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name", unique: true
   end
 
   create_table "price_policies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -456,7 +456,7 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.string "note", limit: 256
     t.integer "created_by_id"
     t.index ["created_by_id"], name: "index_price_policies_on_created_by_id"
-    t.index ["price_group_id"], name: "sys_c008589"
+    t.index ["price_group_id"], name: "fk_rails_74aa223960"
     t.index ["product_id"], name: "index_price_policies_on_product_id"
   end
 
@@ -552,7 +552,7 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.boolean "problems_resolvable_by_user", default: false, null: false
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
-    t.index ["facility_id"], name: "sys_c008556"
+    t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"
     t.index ["initial_order_status_id"], name: "index_products_on_initial_order_status_id"
     t.index ["schedule_id"], name: "i_instruments_schedule_id"
     t.index ["type", "is_archived", "schedule_id"], name: "index_products_on_type_and_is_archived_and_schedule_id"
@@ -861,12 +861,16 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
     t.index ["commit_label"], name: "index_vestal_versions_on_commit_label"
     t.index ["created_at"], name: "index_vestal_versions_on_created_at"
     t.index ["tag"], name: "index_vestal_versions_on_tag"
-    t.index ["user_id", "user_type"], name: "i_versions_user_id_user_type"
+    t.index ["user_id", "user_type"], name: "index_vestal_versions_on_user_id_and_user_type"
     t.index ["user_name"], name: "index_vestal_versions_on_user_name"
-    t.index ["version_number"], name: "index_versions_on_number"
-    t.index ["versioned_id", "versioned_type"], name: "i_ver_ver_id_ver_typ"
+    t.index ["version_number"], name: "index_vestal_versions_on_version_number"
+    t.index ["versioned_id", "versioned_type"], name: "index_vestal_versions_on_versioned_id_and_versioned_type"
   end
 
+  add_foreign_key "account_facility_joins", "accounts"
+  add_foreign_key "account_facility_joins", "facilities"
+  add_foreign_key "account_users", "accounts", name: "fk_accounts"
+  add_foreign_key "account_users", "users"
   add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
@@ -884,48 +888,50 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
   add_foreign_key "nu_safety_certificates", "users", column: "deleted_by_id"
   add_foreign_key "order_details", "accounts", name: "fk_od_accounts"
   add_foreign_key "order_details", "journals"
-  add_foreign_key "order_details", "order_details", column: "parent_order_detail_id", name: "order_details_parent_order_detail_id_fk"
+  add_foreign_key "order_details", "order_details", column: "parent_order_detail_id"
   add_foreign_key "order_details", "order_statuses"
-  add_foreign_key "order_details", "orders", name: "sys_c009172"
-  add_foreign_key "order_details", "price_policies", name: "sys_c009175"
-  add_foreign_key "order_details", "product_accessories", name: "order_details_product_accessory_id_fk"
+  add_foreign_key "order_details", "orders"
+  add_foreign_key "order_details", "price_policies"
+  add_foreign_key "order_details", "product_accessories"
+  add_foreign_key "order_details", "products"
   add_foreign_key "order_details", "products", column: "bundle_product_id", name: "fk_bundle_prod_id"
-  add_foreign_key "order_details", "products", name: "sys_c009173"
   add_foreign_key "order_details", "statements"
   add_foreign_key "order_details", "users", column: "assigned_user_id"
-  add_foreign_key "order_details", "users", column: "dispute_by_id", name: "order_details_dispute_by_id_fk"
+  add_foreign_key "order_details", "users", column: "dispute_by_id"
+  add_foreign_key "order_details", "users", column: "price_changed_by_user_id"
   add_foreign_key "order_details", "users", column: "problem_resolved_by_id"
   add_foreign_key "order_imports", "facilities", name: "fk_order_imports_facilities"
-  add_foreign_key "orders", "accounts", name: "sys_c008808"
+  add_foreign_key "orders", "accounts"
+  add_foreign_key "orders", "facilities"
   add_foreign_key "orders", "order_imports"
   add_foreign_key "orders", "orders", column: "merge_with_order_id"
   add_foreign_key "orders", "users"
-  add_foreign_key "payments", "accounts", name: "payments_account_id_fk"
-  add_foreign_key "payments", "statements", name: "payments_statement_id_fk"
-  add_foreign_key "payments", "users", column: "paid_by_id", name: "payments_paid_by_id_fk"
+  add_foreign_key "payments", "accounts"
+  add_foreign_key "payments", "statements"
+  add_foreign_key "payments", "users", column: "paid_by_id"
   add_foreign_key "price_group_members", "accounts"
-  add_foreign_key "price_group_members", "price_groups", name: "sys_c008583"
+  add_foreign_key "price_group_members", "price_groups"
   add_foreign_key "price_group_members", "users"
-  add_foreign_key "price_groups", "facilities", name: "sys_c008578"
-  add_foreign_key "price_policies", "price_groups", name: "sys_c008589"
+  add_foreign_key "price_groups", "facilities"
+  add_foreign_key "price_policies", "price_groups"
   add_foreign_key "price_policies", "users", column: "created_by_id"
   add_foreign_key "product_display_group_products", "product_display_groups"
   add_foreign_key "product_display_group_products", "products"
   add_foreign_key "product_display_groups", "facilities"
   add_foreign_key "product_users", "products", name: "fk_products"
   add_foreign_key "product_users", "users"
-  add_foreign_key "products", "facilities", name: "sys_c008556"
+  add_foreign_key "products", "facilities"
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
-  add_foreign_key "projects", "facilities", name: "projects_facility_id_fk"
-  add_foreign_key "reservations", "order_details", name: "fk_res_order"
+  add_foreign_key "projects", "facilities"
+  add_foreign_key "reservations", "order_details"
   add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"
   add_foreign_key "reservations", "users", column: "created_by_id"
   add_foreign_key "sanger_seq_product_groups", "products"
   add_foreign_key "sanger_sequencing_batches", "facilities"
   add_foreign_key "sanger_sequencing_samples", "sanger_sequencing_submissions", column: "submission_id", on_delete: :cascade
   add_foreign_key "sanger_sequencing_submissions", "sanger_sequencing_batches", column: "batch_id", on_delete: :nullify
-  add_foreign_key "schedule_rules", "products", name: "schedule_rules_product_id_foreign_key"
+  add_foreign_key "schedule_rules", "products"
   add_foreign_key "schedules", "facilities", name: "fk_schedules_facility"
   add_foreign_key "secure_rooms_card_readers", "products"
   add_foreign_key "secure_rooms_events", "accounts"
@@ -943,5 +949,5 @@ ActiveRecord::Schema.define(version: 2020_02_15_061232) do
   add_foreign_key "stored_files", "products", name: "fk_files_product"
   add_foreign_key "user_preferences", "users"
   add_foreign_key "user_roles", "facilities"
-  add_foreign_key "user_roles", "users", name: "fk_123456"
+  add_foreign_key "user_roles", "users"
 end
