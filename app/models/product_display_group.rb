@@ -31,7 +31,7 @@ class ProductDisplayGroup < ApplicationRecord
   end
 
   def associated_errors
-    product_display_group_products.select { |join| join.errors.present? }.flat_map(&:errors)
+    product_display_group_products.select { |join| join.errors.present? }.map(&:errors)
   end
 
 end

@@ -34,8 +34,8 @@ RSpec.describe ProductDisplayGroup do
     expect do
       group.update(product_ids: [product.id])
     end.to raise_error(ActiveRecord::RecordInvalid)
-    expect(group.associated_errors.map(&:full_messages)).to include("Product #{product.name} is already in a group")
 
+    expect(group.associated_errors.flat_map(&:full_messages)).to include("Product #{product.name} is already in a group")
   end
 
 end
