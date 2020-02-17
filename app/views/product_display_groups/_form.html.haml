@@ -13,9 +13,9 @@
         -# errors and a product might be in both places.
         = f.input :product_ids, collection: (@product_display_group.products + @ungrouped_products).uniq, input_html: { multiple: true, class: "tall js--included pull-left" }
         .multiSelectReorder__buttons
-          = link_to "#", class: "btn js--multiSelectReorder__moveUp", data: { target: "#product_display_group_product_ids" } do
+          = link_to "#", class: "btn js--multiSelectReorder__moveUp", data: { target: "#product_display_group_product_ids" }, title: text("shared.reorder.move_up") do
             = content_tag :i, "", class: "fa fa-arrow-up"
-          = link_to "#", class: "btn js--multiSelectReorder__moveDown ", data: { target: "#product_display_group_product_ids" } do
+          = link_to "#", class: "btn js--multiSelectReorder__moveDown ", data: { target: "#product_display_group_product_ids" }, title: text("shared.reorder.move_down") do
             = content_tag :i, "", class: "fa fa-arrow-down"
       .span2.centered.moveBetweenSelects__buttons
         = link_to "#", class: "btn moveBetweenSelects__btn js--include" do

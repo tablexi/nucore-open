@@ -38,4 +38,13 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll(".js--multiSelectReorder__moveDown").forEach(function(button) {
     addTargetedClickHandler(button, moveSelectedDown);
   });
+
+  document.querySelectorAll(".js--selectAllOnSubmit").forEach(function(select) {
+    select.closest("form").addEventListener("submit", function(evt) {
+      evt.preventDefault();
+      MultiSelectHelper.selectAll(select);
+      evt.target.submit();
+    });
+  })
+
 });

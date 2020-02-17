@@ -9,9 +9,18 @@ en:
         error: There was an error creating the Product Group
       destroy:
         success: The Product Group was successfully deleted!
+    product_display_group_positions:
+      success: The Product Groups have been reordered
   views:
     product_display_groups:
+      index:
+        reorder: "!views.product_display_group_positions.edit.reorder!"
       form:
         include: Include
         exclude: Exclude
+    product_display_group_positions:
+      edit:
+        label: Product Groups
+        reorder: Reorder Product Groups
+        submit: Update Ordering
 

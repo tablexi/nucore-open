@@ -63,10 +63,17 @@ RSpec.describe "ProductDisplayGroups" do
       it "can swap items with javascript", :js do
         visit edit_facility_product_display_group_path(facility, display_group)
         expect(page).to have_select("Products", options: [items.first.name])
+        expect(page).to have_select("Ungrouped", options: [items.second.name])
+
         select items.second.name, from: "Ungrouped"
         click_link "Include"
+
         select items.first.name, from: "Products"
+        # This unselection happens on a normal click in the browser, but capybara
+        # seems to do a "shift-click" on the `select`.
+        unselect items.second.name, from: "Products"
         click_link "Exclude"
+
         click_button "Update Product Group"
 
         expect(display_group.reload.products).to eq([items.second])
@@ -97,6 +104,21 @@ RSpec.describe "ProductDisplayGroups" do
         click_link "Delete"
         expect(page).not_to have_content("My group")
         expect(product.reload.product_display_group).to be_blank
+      end
+    end
+
+    describe "re-ordering" do
+      let!(:display_group) { create(:product_display_group, name: "First", position: 0, facility: facility) }
+      let!(:display_group2) { create(:product_display_group, name: "Second", position: 1, facility: facility) }
+
+      it "can reorder the groups", :js do
+        visit facility_product_display_groups_path(facility)
+        click_link "Reorder Product Groups"
+        select "Second", from: "Product Groups"
+        find("[title='Move Up']").click
+        click_button "Update Ordering"
+
+        expect(facility.reload.product_display_groups.sorted).to eq([display_group2, display_group])
       end
     end
   end

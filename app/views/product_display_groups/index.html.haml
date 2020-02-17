@@ -8,8 +8,11 @@
 .container
   - if can?(:create, ProductDisplayGroup)
     .row
-      .span2
-        %p= link_to text("admin.shared.add", model: ProductDisplayGroup.model_name.human), new_facility_product_display_group_path, class: "btn btn-add"
+      .span12
+        %p
+          = link_to text("admin.shared.add", model: ProductDisplayGroup.model_name.human), new_facility_product_display_group_path, class: "btn btn-add"
+          = link_to text("reorder"), edit_facility_product_display_group_positions_path, class: "btn btn-primary" if @product_display_groups.length > 1
+
   .row
     .span5
       - @product_display_groups.each do |product_display_group|

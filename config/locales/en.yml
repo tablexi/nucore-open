@@ -114,6 +114,9 @@ en:
     unassigned: Unassigned
     activate: Activate
     suspend: Suspend
+    reorder:
+      move_up: Move Up
+      move_down: Move Down
     footer:
       copyright_html: "&copy; Copyright 2010&ndash;%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"
