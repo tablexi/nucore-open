@@ -23,6 +23,19 @@ RSpec.describe "ProductDisplayGroups" do
       expect(ProductDisplayGroup.last.products).to eq([items.first])
     end
 
+    it "renders an error when trying to add a product that already is grouped" do
+      visit new_facility_product_display_group_path(facility)
+
+      # As if it were added in another tab
+      other_group = create(:product_display_group, facility: facility)
+      other_group.products << items.first
+
+      select items.first.name, from: "Products"
+      click_button "Create Product Group"
+
+      expect(page).to have_content("is already in a group")
+    end
+
     describe "editing" do
       let!(:display_group) { create(:product_display_group, name: "My group", facility: facility, products: items.take(1)) }
 
@@ -57,6 +70,19 @@ RSpec.describe "ProductDisplayGroups" do
         click_button "Update Product Group"
 
         expect(display_group.reload.products).to eq([items.second])
+      end
+
+      it "renders an error when trying to add a product that already is grouped" do
+        visit edit_facility_product_display_group_path(facility, display_group)
+
+        # As if it were done in another tab
+        other_group = create(:product_display_group, facility: facility)
+        other_group.products << items.second
+
+        select items.second.name, from: "Products"
+        click_button "Update Product Group"
+
+        expect(page).to have_content("is already in a group")
       end
     end
 

@@ -18,7 +18,11 @@ class ProductDisplayGroupsController < ApplicationController
     if @product_display_group.save
       redirect_to({ action: :index }, notice: text("create.success"))
     else
-      render :new, alert: text("create.error")
+      # create and update behave differently with the associated product_ids. This
+      # should only happen in a multi-tab race condition.
+      error = @product_display_group.associated_errors.flat_map(&:full_messages).to_sentence
+      flash.now[:alert] = error.presence || text("create.error")
+      render :new
     end
   end
 
@@ -29,8 +33,16 @@ class ProductDisplayGroupsController < ApplicationController
     if @product_display_group.update(product_display_group_params)
       redirect_to({ action: :index }, notice: text("update.success"))
     else
-      render :edit, alert: text("update.error")
+      flash[:now] = text("update.error")
+      render :edit
     end
+  # Adding a product that is in another group raises an error rather than just making
+  # it `invalid?`. The error is raised on attribute assignment. This should only
+  # be an edge case/race condition with multiple tabs, so rescuing the error seemed
+  # to be the simplest solution rather than other convoluted logic to work around the issue.
+  rescue ActiveRecord::RecordInvalid => e
+    flash.now[:alert] = @product_display_group.associated_errors.flat_map(&:full_messages).to_sentence
+    render :edit
   end
 
   def destroy

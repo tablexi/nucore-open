@@ -30,4 +30,8 @@ class ProductDisplayGroup < ApplicationRecord
     self.display_order = facility.product_display_groups.maximum(:display_order).to_i + 1
   end
 
+  def associated_errors
+    product_display_group_products.select { |join| join.errors.present? }.flat_map(&:errors)
+  end
+
 end
