@@ -15,7 +15,6 @@ class FacilitiesController < ApplicationController
   load_and_authorize_resource find_by: :url_name
   skip_load_and_authorize_resource only: [:index, :show]
 
-  include FacilitiesHelper
   include AZHelper
   include OrderDetailsCsvExport
 
