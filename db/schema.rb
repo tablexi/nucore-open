@@ -496,7 +496,7 @@ ActiveRecord::Schema.define(version: 2020_02_13_205646) do
   create_table "product_display_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id"
     t.string "name", null: false
-    t.integer "display_order"
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["facility_id"], name: "index_product_display_groups_on_facility_id"

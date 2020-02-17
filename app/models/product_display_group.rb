@@ -6,9 +6,9 @@ class ProductDisplayGroup < ApplicationRecord
 
   validates :name, presence: true
 
-  before_create :set_default_display_order
+  before_create :set_default_positions
 
-  scope :sorted, -> { order(:display_order) }
+  scope :sorted, -> { order(:position) }
 
   def to_s
     name
@@ -26,8 +26,8 @@ class ProductDisplayGroup < ApplicationRecord
     end
   end
 
-  def set_default_display_order
-    self.display_order = facility.product_display_groups.maximum(:display_order).to_i + 1
+  def set_default_positions
+    self.position = facility.product_display_groups.maximum(:position).to_i + 1
   end
 
   def associated_errors

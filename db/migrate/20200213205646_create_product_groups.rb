@@ -4,7 +4,7 @@ class CreateProductGroups < ActiveRecord::Migration[5.2]
       # 5.1 primary keys are biginteger, while 5.0 are integer, so we need to ensure our types match
       t.references :facility, index: true, foreign_key: true, type: :integer
       t.string :name, null: false
-      t.integer :display_order
+      t.integer :position
       t.timestamps
     end
 
