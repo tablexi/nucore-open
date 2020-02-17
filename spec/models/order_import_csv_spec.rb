@@ -24,6 +24,7 @@ RSpec.describe OrderImport do
           sst123@example.com,67890,Example Item,1,02/15/2020,02/15/2020,Add to 2,#{order.id}
           sst123@example.com,67890,Example Item,1,02/15/2020,02/15/2020,Add to other,#{order2.id}
           sst123@example.com,12345,Example Item,1,02/15/2020,02/15/2020,New 1,
+          SST123@EXAMPLE.COM,12345,Example Item,1,02/15/2020,02/15/2020,New 1-2 - Miscased,
           sst123@example.com,67890,Example Item,1,02/15/2020,02/15/2020,New 2 - Different Account,
           sst123@example.com,67890,Example Item,1,02/15/2020,02/15/2020,New 2-2,
           sst123@example.com,67890,Example Item,1,02/01/2020,02/15/2020,New 3 - Different Order Date,
@@ -54,7 +55,10 @@ RSpec.describe OrderImport do
 
         expect(Order.all.to_a - existing).to match([
           having_attributes(
-            order_details: [having_attributes(account: account, note: "New 1")]
+            order_details: [
+              having_attributes(account: account, note: "New 1"),
+              having_attributes(account: account, note: "New 1-2 - Miscased"),
+            ]
           ),
           having_attributes(
             order_details: [

@@ -72,7 +72,7 @@ class OrderRowImporter
   end
 
   def order_key
-    @order_key ||= field(:order_number).presence || [field(:user), field(:chart_string), field(:order_date)]
+    @order_key ||= field(:order_number).presence || [field(:user).downcase, field(:chart_string).downcase, field(:order_date)]
   end
 
   def row_with_errors
