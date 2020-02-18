@@ -72,7 +72,7 @@ class OrderRowImporter
   end
 
   def order_key
-    @order_key ||= [field(:user), field(:chart_string), field(:order_date)]
+    @order_key ||= field(:order_number).presence || [field(:user).downcase, field(:chart_string).downcase, field(:order_date)]
   end
 
   def row_with_errors
@@ -108,14 +108,16 @@ class OrderRowImporter
     ActiveRecord::Base.transaction do
       begin
         @order = field(:order_number).present? ? existing_order : @order_import.fetch_or_create_order!(self)
+
+        attributes = { note: field(:notes), account: account }
         # The order adding feature has some quirky behavior because of the "order form"
         # feature: if you add multiple of a timed service, it creates multiple line items
         # in your cart. Also, in the "add to order" feature, there is a separate `duration`
         # field. To account for this idiosyncrasy, we need to handle it as a special case.
         if product.quantity_as_time?
-          @order_details = order.add(product, 1, duration: field(:quantity), note: field(:notes))
+          @order_details = order.add(product, 1, attributes.merge(duration: field(:quantity)))
         else
-          @order_details = order.add(product, field(:quantity), note: field(:notes))
+          @order_details = order.add(product, field(:quantity), attributes)
         end
         purchase_order! unless order.purchased?
         backdate_order_details_to_complete!
