@@ -8,9 +8,9 @@ RSpec.describe OrderImport do
   describe "adding to existing orders" do
     let!(:user) { create(:user, username: "sst123@example.com") }
     let!(:item) { create(:setup_item, name: "Example Item", facility: facility) }
-    let!(:account) { create(:nufs_account, :with_account_owner, account_number: "12345", owner: user) }
-    let!(:account2) { create(:nufs_account, :with_account_owner, account_number: "67890", owner: user) }
-    let!(:original_account) { create(:nufs_account, :with_account_owner, account_number: "99999", owner: user) }
+    let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
+    let!(:account2) { create(:nufs_account, :with_account_owner, owner: user) }
+    let!(:original_account) { create(:nufs_account, :with_account_owner, owner: user) }
     let!(:order) { create(:purchased_order, product: item, account: original_account, user: user, created_by: user.id) }
     let!(:order2) { create(:purchased_order, product: item, account: original_account, user: user, created_by: user.id) }
     let(:file) { create(:csv_stored_file, file: StringIO.new(body)) }
@@ -20,15 +20,15 @@ RSpec.describe OrderImport do
       let(:body) do
         <<~CSV
           Netid / Email,Chart String,Product Name,Quantity,Order Date,Fulfillment Date,Note,Order
-          sst123@example.com,12345,Example Item,1,02/15/2020,02/15/2020,Add to 1,#{order.id}
-          sst123@example.com,67890,Example Item,1,02/15/2020,02/15/2020,Add to 2,#{order.id}
-          sst123@example.com,67890,Example Item,1,02/15/2020,02/15/2020,Add to other,#{order2.id}
-          sst123@example.com,12345,Example Item,1,02/15/2020,02/15/2020,New 1,
-          SST123@EXAMPLE.COM,12345,Example Item,1,02/15/2020,02/15/2020,New 1-2 - Miscased,
-          sst123@example.com,67890,Example Item,1,02/15/2020,02/15/2020,New 2 - Different Account,
-          sst123@example.com,67890,Example Item,1,02/15/2020,02/15/2020,New 2-2,
-          sst123@example.com,67890,Example Item,1,02/01/2020,02/15/2020,New 3 - Different Order Date,
-          sst123@example.com,67890,Example Item,1,02/15/2020,02/16/2020,New 2-3 - Different fulfilled,
+          sst123@example.com,#{account.account_number},Example Item,1,02/15/2020,02/15/2020,Add to 1,#{order.id}
+          sst123@example.com,#{account2.account_number},Example Item,1,02/15/2020,02/15/2020,Add to 2,#{order.id}
+          sst123@example.com,#{account2.account_number},Example Item,1,02/15/2020,02/15/2020,Add to other,#{order2.id}
+          sst123@example.com,#{account.account_number},Example Item,1,02/15/2020,02/15/2020,New 1,
+          SST123@EXAMPLE.COM,#{account.account_number},Example Item,1,02/15/2020,02/15/2020,New 1-2 - Miscased,
+          sst123@example.com,#{account2.account_number},Example Item,1,02/15/2020,02/15/2020,New 2 - Different Account,
+          sst123@example.com,#{account2.account_number},Example Item,1,02/15/2020,02/15/2020,New 2-2,
+          sst123@example.com,#{account2.account_number},Example Item,1,02/01/2020,02/15/2020,New 3 - Different Order Date,
+          sst123@example.com,#{account2.account_number},Example Item,1,02/15/2020,02/16/2020,New 2-3 - Different fulfilled,
         CSV
       end
 

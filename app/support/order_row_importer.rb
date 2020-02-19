@@ -86,7 +86,7 @@ class OrderRowImporter
   end
 
   def user
-    @user ||= User.find_by(username: field(:user)) || User.find_by(email: field(:user))
+    @user ||= User.find_by(username: field(:user).downcase) || User.find_by(email: field(:user).downcase)
   end
 
   def product
