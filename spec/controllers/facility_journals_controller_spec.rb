@@ -71,7 +71,7 @@ RSpec.describe FacilityJournalsController do
         ignore_account_validations
         create_order_details
         @creation_errors = @journal.create_journal_rows!([@order_detail1, @order_detail3])
-        @journal.create_spreadsheet if Settings.financial.journal_format.xls
+        @journal.create_spreadsheet if Journals::JournalFormat.exists?(:xls)
       end
 
       it "is set up properly" do
