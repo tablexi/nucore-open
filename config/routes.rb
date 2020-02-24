@@ -74,6 +74,9 @@ Rails.application.routes.draw do
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
     resources :instruments do
+      get :dashboard, to: "instruments_dashboard#dashboard", on: :collection
+      get :public_dashboard, to: "instruments_dashboard#public_dashboard", on: :collection
+
       collection do
         get "list", to: "instruments#public_list"
       end
