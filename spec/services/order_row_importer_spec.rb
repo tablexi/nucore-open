@@ -154,6 +154,19 @@ RSpec.describe OrderRowImporter do
 
         it_behaves_like "an invalid fulfillment_date"
       end
+
+      context "is in the future" do
+        let(:fulfillment_date) { I18n.l(1.day.from_now.to_date, format: :usa) }
+
+        it_behaves_like "an invalid fulfillment_date"
+      end
+
+      context "it is today" do
+        include_context "valid row values"
+        let(:fulfillment_date) { I18n.l(Date.today, format: :usa) }
+
+        it_behaves_like "an order was created"
+      end
     end
 
     context "when the chart string" do
@@ -194,6 +207,19 @@ RSpec.describe OrderRowImporter do
         let(:order_date) { nil }
 
         it_behaves_like "an invalid order_date"
+      end
+
+      context "is in he future" do
+        let(:order_date) { I18n.l(1.day.from_now.to_date, format: :usa) }
+
+        it_behaves_like "an invalid order_date"
+      end
+
+      context "it is today" do
+        include_context "valid row values"
+        let(:order_date) { I18n.l(Date.today, format: :usa) }
+
+        it_behaves_like "an order was created"
       end
     end
 

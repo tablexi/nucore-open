@@ -69,6 +69,6 @@ RSpec.describe ItemPricePoliciesController, :js do
   end
 
   def table_row(*columns)
-    columns.join("\t")
+    columns.join(" ")
   end
 end
