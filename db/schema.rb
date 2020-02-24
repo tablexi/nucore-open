@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_07_234415) do
+ActiveRecord::Schema.define(version: 2020_02_15_061232) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -483,6 +483,26 @@ ActiveRecord::Schema.define(version: 2020_02_07_234415) do
     t.index ["product_id"], name: "index_product_accessories_on_product_id"
   end
 
+  create_table "product_display_group_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "product_display_group_id", null: false
+    t.integer "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "position"
+    t.index ["product_display_group_id", "position"], name: "i_product_display_group_position"
+    t.index ["product_display_group_id"], name: "index_product_display_group_products_on_product_display_group_id"
+    t.index ["product_id"], name: "index_product_display_group_products_on_product_id"
+  end
+
+  create_table "product_display_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "facility_id"
+    t.string "name", null: false
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_id"], name: "index_product_display_groups_on_facility_id"
+  end
+
   create_table "product_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_id", null: false
     t.integer "user_id", null: false
@@ -893,6 +913,9 @@ ActiveRecord::Schema.define(version: 2020_02_07_234415) do
   add_foreign_key "price_groups", "facilities"
   add_foreign_key "price_policies", "price_groups"
   add_foreign_key "price_policies", "users", column: "created_by_id"
+  add_foreign_key "product_display_group_products", "product_display_groups"
+  add_foreign_key "product_display_group_products", "products"
+  add_foreign_key "product_display_groups", "facilities"
   add_foreign_key "product_users", "products", name: "fk_products"
   add_foreign_key "product_users", "users"
   add_foreign_key "products", "facilities"

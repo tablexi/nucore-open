@@ -69,6 +69,12 @@ Rails.application.routes.draw do
       resources :product_research_safety_certification_requirements, only: [:index, :create, :destroy], path: "certification_requirements"
     end
 
+    resources :product_display_groups do
+      collection do
+        resource :product_display_group_positions, only: [:edit, :update], path: "positions"
+      end
+    end
+
     get "instrument_statuses", to: "instruments#instrument_statuses", as: "instrument_statuses"
 
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)

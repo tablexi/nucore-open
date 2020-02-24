@@ -24,6 +24,7 @@ class Facility < ApplicationRecord
   has_many :user_roles, dependent: :destroy
   has_many :users, -> { distinct }, through: :user_roles
   has_many :reservations, through: :instruments
+  has_many :product_display_groups
 
   validates_presence_of :name, :short_description, :abbreviation
   validate_url_name :url_name
