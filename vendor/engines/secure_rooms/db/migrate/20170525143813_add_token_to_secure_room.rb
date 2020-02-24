@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddTokenToSecureRoom < ActiveRecord::Migration
+class AddTokenToSecureRoom < ActiveRecord::Migration[4.2]
 
   class Product < ActiveRecord::Base
   end
@@ -10,7 +10,7 @@ class AddTokenToSecureRoom < ActiveRecord::Migration
     add_index :products, :dashboard_token
 
     Product.reset_column_information
-    Product.where(type: SecureRoom).find_each { |room| room.update_column(:dashboard_token, SecureRandom.uuid) }
+    Product.where(type: "SecureRoom").find_each { |room| room.update_column(:dashboard_token, SecureRandom.uuid) }
   end
 
 end
