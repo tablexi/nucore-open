@@ -203,24 +203,24 @@ class FacilitiesController < ApplicationController
     params.require(:facility).permit(*self.class.permitted_facility_params)
   end
 
-  def self.permitted_facility_params
-    @@permitted_facility_params ||=
-      %i(
-        abbreviation
-        accepts_multi_add
-        address
-        banner_notice
-        description
-        email
-        fax_number
-        is_active
-        name
-        order_notification_recipient
-        phone_number
-        short_description
-        show_instrument_availability
-        url_name
-      )
+  cattr_accessor(:permitted_facility_params) do
+    %i(
+      abbreviation
+      accepts_multi_add
+      address
+      banner_notice
+      description
+      email
+      fax_number
+      is_active
+      name
+      order_notification_recipient
+      phone_number
+      short_description
+      show_instrument_availability
+      url_name
+      dashboard_enabled
+    )
   end
 
   def ensure_order_details_selected

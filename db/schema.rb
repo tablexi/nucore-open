@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_30_153146) do
+ActiveRecord::Schema.define(version: 2020_02_07_234415) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(version: 2020_01_30_153146) do
     t.string "order_notification_recipient"
     t.boolean "sanger_sequencing_enabled", default: false, null: false
     t.text "banner_notice"
+    t.string "dashboard_token"
     t.index ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true
     t.index ["is_active", "name"], name: "index_facilities_on_is_active_and_name"
     t.index ["name"], name: "index_facilities_on_name", unique: true
