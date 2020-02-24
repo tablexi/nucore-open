@@ -6,17 +6,17 @@ class OrderRowImporter
 
   include DateHelper
 
-  HEADERS = {
-    user: "Netid / Email",
-    chart_string: "Chart String",
-    product_name: "Product Name",
-    quantity: "Quantity",
-    order_date: "Order Date",
-    fulfillment_date: "Fulfillment Date",
-    notes: "Note",
-    order_number: "Order",
-    errors: "Errors",
-  }.freeze
+  HEADERS = [
+    :user,
+    :chart_string,
+    :product_name,
+    :quantity,
+    :order_date,
+    :fulfillment_date,
+    :notes,
+    :order_number,
+    :errors,
+  ].lazy.map { |k| header(k) }
 
   REQUIRED_HEADERS = [
     :user,
@@ -25,7 +25,7 @@ class OrderRowImporter
     :quantity,
     :order_date,
     :fulfillment_date,
-  ].map { |k| HEADERS[k] }
+  ].lazy.map { |k| header(k) }
 
   cattr_accessor(:importable_product_types) { [Item, Service, TimedService] }
 
@@ -37,8 +37,16 @@ class OrderRowImporter
     new(row, nil).order_key
   end
 
+  def self.header(header)
+    I18n.t(header, scope: "#{name.underscore}.headers", default: header.to_s.titleize)
+  end
+
+  def header(header)
+    self.class.header(header)
+  end
+
   def self.headers_to_s
-    HEADERS.values.join(",")
+    HEADERS.to_a.join(",")
   end
 
   def initialize(row, order_import)
@@ -78,9 +86,9 @@ class OrderRowImporter
   def row_with_errors
     # Start with a hash of HEADERS keys with nil values to ensure optional columns
     # are included in the report even if they are not in the uploaded CSV.
-    new_row = HEADERS.values.each_with_object({}) { |header, hash| hash[header] = nil }
+    new_row = HEADERS.each_with_object({}) { |header, hash| hash[header] = nil }
     new_row.merge!(@row)
-    new_row[HEADERS[:errors]] = errors.join(", ")
+    new_row[header(:errors)] = errors.join(", ")
 
     CSV::Row.new(new_row.keys, new_row.values)
   end
@@ -98,8 +106,11 @@ class OrderRowImporter
       .find_by(name: field(:product_name))
   end
 
-  def add_error(message)
-    @errors.add(message) if message.present?
+  def add_error(message, options = {})
+    if message.present?
+      message = I18n.t(message, options.reverse_merge(scope: "#{self.class.name.underscore}.errors")) if message.is_a?(Symbol)
+      @errors.add(message)
+    end
   end
 
   private
@@ -130,9 +141,9 @@ class OrderRowImporter
 
   def purchase_order!
     if order.validate_order!
-      add_error("Couldn't purchase order") unless order.purchase_without_default_status!
+      add_error(:purchase_fail) unless order.purchase_without_default_status!
     else
-      add_error("Couldn't validate order")
+      add_error(:validate_fail)
     end
   end
 
@@ -144,7 +155,7 @@ class OrderRowImporter
   end
 
   def field(field)
-    @row[HEADERS[field]].to_s.try(:strip)
+    @row[header(field)].to_s.try(:strip)
   end
 
   def fulfillment_date
@@ -163,8 +174,8 @@ class OrderRowImporter
   end
 
   def validate_headers
-    missing_headers = REQUIRED_HEADERS - @row.headers
-    add_error("Missing headers: #{missing_headers.join(' | ')}") if missing_headers.present?
+    missing_headers = REQUIRED_HEADERS.to_a - @row.headers
+    add_error(:missing_headers, headers: missing_headers.join(' | ')) if missing_headers.present?
   end
 
   def has_valid_fields?
@@ -183,23 +194,31 @@ class OrderRowImporter
 
   def validate_fulfillment_date
     if fulfillment_date.blank?
-      add_error("Invalid Fulfillment Date: Please use MM/DD/YYYY format")
+      add_error(:invalid_date, field: header(:fulfillment_date))
+    # Because it's parsed as a date, it gets parsed as midnight at the beginning of that day,
+    # which allows placing the order for today.
+    elsif fulfillment_date.future?
+      add_error(:cannot_be_in_future, field: header(:fulfillment_date))
     end
   end
 
   def validate_order_date
     if order_date.blank?
-      add_error("Invalid Order Date: Please use MM/DD/YYYY format")
+      add_error(:invalid_date, field: header(:order_date))
+    # Because it's parsed as a date, it gets parsed as midnight at the beginning of that day,
+    # which allows placing the order for today.
+    elsif order_date.future?
+      add_error(:cannot_be_in_future, field: header(:order_date))
     end
   end
 
   def validate_user
-    add_error("Invalid username or email") if user.blank?
+    add_error(:invalid_user) if user.blank?
   end
 
   def validate_product
     if product.blank?
-      add_error("Couldn't find product by name '#{field(:product_name)}'")
+      add_error(:product_not_found, product: field(:product_name))
     else
       validate_product_is_importable
     end
@@ -207,12 +226,12 @@ class OrderRowImporter
 
   def validate_product_is_importable
     unless product.class.in?(importable_product_types)
-      add_error("import of #{product.class.model_name.human} orders not allowed at this time")
+      add_error(:invalid_product_type, type: product.class.model_name.human)
     end
 
     if product.is_a?(Service)
-      add_error("Service requires survey") if product.active_survey?
-      add_error("Service requires template") if product.active_template?
+      add_error(:requires_survey, type: product.class.model_name.human) if product.active_survey?
+      add_error(:requires_template, type: product.class.model_name.human) if product.active_template?
     end
   end
 
@@ -221,7 +240,7 @@ class OrderRowImporter
     if account.present?
       add_error(account.validate_against_product(product, user))
     else
-      add_error("Can't find account")
+      add_error(:account_not_found)
     end
   end
 
@@ -230,14 +249,13 @@ class OrderRowImporter
     return unless field(:order_number).present?
 
     if existing_order.blank?
-      add_error("The order could not be found")
+      add_error(:order_not_found)
     elsif !existing_order.purchased?
-      add_error("The order has not been purchased")
+      add_error(:order_not_purchased)
     elsif existing_order.facility != facility
-      add_error("The order belongs to another facility")
+      add_error(:order_in_other_facility)
     elsif existing_order.user != user
-      add_error("The user does not match the existing order's")
+      add_error(:order_user_mismatch)
     end
   end
-
 end
