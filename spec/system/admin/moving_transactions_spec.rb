@@ -67,4 +67,28 @@ RSpec.describe "Moving transactions between accounts" do
 
     expect(order_details.map(&:reload).map(&:account)).to eq([accounts.first, accounts.first, other_account])
   end
+
+  it "Renders when problem orders" do
+    # E.g. missing a price policy
+    order_details.first.update!(actual_cost: nil, actual_subsidy: nil, estimated_cost: nil, estimated_subsidy: nil)
+
+    login_as director
+    visit facility_movable_transactions_path(facility)
+
+    order_details.each do |od|
+      find("input[value='#{od.id}']").click
+    end
+
+    click_button "Reassign Chart Strings"
+
+    expect(page).to have_content("All chart strings listed above are available")
+
+    select accounts.first.account_list_item, from: "Payment Source"
+    click_button "Reassign Chart String"
+
+    expect(page).to have_content("Confirm Transaction Moves")
+
+    click_button "Reassign Chart String"
+    expect(order_details.map(&:reload).map(&:account)).to eq([accounts.first, accounts.first, other_account])
+  end
 end

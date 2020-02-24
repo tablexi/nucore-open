@@ -80,6 +80,9 @@ Rails.application.routes.draw do
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
     resources :instruments do
+      get :dashboard, to: "instruments_dashboard#dashboard", on: :collection
+      get :public_dashboard, to: "instruments_dashboard#public_dashboard", on: :collection
+
       collection do
         get "list", to: "instruments#public_list"
       end
@@ -168,6 +171,9 @@ Rails.application.routes.draw do
       post "access_list/approvals", to: "users#access_list_approvals"
 
       resource :accounts, controller: "user_accounts", only: [:show, :edit, :update]
+      resources :clone_account_memberships, only: %i[index new create] do
+        get :search, on: :collection
+      end
       resources :user_research_safety_certifications, only: [:index]
     end
 
@@ -219,7 +225,6 @@ Rails.application.routes.draw do
     end
 
     get "public_timeline", to: "reservations#public_timeline", as: "public_timeline" if SettingsHelper.feature_on?(:daily_view)
-    get "accounts_receivable", to: "facility_accounts#accounts_receivable"
 
     ### Feature Toggle Editing Accounts ###
     if SettingsHelper.feature_on?(:edit_accounts)

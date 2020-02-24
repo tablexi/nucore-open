@@ -165,10 +165,6 @@ en:
       label:
         search_term: "Search by payment source number or payment source owner's name, NetID, or username"
       search: Search
-    accounts_receivable:
-      head: Accounts Receivable
-      show_with_balance: Show %{model} with a balance
-      show_all: Show all %{model}
     new_account_user_search:
       head: "Add Payment Source"
       instruct: "To add a payment source, first search for the user you would like to create the payment source for."
