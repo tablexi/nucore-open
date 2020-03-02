@@ -110,11 +110,15 @@ module NucoreKfs
     def create_account_owner_record(account, owner)
       puts("create_account_owner_record for account = #{account.id} and user = #{owner.username}")
       # If this user was previously listed on the account in another role, delete that association
-      existing_user = account.account_users.where(user_id: owner.id).first
+      existing_user = account.account_users.where(user_id: owner.id, deleted_at: nil).first
+
       if existing_user != nil
+        puts("existing_user = #{existing_user.user.username}")
+        # If the user is already the owner, we don't need to do anything else
+        if existing_user.user_role == AccountUser::ACCOUNT_OWNER
+          return
+        end
         existing_user.touch(:deleted_at)
-        puts("pre - existing_user.save!")
-        existing_user.save!
       end
       result = account.account_users.create(
         user: owner,
