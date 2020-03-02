@@ -18,7 +18,8 @@
             %h1= yield :h1
             = yield :tabnav
             = render partial: "shared/flashes"
-
+            - unless Rails.env.production?
+              .global-alert-banner= "Warning: you are on staging!"
             = yield
     %footer
       = render "/shared/footer"
