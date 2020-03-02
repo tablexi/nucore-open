@@ -28,15 +28,11 @@ module NucoreKfs
         last_name: "Bot"
       )
 
-      @kfs_bot = User.find_or_create_by( username: NucoreKfs::KFS_BOT_ACCOUNT_USERNAME, email: NucoreKfs::KFS_BOT_ACCOUNT_EMAIL, first_name: "KFS", last_name: "Bot")
       @created_by_user = @kfs_bot
     end
 
     def upsert_accounts_for_subfund(subfund_id)
       response = do_call_for_subfund(subfund_id)
-      puts("response for subfund '#{subfund_id}':")
-      puts(response.body)
-      puts('-------')
       accounts = response.body[:get_accounts_response][:return][:account]
       for account in accounts
         upsert_account(account)
@@ -120,14 +116,13 @@ module NucoreKfs
         end
         existing_user.touch(:deleted_at)
       end
+
       result = account.account_users.create(
         user: owner,
         created_by_user: @created_by_user,
         user_role: AccountUser::ACCOUNT_OWNER
       )
-      puts("pre - result.save!")
       result.save!
-      puts("create_account_owner_record for result = #{result}")
     end
 
     def set_owner_for_account(account, owner_user)
@@ -150,19 +145,19 @@ module NucoreKfs
       account_name = kfs_soap_data[:account_name]
       puts("account_name = #{account_name}")
 
-      account_open = kfs_soap_data[:status] == "OPEN"
+      account_status = kfs_soap_data[:status]
+      account_open = account_status == "OPEN"
 
       # build the account_number in the correct format
       object_code = '6610' # always 6610 for the accounts paying
       kfs_account_number = kfs_soap_data[:account_number]
       account_number = "KFS-#{kfs_account_number}-#{object_code}"
-      puts("account_number = #{account_number}")
+      puts("account_number = #{account_number} | account_open = #{account_open} (status = #{account_status})")
 
       # user roles
       account_owner_netid = kfs_soap_data[:accounts_supervisory_systems_identifier]
       business_admin_netid = kfs_soap_data[:fiscal_officer_identifier]
-      puts("account_owner_netid = #{account_owner_netid}")
-      puts("business_admin_netid = #{business_admin_netid}")
+      puts("account_number = #{account_number} | account_owner_netid = #{account_owner_netid} | business_admin_netid = #{business_admin_netid}")
 
       account_owner = User.find_by(username: account_owner_netid)
       business_admin = User.find_by(username: business_admin_netid)
@@ -171,17 +166,17 @@ module NucoreKfs
         puts("Found nil for account_owner or business_admin. This account will not be added.")
         return
       end
-
-      puts("account_owner = #{account_owner.id}")
-      puts("business_admin = #{business_admin.id}")
+      puts("account_number = #{account_number} | account_owner = #{account_owner.id} | business_admin = #{business_admin.id}")
 
       account = Account.find_by(account_number: account_number)
       # if the account is not in our DB yet, and it is 'OPEN', then build a record for it
       if account == nil && account_open
+        puts("account_number = #{account_number} does not exist yet - building account...")
         account = build_account(account_number, account_owner, account_name)
       end
 
       if account != nil
+        puts("account_number = #{account_number} exists - updating account...")
         # set the correct "Business Admin" and Owners for the account
         set_owner_for_account(account, account_owner)
         set_business_admin_for_account(account, business_admin)
