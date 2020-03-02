@@ -1,4 +1,9 @@
 namespace :uconn do
+  desc "set default price group for users"
+  task set_default_price_group: :environment do
+    User.find_each(&:create_default_price_group!)
+  end
+
   desc "seed data from kennel"
   task kennel_seed: :environment do
     # port of https://gitlab.com/squared-labs/kennel-seeder/blob/master/src/KennelSeeder.php
@@ -50,7 +55,7 @@ namespace :uconn do
             :first_name => record["first_name"],
             :last_name => record["last_name"],
             :email => record["email"],
-          )
+          ).create_default_price_group!
         rescue ActiveRecord::RecordInvalid => e
           logger.info "Skipping this row due to RecordInvalid exception: #{e.message}"
         end
