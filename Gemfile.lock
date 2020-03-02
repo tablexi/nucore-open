@@ -332,7 +332,7 @@ GEM
     haml (5.1.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.34.2)
+    haml_lint (0.35.0)
       haml (>= 4.0, < 5.2)
       rainbow
       rubocop (>= 0.50.0)
@@ -420,7 +420,7 @@ GEM
       parallel
     paranoia (2.4.2)
       activerecord (>= 4.0, < 6.1)
-    parser (2.7.0.2)
+    parser (2.7.0.3)
       ast (~> 2.4.0)
     pdf-core (0.7.0)
     powerpack (0.1.2)
