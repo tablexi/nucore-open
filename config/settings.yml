@@ -3,7 +3,7 @@ header_logo_path: logo-header.png
 price_group:
   name:
     base: 'Base Rate'
-    external: 'External Rate'
+    external: 'External For Profit'
     cancer_center: 'Cancer Center Rate'
 
 accounts:
