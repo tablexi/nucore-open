@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "Cloning account membership" do
   let(:facility) { create(:facility) }
-
   let(:original_user) { create(:user) }
   let(:new_user) { create(:user) }
   let!(:owned_account) { create(:account, :with_account_owner, owner: original_user) }
@@ -33,6 +32,10 @@ RSpec.describe "Cloning account membership" do
       click_link "Clone Payment Source Membership"
       fill_in "search_term", with: original_user.name
       click_button "Search"
+
+      unless page.has_link?("Clone Payment Source Memberships", count: 1)
+        raise "Too many links for user: #{original_user.name} -- All: #{User.all.map(&:name) }"
+      end
 
       click_link "Clone Payment Source Memberships"
 
