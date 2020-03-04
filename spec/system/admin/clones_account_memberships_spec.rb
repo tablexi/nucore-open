@@ -34,6 +34,7 @@ RSpec.describe "Cloning account membership" do
       click_button "Search"
 
       unless page.has_link?("Clone Payment Source Memberships", count: 1)
+        save_and_open_page
         raise "Too many links for user: #{original_user.name} -- All: #{User.all.map(&:name) }"
       end
 
