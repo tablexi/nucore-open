@@ -30,12 +30,8 @@ RSpec.describe "Cloning account membership" do
       visit facility_user_accounts_path("all", new_user)
 
       click_link "Clone Payment Source Membership"
-      fill_in "search_term", with: original_user.name
+      fill_in "search_term", with: original_user.email
       click_button "Search"
-
-      unless page.has_link?("Clone Payment Source Memberships", count: 1)
-        raise "Too many links for user: #{original_user.name} -- All: #{User.all.map(&:name) }\n#{page.body}"
-      end
 
       click_link "Clone Payment Source Memberships"
 
