@@ -2,12 +2,12 @@
 
 FactoryBot.define do
   factory :user do
-    sequence(:username) { |n| "username#{n}" }
+    sequence(:username) { |n| "username#{n + 638}" }
     first_name { "User" }
     password { "password" }
     password_confirmation { "password" }
-    sequence(:last_name, &:to_s)
-    sequence(:email) { |n| "user#{n}@example.com" }
+    sequence(:last_name) { |n| n + 723 }
+    sequence(:email) { |n| "user#{n + 721}@example.com" }
 
     trait :suspended do
       suspended_at { 1.day.ago }
