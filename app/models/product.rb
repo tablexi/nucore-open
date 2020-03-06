@@ -67,12 +67,22 @@ class Product < ApplicationRecord
     left_outer_joins(:product_display_group_product).where(product_display_group_products: { id: nil })
   }
 
-  # All product types
-  cattr_accessor(:types) { [Instrument, Item, Service, TimedService, Bundle] }
+  # All product types. This cannot be a cattr_accessor because the block is evaluated
+  # at definition time (not lazily as I expected) and this causes a circular dependency
+  # in some schools.
+  def self.types
+    @types ||= [Instrument, Item, Service, TimedService, Bundle]
+  end
+
   # Those that can be added to an order by an administrator
-  cattr_accessor(:mergeable_types) { ["Instrument", "Item", "Service", "TimedService", "Bundle"] }
+  def self.mergeable_types
+    @mergeable_types ||= ["Instrument", "Item", "Service", "TimedService", "Bundle"]
+  end
+
   # Those that can be ordered via the NUcore homepage
-  cattr_accessor(:orderable_types) { ["Instrument", "Item", "Service", "TimedService", "Bundle"] }
+  def self.orderable_types
+    @orderable_types ||= ["Instrument", "Item", "Service", "TimedService", "Bundle"]
+  end
 
   # Products that can be used as accessories
   scope :accessorizable, -> { where(type: ["Item", "Service", "TimedService"]) }
