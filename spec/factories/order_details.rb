@@ -4,7 +4,13 @@ FactoryBot.define do
   factory :order_detail do
     quantity { 1 }
     created_by { 0 }
-    order_status { OrderStatus.new_status }
+    state { "new" }
+    order_status { nil }
+
+    trait :purchased do
+      order_status { OrderStatus.new_status }
+      ordered_at { Time.current }
+    end
 
     trait :completed do
       state { "complete" }
