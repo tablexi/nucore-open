@@ -4,17 +4,21 @@ FactoryBot.define do
   factory :order_detail do
     quantity { 1 }
     created_by { 0 }
+    order_status { OrderStatus.new_status }
 
     trait :completed do
       state { "complete" }
+      order_status { OrderStatus.complete }
     end
 
     trait :canceled do
       state { "canceled" }
+      order_status { OrderStatus.canceled }
     end
 
     trait :canceled_with_cost do
       state { "complete" }
+      order_status { OrderStatus.complete }
       canceled_at { 30.minutes.ago }
       actual_cost { 5 }
     end
