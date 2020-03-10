@@ -2,8 +2,12 @@
 
 class ProductPresenter < SimpleDelegator
 
-  def with_archived_tag
-    is_archived? ? I18n.t("products.archived", product: name) : name
+  def to_s
+    tags = []
+    tags << :hidden if is_hidden?
+    tags << :archived if is_archived?
+
+    ([name] + tags.map { |t| I18n.t(t, scope: "products.tags") }).join(" ")
   end
 
 end

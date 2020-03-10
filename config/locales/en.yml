@@ -520,7 +520,9 @@ en:
       hidden: "No"
       optional: Optional
       required: Required
-    archived: "%{product} (Inactive)"
+    tags:
+      archived: (Inactive)
+      hidden: (Hidden)
 
   admin_reservations:
     categories:
