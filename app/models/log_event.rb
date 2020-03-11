@@ -2,8 +2,10 @@
 
 class LogEvent < ApplicationRecord
 
-  belongs_to :user
+  belongs_to :user # This is whodunnit
   belongs_to :loggable, polymorphic: true
+
+  scope :reverse_chronological, -> { order(event_time: :desc) }
 
   def self.log(loggable, event_type, user, event_time: Time.current)
     create(

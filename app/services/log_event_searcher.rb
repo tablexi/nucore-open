@@ -4,7 +4,7 @@ class LogEventSearcher
 
   ALLOWED_EVENTS = ["account.create", "account.update",
                     "account_user.create", "account_user.delete",
-                    "user.create"].freeze
+                    "user.create", "user.suspended", "user.unsuspended"].freeze
 
   def self.beginning_of_time
     10.years.ago
@@ -28,7 +28,7 @@ class LogEventSearcher
     result = result.merge(filter_date) if start_date || end_date
     result = result.merge(filter_event) if events.present?
     result = result.merge(filter_query) if query.present?
-    result
+    result.reverse_chronological
   end
 
   def dates
