@@ -13,9 +13,9 @@ class UserFinder
     "email",
   ]
 
-  def self.search_with_counts(search_term, limit = nil)
+  def self.search_with_count(search_term, limit = nil)
     if search_term.present?
-      new(search_term, limit).result_with_counts
+      new(search_term, limit).result_with_count
     else
       [nil, nil]
     end
@@ -35,7 +35,7 @@ class UserFinder
     @table_alias = table_alias
   end
 
-  def result_with_counts
+  def result_with_count
     [result, relation.count]
   end
 

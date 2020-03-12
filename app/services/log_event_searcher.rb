@@ -39,14 +39,12 @@ class LogEventSearcher
     LogEvent.where(event_time: (dates.min.beginning_of_day..dates.max.end_of_day))
   end
 
-  # When this gets updated to Rails 5, you can use ActiveRecord#or directly
-  # Also, the event name comes in as <loggable_type>.<event_type>
+  # The event name comes in as <loggable_type>.<event_type>
   def filter_event
-    where_strings = events.flatten.map do |event|
+    ors = events.flatten.map do |event|
       loggable_type, event_type = event.split(".")
-      "(loggable_type = '#{loggable_type.camelize}' AND event_type = '#{event_type}')"
-    end
-    LogEvent.where(where_strings.join(" OR "))
+      LogEvent.where(loggable_type: loggable_type.camelize, event_type: event_type)
+    end.inject(&:or)
   end
 
   def filter_query
