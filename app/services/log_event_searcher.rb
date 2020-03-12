@@ -51,8 +51,8 @@ class LogEventSearcher
     relation = LogEvent.joins_polymorphic(Account)
       .joins_polymorphic(User)
       .joins_polymorphic(AccountUser)
-      .joins("LEFT OUTER JOIN accounts AS account_user_accounts ON account_users.account_id = account_user_accounts.id")
-      .joins("LEFT OUTER JOIN users AS account_user_users ON account_users.user_id = account_user_users.id")
+      .joins("LEFT OUTER JOIN accounts account_user_accounts ON account_users.account_id = account_user_accounts.id")
+      .joins("LEFT OUTER JOIN users account_user_users ON account_users.user_id = account_user_users.id")
 
     [
       Account.where("accounts.account_number LIKE ?", "%#{query}%"),
