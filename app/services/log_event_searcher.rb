@@ -41,25 +41,24 @@ class LogEventSearcher
 
   # The event name comes in as <loggable_type>.<event_type>
   def filter_event
-    ors = events.flatten.map do |event|
+    events.flatten.map do |event|
       loggable_type, event_type = event.split(".")
       LogEvent.where(loggable_type: loggable_type.camelize, event_type: event_type)
     end.inject(&:or)
   end
 
   def filter_query
-    relation = LogEvent.joins_polymorphic(Account)
-      .joins_polymorphic(User)
-      .joins_polymorphic(AccountUser)
-      .joins("LEFT OUTER JOIN accounts account_user_accounts ON account_users.account_id = account_user_accounts.id")
-      .joins("LEFT OUTER JOIN users account_user_users ON account_users.user_id = account_user_users.id")
+    accounts = Account.where(Account.arel_table[:account_number].lower.matches("%#{query.downcase}%")).select(:id)
+    users = UserFinder.search(query).select(:id).unscope(:order)
+    account_users = AccountUser.where(account_id: accounts).or(AccountUser.where(user_id: users))
 
     [
-      Account.where("accounts.account_number LIKE ?", "%#{query}%"),
-      Account.where("account_user_accounts.account_number LIKE ?", "%#{query}%"),
-      UserFinder.search(query).unscope(:order),
-      UserFinder.search(query, table_alias: "account_user_users").unscope(:order),
-    ].map { |filter| relation.merge(filter) }.inject(&:or)
+      accounts,
+      users,
+      account_users,
+    ].map do |filter|
+      LogEvent.where(loggable_type: filter.model.name, loggable_id: filter)
+    end.inject(&:or)
   end
 
 end

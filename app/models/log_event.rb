@@ -7,18 +7,6 @@ class LogEvent < ApplicationRecord
 
   scope :reverse_chronological, -> { order(event_time: :desc) }
 
-  # Allows you to LEFT OUTER JOIN a polymorphic table so you can query on it
-  # Example: relation.joins_polymorphic(Account)
-  # => LEFT OUTER JOINS accounts ON loggable_type = 'Account' AND accounts.id = loggable_id
-  scope :joins_polymorphic, ->(clazz) {
-    join_table = clazz.arel_table
-
-    join_on = arel_table[:loggable_type].eq(clazz)
-      .and(join_table[:id].eq(arel_table[:loggable_id]))
-    arel_join = arel_table.join(join_table, Arel::Nodes::OuterJoin).on(join_on)
-    joins(arel_join.join_sources)
-  }
-
   def self.log(loggable, event_type, user, event_time: Time.current)
     create(
       loggable: loggable, event_type: event_type,

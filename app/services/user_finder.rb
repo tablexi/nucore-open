@@ -21,18 +21,17 @@ class UserFinder
     end
   end
 
-  def self.search(search_term, limit = nil, table_alias: nil)
+  def self.search(search_term, limit = nil)
     if search_term.present?
-      new(search_term, limit, table_alias: table_alias).result
+      new(search_term, limit).result
     else
       nil
     end
   end
 
-  def initialize(search_term, limit = nil, table_alias: nil)
+  def initialize(search_term, limit = nil)
     @search_term = generate_multipart_like_search_term(search_term)
     @limit = limit
-    @table_alias = table_alias
   end
 
   def result_with_count
@@ -48,13 +47,18 @@ class UserFinder
   def relation
     conditions = searchable_columns.map { |column| arel_table[column].lower.matches(@search_term) }
 
-    concat = Arel::Nodes::NamedFunction.new("CONCAT", [arel_table[:first_name].lower, arel_table[:last_name].lower])
-    conditions << concat.matches(@search_term)
+
+    conditions << concat_condition.matches(@search_term)
 
     @relation ||= User.where(conditions.inject(&:or))
   end
 
+  # This method is a little funky, but it allows us to search for "First Last"
+  def concat_condition
+    Arel::Nodes::NamedFunction.new("CONCAT", [arel_table[:first_name].lower, arel_table[:last_name].lower])
+  end
+
   def arel_table
-    @table_alias ? Arel::Table.new(@table_alias) : User.arel_table
+    User.arel_table
   end
 end
