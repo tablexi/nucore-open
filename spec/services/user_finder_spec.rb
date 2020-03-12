@@ -41,18 +41,18 @@ RSpec.describe UserFinder do
     end
   end
 
-  describe ".search_with_counts" do
+  describe ".search_with_count" do
     it "searches and returns a count" do
       first_name = SecureRandom.hex(8)
       user = FactoryBot.create(:user, first_name: first_name)
-      found_users, count = UserFinder.search_with_counts(first_name, nil)
+      found_users, count = UserFinder.search_with_count(first_name, nil)
       expect(found_users).to include(user)
       expect(count).to eq(1)
     end
 
     it "returns nothing and 0 if not found" do
       user = FactoryBot.create(:user)
-      found_users, count = UserFinder.search_with_counts("something random", nil)
+      found_users, count = UserFinder.search_with_count("something random", nil)
       expect(found_users).to be_empty
       expect(count).to eq(0)
     end
