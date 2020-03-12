@@ -10,39 +10,51 @@ class UserFinder
     "first_name",
     "last_name",
     "username",
-    "CONCAT(first_name, last_name)",
     "email",
   ]
 
-  def self.search(search_term, limit = nil)
+  def self.search_with_counts(search_term, limit = nil)
     if search_term.present?
-      new(search_term, limit).result
+      new(search_term, limit).result_with_counts
     else
       [nil, nil]
     end
   end
 
-  def initialize(search_term, limit = nil)
+  def self.search(search_term, limit = nil, table_alias: nil)
+    if search_term.present?
+      new(search_term, limit, table_alias: table_alias).result
+    else
+      nil
+    end
+  end
+
+  def initialize(search_term, limit = nil, table_alias: nil)
     @search_term = generate_multipart_like_search_term(search_term)
     @limit = limit
+    @table_alias = table_alias
+  end
+
+  def result_with_counts
+    [result, relation.count]
   end
 
   def result
-    [users, relation.count]
+    relation.order(:last_name, :first_name).limit(@limit)
   end
 
   private
 
   def relation
-    condition_sql = searchable_columns
-                    .map { |column| "LOWER(#{column}) LIKE :search_term" }
-                    .join(" OR ")
+    conditions = searchable_columns.map { |column| arel_table[column].lower.matches(@search_term) }
 
-    @relation ||= User.where(condition_sql, search_term: @search_term)
+    concat = Arel::Nodes::NamedFunction.new("CONCAT", [arel_table[:first_name].lower, arel_table[:last_name].lower])
+    conditions << concat.matches(@search_term)
+
+    @relation ||= User.where(conditions.inject(&:or))
   end
 
-  def users
-    relation.order(:last_name, :first_name).limit(@limit)
+  def arel_table
+    @table_alias ? Arel::Table.new(@table_alias) : User.arel_table
   end
-
 end

@@ -49,20 +49,19 @@ class LogEventSearcher
     LogEvent.where(where_strings.join(" OR "))
   end
 
-  # Some of these queryies become easier to write in Rails 5 when
-  #  you can use ActiveRecord#or directly
   def filter_query
-    account_ids = Account.where("account_number LIKE ?", "%#{query}%").pluck(:id)
-    user_ids = UserFinder.search(query, nil)[0].map(&:id)
-    account_user_ids = AccountUser.where(account_id: account_ids).pluck(:id) +
-                       AccountUser.where(user_id: user_ids).pluck(:id)
-    account_logs = LogEvent.where(
-      loggable_type: "Account", loggable_id: account_ids).pluck(:id)
-    user_logs =  LogEvent.where(
-      loggable_type: "User", loggable_id: user_ids).pluck(:id)
-    account_user_logs = LogEvent.where(
-      loggable_type: "AccountUser", loggable_id: account_user_ids).pluck(:id)
-    LogEvent.where(id: account_logs + user_logs + account_user_logs)
+    relation = LogEvent.joins_polymorphic(Account)
+      .joins_polymorphic(User)
+      .joins_polymorphic(AccountUser)
+      .joins("LEFT OUTER JOIN accounts AS account_user_accounts ON account_users.account_id = account_user_accounts.id")
+      .joins("LEFT OUTER JOIN users AS account_user_users ON account_users.user_id = account_user_users.id")
+
+    [
+      Account.where("accounts.account_number LIKE ?", "%#{query}%"),
+      Account.where("account_user_accounts.account_number LIKE ?", "%#{query}%"),
+      UserFinder.search(query).unscope(:order),
+      UserFinder.search(query, table_alias: "account_user_users").unscope(:order),
+    ].map { |filter| relation.merge(filter) }.inject(&:or)
   end
 
 end

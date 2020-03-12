@@ -8,7 +8,8 @@ class LogEventsController < GlobalSettingsController
       end_date: parse_usa_date(params[:end_date]),
       events: params[:events],
       query: params[:query],
-    ).paginate(per_page: 50, page: params[:page])
+    ).reverse_chronological
+     .paginate(per_page: 50, page: params[:page])
   end
 
 end
