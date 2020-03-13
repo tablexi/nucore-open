@@ -48,8 +48,8 @@ class LogEventSearcher
   end
 
   def filter_query
-    accounts = Account.where(Account.arel_table[:account_number].lower.matches("%#{query.downcase}%")).select(:id)
-    users = UserFinder.search(query).select(:id).unscope(:order)
+    accounts = Account.where(Account.arel_table[:account_number].lower.matches("%#{query.downcase}%"))
+    users = UserFinder.search(query).unscope(:order)
     account_users = AccountUser.where(account_id: accounts).or(AccountUser.where(user_id: users))
 
     [
