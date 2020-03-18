@@ -24,7 +24,7 @@ class FacilityJournalsController < ApplicationController
 
   # GET /facilities/journals
   def index
-    set_pending_journals
+    set_pending_journals if @journals.current_page == 1
   end
 
   # GET /facilities/journals/new
