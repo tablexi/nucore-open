@@ -104,6 +104,7 @@ RSpec.describe AccountsController do
         expect(assigns(:account)).to eq(@account)
         is_expected.to set_flash
         expect(@account.reload).to be_suspended
+        expect(LogEvent.find_by(loggable: @account, event_type: :suspended, user: admin)).to be_present
         assert_redirected_to account_path(@account)
       end
     end
@@ -123,6 +124,7 @@ RSpec.describe AccountsController do
         expect(assigns(:account)).to eq(@account)
         is_expected.to set_flash
         expect(assigns(:account)).not_to be_suspended
+        expect(LogEvent.find_by(loggable: @account, event_type: :unsuspended, user: admin)).to be_present
         assert_redirected_to account_path(@account)
       end
     end

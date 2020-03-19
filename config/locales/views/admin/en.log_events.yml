@@ -5,6 +5,8 @@ en:
         account:
           create: Payment Source created
           update: Payment Source updated
+          suspended: Payment Source suspended
+          unsuspended: Payment Source unsuspended
         account_user:
           create: Payment Source User added
           delete: Payment Source User removed
