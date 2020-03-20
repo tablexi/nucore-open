@@ -21,4 +21,6 @@ en:
         start_date: Start Date
         user:
           create: User added
+          suspended: User suspended
+          unsuspended: User unsuspended
         user_label: User
