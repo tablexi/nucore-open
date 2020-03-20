@@ -6,6 +6,7 @@ en:
           create: Payment Source created
           update: Payment Source updated
           suspended: Payment Source suspended
+          unsuspended: Payment Source unsuspended
         account_user:
           create: Payment Source User added
           delete: Payment Source User removed
@@ -22,4 +23,6 @@ en:
         start_date: Start Date
         user:
           create: User added
+          suspended: User suspended
+          unsuspended: User unsuspended
         user_label: User

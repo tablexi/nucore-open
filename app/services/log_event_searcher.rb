@@ -4,7 +4,9 @@ class LogEventSearcher
 
   ALLOWED_EVENTS = ["account.create", "account.update",
                     "account_user.create", "account_user.delete",
-                    "user.create", "statement.create"].freeze
+                    "user.create", "user.suspended", "user.unsuspended",
+                    "account.suspended", "account.unsuspended", 
+                    "statement.create"].freeze
 
   def self.beginning_of_time
     10.years.ago
