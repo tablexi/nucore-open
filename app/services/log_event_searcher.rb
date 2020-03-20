@@ -28,7 +28,7 @@ class LogEventSearcher
     result = result.merge(filter_date) if start_date || end_date
     result = result.merge(filter_event) if events.present?
     result = result.merge(filter_query) if query.present?
-    result.reverse_chronological
+    result
   end
 
   def dates
