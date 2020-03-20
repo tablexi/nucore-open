@@ -136,6 +136,14 @@ if Account.config.statements_enabled?
         @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail3.id])
       end
 
+      it "should log the statement when it is created" do
+        admin = create(:user, :administrator)
+        sign_in admin
+        do_request
+        log_event = LogEvent.find_by(loggable: @statement, event_type: :create, user: admin)
+        expect(log_event).to be_present
+      end
+
       it_should_allow_managers_only :redirect do
         expect(response).to be_redirect
       end

@@ -5,9 +5,12 @@ en:
         account:
           create: Payment Source created
           update: Payment Source updated
+          suspended: Payment Source suspended
         account_user:
           create: Payment Source User added
           delete: Payment Source User removed
+        statement:
+          create: Statement added
         end_date: End Date
         event_filter: Event
         event_placeholder: Filter on one or more events

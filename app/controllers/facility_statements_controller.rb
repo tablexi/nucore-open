@@ -62,6 +62,8 @@ class FacilityStatementsController < ApplicationController
     elsif @statement_creator.create
       @statement_creator.send_statement_emails
       flash[:notice] = text(success_message, accounts: @statement_creator.formatted_account_list)
+
+    LogEvent.log(@statement_creator, :create, current_user)
     else
       flash[:error] = text("errors_html", errors: @statement_creator.formatted_errors)
     end
