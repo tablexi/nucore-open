@@ -4,25 +4,22 @@ require "rails_helper"
 require "controller_spec_helper"
 
 RSpec.describe InstrumentsController do
-  let(:facility) { @authable }
-  let(:instrument) { @instrument }
-
   render_views
 
-  it "should route" do
-    expect(get: "/#{I18n.t('facilities_downcase')}/alpha/instruments").to route_to(controller: "instruments", action: "index", facility_id: "alpha")
-    expect(get: "/#{I18n.t('facilities_downcase')}/alpha/instruments/1/manage").to route_to(controller: "instruments", action: "manage", id: "1", facility_id: "alpha")
-  end
+  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:instrument) { FactoryBot.create(:instrument, facility: facility, no_relay: true) }
 
   before(:all) { create_users }
 
   before(:each) do
-    @authable = FactoryBot.create(:setup_facility)
-    @instrument = FactoryBot.create(:instrument,
-                                    facility: @authable,
-                                    no_relay: true)
-    @params = { id: @instrument.url_name, facility_id: @authable.url_name }
-    @instrument_pp = create :instrument_price_policy, product: @instrument, price_group: @nupg
+    @authable = facility
+    @params = { id: instrument.url_name, facility_id: facility.url_name }
+    create(:instrument_price_policy, product: instrument, price_group: @nupg)
+  end
+
+  it "should route" do
+    expect(get: "/#{I18n.t('facilities_downcase')}/alpha/instruments").to route_to(controller: "instruments", action: "index", facility_id: "alpha")
+    expect(get: "/#{I18n.t('facilities_downcase')}/alpha/instruments/1/manage").to route_to(controller: "instruments", action: "manage", id: "1", facility_id: "alpha")
   end
 
   context "index" do
@@ -33,7 +30,7 @@ RSpec.describe InstrumentsController do
     end
 
     it_should_allow_operators_only do |_user|
-      expect(assigns(:products)).to eq([@instrument])
+      expect(assigns(:products)).to eq([instrument])
       expect(response).to render_template("admin/products/index")
     end
   end
@@ -42,18 +39,17 @@ RSpec.describe InstrumentsController do
     before :each do
       @method = :get
       @action = :public_schedule
-      @params[:instrument_id] = @params[:id]
-      @params.delete(:id)
+      @params[:instrument_id] = @params.delete(:id)
     end
 
     it "should not require login" do
       do_request
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "should set the instrument" do
       do_request
-      expect(assigns[:product]).to eq(@instrument)
+      expect(assigns[:product]).to eq(instrument)
     end
 
     it "should not have html tags in title" do
@@ -81,7 +77,8 @@ RSpec.describe InstrumentsController do
 
     it_should_allow :guest, "but not add to cart" do
       expect(assigns[:product]).to eq(instrument)
-      assert_redirected_to facility_path(facility)
+      expect(assigns(:add_to_cart)).to be(false)
+      expect(response).to render_template("show")
     end
 
     context "when it needs a valid account" do
@@ -96,8 +93,9 @@ RSpec.describe InstrumentsController do
         end
 
         it "fails" do
-          expect(flash).to be_present
-          assert_redirected_to facility_path(facility)
+          expect(response).to render_template("show")
+          expect(assigns(:add_to_cart)).to be(false)
+          expect(flash[:notice]).to be_present
         end
       end
 
@@ -120,12 +118,11 @@ RSpec.describe InstrumentsController do
       end
     end
 
-    context "when it needs schedule rules" do
+    context "when it lacks schedule rules" do
       before :each do
         facility_operators.each do |operator|
           add_account_for_user(operator, instrument)
         end
-        instrument.schedule_rules.create(attributes_for(:schedule_rule))
       end
 
       it "requires sign in" do
@@ -135,13 +132,9 @@ RSpec.describe InstrumentsController do
       end
 
       it_should_allow_all(facility_operators) do
-        expect(assigns(:product)).to eq(instrument)
-        assert_redirected_to(
-          add_order_path(
-            Order.all.last,
-            order: { order_details: [product_id: instrument.id, quantity: 1] },
-          ),
-        )
+        expect(response).to render_template("show")
+        expect(assigns(:add_to_cart)).to be(false)
+        expect(flash[:notice]).to include("schedule for this instrument")
       end
     end
 
@@ -208,9 +201,14 @@ RSpec.describe InstrumentsController do
       before do
         FactoryBot.create(:schedule_rule, product: instrument)
         instrument.update!(is_hidden: true)
+        facility_operators.each do |operator|
+          add_account_for_user(operator, instrument)
+        end
       end
 
-      it_should_allow_operators_only(:redirect) {}
+      it_should_allow_operators_only(:redirect) do
+        expect(assigns[:add_to_cart]).to be(true)
+      end
 
       context "if acting as a user" do
         before(:each) do
@@ -221,7 +219,7 @@ RSpec.describe InstrumentsController do
           do_request
         end
 
-        it "shows the page if acting as a user" do
+        it "adds to cart and redirects" do
           expect(assigns[:product]).to eq(instrument)
           expect(assigns[:add_to_cart]).to be true
           expect(response).to be_redirect
@@ -239,7 +237,7 @@ RSpec.describe InstrumentsController do
     it_should_allow_managers_only do
       expect(assigns(:product)).to be_kind_of Instrument
       expect(assigns(:product)).to be_new_record
-      expect(assigns(:product).facility).to eq(@authable)
+      expect(assigns(:product).facility).to eq(facility)
       is_expected.to render_template "new"
     end
   end
@@ -261,7 +259,7 @@ RSpec.describe InstrumentsController do
       @action = :create
       @params.merge!(
         instrument: FactoryBot.attributes_for(:instrument,
-                                              facility_account_id: @authable.facility_accounts.first.id,
+                                              facility_account_id: facility.facility_accounts.first.id,
                                               control_mechanism: "manual",
                                              ),
       )
@@ -277,7 +275,7 @@ RSpec.describe InstrumentsController do
         @params[:instrument].merge!(control_mechanism: "relay",
                                     relay_attributes: {
                                       ip: "192.168.1.2",
-                                      port: 1234,
+                                      outlet: 12,
                                       username: "username",
                                       password: "password",
                                       type: RelaySynaccessRevA.name,
@@ -291,7 +289,7 @@ RSpec.describe InstrumentsController do
           relay = assigns(:product).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
-          expect(relay.port).to eq(@params[:instrument][:relay_attributes][:port])
+          expect(relay.outlet).to eq(@params[:instrument][:relay_attributes][:outlet])
           expect(relay.username).to eq(@params[:instrument][:relay_attributes][:username])
           expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
           expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
@@ -300,13 +298,13 @@ RSpec.describe InstrumentsController do
       end
 
       describe "relay validations" do
-        let!(:instrument2) { create(:instrument, facility: @authable, no_relay: true) }
+        let!(:instrument2) { create(:instrument, facility: facility, no_relay: true) }
         let!(:old_relay) { create(:relay_syna, instrument: instrument2) }
 
         before :each do
           sign_in @admin
           @params[:instrument][:relay_attributes][:ip] = old_relay.ip
-          @params[:instrument][:relay_attributes][:port] = old_relay.port
+          @params[:instrument][:relay_attributes][:outlet] = old_relay.outlet
         end
 
         context "and the relay is taken by a different instrument" do
@@ -347,7 +345,7 @@ RSpec.describe InstrumentsController do
 
     describe "shared schedule" do
       before :each do
-        @schedule = FactoryBot.create(:schedule, facility: @authable)
+        @schedule = FactoryBot.create(:schedule, facility: facility)
         sign_in @admin
       end
 
@@ -397,7 +395,7 @@ RSpec.describe InstrumentsController do
       expect(assigns(:product).initial_order_status_id).to eq(OrderStatus.default_order_status.id)
       yield
       is_expected.to set_flash
-      assert_redirected_to manage_facility_instrument_url(@authable, assigns(:product))
+      assert_redirected_to manage_facility_instrument_url(facility, assigns(:product))
     end
   end
 
@@ -405,18 +403,18 @@ RSpec.describe InstrumentsController do
     before :each do
       @method = :put
       @action = :update
-      @params.merge!(instrument: @instrument.attributes.merge!(control_mechanism: "manual"))
+      @params.merge!(instrument: instrument.attributes.merge!(control_mechanism: "manual"))
     end
 
     context "no relay" do
       before :each do
         RelaySynaccessRevA.create!(
           ip: "192.168.1.2",
-          port: 1234,
+          outlet: 12,
           username: "username",
           password: "password",
           type: RelaySynaccessRevA.name,
-          instrument_id: @instrument.id,
+          instrument_id: instrument.id,
         )
       end
 
@@ -431,11 +429,11 @@ RSpec.describe InstrumentsController do
         @params[:instrument].merge!(control_mechanism: "relay",
                                     relay_attributes: {
                                       ip: "192.168.1.2",
-                                      port: 1234,
+                                      outlet: 12,
                                       username: "username",
                                       password: "password",
                                       type: RelaySynaccessRevA.name,
-                                      instrument_id: @instrument.id,
+                                      instrument_id: instrument.id,
                                     })
       end
 
@@ -444,7 +442,7 @@ RSpec.describe InstrumentsController do
           relay = assigns(:product).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
-          expect(relay.port).to eq(@params[:instrument][:relay_attributes][:port])
+          expect(relay.outlet).to eq(@params[:instrument][:relay_attributes][:outlet])
           expect(relay.username).to eq(@params[:instrument][:relay_attributes][:username])
           expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
           expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
@@ -464,7 +462,7 @@ RSpec.describe InstrumentsController do
           relay = assigns(:product).relay
           expect(relay).to be_is_a Relay
           expect(relay.ip).to be_nil
-          expect(relay.port).to be_nil
+          expect(relay.outlet).to be_nil
           expect(relay.username).to be_nil
           expect(relay.password).to be_nil
           expect(relay.type).to eq(RelayDummy.name)
@@ -473,10 +471,10 @@ RSpec.describe InstrumentsController do
     end
 
     def assert_successful_update
-      expect(assigns(:product)).to eq(@instrument)
+      expect(assigns(:product)).to eq(instrument)
       yield
       is_expected.to set_flash
-      assert_redirected_to manage_facility_instrument_url(@authable, assigns(:product))
+      assert_redirected_to manage_facility_instrument_url(facility, assigns(:product))
     end
   end
 
@@ -518,14 +516,14 @@ RSpec.describe InstrumentsController do
         let(:admin_reservation) do
           FactoryBot.create(
             :admin_reservation,
-            product: @instrument,
+            product: instrument,
             reserve_start_at: 2.days.from_now,
           )
         end
         let(:admin_reservation2) do
           FactoryBot.create(
             :admin_reservation,
-            product: @instrument,
+            product: instrument,
             reserve_start_at: 1.day.from_now,
           )
         end
@@ -545,32 +543,14 @@ RSpec.describe InstrumentsController do
 
     end
 
-    context "instrument statuses" do
+    context "instrument_statuses" do
       before :each do
-        # So it doesn't try to actually connect
-        allow(SettingsHelper).to receive(:relays_enabled_for_admin?).and_return(true)
-        allow_any_instance_of(RelaySynaccessRevA).to receive(:query_status).and_return(false)
-
         @method = :get
         @action = :instrument_statuses
         @instrument_with_relay = FactoryBot.create(:instrument,
-                                                   facility: @authable,
+                                                   facility: facility,
                                                    no_relay: true)
         FactoryBot.create(:relay_syna, instrument: @instrument_with_relay)
-
-        @instrument_with_dummy_relay = FactoryBot.create(:instrument,
-                                                         facility: @authable,
-                                                         no_relay: true)
-        FactoryBot.create(:relay_dummy, instrument: @instrument_with_dummy_relay)
-
-        @instrument_with_dummy_relay.instrument_statuses.create(is_on: true)
-        @instrument_with_bad_relay = FactoryBot.create(:instrument,
-                                                       facility: @authable,
-                                                       no_relay: true)
-
-        FactoryBot.create(:relay_synb, instrument: @instrument_with_bad_relay)
-        allow_any_instance_of(RelaySynaccessRevB).to receive(:query_status).and_raise(StandardError.new("Error!"))
-        @instrument_with_bad_relay.relay.update_attribute(:ip, "")
       end
 
       it_should_allow_operators_only {}
@@ -580,45 +560,15 @@ RSpec.describe InstrumentsController do
           maybe_grant_always_sign_in :director
           do_request
           @json_output = JSON.parse(response.body, symbolize_names: true)
-          @instrument_ids = @json_output.map { |hash| hash[:instrument_status][:instrument_id] }
         end
 
-        it "should not return instruments without relays" do
-          expect(assigns[:instrument_statuses].map(&:instrument)).not_to be_include @instrument
-          expect(@instrument_ids).not_to be_include @instrument.id
-        end
-        it "should include instruments with real relays" do
-          expect(assigns[:instrument_statuses].map(&:instrument)).to be_include @instrument_with_relay
-          expect(@instrument_ids).to be_include @instrument_with_relay.id
-        end
-        it "should include instruments with dummy relays" do
-          expect(assigns[:instrument_statuses].map(&:instrument)).to be_include @instrument_with_dummy_relay
-          expect(@instrument_ids).to be_include @instrument_with_dummy_relay.id
-        end
-
-        it "should return an error if the relay is missing a host" do
-          expect(assigns[:instrument_statuses].last.instrument).to eq(@instrument_with_bad_relay)
-          expect(assigns[:instrument_statuses].last.error_message).not_to be_nil
-        end
-
-        it "should return true for a relay thats switched on" do
-          expect(assigns[:instrument_statuses][1].instrument).to eq(@instrument_with_dummy_relay)
-          expect(assigns[:instrument_statuses][1].is_on).to be true
-          expect(@json_output[1][:instrument_status][:instrument_id]).to eq(@instrument_with_dummy_relay.id)
-          expect(@json_output[1][:instrument_status][:is_on]).to be true
-        end
-        it "should return false for a relay thats not turned on" do
-          expect(assigns[:instrument_statuses].first.instrument).to eq(@instrument_with_relay)
-          expect(assigns[:instrument_statuses].first.is_on).to be false
-          expect(@json_output[0][:instrument_status][:is_on]).to be false
-          expect(@json_output[0][:instrument_status][:instrument_id]).to eq(@instrument_with_relay.id)
-        end
-
-        it "should create a new false instrument status if theres nothing" do
-          expect(@instrument_with_relay.reload.instrument_statuses.size).to eq(1)
-        end
-        it "should not create a second true instrument status" do
-          expect(@instrument_with_dummy_relay.reload.instrument_statuses.size).to eq(1)
+        it "renders the expected attributes" do
+          expect(@json_output.first).to match(
+            instrument_status: a_hash_including(
+              instrument_id: @instrument_with_relay.id,
+              name: @instrument_with_relay.name,
+            )
+          )
         end
       end
 

@@ -11,11 +11,7 @@ module TransactionSearch
     end
 
     def search(params)
-      order_details.for_facilities(params)
-    end
-
-    def optimized
-      order_details.includes(order: :facility)
+      order_details.for_facilities(params).includes(order: :facility)
     end
 
   end

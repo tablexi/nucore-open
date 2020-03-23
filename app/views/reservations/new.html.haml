@@ -21,7 +21,7 @@
 
 - if @instrument.offline?
   %p.alert.alert-danger= text("instruments.offline.notice")
-- elsif @instrument.has_alert?
+- elsif @instrument.alert
   %p.alert.alert-warning= text("instruments.schedule.instrument_alert_is_active", note: @instrument.alert.note)
 
 = render "products_common/description", product: @instrument
@@ -33,12 +33,17 @@
 
   - if acting_as?
     .row
+      .span4
+        = f.input :reference_id
+    .row
       - if @order.order_details.size == 1
         .span6.send-notification
           = label_tag :send_notification, class: "checkbox" do
             = hidden_field_tag :send_notification, 0
             = check_box_tag :send_notification, 1, params[:send_notification] == "1"
             = t(".notify")
+
+
 
   - if @instrument.offline?
     %p.alert.alert-danger= text("instruments.offline.notice")
@@ -52,14 +57,14 @@
 
     - url_after_action = facility_path(@instrument.facility)
     %li
-    - if @order.to_be_merged?
-      = link_to t("shared.cancel"), facility_order_path(@instrument.facility, @order.merge_order)
-    - elsif @order_detail.bundled?
-      = link_to t("shared.cancel"), url_after_action
-    - else
-      = link_to t("shared.cancel"),
-        remove_order_path(@order, @order_detail, redirect_to: url_after_action),
-        method: :put
+      - if @order.to_be_merged?
+        = link_to t("shared.cancel"), facility_order_path(@instrument.facility, @order.merge_order)
+      - elsif @order_detail.bundled?
+        = link_to t("shared.cancel"), url_after_action
+      - else
+        = link_to t("shared.cancel"),
+          remove_order_path(@order, @order_detail, redirect_to: url_after_action),
+          method: :put
 
 #overlay
   #spinner

@@ -13,35 +13,22 @@ class Account < ApplicationRecord
   include Overridable
   include Accounts::AccountNumberSectionable
   include DateHelper
-  include NUCore::Database::WhereIdsIn
+  include Nucore::Database::WhereIdsIn
 
   # belongs_to :facility, required: false
   has_many :account_facility_joins
   has_many :facilities, -> { merge(Facility.active) }, through: :account_facility_joins
 
-  # Temporary methods
-  def facility
-    facilities.first
-  end
-
-  def facility_id=(facility_id)
-    self[:facility_id] = facility_id
-    self.account_facility_joins = [AccountFacilityJoin.new(facility_id: facility_id, account: self)] if facility_id
-  end
-
-  def facility=(facility)
-    self.facility_id = facility&.id
-  end
-  # Temporary methods
-
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
-  has_many :deleted_account_users, -> { where.not("account_users.deleted_at" => nil) }, class_name: "AccountUser"
-  # Using a basic hash doesn't work with the `owner_user` :through association. It would
-  # only include the last item in the hash as part of the scoping.
-  # TODO Consider changing when we get to Rails 4.
-  has_one :owner, -> { where("account_users.user_role = '#{AccountUser::ACCOUNT_OWNER}' AND account_users.deleted_at IS NULL") }, class_name: "AccountUser"
+  has_many :deleted_account_users, -> { where.not(deleted_at: nil) }, class_name: "AccountUser"
+
+  has_one :owner, -> { where(user_role: AccountUser::ACCOUNT_OWNER, deleted_at: nil) }, class_name: "AccountUser"
   has_one :owner_user, through: :owner, source: :user
   has_many :business_admins, -> { where(user_role: AccountUser::ACCOUNT_ADMINISTRATOR, deleted_at: nil) }, class_name: "AccountUser"
+
+  has_many :notify_user_roles, -> { where(user_role: AccountUser.admin_user_roles, deleted_at: nil) }, class_name: "AccountUser"
+  has_many :notify_users, through: :notify_user_roles, source: :user
+
   has_many   :price_group_members
   has_many   :order_details
   has_many   :orders
@@ -52,11 +39,17 @@ class Account < ApplicationRecord
   has_many :log_events, as: :loggable
 
   scope :active, -> { where("expires_at > ?", Time.current).where(suspended_at: nil) }
+
   scope :administered_by, lambda { |user|
     for_user(user).where("account_users.user_role" => AccountUser.admin_user_roles)
   }
+
   scope :global, -> { where(type: config.global_account_types) }
   scope :per_facility, -> { where(type: config.facility_account_types) }
+
+  scope :with_orders_for_facility, lambda { |facility|
+    where(id: OrderDetail.for_facility(facility).select(:account_id).distinct)
+  }
 
   validates_presence_of :account_number, :description, :expires_at, :created_by, :type
   validates_length_of :description, maximum: 50
@@ -118,10 +111,6 @@ class Account < ApplicationRecord
     for_user(order_detail.user).for_facility(order_detail.facility)
   end
 
-  def self.with_orders_for_facility(facility)
-    where(id: ids_with_orders(facility))
-  end
-
   def type_string
     I18n.t("activerecord.models.#{self.class.to_s.underscore}.one", default: self.class.model_name.human)
   end
@@ -138,10 +127,6 @@ class Account < ApplicationRecord
     business_admins.collect(&:user)
   end
 
-  def notify_users
-    [owner_user] + business_admin_users
-  end
-
   def suspend
     update_attributes(suspended_at: Time.current)
   end
@@ -152,9 +137,9 @@ class Account < ApplicationRecord
 
   def display_status
     if suspended?
-      I18n.t("activerecord.models.account.statuses.suspended")
+      I18n.t("account.statuses.suspended")
     else
-      I18n.t("activerecord.models.account.statuses.active")
+      I18n.t("account.statuses.active")
     end
   end
 
@@ -249,7 +234,7 @@ class Account < ApplicationRecord
 
   delegate :to_s, to: :account_number, prefix: true
 
-  def to_s(with_owner = false, flag_suspended = true)
+  def to_s(with_owner = false, flag_suspended = true, with_facility: false)
     desc = "#{description} / #{account_number_to_s}"
     desc += " / #{owner_user_name}" if with_owner && owner_user.present?
     desc += " (#{display_status.upcase})" if flag_suspended && suspended?
@@ -282,14 +267,6 @@ class Account < ApplicationRecord
 
   def missing_owner?
     account_users.none? { |au| au.active? && au.owner? }
-  end
-
-  private
-
-  def self.ids_with_orders(facility)
-    relation = joins(order_details: :order)
-    relation = relation.where("orders.facility_id = ?", facility) if facility.single_facility?
-    relation.select("distinct order_details.account_id")
   end
 
 end

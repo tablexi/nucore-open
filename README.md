@@ -4,12 +4,43 @@ Open source version of Northwestern University Core Facility Management Software
 
 ## Quickstart
 
-Welcome to NUcore! This guide will help you get a development environment up and running. It makes a few assumptions:
+Welcome to NUcore! This guide will help you get a development environment up and running.
+
+### Development within Docker Environment
+
+We recommend running within a docker environment.
+Benefits:
+- All daemons, processes are running at all times (easier to develop features)
+
+To do this:
+1. [Install Docker and Docker Compose](https://docs.docker.com/docker-for-mac/install/)
+1. Run `./docker-setup.sh`. This sets up your `database.yml` and `secrets.yml` files. It also does an intial `bundle install`.
+1. The output of the previous set is a randomly generated secret. Copy and paste it into your `secrets.yml` file as the `secret_key_base`.
+1. This will also finish setting up the database
+1. Seed the database with demo data (optional) `docker-compose run app bundle exec rake demo:seed`
+1. Run `docker-compose up`
+1. Open http://localhost:3000
+
+If you seeded the demo data, you can log in with admin@example.com/password
+
+#### Email
+
+We use [mailcatcher](https://mailcatcher.me/) as an SMTP server and web client. Visit <http://localhost:1080>.
+
+#### Useful Commands
+
+* **Rails Console:** `docker-compose exec app bundle exec rails c`
+* **Command line in the container:** `docker-compose exec app bash`
+* **Running tests:** Get a command line in the container and `bundle exec rspec`
+
+### Development locally
+
+It makes a few assumptions:
 
 1. You write code on a Mac.
-2. You have a running Oracle or MySQL instance with two brand new databases. (Oracle setup instructions [here](doc/HOWTO_oracle.txt).)
+2. You have a running Oracle or MySQL instance with two brand new databases. (Oracle setup instructions [here](doc/HOWTO_oracle.md).)
 3. You have the following installed:
-    * [Ruby 2.4.1](http://www.ruby-lang.org/en)
+    * [Ruby](http://www.ruby-lang.org/en)
     * [Bundler](http://gembundler.com)
     * [Git](http://git-scm.com)
     * [PhantomJS](http://phantomjs.org/)
@@ -49,8 +80,12 @@ Welcome to NUcore! This guide will help you get a development environment up and
 5. Set up databases
 
     ```
-    rake db:setup
+    rake db:create
+    rake db:schema:load
+    rake db:seed
     ```
+
+_Known issue: if you run `db:setup` or all three in one rake command, the next time you run `db:migrate`, you will receive a `Table 'splits' already exists` error. Use the separate commands instead._
 
 6. Seed your development database
 
@@ -111,20 +146,69 @@ Welcome to NUcore! This guide will help you get a development environment up and
     ./script/delayed_job run
     ```
 
-
 ### Test it
 
 NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following from NUcore's root directory.
 
 * To run all tests (this will take awhile!)
+
+    ```
     rake spec
-
+    ```
+    
 * To run just the model tests
+
+    ```
     rake spec:models
-
+    ```
+    
 * To run just the controller tests
+    ```
     rake spec:controllers
+    ```
 
+#### Parallel Tests
+
+You can run specs in parallel during local development using the [`parallel_tests`](https://github.com/grosser/parallel_tests) gem.
+
+* Create additional databases:
+
+    ```
+    rake parallel:create
+    ```
+
+* Run migrations (only needed if building from scratch):
+
+    ```
+    rake parallel:create
+    ```
+  
+  OR
+  
+    ```
+    rake parallel:load_schema
+    ```
+
+* Copy development schema (repeat after migrations):
+	
+	```
+    rake parallel:prepare
+	```
+	
+* Run tests:
+
+    ```
+    rake parallel:spec
+    ```
+
+* Example RegEx patterns (ZSH users may require putting rake task in quotes to support args):
+
+	```
+    rake parallel:spec[^spec/requests] # every spec file in spec/requests folder
+    rake parallel:spec[user]  # run users_controller + user_helper + user specs
+    rake parallel:spec['user|instrument']  # run user and product related specs
+    rake parallel:spec['spec\/(?!features)'] # run RSpec tests except the tests in spec/features
+    ```
 
 ## Optional Modules
 
@@ -163,3 +247,5 @@ There are valuable resources in the NUcore's doc directory.
 * Need to use a 3rd party service with your NUcore? [**See HOWTO_external_services.txt**](doc/HOWTO_external_services.md)
 
 * Need to asynchronously monitor some aspect of NUcore? [**See HOWTO_daemons.txt**](doc/HOWTO_daemons.txt)
+
+* Want to integrate with Form.io? [**See form.io_tips_and_tricks**](vendor/engines/form.io_tips_and_tricks.docx)

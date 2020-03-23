@@ -22,7 +22,7 @@ class SurveyResponse
         od.quantity = params[:quantity].to_i
       end
       receiver.save!
-      od.merge!
+      od.save!
       receiver
     end
   end

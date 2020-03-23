@@ -13,6 +13,8 @@
 - else
   = f.input :schedule, as: :readonly, value_method: :display_name, hint: false
 
+= f.input :problems_resolvable_by_user, as: :boolean, label: false, inline_label: true
+
 = f.input :control_mechanism,
   collection: options_for_control_mechanism,
   include_blank: false,
@@ -26,7 +28,10 @@
   = f.simple_fields_for :relay, @product.relay || @product.build_relay do |rf|
     = rf.input :type, collection: options_for_relay, include_blank: false
     = rf.input :ip
-    = rf.input :port
+    = rf.input :ip_port,
+      hint: text("instruments.instrument_fields.relay.instruct.ip_port")
+    = rf.input :outlet,
+      hint: text("instruments.instrument_fields.relay.instruct.outlet")
     = rf.input :username
     = rf.input :password, as: :string
     = rf.input :auto_logout do

@@ -48,18 +48,6 @@ RSpec.describe Statement do
       @order_details.each { |od| statement.add_order_detail(od) }
     end
 
-    context "with the ordered_at switched up" do
-      before :each do
-        @order_details[0].order.update_attributes(ordered_at: 2.days.ago)
-        @order_details[1].order.update_attributes(ordered_at: 3.days.ago)
-        @order_details[2].order.update_attributes(ordered_at: 1.day.ago)
-      end
-
-      it "should return the first date" do
-        expect(statement.first_order_detail_date).to eq @order_details[1].ordered_at
-      end
-    end
-
     it "should set the statement_id of each order detail" do
       @order_details.each do |order_detail|
         expect(order_detail.statement_id).to be_present
@@ -78,6 +66,14 @@ RSpec.describe Statement do
       expect(statement).to_not be_reconciled
     end
 
+    it "is not in the reconciled scope" do
+      expect(described_class.reconciled).not_to include(statement)
+    end
+
+    it "is in the unreconciled scope" do
+      expect(described_class.unreconciled).to include(statement)
+    end
+
     context "with one order detail reconciled" do
       before :each do
         @order_details.first.to_reconciled!
@@ -85,6 +81,14 @@ RSpec.describe Statement do
 
       it "should not be reconciled" do
         expect(statement).to_not be_reconciled
+      end
+
+      it "is not in the reconciled scope" do
+        expect(Statement.reconciled).not_to include(statement)
+      end
+
+      it "is in the unreconciled scope" do
+        expect(described_class.unreconciled).to include(statement)
       end
     end
 
@@ -95,6 +99,14 @@ RSpec.describe Statement do
 
       it "should be reconciled" do
         expect(statement).to be_reconciled
+      end
+
+      it "is in the reconciled scope" do
+        expect(described_class.reconciled).to include(statement)
+      end
+
+      it "is not in the unreconciled scope" do
+        expect(described_class.unreconciled).not_to include(statement)
       end
     end
 

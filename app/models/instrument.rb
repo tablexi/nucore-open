@@ -9,21 +9,22 @@ class Instrument < Product
 
   RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
 
-  # Associations
-  # -------
-
-  has_many :instrument_price_policies, foreign_key: "product_id"
-  has_many :admin_reservations, foreign_key: "product_id"
-  has_many :offline_reservations, foreign_key: "product_id"
+  with_options foreign_key: "product_id" do |instrument|
+    instrument.has_many :admin_reservations
+    instrument.has_many :instrument_price_policies
+    instrument.has_many :offline_reservations
+    instrument.has_many :current_offline_reservations, -> { current }, class_name: "OfflineReservation"
+  end
   has_one :alert, dependent: :destroy, class_name: "InstrumentAlert"
 
   email_list_attribute :cancellation_email_recipients
+  email_list_attribute :issue_report_recipients
 
   # Validations
   # --------
 
   validates :initial_order_status_id, presence: true
-  validates :reserve_interval, inclusion: { in: RESERVE_INTERVALS }
+  validates :reserve_interval, presence: true, inclusion: { in: RESERVE_INTERVALS, allow_blank: true }
   validates :min_reserve_mins,
             :max_reserve_mins,
             :auto_cancel_mins,
@@ -81,8 +82,15 @@ class Instrument < Product
     true
   end
 
-  def has_alert?
-    alert.present?
+  def blackout_reservations(date)
+    ScheduleRule.unavailable(schedule_rules).select { |rule| rule.on_day?(date) }.map do |rule|
+      Reservation.new(
+        product: self,
+        reserve_start_at: date.change(hour: rule.start_hour, min: rule.start_min),
+        reserve_end_at: date.change(hour: rule.end_hour, min: rule.end_min),
+        blackout: true,
+      )
+    end
   end
 
   private

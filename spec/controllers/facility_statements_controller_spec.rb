@@ -27,7 +27,7 @@ if Account.config.statements_enabled?
       @order_detail2 = place_and_complete_item_order(@user, @authable, @account)
       @order_detail2.update_attributes(reviewed_at: nil)
 
-      @account2 = FactoryBot.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
+      @account2 = FactoryBot.create(@account_sym, :with_account_owner, owner: @user, facility: @authable)
       @authable_account2 = FactoryBot.create(:facility_account, facility: @authable)
       @order_detail3 = place_and_complete_item_order(@user, @authable, @account2)
 
@@ -49,8 +49,8 @@ if Account.config.statements_enabled?
       @user = FactoryBot.create(:user)
       @other_user = FactoryBot.create(:user)
       UserRole.grant(@user, UserRole::ADMINISTRATOR)
-      @account = FactoryBot.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility_id: @authable.id)
-      @other_account = FactoryBot.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @other_user), facility_id: @other_facility.id)
+      @account = FactoryBot.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @user), facility: @authable)
+      @other_account = FactoryBot.create(@account_sym, account_users_attributes: account_users_attributes_hash(user: @other_user), facility: @other_facility)
       @statement = FactoryBot.create(:statement, facility_id: @authable.id, created_by: @admin.id, account: @account)
       @statement2 = FactoryBot.create(:statement, facility_id: @other_facility.id, created_by: @admin.id, account: @other_account)
       @params = { facility_id: @authable.url_name }
@@ -75,7 +75,7 @@ if Account.config.statements_enabled?
         let(:billing_admin) { create(:user) }
 
         before do
-          UserRole.grant(billing_admin, UserRole::BILLING_ADMINISTRATOR)
+          UserRole.grant(billing_admin, UserRole::GLOBAL_BILLING_ADMINISTRATOR)
           sign_in billing_admin
           get :index, params: { facility_id: "all" }
         end
@@ -100,7 +100,7 @@ if Account.config.statements_enabled?
       end
 
       it_should_allow_managers_only do
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it_should_deny_all [:staff, :senior_staff]
@@ -109,7 +109,7 @@ if Account.config.statements_enabled?
         it "should return the right order details without start date" do
           grant_and_sign_in(@user)
           do_request
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:facility)).to eq(@authable)
           expect(assigns(:order_detail_action)).to eq(:create)
           expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]
@@ -120,7 +120,7 @@ if Account.config.statements_enabled?
         it "should return the right order details with start date" do
           grant_and_sign_in(@user)
           do_request
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:facility)).to eq(@authable)
           expect(assigns(:order_detail_action)).to eq(:create)
           expect(assigns(:order_details)).to contain_all [@order_detail1, @order_detail3]

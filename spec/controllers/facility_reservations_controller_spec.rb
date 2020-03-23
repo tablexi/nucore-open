@@ -31,7 +31,6 @@ RSpec.describe FacilityReservationsController do
                                user: @director,
                                created_by: @director.id,
                                account: @account,
-                               ordered_at: Time.zone.now,
                                state: "purchased",
                               )
 
@@ -241,6 +240,19 @@ RSpec.describe FacilityReservationsController do
         do_request
         expect(assigns[:display_datetime]).to eq(Time.zone.parse("2015-06-14T00:00"))
       end
+
+      it "shows relay status toggles when the date is today" do
+        allow_any_instance_of(Instrument).to receive(:has_real_relay?).and_return(true)
+        do_request
+        expect(response.body).to include("relay_checkbox")
+      end
+
+      it "does not show relay status toggles when the date is not today" do
+        @params[:date] = "6/14/2015"
+        allow_any_instance_of(Instrument).to receive(:has_real_relay?).and_return(true)
+        do_request
+        expect(response.body).not_to include("relay_checkbox")
+      end
     end
 
     context "orders" do
@@ -251,7 +263,6 @@ RSpec.describe FacilityReservationsController do
                                     user: @director,
                                     created_by: @director.id,
                                     account: @account,
-                                    ordered_at: nil,
                                     state: "new",
                                    )
         # make sure the reservations are happening today

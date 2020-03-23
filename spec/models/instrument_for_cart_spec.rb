@@ -28,9 +28,9 @@ RSpec.describe InstrumentForCart do
         expect(instrument_for_cart.error_message).to match(/A schedule for this instrument is currently unavailable/)
       end
 
-      it "sets error_path to the facility’s page" do
+      it "does not set an error_path" do
         instrument_for_cart.purchasable_by?(user, user)
-        expect(instrument_for_cart.error_path).to eq Rails.application.routes.url_helpers.facility_path(facility)
+        expect(instrument_for_cart.error_path).to be_blank
       end
     end
 

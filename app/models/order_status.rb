@@ -19,6 +19,7 @@ class OrderStatus < ApplicationRecord
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).order(:lft) }
 
+  # This one is different because `new` is a reserved keyword
   def self.new_status
     find_by(name: "New")
   end
@@ -49,10 +50,6 @@ class OrderStatus < ApplicationRecord
 
   def state_name
     root.name.downcase.delete(" ").to_sym
-  end
-
-  def downcase_name
-    name.downcase.gsub(/\s+/, "_")
   end
 
   def is_left_of?(o)

@@ -2,30 +2,22 @@
 
 class Schedule < ApplicationRecord
 
-  # Associations
-  # --------
   belongs_to :facility
 
-  has_many :products, class_name: "Instrument"
-  has_many :reservations, through: :products
-  has_many :admin_reservations, through: :products
+  with_options class_name: "Instrument" do |schedule|
+    schedule.has_many :facility_instruments, -> { not_archived }
+    schedule.has_many :products
+    schedule.has_many :public_instruments, -> { active }
+  end
 
-  # Validations
-  # --------
+  with_options through: :products do |schedule|
+    schedule.has_many :admin_reservations
+    schedule.has_many :reservations
+  end
+
   validates_presence_of :facility
 
-  scope :active, -> { where(id: Product.not_archived.with_schedule.select(:schedule_id)).order(:name) }
-
-  # Instance methods
-  # --------
-
-  def publicly_visible_products
-    products.active
-  end
-
-  def facility_visible_products
-    products.not_archived
-  end
+  scope :active, -> { where(id: Instrument.not_archived.with_schedule.select(:schedule_id)).order(:name) }
 
   def shared?
     products.count > 1

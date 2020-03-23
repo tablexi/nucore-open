@@ -6,9 +6,8 @@ require "controller_spec_helper"
 RSpec.describe FacilityAccountsController do
   render_views
 
-  let(:facility) { facility_account.facility }
-  let(:facility_account) { FactoryBot.create(:facility_account) }
-  let(:item) { FactoryBot.create(:item, facility_account: facility_account) }
+  let(:facility) { create(:setup_facility) }
+  let(:item) { create(:setup_item, facility: facility) }
   let(:account_owner) { @owner }
   let(:purchaser) { @purchaser }
 
@@ -16,6 +15,30 @@ RSpec.describe FacilityAccountsController do
 
   before do
     @authable = facility # controller_spec_helper requires @authable to be set
+  end
+
+  describe "GET index" do
+    let(:other_facility) { create(:setup_facility) }
+    let(:other_product) { create(:setup_item, facility: other_facility) }
+
+    let!(:nufs_account) { create(:nufs_account, :with_order, product: item) }
+    let!(:credit_card_account) { create(:credit_card_account, :with_order, facility: facility, product: item) }
+    let!(:account_without_order) { create(:credit_card_account, :with_account_owner, facility: facility) }
+    let!(:other_facility_account) { create(:credit_card_account, :with_order, facility: other_facility, product: other_product) }
+
+    before { sign_in create(:user, :administrator) }
+
+    it "includes the global and the facility's accounts in single facility context" do
+      get :index, params: { facility_id: facility.url_name }
+
+      expect(assigns(:accounts)).to contain_exactly(nufs_account, credit_card_account)
+    end
+
+    it "includes all accounts with orders in the global context" do
+      get :index, params: { facility_id: "all" }
+
+      expect(assigns(:accounts)).to contain_exactly(nufs_account, credit_card_account, other_facility_account)
+    end
   end
 
   context "GET #edit" do
@@ -33,7 +56,7 @@ RSpec.describe FacilityAccountsController do
 
     it_should_allow :director, "to view the edit form" do
       expect(assigns(:account)).to eq(account)
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template("edit")
     end
 
@@ -49,8 +72,6 @@ RSpec.describe FacilityAccountsController do
         it_should_deny :director
       end
     end
-
-
   end
 
   context "PUT #update" do
@@ -114,7 +135,7 @@ RSpec.describe FacilityAccountsController do
         let(:account_type) { "PurchaseOrderAccount" }
 
         it "loads the account" do
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:account)).to be_a(PurchaseOrderAccount)
         end
       end
@@ -123,7 +144,7 @@ RSpec.describe FacilityAccountsController do
         let(:account_type) { "CreditCardAccount" }
 
         it "loads the account" do
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:account)).to be_a(CreditCardAccount)
         end
       end
@@ -146,7 +167,7 @@ RSpec.describe FacilityAccountsController do
         let(:account_type) { "PurchaseOrderAccount" }
 
         it "falls back to using a chartstring" do
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:account).class.name).to eq(chartstring_class_name)
         end
       end
@@ -155,7 +176,7 @@ RSpec.describe FacilityAccountsController do
         let(:account_type) { "CreditCardAccount" }
 
         it "falls back to using a chartstring" do
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:account).class.name).to eq(chartstring_class_name)
         end
       end
@@ -194,7 +215,6 @@ RSpec.describe FacilityAccountsController do
       it_should_allow :director do
         expect(assigns(:account).expires_at)
           .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-12-05").end_of_day)
-        expect(assigns(:account).facility_id).to eq(facility.id)
         expect(assigns(:account).facilities).to eq([facility])
         expect(assigns(:account)).to be_kind_of PurchaseOrderAccount
         expect(assigns(:account).affiliate)
@@ -221,7 +241,23 @@ RSpec.describe FacilityAccountsController do
         expect(assigns(:account).expires_at)
           .to be_within(1.second).of(Time.zone.parse("#{expiration_year}-5-1").end_of_month.end_of_day)
         expect(assigns(:account).facilities).to eq([facility])
-        expect(assigns(:account).facility_id).to eq(facility.id)
+      end
+    end
+  end
+
+  context "GET #show" do
+    context "when the multi_facility_accounts feature is turned off", feature_setting: { multi_facility_accounts: false, reload_routes: true } do
+      let(:admin) { @admin }
+      let(:purchase_order) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
+
+      before do
+        sign_in admin
+      end
+
+      it "does not show the facilities tab for a per-facility account to global admins" do
+        get :show, params: { facility_id: facility.to_param, id: purchase_order.to_param }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("/accounts/#{purchase_order.id}/facilities/edit")
       end
     end
   end

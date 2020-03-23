@@ -25,7 +25,7 @@ RSpec.describe Notifier do
         ).deliver_now
       end
 
-      it "generatees a statement email", :aggregate_failures do
+      it "generates a statement email", :aggregate_failures do
         expect(email.to).to eq [user.email]
         expect(email.subject).to include("Statement")
         expect(email_html).to include(statement.account.to_s)
@@ -36,16 +36,15 @@ RSpec.describe Notifier do
 
   describe ".review_orders" do
     let(:accounts) do
-      FactoryBot.create_list(:setup_account, 2, owner: user, facility_id: facility.id)
+      FactoryBot.create_list(:setup_account, 2, owner: user, facility: facility)
     end
-    let(:account_ids) { accounts.map(&:id) }
     let(:email_html) { email.html_part.to_s.gsub(/&nbsp;/, " ") } # Markdown changes some whitespace to &nbsp;
     let(:email_text) { email.text_part.to_s }
 
     before(:each) do
-      Notifier.review_orders(user_id: user.id,
+      Notifier.review_orders(user: user,
                              facility: facility,
-                             account_ids: account_ids).deliver_now
+                             accounts: accounts).deliver_now
     end
 
     it "generates a review_orders notification", :aggregate_failures do

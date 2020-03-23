@@ -13,41 +13,6 @@ RSpec.describe ScheduleRule do
     expect(rule).to be_valid
   end
 
-  describe ".unavailable_for_date" do
-    context "for an instrument available only from 9 AM to 5 PM" do
-      before(:each) do
-        FactoryBot.create(:schedule_rule, product: instrument)
-      end
-
-      let(:now) { Time.zone.parse("2015-07-05T12:14:00") }
-      let(:reservations) { ScheduleRule.unavailable_for_date(instrument, now) }
-
-      it "returns two dummy reservations" do
-        expect(reservations.size).to eq(2)
-
-        reservations.each do |reservation|
-          expect(reservation).to be_kind_of(Reservation)
-          expect(reservation).to be_blackout
-          expect(reservation).not_to be_persisted
-        end
-      end
-
-      it "reserves midnight to 9 AM as unavailable" do
-        expect(reservations.first.reserve_start_at)
-          .to eq(now.beginning_of_day)
-        expect(reservations.first.reserve_end_at)
-          .to eq(Time.zone.parse("2015-07-05T09:00:00"))
-      end
-
-      it "reserves 5 PM to midnight as unavailable" do
-        expect(reservations.last.reserve_start_at)
-          .to eq(Time.zone.parse("2015-07-05T17:00:00"))
-        expect(reservations.last.reserve_end_at)
-          .to eq(Time.zone.parse("2015-07-06T00:00:00"))
-      end
-    end
-  end
-
   context "times" do
     it "should not be valid with start hours outside 0-24" do
       is_expected.not_to allow_value(-1).for(:start_hour)
@@ -337,20 +302,23 @@ RSpec.describe ScheduleRule do
       assert @rule2.valid?
 
       # find past tuesday, and build calendar objects
-      @tuesday = Time.current.beginning_of_week(:sunday).to_date + 2
-      @wednesday = @tuesday + 1
+      @tuesday = Time.current.beginning_of_week(:sunday) + 2.days
+      @wednesday = @tuesday + 1.day
 
       # times should be tue 9 pm - 12 am
       @calendar1 = @rule1.as_calendar_objects
-      @calendar1.each_with_index do |hash, _i|
+      @calendar1.each do |hash|
         expect(Time.zone.parse(hash["start"])).to eq(@tuesday + 21.hours)
         expect(Time.zone.parse(hash["end"])).to eq(@tuesday + 24.hours)
       end
 
-      # times should be tue 12 am - 9 am
+      # times should be wed 12 am - 9 am
       @calendar2 = @rule2.as_calendar_objects
-      @calendar2.each_with_index do |hash, _i|
-        expect(Time.zone.parse(hash["start"])).to eq(@wednesday + 0.hours)
+
+      @calendar2.each do |hash|
+        # .in_time_zone will convert the Date @wedensday to midnight in the Application's timezone
+        # + 9.hours will also convert to
+        expect(Time.zone.parse(hash["start"])).to eq(@wednesday)
         expect(Time.zone.parse(hash["end"])).to eq(@wednesday + 9.hours)
       end
     end

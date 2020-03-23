@@ -112,7 +112,7 @@ module Reservations::Validations
       .where(product_id: product.schedule.product_ids)
       .not_canceled
       .not_ended
-      .non_user
+      .admin_and_offline
       .overlapping(reserve_start_at, reserve_end_at)
 
     conflicting_reservations.first

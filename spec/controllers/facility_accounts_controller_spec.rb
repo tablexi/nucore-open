@@ -73,26 +73,11 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
       end
 
       it_should_allow_all facility_managers do
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:account)).to eq(other_account)
         is_expected.to render_template("show")
       end
     end
-
-    context "when the multi_facility_accounts feature is turned off", feature_setting: { multi_facility_accounts: false, reload_routes: true } do
-      let(:purchase_order) { FactoryBot.create(:purchase_order_account, :with_account_owner, facility: facility) }
-
-      before do
-        sign_in admin
-      end
-
-      it "does not show the facilities tab for a per-facility account to global admins" do
-        get :show, params: { facility_id: facility.to_param, id: purchase_order.to_param }
-        expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include("/accounts/#{purchase_order.id}/facilities/edit")
-      end
-    end
-
   end
 
   context "edit accounts" do
@@ -222,38 +207,52 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
 
   end
 
-  context "accounts_receivable" do
-
-    before :each do
-      @method = :get
-      @action = :accounts_receivable
-      @params = { facility_id: @authable.url_name }
-    end
-
-    it_should_allow_managers_only
-    it_should_deny_all [:staff, :senior_staff]
-  end
-
-  # TODO: ping Chris / Matt for functions / factories
-  #      to create other accounts w/ custom numbers
-  #      and non-nufs type
   context "search_results" do
-
-    before :each do
-      @method = :post
-      @action = :search_results
-      @params = { facility_id: @authable.url_name, search_term: @owner.username }
+    it "requires login" do
+      get :search_results, params: { facility_id: facility.url_name }
+      expect(response).to redirect_to(new_user_session_path)
     end
 
-    it_should_require_login
-
-    it_should_deny_all [:staff, :senior_staff]
-
-    it_should_allow_all facility_managers do
-      expect(assigns(:accounts).size).to eq(1)
-      is_expected.to render_template("search_results")
+    it "denies senior staff" do
+      sign_in create(:user, :senior_staff, facility: facility)
+      get :search_results, params: { facility_id: facility.url_name }
+      expect(response).to be_forbidden
     end
 
+    describe "as the director" do
+      let(:owner) { create(:user, first_name: "Owner", last_name: "User") }
+      let!(:account) { create(:nufs_account, :with_account_owner, owner: owner) }
+
+      before do
+        sign_in create(:user, :facility_director, facility: facility)
+      end
+
+      it "finds an account by a partial account number" do
+        get :search_results, params: { facility_id: facility.url_name, search_term: account.account_number.first(3) }
+        expect(assigns(:accounts)).to include(account)
+      end
+
+      it "finds the account by the owner first name" do
+        get :search_results, params: { facility_id: facility.url_name, search_term: owner.first_name }
+        expect(assigns(:accounts)).to include(account)
+      end
+
+      it "finds the account by the owner last name" do
+        get :search_results, params: { facility_id: facility.url_name, search_term: owner.last_name }
+        expect(assigns(:accounts)).to include(account)
+      end
+
+      it "doesn't find anything with gibberish" do
+        get :search_results, params: { facility_id: facility.url_name, search_term: "GOBBLEDEGOOK" }
+        expect(assigns(:accounts)).to be_empty
+      end
+
+      it "returns a warning an no results if less than three characters" do
+        get :search_results, params: { facility_id: facility.url_name, search_term: "A" }
+        expect(assigns(:accounts)).to be_nil
+        expect(flash.now[:errors]).to be_present
+      end
+    end
   end
 
   context "members" do
@@ -305,11 +304,11 @@ RSpec.describe FacilityAccountsController, feature_setting: { edit_accounts: tru
         expect(response.code).to eq("403")
       end
 
-      it "allows billing administrator to access the statement" do
-        user = create(:user, :billing_administrator)
+      it "allows global billing administrator to access the statement" do
+        user = create(:user, :global_billing_administrator)
         sign_in user
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 

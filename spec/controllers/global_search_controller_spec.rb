@@ -45,6 +45,9 @@ RSpec.describe GlobalSearchController do
   let(:product_results) { assigns[:searchers].find { |s| s.template == "products" }.results }
 
   describe "index" do
+    before do
+      allow(FullTextSearch::Model).to receive(:full_text_searcher).and_return(FullTextSearch::LikeSearcher)
+    end
 
     context "when not signed in" do
       it "can search with the product searcher", :aggregate_failures do
@@ -138,8 +141,8 @@ RSpec.describe GlobalSearchController do
       it_should_have_customer_paths
     end
 
-    context "when signed in as a billing administrator", feature_setting: { billing_administrator: true } do
-      before { sign_in create(:user, :billing_administrator) }
+    context "when signed in as a global billing administrator", feature_setting: { global_billing_administrator: true } do
+      before { sign_in create(:user, :global_billing_administrator) }
 
       it_should_find_the_order
       it_should_have_admin_edit_paths

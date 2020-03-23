@@ -1,0 +1,15 @@
+%div
+  %table.table.table-striped.table-tight
+    - if local_assigns[:caption]
+      %caption= local_assigns[:caption]
+    %thead
+      %tr
+        %th= SangerSequencing::Sample.human_attribute_name(:customer_sample_id)
+        %th= SangerSequencing::Sample.human_attribute_name(:id)
+        - if submission.has_results_files?
+          %th= SangerSequencing::Sample.human_attribute_name(:results_files)
+    %tbody
+      - submission.samples.each do |sample|
+        %tr
+          %td= sample.customer_sample_id
+          %td= sample.id

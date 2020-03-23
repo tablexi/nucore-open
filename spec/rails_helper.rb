@@ -23,8 +23,14 @@ RSpec.configure do |config|
 
   config.use_transactional_fixtures = true
 
-  require "capybara/poltergeist"
-  Capybara.javascript_driver = :poltergeist
+  config.before(:each, type: :system) do
+    driven_by :rack_test
+  end
+
+  config.before(:each, type: :system, js: true) do
+    driven_by :selenium_chrome_headless
+  end
+
   Capybara.server = :webrick
   require "capybara/email/rspec"
 
@@ -60,11 +66,11 @@ RSpec.configure do |config|
     User.delete_all
 
     # initialize order status constants
-    @os_new        = OrderStatus.find_or_create_by(name: "New")
-    @os_in_process = OrderStatus.find_or_create_by(name: "In Process")
-    @os_complete   = OrderStatus.find_or_create_by(name: "Complete")
-    @os_canceled   = OrderStatus.find_or_create_by(name: "Canceled")
-    @os_reconciled = OrderStatus.find_or_create_by(name: "Reconciled")
+    OrderStatus.find_or_create_by(name: "New")
+    OrderStatus.find_or_create_by(name: "In Process")
+    OrderStatus.find_or_create_by(name: "Complete")
+    OrderStatus.find_or_create_by(name: "Canceled")
+    OrderStatus.find_or_create_by(name: "Reconciled")
 
     # initialize affiliates
     Affiliate.OTHER
@@ -72,8 +78,7 @@ RSpec.configure do |config|
     # initialize price groups
     @nupg = PriceGroup.find_or_create_by(name: Settings.price_group.name.base, is_internal: true, display_order: 1)
     @nupg.save(validate: false)
-    @epg = PriceGroup.find_or_create_by(name: Settings.price_group.name.external, is_internal: false, display_order: 3)
-    @epg.save(validate: false)
+    PriceGroup.find_or_create_by(name: Settings.price_group.name.external, is_internal: false, display_order: 3).save(validate: false)
 
     # Because many specs rely on not crossing a fiscal year boundary we lock the
     # time globally. Rails's `travel_to` helper does not work well with nesting, so
@@ -98,6 +103,18 @@ RSpec.configure do |config|
     ActiveJob::Base.queue_adapter = :test
     example.call
     ActiveJob::Base.queue_adapter = old_value
+  end
+
+  # Javascript specs need to be able to talk to localhost
+  config.around(:each, :js) do |example|
+    WebMock.disable_net_connect!(allow_localhost: true)
+    example.call
+    WebMock.disable_net_connect!(allow_localhost: false)
+  end
+
+  # Selenium needs to clean itself up once all the tests have been run
+  config.after(:all) do
+    WebMock.disable_net_connect!(allow_localhost: true)
   end
 
   # rspec-rails 3 will no longer automatically infer an example group's spec type
@@ -127,8 +144,8 @@ RSpec.configure do |config|
     I18n.t("facilities_downcase")
   end
 
-  config.include Warden::Test::Helpers, type: :feature
-  config.after type: :feature do
+  config.include Warden::Test::Helpers, type: :system
+  config.after type: :system do
     Warden.test_reset!
   end
 

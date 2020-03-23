@@ -8,7 +8,8 @@
 %p= t('.intro')
 
 %ul.inline
-  %li= link_to t('.link.add'), new_facility_price_group_path, :class => 'btn-add'
+  - if current_ability.can?(:create, PriceGroup)
+    %li= link_to t('.link.add'), new_facility_price_group_path, :class => 'btn-add'
 
 - if @price_groups.empty?
   %p.alert.alert-info= t(".notice")
@@ -25,7 +26,7 @@
       - @price_groups.each do |price_group|
         %tr
           %td
-            - if price_group.can_delete?
+            - if price_group.can_delete? && current_ability.can?(:destroy, PriceGroup)
               = link_to t("shared.remove"),
                 [current_facility, price_group],
                 data: { confirm: t("shared.confirm_message") },

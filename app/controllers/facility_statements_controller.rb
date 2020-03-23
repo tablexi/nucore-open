@@ -13,6 +13,8 @@ class FacilityStatementsController < ApplicationController
     action_name.in?(%w(new)) ? "two_column_head" : "two_column"
   }
 
+  include CsvEmailAction
+
   def initialize
     @active_tab = "admin_billing"
     super
@@ -20,8 +22,23 @@ class FacilityStatementsController < ApplicationController
 
   # GET /facilities/:facility_id/statements
   def index
-    statements = current_facility.cross_facility? ? Statement.all : current_facility.statements
-    @statements = statements.order(created_at: :desc).paginate(page: params[:page])
+    search_params = permitted_search_params.merge(current_facility: current_facility)
+
+    @search_form = StatementSearchForm.new(search_params)
+    @statements = @search_form.search.order(created_at: :desc)
+
+    respond_to do |format|
+      format.html { @statements = @statements.paginate(page: params[:page]) }
+      format.csv do
+        send_csv_email_and_respond do |email|
+          StatementSearchResultMailer.search_result(email, search_params.to_h).deliver_later
+        end
+      end
+    end
+  end
+
+  def permitted_search_params
+    (params[:statement_search_form] || empty_params).permit(:date_range_start, :date_range_end, :status, accounts: [], sent_to: [], facilities: [])
   end
 
   # GET /facilities/:facility_id/statements/new
@@ -31,7 +48,7 @@ class FacilityStatementsController < ApplicationController
 
     defaults = SettingsHelper.feature_on?(:set_statement_search_start_date) ? { date_range_start: format_usa_date(1.month.ago.beginning_of_month) } : {}
     @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: defaults)
-    @search = TransactionSearch::Searcher.search(order_details, @search_form)
+    @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
   end

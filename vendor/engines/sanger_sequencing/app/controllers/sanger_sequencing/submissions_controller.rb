@@ -27,8 +27,7 @@ module SangerSequencing
     end
 
     def new
-      clean_samples
-      @submission.create_samples!(params[:quantity]) if @submission.samples.empty?
+      number_of_samples.times { @submission.create_prefilled_sample } if @submission.samples.none?
       render :edit
     end
 
@@ -36,20 +35,19 @@ module SangerSequencing
     end
 
     def edit
-      clean_samples
     end
 
     def update
-      if SubmissionUpdater.new(@submission).update_attributes(submission_params)
+      if @submission.update(submission_params)
         redirect_to "#{params[:success_url]}&#{external_return_options.to_query}"
       else
         render :edit
       end
     end
 
-    def fetch_ids
-      new_samples = @submission.create_samples!(NEW_IDS_COUNT)
-      render json: new_samples.map { |s| { id: s.id, customer_sample_id: s.form_customer_sample_id } }
+    def create_sample
+      sample = @submission.create_prefilled_sample
+      render json: sample.slice(:id, :customer_sample_id)
     end
 
     def current_ability
@@ -68,11 +66,6 @@ module SangerSequencing
 
     def current_facility
       @current_facility ||= @submission.try(:facility)
-    end
-
-    def clean_samples
-      # Clean up from abandoned submissions that might have requested extra IDs
-      @submission.samples.where(customer_sample_id: nil).delete_all
     end
 
     def submission_params
@@ -103,6 +96,12 @@ module SangerSequencing
 
     def prevent_after_purchase
       raise ActiveRecord::RecordNotFound if @submission.purchased?
+    end
+
+    def number_of_samples
+      Integer(params[:quantity])
+    rescue ArgumentError
+      5
     end
 
   end

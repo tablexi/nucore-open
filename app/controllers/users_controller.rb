@@ -48,6 +48,7 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users/new
   def new
+    redirect_to action: :new_external if SettingsHelper.feature_off?(:lookup_netids)
   end
 
   # GET /facilities/:facility_id/users/new_external
@@ -83,14 +84,8 @@ class UsersController < ApplicationController
                           .item_and_service_orders
                           .for_facility(current_facility)
                           .purchased
-                          .order("orders.ordered_at DESC")
+                          .order(ordered_at: :desc)
                           .paginate(page: params[:page])
-  end
-
-  # GET /facilities/:facility_id/users/:user_id/accounts
-  def accounts
-    # accounts for this facility
-    @accounts = @user.accounts.for_facility(current_facility)
   end
 
   # GET /facilities/:facility_id/users/:id
@@ -133,19 +128,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # PATCH /facilities/:facility_id/users/:id/suspend
-  def suspend
-    @user.suspended_at ||= Time.current
-    @user.save!
-    redirect_to facility_user_path(current_facility, @user), notice: text("suspend.success")
-  end
-
-  # PATCH /facilities/:facility_id/users/:id/unsuspend
-  def unsuspend
-    @user.update!(suspended_at: nil)
-    redirect_to facility_user_path(current_facility, @user), notice: text("unsuspend.success")
-  end
-
   def unexpire
     @user.update!(expired_at: nil, expired_note: nil)
     redirect_to facility_user_path(current_facility, @user), notice: text("unexpire.success")
@@ -159,7 +141,7 @@ class UsersController < ApplicationController
   helper_method :training_requested_for?
 
   def create_params
-    params.require(:user).permit(:email, :first_name, :last_name, :username)
+    params.require(:user).permit(*user_form_class.permitted_params)
   end
 
   def edit_user_params
@@ -171,8 +153,9 @@ class UsersController < ApplicationController
   end
 
   def create_external
-    @user = User.new(create_params)
+    @user = User.new
     @user_form = user_form_class.new(@user)
+    @user_form.assign_attributes(create_params)
 
     authorize! :create, @user_form.user
 

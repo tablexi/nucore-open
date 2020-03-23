@@ -21,7 +21,7 @@ RSpec.describe FacilityJournalsController do
     # make sure order detail 2 is not reviewed (it is if a zero day review period)
     @order_detail2.update_attributes(reviewed_at: nil)
 
-    @account2 = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: user), facility_id: facility.id)
+    @account2 = create(:nufs_account, :with_account_owner, owner: user)
     @authable_account2 = FactoryBot.create(:facility_account, facility: facility)
     @order_detail3 = place_and_complete_item_order(user, facility, @account2, true)
 
@@ -34,7 +34,7 @@ RSpec.describe FacilityJournalsController do
 
   before(:each) do
     @authable = create(:facility)
-    @account = create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @admin), facility_id: facility.id)
+    @account = create(:nufs_account, :with_account_owner, owner: @admin)
     @journal = create(:journal, facility: facility, created_by: @admin.id, journal_date: 2.days.ago.change(usec: 0))
   end
 
@@ -49,7 +49,7 @@ RSpec.describe FacilityJournalsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns(:pending_journals)).to eq([@pending_journal])
     end
   end
@@ -71,7 +71,7 @@ RSpec.describe FacilityJournalsController do
         ignore_account_validations
         create_order_details
         @creation_errors = @journal.create_journal_rows!([@order_detail1, @order_detail3])
-        @journal.create_spreadsheet if Settings.financial.journal_format.xls
+        @journal.create_spreadsheet if Journals::JournalFormat.exists?(:xls)
       end
 
       it "is set up properly" do
@@ -335,10 +335,10 @@ RSpec.describe FacilityJournalsController do
       end
     end
 
-    context "in cross facility", feature_setting: { billing_administrator: true } do
+    context "in cross facility", feature_setting: { global_billing_administrator: true } do
       before :each do
         @params[:facility_id] = "all"
-        sign_in create(:user, :billing_administrator)
+        sign_in create(:user, :global_billing_administrator)
         do_request
       end
 
@@ -346,51 +346,6 @@ RSpec.describe FacilityJournalsController do
         expect(response.code).to eq("404")
       end
     end
-
-    # SLOW
-    # context "with over 1000 order details" do
-    #   let(:facility_account) do
-    #     FactoryBot.create(:facility_account, facility: facility)
-    #   end
-
-    #   let(:item) do
-    #     facility
-    #       .items
-    #       .create(attributes_for(:item, facility_account_id: facility_account.id))
-    #   end
-
-    #   let(:order_details) do
-    #     Array.new(1001) do
-    #       place_product_order(admin_user, facility, item, account)
-    #     end
-    #   end
-
-    #   before :each do
-    #     @params[:order_detail_ids] = order_details.map(&:id)
-    #     @order.state = "validated"
-    #     @order.purchase!
-    #     complete_status = OrderStatus.complete
-
-    #     order_details.each do |order_detail|
-    #       order_detail.update_attributes(
-    #         actual_cost: 20,
-    #         actual_subsidy: 10,
-    #         fulfilled_at: 2.days.ago,
-    #         order_status_id: complete_status.id,
-    #         price_policy_id: @item_pp.id,
-    #         reviewed_at: 1.day.ago,
-    #         state: complete_status.state_name,
-    #       )
-    #     end
-
-    #     sign_in admin_user
-    #     do_request
-    #   end
-
-    #   it "successfully creates a journal" do
-    #     expect(response).to redirect_to facility_journals_path(facility)
-    #   end
-    # end
   end
 
   describe "#show" do
@@ -407,7 +362,7 @@ RSpec.describe FacilityJournalsController do
   describe "#new" do
     let(:expiry_date) { Time.zone.now - 1.year }
     let(:user) { FactoryBot.create(:user) }
-    let(:expired_payment_source) { create(:nufs_account, expires_at: expiry_date, account_users_attributes: account_users_attributes_hash(user: user), facility_id: facility.id) }
+    let(:expired_payment_source) { create(:nufs_account, :with_account_owner, owner: user, expires_at: expiry_date) }
     let!(:problem_order_detail) { place_and_complete_item_order(user, facility, expired_payment_source, true) }
 
     before :each do
@@ -421,13 +376,13 @@ RSpec.describe FacilityJournalsController do
     it_should_deny_all [:staff, :senior_staff]
 
     it_should_allow_managers_only do
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it "sets appropriate values" do
       sign_in @admin
       do_request
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns(:order_details)).to contain_all([@order_detail1, @order_detail3, problem_order_detail])
       expect(assigns(:order_detail_action)).to eq(:create)
     end
@@ -445,10 +400,10 @@ RSpec.describe FacilityJournalsController do
       expect(assigns(:order_detail_action)).to be_nil
     end
 
-    context "in cross facility", feature_setting: { billing_administrator: true } do
+    context "in cross facility", feature_setting: { global_billing_administrator: true } do
       before :each do
         @params[:facility_id] = "all"
-        sign_in create(:user, :billing_administrator)
+        sign_in create(:user, :global_billing_administrator)
         do_request
       end
 

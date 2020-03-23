@@ -36,8 +36,18 @@ RSpec.describe InstrumentIssue do
     let!(:facility_staff) { create(:user, :staff, facility: facility) }
     let(:instrument_issue) { described_class.new(product: instrument) }
 
-    it "returns the training request and admin without duplication" do
-      expect(instrument_issue.recipients).to contain_exactly("training@example.com", "admin@example.com")
+    describe "without product-specific recipients defined" do
+      it "returns the training request and admin without duplication" do
+        expect(instrument_issue.recipients).to contain_exactly("training@example.com", "admin@example.com")
+      end
+    end
+
+    describe "with product-specific recipients defined" do
+      before { instrument.update!(issue_report_recipients: "alt1@example.com, alt2@example.com") }
+
+      it "returns the specified recipients" do
+        expect(instrument_issue.recipients).to contain_exactly("alt1@example.com", "alt2@example.com")
+      end
     end
   end
 

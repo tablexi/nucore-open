@@ -7,14 +7,17 @@ ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ## base
-gem "rails", "5.0.7.1"
+gem "rails", "5.2.3"
+gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
+gem "bootsnap", require: false
 
 ## database
-gem "mysql2", "~> 0.4.10"
+gem "mysql2"
 # To use Oracle, remove the mysql2 gem above and uncomment these lines
-# gem "ruby-oci8"
 # gem "activerecord-oracle_enhanced-adapter"
+# gem "ruby-oci8" # only for CRuby users
+
 
 ## auth
 gem "cancancan"
@@ -35,7 +38,7 @@ gem "paranoia"
 gem "sass-rails"
 gem "coffee-rails"
 gem "uglifier", "= 4.1.18" # 4.1.19 has an issue https://github.com/mishoo/UglifyJS2/issues/3245
-gem "therubyracer"
+gem "mini_racer"
 gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
@@ -62,6 +65,7 @@ gem "prawn-table"
 ## other
 gem "delayed_job_active_record"
 gem "fog-aws"
+gem "health_check"
 gem "rake"
 gem "spreadsheet"
 gem "daemons"
@@ -78,37 +82,32 @@ gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "synaccess_connect"
-gem "nucore_kfs", path: "vendor/engines/nucore_kfs"
-gem "uconn_cider", path: "vendor/engines/uconn_cider"
 
 group :development do
+  gem "bcrypt_pbkdf", ">= 1.0", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "bullet" # Detect N+1s and recommends eager loading
+  gem "capistrano", require: false
+  gem "capistrano-bundler", require: false
+  gem "capistrano-rails", require: false
+  gem "capistrano-rvm", require: false
   gem "coffeelint"
+  gem "ed25519", ">= 1.2", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "haml_lint", require: false
   gem "letter_opener"
   gem "rails-erd"
-  gem "rubocop", "0.58", require: false # needs to be updated in sync with available codeclimate channels
+  gem "rubocop", "0.58", require: false
   gem "rubocop-rspec"
   gem "web-console"
 end
 
-group :development, :deployment do
-  gem "capistrano",         require: false
-  gem "capistrano-rails",   require: false
-  gem "capistrano-chruby"   ,  require: false
-  gem "capistrano-bundler", require: false
-
-  # These gems are required to support ed25519 SSH keys for deploying via capistrano
-  # See https://github.com/net-ssh/net-ssh/issues/565 for more information
-  gem "bcrypt_pbkdf", ">= 1.0", "< 2.0", require: false
-  gem "ed25519", ">= 1.2", "< 2.0", require: false
-end
-
 group :development, :test do
   gem "awesome_print"
-  gem "factory_bot_rails"
+  # FactoryBot 5.X has some breaking changes we haven't sorted out
+  # https://github.com/tablexi/nucore-open/pull/1865
+  gem "factory_bot_rails", "< 5"
   gem "guard-rspec", require: false
   gem "guard-teaspoon", require: false
+  gem "parallel_tests"
   gem "pry-rails"
   gem "pry-byebug"
   gem "rspec-rails"
@@ -116,32 +115,25 @@ group :development, :test do
   gem "spring"
   gem "spring-commands-rspec"
   gem "teaspoon-jasmine"
-  gem "thin"
 end
 
 group :test do
-  gem "rspec_junit_formatter"
-  gem "ci_reporter_rspec"
-  gem "codeclimate_circle_ci_coverage"
   gem "capybara"
   gem "capybara-email"
-  gem "poltergeist"
   gem "rails-controller-testing"
   gem "rspec-collection_matchers"
-  gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers" # https://github.com/thoughtbot/shoulda-matchers/issues/913
+  gem "rspec_junit_formatter"
+  gem "selenium-webdriver"
+  gem "shoulda-matchers"
   gem "single_test"
+  gem "webmock"
 end
 
 group :stage, :production do
-  gem "eye-patch", require: false
   gem "exception_notification"
-  gem "lograge"
-  gem "logstash-event"
+  gem "eye-patch", require: false
   gem "oj"
-  # 2.15.6 has a problem during cap deploy
-  # https://github.com/rollbar/rollbar-gem/issues/713
-  gem "rollbar", "2.15.5"
+  gem "rollbar"
   gem "unicorn", require: false
   gem "whenever", require: false
-  gem "rack-tracker"
 end

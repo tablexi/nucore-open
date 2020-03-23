@@ -4,11 +4,9 @@ Services can require a completed order form which can be hosted through an exter
 
 Currently, you can only use one external service at a time.
 
-## Default: Surveyor
+## Default (and only): UrlService
 
-[Surveyor](https://github.com/NUBIC/surveyor) is a tool for developing surveys in Rails applications. We have built a [wrapper application](https://github.com/tablexi/nucore-surveyor) around Surveyor for integration with NUCore. [`SurveyorController`](https://github.com/tablexi/nucore-surveyor/blob/master/app/controllers/surveyor_controller.rb) in that application is a good example of this process.
-
-You can change the default external service by creating a new class that extends from [`ExternalService`](../app/models/external_service.rb) and changing the value of external_services.survey in settings.yml. The default [`Surveyor`](../app/models/surveyor.rb) class extends from [`UrlService`](../app/models/url_service.rb), which provides the majority of functionality.
+You can change the default external service by creating a new class that extends from [`ExternalService`](../app/models/external_service.rb) and changing the value of external_services.survey in settings.yml. The current implementation, [`UrlService`](../app/models/url_service.rb), provides the majority of functionality.
 
 ## Process
 

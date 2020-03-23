@@ -7,29 +7,27 @@ class Facility < ApplicationRecord
   before_validation :set_journal_mask, on: :create
   before_validation { thumbnail.clear if remove_thumbnail }
 
-  has_many :items
-  has_many :services
-  has_many :timed_services
-  has_many :instruments
-  has_many :bundles
-  has_many :journals
-  has_many :products
-  has_many :schedules
-  has_many :statements
-  has_many :order_details, through: :products do
-    # extend to find all accounts that have ordered from the facility
-    def accounts
-      collect(&:account).compact.uniq
-    end
-  end
-  has_many :order_imports, dependent: :destroy
-  has_many :orders, -> { where.not(ordered_at: nil) }
+  has_many :bundles, inverse_of: :facility
+  has_many :director_and_admin_roles, -> { merge(UserRole.director_and_admins) }, class_name: "UserRole"
+  has_many :director_and_admins, -> { distinct }, through: :director_and_admin_roles, source: :user
   has_many :facility_accounts
+  has_many :instruments, inverse_of: :facility
+  has_many :items, inverse_of: :facility
+  has_many :journals
+  has_many :non_instrument_products, -> { where.not(type: "Instrument").alphabetized }, class_name: "Product", inverse_of: :facility
+  has_many :products
+  has_many :order_details, through: :products
+  has_many :order_imports, dependent: :destroy
+  has_many :orders, -> { purchased }
+  has_many :schedules
+  has_many :services, inverse_of: :facility
+  has_many :statements
+  has_many :timed_services, inverse_of: :facility
   has_many :training_requests, through: :products
   has_many :user_roles, dependent: :destroy
   has_many :users, -> { distinct }, through: :user_roles
-  has_many :director_and_admin_roles, -> { merge(UserRole.director_and_admins) }, class_name: "UserRole"
-  has_many :director_and_admins, -> { distinct }, through: :director_and_admin_roles, source: :user
+  has_many :reservations, through: :instruments
+  has_many :product_display_groups
 
   has_attached_file :thumbnail, styles: { thumb: "400x200#" }, dependent: :destroy
   validates_presence_of :name, :short_description, :abbreviation
@@ -129,6 +127,26 @@ class Facility < ApplicationRecord
 
   def remove_thumbnail=(value)
     @remove_thumbnail = !value.to_i.zero?
+  end
+
+  def schedules_for_timeline(instruments_association)
+    schedules
+    .active
+    .includes(instruments_association => [:alert, :current_offline_reservations, :relay, :schedule_rules])
+    .order(:name)
+  end
+
+  def dashboard_enabled
+    dashboard_token.present?
+  end
+  alias dashboard_enabled? dashboard_enabled
+
+  def dashboard_enabled=(value)
+    if ActiveModel::Type::Boolean.new.cast(value)
+      self.dashboard_token ||= SecureRandom.uuid
+    else
+      self.dashboard_token = nil
+    end
   end
 
   private

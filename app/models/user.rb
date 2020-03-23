@@ -3,20 +3,21 @@
 class User < ApplicationRecord
 
   include ::Users::Roles
-  include NUCore::Database::WhereIdsIn
+  include Nucore::Database::WhereIdsIn
 
   # ldap_authenticatable is included via a to_prepare hook if ldap is enabled
   devise :database_authenticatable, :encryptable, :trackable, :recoverable
 
-  has_many :accounts, through: :account_users
   has_many :account_users, -> { where(deleted_at: nil) }
+  has_many :accounts, through: :account_users
   has_many :orders
   has_many :order_details, through: :orders
+  has_many :reservations, through: :order_details
   has_many :price_group_members, class_name: "UserPriceGroupMember", dependent: :destroy
   has_many :price_groups, -> { SettingsHelper.feature_on?(:user_based_price_groups) ? distinct : none }, through: :price_group_members
   has_many :product_users
-  has_many :notifications
   has_many :products, through: :product_users
+  has_many :notifications
   has_many :assigned_order_details, class_name: "OrderDetail", foreign_key: "assigned_user_id"
   has_many :user_roles, -> { extending UserRole::AssociationExtension }, dependent: :destroy
   has_many :facilities, through: :user_roles
@@ -28,8 +29,10 @@ class User < ApplicationRecord
   validates_presence_of :username, :first_name, :last_name
   validates :email, presence: true, email_format: true
   validates_uniqueness_of :username, :email
+  validates :suspension_note, length: { maximum: 255 }
 
-  #
+  accepts_nested_attributes_for :account_users, allow_destroy: true
+
   # Gem ldap_authenticatable expects User to respond_to? :login. For us that's #username.
   alias_attribute :login, :username
 
@@ -37,7 +40,6 @@ class User < ApplicationRecord
   # those are cleaned up, remove me.
   alias_attribute :deactivated_at, :suspended_at
 
-  #
   # Gem ldap_authenticatable expects User to respond_to? :ldap_attributes. For us should return nil.
   attr_accessor :ldap_attributes
 
@@ -48,8 +50,8 @@ class User < ApplicationRecord
   scope :unexpired, -> { where(expired_at: nil) }
 
   scope :with_global_roles, -> { where(id: UserRole.global.select("distinct user_id")) }
-  scope :with_recent_orders, ->(facility) { distinct.joins(:orders).merge(Order.recent.for_facility(facility)) }
-  scope :sort_last_first, -> { order("LOWER(users.last_name), LOWER(users.first_name)") }
+  scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
+  scope :sort_last_first, -> { order(Arel.sql("LOWER(users.last_name), LOWER(users.first_name)")) }
 
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)

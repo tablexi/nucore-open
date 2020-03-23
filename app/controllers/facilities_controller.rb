@@ -15,7 +15,6 @@ class FacilitiesController < ApplicationController
   load_and_authorize_resource find_by: :url_name
   skip_load_and_authorize_resource only: [:index, :show]
 
-  include FacilitiesHelper
   include AZHelper
   include OrderDetailsCsvExport
 
@@ -45,9 +44,19 @@ class FacilitiesController < ApplicationController
   def show
     return redirect_to(facilities_path) if current_facility.try(:cross_facility?)
     raise ActiveRecord::RecordNotFound unless current_facility.try(:is_active?)
-    @order_form = Order.new if acting_user && current_facility.accepts_multi_add?
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
+
+    @product_scope = Product.alphabetized
+    if acting_as? || session_user.try(:operator_of?, current_facility)
+      @product_scope = @product_scope.not_archived
+    else
+      @product_scope = @product_scope.active # Active also excludes hidden
+    end
+
+    @product_display_groups = current_facility.product_display_groups.sorted
+    @product_display_groups = @product_display_groups.to_a + ProductDisplayGroup.fake_groups_by_type(current_facility.products.without_display_group)
+
     render layout: "application"
   end
 
@@ -123,7 +132,7 @@ class FacilitiesController < ApplicationController
       },
     )
 
-    @search = TransactionSearch::Searcher.new.search(order_details, @search_form)
+    @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details
 
@@ -138,7 +147,7 @@ class FacilitiesController < ApplicationController
     order_details = OrderDetail.in_dispute.for_facility(current_facility)
 
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    @search = TransactionSearch::Searcher.search(order_details, @search_form)
+    @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.reorder(:dispute_at).paginate(page: params[:page])
   end
@@ -146,9 +155,10 @@ class FacilitiesController < ApplicationController
   # GET /facilities/:facility_id/movable_transactions
   def movable_transactions
     @search_form = TransactionSearch::SearchForm.new(params[:search])
-    @search = TransactionSearch::Searcher.new.search(
+    @search = TransactionSearch::Searcher.billing_search(
       OrderDetail.all_movable.for_facility(current_facility),
       @search_form,
+      include_facilities: current_facility.cross_facility?,
     )
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.paginate(page: params[:page], per_page: 100)
@@ -191,26 +201,26 @@ class FacilitiesController < ApplicationController
     params.require(:facility).permit(*self.class.permitted_facility_params)
   end
 
-  def self.permitted_facility_params
-    @@permitted_facility_params ||=
-      %i(
-        abbreviation
-        accepts_multi_add
-        address
-        banner_notice
-        description
-        email
-        fax_number
-        is_active
-        name
-        order_notification_recipient
-        phone_number
-        short_description
-        show_instrument_availability
-        url_name
-        thumbnail
-        remove_thumbnail
-      )
+  cattr_accessor(:permitted_facility_params) do
+    %i(
+      abbreviation
+      accepts_multi_add
+      address
+      banner_notice
+      description
+      email
+      fax_number
+      is_active
+      name
+      order_notification_recipient
+      phone_number
+      short_description
+      show_instrument_availability
+      url_name
+      thumbnail
+      remove_thumbnail
+      dashboard_enabled
+    )
   end
 
   def ensure_order_details_selected
@@ -259,5 +269,4 @@ class FacilitiesController < ApplicationController
     SettingsHelper.feature_on?(:azlist)
   end
   helper_method :azlist_on?
-
 end

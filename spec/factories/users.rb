@@ -6,7 +6,7 @@ FactoryBot.define do
     first_name { "User" }
     password { "password" }
     password_confirmation { "password" }
-    sequence(:last_name, &:to_s)
+    sequence(:last_name) { |n| "Last#{n}" }
     sequence(:email) { |n| "user#{n}@example.com" }
 
     trait :suspended do
@@ -38,9 +38,9 @@ FactoryBot.define do
       end
     end
 
-    trait :billing_administrator do
+    trait :global_billing_administrator do
       after(:create) do |user, _|
-        UserRole.create!(user: user, role: UserRole::BILLING_ADMINISTRATOR)
+        UserRole.create!(user: user, role: UserRole::GLOBAL_BILLING_ADMINISTRATOR)
       end
     end
 
@@ -119,6 +119,18 @@ FactoryBot.define do
         UserRole.create!(
           user: user,
           role: UserRole::FACILITY_STAFF,
+          facility: evaluator.facility,
+        )
+      end
+    end
+
+    trait :facility_billing_administrator do
+      transient { facility { nil } }
+
+      after(:create) do |user, evaluator|
+        UserRole.create!(
+          user: user,
+          role: UserRole::FACILITY_BILLING_ADMINISTRATOR,
           facility: evaluator.facility,
         )
       end

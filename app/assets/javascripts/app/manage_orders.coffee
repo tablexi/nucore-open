@@ -28,6 +28,14 @@ class OrderDetailManagement
     @initResolutionNote()
     @initAccountOwnerUpdate()
     @disableForm() if @$element.hasClass('disabled')
+    @$element.find(".js--order-detail-price-change-reason-select").on "change", (event) ->
+      selectedOption = event.target.options[event.target.selectedIndex]
+      noteTextField = $(".js--order-detail-price-change-reason")
+      if selectedOption.value == "Other"
+        noteTextField.attr("hidden", false).val("")
+      else
+        noteTextField.attr("hidden", true)
+        noteTextField.val(selectedOption.value)
 
   copyReservationTimeIntoActual: (e) ->
     e.preventDefault()

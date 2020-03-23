@@ -34,7 +34,7 @@ RSpec.describe FacilitiesController do
     it_should_allow :admin do
       expect(@controller).to receive(:init_current_facility).never
       do_request
-      expect(response).to be_success.and render_template("facilities/new")
+      expect(response).to be_successful.and render_template("facilities/new")
     end
   end
 
@@ -164,7 +164,7 @@ RSpec.describe FacilitiesController do
 
     it_should_allow_all [:admin, :guest] do
       expect(assigns[:facilities]).to eq([@authable])
-      expect(response).to be_success.and render_template("facilities/index")
+      expect(response).to be_successful.and render_template("facilities/index")
     end
   end
 
@@ -180,7 +180,7 @@ RSpec.describe FacilitiesController do
     it_should_deny :guest
 
     it_should_allow :director do
-      expect(response).to be_success.and render_template("facilities/manage")
+      expect(response).to be_successful.and render_template("facilities/manage")
     end
   end
 
@@ -193,20 +193,48 @@ RSpec.describe FacilitiesController do
 
     it_should_allow_all ([:guest] + facility_operators) do
       expect(@controller.current_facility).to eq(facility)
-      expect(response).to be_success.and render_template("facilities/show")
+      expect(response).to be_successful.and render_template("facilities/show")
     end
 
     describe "daily view link" do
       let!(:instrument) { create(:instrument, facility: facility, facility_account: facility_account) }
 
-      it "includes link to daily view", feature_setting: { daily_view: true, reload_routes: true } do
-        do_request
-        expect(response.body).to include("daily view")
+      describe "with the feature on", feature_setting: { daily_view: true, reload_routes: true } do
+        it "includes link to daily view" do
+          do_request
+          expect(response.body).to include("Daily View")
+        end
+
+        it "does not include the link if all the instruments are hidden" do
+          instrument.update!(hidden: true)
+          do_request
+          expect(response.body).not_to include("Daily View")
+        end
       end
 
       it "does not include a link to the daily view when disabled", feature_setting: { daily_view: false, reload_routes: true } do
         do_request
-        expect(response.body).not_to include("daily view")
+        expect(response.body).not_to include("Daily View")
+      end
+
+      describe "product_display_groups" do
+        let!(:product1) { create(:item, facility: facility) }
+        let!(:product2) { create(:item, facility: facility) }
+        let!(:not_in_group) { create(:item, facility: facility) }
+        let!(:product_display_group1) { create(:product_display_group, position: 2, name: "Second", products: [product1], facility: facility) }
+        let!(:product_display_group2) { create(:product_display_group, position: 1, name: "First", products: [product2], facility: facility) }
+
+        it "returns the product groups in the right order" do
+          do_request
+          expect(assigns(:product_display_groups).first).to eq(product_display_group2)
+          expect(assigns(:product_display_groups).second).to eq(product_display_group1)
+        end
+
+        it "includes an unpersisted group which includes the last item" do
+          do_request
+          items_group = assigns(:product_display_groups).to_a.find { |p| p.name == "Items" }
+          expect(items_group.products).to include(not_in_group)
+        end
       end
     end
 
@@ -246,7 +274,7 @@ RSpec.describe FacilitiesController do
 
       it_should_allow_all facility_operators do
         expect(assigns(:facilities)).to eq([@authable, @facility2])
-        expect(response).to be_success.and render_template("facilities/list")
+        expect(response).to be_successful.and render_template("facilities/list")
       end
     end
 
@@ -283,7 +311,7 @@ RSpec.describe FacilitiesController do
 
       it_should_allow :admin do
         expect(assigns[:facilities]).to eq([@authable, @facility2])
-        expect(response).to be_success.and render_template("facilities/list")
+        expect(response).to be_successful.and render_template("facilities/list")
       end
     end
   end

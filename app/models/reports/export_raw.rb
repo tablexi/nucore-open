@@ -43,7 +43,7 @@ module Reports
       hash = {
         facility: :facility,
         order: :to_s,
-        ordered_at: ->(od) { od.order.ordered_at },
+        ordered_at: :ordered_at,
         fulfilled_at: ->(od) { od.fulfilled_at },
         order_status: ->(od) { od.order_status.name },
         order_state: :state,
@@ -105,6 +105,11 @@ module Reports
         price_change_reason: :price_change_reason,
         price_changed_by_user: ->(od) { od.price_changed_by_user&.full_name(suspended_label: false) },
         assigned_staff: ->(od) { od.assigned_user&.full_name(suspended_label: false) },
+        billable_minutes: ->(od) { od.time_data.try(:billable_minutes) },
+        problem_resolved_at: :problem_resolved_at,
+        problem_description: ->(od) { I18n.t("order_details.notices.#{od.problem_description_key_was}.badge") if od.problem_description_key_was? },
+        problem_resolved_by: :problem_resolved_by,
+        reference_id: :reference_id,
       }
       if SettingsHelper.has_review_period?
         hash

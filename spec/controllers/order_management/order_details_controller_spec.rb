@@ -74,7 +74,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         end
 
         it "is success" do
-          expect(response).to be_success
+          expect(response).to be_successful
         end
 
         it "has new as a status" do
@@ -374,6 +374,22 @@ RSpec.describe OrderManagement::OrderDetailsController do
             it "does not assign the cancellation fee" do
               expect(assigns(:order_detail).actual_total.to_i).to eq(0)
             end
+          end
+        end
+
+        describe "when there are auto-scaled accessories" do
+          let!(:accessory) { create(:time_based_accessory, parent: instrument, facility: facility, scaling_type: "auto") }
+
+          before do
+            allow_any_instance_of(OrderDetail).to receive(:updated_children).and_return([build_stubbed(:order_detail)])
+            @params[:order_detail] = {
+              reservation: { actual_duration_mins: 45 },
+            }
+          end
+
+          it "sets the flash" do
+            do_request
+            expect(flash[:notice]).to include "Auto-scaled accessories"
           end
         end
 
@@ -744,6 +760,14 @@ RSpec.describe OrderManagement::OrderDetailsController do
           end
         end
 
+        describe "when adding a reference id" do
+          it "updates the reference_id" do
+            @params[:order_detail] = { reference_id: "Ref 123" }
+            do_request
+            expect(order_detail.reload.reference_id).to eq("Ref 123")
+          end
+        end
+
         describe "assigning to a user" do
           let(:staff_user) { FactoryBot.create(:user, :staff, facility: facility) }
 
@@ -980,7 +1004,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
         end
 
         it "is successful" do
-          expect(response).to be_success
+          expect(response).to be_successful
         end
 
         it "returns a new estimated price" do
@@ -1021,7 +1045,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           end
 
           it "is successful" do
-            expect(response).to be_success
+            expect(response).to be_successful
           end
 
           it "returns a new actual price" do
@@ -1062,7 +1086,7 @@ RSpec.describe OrderManagement::OrderDetailsController do
           end
 
           it "is successful" do
-            expect(response).to be_success
+            expect(response).to be_successful
           end
 
           it "does not return an estimated price" do

@@ -1,0 +1,5 @@
+- if products.any?
+  %h3= text("title")
+  .product_list
+    %ul
+      = render partial: "product", collection: products

@@ -4,6 +4,7 @@ class Product < ApplicationRecord
 
   include TextHelpers::Translation
   include EmailListAttribute
+  include FullTextSearch::Model
 
   belongs_to :facility
   belongs_to :initial_order_status, class_name: "OrderStatus"
@@ -11,12 +12,16 @@ class Product < ApplicationRecord
   has_many :product_users
   has_many :order_details
   has_many :stored_files
-  has_many :price_groups, through: :price_group_products
   has_many :price_group_products
+  has_many :price_groups, through: :price_group_products
   has_many :product_accessories, -> { where(deleted_at: nil) }, dependent: :destroy
   has_many :accessories, through: :product_accessories, class_name: "Product"
   has_many :price_policies
   has_many :training_requests, dependent: :destroy
+  has_many :product_research_safety_certification_requirements
+  has_many :research_safety_certificates, through: :product_research_safety_certification_requirements
+  has_one :product_display_group_product
+  has_one :product_display_group, through: :product_display_group_product
 
   email_list_attribute :training_request_contacts
 
@@ -37,17 +42,13 @@ class Product < ApplicationRecord
     validates(
       :account,
       presence: true,
-      numericality: {
-        only_integer: true,
-        greater_than_or_equal_to: 0,
-        less_than_or_equal_to: 99_999,
-      },
+      numericality: { only_integer: true },
+      length: { minimum: 1, maximum: Settings.accounts.product_default.to_s.length },
       if: :requires_account?,
     )
   end
-  if SettingsHelper.feature_on? :recharge_accounts
-    validates :facility_account_id, presence: true, if: :requires_account?
-  end
+
+  validates :facility_account_id, presence: true, if: :requires_account?
 
   # Use lambda so we can dynamically enable/disable in specs
   validate if: -> { SettingsHelper.feature_on?(:product_specific_contacts) } do
@@ -55,27 +56,36 @@ class Product < ApplicationRecord
   end
 
   scope :active, -> { where(is_archived: false, is_hidden: false) }
-  scope :active_plus_hidden, -> { where(is_archived: false) } # TODO: phase out in favor of the .not_archived scope
-  scope :alphabetized, -> { order("lower(products.name)") }
+  scope :alphabetized, -> { order(Arel.sql("LOWER(products.name)")) }
   scope :archived, -> { where(is_archived: true) }
   scope :not_archived, -> { where(is_archived: false) }
   scope :mergeable_into_order, -> { not_archived.where(type: mergeable_types) }
   scope :in_active_facility, -> { joins(:facility).where(facilities: { is_active: true }) }
   scope :of_type, ->(type) { where(type: type) }
   scope :with_schedule, -> { where.not(schedule_id: nil) }
+  scope :without_display_group, -> {
+    left_outer_joins(:product_display_group_product).where(product_display_group_products: { id: nil })
+  }
 
+  # All product types. This cannot be a cattr_accessor because the block is evaluated
+  # at definition time (not lazily as I expected) and this causes a circular dependency
+  # in some schools.
   def self.types
     @types ||= [Instrument, Item, Service, TimedService, Bundle]
   end
 
+  # Those that can be added to an order by an administrator
   def self.mergeable_types
-    @mergeable_types ||= [Instrument, Item, Service, TimedService, Bundle]
+    @mergeable_types ||= ["Instrument", "Item", "Service", "TimedService", "Bundle"]
+  end
+
+  # Those that can be ordered via the NUcore homepage
+  def self.orderable_types
+    @orderable_types ||= ["Instrument", "Item", "Service", "TimedService", "Bundle"]
   end
 
   # Products that can be used as accessories
-  def self.accessorizable
-    where(type: [Item, Service, TimedService])
-  end
+  scope :accessorizable, -> { where(type: ["Item", "Service", "TimedService"]) }
 
   def self.exclude(products)
     where.not(id: products)
@@ -104,14 +114,6 @@ class Product < ApplicationRecord
   end
 
   ## AR Hooks
-  before_validation do
-    self.requires_approval ||= false
-    self.is_archived       ||= false
-    self.is_hidden         ||= false
-
-    # return true so validations will run
-    true
-  end
   after_create :set_default_pricing
 
   def initial_order_status
@@ -300,8 +302,8 @@ class Product < ApplicationRecord
     !(is_archived? || (is_hidden? && !is_operator))
   end
 
-  def has_alert?
-    false
+  def alert
+    nil
   end
 
   protected

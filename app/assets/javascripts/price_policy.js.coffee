@@ -55,3 +55,12 @@ $(document).ready ->
   $(".js--masterInternalRow input[type=text]").keyup((evt) ->
     updateAdjustmentFields($(evt.target))
   ).trigger("keyup")
+
+  $(".js--price-policy-note-select").on "change", (event) ->
+    selectedOption = event.target.options[event.target.selectedIndex]
+    noteTextField = $(".js--price-policy-note")
+    if selectedOption.value == "Other"
+      noteTextField.attr("hidden", false).val("")
+    else
+      noteTextField.attr("hidden", true)
+      noteTextField.val(selectedOption.value)

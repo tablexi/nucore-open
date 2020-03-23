@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe JournalRowBuilder, type: :service do
+RSpec.describe JournalRowBuilder, :default_journal_row_converters, type: :service do
 
   let(:builder) { described_class.new(journal, order_details) }
   let(:order_details) { build_stubbed_list(:order_detail, 2) }
@@ -30,18 +30,6 @@ RSpec.describe JournalRowBuilder, type: :service do
       expect(builder.product_recharges).to eq({})
     end
 
-    context "when recharge_accounts enabled", feature_setting: { recharge_accounts: true } do
-      it "assigns recharge_enabled" do
-        expect(builder.recharge_enabled).to eq(true)
-      end
-    end
-
-    context "when recharge_accounts disabled", feature_setting: { recharge_accounts: false } do
-      it "assigns recharge_enabled" do
-        expect(builder.recharge_enabled).to eq(false)
-      end
-    end
-
   end
 
   describe "#build" do
@@ -57,35 +45,71 @@ RSpec.describe JournalRowBuilder, type: :service do
     let(:facility) { create(:setup_facility) }
     let(:journal_date) { Time.zone.now }
     let(:order) { create(:purchased_order, product: product) }
-    let(:order_details) { order.order_details }
+    let(:order2) { create(:purchased_order, product: product) }
+    let(:order_details) { order.order_details + order2.order_details }
     let(:product) { create(:setup_item, facility: facility) }
 
     before do
       order_details.each(&:to_complete!)
     end
 
-    context "when recharge_accounts enabled", feature_setting: { recharge_accounts: true } do
+    context "when using the default builders (one row per order detail, plus one recharge per product)" do
 
-      it "builds two journal_rows for each order_detail" do
-        expect(builder.build.journal_rows.size).to eq(order_details.size * 2)
-      end
-
-      it "builds a product_recharge for each order_detail" do
-        expect(builder.build.product_recharges.size).to eq(order_details.size)
+      it "builds two journal_rows for the order_detail and one for the product" do
+        rows = builder.build.journal_rows
+        expect(rows.size).to eq(3)
+        expect(rows).to match([
+          have_attributes(
+            order_detail: order.order_details.first,
+            amount: be_positive,
+          ),
+          have_attributes(
+            order_detail: order2.order_details.first,
+          ),
+          have_attributes(
+            order_detail: nil,
+            amount: - (order.order_details.first.actual_cost + order2.order_details.first.actual_cost),
+            description: product.name,
+          ),
+        ])
       end
 
     end
 
-    context "when recharge_accounts disabled", feature_setting: { recharge_accounts: false } do
-
-      it "builds a journal_row for each order_detail" do
-        expect(builder.build.journal_rows.size).to eq(order_details.size)
+    context "when using a double entry order detail builder and a null product builder" do
+      before do
+        allow(Converters::ConverterFactory).to receive(:for).with("order_detail_to_journal_rows").and_return(Converters::DoubleEntryOrderDetailToJournalRowAttributes)
+        allow(Converters::ConverterFactory).to receive(:for).with("product_to_journal_rows").and_return(Converters::NullProductToJournalRowAttributes)
       end
 
-      it "does not have product_recharges" do
-        expect(builder.build.product_recharges).to be_empty
+      it "builds four rows, one positive and one negative for each order detail" do
+        rows = builder.build.journal_rows
+        expect(rows.size).to eq(4)
+        expect(rows).to match([
+          having_attributes(
+            order_detail: order.order_details.first,
+            amount: be_positive,
+            account_id: order.order_details.first.account_id,
+          ),
+          having_attributes(
+            order_detail: nil,
+            amount: -1 * order.order_details.first.actual_cost,
+            account_id: nil,
+            description: product.name,
+          ),
+          having_attributes(
+            order_detail: order2.order_details.first,
+            amount: be_positive,
+            account_id: order2.order_details.first.account_id,
+          ),
+          having_attributes(
+            order_detail: nil,
+            amount: -1 * order2.order_details.first.actual_cost,
+            account_id: nil,
+            description: product.name,
+          )
+        ])
       end
-
     end
 
   end

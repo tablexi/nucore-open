@@ -28,7 +28,7 @@ RSpec.describe UsersController do
 
       @lapsed_user = FactoryBot.create(:user, first_name: "Lapsed")
       @old_order_detail = place_and_complete_item_order(@lapsed_user, @authable)
-      @old_order_detail.order.update_attributes(ordered_at: 400.days.ago)
+      @old_order_detail.update_attributes!(ordered_at: 400.days.ago)
     end
 
     it_should_allow_operators_only :success, "include the right users" do
@@ -133,7 +133,7 @@ RSpec.describe UsersController do
 
           it_should_allow_operators_only do
             expect(assigns(:user)).to be_nil
-            expect(response).to be_success
+            expect(response).to be_successful
           end
         end
 
@@ -352,19 +352,6 @@ RSpec.describe UsersController do
     it_should_allow_operators_only do
       expect(assigns(:user)).to eq(@guest)
       expect(assigns(:order_details)).to be_kind_of ActiveRecord::Relation
-    end
-  end
-
-  context "accounts" do
-    before :each do
-      @method = :get
-      @action = :accounts
-      @params.merge!(user_id: @guest.id)
-    end
-
-    it_should_allow_operators_only do
-      expect(assigns(:user)).to eq(@guest)
-      expect(assigns(:accounts)).to be_kind_of ActiveRecord::Relation
     end
   end
 

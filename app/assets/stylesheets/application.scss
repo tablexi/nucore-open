@@ -1,6 +1,7 @@
-$baseFontSize: 12px;
+$baseFontSize: 12px; // Default is 14px
 
 @import "app/font";
+@import "bootstrap-accessibility";
 @import "bootstrap-variables";
 @import "bootstrap";
 @import "bootstrap-responsive";
@@ -32,6 +33,9 @@ $baseFontSize: 12px;
 @import "app/product_list";
 @import "app/chosen-override";
 @import "app/global_alert_banner";
+@import "app/no_modal";
+@import "app/homepage";
+@import "app/move_between_selects";
 
 @import "fine-uploader/fine-uploader-new";
 @import "fine-uploader-override";

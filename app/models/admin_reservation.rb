@@ -26,4 +26,10 @@ class AdminReservation < Reservation
     expires_mins_before.present?
   end
 
+  private
+
+  def set_billable_minutes
+    self.billable_minutes = nil
+  end
+
 end

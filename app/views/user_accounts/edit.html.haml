@@ -1,0 +1,33 @@
+= content_for :h1 do
+  = current_facility
+
+= content_for :sidebar do
+  = render partial: 'admin/shared/sidenav_users', locals: { sidenav_tab: 'users' }
+
+= content_for :tabnav do
+  = render partial: 'admin/shared/tabnav_users', locals: { secondary_tab: 'accounts' }
+
+%h1= t('.h1', user_name: @user.full_name)
+
+= simple_form_for @user, url: facility_user_accounts_path(current_facility, @user), method: :patch do |f|
+  %table.table.table-striped.table-user-accounts
+    %thead
+      %tr
+        %th.centered.table-user-accounts__remove
+          = t('.remove')
+          = select_all_link
+        %th= Account.model_name.human
+        %th.centered= Facility.model_name.human
+    %tbody
+      = f.fields_for :account_users do |af|
+        %tr
+          %td.centered.table-user-accounts__remove
+            - if af.object.owner?
+              = af.check_box :_destroy, disabled: true, title: t('.not_allowed')
+            - else
+              = af.check_box :_destroy, class: "toggle"
+          %td= payment_source_link_or_text(af.object.account)
+          %td= af.object.account.per_facility? ? af.object.account.facilities.join(", ") : content_tag(:i, t("shared.all"))
+
+  = f.submit t(".update"), class: "btn btn-primary"
+  = link_to text("shared.cancel"), facility_user_accounts_path

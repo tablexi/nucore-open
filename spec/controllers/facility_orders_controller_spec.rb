@@ -95,7 +95,7 @@ RSpec.describe FacilityOrdersController do
         it "should not blow up for sort by #{sort}" do
           @params[:sort] = sort
           do_request
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns[:order_details]).not_to be_nil
           expect(assigns[:order_details].first).not_to be_nil
         end
@@ -137,7 +137,7 @@ RSpec.describe FacilityOrdersController do
       @action = :show_problems
     end
 
-    it_should_allow_managers_only
+    it_should_allow_managers_and_senior_staff_only
   end
 
   context "#send_receipt" do
@@ -253,6 +253,24 @@ RSpec.describe FacilityOrdersController do
 
           it_should_allow :director, "to add an item to existing order with a note" do
             expect(order_detail.note).to eq("This is a note")
+          end
+        end
+
+        context "when setting a reference id" do
+          context "of an appropriate length" do
+            before { @params[:add_to_order_form][:reference_id] = "Ref123" }
+
+            it_should_allow :director, "to set the reference id" do
+              expect(order_detail.reference_id).to eq("Ref123")
+            end
+          end
+
+          context "that is too long" do
+            before { @params[:add_to_order_form][:reference_id] = "a" * 31 }
+            it_should_allow :director, "to set the reference id" do
+              expect(order_detail).to be_blank
+              expect(flash[:error]).to include("Reference ID is too long")
+            end
           end
         end
 
@@ -508,7 +526,7 @@ RSpec.describe FacilityOrdersController do
       expect(merge_order.account_id).to eq(original_order.account_id)
       expect(merge_order.user_id).to eq(original_order.user_id)
       expect(merge_order.created_by).to eq(@director.id)
-      expect(merge_order.ordered_at).to be_blank
+      expect(merge_order.order_details).to be { |od| od.ordered_at.blank? }
       expect(merge_order.order_details.size).to eq(detail_count)
       expect(MergeNotification.count).to eq(detail_count)
       assert_update_success merge_order, product
@@ -542,7 +560,7 @@ RSpec.describe FacilityOrdersController do
         @authable.order_details.item_and_service_orders.new_or_inprocess.to_sql
         @params[:tabs] = ["new_or_in_process_orders"]
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
         body = JSON.parse(response.body)
         expect(body.keys).to contain_all ["new_or_in_process_orders"]
         expect(body["new_or_in_process_orders"]).to eq(2)
@@ -550,7 +568,7 @@ RSpec.describe FacilityOrdersController do
 
       it "should get everything if you ask for it" do
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
         body = JSON.parse(response.body)
         expect(body.keys).to contain_all %w(new_or_in_process_orders problem_order_details)
         expect(body["new_or_in_process_orders"]).to eq(2)

@@ -6,6 +6,8 @@ price_group:
     external: 'External For Profit'
     cancer_center: 'Cancer Center Rate'
 
+time_zone: "Central Time (US & Canada)"
+
 accounts:
   # Most frequently used account by NU
   product_default: 75340
@@ -15,9 +17,12 @@ financial:
   # in the format MM-DD
   fiscal_year_begins: 09-01
   journal_format:
-    xls: true
-    csv: true
-    xml: true
+    # Note that xml and xls have custom responders so they don't need a class_name
+    - key: xml
+    - key: xls
+    - key: csv
+      class_name: Journals::DefaultJournalCsv
+      # mime_type: csv # This is optional if it matches the key
   default_journal_cutoff_time: "16:45"
 
 converters:
@@ -47,21 +52,6 @@ email:
 support_email: ~
 
 order_details:
-  # These hooks are triggered when an order detail enters into the status
-  # The hooks can be configured with settings. Here are several formats you can use:
-  #   new:
-  #     - ApprovalNotification::NotifyPurchaser
-  #     - ApprovalNotification::NotifyFacility
-  #   inprocess:
-  #     -
-  #       class: ApprovalNotification::NotifyPurchaser
-  #       setting_1: test3
-  #     - ApprovalNotification::NotifyFacility
-  #   completed: ApprovalNotification::NotifyPurchaser
-  #   reconciled: ["ApprovalNotification::NotifyPurchaser", "ApprovalNotification::NotifyFacility"]
-  status_change_hooks:
-    pending_approval: StatusChangeNotifications::NotifyFacilityHook
-    approved: StatusChangeNotifications::NotifyPurchaserHook
   list_transformer: SplitAccounts::OrderDetailListTransformer
 
 reservations:
@@ -73,9 +63,6 @@ occupancies:
 
 billing:
   review_period: <%= 7.days %>
-
-external_services:
-  survey: UrlService
 
 relays:
   test:
@@ -94,12 +81,11 @@ relays:
 #
 # For these settings use SettingsHelper#feature_on?
 feature:
-  billing_administrator: true
-  billing_administrator_users_tab: true
+  global_billing_administrator: true
+  global_billing_administrator_users_tab: true
   create_users: true
-  netids: true
+  lookup_netids: true
   limit_short_description: true
-  manage_payment_sources_with_users: true
   order_assignment_notifications: true
   password_update: true
   recharge_accounts: true
@@ -131,6 +117,8 @@ feature:
   price_policy_requires_note: true
   facility_tile_list: true
   multi_facility_accounts: true
+  facility_directors_can_manage_price_groups: true
+  account_reference_field: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
@@ -154,9 +142,15 @@ paperclip:
 #   # certificate_file: path/to/file.p12 # Optional. Do not check in to version control.
 #   # driver: # Optional. Useful to override inferred SAML settings if need be.
 #   #   "idp_sso_target_url": "https://websso.example.com/idp/profile/SAML2/Redirect/SSO"
+#   # metadata_parse_options: # Optional. See RubySaml::IdpMetadataParser
+#   #   sso_binding: ["urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"]
 #   attribute_map:
 #     "PersonImmutableID": "username"
 #     "User.email": "email"
 #     "User.FirstName": "first_name"
 #     "User.LastName": "last_name"
-#  # user_updater_class_name: SamlAuthentication::UserUpdater
+#   # user_updating:
+#   #  skip_attributes: email
+
+price_policy_note_options: ~
+order_detail_price_change_reason_options: ~

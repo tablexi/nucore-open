@@ -824,7 +824,7 @@ RSpec.describe ReservationsController do
 
       it "is a successful page render" do
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "uses the minimum reservation window" do
@@ -850,7 +850,7 @@ RSpec.describe ReservationsController do
 
         it "shows correctly" do
           do_request
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to include(not_authorized_message)
         end
       end
@@ -864,7 +864,7 @@ RSpec.describe ReservationsController do
 
         it "shows correctly" do
           do_request
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).not_to include(not_authorized_message)
         end
       end
@@ -1393,7 +1393,6 @@ RSpec.describe ReservationsController do
       @action = :public_timeline
       @params = { facility_id: @authable.url_name }
       do_request
-      expect(assigns[:public_timeline]).to be true
       expect(response).to render_template :public_timeline
     end
 

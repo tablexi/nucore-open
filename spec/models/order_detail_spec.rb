@@ -14,7 +14,6 @@ RSpec.describe OrderDetail do
   let(:user) { @user }
 
   before(:each) do
-    allow(Settings).to receive_message_chain(:order_details, :status_change_hooks).and_return(nil)
     @facility = create(:facility)
     @facility_account = create(:facility_account, facility: @facility)
     @user = create(:user)
@@ -426,7 +425,6 @@ RSpec.describe OrderDetail do
                user: user,
                created_by: user.id,
                account: account,
-               ordered_at: Time.zone.now,
               )
       end
 
@@ -533,6 +531,10 @@ RSpec.describe OrderDetail do
           describe "when it is missing and requiring actuals" do
             it do
               expect(order_detail.problem_description_key).to eq(:missing_actuals)
+            end
+
+            it "has both keys" do
+              expect(order_detail.problem_description_keys).to eq([:missing_actuals, :missing_price_policy])
             end
           end
 
@@ -1198,6 +1200,19 @@ RSpec.describe OrderDetail do
         expect(OrderDetail.non_canceled).to_not include(order_detail)
       end
     end
+
+    describe "all_movable" do
+      let(:product) { Product.last }
+      let!(:unpurchased_order_detail) { create(:setup_order, product: product).order_details.first }
+      let!(:new_order_detail) { create(:purchased_order, product: product).order_details.first }
+      let!(:completed_order_detail) { create(:complete_order, product: product).order_details.first }
+      let!(:journaled_order)  { create(:complete_order, product: product).order_details.first }
+      before { journaled_order.update!(journal: create(:journal)) }
+
+      it "includes everything but the unpurchased and journaled" do
+        expect(described_class.all_movable).to contain_exactly(new_order_detail, completed_order_detail)
+      end
+    end
   end
 
   context "ordered_on_behalf_of?" do
@@ -1219,10 +1234,10 @@ RSpec.describe OrderDetail do
       ignore_order_detail_account_validations
       @user = create(:user)
       @od_yesterday = place_product_order(@user, @facility, @item, @account)
-      @od_yesterday.order.update_attributes(ordered_at: (Time.zone.now - 1.day))
+      @od_yesterday.update_attributes!(ordered_at: 1.day.ago)
 
       @od_tomorrow = place_product_order(@user, @facility, @item, @account)
-      @od_tomorrow.order.update_attributes(ordered_at: (Time.zone.now + 1.day))
+      @od_tomorrow.update_attributes!(ordered_at: 1.day.from_now)
 
       @od_today = place_product_order(@user, @facility, @item, @account)
 
@@ -1233,10 +1248,10 @@ RSpec.describe OrderDetail do
                            min_reserve_mins: 60,
                            max_reserve_mins: 60)
 
-      # all reservations get placed in today
-      @reservation_yesterday = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now - 1.day)
-      @reservation_tomorrow = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now + 1.day)
-      @reservation_today = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now)
+      # all reservations get purchased today
+      @reservation_yesterday = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now - 1.day, purchased: true)
+      @reservation_tomorrow = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now + 1.day, purchased: true)
+      @reservation_today = place_reservation_for_instrument(@user, @instrument, @account, Time.zone.now, purchased: true)
     end
 
     it "should only return the reservations and the orders from today and tomorrow" do
@@ -1708,6 +1723,12 @@ RSpec.describe OrderDetail do
           expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
         end
 
+        it "merges the order if it's a timed service" do
+          timed_service = FactoryBot.create(:timed_service, facility: facility)
+          @order_detail.update!(product: timed_service)
+          expect { Order.find(order.id) }.to raise_error ActiveRecord::RecordNotFound
+        end
+
         it "should not affect non merge orders" do
           assert @order_detail.save
           expect(@order_detail.reload.order).to eq(@merge_to_order)
@@ -1899,6 +1920,45 @@ RSpec.describe OrderDetail do
 
     it "doesn't blow up on 1000+ entries" do
       described_class.where_ids_in((0..1001).to_a).to_a
+    end
+  end
+
+  it "calls #update_billable_minutes on the associated reservation after saving" do
+    order_detail.build_reservation
+    expect(order_detail.reservation).to receive(:update_billable_minutes)
+    order_detail.run_callbacks(:save) { true }
+  end
+
+  describe "#notify_purchaser_of_order_status" do
+    context "when the order detail’s product is configured to email purchasers" do
+      before do
+        @order_detail.product.email_purchasers_on_order_status_changes = true
+      end
+
+      it "does not notify when the order detail is reconciled" do
+        allow(@order_detail).to receive(:reconciled?).and_return(true)
+        expect(Notifier).not_to receive(:order_detail_status_changed)
+        @order_detail.notify_purchaser_of_order_status
+      end
+
+      it "notifies when the order detail is not reconciled" do
+        allow(@order_detail).to receive(:reconciled?).and_return(false)
+        mail_double = instance_double(ActionMailer::MessageDelivery)
+        expect(mail_double).to receive(:deliver_later)
+        expect(Notifier).to receive(:order_detail_status_changed).and_return(mail_double)
+        @order_detail.notify_purchaser_of_order_status
+      end
+    end
+
+    context "when the order detail’s product is not configured to email purchasers" do
+      before do
+        @order_detail.product.email_purchasers_on_order_status_changes = false
+      end
+
+      it "does not notify" do
+        expect(Notifier).not_to receive(:order_detail_status_changed)
+        @order_detail.notify_purchaser_of_order_status
+      end
     end
   end
 end

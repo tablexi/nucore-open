@@ -2,17 +2,20 @@ en:
   views:
     facilities:
       index:
-        recently_purchased: Recently Purchased Products
         welcome: |
           Welcome to !app_name!, the centralized ordering system for shared !facilities_downcase!.
           Please select the shared !facility_downcase! below to view and purchase services
           and products offered by the !facility_downcase!
       recently_used_facilities:
         title: Recently Used !Facilities!
+      recently_used_products:
+        title: Recently Purchased Products
       facilities_list:
         all: All !Facilities!
         none: "No !facilities_downcase! are available at this time."
-
+      product:
+        quantity: "%{product} Quantity"
+        line_items: Enter the number of individual orders, not the quantity for a single order
       azlist:
         all_short: All
         recently_used_short: Recent

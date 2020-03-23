@@ -34,10 +34,11 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, text("views.notifier.account_update.subject")
   end
 
-  def review_orders(user_id:, account_ids:, facility: Facility.cross_facility)
-    @user = User.find(user_id)
-    @accounts = Account.find(account_ids)
+  def review_orders(user:, accounts:, facility: Facility.cross_facility)
+    @user = user
+    @accounts = accounts
     @facility = facility
+    @accounts_grouped_by_owner = accounts.group_by(&:owner_user)
     send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation)
   end
 
@@ -53,12 +54,12 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
   end
 
-  def order_detail_status_change(order_detail, old_status, new_status, to)
-    @order_detail = order_detail
-    @old_status = old_status
-    @new_status = new_status
-    template = "order_status_changed_to_#{new_status.downcase_name}"
-    send_nucore_mail to, t("views.notifier.#{template}.subject", order_detail: order_detail, user: order_detail.order.user, product: order_detail.product), template
+  def order_detail_status_changed(order_detail_id)
+    @order_detail = OrderDetail.includes(:order, :order_status, :product).find(order_detail_id)
+    mail(
+      to: @order_detail.order.user.email,
+      subject: "[NUcore #{@order_detail.facility.abbreviation}] Order Status Changed To: #{@order_detail.order_status.name}"
+    )
   end
 
   private

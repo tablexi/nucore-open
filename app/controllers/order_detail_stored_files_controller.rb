@@ -44,7 +44,7 @@ class OrderDetailStoredFilesController < ApplicationController
       flash[:notice] = text("upload_order_file.success")
 
       if @order_detail.order.to_be_merged?
-        @order_detail.merge! # trigger the OrderDetailObserver callbacks
+        @order_detail.save! # trigger the OrderDetailObserver callbacks
         redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
       else
         redirect_to(order_path(@order))

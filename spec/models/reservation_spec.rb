@@ -99,6 +99,69 @@ RSpec.describe Reservation do
     end
   end
 
+  describe ".current_in_use", :time_travel do
+    let(:nine_am) { Time.zone.parse("2020-02-01T09:00") }
+    let(:ten_am) { Time.zone.parse("2020-02-01T10:00") }
+    subject(:reservations) { described_class.current_in_use }
+
+    describe "a regular user reservation" do
+      let!(:reservation) { create(:purchased_reservation, reserve_start_at: nine_am, reserve_end_at: ten_am) }
+
+      describe "before reservation" do
+        let(:now) { nine_am - 5.minutes }
+        it { is_expected.not_to include(reservation) }
+      end
+
+      describe "in reservation" do
+        let(:now) { nine_am + 5.minutes }
+        it { is_expected.to include(reservation) }
+      end
+
+      describe "after reservation" do
+        let(:now) { ten_am + 1.minute }
+        it { is_expected.not_to include(reservation) }
+      end
+
+      describe "started in grace period" do
+        let(:now) { nine_am - 3.minutes }
+        before { reservation.update!(actual_start_at: now) }
+        it { is_expected.to include(reservation) }
+      end
+
+      describe "ended early" do
+        let(:now) { ten_am - 10.minutes }
+        before { reservation.update!(actual_start_at: nine_am, actual_end_at: ten_am - 20.minutes) }
+        it { is_expected.not_to include(reservation) }
+      end
+
+      describe "forgot to logout" do
+        let(:now) { ten_am + 1.minute }
+        before { reservation.update!(actual_start_at: nine_am) }
+        it { is_expected.not_to include(reservation) }
+      end
+    end
+
+    describe "inside a cart reservation" do
+      let!(:reservation) { create(:setup_reservation, reserve_start_at: nine_am, reserve_end_at: ten_am) }
+      let(:now) { nine_am + 5.minutes }
+      it { is_expected.not_to include(reservation) }
+    end
+
+    describe "admin reservation" do
+      let(:instrument) { create(:setup_instrument) }
+      let!(:reservation) { create(:admin_reservation, product: instrument, reserve_start_at: nine_am, reserve_end_at: ten_am) }
+      let(:now) { nine_am + 5.minutes }
+      it { is_expected.to include(reservation) }
+    end
+
+    describe "offline_reservation" do
+      let(:instrument) { create(:setup_instrument) }
+      let!(:reservation) { create(:offline_reservation, product: instrument, reserve_start_at: nine_am, reserve_end_at: nil) }
+      let(:now) { nine_am + 5.minutes }
+      it { is_expected.to include(reservation) }
+    end
+  end
+
   describe "#admin_editable?" do
     context "when the reservation has been persisted" do
       context "and has been canceled" do
@@ -1346,7 +1409,7 @@ RSpec.describe Reservation do
 
       # Order against the first account
       @order = Order.create(FactoryBot.attributes_for(:order).merge(user: @user, account: @account1, created_by: @user.id))
-      @order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail).merge(product: @instrument, order_status: @os_new))
+      @order_detail = @order.order_details.create(FactoryBot.attributes_for(:order_detail).merge(product: @instrument, order_status: OrderStatus.new_status))
       reservation.order_detail = @order_detail
       reservation.save
     end
@@ -1650,4 +1713,92 @@ RSpec.describe Reservation do
     end
   end
 
+  it "delegates #price_policy to its #order_detail" do
+    expect(subject.price_policy).to eq(subject.order_detail.price_policy)
+  end
+
+  describe "before saving" do
+    context "with a complete order detail that has a nil canceled_at" do
+      before do
+        allow(subject.order_detail).to receive(:complete?).and_return(true)
+        allow(subject.order_detail).to receive(:canceled_at).and_return(nil)
+      end
+
+      context "and a price policy that charges for the reserved time" do
+        before do
+          subject.order_detail.build_price_policy(charge_for: InstrumentPricePolicy::CHARGE_FOR[:reservation])
+        end
+
+        it "sets billable_minutes to the number of reserved minutes" do
+          subject.assign_attributes(reserve_start_at: 74.minutes.ago, reserve_end_at: 25.minutes.ago)
+          subject.run_callbacks(:save) { false }
+          expect(subject.billable_minutes).to eq 49
+        end
+      end
+
+      context "and a price policy that charges for the used time" do
+        before do
+          subject.order_detail.build_price_policy(charge_for: InstrumentPricePolicy::CHARGE_FOR[:usage])
+        end
+
+        it "sets billable_minutes to the number of actually used minutes" do
+          subject.assign_attributes(actual_start_at: 80.minutes.ago, actual_end_at: 15.minutes.ago)
+          subject.run_callbacks(:save) { false }
+          expect(subject.billable_minutes).to eq 65
+        end
+      end
+
+      context "and a price policy that charges for overages" do
+        before do
+          subject.order_detail.build_price_policy(charge_for: InstrumentPricePolicy::CHARGE_FOR[:overage])
+        end
+
+        it "sets billable_minutes to the number of reserved minutes when actual usage was less than the reservation" do
+          subject.assign_attributes(
+            actual_end_at: 15.minutes.ago,
+            actual_start_at: 80.minutes.ago,
+            reserve_end_at: 11.minutes.ago,
+            reserve_start_at: 90.minutes.ago,
+          )
+          subject.run_callbacks(:save) { false }
+          expect(subject.billable_minutes).to eq 79
+        end
+
+        it "sets billable_minutes to the number of actual minutes when actual usage was more than the reservation" do
+          subject.assign_attributes(
+            actual_end_at: 2.minutes.ago,
+            actual_start_at: 99.minutes.ago,
+            reserve_end_at: 11.minutes.ago,
+            reserve_start_at: 90.minutes.ago,
+          )
+          subject.run_callbacks(:save) { false }
+          expect(subject.billable_minutes).to eq 88
+        end
+      end
+    end
+
+    context "with a complete order detail whose canceled_at is set" do
+      before do
+        allow(subject.order_detail).to receive(:complete?).and_return(true)
+        allow(subject.order_detail).to receive(:canceled_at).and_return(5.minutes.ago)
+        subject.order_detail.build_price_policy(charge_for: InstrumentPricePolicy::CHARGE_FOR[:reservation])
+      end
+
+      it "sets billable_minutes to nil" do
+        expect(subject).to receive(:billable_minutes=).with(nil)
+        subject.run_callbacks(:save) { false }
+      end
+    end
+
+    context "with a non-complete order detail" do
+      before do
+        allow(subject.order_detail).to receive(:complete?).and_return(false)
+      end
+
+      it "sets billable_minutes to nil" do
+        expect(subject).to receive(:billable_minutes=).with(nil)
+        subject.run_callbacks(:save) { false }
+      end
+    end
+  end
 end

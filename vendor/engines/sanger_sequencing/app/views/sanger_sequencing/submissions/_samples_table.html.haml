@@ -1,7 +1,5 @@
 %div
   %table.table.table-striped.table-tight
-    - if local_assigns[:caption]
-      %caption= local_assigns[:caption]
     %thead
       %tr
         %th= SangerSequencing::Sample.human_attribute_name(:customer_sample_id)

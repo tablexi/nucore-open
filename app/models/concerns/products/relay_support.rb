@@ -6,7 +6,7 @@ module Products::RelaySupport
 
   included do
     has_one  :relay, inverse_of: :instrument, dependent: :destroy
-    has_many :instrument_statuses, foreign_key: "instrument_id"
+    has_many :instrument_statuses, foreign_key: "instrument_id", inverse_of: :instrument
 
     accepts_nested_attributes_for :relay
 
@@ -27,7 +27,7 @@ module Products::RelaySupport
   end
 
   def has_real_relay?
-    relay && !relay.is_a?(RelayDummy) && relay.ip && relay.port
+    relay && !relay.is_a?(RelayDummy) && relay.ip? && relay.outlet?
   end
 
   private ###################################

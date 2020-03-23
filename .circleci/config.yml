@@ -1,18 +1,20 @@
 version: 2
+
 jobs:
   build:
     parallelism: 4
     docker:
-      - image: circleci/ruby:2.4.5-node-browsers-legacy
+      - image: circleci/ruby:2.5.5-node-browsers-legacy
         environment:
           - RAILS_ENV: "test"
           - MYSQL_USER: root
-          - BUNDLER_VERSION: 2.0.1
+          - SELENIUM_DRIVER_URL: http://localhost:4444/wd/hub
       - image: circleci/mysql:5.7.22-ram
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
           MYSQL_ROOT_PASSWORD: ''
           MYSQL_ROOT_HOST: "%"
+      - image: selenium/standalone-chrome:latest
 
     steps:
       - checkout
@@ -20,18 +22,12 @@ jobs:
       # Bundle
       - restore_cache:
           keys:
-            - gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}--{{ checksum ".ruby-version" }}
-            - gem-cache-{{ arch }}--{{ .Branch }}--{{ checksum ".ruby-version" }}
-            - gem-cache--{{ checksum ".ruby-version" }}
-
-      - run:
-          name: Install Correct Bundler Version
-          command: gem install bundler
+            - gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}-{{ checksum ".ruby-version" }}
 
       - run: bundle install --path vendor/bundle
 
       - save_cache:
-          key: gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}--{{ checksum ".ruby-version" }}
+          key: gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}-{{ checksum ".ruby-version" }}
           paths:
             - vendor/bundle
 
@@ -70,8 +66,15 @@ jobs:
       - store_test_results:
           path: /tmp/test-results
 
-      - store_artifacts:
-         path: coverage/.resultset.json
-         prefix: coverage
+      - deploy:
+          name: Stage deploy of master branch
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                bundle exec cap staging deploy
+              fi
 
-      - run: bundle exec report_coverage
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build

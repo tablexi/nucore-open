@@ -32,7 +32,7 @@ RSpec.describe FileUploadsController do
     end
 
     it_should_allow_operators_only do
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -139,7 +139,7 @@ RSpec.describe FileUploadsController do
     before :each do
       @method = :post
       @action = :create_product_survey
-      @survey_param = ExternalServiceManager.survey_service.name.underscore.to_sym
+      @survey_param = :url_service
       @ext_service_location = "http://remote.surveysystem.com/surveys"
       @params = {
         facility_id: @authable.url_name,
@@ -225,7 +225,6 @@ RSpec.describe FileUploadsController do
                                user: @director,
                                created_by: @director.id,
                                account: @account,
-                               ordered_at: Time.zone.now,
                               )
     @price_group = FactoryBot.create(:price_group, facility: @authable)
     @price_policy = FactoryBot.create(:item_price_policy, product: @product, price_group: @price_group)

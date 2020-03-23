@@ -9,6 +9,8 @@ RSpec.describe User do
   let(:price_group) { create(:price_group, facility: facility) }
   let(:price_policy) { create(:item_price_policy, product: item, price_group: price_group) }
 
+  it { is_expected.to accept_nested_attributes_for(:account_users) }
+
   it "validates uniquess of username" do
     # we need at least 1 user to test validations
     is_expected.to validate_uniqueness_of(:username).case_insensitive
@@ -117,8 +119,8 @@ RSpec.describe User do
       it { is_expected.to match_array(privileged_users) }
     end
 
-    context "when users have the billing administrator role", feature_setting: { billing_administrator: true } do
-      let!(:privileged_users) { create_list(:user, 2, :billing_administrator) }
+    context "when users have the global billing administrator role", feature_setting: { global_billing_administrator: true } do
+      let!(:privileged_users) { create_list(:user, 2, :global_billing_administrator) }
 
       it { is_expected.to match_array(privileged_users) }
     end

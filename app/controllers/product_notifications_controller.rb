@@ -37,6 +37,7 @@ class ProductNotificationsController < ApplicationController
       :training_request_contacts,
       :order_notification_recipient,
       :cancellation_email_recipients,
+      :issue_report_recipients,
     )
   end
 

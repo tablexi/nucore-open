@@ -2,7 +2,7 @@
 
 require "facility_product_routing_concern"
 
-Nucore::Application.routes.draw do
+Rails.application.routes.draw do
   get "/users/sign_in.pdf" => redirect("/users/sign_in")
   devise_for :users
   mount SangerSequencing::Engine => "/" if defined?(SangerSequencing)
@@ -66,6 +66,13 @@ Nucore::Application.routes.draw do
       resources :training_requests, only: [:new, :create] if SettingsHelper.feature_on?(:training_requests)
 
       resource :product_notification, only: [:show, :edit, :update], path: "notifications", as: "notifications"
+      resources :product_research_safety_certification_requirements, only: [:index, :create, :destroy], path: "certification_requirements"
+    end
+
+    resources :product_display_groups do
+      collection do
+        resource :product_display_group_positions, only: [:edit, :update], path: "positions"
+      end
     end
 
     get "instrument_statuses", to: "instruments#instrument_statuses", as: "instrument_statuses"
@@ -73,6 +80,9 @@ Nucore::Application.routes.draw do
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
     resources :instruments do
+      get :dashboard, to: "instruments_dashboard#dashboard", on: :collection
+      get :public_dashboard, to: "instruments_dashboard#public_dashboard", on: :collection
+
       collection do
         get "list", to: "instruments#public_list"
       end
@@ -146,9 +156,8 @@ Nucore::Application.routes.draw do
           get "new_external"
           post "search"
         end
-        patch "suspend", on: :member
-        patch "unsuspend", on: :member
         patch "unexpire", on: :member
+        resource :suspension, controller: :user_suspension, only: [:create, :destroy]
       end
 
       get "switch_to",    to: "users#switch_to"
@@ -158,16 +167,19 @@ Nucore::Application.routes.draw do
           put "cancel"
         end
       end
-      get "accounts",     to: "users#accounts"
       get "access_list",  to: "users#access_list"
       post "access_list/approvals", to: "users#access_list_approvals"
+
+      resource :accounts, controller: "user_accounts", only: [:show, :edit, :update]
+      resources :clone_account_memberships, only: %i[index new create] do
+        get :search, on: :collection
+      end
+      resources :user_research_safety_certifications, only: [:index]
     end
 
-    if SettingsHelper.feature_on? :recharge_accounts
-      resources :facility_accounts,
-                controller: "facility_facility_accounts",
-                only: [:index, :new, :create, :edit, :update], path: "#{I18n.t('facility_downcase')}_accounts"
-    end
+    resources :facility_accounts,
+              controller: "facility_facility_accounts",
+              only: [:index, :new, :create, :edit, :update], path: "#{I18n.t('facility_downcase')}_accounts"
 
     resources :orders, controller: "facility_orders", only: [:index, :update, :show] do
       member do
@@ -213,7 +225,6 @@ Nucore::Application.routes.draw do
     end
 
     get "public_timeline", to: "reservations#public_timeline", as: "public_timeline" if SettingsHelper.feature_on?(:daily_view)
-    get "accounts_receivable", to: "facility_accounts#accounts_receivable"
 
     ### Feature Toggle Editing Accounts ###
     if SettingsHelper.feature_on?(:edit_accounts)
@@ -305,6 +316,7 @@ Nucore::Application.routes.draw do
     get "search", on: :collection
   end
   resources :log_events, only: :index
+  resources :research_safety_certificates, except: :show
 
   # order process
   get "/orders/cart", to: "orders#cart", as: "cart"
@@ -348,6 +360,8 @@ Nucore::Application.routes.draw do
     end
   end
 
+  resources :problem_reservations, only: [:edit, :update]
+
   # notifications
   resources :notifications, only: [:index] do
     collection do
@@ -385,4 +399,11 @@ Nucore::Application.routes.draw do
   namespace :api do
     resources :order_details, only: [:show, :index]
   end
+
+  namespace :formio do
+    resource :submission, only: [:new, :show, :edit]
+  end
+
+  # See config/initializers/health_check.rb for more information
+  health_check_routes
 end

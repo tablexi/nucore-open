@@ -50,6 +50,7 @@ module SplitAccounts
         :duration_mins,
         :actual_duration_mins,
         :quantity,
+        :billable_minutes,
       )
     end
 

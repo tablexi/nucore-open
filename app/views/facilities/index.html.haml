@@ -6,13 +6,13 @@
 - if azlist_on?
   .az_list_container
     = render "azlist"
-  = render "product_list", products: @recent_products, title: text("recently_purchased")
+  = render "recently_used_products", products: @recent_products
   = render "recently_used_facilities"
   = render "facilities_list"
 
 - else
   = render "recently_used_facilities"
   %hr
-  = render "product_list", products: @recent_products, title: text("recently_purchased")
+  = render "recently_used_products", products: @recent_products
   %hr
   = render "facilities_list"

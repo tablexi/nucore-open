@@ -4,8 +4,8 @@ require "rails_helper"
 
 RSpec.describe SecureRoomsApi::EventsController do
   before do
-    name = Rails.application.secrets.secure_rooms_api["basic_auth_name"]
-    password = Rails.application.secrets.secure_rooms_api["basic_auth_password"]
+    name = Rails.application.secrets.secure_rooms_api[:basic_auth_name]
+    password = Rails.application.secrets.secure_rooms_api[:basic_auth_password]
     encoded_auth_credentials = ActionController::HttpAuthentication::Basic.encode_credentials(name, password)
     request.env["HTTP_AUTHORIZATION"] = encoded_auth_credentials
   end
@@ -33,7 +33,7 @@ RSpec.describe SecureRoomsApi::EventsController do
       describe "response" do
         subject { response }
 
-        it { is_expected.to be_success }
+        it { is_expected.to be_successful }
       end
 
       describe "new alarm_event" do

@@ -1,0 +1,6 @@
+en:
+  activemodel:
+    attributes:
+      statement_search_form:
+        date_range_start: Start Date
+        date_range_end: End Date

@@ -73,6 +73,7 @@ en:
     manage_short: Manage
     my_tab: My %{model}
     transactions: My Transactions
+    transactions_in_review: My Transactions In Review (%{count})
     notices: Notices
     support: Support
 
@@ -114,6 +115,9 @@ en:
     unassigned: Unassigned
     activate: Activate
     suspend: Suspend
+    reorder:
+      move_up: Move Up
+      move_down: Move Down
     footer:
       copyright_html: "&copy; Copyright 2010&ndash;%{to_date} Northwestern University"
       logo_alt: "Northwestern Logo"
@@ -137,11 +141,6 @@ en:
       accounts: "Payment Sources"
       users: "Users"
       edit: "Edit"
-    timeline:
-      facility_tooltip:
-        admin_reservation: Administrative Hold
-        offline_reservation: Instrument Offline
-        expiration: Expires %{time} prior
     transactions:
       table_inside:
         total: Total
@@ -167,10 +166,6 @@ en:
       label:
         search_term: "Search by payment source number or payment source owner's name, NetID, or username"
       search: Search
-    accounts_receivable:
-      head: Accounts Receivable
-      show_with_balance: Show %{model} with a balance
-      show_all: Show all %{model}
     new_account_user_search:
       head: "Add Payment Source"
       instruct: "To add a payment source, first search for the user you would like to create the payment source for."
@@ -399,6 +394,10 @@ en:
       no_problem_reservations: There are no problem reservations.
     table_controls:
       update_reservations: Update Reservations
+    reservation:
+      admin_reservation: Administrative Hold
+      offline_reservation: Instrument Offline
+      expiration: Expires %{time} prior
 
   global_user_roles:
     destroy:
@@ -522,6 +521,9 @@ en:
       hidden: "No"
       optional: Optional
       required: Required
+    tags:
+      archived: (Inactive)
+      hidden: (Hidden)
 
   admin_reservations:
     categories:
@@ -823,8 +825,7 @@ en:
       no_orders: There are no disputed orders for this !facility_downcase!
 
     show:
-      daily_view: 'daily view'
-      timed_services_note: "Please Note: Quantities below are individual orders, not minutes per order."
+      daily_view: 'Daily View'
 
     movable_transactions:
       head: "Move Transactions"
@@ -894,6 +895,8 @@ en:
       count: "%{count} Results Files"
       upload: Upload Results
       none: No results have been uploaded yet.
+      download_all: Download all as zip...
+      done: Done
     product_survey:
       intro: "You may provide an Online Order Form and/or an Order File Template.  If provided, the user must complete one before placing an order."
       order_form:
@@ -930,6 +933,7 @@ en:
       not_found: We cannot find %{email} in our records.
 
   reports:
+    export_as_csv: "!reports.account_transactions.export!"
     fields:
       between: between
       instrument_reports:
@@ -1007,10 +1011,20 @@ en:
         h2: "Search Users"
       label:
         search_term: "Search by name, NetID, or username"
-    accounts:
+
+  user_accounts:
+    show:
       h1: "%{user_name} Payment Sources"
-      link: "Add Payment Source"
       notice: "%{user_name} does not have any payment sources."
+      edit: Edit Payment Sources
+    edit:
+      h1: "%{user_name} Payment Sources"
+      remove: Remove?
+      update: Update Payment Sources
+      not_allowed: This account is owned by the user, so they cannot be removed from it.
+    update:
+      updated: Successfully updated %{user_name}’s payment sources.
+      could_not_update: Could not update %{user_name}’s payment sources. Please try again.
 
   user_preferences:
     index:
@@ -1068,6 +1082,10 @@ en:
           relay: "Power Relay Information"
           auto_logout_1: "Automatically power off the relay"
           auto_logout_2: "minutes after the reservation is scheduled to end"
+          ip_port: "IP Port"
+        instruct:
+          ip_port: "Leave blank unless your device is on a non-standard port"
+          outlet: "e.g. 1 or 2"
       reservation:
         instruct:
           reserve_interval: "The minutes of an hour on which a reservation is allowed to begin (e.g. if 5 reservations can be scheduled every 5 minutes)"

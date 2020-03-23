@@ -13,7 +13,8 @@ en:
     labels:
       relay:
         ip: "IP Address"
-        port: "Device Port"
+        ip_port: "IP Port"
+        outlet: "Device Outlet"
         username: "Username"
         password: "Password"
     hints:
@@ -25,7 +26,7 @@ en:
       instrument:
         schedule: You may share a schedule with other products. Choose an exisiting schedule or use an unshared schedule.
         control_mechanism: Time management options for the Instrument. 'Reservation' tracks reserved time only. Both 'Timer' settings track actual usage time.
-
+        problems_resolvable_by_user: Allow users to update their usage time if they forget to sign out
     # Labels and hints examples
     # labels:
     #   defaults:

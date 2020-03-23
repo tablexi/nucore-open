@@ -4,9 +4,9 @@ class NotifierPreview < ActionMailer::Preview
 
   def review_orders
     Notifier.review_orders(
-      account_ids: Account.limit(3).pluck(:id),
+      accounts: ::NUCore::Database.sample(Account, 3),
       facility: Facility.first,
-      user_id: User.first.id,
+      user: User.first,
     )
   end
 
@@ -23,6 +23,11 @@ class NotifierPreview < ActionMailer::Preview
   def new_user
     user = User.first
     Notifier.new_user(user: user, password: "password")
+  end
+
+  def order_detail_status_changed
+    order_detail = NUCore::Database.random(OrderDetail.complete)
+    Notifier.order_detail_status_changed(order_detail)
   end
 
 end

@@ -38,8 +38,6 @@ en:
         account_facility_joins_form:
           missing_current_facility: can't remove the current facility
 
-
-
   activerecord:
     errors:
       # The values :model, :attribute and :value are always available for interpolation
@@ -96,6 +94,11 @@ en:
           attributes:
             price_change_reason:
               blank: is required
+        product_display_group_product:
+          attributes:
+            product_id:
+              taken: "%{product} is already in a group"
+
         reservation:
           cannot_be_completed_in_future: You cannot complete a future reservation.
           duration_not_interval: "The duration of the reservation must be a multiple of %{reserve_interval}"
@@ -142,9 +145,6 @@ en:
         one: Payment Source
         other: Payment Sources
         owner: Owner
-        statuses:
-          active: Active
-          suspended: Suspended
       account_user:
         one: Account User
         other: Account Users
@@ -169,6 +169,9 @@ en:
       item:
         one: Item
         other: Items
+      journal:
+        one: Journal
+        other: Journals
       journal_cutoff_date:
         one: Journal Cutoff Date
         other: Journal Cutoff Dates
@@ -200,6 +203,15 @@ en:
       product_accessory:
         one: Accessory
         other: Accessories
+      product_display_group:
+        one: Product Group
+        other: Product Groups
+      research_safety_certificate:
+        one: Certificate
+        other: Certificates
+      product_research_safety_certification_requirement:
+        one: Certification Requirement
+        other: Certification Requirements
       service:
         one: Service
         other: Services
@@ -220,6 +232,8 @@ en:
         other: User Preferences
     # Model Attributes
     attributes:
+      account_user:
+        user_role: Role
       affiliate:
         subaffiliates_enabled: Allows subaffiliates
       schedule_rule:
@@ -235,6 +249,8 @@ en:
         current_password: Current password
         last_sign_in_at: Last Login
         full_name: Full Name
+        suspended_at: Suspended
+        suspension_note: Suspension Note
         suspended: SUSPENDED
         expired: EXPIRED
       facility:
@@ -254,18 +270,24 @@ en:
         url: URL
         url_name: URL Name
         requires_approval: Requires Approval?
+        allows_training_requests: Allows Training Requests?
         requires_approval_show: Requires Approval
         initial_order_status: Initial Order Status
         is_archived: Is Inactive?
         is_hidden: Is Hidden?
         facility_account: Recharge Chart String
         user_notes_field_mode: Users may submit a note when purchasing?
+        email_purchasers_on_order_status_changes: Email purchasers when the status of an order changes?
         user_notes_label: Label for Notes Field
         training_request_contacts: Training Request Recipients
         order_notification_recipient: Order Notification Recipient
         cancellation_email_recipients: Cancellation Notification Recipients
+        issue_report_recipients: Alternate Issue Report Recipients
       product_accessory:
         scaling_type: Scaling Type
+      product_display_group:
+        product_ids: Products
+        ungrouped_product_ids: Ungrouped
       instrument:
         min_reserve_mins: Minimum Reservation Minutes
         max_reserve_mins: Maximum Reservation Minutes
@@ -288,7 +310,7 @@ en:
       order:
         user: Ordered For
         created_by_user: Ordered By
-        ordered_at: Ordered Date
+        initial_ordered_at: Ordered Date
         account: Payment Source
       order_detail:
         account: Payment Source
@@ -317,9 +339,11 @@ en:
         ordered_by: Ordered By
         product: Product
         price_change_reason: Pricing Note
+        price_change_reason_option: Pricing Note
         quantity: Quantity
         reconciled_note: Reconciliation Note
         reconciled_at: Reconciliation Date
+        reference_id: Reference ID
         reviewed_at: Review Closes
         reviewed_at_past: Review Closed
         status: Status
@@ -366,6 +390,7 @@ en:
         canceled_at: Canceled At
         type: Type
         reserve_range: Reserved For
+        reference_id: Reference ID
       statement:
         id: "Invoice #"
         created_by: Sent By

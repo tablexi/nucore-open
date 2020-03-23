@@ -16,11 +16,6 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
 
   end
 
-  let(:idp_slo_path) do
-    doc = Nokogiri::XML(File.read(File.expand_path("../../fixtures/idp_metadata.xml", __dir__)))
-    doc.css("SingleLogoutService").first["Location"]
-  end
-
   describe "#create" do
     # based on a onelogin response
     let(:attribute_map) do
@@ -41,6 +36,15 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       allow(User).to receive(:attribute_map).and_return(attribute_map)
       # Our response fixure is old, so don't worry about it
       allow(Devise).to receive(:allowed_clock_drift_in_seconds).and_return(1000.years)
+    end
+
+    around :each do |example|
+      original_value = Devise.saml_update_resource_hook
+      Devise.saml_update_resource_hook = SamlAuthentication::UserUpdater.new
+
+      example.run
+
+      Devise.saml_update_resource_hook = original_value
     end
 
     describe "the user does not exist already" do
@@ -80,12 +84,12 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
 
       it "sets a user-friendly error message in the flash" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(flash[:alert]).to eq(I18n.t("devise.failure.saml_invalid"))
       end
 
       it "marks the message in :saml_invalid as html_safe to allow including links" do
-        post :create, SAMLResponse: saml_response
+        post :create, params: { SAMLResponse: saml_response }
         expect(flash[:alert].html_safe?).to be true
       end
     end
@@ -108,12 +112,12 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
 
       it "is case-insensitive when matching on username" do
         user.update(email: "something_else@example.com", username: "Sst123")
-        expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
+        expect { post :create, params: { SAMLResponse: saml_response } }.not_to change(User, :count)
       end
 
       it "is case-insensitive when matching on email" do
         user.update(username: "something_else", email: "Sst123@example.com")
-        expect { post :create, SAMLResponse: saml_response }.not_to change(User, :count)
+        expect { post :create, params: { SAMLResponse: saml_response } }.not_to change(User, :count)
       end
 
       it "logs in the user" do
@@ -139,15 +143,6 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
 
     describe "the user already exists" do
       let!(:user) { create(:user, username: "sst123", email: "something@old.com") }
-
-      around :each do |example|
-        original_value = Devise.saml_update_resource_hook
-        Devise.saml_update_resource_hook = SamlAuthentication::UserUpdater.new
-
-        example.run
-
-        Devise.saml_update_resource_hook = original_value
-      end
 
       it "does not create a new user" do
         expect { post :create, params: { SAMLResponse: saml_response } }.not_to change(User, :count)
@@ -189,7 +184,7 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
 
     it "redirects to the slo path" do
       delete :destroy
-      expect(response.location).to start_with(idp_slo_path)
+      expect(response.location).to start_with(Devise.saml_config.idp_slo_target_url)
     end
 
     it "includes the username in the logout request" do
@@ -212,7 +207,7 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       it "redirects to the homepage" do
         # captured from OneLogin requests
         encoded = SamlEncoder.encode File.read(File.expand_path("../../fixtures/sp_initiated_sign_out.xml", __dir__))
-        get :idp_sign_out, SAMLResponse: encoded
+        get :idp_sign_out, params: { SAMLResponse: encoded }
         expect(response).to redirect_to(root_path)
       end
     end
@@ -226,13 +221,13 @@ RSpec.describe SamlAuthentication::SessionsController, type: :controller do
       end
 
       it "logs the user out" do
-        get :idp_sign_out, SAMLRequest: payload
+        get :idp_sign_out, params: { SAMLRequest: payload }
         expect(controller.current_user).to be_blank
       end
 
       it "redirects back to the IdP" do
-        get :idp_sign_out, SAMLRequest: payload
-        expect(response.location).to start_with(idp_slo_path)
+        get :idp_sign_out, params: { SAMLRequest: payload }
+        expect(response.location).to start_with(Devise.saml_config.idp_slo_target_url)
       end
     end
   end

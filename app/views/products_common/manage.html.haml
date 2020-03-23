@@ -15,17 +15,19 @@
   = f.input :description, input_html: { class: "wysiwyg" }
 
   - unless @product.is_a?(Bundle)
-    - if SettingsHelper.feature_on? :recharge_accounts
-      = f.input :facility_account,
-        input_html: { value: @product.facility_account.account_number + (@product.facility_account.is_active? ? "" : " (inactive)") }
+    = f.input :facility_account,
+      input_html: { value: @product.facility_account.account_number + (@product.facility_account.is_active? ? "" : " (inactive)") }
 
     = f.input :initial_order_status
     = f.input :requires_approval
+    - if f.object.requires_approval?
+      = f.input :allows_training_requests
   = f.input :is_archived
   = f.input :is_hidden
   - unless @product.is_a?(Bundle)
     = f.input :user_notes_field_mode, value_method: :to_label
     = f.input :user_notes_label if f.object.user_notes_label? && f.object.user_notes_field_mode.visible?
+  = f.input :email_purchasers_on_order_status_changes
 
   = render_if_exists "#{@product.class.name.underscore}_manage_fields", f: f
 - if can? :edit, @product

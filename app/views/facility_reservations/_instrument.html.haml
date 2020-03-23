@@ -1,0 +1,18 @@
+.timeline_instrument[instrument]
+  %h4
+    = link_to instrument, facility_instrument_schedule_path(current_facility, instrument)
+    = warning_if_instrument_is_offline_or_partially_available(instrument)
+
+  .timeline
+    .unit_container
+      = render partial: "reservation",
+        collection: (@reservations_by_instrument.fetch(instrument, []) + instrument.blackout_reservations(@display_datetime)),
+        locals: { product: instrument }
+
+      - if @display_datetime.today?
+        .current_time{style: "left: #{datetime_left_position(@display_datetime, Time.current)}"}
+
+    - if @display_datetime.today? && instrument.has_real_relay?
+      .relay_checkbox
+        = check_box_tag "relay[#{instrument.id}]", 1, false, :disabled => true, :"data-relay-url" => facility_instrument_switch_path(instrument.facility, instrument)
+        .loading_box
