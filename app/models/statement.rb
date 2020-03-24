@@ -78,4 +78,8 @@ class Statement < ApplicationRecord
     statement_rows.where(order_detail_id: order_detail.id)
   end
 
+  def to_s
+    "Statement: #{invoice_number}"
+  end
+
 end
