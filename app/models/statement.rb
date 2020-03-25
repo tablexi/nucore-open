@@ -53,6 +53,11 @@ class Statement < ApplicationRecord
     find_by(id: id, account_id: account_id)
   end
 
+  def self.where_invoice_number(query)
+    return nil unless /\A(?<account_id>\d+)-(?<id>\d+)\z/ =~ query
+    where(id: id, account_id: account_id)
+  end
+
   def invoice_date
     created_at.to_date
   end

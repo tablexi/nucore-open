@@ -53,11 +53,12 @@ class LogEventSearcher
     accounts = Account.where(Account.arel_table[:account_number].lower.matches("%#{query.downcase}%"))
     users = UserFinder.search(query).unscope(:order)
     account_users = AccountUser.where(account_id: accounts).or(AccountUser.where(user_id: users))
-
+    statements = Statement.where_invoice_number(query)
     [
       accounts,
       users,
       account_users,
+      statements,
     ].map do |filter|
       LogEvent.where(loggable_type: filter.model.name, loggable_id: filter)
     end.inject(&:or)
