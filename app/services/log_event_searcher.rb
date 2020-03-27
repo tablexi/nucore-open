@@ -52,11 +52,14 @@ class LogEventSearcher
     accounts = Account.where(Account.arel_table[:account_number].lower.matches("%#{query.downcase}%"))
     users = UserFinder.search(query).unscope(:order)
     account_users = AccountUser.where(account_id: accounts).or(AccountUser.where(user_id: users))
+    facilities = Facility.name_query(query)
+    user_roles = UserRole.with_deleted.where(user_id: users).or(UserRole.with_deleted.where(facility_id: facilities))
 
     [
       accounts,
       users,
       account_users,
+      user_roles,
     ].map do |filter|
       LogEvent.where(loggable_type: filter.model.name, loggable_id: filter)
     end.inject(&:or)
