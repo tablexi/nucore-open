@@ -17,8 +17,8 @@ class StatementCreator
       set_order_details_to_statement
       setup_statement_from_details
       raise ActiveRecord::Rollback if errors.any?
+      LogEvent.log(@statement, :create, session_user)
     end
-    LogEvent.log(@statement, :create, session_user)
     errors.none?
   end
 
