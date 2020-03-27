@@ -23,4 +23,7 @@ en:
           create: User added
           suspended: User suspended
           unsuspended: User unsuspended
+        user_role:
+          create: Role added
+          delete: Role removed
         user_label: User
