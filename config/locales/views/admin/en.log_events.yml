@@ -10,6 +10,10 @@ en:
         account_user:
           create: Payment Source User added
           delete: Payment Source User removed
+        journal:
+          create: Journal created
+        statement:
+          create: Statement created
         end_date: End Date
         event_filter: Event
         event_placeholder: Filter on one or more events
