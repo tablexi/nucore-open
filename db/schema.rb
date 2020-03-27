@@ -801,6 +801,8 @@ ActiveRecord::Schema.define(version: 2020_03_27_163058) do
     t.integer "user_id", null: false
     t.integer "facility_id"
     t.string "role", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.index ["facility_id"], name: "fk_rails_dca27403dd"
     t.index ["user_id", "facility_id", "role"], name: "index_user_roles_on_user_id_and_facility_id_and_role"
