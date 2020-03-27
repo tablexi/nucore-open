@@ -59,7 +59,7 @@ class LogEventSearcher
       users,
       account_users,
       statements,
-    ].map do |filter|
+  ].compact.map do |filter|
       LogEvent.where(loggable_type: filter.model.name, loggable_id: filter)
     end.inject(&:or)
   end
