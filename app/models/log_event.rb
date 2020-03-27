@@ -27,7 +27,11 @@ class LogEvent < ApplicationRecord
     when AccountUser
       "#{loggable.account} / #{loggable.user}"
     else
-      loggable.to_s
+      if loggable.respond_to?(:to_log_s)
+        loggable.to_log_s
+      else
+        loggable.to_s
+      end
     end
   end
 
