@@ -168,7 +168,7 @@ class Journal < ApplicationRecord
     is_successful?
   end
 
-  def to_s
+  def to_log_s
     "Journal ##{id}"
   end
 
