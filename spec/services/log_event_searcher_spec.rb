@@ -137,4 +137,30 @@ RSpec.describe LogEventSearcher do
       expect(results).not_to include(log_event)
     end
   end
+
+  describe "finds user roles" do
+    let(:user) { create(:user, username: "myuser") }
+    let(:facility) { create(:facility, name: "My Facility") }
+
+    describe "facility role" do
+      let!(:user_role) { create(:user_role, :facility_staff, user: user, facility: facility) }
+      let!(:log_event) { create(:log_event, loggable: user_role, event_type: :create) }
+
+      it "finds by the user" do
+        results = described_class.new(query: "myuser").search
+        expect(results).to include(log_event)
+      end
+
+      it "finds the user even if the role was since deleted" do
+        user_role.destroy
+        results = described_class.new(query: "myuser").search
+        expect(results).to include(log_event)
+      end
+
+      it "finds by the facility" do
+        results = described_class.new(query: "my facility").search
+        expect(results).to include(log_event)
+      end
+    end
+  end
 end
