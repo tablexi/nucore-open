@@ -100,4 +100,13 @@ class UserRole < ApplicationRecord
     role.in? Array(roles).map(&:to_s).map(&:titleize)
   end
 
+  def to_log_s
+    [
+      user,
+      "-",
+      facility_id ? facility.abbreviation : "Global",
+      role,
+    ].join(" ")
+  end
+
 end
