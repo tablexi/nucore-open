@@ -84,6 +84,23 @@ RSpec.describe LogEventSearcher do
     end
   end
 
+  describe "finding statement" do
+    let(:account) { create(:account, :with_account_owner, account_number: "12345") }
+    let(:facility) { create(:setup_facility) }
+    let(:statement) { create(:statement, facility: facility, account: account)}
+    let!(:log_event) { create(:log_event, loggable: statement, event_type: :create) }
+
+    it "finds the statement" do
+      results = described_class.new(query: statement.invoice_number).search
+      expect(results).to include(log_event)
+    end
+
+    it "does not find it if it is not a match" do
+      results = described_class.new(query: "54321").search
+      expect(results).not_to include(log_event)
+    end
+  end
+
   describe "finds account user memberships" do
     let(:user) { create(:user, username: "myuser") }
     let(:account) { create(:account, :with_account_owner, account_number: "12345-12345") }

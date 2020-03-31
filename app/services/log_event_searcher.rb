@@ -5,7 +5,9 @@ class LogEventSearcher
   ALLOWED_EVENTS = ["account.create", "account.update",
                     "account_user.create", "account_user.delete",
                     "user.create", "user.suspended", "user.unsuspended",
-                     "account.suspended", "account.unsuspended"].freeze
+                    "account.suspended", "account.unsuspended", 
+                    "statement.create",
+                    ].freeze
 
   def self.beginning_of_time
     10.years.ago
@@ -52,12 +54,13 @@ class LogEventSearcher
     accounts = Account.where(Account.arel_table[:account_number].lower.matches("%#{query.downcase}%"))
     users = UserFinder.search(query).unscope(:order)
     account_users = AccountUser.where(account_id: accounts).or(AccountUser.where(user_id: users))
-
+    statements = Statement.where_invoice_number(query)
     [
       accounts,
       users,
       account_users,
-    ].map do |filter|
+      statements,
+  ].compact.map do |filter|
       LogEvent.where(loggable_type: filter.model.name, loggable_id: filter)
     end.inject(&:or)
   end
