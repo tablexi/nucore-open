@@ -84,6 +84,21 @@ RSpec.describe LogEventSearcher do
     end
   end
 
+  describe "finding journal" do
+    let(:journal) { create(:journal) }
+    let!(:log_event) { create(:log_event, loggable: journal, event_type: :create) }
+
+    it "finds the journal" do
+      results = described_class.new(query: journal.id.to_s).search
+      expect(results).to include(log_event)
+    end
+
+    it "does not find it if it is not a match" do
+      results = described_class.new(query: "54321").search
+      expect(results).not_to include(log_event)
+    end
+  end
+
   describe "finding statement" do
     let(:account) { create(:account, :with_account_owner, account_number: "12345") }
     let(:facility) { create(:setup_facility) }
