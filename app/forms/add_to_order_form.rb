@@ -147,7 +147,7 @@ class AddToOrderForm
     return @merge_order if defined?(@merge_order)
 
     products = product.is_a?(Bundle) ? product.products : [product]
-    @merge_order = if products.any?(&:mergeable?)
+    @merge_order = if products.any?(&:requires_merge?)
                      Order.create!(
                        merge_with_order_id: original_order.id,
                        facility_id: original_order.facility_id,

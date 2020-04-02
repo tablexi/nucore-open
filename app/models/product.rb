@@ -277,7 +277,7 @@ class Product < ApplicationRecord
     !hidden?
   end
 
-  def mergeable?
+  def requires_merge?
     false
   end
 

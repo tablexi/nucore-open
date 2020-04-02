@@ -64,7 +64,7 @@ class Instrument < Product
     days = price_group_products.collect(&:reservation_window).max.to_i
   end
 
-  def mergeable?
+  def requires_merge?
     true
   end
 
