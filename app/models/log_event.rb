@@ -3,7 +3,7 @@
 class LogEvent < ApplicationRecord
 
   belongs_to :user # This is whodunnit
-  belongs_to :loggable, polymorphic: true
+  belongs_to :loggable, -> { with_deleted if respond_to?(:with_deleted) }, polymorphic: true
 
   scope :reverse_chronological, -> { order(event_time: :desc) }
 
