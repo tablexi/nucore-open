@@ -6,7 +6,7 @@ class LogEventSearcher
                     "account_user.create", "account_user.delete",
                     "user.create", "user.suspended", "user.unsuspended",
                     "account.suspended", "account.unsuspended", 
-                    "statement.create",
+                    "statement.create", "order_detail.dispute",
                     ].freeze
 
   def self.beginning_of_time
