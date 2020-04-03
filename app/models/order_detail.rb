@@ -895,6 +895,10 @@ class OrderDetail < ApplicationRecord
     where(id: id, order_id: order_id)
   end
 
+  def to_log_s
+    "Order # #{order_id}-#{id}"
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
