@@ -46,6 +46,9 @@ class FacilityNotificationsController < ApplicationController
 
     if sender.perform
       flash[:notice] = send_notification_success_message(sender)
+      sender.order_details.each do |order_detail|
+        LogEvent.log(order_detail, :notify, current_user)
+      end
     else
       flash[:error] = I18n.t("controllers.facility_notifications.errors_html", errors: sender.errors.join("<br/>")).html_safe
     end

@@ -20,7 +20,6 @@ class NotificationSender
 
   def perform
     init_account_ids_to_notify
-    @orders_notified = []
     @errors = []
 
     OrderDetail.transaction do

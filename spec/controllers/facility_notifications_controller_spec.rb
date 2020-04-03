@@ -81,6 +81,14 @@ RSpec.describe FacilityNotificationsController do
           @params.merge!(order_detail_ids: [@order_detail1.id, @order_detail2.id, @order_detail3.id])
         end
 
+        it "logs every order detail" do
+          do_request
+          log_event1 = LogEvent.find_by(loggable: @order_detail1, event_type: :notify)
+          log_event2 = LogEvent.find_by(loggable: @order_detail2, event_type: :notify)
+          log_event3 = LogEvent.find_by(loggable: @order_detail3, event_type: :notify)
+          expect([log_event1, log_event2, log_event3]).to be_present
+        end
+
         it_should_allow_managers_only :redirect do
           expect(assigns(:errors)).to be_empty
           expect([@order_detail1, @order_detail2, @order_detail3]).to be_all { |od| od.reload.reviewed_at? }
