@@ -896,7 +896,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def to_log_s
-    "Order # #{order_id}-#{id}"
+    "Order ##{order_number}"
   end
 
   private

@@ -8,7 +8,7 @@ class LogEventSearcher
                     "account.suspended", "account.unsuspended",
                     "journal.create","statement.create",
                     "user_role.create", "user_role.delete",
-                    "order_detail.dispute", "order_detail.resolve"
+                    "order_detail.dispute", "order_detail.resolve",
                     ].freeze
 
   def self.beginning_of_time

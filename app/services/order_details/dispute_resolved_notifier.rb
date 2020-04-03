@@ -6,7 +6,7 @@ module OrderDetails
 
     attr_accessor :current_user
 
-    def initialize(order_detail, current_user='')
+    def initialize(order_detail, current_user: nil)
       @current_user = current_user
       super(order_detail)
     end

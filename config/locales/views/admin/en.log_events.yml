@@ -13,7 +13,7 @@ en:
         journal:
           create: Journal created
         statement:
-          create: Statement added
+          create: Statement created
         order_detail:
           dispute: Order disputed
           resolve: Order resolved
