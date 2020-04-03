@@ -90,6 +90,7 @@ class OrderDetails::ParamUpdater
       @order_detail.price_changed_by_user = nil
     elsif %w[actual_cost actual_subsidy price_change_reason].any? { |a| @order_detail.changed.include?(a) }
       @order_detail.price_changed_by_user = @editing_user
+      LogEvent.log(@order_detail, :price_change, @editing_user)
     end
   end
 

@@ -595,6 +595,8 @@ RSpec.describe OrderManagement::OrderDetailsController do
                   do_request
 
                   expect(order_detail.reload.price_changed_by_user).to eq @admin
+                  log_event = LogEvent.find_by(loggable: order_detail, event_type: :price_change)
+                  expect(log_event).to be_present
                 end
               end
 
