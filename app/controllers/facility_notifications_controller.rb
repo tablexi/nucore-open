@@ -43,10 +43,10 @@ class FacilityNotificationsController < ApplicationController
     end
 
     sender = NotificationSender.new(current_facility, params[:order_detail_ids])
+    order_details = OrderDetail.where_ids_in(params[:order_detail_ids])
 
     if sender.perform
       flash[:notice] = send_notification_success_message(sender)
-      order_details = OrderDetail.where(id: params[:order_detail_ids])
       order_details.each do |order_detail|
         LogEvent.log(order_detail, :notify, current_user)
       end
