@@ -8,6 +8,7 @@ class LogEventSearcher
                     "account.suspended", "account.unsuspended",
                     "journal.create","statement.create",
                     "user_role.create", "user_role.delete",
+                    "order_detail.dispute", "order_detail.resolve",
                     ].freeze
 
   def self.beginning_of_time
@@ -59,6 +60,7 @@ class LogEventSearcher
     statements = Statement.where_invoice_number(query)
     facilities = Facility.name_query(query)
     user_roles = UserRole.with_deleted.where(user_id: users).or(UserRole.with_deleted.where(facility_id: facilities))
+    order_details = OrderDetail.where_order_number(query)
 
     [
       accounts,
@@ -67,6 +69,7 @@ class LogEventSearcher
       journals,
       statements,
       user_roles,
+      order_details,
     ].compact.map do |filter|
       LogEvent.where(loggable_type: filter.model.name, loggable_id: filter)
     end.inject(&:or)
