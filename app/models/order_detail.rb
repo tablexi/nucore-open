@@ -890,7 +890,7 @@ class OrderDetail < ApplicationRecord
     end
   end
 
-  def self.where_order_number_and_id(query)
+  def self.where_order_number(query)
     return nil unless /\A(?<order_id>\d+)-(?<id>\d+)\z/ =~ query
     where(id: id, order_id: order_id)
   end
