@@ -205,6 +205,14 @@ RSpec.describe FacilityNotificationsController do
         expect(@order_detail3.reload.reviewed_at.to_i).to eq(Time.zone.now.to_i)
       end
 
+      it "logs the order when it gets review" do
+        @params[:order_detail_ids] = [@order_detail1.id, @order_detail3.id]
+        do_request
+        log_event = LogEvent.find_by(loggable: @order_detail1, event_type: :review)
+        log_event = LogEvent.find_by(loggable: @order_detail3, event_type: :review)
+        expect(log_event).to be_present
+      end
+
       it "displays an error for no orders" do
         do_request
         expect(flash[:error]).to include("No orders")

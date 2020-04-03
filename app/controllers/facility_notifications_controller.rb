@@ -83,6 +83,7 @@ class FacilityNotificationsController < ApplicationController
           od = OrderDetail.for_facility(current_facility).readonly(false).find(order_detail_id)
           od.reviewed_at = Time.zone.now
           od.save!
+          LogEvent.log(od, :review, current_user)
           @order_details_updated << od
         rescue => e
           logger.error(e.message)
