@@ -61,7 +61,9 @@ class NotificationSender
   end
 
   def mark_order_details_as_reviewed
-    order_details.update_all(reviewed_at: reviewed_at)
+    order_details.each do |order_detail|
+      order_detail.update(reviewed_at: reviewed_at)
+    end
   end
 
   def reviewed_at
