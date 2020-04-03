@@ -890,6 +890,11 @@ class OrderDetail < ApplicationRecord
     end
   end
 
+  def self.where_order_number_and_id(query)
+    return nil unless /\A(?<order_id>\d+)-(?<id>\d+)\z/ =~ query
+    where(id: id, order_id: order_id)
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
