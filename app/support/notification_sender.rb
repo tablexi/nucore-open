@@ -43,6 +43,13 @@ class NotificationSender
     Account.where_ids_in(account_ids_to_notify)
   end
 
+  def order_details
+    @order_details ||= OrderDetail.for_facility(current_facility)
+                                  .need_notification
+                                  .where_ids_in(@order_detail_ids)
+                                  .includes(:product, :order, :price_policy, :reservation)
+  end
+
   private
 
   def find_missing_order_details
@@ -55,13 +62,6 @@ class NotificationSender
 
   def mark_order_details_as_reviewed
     order_details.update_all(reviewed_at: reviewed_at)
-  end
-
-  def order_details
-    @order_details ||= OrderDetail.for_facility(current_facility)
-                                  .need_notification
-                                  .where_ids_in(@order_detail_ids)
-                                  .includes(:product, :order, :price_policy, :reservation)
   end
 
   def reviewed_at
