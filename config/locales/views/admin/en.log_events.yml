@@ -17,6 +17,7 @@ en:
         order_detail:
           dispute: Order disputed
           resolve: Order dispute resolved
+          notify: Billing notified
         end_date: End Date
         event_filter: Event
         event_placeholder: Filter on one or more events
