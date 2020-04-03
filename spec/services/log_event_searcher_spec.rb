@@ -163,4 +163,22 @@ RSpec.describe LogEventSearcher do
       end
     end
   end
+
+  describe "finding order details" do
+    let!(:user) { FactoryBot.create(:user) }
+    let(:order) { create(:order, created_by_user: user, user: user) }
+    let(:product) { create(:setup_item) }
+    let(:order_detail) { create(:order_detail, order: order, product: product) }
+    let!(:log_event) { create(:log_event, loggable: order_detail, event_type: :resolve) }
+    
+    it "finds the order detail" do
+      results = described_class.new(query: "#{order.id}-#{order_detail.id}").search
+      expect(results).to include(log_event)
+    end
+
+    it "does not find it if it is not a match" do
+      results = described_class.new(query: "54321").search
+      expect(results).not_to include(log_event)
+    end
+  end
 end
