@@ -79,7 +79,7 @@ class OrderDetails::ParamUpdater
   end
 
   def trigger_notifications
-    OrderDetails::DisputeResolvedNotifier.new(@order_detail, @editing_user).notify
+    OrderDetails::DisputeResolvedNotifier.new(@order_detail,current_user: @editing_user).notify
     OrderDetails::AssignmentNotifier.new(@order_detail).notify
   end
 
