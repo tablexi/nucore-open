@@ -62,15 +62,14 @@ class OrderDetails::ParamUpdater
     assign_attributes(params)
 
     @order_detail.manually_priced! # don't auto-reassign price
-    assign_price_changed_by_user
 
     @order_detail.transaction do
+      assign_price_changed_by_user
       @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation
       if order_status_id && order_status_id.to_i != @order_detail.order_status_id
         change_order_status(order_status_id, @options[:cancel_fee]) || raise(ActiveRecord::Rollback)
       else
         @order_detail.save_as_user(@editing_user) || raise(ActiveRecord::Rollback)
-        LogEvent.log(@order_detail, :price_change, @editing_user) unless @order_detail.price_changed_by_user == nil
       end
     end
     merge_reservation_errors if @order_detail.reservation.present?
@@ -91,6 +90,7 @@ class OrderDetails::ParamUpdater
       @order_detail.price_changed_by_user = nil
     elsif %w[actual_cost actual_subsidy price_change_reason].any? { |a| @order_detail.changed.include?(a) }
       @order_detail.price_changed_by_user = @editing_user
+      LogEvent.log(@order_detail, :price_change, @editing_user)
     end
   end
 
