@@ -90,6 +90,7 @@ group :development do
   gem "capistrano-bundler", require: false
   gem "capistrano-rails", require: false
   gem "capistrano-rvm", require: false
+  gem "capistrano-chruby", require: false
   gem "coffeelint"
   gem "ed25519", ">= 1.2", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "haml_lint", require: false
@@ -136,4 +137,5 @@ group :stage, :production do
   gem "rollbar"
   gem "unicorn", require: false
   gem "whenever", require: false
+  gem "rack-tracker"
 end
