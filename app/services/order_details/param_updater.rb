@@ -41,6 +41,11 @@ class OrderDetails::ParamUpdater
     params.delete(:quantity) unless params[:quantity].to_s =~ /\A\d+\z/
 
     assign_self_and_reservation_attributes(permitted_params(params))
+    # As of Rails 5.2.4, if nothing changes on the association (e.g. submitting the
+    # form with no changes on a reservation/occupancy missing end_at), the validations
+    # no longer run on the associations.
+    @order_detail.time_data.force_dirty!
+
     # this will overwrite the prices, so if we got cost/subsidy as parameters,
     # we need to use them instead
     assign_policy_and_prices
