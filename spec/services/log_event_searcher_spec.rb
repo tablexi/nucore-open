@@ -84,6 +84,38 @@ RSpec.describe LogEventSearcher do
     end
   end
 
+  describe "finding journal" do
+    let(:journal) { create(:journal) }
+    let!(:log_event) { create(:log_event, loggable: journal, event_type: :create) }
+
+    it "finds the journal" do
+      results = described_class.new(query: journal.id.to_s).search
+      expect(results).to include(log_event)
+    end
+
+    it "does not find it if it is not a match" do
+      results = described_class.new(query: "54321").search
+      expect(results).not_to include(log_event)
+    end
+  end
+
+  describe "finding statement" do
+    let(:account) { create(:account, :with_account_owner, account_number: "12345") }
+    let(:facility) { create(:setup_facility) }
+    let(:statement) { create(:statement, facility: facility, account: account)}
+    let!(:log_event) { create(:log_event, loggable: statement, event_type: :create) }
+
+    it "finds the statement" do
+      results = described_class.new(query: statement.invoice_number).search
+      expect(results).to include(log_event)
+    end
+
+    it "does not find it if it is not a match" do
+      results = described_class.new(query: "54321").search
+      expect(results).not_to include(log_event)
+    end
+  end
+
   describe "finds account user memberships" do
     let(:user) { create(:user, username: "myuser") }
     let(:account) { create(:account, :with_account_owner, account_number: "12345-12345") }
@@ -102,6 +134,50 @@ RSpec.describe LogEventSearcher do
 
     it "does not find it if no match" do
       results = described_class.new(query: "random").search
+      expect(results).not_to include(log_event)
+    end
+  end
+
+  describe "finds user roles" do
+    let(:user) { create(:user, username: "myuser") }
+    let(:facility) { create(:facility, name: "My Facility") }
+
+    describe "facility role" do
+      let!(:user_role) { create(:user_role, :facility_staff, user: user, facility: facility) }
+      let!(:log_event) { create(:log_event, loggable: user_role, event_type: :create) }
+
+      it "finds by the user" do
+        results = described_class.new(query: "myuser").search
+        expect(results).to include(log_event)
+      end
+
+      it "finds the user even if the role was since deleted" do
+        user_role.destroy
+        results = described_class.new(query: "myuser").search
+        expect(results).to include(log_event)
+      end
+
+      it "finds by the facility" do
+        results = described_class.new(query: "my facility").search
+        expect(results).to include(log_event)
+      end
+    end
+  end
+
+  describe "finding order details" do
+    let!(:user) { FactoryBot.create(:user) }
+    let(:order) { create(:order, created_by_user: user, user: user) }
+    let(:product) { create(:setup_item) }
+    let(:order_detail) { create(:order_detail, order: order, product: product) }
+    let!(:log_event) { create(:log_event, loggable: order_detail, event_type: :resolve) }
+    
+    it "finds the order detail" do
+      results = described_class.new(query: "#{order.id}-#{order_detail.id}").search
+      expect(results).to include(log_event)
+    end
+
+    it "does not find it if it is not a match" do
+      results = described_class.new(query: "54321").search
       expect(results).not_to include(log_event)
     end
   end

@@ -3,7 +3,7 @@
 class LogEvent < ApplicationRecord
 
   belongs_to :user # This is whodunnit
-  belongs_to :loggable, polymorphic: true
+  belongs_to :loggable, -> { with_deleted if respond_to?(:with_deleted) }, polymorphic: true
 
   scope :reverse_chronological, -> { order(event_time: :desc) }
 
@@ -23,9 +23,8 @@ class LogEvent < ApplicationRecord
   end
 
   def loggable_to_s
-    case loggable
-    when AccountUser
-      "#{loggable.account} / #{loggable.user}"
+    if loggable.respond_to?(:to_log_s)
+      loggable.to_log_s
     else
       loggable.to_s
     end

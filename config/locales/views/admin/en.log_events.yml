@@ -10,6 +10,16 @@ en:
         account_user:
           create: Payment Source User added
           delete: Payment Source User removed
+        journal:
+          create: Journal created
+        statement:
+          create: Statement created
+        order_detail:
+          dispute: Order disputed
+          resolve: Order dispute resolved
+          notify: Billing notified
+          review: Order reviewed
+          price_change: Order's price was manually change
         end_date: End Date
         event_filter: Event
         event_placeholder: Filter on one or more events
@@ -23,4 +33,7 @@ en:
           create: User added
           suspended: User suspended
           unsuspended: User unsuspended
+        user_role:
+          create: Role added
+          delete: Role removed
         user_label: User
