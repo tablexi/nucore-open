@@ -19,6 +19,7 @@ en:
           resolve: Order dispute resolved
           notify: Billing notified
           review: Order reviewed
+          problem_queue: Order added to problem queue %{cause}
         end_date: End Date
         event_filter: Event
         event_placeholder: Filter on one or more events
