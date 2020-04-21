@@ -171,6 +171,12 @@ class Reservation < ApplicationRecord
     force_completion || actual_end_at || reserve_end_at < Time.current
   end
 
+  def force_dirty!
+    # The actual attribute doesn't matter, we just need to make sure this object
+    # is marked as ActiveModel::Dirty when this method is called.
+    actual_start_at_will_change!
+  end
+
   def start_reservation!
     # If there are any reservations running over their time on the shared schedule,
     # kick them over to the problem queue.
