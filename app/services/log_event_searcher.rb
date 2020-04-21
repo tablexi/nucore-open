@@ -59,7 +59,7 @@ class LogEventSearcher
     users = UserFinder.search(query).unscope(:order)
     account_users = AccountUser.where(account_id: accounts).or(AccountUser.where(user_id: users))
     journals = Journal.where(id: query)
-    statements = Statement.where_invoice_number(query)
+    statements = Statement.where_invoice_number(query).unscope(:order)
     facilities = Facility.name_query(query)
     user_roles = UserRole.with_deleted.where(user_id: users).or(UserRole.with_deleted.where(facility_id: facilities))
     order_details = OrderDetail.where_order_number(query)
