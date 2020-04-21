@@ -53,7 +53,7 @@ class Statement < ApplicationRecord
   end
 
   def self.where_invoice_number(query)
-    return nil unless /\A(?<account_id>\d+)-(?<id>\d+)\z/ =~ query
+    return none unless /\A(?<account_id>\d+)-(?<id>\d+)\z/ =~ query
     where(id: id, account_id: account_id)
   end
 
