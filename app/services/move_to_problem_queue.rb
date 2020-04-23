@@ -2,11 +2,11 @@
 
 class MoveToProblemQueue
 
-  def self.move!(order_detail, force: false, user: nil, cause: nil)
+  def self.move!(order_detail, force: false, user: nil, cause:)
     new(order_detail, force: force, user: user, cause: cause).move!
   end
 
-  def initialize(order_detail, force: false, user: nil, cause: nil)
+  def initialize(order_detail, force: false, user: nil, cause:)
     @order_detail = order_detail
     @force = force
     @user = user
