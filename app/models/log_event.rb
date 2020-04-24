@@ -18,6 +18,7 @@ class LogEvent < ApplicationRecord
     LogEventSearcher.new(
       start_date: start_date, end_date: end_date, events: events, query: query).search
   end
+
 # The reason that we are doing this is because in some case we can't add a default value to a text column 
   def metadata
     self[:metadata] || {}
