@@ -184,7 +184,7 @@ class Reservation < ApplicationRecord
       # If we're in the grace period for this reservation, but the other reservation
       # has not finished its reserved time, this will fail and this reservation will
       # not start.
-      MoveToProblemQueue.move!(reservation.order_detail)
+      MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
     end
     update!(actual_start_at: Time.current)
   end

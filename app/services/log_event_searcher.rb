@@ -10,7 +10,7 @@ class LogEventSearcher
                     "user_role.create", "user_role.delete",
                     "order_detail.dispute", "order_detail.resolve",
                     "order_detail.notify", "order_detail.review",
-                    "order_detail.price_change",
+                    "order_detail.problem_queue", "order_detail.price_change",
                     ].freeze
 
   def self.beginning_of_time
