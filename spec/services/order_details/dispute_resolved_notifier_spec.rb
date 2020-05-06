@@ -10,7 +10,7 @@ RSpec.describe OrderDetails::DisputeResolvedNotifier do
   subject(:notifier) { described_class.new(order_detail) }
 
   def resolve_dispute_and_notify
-    order_detail.update!(dispute_resolved_at: Time.current, dispute_resolved_reason: "resolved")
+    order_detail.update!(dispute_resolved_at: Time.current, dispute_resolved_reason: "resolved", resolve_dispute: "1")
     notifier.notify
   end
 
