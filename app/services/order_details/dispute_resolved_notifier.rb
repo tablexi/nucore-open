@@ -12,7 +12,7 @@ module OrderDetails
     end
 
     def notify
-      if __getobj__.resolve_dispute?
+      if resolve_dispute?
         users_to_notify.each do |user|
           OrderDetailDisputeMailer.dispute_resolved(order_detail: __getobj__, user: user).deliver_later
         end
