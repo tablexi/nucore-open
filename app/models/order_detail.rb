@@ -899,6 +899,10 @@ class OrderDetail < ApplicationRecord
     "Order ##{order_number}"
   end
 
+  def resolve_dispute?
+    ActiveModel::Type::Boolean.new.cast(resolve_dispute)
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?
@@ -946,7 +950,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def mark_dispute_resolved
-    if resolve_dispute == true || resolve_dispute == "1"
+    if resolve_dispute?
       self.dispute_resolved_at = Time.zone.now
       self.reviewed_at         = Time.zone.now
     else
