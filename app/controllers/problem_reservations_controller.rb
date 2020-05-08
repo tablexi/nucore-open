@@ -22,6 +22,7 @@ class ProblemReservationsController < ApplicationController
       else
         redirect_to reservations_status_path(status: "all"), notice: text("update.success")
       end
+      LogEvent.log(@order_detail, :resolve_from_problem_queue, current_user)
     else
       render :edit
     end

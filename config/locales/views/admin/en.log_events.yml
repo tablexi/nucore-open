@@ -21,6 +21,7 @@ en:
           review: Order reviewed
           problem_queue: Order added to problem queue %{cause}
           price_change: Order's price was manually change
+          resolve_from_problem_queue: Order remove from problem queue
         end_date: End Date
         event_filter: Event
         event_placeholder: Filter on one or more events
