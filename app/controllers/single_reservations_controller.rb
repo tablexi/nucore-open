@@ -25,13 +25,14 @@ class SingleReservationsController < ApplicationController
 
   def create
     creator = ReservationCreator.new(@order, @order_detail, params)
-    @reservation = creator.reservation
-    authorize! :create, @reservation
     if creator.save(session_user)
+      @reservation = creator.reservation
+      authorize! :create, @reservation
       flash[:notice] = I18n.t "controllers.reservations.create.success"
       flash[:error] = I18n.t("controllers.reservations.create.admin_hold_warning") if creator.reservation.conflicting_admin_reservation?
       redirect_to purchase_order_path(@order, params.permit(:send_notification))
     else
+      @reservation = creator.reservation
       flash.now[:error] = creator.error.html_safe
       set_windows
       render "reservations/new"
@@ -45,10 +46,11 @@ class SingleReservationsController < ApplicationController
   end
 
   def build_order
-    @order = Order.new(user: current_user,
-                       facility: current_facility,
-                       created_by: session_user.id,
-                       )
+    @order = Order.new(
+      user: acting_user,
+      facility: current_facility,
+      created_by: session_user.id,
+    )
     @order_detail = @order.order_details.build(
       product: @instrument,
       quantity: 1,
