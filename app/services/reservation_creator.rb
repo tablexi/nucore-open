@@ -25,10 +25,12 @@ class ReservationCreator
         # merge state can change after call to #save! due to OrderDetailObserver#before_save
         to_be_merged = @order_detail.order.to_be_merged?
 
-        save_reservation_and_order_detail(session_user)
+        raise ActiveRecord::RecordInvalid, @order_detail unless reservation_and_order_valid?(session_user)
 
         validator = OrderPurchaseValidator.new(@order_detail)
         raise ActiveRecord::RecordInvalid, @order_detail if validator.invalid?
+
+        save_reservation_and_order_detail(session_user)
 
         if to_be_merged
           # The purchase_order_path or cart_path will handle the backdating, but we need
@@ -70,16 +72,18 @@ class ReservationCreator
   def update_order_account
     if params[:order_account].present?
       account = Account.find(params[:order_account].to_i)
-      if account != @order.account
-        @order.invalidate
-        @order.update_attributes!(account: account)
-      end
+      @order.invalidate if @order.account.present? && account != @order.account
+      @order.account = account
     end
   end
 
   def backdate_reservation_if_necessary(session_user)
     facility_ability = Ability.new(session_user, @order.facility, self)
     @order_detail.backdate_to_complete!(@reservation.reserve_end_at) if facility_ability.can?(:order_in_past, @order) && @reservation.reserve_end_at < Time.zone.now
+  end
+
+  def reservation_and_order_valid?(session_user)
+    reservation.valid_as_user?(session_user) && order_detail.valid_as_user?(session_user)
   end
 
   def save_reservation_and_order_detail(session_user)

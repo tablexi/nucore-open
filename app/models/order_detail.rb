@@ -434,6 +434,11 @@ class OrderDetail < ApplicationRecord
     change_status! product.initial_order_status
   end
 
+  def valid_as_user?(user)
+    @being_purchased_by_admin = user.operator_of?(product.facility)
+    valid?
+  end
+
   def save_as_user(user)
     @being_purchased_by_admin = user.operator_of?(product.facility)
     save
