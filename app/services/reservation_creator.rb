@@ -70,10 +70,16 @@ class ReservationCreator
   end
 
   def update_order_account
-    if params[:order_account].present?
-      account = Account.find(params[:order_account].to_i)
-      @order.invalidate if @order.account.present? && account != @order.account
+    return if params[:order_account].blank?
+
+    account = Account.find(params[:order_account].to_i)
+    # If the account has changed, we need to re-do validations on the order. We're
+    # only saving the changes if the reservation is part of a cart. Otherwise, we
+    # just modify the object in-memory for redisplay.
+    if account != @order.account
+      @order.invalidate if @order.persisted?
       @order.account = account
+      @order.save! if @order.persisted?
     end
   end
 

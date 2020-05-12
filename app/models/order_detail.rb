@@ -44,7 +44,7 @@ class OrderDetail < ApplicationRecord
 
   after_save :update_billable_minutes_on_reservation, if: :reservation
 
-  belongs_to :product, required: true
+  belongs_to :product
   belongs_to :price_policy
   belongs_to :statement, inverse_of: :order_details
   belongs_to :journal
@@ -72,7 +72,7 @@ class OrderDetail < ApplicationRecord
   # allow access to the vestal data.
   # once that data is no longer needed, this line and the
   # associated class can be removed
-  has_many   :vestal_versions, as: :versioned
+  has_many :vestal_versions, as: :versioned
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :in_cart?, :facility, :user, to: :order
@@ -100,7 +100,7 @@ class OrderDetail < ApplicationRecord
     journal_date || statement_date
   end
 
-  validates_presence_of :created_by
+  validates_presence_of :product_id, :created_by
   validates_numericality_of :quantity, only_integer: true, greater_than_or_equal_to: 1
   validates_numericality_of :actual_cost, greater_than_or_equal_to: 0, if: ->(o) { o.actual_cost_changed? && !o.actual_cost.nil? }
   validates_numericality_of :actual_subsidy, greater_than_or_equal_to: 0, if: ->(o) { o.actual_subsidy_changed? && !o.actual_cost.nil? }
