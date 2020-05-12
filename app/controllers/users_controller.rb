@@ -120,6 +120,8 @@ class UsersController < ApplicationController
   def update
     @user_form = user_form_class.new(@user)
     if @user_form.update_attributes(edit_user_params) && @user.update_price_group(price_group_params)
+      
+      binding.pry
       flash[:notice] = text("update.success")
       redirect_to facility_user_path(current_facility, @user)
     else

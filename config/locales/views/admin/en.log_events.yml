@@ -2,6 +2,9 @@ en:
   views:
     log_events:
       index:
+        dropdown_titles:
+          order_detail:
+            problem_queue: Order added to problem queue
         account:
           create: Payment Source created
           update: Payment Source updated
