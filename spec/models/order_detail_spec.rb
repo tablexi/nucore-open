@@ -206,11 +206,11 @@ RSpec.describe OrderDetail do
   end
 
   it "should have a product" do
-    is_expected.not_to allow_value(nil).for(:product_id)
+    is_expected.not_to allow_value(nil).for(:product)
   end
 
   it "should have an order" do
-    is_expected.not_to allow_value(nil).for(:order_id)
+    is_expected.not_to allow_value(nil).for(:order)
   end
 
   it "should have a quantity of at least 1" do
