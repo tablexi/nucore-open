@@ -79,9 +79,19 @@ RSpec.describe UsersController do
     end
 
     it_should_allow(:admin, "to log the change of the internal flag and log the new rate as metadata") do
-      log_event = LogEvent.find_by(loggable: user, event_type: :internal_changed)
+      log_event = LogEvent.find_by(loggable: user, event_type: :default_price_group_changed)
       expect(log_event).to be_present
-      expect(log_event.metadata).to eq("price_group_rate"=>"Northwestern Base Rate")
+      expect(log_event.metadata).to eq("price_group_rate" => "Northwestern Base Rate")
+    end
+
+    context "the price group does not change" do
+      before(:each) do
+        @params[:user][:internal] = false
+      end
+      it_should_allow(:admin, "to update the user information and it shouldn't log the unchaged price group") do
+        log_event = LogEvent.find_by(loggable: user, event_type: :default_price_group_changed)
+        expect(log_event).not_to be_present
+      end
     end
 
   end

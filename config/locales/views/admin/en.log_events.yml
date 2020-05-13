@@ -6,7 +6,7 @@ en:
           order_detail:
             problem_queue: Order added to problem queue
           user:
-            internal_changed: User price group changed
+            default_price_group_changed: User price group changed
         account:
           create: Payment Source created
           update: Payment Source updated
@@ -40,7 +40,7 @@ en:
           create: User added
           suspended: User suspended
           unsuspended: User unsuspended
-          internal_changed: User price group changed to %{price_group_rate}
+          default_price_group_changed: User price group changed to %{price_group_rate}
         user_role:
           create: Role added
           delete: Role removed
