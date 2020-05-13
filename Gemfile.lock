@@ -128,7 +128,7 @@ GEM
       uniform_notifier (~> 1.11)
     byebug (11.1.1)
     cancancan (2.3.0)
-    capistrano (3.13.0)
+    capistrano (3.14.0)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -394,9 +394,9 @@ GEM
       jquery-rails
       rails (>= 3.2.0)
     net-ldap (0.16.1)
-    net-scp (2.0.0)
-      net-ssh (>= 2.6.5, < 6.0.0)
-    net-ssh (5.2.0)
+    net-scp (3.0.0)
+      net-ssh (>= 2.6.5, < 7.0.0)
+    net-ssh (6.0.2)
     nio4r (2.5.2)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
