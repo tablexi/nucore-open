@@ -67,7 +67,7 @@ RSpec.describe UsersController do
       @method = :put
       @action = :update
       @params[:id] = user.id
-      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "user234" }
+      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "user234", internal: true }
     end
 
     it_should_allow_admin_only(:found) do
@@ -77,6 +77,13 @@ RSpec.describe UsersController do
       expect(user.username).to eq("user234")
       expect(response).to redirect_to facility_user_path(facility, user)
     end
+
+    it_should_allow(:admin, "to log the change of the internal flag and log the new rate as metadata") do
+      log_event = LogEvent.find_by(loggable: user, event_type: :internal_changed)
+      expect(log_event).to be_present
+      expect(log_event.metadata).to eq("price_group_rate"=>"Northwestern Base Rate")
+    end
+
   end
 
   describe "GET #access_list" do
