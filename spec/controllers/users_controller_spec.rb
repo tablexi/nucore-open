@@ -67,7 +67,7 @@ RSpec.describe UsersController do
       @method = :put
       @action = :update
       @params[:id] = user.id
-      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "user234", internal: true }
+      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "user234"}
     end
 
     it_should_allow_admin_only(:found) do
@@ -78,17 +78,22 @@ RSpec.describe UsersController do
       expect(response).to redirect_to facility_user_path(facility, user)
     end
 
-    it_should_allow(:admin, "to log the change of the internal flag and log the new rate as metadata") do
-      log_event = LogEvent.find_by(loggable: user, event_type: :default_price_group_changed)
-      expect(log_event).to be_present
-      expect(log_event.metadata).to eq("price_group_rate" => "Northwestern Base Rate")
+    context "the price group changes", feature_setting: { user_based_price_groups: true } do
+      before(:each) do
+        @params[:user][:internal] = true
+      end
+      it_should_allow(:admin, "to update the user information and it should log the user") do
+        log_event = LogEvent.find_by(loggable: user, event_type: :default_price_group_changed)
+        expect(log_event).to be_present
+        expect(log_event.metadata).to eq("price_group_rate" => "Northwestern Base Rate")
+      end
     end
 
-    context "the price group does not change" do
+    context "the price group does not change", feature_setting: { user_based_price_groups: true } do
       before(:each) do
         @params[:user][:internal] = false
       end
-      it_should_allow(:admin, "to update the user information and it shouldn't log the unchaged price group") do
+      it_should_allow(:admin, "to update the user information and it shouldn't log the user") do
         log_event = LogEvent.find_by(loggable: user, event_type: :default_price_group_changed)
         expect(log_event).not_to be_present
       end
