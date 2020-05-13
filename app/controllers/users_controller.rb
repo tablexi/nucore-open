@@ -118,12 +118,12 @@ class UsersController < ApplicationController
 
   # PUT /facilities/:facility_id/users/:id
   def update
+    previous = @user.price_groups.to_a
     @user_form = user_form_class.new(@user)
     if @user_form.update_attributes(edit_user_params) && @user.update_price_group(price_group_params)
-      
-      binding.pry
       flash[:notice] = text("update.success")
       redirect_to facility_user_path(current_facility, @user)
+      LogEvent.log(@user, :internal_changed, current_user) if previous != @user.price_groups.reload.to_a
     else
       flash[:error] = text("update.error", message: @user_form.errors.full_messages.to_sentence)
       render action: "edit"

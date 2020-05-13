@@ -38,6 +38,7 @@ en:
           create: User added
           suspended: User suspended
           unsuspended: User unsuspended
+          internal_changed: User internal flag changed
         user_role:
           create: Role added
           delete: Role removed
