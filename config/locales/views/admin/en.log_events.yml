@@ -5,6 +5,7 @@ en:
         dropdown_titles:
           order_detail:
             problem_queue: Order added to problem queue
+            internal_changed: User price group changed
         account:
           create: Payment Source created
           update: Payment Source updated
@@ -38,7 +39,7 @@ en:
           create: User added
           suspended: User suspended
           unsuspended: User unsuspended
-          internal_changed: User internal flag changed
+          internal_changed: User price group changed to %{price_group_rate}
         user_role:
           create: Role added
           delete: Role removed

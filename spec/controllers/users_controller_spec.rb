@@ -68,6 +68,7 @@ RSpec.describe UsersController do
       @action = :update
       @params[:id] = user.id
       @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "user234" }
+      @params[:price_group] = {internal: true}
     end
 
     it_should_allow_admin_only(:found) do
@@ -76,6 +77,9 @@ RSpec.describe UsersController do
       expect(user.email).to eq("newemail@example.com")
       expect(user.username).to eq("user234")
       expect(response).to redirect_to facility_user_path(facility, user)
+      # log_event = LogEvent.find_by(loggable: user, event_type: :internal_changed)
+      # binding.pry
+      # expect(log_event).to be_present
     end
   end
 
