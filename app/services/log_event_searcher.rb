@@ -12,6 +12,7 @@ class LogEventSearcher
                     "order_detail.notify", "order_detail.review",
                     "order_detail.problem_queue", "order_detail.price_change",
                     "order_detail.resolve_from_problem_queue",
+                    "price_group.price_group_created",
                     ].freeze
 
   def self.beginning_of_time

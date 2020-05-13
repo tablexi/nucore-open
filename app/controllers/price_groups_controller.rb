@@ -73,6 +73,7 @@ class PriceGroupsController < ApplicationController
     if @price_group.save
       flash[:notice] = I18n.t("controllers.price_groups.create.notice")
       redirect_to [current_facility, @price_group]
+      LogEvent.log(@price_group, :price_group_created, current_user)
     else
       render action: "new"
     end
