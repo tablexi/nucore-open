@@ -67,7 +67,7 @@ RSpec.describe UsersController do
       @method = :put
       @action = :update
       @params[:id] = user.id
-      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "user234"}
+      @params[:user] = { first_name: "New", last_name: "Name", email: "newemail@example.com", username: "user234" }
     end
 
     it_should_allow_admin_only(:found) do
