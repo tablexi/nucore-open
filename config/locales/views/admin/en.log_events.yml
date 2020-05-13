@@ -5,6 +5,7 @@ en:
         dropdown_titles:
           order_detail:
             problem_queue: Order added to problem queue
+          user:
             internal_changed: User price group changed
         account:
           create: Payment Source created
