@@ -155,13 +155,13 @@ NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following fr
     ```
     rake spec
     ```
-    
+
 * To run just the model tests
 
     ```
     rake spec:models
     ```
-    
+
 * To run just the controller tests
     ```
     rake spec:controllers
@@ -182,19 +182,19 @@ You can run specs in parallel during local development using the [`parallel_test
     ```
     rake parallel:create
     ```
-  
+
   OR
-  
+
     ```
     rake parallel:load_schema
     ```
 
 * Copy development schema (repeat after migrations):
-	
+
 	```
     rake parallel:prepare
 	```
-	
+
 * Run tests:
 
     ```
@@ -248,4 +248,4 @@ There are valuable resources in the NUcore's doc directory.
 
 * Need to asynchronously monitor some aspect of NUcore? [**See HOWTO_daemons.txt**](doc/HOWTO_daemons.txt)
 
-* Want to integrate with Form.io? [**See form.io_tips_and_tricks**](vendor/engines/form.io_tips_and_tricks.docx)
+* Want to integrate with Form.io? [**See form.io_tips_and_tricks**](doc/form.io_tips_and_tricks.docx)
