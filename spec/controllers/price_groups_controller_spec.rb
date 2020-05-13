@@ -16,14 +16,8 @@ RSpec.describe PriceGroupsController do
   end
 
   describe "POST #create" do
-  def do_request
-    post :create, params: {
-      facility_id: facility.url_name,
-      name: "Base Rate",
-    }
-  end
+  let(:price_group) { create(:price_group, facility: facility) }
     it "log" do
-      do_request
       binding.pry
       
     end
