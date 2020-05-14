@@ -5,6 +5,7 @@ class LogEventSearcher
   ALLOWED_EVENTS = ["account.create", "account.update",
                     "account_user.create", "account_user.delete",
                     "user.create", "user.suspended", "user.unsuspended",
+                    "user.default_price_group_changed",
                     "account.suspended", "account.unsuspended",
                     "journal.create","statement.create",
                     "user_role.create", "user_role.delete",
