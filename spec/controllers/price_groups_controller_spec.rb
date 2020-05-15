@@ -16,10 +16,10 @@ RSpec.describe PriceGroupsController do
   end
 
   describe "POST #create" do
-  let(:price_group) { create(:price_group, facility: facility) }
-    it "log" do
-      binding.pry
-      
+    before(:each) do
+      @method = :put
+      @action = :create
+      @params.merge!(price_group: attributes_for(:price_group, facility_id: facility.id))
     end
   end
 
@@ -187,6 +187,8 @@ RSpec.describe PriceGroupsController do
           expect(assigns(:price_group)).to be_kind_of(PriceGroup).and eq(price_group)
           should_be_destroyed price_group
           is_expected.to redirect_to(facility_price_groups_url)
+          log_event = LogEvent.find_by(loggable: price_group, event_type: :delete)
+          expect(log_event).to be_present
         end
       end
 
