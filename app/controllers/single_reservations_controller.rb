@@ -8,14 +8,11 @@ class SingleReservationsController < ApplicationController
   before_action { @submit_action = facility_instrument_single_reservations_path }
 
   def new
-    options = current_user.can_override_restrictions?(@instrument) ? {} : { user: acting_user }
-    next_available = @instrument.next_available_reservation(after: 1.minute.from_now, duration: default_reservation_mins.minutes, options: options)
-    @reservation = next_available || default_reservation
+    @reservation = NextAvailableReservationFinder.new(@instrument).next_available_for(current_user, acting_user)
     @reservation.order_detail = @order_detail
 
     authorize! :new, @reservation
 
-    @reservation.round_reservation_times
     unless @instrument.can_be_used_by?(acting_user)
       flash[:notice] = text(".acting_as_not_on_approval_list")
     end
@@ -58,27 +55,8 @@ class SingleReservationsController < ApplicationController
     )
   end
 
-  def default_reservation
-    Reservation.new(instrument: @instrument,
-                    reserve_start_at: Time.zone.now,
-                    reserve_end_at: default_reservation_mins.minutes.from_now)
-  end
-
-  def default_reservation_mins
-    @instrument.min_reserve_mins.to_i > 0 ? @instrument.min_reserve_mins : 30
-  end
-
   def set_windows
-    @max_window = max_reservation_window
-    @max_days_ago = session_user.operator_of?(@facility) ? -365 : 0
-    # initialize calendar time constraints
-    @min_date     = (Time.zone.now + @max_days_ago.days).strftime("%Y%m%d")
-    @max_date     = (Time.zone.now + @max_window.days).strftime("%Y%m%d")
-  end
-
-  def max_reservation_window
-    return 365 if session_user.operator_of?(current_facility)
-    @reservation.longest_reservation_window(current_user.price_groups)
+    @reservation_window = ReservationWindow.new(@reservation, current_user)
   end
 
 end
