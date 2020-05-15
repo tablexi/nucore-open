@@ -406,7 +406,7 @@ RSpec.describe ReservationsController do
     end
 
     it_should_allow_all facility_operators, "should redirect" do
-      assert_redirected_to purchase_order_path(@order)
+      assert_redirected_to cart_path
     end
 
     it_should_allow_all facility_operators, "and not have errors" do
@@ -464,29 +464,10 @@ RSpec.describe ReservationsController do
       expect(assigns[:order_detail].estimated_cost).not_to be_nil
       expect(assigns[:order_detail].estimated_subsidy).not_to be_nil
       is_expected.to set_flash
-      assert_redirected_to purchase_order_path(@order)
+      assert_redirected_to cart_path
     end
 
     it_behaves_like "it can handle having its order_detail removed"
-
-    context "notifications when acting as" do
-      before :each do
-        sign_in @admin
-        switch_to @guest
-      end
-
-      it "should set the option for sending notifications" do
-        @params[:send_notification] = "1"
-        do_request
-        expect(response).to redirect_to purchase_order_path(@order, send_notification: "1")
-      end
-
-      it "should set the option for not sending notifications" do
-        @params[:send_notification] = "0"
-        do_request
-        expect(response).to redirect_to purchase_order_path(@order)
-      end
-    end
 
     context "merge order" do
       before :each do
@@ -560,7 +541,7 @@ RSpec.describe ReservationsController do
       end
 
       it_should_allow_all facility_operators, "to create a reservation beyond the default reservation window" do
-        assert_redirected_to purchase_order_path(@order)
+        assert_redirected_to cart_path
       end
 
       it_should_allow_all [:guest], "to receive an error that they are trying to reserve outside of the window" do

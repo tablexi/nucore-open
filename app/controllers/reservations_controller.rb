@@ -95,6 +95,24 @@ class ReservationsController < ApplicationController
     flash.now[:notice] = existing_notices.concat(notices).join("<br />").html_safe unless notices.empty?
   end
 
+  # GET /orders/:order_id/order_details/:order_detail_id/reservations/new
+  #
+  # This flow is only for reservations which go through a cart (bundled, order form,
+  # merge orders). Normal purchase goes through ReservationPurchasingController
+  def new
+    raise ActiveRecord::RecordNotFound unless @reservation.nil?
+
+    @reservation = NextAvailableReservationFinder.new(@instrument).next_available_for(current_user, acting_user)
+    @reservation.order_detail = @order_detail
+
+    authorize! :new, @reservation
+
+    unless @instrument.can_be_used_by?(@order_detail.user)
+      flash[:notice] = text(".acting_as_not_on_approval_list")
+    end
+    set_windows
+  end
+
   # POST /orders/:order_id/order_details/:order_detail_id/reservations
   def create
     raise ActiveRecord::RecordNotFound unless @reservation.nil?
@@ -108,12 +126,6 @@ class ReservationsController < ApplicationController
 
       if creator.merged_order?
         redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
-      elsif creator.instrument_only_order?
-        redirect_params = {}
-        redirect_params[:send_notification] = "1" if params[:send_notification] == "1"
-        # only trigger purchase if instrument
-        # and is only thing in cart (isn't bundled or on a multi-add order)
-        redirect_to purchase_order_path(@order, redirect_params)
       else
         redirect_to cart_path
       end
@@ -123,21 +135,6 @@ class ReservationsController < ApplicationController
       set_windows
       render :new
     end
-  end
-
-  # GET /orders/:order_id/order_details/:order_detail_id/reservations/new
-  def new
-    raise ActiveRecord::RecordNotFound unless @reservation.nil?
-
-    @reservation = NextAvailableReservationFinder.new(@instrument).next_available_for(current_user, acting_user)
-    @reservation.order_detail = @order_detail
-
-    authorize! :new, @reservation
-
-    unless @instrument.can_be_used_by?(@order_detail.user)
-      flash[:notice] = text(".acting_as_not_on_approval_list")
-    end
-    set_windows
   end
 
   # GET /orders/:order_id/order_details/:order_detail_id/reservations/:id(.:format)

@@ -7,6 +7,11 @@ class SingleReservationsController < ApplicationController
   before_action :build_order
   before_action { @submit_action = facility_instrument_single_reservations_path }
 
+  # GET /facilities/:facility_slug/instruments/:instument/slug/single_reservations/new
+  #
+  # This code is very, very similar to ReservationsController#new. However, the
+  # before_actions are different. We decided that was ok since this is mostly controller-level code left
+  # and it feels like it would be more confusing to try to share the code.
   def new
     @reservation = NextAvailableReservationFinder.new(@instrument).next_available_for(current_user, acting_user)
     @reservation.order_detail = @order_detail
@@ -20,6 +25,7 @@ class SingleReservationsController < ApplicationController
     render "reservations/new"
   end
 
+  # GET /facilities/:facility_slug/instruments/:instument/slug/single_reservations
   def create
     creator = ReservationCreator.new(@order, @order_detail, params)
     if creator.save(session_user)
@@ -27,6 +33,7 @@ class SingleReservationsController < ApplicationController
       authorize! :create, @reservation
       flash[:notice] = I18n.t "controllers.reservations.create.success"
       flash[:error] = I18n.t("controllers.reservations.create.admin_hold_warning") if creator.reservation.conflicting_admin_reservation?
+
       redirect_to purchase_order_path(@order, params.permit(:send_notification))
     else
       @reservation = creator.reservation
