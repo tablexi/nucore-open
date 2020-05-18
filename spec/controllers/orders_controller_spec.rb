@@ -798,52 +798,6 @@ RSpec.describe OrdersController do
 
     end
 
-    context "instrument" do
-      before :each do
-        @order.clear_cart?
-        @instrument = FactoryBot.create(:instrument,
-                                        facility: @authable,
-                                        min_reserve_mins: 60,
-                                        max_reserve_mins: 60)
-        @params[:id] = @order.id
-        @params[:order][:order_details].first[:product_id] = @instrument.id
-      end
-
-      it_should_allow :staff, "with empty cart (will use same order)" do
-        expect(assigns(:order).id).to eq(@order.id)
-        expect(flash[:error]).to be_nil
-
-        assert_redirected_to new_order_order_detail_reservation_path(@order.id, @order.reload.order_details.first.id)
-      end
-
-      context "quantity = 2" do
-        before :each do
-          @params[:order][:order_details].first[:quantity] = 2
-        end
-
-        it_should_allow :staff, "with empty cart (will use same order) redirect to choose account" do
-          expect(assigns(:order).id).to eq(@order.id)
-          expect(flash[:error]).to be_nil
-
-          assert_redirected_to choose_account_order_url(@order)
-        end
-
-      end
-
-      context "with non-empty cart" do
-        before :each do
-          @order.add(@item, 1)
-        end
-
-        it_should_allow :staff, "with non-empty cart (will create new order)" do
-          expect(assigns(:order)).not_to eq(@order)
-          expect(flash[:error]).to be_nil
-
-          assert_redirected_to new_order_order_detail_reservation_path(assigns(:order), assigns(:order).order_details.first)
-        end
-      end
-    end
-
     context "add is called and cart doesn't have an account" do
       before :each do
         @order.account = nil

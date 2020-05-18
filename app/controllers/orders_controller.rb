@@ -73,24 +73,6 @@ class OrdersController < ApplicationController
       redirect_to(order_path(@order)) && return
     end
 
-    ## handle a single instrument reservation
-    if items.size == 1 && (quantity = items.first[:quantity].to_i) == 1 # only one od w/ quantity of 1
-      if first_product.respond_to?(:reservations) # and product is reservable
-
-        # make a new cart w/ instrument (unless this order is empty.. then use that one)
-        @order = acting_user.cart(session_user, @order.order_details.empty?)
-
-        # wipe out stale account info in temp cart to avoid account related errors
-        @order.account = nil
-        @order.account_id = nil
-
-        @order.add(first_product, 1)
-
-        # bypass cart kicking user over to new reservation screen
-        return redirect_to new_order_order_detail_reservation_path(@order.id, @order.order_details.first)
-      end
-    end
-
     ## make sure the order has an account
     if @order.account.nil?
       ## add auto_assign back here if needed
