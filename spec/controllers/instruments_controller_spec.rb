@@ -77,7 +77,6 @@ RSpec.describe InstrumentsController do
 
     it_should_allow :guest, "but not add to cart" do
       expect(assigns[:product]).to eq(instrument)
-      expect(assigns(:add_to_cart)).to be(false)
       expect(response).to render_template("show")
     end
 
@@ -94,8 +93,7 @@ RSpec.describe InstrumentsController do
 
         it "fails" do
           expect(response).to render_template("show")
-          expect(assigns(:add_to_cart)).to be(false)
-          expect(flash[:notice]).to be_present
+          expect(flash[:notice]).to match(/we could not find a valid payment source/)
         end
       end
 
@@ -128,7 +126,6 @@ RSpec.describe InstrumentsController do
 
       it_should_allow_all(facility_operators) do
         expect(response).to render_template("show")
-        expect(assigns(:add_to_cart)).to be(false)
         expect(flash[:notice]).to include("schedule for this instrument")
       end
     end
@@ -173,9 +170,9 @@ RSpec.describe InstrumentsController do
           do_request
         end
 
-        it "adds the instrument to the cart" do
+        it "redirects to create a new reservation" do
           expect(flash).to be_empty
-          expect(assigns[:add_to_cart]).to be true
+          expect(response).to redirect_to(new_facility_instrument_single_reservation_path(facility, instrument))
         end
       end
 
@@ -186,8 +183,9 @@ RSpec.describe InstrumentsController do
           do_request
         end
 
-        it "adds the instrument to the cart" do
-          expect(assigns[:add_to_cart]).to be true
+        it "redirects to create a new reservation" do
+          expect(flash).to be_empty
+          expect(response).to redirect_to(new_facility_instrument_single_reservation_path(facility, instrument))
         end
       end
     end
@@ -202,7 +200,7 @@ RSpec.describe InstrumentsController do
       end
 
       it_should_allow_operators_only(:redirect) do
-        expect(assigns[:add_to_cart]).to be(true)
+        expect(response).to redirect_to(new_facility_instrument_single_reservation_path(facility, instrument))
       end
 
       context "if acting as a user" do
@@ -214,10 +212,9 @@ RSpec.describe InstrumentsController do
           do_request
         end
 
-        it "adds to cart and redirects" do
+        it "redirects to create a new reservation" do
           expect(assigns[:product]).to eq(instrument)
-          expect(assigns[:add_to_cart]).to be true
-          expect(response).to be_redirect
+          expect(response).to redirect_to(new_facility_instrument_single_reservation_path(facility, instrument))
         end
       end
     end
