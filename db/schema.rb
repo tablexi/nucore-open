@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_14_202107) do
+ActiveRecord::Schema.define(version: 2020_05_19_230633) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -413,6 +413,9 @@ ActiveRecord::Schema.define(version: 2020_04_14_202107) do
     t.integer "price_group_id", null: false
     t.integer "user_id"
     t.integer "account_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
     t.index ["account_id"], name: "index_price_group_members_on_account_id"
     t.index ["price_group_id"], name: "fk_rails_0425013e5b"
     t.index ["user_id"], name: "index_price_group_members_on_user_id"
@@ -434,7 +437,10 @@ ActiveRecord::Schema.define(version: 2020_04_14_202107) do
     t.integer "display_order", null: false
     t.boolean "is_internal", null: false
     t.boolean "admin_editable", default: true, null: false
-    t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name", unique: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+    t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name"
   end
 
   create_table "price_policies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
