@@ -59,6 +59,7 @@ RSpec.describe PriceGroup do
       expect(@price_group).to be_can_delete
       @price_group.destroy
       expect { PriceGroup.find(@price_group.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(PriceGroup.with_deleted.find(@price_group.id)).to be_present
     end
 
     context "with price policy" do
@@ -72,6 +73,7 @@ RSpec.describe PriceGroup do
         expect(@price_group).to be_can_delete
         @price_group.destroy
         expect { PriceGroup.find(@price_group.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(PriceGroup.with_deleted.find(@price_group.id)).to be_present
         expect(PricePolicy.find_by(id: @price_policy.id)).to be_blank # It destroys the associated price policy
       end
 
