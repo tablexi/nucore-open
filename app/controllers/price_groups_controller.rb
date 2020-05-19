@@ -69,9 +69,6 @@ class PriceGroupsController < ApplicationController
   # POST /price_groups
   def create
     @price_group = PriceGroup.new(price_group_params.merge(facility: current_facility))
-    
-    binding.pry
-    
     if @price_group.save
       flash[:notice] = I18n.t("controllers.price_groups.create.notice")
       redirect_to [current_facility, @price_group]

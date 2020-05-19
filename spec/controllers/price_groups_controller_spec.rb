@@ -15,14 +15,6 @@ RSpec.describe PriceGroupsController do
     @params = { facility_id: facility.url_name }
   end
 
-  describe "POST #create" do
-    before(:each) do
-      @method = :put
-      @action = :create
-      @params.merge!(price_group: attributes_for(:price_group, facility_id: facility.id))
-    end
-  end
-
   describe "GET #index" do
     let!(:price_groups) { create_list(:price_group, 3, facility: facility) }
 
@@ -187,8 +179,6 @@ RSpec.describe PriceGroupsController do
           expect(assigns(:price_group)).to be_kind_of(PriceGroup).and eq(price_group)
           should_be_destroyed price_group
           is_expected.to redirect_to(facility_price_groups_url)
-          log_event = LogEvent.find_by(loggable: price_group, event_type: :delete)
-          expect(log_event).to be_present
         end
       end
 
