@@ -21,7 +21,7 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
       it "creates a price group and brings you back to the index" do
         expect { click_button "Create" }.to change(PriceGroup, :count).by(1)
         expect(current_path).to eq(accounts_facility_price_group_path(facility, PriceGroup.reorder(:id).last))
-        log_event = LogEvent.find_by(loggable: price_group, event_type: :create)
+        log_event = LogEvent.find_by(loggable: PriceGroup.reorder(:id).last, event_type: :create)
         expect(log_event).to be_present
       end
     end
