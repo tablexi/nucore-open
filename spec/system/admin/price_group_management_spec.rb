@@ -38,5 +38,42 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
     end
   end
 
+  describe "add user to a price group" do
+    describe "as a facility admin", feature_setting: { facility_directors_can_manage_price_groups: true } do
+      let(:user) { FactoryBot.create(:user, :facility_director, facility: facility) }
+      let(:user2) { FactoryBot.create(:user) }
+      let!(:price_group) { FactoryBot.create(:price_group, facility: facility) }
+
+      before do
+        login_as user
+        visit users_facility_price_group_path(facility, price_group)
+        click_link "Add User"
+        fill_in "Search", with: user2.name
+        click_button "Search"
+      end
+
+      it "creates a price group member and brings you back to the index" do
+        
+        binding.pry
+        
+        # expect { click_link user.last_first_name }.to change(PriceGroupMember, :count).by(1)
+        # expect(current_path).to eq(accounts_facility_price_group_path(facility, PriceGroup.reorder(:id).last))
+      end
+    end
+
+    describe "as a facility senior staff" do
+      let(:user) { FactoryBot.create(:user, :senior_staff, facility: facility) }
+
+      before do
+        login_as user
+        visit new_facility_price_group_path(facility)
+      end
+
+      it "does not allow access" do
+        expect(page.status_code).to eq(403)
+      end
+    end
+  end
+
   # TODO: Move tests out of price_groups_controller_spec.rb
 end
