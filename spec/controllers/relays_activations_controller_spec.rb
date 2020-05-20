@@ -32,7 +32,7 @@ RSpec.describe RelaysActivationsController do
     end
 
     it "sets an alert in the flash when an error is encountered" do
-      allow(relay).to receive(:activate).and_raise(NetBooter::Error)
+      allow(relay).to receive(:activate).and_raise(ActiveRecord::Rollback)
       post :create, params: { facility_id: instrument.facility.url_name }
       expect(flash[:alert]).to be_present
     end
@@ -55,7 +55,7 @@ RSpec.describe RelaysActivationsController do
     end
 
     it "sets an alert in the flash when an error is encountered" do
-      allow(relay).to receive(:deactivate).and_raise(NetBooter::Error)
+      allow(relay).to receive(:deactivate).and_raise(ActiveRecord::Rollback)
       delete :destroy, params: { facility_id: instrument.facility.url_name }
       expect(flash[:alert]).to be_present
     end
