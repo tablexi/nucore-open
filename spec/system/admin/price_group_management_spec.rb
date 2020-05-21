@@ -48,15 +48,13 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
         login_as user
         visit users_facility_price_group_path(facility, price_group)
         click_link "Add User"
-        fill_in "Search", with: user2.name
+        fill_in "search_term", with: user2.name
         click_button "Search"
       end
 
       it "creates a price group member and brings you back to the index" do
-        
-        binding.pry
-        
-        # expect { click_link user.last_first_name }.to change(PriceGroupMember, :count).by(1)
+        save_and_open_page
+        expect { click_link user2.last_first_name }.to change(PriceGroupMember, :count).by(1)
         # expect(current_path).to eq(accounts_facility_price_group_path(facility, PriceGroup.reorder(:id).last))
       end
     end
