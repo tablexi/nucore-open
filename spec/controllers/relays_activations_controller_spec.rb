@@ -19,6 +19,8 @@ RSpec.describe RelaysActivationsController do
     it "activates all real relays for the facility’s instruments" do
       expect(relay).to receive(:activate)
       post :create, params: { facility_id: instrument.facility.url_name }
+      log_event = LogEvent.find_by(loggable: instrument.facility , event_type: :activate)
+      expect(log_event).to be_present
     end
 
     it "redirects back to the instruments page" do
@@ -32,7 +34,7 @@ RSpec.describe RelaysActivationsController do
     end
 
     it "sets an alert in the flash when an error is encountered" do
-      allow(relay).to receive(:activate).and_raise(ActiveRecord::Rollback)
+      allow(relay).to receive(:activate).and_raise(NetBooter::Error)
       post :create, params: { facility_id: instrument.facility.url_name }
       expect(flash[:alert]).to be_present
     end
@@ -42,6 +44,8 @@ RSpec.describe RelaysActivationsController do
     it "deactivates all real relays for the facility’s instruments" do
       expect(relay).to receive(:deactivate)
       delete :destroy, params: { facility_id: instrument.facility.url_name }
+      log_event = LogEvent.find_by(loggable: instrument.facility , event_type: :deactivate)
+      expect(log_event).to be_present
     end
 
     it "redirects back to the instruments page" do
@@ -55,7 +59,7 @@ RSpec.describe RelaysActivationsController do
     end
 
     it "sets an alert in the flash when an error is encountered" do
-      allow(relay).to receive(:deactivate).and_raise(ActiveRecord::Rollback)
+      allow(relay).to receive(:deactivate).and_raise(NetBooter::Error)
       delete :destroy, params: { facility_id: instrument.facility.url_name }
       expect(flash[:alert]).to be_present
     end
