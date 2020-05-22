@@ -61,6 +61,13 @@ RSpec.describe PriceGroup do
       expect(@price_group).to be_destroyed
     end
 
+    it "should be able to delete a price group with price group members" do
+      user = create(:user)
+      user_price_group_member = create(:user_price_group_member, price_group: @price_group, user: user)
+      @price_group.destroy
+      expect(@price_group).to be_destroyed
+    end
+
     context "with price policy" do
       before :each do
         @facility_account = FactoryBot.create(:facility_account, facility: @facility)
