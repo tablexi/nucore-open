@@ -27,6 +27,10 @@ en:
           problem_queue: Order added to problem queue %{cause}
           price_change: Order's price was manually changed
           resolve_from_problem_queue: Problem order resolved
+        product:
+          create_price_policy: Price policy added %{start_date} %{expire_date}
+          update_price_policy: Price policy updated %{start_date} %{expire_date}
+          delete_price_policy: Price policy deleted
         end_date: End Date
         event_filter: Event
         event_placeholder: Filter on one or more events

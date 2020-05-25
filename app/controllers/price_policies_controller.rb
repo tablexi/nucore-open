@@ -42,6 +42,7 @@ class PricePoliciesController < ApplicationController
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
   def create
     if update_policies_from_params
+      LogEvent.log(@product, :create_price_policy, current_user, metadata: { start_date: I18n.l(@price_policies.first.start_date.to_date) , expire_date: I18n.l(@price_policies.first.expire_date.to_date) })
       redirect_to facility_product_price_policies_path, notice: text("create.success")
     else
       flash.now[:error] = text("errors.save")
@@ -52,6 +53,7 @@ class PricePoliciesController < ApplicationController
   # PUT /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def update
     if update_policies_from_params
+      LogEvent.log(@product, :update_price_policy, current_user, metadata: { start_date: I18n.l(@price_policies.first.start_date.to_date) , expire_date: I18n.l(@price_policies.first.expire_date.to_date) })
       redirect_to facility_product_price_policies_path, notice: text("update.success")
     else
       flash.now[:error] = text("errors.save")
@@ -67,8 +69,8 @@ class PricePoliciesController < ApplicationController
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
   def destroy
     return flash_remove_active_policy_warning_and_redirect if @start_date <= Date.today
-
     if PricePolicyUpdater.destroy_all_for_product!(@product, @start_date)
+      LogEvent.log(@product, :delete_price_policy, current_user)
       flash[:notice] = text("destroy.success")
     else
       flash[:error] = text("destroy.failure")
