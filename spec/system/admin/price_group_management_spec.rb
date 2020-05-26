@@ -47,21 +47,27 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
       before do
         login_as user
         visit users_facility_price_group_path(facility, price_group)
-        click_link "Add User"
-        fill_in "search_term", with: user2.name
-        click_button "Search"
       end
 
       context "add a user to the price group" do
         it "creates a price group member and logs the new price group member" do
+          click_link "Add User"
+          fill_in "search_term", with: user2.name
+          click_button "Search"
           expect { click_link user2.last_first_name }.to change(PriceGroupMember, :count).by(1)
           log_event = LogEvent.find_by(loggable: PriceGroupMember.reorder(:id).last, event_type: :create)
-          expect(log_event).not_to be_present
+          expect(log_event).to be_present
         end
       end
 
       context "remove a user from the price group" do
-        it
+        it "soft delete the price group memeber and logs it" do
+          user_price_group_member = create(:user_price_group_member, price_group: price_group, user: user)
+          visit users_facility_price_group_path(facility, price_group)
+          expect { click_link "Remove" }.to change(PriceGroupMember, :count).by(-1)
+          log_event = LogEvent.find_by(loggable: user_price_group_member, event_type: :delete)
+          expect(log_event).to be_present
+        end
       end
 
     end
