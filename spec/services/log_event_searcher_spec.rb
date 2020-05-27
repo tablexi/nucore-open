@@ -181,4 +181,10 @@ RSpec.describe LogEventSearcher do
       expect(results).not_to include(log_event)
     end
   end
+
+  describe "finding product user" do
+    let(:product) { create(:setup_item) }
+    let!(:log_event) { create(:log_event, loggable: product, event_type: :create) }
+    ProductUser.create(product: item, user: user, approved_by: user.id)
+  end
 end
