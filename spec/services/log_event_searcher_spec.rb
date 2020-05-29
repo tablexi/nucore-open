@@ -183,8 +183,19 @@ RSpec.describe LogEventSearcher do
   end
 
   describe "finding product user" do
-    let(:product) { create(:setup_item) }
-    let!(:log_event) { create(:log_event, loggable: product, event_type: :create) }
-    ProductUser.create(product: item, user: user, approved_by: user.id)
+    let(:user) { create(:user) }
+    let(:item) { FactoryBot.create(:setup_item) }
+    let(:product_user) { ProductUser.create(product: item, user: user, approved_by: user.id) }
+    let!(:log_event) { create(:log_event, loggable: product_user, event_type: :create) }
+
+    it "finds the product user" do
+      results = described_class.new(query: "#{item.name}").search
+      expect(results).to include(log_event)
+    end
+
+    it "does not find it if it is not a match" do
+      results = described_class.new(query: "54321").search
+      expect(results).not_to include(log_event)
+    end
   end
 end
