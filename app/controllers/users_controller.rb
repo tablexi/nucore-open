@@ -196,10 +196,10 @@ class UsersController < ApplicationController
     if update_approvals.grants_changed?
       flash[:notice] = I18n.t "controllers.users.access_list.approval_update.notice",
                               granted: update_approvals.granted, revoked: update_approvals.revoked
-      update_approvals.granted_product_users.compact.each do |product_user|
+      update_approvals.granted_product_users.each do |product_user|
         LogEvent.log(product_user, :create, current_user)
       end
-      update_approvals.revoked_product_users.compact.each do |product_user|
+      update_approvals.revoked_product_users.each do |product_user|
         LogEvent.log(product_user, :delete, current_user)
       end
     end

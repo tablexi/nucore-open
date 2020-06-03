@@ -4,24 +4,28 @@ class ProductApprover
 
   class Stats
 
-    attr_reader :access_groups_changed, :granted, :revoked, :granted_product_users, :revoked_product_users
+    attr_reader :access_groups_changed, :granted_product_users, :revoked_product_users
 
     def initialize
       @access_groups_changed = 0
-      @granted = 0
-      @revoked = 0
       @granted_product_users = []
       @revoked_product_users = []
     end
 
     def grant(product_user)
-      @granted += 1
       @granted_product_users << product_user
     end
 
+    def granted
+      @granted_product_users.count
+    end
+
     def revoke(product_user)
-      @revoked += 1
       @revoked_product_users << product_user
+    end
+
+    def revoked
+      @revoked_product_users.count
     end
 
     def access_group_change
@@ -33,7 +37,7 @@ class ProductApprover
     end
 
     def grants_changed?
-      @granted + @revoked > 0
+      granted + revoked > 0
     end
 
   end
@@ -48,10 +52,12 @@ class ProductApprover
     access_group_hash ||= {}
     @all_products.each_with_object(Stats.new) do |product, stats|
       if products_to_approve.include?(product)
-        stats.grant(approve_access(product))
+        product_user = approve_access(product)
+        stats.grant(product_user) if product_user
         update_access_group(product, access_group_hash[product.id.to_s]) && stats.access_group_change
       else
-        stats.revoke(revoke_access(product))
+        product_user = revoke_access(product)
+        stats.revoke(product_user) if product_user
       end
     end
   end
