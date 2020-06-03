@@ -27,6 +27,9 @@ en:
           problem_queue: Order added to problem queue %{cause}
           price_change: Order's price was manually changed
           resolve_from_problem_queue: Problem order resolved
+        facility:
+          activate: Turned on all relays
+          deactivate: Turned off all relays
         price_group:
           create: Price Group created
           delete: Price Group deleted
