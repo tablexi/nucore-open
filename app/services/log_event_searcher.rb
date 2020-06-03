@@ -13,13 +13,10 @@ class LogEventSearcher
                     "order_detail.notify", "order_detail.review",
                     "order_detail.problem_queue", "order_detail.price_change",
                     "order_detail.resolve_from_problem_queue",
-<<<<<<< HEAD
                     "product_user.create", "product_user.delete",
-=======
                     "price_group_member.create", "price_group_member.delete",
                     "facility.activate", "facility.deactivate",
                     "price_group.create", "price_group.delete",
->>>>>>> master
                     ].freeze
 
   def self.beginning_of_time
