@@ -30,6 +30,12 @@ en:
         price_group_member:
           create: User added to price group
           delete: User removed from price group
+        facility:
+          activate: Turned on all relays
+          deactivate: Turned off all relays
+        price_group:
+          create: Price Group created
+          delete: Price Group deleted
         end_date: End Date
         event_filter: Event
         event_placeholder: Filter on one or more events
