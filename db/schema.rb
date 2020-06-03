@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_14_155649) do
+ActiveRecord::Schema.define(version: 2020_05_19_230633) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -413,6 +413,9 @@ ActiveRecord::Schema.define(version: 2020_05_14_155649) do
     t.integer "price_group_id", null: false
     t.integer "user_id"
     t.integer "account_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
     t.index ["account_id"], name: "index_price_group_members_on_account_id"
     t.index ["price_group_id"], name: "fk_rails_0425013e5b"
     t.index ["user_id"], name: "index_price_group_members_on_user_id"

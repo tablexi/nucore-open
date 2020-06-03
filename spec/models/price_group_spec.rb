@@ -62,6 +62,14 @@ RSpec.describe PriceGroup do
       expect(PriceGroup.with_deleted.find(@price_group.id)).to be_present
     end
 
+    it "should be able to delete a price group with price group members" do
+      user = create(:user)
+      user_price_group_member = create(:user_price_group_member, price_group: @price_group, user: user)
+      @price_group.destroy
+      expect { PriceGroup.find(@price_group.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(PriceGroup.with_deleted.find(@price_group.id)).to be_present
+    end
+
     context "with price policy" do
       before :each do
         @facility_account = FactoryBot.create(:facility_account, facility: @facility)
