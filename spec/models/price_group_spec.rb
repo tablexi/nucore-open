@@ -66,7 +66,8 @@ RSpec.describe PriceGroup do
       user = create(:user)
       user_price_group_member = create(:user_price_group_member, price_group: @price_group, user: user)
       @price_group.destroy
-      expect(@price_group).to be_destroyed
+      expect { PriceGroup.find(@price_group.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(PriceGroup.with_deleted.find(@price_group.id)).to be_present
     end
 
     context "with price policy" do
