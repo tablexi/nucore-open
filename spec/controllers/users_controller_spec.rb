@@ -85,7 +85,7 @@ RSpec.describe UsersController do
       it_should_allow(:admin, "to update the user information and it should log the user") do
         log_event = LogEvent.find_by(loggable: user, event_type: :default_price_group_changed)
         expect(log_event).to be_present
-        expect(log_event.metadata).to eq("price_group_rate" => "Northwestern Base Rate")
+        expect(log_event.metadata).to eq("price_group_rate" => PriceGroup.base.name)
       end
     end
 
@@ -98,7 +98,6 @@ RSpec.describe UsersController do
         expect(log_event).not_to be_present
       end
     end
-
   end
 
   describe "GET #access_list" do
