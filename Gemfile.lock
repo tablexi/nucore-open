@@ -149,7 +149,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (~> 1.5)
       xpath (~> 3.2)
-    capybara-email (3.0.1)
+    capybara-email (3.0.2)
       capybara (>= 2.4, < 4.0)
       mail
     celluloid (0.17.4)
@@ -486,7 +486,7 @@ GEM
     rb-inotify (0.10.0)
       ffi (~> 1.0)
     redcarpet (3.5.0)
-    regexp_parser (1.7.0)
+    regexp_parser (1.7.1)
     request_store (1.4.1)
       rack (>= 1.4)
     responders (3.0.0)
