@@ -8,7 +8,9 @@ module NucoreKfs
 
     def initialize
       @now = DateTime.now
-      @fiscal_year = (@now.month < 6 ? @now.year : @now.year + 1).to_s
+      # TODO: There is a fiscal_year_begins setting that we should read and use here.
+      # For now, we are just hardcoding the start of UConn's FY: July 1
+      @fiscal_year = (@now.month < 7 ? @now.year : @now.year + 1).to_s
 
       # Always "UC"
       @chart_accounts_code = "UC"
