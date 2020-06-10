@@ -276,7 +276,7 @@ module NucoreKfs
         # Money format (2 decimal places) right aligned, leading zeroes, no commas
         # Total amount credited plus total amount debited. Cannot be zero.
         # Must include decimal point, for example 00000000000000114.00
-        file_amt.truncate(2).to_s("F").rjust(20, "0"),
+        file_amt.truncate(2).to_s.rjust(20, "0"),
       ]
 
       output << trailer_record.join("") << "\n"
