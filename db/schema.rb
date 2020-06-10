@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_19_230633) do
+ActiveRecord::Schema.define(version: 2020_05_26_201622) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -517,6 +517,9 @@ ActiveRecord::Schema.define(version: 2020_05_19_230633) do
     t.datetime "approved_at", null: false
     t.integer "product_access_group_id"
     t.datetime "requested_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
     t.index ["product_access_group_id"], name: "index_product_users_on_product_access_group_id"
     t.index ["product_id"], name: "fk_products"
     t.index ["user_id"], name: "index_product_users_on_user_id"

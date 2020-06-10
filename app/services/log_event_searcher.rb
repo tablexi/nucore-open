@@ -13,6 +13,7 @@ class LogEventSearcher
                     "order_detail.notify", "order_detail.review",
                     "order_detail.problem_queue", "order_detail.price_change",
                     "order_detail.resolve_from_problem_queue",
+                    "product_user.create", "product_user.delete",
                     "price_group_member.create", "price_group_member.delete",
                     "facility.activate", "facility.deactivate",
                     "price_group.create", "price_group.delete",
@@ -68,7 +69,8 @@ class LogEventSearcher
     facilities = Facility.name_query(query)
     user_roles = UserRole.with_deleted.where(user_id: users).or(UserRole.with_deleted.where(facility_id: facilities))
     order_details = OrderDetail.where_order_number(query)
-
+    products = Product.where(Product.arel_table[:name].lower.matches("%#{query.downcase}%"))
+    product_users = ProductUser.with_deleted.where(product_id: products).or(ProductUser.with_deleted.where(user_id: users))
     [
       accounts,
       users,
@@ -77,6 +79,8 @@ class LogEventSearcher
       statements,
       user_roles,
       order_details,
+      products,
+      product_users,
     ].compact.map do |filter|
       LogEvent.where(loggable_type: filter.model.name, loggable_id: filter)
     end.inject(&:or)
