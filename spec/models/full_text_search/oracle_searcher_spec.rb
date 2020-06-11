@@ -59,4 +59,56 @@ RSpec.describe FullTextSearch::OracleSearcher, if: Nucore::Database.oracle? do
     end
   end
 
+  context "when the query contains function names or other characters" do
+    context "AND" do
+      let(:query) { "lsc and andor" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "OR" do
+      let(:query) { "lsc or andor" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "about" do
+      let(:query) { "something about andor" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "&" do
+      let(:query) { "lsc & andor" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "double quotes" do
+      let(:query) { '"lsc"' }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "single quotes" do
+      let(:query) { "'lsc' 'andor'" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "open curly brace" do
+      let(:query) { "{lsc andor" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "close curly brace" do
+      let(:query) { "lsc andor}" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "curly braces" do
+      let(:query) { "{lsc andor}" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "backslash" do
+      let(:query) { "lsc \\andor" }
+      it { is_expected.to contain_exactly(item) }
+    end
+  end
+
 end

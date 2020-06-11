@@ -5,7 +5,14 @@ module FullTextSearch
     def search(fields, query)
       return @scope.none if query.blank?
 
-      formatted_query = query.to_s.split.join(",")
+      query_elements = query.to_s.split
+      # By wrapping each portion in {}, it escapes what's inside so it handles special
+      # characters and other reserved words
+      # https://docs.oracle.com/cd/B10501_01/text.920/a96518/cqspcl.htm#20741
+      formatted_query = query_elements
+        .map { |s| s.gsub(/[{}]/, "") } # remove any existing curly braces
+        .map { |s| "{#{s}}" }
+        .join(",")
       # If we leave the label out `:label`, we end up with duplicate labels which Oracle doesn't like.
       # If we don't handle the `order` ourselves, then AR's `or` complains about incompatible `ORDER BY`s.
       array = Array(fields)
