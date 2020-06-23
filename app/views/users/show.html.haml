@@ -22,9 +22,13 @@
 
   = render_view_hook "additional_user_fields", f: f
 
+- show_order_for_link = current_ability.can?(:switch_to, @user) && @user.active? && !current_facility.cross_facility?
 - if can? :edit, @user
   %ul.inline
     %li= link_to text("shared.edit"), edit_facility_user_path(current_facility, @user), class: "btn btn-primary"
+
+    - if show_order_for_link
+      %li= link_to text("search.results_table.order_for"), facility_user_switch_to_path(current_facility, @user), class: "btn btn-primary"
 
     - if can?(:unexpire, @user) && @user.expired?
       %li= link_to text("unexpire"), unexpire_facility_user_path(current_facility, @user), class: "btn", method: :patch
@@ -35,6 +39,6 @@
       = simple_form_for @user, url: facility_user_suspension_path(current_facility, @user), method: :post do |f|
         = f.input :suspension_note
         = f.submit t("shared.suspend"), class: "btn btn-danger"
-
-
-
+- elsif show_order_for_link
+  %ul.inline
+    %li= link_to text("search.results_table.order_for"), facility_user_switch_to_path(current_facility, @user), class: "btn btn-primary"
