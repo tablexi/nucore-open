@@ -2,7 +2,7 @@ email:
   from: "noreply@cider.uconn.edu"
   fake:
     enabled: true
-    to: ["joseph.oshea@uconn.edu", "ronny.heredia@uconn.edu"]
+    to: ["joseph.oshea@uconn.edu", "ronny.heredia@uconn.edu", "courtney.wiley@uconn.edu"]
     whitelist: []
 
 hotjar:
