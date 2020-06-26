@@ -83,6 +83,8 @@ RSpec.describe "Purchasing a reservation on behalf of another user" do
       select user.accounts.first.description, from: "Payment Source"
 
       click_button "Create"
+
+      expect(page).to have_content("Order Receipt")
     end
   end
 
