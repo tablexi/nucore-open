@@ -7,7 +7,7 @@ class LogEventSearcher
                     "user.create", "user.suspended", "user.unsuspended",
                     "user.default_price_group_changed",
                     "account.suspended", "account.unsuspended",
-                    "journal.create","statement.create",
+                    "journal.create", "statement.create",
                     "user_role.create", "user_role.delete",
                     "order_detail.dispute", "order_detail.resolve",
                     "order_detail.notify", "order_detail.review",
