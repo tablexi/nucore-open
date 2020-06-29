@@ -380,7 +380,7 @@ GEM
     mimemagic (0.3.4)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    mini_racer (0.2.14)
+    mini_racer (0.2.15)
       libv8 (> 7.3)
     minitest (5.14.1)
     momentjs-rails (2.20.1)
