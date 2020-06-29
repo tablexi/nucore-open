@@ -3,11 +3,12 @@
 module AbilityHelper
 
   # A convenience method to help clarify permissions for various user roles.
+  # Useful for developer debugging, this method is not actually invoked anywhere.
   #
   # [_users_]
-  #   A collection of User objects to test
+  #   A collection of User objects to test.
   # [_resource_]
-  #   A class or instance that each +user+ will be authorized against
+  #   A class or instance that each +user+ will be authorized against.
   # [_controller_]
   #   The controller whose authorization request is being handled.
   #
