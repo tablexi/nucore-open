@@ -14,7 +14,7 @@ class SingleReservationsController < ApplicationController
     authorize! :new, @reservation
 
     unless @instrument.can_be_used_by?(acting_user)
-      flash[:notice] = text(".acting_as_not_on_approval_list")
+      flash[:notice] = text("controllers.reservations.acting_as_not_on_approval_list")
     end
     set_windows
     render "reservations/new"
@@ -25,7 +25,7 @@ class SingleReservationsController < ApplicationController
     if creator.save(session_user)
       @reservation = creator.reservation
       authorize! :create, @reservation
-      flash[:notice] = I18n.t "controllers.reservations.create.success"
+      flash[:notice] = I18n.t("controllers.reservations.create.success")
       flash[:error] = I18n.t("controllers.reservations.create.admin_hold_warning") if creator.reservation.conflicting_admin_reservation?
       redirect_to purchase_order_path(@order, params.permit(:send_notification))
     else
