@@ -24,12 +24,17 @@ RSpec.describe FullTextSearch::OracleSearcher, if: Nucore::Database.oracle? do
 
   context "when the query is nil" do
     let(:query) { nil }
-    it { is_expected.to be_empty }
+    it { is_expected.to be_none }
+  end
+
+  context "when the query is an empty string" do
+    let(:query) { "" }
+    it { is_expected.to be_none }
   end
 
   context "when the query is whitespace only" do
     let(:query) { " " }
-    it { is_expected.to be_empty }
+    it { is_expected.to be_none }
   end
 
   context "when the query matches no products" do
@@ -107,6 +112,21 @@ RSpec.describe FullTextSearch::OracleSearcher, if: Nucore::Database.oracle? do
 
     context "backslash" do
       let(:query) { "lsc \\andor" }
+      it { is_expected.to contain_exactly(item) }
+    end
+
+    context "just curly braces" do
+      let(:query) { "{}" }
+      it { is_expected.to be_none }
+    end
+
+    context "just curly braces with spaces" do
+      let(:query) { " {  }  " }
+      it { is_expected.to be_none }
+    end
+
+    context "with commas" do
+      let(:query) { "lsc,andor," }
       it { is_expected.to contain_exactly(item) }
     end
   end
