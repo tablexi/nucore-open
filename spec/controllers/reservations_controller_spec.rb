@@ -694,11 +694,29 @@ RSpec.describe ReservationsController do
     end
 
     # guests should only be able to go the default reservation window into the future
-    it_should_allow_all [:guest] do
-      expect(assigns[:reservation_window].max_window).to eq(PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
-      expect(assigns[:reservation_window].max_days_ago).to eq(0)
-      expect(assigns[:reservation_window].max_date).to eq((Time.zone.now + PriceGroupProduct::DEFAULT_RESERVATION_WINDOW.days).strftime("%Y%m%d"))
-      expect(assigns[:reservation_window].min_date).to eq(Time.zone.now.strftime("%Y%m%d"))
+    context "with a guest user" do
+      describe "without user based price groups", feature_setting: { user_based_price_groups: false } do
+        it "sets the reservation window correctly" do
+          sign_in @guest
+          do_request
+          expect(assigns[:reservation_window].max_window).to eq(PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
+          expect(assigns[:reservation_window].max_days_ago).to eq(0)
+          expect(assigns[:reservation_window].max_date).to eq((Time.zone.now + PriceGroupProduct::DEFAULT_RESERVATION_WINDOW.days).strftime("%Y%m%d"))
+          expect(assigns[:reservation_window].min_date).to eq(Time.zone.now.strftime("%Y%m%d"))
+        end
+      end
+
+      describe "with user based price groups", feature_setting: { user_based_price_groups: true } do
+        it "sets the reservation window correctly" do
+          @guest.create_default_price_group!
+          sign_in @guest
+          do_request
+          expect(assigns[:reservation_window].max_window).to eq(PriceGroupProduct::DEFAULT_RESERVATION_WINDOW)
+          expect(assigns[:reservation_window].max_days_ago).to eq(0)
+          expect(assigns[:reservation_window].max_date).to eq((Time.zone.now + PriceGroupProduct::DEFAULT_RESERVATION_WINDOW.days).strftime("%Y%m%d"))
+          expect(assigns[:reservation_window].min_date).to eq(Time.zone.now.strftime("%Y%m%d"))
+        end
+      end
     end
 
     it_behaves_like "it can handle having its order_detail removed"

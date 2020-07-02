@@ -41,7 +41,7 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
   end
 
   describe "manage users of a price group" do
-    describe "as a facility admin", feature_setting: { facility_directors_can_manage_price_groups: true } do
+    describe "as a facility admin", feature_setting: { user_based_price_groups: true, facility_directors_can_manage_price_groups: true } do
       let(:user) { FactoryBot.create(:user, :facility_director, facility: facility) }
       let(:user2) { FactoryBot.create(:user) }
       let!(:price_group) { FactoryBot.create(:price_group, facility: facility) }
