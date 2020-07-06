@@ -271,7 +271,7 @@ GEM
     dynamic_form (1.1.4)
     ed25519 (1.2.4)
     erubi (1.9.0)
-    exception_notification (4.4.1)
+    exception_notification (4.4.3)
       actionmailer (>= 4.0, < 7)
       activesupport (>= 4.0, < 7)
     excon (0.75.0)
