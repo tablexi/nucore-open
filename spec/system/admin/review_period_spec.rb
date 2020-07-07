@@ -38,7 +38,7 @@ RSpec.describe "Review period - Sending notifications and marking as reviewed", 
     expect(page).not_to have_content("OD ##{order_details.second.order_number}")
   end
 
-  context "when 'Send $0 emails?' checkbox is unchecked" do
+  context "when 'Send $0 Notifications?' checkbox is unchecked" do
     it "only sends notifications for orders > $0" do
       login_as director
       visit facility_notifications_path(facility)
@@ -65,7 +65,7 @@ RSpec.describe "Review period - Sending notifications and marking as reviewed", 
     end
   end
 
-  context "when 'Send $0 emails?' checkbox is checked" do
+  context "when 'Send $0 Notifications?' checkbox is checked" do
     it "sends notifications for all orders" do
       login_as director
       visit facility_notifications_path(facility)
@@ -73,7 +73,7 @@ RSpec.describe "Review period - Sending notifications and marking as reviewed", 
       find("input[value='#{order_details.first.id}']").click
       find("input[value='#{order_details.second.id}']").click
 
-      check "Send $0 emails?"
+      check "Send $0 Notifications?"
       click_button "Send Notifications"
 
       expect(ActionMailer::Base.deliveries.count).to eq 2
