@@ -11,9 +11,7 @@
 
 - if @order_details.any?
   #table_billing
-    = form_tag url_for(controller: params[:controller], action: :send_notifications), id: "journals_create_form", name: "journals_create_form", method: :post, class: "form-horizontal" do
-      .row
-        .span12= yield :action_instructions
+    = form_tag facility_send_notifications_path, method: :post, class: "form-horizontal" do
       .row.table-actions
         .span1.select_all_none= select_all_link
         #zero_dollar_orders.span2.offset8
@@ -22,7 +20,7 @@
             = text("send_zero_dollar_notifications", scope: "admin.transaction_search.actions")
         .span1
           .submit
-            = submit_tag text(:send_notifications, scope: "admin.transaction_search.actions"), class: ['btn', 'btn-primary']
+            = submit_tag text("send_notifications", scope: "admin.transaction_search.actions"), class: ["btn", "btn-primary"]
       .row
         .span12= render "shared/transactions/table_inside", order_details: @order_details
 
