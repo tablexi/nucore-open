@@ -37,6 +37,11 @@
 }
 
 #zero_dollar_orders {
-  width: 120px;
-  margin-top: 5px;
+  align-items: center;
+  display: flex;
+
+  .checkbox {
+    margin-right: 20px;
+    margin-left: 70px;
+  }
 }
