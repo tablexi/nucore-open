@@ -25,15 +25,7 @@ class LogEvent < ApplicationRecord
   end
 
   def facility
-    if loggable.respond_to?(:facility)
-      loggable.facility
-    elsif loggable.respond_to?(:price_group_with_deleted)
-      loggable.price_group_with_deleted.facility
-    elsif loggable.respond_to?(:facilities)
-      loggable.facilities.first if loggable.facilities.count == 1
-    elsif loggable.respond_to?(:user)
-      loggable.user.facilities.first if loggable.user.facilities.count == 1
-    end
+    loggable.facility if loggable.respond_to?(:facility)
   end
 
   def locale_tag
