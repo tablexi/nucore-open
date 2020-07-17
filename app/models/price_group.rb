@@ -17,7 +17,7 @@ class PriceGroup < ApplicationRecord
 
   default_scope -> { order(is_internal: :desc, display_order: :asc, name: :asc) }
 
-  before_destroy :throw_abort, if: :global?
+  before_destroy { throw :abort if global? }
   before_destroy { price_policies.destroy_all } # Cannot be a dependent: :destroy because of ordering of callbacks
   before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil? }
 
@@ -75,10 +75,6 @@ class PriceGroup < ApplicationRecord
 
   def external?
     !is_internal?
-  end
-
-  def throw_abort
-    throw :abort
   end
 
 end

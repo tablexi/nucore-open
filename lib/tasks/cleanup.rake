@@ -26,7 +26,7 @@ namespace :cleanup do
       pg = PriceGroup.find_by(name: cc_name)
       abort("No cancer center price group found with name #{cc_name}") unless pg
 
-      PriceGroup.skip_callback(:destroy, :before, :throw_abort)
+      pg.facility = Facility.first
       pg.destroy!
       puts "Price group with id: #{pg.id}, name: #{cc_name} has been destroyed."
     end
