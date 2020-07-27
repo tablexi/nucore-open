@@ -9,6 +9,7 @@ gem "rails", "5.2.4.2"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
 gem "bootsnap", require: false
+gem "puma"
 
 ## database
 gem "mysql2"
