@@ -4,8 +4,6 @@ FactoryBot.define do
   factory :user do
     sequence(:username) { |n| "username#{n}" }
     first_name { "User" }
-    password { "password" }
-    password_confirmation { "password" }
     sequence(:last_name) { |n| "Last#{n}" }
     sequence(:email) { |n| "user#{n}@example.com" }
 
@@ -24,6 +22,8 @@ FactoryBot.define do
 
     trait :external do
       username { email }
+      password { "password" }
+      password_confirmation { "password" }
     end
 
     trait :account_manager do
