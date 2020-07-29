@@ -10,8 +10,4 @@ class PriceGroupMember < ApplicationRecord
 
   validates_presence_of :price_group_id
 
-  def to_log_s
-    "#{user} / #{price_group_with_deleted}"
-  end
-
 end
