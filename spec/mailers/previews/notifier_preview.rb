@@ -21,12 +21,12 @@ class NotifierPreview < ActionMailer::Preview
   end
 
   def new_internal_user
-    user = FactoryBot.build(:user, username: "mynetid")
+    user = FactoryBot.build(:user, :netid, username: "mynetid")
     Notifier.new_user(user: user, password: user.password)
   end
 
   def new_external_user
-    user = FactoryBot.build(:user, :external)
+    user = FactoryBot.build(:user, password: "abc123")
     Notifier.new_user(user: user, password: user.password)
   end
 
