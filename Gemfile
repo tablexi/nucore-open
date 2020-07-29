@@ -104,15 +104,11 @@ group :development, :test do
   # FactoryBot 5.X has some breaking changes we haven't sorted out
   # https://github.com/tablexi/nucore-open/pull/1865
   gem "factory_bot_rails", "< 5"
-  gem "guard-rspec", require: false
-  gem "guard-teaspoon", require: false
   gem "parallel_tests"
   gem "pry-rails"
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rspec-activejob"
-  gem "spring"
-  gem "spring-commands-rspec"
   gem "teaspoon-jasmine"
 end
 
