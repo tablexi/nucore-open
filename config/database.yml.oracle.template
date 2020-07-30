@@ -3,7 +3,7 @@ defaults: &defaults
   database: //localhost:1521/ORCLCDB.localdomain
   database: //<%= ENV.fetch("ORACLE_HOST", "localhost") %>:<%= ENV.fetch("ORACLE_PORT", 1521) %>/<%= ENV.fetch("ORACLE_SERVICE_NAME", "ORCLCDB.localdomain") %>
   # Alternative format:
-  # database: (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=<localhost)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=ORCLCDB.localdomain)))
+  # database: (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=ORCLCDB.localdomain)))
   encoding: utf8
   password: <%= ENV.fetch("ORACLE_PASSWORD", "password") %>
   # This value must be less than the Oracle parameter of `open_cursors`. The default in
