@@ -10,4 +10,8 @@ class PriceGroupMember < ApplicationRecord
 
   validates_presence_of :price_group_id
 
+  def member_type
+    type.sub("PriceGroupMember", "")
+  end
+
 end
