@@ -125,8 +125,8 @@ split_accounts:
     - administrator
     # - account_manager
 
-# If you wish to instead use S3, override it in the appropriate environment settings.
-# See production.yml for an example.
+# To use S3 or another Paperclip backend, you can override the configuration in the
+# appropriate environment, e.g. config/settings/production.yml.
 # If you wish to use it for development, add it to a `config/settings/development.local.yml`
 # file (this file is gitignored).
 paperclip:
