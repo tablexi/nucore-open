@@ -14,6 +14,9 @@ We recommend deleting one of the entries and removing the suffix from the other 
 of `intro`, `only_username`, `username_and_password`, and `outro`. The content is presented
 as is for the plain-text version and parsed via Markdown for the HTML version.
 
+For development, we've improved the previews so you can see both a netid user email
+as well as an external user email. http://localhost:3000/rails/mailers/notifier
+
 ### Rename BaseMailer to ApplicationMailer (#2362)
 
 If you have custom mailers in any of your engines, you might need to rename `< BaseMailer` to
