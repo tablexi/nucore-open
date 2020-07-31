@@ -2,8 +2,9 @@
 
 namespace :paperclip do
   # How to use:
-  # Change the path in `OldRecord` below to the old path format (what's currently in
-  # settings.yml or the environment's settings)
+  # Change the path in `OldJournal` and `OldStoredFile` below to the old path format (what's currently in
+  # settings.yml or the environment's settings). Note: if you have :class in there, you'll
+  # need to replace that with `journals` or `stored_files`.
   # Update the `paperclip.path` in settings.yml to your new destination
   # Run this script `bundle exec rake paperclip:migrate_path`
   desc "Migrate paperclip path format"
@@ -18,17 +19,20 @@ namespace :paperclip do
       puts "ERROR: #{e}"
     end
 
-    class OldRecord < ApplicationRecord
+    class OldJournal < ApplicationRecord
       self.table_name = "journals"
       has_attached_file :file, PaperclipSettings.config.merge(path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename")
     end
 
-    OldRecord.find_each do |old_record|
+    OldJournal.find_each do |old_record|
       move_record(Journal, old_record)
     end
 
-    OldRecord.table_name = "stored_files"
-    OldRecord.find_each do |old_record|
+    class OldStoredFiles < ApplicationRecord
+      self.table_name = "stored_files"
+      has_attached_file :file, PaperclipSettings.config.merge(path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename")
+    end
+    OldStoredFiles.find_each do |old_record|
       move_record(StoredFile, old_record)
     end
   end
