@@ -35,9 +35,9 @@ namespace :cleanup do
   namespace :log_events do
     desc "update metadata for PriceGroupMembers"
     task metadata: :environment do
-      events = LogEvent.where("loggable_type LIKE ?", "PriceGroupMember").where(metadata: nil)
+      events = LogEvent.where(loggable_type: "PriceGroupMember").where(metadata: nil)
       puts "Updating #{events.size} LogEvents..."
-      events.each do |event|
+      events.find_each do |event|
         event.update(metadata: { member_type: event.loggable.member_type })
       end
     end
