@@ -2,38 +2,9 @@
 
 ### Migrate locally stored file path
 
-We want to move everything into `public/system`.
+Ensure that everything is in `public/system` per the recent changes in the settings.
 
-With the previous default in settings.yml, files were not stored according to their
-class, so objects of different types with the same IDs could share the same folder, so
-we also want to add the class name to the path.
-
-```yaml
-# Old setting
-paperclip:
-  storage: filesystem
-  url: ":rails_relative_url_root/:attachment/:id_partition/:style/:safe_filename"
-  path: ":rails_root/public/:class/:attachment/:id_partition/:style/:safe_filename"
-
-# New setting
-paperclip:
-  storage: filesystem
-  url: ":rails_relative_url_root/system/:class/:attachment/:id_partition/:style/:safe_filename"
-  path: ":rails_root/public/system/:class/:attachment/:id_partition/:style/:safe_filename"
-```
-
-_If your old setting for `path` was something different, you'll need to change it
-in `lib/tasks/paperclip-nucore.rake`_
-
-* Take a backup of `public/files`
-
-* Move the files to the new location
-
-  ```
-  bundle exec rake paperclip:migrate_path
-  ```
-
-* Restart the server so it points at the new location
+See [the CHANGELOG](../CHANGELOG.md) for instructions.
 
 ### Sync the folder to S3
 
