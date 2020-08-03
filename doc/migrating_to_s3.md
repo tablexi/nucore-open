@@ -38,10 +38,11 @@ in `lib/tasks/paperclip-nucore.rake`_
 ### Sync the folder to S3
 
 This does an rsync-style sync, so you can run it once initially and then it'll only
-copy over new files the next time you run it.
+copy over new files the next time you run it. See [the AWS docs](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html) for more information.
 
 ```
 aws s3 sync public/system s3://BUCKET_NAME --acl private
+# Optional argument: --dryrun
 ```
 
 ### Update the application settings
