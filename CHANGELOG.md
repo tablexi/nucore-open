@@ -1,7 +1,7 @@
 # Changelog
 
 Because we use squash and merge, you should be able to see the changes by looking
-at the [commit log](commits/master). However, we have begun eeping track of breaking changes
+at the [commit log](https://github.com/tablexi/nucore-open/commits/master). However, we have begun keeping track of breaking changes
 or optional rake tasks.
 
 ### Welcome email refactoring/cleanup ([#2362](https://github.com/tablexi/nucore-open/pull/2362))
