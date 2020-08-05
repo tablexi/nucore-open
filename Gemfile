@@ -59,7 +59,7 @@ gem "rubyzip"
 
 ## controllers
 gem "prawn"
-gem "prawn_rails"
+gem "prawn-rails"
 gem "prawn-table"
 
 ## other
