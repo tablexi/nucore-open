@@ -43,7 +43,7 @@ gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
 gem "dynamic_form"
-gem "ckeditor"
+gem "ckeditor", "< 5" # Breaking changes
 gem "jquery-rails"
 gem "jquery-ui-rails"
 gem "vuejs-rails", "~> 1.0.26" # 2.0 introduces breaking changes
