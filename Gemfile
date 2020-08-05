@@ -5,7 +5,7 @@ source "https://rubygems.org"
 ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| f.read.chomp }
 
 ## base
-gem "rails", "5.2.4.3"
+gem "rails", "6.0.3.1"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
 gem "bootsnap", require: false
@@ -43,7 +43,7 @@ gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
 gem "dynamic_form"
-gem "ckeditor"
+gem "ckeditor", "< 5" # Breaking changes
 gem "jquery-rails"
 gem "jquery-ui-rails"
 gem "vuejs-rails", "~> 1.0.26" # 2.0 introduces breaking changes
@@ -59,7 +59,7 @@ gem "rubyzip"
 
 ## controllers
 gem "prawn"
-gem "prawn_rails"
+gem "prawn-rails"
 gem "prawn-table"
 
 ## other
@@ -104,6 +104,7 @@ group :development, :test do
   # FactoryBot 5.X has some breaking changes we haven't sorted out
   # https://github.com/tablexi/nucore-open/pull/1865
   gem "factory_bot_rails", "< 5"
+  gem "listen"
   gem "parallel_tests"
   gem "pry-rails"
   gem "pry-byebug"
