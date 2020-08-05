@@ -51,3 +51,5 @@ Rails.application.configure do
 
   Delayed::Worker.delay_jobs = false
 end
+
+GOOGLE_ANALYTICS_KEY = nil
