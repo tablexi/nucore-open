@@ -131,14 +131,14 @@ class ApplicationController < ActionController::Base
 
   def render_404(_exception)
     # Add :html in case the 404 is a PDF or XML so the view can be found
-    render "/404", status: 404, layout: "application", formats: request.formats + [:html]
+    render "/404", status: 404, layout: "application"
   end
 
   rescue_from NUCore::PermissionDenied, CanCan::AccessDenied, with: :render_403
   def render_403(_exception)
     # if current_user is nil, the user should be redirected to login
     if current_user
-      render "/403", status: 403, layout: "application", formats: request.formats + [:html]
+      render "/403", status: 403, layout: "application"
     else
       store_location_for(:user, request.fullpath)
       redirect_to new_user_session_path
@@ -147,7 +147,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from NUCore::NotPermittedWhileActingAs, with: :render_acting_error
   def render_acting_error
-    render "/acting_error", status: 403, layout: "application", formats: request.formats + [:html]
+    render "/acting_error", status: 403, layout: "application"
   end
 
   def after_sign_out_path_for(_)
