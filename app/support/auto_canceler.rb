@@ -35,7 +35,7 @@ class AutoCanceler
 
   def time_condition
     if Nucore::Database.oracle?
-      "(:now - reserve_start_at) >= NumToDSInterval(auto_cancel_mins, 'MINUTE')"
+      "(to_timestamp(:now) - reserve_start_at) >= NumToDSInterval(auto_cancel_mins, 'MINUTE')"
     else
       "TIMESTAMPDIFF(MINUTE, reserve_start_at, :now) >= auto_cancel_mins"
     end
