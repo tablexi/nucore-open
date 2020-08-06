@@ -26,6 +26,7 @@ gem "devise-encryptable"
 
 ## models
 gem "aasm"
+gem "after_commit_everywhere", "~> 0.1", ">= 0.1.5" # Needed by AASM
 gem "paperclip"
 gem "paper_trail"
 gem "awesome_nested_set"
