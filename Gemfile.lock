@@ -613,7 +613,7 @@ DEPENDENCIES
   capybara
   capybara-email
   chosen-rails
-  ckeditor
+  ckeditor (< 5)
   clockpunch
   coffee-rails
   coffeelint
