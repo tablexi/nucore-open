@@ -82,6 +82,8 @@ gem "sanger_sequencing", path: "vendor/engines/sanger_sequencing"
 gem "secure_rooms", path: "vendor/engines/secure_rooms"
 gem "split_accounts", path: "vendor/engines/split_accounts"
 gem "synaccess_connect"
+gem "nucore_kfs", path: "vendor/engines/nucore_kfs"
+gem "uconn_cider", path: "vendor/engines/uconn_cider"
 
 group :development do
   gem "bcrypt_pbkdf", ">= 1.0", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
