@@ -63,7 +63,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.1.0)
+    aasm (5.1.1)
       concurrent-ruby (~> 1.0)
     actioncable (5.2.4.3)
       actionpack (= 5.2.4.3)
@@ -203,7 +203,7 @@ GEM
       coffee-script
       execjs
       json
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.7)
     config (2.2.1)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
