@@ -3,6 +3,7 @@
 require "saml_authentication/user_locator"
 require "saml_authentication/user_updater"
 require "saml_authentication/idp_entity_id_reader"
+require "saml_authentication/attribute_map_resolver"
 
 module SamlAuthentication
 
@@ -11,6 +12,7 @@ module SamlAuthentication
     def configure!
       OneLogin::RubySaml::Logging.logger.info "Configuring SAML..."
       Devise.setup do |config|
+        config.saml_attribute_map_resolver = SamlAuthentication::AttributeMapResolver
         config.saml_default_user_key = :username
         config.saml_create_user = saml_create_user?
         config.saml_update_user = true

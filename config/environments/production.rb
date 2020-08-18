@@ -126,6 +126,3 @@ Rails.application.configure do
                         }
 
 end
-
-# What's this for?
-GOOGLE_ANALYTICS_KEY = nil # move to secrets

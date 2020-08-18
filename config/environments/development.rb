@@ -79,6 +79,3 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
 end
-
-# What's this for?
-GOOGLE_ANALYTICS_KEY = nil # move to secrets
