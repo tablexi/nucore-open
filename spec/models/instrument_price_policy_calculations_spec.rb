@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe InstrumentPricePolicyCalculations do
 
-  subject(:policy) { build :instrument_price_policy, options }
+  subject(:policy) { create(:instrument_price_policy, options) }
   let(:options) { {} }
 
   let(:now) { Time.zone.now }

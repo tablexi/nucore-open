@@ -203,7 +203,7 @@ GEM
       coffee-script
       execjs
       json
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.7)
     config (2.2.1)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
@@ -286,11 +286,11 @@ GEM
     eye-patch (1.1.0)
       chronic_duration
       eye (>= 0.10.0)
-    factory_bot (4.11.1)
-      activesupport (>= 3.0.0)
-    factory_bot_rails (4.11.1)
-      factory_bot (~> 4.11.1)
-      railties (>= 3.0.0)
+    factory_bot (6.1.0)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.1.0)
+      factory_bot (~> 6.1.0)
+      railties (>= 5.0.0)
     ffi (1.13.1)
     fog-aws (3.6.6)
       fog-core (~> 2.1)
@@ -627,7 +627,7 @@ DEPENDENCIES
   ed25519 (>= 1.2, < 2.0)
   exception_notification
   eye-patch
-  factory_bot_rails (< 5)
+  factory_bot_rails
   fine_uploader!
   fog-aws
   font-awesome-rails
