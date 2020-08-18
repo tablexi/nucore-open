@@ -31,3 +31,5 @@ def overridable_factory(factory_name, *args, &block)
     end
   end
 end
+
+FactoryBot.use_parent_strategy = false
