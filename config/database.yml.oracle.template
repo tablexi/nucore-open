@@ -22,4 +22,4 @@ test:
 
 production:
   <<: *defaults
-  database: <%= ENV.fetch("MYSQL_DATABASE", "") %>
+  database: <%= ENV.fetch("ORACLE_USERNAME", "") %>
