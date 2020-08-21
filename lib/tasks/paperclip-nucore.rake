@@ -1,39 +1,45 @@
 # frozen_string_literal: true
 
 namespace :paperclip do
+  def move_record(new_class, old_record)
+    new_record = new_class.find(old_record.id)
+    new_record.file = old_record.file
+    # Journals have some validations on update that would fail here
+    new_record.save!(validate: false)
+    old_record.file.destroy
+  rescue Errno::ENOENT => e
+    puts "ERROR: #{e}"
+  end
+
   # How to use:
   # Change the path in `OldJournal` and `OldStoredFile` below to the old path format (what's currently in
   # settings.yml or the environment's settings). Note: if you have :class in there, you'll
   # need to replace that with `journals` or `stored_files`.
   # Update the `paperclip.path` in settings.yml to your new destination
-  # Run this script `bundle exec rake paperclip:migrate_path`
-  desc "Migrate paperclip path format"
-  task migrate_path: :environment do |_t, args|
-    def move_record(new_class, old_record)
-      new_record = new_class.find(old_record.id)
-      new_record.file = old_record.file
-      # Journals have some validations on update that would fail here
-      new_record.save!(validate: false)
-      old_record.file.destroy
-    rescue Errno::ENOENT => e
-      puts "ERROR: #{e}"
+  # Run this script `bundle exec rake paperclip:migrate_path:all`
+  namespace :migrate_path do
+    desc "Migrate paperclip path format"
+    task all: [:journals, :stored_files]
+
+    task journals: :environment do
+      class OldJournal < ApplicationRecord
+        self.table_name = "journals"
+        has_attached_file :file, PaperclipSettings.config.merge(path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename")
+      end
+
+      OldJournal.find_each do |old_record|
+        move_record(Journal, old_record)
+      end
     end
 
-    class OldJournal < ApplicationRecord
-      self.table_name = "journals"
-      has_attached_file :file, PaperclipSettings.config.merge(path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename")
-    end
-
-    OldJournal.find_each do |old_record|
-      move_record(Journal, old_record)
-    end
-
-    class OldStoredFiles < ApplicationRecord
-      self.table_name = "stored_files"
-      has_attached_file :file, PaperclipSettings.config.merge(path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename")
-    end
-    OldStoredFiles.find_each do |old_record|
-      move_record(StoredFile, old_record)
+    task stored_files: :environment do
+      class OldStoredFiles < ApplicationRecord
+        self.table_name = "stored_files"
+        has_attached_file :file, PaperclipSettings.config.merge(path: ":rails_root/public/:attachment/:id_partition/:style/:safe_filename")
+      end
+      OldStoredFiles.find_each do |old_record|
+        move_record(StoredFile, old_record)
+      end
     end
   end
 
