@@ -652,9 +652,7 @@ DEPENDENCIES
   paperclip
   parallel_tests
   paranoia
-  prawn
   prawn-rails
-  prawn-table
   projects!
   pry-byebug
   pry-rails
