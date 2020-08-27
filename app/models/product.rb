@@ -38,15 +38,13 @@ class Product < ApplicationRecord
             email_format: true,
             allow_blank: true
 
-  if SettingsHelper.feature_on? :expense_accounts
-    validates(
-      :account,
-      presence: true,
-      numericality: { only_integer: true },
-      length: { minimum: 1, maximum: Settings.accounts.product_default.to_s.length },
-      if: :requires_account?,
-    )
-  end
+  validates(
+    :account,
+    presence: true,
+    numericality: { only_integer: true },
+    length: { minimum: 1, maximum: Settings.accounts.product_default.to_s.length },
+    if: :requires_account?,
+  )
 
   validates :facility_account_id, presence: true, if: :requires_account?
 
