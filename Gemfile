@@ -63,10 +63,8 @@ gem "fine_uploader", path: "vendor/engines/fine_uploader"
 gem "fullcalendar", path: "vendor/engines/fullcalendar"
 gem "rubyzip"
 
-## controllers
-gem "prawn"
+## PDF generation
 gem "prawn-rails"
-gem "prawn-table"
 
 ## other
 gem "delayed_job_active_record"
