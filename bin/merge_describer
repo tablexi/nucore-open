@@ -16,9 +16,8 @@ while read LINE; do
   pr=$(echo $LINE | cut -d' ' -f1)
   desc=$(echo $LINE | cut -d' ' -f2-)
   if [[ ${#pr} -gt 3 ]]; then
-    echo '*' https://github.com/tablexi/nucore-open/pull/$pr
+    echo "* $desc (https://github.com/tablexi/nucore-open/pull/$pr)"
   else
-    echo '*' '#'$pr
+    echo "* $desc (#$pr)"
   fi
-  echo $desc
 done
