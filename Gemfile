@@ -71,12 +71,14 @@ gem "prawn-table"
 
 ## other
 gem "delayed_job_active_record"
-gem "fog-aws"
 gem "health_check"
 gem "rake"
 gem "spreadsheet"
 gem "daemons"
 gem "ice_cube"
+
+# Optional: File uploads to S3
+# gem "aws-sdk-s3"
 
 ## custom
 gem "bulk_email", path: "vendor/engines/bulk_email"
