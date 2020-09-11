@@ -26,6 +26,7 @@ class InstrumentsDashboardController < ApplicationController
       .current_in_use
       .merge(Product.alphabetized)
       .includes(:product, order: :user)
+      .sort_by { |r| [r.product.schedule.position ? 0 : 1, r.product.schedule.position] }
   end
 
   def authenticate_token
