@@ -2,6 +2,8 @@
 
 class Schedule < ApplicationRecord
 
+  include Nucore::Database::SortHelper
+
   belongs_to :facility
 
   with_options class_name: "Instrument" do |schedule|
