@@ -3,20 +3,24 @@
 = content_for :sidebar do
   = render "admin/shared/sidenav_product", sidenav_tab: "instrument_schedule_position"
 
-%h2== Instrument Display Order
+%h2= text("title")
 
 .container
   - if can?(:update, Schedule)
     .row
       .span12
-        %p= link_to "Edit", edit_facility_instrument_schedule_position_path, class: "btn"
+        %p= link_to text("shared.edit"), edit_facility_instrument_schedule_position_path, class: "btn"
 
   .row
-    .span5
+    .span7
       %ul
         - @schedules.each do |schedule|
-          .well
-            - if schedule.shared?
-              %legend== Shared Schedule
+          - if schedule.shared?
+            %li
+              %strong= schedule.display_name
+            %ul
+              - schedule.products.each do |product|
+                %li= ProductPresenter.new(product)
+          - else
             - schedule.products.each do |product|
               %li= ProductPresenter.new(product)

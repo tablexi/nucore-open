@@ -3,7 +3,7 @@
 = content_for :sidebar do
   = render "admin/shared/sidenav_product", sidenav_tab: "instrument_schedule_position"
 
-%h2== Instrument Display Order
+%h2= text("title")
 
 = simple_form_for :instrument_schedule_position, url: facility_instrument_schedule_position_path, method: :patch do |f|
   .container

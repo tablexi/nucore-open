@@ -6,7 +6,10 @@ en:
   views:
     instrument_schedule_positions:
       edit:
+        title: Instrument Display Order
         label: Instrument Schedules
         reorder: Reorder Instrument Schedules
         submit: Update Ordering
+      show:
+        title: Instrument Display Order
 
