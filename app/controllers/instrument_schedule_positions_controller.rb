@@ -21,9 +21,11 @@ class InstrumentSchedulePositionsController < ApplicationController
 
   # PUT/PATCH /facilities/:facility_id/instrument_schedule_position
   def update
-    @schedules.each do |schedule|
-      position = params[:instrument_schedule_position][:schedule_ids].index(schedule.id.to_s)
-      schedule.update!(position: position)
+    Schdeule.transaction do
+      @schedules.each do |schedule|
+        position = params[:instrument_schedule_position][:schedule_ids].index(schedule.id.to_s)
+        schedule.update!(position: position)
+      end
     end
     redirect_to facility_instrument_schedule_position_path, notice: text("success")
   end

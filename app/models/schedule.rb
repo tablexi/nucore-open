@@ -30,4 +30,8 @@ class Schedule < ApplicationRecord
     "#{I18n.t(key)}: #{name}"
   end
 
+  def display_order_name
+    shared? ? display_name : name
+  end
+
 end

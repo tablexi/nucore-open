@@ -13,14 +13,15 @@
 
   .row
     .span7
+      %p= text("hint")
       %ul
         - @schedules.each do |schedule|
           - if schedule.shared?
             %li
               %strong= schedule.display_name
-            %ul
-              - schedule.products.each do |product|
-                %li= ProductPresenter.new(product)
+              %ul
+                - schedule.products.each do |product|
+                  %li= ProductPresenter.new(product)
           - else
             - schedule.products.each do |product|
               %li= ProductPresenter.new(product)
