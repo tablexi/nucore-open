@@ -21,7 +21,7 @@ class InstrumentSchedulePositionsController < ApplicationController
 
   # PUT/PATCH /facilities/:facility_id/instrument_schedule_position
   def update
-    Schdeule.transaction do
+    Schedule.transaction do
       @schedules.each do |schedule|
         position = params[:instrument_schedule_position][:schedule_ids].index(schedule.id.to_s)
         schedule.update!(position: position)
