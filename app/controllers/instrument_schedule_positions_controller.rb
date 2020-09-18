@@ -12,7 +12,7 @@ class InstrumentSchedulePositionsController < ApplicationController
 
   # GET /facilities/:facility_id/instrument_schedule_position
   def show
-    authorize! :read, @schedules.first
+    authorize! :read, @schedules&.first || Schedule
   end
 
   # GET /facilities/:facility_id/instrument_schedule_position/edit
@@ -37,7 +37,7 @@ class InstrumentSchedulePositionsController < ApplicationController
   end
 
   def authorize_schedules
-    authorize! :edit, @schedules.first
+    authorize! :edit, @schedules&.first || Schedule
   end
 
   def load_schedules
