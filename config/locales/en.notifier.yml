@@ -18,7 +18,6 @@ en:
           Password: %{password}
         outro: ""
       order_detail_status_changed:
-        subject:
         body: |
           Hello %{user},
 

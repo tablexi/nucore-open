@@ -54,11 +54,12 @@ class Notifier < ActionMailer::Base
   end
 
   def order_detail_status_changed(order_detail)
+    @order_detail = order_detail
     facility = order_detail.facility.abbreviation
     status = order_detail.order_status.name
     mail(
       to: order_detail.order.user.email,
-      subject: text(:subject, facility: facility, status: status)
+      subject: text("views.notifier.order_detail_status_changed.subject", facility: facility, status: status)
     )
   end
 
