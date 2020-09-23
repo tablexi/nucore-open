@@ -32,7 +32,7 @@ class NotifierPreview < ActionMailer::Preview
 
   def order_detail_status_changed
     order_detail = Nucore::Database.random(OrderDetail.complete)
-    Notifier.order_detail_status_changed(order_detail)
+    Notifier.order_detail_status_changed(order_detail.id)
   end
 
 end
