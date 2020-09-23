@@ -6,6 +6,8 @@ class Schedule < ApplicationRecord
 
   belongs_to :facility
 
+  scope :positioned, -> { order_by_asc_nulls_last(:position) }
+
   with_options class_name: "Instrument" do |schedule|
     schedule.has_many :facility_instruments, -> { not_archived }
     schedule.has_many :products

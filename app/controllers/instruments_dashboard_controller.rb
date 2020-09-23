@@ -24,9 +24,9 @@ class InstrumentsDashboardController < ApplicationController
   def init_reservations
     @reservations = current_facility.reservations
       .current_in_use
-      .merge(Product.alphabetized)
       .includes(:product, order: :user)
-      .sort_by { |r| r.product.schedule.position || 9999 } # there's no direct relation between reservation and schedule, and we want nil's last
+      .joins(instrument: :schedule)
+      .merge(Schedule.positioned)
   end
 
   def authenticate_token
