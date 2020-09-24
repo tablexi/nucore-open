@@ -63,7 +63,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.1.0)
+    aasm (5.1.1)
       concurrent-ruby (~> 1.0)
     actioncable (5.2.4.3)
       actionpack (= 5.2.4.3)
@@ -108,8 +108,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    after_commit_everywhere (0.1.5)
-      activerecord (>= 4.2)
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
     arel (9.0.0)
@@ -203,7 +201,7 @@ GEM
       coffee-script
       execjs
       json
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.7)
     config (2.2.1)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
@@ -359,7 +357,7 @@ GEM
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     numerizer (0.1.1)
-    oj (3.10.8)
+    oj (3.10.13)
     orm_adapter (0.5.0)
     paper_trail (10.3.1)
       activerecord (>= 4.2)
@@ -371,7 +369,7 @@ GEM
       mimemagic (~> 0.3.0)
       terrapin (~> 0.6.0)
     parallel (1.19.2)
-    parallel_tests (3.1.0)
+    parallel_tests (3.2.0)
       parallel
     paranoia (2.4.2)
       activerecord (>= 4.0, < 6.1)
@@ -445,7 +443,7 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
-    rollbar (2.27.0)
+    rollbar (3.0.0)
     rspec-activejob (0.6.1)
       activejob (>= 4.2)
       rspec-mocks
@@ -504,7 +502,7 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
-    shoulda-matchers (4.3.0)
+    shoulda-matchers (4.4.1)
       activesupport (>= 4.2.0)
     simple_form (5.0.2)
       actionpack (>= 5.0)
@@ -578,7 +576,6 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
-  after_commit_everywhere (~> 0.1, >= 0.1.5)
   awesome_nested_set
   awesome_print
   bcrypt_pbkdf (>= 1.0, < 2.0)
@@ -632,9 +629,7 @@ DEPENDENCIES
   paperclip
   parallel_tests
   paranoia
-  prawn
   prawn-rails
-  prawn-table
   projects!
   pry-byebug
   pry-rails

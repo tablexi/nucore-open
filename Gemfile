@@ -27,7 +27,6 @@ gem "devise-encryptable"
 
 ## models
 gem "aasm"
-gem "after_commit_everywhere", "~> 0.1", ">= 0.1.5" # Needed by AASM
 gem "paperclip"
 gem "paper_trail"
 gem "awesome_nested_set"
@@ -64,10 +63,8 @@ gem "fine_uploader", path: "vendor/engines/fine_uploader"
 gem "fullcalendar", path: "vendor/engines/fullcalendar"
 gem "rubyzip"
 
-## controllers
-gem "prawn"
+## PDF generation
 gem "prawn-rails"
-gem "prawn-table"
 
 ## other
 gem "delayed_job_active_record"
