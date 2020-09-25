@@ -43,7 +43,7 @@ email:
   from: 'noreply@example.com'
   fake:
     enabled: false
-    to:
+    to: nucore@tablexi.com
     whitelist:
   exceptions:
     sender: 'noreply@example.com'
