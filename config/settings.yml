@@ -44,7 +44,6 @@ email:
   fake:
     enabled: false
     to:
-      - nucore@tablexi.com
     whitelist:
   exceptions:
     sender: 'noreply@example.com'
