@@ -40,3 +40,5 @@ spec/examples.txt
 .tags1
 erd.*
 /ssh
+
+*.p12
