@@ -18,6 +18,8 @@ aws s3 sync public/system s3://BUCKET_NAME --acl private
 
 ### Update the application settings
 
+Add the `aws-sdk-s3` gem to `Gemfile`
+
 Add your AWS access keys either to the ENV or to `secrets.yml` (see <config/secrets.yml.template>) on the server.
 
 Update `config/settings/ENVIRONMENT.yml` to use `s3` as the provider for Paperclip and
