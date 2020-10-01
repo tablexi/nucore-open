@@ -88,7 +88,7 @@ module BulkEmail
     end
 
     def products_from_params
-      query = Product.for_facility(facility)
+      query = Product.for_facility(facility).active.requiring_approval
       query = query.where(facility: search_fields[:facilities]) if search_fields[:facilities].present?
       query = query.where(id: search_fields[:products]) if search_fields[:products].present?
       query
@@ -106,6 +106,8 @@ module BulkEmail
     def find_order_details
       OrderDetail
         .for_products(search_fields[:products])
+        .joins(:product)
+        .merge(Product.active)
         .for_facility(facility) # If cross_facility, will not add any restrictions
         .for_facilities(search_fields[:facilities])
         .ordered_or_reserved_in_range(start_date, end_date)
