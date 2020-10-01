@@ -12,7 +12,7 @@ jobs:
       - image: circleci/mysql:5.7.22-ram
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: 'root'
           MYSQL_ROOT_HOST: "%"
       - image: selenium/standalone-chrome:latest
 
