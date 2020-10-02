@@ -29,9 +29,9 @@ module BulkEmail
     end
 
     def do_search
-      user_types.collect do |user_type|
+      user_types.flat_map do |user_type|
         public_send(:"search_#{user_type}")
-      end.flatten.uniq
+      end.uniq.sort_by { |u| [u.last_name, u.first_name] }
     end
 
     def has_search_fields?
@@ -49,36 +49,32 @@ module BulkEmail
     end
 
     def search_customers
-      order_details = find_order_details.joins(order: :user)
-      users.find_by_sql(order_details.select("distinct(users.id), users.*")
-                                            .reorder("users.last_name, users.first_name")
-                                            .merge(users)
-                                            .to_sql)
+      users
+        .distinct
+        .joins(orders: :order_details)
+        .merge(filtered_order_details)
     end
 
     def search_account_owners
-      order_details = find_order_details_for_roles([AccountUser::ACCOUNT_OWNER])
-      User.find_by_sql(order_details.joins(account: { account_users: :user })
-                                     .select("distinct(users.id), users.*")
-                                     .reorder("users.last_name, users.first_name")
-                                     .merge(users)
-                                     .to_sql)
+      users
+        .distinct
+        .joins(accounts: :order_details)
+        .merge(AccountUser.owners)
+        .merge(filtered_order_details)
     end
 
     def search_authorized_users
       users
-        .joins(:product_users)
         .distinct
+        .joins(:product_users)
         .where(product_users: { product: products_from_params })
-        .reorder(*self.class::DEFAULT_SORT)
     end
 
     def search_training_requested
       users
-        .joins(:training_requests)
         .distinct
+        .joins(:training_requests)
         .where(training_requests: { product: products_from_params })
-        .reorder(*self.class::DEFAULT_SORT)
     end
 
     private
@@ -103,7 +99,7 @@ module BulkEmail
       User.active
     end
 
-    def find_order_details
+    def filtered_order_details
       OrderDetail
         .for_products(search_fields[:products])
         .joins(:product)
@@ -111,10 +107,6 @@ module BulkEmail
         .for_facility(facility) # If cross_facility, will not add any restrictions
         .for_facilities(search_fields[:facilities])
         .ordered_or_reserved_in_range(start_date, end_date)
-    end
-
-    def find_order_details_for_roles(roles)
-      find_order_details.joins(account: :account_users).where(account_users: { user_role: roles })
     end
 
     def start_date
