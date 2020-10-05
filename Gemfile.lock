@@ -504,7 +504,7 @@ GEM
       rubyzip (>= 1.2.2)
     shoulda-matchers (4.4.1)
       activesupport (>= 4.2.0)
-    simple_form (5.0.2)
+    simple_form (5.0.3)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
     single_test (0.6.0)
