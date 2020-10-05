@@ -19,6 +19,10 @@ test:
   <<: *defaults
   username: "c##nucore_nu_test"
 
+staging:
+  <<: *defaults
+  database: <%= ENV.fetch("ORACLE_USERNAME", "") %>
+
 production:
   <<: *defaults
   database: <%= ENV.fetch("ORACLE_USERNAME", "") %>

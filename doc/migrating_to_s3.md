@@ -25,7 +25,6 @@ Add your AWS access keys either to the ENV or to `secrets.yml` (see <config/secr
 Update `config/settings/ENVIRONMENT.yml` to use `s3` as the provider for Paperclip and
 configure the bucket (and region if necessary). See the example in <config/settings/production.yml>
 
-
 Deploy the application.
 
 Run the sync one last time.
