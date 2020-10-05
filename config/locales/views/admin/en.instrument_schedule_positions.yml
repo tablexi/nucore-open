@@ -12,4 +12,4 @@ en:
         submit: Update Ordering
       show:
         title: Instrument Display Order
-        hint: Instruments will be displyed in this order on the admin timeline, public timeline, and instrument dashboard.
+        hint: Instruments will be displayed in this order on the admin & public Daily View and the Instrument Dashboard.
