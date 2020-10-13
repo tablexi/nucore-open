@@ -69,6 +69,7 @@ It makes a few assumptions:
 3. Configure your databases
 
     ```
+    # For oracle, use config/database.yml.oracle.template
     cp config/database.yml.mysql.template config/database.yml
     ```
 
