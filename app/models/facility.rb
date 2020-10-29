@@ -49,6 +49,8 @@ class Facility < ApplicationRecord
 
   scope :active, -> { where(is_active: true) }
   scope :alphabetized, -> { order(:name) }
+  # Finds exact name case-insensitive
+  scope :name_query, ->(name) { where(arel_table[:name].lower.eq(name.downcase)) if name.present? }
 
   cattr_accessor(:facility_account_validators) { [] }
 
@@ -133,6 +135,7 @@ class Facility < ApplicationRecord
     schedules
     .active
     .includes(instruments_association => [:alert, :current_offline_reservations, :relay, :schedule_rules])
+    .order_by_asc_nulls_last(:position)
     .order(:name)
   end
 

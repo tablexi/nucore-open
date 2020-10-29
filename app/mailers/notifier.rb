@@ -4,7 +4,6 @@ class Notifier < ActionMailer::Base
 
   include DateHelper
   add_template_helper ApplicationHelper
-  add_template_helper TranslationHelper
   add_template_helper ViewHookHelper
 
   default from: Settings.email.from, content_type: "multipart/alternative"
@@ -22,7 +21,7 @@ class Notifier < ActionMailer::Base
     @user = args[:user]
     @account = args[:account]
     @created_by = args[:created_by]
-    send_nucore_mail @account.owner.user.email, text("views.notifier.user_update.subject")
+    send_nucore_mail @account.owner_user.email, text("views.notifier.user_update.subject")
   end
 
   # Any changes to the financial accounts will alert the PI(s), admin(s)
@@ -54,11 +53,13 @@ class Notifier < ActionMailer::Base
     send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
   end
 
-  def order_detail_status_changed(order_detail_id)
-    @order_detail = OrderDetail.includes(:order, :order_status, :product).find(order_detail_id)
+  def order_detail_status_changed(order_detail)
+    @order_detail = order_detail
+    facility = order_detail.facility.abbreviation
+    status = order_detail.order_status.name
     mail(
-      to: @order_detail.order.user.email,
-      subject: "[NUcore #{@order_detail.facility.abbreviation}] Order Status Changed To: #{@order_detail.order_status.name}"
+      to: order_detail.order.user.email,
+      subject: text("views.notifier.order_detail_status_changed.subject", facility: facility, status: status)
     )
   end
 

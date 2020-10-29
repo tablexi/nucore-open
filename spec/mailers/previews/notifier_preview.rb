@@ -4,7 +4,7 @@ class NotifierPreview < ActionMailer::Preview
 
   def review_orders
     Notifier.review_orders(
-      accounts: ::NUCore::Database.sample(Account, 3),
+      accounts: ::Nucore::Database.sample(Account, 3),
       facility: Facility.first,
       user: User.first,
     )
@@ -20,13 +20,18 @@ class NotifierPreview < ActionMailer::Preview
     )
   end
 
-  def new_user
-    user = User.first
-    Notifier.new_user(user: user, password: "password")
+  def new_internal_user
+    user = FactoryBot.build(:user, :netid, username: "mynetid")
+    Notifier.new_user(user: user, password: user.password)
+  end
+
+  def new_external_user
+    user = FactoryBot.build(:user, password: "abc123")
+    Notifier.new_user(user: user, password: user.password)
   end
 
   def order_detail_status_changed
-    order_detail = NUCore::Database.random(OrderDetail.complete)
+    order_detail = Nucore::Database.random(OrderDetail.complete)
     Notifier.order_detail_status_changed(order_detail)
   end
 

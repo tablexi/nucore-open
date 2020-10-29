@@ -220,6 +220,7 @@ class FacilitiesController < ApplicationController
       thumbnail
       remove_thumbnail
       dashboard_enabled
+      payment_url
     )
   end
 

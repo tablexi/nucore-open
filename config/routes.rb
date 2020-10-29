@@ -75,6 +75,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resource "instrument_schedule_position", only: [:edit, :update, :show]
+
     get "instrument_statuses", to: "instruments#instrument_statuses", as: "instrument_statuses"
 
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
@@ -82,6 +84,8 @@ Rails.application.routes.draw do
     resources :instruments do
       get :dashboard, to: "instruments_dashboard#dashboard", on: :collection
       get :public_dashboard, to: "instruments_dashboard#public_dashboard", on: :collection
+
+      resources :single_reservations, only: [:new, :create]
 
       collection do
         get "list", to: "instruments#public_list"
