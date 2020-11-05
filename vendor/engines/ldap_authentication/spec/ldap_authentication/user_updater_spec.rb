@@ -3,9 +3,16 @@
 require "rails_helper"
 
 RSpec.describe LdapAuthentication::UserUpdater do
-  let(:user_entry) do
-    double("UserEntry", username: "abc123", first_name: "First", last_name: "Last", email: "primary@example.org")
+  let(:net_ldap_entry) do
+    double(
+      "Fake::Net::LDAP::Entry",
+      givenname: ["First"],
+      sn: ["Last"],
+      uid: ["uname"],
+      mail: ["primary@example.org", "secondary@example.org"],
+    )
   end
+  let(:user_entry) { LdapAuthentication::UserEntry.new(net_ldap_entry) }
 
   before do
     allow(LdapAuthentication::UserEntry).to receive(:find).with("abc123").and_return(user_entry)

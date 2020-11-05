@@ -100,8 +100,6 @@ RSpec.describe LdapAuthentication::UserEntry do
 
   describe "update_attributes" do
     it "fills out the attribute hash" do
-      allow(user_entry).to receive(:additional_attributes).and_return(["department"])
-
       expect(user_entry.update_attributes).to match_array(
         username: "uname",
         first_name: "First",
