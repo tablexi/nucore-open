@@ -89,23 +89,28 @@ RSpec.describe LdapAuthentication::UserEntry do
 
   describe "attributes" do
     it "fills out the attribute hash" do
-      expect(user_entry.attributes).to match_array(
+      expect(user_entry.attributes).to include(
         username: "uname",
         first_name: "First",
         last_name: "Last",
         email: "primary@example.org",
       )
     end
-  end
 
-  describe "update_attributes" do
-    it "fills out the attribute hash" do
-      expect(user_entry.update_attributes).to match_array(
-        username: "uname",
-        first_name: "First",
-        last_name: "Last",
-        email: "primary@example.org",
-      )
+    context "with an empty value" do
+      let(:net_ldap_entry) do
+        double(
+          "Fake::Net::LDAP::Entry",
+          givenname: [""],
+          sn: ["Last"],
+          uid: ["uname"],
+          mail: ["primary@example.org", "secondary@example.org"],
+        )
+      end
+
+      it "excludes the attribute" do
+        expect(user_entry.attributes.keys).not_to include(:first_name)
+      end
     end
   end
 end
