@@ -29,6 +29,27 @@ RSpec.describe LdapAuthentication::UserUpdater do
     expect(user.email).to eq("primary@example.org")
   end
 
+  context "when an attrubute is missing" do
+    let!(:user) { create(:user, username: "abc123", email: "primary@example.org") }
+    let(:net_ldap_entry) do
+      double(
+        "Fake::Net::LDAP::Entry",
+        givenname: ["First"],
+        sn: ["Last"],
+        uid: ["uname"],
+        mail: [],
+      )
+    end
+
+    it "updates attrubutes that are present in the response" do
+      expect { described_class.new(user).update_from_ldap }.to change { user.first_name }
+    end
+
+    it "does not update attrubute that are not present in the response" do
+      expect { described_class.new(user).update_from_ldap }.not_to change { user.email }
+    end
+  end
+
   it "raises an error if the user is not found" do
     user = create(:user, username: "xyz789")
     expect { described_class.new(user).update_from_ldap }.to raise_error(/not found in LDAP/)
