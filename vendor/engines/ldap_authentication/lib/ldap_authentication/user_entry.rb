@@ -56,16 +56,13 @@ module LdapAuthentication
 
     def attributes
       (CONVERTABLE_ATTRIBUTES + additional_attributes).each_with_object({}) do |field, output|
-        output[field] = self.public_send(field)
+        field_value = self.public_send(field).presence
+        output[field] = field_value if field_value
       end
     end
 
     def additional_attributes
       LdapAuthentication.config.fetch("additional_user_attributes", []).map(&:to_sym)
-    end
-
-    def update_attributes
-      attributes.delete_if { |field, value| additional_attributes.include?(field) && value.blank? }
     end
 
     def self.with_retry(max_attempts = 3)
