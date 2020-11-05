@@ -4,6 +4,8 @@ module LdapAuthentication
 
   class UserEntry
 
+    CONVERTABLE_ATTRIBUTES = [:username, :first_name, :last_name, :email].freeze
+
     # Returns an Array of `LdapAuthentication::UserEntry`s
     def self.search(uid)
       return [] unless uid
@@ -49,7 +51,21 @@ module LdapAuthentication
     end
 
     def to_user
-      UserConverter.new(self).to_user
+      ::User.new(attributes)
+    end
+
+    def attributes
+      (CONVERTABLE_ATTRIBUTES + additional_attributes).each_with_object({}) do |field, output|
+        output[field] = self.public_send(field)
+      end
+    end
+
+    def additional_attributes
+      LdapAuthentication.config.fetch("additional_user_attributes", []).map(&:to_sym)
+    end
+
+    def update_attributes
+      attributes.delete_if { |field, value| additional_attributes.include?(field) && value.blank? }
     end
 
     def self.with_retry(max_attempts = 3)

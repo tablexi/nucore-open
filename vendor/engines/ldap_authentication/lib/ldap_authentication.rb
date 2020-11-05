@@ -2,7 +2,6 @@
 
 require "devise_ldap_authenticatable"
 require "ldap_authentication/user_entry"
-require "ldap_authentication/user_converter"
 require "ldap_authentication/null_connection"
 require "ldap_authentication/engine"
 

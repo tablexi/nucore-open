@@ -12,6 +12,7 @@ RSpec.describe LdapAuthentication::UserEntry do
       mail: ["primary@example.org", "secondary@example.org"],
     )
   end
+  let(:user_entry) { described_class.new(net_ldap_entry) }
 
   describe ".find" do
     let(:admin_ldap) { spy("AdminConnection", search: [net_ldap_entry]) }
@@ -41,8 +42,6 @@ RSpec.describe LdapAuthentication::UserEntry do
   end
 
   describe "fields" do
-    let(:user_entry) { described_class.new(net_ldap_entry) }
-
     it "gets first_name" do
       expect(user_entry.first_name).to eq("First")
     end
@@ -61,10 +60,54 @@ RSpec.describe LdapAuthentication::UserEntry do
   end
 
   describe "to_user" do
-    let(:user_entry) { described_class.new(net_ldap_entry) }
+    let(:user) { user_entry.to_user }
 
     it "returns a user" do
-      expect(user_entry.to_user).to be_an_instance_of(::User)
+      expect(user).to be_an_instance_of(::User)
+    end
+
+    it "is not persisted" do
+      expect(user).to be_new_record
+    end
+
+    it "has the email set" do
+      expect(user.email).to eq("primary@example.org")
+    end
+
+    it "has the first name set" do
+      expect(user.first_name).to eq("First")
+    end
+
+    it "has the last name set" do
+      expect(user.last_name).to eq("Last")
+    end
+
+    it "has the username set" do
+      expect(user.username).to eq("uname")
+    end
+  end
+
+  describe "attributes" do
+    it "fills out the attribute hash" do
+      expect(user_entry.attributes).to match_array(
+        username: "uname",
+        first_name: "First",
+        last_name: "Last",
+        email: "primary@example.org",
+      )
+    end
+  end
+
+  describe "update_attributes" do
+    it "fills out the attribute hash" do
+      allow(user_entry).to receive(:additional_attributes).and_return(["department"])
+
+      expect(user_entry.update_attributes).to match_array(
+        username: "uname",
+        first_name: "First",
+        last_name: "Last",
+        email: "primary@example.org",
+      )
     end
   end
 end
