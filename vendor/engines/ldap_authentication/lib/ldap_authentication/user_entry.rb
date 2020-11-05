@@ -64,7 +64,7 @@ module LdapAuthentication
     end
 
     def additional_attributes
-      LdapAuthentication.config.fetch("additional_user_attributes", []).map(&:to_sym)
+      LdapAuthentication.additional_user_attributes.map(&:to_sym)
     end
 
     def self.with_retry(max_attempts = 3)

@@ -35,6 +35,10 @@ module LdapAuthentication
     config.fetch("attribute", "uid")
   end
 
+  def self.additional_user_attributes
+    config.fetch("additional_user_attributes", [])
+  end
+
   def self.load_config_from_file
     config_file_path = Rails.root.join("config", "ldap.yml")
     parsed = ERB.new(File.read(config_file_path)).result
