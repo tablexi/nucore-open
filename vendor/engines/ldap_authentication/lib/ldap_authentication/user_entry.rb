@@ -4,6 +4,8 @@ module LdapAuthentication
 
   class UserEntry
 
+    attr_reader :ldap_entry
+
     CONVERTABLE_ATTRIBUTES = [:username, :first_name, :last_name, :email].freeze
 
     # Returns an Array of `LdapAuthentication::UserEntry`s
@@ -35,19 +37,19 @@ module LdapAuthentication
     end
 
     def username
-      @ldap_entry.public_send(LdapAuthentication.attribute_field).last
+      ldap_entry.public_send(LdapAuthentication.attribute_field).last
     end
 
     def first_name
-      @ldap_entry.givenname.first
+      ldap_entry.givenname.first
     end
 
     def last_name
-      @ldap_entry.sn.first
+      ldap_entry.sn.first
     end
 
     def email
-      @ldap_entry.mail.first
+      ldap_entry.mail.first
     end
 
     def to_user
