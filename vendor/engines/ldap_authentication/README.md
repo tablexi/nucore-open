@@ -79,7 +79,7 @@ The easiest thing to do is add an LDAP server in `docker-compose`.
       - PHPLDAPADMIN_HTTPS=false
 ```
 
-3. Add `ldap-data` and `slapd-config` to your volumes list in `docker-compose.yml`:
+3. The directories `/var/lib/ldap` (LDAP database files) and `/etc/ldap/slapd.d` (LDAP config files) are used to persist the schema and data information, and should be mapped as volumes so the files are saved outside the container.  More info on this at https://github.com/osixia/docker-openldap#data-persistence.  Add `ldap-data` and `slapd-config` to your volumes list in `docker-compose.yml`:
 
 ```yaml
 volumes:
