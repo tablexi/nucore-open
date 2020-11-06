@@ -45,7 +45,7 @@ be the value of the `base:` key.
 
 The easiest thing to do is add an LDAP server in `docker-compose`.
 
-1. First, set the `LDAP_HOST`.  If you're running the main app outside docker, you can run `echo LDAP_HOST=localhost` or just leave `LDAP_HOST` unset (`localhost` is set as the default value in `ldap.yml`).  If you're running the main app in docker, add `LDAP_HOST=ldap` to the main app's `environment` in `docker-compose.yml`:
+1. Set the `LDAP_HOST` environment variable.  If you're running the main app outside docker, you can run `echo LDAP_HOST=localhost` or just leave `LDAP_HOST` unset (`localhost` is set as the default value in `ldap.yml`).  If you're running the main app in docker, add `LDAP_HOST=ldap` to the main app's `environment` in `docker-compose.yml`:
 
 ```yaml
   app:
@@ -53,7 +53,7 @@ The easiest thing to do is add an LDAP server in `docker-compose`.
       - LDAP_HOST=ldap
 ```
 
-2. After `LDAP_HOST` is set, add the `ldap` and `ldap-admin` services to `docker-compose.yml`.  The `ldap-admin` service is optional:
+2. Add the `ldap` and `ldap-admin` services to `docker-compose.yml`.  The `ldap-admin` service is optional:
 
 ```yaml
   ldap:
@@ -79,7 +79,7 @@ The easiest thing to do is add an LDAP server in `docker-compose`.
       - PHPLDAPADMIN_HTTPS=false
 ```
 
-3. You'll also need to add `ldap-data` and `slapd-config` to your volumes list in `docker-compose.yml`:
+3. Add `ldap-data` and `slapd-config` to your volumes list in `docker-compose.yml`:
 
 ```yaml
 volumes:
