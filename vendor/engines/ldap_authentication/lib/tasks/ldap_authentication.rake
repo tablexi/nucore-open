@@ -33,7 +33,7 @@ namespace :ldap_authentication do
   desc "Updates User records based on LDAP directory"
   task update_users: :environment do
     updated_users = 0
-    users_to_update = User.authenticated_externally.unexpired
+    users_to_update = User.authenticated_by_netid.unexpired
     users_to_update.find_each do |user|
       entry = LdapAuthentication::UserEntry.find(user.username)
       if entry.present?
