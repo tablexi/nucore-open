@@ -14,7 +14,7 @@ module LdapAuthentication
 
       ldap_entries = nil
       ActiveSupport::Notifications.instrument "search.ldap_authentication" do |payload|
-        ldap_entries = with_retry { admin_ldap.search(filter: Net::LDAP::Filter.eq(LdapAuthentication.attribute_field, uid)) }
+        ldap_entries = with_retry { admin_ldap.search(filter: Net::LDAP::Filter.eq(LdapAuthentication.username_attribute, uid)) }
         payload[:uid] = uid
         payload[:results] = ldap_entries
       end
@@ -37,7 +37,7 @@ module LdapAuthentication
     end
 
     def username
-      ldap_entry.public_send(LdapAuthentication.attribute_field).last
+      ldap_entry.public_send(LdapAuthentication.username_attribute).last
     end
 
     def first_name
