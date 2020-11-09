@@ -6,7 +6,7 @@ or optional rake tasks.
 
 ### Rename username attribute key in `ldap.yml.template` ([#2440](https://github.com/tablexi/nucore-open/pull/2440))
 
-If you are using the [LDAP Authenitcation engine](link) and have set a value for the `attribute` key in `ldap.yml`, you will need to rename the key to `username_attribute`.
+If you are using the [LDAP Authenitcation engine](vendor/engines/ldap_authentication/README.md) and have set a value for the `attribute` key in `ldap.yml`, you will need to rename the key to `username_attribute`.
 
 ```yaml
 # Old setting
