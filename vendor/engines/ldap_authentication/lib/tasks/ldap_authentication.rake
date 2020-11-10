@@ -32,20 +32,26 @@ namespace :ldap_authentication do
 
   desc "Updates User records based on LDAP directory"
   task update_users: :environment do
-    updated_users = 0
-    users_to_update = User.authenticated_by_netid.unexpired
-    users_to_update.find_each do |user|
+    def update_user_from_ldap(user)
       entry = LdapAuthentication::UserEntry.find(user.username)
       if entry.present?
-        puts "Updating: #{user.username}"
         LdapAuthentication::UserUpdater.new(user).update_from_ldap
         if user.saved_changes?
-          updated_users += 1
+          puts "Updated: #{user.username}"
         else
           puts "No changes: #{user.username}"
         end
       end
+    rescue NoMethodError => e
+      puts "Error for #{user.username}: #{e}"
     end
-    puts "Updated #{updated_users} of #{users_to_update.count} Unexpired NetID Users"
+
+    updated_user_count = 0
+    users_to_update = User.authenticated_by_netid.unexpired
+    users_to_update.find_each do |user|
+      update_user_from_ldap(user)
+      updated_user_count += 1 if user.saved_changes?
+    end
+    puts "Updated #{updated_user_count} of #{users_to_update.count} Unexpired NetID Users"
   end
 end
