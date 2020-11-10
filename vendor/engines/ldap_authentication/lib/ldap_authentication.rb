@@ -31,8 +31,8 @@ module LdapAuthentication
     @admin_connection ||= Devise::LDAP::Connection.admin
   end
 
-  def self.attribute_field
-    config.fetch("attribute", "uid")
+  def self.username_attribute
+    config.fetch("username_attribute", "uid")
   end
 
   def self.additional_user_attributes
