@@ -26,6 +26,7 @@
         %th= t(".th.username")
         %th= t(".th.email")
         %th= t(".th.roles")
+        = render_view_hook("additional_user_attribute_headers")
     %tbody
       - UserPresenter.wrap(@users).each do |user|
         %tr
@@ -43,3 +44,4 @@
               = link_to user.username, edit_global_user_role_path(user.id)
           %td= user.email
           %td= user.global_role_list
+          = render_view_hook("additional_user_attributes", user: user)
