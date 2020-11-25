@@ -51,7 +51,7 @@ class OrderRowImporter
   end
 
   def self.optional_fields
-    (HEADERS.to_a - REQUIRED_HEADERS.to_a - ["Errors"]).to_sentence
+    (HEADERS.to_a - REQUIRED_HEADERS.to_a - [header(:errors)]).to_sentence
   end
 
   def self.importable_products
