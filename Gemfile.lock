@@ -402,6 +402,7 @@ GEM
     parser (2.7.2.0)
       ast (~> 2.4.1)
     pdf-core (0.8.1)
+    phantomjs (2.1.1.0)
     powerpack (0.1.2)
     prawn (2.3.0)
       pdf-core (~> 0.8.1)
@@ -673,6 +674,7 @@ DEPENDENCIES
   paperclip
   parallel_tests
   paranoia
+  phantomjs
   prawn-rails
   projects!
   pry-byebug

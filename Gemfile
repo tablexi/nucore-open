@@ -124,6 +124,7 @@ group :development, :test do
 end
 
 group :test do
+  gem "phantomjs"
   gem "capybara"
   gem "capybara-email"
   gem "rails-controller-testing"
