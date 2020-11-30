@@ -120,6 +120,7 @@ group :development, :test do
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rspec-activejob"
+  gem 'teaspoon', '1.1.5'
   gem "teaspoon-jasmine"
 end
 
