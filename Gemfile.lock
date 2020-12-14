@@ -531,7 +531,7 @@ GEM
     temple (0.8.2)
     terrapin (0.6.0)
       climate_control (>= 0.0.3, < 1.0)
-    text_helpers (1.0.0)
+    text_helpers (1.1.0)
       activesupport
       i18n (>= 0.6.8)
       redcarpet (>= 3.3.3)
@@ -540,7 +540,7 @@ GEM
     tilt (2.0.10)
     timers (4.3.0)
     ttfunk (1.6.2.1)
-    tzinfo (1.2.7)
+    tzinfo (1.2.8)
       thread_safe (~> 0.1)
     uglifier (4.1.18)
       execjs (>= 0.3.0, < 3)
