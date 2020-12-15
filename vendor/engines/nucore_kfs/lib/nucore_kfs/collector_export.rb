@@ -144,9 +144,10 @@ module NucoreKfs
           doc_from_char = "C"
           doc_num_as_str = doc_num.to_s
           desc = "#{facility_initials}|#{prod.name}|#{date}"[0..39]
-          tx_dollar_amt = od.actual_cost.truncate(2).to_s("F")
+          dollar_amt = od.actual_cost.truncate(2)
+          tx_dollar_amt = dollar_amt.to_s("F")
 
-          puts("tx_dollar_amt = #{tx_dollar_amt}")
+          puts("actual_cost | dollar_amt | tx_dollar_amt = #{od.actual_cost} | #{dollar_amt} | #{tx_dollar_amt}")
 
           ref_field_1 = od.order_id.to_s
           ref_field_2 = od.id.to_s
@@ -245,7 +246,7 @@ module NucoreKfs
             ]
             records += 1
             doc_num += 1
-            file_amt += Float(tx_dollar_amt)
+            file_amt += dollar_amt
 
             output << entry.join("") << "\n"
           }
