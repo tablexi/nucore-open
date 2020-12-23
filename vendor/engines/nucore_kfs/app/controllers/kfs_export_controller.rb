@@ -17,4 +17,22 @@ class KfsExportController < ApplicationController
     end
     render action: "show.#{params[:format]}.erb", layout: false, content_type: "application/kfs-collector"
   end
+
+  def uch_banner
+    @journal = Journal.find(params[:id])
+
+    @journal_rows = @journal.journal_rows.select {|row| row.order_detail && row.order_detail.account.account_number.start_with?('UCH') } 
+
+    exporter = NucoreKfs::UchBannerExport.new(@journal.journal_rows)
+    
+    # respond_to do |format|
+    #   format.csv { send_data exporter.to_csv, filename: "users-#{Date.today}.csv" }
+    # end
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"uch-journal-#{@journal.id}.csv\""
+        headers['Content-Type'] ||= 'text/csv'
+      end
+    end
+  end
 end

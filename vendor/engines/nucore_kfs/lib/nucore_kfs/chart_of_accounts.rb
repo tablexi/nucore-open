@@ -6,7 +6,8 @@ module NucoreKfs
     def initialize
 
       # TODO: consider refactoring these to configuration/settings
-      wsdl = 'https://kuali.uconn.edu/kfs-prd/remoting/chartOfAccountsInquiry?wsdl'
+      # wsdl = 'https://kuali.uconn.edu/kfs-uat/remoting/chartOfAccountsInquiry?wsdl'
+      wsdl = 'https://kualinp.uconn.edu/kfs-uat/remoting/chartOfAccountsInquiry?wsdl'
       # required workaround: override WSDL namespace since the targetNamespace
       # specified by the WSDL does not match what the SOAP endpoint expects
       namespace = 'http://kfs.kuali.org/core/v5_0'

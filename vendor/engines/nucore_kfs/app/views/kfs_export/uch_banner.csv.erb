@@ -1,0 +1,12 @@
+<%- headers = ['Order ID', 'Line Item ID', 'Order URL', 'Banner Index #', 'Amount', 'Transaction Date'] -%>
+<%= CSV.generate_line(headers).strip %>
+<%- @journal_rows.each do |row|  -%>
+<%= CSV.generate_line([
+  row.order_detail.order_id,
+  row.order_detail.id,
+  order_url(row.order_detail.order_id),
+  row.order_detail.account.account_number,
+  row.order_detail.actual_cost,
+  row.order_detail.created_at.strftime("%Y-%m-%d")])
+-%>
+<%- end -%>
