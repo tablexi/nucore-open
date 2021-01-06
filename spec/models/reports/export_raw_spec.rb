@@ -201,7 +201,7 @@ RSpec.describe Reports::ExportRaw do
     end
 
     describe "in review" do
-      before { order_detail.update!(reviewed_at: nil) }
+      before { order_detail.update!(reviewed_at: 5.days.from_now) }
 
       it "includes the correct notice" do
         expect(report).to have_column_values("Notices" => "In Review")
