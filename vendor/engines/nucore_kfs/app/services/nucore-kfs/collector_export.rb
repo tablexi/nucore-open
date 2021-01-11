@@ -3,8 +3,6 @@ module NucoreKfs
   class CollectorExport
     require "date"
 
-    @@UCH_GLOBAL_DEBIT_ACCOUNT = 'KFS-4643530-1390'
-
     # Please reference the "Collector Batch Format" document for a complete
     # understanding of all the fields are formatting used here.
 
@@ -112,19 +110,6 @@ module NucoreKfs
       return header_record.join("")
     end
 
-    def get_debit_account(order_detail_row)
-      account_number = order_detail_row.account.account_number
-      is_uch = account_number.match(/^UCH-(?<acct_num>\d{0,7})/)
-      is_kfs = account_number.match(/^KFS-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
-      if is_uch
-        return @@UCH_GLOBAL_DEBIT_ACCOUNT
-      elsif is_kfs
-        return account_number
-      else
-        raise "unknown account type: #{account_number}"
-      end
-    end
-
     def create_collector_transactions_from_journal_rows(journal_rows)
       collector_transactions = []
       # An increasing sequential number beginning with zero. Should be the same for each Debit(D) and Credit(C) entry.
@@ -132,68 +117,43 @@ module NucoreKfs
 
       journal_rows.each do |journal_row|
         next unless journal_row.order_detail
-        order_detail = journal_row.order_detail
-        # TODO: move some of this logic to the model?
-        transaction_date = order_detail.created_at.strftime("%Y-%m-%d")
-        product = order_detail.product
-        facility_initials = order_detail.facility.name.scan(/([A-Z])/).join
-        description = "|CORE|#{facility_initials}|#{transaction_date}|#{product.name}"[0..39]
-        transaction_dollar_amount = order_detail.actual_cost.truncate(2).to_s("F")
-        ref_field_1 = order_detail.order_id.to_s
-        ref_field_2 = order_detail.id.to_s
-
-        # where to take the money (the purchaser)
-        debit_account_string = get_debit_account(order_detail)
-        # where to send the money (the facility)
-        credit_account_string = product.facility_account.account_number
-
-        # Parse account chartstrings (e.g., KFS-1234567-1234) to get account number and object code
-        raise "invalid account format: #{debit_account_string}" unless debit_account_match = debit_account_string.match(/^(?<acct_type>\w{3})-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
-        raise "invalid account format: #{credit_account_string}" unless credit_account_match = credit_account_string.match(/^(?<acct_type>\w{3})-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
-        debit_account_number = debit_account_match[:acct_num]
-        credit_account_number = credit_account_match[:acct_num]
-        debit_object_code = debit_account_match[:obj_code]
-        credit_object_code = credit_account_match[:obj_code]
-
-        collector_transaction = CollectorTransaction.new(
-          @fiscal_year,
-          debit_account_number,
-          credit_account_number,
-          debit_object_code,
-          credit_object_code,
-          document_number,
-          description,
-          transaction_dollar_amount,
-          transaction_date,
-          ref_field_1,
-          ref_field_2
-        )
+      
+        collector_transaction = CollectorTransaction.new
+        collector_transaction.from_journal_row(journal_row)
         collector_transactions.append(collector_transaction)
 
         # handle any counters or aggregates
         document_number += 1
       end
-
       collector_transactions
     end
 
-    def generate_export_file_new(journal_rows)
-      collector_transactions = create_collector_transactions_from_journal_rows(journal_rows)
-
-      output = ""
+    def create_general_ledger_entries_from_transactions(transactions)
+      entries = ""
       records = 0
       file_amt = 0
-      header_content = generate_export_header()
-      output << header_content << "\n"
-
-      collector_transactions.each do |transaction|
-        output << transaction.create_debit_row_string() << "\n"
-        output << transaction.create_credit_row_string() << "\n"
+      transactions.each do |transaction|
+        entries << transaction.create_debit_row_string() << "\n"
+        entries << transaction.create_credit_row_string() << "\n"
         records += 2 # we must count both the credit and debit row
         # the way collector works, we must "double cunt"
         file_amt += transaction.get_transaction_dollar_amount() * 2
       end
+      return Hash[:entries => entries, :records => records, :file_amt => file_amt]
+    end
 
+    def generate_export_file_new(journal_rows)
+      output = ""
+
+      header_content = generate_export_header()
+      output << header_content << "\n"
+
+      collector_transactions = create_collector_transactions_from_journal_rows(journal_rows)
+      transaction_entries = create_general_ledger_entries_from_transactions(collector_transactions)
+      output << transaction_entries[:entries]
+
+      records = transaction_entries[:records]
+      file_amt = transaction_entries[:file_amt]
       trailer_record = generate_trailer_record(records, file_amt)
       output << trailer_record << "\n"
 

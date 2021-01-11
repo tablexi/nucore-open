@@ -1,37 +1,49 @@
 module NucoreKfs
 
   class CollectorTransaction
+    require "date"
 
-    def initialize(fiscal_year,
-                   debit_account_number,
-                   credit_account_number,
-                   debit_object_code,
-                   credit_object_code,
-                   document_number,
-                   description,
-                   transaction_dollar_amount,
-                   transaction_date,
-                   ref_field_1,
-                   ref_field_2
-                  )
-      @fiscal_year = fiscal_year
-      @debit_account_number = debit_account_number
-      @credit_account_number = credit_account_number
-      @debit_object_code = debit_object_code
-      @credit_object_code = credit_object_code
-      @document_number = document_number
-      @description = description
-      @transaction_dollar_amount = transaction_dollar_amount
-      @transaction_date = transaction_date
-      @ref_field_1 = ref_field_1
-      @ref_field_2 = ref_field_2
+    @@UCH_GLOBAL_DEBIT_ACCOUNT = 'KFS-4643530-1390'
 
-      # these are always the same. maybe they should be class properties?
+    # Please reference the "Collector Batch Format" document for a complete
+    # understanding of all the fields are formatting used here.
+
+    def initialize
+      @now = DateTime.now
+      # TODO: There is a fiscal_year_begins setting that we should read and use here.
+      # For now, we are just hardcoding the start of UConn's FY: July 1
+      @fiscal_year = (@now.month < 7 ? @now.year : @now.year + 1).to_s
+
       @chart_accounts_code = "UC"
       @bal_record_type = "AC"
       @doc_type = "CLTR"
       @orig_code = "CC"
       @doc_from_char = "C"
+    end
+
+    def from_journal_row(journal_row)
+      @order_detail = journal_row.order_detail
+      # TODO: move some of this logic to the model?
+      @transaction_date = @order_detail.created_at.strftime("%Y-%m-%d")
+      @product = @order_detail.product
+      @facility_initials = @order_detail.facility.name.scan(/([A-Z])/).join
+      @description = "|CORE|#{@facility_initials}|#{@transaction_date}|#{@product.name}"[0..39]
+      @transaction_dollar_amount = @order_detail.actual_cost.truncate(2).to_s("F")
+      @ref_field_1 = @order_detail.order_id.to_s
+      @ref_field_2 = @order_detail.id.to_s
+
+      # where to take the money (the purchaser)
+      debit_account_string = get_debit_account(@order_detail)
+      # where to send the money (the facility)
+      credit_account_string = @product.facility_account.account_number
+
+      # Parse account chartstrings (e.g., KFS-1234567-1234) to get account number and object code
+      raise "invalid account format: #{debit_account_string}" unless debit_account_match = debit_account_string.match(/^(?<acct_type>\w{3})-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
+      raise "invalid account format: #{credit_account_string}" unless credit_account_match = credit_account_string.match(/^(?<acct_type>\w{3})-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
+      @debit_account_number = debit_account_match[:acct_num]
+      @credit_account_number = credit_account_match[:acct_num]
+      @debit_object_code = debit_account_match[:obj_code]
+      @credit_object_code = credit_account_match[:obj_code]
     end
 
     def get_transaction_dollar_amount()
@@ -44,6 +56,19 @@ module NucoreKfs
 
     def create_debit_row_string()
       create_collector_row_string_helper(false)
+    end
+
+    def get_debit_account(order_detail_row)
+      account_number = order_detail_row.account.account_number
+      is_uch = account_number.match(/^UCH-(?<acct_num>\d{0,7})/)
+      is_kfs = account_number.match(/^KFS-(?<acct_num>\d{0,7})-(?<obj_code>\d{4})$/)
+      if is_uch
+        return @UCH_GLOBAL_DEBIT_ACCOUNT
+      elsif is_kfs
+        return account_number
+      else
+        raise "unknown account type: #{account_number}"
+      end
     end
 
     def create_collector_row_string_helper(is_credit)
@@ -60,11 +85,11 @@ module NucoreKfs
         # "Chart of Accounts code"
         @chart_accounts_code.ljust(2),
         # "Account Number" - Account number to be credited or debited
-        account_number.ljust(7),
+        @account_number.ljust(7),
         # "Filler" - Blanks or spaces
         " " * 5,
         # "Object Code" - Object Code to be credited or debited
-        object_code.ljust(4),
+        @object_code.ljust(4),
         # "Filler" - Blanks or spaces
         " " * 3,
         # "Balance Type"
