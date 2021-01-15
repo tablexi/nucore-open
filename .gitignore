@@ -5,6 +5,7 @@ tmp/
 .vscode
 .rvmrc
 .ruby-gemset
+.ruby-version
 sqlnet.log
 config/database.yml
 config/ldap.yml

@@ -9,8 +9,8 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
   let(:kfs_soap_data) { Hash({:account_number => "7777777",
                           :account_name => "test account",
                           :status => "OPEN",
-                          :fiscal_officer_identifier => owner.username,
-                          :accounts_supervisory_systems_identifier => business_admin.username
+                          :fiscal_officer_identifier => business_admin.username,
+                          :accounts_supervisory_systems_identifier => owner.username
                           })
                         }
 
@@ -76,9 +76,10 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
   end
 
   it "can find the correct account in upsert" do
+    account = kfs_account
     api.upsert_account(kfs_soap_data)
 
-    expect(kfs_account.owner_user.id).to eq(owner.id)
+    expect(account.owner_user.username).to eq(owner.username)
   end
 
   it "can insert account in upsert" do
@@ -87,12 +88,15 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
     expect(Account.find_by(account_number: "KFS-7777777-6610")).to_not be_nil
   end
 
-  it "can update account in upsert" do
-    kfs_soap_data[:fiscal_officer_identifier] = business_admin.username
-    kfs_soap_data[:accounts_supervisory_systems_identifier] = owner.username
+  it "can update existing account in upsert" do
+    kfs_soap_data[:fiscal_officer_identifier] = owner.username
+    kfs_soap_data[:accounts_supervisory_systems_identifier] = business_admin.username
+
+    account = kfs_account
     api.upsert_account(kfs_soap_data)
 
-    expect(kfs_account.owner_user.id).to eq(business_admin.id)
+    expect(account.owner_user.id).to eq(business_admin.id)
+    expect(account.owner_user.username).to eq(business_admin.username)
   end
 
   it "only upserts accounts with valid owner and administrator" do
@@ -102,17 +106,18 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
     expect(api.upsert_account(kfs_soap_data)).to be_nil
   end
 
-  it "suspends account if closed" do
-    kfs_soap_data[:status] = "CLOSED"
-
+  it "suspends closed account" do
     kfs_account.unsuspend
+
+    kfs_soap_data[:status] = "CLOSED"
     api.upsert_account(kfs_soap_data)
 
     expect(kfs_account.suspended?).to be true
   end
 
-  it "unsuspends account if open" do
+  it "unsuspends open account" do
     kfs_account.suspend
+
     api.upsert_account(kfs_soap_data)
 
     expect(kfs_account.suspended?).to be false

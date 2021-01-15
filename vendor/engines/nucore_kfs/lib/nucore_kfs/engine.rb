@@ -1,10 +1,10 @@
+# frozen_string_literal: true
 
-
-require "nucore_kfs/collector_export"
-require "nucore_kfs/uch_banner_export"
-require "nucore_kfs/chart_of_accounts"
-require "nucore_kfs/import_uch_banner_index"
-require "nucore_kfs/collector_row"
+# require "nucore_kfs/chart_of_accounts"
+# require "nucore_kfs/collector_export"
+# require "nucore_kfs/collector_transaction"
+# require "nucore_kfs/import_uch_banner_index"
+# require "nucore_kfs/uch_banner_export"
 
 module NucoreKfs
   class Engine < ::Rails::Engine

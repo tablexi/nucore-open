@@ -196,12 +196,10 @@ module NucoreKfs
         # ensure the account is flagged as open/closed as appropriate
         if account.suspended? && account_open
           account.unsuspend
-          #puts("#{account.id} = #{account.suspended?}")
           #puts("unsuspending account: #{account_number}")
         end
         if !account.suspended? && !account_open
           account.suspend
-          #puts("#{account.id} = #{account.suspended?}")
           #puts("suspending account: #{account_number}")
         end
 
