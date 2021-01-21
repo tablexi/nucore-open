@@ -16,6 +16,7 @@ class Reservation < ApplicationRecord
   # Associations
   #####
   belongs_to :product
+  belongs_to :instrument, foreign_key: :product_id
   belongs_to :order_detail, inverse_of: :reservation
   belongs_to :created_by, class_name: "User"
   has_one :order, through: :order_detail
@@ -171,6 +172,12 @@ class Reservation < ApplicationRecord
     force_completion || actual_end_at || reserve_end_at < Time.current
   end
 
+  def force_dirty!
+    # The actual attribute doesn't matter, we just need to make sure this object
+    # is marked as ActiveModel::Dirty when this method is called.
+    actual_start_at_will_change!
+  end
+
   def start_reservation!
     # If there are any reservations running over their time on the shared schedule,
     # kick them over to the problem queue.
@@ -178,7 +185,7 @@ class Reservation < ApplicationRecord
       # If we're in the grace period for this reservation, but the other reservation
       # has not finished its reserved time, this will fail and this reservation will
       # not start.
-      MoveToProblemQueue.move!(reservation.order_detail)
+      MoveToProblemQueue.move!(reservation.order_detail, user: reservation.user, cause: :reservation_started)
     end
     update!(actual_start_at: Time.current)
   end
@@ -198,6 +205,16 @@ class Reservation < ApplicationRecord
   def assign_actuals_off_reserve
     self.actual_start_at ||= reserve_start_at
     self.actual_end_at   ||= reserve_end_at
+  end
+
+  def valid_as_user?(user)
+    if user.operator_of?(product.facility)
+      self.reserved_by_admin = true
+      valid?
+    else
+      self.reserved_by_admin = false
+      valid?(context: :user_purchase)
+    end
   end
 
   def save_as_user(user)

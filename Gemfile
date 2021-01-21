@@ -7,15 +7,18 @@ ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ## base
-gem "rails", "5.2.3"
+gem "rails", "5.2.4.4"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
 gem "bootsnap", require: false
+gem "puma"
 
 ## database
 gem "mysql2"
 # To use Oracle, remove the mysql2 gem above and uncomment these lines
-# gem "activerecord-oracle_enhanced-adapter"
+# There are fixes for fulltext indexing in the 6.0 master of the gem, but we need
+# to backport them to support 5.2.
+# gem "activerecord-oracle_enhanced-adapter", git: "https://github.com/jhanggi/oracle-enhanced", branch: "release52"
 # gem "ruby-oci8" # only for CRuby users
 
 
@@ -38,12 +41,17 @@ gem "paranoia"
 gem "sass-rails"
 gem "coffee-rails"
 gem "uglifier", "= 4.1.18" # 4.1.19 has an issue https://github.com/mishoo/UglifyJS2/issues/3245
-gem "mini_racer"
+# TO DO: consider using nodejs instead of mini_racer
+# libv8 8+ does not like to compile on our boxes. It's easier to lock down
+# libv8 and mini_racer for now than to try to get them upgraded on the server.
+gem "mini_racer", "< 0.3"
+gem "libv8", "< 8"
 gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
 gem "dynamic_form"
-gem "ckeditor"
+# 5.0 has breaking changes based which need to be addressed before we can upgrade
+gem "ckeditor", "< 5"
 gem "jquery-rails"
 gem "jquery-ui-rails"
 gem "vuejs-rails", "~> 1.0.26" # 2.0 introduces breaking changes
@@ -57,19 +65,19 @@ gem "fine_uploader", path: "vendor/engines/fine_uploader"
 gem "fullcalendar", path: "vendor/engines/fullcalendar"
 gem "rubyzip"
 
-## controllers
-gem "prawn"
-gem "prawn_rails"
-gem "prawn-table"
+## PDF generation
+gem "prawn-rails"
 
 ## other
 gem "delayed_job_active_record"
-gem "fog-aws"
 gem "health_check"
 gem "rake"
 gem "spreadsheet"
 gem "daemons"
 gem "ice_cube"
+
+# Optional: File uploads to S3
+# gem "aws-sdk-s3"
 
 ## custom
 gem "bulk_email", path: "vendor/engines/bulk_email"
@@ -97,7 +105,6 @@ group :development do
   gem "ed25519", ">= 1.2", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "haml_lint", require: false
   gem "letter_opener"
-  gem "rails-erd"
   gem "rubocop", "0.58", require: false
   gem "rubocop-rspec"
   gem "web-console"
@@ -108,19 +115,17 @@ group :development, :test do
   # FactoryBot 5.X has some breaking changes we haven't sorted out
   # https://github.com/tablexi/nucore-open/pull/1865
   gem "factory_bot_rails", "< 5"
-  gem "guard-rspec", require: false
-  gem "guard-teaspoon", require: false
   gem "parallel_tests"
   gem "pry-rails"
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rspec-activejob"
-  gem "spring"
-  gem "spring-commands-rspec"
+  gem 'teaspoon', '1.1.5'
   gem "teaspoon-jasmine"
 end
 
 group :test do
+  gem "phantomjs"
   gem "capybara"
   gem "capybara-email"
   gem "rails-controller-testing"

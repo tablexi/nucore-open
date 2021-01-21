@@ -210,7 +210,7 @@ RSpec.describe OrderDetail do
   end
 
   it "should have an order" do
-    is_expected.not_to allow_value(nil).for(:order_id)
+    is_expected.not_to allow_value(nil).for(:order)
   end
 
   it "should have a quantity of at least 1" do
@@ -1960,5 +1960,24 @@ RSpec.describe OrderDetail do
         @order_detail.notify_purchaser_of_order_status
       end
     end
+  end
+
+  describe "#order_number" do
+
+    it "includes the merge_with_order_id when present" do
+      merge_to_order = @order.dup
+      merge_to_order.save
+      @order.update_attribute :merge_with_order_id, merge_to_order.id
+      @order_detail.reload
+
+      expect(@order_detail.order.merge_with_order_id).to be_present
+      expect(@order_detail.order_number).to eq "#{merge_to_order.id}-#{@order_detail.id}"
+    end
+
+    it "includes the order_id when no merge_with_order_id exists" do
+      expect(@order_detail.order.merge_with_order_id).to be_blank
+      expect(@order_detail.order_number).to eq "#{@order_detail.order.id}-#{@order_detail.id}"
+    end
+
   end
 end

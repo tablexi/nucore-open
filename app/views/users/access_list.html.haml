@@ -32,14 +32,15 @@
               %td.approval-column.approval-checkbox
                 = check_box_tag "approved_products[]",
                   product.id,
-                  product.can_be_used_by?(@user)
+                  product.can_be_used_by?(@user),
+                  aria: {label: product.name}
               %td.product-column
                 - if training_requested_for?(product)
                   %span.label.label-important
                     = text("users.access_list.training_requested")
                 = link_to product, [product.facility, product, :users]
               %td.scheduling-group-column
-                - if product.has_access_list?
+                - if product.has_product_access_groups?
                   = scheduling_group_select(product, @user)
 
     = submit_tag text("users.access_list.update_approvals.submit"),

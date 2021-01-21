@@ -30,7 +30,7 @@ class FacilityStatementsController < ApplicationController
     respond_to do |format|
       format.html { @statements = @statements.paginate(page: params[:page]) }
       format.csv do
-        send_csv_email_and_respond do |email|
+        yield_email_and_respond_for_report do |email|
           StatementSearchResultMailer.search_result(email, search_params.to_h).deliver_later
         end
       end
@@ -62,6 +62,7 @@ class FacilityStatementsController < ApplicationController
     elsif @statement_creator.create
       @statement_creator.send_statement_emails
       flash[:notice] = text(success_message, accounts: @statement_creator.formatted_account_list)
+
     else
       flash[:error] = text("errors_html", errors: @statement_creator.formatted_errors)
     end

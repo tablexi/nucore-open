@@ -11,9 +11,9 @@ jobs:
           - SELENIUM_DRIVER_URL: http://localhost:4444/wd/hub
       - image: circleci/mysql:5.7.22-ram
         environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: 'root'
           MYSQL_ROOT_HOST: "%"
+          BUNDLER_VERSION: 2.0.1
       - image: selenium/standalone-chrome:latest
 
     steps:
@@ -24,6 +24,7 @@ jobs:
           keys:
             - gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}-{{ checksum ".ruby-version" }}
 
+      - run: gem install bundler
       - run: bundle install --path vendor/bundle
 
       - save_cache:

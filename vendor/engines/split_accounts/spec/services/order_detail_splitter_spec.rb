@@ -24,6 +24,7 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
                                    estimated_cost: BigDecimal("29.99"),
                                    estimated_subsidy: BigDecimal("39.99"),
                                    account: split_account,
+                                   order: order,
                                    note: "this is a note")
     end
 
@@ -173,7 +174,9 @@ RSpec.describe SplitAccounts::OrderDetailSplitter, type: :service do
 
     it "does not do anything to the reservation" do
       order_detail.update_attributes!(account: split_account)
-      described_class.new(order_detail, split_time_data: true).split
+      expect {
+        described_class.new(order_detail, split_time_data: true).split
+      }.not_to change(Reservation, :count)
       expect(reservation.reload).to be_persisted
     end
   end

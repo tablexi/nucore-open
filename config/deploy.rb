@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-lock "~> 3.12.0"
+lock "~> 3.14.0"
 
 set :application, "nucore"
 

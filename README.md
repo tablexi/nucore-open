@@ -2,6 +2,12 @@
 
 Open source version of Northwestern University Core Facility Management Software
 
+## Note for Forks
+
+As you pull in new features/bug fixes from open, please keep up with the [CHANGELOG](CHANGELOG.md)
+to see changes that may break your fork and optional/required rake tasks you may want
+to run.
+
 ## Quickstart
 
 Welcome to NUcore! This guide will help you get a development environment up and running.
@@ -63,6 +69,7 @@ It makes a few assumptions:
 3. Configure your databases
 
     ```
+    # For oracle, use config/database.yml.oracle.template
     cp config/database.yml.mysql.template config/database.yml
     ```
 
@@ -96,21 +103,18 @@ _Known issue: if you run `db:setup` or all three in one rake command, the next t
 7. Configure your file storage
 
     By default, files are stored on the local filesystem. If you wish to use
-    Amazon's S3 instead, create a local settings override file such as
-    `config/settings/development.local.yml` or `config/settings/production.local.yml`
-    and include the following, substituting your AWS settings:
-
+    Amazon's S3 instead, enable S3 in your environment by updateing the local settings override file such as
+    `config/settings/development.local.yml` or `config/settings/production.local.yml`.
+    Uncomment the section under `paperclip`:
     ```
     paperclip:
-      storage: fog
-      fog_credentials:
-        provider: AWS
-        aws_access_key_id: YOUR_S3_KEY_GOES_HERE
-        aws_secret_access_key: YOUR_S3_SECRET_KEY_GOES_HERE
-      fog_directory: YOUR_S3_BUCKET_NAME_GOES_HERE
-      fog_public: false
-      path: ":class/:attachment/:id_partition/:style/:safe_filename"
+      aws_access_key_id: <%= ENV.fetch("AWS_ACCESS_KEY", "Your-Key-Here") %>
+      aws_secret_access_key: <ENV.fetch("AWS_SECRET_ACCESS_KEY", "Your-Key-Here") %>
+      ...
     ```
+    Then add your credentials to the ENV or `secrets.yml`.
+
+    See [`migrating_to_s3.md`](./doc/migrating_to_s3.md) for more info.
 
 8. Start your server
 
@@ -155,13 +159,13 @@ NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following fr
     ```
     rake spec
     ```
-    
+
 * To run just the model tests
 
     ```
     rake spec:models
     ```
-    
+
 * To run just the controller tests
     ```
     rake spec:controllers
@@ -182,19 +186,19 @@ You can run specs in parallel during local development using the [`parallel_test
     ```
     rake parallel:create
     ```
-  
+
   OR
-  
+
     ```
     rake parallel:load_schema
     ```
 
 * Copy development schema (repeat after migrations):
-	
+
 	```
     rake parallel:prepare
 	```
-	
+
 * Run tests:
 
     ```
@@ -248,4 +252,4 @@ There are valuable resources in the NUcore's doc directory.
 
 * Need to asynchronously monitor some aspect of NUcore? [**See HOWTO_daemons.txt**](doc/HOWTO_daemons.txt)
 
-* Want to integrate with Form.io? [**See form.io_tips_and_tricks**](vendor/engines/form.io_tips_and_tricks.docx)
+* Want to integrate with Form.io? [**See form.io_tips_and_tricks**](doc/form.io_tips_and_tricks.docx)
