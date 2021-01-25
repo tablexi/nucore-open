@@ -513,8 +513,8 @@ GEM
       activemodel (>= 5.0)
     single_test (0.6.0)
       rake
-    spreadsheet (1.2.6)
-      ruby-ole (>= 1.0)
+    spreadsheet (1.2.7)
+      ruby-ole
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
