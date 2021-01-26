@@ -70,7 +70,9 @@ class OrderDetails::ParamUpdater
 
     @order_detail.transaction do
       assign_price_changed_by_user
-      @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation
+      if @order_detail.reservation
+        log_and_rollback unless @order_detail.reservation.save_as_user(@editing_user)
+      end
       if order_status_id && order_status_id.to_i != @order_detail.order_status_id
         change_order_status(order_status_id, @options[:cancel_fee]) || raise(ActiveRecord::Rollback)
       else
@@ -84,11 +86,16 @@ class OrderDetails::ParamUpdater
   end
 
   def trigger_notifications
-    OrderDetails::DisputeResolvedNotifier.new(@order_detail,current_user: @editing_user).notify
+    OrderDetails::DisputeResolvedNotifier.new(@order_detail, current_user: @editing_user).notify
     OrderDetails::AssignmentNotifier.new(@order_detail).notify
   end
 
   private
+
+  def log_and_rollback
+    logger.error("errors for reservation #{@order_detail.reservation.id}: #{@order_detail.reservation.errors.full_messages}")
+    raise(ActiveRecord::Rollback)
+  end
 
   def assign_price_changed_by_user
     if @order_detail.actual_costs_match_calculated?
