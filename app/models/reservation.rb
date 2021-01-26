@@ -5,6 +5,7 @@ require "date"
 class Reservation < ApplicationRecord
 
   acts_as_paranoid # soft deletes
+  has_paper_trail
 
   include DateHelper
   include Reservations::DateSupport
