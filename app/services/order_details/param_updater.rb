@@ -93,7 +93,7 @@ class OrderDetails::ParamUpdater
   private
 
   def log_and_rollback
-    logger.error("errors for reservation #{@order_detail.reservation.id}: #{@order_detail.reservation.errors.full_messages}")
+    Rollbar.error("Failed save for reservation #{@order_detail.reservation.id}: #{@order_detail.reservation.errors.full_messages}")
     raise(ActiveRecord::Rollback)
   end
 
