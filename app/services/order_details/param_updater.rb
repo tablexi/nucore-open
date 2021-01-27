@@ -94,7 +94,7 @@ class OrderDetails::ParamUpdater
 
   def log_and_rollback
     # TODO: Determine why reservations are failing to save at this point, then remove logging.
-    ActiveSupport::Notifications.instrument("background_error", exception: e, information: "Failed save for reservation #{@order_detail.reservation.id}: #{@order_detail.reservation.errors.full_messages}")
+    Rollbar.error("Failed save for reservation #{@order_detail.reservation.id}: #{@order_detail.reservation.errors.full_messages}") if defined?(Rollbar)
     # If the reservation save fails, the order detail should stay in the problem queue.
     raise(ActiveRecord::Rollback)
   end
