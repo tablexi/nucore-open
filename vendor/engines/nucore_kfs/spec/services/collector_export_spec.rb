@@ -26,17 +26,17 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
       end
 
       it "can build transactions from multiple journal rows" do
-        expect(exporter.create_collector_transactions_from_journal_rows(journal_rows)).to be_valid
+        expect(exporter.create_collector_transactions_from_journal_rows(journal_rows)).to_not be_nil
       end
 
       it "has correct number of transactions" do
         transactions = exporter.create_collector_transactions_from_journal_rows(journal_rows)
 
-        expect(transactions.length()).to eq(journal_rows.length())
+        expect(transactions.count()).to eq(1)
       end
 
       it "can export journal" do
-        expect(exporter.generate_export_file_new(journal_rows)).to be_valid
+        expect(exporter.generate_export_file_new(journal_rows)).to_not be_nil
       end
     end
 
@@ -61,16 +61,18 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
       it "has correct general ledger entry format for each transaction" do
         transactions = exporter.create_collector_transactions_from_journal_rows(journal_rows)
         transactions.each do |transaction|
-          expect(transaction.lines.count).to eq(1)
-          expect(transaction.size).to eq(189)
+          row = transaction.create_credit_row_string()
 
-          expect(transaction[7..11].blank?).to be true
-          expect(transaction[16..18].blank?).to be true
-          expect(transaction[16..18].blank?).to be true
-          expect(transaction[44..48].blank?).to be true
-          expect(transaction[89].blank?).to be true
-          expect(transaction[140..149].blank?).to be true
-          expect(transaction[158..188].blank?).to be true
+          expect(row.lines.count).to eq(1)
+          expect(row.size).to eq(187)
+
+          expect(row[13..17].blank?).to be true
+          expect(row[22..24].blank?).to be true
+          expect(row[27..30].blank?).to be true
+          expect(row[51..54].blank?).to be true
+          expect(row[91].blank?).to be true
+          expect(row[131..140].blank?).to be true
+          expect(row[157..187].blank?).to be true
         end
       end
 
@@ -93,6 +95,9 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
         expect(trailer_record[0..24].blank?).to be true
         expect(trailer_record[27..45].blank?).to be true
         expect(trailer_record[51..91].blank?).to be true
+      end
+
+      it "has correct trailer amounts" do
       end
     end
   end
@@ -116,17 +121,17 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
       end
 
       it "can build transactions from multiple journal rows" do
-        expect(exporter.create_collector_transactions_from_journal_rows(journal_rows)).to be_valid
+        expect(exporter.create_collector_transactions_from_journal_rows(journal_rows)).to_not be_nil
       end
 
       it "has correct number of transactions" do
         transactions = exporter.create_collector_transactions_from_journal_rows(journal_rows)
 
-        expect(transactions.length()).to eq(journal_rows.length())
+        expect(transactions.length()).to eq(1)
       end
 
       it "can export journal" do
-        expect(exporter.generate_export_file_new(journal_rows)).to be_valid
+        expect(exporter.generate_export_file_new(journal_rows)).to_not be_nil
       end
     end
 
@@ -151,16 +156,18 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
       it "has correct general ledger entry format for each transaction" do
         transactions = exporter.create_collector_transactions_from_journal_rows(journal_rows)
         transactions.each do |transaction|
-          expect(transaction.lines.count).to eq(1)
-          expect(transaction.size).to eq(189)
+          row = transaction.create_credit_row_string()
 
-          expect(transaction[7..11].blank?).to be true
-          expect(transaction[16..18].blank?).to be true
-          expect(transaction[16..18].blank?).to be true
-          expect(transaction[44..48].blank?).to be true
-          expect(transaction[89].blank?).to be true
-          expect(transaction[140..149].blank?).to be true
-          expect(transaction[158..188].blank?).to be true
+          expect(row.lines.count).to eq(1)
+          expect(row.size).to eq(187)
+
+          expect(row[13..17].blank?).to be true
+          expect(row[22..24].blank?).to be true
+          expect(row[27..30].blank?).to be true
+          expect(row[51..54].blank?).to be true
+          expect(row[91].blank?).to be true
+          expect(row[131..140].blank?).to be true
+          expect(row[157..187].blank?).to be true
         end
       end
 
@@ -183,6 +190,9 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
         expect(trailer_record[0..24].blank?).to be true
         expect(trailer_record[27..45].blank?).to be true
         expect(trailer_record[51..91].blank?).to be true
+      end
+
+      it "has correct trailer amounts" do
       end
     end
   end

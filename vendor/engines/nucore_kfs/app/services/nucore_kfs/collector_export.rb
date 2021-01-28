@@ -117,10 +117,8 @@ module NucoreKfs
 
       journal_rows.each do |journal_row|
         next unless journal_row.order_detail
-      
-        collector_transaction = CollectorTransaction.new
-        collector_transaction.from_journal_row(journal_row)
-        collector_transactions.append(collector_transaction)
+
+        collector_transactions.append(CollectorTransaction.new(journal_row))
 
         # handle any counters or aggregates
         document_number += 1
