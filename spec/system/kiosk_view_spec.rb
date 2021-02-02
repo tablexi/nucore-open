@@ -2,8 +2,8 @@
 
 require "rails_helper"
 
-RSpec.describe "Launching Kiosk View", :js do
-  let(:facility) { create(:setup_facility) }
+RSpec.describe "Launching Kiosk View", :js, feature_setting: { kiosk_view: true } do
+  let(:facility) { create(:setup_facility, kiosk_enabled: true) }
   let(:account) { create(:setup_account) }
   let!(:account_user) { FactoryBot.create(:account_user, :purchaser, account: account, user: user) }
 
@@ -169,5 +169,19 @@ RSpec.describe "Launching Kiosk View", :js do
     before { login_as(user) }
 
     it_behaves_like "kiosk_actions", "Logout", "password"
+  end
+
+  context "with a facility that has disabled the kiosk view" do
+    let(:user) { create(:user, :external, :purchaser, password: "password", account: account) }
+    let(:facility) { create(:setup_facility, kiosk_enabled: false) }
+    let!(:reservation) { create(:purchased_reservation, reserve_start_at: 15.minutes.ago, product: instrument, user: user) }
+
+    it "does not show the kiosk view" do
+      visit facility_kiosk_reservations_path(facility)
+      expect(page).to have_content("Login")
+      expect(page).not_to have_content("Begin Reservation")
+      expect(page).not_to have_content("End Reservation")
+      expect(page.current_path).to eq new_user_session_path
+    end
   end
 end

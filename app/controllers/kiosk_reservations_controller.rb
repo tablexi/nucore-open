@@ -8,6 +8,7 @@
 # then logged out and redirected back to the Kiosk View.
 class KioskReservationsController < ApplicationController
 
+  before_action :check_kiosk_enabled, only: :index
   before_action :check_acting_as, only: [:switch_instrument]
   before_action :load_and_check_resources, except: [:index]
 
@@ -84,6 +85,12 @@ class KioskReservationsController < ApplicationController
     @switch = params[:switch]
     flash[:error] = message
     render :begin, status: 406, layout: false
+  end
+
+  def check_kiosk_enabled
+    return if current_facility&.kiosk_enabled? && SettingsHelper.feature_on?(:kiosk_view)
+
+    raise NUCore::PermissionDenied
   end
 
 end

@@ -8,7 +8,7 @@
 = content_for :tabnav do
   = render partial: "admin/shared/tabnav_reservation", locals: { secondary_tab: "daily" }
 
-- if SettingsHelper.feature_on?(:kiosk_view) && current_facility.instruments.active.any?
+- if current_facility.display_kiosk_link?
   %h3= link_to t(".kiosk_view"), facility_kiosk_reservations_path(current_facility, sign_out: "true")
 
 .timeline_header
