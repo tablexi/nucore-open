@@ -41,6 +41,11 @@ class OrderDetails::ParamUpdater
     params.delete(:quantity) unless params[:quantity].to_s =~ /\A\d+\z/
 
     assign_self_and_reservation_attributes(permitted_params(params))
+    # As of Rails 5.2.4, if nothing changes on the association (e.g. submitting the
+    # form with no changes on a reservation/occupancy missing end_at), the validations
+    # no longer run on the associations.
+    @order_detail.time_data.force_dirty!
+
     # this will overwrite the prices, so if we got cost/subsidy as parameters,
     # we need to use them instead
     assign_policy_and_prices
@@ -62,10 +67,12 @@ class OrderDetails::ParamUpdater
     assign_attributes(params)
 
     @order_detail.manually_priced! # don't auto-reassign price
-    assign_price_changed_by_user
 
     @order_detail.transaction do
-      @order_detail.reservation.save_as_user(@editing_user) if @order_detail.reservation
+      assign_price_changed_by_user
+      if @order_detail.reservation.present?
+        @order_detail.reservation.save_as_user(@editing_user) || log_and_rollback
+      end
       if order_status_id && order_status_id.to_i != @order_detail.order_status_id
         change_order_status(order_status_id, @options[:cancel_fee]) || raise(ActiveRecord::Rollback)
       else
@@ -79,17 +86,25 @@ class OrderDetails::ParamUpdater
   end
 
   def trigger_notifications
-    OrderDetails::DisputeResolvedNotifier.new(@order_detail).notify
+    OrderDetails::DisputeResolvedNotifier.new(@order_detail, current_user: @editing_user).notify
     OrderDetails::AssignmentNotifier.new(@order_detail).notify
   end
 
   private
+
+  def log_and_rollback
+    # TODO: Determine why reservations are failing to save at this point, then remove logging.
+    Rollbar.error("Failed save for reservation #{@order_detail.reservation.id}: #{@order_detail.reservation.errors.full_messages}") if defined?(Rollbar)
+    # If the reservation save fails, the order detail should stay in the problem queue.
+    raise(ActiveRecord::Rollback)
+  end
 
   def assign_price_changed_by_user
     if @order_detail.actual_costs_match_calculated?
       @order_detail.price_changed_by_user = nil
     elsif %w[actual_cost actual_subsidy price_change_reason].any? { |a| @order_detail.changed.include?(a) }
       @order_detail.price_changed_by_user = @editing_user
+      LogEvent.log(@order_detail, :price_change, @editing_user)
     end
   end
 

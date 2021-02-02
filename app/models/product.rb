@@ -23,6 +23,8 @@ class Product < ApplicationRecord
   has_one :product_display_group_product
   has_one :product_display_group, through: :product_display_group_product
 
+  after_create :create_default_price_group_products
+
   email_list_attribute :training_request_contacts
 
   # Allow us to use `product.hidden?`
@@ -111,9 +113,6 @@ class Product < ApplicationRecord
     order(:type, :name).group_by { |product| product.class.model_name.human }
   end
 
-  ## AR Hooks
-  after_create :set_default_pricing
-
   def initial_order_status
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
@@ -182,9 +181,9 @@ class Product < ApplicationRecord
     to_s + (is_archived? ? " (inactive)" : "")
   end
 
-  def set_default_pricing
-    PriceGroup.globals.find_each do |pg|
-      PriceGroupProduct.create!(product: self, price_group: pg)
+  def create_default_price_group_products
+    PriceGroup.globals.find_each do |price_group|
+      price_group_products.create!(price_group: price_group)
     end
   end
 
@@ -259,7 +258,7 @@ class Product < ApplicationRecord
     product_accessories.where(accessory_id: id).first
   end
 
-  def has_access_list?
+  def has_product_access_groups?
     respond_to?(:product_access_groups) && product_access_groups.any?
   end
 
@@ -275,7 +274,7 @@ class Product < ApplicationRecord
     !hidden?
   end
 
-  def mergeable?
+  def requires_merge?
     false
   end
 

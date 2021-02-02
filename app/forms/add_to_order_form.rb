@@ -147,7 +147,7 @@ class AddToOrderForm
     return @merge_order if defined?(@merge_order)
 
     products = product.is_a?(Bundle) ? product.products : [product]
-    @merge_order = if products.any?(&:mergeable?)
+    @merge_order = if products.any?(&:requires_merge?)
                      Order.create!(
                        merge_with_order_id: original_order.id,
                        facility_id: original_order.facility_id,
@@ -165,7 +165,10 @@ class AddToOrderForm
     # `manual_fulfilled_at` already handles the proper string parsing so we can use
     # it instead of duplicating the parsing effort.
     order_detail.manual_fulfilled_at = fulfilled_at
-    if order_detail.valid_for_purchase?
+    # If we are a merge order (i.e. requires more action like uploading an order form),
+    # we do not want to set the ordered_at just yet. It will be set after the issues have
+    # been resolved.
+    if merge_order == original_order
       order_detail.ordered_at = order_detail.manual_fulfilled_at_time || Time.current
     end
   end

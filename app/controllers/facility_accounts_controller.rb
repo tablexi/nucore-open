@@ -52,9 +52,7 @@ class FacilityAccountsController < ApplicationController
 
   # PUT /facilities/:facility_id/accounts/:id
   def update
-    account_type = Account.config.account_type_to_param(@account.class)
-
-    @account = AccountBuilder.for(account_type).new(
+    @account = AccountBuilder.for(@account.class).new(
       account: @account,
       current_user: current_user,
       owner_user: @owner_user,
@@ -85,7 +83,7 @@ class FacilityAccountsController < ApplicationController
           render layout: false
         end
         format.csv do
-          send_csv_email_and_respond do |email|
+          yield_email_and_respond_for_report do |email|
             AccountSearchResultMailer.search_result(email, params[:search_term], SerializableFacility.new(current_facility)).deliver_later
           end
         end

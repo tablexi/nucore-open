@@ -41,6 +41,13 @@ RSpec.describe OfflineReservationsController do
         expect(reservation.order_detail.problem_description_key).to eq(:missing_actuals)
       end
 
+      it "logs the problem reservation" do
+        post :create, params: params
+        log_event = LogEvent.find_by(loggable: reservation.order_detail, event_type: :problem_queue)
+        expect(log_event).to be_present
+        expect(log_event.metadata).to eq("cause"=>"new_offline_reservation")
+      end
+
       it "triggers an email" do
         expect { post :create, params: params }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end

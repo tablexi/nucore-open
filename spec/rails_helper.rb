@@ -28,11 +28,12 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system, js: true) do
-    driven_by :selenium_chrome_headless
+    driven_by :selenium, using: :headless_chrome, screen_size: [1366, 768]
   end
 
   Capybara.server = :webrick
   require "capybara/email/rspec"
+  Capybara.enable_aria_label = true
 
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include FactoryBot::Syntax::Methods

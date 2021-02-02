@@ -15,6 +15,7 @@ class OrderRowImporter
     :fulfillment_date,
     :notes,
     :order_number,
+    :reference_id,
     :errors,
   ].lazy.map { |k| header(k) }
 
@@ -47,6 +48,14 @@ class OrderRowImporter
 
   def self.headers_to_s
     HEADERS.to_a.join(",")
+  end
+
+  def self.optional_fields
+    (HEADERS.to_a - REQUIRED_HEADERS.to_a - [header(:errors)]).to_sentence
+  end
+
+  def self.importable_products
+    importable_product_types.map { |type| type.name.titleize }.to_sentence
   end
 
   def initialize(row, order_import)
@@ -120,7 +129,7 @@ class OrderRowImporter
       begin
         @order = field(:order_number).present? ? existing_order : @order_import.fetch_or_create_order!(self)
 
-        attributes = { note: field(:notes), account: account }
+        attributes = { note: field(:notes), account: account, reference_id: field(:reference_id) }
         # The order adding feature has some quirky behavior because of the "order form"
         # feature: if you add multiple of a timed service, it creates multiple line items
         # in your cart. Also, in the "add to order" feature, there is a separate `duration`

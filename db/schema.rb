@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_24_215210) do
+ActiveRecord::Schema.define(version: 2021_01_26_230013) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -174,6 +174,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
     t.datetime "thumbnail_updated_at"
     t.text "banner_notice"
     t.string "dashboard_token"
+    t.string "payment_url"
     t.index ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true
     t.index ["is_active", "name"], name: "index_facilities_on_is_active_and_name"
     t.index ["name"], name: "index_facilities_on_name", unique: true
@@ -259,6 +260,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "event_time"
+    t.text "metadata"
     t.index ["loggable_type", "loggable_id"], name: "index_log_events_loggable"
     t.index ["user_id"], name: "index_log_events_on_user_id"
   end
@@ -427,6 +429,9 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
     t.integer "price_group_id", null: false
     t.integer "user_id"
     t.integer "account_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
     t.index ["account_id"], name: "index_price_group_members_on_account_id"
     t.index ["price_group_id"], name: "fk_rails_0425013e5b"
     t.index ["user_id"], name: "index_price_group_members_on_user_id"
@@ -448,7 +453,10 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
     t.integer "display_order", null: false
     t.boolean "is_internal", null: false
     t.boolean "admin_editable", default: true, null: false
-    t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name", unique: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+    t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name"
   end
 
   create_table "price_policies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -525,6 +533,9 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
     t.datetime "approved_at", null: false
     t.integer "product_access_group_id"
     t.datetime "requested_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
     t.index ["product_access_group_id"], name: "index_product_users_on_product_access_group_id"
     t.index ["product_id"], name: "fk_products"
     t.index ["user_id"], name: "index_product_users_on_user_id"
@@ -587,7 +598,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
 
   create_table "relays", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "instrument_id"
-    t.string "ip", limit: 15
+    t.string "ip"
     t.integer "outlet"
     t.string "username", limit: 50
     t.string "password", limit: 50
@@ -683,6 +694,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
     t.integer "facility_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["facility_id"], name: "i_schedules_facility_id"
   end
 
@@ -816,6 +828,9 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
     t.integer "user_id", null: false
     t.integer "facility_id"
     t.string "role", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
     t.index ["facility_id"], name: "fk_rails_dca27403dd"
     t.index ["user_id", "facility_id", "role"], name: "index_user_roles_on_user_id_and_facility_id_and_role"
   end
@@ -856,6 +871,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_215210) do
     t.string "whodunnit"
     t.text "object", limit: 4294967295
     t.datetime "created_at"
+    t.text "object_changes"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
