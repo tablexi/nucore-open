@@ -196,4 +196,4 @@ bundle exec rails console
 
 Try logging in to NUcore with username `cgreen` and password `secret`.
 You should login successfully, and you should see activity in the LDAP server's
-the standard output.
+standard output.
