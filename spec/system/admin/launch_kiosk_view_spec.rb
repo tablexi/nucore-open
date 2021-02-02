@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Launching Kiosk View" do
+RSpec.describe "Launching Kiosk View", feature_setting: { kiosk_view: true } do
   let(:facility) { create(:setup_facility) }
   let(:director) { create(:user, :facility_director, facility: facility) }
 
@@ -22,6 +22,14 @@ RSpec.describe "Launching Kiosk View" do
   end
 
   context "with no active reservations" do
+    it "cannot launch the Kiosk View" do
+      login_as director
+      visit timeline_facility_reservations_path(facility)
+      expect(page).not_to have_content("Launch Kiosk View")
+    end
+  end
+
+  context "with the feature flag turned off", feature_setting: { kiosk_view: false } do
     it "cannot launch the Kiosk View" do
       login_as director
       visit timeline_facility_reservations_path(facility)
