@@ -26,6 +26,10 @@ RSpec.describe Users::AuthChecker do
     context "with a netid user", :ldap do
       let(:user) { create(:user, :netid, email: "internal@example.org", username: "netid") }
 
+      before(:each) do
+        expect(LdapAuthentication).to receive(:configured?).and_return(true)
+      end
+
       context "with the correct password" do
         let(:auth_user) { described_class.new(user, "netidpassword") }
 
@@ -39,6 +43,26 @@ RSpec.describe Users::AuthChecker do
 
         it "returns false" do
           expect(auth_user.authenticated?).to eq false
+        end
+      end
+    end
+
+    context "without LdapAuthentication gem" do
+      let(:user) { create(:user, :netid, email: "internal@example.org", username: "netid") }
+
+      context "with the correct password" do
+        let(:auth_user) { described_class.new(user, "netidpassword") }
+
+        it "returns nil" do
+          expect(auth_user.authenticated?).to eq nil
+        end
+      end
+
+      context "with the wrong password" do
+        let(:auth_user) { described_class.new(user, "wrong") }
+
+        it "returns nil" do
+          expect(auth_user.authenticated?).to eq nil
         end
       end
     end

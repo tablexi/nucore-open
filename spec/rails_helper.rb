@@ -52,9 +52,12 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :ldap) do |example|
-    class LdapAuthentication
-      def self.configured?
-        true
+    ldap_auth_undefined = !defined?(LdapAuthentication)
+    if ldap_auth_undefined
+      class LdapAuthentication
+        def self.configured?
+          true
+        end
       end
     end
     User.define_method(:valid_ldap_authentication?) { |password| password == "netidpassword" }
@@ -62,7 +65,7 @@ RSpec.configure do |config|
     example.call
 
     Object.send(:remove_const, :LdapAuthentication)
-    User.remove_method(:valid_ldap_authentication?)
+    User.remove_method(:valid_ldap_authentication?) if ldap_auth_undefined
   end
 
   config.around(:each, :billing_review_period) do |example|
