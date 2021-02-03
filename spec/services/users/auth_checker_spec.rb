@@ -23,11 +23,11 @@ RSpec.describe Users::AuthChecker do
       end
     end
 
-    context "with a netid user", :ldap do
+    context "with a netid user", :ldap, feature_setting: { uses_ldap_authentication: true }  do
       let(:user) { create(:user, :netid, email: "internal@example.org", username: "netid") }
 
       before(:each) do
-        expect(LdapAuthentication).to receive(:configured?).and_return(true)
+        expect(auth_user).to receive(:ldap_enabled?).and_return(true)
       end
 
       context "with the correct password" do
