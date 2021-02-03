@@ -142,17 +142,8 @@ RSpec.describe "Launching Kiosk View", :js do
     end
   end
 
-  context "with an LDAP authenticated user" do
+  context "with an LDAP authenticated user", :ldap do
     let(:user) { create(:user, :netid, :purchaser, account: account, email: "internal@example.org", username: "netid") }
-
-    before(:each) do
-      allow(LdapAuthentication).to receive(:configured?).and_return(true)
-      User.define_method(:valid_ldap_authentication?) { |password| password == "netidpassword" }
-    end
-
-    after(:all) do
-      User.remove_method(:valid_ldap_authentication?)
-    end
 
     it_behaves_like "kiosk_actions", "Login", "netidpassword"
   end

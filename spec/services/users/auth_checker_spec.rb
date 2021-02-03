@@ -23,17 +23,8 @@ RSpec.describe Users::AuthChecker do
       end
     end
 
-    context "with a netid user" do
+    context "with a netid user", :ldap do
       let(:user) { create(:user, :netid, email: "internal@example.org", username: "netid") }
-
-      before(:each) do
-        allow(LdapAuthentication).to receive(:configured?).and_return(true)
-        User.define_method(:valid_ldap_authentication?) { |password| password == "netidpassword" }
-      end
-
-      after(:all) do
-        User.remove_method(:valid_ldap_authentication?)
-      end
 
       context "with the correct password" do
         let(:auth_user) { described_class.new(user, "netidpassword") }

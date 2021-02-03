@@ -21,7 +21,7 @@ module Users
 
       if @user.authenticated_locally?
         @user.valid_password?(@password)
-      elsif LdapAuthentication.configured?
+      elsif defined?(LdapAuthentication) && LdapAuthentication.configured?
         @user.valid_ldap_authentication?(@password)
       elsif Settings.saml.present?
         # TODO
