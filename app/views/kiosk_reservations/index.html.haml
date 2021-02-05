@@ -1,26 +1,8 @@
+= content_for :head_content do
+  = javascript_include_tag "dashboard_refresh"
+
 = content_for :h1 do
   = text("title", facility: current_facility)
 
-- if @reservations.any?
-  %table.table.table-striped.table-hover.old-table.js--responsive_table
-    %thead
-      %tr
-        %th= text("name")
-        %th= text("reservation")
-        %th= OrderDetail.human_attribute_name(:product)
-        %th.centered= text("actions")
-    %tbody
-      - @reservations.each do |res|
-        %tr
-          %td
-            = res.user.full_name
-          %td
-            = res
-          %td
-            = res.product.name
-            = warning_if_instrument_is_offline_or_partially_available(res.product)
-          %td.centered
-            = kiosk_reservation_actions(res)
-            &nbsp;
-- else
-  %p.notice= text("none")
+.js--dashboardRefresh{ data: { refresh_interval: 5.minutes } }
+  = render partial: "reservations_table", locals: { reservations: @reservations }

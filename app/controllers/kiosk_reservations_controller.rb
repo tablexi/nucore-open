@@ -19,6 +19,9 @@ class KioskReservationsController < ApplicationController
     schedules = current_facility.schedules_for_timeline(:public_instruments)
     instrument_ids = schedules.flat_map { |schedule| schedule.public_instruments.map(&:id) }
     @reservations = Reservation.for_timeline(Time.current.beginning_of_day, instrument_ids)
+    if params[:refresh]
+      render partial: "reservations_table", locals: { reservations: @reservations }
+    end
   end
 
   def begin

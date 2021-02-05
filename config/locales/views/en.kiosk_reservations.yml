@@ -3,6 +3,7 @@ en:
     kiosk_reservations:
       index:
         title: "Kiosk View: %{facility}"
+      reservations_table:
         name: Name
         reservation: Reservation
         actions: Actions
