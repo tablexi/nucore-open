@@ -30,7 +30,7 @@ class KioskAccessoriesController < ApplicationController
       end
       head :ok
     else
-      respond_error(text("update.error"))
+      respond_error(text("create.error"))
     end
   end
 
