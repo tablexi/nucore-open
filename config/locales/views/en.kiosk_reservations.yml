@@ -18,6 +18,8 @@ en:
         confirm: Sign in to Confirm
         submit: End Reservation
         cancel: Cancel
+      error:
+        title: "Reservation (%{user})"
 
   controllers:
     kiosk_reservations:

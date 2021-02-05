@@ -36,14 +36,11 @@ class KioskReservationsController < ApplicationController
 
   # GET /orders/:order_id/order_details/:order_detail_id/kiosk_reservations/switch_instrument
   def switch_instrument
-    if can_switch? && switch_value_present?
-      switch_instrument!(params[:switch])
-      head :ok
-    elsif can_switch?
-      respond_error(text("switch.error"))
-    else
-      respond_error(text("authentication.error"))
-    end
+    respond_error(text("authentication.error")) && return unless can_switch?
+    respond_error(text("switch.error")) && return unless switch_value_present?
+
+    switch_instrument!(params[:switch])
+    head :ok
   end
 
   private
@@ -87,7 +84,14 @@ class KioskReservationsController < ApplicationController
   def respond_error(message)
     @switch = params[:switch]
     flash[:error] = message
-    render :begin, status: 406, layout: false
+    template = if @switch == "off"
+                 :stop
+               elsif @switch == "on"
+                 :begin
+               else
+                 :error
+               end
+    render template, status: 406, layout: false
   end
 
   def check_kiosk_enabled
