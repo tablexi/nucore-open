@@ -6,9 +6,10 @@
   = simple_form_for :kiosk_reservations, method: :get, url: url_for(action: :switch_instrument, switch: @switch), remote: true do |f|
     .modal-body
       = render partial: "shared/flashes"
-      %fieldset.well
-        %h4= text("confirm")
-        = f.input :password, required: false
+      - if SettingsHelper.feature_off?(:bypass_kiosk_auth)
+        %fieldset.well
+          %h4= text("confirm")
+          = f.input :password, required: false
     .modal-footer
       = f.submit text("submit"), class: "btn btn-primary"
       = modal_cancel_button text: text("cancel")
