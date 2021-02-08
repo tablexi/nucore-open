@@ -16,7 +16,6 @@ en:
       create:
         success: "%{accessories} added."
         switch_off: "The instrument has been deactivated successfully.  %{accessories} added."
+        error: Something went wrong, please try again.
       authentication:
         error: Invalid password.
-      update:
-        error: Something went wrong, please try again.
