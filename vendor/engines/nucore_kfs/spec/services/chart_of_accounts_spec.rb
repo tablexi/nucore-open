@@ -108,17 +108,17 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
 
   it "suspends closed account" do
     kfs_account.unsuspend
-
     kfs_soap_data[:status] = "CLOSED"
     api.upsert_account(kfs_soap_data)
+    kfs_account.reload
 
     expect(kfs_account.suspended?).to be true
   end
 
   it "unsuspends open account" do
     kfs_account.suspend
-
     api.upsert_account(kfs_soap_data)
+    kfs_account.reload
 
     expect(kfs_account.suspended?).to be false
   end
