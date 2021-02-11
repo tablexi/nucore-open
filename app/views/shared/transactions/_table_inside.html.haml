@@ -2,7 +2,9 @@
 %table.table.table-striped.table-hover.dense.old-table
   %thead
     %tr
-      -if @order_detail_action or @order_detail_link
+      -if @order_detail_action
+        %th
+      -if @order_detail_link
         %th
       - if @sorting_enabled
         = render "shared/transactions/sortable_table_headers"
