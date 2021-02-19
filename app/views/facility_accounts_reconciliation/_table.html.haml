@@ -1,17 +1,18 @@
 %table.table.table-striped.table-hover
+  %caption= t(".table_caption")
   %thead
     %tr
-      %th
-      %th= Statement.human_attribute_name(:invoice_number)
-      %th= Account.model_name.human
-      %th= Order.model_name.human
-      %th= Statement.human_attribute_name(:total_cost)
-      %th= Statement.human_attribute_name(:reconcile_note)
+      %th{ scope: "col" }
+      %th{ scope: "col" }= Statement.human_attribute_name(:invoice_number)
+      %th{ scope: "col" }= Account.model_name.human
+      %th{ scope: "col" }= Order.model_name.human
+      %th{ scope: "col" }= Statement.human_attribute_name(:total_cost)
+      %th{ scope: "col" }= Statement.human_attribute_name(:reconcile_note)
   %tbody
     - @unreconciled_details.each do |order_detail|
       %tr
         %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", false, class: "toggle"
-        %td= "##{order_detail.statement_invoice_number}"
+        %th{ scope: "row" }= "##{order_detail.statement_invoice_number}"
         %td
           = order_detail.account
           %br
