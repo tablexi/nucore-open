@@ -1,5 +1,5 @@
 /***
- * Triggers a full refreseh of the page at a specified internval.
+ * Triggers a full refresh of the page at a specified interval.
  *
  * Usage:
    = content_for :head_content do
