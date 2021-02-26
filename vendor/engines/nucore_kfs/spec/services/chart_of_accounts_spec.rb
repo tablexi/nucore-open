@@ -127,4 +127,3 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
     expect{api.upsert_accounts_for_subfund('OPAUX')}.to_not raise_error
   end
 end
-

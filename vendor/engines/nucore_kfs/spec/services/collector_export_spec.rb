@@ -197,4 +197,3 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
     end
   end
 end
-
