@@ -112,7 +112,7 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
     api.upsert_account(kfs_soap_data)
     kfs_account.reload
 
-    expect(kfs_account.reload.suspended?).to be true
+    expect(kfs_account.suspended?).to be true
   end
 
   it "unsuspends open account" do
@@ -120,7 +120,7 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
     api.upsert_account(kfs_soap_data)
     kfs_account.reload
 
-    expect(kfs_account.reload.suspended?).to be false
+    expect(kfs_account.suspended?).to be false
   end
 
   it "can upsert a single subfund" do
