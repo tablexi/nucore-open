@@ -1,16 +1,16 @@
 require "rails_helper"
+require_relative "../kfs_spec_helper.rb"
 
 RSpec.describe NucoreKfs::CollectorExport, type: :service do
   let(:user) { FactoryBot.create(:user) }
-  let(:facility) { FactoryBot.create(:setup_facility) }
+  let(:facility) { FactoryBot.create(:setup_kfs_facility) }
   let(:kfs_account) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user, account_number: "KFS-7777777-4444") }
   let(:uch_account) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user, account_number: "UCH-7777777-4444") }
 
-
   context "in open journal with KFS account" do
     let(:exporter) { described_class.new }
-    let(:journal) { FactoryBot.create(:journal, facility: facility) }
-    let(:order_detail) { place_and_complete_item_order(user, facility, kfs_account, true) }
+    let(:journal) { FactoryBot.create(:kfs_journal, facility: facility) }
+    let(:order_detail) { place_and_complete_kfs_item_order(user, facility, kfs_account, true) }
     let(:journal_rows) {
       journal.create_journal_rows!([order_detail])
       journal.journal_rows
@@ -71,7 +71,7 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
           expect(row[27..30].blank?).to be true
           expect(row[51..54].blank?).to be true
           expect(row[91].blank?).to be true
-          expect(row[131..140].blank?).to be true
+          expect(row[132..140].blank?).to be true
           expect(row[157..187].blank?).to be true
         end
       end
@@ -104,8 +104,8 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
 
   context "in open journal with UCH account" do
     let(:exporter) { described_class.new }
-    let(:journal) { FactoryBot.create(:journal, facility: facility) }
-    let(:order_detail) { place_and_complete_item_order(user, facility, uch_account, true) }
+    let(:journal) { FactoryBot.create(:kfs_journal, facility: facility) }
+    let(:order_detail) { place_and_complete_kfs_item_order(user, facility, uch_account, true) }
     let(:journal_rows) {
       journal.create_journal_rows!([order_detail])
       journal.journal_rows
@@ -166,7 +166,7 @@ RSpec.describe NucoreKfs::CollectorExport, type: :service do
           expect(row[27..30].blank?).to be true
           expect(row[51..54].blank?).to be true
           expect(row[91].blank?).to be true
-          expect(row[131..140].blank?).to be true
+          expect(row[132..140].blank?).to be true
           expect(row[157..187].blank?).to be true
         end
       end

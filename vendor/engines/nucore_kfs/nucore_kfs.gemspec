@@ -15,8 +15,7 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
   # providing all of this information is necessary, because of gem validation
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
-  s.test_files = Dir["spec/**/*"]
+  s.files = Dir["{app,config,db,lib}/**/*", "spec/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
 
   s.add_dependency "rails", "~> 5.2.3"
   s.add_dependency 'savon', '~> 2.12.0'
