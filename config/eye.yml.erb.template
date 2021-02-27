@@ -1,7 +1,8 @@
+# This is here only as an example.  Active instances have eye.yml.erb checked in.
 <% app_root = File.expand_path("..", __dir__) %>
 <% rails_env = ENV["RAILS_ENV"] %>
 ---
-name: NUcore (<%= rails_env %>)
+name: NUCore (<%= rails_env %>) # change the name as needed (CORUM, etc)
 
 config:
   logger: <%= app_root %>/log/eye.log
@@ -18,15 +19,10 @@ triggers:
 
 notifications:
   - name: crash
-    type: mail
-    level: info
-    contact: eye@nucore.example.com
+    type: datadog
+    level: error
     config:
-      from_mail: noreply@example.com
-      host: smtp.example.com
-      port: 25
-      # domain: ~
-
+      api_key: ~
 
 processes:
   - name: unicorn
@@ -52,6 +48,7 @@ processes:
       notify:
         crash: error
 
+<% if ENV["HOSTNAME"] == "the hostname where this should run" %>
   # only run on 1 instance
   - name: auto_cancel
     config:
@@ -63,6 +60,7 @@ processes:
       smart_pid: true
       notify:
         crash: error
+<% end %>
 
   - name: delayed_job
     config:
