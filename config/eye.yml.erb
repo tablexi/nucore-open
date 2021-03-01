@@ -16,14 +16,11 @@ triggers:
       within: 5 minutes
 
 notifications:
-  - name: monitoring
-    type: ses
-    level: info
-    contact: nucore+open@tablexi.com
+  - name: crash
+    type: datadog
+    level: error
     config:
-      from: nucore+open@tablexi.com
-      access_key_id: ~
-      secret_access_key: ~
+      api_key: <%= ENV['DATADOG_API_KEY'] %>
 
 processes:
   - name: unicorn
@@ -40,8 +37,14 @@ processes:
         stop_command: "kill -QUIT {PID}"
       user_commands:
         rotate: "kill -USR1 {PID}"
+    checks:
+      - name: memory
+        config:
+          times: 3
+          every: 20 seconds
+          below: 512 megabytes
 
-  # only run on 1 instance
+
   - name: auto_cancel
     config:
       start_command: ruby lib/daemons/auto_cancel.rb start -- --no-monitor
@@ -52,6 +55,12 @@ processes:
       smart_pid: true
       notify:
         crash: error
+    checks:
+      - name: memory
+        config:
+          times: 3
+          every: 20 seconds
+          below: 256 megabytes
 
   - name: delayed_job
     config:
@@ -63,3 +72,9 @@ processes:
       stop_timeout: 40 seconds
       notify:
         crash: error
+    checks:
+      - name: memory
+        config:
+          times: 3
+          every: 20 seconds
+          below: 512 megabytes
