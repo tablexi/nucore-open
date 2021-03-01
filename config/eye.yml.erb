@@ -22,6 +22,17 @@ notifications:
     config:
       api_key: <%= ENV['DATADOG_API_KEY'] %>
 
+# You can also set up notifications via email:
+# notifications:
+#   - name: monitoring
+#     type: ses
+#     level: info
+#     contact: nucore+open@tablexi.com
+#     config:
+#       from: nucore+open@tablexi.com
+#       access_key_id: ~
+#       secret_access_key: ~
+
 processes:
   - name: unicorn
     config:
@@ -44,7 +55,9 @@ processes:
           every: 20 seconds
           below: 512 megabytes
 
-
+# This should only run on 1 instance.
+# You can use erb to ensure this with a conditional like:
+<% # if ENV["HOSTNAME"] == "the hostname where this should run" %>
   - name: auto_cancel
     config:
       start_command: ruby lib/daemons/auto_cancel.rb start -- --no-monitor
