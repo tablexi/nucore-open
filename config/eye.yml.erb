@@ -46,14 +46,14 @@ processes:
       stderr: log/unicorn.stderr.log
       monitor_children:
         stop_command: "kill -QUIT {PID}"
+        checks:
+          - name: memory
+            config:
+              times: 3
+              every: 20 seconds
+              below: 512 megabytes
       user_commands:
         rotate: "kill -USR1 {PID}"
-    checks:
-      - name: memory
-        config:
-          times: 3
-          every: 20 seconds
-          below: 512 megabytes
 
 # This should only run on 1 instance.
 # You can use erb to ensure this with a conditional like:
