@@ -1,6 +1,9 @@
 <% app_root = "/home/nucore/nucore.stage.tablexi.com/current" %>
-
-name: "nucore_open_stage"
+<% rails_env = ENV["RAILS_ENV"] %>
+# Some processes should only run on 1 instance.
+<% is_first_host = rails_env != "production" || ENV["HOSTNAME"] == "production.hostname.edu" %>
+---
+name: "nucore_open_<%= rails_env %>"
 
 config:
   logger: <%= app_root %>/log/eye.log
@@ -37,7 +40,7 @@ processes:
   - name: unicorn
     config:
       pid_file: tmp/pids/unicorn.pid
-      start_command: unicorn -E deployment -Dc config/unicorn/stage.rb
+      start_command: unicorn -E deployment -Dc config/unicorn/<%= rails_env %>.rb
       restart_command: "kill -USR2 {PID}"
       start_timeout: 15 seconds
       restart_timeout: 15 seconds
@@ -55,9 +58,7 @@ processes:
       user_commands:
         rotate: "kill -USR1 {PID}"
 
-# This should only run on 1 instance.
-# You can use erb to ensure this with a conditional like:
-<% # if ENV["HOSTNAME"] == "the hostname where this should run" %>
+<% if is_first_host %>
   - name: auto_cancel
     config:
       start_command: ruby lib/daemons/auto_cancel.rb start -- --no-monitor
@@ -74,6 +75,7 @@ processes:
           times: 3
           every: 20 seconds
           below: 256 megabytes
+<% end %>
 
   - name: delayed_job
     config:
