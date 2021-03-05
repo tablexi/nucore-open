@@ -1,7 +1,9 @@
 <% app_root = File.expand_path("..", __dir__) %>
 <% rails_env = ENV["RAILS_ENV"] %>
+# Some processes should only run on 1 instance.
+<% is_first_host = rails_env != "production" || ENV["HOSTNAME"] == "production.hostname.edu" %>
 ---
-name: NUcore (<%= rails_env %>)
+name: "nucore_open_<%= rails_env %>"
 
 config:
   logger: <%= app_root %>/log/eye.log
@@ -18,25 +20,31 @@ triggers:
 
 notifications:
   - name: crash
-    type: mail
-    level: info
-    contact: eye@nucore.example.com
+    type: datadog
+    level: error
     config:
-      from_mail: noreply@example.com
-      host: smtp.example.com
-      port: 25
-      # domain: ~
+      api_key: <%= ENV['DATADOG_API_KEY'] %>
 
+# You can also set up notifications via email:
+# notifications:
+#   - name: monitoring
+#     type: ses
+#     level: info
+#     contact: nucore+open@tablexi.com
+#     config:
+#       from: nucore+open@tablexi.com
+#       access_key_id: ~
+#       secret_access_key: ~
 
 processes:
   - name: unicorn
     config:
       pid_file: tmp/pids/unicorn.pid
-      start_command: bundle exec unicorn -E deployment -Dc config/unicorn/<%= rails_env %>.rb
+      start_command: unicorn -E deployment -Dc config/unicorn/<%= rails_env %>.rb
       restart_command: "kill -USR2 {PID}"
       start_timeout: 15 seconds
       restart_timeout: 15 seconds
-      restart_grace: 15 seconds
+      restart_grace: 5 seconds
       stdout: log/unicorn.stdout.log
       stderr: log/unicorn.stderr.log
       monitor_children:
@@ -46,23 +54,28 @@ processes:
             config:
               times: 3
               every: 20 seconds
-              below: 512 megabytes # Change this per installation based on box size
+              below: 512 megabytes
       user_commands:
         rotate: "kill -USR1 {PID}"
-      notify:
-        crash: error
 
-  # only run on 1 instance
+<% if is_first_host %>
   - name: auto_cancel
     config:
-      start_command: bundle exec ruby lib/daemons/auto_cancel.rb start -- --no-monitor
-      stop_command: bundle exec ruby lib/daemons/auto_cancel.rb stop
+      start_command: ruby lib/daemons/auto_cancel.rb start -- --no-monitor
+      stop_command: ruby lib/daemons/auto_cancel.rb stop
       stdall: log/auto_cancel.log
       pid_file: tmp/pids/auto_cancel.pid
       daemon: true
       smart_pid: true
       notify:
         crash: error
+    checks:
+      - name: memory
+        config:
+          times: 3
+          every: 20 seconds
+          below: 256 megabytes
+<% end %>
 
   - name: delayed_job
     config:
@@ -70,7 +83,7 @@ processes:
       stop_command: ./script/delayed_job stop
       stdall: log/delayed_job.log
       pid_file: tmp/pids/delayed_job.pid
-      start_timeout: 40 seconds
+      start_timeout: 60 seconds
       stop_timeout: 40 seconds
       notify:
         crash: error
@@ -79,4 +92,4 @@ processes:
         config:
           times: 3
           every: 20 seconds
-          below: 1 gigabyte # Change this per installation based on box size
+          below: 1 gigabyte
