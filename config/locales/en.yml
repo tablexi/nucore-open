@@ -354,7 +354,6 @@ en:
       instructions: |
         The orders listed below are still in review by the customer.  The time the review window will close is listed.
         You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
-      submit: "Mark As Reviewed"
     index:
       head: "Send Notifications"
       no_orders: "No notifications are currently pending"
@@ -410,6 +409,7 @@ en:
       grant_roles: Grant Roles
       remove_roles: Remove Roles
       remove_roles_confirm: Are you sure?
+      export: Export as CSV
       th:
         email: Email
         name: Name
@@ -954,6 +954,7 @@ en:
       export: Export as CSV
       subject: "!app_name! Transaction Export"
       body: Your export is ready. Please see the attached file.
+      order_detail_notices: Notices
 
   users:
     new_user:

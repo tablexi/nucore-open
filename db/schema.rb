@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_04_185502) do
+ActiveRecord::Schema.define(version: 2021_01_26_230013) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -871,6 +871,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_185502) do
     t.string "whodunnit"
     t.text "object", limit: 4294967295
     t.datetime "created_at"
+    t.text "object_changes"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 

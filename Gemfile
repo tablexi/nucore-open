@@ -7,7 +7,7 @@ ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ## base
-gem "rails", "5.2.4.4"
+gem "rails", "5.2.3"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
 gem "bootsnap", require: false
