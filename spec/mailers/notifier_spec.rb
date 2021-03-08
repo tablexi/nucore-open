@@ -82,12 +82,12 @@ RSpec.describe Notifier do
 
     it "generates a user_update notification", :aggregate_failures do
       expect(email.to).to eq ["john@example.com"]
-      expect(email.subject).to include("#{user} has been added to your NUcore Payment Source")
+      expect(email.subject).to include("#{user} has been added to your #{I18n.t('app_name')} Payment Source")
 
       [email_html, email_text].each do |email_content|
         expect(email_content)
           .to include(
-            "#{user} has been added to the NUcore Payment Source \"#{account}\" as a/an Purchaser by administrator #{admin_user}",
+            "#{user} has been added to the #{I18n.t('app_name')} Payment Source \"#{account}\" as a/an Purchaser by administrator #{admin_user}",
           )
       end
     end
