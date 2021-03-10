@@ -2,6 +2,10 @@
 
 Open source version of Northwestern University Core Facility Management Software
 
+## NUCore Open Environment
+
+Staging: https://nucore.stage.tablexi.com
+
 ## Note for Forks
 
 As you pull in new features/bug fixes from open, please keep up with the [CHANGELOG](CHANGELOG.md)

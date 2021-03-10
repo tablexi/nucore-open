@@ -1,0 +1,24 @@
+#!/bin/sh
+# Usage:
+#
+# Start a latest from open branch:
+# bin/latest_from_open 11262001
+
+release_date=$1 # MMDDYYYY
+if [ -z "$release_date" ]; then
+  echo "No release date specified. Please try again."
+else
+  git co master
+  git pull
+  git co -b latest_from_open_$release_date
+  git fetch upstream
+  git merge upstream/master
+  result=$?
+  if [ $result -ne 0 ]; then
+    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    echo ""
+    echo "Resolve merge conflicts, then run bin/merge_describer"
+  else
+    bin/merge_describer
+  fi
+fi
