@@ -12,6 +12,8 @@ As you pull in new features/bug fixes from open, please keep up with the [CHANGE
 to see changes that may break your fork and optional/required rake tasks you may want
 to run.
 
+[**See HOWTO_forks.txt**](doc/HOWTO_forks.md) for more information on merging changes from the open source fork and deployment processes.
+
 ## Quickstart
 
 Welcome to NUcore! This guide will help you get a development environment up and running.
