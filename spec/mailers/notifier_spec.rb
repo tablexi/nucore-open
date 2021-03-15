@@ -87,7 +87,7 @@ RSpec.describe Notifier do
       [email_html, email_text].each do |email_content|
         expect(email_content)
           .to include(
-            "#{user} has been added to the #{I18n.t('app_name')} Payment Source \"#{account}\" as a/an Purchaser by administrator #{admin_user}",
+            "#{user} has been added to the #{I18n.t('app_name')} Payment Source \"#{account}\" as Purchaser by administrator #{admin_user}",
           )
       end
     end
