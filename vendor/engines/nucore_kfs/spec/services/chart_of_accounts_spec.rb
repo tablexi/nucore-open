@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
-
   let(:api) { described_class.new }
   let(:owner) { FactoryBot.create(:user) }
   let(:business_admin) { FactoryBot.create(:user) }
@@ -17,7 +16,7 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
   # We want this to serve as an integration test with UConn's KFS system, so we prefer not to mock these requests.
   WebMock.disable_net_connect!(allow: 'kualinp.uconn.edu')
 
-  it "can load the list of accounts for a single subfund" do
+  it "can load the list of accounts for a single subfund", :if => ENV['VPN_ENABLED'] do
     result = api.do_call_for_subfund('OPAUX')
 
     accounts = result.body[:get_accounts_response][:return][:account]
@@ -25,7 +24,7 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
     expect(accounts).not_to be_empty
   end
 
-  it "gets the expected fields for accounts" do
+  it "gets the expected fields for accounts", :if => ENV['VPN_ENABLED'] do
     result = api.do_call_for_subfund('OPAUX')
 
     accounts = result.body[:get_accounts_response][:return][:account]
@@ -123,7 +122,7 @@ RSpec.describe NucoreKfs::ChartOfAccounts, type: :service do
     expect(kfs_account.suspended?).to be false
   end
 
-  it "can upsert a single subfund" do
+  it "can upsert a single subfund", :if => ENV['VPN_ENABLED'] do
     expect{api.upsert_accounts_for_subfund('OPAUX')}.to_not raise_error
   end
 end
