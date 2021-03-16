@@ -74,9 +74,9 @@ en:
       user_update:
         subject: "%{user} has been added to your !app_name! Payment Source"
         body: |
-          %{user} has been added to the !app_name! Payment Source "%{account}" as a/an %{role} by administrator %{created_by}.
+          %{user} has been added to the !app_name! Payment Source "%{account}" as %{role} by administrator %{created_by}.
           If this is incorrect, please log in to !app_name! at %{login_url} and remove this user or contact the administrator named above.
         body_html: |
-          %{user} has been added to the !app_name! Payment Source "%{account}" as a/an %{role} by administrator %{created_by}.
+          %{user} has been added to the !app_name! Payment Source "%{account}" as %{role} by administrator %{created_by}.
 
           If this is incorrect, please [log in to !app_name!](%{login_url}) and remove this user or contact the administrator named above.
