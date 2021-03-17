@@ -1,3 +1,5 @@
+require 'phantomjs-polyfill-array-from'
+
 document.addEventListener("DOMContentLoaded", function() {
   function moveSelected(fromSelect, toSelect) {
     MultiSelectHelper.selectNone(toSelect);
