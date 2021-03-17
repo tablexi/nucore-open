@@ -304,7 +304,7 @@ GEM
       railties (>= 5.0)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
-    icalendar (2.7.0)
+    icalendar (2.7.1)
       ice_cube (~> 0.16)
     ice_cube (0.16.3)
     jaro_winkler (1.5.4)
