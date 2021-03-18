@@ -1,5 +1,3 @@
-require 'phantomjs-polyfill-array-from'
-
 document.addEventListener("DOMContentLoaded", function() {
   function moveSelectedUp(select) {
     // Prevent movement if all the selected are at the beginning
