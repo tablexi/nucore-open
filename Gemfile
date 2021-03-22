@@ -116,6 +116,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "rspec-activejob"
   gem "teaspoon-jasmine"
+  gem "phantomjs"
 end
 
 group :test do
