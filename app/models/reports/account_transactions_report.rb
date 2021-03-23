@@ -11,6 +11,7 @@ class Reports::AccountTransactionsReport
   def initialize(order_details, options = {})
     @order_details = order_details
     @date_range_field = options[:date_range_field] || "fulfilled_at"
+    @use_estimated_cost_header = options[:use_estimated_cost_header]
   end
 
   def to_csv
@@ -60,9 +61,9 @@ class Reports::AccountTransactionsReport
       Reservation.human_attribute_name(:actual_end_at),
       OrderDetail.human_attribute_name(:quantity),
       OrderDetail.human_attribute_name(:user),
-      OrderDetail.human_attribute_name(:cost),
-      OrderDetail.human_attribute_name(:subsidy),
-      OrderDetail.human_attribute_name(:total),
+      actual_or_estimated_label_for(OrderDetail.human_attribute_name(:cost)),
+      actual_or_estimated_label_for(OrderDetail.human_attribute_name(:subsidy)),
+      actual_or_estimated_label_for(OrderDetail.human_attribute_name(:total)),
       "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
       Account.model_name.human,
       Account.human_attribute_name(:owner),
@@ -107,6 +108,10 @@ class Reports::AccountTransactionsReport
 
   def notices_for(order_detail)
     OrderDetailNoticePresenter.new(order_detail).badges_to_text
+  end
+
+  def actual_or_estimated_label_for(label)
+    @use_estimated_cost_header ? "Estimated #{label}" : label
   end
 
   def order_detail_duration(order_detail)
