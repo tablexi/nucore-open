@@ -27,7 +27,7 @@ Run `bin/merge_describer` which generates a helpful description you can copy/pas
 
 Push up your new branch, and paste the output from `bin/merge_describer` into the PR description.  For clarity it's best to sort commits into 3 groups: features, fixes, and tech tasks.
 
-After adding the `upstream` remote, you can use the `bin/latest_from_open` script to create a new `latest_from_open_YYYYMMDD` branch.
+After adding the `upstream` remote, you can use the `bin/latest_from_open` script to create a new `latest_from_open_MMDDYYYY` branch.
 
 When merging in changes from the open source repo, differences in `scehma.rb` and `Gemfile.lock` tend to be the trickiest to resolve.  Run `bundle` and `rails db:migrate` locally to ensure any conflicts have been resolved as expected.
 
