@@ -81,7 +81,7 @@ From the root of your fork:
 
 - `bundle exec cap [staging_name] deploy`
 
-Find `staging_name` by the name of the `.rb` files in `config/deploy/[staging_name].rb`
+`staging_name` should be `stage`, `staging`, or `development`.  Check the name of the `.rb` files in `config/deploy/[staging_name].rb`.
 
 ### To production:
 
@@ -91,4 +91,5 @@ From the root of your fork:
 
 - `REVISION=[tag_to_release] bundle exec cap [prod_name] deploy`
 
-The `tag_to_release` should be created in Github, for example `v2021-03-01`.
+`prod_name` should be `prod` or `production`. check the name of the `.rb` files in `config/deploy/[prod_name].rb`.
+`tag_to_release` should be created in Github, for example `v2021-03-01`.
