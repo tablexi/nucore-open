@@ -200,6 +200,5 @@ class User < ApplicationRecord
   def lock_access!(opts = { })
     super
     LogEvent.log(self, :access_locked, self, metadata: {cause: "Too many login attempts"})
-    puts "\n========= HELLO"
   end
 end
