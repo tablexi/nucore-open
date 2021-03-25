@@ -100,11 +100,15 @@ class Reports::AccountTransactionsReport
       format_usa_date(order_detail.account.expires_at),
       order_detail.order_status,
       order_detail.note,
-      order_detail.badges_to_text,
+      notices_for(order_detail),
     ]
   end
 
   private
+
+  def notices_for(order_detail)
+    OrderDetailNoticePresenter.new(order_detail).badges_to_text
+  end
 
   def order_detail_duration(order_detail)
     if order_detail.problem?
