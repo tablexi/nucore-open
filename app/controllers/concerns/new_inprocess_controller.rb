@@ -14,7 +14,7 @@ module NewInprocessController
                                               TransactionSearch::DateRangeSearcher).search(order_details, @search_form)
     @order_details = @search.order_details.includes(:order_status).joins_assigned_users.reorder(sort_clause)
     @date_range_field = @search_form.date_params[:field]
-    @use_estimated_cost_header = true
+    @use_estimated_cost_label = true
 
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }

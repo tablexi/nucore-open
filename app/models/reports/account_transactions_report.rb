@@ -11,7 +11,7 @@ class Reports::AccountTransactionsReport
   def initialize(order_details, options = {})
     @order_details = order_details
     @date_range_field = options[:date_range_field] || "fulfilled_at"
-    @use_estimated_cost_header = options[:use_estimated_cost_header]
+    @use_estimated_cost_label = options[:use_estimated_cost_label]
   end
 
   def to_csv
@@ -61,9 +61,9 @@ class Reports::AccountTransactionsReport
       Reservation.human_attribute_name(:actual_end_at),
       OrderDetail.human_attribute_name(:quantity),
       OrderDetail.human_attribute_name(:user),
-      actual_or_estimated_label_for(OrderDetail.human_attribute_name(:cost)),
-      actual_or_estimated_label_for(OrderDetail.human_attribute_name(:subsidy)),
-      actual_or_estimated_label_for(OrderDetail.human_attribute_name(:total)),
+      OrderDetail.human_attribute_name("#{label_key_prefix}_cost"),
+      OrderDetail.human_attribute_name("#{label_key_prefix}_subsidy"),
+      OrderDetail.human_attribute_name("#{label_key_prefix}_total"),
       "#{Account.model_name.human} #{Account.human_attribute_name(:description)}",
       Account.model_name.human,
       Account.human_attribute_name(:owner),
@@ -100,18 +100,14 @@ class Reports::AccountTransactionsReport
       format_usa_date(order_detail.account.expires_at),
       order_detail.order_status,
       order_detail.note,
-      notices_for(order_detail),
+      order_detail.badges_to_text,
     ]
   end
 
   private
 
-  def notices_for(order_detail)
-    OrderDetailNoticePresenter.new(order_detail).badges_to_text
-  end
-
-  def actual_or_estimated_label_for(label)
-    @use_estimated_cost_header ? "Estimated #{label}" : label
+  def label_key_prefix
+    @use_estimated_cost_label ? :estimated : :actual
   end
 
   def order_detail_duration(order_detail)
