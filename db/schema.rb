@@ -845,6 +845,7 @@ ActiveRecord::Schema.define(version: 2021_03_23_212200) do
     t.string "expired_note"
     t.integer "failed_attempts", default: 0, null: false
     t.datetime "locked_at"
+    t.string "unlock_token"
     t.index ["card_number"], name: "index_users_on_card_number"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["expired_at"], name: "index_users_on_expired_at"

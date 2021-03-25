@@ -1,7 +1,7 @@
 en:
   devise:
     failure:
-      locked: "You've been locked out after too many login attempts, please wait 5 minutes before trying again. If you have forgotten your password, you can reset it below and login after the 5 minutes is up."
+      locked: "You've been locked out due to too many failed attempts, please check your email for instructions for how to unlock your account."
   views:
     devise:
       sessions:
