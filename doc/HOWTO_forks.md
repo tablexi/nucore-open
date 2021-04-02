@@ -31,6 +31,11 @@ After adding the `upstream` remote, you can use the `bin/latest_from_open` scrip
 
 When merging in changes from the open source repo, differences in `scehma.rb` and `Gemfile.lock` tend to be the trickiest to resolve.  Run `bundle` and `rails db:migrate` locally to ensure any conflicts have been resolved as expected.
 
+## Squash vs Merge
+Squash commits include a branch number like `#45` in the commit message by default, except when the PR only includes 1 commit. Merge commits do not include the branch number.
+The `bin/merge_describer` script only describes commits which include the branch number,
+so use Squash (and make sure the branch number is in the commit message) for every PR that should be described later on in the GitHub release and release ticket.  Use Merge commits for `latest_from_open_MMDDYYYY` branch PRs.
+
 # Bringing changes on your fork into Open
 
 _While in `nucore-open`_
@@ -59,7 +64,7 @@ General process:
   - Organize the output into features, fixes and tech tasks
   - Create a new release in Github using this list of commits for the description
   - Specify the new tag (`v2021-02-18`) for the release tag version, target, and release title
-1. Deploy the new code using capistrano or helm/CircelCI (see below)
+1. Deploy the new code using capistrano or helm/CircleCI (see below)
 1. Run any relevant rake tasks
 1. Go to staging and confirm new functionality is there
 
