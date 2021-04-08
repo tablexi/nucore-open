@@ -6,13 +6,13 @@ Open source version of Northwestern University Core Facility Management Software
 
 Staging: https://nucore.stage.tablexi.com
 
-## Note for Forks
+## Note for School-specific Repos
 
 As you pull in new features/bug fixes from open, please keep up with the [CHANGELOG](CHANGELOG.md)
-to see changes that may break your fork and optional/required rake tasks you may want
+to see changes that may break your school-specific repo and optional/required rake tasks you may want
 to run.
 
-[**See HOWTO_forks.txt**](doc/HOWTO_forks.md) for more information on merging changes from the open source fork and deployment processes.
+[**See HOWTO_related_repos.md**](doc/HOWTO_related_repos.md) for more information on merging changes from the open source repo and deployment processes.
 
 ## Quickstart
 
@@ -248,7 +248,7 @@ There are valuable resources in the NUcore's doc directory.
 
 * Want to know more about the instrument pricing model? [**See instrument_pricing.md**](doc/instrument_pricing.md)
 
-* Need to move changes between nucore-open and your fork? [**See HOWTO_forks.txt**](doc/HOWTO_forks.md)
+* Need to move changes between nucore-open and your school-specific repo? [**See HOWTO_related_repos.md**](doc/HOWTO_related_repos.md)
 
 * Need help getting Oracle running on your Mac? [**See HOWTO_oracle.md**](doc/HOWTO_oracle.md)
 
