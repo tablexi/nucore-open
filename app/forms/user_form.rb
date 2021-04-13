@@ -56,8 +56,10 @@ class UserForm < SimpleDelegator
   end
 
   def generate_new_password
-    chars = ("a".."z").to_a + ("1".."9").to_a + ("A".."Z").to_a
-    chars.sample(8).join
+    symbols = %w[! " # $ % & ' ( ) * + , - . / : ; < = > ? @ \[ \\ \] ^ _ ` { | } ~]
+    chars = ("a".."z").to_a.sample(3) + ("1".."9").to_a.sample(3) + ("A".."Z").to_a.sample(3) + symbols.sample(3)
+
+    chars.shuffle.join
   end
 
 end
