@@ -223,6 +223,8 @@ GEM
       warden (~> 1.2.3)
     devise-encryptable (0.2.0)
       devise (>= 2.1.0)
+    devise-security (0.15.0)
+      devise (>= 4.3.0, < 5.0)
     devise_ldap_authenticatable (0.8.7)
       devise (>= 3.4.1)
       net-ldap (>= 0.16.0)
@@ -604,6 +606,7 @@ DEPENDENCIES
   delayed_job_active_record
   devise
   devise-encryptable
+  devise-security
   dynamic_form
   ed25519 (>= 1.2, < 2.0)
   exception_notification
