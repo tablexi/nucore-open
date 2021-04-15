@@ -212,7 +212,7 @@ namespace :demo do
                             email: "admin@example.com",
                             first_name: "Admin",
                             last_name: "Istrator")
-      user_admin.password = "password"
+      user_admin.password = "P@5sw0rD!!"
       user_admin.save!
       UserRole.grant(user_admin, UserRole::ADMINISTRATOR)
     end
@@ -223,7 +223,7 @@ namespace :demo do
                          email: "ppi123@example.com",
                          first_name: "Paul",
                          last_name: "PI")
-      user_pi.password = "password"
+      user_pi.password = "P@5sw0rD!!"
       user_pi.save!
     end
 
@@ -233,7 +233,7 @@ namespace :demo do
                               email: "sst123@example.com",
                               first_name: "Sam",
                               last_name: "Student")
-      user_student.password = "password"
+      user_student.password = "P@5sw0rD!!"
       user_student.save!
     end
 
@@ -243,7 +243,7 @@ namespace :demo do
                             email: "ast123@example.com",
                             first_name: "Alice",
                             last_name: "Facility Staff")
-      user_staff.password = "password"
+      user_staff.password = "P@5sw0rD!!"
       user_staff.save!
       UserRole.grant(user_staff, UserRole::FACILITY_STAFF, facility)
     end
@@ -254,7 +254,7 @@ namespace :demo do
                                    email: "jss123@example.com",
                                    first_name: "Jennifer",
                                    last_name: "Facility Senior Staff")
-      user_senior_staff.password = "password"
+      user_senior_staff.password = "P@5sw0rD!!"
       user_senior_staff.save!
       UserRole.grant(user_senior_staff, UserRole::FACILITY_SENIOR_STAFF, facility)
     end
@@ -265,7 +265,7 @@ namespace :demo do
                                              email: "mfa123@example.com",
                                              first_name: "Macy",
                                              last_name: "Facility Administator")
-      user_facility_administrator.password = "password"
+      user_facility_administrator.password = "P@5sw0rD!!"
       user_facility_administrator.save!
       UserRole.grant(user_facility_administrator, UserRole::FACILITY_ADMINISTRATOR, facility)
     end
@@ -276,7 +276,7 @@ namespace :demo do
                                email: "ddi123@example.com",
                                first_name: "Dave",
                                last_name: "Facililty Director")
-      user_director.password = "password"
+      user_director.password = "P@5sw0rD!!"
       user_director.save
       UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
     end
@@ -287,7 +287,7 @@ namespace :demo do
                                       email: "aam123@example.com",
                                       first_name: "Ava",
                                       last_name: "Account Manager")
-      user_account_manager.password = "password"
+      user_account_manager.password = "P@5sw0rD!!"
       user_account_manager.save!
       UserRole.grant(user_account_manager, UserRole::ACCOUNT_MANAGER)
     end
@@ -299,7 +299,7 @@ namespace :demo do
                                                      email: "bba123@example.com",
                                                      first_name: "Billy",
                                                      last_name: "Global Billing Administator")
-        user_global_billing_administrator.password = "password"
+        user_global_billing_administrator.password = "P@5sw0rD!!"
         user_global_billing_administrator.save
         UserRole.grant(user_global_billing_administrator, UserRole::GLOBAL_BILLING_ADMINISTRATOR)
       end
@@ -311,7 +311,7 @@ namespace :demo do
                                                      email: "ffba123@example.com",
                                                      first_name: "Felix",
                                                      last_name: "Facility Billing Administator")
-      user_facility_billing_administrator.password = "password"
+      user_facility_billing_administrator.password = "P@5sw0rD!!"
       user_facility_billing_administrator.save!
       UserRole.grant(user_facility_billing_administrator, UserRole::FACILITY_BILLING_ADMINISTRATOR, facility)
     end

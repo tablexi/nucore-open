@@ -55,6 +55,7 @@ class UserForm < SimpleDelegator
     user.password = generate_new_password
   end
 
+  # Generates a secure password for a new user based on our password-complexity requirements
   def generate_new_password
     symbols = %w[! " # $ % & ' ( ) * + , - . / : ; < = > ? @ \[ \\ \] ^ _ ` { | } ~]
     chars = ("a".."z").to_a.sample(3) + ("1".."9").to_a.sample(3) + ("A".."Z").to_a.sample(3) + symbols.sample(3)
