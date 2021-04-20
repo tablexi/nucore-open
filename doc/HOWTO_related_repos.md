@@ -74,7 +74,7 @@ For feature PRs, the PR description will become the squash commit message. These
 # Bringing changes from your school-specific repo into `nucore-open`
 
 This doesn't come up as often, but sometimes you may need to bring a view hook or feature flag into open in order to support a school-specific customization.
-The best way to bring the changes from a school-specific repo is by cherry-picking the individual commits from `nucore-open`. For this reason, it's best to develop on `nucore-open` to start with, or to squash the commits in your branch so you only need to bring one commit.
+The best way to bring the changes from a school-specific repo is by checking out a branch from `nucore-open` and cherry-picking the desired school-specific commits. For this reason, it's best to develop on `nucore-open` to start with, or to squash the commits in your branch so you only need to bring one commit.
 
 For example, to bring changes from `nucore-nu` into `nucore-open`:
 
