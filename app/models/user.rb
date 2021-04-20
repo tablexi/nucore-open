@@ -53,6 +53,11 @@ class User < ApplicationRecord
   scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
   scope :sort_last_first, -> { order(Arel.sql("LOWER(users.last_name), LOWER(users.first_name)")) }
 
+  # password validations are required only for external users
+  def password_required?
+    email_user?
+  end
+
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
     UserRole.where(facility_id: facility.id, user_id: id)
