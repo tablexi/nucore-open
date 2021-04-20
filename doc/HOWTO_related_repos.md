@@ -8,18 +8,18 @@ repositories on each side.
 
 ## Bringing changes from `nucore-open` into a school-specific repo
 
-You can bring over all the new changes with a `latest_from_open_MMDDYYYY` branch,
-or just a few commmits with a cherry-picked branch.
+You can either bring over all the new changes with a `latest_from_open_MMDDYYYY` branch,
+or just a few commits with a cherry-picked branch.
 
-### General process
+### General deployment process
 
 1. Start in the directory of the school repo (for example, `nucore-nu`)
-1. Open a new branch, either`latest_from_open_MMDDYYYY` or cherry-picked [(see below)](#creating-a-latest_from_open_mmddyyyy-branch)
+1. Open a new branch (for more details see the sections on creating a [latest_from_open](#creating-a-latest_from_open_mmddyyyy-branch) or [cherry-picked](#creating-a-branch-with-cherry-picked-commits) branch below)
 1. Merge the PR (not squash) once it has been approved and CI is green [(see below)](#squash-vs-merge)
 1. For a production release, create a Github release [(see below)](#creating-a-github-release)
 1. Deploy the new code using capistrano or helm/CircleCI [(see below)](#deploy)
-1. Run any relevant rake tasks
-1. Go to staging and confirm new functionality is there
+1. Perform any release/deployment related tasks (e.g. add new env variables, run one-off rake task, etc.)
+1. Check the site in a browser and confirm new functionality is there
 
 ## Creating a branch with cherry picked commits
 You can cherry-pick commits from `upstream`/`nucore-open` to create more focused PRs.
@@ -33,9 +33,11 @@ git cherry-pick XXXXX
 
 ## Creating a `latest_from_open_MMDDYYYY` branch
 
+To keep each school in sync with `nucore-open`, the latest changes from `nucore-open` are merged in on a regular basis.
+
 _While in your school-specific repo's directory_
 
-1. Add a new remote called `upstream ` that points to the `nucore-open` repo
+1. Add a new remote called `upstream` that points to the `nucore-open` repo
 (you should only need to do this once): `git remote add upstream git@github.com:tablexi/nucore-open.git`
 1. Create a new branch with the name `latest_from_open_MMDDYYYY` (reflecting the current date).
 1. Whenever you want to bring the latest changes from open/master into your branch: `git fetch upstream` and then `git merge upstream/master`
@@ -50,9 +52,14 @@ When merging in changes from the open source repo, differences in `scehma.rb` an
 
 ## Squash vs Merge
 
-On github, squash commits include a parenthesized branch number like `(#45)` in the commit message by default, except when the PR only includes 1 commit. Merge commits do not include the branch number.
-The `bin/merge_describer` script only describes commits which include the parenthesized branch number,
-so use Squash (and make sure the parenthesized branch number is in the commit message) for every PR that should be described later on in the GitHub release and release ticket.  Use Merge commits for `latest_from_open_MMDDYYYY` branch PRs.
+*The `bin/merge_describer` script only describes commits which include the parenthesized branch number.*
+
+On github, squash commits include a parenthesized branch number like `(#45)` in the commit message by default, except when the PR only includes 1 commit. Merge commits do not include the parenthesized branch number. So...
+
+* Use **Squash** for feature PRs, and make sure the parenthesized branch number is in the commit message so the squash commit will get described later on in the GitHub release and release ticket.
+* Use **Merge** commits for `latest_from_open_MMDDYYYY` branch PRs.
+
+## PR Descriptions
 
 For feature PRs, the PR description will become the squash commit message. These appear later in the `bin/merge_describer` output, which is used in the`latest_from_open_MMDDYYYY` PR description, github release, and release redmine ticket. Try to write feature PR descriptions that focus on user outcomes rather than technical details - "Fix ability to download CSV" is preferred over "Resolve issues with JSON parsing".
 
@@ -66,22 +73,23 @@ For feature PRs, the PR description will become the squash commit message. These
 
 # Bringing changes from your school-specific repo into `nucore-open`
 
-_While in the `nucore-open` directory_
+This doesn't come up as often, but sometimes you may need to bring a view hook or feature flag into open in order to support a school-specific customization.
+The best way to bring the changes from a school-specific repo is by cherry-picking the individual commits from `nucore-open`. For this reason, it's best to develop on `nucore-open` to start with, or to squash the commits in your branch so you only need to bring one commit.
 
 For example, to bring changes from `nucore-nu` into `nucore-open`:
 
-`git remote add nu git@github.com:tablexi/nucore-nu.git`
-
-The best way to bring in the changes from NU is by cherry-picking the individual
-commits. For this reason, it's best to develop on `nucore-open` to start with, or to squash
-the commits in your branch so you only need to bring one commit.
+_While in the `nucore-open` directory_
 
 ```
+git remote add nu git@github.com:tablexi/nucore-nu.git
 git fetch nu
 git cherry-pick XXXXX
 ```
 
 # Deploy
+
+Deploy process will vary depending on the hosting setup.
+Helm is used for apps hosted in kubernetes, and capistrano is used for legacy-hosting setups.
 
 ## Helm deploy steps
 
