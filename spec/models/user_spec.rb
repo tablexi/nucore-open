@@ -11,7 +11,7 @@ RSpec.describe User do
 
   it { is_expected.to accept_nested_attributes_for(:account_users) }
 
-  it "validates uniquess of username" do
+  it "validates uniqueness of username" do
     # we need at least 1 user to test validations
     is_expected.to validate_uniqueness_of(:username).case_insensitive
   end
