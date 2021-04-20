@@ -7,19 +7,19 @@ RSpec.describe Devise::SessionsController do
 
   describe "#create, aka logging in" do
     describe "a user with the password in the database" do
-      let(:user) { FactoryBot.create(:user, password: "P@5sw0rD!!", password_confirmation: "P@5sw0rD!!") }
+      let(:user) { FactoryBot.create(:user, password: "IamAnud0mU$3r", password_confirmation: "IamAnud0mU$3r") }
 
       specify "can log in" do
-        post :create, params: { user: { username: user.username, password: "P@5sw0rD!!", password_confirmation: "P@5sw0rD!!" } }
+        post :create, params: { user: { username: user.username, password: "IamAnud0mU$3r" } }
         expect(controller.current_user).to eq(user)
       end
     end
 
     describe "a suspended user" do
-      let(:user) { create(:user, :suspended, password: "P@5sw0rD!!", password_confirmation: "P@5sw0rD!!") }
+      let(:user) { create(:user, :suspended, password: "IamAnud0mU$3r", password_confirmation: "IamAnud0mU$3r") }
 
       specify "can not log in" do
-        post :create, params: { user: { username: user.username, password: "P@5sw0rD!!", password_confirmation: "P@5sw0rD!!" } }
+        post :create, params: { user: { username: user.username, password: "IamAnud0mU$3r" } }
         expect { controller.current_user }.to throw_symbol(:warden)
       end
     end
