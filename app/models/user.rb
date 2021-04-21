@@ -53,8 +53,11 @@ class User < ApplicationRecord
   scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
   scope :sort_last_first, -> { order(Arel.sql("LOWER(users.last_name), LOWER(users.first_name)")) }
 
-  # password validations are required only for external users
+  # Password validations are required only for external users. This method overrides default logic in Devise-Security Gem.
   def password_required?
+    # Determine if password is required only after required fields are present. (i.e, during User creation flow)
+    return false unless email && username
+
     email_user?
   end
 
