@@ -402,6 +402,8 @@ GEM
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
+    rack-utf8_sanitizer (1.7.0)
+      rack (>= 1.0, < 3.0)
     rails (5.2.5)
       actioncable (= 5.2.5)
       actionmailer (= 5.2.5)
@@ -637,6 +639,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   puma
+  rack-utf8_sanitizer
   rails (= 5.2.5)
   rails-controller-testing
   rails-observers

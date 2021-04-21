@@ -10,6 +10,7 @@ gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
 gem "bootsnap", require: false
 gem "puma"
+gem "rack-utf8_sanitizer"
 
 ## database
 gem "mysql2"
