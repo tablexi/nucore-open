@@ -97,7 +97,7 @@ class User < ApplicationRecord
     end
 
     errors.add(:password, :empty) if params[:password].blank?
-    errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 11
+    errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 10
     errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
 
     if errors.empty?
