@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe User do
-  subject(:user) { create(:user) }
+  subject(:user) { create(:user, :netid) }
   let(:facility) { create(:setup_facility) }
   let(:item) { create(:item, facility: facility) }
   let(:price_group) { create(:price_group, facility: facility) }
@@ -77,15 +77,12 @@ RSpec.describe User do
     end
   end
 
-  it { is_expected.to be_authenticated_locally }
+  it { is_expected.not_to be_authenticated_locally }
 
-  it "can not be locally authenticated" do
-    user.encrypted_password = nil
+  it "can be locally authenticated as an email user" do
+    user.password = "Passw0rd!!"
     assert user.save
-    expect(user).not_to be_authenticated_locally
-    user.password_salt = nil
-    assert user.save
-    expect(user).not_to be_authenticated_locally
+    expect(user).to be_authenticated_locally
   end
 
   it "aliases username to login" do
