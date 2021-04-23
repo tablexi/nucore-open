@@ -4,7 +4,7 @@ RSpec.describe Users::AuthChecker do
 
   describe "#authenticated?" do
     context "with an external user", feature_setting: { bypass_kiosk_auth: false } do
-      let(:user) { create(:user, email: "external@example.org", username: "external@example.org") }
+      let(:user) { create(:user, :external, email: "external@example.org", username: "external@example.org") }
 
       context "with the correct password" do
         let(:auth_user) { described_class.new(user, "P@ssw0rd!!") }
@@ -68,7 +68,7 @@ RSpec.describe Users::AuthChecker do
     end
 
     context "with kiosk auth bypass", feature_setting: { bypass_kiosk_auth: true } do
-      let(:user) { create(:user, email: "external@example.org", username: "external@example.org") }
+      let(:user) { create(:user, :external, email: "external@example.org", username: "external@example.org") }
 
       context "with the correct password" do
         let(:auth_user) { described_class.new(user, "netidpassword") }
