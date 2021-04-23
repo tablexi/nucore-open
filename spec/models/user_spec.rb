@@ -79,7 +79,7 @@ RSpec.describe User do
 
   it { is_expected.not_to be_authenticated_locally }
 
-  it "can be locally authenticated as an email user" do
+  it "can be locally authenticated as a netid user (email != username)" do
     user.password = "Passw0rd!!"
     assert user.save
     expect(user).to be_authenticated_locally
