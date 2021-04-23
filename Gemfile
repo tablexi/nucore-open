@@ -24,7 +24,7 @@ gem "mysql2"
 gem "cancancan"
 gem "devise"
 gem "devise-encryptable"
-gem 'devise-security'
+gem "devise-security"
 
 ## models
 gem "aasm"
