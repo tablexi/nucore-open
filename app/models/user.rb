@@ -6,7 +6,7 @@ class User < ApplicationRecord
   include Nucore::Database::WhereIdsIn
 
   # ldap_authenticatable is included via a to_prepare hook if ldap is enabled
-  devise :database_authenticatable, :encryptable, :trackable, :recoverable, :lockable, :timeoutable
+  devise :database_authenticatable, :encryptable, :trackable, :recoverable, :lockable, :timeoutable, :secure_validatable
 
   has_many :account_users, -> { where(deleted_at: nil) }
   has_many :accounts, through: :account_users
@@ -53,6 +53,15 @@ class User < ApplicationRecord
   scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
   scope :sort_last_first, -> { order(Arel.sql("LOWER(users.last_name), LOWER(users.first_name)")) }
 
+  # Password validations are required only for email users. This method overrides default logic in the devise-security gem.
+  # See https://github.com/devise-security/devise-security/blob/master/lib/devise-security/models/secure_validatable.rb#L54
+  def password_required?
+    # Determine if password is required only after required fields are present. (i.e, during User creation flow)
+    return false unless email && username
+
+    email_user?
+  end
+
   # finds all user role mappings for a this user in a facility
   def facility_user_roles(facility)
     UserRole.where(facility_id: facility.id, user_id: id)
@@ -89,7 +98,7 @@ class User < ApplicationRecord
     end
 
     errors.add(:password, :empty) if params[:password].blank?
-    errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 6
+    errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 10
     errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
 
     if errors.empty?
