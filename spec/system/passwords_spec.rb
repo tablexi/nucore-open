@@ -78,7 +78,7 @@ RSpec.describe "Passwords", :aggregate_failures, feature_setting: { password_upd
         current_email.click_link "Change my password"
         fill_in "New password", with: "NewP@5sw0rd!!"
         fill_in "Confirm your new password", with: "NewP@5sw0rd!!"
-        click_button "Change my password"
+        click_button "Change Password"
 
         expect(page).to have_content "Your password has been changed successfully"
         expect(external_user.reload).to be_valid_password("NewP@5sw0rd!!")
