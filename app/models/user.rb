@@ -53,13 +53,22 @@ class User < ApplicationRecord
   scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
   scope :sort_last_first, -> { order(Arel.sql("LOWER(users.last_name), LOWER(users.first_name)")) }
 
-  # Password validations are required only for email users. This method overrides default logic in the devise-security gem.
+  # This method is only used by devise-security to determine
+  # whether or not password validations should run.
+  # A better name would be passowrd_validations_required?
+  # but that's just my humble opinion.
   # See https://github.com/devise-security/devise-security/blob/master/lib/devise-security/models/secure_validatable.rb#L54
+  #
+  # By default passwords are validated for new records,
+  # or when the password or password_confirmation are being set.
+  # We over-ride here because we only want to run validations
+  # for persisted, locally authenticated users.
+  # New locally authenticated users get a valid password set
+  # by UserForm#set_password.
   def password_required?
-    # Determine if password is required only after required fields are present. (i.e, during User creation flow)
-    return false unless email && username
+    return false unless persisted? && authenticated_locally?
 
-    email_user?
+    super
   end
 
   # finds all user role mappings for a this user in a facility
