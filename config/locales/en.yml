@@ -618,6 +618,7 @@ en:
     reconciled:
       "true": Reconciled
       "false": Unreconciled
+    resend: Resend
 
   orders:
     add_account:
