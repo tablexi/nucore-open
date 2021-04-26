@@ -61,7 +61,7 @@ class User < ApplicationRecord
   #
   # By default passwords are validated for new records,
   # or when the password or password_confirmation are being set.
-  # We over-ride here because we only want to run validations
+  # We override here because we only want to run validations
   # for persisted, locally authenticated users.
   # New locally authenticated users get a valid password set
   # by UserForm#set_password.
