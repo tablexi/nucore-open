@@ -55,7 +55,7 @@ class User < ApplicationRecord
 
   # This method is only used by devise-security to determine
   # whether or not password validations should run.
-  # A better name would be passowrd_validations_required?
+  # A better name would be password_validations_required?
   # but that's just my humble opinion.
   # See https://github.com/devise-security/devise-security/blob/master/lib/devise-security/models/secure_validatable.rb#L54
   #
