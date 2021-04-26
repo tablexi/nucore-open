@@ -72,7 +72,7 @@ class FacilityStatementsController < ApplicationController
     redirect_to action: :new
   end
 
-  # GET /facilities/:facility_id/statements/:id/resend_emails
+  # POST /facilities/:facility_id/statements/:id/resend_emails
   def resend_emails
     if SettingsHelper.feature_on?(:send_statement_emails)
       statement = Statement.find(params[:id])
