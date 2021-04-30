@@ -24,6 +24,8 @@ module LdapAuthentication
       @config = {}
     end
 
+    @config["encryption"] = encryption_options if encryption_options.present?
+
     @config
   end
 
@@ -37,6 +39,18 @@ module LdapAuthentication
 
   def self.additional_user_attributes
     config.fetch("additional_user_attributes", [])
+  end
+
+  def self.additional_user_attributes
+    config.fetch("additional_user_attributes", [])
+  end
+
+  # Can be over-written to insert additional encryption options.
+  # See https://github.com/ruby-ldap/ruby-net-ldap/blob/master/lib/net/ldap.rb#L483
+  # For example:
+  # { :method => :start_tls }
+  def self.encryption_options
+    {}
   end
 
   def self.load_config_from_file
