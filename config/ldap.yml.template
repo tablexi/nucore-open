@@ -13,3 +13,4 @@ development:
   admin_user: "cn=admin,dc=example,dc=org"
   admin_password: admin
   additional_user_attributes: [] # attributes to update on log in
+  encryption_method: "" # either simple_tls or start_tls
