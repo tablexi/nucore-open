@@ -146,8 +146,8 @@ paperclip:
 #   # certificate_file: path/to/file.p12 # Optional. Do not check in to version control.
 #   # driver: # Optional. Useful to override inferred SAML settings if need be.
 #   #   "idp_sso_target_url": "https://websso.example.com/idp/profile/SAML2/Redirect/SSO"
-#   # metadata_parse_options: # Optional. See RubySaml::IdpMetadataParser
-#   #   sso_binding: ["urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"]
+#   # metadata_parse_options: # Optional, but setting the sso_binding option is highly recommended. See RubySaml::IdpMetadataParser for valid options.
+#   #   sso_binding: ["urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"] #  Otherwise the binding will default to the first one specified in the IdP by default, which can cause problems if the IdP metadata changes.
 #   attribute_map:
 #     "PersonImmutableID": "username"
 #     "User.email": "email"
