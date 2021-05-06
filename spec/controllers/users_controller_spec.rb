@@ -113,6 +113,7 @@ RSpec.describe UsersController do
     end
 
     before(:each) do
+      FactoryBot.create(:product_user, user: user, product: instruments.last)
       @method = :get
       @action = :access_list
       @params[:user_id] = user.id
@@ -122,6 +123,7 @@ RSpec.describe UsersController do
       expect(assigns[:facility]).to eq(facility)
       expect(assigns[:products_by_type]["Instrument"]).to match_array(instruments)
       expect(assigns[:products_by_type]["Service"]).to match_array(services)
+      expect(assigns[:access_granted_date_by_product_id]).to have_key(instruments.last.id)
       expect(assigns[:training_requested_product_ids]).to match_array [
         instruments.last.id,
         services.first.id,
