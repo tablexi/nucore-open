@@ -21,7 +21,7 @@
         %td
           = link_to user.last_first_name, [current_facility, user]
 
-        %td= product_user.approved_at.strftime("%Y/%M/%d")
+        %td= month_day_year(product_user.approved_at)
         %td= user.username
         %td= user.email
         - if local_assigns[:f]

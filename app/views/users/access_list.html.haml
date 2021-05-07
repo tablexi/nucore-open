@@ -29,7 +29,7 @@
 
         %tbody
           - products.each do |product|
-            - access_granted_at = @access_granted_date_by_product_id[product.id]
+            - access_granted_at = @user_approved_at_for_product_id[product.id]
             %tr.js--access-list-row
               %td.approval-column.approval-checkbox
                 = check_box_tag "approved_products[]",
@@ -43,7 +43,7 @@
                 = link_to product, [product.facility, product, :users]
               %td.product-column
                 - if access_granted_at.present?
-                  = access_granted_at.strftime("%Y/%M/%d")
+                  = month_day_year(access_granted_at)
               %td.scheduling-group-column
                 - if product.has_product_access_groups?
                   = scheduling_group_select(product, @user)
