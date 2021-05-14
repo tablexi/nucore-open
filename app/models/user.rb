@@ -106,12 +106,16 @@ class User < ApplicationRecord
       return false
     end
 
+    # let devise-security check password complexity first
+    self.password = params[:password].strip
+    valid?
+
+    # then add our own errors
     errors.add(:password, :empty) if params[:password].blank?
     errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 10
     errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
 
     if errors.empty?
-      self.password = params[:password].strip
       clear_reset_password_token
       save!
       return true
