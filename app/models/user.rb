@@ -93,25 +93,34 @@ class User < ApplicationRecord
     email_user?
   end
 
+  # Runs various validation checks and then saves the new password.
+  #
+  # Returns: Boolean
+  #
+  # The order of various validity checks here is important,
+  # see numbered comments below.
   def update_password_confirm_current(params)
-    unless valid_password? params[:current_password]
-      errors.add(:current_password, :incorrect)
-    end
-    update_password(params)
-  end
+    # 1) Must run this check before the password is set to a new value,
+    # but we can't set errors until after calling #valid?
+    current_password_valid = valid_password?(params[:current_password])
 
-  def update_password(params)
+    # 2) Bail if somehow the user should be using SSO
     unless password_updatable?
       errors.add(:base, :password_not_updatable)
       return false
     end
 
+    # 3) Set the password so devise-security can check password complexity
+    self.password = params[:password].strip
+    valid? # clears any existing errors
+
+    # 4) Add more validation errors as needed
+    errors.add(:current_password, :incorrect) unless current_password_valid
     errors.add(:password, :empty) if params[:password].blank?
     errors.add(:password, :password_too_short) if params[:password] && params[:password].strip.length < 10
     errors.add(:password_confirmation, :confirmation) if params[:password] != params[:password_confirmation]
 
     if errors.empty?
-      self.password = params[:password].strip
       clear_reset_password_token
       save!
       return true
