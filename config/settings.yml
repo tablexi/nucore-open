@@ -121,6 +121,7 @@ feature:
   uses_ldap_authentication: false
   kiosk_view: true
   bypass_kiosk_auth: false
+  revenue_account_editable: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
