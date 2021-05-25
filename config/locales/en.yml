@@ -958,6 +958,12 @@ en:
       subject: "!app_name! Transaction Export"
       body: Your export is ready. Please see the attached file.
       order_detail_notices: Notices
+    instruments:
+      product_users:
+        export: Export as CSV
+        subject: "!app_name! Access List Export"
+        body: Your export is ready. Please see the attached file.
+        suspended_or_expired: Suspended or Expired
 
   users:
     new_user:
