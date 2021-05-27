@@ -10,7 +10,8 @@
       - reservations.each do |res|
         %tr
           %td
-            = res.user.full_name
+            - # AdminReservation and OfflineReservation records don't belong to an order
+            = res.user&.full_name || res.created_by&.full_name || text("no_user")
           %td
             = res
           %td

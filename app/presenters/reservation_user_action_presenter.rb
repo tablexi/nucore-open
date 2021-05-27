@@ -102,8 +102,9 @@ class ReservationUserActionPresenter
   end
 
   def kiosk_switch_actions
-    kiosk_path = facility_kiosk_reservations_path(reservation.facility)
-    if can_switch_instrument_on?
+    if order.nil?
+      # do nothing for Offline and Admin Reservations
+    elsif can_switch_instrument_on?
       link_to I18n.t("reservations.switch.start"),
               order_order_detail_reservation_kiosk_begin_path(order, order_detail, reservation),
               class: "has_accessories",
