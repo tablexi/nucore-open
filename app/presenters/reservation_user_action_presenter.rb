@@ -39,6 +39,9 @@ class ReservationUserActionPresenter
   end
 
   def kiosk_user_actions
+    # no actions allowed for Offline and Admin Reservations
+    return [] unless order_detail.present?
+
     actions = []
     actions << kiosk_accessories_link if accessories?
     actions << kiosk_switch_actions if can_switch_instrument?
@@ -102,9 +105,7 @@ class ReservationUserActionPresenter
   end
 
   def kiosk_switch_actions
-    if order.nil?
-      # do nothing for Offline and Admin Reservations
-    elsif can_switch_instrument_on?
+    if can_switch_instrument_on?
       link_to I18n.t("reservations.switch.start"),
               order_order_detail_reservation_kiosk_begin_path(order, order_detail, reservation),
               class: "has_accessories",

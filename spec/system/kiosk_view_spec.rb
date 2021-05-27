@@ -26,7 +26,7 @@ RSpec.describe "Launching Kiosk View", :js, feature_setting: { kiosk_view: true,
     end
 
     context "with an offline reservation" do
-      let!(:offline_reservation) { create(:offline_reservation, reserve_start_at: 5.minutes.ago, product: instrument) }
+      let!(:offline_reservation) { create(:offline_reservation, reserve_start_at: 15.minutes.ago, actual_start_at: 10.minutes.ago, product: instrument) }
 
       it "does not error" do
         visit facility_kiosk_reservations_path(facility)
