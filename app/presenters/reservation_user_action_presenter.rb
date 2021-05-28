@@ -3,7 +3,7 @@
 class ReservationUserActionPresenter
 
   attr_accessor :reservation, :controller
-  delegate :order_detail, :order, :facility, :product,
+  delegate :order_detail, :order, :facility, :product, :admin?,
            :can_switch_instrument?, :can_switch_instrument_on?, :can_switch_instrument_off?,
            :can_cancel?, :startable_now?, :can_customer_edit?, :started?, :ongoing?, to: :reservation
 
@@ -39,13 +39,14 @@ class ReservationUserActionPresenter
   end
 
   def kiosk_user_actions
-    # no actions allowed for Offline and Admin Reservations
-    return [] unless order_detail.present?
-
     actions = []
     actions << kiosk_accessories_link if accessories?
-    actions << kiosk_switch_actions if can_switch_instrument?
+    actions << kiosk_switch_actions if kiosk_actions?
     actions.compact
+  end
+
+  def kiosk_actions?
+    !admin? && can_switch_instrument?
   end
 
   def view_edit_link
@@ -69,7 +70,7 @@ class ReservationUserActionPresenter
   private
 
   def accessories?
-    ongoing? && order_detail.accessories?
+    ongoing? && order_detail&.accessories?
   end
 
   def accessories_link

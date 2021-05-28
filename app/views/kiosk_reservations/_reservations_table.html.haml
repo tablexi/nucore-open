@@ -10,8 +10,7 @@
       - reservations.each do |res|
         %tr
           %td
-            - # Admin and Offline Reservations have a created_by user and no order user
-            = res.user&.full_name || res.created_by&.full_name || text("no_user")
+            = kiosk_reservation_user(res)
           %td
             = res
           %td
