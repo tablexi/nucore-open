@@ -38,7 +38,7 @@ module Reports
     end
 
     def translation_scope
-      "reports.instruments.product_users"
+      "reports.product_users"
     end
 
     private
@@ -50,7 +50,7 @@ module Reports
         text(".suspended_or_expired"),
         User.human_attribute_name(:email),
         ProductAccessGroup.model_name.human,
-        ProductUser.human_attribute_name(:date_added),
+        text(".date_added"),
       ]
     end
 
