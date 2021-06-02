@@ -34,7 +34,7 @@ class ProductUsersController < ApplicationController
         format.csv do
           # used for "Export as CSV" link
           yield_email_and_respond_for_report do |email|
-            access_list_report = Reports::InstrumentAccessListExportRaw.new(all_product_users)
+            access_list_report = Reports::ProductAccessListCsvReport.new(@product.name, all_product_users)
             CsvReportMailer.csv_report_email(email, access_list_report).deliver
           end
         end

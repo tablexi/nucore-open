@@ -4,11 +4,12 @@ require "csv"
 
 module Reports
 
-  class InstrumentAccessListExportRaw
+  class ProductAccessListCsvReport
     include DateHelper
     include TextHelpers::Translation
 
-    def initialize(product_users)
+    def initialize(product_name, product_users)
+      @product_name = product_name
       @product_users = product_users
     end
 
@@ -22,7 +23,7 @@ module Reports
     end
 
     def filename
-      "instrument_access_list.csv"
+      "#{@product_name.parameterize}_access_list.csv"
     end
 
     def description
@@ -47,7 +48,7 @@ module Reports
       [
         User.human_attribute_name(:username),
         User.human_attribute_name(:full_name),
-        text(".suspended_or_expired"),
+        text(".user_status"),
         User.human_attribute_name(:email),
         ProductAccessGroup.model_name.human,
         text(".date_added"),
@@ -59,15 +60,15 @@ module Reports
       [
         user.username,
         user.full_name,
-        suspended_or_expired(user),
+        user_status(user),
         user.email,
         product_user.product_access_group.try(:name),
         format_usa_datetime(product_user.approved_at),
       ]
     end
 
-    def suspended_or_expired(user)
-      return "" if user.active?
+    def user_status(user)
+      return "Active" if user.active?
       user.suspended? ? "Suspended" : "Expired"
     end
   end
