@@ -49,6 +49,16 @@ class UserForm < SimpleDelegator
     false
   end
 
+  # TODO: Consider refactoring for consistency between schools.
+  # The NU flow could align more by hiding the username input.
+  def username_input_options
+    { readonly: true }
+  end
+
+  def form_head
+    "form_head"
+  end
+
   private
 
   def set_password
