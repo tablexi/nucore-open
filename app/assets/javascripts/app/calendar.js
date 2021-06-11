@@ -78,6 +78,7 @@ window.FullCalendarConfig = class FullCalendarConfig {
         event.product,
         event.expiration,
         event.userNote,
+        event.orderNote,
         this.linkToEditOrder(event)
       ].filter(
         e => // remove undefined values
