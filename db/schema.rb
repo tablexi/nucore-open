@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_23_212200) do
+ActiveRecord::Schema.define(version: 2021_06_08_225403) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -172,6 +172,7 @@ ActiveRecord::Schema.define(version: 2021_03_23_212200) do
     t.string "dashboard_token"
     t.string "payment_url"
     t.boolean "kiosk_enabled"
+    t.boolean "show_order_note", default: true, null: false
     t.index ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true
     t.index ["is_active", "name"], name: "index_facilities_on_is_active_and_name"
     t.index ["name"], name: "index_facilities_on_name", unique: true
