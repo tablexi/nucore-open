@@ -326,6 +326,11 @@ Rails.application.routes.draw do
   end
   resources :log_events, only: :index
   resources :research_safety_certificates, except: :show
+  resources :admin_reports, only: :index do
+    collection do
+      get "relay_data"
+    end
+  end
 
   # order process
   get "/orders/cart", to: "orders#cart", as: "cart"

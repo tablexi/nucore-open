@@ -4,4 +4,5 @@
   = tab t("pages.global_user_roles"), global_user_roles_path, sidenav_tab == "global_user_roles"
   = tab JournalCutoffDate.model_name.human(count: 2), journal_cutoff_dates_path, sidenav_tab == "journal_cutoff_dates"
   = tab text("views.research_safety_certificates.index.title"), research_safety_certificates_path, sidenav_tab == "certificates"
+  = tab text("admin_reports.index.title"), admin_reports_path, sidenav_tab == "admin_reports"
   = render_view_hook "after", sidenav_tab: sidenav_tab

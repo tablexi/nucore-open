@@ -23,6 +23,10 @@ class ProductsCommonController < ApplicationController
   end
 
   # GET /services
+  # GET /instruments
+  # GET /bundles
+  # GET /items
+  # GET /timed_services
   def index
     @archived_product_count     = current_facility_products.archived.length
     @not_archived_product_count = current_facility_products.not_archived.length
