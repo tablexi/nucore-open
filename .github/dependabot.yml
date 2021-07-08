@@ -1,0 +1,50 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: sunday
+    time: "23:00"
+    timezone: America/Chicago
+  pull-request-branch-name:
+    separator: "-"
+  open-pull-requests-limit: 99
+  versioning-strategy: lockfile-only
+  ignore:
+  - dependency-name: bootstrap-sass
+    versions:
+    - "< 4, >= 3.0.a"
+  - dependency-name: cancancan
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: ckeditor
+    versions:
+    - ">= 5.a, < 6"
+  - dependency-name: factory_bot_rails
+    versions:
+    - ">= 5.a, < 6"
+  - dependency-name: fog-aws
+    versions:
+    - ">= 3.4.a, < 3.5"
+  - dependency-name: fog-aws
+    versions:
+    - ">= 3.5.a, < 3.6"
+  - dependency-name: rbnacl
+    versions:
+    - "< 6, >= 5.a"
+  - dependency-name: rspec-rails
+    versions:
+    - ">= 3.9.a, < 3.10"
+  - dependency-name: unicorn
+    versions:
+    - ">= 5.5.a, < 5.6"
+  - dependency-name: vuejs-rails
+    versions:
+    - "< 3, >= 2.0.a"
+  - dependency-name: parallel_tests
+    versions:
+    - 3.6.0
+  - dependency-name: oj
+    versions:
+    - 3.11.1
