@@ -17,12 +17,12 @@ RSpec.describe "Importing Approved Users", :js do
       create(:product_user, product: instrument, user: user_2)
     end
 
-    it "can launch the Kiosk View" do
+    it "displays the correct message" do
       visit facility_instrument_users_path(facility, instrument)
       page.attach_file(Rails.root + 'spec/files/product_user_imports/existing_users.csv', visible: false)
 
       expect(page.current_path).to eq facility_instrument_users_path(facility, instrument)
-      expect(page).to have_content("The following user(s) already had access:\n#{user_1.username}\n#{user_2.username}\n")
+      expect(page).to have_content("No new approved users were added.\nThe following user(s) already had access:\n#{user_1.username}\n#{user_2.username}\n")
       expect(page).not_to have_content("imported successfully")
     end
   end
@@ -32,7 +32,7 @@ RSpec.describe "Importing Approved Users", :js do
       create(:product_user, product: instrument, user: user_1)
     end
 
-    it "can launch the Kiosk View" do
+    it "displays the correct message" do
       visit facility_instrument_users_path(facility, instrument)
       page.attach_file(Rails.root + 'spec/files/product_user_imports/existing_users.csv', visible: false)
 
@@ -47,7 +47,7 @@ RSpec.describe "Importing Approved Users", :js do
       create(:product_user, product: instrument, user: user_1)
     end
 
-    it "can launch the Kiosk View" do
+    it "displays the correct message" do
       visit facility_instrument_users_path(facility, instrument)
       page.attach_file(Rails.root + 'spec/files/product_user_imports/user_not_found.csv', visible: false)
 
