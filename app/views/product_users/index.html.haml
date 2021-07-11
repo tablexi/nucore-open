@@ -13,8 +13,7 @@
 
 %p= text("explanation", product_type: @product.model_name.human.downcase)
 
-%p
-  = link_to text("add"), [:new, current_facility, @product, :user], class: "btn-add"
+%p= link_to text("add"), [:new, current_facility, @product, :user], class: "btn-add"
 
 .well.well-small
   = simple_form_for :product_user_import, url: facility_product_product_user_imports_path(current_facility, @product), html: { multipart: true } do |f|
