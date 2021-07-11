@@ -17,20 +17,21 @@ class ProductUserImport < ApplicationRecord
     self.successes = []
     self.skipped = []
     self.failures = []
-    ProductUser.transaction do
-      begin
-        CSV.parse(Paperclip.io_adapters.for(file).read, headers: true, skip_lines: /^,*$/).each do |row|
-          import_row(row)
-        end
+
+    if parsed_import_file.headers.include?('Username')
+      ProductUser.transaction do
+        parsed_import_file.each { |row| import_row(row) }
+        raise ActiveRecord::Rollback if failed?
       end
 
-      raise ActiveRecord::Rollback if failed?
+      self.processed_at = Time.zone.now
+    else
+      failures << "Uploaded CSV file must include a Username Column.  Please try again."
     end
 
-    self.processed_at = Time.zone.now
-    save!
 
-    if succeeded?
+    if new_product_users_added?
+      save!
       successes.map! do |product_user|
         LogEvent.log(product_user, :create, creator)
         "* #{product_user.user.username}\n"
@@ -38,16 +39,12 @@ class ProductUserImport < ApplicationRecord
     end
   end
 
-  def processed?
-    processed_at.present?
-  end
-
   def failed?
     failures.count > 0
   end
 
-  def succeeded?
-    !failed?
+  def new_product_users_added?
+    successes.count > 0 && !failed?
   end
 
   private
@@ -62,14 +59,15 @@ class ProductUserImport < ApplicationRecord
     elsif new_product_user.errors.full_messages.to_sentence == "User is already approved"
       skipped << "* #{row_username}\n"
     else
-      failures << "* #{row_username}: #{new_product_user.errors.full_messages.to_sentence}\n\n"
+      failures << "* #{row_username}: #{new_product_user.errors.full_messages.to_sentence}\n"
     end
   rescue => e
-    failures << "* #{row_username}: #{e.message}\n\n"
+    failures << "* #{row_username}: #{e.message}\n"
   end
 
-  def upload_file_path
-    @upload_file_path ||= upload_file.file.path
+  def parsed_import_file
+    @parsed_import_file ||=
+      CSV.parse(Paperclip.io_adapters.for(file).read, headers: true, skip_lines: /^,*$/)
   end
 
 end

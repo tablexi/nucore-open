@@ -14,7 +14,7 @@ class ProductUserImportsController < ApplicationController
     begin
       import = create_product_user_import!
       import.process_upload!
-      if import.succeeded?
+      if !import.failed?
         flash[:notice] = import_success_alert(import)
       else
         flash[:error] = import_failed_alert(import)
@@ -35,7 +35,7 @@ class ProductUserImportsController < ApplicationController
   def create_product_user_import!
     raise "Please upload a valid import file" if file.blank?
 
-    ProductUserImport.create!(
+    ProductUserImport.new(
       create_params.merge(
         creator: session_user,
         product: @product,
