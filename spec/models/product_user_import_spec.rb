@@ -39,7 +39,6 @@ RSpec.describe ProductUserImport do
         CSV
       end
 
-
       it { is_expected.to be_failed }
       it { is_expected.not_to be_persisted }
 
