@@ -21,6 +21,7 @@ RSpec.describe ProductUserImport do
   end
 
   context "validations" do
+    it { is_expected.to belong_to :product }
     it { is_expected.to belong_to :creator }
     it { is_expected.to validate_presence_of :file }
     it { is_expected.to validate_presence_of :creator }
@@ -43,7 +44,7 @@ RSpec.describe ProductUserImport do
       it { is_expected.not_to be_persisted }
 
       it "includes a failure message" do
-        expect(import.failures).to include("Uploaded CSV file must include a Username Column.  Please try again.")
+        expect(import.failures).to include("Uploaded CSV file must include a 'Username' column.  Please try again.")
       end
     end
 

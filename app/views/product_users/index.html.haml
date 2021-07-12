@@ -23,7 +23,6 @@
       = text("import_button")
       %span{ style:"display:none" }= f.file_field :file, onchange: "form.submit()"
 
-
 - if @product_users.nil?
 - elsif @product_users.empty?
   %p.notice= text("none")

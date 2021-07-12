@@ -19,7 +19,7 @@ RSpec.describe "Importing Approved Users", :js do
 
     it "displays the correct message" do
       visit facility_instrument_users_path(facility, instrument)
-      page.attach_file(Rails.root + 'spec/files/product_user_imports/existing_users.csv', visible: false)
+      page.attach_file("#{Rails.root}/spec/files/product_user_imports/existing_users.csv", visible: false)
 
       expect(page.current_path).to eq facility_instrument_users_path(facility, instrument)
       expect(page).to have_content("No new approved users were added.\nThe following user(s) already had access:\n#{user_1.username}\n#{user_2.username}\n")
@@ -34,7 +34,7 @@ RSpec.describe "Importing Approved Users", :js do
 
     it "displays the correct message" do
       visit facility_instrument_users_path(facility, instrument)
-      page.attach_file(Rails.root + 'spec/files/product_user_imports/existing_users.csv', visible: false)
+      page.attach_file("#{Rails.root}/spec/files/product_user_imports/existing_users.csv", visible: false)
 
       expect(page.current_path).to eq facility_instrument_users_path(facility, instrument)
       expect(page).to have_content("The following user(s) already had access:\n#{user_1.username}\n")
@@ -42,14 +42,14 @@ RSpec.describe "Importing Approved Users", :js do
     end
   end
 
-  context "when some usernames are not found and some are imported" do
+  context "when some usernames are found and some are not found" do
     before(:each) do
       create(:product_user, product: instrument, user: user_1)
     end
 
     it "displays the correct message" do
       visit facility_instrument_users_path(facility, instrument)
-      page.attach_file(Rails.root + 'spec/files/product_user_imports/user_not_found.csv', visible: false)
+      page.attach_file("#{Rails.root}/spec/files/product_user_imports/user_not_found.csv", visible: false)
 
       expect(page.current_path).to eq facility_instrument_users_path(facility, instrument)
       expect(page).to have_content("1 error(s) occurred while importing:\nwhoami: User not found")

@@ -18,7 +18,7 @@ class ProductUserImport < ApplicationRecord
     self.skipped = []
     self.failures = []
 
-    if parsed_import_file.headers.include?('Username')
+    if parsed_import_file.headers.include?("Username")
       ProductUser.transaction do
         parsed_import_file.each { |row| import_row(row) }
         raise ActiveRecord::Rollback if failed?
@@ -26,7 +26,7 @@ class ProductUserImport < ApplicationRecord
 
       self.processed_at = Time.zone.now
     else
-      failures << "Uploaded CSV file must include a Username Column.  Please try again."
+      failures << "Uploaded CSV file must include a 'Username' column.  Please try again."
     end
 
 
