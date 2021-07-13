@@ -489,7 +489,7 @@ GEM
     ruby-progressbar (1.11.0)
     ruby-saml (1.11.0)
       nokogiri (>= 1.5.10)
-    rubyzip (2.3.0)
+    rubyzip (2.3.2)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
