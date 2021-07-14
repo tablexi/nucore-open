@@ -12,6 +12,10 @@ module BootstrapHelper
 
   def modal_cancel_button(options = {})
     if request.xhr?
+      if options[:refresh]
+        # link_to facility_order_show_path
+      end
+
       content_tag :button,
                   options[:text] || "Cancel",
                   data: { dismiss: "modal" },
