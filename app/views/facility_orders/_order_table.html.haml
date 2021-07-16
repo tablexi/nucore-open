@@ -1,7 +1,7 @@
-%tbody.js--dashboardRefresh
+%tbody.js--orderTableRefresh
   - OrderDetailPresenter.wrap(@order_details).each do |od|
     %tr{class: [od.parent_order_detail_id ? "child" : "parent", "status-#{od.order_status.root.name.underscore}", flash[:updated_order_details].try(:include?, od.id) ? "updated-order-detail" : ""] }
-      %td.order-id
+      %th.order-id{scope: "row"}
         = link_to od,
           manage_order_detail_path(od),
           class: "manage-order-detail"
@@ -16,11 +16,13 @@
         - if od.add_accessories?
           = link_to new_facility_order_order_detail_accessory_path(current_facility, @order, od), class: ["has_accessories", "persistent", "undecorated"] do
             = tooltip_icon "fa fa-plus-square", t("product_accessories.pick_accessories.title")
+            %span Add Accessories
 
         - if od.reservation.present?
-          = link_to(fa_icon("calendar"),
-            facility_order_order_detail_url(current_facility, @order, od, format: :ics),
-            title: t("ical.calendar_tooltip"))
+          = link_to facility_order_order_detail_url(current_facility, @order, od, format: :ics) do
+            = tooltip_icon "fa fa-calendar", t("ical.calendar_tooltip")
+            %span Download event
+
         = render "order_file_icon", od: od
         = render "result_file_icon", od: od
 

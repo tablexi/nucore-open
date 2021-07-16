@@ -889,7 +889,7 @@ en:
   file_uploads:
     sample_result:
       title: Results Files
-      count: "%{count} Results Files"
+      count: "%{count} Uploaded"
       upload: Upload Results
       none: No results have been uploaded yet.
       download_all: Download all as zip...
