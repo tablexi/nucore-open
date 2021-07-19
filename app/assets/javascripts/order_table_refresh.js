@@ -1,8 +1,6 @@
 /***
- * This is used for the order detail page for a facility
- * that needs to have the result file count updated
- * when a user uploads or removes files via modal
- *
+ * Upates the file count when result files are uploaded or removed
+ * via modal on the admin facility Order show page.
 ***/
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -30,4 +28,3 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 });
-
