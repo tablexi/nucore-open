@@ -23,8 +23,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  $("#results-file-upload-modal").on("hidden", function() {
-    fetchAndRefresh()
-  });
+  $("#results-file-upload-modal").on("hidden", fetchAndRefresh);
 
 });
