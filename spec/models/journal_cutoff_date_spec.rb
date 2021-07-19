@@ -111,6 +111,7 @@ RSpec.describe JournalCutoffDate do
 
   describe "#year_end_closing_window?", :time_travel do
     subject(:closing_window) { described_class.year_end_closing_window? }
+    before { described_class.destroy_all }
 
     context "with no journal cutoff records" do
       it { is_expected.to be false }
@@ -122,7 +123,7 @@ RSpec.describe JournalCutoffDate do
     end
 
     context "with a journal cutoff for year end" do
-      before { described_class.create(cutoff_date: 1.week.from_now) }
+      let!(:year_end_cutoff) { described_class.create(cutoff_date: 1.week.from_now) }
 
       describe "during the year end closing window" do
         it { is_expected.to be true }
@@ -137,11 +138,24 @@ RSpec.describe JournalCutoffDate do
         let(:now) { 11.days.ago }
         it { is_expected.to be false }
       end
+
+      describe "at the moment of the last_valid_date" do
+        # Tue, 31 Aug 2021 23:59:59 CDT -05:00
+        let(:now) { year_end_cutoff.last_valid_date }
+        it { is_expected.to be false }
+      end
+
+      describe "at the moment of the year end cutoff date" do
+        # Sat, 18 Sep 2021 09:30:00 CDT -05:00
+        let(:now) { year_end_cutoff.cutoff_date }
+        it { is_expected.to be false }
+      end
     end
   end
 
   describe "#year_end" do
     subject(:year_end) { described_class.year_end }
+    before { described_class.destroy_all }
 
     context "with no journal cutoff records" do
       it { is_expected.to be nil }
