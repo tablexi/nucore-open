@@ -1,8 +1,8 @@
+- content_for :head_content do
+  = javascript_include_tag "order_table_refresh"
+
 - content_for :h1 do
   = current_facility
-
-= content_for :head_content do
-  = javascript_include_tag "order_table_refresh"
 
 %h2= "#{Order.model_name.human} ##{@order.id}"
 
@@ -17,22 +17,22 @@
 = render "merge_order"
 
 %table.order-list.table.table-striped.table-hover#order-management
-  %caption Order detail listings
+  %caption.text-left.font-weight-bold= t("views.facility_orders.show.table_caption")
   %thead
     %tr
       %td{colspan: 4}
       %th{colspan: 2}= OrderDetail.human_attribute_name(:quantity)
-      %th{colspan: 3} Pricing
+      %th{colspan: 3}= t("views.facility_orders.show.pricing")
     %tr
       %th.order-id{scope: "col"}= OrderDetail.human_attribute_name(:id)
-      %th.badges{scope: "col"} Status
+      %th.badges{scope: "col"}= t("views.facility_orders.show.status")
       %th{scope: "col"}= Product.model_name.human
-      %th{scope: "col"} Actions
-      %th.time{scope: "col"} Reserved
-      %th.time{scope: "col"} Actual
-      %th.currency{scope: "col"} Cost
-      %th.currency{scope: "col"} Subsidy
-      %th.currency{scope: "col"} Total
+      %th{scope: "col"}= t("views.facility_orders.show.actions")
+      %th.time{scope: "col"}= t("views.facility_orders.show.reserved")
+      %th.time{scope: "col"}= t("views.facility_orders.show.actual")
+      %th.currency{scope: "col"}= t("views.facility_orders.show.cost")
+      %th.currency{scope: "col"}= t("views.facility_orders.show.subsidy")
+      %th.currency{scope: "col"}= t("views.facility_orders.show.total")
       %td.badges
 
   = render "order_table", order_details: @order_details
