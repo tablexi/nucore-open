@@ -1,0 +1,16 @@
+#year-end-window.modal.hide.fade{ data: { backdrop: "static" } }
+  .modal-header
+    = modal_close_button
+    %h3= text("facility_journals.year_end_modal.header")
+  .modal-body
+    - cutoff_time = l(cutoff_date, format: "%A, %B %e, %Y at %I:%M %p")
+    - fy = l(cutoff_date, format: "FY%y")
+    = text("facility_journals.year_end_modal.message", cutoff_time: cutoff_time, year: fy)
+  .modal-footer
+    %button.btn{ type: "button", data: { dismiss: "modal" } }
+      = text("facility_journals.year_end_modal.proceed")
+
+:javascript
+  $(document).ready(function() {
+    $('#year-end-window').modal('show');
+  });

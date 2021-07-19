@@ -40,6 +40,7 @@ class FacilityJournalsController < ApplicationController
     @order_details = @search.order_details.reorder(sort_clause)
 
     set_earliest_journal_date
+    set_year_end_cutoff_date
 
     unless current_facility.has_pending_journals?
       @order_detail_action = :create
@@ -172,6 +173,10 @@ class FacilityJournalsController < ApplicationController
       @order_details.collect(&:fulfilled_at).max,
       JournalCutoffDate.first_valid_date,
     ].compact.max
+  end
+
+  def set_year_end_cutoff_date
+    @year_end_cutoff_date = JournalCutoffDate.year_end.cutoff_date if JournalCutoffDate.year_end_closing_window?
   end
 
   def init_journals

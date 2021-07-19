@@ -13,6 +13,7 @@ RSpec.describe "Creating a journal" do
   let(:expiry_date) { Time.zone.now - 1.year }
   let(:expired_payment_source) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user, expires_at: expiry_date, facility: facility) }
   let!(:problem_order_detail) { place_and_complete_item_order(user, facility, expired_payment_source, true) }
+  let!(:cutoff_date) { JournalCutoffDate.create(cutoff_date: 2.days.from_now) }
 
   before do
     unreviewed_order_detail.update_attributes(reviewed_at: nil)
@@ -41,6 +42,10 @@ RSpec.describe "Creating a journal" do
       expect(page).to have_content("These payment sources were not valid at the time of fulfillment.")
       expect(page).to have_content(OrderDetailPresenter.new(problem_order_detail).description_as_html)
       expect(page).to have_content(problem_order_detail.account.expires_at.strftime("%m/%d/%Y"))
+    end
+
+    it "has a reminder modal during the year end closing window", :js do
+      expect(page).to have_content("We are in the year-end closing window.")
     end
   end
 
