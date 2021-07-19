@@ -4,10 +4,11 @@
 ***/
 
 document.addEventListener("DOMContentLoaded", function() {
-  const table = document.getElementsByClassName("js--orderTableRefresh")[0];
 
   function fetchAndRefresh() {
+    const table = document.getElementsByClassName("js--orderTableRefresh")[0];
     const url = new URL(document.location);
+
     url.searchParams.set("refresh", "true");
     const headers = { Accept: "text/html" };
 
@@ -17,12 +18,25 @@ document.addEventListener("DOMContentLoaded", function() {
         response.text()
         .then(function(body) {
           table.innerHTML = body;
-          makeAModal()
+          setResultsFileUploadModals()
          });
       }
     });
   }
 
+  function setResultsFileUploadModals() {
+    new AjaxModal('a.results-file-upload', '#results-file-upload-modal', {
+      loading_text: 'Loading Results Files...',
+      success(modal) {
+        return $('.modal a.remove-file').bind('ajax:complete', function(e) {
+          e.preventDefault();
+          return modal.reload();
+        });
+      }
+    })
+  }
+
+  setResultsFileUploadModals();
   $("#results-file-upload-modal").on("hidden", fetchAndRefresh);
 
 });
