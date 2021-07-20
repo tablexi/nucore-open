@@ -20,10 +20,15 @@ class ProductDisplayGroup < ApplicationRecord
     end
   end
 
+
   def self.fake_groups_by_type(products)
     Product.orderable_types.map do |type|
       Fake.new(name: type.constantize.model_name.human(count: :many), products: products.where(type: type))
     end
+  end
+
+  def any_active?
+    products.reject{|p| p.is_archived || p.is_hidden}.any?
   end
 
   def set_default_positions
