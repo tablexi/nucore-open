@@ -11,7 +11,7 @@ RSpec.describe "Reservation Tooltips", :js do
 
   let(:facility) { create(:setup_facility) }
   let(:director) { create(:user, :facility_director, facility: facility) }
-  let(:reserve_start) { Time.zone.parse("#{Date.today} 12:30:00") }
+  let(:reserve_start) { Time.current.change(hour: 12, min: 30) }
   let!(:reservation) { create(:purchased_reservation, reserve_start_at: reserve_start, product: instrument, order_detail: order_detail) }
   let(:instrument) { create(:setup_instrument, facility: facility) }
   let(:order) { create(:setup_order, product: instrument, order_detail_attributes: { note: "This is an order detail note" } ) }
