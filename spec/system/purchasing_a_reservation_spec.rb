@@ -16,8 +16,7 @@ RSpec.describe "Purchasing a reservation" do
   before do
     facility.update(accepts_multi_add: true)
     login_as user
-    visit root_path
-    click_link facility.name
+    visit facility_path(facility)
   end
 
   describe "selecting the default time" do
@@ -171,13 +170,41 @@ RSpec.describe "Purchasing a reservation" do
   end
 
   describe "Ordering a hidden product" do
-    before do
-      instrument.update!(is_hidden: true)
-    end
+    let!(:instrument) { FactoryBot.create(:setup_instrument, user_notes_field_mode: "optional", is_hidden: true) }
 
-    it "doesnt show up for regular users" do
-      expect(page).not_to have_content("Create Order")
+    it "doesn't show up for regular users" do
+      expect(page).not_to have_button("Create Order")
       expect(page).not_to have_content("Hidden")
     end
+
+    context "as an admin" do
+      let(:user) { FactoryBot.create(:user, :facility_administrator, facility: facility) }
+
+      it "shows up for administrator users" do
+        expect(page).to have_button("Create Order")
+        expect(page).to have_content("Hidden")
+      end
+    end
   end
+
+  describe "If the facility has no products" do
+    let!(:instrument) { nil }
+    let!(:price_policy) { nil }
+    let!(:account_price_group_member) { nil }
+    let!(:facility) { FactoryBot.create(:facility) }
+
+
+    it "will not show create-order button" do
+      expect(page).not_to have_button("Create Order")
+    end
+
+    context "as an admin" do
+      let(:user) { FactoryBot.create(:user, :facility_administrator, facility: facility) }
+
+      it "will still not have create-order content" do
+        expect(page).not_to have_button("Create Order")
+      end
+    end
+  end
+
 end

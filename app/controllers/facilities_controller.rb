@@ -47,9 +47,9 @@ class FacilitiesController < ApplicationController
     raise ActiveRecord::RecordNotFound unless current_facility.try(:is_active?)
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
-
+    @can_see_hidden = acting_as? || session_user.try(:operator_of?, current_facility)
     @product_scope = Product.alphabetized
-    if acting_as? || session_user.try(:operator_of?, current_facility)
+    if @can_see_hidden
       @product_scope = @product_scope.not_archived
     else
       @product_scope = @product_scope.active # Active also excludes hidden
