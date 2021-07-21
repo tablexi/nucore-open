@@ -18,6 +18,10 @@ class ProductDisplayGroup < ApplicationRecord
     def to_s
       name
     end
+
+    def any_active?
+      products.reject{|p| p.is_archived || p.is_hidden}.any?
+    end
   end
 
 

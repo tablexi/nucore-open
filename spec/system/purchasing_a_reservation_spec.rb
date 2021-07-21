@@ -169,4 +169,15 @@ RSpec.describe "Purchasing a reservation" do
       expect(page).to have_link("Make a Reservation", count: 2)
     end
   end
+
+  describe "Ordering a hidden product" do
+    before do
+      instrument.update!(is_hidden: true)
+    end
+
+    it "doesnt show up for regular users" do
+      expect(page).not_to have_content("Create Order")
+      expect(page).not_to have_content("Hidden")
+    end
+  end
 end
