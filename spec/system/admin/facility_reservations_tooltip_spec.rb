@@ -2,17 +2,17 @@
 
 require "rails_helper"
 
-RSpec.describe "Reservation Tooltips", :js, :time_travel do
+RSpec.describe "Reservation Tooltips", :js do
 
   # FullCalendar.io doesn't know about server time,
   # and this spec isn't sensitive to fiscal year changes,
-  # so we're using 12:30 today instead of the global time lock date.
+  # so we're using system time instead of the global time lock.
   before(:all) { travel_back }
-  let(:now) { Time.zone.parse("#{Date.today} 12:30:00") }
 
   let(:facility) { create(:setup_facility) }
   let(:director) { create(:user, :facility_director, facility: facility) }
-  let!(:reservation) { create(:purchased_reservation, reserve_start_at: now + 2.hours, product: instrument, order_detail: order_detail) }
+  let(:reserve_start) { Time.zone.parse("#{Date.today} 12:30:00") }
+  let!(:reservation) { create(:purchased_reservation, reserve_start_at: reserve_start, product: instrument, order_detail: order_detail) }
   let(:instrument) { create(:setup_instrument, facility: facility) }
   let(:order) { create(:setup_order, product: instrument, order_detail_attributes: { note: "This is an order detail note" } ) }
   let(:order_detail) { order.order_details.first }
@@ -60,7 +60,6 @@ RSpec.describe "Reservation Tooltips", :js, :time_travel do
   end
 
   context "When show order note is NOT enabled for the facility" do
-
     let(:facility) { create(:setup_facility, show_order_note: false) }
 
     it "Does not include the order note in the tooltip for the Admin Daily View" do
