@@ -11,9 +11,7 @@
     %li= current_facility
 
 .wysiwyg= sanitize current_facility.description
-- has_products = @product_display_groups.any?(&:any_active?)
-- has_products ||= @can_see_hidden && @product_display_groups.any? { |display_group| display_group.products.any? }
-- if acting_user && current_facility.accepts_multi_add? && has_products
+- if current_facility.show_multi_add_products?(@product_scope, acting_user)
   = form_for Order.new, url: add_order_path(acting_user.cart(session_user)), html: {method: :put, class:['product_list_container', @columns]} do |f|
     .button_row
       = f.submit class: ['btn', 'btn-primary']

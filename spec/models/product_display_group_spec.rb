@@ -65,22 +65,4 @@ RSpec.describe ProductDisplayGroup do
       expect(group.position).to eq(39)
     end
   end
-
-  describe "any_active?" do
-    let(:group) { create(:product_display_group, facility: facility) }
-
-    let(:active_product) {  create(:item, :without_validation, facility: facility,  is_archived: false, is_hidden: false) }
-
-    let(:hidden_product) {  create(:item, :without_validation, facility: facility, is_archived: false, is_hidden: true) }
-
-    it "returns true if there's an active product in the group" do
-      group.products << active_product
-      expect(group.reload.any_active?).to be true
-    end
-
-    it "returns false if there are no active products in the group" do
-      group.products << hidden_product
-      expect(group.reload.any_active?).to be false
-    end
-  end
 end
