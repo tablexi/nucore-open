@@ -65,4 +65,5 @@ RSpec.describe ProductDisplayGroup do
       expect(group.position).to eq(39)
     end
   end
+
 end

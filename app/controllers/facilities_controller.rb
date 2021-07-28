@@ -48,6 +48,7 @@ class FacilitiesController < ApplicationController
     @columns = "columns" if SettingsHelper.feature_on?(:product_list_columns)
     @active_tab = SettingsHelper.feature_on?(:use_manage) ? "use" : "home"
     @product_scope = Product.alphabetized
+
     if acting_as? || session_user.try(:operator_of?, current_facility)
       @product_scope = @product_scope.not_archived
     else

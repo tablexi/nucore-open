@@ -11,6 +11,7 @@
     %li= current_facility
 
 .wysiwyg= sanitize current_facility.description
+
 - if current_facility.show_multi_add_products?(@product_scope, acting_user)
   = form_for Order.new, url: add_order_path(acting_user.cart(session_user)), html: {method: :put, class:['product_list_container', @columns]} do |f|
     .button_row

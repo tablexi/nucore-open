@@ -169,39 +169,42 @@ RSpec.describe "Purchasing a reservation" do
     end
   end
 
-  describe "Ordering a hidden product" do
+  describe "Reserving a hidden instrument" do
     let!(:instrument) { FactoryBot.create(:setup_instrument, user_notes_field_mode: "optional", is_hidden: true) }
 
-    it "doesn't show up for regular users" do
-      expect(page).not_to have_button("Create Order")
-      expect(page).not_to have_content("Hidden")
+    context "as a non-admin" do
+      it "does NOT show the hidden instrument" do
+        expect(page).not_to have_button("Create Order")
+        expect(page).not_to have_content("Hidden")
+      end
     end
 
     context "as an admin" do
       let(:user) { FactoryBot.create(:user, :facility_administrator, facility: facility) }
 
-      it "shows up for administrator users" do
+      it "shows the hidden instrument" do
         expect(page).to have_button("Create Order")
         expect(page).to have_content("Hidden")
       end
     end
   end
 
-  describe "If the facility has no products" do
+  describe "When the facility has no products" do
     let!(:instrument) { nil }
     let!(:price_policy) { nil }
     let!(:account_price_group_member) { nil }
     let!(:facility) { FactoryBot.create(:facility) }
 
-
-    it "will not show create-order button" do
-      expect(page).not_to have_button("Create Order")
+    context "as a non-admin" do
+      it "will not show the Create Order button" do
+        expect(page).not_to have_button("Create Order")
+      end
     end
 
     context "as an admin" do
       let(:user) { FactoryBot.create(:user, :facility_administrator, facility: facility) }
 
-      it "will still not have create-order content" do
+      it "will not show the Create Order button" do
         expect(page).not_to have_button("Create Order")
       end
     end
