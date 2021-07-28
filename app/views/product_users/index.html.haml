@@ -27,7 +27,7 @@
 - elsif @product_users.empty?
   %p.notice= text("none")
 - else
-  = form_tag facility_instrument_users_path(format: :csv), method: :get, class: "search_form" do
+  = form_tag polymorphic_path([current_facility, @product, :users], format: :csv), method: :get, class: "search_form" do
     = hidden_field_tag :email, current_user.email, disabled: true
     = hidden_field_tag :format, params[:format], disabled: true
 
