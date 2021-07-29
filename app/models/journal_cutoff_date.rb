@@ -23,33 +23,6 @@ class JournalCutoffDate < ApplicationRecord
     cutoff_date < Time.current
   end
 
-  # Admin staff can still close journals for about a week after the end of the fiscal year.
-  # This is known as the 'year end closing window' - the date range between the
-  # end of the fiscal year and the journal cutoff date for the last month of the fiscal year.
-  #
-  # For example:
-  #   With FY22 starting 09/01/21, the closing window would
-  #   start Sep 1, 2021 and end on the August 2021 cutoff date:
-  #   Sep 1, 2021 - Sep 8, 2021.
-  #
-  # Returns true or false.
-  def self.year_end_closing_window?
-    year_end_cutoff = year_end
-    now = Time.current
-    return false if year_end_cutoff.nil? # some schools don't use this feature
-
-    year_end_cutoff.last_valid_date < now && now < year_end_cutoff.cutoff_date
-  end
-
-  # Fetch the record for the last month of the current fiscal year.
-  #
-  # Given a fiscal year starting in September, this will return the
-  # August record, which has a cutoff date in early September.
-  def self.year_end
-    fy_start_month = Settings.financial.fiscal_year_begins[0,2].to_i
-    month_equal(fy_start_month).year_equal(Time.current.year).first
-  end
-
   private
 
   def unique_month_for_cutoff_date

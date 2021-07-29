@@ -266,13 +266,10 @@ en:
       expired_payment: These payment sources were not valid at the time of fulfillment. Please choose a different payment source.
       download_unjournalable: Export Errors as CSV
       no_transactions: There are no transactions requiring journals matching the search parameters.
-    year_end_modal:
-      header: Year End Closing Reminder
-      message: |
-        We are in the year-end closing window.  Any journals for the previous fiscal year
-        must be submitted by %{cutoff_time}.  If you are creating a journal for %{year},
-        make sure to update the Journal Date field.
-      proceed: Proceed
+    journal_closing_modal:
+      header: Journal Closing Reminder
+      proceed: Create Journal
+      cancel: Edit Journal Date
     index:
       head:
         pending: Pending Journal
@@ -1160,6 +1157,30 @@ en:
     in_review: Transactions in Review
     none_in_review_found: No transactions in review were found.
     recently_reviewed: Recently Reviewed
+
+  journal_closing_reminders:
+    index:
+      new: Add New Closing Reminder
+      start_date: Starting
+      end_date: Ending
+      fiscal_year: Fiscal Year
+      message: Message
+      edit: Edit
+    create:
+      success: Closing Reminder successfully added
+    destroy:
+      success: Closing Reminder successfully deleted
+    edit:
+      delete: Delete
+      delete_confirm: Are you sure you want to delete this Reminder?
+      header: Edit Year End Closing Reminder
+    form:
+      submit: Submit
+      cancel: Cancel
+    new:
+      header: New FY Closing Reminder Dates
+    update:
+      success: Closing Reminder successfully updated
 
   activerecord:
     errors:

@@ -68,6 +68,7 @@ en:
         subsidy_greater_than_cost: "cannot be greater than the Usage cost"
         already_in_queue: Only one file may be in process at a time
         zero_minutes: must be at least 1 minute
+        start_after_end: must be after Ending Date
         # Append your own errors here or at the model/attributes scope.
       full_messages:
         format: "%{attribute} %{message}"
@@ -230,6 +231,9 @@ en:
       user_preference:
         one: User Preference
         other: User Preferences
+      journal_closing_reminder:
+        one: Journal Closing Reminder
+        other: Journal Closing Reminders
     # Model Attributes
     attributes:
       account_user:
@@ -416,3 +420,6 @@ en:
         user: Name
         product: Instrument
         created_at: Requested on
+      journal_closing_reminder:
+        starts_at: Starting Date
+        ends_at: Ending Date

@@ -16,8 +16,8 @@
         });
       });
 
-- if @year_end_cutoff_date
-  = render "year_end_modal", cutoff_date: @year_end_cutoff_date
+- if @journal_closing_reminder
+  = render "journal_closing_modal", reminder_message: @journal_closing_reminder.message
 = render "shared/transactions/headers"
 = content_for :h1 do
   = current_facility

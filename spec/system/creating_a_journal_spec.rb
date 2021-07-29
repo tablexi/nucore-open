@@ -13,7 +13,6 @@ RSpec.describe "Creating a journal" do
   let(:expiry_date) { Time.zone.now - 1.year }
   let(:expired_payment_source) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user, expires_at: expiry_date, facility: facility) }
   let!(:problem_order_detail) { place_and_complete_item_order(user, facility, expired_payment_source, true) }
-  let!(:cutoff_date) { JournalCutoffDate.create(cutoff_date: 2.days.from_now) }
 
   before do
     unreviewed_order_detail.update_attributes(reviewed_at: nil)
@@ -43,22 +42,64 @@ RSpec.describe "Creating a journal" do
       expect(page).to have_content(OrderDetailPresenter.new(problem_order_detail).description_as_html)
       expect(page).to have_content(problem_order_detail.account.expires_at.strftime("%m/%d/%Y"))
     end
-
-    it "has a reminder modal during the year end closing window", :js do
-      expect(page).to have_content("We are in the year-end closing window.")
-    end
   end
 
-  describe "creating a journal" do
-    before do
-      visit new_facility_journal_path(facility)
+  describe "creating a journal", :js do
+    context "with no closing reminder" do
+      before do
+        visit new_facility_journal_path(facility)
+      end
+
+      it "can select order details and create a journal" do
+        expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
+        check "order_detail_ids_"
+        click_button "Create"
+        expect(page).to have_content "Pending Journal"
+      end
     end
 
-    it "can select order details and create a journal" do
-      expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
-      check "order_detail_ids_"
-      click_button "Create"
-      expect(page).to have_content "Pending Journal"
+    context "with a past closing reminder" do
+      before do
+        JournalClosingReminder.create(starts_at: 2.weeks.ago, ends_at: 2.days.ago, message: "We are in the year-end closing window.")
+        visit new_facility_journal_path(facility)
+      end
+
+      it "can select order details and create a journal" do
+        expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
+        check "order_detail_ids_"
+        click_button "Create"
+        expect(page).to have_content "Pending Journal"
+      end
+    end
+
+    context "with a future closing reminder" do
+      before do
+        JournalClosingReminder.create(starts_at: 2.weeks.from_now, ends_at: 2.months.from_now, message: "We are in the year-end closing window.")
+        visit new_facility_journal_path(facility)
+      end
+
+      it "can select order details and create a journal" do
+        expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
+        check "order_detail_ids_"
+        click_button "Create"
+        expect(page).to have_content "Pending Journal"
+      end
+    end
+
+    context "with a current closing reminder" do
+      before do
+        JournalClosingReminder.create(starts_at: 2.days.ago, ends_at: 2.days.from_now, message: "We are in the year-end closing window.")
+        visit new_facility_journal_path(facility)
+      end
+
+      it "can see a reminder message, then select order details and create a journal" do
+        expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
+        check "order_detail_ids_"
+        click_link "Create"
+        expect(page).to have_content("We are in the year-end closing window.")
+        click_button "Create Journal"
+        expect(page).to have_content "Pending Journal"
+      end
     end
   end
 
