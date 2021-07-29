@@ -555,7 +555,7 @@ GEM
     unicorn (6.0.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
-    uniform_notifier (1.14.1)
+    uniform_notifier (1.14.2)
     vuejs-rails (1.0.26)
     warden (1.2.9)
       rack (>= 2.0.9)
