@@ -317,7 +317,7 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.3.0)
-    kgio (2.11.3)
+    kgio (2.11.4)
     kostya-sigar (2.0.9)
     launchy (2.4.3)
       addressable (~> 2.3)
