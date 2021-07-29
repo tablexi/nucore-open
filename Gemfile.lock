@@ -545,7 +545,7 @@ GEM
     thor (1.1.0)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    timers (4.3.0)
+    timers (4.3.3)
     ttfunk (1.7.0)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
