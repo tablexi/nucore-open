@@ -60,7 +60,7 @@ RSpec.describe "Creating a journal" do
 
     context "with a past closing reminder" do
       before do
-        JournalClosingReminder.create(starts_at: 2.weeks.ago, ends_at: 2.days.ago, message: "We are in the year-end closing window.")
+        JournalCreationReminder.create(starts_at: 2.weeks.ago, ends_at: 2.days.ago, message: "We are in the year-end closing window.")
         visit new_facility_journal_path(facility)
       end
 
@@ -74,7 +74,7 @@ RSpec.describe "Creating a journal" do
 
     context "with a future closing reminder" do
       before do
-        JournalClosingReminder.create(starts_at: 2.weeks.from_now, ends_at: 2.months.from_now, message: "We are in the year-end closing window.")
+        JournalCreationReminder.create(starts_at: 2.weeks.from_now, ends_at: 2.months.from_now, message: "We are in the year-end closing window.")
         visit new_facility_journal_path(facility)
       end
 
@@ -88,7 +88,7 @@ RSpec.describe "Creating a journal" do
 
     context "with a current closing reminder" do
       before do
-        JournalClosingReminder.create(starts_at: 2.days.ago, ends_at: 2.days.from_now, message: "We are in the year-end closing window.")
+        JournalCreationReminder.create(starts_at: 2.days.ago, ends_at: 2.days.from_now, message: "We are in the year-end closing window.")
         visit new_facility_journal_path(facility)
       end
 

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe JournalClosingReminder do
+RSpec.describe JournalCreationReminder do
   subject(:reminder) { described_class.create(starts_at: starts_at, ends_at: ends_at, message: "Don't forget to submit your journal before year end!") }
   let(:starts_at) { nil }
   let(:ends_at) { nil }

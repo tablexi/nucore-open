@@ -231,9 +231,9 @@ en:
       user_preference:
         one: User Preference
         other: User Preferences
-      journal_closing_reminder:
-        one: Journal Closing Reminder
-        other: Journal Closing Reminders
+      journal_creation_reminder:
+        one: Journal Creation Reminder
+        other: Journal Creation Reminders
     # Model Attributes
     attributes:
       account_user:
@@ -420,6 +420,6 @@ en:
         user: Name
         product: Instrument
         created_at: Requested on
-      journal_closing_reminder:
+      journal_creation_reminder:
         starts_at: Starting Date
         ends_at: Ending Date

@@ -204,7 +204,7 @@ ActiveRecord::Schema.define(version: 2021_07_28_030637) do
     t.index ["instrument_id", "created_at"], name: "index_instrument_statuses_on_instrument_id_and_created_at"
   end
 
-  create_table "journal_closing_reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "journal_creation_reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "starts_at"
     t.datetime "ends_at"
     t.text "message"

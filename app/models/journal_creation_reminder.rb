@@ -8,7 +8,7 @@
 #   With FY22 starting 09/01/21, the closing window would
 #   start Sep 1, 2021 and end on the August 2021 cutoff date:
 #   Sep 1, 2021 - Sep 8, 2021.
-class JournalClosingReminder < ApplicationRecord
+class JournalCreationReminder < ApplicationRecord
   include DateHelper
 
   validates :message, presence: true

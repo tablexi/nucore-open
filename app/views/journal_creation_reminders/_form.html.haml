@@ -1,4 +1,4 @@
-= simple_form_for(@journal_closing_reminder) do |f|
+= simple_form_for(@journal_creation_reminder) do |f|
 
   = f.input :starts_at, as: :date_picker
   = f.input :ends_at, as: :date_picker
@@ -6,4 +6,4 @@
   = f.input :message, input_html: { rows: 7, class: "input-block-level" }
 
   = f.button :submit, t(".submit"), class: ["btn", "btn-primary"]
-  = link_to t(".cancel"), journal_closing_reminders_path
+  = link_to t(".cancel"), journal_creation_reminders_path

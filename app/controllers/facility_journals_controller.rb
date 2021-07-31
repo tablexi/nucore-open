@@ -40,7 +40,7 @@ class FacilityJournalsController < ApplicationController
     @order_details = @search.order_details.reorder(sort_clause)
 
     set_earliest_journal_date
-    set_journal_closing_reminder
+    set_journal_creation_reminder
 
     unless current_facility.has_pending_journals?
       @order_detail_action = :create
@@ -175,8 +175,8 @@ class FacilityJournalsController < ApplicationController
     ].compact.max
   end
 
-  def set_journal_closing_reminder
-    @journal_closing_reminder = JournalClosingReminder.current.first
+  def set_journal_creation_reminder
+    @journal_creation_reminder = JournalCreationReminder.current.first
   end
 
   def init_journals

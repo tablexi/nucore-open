@@ -2,9 +2,9 @@
 
 require "rails_helper"
 
-RSpec.describe "Managing JournalClosingReminder" do
+RSpec.describe "Managing JournalCreationReminder" do
   before do
-    JournalClosingReminder.create(starts_at: 2.days.ago, ends_at: 2.days.from_now, message: "Don't forget to submit your journal!")
+    JournalCreationReminder.create(starts_at: 2.days.ago, ends_at: 2.days.from_now, message: "Don't forget to submit your journal!")
     login_as user
   end
 
@@ -12,7 +12,7 @@ RSpec.describe "Managing JournalClosingReminder" do
     let(:user) { FactoryBot.create(:user) }
 
     it "does not give access to index" do
-      visit journal_closing_reminders_path
+      visit journal_creation_reminders_path
       expect(page).to have_content("403 – Permission Denied")
     end
   end
@@ -21,8 +21,8 @@ RSpec.describe "Managing JournalClosingReminder" do
     let(:user) { FactoryBot.create(:user, :administrator) }
 
     it "allows creating a new reminder" do
-      visit journal_closing_reminders_path
-      click_link "Add New Closing Reminder"
+      visit journal_creation_reminders_path
+      click_link "Add New Reminder"
       fill_in "Ending Date", with: 2.days.from_now
 
       # Leave the message field blank to test error handling
@@ -32,13 +32,13 @@ RSpec.describe "Managing JournalClosingReminder" do
       # Happy path
       fill_in "Message", with: "This is a FY closing window reminder"
       click_button "Submit"
-      expect(page).to have_content("Closing Reminder successfully added")
+      expect(page).to have_content("Reminder successfully added")
       expect(page).to have_content("This is a FY closing window reminder")
-      expect(page.current_path).to eq journal_closing_reminders_path
+      expect(page.current_path).to eq journal_creation_reminders_path
     end
 
     it "editing a reminder" do
-      visit journal_closing_reminders_path
+      visit journal_creation_reminders_path
       click_link "Edit"
 
       # Submit an invalid date to test error handling
@@ -49,19 +49,19 @@ RSpec.describe "Managing JournalClosingReminder" do
       # Happy path
       fill_in "Ending Date", with: 1.year.from_now
       click_button "Submit"
-      expect(page).to have_content("Closing Reminder successfully updated")
+      expect(page).to have_content("Reminder successfully updated")
       expect(page).to have_content("FY#{1.year.from_now.to_s[2,2]}")
-      expect(page.current_path).to eq journal_closing_reminders_path
+      expect(page.current_path).to eq journal_creation_reminders_path
     end
 
     it "deleting a reminder" do
-      visit journal_closing_reminders_path
+      visit journal_creation_reminders_path
       click_link "Edit"
       click_link "Delete"
 
-      expect(page).to have_content("Closing Reminder successfully deleted")
+      expect(page).to have_content("Reminder successfully deleted")
       expect(page).not_to have_content("Don't forget to submit your journal!")
-      expect(page.current_path).to eq journal_closing_reminders_path
+      expect(page.current_path).to eq journal_creation_reminders_path
     end
   end
 end
