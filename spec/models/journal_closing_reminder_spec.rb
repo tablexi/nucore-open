@@ -41,18 +41,24 @@ RSpec.describe JournalClosingReminder do
     end
   end
 
-  describe "update_ends_at_to_end_of_day" do
-    context "when ends_at is present" do
-      let(:starts_at) { nil }
-      let(:ends_at) { Time.current }
+  describe "ends_at=" do
+    context "with a valid string" do
+      let(:ends_at) { "02/01/2022" }
 
-      it "sets ends_at to end of day" do
-        expect(reminder.ends_at).to be_within(1.second).of(ends_at.end_of_day)
+      it "set the ends_at to the end of the day" do
+        expect(reminder.ends_at).to eq(Time.zone.parse("2022-02-01 23:59:59"))
       end
     end
 
-    context "when ends_at is nil" do
-      let(:starts_at) { 3.days.ago }
+    context "with an invalid string" do
+      let(:ends_at) { "02/01/222" }
+
+      it "doesn't error" do
+        expect(reminder.ends_at).to eq nil
+      end
+    end
+
+    context "with nil" do
       let(:ends_at) { nil }
 
       it "doesn't error" do
@@ -61,35 +67,29 @@ RSpec.describe JournalClosingReminder do
     end
   end
 
-  describe "ends_at_date_time_data" do
-    let(:ends_at) { Time.zone.parse("2022-01-01") }
-
-    it "generates a hash of date time data" do
-      expect(reminder.ends_at_date_time_data.to_h).to eq({ date: "01/01/2022", hour: 11, minute: 59, ampm: "PM" })
-    end
-  end
-
-  describe "ends_at=" do
-    let(:ends_at) { { date: "02/01/2022", hour: 12, minute: 0, ampm: "AM" } }
-
-    it "set the ends_at from a hash of date time data" do
-      expect(reminder.ends_at).to eq(Time.zone.parse("2022-02-01 23:59:59"))
-    end
-  end
-
-  describe "starts_at_date_time_data" do
-    let(:starts_at) { Time.zone.parse("2022-01-01") }
-
-    it "generates a hash of date time data" do
-      expect(reminder.starts_at_date_time_data.to_h).to eq({ date: "01/01/2022", hour: 12, minute: 00, ampm: "AM" })
-    end
-  end
-
   describe "starts_at=" do
-    let(:starts_at) { { date: "02/01/2022", hour: 12, minute: 0, ampm: "AM" } }
+    context "with a valid string" do
+      let(:starts_at) { "02/01/2022" }
 
-    it "sets the starts_at from a hash of date time data" do
-      expect(reminder.starts_at).to eq(Time.zone.parse("2022-02-01 00:00:00"))
+      it "set the value to the start of the day" do
+        expect(reminder.starts_at).to eq(Time.zone.parse("2022-02-01 00:00:00"))
+      end
+    end
+
+    context "with an invalid string" do
+      let(:starts_at) { "02/01/222" }
+
+      it "doesn't error" do
+        expect(reminder.starts_at).to eq nil
+      end
+    end
+
+    context "with nil" do
+      let(:starts_at) { nil }
+
+      it "doesn't error" do
+        expect(reminder.starts_at).to eq nil
+      end
     end
   end
 end

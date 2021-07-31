@@ -13,7 +13,7 @@ class JournalClosingRemindersController < ApplicationController
   end
 
   def new
-    @journal_closing_reminder.starts_at = default_next_window
+    @journal_closing_reminder.starts_at = default_start_date
   end
 
   def create
@@ -42,12 +42,13 @@ class JournalClosingRemindersController < ApplicationController
 
   private
 
-  def default_next_window
-    [JournalClosingReminder.maximum(:starts_at), Time.current].compact.max
+  def default_start_date
+    start_date = [JournalClosingReminder.maximum(:starts_at), Time.current].compact.max
+    l(start_date.to_date, format: :usa)
   end
 
   def journal_closing_reminder_params
-    params.require(:journal_closing_reminder).permit(:message, starts_at: :date, ends_at: :date)
+    params.require(:journal_closing_reminder).permit(:message, :starts_at, :ends_at)
   end
 
 end
