@@ -1160,6 +1160,7 @@ en:
 
   journal_creation_reminders:
     index:
+      caption: Messages to display when creating a new journal during the specified date range.
       new: Add New Reminder
       start_date: Starting
       end_date: Ending
