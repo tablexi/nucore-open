@@ -13,7 +13,8 @@ class JournalCreationRemindersController < ApplicationController
   end
 
   def new
-    @journal_creation_reminder.starts_at = default_start_date
+    default_start_date = [JournalCreationReminder.maximum(:starts_at), Time.current].compact.max
+    @journal_creation_reminder.starts_at = l(default_start_date.to_date, format: :usa)
   end
 
   def create
@@ -41,11 +42,6 @@ class JournalCreationRemindersController < ApplicationController
   end
 
   private
-
-  def default_start_date
-    start_date = [JournalCreationReminder.maximum(:starts_at), Time.current].compact.max
-    l(start_date.to_date, format: :usa)
-  end
 
   def journal_creation_reminder_params
     params.require(:journal_creation_reminder).permit(:message, :starts_at, :ends_at)

@@ -38,9 +38,9 @@ class FacilityJournalsController < ApplicationController
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.reorder(sort_clause)
+    @journal_creation_reminder = JournalCreationReminder.current.first
 
     set_earliest_journal_date
-    set_journal_creation_reminder
 
     unless current_facility.has_pending_journals?
       @order_detail_action = :create
@@ -173,10 +173,6 @@ class FacilityJournalsController < ApplicationController
       @order_details.collect(&:fulfilled_at).max,
       JournalCutoffDate.first_valid_date,
     ].compact.max
-  end
-
-  def set_journal_creation_reminder
-    @journal_creation_reminder = JournalCreationReminder.current.first
   end
 
   def init_journals

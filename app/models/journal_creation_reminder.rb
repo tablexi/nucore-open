@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# Admin staff can still close journals for about a week after the end of the fiscal year.
+# Messages to display when creating a new journal during the specified date range.
+#
+# Admin staff can still create journals for about a week after the end of the fiscal year.
 # This is known as the 'year end closing window' - the date range between the
 # end of the fiscal year and the journal cutoff date for the last month of the fiscal year.
 #
