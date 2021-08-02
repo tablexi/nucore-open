@@ -23,5 +23,5 @@
         %td= format_usa_datetime journal_creation_reminder.starts_at
         %td= format_usa_datetime journal_creation_reminder.ends_at
         %td= l(journal_creation_reminder.ends_at, format: "FY%y")
-        %th{scope: "row"} journal_creation_reminder.message
+        %th{scope: "row"}= journal_creation_reminder.message
 
