@@ -19,9 +19,8 @@
   %tbody
     - @journal_creation_reminders.each do |journal_creation_reminder|
       %tr{class: journal_creation_reminder.past? ? "row-warning" : ""}
-        %td= link_to t(".edit"), edit_journal_creation_reminder_path(journal_creation_reminder)
+        %td{"aria-label": "Edit Reminder ##{journal_creation_reminder.id}"}= link_to t(".edit"), edit_journal_creation_reminder_path(journal_creation_reminder)
         %td= format_usa_datetime journal_creation_reminder.starts_at
         %td= format_usa_datetime journal_creation_reminder.ends_at
         %td= l(journal_creation_reminder.ends_at, format: "FY%y")
         %th{scope: "row"}= journal_creation_reminder.message
-
