@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_06_192338) do
+ActiveRecord::Schema.define(version: 2021_07_28_030637) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -202,6 +202,14 @@ ActiveRecord::Schema.define(version: 2021_07_06_192338) do
     t.boolean "is_on", null: false
     t.datetime "created_at", null: false
     t.index ["instrument_id", "created_at"], name: "index_instrument_statuses_on_instrument_id_and_created_at"
+  end
+
+  create_table "journal_creation_reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "journal_cutoff_dates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -322,6 +322,7 @@ Rails.application.routes.draw do
   # global settings
   resources :affiliates, except: :show
   resources :journal_cutoff_dates
+  resources :journal_creation_reminders, except: :show
   resources :global_user_roles do
     get "search", on: :collection
   end

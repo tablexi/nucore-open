@@ -266,6 +266,10 @@ en:
       expired_payment: These payment sources were not valid at the time of fulfillment. Please choose a different payment source.
       download_unjournalable: Export Errors as CSV
       no_transactions: There are no transactions requiring journals matching the search parameters.
+    journal_creation_reminder_modal:
+      header: Journal Date Reminder
+      proceed: Create Journal
+      cancel: Edit Journal Date
     index:
       head:
         pending: Pending Journal
@@ -1153,6 +1157,31 @@ en:
     in_review: Transactions in Review
     none_in_review_found: No transactions in review were found.
     recently_reviewed: Recently Reviewed
+
+  journal_creation_reminders:
+    index:
+      caption: Messages to display when creating a new journal during the specified date range.
+      new: Add New Reminder
+      start_date: Starting
+      end_date: Ending
+      fiscal_year: Fiscal Year
+      message: Message
+      edit: Edit
+    create:
+      success: Reminder successfully added
+    destroy:
+      success: Reminder successfully deleted
+    edit:
+      delete: Delete
+      delete_confirm: Are you sure you want to delete this Reminder?
+      header: Edit Reminder
+    form:
+      submit: Submit
+      cancel: Cancel
+    new:
+      header: New Journal Reminder Dates
+    update:
+      success: Reminder successfully updated
 
   activerecord:
     errors:
