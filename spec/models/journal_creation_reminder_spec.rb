@@ -24,19 +24,24 @@ RSpec.describe JournalCreationReminder do
         let(:starts_at) { 3.days.from_now }
         let(:ends_at) { 3.days.ago }
 
-        it { is_expected.to be_invalid }
-
         it "has an error message" do
+          expect(reminder).to be_invalid
           expect(reminder.errors.messages).to eq({ starts_at: ["must be after Ending Date"] })
         end
       end
 
       context "when starts_at is the same as ends_at" do
         let(:current_time) { Time.current }
-        let(:starts_at) { current_time }
-        let(:ends_at) { current_time }
+        let(:starts_at) { 3.days.ago } # need a valid date so we can use update_columns
+        let(:ends_at) { 3.days.from_now } # need a valid date so we can use update_columns
+        # ends_at is set to end of day in the setter method
+        before(:each) { reminder.update_columns(starts_at: current_time, ends_at: current_time) }
 
-        it { is_expected.to be_valid }
+        it "has an error message" do
+          expect(reminder.starts_at).to eq reminder.ends_at
+          expect(reminder).to be_invalid
+          expect(reminder.errors.messages).to eq({ starts_at: ["must be after Ending Date"] })
+        end
       end
     end
   end
