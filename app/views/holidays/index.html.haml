@@ -1,0 +1,24 @@
+= content_for :h1 do
+  = t("pages.global_settings")
+
+= content_for :sidebar do
+  = render "admin/shared/sidenav_global", sidenav_tab: "holidays"
+
+%h2= t(".title")
+
+= link_to t(".new"), new_holiday_path, class: "btn-add"
+
+%table.table
+  %thead
+    %th
+    %th= t(".date")
+  %tbody
+    - @holidays.each do |holiday|
+      %tr
+        %td= link_to t(".delete"), holiday_path(holiday), method: :delete, data: { confirm: t(".confirm_delete") }
+        %td.indented_lots
+          = format_usa_date holiday.date
+          %span.indented (#{link_to t(".edit"), edit_holiday_path(holiday)})
+
+%p
+  %em= t(".recency")

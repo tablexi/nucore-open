@@ -67,6 +67,7 @@ en:
     global_settings: Global Settings
     global_user_roles: Global User Roles
     instrument_utilization_reports: Instrument Utilization
+    holidays: Holidays
     login: Login
     logout: Logout
     manage: Manage %{model}
@@ -1182,6 +1183,30 @@ en:
       header: New Journal Reminder Dates
     update:
       success: Reminder successfully updated
+  holidays:
+    index:
+      title: Holidays
+      new: Add Holiday
+      date: Date
+      edit: Edit
+      delete: Delete
+      confirm_delete: Delete this holiday?
+      recency: "Note: Only future holidays are displayed. Holidays can (optionally) be used to restrict instrument access."
+    create:
+      success: Holiday successfully added
+    destroy:
+      success: Holiday successfully deleted
+    edit:
+      delete: Delete
+      delete_confirm: Are you sure you want to delete this holiday?
+      header: Edit Holiday
+    form:
+      submit: Submit
+      cancel: Cancel
+    new:
+      header: New Holiday
+    update:
+      success: Holiday successfully updated
 
   activerecord:
     errors:
