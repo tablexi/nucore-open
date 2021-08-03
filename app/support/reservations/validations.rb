@@ -17,6 +17,9 @@ module Reservations::Validations
              :satisfies_maximum_length,
              if: ->(r) { r.reserve_start_at && r.reserve_end_at && r.reservation_changed? },
              unless: :admin?
+    validate :holiday_reservable,
+             unless: :admin?,
+             if: :holiday_reservation?
 
     validates_each [:actual_start_at, :actual_end_at] do |record, attr, value|
       if value
@@ -218,6 +221,22 @@ module Reservations::Validations
 
   def default_reservation_window
     product.price_group_products.map(&:reservation_window).min
+  end
+
+  def holiday_reservable
+    if product.restrict_holiday_access? && user_restricted_on_holidays?
+      errors.add(:base, :holiday_access_restricted)
+    end
+  end
+
+  def user_restricted_on_holidays?
+    !product.access_group_for_user(user)&.allow_holiday_access
+  end
+
+  def holiday_reservation?
+    return false unless reserve_start_at.present? && reserve_end_at.present?
+
+    (reserve_start_at.to_date..reserve_end_at.to_date).any? { |date| Holiday.on(date).present? }
   end
 
 end
