@@ -1,4 +1,8 @@
 = f.input :name
+- if @product.restrict_holiday_access?
+  = f.input :allow_holiday_access
+- else
+  = f.input :allow_holiday_access, as: :string, readonly: true, hint: "This product doesn't restrict access on holidays"
 
 %ul.inline
   %li= f.submit :class => ['btn', 'btn-primary']
