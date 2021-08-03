@@ -51,7 +51,7 @@ RSpec.describe JournalCreationReminder do
       let(:ends_at) { "02/01/2022" }
 
       it "set the time to the end of the day" do
-        expect(reminder.ends_at).to eq(Time.zone.parse("2022-02-01 23:59:59"))
+        expect(reminder.ends_at).to be_within(1.second).of(Time.zone.parse("2022-02-01 23:59:59"))
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe JournalCreationReminder do
       let(:starts_at) { "02/01/2022" }
 
       it "set the time to the start of the day" do
-        expect(reminder.starts_at).to eq(Time.zone.parse("2022-02-01 00:00:00"))
+        expect(reminder.starts_at).to be_within(1.second).of(Time.zone.parse("2022-02-01 00:00:00"))
       end
     end
 
