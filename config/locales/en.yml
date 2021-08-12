@@ -544,6 +544,13 @@ en:
   product_access_groups:
     index:
       add_button: Add %{group}
+      holiday_hint: This product doesn't restrict access on holidays
+    fields:
+      url: Edit Details page
+      holiday_hint: |
+        This product doesn't restrict access on holidays.
+
+        To enable holiday restrictions for this product, check the boxes for "Restrict access to approved users" and "Restrict holiday access?" on the %{url}.
 
   reservations:
     logout:
@@ -1183,6 +1190,7 @@ en:
       header: New Journal Reminder Dates
     update:
       success: Reminder successfully updated
+
   holidays:
     index:
       title: Holidays

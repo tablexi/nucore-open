@@ -2,7 +2,9 @@
 - if @product.restrict_holiday_access?
   = f.input :allow_holiday_access
 - else
-  = f.input :allow_holiday_access, as: :string, readonly: true, hint: "This product doesn't restrict access on holidays"
+  - edit_url = link_to(t(".url"), url_for([:edit, current_facility, @product]))
+  - hint = html(".holiday_hint", scope: "product_access_groups.fields", url: edit_url)
+  = f.input :allow_holiday_access, as: :string, readonly: true, hint: hint, input_html: { value: t_boolean(f.object.allow_holiday_access) }
 
 %ul.inline
   %li= f.submit :class => ['btn', 'btn-primary']
