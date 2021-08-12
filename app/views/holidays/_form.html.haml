@@ -1,7 +1,4 @@
 = simple_form_for(@holiday) do |f|
-  = f.input :date, as: :string, input_html: { class: "datepicker", value: format_usa_date(f.object.date) }
+  = f.input :date, as: :date_picker
   = f.button :submit, t(".submit"), class: ["btn", "btn-primary"]
   = link_to t(".cancel"), holidays_path
-
-  :javascript
-    $(function () { $(".datepicker").datepicker(); });
