@@ -193,6 +193,7 @@ ActiveRecord::Schema.define(version: 2021_08_03_023106) do
     t.datetime "date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_holidays_on_date"
   end
 
   create_table "instrument_alerts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

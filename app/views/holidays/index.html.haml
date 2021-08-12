@@ -9,16 +9,18 @@
 = link_to t(".new"), new_holiday_path, class: "btn-add"
 
 %table.table
+  %caption= t(".caption")
   %thead
-    %th
-    %th= t(".date")
+    %th.span1{scope: "col"}= t(".date")
+    %th.span11{scope: "col"}= t(".actions")
   %tbody
     - @holidays.each do |holiday|
       %tr
-        %td= link_to t(".delete"), holiday_path(holiday), method: :delete, data: { confirm: t(".confirm_delete") }
-        %td.indented_lots
-          = format_usa_date holiday.date
-          %span.indented (#{link_to t(".edit"), edit_holiday_path(holiday)})
+        %th{scope: "row"}= format_usa_date holiday.date
+        %td
+          = link_to t(".edit"), edit_holiday_path(holiday)
+          %span= "|"
+          = link_to t(".delete"), holiday_path(holiday), method: :delete, data: { confirm: t(".confirm_delete") }
 
 %p
   %em= t(".recency")

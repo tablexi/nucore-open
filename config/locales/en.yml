@@ -1186,12 +1186,14 @@ en:
   holidays:
     index:
       title: Holidays
+      caption: A list of dates which can (optionally) be used to restrict instrument access.
       new: Add Holiday
+      actions: Actions
       date: Date
       edit: Edit
       delete: Delete
       confirm_delete: Delete this holiday?
-      recency: "Note: Only future holidays are displayed. Holidays can (optionally) be used to restrict instrument access."
+      recency: "Note: Only future holidays are displayed."
     create:
       success: Holiday successfully added
     destroy:
