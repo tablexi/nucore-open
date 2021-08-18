@@ -7,6 +7,7 @@ class FacilityAccountUsersController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
   before_action :init_account
+  before_action :init_user, only: :create
 
   load_and_authorize_resource class: AccountUser
 
@@ -33,7 +34,6 @@ class FacilityAccountUsersController < ApplicationController
 
   # POST /facilities/:facility_id/accounts/:account_id/account_users
   def create
-    @user = User.find(params[:user_id])
     @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
 
     if @account_user.persisted?
@@ -84,6 +84,16 @@ class FacilityAccountUsersController < ApplicationController
 
   def current_owner?
     @account.owner_user == @user
+  end
+
+  def init_user
+    @user = User.find(params[:user_id])
+    return unless create_params[:user_role] == AccountUser::ACCOUNT_OWNER
+
+    if @account.account_users.map(&:user_id).include?(@user.id)
+      flash[:error] = text("create.existing_member_error", user: @user.full_name)
+      redirect_to facility_account_members_path(current_facility, @account)
+    end
   end
 
 end
