@@ -5,7 +5,6 @@ module SecureRooms
   class Occupancy < ApplicationRecord
 
     include DateTimeInput::Model
-    include HolidayValidations
 
     belongs_to :product
     belongs_to :secure_room, foreign_key: :product_id

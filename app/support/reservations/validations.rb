@@ -5,8 +5,6 @@ module Reservations::Validations
   extend ActiveSupport::Concern
 
   included do
-    include HolidayValidations
-
     delegate :editing_time_data, to: :order_detail, allow_nil: true
 
     validates_uniqueness_of :order_detail_id, allow_nil: true
@@ -26,6 +24,7 @@ module Reservations::Validations
       end
     end
 
+    validate :holiday_access
     validate :starts_before_ends
     validate :duration_is_interval
     validates :actual_duration_mins, presence: true, if: ->(r) { r.actual_start_at? && r.editing_time_data }
@@ -205,6 +204,12 @@ module Reservations::Validations
       .where(price_group_id: groups.map(&:id))
       .pluck(:reservation_window)
       .max
+  end
+
+  def holiday_access
+    return if Holiday.allow_access?(user, product, reserve_start_at)
+
+    errors.add(:reserve_start_at, :holiday_access_restricted)
   end
 
   private
