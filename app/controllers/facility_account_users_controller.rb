@@ -7,7 +7,6 @@ class FacilityAccountUsersController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
   before_action :init_account
-  before_action :init_user, only: :create
 
   load_and_authorize_resource class: AccountUser
 
@@ -34,25 +33,31 @@ class FacilityAccountUsersController < ApplicationController
 
   # POST /facilities/:facility_id/accounts/:account_id/account_users
   def create
-    @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
-
-    if @account_user.persisted?
-      flash[:notice] = text("create.success", user: @user.full_name, account_type: @account.type_string)
-      LogEvent.log(@account_user, :create, current_user)
-
-      [@account.owner_user.email, @account.business_admin_users.map(&:email)].flatten.compact.each do |email|
-        Notifier.user_update(
-          account: @account,
-          user: @user,
-          created_by: session_user,
-          role: create_params[:user_role],
-          send_to: email,
-        ).deliver_later
-      end
+    @user = User.find(params[:user_id])
+    
+    if existing_member_becoming_owner?
+      flash[:error] = text("create.existing_member_error", user: @user.full_name)
       redirect_to facility_account_members_path(current_facility, @account)
     else
-      flash.now[:error] = text("create.error", user: @user.full_name, account_type: @account.type_string)
-      render(action: "new")
+      @account_user = AccountUser.grant(@user, create_params[:user_role], @account, by: session_user)
+      if @account_user.persisted?
+        flash[:notice] = text("create.success", user: @user.full_name, account_type: @account.type_string)
+        LogEvent.log(@account_user, :create, current_user)
+
+        [@account.owner_user.email, @account.business_admin_users.map(&:email)].flatten.compact.each do |email|
+          Notifier.user_update(
+            account: @account,
+            user: @user,
+            created_by: session_user,
+            role: create_params[:user_role],
+            send_to: email,
+          ).deliver_later
+        end
+        redirect_to facility_account_members_path(current_facility, @account)
+      else
+        flash.now[:error] = text("create.error", user: @user.full_name, account_type: @account.type_string)
+        render(action: "new")
+      end
     end
   end
 
@@ -86,14 +91,8 @@ class FacilityAccountUsersController < ApplicationController
     @account.owner_user == @user
   end
 
-  def init_user
-    @user = User.find(params[:user_id])
-    return unless create_params[:user_role] == AccountUser::ACCOUNT_OWNER
-
-    if @account.account_users.map(&:user_id).include?(@user.id)
-      flash[:error] = text("create.existing_member_error", user: @user.full_name)
-      redirect_to facility_account_members_path(current_facility, @account)
-    end
+  def existing_member_becoming_owner?
+    create_params[:user_role] == AccountUser::ACCOUNT_OWNER && @account.account_users.map(&:user_id).include?(@user.id)
   end
 
 end
