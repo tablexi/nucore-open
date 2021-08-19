@@ -215,36 +215,6 @@ RSpec.describe FacilityAccountUsersController, if: SettingsHelper.feature_on?(:e
             do_request
           end
         end
-
-        context "from anything to owner" do
-          let(:existing_user) { FactoryBot.create(:user) }
-          let!(:user_role) do
-            FactoryBot.create(:account_user, account: @account, user: existing_user, user_role: AccountUser::ACCOUNT_PURCHASER)
-          end
-
-          before :each do
-            @params[:user_id]                  = existing_user.id
-            @params[:account_user][:user_role] = AccountUser::ACCOUNT_OWNER
-            expect(@account.account_users.owners.map(&:user)).to eq([@owner])
-            expect(@account.account_users.purchasers.map(&:user)).to eq([existing_user])
-          end
-
-          it "should be prevented" do
-            do_request
-            expect(assigns(:account)).to eq(@account)
-            expect(assigns(:account).owner_user).to eq(@owner)
-            expect(@account.account_users.owners.map(&:user)).to eq([@owner])
-            expect(@account.account_users.purchasers.map(&:user)).to eq([existing_user])
-
-            expect(flash[:error]).to be_present
-            expect(response).to redirect_to facility_account_members_path(@authable, @account)
-          end
-
-          it "should not send an email" do
-            expect(Notifier).not_to receive(:user_update)
-            do_request
-          end
-        end
       end
     end
 
