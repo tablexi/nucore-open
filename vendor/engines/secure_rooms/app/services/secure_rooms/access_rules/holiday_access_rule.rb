@@ -10,7 +10,7 @@ module SecureRooms
       end
 
       def deny_holiday_access?
-        card_reader.inress? && !Holiday.allow_access?(user, secure_room, Time.current)
+        card_reader.ingress? && !Holiday.allow_access?(user, secure_room, Time.current)
       end
 
     end
