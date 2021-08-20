@@ -33,7 +33,8 @@
           %td= level.name
 
         %td= level.users.size
-        - if @product.restrict_holiday_access?
-          %td= t_boolean(level.allow_holiday_access)
-        - else
-          %td= t(".holiday_hint")
+        %td
+          - if @product.restrict_holiday_access?
+            = t_boolean(level.allow_holiday_access)
+          - else
+            = t(".holiday_hint")
