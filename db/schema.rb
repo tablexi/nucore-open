@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_28_030637) do
+ActiveRecord::Schema.define(version: 2021_08_03_023106) do
 
   create_table "account_facility_joins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -187,6 +187,13 @@ ActiveRecord::Schema.define(version: 2021_07_28_030637) do
     t.datetime "created_at", null: false
     t.integer "revenue_account", null: false
     t.index ["facility_id"], name: "fk_facilities"
+  end
+
+  create_table "holidays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.datetime "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_holidays_on_date"
   end
 
   create_table "instrument_alerts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -482,6 +489,7 @@ ActiveRecord::Schema.define(version: 2021_07_28_030637) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "allow_holiday_access", default: false, null: false
     t.index ["product_id"], name: "index_product_access_groups_on_product_id"
   end
 
@@ -583,6 +591,7 @@ ActiveRecord::Schema.define(version: 2021_07_28_030637) do
     t.text "issue_report_recipients"
     t.boolean "email_purchasers_on_order_status_changes", default: false, null: false
     t.boolean "problems_resolvable_by_user", default: false, null: false
+    t.boolean "restrict_holiday_access", default: false, null: false
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"

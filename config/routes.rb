@@ -326,6 +326,7 @@ Rails.application.routes.draw do
   resources :global_user_roles do
     get "search", on: :collection
   end
+  resources :holidays, except: :show
   resources :log_events, only: :index
   resources :research_safety_certificates, except: :show
 
