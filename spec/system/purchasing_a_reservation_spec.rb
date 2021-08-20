@@ -154,7 +154,7 @@ RSpec.describe "Purchasing a reservation" do
       select "00", from: "reservation[reserve_start_min]"
       fill_in "Duration", with: "90"
       click_button "Create"
-      expect(page).to have_content("Reserve start at must be in the future")
+      expect(page).to have_content("Reserve Start must be in the future")
     end
 
     it "clicking cancel returns you to the cart as it was" do
