@@ -1,23 +1,24 @@
 %table.table.table-striped.table-hover
+  %caption= "#{account_class.model_name.human(count: 2)} available to reconcile"
   %thead
     %tr
       %th
-      %th= Statement.human_attribute_name(:invoice_number)
-      %th= Account.model_name.human
-      %th= Order.model_name.human
-      %th= Statement.human_attribute_name(:total_cost)
-      %th= Statement.human_attribute_name(:reconcile_note)
+      %th{scope: "col"}= Statement.human_attribute_name(:invoice_number)
+      %th{scope: "col"}= Account.model_name.human
+      %th{scope: "col"}= Order.model_name.human
+      %th{scope: "col"}= Statement.human_attribute_name(:total_cost)
+      %th#reconcile-note.single-note-place{scope: "col"}= Statement.human_attribute_name(:reconcile_note)
   %tbody
     - @unreconciled_details.each do |order_detail|
       %tr
-        %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", false, class: "toggle"
+        %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", false, class: "toggle", aria: {label: "select ##{order_detail.order_id}-#{order_detail.id} to be reconciled"}
         %td= "##{order_detail.statement_invoice_number}"
         %td
           = order_detail.account
           %br
           = order_detail.account.owner_user
         %td.user-order-detail
-          .order-detail-description
+          .order-detail-description{scope: "row"}
             = link_to "##{order_detail.order_id}", facility_order_path(current_facility, order_detail.order_id)
             = "-"
             = link_to "#{order_detail.id}", manage_order_detail_path(order_detail), class: "manage-order-detail"
@@ -26,4 +27,4 @@
               .order-detail-extra.order-detail-note= order_detail.note
 
         %td= show_actual_total(order_detail)
-        %td= text_field_tag "order_detail[#{order_detail.id}][reconciled_note]"
+        %td.single-note-place= text_field_tag "order_detail[#{order_detail.id}][reconciled_note]", nil, aria: {labelledby: "reconcile-note"}
