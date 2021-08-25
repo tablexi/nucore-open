@@ -61,33 +61,6 @@ $(document).ready(function() {
   $('#filter_toggle').click(function(){
      $('#filter_container').toggle('fast');
    });
-
-  if ($('#Use_Bulk_Note')) {
-    var bulk_note_box = $('#Use_Bulk_Note');
-    var bulk_place = $('#bulk-note-place');
-    bulk_place.hide()
-    var row_notes = $('.single-note-place')
-    var order_form = bulk_note_box.parents('form:first')
-
-    bulk_note_box.change(function(e){
-      if (bulk_note_box[0].checked === true){
-        bulk_place.show();
-        row_notes.hide();
-      } else if (bulk_note_box[0].checked === false) {
-        bulk_place.hide();
-        row_notes.show();
-      }
-    })
-
-    order_form.submit(function(e){
-      e.preventDefault
-      if (bulk_note_box[0].checked === true){
-        row_notes.parents('tr').find(".toggle").filter(":checked").parents("tr").find('.single-note-place').find("input").val(bulk_place.find("input").val())
-      }
-      e.submit
-    })
-
-  }
 });
 
 String.prototype.endsWith = function(suffix) {

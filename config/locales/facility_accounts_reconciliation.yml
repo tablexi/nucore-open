@@ -1,0 +1,6 @@
+en:
+  views:
+    facility_accounts_reconciliation:
+      index:
+        caption: available to reconcile
+

@@ -57,6 +57,7 @@ RSpec.describe "Account Reconciliation" do
       expect(page).not_to have_content(other_order_number)
 
       check "order_detail_#{order_detail.id}_reconciled"
+
       fill_in "Reconciliation Date", with: I18n.l(1.day.ago.to_date, format: :usa)
       click_button "Reconcile Orders", match: :first
 

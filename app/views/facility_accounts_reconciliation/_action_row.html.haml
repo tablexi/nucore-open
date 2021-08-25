@@ -10,10 +10,10 @@
         = text_field_tag :reconciled_at, format_usa_date(Time.current), class: :datepicker__data, data: { min_date: unreconciled_order_details.map(&:journal_or_statement_date).min.iso8601, max_date: Time.current.iso8601 }
   .row.table-actions.form-horizontal
     .span3.control-group.fields
-      %label.control-label{ for: "Use Bulk Note" }= "Use Bulk Note"
+      %label.control-label{ for: "bulk-note-checkbox" }= "Use Bulk Note"
       .controls
-        = check_box_tag "Use Bulk Note"
-    #bulk-note-place.span5.control-group.fields
+        = check_box_tag "Use Bulk Note", nil, id: "bulk-note-checkbox"
+    #bulk-note-input.span5.control-group.fields
       %label.control-label{ for: :notes }= "Bulk Reconciliation Note"
       .controls
         = text_field_tag :notes
