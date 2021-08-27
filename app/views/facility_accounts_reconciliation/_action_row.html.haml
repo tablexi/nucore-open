@@ -12,8 +12,8 @@
     .span3.control-group.fields
       %label.control-label{ for: "bulk-note-checkbox" }= "Use Bulk Note"
       .controls
-        = check_box_tag "Use Bulk Note", nil, id: "bulk-note-checkbox"
+        = check_box_tag "Use Bulk Note", 0, false, id: "bulk-note-checkbox"
     #bulk-note-input.span5.control-group.fields
-      %label.control-label{ for: :notes }= "Bulk Reconciliation Note"
+      %label.control-label{ for: :bulk_reconcile_note }= "Bulk Reconciliation Note"
       .controls
-        = text_field_tag :notes
+        = text_field_tag :bulk_reconcile_note

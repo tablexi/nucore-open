@@ -12,7 +12,7 @@ module OrderDetails
     validate :reconciliation_must_be_in_past
     validate :all_journals_and_statements_must_be_before_reconciliation_date
 
-    def initialize(order_detail_scope, params, reconciled_at, bulk_reconcile_note)
+    def initialize(order_detail_scope, params, reconciled_at, bulk_reconcile_note = nil)
       @params = params || ActionController::Parameters.new
       @order_details = order_detail_scope.readonly(false).find_ids(to_be_reconciled.keys)
       @reconciled_at = reconciled_at
@@ -45,8 +45,8 @@ module OrderDetails
 
     def reconcile(order_detail, params)
       order_detail.reconciled_at = @reconciled_at
-      order_detail.reconcile_note = @bulk_reconcile_note if @bulk_reconcile_note
       order_detail.assign_attributes(allowed(params))
+      order_detail.reconciled_note = @bulk_reconcile_note if @bulk_reconcile_note
       order_detail.change_status!(OrderStatus.reconciled)
       @count += 1
     rescue => e
