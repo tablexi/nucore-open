@@ -61,6 +61,7 @@ $(document).ready(function() {
   $('#filter_toggle').click(function(){
      $('#filter_container').toggle('fast');
    });
+
 });
 
 String.prototype.endsWith = function(suffix) {

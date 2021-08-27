@@ -317,6 +317,8 @@ en:
         journal_status: "Journal Status"
         reference: "Reference"
         description: "Notes"
+        bulk_note_checkbox: Use Bulk Note
+        bulk_note: Bulk Reconciliation Note
       instruct:
         orders: |
           Orders on this page reflect updates made to orders since journaling.  To view the journal as originally

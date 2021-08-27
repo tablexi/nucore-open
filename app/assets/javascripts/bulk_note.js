@@ -3,7 +3,6 @@ $(document).ready(function() {
   var bulkNoteInput = $('#bulk-note-input');
   bulkNoteInput.hide()
   var rowNoteInputs = $('.row-note-input')
-  var order_form = bulkNoteCheckbox.parents('form:first')
 
   bulkNoteCheckbox.change(function(e){
     if (bulkNoteCheckbox[0].checked === true){
