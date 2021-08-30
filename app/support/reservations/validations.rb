@@ -207,7 +207,7 @@ module Reservations::Validations
   end
 
   def holiday_access
-    return if Holiday.allow_access?(order.created_by_user, product, reserve_start_at)
+    return if Holiday.allow_access?(order&.created_by_user, product, reserve_start_at)
 
     errors.add(:reserve_start_at, :holiday_access_restricted)
   end
