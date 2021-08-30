@@ -30,12 +30,26 @@ RSpec.describe "Reserving an instrument on a holiday" do
   end
 
   context "as a member of a restricted group" do
-    it "does NOT allow making a reservation" do
-      click_link instrument.name
-      select user.accounts.first.description, from: "Payment Source"
-      fill_in "Reserve Start", with: 2.days.from_now
-      click_button "Create"
-      expect(page).to have_content("Reserve Start cannot be on a holiday because you do not have holiday access")
+    context "non-admin" do
+      it "does NOT allow making a reservation" do
+        click_link instrument.name
+        select user.accounts.first.description, from: "Payment Source"
+        fill_in "Reserve Start", with: 2.days.from_now
+        click_button "Create"
+        expect(page).to have_content("Reserve Start cannot be on a holiday because you do not have holiday access")
+      end
+    end
+
+    context "as an admin" do
+      let(:user) { create(:user, :administrator) }
+
+      it "allows making a reservation" do
+        click_link instrument.name
+        select user.accounts.first.description, from: "Payment Source"
+        fill_in "Reserve Start", with: 2.days.from_now
+        click_button "Create"
+        expect(page).to have_content("Reservation created successfully")
+      end
     end
   end
 
