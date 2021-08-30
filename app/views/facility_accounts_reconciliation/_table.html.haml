@@ -1,5 +1,5 @@
 %table.table.table-striped.table-hover
-  %caption= "#{account_class.model_name.human(count: 2)} #{t("views.facility_accounts_reconciliation.index.caption")}"
+  %caption= "#{account_class.model_name.human(count: 2)} #{t("facility_accounts_reconciliation.index.caption")}"
   %thead
     %tr
       %th
@@ -11,7 +11,7 @@
   %tbody
     - @unreconciled_details.each do |order_detail|
       %tr
-        %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", false, class: "toggle", aria: {label: t("views.facility_accounts_reconciliation.index.checkbox-label", order: order_detail.order_id, order_detail: order_detail.id)}
+        %td.centered= check_box_tag "order_detail[#{order_detail.id}][reconciled]", "1", false, class: "toggle", aria: {label: t("facility_accounts_reconciliation.index.checkbox_label", order_number:  order_detail.to_s)}
         %td= "##{order_detail.statement_invoice_number}"
         %td
           = order_detail.account

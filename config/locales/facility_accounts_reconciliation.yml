@@ -1,7 +1,0 @@
-en:
-  views:
-    facility_accounts_reconciliation:
-      index:
-        caption: available to reconcile
-        checkbox-label: select order %{order}-%{order_detail} to be reconciled
-
