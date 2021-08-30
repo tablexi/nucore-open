@@ -43,7 +43,6 @@ class ReservationCreator
           @success = :default
         end
       rescue ActiveRecord::RecordInvalid => e
-        @error = e.message
         raise ActiveRecord::Rollback
       rescue StandardError => e
         @error = I18n.t("orders.purchase.error", message: e.message).html_safe
