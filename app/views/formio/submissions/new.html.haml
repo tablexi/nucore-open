@@ -6,8 +6,19 @@
         form.submission = { data: #{raw @prefill_data.to_json} };
 
         form.on('submitDone', function(submission) {
-          var surveyUrl = encodeURIComponent('#{@formio_url}/submission/' + submission._id);
-          window.location = '#{raw @redirect_url}&survey_url=' + surveyUrl + '&survey_edit_url=' + surveyUrl;
+          var surveyUrl = "#{raw @formio_url}/submission/" + submission._id;
+          var orderDetailData = {
+            order_detail: submission.data,
+            survey_url: surveyUrl,
+            survey_edit_url: surveyUrl
+          }
+
+          jQuery.ajax({
+            type: "get",
+            data: orderDetailData,
+            url:  "#{raw @redirect_url}",
+            timeout: 25000
+          });
         });
       });
   };

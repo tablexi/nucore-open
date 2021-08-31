@@ -37,7 +37,12 @@ class SurveysController < ApplicationController
       Rails.logger.error("Could not save external surveyor response! #{e.message}\n#{e.backtrace.join("\n")}")
     end
 
-    redirect_to params[:referer]
+    if request.xhr?
+      # send the supplied string to the browser with a MIME type of text/javascript
+      render :js => "window.location = '#{params[:referer]}'"
+    else
+      redirect_to params[:referer]
+    end
   end
 
   private
