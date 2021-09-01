@@ -117,7 +117,7 @@ GEM
     awesome_print (1.9.2)
     bcrypt (3.1.16)
     bcrypt_pbkdf (1.1.0)
-    bindex (0.5.0)
+    bindex (0.8.1)
     bootsnap (1.8.1)
       msgpack (~> 1.0)
     bootstrap-sass (2.3.2.2)
