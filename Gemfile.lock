@@ -488,8 +488,9 @@ GEM
       rubocop (>= 0.58.0)
     ruby-ole (1.2.12.2)
     ruby-progressbar (1.11.0)
-    ruby-saml (1.11.0)
-      nokogiri (>= 1.5.10)
+    ruby-saml (1.12.2)
+      nokogiri (>= 1.10.5)
+      rexml
     rubyzip (2.3.2)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
