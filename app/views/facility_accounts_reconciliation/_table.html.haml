@@ -17,8 +17,8 @@
           = order_detail.account
           %br
           = order_detail.account.owner_user
-        %td.user-order-detail
-          .order-detail-description{scope: "row"}
+        %th.user-order-detail{scope: "row"}
+          .order-detail-description
             = link_to "##{order_detail.order_id}", facility_order_path(current_facility, order_detail.order_id)
             = "-"
             = link_to "#{order_detail.id}", manage_order_detail_path(order_detail), class: "manage-order-detail"
