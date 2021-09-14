@@ -550,7 +550,7 @@ GEM
     ttfunk (1.7.0)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
-    uglifier (4.1.18)
+    uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (2.0.0)
     unicorn (6.0.0)
@@ -670,7 +670,7 @@ DEPENDENCIES
   synaccess_connect
   teaspoon-jasmine
   text_helpers
-  uglifier (= 4.1.18)
+  uglifier (= 4.2.0)
   unicorn
   vuejs-rails (~> 1.0.26)
   web-console
