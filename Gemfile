@@ -5,7 +5,7 @@ source "https://rubygems.org"
 ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| f.read.chomp }
 
 ## base
-gem "rails", "5.2.6"
+gem "rails", "6.1.4.1"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "config"
 gem "bootsnap", require: false
