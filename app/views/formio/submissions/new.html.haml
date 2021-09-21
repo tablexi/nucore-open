@@ -3,22 +3,9 @@
     Formio
       .createForm(document.getElementById('formio'), '#{@formio_url}')
       .then(function(form) {
-        form.submission = { data: #{raw @prefill_data.to_json} };
-
-        form.on('submitDone', function(submission) {
-          var surveyUrl = "#{raw @formio_url}/submission/" + submission._id;
-          var orderDetailData = {
-            order_detail: submission.data,
-            survey_url: surveyUrl,
-            survey_edit_url: surveyUrl
-          }
-
-          jQuery.ajax({
-            type: "post",
-            data: orderDetailData,
-            url:  "#{raw @redirect_url}",
-            timeout: 25000
-          });
-        });
-      });
+        var surveyUrl = "#{raw @formio_url}/submission/"
+        var surveyCompleteUrl = "#{raw @redirect_url}"
+        var prefillData = #{raw @prefill_data.to_json}
+        handleFormioSubmission(form, surveyUrl, surveyCompleteUrl, prefillData)
+      })
   };
