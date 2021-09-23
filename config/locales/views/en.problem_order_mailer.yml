@@ -18,15 +18,17 @@ en:
 
           %{facility}
       notify_user_with_resolution_option:
+        subject: "User Amendable !app_name! Problem Order Alert: %{facility}"
         body: |
           Hello %{user},
 
           !app_name! is missing log off information from your recent use of the %{product}
-          at the %{facility} on %{fulfillment_date}. Please click on the link below
-          to enter the End Time or Actual Duration for your instrument reservation
-          and to add any applicable accessories:
+          at the %{facility} on %{fulfillment_date}.
 
-          [#%{order_detail}](%{order_detail_link})
+          **Please click on the link below** to enter the End Time or Actual Duration
+          for your instrument reservation, and to add any applicable accessories:
+
+          **[Add your logout time to #%{order_detail}](%{order_detail_link})**
 
           Thank you,
 
