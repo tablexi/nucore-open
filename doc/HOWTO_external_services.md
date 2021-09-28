@@ -69,6 +69,17 @@ Here are the steps to configure the form.io survey:
 1. In the field for "Property Name", enter "orderDetailQuantity", "orderDetailNote", or "orderDetailReferenceId"
 1. Save the changes
 
+### Validating form inputs from Form.io
+
+1. Log in to form.io
+1. Select the "Live" tab (form.io allows multiple stages for keeping forms organized)
+1. Select "Forms" on the side nav bar
+1. Click the form you want to edit
+1. Create a new form component (or click the gear icon to edit one)
+1. Click "Validation" tab on the top nav
+1. Enter a max value in the field for "Maximum Length".  The max for note is 1000 characters, 255 for reference ID.  Use something sensible for quantity.
+1. Save the changes
+
 ## Testing
 
 You will need a form.io account with access to the NU forms in order to debug or make changes on the form.io side.
