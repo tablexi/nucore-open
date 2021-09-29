@@ -3,7 +3,36 @@
 require "rails_helper"
 
 RSpec.describe User do
-  subject(:user) { build(:user) }
+  subject(:user) { build(:user, :netid) }
   it { is_expected.to validate_uniqueness_of :card_number }
   it { is_expected.to validate_uniqueness_of :i_class_number }
+
+  describe ".find_by_card_number" do
+    let(:card_number) { "12345-123" }
+
+    context "when user's card number has facility number" do
+      before { user.update(card_number: card_number) }
+
+      it "finds the user" do
+        expect(described_class.find_by_card_number(card_number)).to eq(user)
+      end
+    end
+
+    context "when user's card number has NO facility number" do
+      before { user.update(card_number: "12345") }
+
+      it "finds the user" do
+        expect(described_class.find_by_card_number(card_number)).to eq(user)
+      end
+    end
+
+    context "when 2 users have the same indala_number" do
+      let!(:user2) { create(:user, :netid, card_number: "12345") }
+      before { user.update(card_number: "12345-124") }
+
+      it "finds the user" do
+        expect(described_class.find_by_card_number(card_number)).to eq(user2)
+      end
+    end
+  end
 end
