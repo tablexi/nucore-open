@@ -13,7 +13,7 @@ module Nucore
 
   class Application < Rails::Application
 
-    config.load_defaults 5.0
+    config.load_defaults 5.2
     # It appears cancancan and/or delayed_job_active_record do some monkey patching of AR incorrectly,
     # so setting this in an initializer doesn't work. https://stackoverflow.com/a/39153224
     config.active_record.belongs_to_required_by_default = false
