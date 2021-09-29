@@ -8,6 +8,7 @@ module SecureRooms
 
     included do
       validates :card_number, uniqueness: { allow_blank: true }
+      validates :i_class_number, uniqueness: { allow_blank: true }
     end
 
   end
