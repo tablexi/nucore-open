@@ -7,14 +7,14 @@ RSpec.describe User do
   it { is_expected.to validate_uniqueness_of :card_number }
   it { is_expected.to validate_uniqueness_of :i_class_number }
 
-  describe ".find_by_card_number" do
+  describe ".for_card_number" do
     let(:card_number) { "12345-123" }
 
     context "when user's card number has facility number" do
       before { user.update(card_number: card_number) }
 
       it "finds the user" do
-        expect(described_class.find_by_card_number(card_number)).to eq(user)
+        expect(described_class.for_card_number(card_number)).to eq(user)
       end
     end
 
@@ -22,7 +22,7 @@ RSpec.describe User do
       before { user.update(card_number: "12345") }
 
       it "finds the user" do
-        expect(described_class.find_by_card_number(card_number)).to eq(user)
+        expect(described_class.for_card_number(card_number)).to eq(user)
       end
     end
 
@@ -31,7 +31,7 @@ RSpec.describe User do
       before { user.update(card_number: "12345-124") }
 
       it "finds the user" do
-        expect(described_class.find_by_card_number(card_number)).to eq(user2)
+        expect(described_class.for_card_number(card_number)).to eq(user2)
       end
     end
   end

@@ -10,7 +10,7 @@ module SecureRooms
       validates :card_number, uniqueness: { allow_blank: true }
       validates :i_class_number, uniqueness: { allow_blank: true }
 
-      def self.find_by_card_number(card_number) 
+      def self.for_card_number(card_number) 
         find_by(card_number: [card_number, card_number.split("-").first])
       end
     end
