@@ -41,11 +41,21 @@
       .backdate_fields= render "edit_date", f: f
 
     %ul.inline{ style: "float: left" }
-      %li
-        = f.submit t("shared.update"),
-          class: "btn"
-      - if order.validated?
+      - if @order.has_valid_payment?
         %li
-          = f.submit t("shared.purchase"),
-            class: %w(btn btn-primary),
-            data: { disable_with: t("shared.purchase") }
+          = f.submit t("shared.update"),
+            class: "btn"
+        - if order.validated?
+          %li
+            = f.submit t("shared.purchase"),
+              class: %w(btn btn-primary),
+              data: { disable_with: t("shared.purchase") }
+      - else
+        - alert_error = "Please Change Payment Source or remove any invalid products from the Cart before continuing"
+        %li
+          %a{ class: "btn disabled", data: { toggle: "tooltip" }, title: "#{alert_error}" }
+            = t("shared.update")
+        - if order.validated?
+          %li
+            %a{ class: "btn btn-primary disabled", data: { toggle: "tooltip" }, title: "#{alert_error}" }
+              = t("shared.purchase")

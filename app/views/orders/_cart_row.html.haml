@@ -1,5 +1,7 @@
 = f.simple_fields_for order_detail do |odf|
-  %tr{ class: order_detail_iteration.first? ? "first-in-bundle" : "" }
+  - row_class = "#{ order_detail_iteration.first? ? "first-in-bundle" : "" }"
+  - row_class += "#{ order_detail.order.has_valid_payment? ? "" : " invalid" }"
+  %tr{ class: row_class }
     %td
       - if order_detail_iteration.first?
         = link_to text("shared.remove"), remove_order_path(f.object, order_detail), method: :put
