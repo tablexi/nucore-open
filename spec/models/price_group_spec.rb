@@ -12,7 +12,7 @@ RSpec.describe PriceGroup do
     @price_group = price_group
   end
 
-  it "is valid using the factory using factory" do
+  it "is valid using the factory" do
     expect(price_group).to be_valid
   end
 

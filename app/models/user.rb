@@ -30,7 +30,7 @@ class User < ApplicationRecord
   # There are existing duplicate emails in NU -- they're all users that have both a netid
   # account and a non-netid account.
   validates :email, presence: true, email_format: true, uniqueness: { case_sensitive: true }
-  validates :username, uniqueness: true
+  validates :username, uniqueness: { case_sensitive: false }
   validates :suspension_note, length: { maximum: 255 }
 
   accepts_nested_attributes_for :account_users, allow_destroy: true
