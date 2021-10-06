@@ -166,7 +166,7 @@ RSpec.describe "Placing an item order" do
 
     it "shows error in cart" do
       visit "/orders/cart"
-      expect(page).to have_content("Account is not valid for the orderer")
+      expect(page).to have_content("The payment source is not valid for the orderer")
     end
   end
 end

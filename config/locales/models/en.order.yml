@@ -1,0 +1,9 @@
+en:
+  models:
+    order:
+      account_invalid_for_orderer: |
+        The payment source is not valid for the orderer.<br> Please %{clear_cart_link} 
+        or %{change_payment_source_link} to continue."
+      account_invalid_for_orderer_tooltip: |
+        The payment source is not valid for the orderer. Please clear your cart 
+        or select a different payment source to continue.
