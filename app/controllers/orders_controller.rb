@@ -47,9 +47,7 @@ class OrdersController < ApplicationController
 
     return unless @order.order_details.any? && !@order.has_valid_payment?
 
-    @order.errors.add(:base, text("models.order.account_invalid_for_orderer",
-            clear_cart_link: clear_order_path(@order),
-            change_payment_source_link: choose_account_order_path(@order)))
+    @order.errors.add(:base, invalid_for_orderer_message)
 
     flash[:error] = "There are errors in your order:<br>#{@order.errors.full_messages.join('<br>')}".html_safe
   end
@@ -119,9 +117,7 @@ class OrdersController < ApplicationController
           @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
         rescue => e
           if !@order.has_valid_payment?
-            @order.errors.add(:base, text("models.order.account_invalid_for_orderer",
-                    clear_cart_link: clear_order_path(@order),
-                    change_payment_source_link: choose_account_order_path(@order)))
+            @order.errors.add(:base, invalid_for_orderer_message)
           else
             @order.errors.add(:base, "An error was encountered while adding the product #{@product}.")
           end
@@ -393,6 +389,12 @@ class OrdersController < ApplicationController
       switch: "on",
       redirect_to: reservations_path,
     )
+  end
+
+  def invalid_for_orderer_message
+    text("models.order.account_invalid_for_orderer",
+      clear_cart_link: clear_order_path(@order),
+      change_payment_source_link: choose_account_order_path(@order))
   end
 
 end
