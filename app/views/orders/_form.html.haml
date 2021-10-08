@@ -53,9 +53,9 @@
       - else
         - alert_error = t("models.order.account_invalid_for_orderer_tooltip")
         %li
-          %a{ class: "btn disabled", data: { toggle: "tooltip" }, title: "#{alert_error}" }
+          %a{ class: "btn disabled", data: { toggle: "tooltip" }, title: alert_error }
             = t("shared.update")
         - if order.validated?
           %li
-            %a{ class: "btn btn-primary disabled", data: { toggle: "tooltip" }, title: "#{alert_error}" }
+            %a{ class: "btn btn-primary disabled", data: { toggle: "tooltip" }, title: alert_error }
               = t("shared.purchase")

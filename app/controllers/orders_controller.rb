@@ -46,9 +46,11 @@ class OrdersController < ApplicationController
     @order.validate_order! if @order.new?
 
     return unless @order.order_details.any? && !@order.has_valid_payment?
-    @order.errors.add(:base, text("models.order.account_invalid_for_orderer", 
-      clear_cart_link: ActionController::Base.helpers.link_to("clear your cart", clear_order_path(@order), method: :put),
-      change_payment_source_link: ActionController::Base.helpers.link_to("select a different payment source", choose_account_order_path(@order))).html_safe)
+
+    @order.errors.add(:base, text("models.order.account_invalid_for_orderer",
+            clear_cart_link: clear_order_path(@order),
+            change_payment_source_link: choose_account_order_path(@order)))
+
     flash[:error] = "There are errors in your order:<br>#{@order.errors.full_messages.join('<br>')}".html_safe
   end
 
@@ -117,9 +119,9 @@ class OrdersController < ApplicationController
           @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
         rescue => e
           if !@order.has_valid_payment?
-            @order.errors.add(:base, text("models.order.account_invalid_for_orderer", 
-              clear_cart_link: ActionController::Base.helpers.link_to("clear your cart", clear_order_path(@order), method: :put),
-              change_payment_source_link: ActionController::Base.helpers.link_to("select a different payment source", choose_account_order_path(@order))).html_safe)
+            @order.errors.add(:base, text("models.order.account_invalid_for_orderer",
+                    clear_cart_link: clear_order_path(@order),
+                    change_payment_source_link: choose_account_order_path(@order)))
           else
             @order.errors.add(:base, "An error was encountered while adding the product #{@product}.")
           end
