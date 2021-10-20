@@ -48,6 +48,7 @@ module Nucore
     # Override the default ("#{Rails.root}/**/spec/mailers/previews") to also load
     # previews from within our engines.
     config.action_mailer.preview_path = "#{Rails.root}/**/spec/mailers/previews"
+    config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
 
     # Prevent invalid (usually malicious) URLs from causing exceptions/issues
     config.middleware.insert 0, Rack::UTF8Sanitizer
