@@ -7,7 +7,7 @@ module SecureRooms
     extend ActiveSupport::Concern
 
     included do
-      validates :card_number, uniqueness: { allow_blank: true, case_sensitive: false }
+      validates :card_number, uniqueness: { allow_blank: true, case_sensitive: true }
     end
 
   end
