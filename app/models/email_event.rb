@@ -5,7 +5,7 @@ class EmailEvent < ApplicationRecord
 
   belongs_to :user
   validates :user, presence: true
-  validates :key, presence: true, uniqueness: { scope: :user_id }
+  validates :key, presence: true, uniqueness: { scope: :user_id, case_sensitive: false }
 
   # Use this to avoid sending too many emails to a user within a given timeframe
   # It accepts a block, and will yield if this method has not been called within

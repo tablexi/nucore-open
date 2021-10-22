@@ -45,3 +45,17 @@ Devise.setup do |config|
   # Time period for account expiry from last_activity_at
   # config.expire_after = 90.days
 end
+
+# To address the coming behavior change in 6.1 and its affects on how devise-security SecureValidatable interacts with it
+module Devise
+  module Models
+    module SecureValidatable
+      module ClassMethods
+        private
+        def devise_validation_enabled?
+          true
+        end
+      end
+    end
+  end
+end
