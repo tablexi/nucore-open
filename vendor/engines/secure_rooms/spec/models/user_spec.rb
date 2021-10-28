@@ -6,8 +6,8 @@ RSpec.describe User do
   subject!(:user) { create(:user, :netid, card_number: card_number) }
   let(:card_number) { "abcXYZ" }
 
-  it { is_expected.to validate_uniqueness_of :card_number }
-  it { is_expected.to validate_uniqueness_of :i_class_number }
+  it { is_expected.to validate_uniqueness_of(:card_number).case_insensitive }
+  it { is_expected.to validate_uniqueness_of(:i_class_number).case_insensitive }
 
   describe ".for_card_number" do
     context "when user's card number has facility number" do
