@@ -15,9 +15,7 @@ gem "rack-utf8_sanitizer"
 ## database
 gem "mysql2"
 # To use Oracle, remove the mysql2 gem above and uncomment these lines
-# There are fixes for fulltext indexing in the 6.0 master of the gem, but we need
-# to backport them to support 5.2.
-# gem "activerecord-oracle_enhanced-adapter", git: "https://github.com/jhanggi/oracle-enhanced", branch: "release52"
+# gem "activerecord-oracle_enhanced-adapter", "~> 6.0.0"
 # gem "ruby-oci8" # only for CRuby users
 
 
