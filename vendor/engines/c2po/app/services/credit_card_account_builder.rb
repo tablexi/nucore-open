@@ -37,7 +37,7 @@ class CreditCardAccountBuilder < AccountBuilder
     set_expires_at
   end
 
-  # Hooks into superclass's `build` method.
+  # Hooks into superclass's `update` method.
   def after_update
     set_expires_at
   end
