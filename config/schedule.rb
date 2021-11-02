@@ -10,6 +10,10 @@ require File.expand_path(File.dirname(__FILE__) + "/environment")
 # still sent via email to sysadmins
 job_type :rake, "cd :path && :environment_variable=:environment bundle exec rake :task :output"
 
+every 6.hours, roles: [:db] do
+  rake "check_connection"
+end
+
 every 5.minutes, roles: [:db] do
   command "curl --silent -X POST #{Rails.application.routes.url_helpers.admin_services_process_five_minute_tasks_url}"
 end
