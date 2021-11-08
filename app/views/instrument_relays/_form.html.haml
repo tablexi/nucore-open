@@ -28,6 +28,12 @@
             wrapper_html: { class: "input-inline" },
             input_html: { style: "width: 38px" }
         = text("instruments.instrument_fields.relay.label.auto_logout_2")
+        %h3=text("instruments.instrument_fields.relay.label.ethernet_port")
+        = r.input :mac_address
+        = r.input :building_room_number
+        = r.input :circuit_number
+        = r.input :ethernet_port_number, label: text("instruments.instrument_fields.relay.label.ethernet_port_number")
+
 
   %ul.inline
     %li= f.submit text("shared.save"), class: ["btn", "btn-primary"]

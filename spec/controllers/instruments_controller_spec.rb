@@ -276,6 +276,10 @@ RSpec.describe InstrumentsController do
                                       type: RelaySynaccessRevA.name,
                                       auto_logout: true,
                                       auto_logout_minutes: 15,
+                                      mac_address: "macaddress",
+                                      building_room_number: "1a",
+                                      circuit_number: "2",
+                                      ethernet_port_number: 8080
                                     })
       end
 
@@ -289,6 +293,10 @@ RSpec.describe InstrumentsController do
           expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
           expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
           expect(relay.auto_logout_minutes).to eq(@params[:instrument][:relay_attributes][:auto_logout_minutes])
+          expect(relay.mac_address).to eq(@params[:instrument][:relay_attributes][:mac_address])
+          expect(relay.building_room_number).to eq(@params[:instrument][:relay_attributes][:building_room_number])
+          expect(relay.circuit_number).to eq(@params[:instrument][:relay_attributes][:circuit_number])
+          expect(relay.ethernet_port_number).to eq(@params[:instrument][:relay_attributes][:ethernet_port_number])
         end
       end
 
