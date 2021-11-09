@@ -14,9 +14,9 @@
       = r.input :type, collection: options_for_relay, include_blank: false
       = r.input :ip
       = r.input :ip_port,
-      hint: text("instruments.instrument_fields.relay.instruct.ip_port")
+        hint: text("instruments.instrument_fields.relay.instruct.ip_port")
       = r.input :outlet,
-      hint: text("instruments.instrument_fields.relay.instruct.outlet")
+        hint: text("instruments.instrument_fields.relay.instruct.outlet")
       = r.input :username
       = r.input :password, as: :string
       = r.input :auto_logout do
@@ -34,8 +34,6 @@
         = r.input :circuit_number
         = r.input :ethernet_port_number, label: text("instruments.instrument_fields.relay.label.ethernet_port_number")
 
-
   %ul.inline
     %li= f.submit text("shared.save"), class: ["btn", "btn-primary"]
     %li= link_to text("shared.cancel"), [:manage, current_facility, @product]
-    

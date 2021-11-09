@@ -8,11 +8,11 @@
 %h2= @product
 
 - if @product.relay.nil?
-  %label= t 'instruments.manage.label.control_mech'
-  %p= t 'instruments.instrument_fields.relay.control_mechanisms.manual'
+  %label= t("instruments.manage.label.control_mech")
+  %p= t("instruments.instrument_fields.relay.control_mechanisms.manual")
 - elsif @product.relay.is_a?(RelayDummy)
-  %label= t 'instruments.manage..label.control_mech'
-  %p= t 'instruments.instrument_fields.relay.control_mechanisms.timer'
+  %label= t("instruments.manage..label.control_mech")
+  %p= t("instruments.instrument_fields.relay.control_mechanisms.timer")
 - elsif @product.relay.is_a?(PowerRelay)
   = readonly_form_for @product.relay.class.name.underscore do |f|
     = f.simple_fields_for @product.relay, :defaults => { :default_value => 'N/A'} do |r|
@@ -38,4 +38,3 @@
       %li= link_to "Edit", edit_facility_instrument_relay_path(current_facility, @product, @product.relay.id), class: "btn"
     - else
       %li= link_to "Edit", new_facility_instrument_relay_path(current_facility, @product), class: "btn"
-      

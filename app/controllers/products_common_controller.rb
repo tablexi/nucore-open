@@ -110,7 +110,8 @@ class ProductsCommonController < ApplicationController
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
                                                       :problems_resolvable_by_user, :restrict_holiday_access,
                                                       relay_attributes: [:ip, :ip_port, :outlet, :username, :password, :type,
-                                                                         :auto_logout, :auto_logout_minutes, :id, :mac_address, :building_room_number, :circuit_number, :ethernet_port_number ])
+                                                                         :auto_logout, :auto_logout_minutes, :id, :mac_address,
+                                                                         :building_room_number, :circuit_number, :ethernet_port_number])
   end
 
   def current_facility_products
