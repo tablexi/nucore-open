@@ -275,11 +275,7 @@ RSpec.describe InstrumentsController do
                                       password: "password",
                                       type: RelaySynaccessRevA.name,
                                       auto_logout: true,
-                                      auto_logout_minutes: 15,
-                                      mac_address: "macaddress",
-                                      building_room_number: "1a",
-                                      circuit_number: "2",
-                                      ethernet_port_number: 8080
+                                      auto_logout_minutes: 15
                                     })
       end
 
@@ -293,55 +289,6 @@ RSpec.describe InstrumentsController do
           expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
           expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
           expect(relay.auto_logout_minutes).to eq(@params[:instrument][:relay_attributes][:auto_logout_minutes])
-          expect(relay.mac_address).to eq(@params[:instrument][:relay_attributes][:mac_address])
-          expect(relay.building_room_number).to eq(@params[:instrument][:relay_attributes][:building_room_number])
-          expect(relay.circuit_number).to eq(@params[:instrument][:relay_attributes][:circuit_number])
-          expect(relay.ethernet_port_number).to eq(@params[:instrument][:relay_attributes][:ethernet_port_number])
-        end
-      end
-
-      describe "relay validations" do
-        let!(:instrument2) { create(:instrument, facility: facility, no_relay: true) }
-        let!(:old_relay) { create(:relay_syna, instrument: instrument2) }
-
-        before :each do
-          sign_in @admin
-          @params[:instrument][:relay_attributes][:ip] = old_relay.ip
-          @params[:instrument][:relay_attributes][:outlet] = old_relay.outlet
-        end
-
-        context "and the relay is taken by a different instrument" do
-          it "does not allow the relay to be used again" do
-            do_request
-            expect(assigns(:product)).to_not be_persisted
-            expect(assigns(:product).errors).to include(:relay)
-          end
-        end
-
-        context "and the relay is taken, but on the same shared schedule" do
-          it "allows creation" do
-            @params[:instrument][:schedule_id] = instrument2.schedule_id
-            do_request
-            expect(assigns(:product)).to be_persisted
-            expect(assigns(:product).relay).to be_persisted
-          end
-        end
-      end
-
-    end
-
-    context "dummy relay" do
-
-      before :each do
-        # relay attributes
-        @params[:instrument].merge!(control_mechanism: "timer")
-      end
-
-      it_should_allow :director, "to create a timer" do
-        assert_successful_creation do
-          relay = assigns(:product).relay
-          expect(relay).to be_a Relay
-          expect(relay.type).to eq(RelayDummy.name)
         end
       end
     end

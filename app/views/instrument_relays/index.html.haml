@@ -32,7 +32,7 @@
       = r.input :ethernet_port_number, label: text("instruments.instrument_fields.relay.label.ethernet_port_number")
 -else
   %p UNKNOWN RELAY TYPE
-- if can? :edit, @product.relay
+- if can? :edit, @product
   %ul.inline
     - if @product.relay.present?
       %li= link_to "Edit", edit_facility_instrument_relay_path(current_facility, @product, @product.relay.id), class: "btn"
