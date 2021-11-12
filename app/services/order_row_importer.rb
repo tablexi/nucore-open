@@ -193,12 +193,20 @@ class OrderRowImporter
   end
 
   def validate_fields
-    validate_fulfillment_date
-    validate_order_date
-    validate_user
-    validate_product
-    validate_account
-    validate_existing_order
+    if empty_row?
+      add_error(:blank)
+    else
+      validate_fulfillment_date
+      validate_order_date
+      validate_user
+      validate_product
+      validate_account
+      validate_existing_order
+    end
+  end
+
+  def empty_row?
+    @row.to_h.values.all?(&:blank?)
   end
 
   def validate_fulfillment_date
