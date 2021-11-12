@@ -205,8 +205,12 @@ class OrderRowImporter
     end
   end
 
+  # When skip_blanks is set to true, CSV will skip over empty rows,
+  # but it doesn't skip rows that contain column separators,
+  # even if the rows contain no actual data
+  # see https://ruby-doc.org/stdlib-2.6.1/libdoc/csv/rdoc/CSV.html#method-c-new
   def empty_row?
-    @row.to_h.values.all?(&:blank?)
+    @row.fields.compact.empty?
   end
 
   def validate_fulfillment_date
