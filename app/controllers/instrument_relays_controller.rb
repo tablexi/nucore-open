@@ -15,8 +15,7 @@ class InstrumentRelaysController < ApplicationController
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/:id/edit
   def edit
-    @relay_submit_url = facility_instrument_relay_path(current_facility, @product, @relay)
-    @relay_submit_method = :patch
+    init_form_options("edit")
   end
 
   def update
@@ -25,8 +24,7 @@ class InstrumentRelaysController < ApplicationController
         flash[:notice] = "Relay was successfully updated."
         format.html { redirect_to([current_facility, @product, Relay]) }
       else
-        @relay_submit_url = facility_instrument_relay_path(current_facility, @product, @relay)
-        @relay_submit_method = :patch
+        init_form_options("edit")
         format.html { render action: "edit" }
       end
     end
@@ -34,8 +32,7 @@ class InstrumentRelaysController < ApplicationController
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/new
   def new
-    @relay_submit_url = facility_instrument_relays_path(current_facility, @product)
-    @relay_submit_method = :post
+    init_form_options("new")
   end
 
   def create
@@ -45,8 +42,7 @@ class InstrumentRelaysController < ApplicationController
         flash[:notice] = "Relay was successfully added."
         format.html { redirect_to([current_facility, @product, Relay]) }
       else
-        @relay_submit_url = facility_instrument_relays_path(current_facility, @product)
-        @relay_submit_method = :post
+        init_form_options("new")
         format.html { render action: "new" }
       end
     end
@@ -60,6 +56,11 @@ class InstrumentRelaysController < ApplicationController
 
   def init_relay
     @relay = @product.relay || @product.build_relay
+  end
+
+  def init_form_options(action)
+    @submit_url = action == "edit" ? facility_instrument_relay_path(current_facility, @product, @relay) : facility_instrument_relays_path(current_facility, @product)
+    @submit_method = action == "edit" ? :patch : :post
   end
 
   def manage

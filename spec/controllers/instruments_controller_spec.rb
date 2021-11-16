@@ -264,35 +264,6 @@ RSpec.describe InstrumentsController do
       assert_successful_creation { expect(assigns(:product).relay).to be_nil }
     end
 
-    context "with relay" do
-
-      before :each do
-        @params[:instrument].merge!(control_mechanism: "relay",
-                                    relay_attributes: {
-                                      ip: "192.168.1.2",
-                                      outlet: 12,
-                                      username: "username",
-                                      password: "password",
-                                      type: RelaySynaccessRevA.name,
-                                      auto_logout: true,
-                                      auto_logout_minutes: 15
-                                    })
-      end
-
-      it_should_allow :director, "to create a relay" do
-        assert_successful_creation do
-          relay = assigns(:product).relay
-          expect(relay).to be_is_a Relay
-          expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
-          expect(relay.outlet).to eq(@params[:instrument][:relay_attributes][:outlet])
-          expect(relay.username).to eq(@params[:instrument][:relay_attributes][:username])
-          expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
-          expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
-          expect(relay.auto_logout_minutes).to eq(@params[:instrument][:relay_attributes][:auto_logout_minutes])
-        end
-      end
-    end
-
     describe "shared schedule" do
       before :each do
         @schedule = FactoryBot.create(:schedule, facility: facility)
@@ -354,70 +325,6 @@ RSpec.describe InstrumentsController do
       @method = :put
       @action = :update
       @params.merge!(instrument: instrument.attributes.merge!(control_mechanism: "manual"))
-    end
-
-    context "no relay" do
-      before :each do
-        RelaySynaccessRevA.create!(
-          ip: "192.168.1.2",
-          outlet: 12,
-          username: "username",
-          password: "password",
-          type: RelaySynaccessRevA.name,
-          instrument_id: instrument.id,
-        )
-      end
-
-      it_should_allow_managers_only :redirect do
-        assert_successful_update { expect(assigns(:product).reload.relay).to be_nil }
-      end
-    end
-
-    context "with relay" do
-
-      before :each do
-        @params[:instrument].merge!(control_mechanism: "relay",
-                                    relay_attributes: {
-                                      ip: "192.168.1.2",
-                                      outlet: 12,
-                                      username: "username",
-                                      password: "password",
-                                      type: RelaySynaccessRevA.name,
-                                      instrument_id: instrument.id,
-                                    })
-      end
-
-      it_should_allow :director, "to create a relay" do
-        assert_successful_update do
-          relay = assigns(:product).relay
-          expect(relay).to be_is_a Relay
-          expect(relay.ip).to eq(@params[:instrument][:relay_attributes][:ip])
-          expect(relay.outlet).to eq(@params[:instrument][:relay_attributes][:outlet])
-          expect(relay.username).to eq(@params[:instrument][:relay_attributes][:username])
-          expect(relay.password).to eq(@params[:instrument][:relay_attributes][:password])
-          expect(relay.type).to eq(@params[:instrument][:relay_attributes][:type])
-        end
-      end
-
-    end
-
-    context "dummy relay" do
-
-      before :each do
-        @params[:instrument].merge!(control_mechanism: "timer")
-      end
-
-      it_should_allow :director, "to create a timer" do
-        assert_successful_update do
-          relay = assigns(:product).relay
-          expect(relay).to be_is_a Relay
-          expect(relay.ip).to be_nil
-          expect(relay.outlet).to be_nil
-          expect(relay.username).to be_nil
-          expect(relay.password).to be_nil
-          expect(relay.type).to eq(RelayDummy.name)
-        end
-      end
     end
 
     def assert_successful_update

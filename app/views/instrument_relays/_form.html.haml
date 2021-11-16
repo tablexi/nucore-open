@@ -1,7 +1,7 @@
 - content_for :head_content do
   = javascript_include_tag "power_relay"
 
-= simple_form_for :relay, url: @relay_submit_url, method: @relay_submit_method do |f|
+= simple_form_for :relay, url: @submit_url, method: @submit_method do |f|
   = f.error_messages
   = f.input :control_mechanism,
     collection: options_for_control_mechanism,
