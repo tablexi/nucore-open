@@ -59,9 +59,11 @@ RSpec.describe "Account Reconciliation" do
       check "order_detail_#{order_detail.id}_reconciled"
 
       fill_in "Reconciliation Date", with: I18n.l(1.day.ago.to_date, format: :usa)
+      fill_in "order_detail_#{order_detail.id}_reconciled_note", with: "this is a note!"
       click_button "Reconcile Orders", match: :first
 
       expect(order_detail.reload).to be_reconciled
+      expect(order_detail.reconciled_note).to eq("this is a note!")
       expect(order_detail.reconciled_at).to eq(1.day.ago.beginning_of_day)
     end
 
@@ -88,7 +90,7 @@ RSpec.describe "Account Reconciliation" do
     let(:order_number) { "##{orders.first.id} - #{orders.first.order_details.first.id}" }
     let(:other_order_number) { "##{orders.last.id} - #{orders.last.order_details.first.id}" }
 
-    it "can search and then reconcile a credit card order" do
+    it "can search and then reconcile a PO order" do
       visit facility_notifications_path(facility)
       click_link "Reconcile Purchase Orders"
 
@@ -102,9 +104,11 @@ RSpec.describe "Account Reconciliation" do
 
       check "order_detail_#{order_detail.id}_reconciled"
       fill_in "Reconciliation Date", with: I18n.l(1.day.ago.to_date, format: :usa)
+      fill_in "order_detail_#{order_detail.id}_reconciled_note", with: "this is a note!"
       click_button "Reconcile Orders", match: :first
 
       expect(order_detail.reload).to be_reconciled
+      expect(order_detail.reconciled_note).to eq("this is a note!")
       expect(order_detail.reconciled_at).to eq(1.day.ago.beginning_of_day)
     end
 

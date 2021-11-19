@@ -46,7 +46,7 @@ module OrderDetails
     def reconcile(order_detail, params)
       order_detail.reconciled_at = @reconciled_at
       order_detail.assign_attributes(allowed(params))
-      order_detail.reconciled_note = @bulk_reconcile_note if @bulk_reconcile_note
+      order_detail.reconciled_note = @bulk_reconcile_note if @bulk_reconcile_note.present?
       order_detail.change_status!(OrderStatus.reconciled)
       @count += 1
     rescue => e

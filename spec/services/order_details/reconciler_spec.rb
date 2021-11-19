@@ -32,6 +32,47 @@ RSpec.describe OrderDetails::Reconciler do
         end
       end
     end
+
+    context "with NO bulk note" do
+      context "with reconciled note set" do
+        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "" ) }
+        let(:params) { order_details.each_with_object({}) { |od, h| h[od.id.to_s] = ActionController::Parameters.new(reconciled: "1", reconciled_note: "note #{od.id}") } }
+
+        it "adds the note to the appropriate order details" do
+          reconciler.reconcile_all
+          order_details.each do |od|
+            expect(od.reload.reconciled_note).to eq("note #{od.id}")
+          end
+        end
+      end
+
+      context "with NO reconciled note set" do
+        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "" ) }
+
+        it "does not set a value" do
+          reconciler.reconcile_all
+          order_details.each do |od|
+            expect(od.reload.reconciled_note).to eq(nil)
+          end
+        end
+      end
+
+      context "with previous reconciled note value, no new value set" do
+        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "" ) }
+        before(:each) do
+          order_details.each do |od|
+            od.update!(reconciled_note: "rec note #{od.id}")
+          end
+        end
+
+        it "does not change the reconciled note" do
+          reconciler.reconcile_all
+          order_details.each do |od|
+            expect(od.reload.reconciled_note).to eq("rec note #{od.id}")
+          end
+        end
+      end
+    end
   end
 
   # describe "reconciling more than 1000 order details (because of oracle)" do
