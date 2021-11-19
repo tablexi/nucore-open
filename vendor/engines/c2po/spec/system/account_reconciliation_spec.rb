@@ -67,19 +67,37 @@ RSpec.describe "Account Reconciliation" do
       expect(order_detail.reconciled_at).to eq(1.day.ago.beginning_of_day)
     end
 
-    it "can take a bulk reconciliation note" do
-      visit credit_cards_facility_accounts_path(facility)
-      click_link "Reconcile Credit Cards"
+    context "with bulk reconciliation note" do
+      it "sets the note when checkbox is checked" do
+        visit credit_cards_facility_accounts_path(facility)
+        click_link "Reconcile Credit Cards"
 
-      check "Use Bulk Note"
-      fill_in "Bulk Reconciliation Note", with: "this is the bulk note"
-      check "order_detail_#{order_detail.id}_reconciled"
-      check "order_detail_#{orders.last.order_details.first.id}_reconciled"
-      fill_in "Reconciliation Date", with: I18n.l(1.day.ago.to_date, format: :usa)
-      click_button "Reconcile Orders", match: :first
+        check "Use Bulk Note"
+        fill_in "Bulk Reconciliation Note", with: "this is the bulk note"
+        check "order_detail_#{order_detail.id}_reconciled"
+        check "order_detail_#{orders.last.order_details.first.id}_reconciled"
+        fill_in "Reconciliation Date", with: I18n.l(1.day.ago.to_date, format: :usa)
+        click_button "Reconcile Orders", match: :first
 
-      expect(order_detail.reload.reconciled_note).to eq("this is the bulk note")
-      expect(orders.last.order_details.first.reload.reconciled_note).to eq("this is the bulk note")
+        expect(order_detail.reload.reconciled_note).to eq("this is the bulk note")
+        expect(orders.last.order_details.first.reload.reconciled_note).to eq("this is the bulk note")
+      end
+
+      it "does NOT set the note when checkbox is NOT checked" do
+        visit credit_cards_facility_accounts_path(facility)
+        click_link "Reconcile Credit Cards"
+
+        check "Use Bulk Note"
+        fill_in "Bulk Reconciliation Note", with: "this is the bulk note"
+        uncheck "Use Bulk Note"
+        check "order_detail_#{order_detail.id}_reconciled"
+        check "order_detail_#{orders.last.order_details.first.id}_reconciled"
+        fill_in "Reconciliation Date", with: I18n.l(1.day.ago.to_date, format: :usa)
+        click_button "Reconcile Orders", match: :first
+
+        expect(order_detail.reload.reconciled_note).to eq("")
+        expect(orders.last.order_details.first.reload.reconciled_note).to eq("")
+      end
     end
   end
 
