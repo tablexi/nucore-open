@@ -105,7 +105,7 @@ class ProductsCommonController < ApplicationController
                                                       :facility_account_id, :account, :initial_order_status_id,
                                                       :requires_approval, :allows_training_requests, :is_archived, :is_hidden, :email_purchasers_on_order_status_changes,
                                                       :user_notes_field_mode, :user_notes_label, :show_details,
-                                                      :schedule_id, :control_mechanism, :reserve_interval,
+                                                      :schedule_id, :reserve_interval,
                                                       :min_reserve_mins, :max_reserve_mins, :min_cancel_hours,
                                                       :auto_cancel_mins, :lock_window, :cutoff_hours,
                                                       :problems_resolvable_by_user, :restrict_holiday_access)

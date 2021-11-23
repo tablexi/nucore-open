@@ -8,7 +8,7 @@ RSpec.describe "Instrument Relay Tab" do
 
   before do
     login_as user
-    visit polymorphic_path([facility, instrument, Relay])
+    visit facility_instrument_relays_path(facility, instrument)
   end
 
   context "the instrument has no relay" do
@@ -28,7 +28,7 @@ RSpec.describe "Instrument Relay Tab" do
       end
 
       it "saves a new relay" do
-        select "Timer with relay", from: "relay_control_mechanism" 
+        select "Timer with relay", from: "Control mechanism"
         fill_in "relay_ip", with: "123.456.789"
         fill_in "relay_ip_port", with: "1234"
         fill_in "relay_outlet", with: "1"
@@ -54,7 +54,7 @@ RSpec.describe "Instrument Relay Tab" do
       end
 
       it "raises an error if there's no outlet entered" do
-        select "Timer with relay", from: "relay_control_mechanism"
+        select "Timer with relay", from: "Control mechanism"
         fill_in "relay_ip", with: "123.456.789"
         fill_in "relay_ip_port", with: "1234"
         fill_in "relay_username", with: "root"
@@ -66,7 +66,7 @@ RSpec.describe "Instrument Relay Tab" do
       end
 
       it "raises an error if there's no ip entered" do
-        select "Timer with relay", from: "relay_control_mechanism"
+        select "Timer with relay", from: "Control mechanism"
         fill_in "relay_outlet", with: "1"
         fill_in "relay_ip_port", with: "1234"
         fill_in "relay_username", with: "root"
@@ -77,7 +77,7 @@ RSpec.describe "Instrument Relay Tab" do
       end
 
       it "raises an error if there's no username or password entered" do
-        select "Timer with relay", from: "relay_control_mechanism" 
+        select "Timer with relay", from: "Control mechanism"
         fill_in "relay_ip", with: "123.456.789"
         fill_in "relay_ip_port", with: "1234"
         fill_in "relay_outlet", with: "1"
@@ -91,7 +91,7 @@ RSpec.describe "Instrument Relay Tab" do
         let(:user) { FactoryBot.create(:user, :facility_director, facility: facility) }
 
         it "saves a new relay" do
-          select "Timer with relay", from: "relay_control_mechanism" 
+          select "Timer with relay", from: "Control mechanism"
           fill_in "relay_ip", with: "123.456.789"
           fill_in "relay_ip_port", with: "1234"
           fill_in "relay_outlet", with: "1"
@@ -119,10 +119,10 @@ RSpec.describe "Instrument Relay Tab" do
 
       context "the relay has already been taken by a different instrument" do
         let!(:instrument2) { create(:instrument, facility: facility, no_relay: true) }
-        let!(:existing_relay) { create(:relay_syna, instrument: instrument2) }
+        let!(:existing_relay) { create(:relay_synb, instrument: instrument2) }
 
         it "raises an error" do
-          select "Timer with relay", from: "relay_control_mechanism"
+          select "Timer with relay", from: "Control mechanism"
           fill_in "relay_ip", with: existing_relay.ip
           fill_in "relay_ip_port", with: existing_relay.ip_port
           fill_in "relay_outlet", with: existing_relay.outlet
@@ -135,10 +135,10 @@ RSpec.describe "Instrument Relay Tab" do
         
         context "both instruments have the same schedule" do
           let!(:instrument2) { create(:instrument, facility: facility, no_relay: true, schedule: instrument.schedule) }
-          let!(:existing_relay) { create(:relay_syna, instrument: instrument2) }
+          let!(:existing_relay) { create(:relay_synb, instrument: instrument2) }
 
           it "saves the relay" do
-            select "Timer with relay", from: "relay_control_mechanism"
+            select "Timer with relay", from: "Control mechanism"
             fill_in "relay_ip", with: existing_relay.ip
             fill_in "relay_ip_port", with: existing_relay.ip_port
             fill_in "relay_outlet", with: existing_relay.outlet
@@ -165,7 +165,7 @@ RSpec.describe "Instrument Relay Tab" do
     end
 
     it "can be saved" do
-      select "Timer with relay", from: "relay_control_mechanism" 
+      select "Timer with relay", from: "Control mechanism"
       fill_in "relay_ip", with: "123.456.789"
       fill_in "relay_ip_port", with: "1234"
       fill_in "relay_outlet", with: "1"
@@ -190,4 +190,62 @@ RSpec.describe "Instrument Relay Tab" do
     end
   end
 
+  context "switching relay types" do
+    let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility, relay: build(:relay)) }
+    
+    before do
+      click_link "Edit"
+    end
+
+    context "from relay to timer" do
+      it "it deletes the relay and assigns the instrument a RelayDummy" do
+        select "Timer without relay", from: "Control mechanism"
+
+        click_button "Save"
+        instrument.reload
+
+        expect(instrument.relay).to be_a(RelayDummy)
+      end
+      
+    end
+
+    context "from relay to reservation only" do
+
+      it "deletes the relay" do
+        select "Reservation only", from: "Control mechanism"
+
+        click_button "Save"
+        instrument.reload
+
+        expect(instrument.relay).not_to be_present
+      end
+      
+    end
+
+    context "from reservation only to timer" do
+      let(:instrument) { FactoryBot.create(:instrument, facility: facility, no_relay: true) }
+
+      it "sets the instrument relay to a RelayDummy" do
+        select "Timer without relay", from: "Control mechanism"
+
+        click_button "Save"
+        instrument.reload
+
+        expect(instrument.relay).to be_a(RelayDummy)
+      end
+    end
+
+    context "from timer to reservation only" do
+      let(:instrument) { FactoryBot.create(:setup_instrument, facility: facility) }
+
+      it "deletes the relay dummy" do
+        select "Reservation only", from: "Control mechanism"
+
+        click_button "Save"
+        instrument.reload
+
+        expect(instrument.relay).not_to be_present
+      end
+    end
+  end
 end

@@ -3,64 +3,71 @@ class InstrumentRelaysController < ApplicationController
   admin_tab :all
   before_action :authenticate_user!
   before_action :check_acting_as
-  before_action :init_product
+  before_action :init_instrument
   before_action :init_relay, only: [:edit, :new, :update, :create]
   before_action :manage
 
   layout "two_column"
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays
+  # This will return either 1 or 0 relays for the given instrument
   def index
   end
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/:id/edit
   def edit
-    init_form_options("edit")
   end
 
   def update
-    respond_to do |format|
+    control_mechanism = relay_params["control_mechanism"]
+    if control_mechanism == Relay::CONTROL_MECHANISMS[:relay]
       if @relay.update(relay_params.except(:control_mechanism))
         flash[:notice] = "Relay was successfully updated."
-        format.html { redirect_to([current_facility, @product, Relay]) }
+        redirect_to facility_instrument_relays_path(current_facility, @product)
       else
-        init_form_options("edit")
-        format.html { render action: "edit" }
+        render action: "edit"
       end
+    else
+      @relay&.destroy
+      if control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
+        @product.relay = RelayDummy.new
+      end
+      flash[:notice] = "Relay was successfully updated."
+      redirect_to facility_instrument_relays_path(current_facility, @product)
     end
   end
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/new
   def new
-    init_form_options("new")
   end
 
   def create
-    @relay = @product.build_relay(relay_params.except(:control_mechanism))
-    respond_to do |format|
-      if @product.save
-        flash[:notice] = "Relay was successfully added."
-        format.html { redirect_to([current_facility, @product, Relay]) }
-      else
-        init_form_options("new")
-        format.html { render action: "new" }
-      end
+    control_mechanism = relay_params["control_mechanism"]
+    if control_mechanism == Relay::CONTROL_MECHANISMS[:relay]
+      @relay = @product.build_relay(relay_params.except(:control_mechanism))
+    elsif control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
+      @relay&.destroy
+      @product.relay = RelayDummy.new
+    else
+      @relay&.destroy
+    end
+
+    if @product.save
+      flash[:notice] = "Relay was successfully added."
+      redirect_to facility_instrument_relays_path(current_facility, @product)
+    else
+      render action: "new"
     end
   end
 
   private
 
-  def init_product
+  def init_instrument
     @product = current_facility.instruments.find_by!(url_name: params[:instrument_id])
   end
 
   def init_relay
     @relay = @product.relay || @product.build_relay
-  end
-
-  def init_form_options(action)
-    @submit_url = action == "edit" ? facility_instrument_relay_path(current_facility, @product, @relay) : facility_instrument_relays_path(current_facility, @product)
-    @submit_method = action == "edit" ? :patch : :post
   end
 
   def manage
