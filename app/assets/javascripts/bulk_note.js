@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var bulkNoteCheckbox = $('#bulk-note-checkbox');
+  var bulkNoteCheckbox = $('#bulk_note_checkbox');
   var bulkNoteInput = $('#bulk-note-input');
   bulkNoteInput.hide()
   var rowNoteInputs = $('.row-note-input')
