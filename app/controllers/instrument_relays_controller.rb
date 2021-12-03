@@ -19,22 +19,7 @@ class InstrumentRelaysController < ApplicationController
   end
 
   def update
-    control_mechanism = relay_params["control_mechanism"]
-    if control_mechanism == Relay::CONTROL_MECHANISMS[:relay]
-      if @relay.update(relay_params.except(:control_mechanism))
-        flash[:notice] = "Relay was successfully updated."
-        redirect_to facility_instrument_relays_path(current_facility, @product)
-      else
-        render action: "edit"
-      end
-    else
-      @relay&.destroy
-      if control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
-        @product.relay = RelayDummy.new
-      end
-      flash[:notice] = "Relay was successfully updated."
-      redirect_to facility_instrument_relays_path(current_facility, @product)
-    end
+    handle_relay("edit")
   end
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/new
@@ -42,25 +27,29 @@ class InstrumentRelaysController < ApplicationController
   end
 
   def create
-    control_mechanism = relay_params["control_mechanism"]
-    if control_mechanism == Relay::CONTROL_MECHANISMS[:relay]
-      @relay = @product.build_relay(relay_params.except(:control_mechanism))
-    elsif control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
-      @relay&.destroy
-      @product.relay = RelayDummy.new
-    else
-      @relay&.destroy
-    end
-
-    if @product.save
-      flash[:notice] = "Relay was successfully added."
-      redirect_to facility_instrument_relays_path(current_facility, @product)
-    else
-      render action: "new"
-    end
+    handle_relay("new")
   end
 
   private
+
+  def handle_relay(action_string)
+    control_mechanism = relay_params["control_mechanism"]
+    @relay&.destroy 
+    if control_mechanism == Relay::CONTROL_MECHANISMS[:relay]
+      @relay = @product.build_relay(relay_params.except(:control_mechanism))
+      # Saving the product ensures that all the correct subclass validations are ran against the relay
+      if @product.save
+        flash[:notice] = "Relay was successfully updated."
+        redirect_to facility_instrument_relays_path(current_facility, @product)
+      else
+        render action: action_string
+      end
+    else
+      @product.relay = RelayDummy.new if control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
+      flash[:notice] = "Relay was successfully updated."
+      redirect_to facility_instrument_relays_path(current_facility, @product)
+    end
+  end
 
   def init_instrument
     @product = current_facility.instruments.find_by!(url_name: params[:instrument_id])

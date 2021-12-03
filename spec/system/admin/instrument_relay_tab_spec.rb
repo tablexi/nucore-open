@@ -135,10 +135,11 @@ RSpec.describe "Instrument Relay Tab" do
         
         context "both instruments have the same schedule" do
           let!(:instrument2) { create(:instrument, facility: facility, no_relay: true, schedule: instrument.schedule) }
-          let!(:existing_relay) { create(:relay_synb, instrument: instrument2) }
+          let!(:existing_relay) { create(:relay_syna, instrument: instrument2) }
 
           it "saves the relay" do
             select "Timer with relay", from: "Control mechanism"
+            select "Synaccess Revision A", from: "Relay Type"
             fill_in "relay_ip", with: existing_relay.ip
             fill_in "relay_ip_port", with: existing_relay.ip_port
             fill_in "relay_outlet", with: existing_relay.outlet
@@ -146,7 +147,7 @@ RSpec.describe "Instrument Relay Tab" do
             fill_in "relay_password", with: "root"
 
             click_button "Save"
-            expect(page).to have_content("Relay was successfully added.")
+            expect(page).to have_content("Relay was successfully updated.")
           end
         end
       end
