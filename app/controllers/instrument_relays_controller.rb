@@ -21,7 +21,7 @@ class InstrumentRelaysController < ApplicationController
   end
 
   def update
-    handle_relay
+    handle_relay("edit")
   end
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/new
@@ -29,7 +29,7 @@ class InstrumentRelaysController < ApplicationController
   end
 
   def create
-    handle_relay
+    handle_relay("new")
   end
 
   private
@@ -40,7 +40,7 @@ class InstrumentRelaysController < ApplicationController
       flash[:notice] = "Relay was successfully updated."
       redirect_to facility_instrument_relays_path(current_facility, @product)
     else
-      render action: action_name
+      render action: action_string
     end
   end
 

@@ -254,8 +254,8 @@ RSpec.describe InstrumentsController do
       @action = :create
       @params.merge!(
         instrument: FactoryBot.attributes_for(:instrument,
+                                              no_relay: true,
                                               facility_account_id: facility.facility_accounts.first.id,
-                                              control_mechanism: "manual",
                                              ),
       )
     end
@@ -324,7 +324,6 @@ RSpec.describe InstrumentsController do
     before :each do
       @method = :put
       @action = :update
-      @params.merge!(instrument: instrument.attributes.merge!(control_mechanism: "manual"))
     end
 
     def assert_successful_update
