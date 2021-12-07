@@ -6,7 +6,6 @@ class InstrumentRelaysController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_instrument
-  before_action :init_relay, only: [:edit, :new, :update, :create]
   before_action :manage
 
   layout "two_column"
@@ -18,6 +17,7 @@ class InstrumentRelaysController < ApplicationController
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/:id/edit
   def edit
+    @relay = @product.relay
   end
 
   def update
@@ -26,6 +26,7 @@ class InstrumentRelaysController < ApplicationController
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/new
   def new
+    @relay = @product.build_relay
   end
 
   def create
@@ -46,10 +47,6 @@ class InstrumentRelaysController < ApplicationController
 
   def init_instrument
     @product = current_facility.instruments.find_by!(url_name: params[:instrument_id])
-  end
-
-  def init_relay
-    @relay = @product.relay || @product.build_relay
   end
 
   def manage
