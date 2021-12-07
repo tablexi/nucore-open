@@ -201,7 +201,7 @@ RSpec.describe Instrument do
 
       context "replace with new control_mechanism: 'manual' (Reservation Only)" do
         before :each do
-          @updated = @instrument.replace_relay
+          @updated = @instrument.replace_relay(nil, "manual")
         end
 
         it "should succeed" do
@@ -226,7 +226,7 @@ RSpec.describe Instrument do
 
       context "replace with new control_mechanism: 'manual' (Reservation Only)" do
         before :each do
-          @updated = @instrument.replace_relay
+          @updated = @instrument.replace_relay(nil, "manual")
         end
 
         it "should succeed" do
@@ -755,7 +755,7 @@ RSpec.describe Instrument do
 
     context "instrument with timer" do
       before :each do
-        instrument.replace_relay
+        instrument.replace_relay(nil, "manual")
       end
 
       context "with a current reservation" do

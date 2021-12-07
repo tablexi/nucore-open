@@ -34,7 +34,7 @@ module Products::RelaySupport
         create_relay!(attributes)
       when Relay::CONTROL_MECHANISMS[:timer]
         create_relay!(instrument: @product, type: "RelayDummy")
-      when Relay::CONTROL_MECHANISMS[:manual] # nil
+      when "manual"
         Relay.new # return a relay instance for the form to use
       end
     end
