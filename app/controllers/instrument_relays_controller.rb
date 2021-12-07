@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InstrumentRelaysController < ApplicationController
 
   admin_tab :all
@@ -33,19 +35,18 @@ class InstrumentRelaysController < ApplicationController
   private
 
   def handle_relay(action_string)
-    control_mechanism = relay_params["control_mechanism"]
-    @relay&.destroy 
+    control_mechanism = params[:relay][:control_mechanism]
     if control_mechanism == Relay::CONTROL_MECHANISMS[:relay]
-      @relay = @product.build_relay(relay_params.except(:control_mechanism))
-      # Saving the product ensures that all the correct subclass validations are ran against the relay
-      if @product.save
+      @relay = @product.replace_relay(relay_params)
+      if @relay.valid?
         flash[:notice] = "Relay was successfully updated."
         redirect_to facility_instrument_relays_path(current_facility, @product)
       else
         render action: action_string
       end
     else
-      @product.relay = RelayDummy.new if control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
+      @relay&.destroy
+      RelayDummy.create(instrument: @product) if control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
       flash[:notice] = "Relay was successfully updated."
       redirect_to facility_instrument_relays_path(current_facility, @product)
     end
@@ -65,8 +66,21 @@ class InstrumentRelaysController < ApplicationController
   end
 
   def relay_params
-    params.require(:relay).permit(:control_mechanism, :ip, :ip_port, :outlet, :username, :password, :type, :auto_logout, :auto_logout_minutes, :id, 
-                                                                        :mac_address, :building_room_number, :circuit_number, :ethernet_port_number)
+    params.require(:relay)
+          .except(:control_mechanism)
+          .permit(:ip,
+                  :ip_port,
+                  :outlet,
+                  :username,
+                  :password,
+                  :type,
+                  :auto_logout,
+                  :auto_logout_minutes,
+                  :id,
+                  :mac_address,
+                  :building_room_number,
+                  :circuit_number,
+                  :ethernet_port_number)
   end
 
 end
