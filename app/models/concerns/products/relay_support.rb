@@ -26,13 +26,20 @@ module Products::RelaySupport
 
   # We only want to destroy the existing relay if the new one is valid.
   # See https://andycroll.com/ruby/be-careful-assigning-to-has-one-relations/
-  def replace_relay(attributes = nil)
+  def replace_relay(attributes = nil, param_control_mechanism = nil)
     self.class.transaction do
       relay&.destroy!
-      create_relay!(attributes)
+      case param_control_mechanism
+      when Relay::CONTROL_MECHANISMS[:relay]
+        create_relay!(attributes)
+      when Relay::CONTROL_MECHANISMS[:timer]
+        create_relay!(instrument: @product, type: "RelayDummy")
+      when Relay::CONTROL_MECHANISMS[:manual]
+        Relay.new # return a relay instance for the form to use
+      end
     end
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotDestroyed
-    relay # returns invalid object
+    relay # returns invalid object for error handling
   end
 
 end

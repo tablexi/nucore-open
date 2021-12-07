@@ -21,7 +21,7 @@ class InstrumentRelaysController < ApplicationController
   end
 
   def update
-    handle_relay("edit")
+    handle_relay
   end
 
   # GET /facilities/:facility_id/instrument/:instrument_id/relays/new
@@ -29,26 +29,18 @@ class InstrumentRelaysController < ApplicationController
   end
 
   def create
-    handle_relay("new")
+    handle_relay
   end
 
   private
 
-  def handle_relay(action_string)
-    control_mechanism = params[:relay][:control_mechanism]
-    if control_mechanism == Relay::CONTROL_MECHANISMS[:relay]
-      @relay = @product.replace_relay(relay_params)
-      if @relay.valid?
-        flash[:notice] = "Relay was successfully updated."
-        redirect_to facility_instrument_relays_path(current_facility, @product)
-      else
-        render action: action_string
-      end
-    else
-      @relay&.destroy
-      RelayDummy.create(instrument: @product) if control_mechanism == Relay::CONTROL_MECHANISMS[:timer]
+  def handle_relay
+    @relay = @product.replace_relay(relay_attrs, params[:relay][:control_mechanism])
+    if @relay.valid?
       flash[:notice] = "Relay was successfully updated."
       redirect_to facility_instrument_relays_path(current_facility, @product)
+    else
+      render action: action_name
     end
   end
 
