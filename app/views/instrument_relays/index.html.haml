@@ -11,7 +11,7 @@
   %label= t("instruments.manage.label.control_mech")
   %p= t("instruments.instrument_fields.relay.control_mechanisms.manual")
 - elsif @product.relay.is_a?(RelayDummy)
-  %label= t("instruments.manage..label.control_mech")
+  %label= t("instruments.manage.label.control_mech")
   %p= t("instruments.instrument_fields.relay.control_mechanisms.timer")
 - elsif @product.relay.is_a?(PowerRelay)
   = readonly_form_for @product.relay.class.name.underscore do |f|
