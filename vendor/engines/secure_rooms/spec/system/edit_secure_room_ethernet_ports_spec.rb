@@ -14,7 +14,7 @@ RSpec.describe "Secure Room Ethernet Ports" do
     end
 
     it "renders the page" do
-      expect(page.current_path).to eq facility_secure_room_ethernet_ports_path(facility, room)
+      expect(page.current_path).to eq edit_facility_secure_room_ethernet_port_path(facility, room)
     end
 
     it "can be saved" do
@@ -39,5 +39,4 @@ RSpec.describe "Secure Room Ethernet Ports" do
       expect(room.tablet_port_number).to eq(4000)
       expect(room.tablet_location_description).to eq("The tablet is near the card reader")
     end 
-    
 end
