@@ -1,5 +1,9 @@
 # frozen_string_literal: true
+
 module SecureRooms
+  # NU needs this information to maintain these devices on the protected subnet
+  # they created to host them. Storing this info in NUcore will make it easier
+  # to debug issues and maintain consistency of this data.
   class EthernetPortsController < ApplicationController
 
     admin_tab :all
@@ -32,9 +36,14 @@ module SecureRooms
     end
 
     def ethernet_resource_params
-      params.require("secure_room").permit(:card_reader_room_number, :card_reader_circuit_number, :card_reader_port_number,
-                                            :card_reader_location_description, :tablet_room_number, :tablet_circuit_number,\
-                                            :tablet_port_number, :tablet_location_description)
+      params.require("secure_room").permit(:card_reader_room_number,
+                                           :card_reader_circuit_number,
+                                           :card_reader_port_number,
+                                           :card_reader_location_description,
+                                           :tablet_room_number,
+                                           :tablet_circuit_number,
+                                           :tablet_port_number,
+                                           :tablet_location_description)
     end
   end
 end

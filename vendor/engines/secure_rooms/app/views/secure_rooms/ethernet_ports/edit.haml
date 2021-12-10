@@ -7,8 +7,7 @@
 
 %h2= @product
 
-= simple_form_for [current_facility, @product, :ethernet_port], as: :secure_room, method: :put do |f|
-  - f.object = @product
+= simple_form_for @product, url: facility_secure_room_ethernet_port_path(current_facility, @product) do |f|
   = f.error_messages
 
   %h3=text("views.admin.secure_rooms.card_readers.ethernet_port_fields.card_reader_title")
@@ -18,8 +17,8 @@
     label: text("views.admin.secure_rooms.card_readers.ethernet_port_fields.circuit_number")
   = f.input :card_reader_port_number,
     label: text("views.admin.secure_rooms.card_readers.ethernet_port_fields.port_number")
-  = f.label text("views.admin.secure_rooms.card_readers.ethernet_port_fields.location_description")
-  = f.text_area :card_reader_location_description
+  = f.input :card_reader_location_description,
+    label: text("views.admin.secure_rooms.card_readers.ethernet_port_fields.location_description")
   
   %h3=text("views.admin.secure_rooms.card_readers.ethernet_port_fields.tablet_title")
   = f.input :tablet_room_number,
@@ -28,8 +27,8 @@
     label: text("views.admin.secure_rooms.card_readers.ethernet_port_fields.circuit_number")
   = f.input :tablet_port_number,
     label: text("views.admin.secure_rooms.card_readers.ethernet_port_fields.port_number")
-  = f.label text("views.admin.secure_rooms.card_readers.ethernet_port_fields.location_description")
-  = f.text_area :tablet_location_description
+  = f.input :tablet_location_description,
+    label: text("views.admin.secure_rooms.card_readers.ethernet_port_fields.location_description")
 
   %ul.inline
     %li= f.submit text("shared.save"), class: ["btn", "btn-primary"]
