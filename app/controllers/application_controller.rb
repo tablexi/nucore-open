@@ -203,7 +203,8 @@ class ApplicationController < ActionController::Base
   end
 
   def formats_with_html_fallback
-    request.formats.map(&:symbol) + [:html]
+    # request.formats returns a collection of Mime::Type objects, which can have nil value for @symbol
+    request.formats.map(&:symbol).compact + [:html]
   end
 
 end
