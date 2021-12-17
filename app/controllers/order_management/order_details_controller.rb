@@ -52,7 +52,16 @@ class OrderManagement::OrderDetailsController < ApplicationController
   def pricing
     checker = OrderDetails::PriceChecker.new(@order_detail)
     @prices = checker.prices_from_params(params[:order_detail] || empty_params)
-
+    if @order_detail.account.try(:splits).try(:present?)
+      @prices.merge!(:splits =>
+        SplitAccounts::OrderDetailSplitter.new(@order_detail).split.map do |s|
+          { :acct_name => s.account.to_s,
+            :acct_actual_cost => s.actual_cost,
+            :acct_estimated_cost => s.estimated_cost
+          }
+        end
+      )
+    end
     render json: @prices.to_json
   end
 

@@ -93,6 +93,18 @@ class OrderDetailManagement
       row = $(this).closest('.cost-table')
       total = row.find('.cost input').val() - row.find('.subsidy input').val()
       row.find('.total input').val(total.toFixed(2))
+
+      # update splits if present
+      for field in $('.split-cost')
+        old_split = field.innerHTML.split("$")[1] # allows for replacement later
+        percent = field.dataset.percent
+        new_split = (total * percent) / 100
+
+        field.innerHTML.replace(old_split, new_split.toFixed(2)) # not actually replacing anything!!
+
+        self.notify_of_update $('.split_table') # not working.. is self out of scope here? would like same highlighting to happen...
+
+      # update total
       self.notify_of_update $(row).find('input[name*=total]')
 
   disableSubmit: ->

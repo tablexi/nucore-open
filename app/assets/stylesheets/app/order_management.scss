@@ -90,6 +90,14 @@
       }
     }
   }
+  .split-table {
+    margin-bottom: 2rem;
+
+    th {
+      text-align: left;
+      width: 88%;
+    }
+  }
 
   .inline-icons {
     font-size: 200%;
