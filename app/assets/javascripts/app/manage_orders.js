@@ -99,12 +99,12 @@ class OrderDetailManagement {
         self.$element.find('.subsidy input').prop('disabled', subsidy <= 0).css('backgroundColor', '');
 
         for (let field of ['cost', 'subsidy', 'total']) {
-        const input_field = self.$element.find(`[name='order_detail[estimated_${field}]'],[name='order_detail[actual_${field}]']`);
+          const input_field = self.$element.find(`[name='order_detail[estimated_${field}]'],[name='order_detail[actual_${field}]']`);
           const old_val = input_field.val();
           const new_val = result[`actual_${field}`] || result[`estimated_${field}`];
           input_field.val(new_val);
           if (field === 'cost') {
-            input_field.trigger("change");
+            input_field.trigger('change');
             }
           if (old_val !== new_val) { input_field.animateHighlight(); }
         }
@@ -124,7 +124,7 @@ class OrderDetailManagement {
       for (let field of $('.split-cost')) {
         const percent = field.dataset.percent;
         const new_split = (total * percent) / 100;
-        field.innerHTML = "$" + new_split.toFixed(2)
+        field.innerHTML = '$' + new_split.toFixed(2)
       };
     // notify page of changes
       return self.notify_of_update($('.split_table'))
