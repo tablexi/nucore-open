@@ -116,19 +116,26 @@ class OrderDetailManagement {
   initTotalCalculating() {
     const self = this;
     return $('.cost-table .cost, .cost-table .subsidy').change(function() {
-    // update total value
+      // update total value
       const row = $(this).closest('.cost-table');
       const total = row.find('.cost input').val() - row.find('.subsidy input').val();
       row.find('.total input').val(total.toFixed(2));
-    // update split values
+      // update split values
       for (let field of $('.split-cost')) {
-        const percent = field.dataset.percent;
-        const new_split = (total * percent) / 100;
-        field.innerHTML = '$' + new_split.toFixed(2)
+        const splitCount = Math.round(100 / field.dataset.percent)
+        const totalPennies = total * 100;
+        // round down to handle remainders
+        var newSplit = Math.floor(totalPennies / splitCount);
+
+        if (field.dataset.applyRemainder === 'true') {
+          const remainder = (totalPennies % splitCount);
+          newSplit += remainder
+        }
+        field.innerHTML = '$' + (newSplit / 100).toFixed(2)
       };
-    // notify page of changes
-      return self.notify_of_update($('.split_table'))
-      return self.notify_of_update($(row).find('input[name*=total]'));
+      // notify page of changes
+      self.notifyOfUpdate($('.split-table'))
+      return self.notifyOfUpdate($(row).find('input[name*=total]'));
     });
   }
 
@@ -150,7 +157,7 @@ class OrderDetailManagement {
     }
   }
 
-  notify_of_update(elem) {
+  notifyOfUpdate(elem) {
     return elem.animateHighlight();
   }
 
