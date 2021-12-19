@@ -1,19 +1,7 @@
 - f.object.send(:extend, PriceDisplayment)
 - if f.object.actual_cost?
   - if f.object.account.try(:splits).try(:present?)
-    .split-table
-      %table
-        %tbody
-          %th{scope: "col"}== Subaccounts
-          %th{scope: "col"}== Amount
-          - SplitAccounts::OrderDetailSplitter.new(f.object).split.each do |split_order_detail|
-            %tr
-              %td= payment_source_link_or_text(split_order_detail.account)
-              - split_percent = split_order_detail.split.percent
-              - apply_remainder = split_order_detail.split.apply_remainder.to_s
-              %td.split-cost{ data: { percent: split_percent, apply_remainder: apply_remainder } }
-                = number_to_currency(split_order_detail.actual_cost)
-
+    = render "split_costs", order_detail: f.object, cost_type: :actual_cost
 
   .cost-table
     .cost= f.input :actual_cost, as: :currency
@@ -22,19 +10,7 @@
 
 - else
   - if f.object.account.try(:splits).try(:present?)
-    .split-table
-      %table
-        %tbody
-          %th{scope: "col"}== Subaccounts
-          %th{scope: "col"}== Amount
-          - SplitAccounts::OrderDetailSplitter.new(f.object).split.each do |split_order_detail|
-            %tr
-              %td= payment_source_link_or_text(split_order_detail.account)
-              - split_percent = split_order_detail.split.percent
-              - apply_remainder = split_order_detail.split.apply_remainder.to_s
-              %td.split-cost{ data: { percent: split_percent, apply_remainder: apply_remainder } }
-                = number_to_currency(split_order_detail.estimated_cost)
-
+    = render "split_costs", order_detail: f.object, cost_type: :estimated_cost
 
   .cost-table
     .cost= f.input :estimated_cost, as: :currency, disabled: true
