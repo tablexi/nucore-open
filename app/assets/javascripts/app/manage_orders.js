@@ -122,14 +122,15 @@ class OrderDetailManagement {
       row.find('.total input').val(total.toFixed(2));
       // update split values
       for (let field of $('.split-cost')) {
-        const splitCount = Math.round(100 / field.dataset.percent)
+        const splitCount = 100 / field.dataset.percent
         const totalPennies = total * 100;
         // round down to handle remainders
         var newSplit = Math.floor(totalPennies / splitCount);
 
-        if (field.dataset.applyRemainder === 'true') {
-          const remainder = (totalPennies % splitCount);
-          newSplit += remainder
+        const remainder = (totalPennies % splitCount);
+        if (remainder && field.dataset.applyRemainder === 'true') {
+          // add an extra penny
+          newSplit += 1
         }
         field.innerHTML = '$' + (newSplit / 100).toFixed(2)
       };
