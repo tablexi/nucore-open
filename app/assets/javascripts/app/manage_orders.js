@@ -121,19 +121,28 @@ class OrderDetailManagement {
       const total = row.find('.cost input').val() - row.find('.subsidy input').val();
       row.find('.total input').val(total.toFixed(2));
       // update split values
+      const splitUpdateData = []
       for (let field of $('.split-cost')) {
-        const splitCount = 100 / field.dataset.percent
-        const totalPennies = total * 100;
-        // round down to handle remainders
-        var newSplit = Math.floor(totalPennies / splitCount);
-
-        const remainder = (totalPennies % splitCount);
-        if (remainder && field.dataset.applyRemainder === 'true') {
-          // add an extra penny
-          newSplit += 1
-        }
-        field.innerHTML = '$' + (newSplit / 100).toFixed(2)
+        splitUpdateData.push({
+          field: field,
+          // round down to handle remainders
+          total: Math.floor(total * field.dataset.percent) / 100,
+          applyRemainder: field.dataset.applyRemainder
+        })
       };
+
+      // Add up each split accounts' total;
+      // Any difference with the original total is applied to the "Apply Remainder" acct
+      const newTotal = splitUpdateData.reduce((prev, splitData) => prev + splitData.total, 0)
+      const remainder = total - newTotal
+      splitUpdateData.forEach(function(splitData) {
+        var newSplitTotal = splitData.total
+
+        if (splitData.applyRemainder === 'true' && remainder != 0) {
+          newSplitTotal += remainder
+        }
+        splitData.field.innerHTML = '$' + (newSplitTotal).toFixed(2)
+      });
       // notify page of changes
       self.notifyOfUpdate($('.split-table'))
       return self.notifyOfUpdate($(row).find('input[name*=total]'));
