@@ -120,32 +120,31 @@ class OrderDetailManagement {
       const row = $(this).closest('.cost-table');
       const total = row.find('.cost input').val() - row.find('.subsidy input').val();
       row.find('.total input').val(total.toFixed(2));
-      // update split values
-      const splitUpdateData = []
-      for (let field of $('.split-cost')) {
-        splitUpdateData.push({
-          field: field,
-          // round down to handle remainders
-          total: Math.floor(total * field.dataset.percent) / 100,
-          applyRemainder: field.dataset.applyRemainder
-        })
-      };
 
-      // Add up each split accounts' total;
-      // Any difference with the original total is applied to the "Apply Remainder" acct
-      const newTotal = splitUpdateData.reduce((prev, splitData) => prev + splitData.total, 0)
-      const remainder = total - newTotal
-      splitUpdateData.forEach(function(splitData) {
-        var newSplitTotal = splitData.total
+      // update split table values
+      self.updateSplitValues(total);
 
-        if (splitData.applyRemainder === 'true' && remainder != 0) {
-          newSplitTotal += remainder
-        }
-        splitData.field.innerHTML = '$' + (newSplitTotal).toFixed(2)
-      });
       // notify page of changes
-      self.notifyOfUpdate($('.split-table'))
+      self.notifyOfUpdate($('.split-table'));
       return self.notifyOfUpdate($(row).find('input[name*=total]'));
+    });
+  }
+
+  updateSplitValues(total) {
+    const splitUpdateFields = $('.split-cost').toArray();
+    const splitTotal = (percent) => Math.floor(total * percent) / 100;
+    const reducer = (prev, splitField) => prev + splitTotal(splitField.dataset.percent);
+    // Add up each split accounts' total
+    const splitsTotalAmount = splitUpdateFields.reduce(reducer, 0);
+    // Any remaining pennies are added to the "Apply Remainder" account.
+    const remainder = total - splitsTotalAmount;
+
+    splitUpdateFields.forEach(function(splitField) {
+      var newSplitAmount = splitTotal(splitField.dataset.percent);
+      if (splitField.dataset.applyRemainder === 'true' && remainder != 0) {
+        newSplitAmount += remainder;
+      }
+      splitField.innerHTML = '$' + (newSplitAmount).toFixed(2);
     });
   }
 
