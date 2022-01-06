@@ -17,8 +17,8 @@ module AccountsHelper
     end
   end
 
-  def split_account_link_or_text(account, percent)
-    acct_desc = "#{account.description_to_s} (#{percent}%)"
+  def split_account_link_or_text(account)
+    acct_desc = account.to_s(with_facility: false)
     if current_ability.can?(:edit, account)
       link_to acct_desc, facility_account_path(current_facility, account)
     else
