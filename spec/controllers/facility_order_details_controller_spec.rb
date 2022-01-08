@@ -55,6 +55,34 @@ RSpec.describe FacilityOrderDetailsController do
         expect(flash[:notice]).to be_present
         assert_redirected_to facility_order_path(@authable, @clone)
       end
+
+      context "when deleting fails" do
+        let(:journal) { FactoryBot.create(:journal) }
+        let(:order_detail) do
+          FactoryBot.create(:order_detail,
+                            :completed,
+                            order: @order,
+                            product: @product,
+                            price_policy: @price_policy,
+                            ordered_at: Time.current,
+                            fulfilled_at: Time.current,
+                            account: @account,
+                            journal: journal)
+        end
+
+        before :each do
+          JournalRowBuilder.create_for_single_order_detail!(journal, order_detail)
+          journal_order = order_detail.order
+          journal_order.update_attribute :merge_with_order_id, @clone.id
+          @params = { facility_id: @authable.url_name, order_id: journal_order.id, id: order_detail.id }
+        end
+
+        it_should_allow :director, "to see an error message when destroy fails" do
+          expect(order_detail).to be_persisted
+          expect(flash[:error]).to be_present
+          assert_redirected_to facility_order_path(@authable, @clone)
+        end
+      end
     end
   end
 end
