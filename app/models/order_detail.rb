@@ -366,7 +366,7 @@ class OrderDetail < ApplicationRecord
     end
 
     event :to_complete do
-      transitions to: :complete, from: [:new, :inprocess], guard: :time_data_completeable?
+      transitions to: :complete, from: [:new, :inprocess], guard: :completeable?
     end
 
     event :to_reconciled do
@@ -754,12 +754,16 @@ class OrderDetail < ApplicationRecord
     reviewed_at.try(:past?) && !in_dispute?
   end
 
+  def missing_form?
+    !valid_service_meta?
+  end
+
   def ready_for_statement?
-    reviewed? && statement_id.blank? && Account.config.using_statements?(account.type)
+    reviewed? && statement_id.blank? && Account.config.using_statements?(account.type) && !missing_form?
   end
 
   def ready_for_journal?
-    reviewed? && journal_id.blank? && Account.config.using_journal?(account.type) && !reconciled?
+    reviewed? && journal_id.blank? && Account.config.using_journal?(account.type) && !reconciled? && !missing_form?
   end
 
   def awaiting_payment?
@@ -911,6 +915,12 @@ class OrderDetail < ApplicationRecord
   private
 
   # Is there enough information to move an associated order to complete/problem?
+  def completeable?
+    return false if missing_form?
+
+    time_data_completeable?
+  end
+
   def time_data_completeable?
     canceled_at.present? || time_data.order_completable?
   end

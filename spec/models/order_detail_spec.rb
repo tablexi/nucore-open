@@ -346,6 +346,19 @@ RSpec.describe OrderDetail do
       expect(@order_detail.valid_service_meta?).to be true
     end
 
+    it "should not transition to complete if there is no upladed result" do
+      # add service file template
+      @file1      = "#{Rails.root}/spec/files/template1.txt"
+      @template1  = @service.stored_files.create(name: "Template 1", file: File.open(@file1), file_type: "template",
+                                                 created_by: @user.id)
+      expect(@order_detail.valid_service_meta?).to be false
+
+      @order_detail.to_inprocess!
+      expect { @order_detail.to_complete! }.to raise_error(AASM::InvalidTransition)
+      expect(@order_detail.state).to eq("inprocess")
+      expect(@order_detail.versions.size).to eq(3)
+    end
+
     it "should not validate_extras for a service file template upload with no template results" do
       # add service file template
       @file1      = "#{Rails.root}/spec/files/template1.txt"
