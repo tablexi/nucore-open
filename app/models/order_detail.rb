@@ -366,7 +366,7 @@ class OrderDetail < ApplicationRecord
     end
 
     event :to_complete do
-      transitions to: :complete, from: [:new, :inprocess], guard: :completeable?
+      transitions to: :complete, from: [:new, :inprocess], guard: :time_data_completeable?
     end
 
     event :to_reconciled do
@@ -915,12 +915,6 @@ class OrderDetail < ApplicationRecord
   private
 
   # Is there enough information to move an associated order to complete/problem?
-  def completeable?
-    return false if missing_form?
-
-    time_data_completeable?
-  end
-
   def time_data_completeable?
     canceled_at.present? || time_data.order_completable?
   end
