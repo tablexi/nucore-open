@@ -733,6 +733,7 @@ class OrderDetail < ApplicationRecord
   # If this +OrderDetail+ is #complete? and either:
   #   A) Does not have a +PricePolicy+ or
   #   B) Has a reservation with missing usage information
+  #   C) Has a service with missing order form or survey
   # the method will return true, otherwise false
   def problem_order?
     problem
@@ -879,8 +880,9 @@ class OrderDetail < ApplicationRecord
 
     time_data_problem_key = time_data.problem_description_key
     price_policy_problem_key = :missing_price_policy if price_policy.blank?
+    missing_form_problem_key = :missing_form if missing_form?
 
-    [time_data_problem_key, price_policy_problem_key].compact
+    [time_data_problem_key, price_policy_problem_key, missing_form_problem_key].compact
   end
 
   def requires_but_missing_actuals?
