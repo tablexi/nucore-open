@@ -1,8 +1,7 @@
-version: 2
+version: 2.1
 
-jobs:
-  build:
-    parallelism: 4
+executors:
+  my_executor:
     docker:
       - image: circleci/ruby:2.6.6-node-browsers-legacy
         environment:
@@ -14,6 +13,10 @@ jobs:
           MYSQL_ROOT_PASSWORD: 'root'
           MYSQL_ROOT_HOST: "%"
       - image: selenium/standalone-chrome:latest
+jobs:
+  build:
+    executor: my_executor
+    parallelism: 4
 
     steps:
       - checkout
