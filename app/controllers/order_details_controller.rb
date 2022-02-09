@@ -38,7 +38,7 @@ class OrderDetailsController < ApplicationController
     if @order_detail.reservation && @order_detail.reservation.can_cancel?
       @order_detail.transaction do
         if @order_detail.cancel_reservation(session_user)
-          CancellationMailer.notify_facility(@order_detail).deliver_later
+          CancellationMailer.with(order_detail: @order_detail).notify_facility.deliver_later
           flash[:notice] = text("cancel.success")
         else
           flash[:error] = text("cancel.error")

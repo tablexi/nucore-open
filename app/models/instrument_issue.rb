@@ -13,12 +13,12 @@ class InstrumentIssue
   def send_notification
     return false unless valid?
 
-    InstrumentIssueMailer.create(
+    InstrumentIssueMailer.with(
       product: product,
       user: user,
       message: message,
       recipients: recipients.to_a,
-    ).deliver_later
+    ).create.deliver_later
   end
 
   def recipients

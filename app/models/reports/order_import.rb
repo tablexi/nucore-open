@@ -31,7 +31,7 @@ class Reports::OrderImport
 
   def deliver!(recipient)
     @order_import.process_upload!
-    CsvReportMailer.csv_report_email(recipient, self).deliver_now
+    CsvReportMailer.with(to_address: recipient, report: self).csv_report_email.deliver_now
   end
 
   def has_attachment?

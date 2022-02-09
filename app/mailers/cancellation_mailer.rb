@@ -2,7 +2,9 @@
 
 class CancellationMailer < ApplicationMailer
 
-  def notify_facility(order_detail)
+  def notify_facility
+    order_detail = params[:order_detail]
+
     @order_detail = order_detail
     @product = order_detail.product
     if @product.cancellation_email_recipients.any?

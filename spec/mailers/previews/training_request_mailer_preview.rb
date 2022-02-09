@@ -7,7 +7,7 @@ class TrainingRequestMailerPreview < ActionMailer::Preview
     products_with_contacts = Product.requiring_approval.where("LENGTH(training_request_contacts) > 0")
     product = Nucore::Database.random(products_with_contacts)
     user = Nucore::Database.random(User.all)
-    TrainingRequestMailer.notify_facility_staff(user, product)
+    TrainingRequestMailer.with(user: user, product: product).notify_facility_staff
   end
 
 end

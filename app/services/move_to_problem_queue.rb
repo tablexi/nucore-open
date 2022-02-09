@@ -25,9 +25,9 @@ class MoveToProblemQueue
     raise "Trying to move Order ##{@order_detail} to problem queue, but it's not a problem" unless @order_detail.problem?
 
     if OrderDetails::ProblemResolutionPolicy.new(@order_detail).user_can_resolve?
-      ProblemOrderMailer.notify_user_with_resolution_option(@order_detail).deliver_later
+      ProblemOrderMailer.with(order_detail: @order_detail).notify_user_with_resolution_option.deliver_later
     else
-      ProblemOrderMailer.notify_user(@order_detail).deliver_later
+      ProblemOrderMailer.with(order_detail: @order_detail).notify_user.deliver_later
     end
   end
 

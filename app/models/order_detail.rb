@@ -897,7 +897,7 @@ class OrderDetail < ApplicationRecord
 
   def notify_purchaser_of_order_status
     if product.email_purchasers_on_order_status_changes? && !reconciled?
-      Notifier.order_detail_status_changed(self).deliver_later
+      Notifier.with(order_detail: self).order_detail_status_changed.deliver_later
     end
   end
 

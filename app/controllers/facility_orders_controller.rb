@@ -48,7 +48,7 @@ class FacilityOrdersController < ApplicationController
 
   def send_receipt
     begin
-      PurchaseNotifier.order_receipt(order: @order, user: @order.user).deliver_later
+      PurchaseNotifier.with(order: @order, user: @order.user).order_receipt.deliver_later
       flash[:notice] = "Receipt sent successfully."
     rescue => e
       flash[:error] = "There was a problem while sending the receipt: #{e.message}"

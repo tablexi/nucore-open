@@ -5,19 +5,19 @@ class PurchaseNotifierPreview < ActionMailer::Preview
   def product_order_notification
     order_detail = OrderDetail.purchased.last
     recipient = User.last
-    PurchaseNotifier.product_order_notification(
-      order_detail,
-      recipient,
-    )
+    PurchaseNotifier.with(
+      order_detail: order_detail,
+      recipient: recipient,
+    ).product_order_notification
   end
 
   def order_notification
     order = Order.purchased.last
     recipient = User.last
-    PurchaseNotifier.order_notification(
-      order,
-      recipient,
-    )
+    PurchaseNotifier.with(
+      order: order,
+      recipient: recipient,
+    ).order_notification
   end
 
 end

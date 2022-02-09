@@ -10,7 +10,9 @@ class PurchaseNotifier < ApplicationMailer
   default from: Settings.email.from, content_type: "multipart/alternative"
 
   # Notifies the specified facility staff member if an order is placed including a product
-  def product_order_notification(order_detail, recipient)
+  def product_order_notification
+    order_detail = params[:order_detail]
+    recipient = params[:recipient]
     @order = order_detail.order
     @order_detail = OrderDetailPresenter.new(order_detail)
     attach_reservation_ical(order_detail.reservation) if order_detail.reservation.present?
@@ -19,7 +21,9 @@ class PurchaseNotifier < ApplicationMailer
   end
 
   # Notifies the specified facility staff member if any order is placed within a facility
-  def order_notification(order, recipient)
+  def order_notification
+    order = params[:order]
+    recipient = params[:recipient]
     @order = order
     attach_all_icals_from_order(@order)
     subject = text("views.purchase_notifier.order_notification.subject")
@@ -28,12 +32,12 @@ class PurchaseNotifier < ApplicationMailer
 
   # Custom order forms send out a confirmation email when filled out by a
   # customer. Customer gets one along with PI/Admin/Lab Manager.
-  def order_receipt(args)
-    @user = args[:user]
-    @order = args[:order]
+  def order_receipt
+    @user = params[:user]
+    @order = params[:order]
     @greeting = text("views.purchase_notifier.order_receipt.intro")
     attach_all_icals_from_order(@order)
-    send_nucore_mail to: args[:user].email, subject: text("views.purchase_notifier.order_receipt.subject")
+    send_nucore_mail to: params[:user].email, subject: text("views.purchase_notifier.order_receipt.subject")
   end
 
   private

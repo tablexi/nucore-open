@@ -2,7 +2,8 @@
 
 class OrderAssignmentMailer < ApplicationMailer
 
-  def notify_assigned_user(order_details)
+  def notify_assigned_user
+    order_details = params[:order_details]
     @order_details = Array(order_details)
     return if @order_details.blank?
 

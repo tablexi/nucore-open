@@ -6,7 +6,8 @@ class OfflineCancellationMailer < ApplicationMailer
 
   attr_reader :reservation
 
-  def send_notification(reservation)
+  def send_notification
+    reservation = params[:reservation]
     @reservation = reservation
     @instrument = reservation.product
     mail(to: reservation.user.email, subject: subject)

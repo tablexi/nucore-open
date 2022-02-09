@@ -2,8 +2,8 @@
 
 class ResultsFileNotifierMailer < ApplicationMailer
 
-  def file_uploaded(file)
-    @order_detail = file.order_detail
+  def file_uploaded
+    @order_detail = params[:file].order_detail
     mail(to: @order_detail.user.email, subject: text("results_file_notifier_mailer.file_uploaded.subject"))
   end
 

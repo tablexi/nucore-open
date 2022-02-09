@@ -3,6 +3,8 @@
 class StatementSearchResultMailer < CsvReportMailer
 
   def search_result(to_email, search_params)
+    to_email = params[:to_email]
+    search_params = params[:search_params]
     search_form = StatementSearchForm.new(search_params)
     statements = search_form.search.order(created_at: :desc)
 

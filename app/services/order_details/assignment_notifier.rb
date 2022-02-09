@@ -6,7 +6,7 @@ module OrderDetails
 
     def notify
       if SettingsHelper.feature_on?(:order_assignment_notifications) && assigned_user_changed?
-        OrderAssignmentMailer.notify_assigned_user(__getobj__).deliver_later
+        OrderAssignmentMailer.with(order_details: __getobj__).notify_assigned_user.deliver_later
       end
     end
 

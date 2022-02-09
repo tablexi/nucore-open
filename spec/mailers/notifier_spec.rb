@@ -17,12 +17,12 @@ RSpec.describe Notifier do
       let(:email_text) { email.text_part.to_s }
 
       before do
-        Notifier.statement(
+        Notifier.with(
           user: user,
           facility: facility,
           account: account,
           statement: statement,
-        ).deliver_now
+        ).statement.deliver_now
       end
 
       it "generates a statement email", :aggregate_failures do
@@ -42,9 +42,9 @@ RSpec.describe Notifier do
     let(:email_text) { email.text_part.to_s }
 
     before(:each) do
-      Notifier.review_orders(user: user,
-                             facility: facility,
-                             accounts: accounts).deliver_now
+      Notifier.with(user: user,
+                    facility: facility,
+                    accounts: accounts).review_orders.deliver_now
     end
 
     it "generates a review_orders notification", :aggregate_failures do
@@ -73,11 +73,11 @@ RSpec.describe Notifier do
     let(:admin_user) { FactoryBot.create(:user) }
 
     before(:each) do
-      Notifier.user_update(user: user,
+      Notifier.with(user: user,
                            created_by: admin_user,
                            role: AccountUser::ACCOUNT_PURCHASER,
                            send_to: "john@example.com",
-                           account: account).deliver_now
+                           account: account).user_update.deliver_now
     end
 
     it "generates a user_update notification", :aggregate_failures do

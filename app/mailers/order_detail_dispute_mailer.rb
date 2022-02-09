@@ -4,9 +4,9 @@ class OrderDetailDisputeMailer < ApplicationMailer
 
   add_template_helper DateHelper
 
-  def dispute_resolved(order_detail:, user:)
-    @order_detail = order_detail
-    @user = user
+  def dispute_resolved
+    @order_detail = params[:order_detail]
+    @user = params[:user]
     mail(
       to: @user.email,
       subject: text("subject", facility_abbreviation: @order_detail.facility.abbreviation),

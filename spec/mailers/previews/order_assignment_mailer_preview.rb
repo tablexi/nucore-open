@@ -3,7 +3,7 @@
 class OrderAssignmentMailerPreview < ActionMailer::Preview
 
   def order_assignment
-    OrderAssignmentMailer.notify_assigned_user(order_detail)
+    OrderAssignmentMailer.with(order_details: order_detail).notify_assigned_user
   end
 
   private

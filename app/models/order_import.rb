@@ -187,7 +187,7 @@ class OrderImport < ApplicationRecord
 
   def send_notifications(orders)
     orders.each do |order|
-      PurchaseNotifier.order_receipt(user: order.user, order: order).deliver_later
+      PurchaseNotifier.with(user: order.user, order: order).order_receipt.deliver_later
     end
   end
 

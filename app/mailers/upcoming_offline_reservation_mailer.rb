@@ -6,8 +6,8 @@ class UpcomingOfflineReservationMailer < ApplicationMailer
 
   attr_reader :reservation
 
-  def send_offline_instrument_warning(reservation)
-    @reservation = reservation
+  def send_offline_instrument_warning
+    @reservation = params[:reservation]
     mail(to: recipient.email, subject: subject)
   end
 

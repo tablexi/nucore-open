@@ -3,10 +3,11 @@
 class InstrumentIssueMailer < ApplicationMailer
 
   def create(product:, user:, message:, recipients:)
-    @product = product
-    @user = user
-    @message = message
-    mail(to: recipients, subject: text("create.subject", product: product))
+    @product = params[:product]
+    @user = params[:user]
+    @message = params[:message]
+    recipients = params[:recipients]
+    mail(to: recipients, subject: text("create.subject", product: @product))
   end
 
   protected

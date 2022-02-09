@@ -3,7 +3,7 @@
 class OfflineCancellationMailerPreview < ActionMailer::Preview
 
   def offline_cancellation
-    OfflineCancellationMailer.send_notification(Reservation.user.last)
+    OfflineCancellationMailer.with(reservation: Reservation.user.last).send_notification
   end
 
 end

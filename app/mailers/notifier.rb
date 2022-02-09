@@ -9,53 +9,54 @@ class Notifier < ActionMailer::Base
   default from: Settings.email.from, content_type: "multipart/alternative"
 
   # Welcome user, login credentials
-  def new_user(user:, password:)
-    @user = user
-    @password = password
+  def new_user
+    @user = params[:user]
+    @password = params[:password]
     send_nucore_mail @user.email, text("views.notifier.new_user.subject")
   end
 
   # Changes to the user affecting the PI or department will alert their
   # PI, the Dept Admins, and Lab Manager.
-  def user_update(args)
-    @user = args[:user]
-    @account = args[:account]
-    @created_by = args[:created_by]
-    @role = AccountUserPresenter.localized_role(args[:role])
-    send_to = args[:send_to]
+  def user_update
+    @user = params[:user]
+    @account = params[:account]
+    @created_by = params[:created_by]
+    @role = AccountUserPresenter.localized_role(params[:role])
+    send_to = params[:send_to]
     send_nucore_mail send_to, text("views.notifier.user_update.subject", user: @user)
   end
 
   # Any changes to the financial accounts will alert the PI(s), admin(s)
   # when it is not them making the change. Adding someone to any role of a
   # financial account as well. Roles: Order, Admin, PI.
-  def account_update(args)
-    @user = args[:user]
-    @account = args[:account]
-    send_nucore_mail args[:user].email, text("views.notifier.account_update.subject")
+  def account_update
+    @user = params[:user]
+    @account = params[:account]
+    send_nucore_mail params[:user].email, text("views.notifier.account_update.subject")
   end
 
-  def review_orders(user:, accounts:, facility: Facility.cross_facility)
-    @user = user
-    @accounts = accounts
-    @facility = facility
-    @accounts_grouped_by_owner = accounts.group_by(&:owner_user)
+  def review_orders
+    @user = params[:user]
+    @accounts = params[:accounts]
+    @facility = params[:facility]
+    @accounts_grouped_by_owner = params[:accounts].group_by(&:owner_user)
     send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation)
   end
 
   # Billing sends out the statement for the month. Appropriate users get
   # their version of usage.
   # args = :user, :account, :facility
-  def statement(args)
-    @user = args[:user]
-    @facility = args[:facility]
-    @account = args[:account]
-    @statement = args[:statement]
+  def statement
+    @user = params[:user]
+    @facility = params[:facility]
+    @account = params[:account]
+    @statement = params[:statement]
     attach_statement_pdf
-    send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
+    send_nucore_mail params[:user].email, text("views.notifier.statement.subject", facility: @facility)
   end
 
-  def order_detail_status_changed(order_detail)
+  def order_detail_status_changed
+    order_detail = params[:order_detail]
     @order_detail = order_detail
     facility = order_detail.facility.abbreviation
     status = order_detail.order_status.name

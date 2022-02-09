@@ -5,7 +5,8 @@ class UpcomingOfflineReservationNotifier
   def notify
     Reservation.upcoming_offline(1.day.from_now).each do |reservation|
       UpcomingOfflineReservationMailer
-        .send_offline_instrument_warning(reservation)
+        .with(reservation: reservation)
+        .send_offline_instrument_warning
         .deliver_later
     end
   end

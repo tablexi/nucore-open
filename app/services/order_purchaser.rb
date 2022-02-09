@@ -107,16 +107,16 @@ class OrderPurchaser
     should_send_order_notification = order_notification_recipient.present? && !acting_as?
 
     if should_send_receipt
-      PurchaseNotifier.order_receipt(user: order.user, order: order).deliver_later
+      PurchaseNotifier.with(user: order.user, order: order).order_receipt.deliver_later
     end
 
     if should_send_order_notification
-      PurchaseNotifier.order_notification(order, order_notification_recipient).deliver_later
+      PurchaseNotifier.with(order: order, recipient: order_notification_recipient).order_notification.deliver_later
     end
 
     order.order_details.each do |order_detail|
       next unless order_detail.product.order_notification_recipient?
-      PurchaseNotifier.product_order_notification(order_detail, order_detail.product.order_notification_recipient).deliver_later
+      PurchaseNotifier.with(order_detail: order_detail, recipient: order_detail.product.order_notification_recipient).product_order_notification.deliver_later
     end
   end
 

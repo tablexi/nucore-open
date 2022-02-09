@@ -4,7 +4,7 @@ class StatementSearchResultMailerPreview < ActionMailer::Preview
 
   def search_result
     params = { facility: Facility.first }
-    StatementSearchResultMailer.search_result("example@example.com", params)
+    StatementSearchResultMailer.with(to_email: "example@example.com", search_params: params).search_result
   end
 
 end

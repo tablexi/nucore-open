@@ -25,7 +25,7 @@ module CsvEmailAction
     yield_email_and_respond_for_report do |email|
       # TODO: in order to use ActiveJob's `deliver_later`, the report needs to be
       # specifically serializable, which many of our reports are not.
-      CsvReportMailer.delay.csv_report_email(email, report)
+      CsvReportMailer.with(to_address: email, report: report).delay.csv_report_email
     end
   end
 

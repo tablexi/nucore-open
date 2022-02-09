@@ -6,7 +6,7 @@ class InstrumentOfflineReservationCanceler
     Reservation.upcoming_offline(Time.current).each do |reservation|
       reservation.transaction do
         cancel_reservation(reservation)
-        OfflineCancellationMailer.send_notification(reservation).deliver_later
+        OfflineCancellationMailer.with(reservation: reservation).send_notification.deliver_later
       end
     end
   end

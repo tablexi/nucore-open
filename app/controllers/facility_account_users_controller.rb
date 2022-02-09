@@ -45,13 +45,13 @@ class FacilityAccountUsersController < ApplicationController
         LogEvent.log(@account_user, :create, current_user)
 
         [@account.owner_user.email, @account.business_admin_users.map(&:email)].flatten.compact.each do |email|
-          Notifier.user_update(
+          Notifier.with(
             account: @account,
             user: @user,
             created_by: session_user,
             role: create_params[:user_role],
             send_to: email,
-          ).deliver_later
+          ).user_update.deliver_later
         end
         redirect_to facility_account_members_path(current_facility, @account)
       else

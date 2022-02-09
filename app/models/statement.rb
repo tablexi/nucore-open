@@ -88,12 +88,12 @@ class Statement < ApplicationRecord
 
   def send_emails
     account.notify_users.each do |user|
-        Notifier.statement(
+        Notifier.with(
           user: user,
           facility: facility,
           account: account,
           statement: self
-        ).deliver_later
+        ).statement.deliver_later
     end
   end
 

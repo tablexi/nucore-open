@@ -84,7 +84,9 @@ class FacilityAccountsController < ApplicationController
         end
         format.csv do
           yield_email_and_respond_for_report do |email|
-            AccountSearchResultMailer.search_result(email, params[:search_term], SerializableFacility.new(current_facility)).deliver_later
+            AccountSearchResultMailer.with(
+              to_email: email, search_term: params[:search_term], facility: SerializableFacility.new(current_facility)
+            ).search_result.deliver_later
           end
         end
       end
