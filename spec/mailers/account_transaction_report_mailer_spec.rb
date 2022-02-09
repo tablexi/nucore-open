@@ -10,7 +10,8 @@ RSpec.describe AccountTransactionReportMailer do
 
       before :each do
         AccountTransactionReportMailer
-          .csv_report_email("recipient@example.net", [1, 2, 3], :statement_date)
+          .with(to_address: "recipient@example.net", order_detail_ids: [1, 2, 3], date_range_field: :statement_date)
+          .csv_report_email
           .deliver_now
       end
 

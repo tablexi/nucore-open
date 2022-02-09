@@ -17,7 +17,7 @@ RSpec.describe UpcomingOfflineReservationMailer do
       allow(reservation).to receive(:product) { instrument }
       allow(reservation).to receive(:order) { order }
       allow(reservation).to receive(:order_detail) { order_detail }
-      described_class.send_offline_instrument_warning(reservation).deliver_now
+      described_class.with(reservation: reservation).send_offline_instrument_warning.deliver_now
     end
 
     it "generates an upcoming offline reservation notification", :aggregate_failures do

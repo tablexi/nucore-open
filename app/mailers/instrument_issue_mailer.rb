@@ -2,7 +2,7 @@
 
 class InstrumentIssueMailer < ApplicationMailer
 
-  def create(product:, user:, message:, recipients:)
+  def create
     @product = params[:product]
     @user = params[:user]
     @message = params[:message]

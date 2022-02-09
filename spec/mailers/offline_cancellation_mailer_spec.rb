@@ -11,7 +11,7 @@ RSpec.describe OfflineCancellationMailer do
       allow(reservation).to receive(:product) { instrument }
       allow(reservation).to receive(:order) { order }
       allow(reservation).to receive(:order_detail) { order_detail }
-      described_class.send_notification(reservation).deliver_now
+      described_class.with(reservation: reservation).send_notification.deliver_now
     end
 
     let(:instrument) { FactoryBot.create(:setup_instrument) }

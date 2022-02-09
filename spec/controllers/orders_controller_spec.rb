@@ -445,11 +445,19 @@ RSpec.describe OrdersController do
       end
 
       describe "emailed receipts" do
-        before { sign_in @admin }
+        let(:mailer) { double("purchase_notifier") }
+        let(:message) { double(deliver_later: nil) }
+
+        before do
+          sign_in @admin
+
+          allow(PurchaseNotifier).to receive(:with).and_return(mailer)
+          allow(mailer).to receive(:order_receipt).and_return(message)
+        end
 
         context "when ordering" do
           it "sends receipts" do
-            expect(PurchaseNotifier).to receive(:order_receipt).once { DummyNotifier.new }
+            expect(mailer).to receive(:order_receipt).once { DummyNotifier.new }
             do_request
           end
         end
@@ -461,7 +469,7 @@ RSpec.describe OrdersController do
             before { @params[:send_notification] = "1" }
 
             it "sends receipts" do
-              expect(PurchaseNotifier).to receive(:order_receipt).once { DummyNotifier.new }
+              expect(mailer).to receive(:order_receipt).once { DummyNotifier.new }
               do_request
             end
           end
@@ -470,7 +478,7 @@ RSpec.describe OrdersController do
             before { @params[:send_notification] = "" }
 
             it "does not send receipts" do
-              expect(PurchaseNotifier).not_to receive(:order_receipt)
+              expect(mailer).not_to receive(:order_receipt)
               do_request
             end
           end
@@ -478,13 +486,21 @@ RSpec.describe OrdersController do
       end
 
       describe "emailed order notifications" do
-        before { sign_in @admin }
+        let(:mailer) { double("purchase_notifier") }
+        let(:message) { double(deliver_later: nil) }
+
+        before do
+          sign_in @admin
+
+          allow(PurchaseNotifier).to receive(:with).and_return(mailer)
+          allow(mailer).to receive(:order_notification).and_return(message)
+        end
 
         context "when the facility has an order_notification_recipient" do
           let(:facility) { create(:setup_facility, :with_order_notification) }
 
           it "sends order notifications" do
-            expect(PurchaseNotifier).to receive(:order_notification).once { DummyNotifier.new }
+            expect(mailer).to receive(:order_notification).once { DummyNotifier.new }
             do_request
           end
 
@@ -492,7 +508,7 @@ RSpec.describe OrdersController do
             before { switch_to @staff }
 
             it "does not send order notifications" do
-              expect(PurchaseNotifier).not_to receive(:order_notification)
+              expect(mailer).not_to receive(:order_notification)
               do_request
             end
           end
@@ -500,7 +516,7 @@ RSpec.describe OrdersController do
 
         context "when the facility has no order_notification_recipient" do
           it "sends no order notifications" do
-            expect(PurchaseNotifier).not_to receive(:order_notification)
+            expect(mailer).not_to receive(:order_notification)
             do_request
           end
         end

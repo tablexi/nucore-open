@@ -3,7 +3,8 @@
 require "rails_helper"
 
 RSpec.describe MoveToProblemQueue do
-  let(:mailer) { double("mail object", deliver_later: true) }
+  let(:mailer) { double("mail object") }
+  let(:message) { double(deliver_later: nil) }
   let(:order) { FactoryBot.build(:order, :purchased) }
   let(:reservation) { FactoryBot.build(:reservation) }
   let(:order_detail) { FactoryBot.build(:order_detail, order: order, reservation: reservation, product: product) }
@@ -12,6 +13,9 @@ RSpec.describe MoveToProblemQueue do
       complete!: true,
       problem?: true,
     )
+    allow(ProblemOrderMailer).to receive(:with).and_return(mailer)
+    allow(mailer).to receive(:notify_user).and_return(message)
+    allow(mailer).to receive(:notify_user_with_resolution_option).and_return(message)
   end
 
   describe "with the resolvable flag turned on for the product" do
@@ -21,8 +25,8 @@ RSpec.describe MoveToProblemQueue do
       before { expect(order_detail).to receive(:requires_but_missing_actuals?).and_return(false) }
 
       it "triggers the regular resolution email" do
-        expect(ProblemOrderMailer).to receive(:notify_user).with(order_detail).and_return(mailer)
-
+        expect(ProblemOrderMailer).to receive(:with).with(order_detail)
+        expect(mailer).to receive(:notify_user)
         described_class.move!(order_detail, cause: :cause)
       end
     end
@@ -34,7 +38,8 @@ RSpec.describe MoveToProblemQueue do
         before { reservation.actual_start_at = 1.day.ago }
 
         it "triggers the notify with resolution email" do
-          expect(ProblemOrderMailer).to receive(:notify_user_with_resolution_option).with(order_detail).and_return(mailer)
+          expect(ProblemOrderMailer).to receive(:with).with(order_detail)
+          expect(mailer).to receive(:notify_user_with_resolution_option)
 
           described_class.move!(order_detail, cause: :cause)
         end
@@ -43,7 +48,8 @@ RSpec.describe MoveToProblemQueue do
       describe "when it is missing start at" do
         before { reservation.actual_start_at = nil }
         it "triggers the notify with resolution email" do
-          expect(ProblemOrderMailer).to receive(:notify_user).with(order_detail).and_return(mailer)
+          expect(ProblemOrderMailer).to receive(:with).with(order_detail)
+          expect(mailer).to receive(:notify_user)
 
           described_class.move!(order_detail, cause: :cause)
         end
@@ -57,7 +63,8 @@ RSpec.describe MoveToProblemQueue do
     before { expect(order_detail).to receive(:requires_but_missing_actuals?).and_return(true) }
 
     it "triggers the regular resolution email" do
-      expect(ProblemOrderMailer).to receive(:notify_user).with(order_detail).and_return(mailer)
+      expect(ProblemOrderMailer).to receive(:with).with(order_detail)
+      expect(mailer).to receive(:notify_user)
 
       described_class.move!(order_detail, cause: :cause_example)
     end

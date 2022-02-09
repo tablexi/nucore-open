@@ -18,7 +18,7 @@ RSpec.describe OrderAssignmentMailer do
       let(:order) { FactoryBot.build_stubbed(:order, facility: facility) }
       let(:order_detail) { stubbed_order_detail(order) }
 
-      before { described_class.notify_assigned_user(order_detail).deliver_now }
+      before { described_class.with(order_details: order_detail).notify_assigned_user.deliver_now }
 
       it "generates an order assignment notification", :aggregate_failures do
         expect(email.to).to eq [assigned_user.email]
@@ -38,7 +38,7 @@ RSpec.describe OrderAssignmentMailer do
         orders.map { |order| stubbed_order_detail(order) }
       end
 
-      before { described_class.notify_assigned_user(order_details).deliver_now }
+      before { described_class.with(order_details: order_details).notify_assigned_user.deliver_now }
 
       it "generates an order assignment notification", :aggregate_failures do
         expect(email.to).to eq [assigned_user.email]
