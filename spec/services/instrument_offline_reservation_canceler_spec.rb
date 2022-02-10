@@ -13,6 +13,7 @@ RSpec.describe InstrumentOfflineReservationCanceler do
   describe "#cancel!" do
     context "when the instrument is offline" do
       let!(:instrument) { FactoryBot.create(:setup_instrument, :offline) }
+      let(:mailer) { double("offline_cancellation_mailer") }
 
       context "when a reservation starting now exists" do
         let!(:reservation) do
@@ -22,7 +23,8 @@ RSpec.describe InstrumentOfflineReservationCanceler do
         end
 
         before(:each) do
-          allow(OfflineCancellationMailer)
+          allow(OfflineCancellationMailer).to receive(:with).and_return(mailer)
+          allow(mailer)
             .to receive(:send_notification) { stub_mailer }
           allow(stub_mailer).to receive(:deliver_later)
           subject.cancel!
@@ -44,8 +46,10 @@ RSpec.describe InstrumentOfflineReservationCanceler do
 
         it "sends a cancellation notification to the user" do
           expect(OfflineCancellationMailer)
+            .to have_received(:with)
+            .with(reservation: reservation)
+          expect(mailer)
             .to have_received(:send_notification)
-            .with(reservation)
           expect(stub_mailer).to have_received(:deliver_later)
         end
       end

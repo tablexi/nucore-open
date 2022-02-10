@@ -4,7 +4,7 @@ class CsvReportMailer < ApplicationMailer
 
   def csv_report_email
     to_address = params[:to_address]
-    report = params[:report]
+    report = @report || params[:report]
 
     attachments[report.filename] = report.to_csv if report.has_attachment?
     mail(to: to_address, subject: report.description) do |format|

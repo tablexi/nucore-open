@@ -151,8 +151,10 @@ RSpec.describe OrderImport, :time_travel do
         product_name: "Invalid Item",
       )
     end
+    let(:mailer) { double("purchase_notifier", deliver_later: nil) }
 
     before :each do
+      allow(PurchaseNotifier).to receive(:with).and_return(mailer)
       order_import.fail_on_error = false
       order_import.send_receipts = true
       order_import.upload_file.file = import_file
@@ -161,7 +163,7 @@ RSpec.describe OrderImport, :time_travel do
     end
 
     it "sends notifications" do
-      expect(PurchaseNotifier)
+      expect(mailer)
         .to receive(:order_receipt)
         .once
         .and_return(double(deliver_later: nil))
@@ -171,7 +173,10 @@ RSpec.describe OrderImport, :time_travel do
   end
 
   context "when in save-nothing-on-error mode" do
+    let(:mailer) { double("purchase_notifier", deliver_later: nil) }
+
     before :each do
+      allow(PurchaseNotifier).to receive(:with).and_return(mailer)
       order_import.fail_on_error = true
       order_import.send_receipts = send_receipts
       order_import.upload_file.file = import_file
@@ -194,7 +199,7 @@ RSpec.describe OrderImport, :time_travel do
         let(:import_file) { generate_import_file }
 
         it "sends notifications" do
-          expect(PurchaseNotifier)
+          expect(mailer)
             .to receive(:order_receipt)
             .once
             .and_return(double(deliver_later: nil))
@@ -254,7 +259,12 @@ RSpec.describe OrderImport, :time_travel do
       end
 
       context "when in save-clean-orders mode" do
+        let(:mailer) { double("purchase_notifier", order_receipt: nil) }
+        let(:message) { double(deliver_later: nil) }
+
         before :each do
+          allow(PurchaseNotifier).to receive(:with).and_return(mailer)
+          allow(mailer).to receive(:order_receipt).and_return(message)
           order_import.fail_on_error = false
           order_import.save!
         end
@@ -264,10 +274,9 @@ RSpec.describe OrderImport, :time_travel do
         end
 
         it "sends a notification for second order" do
-          expect(PurchaseNotifier)
+          expect(mailer)
             .to receive(:order_receipt)
             .once
-            .and_return(double(deliver_later: nil))
 
           order_import.process_upload!
         end

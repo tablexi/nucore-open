@@ -494,6 +494,7 @@ RSpec.describe OrdersController do
 
           allow(PurchaseNotifier).to receive(:with).and_return(mailer)
           allow(mailer).to receive(:order_notification).and_return(message)
+          allow(mailer).to receive(:order_receipt).and_return(message)
         end
 
         context "when the facility has an order_notification_recipient" do

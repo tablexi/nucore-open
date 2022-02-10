@@ -10,11 +10,13 @@ RSpec.describe NotificationSender, :aggregate_failures do
   let(:item) { FactoryBot.create(:setup_item, :with_facility_account) }
   let(:order_detail_ids) { order_details.map(&:id) }
   let(:delivery) { OpenStruct.new(deliver_now: true) }
+  let(:mailer) { double("notifier") }
+  let(:message) { double(deliver_later: nil) }
 
   before(:each) do
     # This feature only gets used when there is a review period, so go ahead and enable it.
     allow(SettingsHelper).to receive(:has_review_period?).and_return true
-
+    allow(Notifier).to receive(:with).and_return(mailer)
     order_details.each(&:complete!)
   end
 
@@ -31,12 +33,12 @@ RSpec.describe NotificationSender, :aggregate_failures do
 
         it "sends a notification for $0 order_details" do
           expect(Notifier)
-            .to receive(:review_orders)
+            .to receive(:with)
             .with(user: account_owner,
                   accounts: [account],
                   facility: facility)
             .once
-            .and_return(delivery)
+          expect(mailer).to receive(:review_orders).and_return(delivery)
 
           notification_sender.perform
         end
@@ -53,7 +55,7 @@ RSpec.describe NotificationSender, :aggregate_failures do
         it "sends no notification if all order_details are $0" do
           order_details.each { |od| od.update!(actual_cost: 0, actual_subsidy: 0) }
 
-          expect(Notifier).not_to receive(:review_orders)
+          expect(mailer).not_to receive(:review_orders)
 
           notification_sender.perform
         end
@@ -62,11 +64,14 @@ RSpec.describe NotificationSender, :aggregate_failures do
           order_details.first.update!(actual_cost: 0, actual_subsidy: 0)
 
           expect(Notifier)
-            .to receive(:review_orders)
+            .to receive(:with)
             .with(user: account_owner,
                   accounts: [account],
                   facility: facility)
             .once
+
+          expect(mailer)
+            .to receive(:review_orders)
             .and_return(delivery)
 
           notification_sender.perform
@@ -76,11 +81,14 @@ RSpec.describe NotificationSender, :aggregate_failures do
           order_details.each { |od| od.update!(actual_cost: 10, actual_subsidy: 10) }
 
           expect(Notifier)
-            .to receive(:review_orders)
+            .to receive(:with)
             .with(user: account_owner,
                   accounts: [account],
                   facility: facility)
             .once
+
+          expect(mailer)
+            .to receive(:review_orders)
             .and_return(delivery)
 
           notification_sender.perform
@@ -107,12 +115,12 @@ RSpec.describe NotificationSender, :aggregate_failures do
         it "notifies each user once while setting order_details to reviewed" do
           account_owners.each do |user|
             expect(Notifier)
-              .to receive(:review_orders)
+              .to receive(:with)
               .with(user: user,
                     accounts: match_array(AccountUser.where(user_id: user.id).map(&:account)),
                     facility: facility)
               .once
-              .and_return(delivery)
+            expect(mailer).to receive(:review_orders).once.and_return(delivery)
           end
 
           expect(notification_sender.perform).to be_truthy

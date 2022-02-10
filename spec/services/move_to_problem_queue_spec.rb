@@ -25,7 +25,7 @@ RSpec.describe MoveToProblemQueue do
       before { expect(order_detail).to receive(:requires_but_missing_actuals?).and_return(false) }
 
       it "triggers the regular resolution email" do
-        expect(ProblemOrderMailer).to receive(:with).with(order_detail)
+        expect(ProblemOrderMailer).to receive(:with).with(order_detail: order_detail)
         expect(mailer).to receive(:notify_user)
         described_class.move!(order_detail, cause: :cause)
       end
@@ -38,7 +38,7 @@ RSpec.describe MoveToProblemQueue do
         before { reservation.actual_start_at = 1.day.ago }
 
         it "triggers the notify with resolution email" do
-          expect(ProblemOrderMailer).to receive(:with).with(order_detail)
+          expect(ProblemOrderMailer).to receive(:with).with(order_detail: order_detail)
           expect(mailer).to receive(:notify_user_with_resolution_option)
 
           described_class.move!(order_detail, cause: :cause)
@@ -48,7 +48,7 @@ RSpec.describe MoveToProblemQueue do
       describe "when it is missing start at" do
         before { reservation.actual_start_at = nil }
         it "triggers the notify with resolution email" do
-          expect(ProblemOrderMailer).to receive(:with).with(order_detail)
+          expect(ProblemOrderMailer).to receive(:with).with(order_detail: order_detail)
           expect(mailer).to receive(:notify_user)
 
           described_class.move!(order_detail, cause: :cause)
@@ -63,7 +63,7 @@ RSpec.describe MoveToProblemQueue do
     before { expect(order_detail).to receive(:requires_but_missing_actuals?).and_return(true) }
 
     it "triggers the regular resolution email" do
-      expect(ProblemOrderMailer).to receive(:with).with(order_detail)
+      expect(ProblemOrderMailer).to receive(:with).with(order_detail: order_detail)
       expect(mailer).to receive(:notify_user)
 
       described_class.move!(order_detail, cause: :cause_example)

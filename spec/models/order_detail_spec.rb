@@ -1967,13 +1967,16 @@ RSpec.describe OrderDetail do
 
   describe "#notify_purchaser_of_order_status" do
     context "when the order detail’s product is configured to email purchasers" do
+      let(:mailer) { double('Nofifier', deliver_later: nil) }
       before do
         @order_detail.product.email_purchasers_on_order_status_changes = true
+
+        allow(Notifier).to receive(:with).and_return(mailer)
       end
 
       it "does not notify when the order detail is reconciled" do
         allow(@order_detail).to receive(:reconciled?).and_return(true)
-        expect(Notifier).not_to receive(:order_detail_status_changed)
+        expect(mailer).not_to receive(:order_detail_status_changed)
         @order_detail.notify_purchaser_of_order_status
       end
 
@@ -1981,7 +1984,7 @@ RSpec.describe OrderDetail do
         allow(@order_detail).to receive(:reconciled?).and_return(false)
         mail_double = instance_double(ActionMailer::MessageDelivery)
         expect(mail_double).to receive(:deliver_later)
-        expect(Notifier).to receive(:order_detail_status_changed).and_return(mail_double)
+        expect(mailer).to receive(:order_detail_status_changed).and_return(mail_double)
         @order_detail.notify_purchaser_of_order_status
       end
     end

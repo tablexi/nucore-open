@@ -10,7 +10,7 @@ RSpec.describe PurchaseNotifier do
   let(:user) { order.user }
 
   describe ".order_notification" do
-    before { described_class.order_notification(order, recipient).deliver_now }
+    before { described_class.with(order: order, recipient: recipient).order_notification.deliver_now }
 
     let(:recipient) { "orders@example.net" }
 
@@ -28,7 +28,7 @@ RSpec.describe PurchaseNotifier do
   end
 
   describe ".product_order_notification" do
-    before { described_class.product_order_notification(order_detail, recipient).deliver_now }
+    before { described_class.with(order_detail: order_detail, recipient: recipient).product_order_notification.deliver_now }
 
     let(:order_detail) { order.order_details.first }
     let(:recipient) { "orders@example.net" }
@@ -53,7 +53,7 @@ RSpec.describe PurchaseNotifier do
 
     before(:each) do
       order.order_details.first.update_attribute(:note, note) if note.present?
-      described_class.order_receipt(order: order, user: user).deliver_now
+      described_class.with(order: order, user: user).order_receipt.deliver_now
     end
 
     it "generates a receipt", :aggregate_failures do
