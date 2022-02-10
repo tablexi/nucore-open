@@ -18,11 +18,13 @@ RSpec.describe UpcomingOfflineReservationNotifier do
                             reserve_start_at: now + 10.hours,
                             reserve_end_at: now + 11.hours)
         end
+        let(:mailer) { double("UpcomingOfflineReservationMailer") }
         let(:stub_delivery) { double(ActionMailer::MessageDelivery) }
         let(:user) { reservation.user }
 
         before(:each) do
-          allow(UpcomingOfflineReservationMailer)
+          allow(UpcomingOfflineReservationMailer).to receive(:with).and_return(mailer)
+          allow(mailer)
             .to receive(:send_offline_instrument_warning) { stub_delivery }
           allow(stub_delivery).to receive(:deliver_later)
           subject.notify
@@ -30,8 +32,10 @@ RSpec.describe UpcomingOfflineReservationNotifier do
 
         it "creates a notification for the reservation's user" do
           expect(UpcomingOfflineReservationMailer)
+            .to have_received(:with)
+            .with(reservation: reservation)
+          expect(mailer)
             .to have_received(:send_offline_instrument_warning)
-            .with(reservation)
           expect(stub_delivery).to have_received(:deliver_later)
         end
       end

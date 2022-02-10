@@ -17,7 +17,7 @@ RSpec.describe PurchaseNotifier, type: :mailer do
       response_data: { show_url: sanger_sequencing_submission_path(submission) }.to_json,
     )
   end
-  let(:mailer) { described_class.order_notification(order, order.user) }
+  let(:mailer) { described_class.with(order: order, recipient: order.user).order_notification }
 
   it "includes the samples in the mailer" do
     expect(mailer.body.encoded).to include(submission.samples.first.customer_sample_id)
