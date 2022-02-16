@@ -475,7 +475,7 @@ en:
         dispute_information: Dispute Information
         h3-5: "Bundle Summary"
       label:
-        account_owner_html: "<strong>Owner: </strong><span class='account-owner'>%{owner}</span>"
+        account_owner: Account Owner
         ordered:
           at: "Ordered At"
           for: "Ordered For"
