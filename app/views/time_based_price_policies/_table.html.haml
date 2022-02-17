@@ -32,10 +32,12 @@
         - if price_policy.valid?
           %td.currency{ colspan: 2 }
             - if price_policy.has_rate?
-              .rate= number_to_currency price_policy.hourly_usage_rate
+              .rate= number_to_currency price_policy.hourly_usage_rate.truncate(4)
               - if price_policy.has_subsidy?
-                .subsidy= "- #{number_to_currency price_policy.hourly_usage_subsidy}"
-                %strong= "= #{number_to_currency price_policy.subsidized_hourly_usage_cost}"
+                - hourly_usage_subsidy = price_policy.hourly_usage_subsidy.truncate(4)
+                .subsidy= "- #{number_to_currency hourly_usage_subsidy, precision: 4}"
+                - subsidized_hourly_usage_cost = price_policy.subsidized_hourly_usage_cost.truncate(4)
+                %strong= "= #{number_to_currency subsidized_hourly_usage_cost, precision: 4}"
 
               %p.per-minute-show
                 - price_per_minute = (price_policy.subsidized_hourly_usage_cost / 60).truncate(4)
