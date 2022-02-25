@@ -24,7 +24,7 @@ namespace :price_policies do
   task :update_usage_rate, [:commit] => :environment do |_t, args|
     commit = args[:commit].to_s == "commit"
 
-    policies = PricePolicy.current.where.not(usage_rate: nil).count
+    policies = PricePolicy.current.where.not(usage_rate: nil)
 
     puts "Updating #{policies.count} price rules ..."
     policies.each do |policy|
