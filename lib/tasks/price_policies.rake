@@ -28,7 +28,7 @@ namespace :price_policies do
 
     puts "Updating #{policies.count} price rules ..."
     policies.each do |policy|
-      if policy.usage_rate.nil?
+      if policy.usage_rate.nil? || policy.usage_subsidy.nil?
         puts "Skipped #{policy.id}"
       else
         puts "#{policy.id} Before: #{policy.usage_rate.to_f}, #{policy.usage_subsidy.to_f}"
