@@ -31,13 +31,17 @@ namespace :price_policies do
       if policy.usage_rate.nil? || policy.usage_subsidy.nil?
         puts "Skipped #{policy.id}"
       else
-        puts "#{policy.id} Before: #{policy.usage_rate.to_f}, #{policy.usage_subsidy.to_f}"
+        puts policy.id
+        puts "Before: #{policy.usage_rate.to_f}/#{policy.usage_subsidy.to_f}"
+        puts "#{policy.hourly_usage_rate}/#{policy.hourly_usage_subsidy}"
         policy.usage_rate = policy.hourly_usage_rate.to_f.round(2)
         policy.usage_subsidy = policy.hourly_usage_subsidy.to_f.round(2)
-        policy.save if commit
-        puts "#{policy.id} After: #{policy.usage_rate.to_f}, #{policy.usage_subsidy.to_f}"
+        success = commit ? policy.save : policy.valid?
+        puts "Errors: #{policy.errors.full_messages}" if !success
+        puts "After: #{policy.usage_rate.to_f}/#{policy.usage_subsidy.to_f}"
+        puts "#{policy.hourly_usage_rate}/#{policy.hourly_usage_subsidy}"
       end
-    end
+    end; nil
     puts "DONE"
   end
 
