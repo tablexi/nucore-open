@@ -307,7 +307,7 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.37.1)
+    haml_lint (0.40.0)
       haml (>= 4.0, < 5.3)
       parallel (~> 1.10)
       rainbow
@@ -456,7 +456,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redcarpet (3.5.1)
-    regexp_parser (2.2.0)
+    regexp_parser (2.2.1)
     request_store (1.5.1)
       rack (>= 1.4)
     responders (3.0.1)
