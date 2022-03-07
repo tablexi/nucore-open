@@ -297,7 +297,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
       reservation.actual_end_at = reservation.reserve_end_at - 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
       expect(new_costs[:cost]).to eq(61.to_d)
-      expect(new_costs[:subsidy]).to eq(8.61.to_d)
+      expect(new_costs[:subsidy]).to eq(8.6083335.to_d)
     end
 
     it "calculates overage costs precisely" do
@@ -310,8 +310,8 @@ RSpec.describe InstrumentPricePolicyCalculations do
       reservation.actual_start_at = reservation.reserve_start_at
       reservation.actual_end_at = reservation.reserve_end_at + 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
-      expect(new_costs[:cost]).to eq(29.169.to_d)
-      expect(new_costs[:subsidy]).to eq(8.169.to_d)
+      expect(new_costs[:cost]).to eq(29.1666669.to_d)
+      expect(new_costs[:subsidy]).to eq(8.1666669.to_d)
     end
 
     it "charges for 90 minutes when an hour reservation is started 15 minutes late and goes over the reserved end time by 30 minutes" do

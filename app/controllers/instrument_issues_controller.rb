@@ -5,6 +5,7 @@ class InstrumentIssuesController < ApplicationController
   customer_tab :all
   before_action :authenticate_user!
   before_action :init_current_facility
+  before_action :init_order_detail
   before_action :init_product
   before_action :init_instrument_issue, only: %i[new create]
 
@@ -26,8 +27,12 @@ class InstrumentIssuesController < ApplicationController
     params.require(:instrument_issue).permit(:message)
   end
 
+  def init_order_detail
+    @order_detail = OrderDetail.find(params[:order_detail_id])
+  end
+
   def init_product
-    @product = current_facility.instruments.find_by!(url_name: params[:instrument_id])
+    @product = @order_detail.product
   end
 
   def init_instrument_issue
