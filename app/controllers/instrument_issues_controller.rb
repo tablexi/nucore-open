@@ -14,6 +14,7 @@ class InstrumentIssuesController < ApplicationController
 
   def create
     @instrument_issue.assign_attributes(create_params)
+
     if @instrument_issue.send_notification
       redirect_to reservations_path, notice: text("create.success")
     else
@@ -36,7 +37,9 @@ class InstrumentIssuesController < ApplicationController
   end
 
   def init_instrument_issue
-    @instrument_issue = InstrumentIssue.new(product: @product, user: current_user)
+    @instrument_issue = InstrumentIssue.new(product: @product, 
+                                            user: current_user,
+                                            order_detail: @order_detail)
   end
 
 end
