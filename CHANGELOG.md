@@ -4,6 +4,10 @@ Because we use squash and merge, you should be able to see the changes by lookin
 at the [commit log](https://github.com/tablexi/nucore-open/commits/master). However, we have begun keeping track of breaking changes
 or optional rake tasks.
 
+### Rename `auto_cancel` to `recurring_tasks` and move other tasks into that daemon ([#2544](https://github.com/tablexi/nucore-open/pull/2544))
+
+The `recurring_tasks` process should only run on one server per environment.  If you have multiple servers running in production, set`run_recurring_tasks: false` in `secrets.yml` on all but one production server.
+
 ### Configure `auto_cancel` process via `secrets.yml` ([#2544](https://github.com/tablexi/nucore-open/pull/2544))
 
 The `auto_cancel` process should only run on one server per environment.  If you have multiple servers running in production, set`run_auto_cancel: false` in `secrets.yml` on all but one production server.

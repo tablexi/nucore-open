@@ -2,9 +2,7 @@
 
 module Admin
 
-  class ServicesController < ApplicationController
-
-    skip_before_action :verify_authenticity_token
+  class RecurringServices
 
     def process_one_minute_tasks
       InstrumentOfflineReservationCanceler.new.cancel!
