@@ -102,6 +102,8 @@ group :development do
   gem "haml_lint", require: false
   gem "letter_opener"
   gem "rubocop", "1.25.1", require: false
+  gem "rubocop-performance"
+  gem "rubocop-rails"
   gem "rubocop-rspec"
   gem "web-console"
 end

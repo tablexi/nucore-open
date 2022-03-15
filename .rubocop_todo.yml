@@ -90,7 +90,7 @@ Lint/DuplicateMethods:
     - 'app/services/account_builder.rb'
 
 # Offense count: 5
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Exclude:
     - 'config/unicorn/*'
     - 'app/models/email_event.rb'
@@ -235,7 +235,7 @@ Naming/PredicateName:
 # Offense count: 26
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
 # AllowedNames: io, id, to, by, on, in, at
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Exclude:
     - 'app/controllers/application_controller.rb'
     - 'app/helpers/date_helper.rb'
@@ -627,7 +627,7 @@ Style/InverseMethods:
     - 'vendor/engines/sanger_sequencing/app/services/sanger_sequencing/submission_updater.rb'
 
 # Offense count: 1
-Style/MethodMissingSuper:
+Lint/MissingSuper:
   Exclude:
     - 'lib/validator/validator_factory.rb'
 
