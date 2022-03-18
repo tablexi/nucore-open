@@ -57,7 +57,6 @@ processes:
         rotate: "kill -USR1 {PID}"
 
   # This should only run on 1 instance.
-  # See run_recurring_tasks in secrets.yml
   <% if ENV["RECURRING"] == "true" %>
   - name: recurring_tasks
     config:
