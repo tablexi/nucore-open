@@ -58,6 +58,7 @@ processes:
 
   # This should only run on 1 instance.
   # See run_recurring_tasks in secrets.yml
+  <% if ENV["RECURRING"] == "true" %>
   - name: recurring_tasks
     config:
       start_command: ruby lib/daemons/recurring_tasks.rb start -- --no-monitor
@@ -74,6 +75,7 @@ processes:
           times: 3
           every: 20 seconds
           below: 256 megabytes
+  <% end %>
 
   - name: delayed_job
     config:

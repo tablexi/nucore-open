@@ -24,7 +24,7 @@ module SecureRooms
         MessageSummarizer::ProblemReservationOrderDetailsSummary,
       )
 
-      Admin::ServicesController.five_minute_tasks << SecureRooms::AutoOrphanOccupancy
+      # Admin::ServicesController.five_minute_tasks << SecureRooms::AutoOrphanOccupancy
 
       UserFinder.searchable_columns << "card_number"
       UserFinder.searchable_columns << "i_class_number"
