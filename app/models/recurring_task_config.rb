@@ -15,4 +15,15 @@ class RecurringTaskConfig
     ]
   end
 
+  def self.invoke!
+    recurring_tasks.each do |task_params|
+      RecurringTask.new(task_params).invoke!
+    end
+  end
+
+  RecurringTask = Struct.new(:task_class, :call_method) do
+    def invoke!
+      task_class.new.public_send(call_method)
+    end
+  end
 end
