@@ -22,7 +22,7 @@ gem "mysql2"
 
 
 ## auth
-gem "cancancan", "3.1.0"
+gem "cancancan", "3.3.0"
 gem "devise"
 gem "devise-encryptable"
 gem "devise-security"
