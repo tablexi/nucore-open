@@ -24,7 +24,7 @@ module SecureRooms
         MessageSummarizer::ProblemReservationOrderDetailsSummary,
       )
 
-      RecurringTaskConfig.recurring_tasks << [SecureRooms::AutoOrphanOccupancy, :perform]
+      RecurringTaskConfig.recurring_tasks << [[SecureRooms::AutoOrphanOccupancy, :perform], 5]
 
       UserFinder.searchable_columns << "card_number"
       UserFinder.searchable_columns << "i_class_number"
