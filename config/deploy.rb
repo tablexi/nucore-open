@@ -16,8 +16,8 @@ set :linked_dirs, fetch(:linked_dirs, []).concat(
 
 namespace :eye do
   task :set_recurring_tasks do
-    on roles :all do |host|
-      set :eye_env, -> { { rails_env: fetch(:rails_env), recurring: host.roles_array.include?(:db) } }
+    on roles :db do |host|
+      set :eye_env, -> { { recurring: true } }
     end
   end
 end
