@@ -22,9 +22,12 @@ module Nucore
     # https://blog.bigbinary.com/2016/08/29/rails-5-disables-autoloading-after-booting-the-app-in-production.html
     config.enable_dependency_loading = true
 
+    # config.time_zone = "Central Time (US & Canada)"
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+    # config.eager_load_paths << Rails.root.join("extras")
     # config.autoload_paths += Dir["#{config.root}/lib"]
     # config.eager_load_paths += Dir["#{config.root}/lib"]
 

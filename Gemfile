@@ -5,7 +5,7 @@ source "https://rubygems.org"
 ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| f.read.chomp }
 
 ## base
-gem "rails", "~> 6.0.4"
+gem "rails", "~> 6.1.5"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "sprockets-rails", "3.2.2" # downgrade to avoid a bug
 gem "config"
@@ -44,8 +44,8 @@ gem "uglifier", "= 4.1.18" # 4.1.19 has an issue https://github.com/mishoo/Uglif
 # TO DO: consider using nodejs instead of mini_racer
 # libv8 8+ does not like to compile on our boxes. It's easier to lock down
 # libv8 and mini_racer for now than to try to get them upgraded on the server.
-gem "mini_racer", "< 0.3"
-gem "libv8", "< 8"
+# gem "mini_racer", "< 0.3"
+# gem "libv8", "< 8"
 gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
