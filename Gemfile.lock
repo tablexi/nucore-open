@@ -382,8 +382,8 @@ GEM
       mime-types
       mimemagic (~> 0.3.0)
       terrapin (~> 0.6.0)
-    parallel (1.22.0)
-    parallel_tests (3.7.3)
+    parallel (1.22.1)
+    parallel_tests (3.8.1)
       parallel
     paranoia (2.5.2)
       activerecord (>= 5.1, < 7.1)
