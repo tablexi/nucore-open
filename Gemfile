@@ -5,7 +5,7 @@ source "https://rubygems.org"
 ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| f.read.chomp }
 
 ## base
-gem "rails", "~> 6.0.4"
+gem "rails", "~> 6.1.5"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
 gem "sprockets-rails", "3.2.2" # downgrade to avoid a bug
 gem "config"
