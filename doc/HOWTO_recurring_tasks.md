@@ -18,7 +18,7 @@ RecurringTaskConfig.recurring_tasks << [SecureRooms::AutoOrphanOccupancy, :perfo
 
 - `AutoCanceler`
 
-  * Set a value of 1 for "Automatic Cancelation (minutes)", place a reservation and do not start it.  The unstarted reservation should be canceled 1 minute after the start time.
+  * Set a value of 1 for "Automatic Cancellation (minutes)", place a reservation and do not start it.  The unstarted reservation should be canceled 1 minute after the start time.
 
 ### Every 5 minutes
 - `AutoExpireReservation`
