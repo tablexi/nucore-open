@@ -15,11 +15,11 @@ class AccountRoleGrantor
     begin
       AccountUser.transaction do
         # Remove the old owner if we're assigning a new one
-        destroy(account.owner) if role == AccountUser::ACCOUNT_OWNER
+        destroy_old_account_user(account.owner, validate: false) if role == AccountUser::ACCOUNT_OWNER
 
         # Delete any previous role the user might have had
         old_account_user = AccountUser.find_by(account: account, user: user, deleted_at: nil)
-        destroy(old_account_user)
+        destroy_old_account_user(old_account_user, validate: old_account_user.user_role != AccountUser::ACCOUNT_OWNER) if old_account_user
 
         account_user = account.account_users.build(
           account: account,
@@ -39,12 +39,12 @@ class AccountRoleGrantor
 
   private
 
-  def destroy(account_user)
+  def destroy_old_account_user(account_user, validate: true)
     return unless account_user
-    account_user.update!(
-      deleted_at: Time.current,
-      deleted_by: by.id,
-    )
+
+    account_user.deleted_at = Time.current
+    account_user.deleted_by = by.id
+    account_user.save!(validate: validate)
   end
 
 end

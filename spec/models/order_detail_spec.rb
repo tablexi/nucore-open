@@ -1326,6 +1326,7 @@ RSpec.describe OrderDetail do
 
     shared_examples "it was removed from its statement" do
       it "should be removed from the statement" do
+        original_statement.reload
         expect(original_statement.order_details).not_to include(order_detail)
         expect(order_detail.statement).to be_blank
       end
