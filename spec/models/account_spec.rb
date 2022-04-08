@@ -224,9 +224,7 @@ RSpec.describe Account do
       @account = FactoryBot.create(:nufs_account, account_users_attributes: account_users_attributes_hash(user: @user1))
 
       expect(@account.owner_user).to eq(@user1)
-      @account.owner.deleted_at = Time.zone.now
-      @account.owner.deleted_by = @user1.id
-      @account.owner.save(validate: false)
+      @account.owner.update(deleted_at: Time.zone.now, deleted_by: @user1.id)
       @account_user2 = @account.account_users.create(user_id: @user2.id, user_role: "Owner", created_by: @user2.id)
       @account.reload # load fresh account users with update attributes
       expect(@account.owner_user).to eq(@user2)
