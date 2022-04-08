@@ -14,6 +14,10 @@ module Nucore
   class Application < Rails::Application
 
     config.load_defaults 6.1
+
+    # TODO- clean up unconventional inverse relations
+    config.active_record.has_many_inversing = false
+
     # It appears cancancan and/or delayed_job_active_record do some monkey patching of AR incorrectly,
     # so setting this in an initializer doesn't work. https://stackoverflow.com/a/39153224
     config.active_record.belongs_to_required_by_default = false

@@ -252,9 +252,7 @@ RSpec.describe SplitAccounts::SplitAccount, :enable_split_accounts, type: :model
         end
 
         it "unexpires the parent split_account" do
-          split_account.splits.reload
-          split_account.set_expires_at_from_subaccounts
-          expect(split_account).not_to be_expired
+          expect(split_account.reload).not_to be_expired
         end
       end
     end
