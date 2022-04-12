@@ -45,7 +45,7 @@ gem "uglifier", "= 4.1.18" # 4.1.19 has an issue https://github.com/mishoo/Uglif
 # libv8 8+ does not like to compile on our boxes. It's easier to lock down
 # libv8 and mini_racer for now than to try to get them upgraded on the server.
 gem "mini_racer", "< 0.3"
-gem "libv8", "< 8"
+gem "libv8", "< 9"
 gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
