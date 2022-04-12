@@ -339,6 +339,7 @@ GEM
     letter_opener (1.8.1)
       launchy (>= 2.2, < 3)
     libv8 (7.3.492.27.1)
+    libv8-node (16.10.0.0)
     loofah (2.16.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -355,8 +356,8 @@ GEM
       rake
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    mini_racer (0.2.15)
-      libv8 (> 7.3)
+    mini_racer (0.6.2)
+      libv8-node (~> 16.10.0.0)
     minitest (5.15.0)
     momentjs-rails (2.29.1.1)
       railties (>= 3.1)
@@ -649,7 +650,7 @@ DEPENDENCIES
   ldap_authentication!
   letter_opener
   libv8 (< 8)
-  mini_racer (< 0.3)
+  mini_racer (< 0.7)
   mysql2
   nested_form_fields
   nokogiri
