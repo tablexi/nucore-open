@@ -17,7 +17,7 @@ COPY Gemfile Gemfile.lock .ruby-version /app/
 COPY vendor/engines /app/vendor/engines
 
 # Install Bundler 2
-RUN gem install bundler --version=2.3.11
+RUN gem install bundler --version=$(cat Gemfile.lock | tail -1 | tr -d " ")
 
 # Build bundle
 RUN bundle install
