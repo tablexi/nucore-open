@@ -799,7 +799,7 @@ en:
   account_price_group_members:
     new:
       label:
-        search_term: "Search by payment source"
+        search_term: "Search by payment source number or description, or payment source owner's name, NetID, or username"
     search_results:
       head: "Select an Existing Payment Source"
       main: "Can't find the payment source you're looking for?"
