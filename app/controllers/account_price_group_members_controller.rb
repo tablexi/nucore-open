@@ -42,9 +42,12 @@ class AccountPriceGroupMembersController < ApplicationController
   end
 
   def search_conditions
+    search_term = generate_multipart_like_search_term(params[:search_term])
+
     @search_conditions ||= [
-      "LOWER(account_number) LIKE ?",
-      generate_multipart_like_search_term(params[:search_term]),
+      "LOWER(accounts.account_number) LIKE ? or LOWER(accounts.description) LIKE ?",
+      search_term,
+      search_term
     ]
   end
 
