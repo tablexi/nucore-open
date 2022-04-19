@@ -23,6 +23,12 @@ jobs:
           keys:
             - gem-cache-{{ arch }}--{{ .Branch }}-{{ checksum "Gemfile.lock" }}-{{ checksum ".ruby-version" }}
 
+      - run:
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+
       - run: bundle install --path vendor/bundle
 
       - save_cache:
