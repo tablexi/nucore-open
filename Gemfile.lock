@@ -338,8 +338,10 @@ GEM
       addressable (~> 2.7)
     letter_opener (1.8.1)
       launchy (>= 2.2, < 3)
-    libv8 (7.3.492.27.1)
-    loofah (2.15.0)
+    libv8-node (16.10.0.0)
+    libv8-node (16.10.0.0-aarch64-linux)
+    libv8-node (16.10.0.0-x86_64-linux)
+    loofah (2.16.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -355,12 +357,12 @@ GEM
       rake
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    mini_racer (0.2.15)
-      libv8 (> 7.3)
+    mini_racer (0.6.2)
+      libv8-node (~> 16.10.0.0)
     minitest (5.15.0)
     momentjs-rails (2.29.1.1)
       railties (>= 3.1)
-    msgpack (1.4.5)
+    msgpack (1.5.1)
     mysql2 (0.5.3)
     nested_form_fields (0.8.4)
       coffee-rails (>= 3.2.1)
@@ -371,8 +373,12 @@ GEM
       net-ssh (>= 2.6.5, < 7.0.0)
     net-ssh (6.1.0)
     nio4r (2.5.8)
-    nokogiri (1.13.3)
+    nokogiri (1.13.4)
       mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
+    nokogiri (1.13.4-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.13.4-x86_64-linux)
       racc (~> 1.4)
     numerizer (0.1.1)
     oj (3.13.11)
@@ -391,7 +397,7 @@ GEM
       parallel
     paranoia (2.6.0)
       activerecord (>= 5.1, < 7.1)
-    parser (3.1.1.0)
+    parser (3.1.2.0)
       ast (~> 2.4.1)
     pdf-core (0.9.0)
     phantomjs (2.1.1.0)
@@ -412,7 +418,7 @@ GEM
       pry (~> 0.13.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    public_suffix (4.0.6)
+    public_suffix (4.0.7)
     puma (5.6.4)
       nio4r (~> 2.0)
     racc (1.6.0)
@@ -460,7 +466,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redcarpet (3.5.1)
-    regexp_parser (2.2.1)
+    regexp_parser (2.3.0)
     request_store (1.5.1)
       rack (>= 1.4)
     responders (3.0.1)
@@ -478,7 +484,7 @@ GEM
     rspec-expectations (3.11.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
-    rspec-mocks (3.11.0)
+    rspec-mocks (3.11.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-rails (5.1.1)
@@ -492,16 +498,16 @@ GEM
     rspec-support (3.11.0)
     rspec_junit_formatter (0.5.1)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.25.1)
+    rubocop (1.27.0)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.15.1, < 2.0)
+      rubocop-ast (>= 1.16.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.16.0)
+    rubocop-ast (1.17.0)
       parser (>= 3.1.1.0)
     rubocop-rspec (2.9.0)
       rubocop (~> 1.19)
@@ -600,7 +606,9 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
+  aarch64-linux
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   aasm
@@ -648,8 +656,7 @@ DEPENDENCIES
   jquery-ui-rails
   ldap_authentication!
   letter_opener
-  libv8 (< 8)
-  mini_racer (< 0.3)
+  mini_racer (~> 0.6.2)
   mysql2
   nested_form_fields
   nokogiri
@@ -674,7 +681,7 @@ DEPENDENCIES
   rspec-collection_matchers
   rspec-rails
   rspec_junit_formatter
-  rubocop (= 1.25.1)
+  rubocop (= 1.27.0)
   rubocop-rspec
   rubyzip
   saml_authentication!
@@ -704,4 +711,4 @@ RUBY VERSION
    ruby 2.6.6p146
 
 BUNDLED WITH
-   1.17.3
+   2.3.11

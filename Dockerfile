@@ -16,6 +16,9 @@ COPY Gemfile Gemfile.lock .ruby-version /app/
 # We reference the engines in the Gemfile, so we need them to be there, too
 COPY vendor/engines /app/vendor/engines
 
+# Install Bundler 2
+RUN gem install bundler --version=$(cat Gemfile.lock | tail -1 | tr -d " ")
+
 # Build bundle
 RUN bundle install
 

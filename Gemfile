@@ -41,11 +41,7 @@ gem "paranoia"
 gem "sass-rails"
 gem "coffee-rails"
 gem "uglifier", "= 4.1.18" # 4.1.19 has an issue https://github.com/mishoo/UglifyJS2/issues/3245
-# TO DO: consider using nodejs instead of mini_racer
-# libv8 8+ does not like to compile on our boxes. It's easier to lock down
-# libv8 and mini_racer for now than to try to get them upgraded on the server.
-gem "mini_racer", "< 0.3"
-gem "libv8", "< 8"
+gem "mini_racer", "~> 0.6.2"
 gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
@@ -102,7 +98,7 @@ group :development do
   gem "ed25519", ">= 1.2", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "haml_lint", require: false
   gem "letter_opener"
-  gem "rubocop", "1.25.1", require: false
+  gem "rubocop", "1.27.0", require: false
   gem "rubocop-rspec"
   gem "web-console"
 end
