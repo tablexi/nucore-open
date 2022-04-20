@@ -6,7 +6,7 @@ ENV BUNDLE_PATH /gems
 # Install NodeJS based on https://github.com/nodesource/distributions#installation-instructions
 RUN apt-get update && \
  # Installs the node repository
- curl -sL https://deb.nodesource.com/setup_14.x | bash && \
+ curl -sL https://deb.nodesource.com/setup_16.x | bash && \
  # Installs the node repository
  apt-get install --yes nodejs && \
  apt-get autoremove -y
