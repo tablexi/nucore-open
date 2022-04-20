@@ -9,6 +9,7 @@ RUN apt-get update && \
  curl -sL https://deb.nodesource.com/setup_16.x | bash && \
  # Installs the node repository
  apt-get install --yes nodejs && \
+ npm install --global yarn && \
  apt-get autoremove -y
 
 # Copy just what we need in order to bundle
@@ -39,5 +40,6 @@ FROM base as deploy
 
 ENV RAILS_ENV production
 RUN bundle install --without=development test
+RUN yarn install
 # asset compile
 RUN SECRET_KEY_BASE=fake bundle exec rake assets:precompile
