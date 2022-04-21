@@ -107,7 +107,7 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
     end
   end
 
-  describe "searcing to add price group member", js: true do
+  describe "searching to add price group member", js: true do
     let(:user) { FactoryBot.create(:user, :facility_director, facility: facility) }
     let!(:account1) { FactoryBot.create(:account, :with_account_owner, account_number: "135711", description: "first account", facilities: [facility], owner: user) }
     let!(:account2) { FactoryBot.create(:account, :with_account_owner, account_number: "246810", description: "second account", facilities: [facility], owner: user) }
@@ -115,8 +115,7 @@ RSpec.describe "Managing Price Groups", :aggregate_failures do
     before do
       allow(Account.config).to receive(:facility_account_types).and_return(["Account"])
       login_as user
-      price_group = FactoryBot.create(:price_group, facility_id: facility.id )
-      visit "/facilities/#{facility.url_name}/price_groups/#{price_group.id}/account_price_group_members/new"
+      visit new_facility_price_group_account_price_group_member_path(facility, price_group)
     end
 
     it "searches for accounts by partial description" do
