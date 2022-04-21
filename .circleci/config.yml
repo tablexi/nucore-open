@@ -9,7 +9,7 @@ jobs:
           - RAILS_ENV: "test"
           - MYSQL_USER: root
           - SELENIUM_DRIVER_URL: http://localhost:4444/wd/hub
-      - image: circleci/mysql:8.0.28-ram
+      - image: cimg/mysql:8.0.28
         environment:
           MYSQL_ROOT_PASSWORD: 'root'
           MYSQL_ROOT_HOST: "%"
