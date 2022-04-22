@@ -14,13 +14,3 @@ set :linked_files, fetch(:linked_files, []).concat(
 set :linked_dirs, fetch(:linked_dirs, []).concat(
   %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/files),
 )
-
-namespace :eye do
-  task :set_recurring_tasks do
-    on roles :db do |host|
-      set :eye_env, -> { { rails_env: fetch(:rails_env), recurring: true } }
-    end
-  end
-end
-
-before "eye:load_config", "eye:set_recurring_tasks"
