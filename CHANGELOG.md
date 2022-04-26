@@ -6,7 +6,7 @@ or optional rake tasks.
 
 ### Use `secrets.yml` to determine which servers should run recurring tasks ([#2994](https://github.com/tablexi/nucore-open/pull/2994))
 
-The `recurring_tasks` process should only run on one server per environment.  Using `eye` to manage this did not work as expected. Set the value of `recurring_tasks` in `secrets.yml` to configure which servers should run these tasks.
+The `recurring_tasks` process should only run on one server per environment.   Set `RECURRING=true` in the environment (`.bashrc` for example) to configure which servers should run these tasks.  Attempting to set this via `capistrano` only works on deploy.
 
 ### Rename `auto_cancel` daemon to `recurring_tasks` and consolidate recurring tasks there ([#2957](https://github.com/tablexi/nucore-open/pull/2957))
 
