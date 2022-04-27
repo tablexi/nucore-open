@@ -4,7 +4,7 @@ Because we use squash and merge, you should be able to see the changes by lookin
 at the [commit log](https://github.com/tablexi/nucore-open/commits/master). However, we have begun keeping track of breaking changes
 or optional rake tasks.
 
-### Use `secrets.yml` to determine which servers should run recurring tasks ([#2994](https://github.com/tablexi/nucore-open/pull/2994))
+### Use `.bashrc` to determine which servers should run recurring tasks ([#2994](https://github.com/tablexi/nucore-open/pull/2994))
 
 The `recurring_tasks` process should only run on one server per environment.   Set `RECURRING=true` in the environment (`.bashrc` for example) to configure which servers should run these tasks.  Attempting to set this via `capistrano` only works on deploy.
 
