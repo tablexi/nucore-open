@@ -42,13 +42,15 @@ services:
     stdin_open: true
     tty: true
   db:
-    image: mysql:5.7.22
+    image: mysql:8.0.28
     environment:
       - MYSQL_ROOT_PASSWORD=root
     ports:
       - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
+    tty: true
+    stdin_open: true
     logging:
       driver: none
   mailcatcher:

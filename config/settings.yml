@@ -1,4 +1,5 @@
 header_logo_path: ~
+display_app_name_in_header: true
 
 price_group:
   name:
@@ -34,7 +35,7 @@ statement_pdf:
   font_name: Roboto
 
 validator:
-  class_name: ValidatorDefault
+  class_name: "AccountValidator::ValidatorDefault"
   test:
     factory: # relative to Rails.root
     helper: 'spec/validator_helper' # relative to Rails.root

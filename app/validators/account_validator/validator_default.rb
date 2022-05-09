@@ -7,9 +7,9 @@
 # very little. In fact, it will consider every payment
 # source it validates as valid. Every real nucore instance
 # should replace this class with institution-specific
-# validation rules. See +ValidatorFactory+ for details
+# validation rules. See +AccountValidator::ValidatorFactory+ for details
 # on how to do that.
-class ValidatorDefault
+class AccountValidator::ValidatorDefault
 
   #
   # Returns the payment source format that is
@@ -32,7 +32,7 @@ class ValidatorDefault
   #
   # Validates a payment source. Returns nil and raises
   # no +Exception+ if a payment source is open to new
-  # payments. Otherwise a +ValidatorError+ will be raised.
+  # payments. Otherwise a +AccountValidator::ValidatorError+ will be raised.
   def account_is_open!(fulfilled_at = nil)
   end
 
