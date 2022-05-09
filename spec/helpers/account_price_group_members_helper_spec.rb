@@ -12,14 +12,14 @@ RSpec.describe AccountPriceGroupMembersHelper do
 
     it "returns nil if the accounts_count isn't over the limit" do
       expect(additional_results_notice(count: 12, limit: 25)).to be_nil
-	end
+    end
 
     it "returns a notice if accounts_count is over the limit" do
-	  count = 120
-	  limit = 25
-	  text = "<p class='notice'>#{count - limit} more payment sources exist, try refining your search.</p>"
+      count = 120
+      limit = 25
+      text = "<p class='notice'>#{count - limit} more payment sources exist, try refining your search.</p>"
 
-      expect(additional_results_notice(count: 120, limit: 25)).to eq text
-	end
+       expect(additional_results_notice(count: 120, limit: 25)).to eq text
+    end
   end
 end
