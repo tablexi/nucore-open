@@ -1,6 +1,5 @@
 .navbar.navbar-static-top
-  - styles = (Rails.env == "stage" && Settings.stage_color.present?) ? "background-image: none; background-color:  #{Settings.stage_color}" : ""
-  .navbar-inner{ style: styles }
+  .navbar-inner{ style: staging_header_styles }
     .container
       = link_to :root, class: "brand" do
         - if Settings.header_logo_path.present?
