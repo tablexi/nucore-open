@@ -21,8 +21,8 @@ module ApplicationHelper
   end
 
   def staging_header_styles
-    apply_stage_color = (Rails.env == "stage" && Settings.stage_color.present?)
-    "background-image: none; background-color: #{Settings.stage_color}" if apply_stage_color
+    stage_color = ENV.fetch("stage_color", nil)
+    "background-image: none; background-color: #{stage_color}" if stage_color
   end
 
   def sortable(column, title = nil)
