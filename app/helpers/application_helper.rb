@@ -21,7 +21,7 @@ module ApplicationHelper
   end
 
   def staging_header_styles
-    stage_color = ENV.fetch("stage_color", nil)
+    stage_color = Settings.stage_color
     "background-image: none; background-color: #{stage_color}" if stage_color
   end
 
