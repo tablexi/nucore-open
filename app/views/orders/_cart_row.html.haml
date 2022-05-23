@@ -25,6 +25,15 @@
 
       - if order_detail.product.is_a?(Instrument)
         %td
+      - elsif order_detail.product.is_a?(TimedService)
+        %td.centered
+          = odf.input :quantity,
+            disabled: order_detail.quantity_locked_by_survey?,
+            input_html: { name: "quantity#{order_detail.id}",
+            aria: { label: "#{order_detail.product} #{OrderDetail.human_attribute_name(:quantity)}" },
+            id: "quantity#{order_detail.id}",
+            class: "cart__quantityField" },
+            label: false
       - elsif order_detail.bundle
         %td.centered= QuantityPresenter.new(order_detail.product, order_detail.quantity)
       - else
