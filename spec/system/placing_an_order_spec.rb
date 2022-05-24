@@ -115,7 +115,7 @@ RSpec.describe "Placing an item order" do
       it "adds the item as a single line item" do
         add_to_cart
         expect(page).to have_content(timed_service.name).once
-        expect(page).to have_content("1:30")
+        expect(page).to have_content("90")
       end
     end
 
