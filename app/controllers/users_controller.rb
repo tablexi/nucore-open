@@ -237,7 +237,9 @@ class UsersController < ApplicationController
   end
 
   def save_user_success(user)
-    flash[:notice] = text("create.success")
+    user_type = user.email_user? ? "external" : "internal"
+    flash[:notice] = creation_success_text(user_type)
+
     if session_user.manager_of?(current_facility)
       add_role = html("create.add_role", link: facility_facility_user_map_user_path(current_facility, user), inline: true)
       flash[:notice].safe_concat(add_role)
@@ -251,6 +253,34 @@ class UsersController < ApplicationController
       flash[key] += " #{message}"
     else
       flash[key] = message
+    end
+  end
+
+  # Builds the text for the creation success flash notice
+  #
+  # +user_type+ A string which specifies if the user is "internal" or "external"
+  def creation_success_text(user_type)
+    text(
+      "create.success.#{user_type}",
+      price_group: price_group_name(user_type),
+      app_name: t("app_name"),
+      support_contact: support_contact
+    )
+  end
+
+  def price_group_name(user_type)
+    if user_type == "internal"
+      Settings.price_group.name.internal
+    else
+      Settings.price_group.name.external
+    end
+  end
+
+  def support_contact
+    if Settings.support_email.blank?
+      ""
+    else
+      " at #{Settings.support_email}"
     end
   end
 
