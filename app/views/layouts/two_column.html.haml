@@ -11,8 +11,10 @@
       .container
         .row
           .span12
-            %h1= yield :h1
-            %h2= yield :h2
+            - if yield(:h1).present?
+              %h1= yield(:h1)
+            - if yield(:h2).present?
+              %h2= yield(:h2)
         .row
           .span9.pull-right
             = render partial: 'shared/flashes'
