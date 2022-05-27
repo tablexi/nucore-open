@@ -34,7 +34,6 @@ class UsersController < ApplicationController
 
   # GET /facilities/:facility_id/users
   def index
-    @new_user = User.find_by(id: params[:user])
     @users = User.with_recent_orders(current_facility)
                  .order(:last_name, :first_name)
                  .paginate(page: params[:page])
@@ -237,13 +236,8 @@ class UsersController < ApplicationController
   end
 
   def save_user_success(user)
-    user_type = user.email_user? ? "external" : "internal"
-    flash[:notice] = creation_success_text(user_type)
+    flash[:notice] = creation_success_text(user)
 
-    if session_user.manager_of?(current_facility)
-      add_role = html("create.add_role", link: facility_facility_user_map_user_path(current_facility, user), inline: true)
-      flash[:notice].safe_concat(add_role)
-    end
     Notifier.new_user(user: user, password: user.password).deliver_later
     redirect_to facility_users_path(user: user.id)
   end
@@ -257,11 +251,13 @@ class UsersController < ApplicationController
   end
 
   # Builds the text for the creation success flash notice
-  #
-  # +user_type+ A string which specifies if the user is "internal" or "external"
-  def creation_success_text(user_type)
-    text(
+  def creation_success_text(user)
+    user_type = user.email_user? ? "external" : "internal"
+
+    html(
       "create.success.#{user_type}",
+      user_info: "#{user.full_name} (#{user.email})",
+      user_link: facility_user_path(current_facility, user),
       price_group: price_group_name(user_type),
       app_name: t("app_name"),
       support_contact: support_contact
@@ -270,7 +266,7 @@ class UsersController < ApplicationController
 
   def price_group_name(user_type)
     if user_type == "internal"
-      Settings.price_group.name.internal
+      Settings.price_group.name.base
     else
       Settings.price_group.name.external
     end
