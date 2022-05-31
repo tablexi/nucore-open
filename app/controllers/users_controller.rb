@@ -12,6 +12,7 @@ class UsersController < ApplicationController
   end
 
   include Overridable
+  include UserControllerFlashText
   include TextHelpers::Translation
 
   customer_tab :password
@@ -236,7 +237,7 @@ class UsersController < ApplicationController
   end
 
   def save_user_success(user)
-    flash[:notice] = creation_success_text(user)
+    flash[:notice] = creation_success_flash_text(user, current_facility)
 
     Notifier.new_user(user: user, password: user.password).deliver_later
     redirect_to facility_users_path(user: user.id)
@@ -247,36 +248,6 @@ class UsersController < ApplicationController
       flash[key] += " #{message}"
     else
       flash[key] = message
-    end
-  end
-
-  # Builds the text for the creation success flash notice
-  def creation_success_text(user)
-    user_type = user.email_user? ? "external" : "internal"
-
-    html(
-      "create.success.#{user_type}",
-      user_info: "#{user.full_name} (#{user.email})",
-      user_link: facility_user_path(current_facility, user),
-      price_group: price_group_name(user_type),
-      app_name: t("app_name"),
-      support_contact: support_contact
-    )
-  end
-
-  def price_group_name(user_type)
-    if user_type == "internal"
-      Settings.price_group.name.base
-    else
-      Settings.price_group.name.external
-    end
-  end
-
-  def support_contact
-    if Settings.support_email.blank?
-      ""
-    else
-      " at #{Settings.support_email}"
     end
   end
 
