@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-module UserControllerFlashText
-
-  extend ActiveSupport::Concern
+module UsersHelper
 
   # Builds the text for the creation success flash notice
   def creation_success_flash_text(user, facility)
     user_type = user.email_user? ? "external" : "internal"
 
     html(
-      "create.success.#{user_type}",
+      "controllers.users.create.success.#{user_type}",
       user_info: "#{user.full_name} (#{user.email})",
       user_link: facility_user_path(facility, user),
       price_group: price_group_name(user_type),
@@ -17,6 +15,8 @@ module UserControllerFlashText
       support_contact: support_contact
     )
   end
+
+	private
 
   def price_group_name(user_type)
     if user_type == "internal"
@@ -34,5 +34,4 @@ module UserControllerFlashText
       " at [#{email}](mailto:#{email})"
     end
   end
-
 end

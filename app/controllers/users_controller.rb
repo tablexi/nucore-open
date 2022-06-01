@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   end
 
   include Overridable
-  include UserControllerFlashText
+  include UsersHelper
   include TextHelpers::Translation
 
   customer_tab :password
