@@ -99,11 +99,6 @@ RSpec.describe User do
     expect(user).not_to be_email_user
   end
 
-  it "is an email user when the username is the same as the email" do
-    user.username = user.email
-    expect(user).to be_email_user
-  end
-
   describe ".with_global_roles" do
     subject(:users_with_global_roles) { described_class.with_global_roles }
     let!(:unprivileged_users) { create_list(:user, 2) }
