@@ -14,7 +14,7 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
   describe "create", js: true do
     let(:user) { FactoryBot.build(:user, :netid, username: "user123") }
 
-    it "creates an external user" do
+    it "creates an external user", :js do
       visit new_external_facility_users_path(facility)
 
       fill_in "First name", with: user.first_name
@@ -23,7 +23,8 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
 
       click_on "Create"
 
-      expect(page).to have_content("You just created a new user, #{user.full_name} (#{user.email})")
+      new_user = User.where(email: user.email).first
+      expect(page).to have_content("You just created a new user, #{new_user.full_name} (#{new_user.username})")
 
       expect(page).to have_content("if this user is entitled to internal rates.")
     end
