@@ -21,6 +21,8 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
       fill_in "Last name", with: user.last_name
       fill_in "Email", with: user.email
 
+      check("user[no_netid]") if UsersController.user_form_class.new(user).respond_to? :no_netid
+
       click_on "Create"
 
       expect(page).to have_content("You just created a new user, #{user.full_name} (#{user.email})")
