@@ -24,10 +24,14 @@ en:
             You just created a new user, [%{user_info}](%{user_link}).
 
             The default Price Group for this user is "%{price_group}" (internal rates). Please notify %{app_name} support%{support_contact} if this is an external user.
+
+            The user must be added to a Payment Source before they can make a purchase.
           external: |
             You just created a new user, [%{user_info}](%{user_link}).
 
             The default Price Group for this user is "%{price_group}." Please notify %{app_name} support%{support_contact} if this user is entitled to internal rates.
+
+            The user must be added to a Payment Source before they can make a purchase.
       update:
         error: There was an error updating the user. %{message}
         success: The user has been updated successfully.
