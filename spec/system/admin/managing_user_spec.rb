@@ -19,7 +19,7 @@ RSpec.describe "Managing User Details", :aggregate_failures, feature_setting: { 
       fill_in "Last name", with: "Waialiki"
       fill_in "Email", with: "moana@maui.island"
 
-      check("user[no_netid]") if has_css?("user[no_netid]")
+      check("user[no_netid]") if has_css?("#user_no_netid")
 
       click_on "Create"
 
