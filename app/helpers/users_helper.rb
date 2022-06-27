@@ -8,7 +8,7 @@ module UsersHelper
 
     html(
       "controllers.users.create.success.#{user_type}",
-      user_info: "#{user.full_name} (#{user.email})",
+      user_info: "#{user.full_name} (#{user.username})",
       user_link: facility_user_path(facility, user),
       price_group: price_group_name(user_type),
       app_name: t("app_name"),
