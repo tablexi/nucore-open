@@ -82,6 +82,7 @@ class StagingMailInterceptor
   def allow_listed?(recipient)
     recipient = Mail::Address.new(recipient)
     recipient.domain == "tablexi.com" ||
+      recipient.domain == "txidigital.com" ||
       full_allow_list.map(&:downcase).include?(recipient.address.downcase)
   end
 

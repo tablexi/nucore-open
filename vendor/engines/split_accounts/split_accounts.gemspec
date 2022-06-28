@@ -8,9 +8,9 @@ Gem::Specification.new do |s|
   s.name    = "split_accounts"
   s.version = SplitAccounts::VERSION
   s.authors  = ["Table XI"]
-  s.email    = "devs@tablexi.com"
+  s.email    = "devs@txidigital.com"
   s.homepage = "https://github.com/tablexi/nucore-open"
-  s.summary = "Optional split accounts feature"
+  s.summary = "Optional split a`ccounts feature"
   s.description = ""
 
   s.files = Dir["{app,config,db,lib}/**/*", "spec/factories/**/*"]
