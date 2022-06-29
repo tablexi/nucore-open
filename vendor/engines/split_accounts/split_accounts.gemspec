@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.authors  = ["Table XI"]
   s.email    = "devs@txidigital.com"
   s.homepage = "https://github.com/tablexi/nucore-open"
-  s.summary = "Optional split a`ccounts feature"
+  s.summary = "Optional split accounts feature"
   s.description = ""
 
   s.files = Dir["{app,config,db,lib}/**/*", "spec/factories/**/*"]
