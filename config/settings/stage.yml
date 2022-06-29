@@ -3,8 +3,8 @@ email:
   fake:
     enabled: true
     to:
-      - nucore@tablexi.com
-    whitelist: []
+      - nucore@txidigital.com
+    allow_list: []
 
 # paperclip:
 #   storage: s3
