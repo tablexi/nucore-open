@@ -1,34 +1,42 @@
-// On bundle_products#new, switch between a regular quantity field and a time
-// quantity field based on the type of product selected.
-$(function() {
-  $productSelect = $(".js--bundleProducts__productSelect");
-  const hints = document.querySelectorAll('.hint');
+/**
+ * Show/hide helpful hint text on the bundle new page based on which kind of product
+ * is selected. The hint text is meant to give the user helpful information about
+ * the product type (e.g. Item, Timed Service, etc).
+ * 
+ * To add a hint, add an element with the .hint and .js--<camel cased product type> 
+ * classes to the page. E.g. the "Timed Services" hint is put in an element with the
+ * .js--timedServices, and .hint classes.
+ */
+(function() {
+  window.addEventListener("DOMContentLoaded", function() {
+    const productSelect = document.querySelector(".js--bundleProducts__productSelect");
 
-  hideElements(hints);
+    if (productSelect) {
+      const hints = document.querySelectorAll(".hint");
 
-  if ($productSelect.length) {
-
-    $productSelect.bind("change", function(evt) {
       hideElements(hints);
 
-      let selectedType = $(evt.target).find(":selected").closest("optgroup").attr("label");
+      productSelect.addEventListener("change", function(evt) {
+        hideElements(hints);
 
-      if (selectedType) {
-        let className = ".js--" + capitalizedToCamelCase(selectedType);
-        document.querySelector(className).hidden = false;
-      }
+        let selectedType = $(evt.target).find(":selected").closest("optgroup").attr("label");
 
-    }).trigger("change");
+        if (selectedType) {
+          let className = ".js--" + capitalizedToCamelCase(selectedType);
+          document.querySelector(className).hidden = false;
+        }
 
-  }
+      });
+    }
 
-  function capitalizedToCamelCase(str) {
-    return (str[0].toLowerCase() + str.slice(1)).replaceAll(" ", "");
-  }
+    function capitalizedToCamelCase(str) {
+      return (str[0].toLowerCase() + str.slice(1)).replaceAll(" ", "");
+    }
 
-  function hideElements(elements) {
-    elements.forEach(function(element) {
-      element.hidden = true;
-    });
-  }
-});
+    function hideElements(elements) {
+      elements.forEach(function(element) {
+        element.hidden = true;
+      });
+    }
+  });
+})();

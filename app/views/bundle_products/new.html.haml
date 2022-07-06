@@ -24,7 +24,7 @@
       = f.input :quantity, required: true
 
     %p.js--timedServices.hint
-      The number of timed services, not time per service. Time can be adjusted in cart.
+      = t("timed_service_hint")
 
   %ul.inline
     %li= f.submit t("shared.create"), class: "btn"
