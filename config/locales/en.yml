@@ -1268,3 +1268,5 @@ en:
     calendar_tooltip: Calendar file download
     summary: "%{facility}: %{product}"
     description: "%{facility} reservation for %{product}. Order number %{order_number}."
+  
+  timed_service_hint: The number of timed services, not time per service. Time can be adjusted in cart.
