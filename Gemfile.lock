@@ -336,7 +336,7 @@ GEM
     hashdiff (1.0.1)
     health_check (3.1.0)
       railties (>= 5.0)
-    i18n (1.10.0)
+    i18n (1.11.0)
       concurrent-ruby (~> 1.0)
     icalendar (2.7.1)
       ice_cube (~> 0.16)
