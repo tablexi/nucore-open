@@ -17,7 +17,7 @@ class OrderDetailUpdateParamHashExtractor
   #   { 123 => { quantity: 2, note: "Noted" } }
   def to_h
     # TODO: clean up this and _cart_row.html.haml
-    params.permit!.to_h.each_with_object({}) do |(key, value), memo|
+    od_params = params.permit!.to_h.each_with_object({}) do |(key, value), memo|
       match = key.match(/\A(note|quantity|reference_id)(\d+)\z/) || next
       property = match[1].to_sym
       id = match[2].to_i
@@ -25,6 +25,12 @@ class OrderDetailUpdateParamHashExtractor
 
       (memo[id] ||= {})[property] = value
     end
+
+    if params.permit!.to_h[:fulfilled_at]
+      od_params.each_value { |inner_hash| inner_hash[:manual_fulfilled_at] = params.permit!.to_h[:fulfilled_at] }
+    end
+
+    od_params
   end
 
 end
