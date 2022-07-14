@@ -29,7 +29,7 @@ module Nucore
 
     # Needed on the 6.1.6.1 version bump.
     # https://github.com/rails/rails/blob/dc1242fd5a4d91e63846ab552a07e19ebf8716ac/activerecord/CHANGELOG.md
-    config.active_record.yaml_column_permitted_classes = [Symbol, Date, Time, ActiveSupport::HashWithIndifferentAccess]
+    config.active_record.yaml_column_permitted_classes = [Symbol, ActiveSupport::HashWithIndifferentAccess]
 
     # config.time_zone = "Central Time (US & Canada)"
 
