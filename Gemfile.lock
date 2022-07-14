@@ -348,7 +348,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
-    json (2.6.1)
+    json (2.6.2)
     kgio (2.11.4)
     kostya-sigar (2.0.10)
     launchy (2.5.0)
