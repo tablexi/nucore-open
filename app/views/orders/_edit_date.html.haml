@@ -8,8 +8,6 @@
           class: "datepicker__data",
           data: { max_date: Time.current.iso8601 } }
 
-    = f.input :fulfilled_at
-
     = label_tag :order_time
     .time-select= time_select_tag :order_time, params[:order_datetime] || default_time 
 
@@ -18,6 +16,8 @@
       label_method: :name_with_level,
       selected:  params[:order_status_id] || @order_statuses.first.try(:id),
       label: OrderDetail.human_attribute_name(:order_status)
+
+    = f.input :fulfilled_at
 
     = f.input :send_notification,
       as: :boolean,
