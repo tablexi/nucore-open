@@ -84,7 +84,6 @@ RSpec.describe "Placing an item order" do
     choose account.to_s
     click_button "Continue"
 
-    find("label", text: /More options/i).click
     fill_in "Order date", with: I18n.l(2.days.ago.to_date, format: :usa)
     select "Complete", from: "Order Status"
 
