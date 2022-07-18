@@ -9,19 +9,25 @@ window.addEventListener("DOMContentLoaded", () => {
     // In the _edit_date partial, show the "Fulfilled at" field only if 
     // the "Order Status" is "Complete"
     function toggleFulfilledAt() {
-      const fulfilledAt = document.querySelector(".backdate_fulfilled_at");
+      const fulfilledAtSection = document.querySelector(".backdate_fulfilled_at");
+      const fulfilledAtElement = document.querySelector("#fulfilled_at");
       let selectedValue = orderStatusSelect.value;
       let displayStyle;
+      let required;
 
       // "Complete" is the 4th item in the dropdown
       if (selectedValue === "4") {
         displayStyle = "";
+        required = true;
       }
       else {
         displayStyle = "none";
+        required = false;
+        fulfilledAtElement.value = null;
       }
   
-      fulfilledAt.style.display = displayStyle;
+      fulfilledAtSection.style.display = displayStyle;
+      fulfilledAtElement.required = required;
     }
   }
 });
