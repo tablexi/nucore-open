@@ -595,7 +595,7 @@ GEM
     tilt (2.0.10)
     timers (4.3.3)
     ttfunk (1.7.0)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uglifier (4.1.18)
       execjs (>= 0.3.0, < 3)
