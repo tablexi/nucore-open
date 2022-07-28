@@ -592,7 +592,7 @@ GEM
       redcarpet (>= 3.5.1)
     thor (1.2.1)
     thread_safe (0.3.6)
-    tilt (2.0.10)
+    tilt (2.0.11)
     timers (4.3.3)
     ttfunk (1.7.0)
     tzinfo (2.0.5)
