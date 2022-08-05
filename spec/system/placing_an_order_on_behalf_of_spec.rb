@@ -11,7 +11,7 @@ RSpec.describe "Placing an item order" do
                       price_group: PriceGroup.base,
                       product: product,
                       unit_cost: 33.25,
-                      start_date: 2.days.ago)
+                      start_date: 3.days.ago)
   end
   let!(:account_price_group_member) do
     FactoryBot.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
@@ -86,6 +86,8 @@ RSpec.describe "Placing an item order" do
 
     fill_in "Order date", with: I18n.l(2.days.ago.to_date, format: :usa)
     select "Complete", from: "Order Status"
+
+    fill_in "Fulfilled at", with: I18n.l(2.days.ago.to_date, format: :usa)
 
     click_button "Purchase"
 

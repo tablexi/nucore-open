@@ -11,12 +11,12 @@ window.addEventListener("DOMContentLoaded", () => {
     function toggleFulfilledAt() {
       const fulfilledAtSection = document.querySelector(".backdate_fulfilled_at");
       const fulfilledAtElement = document.querySelector("#fulfilled_at");
-      let selectedValue = orderStatusSelect.value;
+      let selectedIndex = orderStatusSelect.selectedIndex;
+      let selectedText = orderStatusSelect.options[selectedIndex].text; 
       let displayStyle;
       let required;
 
-      // "Complete" is the 4th item in the dropdown
-      if (selectedValue === "4") {
+      if (selectedText === "Complete") {
         displayStyle = "";
         required = true;
       }
