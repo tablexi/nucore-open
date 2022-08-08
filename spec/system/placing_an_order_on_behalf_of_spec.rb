@@ -78,16 +78,17 @@ RSpec.describe "Placing an item order" do
   end
 
   it "can backdate an order", :js do # js needed for More options expansion
+    two_days_ago = I18n.l(2.days.ago.to_date, format: :usa)
     visit facility_path(facility)
     click_link product.name
     click_link "Add to cart"
     choose account.to_s
     click_button "Continue"
 
-    fill_in "Order date", with: I18n.l(2.days.ago.to_date, format: :usa)
+    fill_in "Order date", with: two_days_ago
     select "Complete", from: "Order Status"
 
-    fill_in "Fulfilled at", with: I18n.l(2.days.ago.to_date, format: :usa)
+    fill_in "Fulfilled at", with: two_days_ago
 
     click_button "Purchase"
 
@@ -96,7 +97,7 @@ RSpec.describe "Placing an item order" do
     expect(page).to have_css(".currency .estimated_cost", count: 0)
     expect(page).to have_css(".currency .actual_cost", count: 2) # Cost and Total
 
-    expect(page).to have_content_i("Ordered Date\n#{I18n.l(2.days.ago.to_date, format: :usa)}")
+    expect(page).to have_content_i("Ordered Date\n#{two_days_ago}")
   end
 
   it "can set a reference ID" do
