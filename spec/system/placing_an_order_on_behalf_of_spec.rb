@@ -11,7 +11,7 @@ RSpec.describe "Placing an item order" do
                       price_group: PriceGroup.base,
                       product: product,
                       unit_cost: 33.25,
-                      start_date: 3.days.ago)
+                      start_date: 2.days.ago.beginning_of_day)
   end
   let!(:account_price_group_member) do
     FactoryBot.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
