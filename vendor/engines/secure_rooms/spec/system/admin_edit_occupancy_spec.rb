@@ -34,7 +34,7 @@ RSpec.describe "Editing an occupancy" do
     let(:entry_at) { Time.zone.parse("2017-09-12 08:30") }
     let(:exit_at) { Time.zone.parse("2017-09-12 09:30") }
 
-    it "can change the times" do
+    it "can change the times", :blank_price_change_reason_options do
       fill_in "order_detail_occupancy_attributes_entry_at_date", with: "04/12/2017"
       select "7", from: "order_detail_occupancy_attributes_entry_at_hour"
       select "10", from: "order_detail_occupancy_attributes_entry_at_minute"
