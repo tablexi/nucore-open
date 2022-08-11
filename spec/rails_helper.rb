@@ -114,15 +114,6 @@ RSpec.configure do |config|
     Settings.billing.review_period = original_review_period
   end
 
-  config.around(:each, :blank_price_change_reason_options) do |example|
-    original_options = Settings.order_detail_price_change_reason_options
-    Settings.order_detail_price_change_reason_options = ""
-
-    example.call
-
-    Settings.order_detail_price_change_reason_options = original_options
-  end
-
   config.before(:all) do
     # users are not created within transactions, so delete them all here before running tests
     PriceGroupMember.delete_all
