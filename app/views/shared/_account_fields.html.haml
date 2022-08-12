@@ -2,6 +2,7 @@
   %ul.inline
     - fields = account_class.new.account_number_fields
     - fields.each_with_index do |(section, options), i|
+      - section_value = f.object.send(section) || options[:default]
       %li.account_number_field
         = p.label section,
           t("#{account_class.name.underscore}.account_fields.label.account_number.#{section}"),
@@ -12,6 +13,6 @@
           maxlength: options[:length] || 30,
           tabindex: i + 1,
           readonly: local_assigns[:readonly],
-          value: account_field_value(params, account_class, section, options[:default])
+          value: account_field_value(params, account_class, section, section_value)
 
         = "-&nbsp;".html_safe unless i >= fields.size - 1
