@@ -39,6 +39,7 @@ RSpec.describe "Managing recharge accounts (FacilityFacilityAccountsController)"
         expect(page).to have_field(I18n.t(field, scope: "facility_account.account_fields.label.account_number"), readonly: true)
       end
 
+      expect(page.html).to include facility_account.account_number
       uncheck "Is Active?"
       click_button "Save"
       expect(page).to have_content("(inactive)")
