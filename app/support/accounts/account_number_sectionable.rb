@@ -37,7 +37,7 @@ module Accounts::AccountNumberSectionable
   # as provided by `account_number_fields`.
   #
   # Not all account types have multiple account number parts. Account types that
-  # only have one part to their `account_number`` should only have a part called
+  # only have one part to their `account_number` should only have a part called
   # `:account_number`, in this case, whatever the value of `account_number` is
   # returned.
   def account_number_part_value_or_default(part)
