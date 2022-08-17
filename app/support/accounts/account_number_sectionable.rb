@@ -33,4 +33,8 @@ module Accounts::AccountNumberSectionable
     self.account_number = account_number_to_storage_format
   end
 
+  def account_number_part_value_or_default(part)
+    account_number_parts&.dig(part) || account_number_fields[part][:default]
+  end
+
 end
