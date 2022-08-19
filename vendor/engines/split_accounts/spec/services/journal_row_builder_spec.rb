@@ -9,9 +9,9 @@ RSpec.describe JournalRowBuilder, :enable_split_accounts, :default_journal_row_c
   end
 
   let(:facility) { create(:facility) }
-  let(:facility_account) { create(:facility_account, facility: facility, revenue_account: 51_234) }
+  let(:facility_account) { create(:facility_account, facility: facility, revenue_account: "51234") }
   let(:product) { create(:setup_item, facility: facility, facility_account: facility_account) }
-  let(:facility_account2) { create(:facility_account, facility: facility, revenue_account: 51_235) }
+  let(:facility_account2) { create(:facility_account, facility: facility, revenue_account: "51235") }
   let(:product2) { create(:setup_item, facility: facility, facility_account: facility_account2) }
 
   let(:journal) { build_stubbed(:journal, facility: facility) }
@@ -45,12 +45,12 @@ RSpec.describe JournalRowBuilder, :enable_split_accounts, :default_journal_row_c
     end
 
     it "2 negative rows for the facility accounts" do
-      rows = builder.build.journal_rows.select { |row| row.account.to_i == facility_account.revenue_account }
+      rows = builder.build.journal_rows.select { |row| row.account == facility_account.revenue_account }
       expect(rows.length).to eq(1)
       expect(rows.first.amount).to eq(-20)
       expect(rows.first.order_detail_id).to be_blank
 
-      rows2 = builder.journal_rows.select { |row| row.account.to_i == facility_account2.revenue_account }
+      rows2 = builder.journal_rows.select { |row| row.account == facility_account2.revenue_account }
       expect(rows2.length).to eq(1)
       expect(rows2.first.amount).to eq(-3)
       expect(rows2.first.order_detail_id).to be_blank

@@ -13,7 +13,7 @@ time_zone: "Central Time (US & Canada)"
 accounts:
   # Most frequently used account by NU
   product_default: 75340
-  revenue_account_default: 50617
+  revenue_account_default: "50617"
 
 financial:
   # in the format MM-DD
