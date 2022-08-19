@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_16_233321) do
+ActiveRecord::Schema.define(version: 2022_08_19_183819) do
 
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -185,7 +185,7 @@ ActiveRecord::Schema.define(version: 2022_02_16_233321) do
     t.boolean "is_active", null: false
     t.integer "created_by", null: false
     t.datetime "created_at", null: false
-    t.integer "revenue_account", null: false
+    t.string "revenue_account", null: false
     t.index ["facility_id"], name: "fk_facilities"
   end
 
