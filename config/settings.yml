@@ -145,6 +145,8 @@ paperclip:
 #   # Use login_enabled: false if you want to allow access to metadata without yet
 #   # allowing login.
 #   login_enabled: true
+#   # You can add allowance for clock drift between the sp and idp - this is a time in seconds.
+#   allowed_clock_drift_in_seconds: 0
 #   idp_metadata: "https://websso.example.com/idp/metadata"
 #   # certificate_file: path/to/file.p12 # Optional. Do not check in to version control.
 #   # driver: # Optional. Useful to override inferred SAML settings if need be.
