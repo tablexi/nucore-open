@@ -8,10 +8,10 @@ en:
         update: Update %{plural_label}
         import_button: Import Approved Users
         import_hint: |
-          This instrument requires a user to be approved before they can make a 
-          reservation. Users can be approved individually or a list can be imported. 
+          This %{product_type} requires a user to be approved before they can make a 
+          reservation or pruchase. Users can be approved individually or a list can be imported. 
           When importing, create a CSV file with a single column titled ‘Username’ 
-          (NETID or email). New users are added to the existing list.
+          (NETID or email). New users are added to the existing access list.
 
       table:
         confirm_removal: |
