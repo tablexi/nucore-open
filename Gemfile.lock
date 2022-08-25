@@ -371,7 +371,7 @@ GEM
       rake
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    minitest (5.16.2)
+    minitest (5.16.3)
     momentjs-rails (2.29.4.1)
       railties (>= 3.1)
     msgpack (1.5.6)
@@ -395,7 +395,7 @@ GEM
     numerizer (0.1.1)
     oj (3.13.21)
     orm_adapter (0.5.0)
-    paper_trail (12.3.0)
+    paper_trail (13.0.0)
       activerecord (>= 5.2)
       request_store (~> 1.1)
     paperclip (6.1.0)
