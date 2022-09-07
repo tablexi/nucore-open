@@ -11,7 +11,7 @@ RSpec.describe "Placing an item order" do
                       price_group: PriceGroup.base,
                       product: product,
                       unit_cost: 33.25,
-                      start_date: 2.days.ago.beginning_of_day)
+                      start_date: 6.days.ago.beginning_of_day)
   end
   let!(:account_price_group_member) do
     FactoryBot.create(:account_price_group_member, account: account, price_group: price_policy.price_group)
@@ -95,8 +95,8 @@ RSpec.describe "Placing an item order" do
 
     expect(page).to have_content "Order Receipt"
     expect(page).to have_content(/Ordered For\n#{user.full_name}/i)
-    expect(page).to have_css(".currency .estimated_cost", count: 2)
-    expect(page).to have_css(".currency .actual_cost", count: 0) # Cost and Total
+    expect(page).to have_css(".currency .estimated_cost", count: 0)
+    expect(page).to have_css(".currency .actual_cost", count: 2) # Cost and Total
 
     expect(page).to have_content("Ordered Date\n#{two_days_ago}")
 
