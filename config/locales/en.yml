@@ -29,6 +29,10 @@ en:
   facility_downcase: facility
   facilities_downcase: facilities
 
+  sso_id_upcase: NetID
+  sso_id_downcase: NetID
+  sso_id_or_username: NetID, or username
+
   admin:
     shared:
       add: "Add %{model}"
@@ -165,13 +169,13 @@ en:
       head: "Recent Payment Sources"
       add_account: "Add Payment Source"
       label:
-        search_term: "Search by payment source number, description, accounts receivable number, or payment source owner's name, NetID, or username"
+        search_term: "Search by payment source number, description, accounts receivable number, or payment source owner's name, !sso_id_or_username!"
       search: Search
     new_account_user_search:
       head: "Add Payment Source"
       instruct: "To add a payment source, first search for the user you would like to create the payment source for."
       label:
-        search_term: "Search by name, NetID, or username"
+        search_term: "Search by name, !sso_id_or_username!"
     account_fields:
       label:
         owner_user: "Owner User"
@@ -226,7 +230,7 @@ en:
   facility_users:
     title: "!Facility! Staff"
     search:
-      instruct: "Search for an existing user by name, NetID, or username.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
+      instruct: "Search for an existing user by name,!sso_id_downcase!.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 
   facility_account_orders:
     index:
@@ -244,7 +248,7 @@ en:
     user_search:
       head: "Add Payment Source User"
       label:
-        search_term: "Search by name, NetID, or username"
+        search_term: "Search by name, !sso_id_or_username!"
     new:
       head: "Add Payment Source User"
       messages:
@@ -429,7 +433,7 @@ en:
       h2: Grant global roles to a user
       instructions:
         search: |
-          Search for an existing user by name, NetID, or username.
+          Search for an existing user by name, !sso_id_or_username!.
           Click on the name of the user you wish to grant global roles to.
         add_user: |
           If the search does not return any acceptable matches,
@@ -769,7 +773,7 @@ en:
   product_users:
     new:
       label:
-        search_term: "Search by name, NetID, or username"
+        search_term: "Search by name, !sso_id_or_username!"
     table:
       date_added: "Date Added"
 
@@ -777,7 +781,7 @@ en:
     new:
       head: "Add Price Group Member"
       label:
-        search_term: "Search by name, NetID, or username"
+        search_term: "Search by name, !sso_id_or_username!"
 
   search:
     results_table:
@@ -799,7 +803,7 @@ en:
   account_price_group_members:
     new:
       label:
-        search_term: "Search by payment source number, description, accounts receivable number, or payment source owner's name, NetID, or username"
+        search_term: "Search by payment source number, description, accounts receivable number, or payment source owner's name, !sso_id_or_username!"
     search_results:
       head: "Select an Existing Payment Source"
       main: "Can't find the payment source you're looking for?"
@@ -823,7 +827,7 @@ en:
       head: "Add Payment Source Member"
       instruct: "Search for a user to add to the %{account_type}, (%{account})"
       label:
-        search: "Search by name, NetID, or username"
+        search: "Search by name, !sso_id_or_username!"
 
   accounts:
     role:
@@ -1005,16 +1009,16 @@ en:
       main: "You may use this to grant !app_name! access to users."
     new:
       js:
-        id: "NetID"
+        id: "!sso_id_upcase!"
         email: "Email Address"
-        error: "An error was encountered while looking up the NetID"
+        error: "An error was encountered while looking up the !sso_id_downcase!"
       head: "Add User"
-      intro: "Some information about this user may already exist in university databases.  Please choose whether the user you wish to add has a NetID and enter the requested information.  If the user exists already, you will be able to add her with a single click."
-      instruct: "Enter the user's NetID"
-      submit: "Look up NetID"
+      intro: "Some information about this user may already exist in university databases.  Please choose whether the user you wish to add has a !sso_id_downcase! and enter the requested information.  If the user exists already, you will be able to add her with a single click."
+      instruct: "Enter the user's !sso_id_downcase!"
+      submit: "Look up !sso_id_downcase!"
       label:
-        id: "NetID"
-        have_id: "Does the new user have a NetID?"
+        id: "!sso_id_upcase!"
+        have_id: "Does the new user have a !sso_id_upcase!?"
     orders:
       none: "%{name} has not placed any orders."
     reservations:
@@ -1033,7 +1037,7 @@ en:
 
     search:
       main_html: "You may add a new external user by clicking <a href=\"%{link}\">Add a new external user</a>."
-      netid_not_found: "The user could not be located in the university database.  Please make sure you typed the NetID correctly."
+      netid_not_found: "The user could not be located in the university database.  Please make sure you typed the !sso_id_downcase! correctly."
       email_not_found: "No user information was found in the university databases."
       found: "The following user was found.  Click \"Add User\" to allow this user access to !app_name!."
       user_already_exists: "The user %{username} already exists in !app_name!"
@@ -1041,7 +1045,7 @@ en:
       head:
         h2: "Search Users"
       label:
-        search_term: "Search by name, NetID, or username"
+        search_term: "Search by name, !sso_id_or_username!"
 
   user_accounts:
     show:
