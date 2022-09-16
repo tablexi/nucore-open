@@ -65,7 +65,7 @@ class OrderStatus < ApplicationRecord
     root? ? self : parent
   end
 
-  def is_left_of?(o)
+  def before?(o)
     index = STATUS_ORDER.index(base_status.name)
     other_index = STATUS_ORDER.index(o.base_status.name)
 
@@ -104,16 +104,14 @@ class OrderStatus < ApplicationRecord
 
     def initial_statuses(facility)
       first_invalid_status = canceled
-      statuses = all.sort_by(&:position).select { |os| os.is_left_of?(first_invalid_status) }
-      statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
-      statuses
+      statuses = facility.nil? ? all : facility.order_statuses
+      statuses.select { |os| os.before?(first_invalid_status) }.sort_by(&:position)
     end
 
     def non_protected_statuses(facility)
       first_protected_status = reconciled
-      statuses = all.sort_by(&:position).select { |os| os.is_left_of?(first_protected_status) }
-      statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
-      statuses
+      statuses = facility.nil? ? all : facility.order_statuses
+      statuses.select { |os| os.before?(first_protected_status) }.sort_by(&:position)
     end
 
   end
