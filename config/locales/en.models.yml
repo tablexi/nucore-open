@@ -164,8 +164,8 @@ en:
         one: Facility
         other: Facilities
       facility_account:
-        one: Recharge Chart String
-        other: Recharge Chart Strings
+        one: Recharge !Chart_string_upcase!
+        other: Recharge !Chart_strings_upcase!
       instrument:
         one: Instrument
         other: Instruments
@@ -179,8 +179,8 @@ en:
         one: Journal Cutoff Date
         other: Journal Cutoff Dates
       nufs_account:
-        one: Chart String
-        other: Chart Strings
+        one: '!Chart_string_upcase!'
+        other: '!Chart_strings_upcase!'
       offline_reservation:
         one: Offline Reservation
         other: Offline Reservations
@@ -269,7 +269,7 @@ en:
         short_description: Short Description
         url_name: URL Name
       facility_account:
-        account_number: Chart String Number
+        account_number: '!Chart_string_upcase! Number'
         revenue_account: Revenue Account
         is_active: "Is Active?"
       product:
@@ -283,7 +283,7 @@ en:
         initial_order_status: Initial Order Status
         is_archived: Is Inactive?
         is_hidden: Is Hidden?
-        facility_account: Recharge Chart String
+        facility_account: Recharge !Chart_string_upcase!
         user_notes_field_mode: Users may submit a note when purchasing?
         email_purchasers_on_order_status_changes: Email purchasers when the status of an order changes?
         user_notes_label: Label for Notes Field

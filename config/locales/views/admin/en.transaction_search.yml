@@ -7,7 +7,7 @@ en:
         journal_or_statement_date: "Journaled/!Invoice_upcase!"
         reconciled_at: Reconciled
       actions:
-        reassign_chart_strings: Reassign Chart Strings
+        reassign_chart_strings: Reassign !Chart_strings_upcase!
         send_notifications: Send Notifications
         send_zero_dollar_notifications: Send $0 Notifications?
         mark_as_reviewed: Mark as Reviewed

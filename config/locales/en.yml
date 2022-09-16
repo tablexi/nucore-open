@@ -33,8 +33,8 @@ en:
   sso_id_downcase: NetID
   sso_id_or_username: NetID, or username
 
-  chart_string_upcase: Chart String
-  chart_strings_upcase: Chart Strings
+  Chart_string_upcase: Chart String
+  Chart_strings_upcase: Chart Strings
   chart_string_downcase: chart string
   chart_strings_downcase: chart strings
 
@@ -876,10 +876,10 @@ en:
 
     reassign_chart_strings:
       account_select:
-        placeholder: "Select a chart string"
-        explanation: "All chart strings listed above are available to reassign to at least one of the selected transactions below."
+        placeholder: "Select a !chart_string_downcase!"
+        explanation: "All !chart_strings_downcase! listed above are available to reassign to at least one of the selected transactions below."
       head: "Move Transactions"
-      submit: "Reassign Chart String"
+      submit: "Reassign !Chart_string_upcase!"
 
     transactions:
       no_orders: There are no orders in this !facility_downcase! matching the search parameters
