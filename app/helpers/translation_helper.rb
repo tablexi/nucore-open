@@ -3,27 +3,27 @@
 module TranslationHelper
 
   def t_manage_models(clazz)
-    text("pages.manage", model: clazz.model_name.human(count: :many))
+    I18n.t("pages.manage", model: clazz.model_name.human(count: :many))
   end
 
   def t_create_model(clazz)
-    text("pages.create", model: clazz.model_name.human)
+    I18n.t("pages.create", model: clazz.model_name.human)
   end
 
   def t_create_models(clazz)
-    text("pages.create", model: clazz.model_name.human(count: :many))
+    I18n.t("pages.create", model: clazz.model_name.human(count: :many))
   end
 
   def t_my(clazz)
-    text("pages.my_tab", model: clazz.model_name.human(count: :many))
+    I18n.t("pages.my_tab", model: clazz.model_name.human(count: :many))
   end
 
   def t_model_error(clazz, error, *options)
-    text("activerecord.errors.models.#{clazz.model_name.to_s.underscore}.#{error}", *options)
+    I18n.t("activerecord.errors.models.#{clazz.model_name.to_s.underscore}.#{error}", *options)
   end
 
   def t_boolean(value)
-    text(value.to_s, scope: "boolean")
+    I18n.t(value.to_s, scope: "boolean")
   end
 
   # Strips HTML line breaks. Useful when using text-helper's `text` method so you
