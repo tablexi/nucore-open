@@ -94,4 +94,14 @@ RSpec.describe OrderStatus do
       expect(status.state_name).to eq(:inprocess)
     end
   end
+
+  describe "#self_and_descendants" do
+    it "returns the root record and its children" do
+      child_status = create(:order_status, parent: root_statuses[:complete])
+      expect(root_statuses[:complete].self_and_descendants).to eq([
+        root_statuses[:complete],
+        child_status,
+      ])
+    end
+  end
 end

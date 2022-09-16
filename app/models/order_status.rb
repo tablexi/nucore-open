@@ -49,6 +49,10 @@ class OrderStatus < ApplicationRecord
     where(parent_id: nil)
   end
 
+  def self_and_descendants
+    self.class.where(self.class.arel_table[:id].eq(self.id).or(self.class.arel_table[:parent_id].eq(self.id)))
+  end
+
   def root?
     parent_id.nil?
   end
