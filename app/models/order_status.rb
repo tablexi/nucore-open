@@ -2,10 +2,9 @@
 
 class OrderStatus < ApplicationRecord
 
-  acts_as_nested_set
-
   has_many :order_details
   belongs_to :facility
+  belongs_to :parent, class_name: "OrderStatus"
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: [:parent_id, :facility_id], case_sensitive: false
@@ -18,6 +17,8 @@ class OrderStatus < ApplicationRecord
   end
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).order(:lft) }
+
+  STATUS_ORDER = ["New", "In Process", "Canceled", "Complete", "Reconciled"].freeze
 
   # This one is different because `new` is a reserved keyword
   def self.new_status
@@ -44,6 +45,14 @@ class OrderStatus < ApplicationRecord
     non_protected_statuses(facility) - [canceled]
   end
 
+  def self.roots
+    where(parent_id: nil)
+  end
+
+  def root?
+    parent_id.nil?
+  end
+
   def editable?
     !!facility
   end
@@ -52,8 +61,23 @@ class OrderStatus < ApplicationRecord
     root.name.downcase.delete(" ").to_sym
   end
 
+  def base_status
+    root? ? self : parent
+  end
+
   def is_left_of?(o)
-    rgt < o.lft
+    index = STATUS_ORDER.index(base_status.name)
+    other_index = STATUS_ORDER.index(o.base_status.name)
+
+    (index < other_index) || (index == other_index && id < o.id)
+  end
+
+  def position
+    [STATUS_ORDER.index(base_status.name), id]
+  end
+
+  def level
+    root? ? 0 : 1
   end
 
   def name_with_level
@@ -71,7 +95,7 @@ class OrderStatus < ApplicationRecord
   class << self
 
     def root_statuses
-      roots.sort_by(&:lft)
+      roots.sort_by(&:position)
     end
 
     def default_order_status
@@ -80,14 +104,14 @@ class OrderStatus < ApplicationRecord
 
     def initial_statuses(facility)
       first_invalid_status = canceled
-      statuses = all.sort_by(&:lft).select { |os| os.is_left_of?(first_invalid_status) }
+      statuses = all.sort_by(&:position).select { |os| os.is_left_of?(first_invalid_status) }
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
       statuses
     end
 
     def non_protected_statuses(facility)
       first_protected_status = reconciled
-      statuses = all.sort_by(&:lft).select { |os| os.is_left_of?(first_protected_status) }
+      statuses = all.sort_by(&:position).select { |os| os.is_left_of?(first_protected_status) }
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
       statuses
     end
