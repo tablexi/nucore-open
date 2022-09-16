@@ -58,7 +58,7 @@ class OrderStatus < ApplicationRecord
   end
 
   def state_name
-    root.name.downcase.delete(" ").to_sym
+    base_status.name.downcase.delete(" ").to_sym
   end
 
   def base_status
