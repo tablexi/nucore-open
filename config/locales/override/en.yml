@@ -8,6 +8,17 @@ en:
   #     copyright_html: "&copy; Copyright 2011%{to_date} Northwestern University"
   #     logo_alt: "Northwestern University Logo"
 
+  # models:
+  #   statement:
+  #     one: Statement
+  #     other: Statements
+
+  # activemodel:
+  #   errors:
+  #     models:
+  #       order_details/reconciler:
+  #         after_all_journal_dates: "Reconciliation Date must be after all journal or statement dates"
+
   testing: # DO NOT DELETE: these are used to verify proper file loading in the specs
     locale_loading: This is here to verify the file is loaded in the specs
     overriding: This overrides the version in en.yml
