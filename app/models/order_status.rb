@@ -80,18 +80,14 @@ class OrderStatus < ApplicationRecord
 
     def initial_statuses(facility)
       first_invalid_status = canceled
-      statuses = all.sort_by(&:lft).reject do |os|
-        !os.is_left_of?(first_invalid_status)
-      end
+      statuses = all.sort_by(&:lft).select { |os| os.is_left_of?(first_invalid_status) }
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
       statuses
     end
 
     def non_protected_statuses(facility)
       first_protected_status = reconciled
-      statuses = all.sort_by(&:lft).reject do |os|
-        !os.is_left_of?(first_protected_status)
-      end
+      statuses = all.sort_by(&:lft).select { |os| os.is_left_of?(first_protected_status) }
       statuses.reject! { |os| os.facility_id != facility.id && !os.facility_id.nil? } unless facility.nil?
       statuses
     end
