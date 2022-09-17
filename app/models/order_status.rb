@@ -16,7 +16,7 @@ class OrderStatus < ApplicationRecord
     end
   end
 
-  scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).order(:lft) }
+  scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).sort_by(&:position) }
 
   STATUS_ORDER = ["New", "In Process", "Canceled", "Complete", "Reconciled"].freeze
 
