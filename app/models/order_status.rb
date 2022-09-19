@@ -82,12 +82,9 @@ class OrderStatus < ApplicationRecord
     [STATUS_ORDER.index(root.name), id]
   end
 
-  def level
-    root? ? 0 : 1
-  end
-
   def name_with_level
-    "#{'-' * level} #{name}".strip
+    level_indicator = root? ? "" : "-"
+    "#{level_indicator} #{name}".strip
   end
 
   def to_s
