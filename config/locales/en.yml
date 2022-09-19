@@ -31,7 +31,7 @@ en:
 
   sso_id_upcase: NetID
   sso_id_downcase: NetID
-  sso_id_or_username: NetID, or username
+  name_or_sso_id: name, NetID, or username
 
   admin:
     shared:
@@ -169,13 +169,13 @@ en:
       head: "Recent Payment Sources"
       add_account: "Add Payment Source"
       label:
-        search_term: "Search by payment source number, description, accounts receivable number, or payment source owner's name, !sso_id_or_username!"
+        search_term: "Search by payment source number, description, accounts receivable number, or payment source owner's !name_or_sso_id!"
       search: Search
     new_account_user_search:
       head: "Add Payment Source"
       instruct: "To add a payment source, first search for the user you would like to create the payment source for."
       label:
-        search_term: "Search by name, !sso_id_or_username!"
+        search_term: "Search by !name_or_sso_id!"
     account_fields:
       label:
         owner_user: "Owner User"
@@ -248,7 +248,7 @@ en:
     user_search:
       head: "Add Payment Source User"
       label:
-        search_term: "Search by name, !sso_id_or_username!"
+        search_term: "Search by !name_or_sso_id!"
     new:
       head: "Add Payment Source User"
       messages:
@@ -433,7 +433,7 @@ en:
       h2: Grant global roles to a user
       instructions:
         search: |
-          Search for an existing user by name, !sso_id_or_username!.
+          Search for an existing user by !name_or_sso_id!.
           Click on the name of the user you wish to grant global roles to.
         add_user: |
           If the search does not return any acceptable matches,
@@ -773,7 +773,7 @@ en:
   product_users:
     new:
       label:
-        search_term: "Search by name, !sso_id_or_username!"
+        search_term: "Search by !name_or_sso_id!"
     table:
       date_added: "Date Added"
 
@@ -781,7 +781,7 @@ en:
     new:
       head: "Add Price Group Member"
       label:
-        search_term: "Search by name, !sso_id_or_username!"
+        search_term: "Search by !name_or_sso_id!"
 
   search:
     results_table:
@@ -803,7 +803,7 @@ en:
   account_price_group_members:
     new:
       label:
-        search_term: "Search by payment source number, description, accounts receivable number, or payment source owner's name, !sso_id_or_username!"
+        search_term: "Search by payment source number, description, accounts receivable number, or payment source owner's !name_or_sso_id!"
     search_results:
       head: "Select an Existing Payment Source"
       main: "Can't find the payment source you're looking for?"
@@ -827,7 +827,7 @@ en:
       head: "Add Payment Source Member"
       instruct: "Search for a user to add to the %{account_type}, (%{account})"
       label:
-        search: "Search by name, !sso_id_or_username!"
+        search: "Search by !name_or_sso_id!"
 
   accounts:
     role:
@@ -1045,7 +1045,7 @@ en:
       head:
         h2: "Search Users"
       label:
-        search_term: "Search by name, !sso_id_or_username!"
+        search_term: "Search by !name_or_sso_id!"
 
   user_accounts:
     show:
