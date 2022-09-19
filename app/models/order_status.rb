@@ -57,27 +57,27 @@ class OrderStatus < ApplicationRecord
     parent_id.nil?
   end
 
+  def root
+    parent || self
+  end
+
   def editable?
     !!facility
   end
 
   def state_name
-    base_status.name.downcase.delete(" ").to_sym
-  end
-
-  def base_status
-    root? ? self : parent
+    root.name.downcase.delete(" ").to_sym
   end
 
   def before?(o)
-    index = STATUS_ORDER.index(base_status.name)
-    other_index = STATUS_ORDER.index(o.base_status.name)
+    index = STATUS_ORDER.index(root.name)
+    other_index = STATUS_ORDER.index(o.root.name)
 
     (index < other_index) || (index == other_index && id < o.id)
   end
 
   def position
-    [STATUS_ORDER.index(base_status.name), id]
+    [STATUS_ORDER.index(root.name), id]
   end
 
   def level
