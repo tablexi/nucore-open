@@ -230,7 +230,7 @@ en:
   facility_users:
     title: "!Facility! Staff"
     search:
-      instruct: "Search for an existing user by name,!sso_id_downcase!.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
+      instruct: "Search for an existing user by !name_or_sso_id!.  Click on the name of the user you wish to grant access to.  If the search does not return any acceptable matches, you may create a new user."
 
   facility_account_orders:
     index:
