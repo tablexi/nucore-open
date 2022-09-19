@@ -6,4 +6,4 @@ en:
         instructions_without_email: Please review the following payment sources. A !statement_downcase! will be generated for each of the payment sources.
         no_orders: There are no completed orders that require !statements_downcase!.
       index:
-        head: '!Statement_upcase! History'
+        head: "!Statement_upcase! History"

@@ -60,7 +60,7 @@ en:
         details: Details
         members: Members
         orders: Orders
-        statements: '!Statements_upcase!'
+        statements: "!Statements_upcase!"
 
   pages:
     home: Home
