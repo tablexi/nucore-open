@@ -17,6 +17,7 @@ class OrderStatus < ApplicationRecord
   end
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).sort_by(&:position) }
+  scope :self_and_descendants, ->(status_id) { where(parent_id: status_id).or(where(id: status_id)) }
 
   STATUS_ORDER = ["New", "In Process", "Canceled", "Complete", "Reconciled"].freeze
 
@@ -49,8 +50,8 @@ class OrderStatus < ApplicationRecord
     where(parent_id: nil)
   end
 
-  def self_and_descendants
-    self.class.where(self.class.arel_table[:id].eq(self.id).or(self.class.arel_table[:parent_id].eq(self.id)))
+  def self.canceled_statuses_for_facility(facility)
+    self_and_descendants(canceled.id).for_facility(current_facility)
   end
 
   def root?
