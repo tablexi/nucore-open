@@ -59,6 +59,15 @@ RSpec.describe OrderStatus do
 
       expect(described_class.initial_statuses(facility)).to eq(expected_statuses)
     end
+
+    it "returns all new and in process statuses in cross-facility context" do
+      expected_statuses = [
+        root_statuses[:new],
+        root_statuses[:in_process],
+      ]
+
+      expect(described_class.initial_statuses(nil)).to eq(expected_statuses)
+    end
   end
 
   describe ".non_protected_statuses" do
@@ -80,6 +89,17 @@ RSpec.describe OrderStatus do
       ]
 
       expect(described_class.non_protected_statuses(facility)).to eq(expected_statuses)
+    end
+
+    it "returns all non-reconciled statuses in cross-facility context" do
+      expected_statuses = [
+        root_statuses[:new],
+        root_statuses[:in_process],
+        root_statuses[:canceled],
+        root_statuses[:complete],
+      ]
+
+      expect(described_class.non_protected_statuses(nil)).to eq(expected_statuses)
     end
   end
 

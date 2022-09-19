@@ -17,7 +17,7 @@ class OrderStatus < ApplicationRecord
     end
   end
 
-  scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]).sort_by(&:position) }
+  scope :for_facility, ->(facility) { where(facility_id: [nil, facility&.id]).sort_by(&:position) }
   scope :self_and_descendants, ->(status_id) { where(parent_id: status_id).or(where(id: status_id)) }
 
   STATUS_ORDER = ["New", "In Process", "Canceled", "Complete", "Reconciled"].freeze
@@ -27,16 +27,16 @@ class OrderStatus < ApplicationRecord
     find_by(name: "New")
   end
 
-  def self.complete
-    find_by(name: "Complete")
+  def self.in_process
+    find_by(name: "In Process")
   end
 
   def self.canceled
     find_by(name: "Canceled")
   end
 
-  def self.in_process
-    find_by(name: "In Process")
+  def self.complete
+    find_by(name: "Complete")
   end
 
   def self.reconciled
@@ -71,13 +71,6 @@ class OrderStatus < ApplicationRecord
     root.name.downcase.delete(" ").to_sym
   end
 
-  def before?(o)
-    index = STATUS_ORDER.index(root.name)
-    other_index = STATUS_ORDER.index(o.root.name)
-
-    (index < other_index) || (index == other_index && id < o.id)
-  end
-
   def position
     [STATUS_ORDER.index(root.name), id]
   end
@@ -106,15 +99,17 @@ class OrderStatus < ApplicationRecord
     end
 
     def initial_statuses(facility)
-      first_invalid_status = canceled
-      statuses = facility.nil? ? all : facility.order_statuses
-      statuses.select { |os| os.before?(first_invalid_status) }.sort_by(&:position)
+      self_and_descendants(new_status.id)
+        .or(self_and_descendants(in_process.id))
+        .for_facility(facility)
     end
 
     def non_protected_statuses(facility)
-      first_protected_status = reconciled
-      statuses = facility.nil? ? all : facility.order_statuses
-      statuses.select { |os| os.before?(first_protected_status) }.sort_by(&:position)
+      self_and_descendants(new_status.id)
+        .or(self_and_descendants(in_process.id))
+        .or(self_and_descendants(canceled.id))
+        .or(self_and_descendants(complete.id))
+        .for_facility(facility)
     end
 
   end
