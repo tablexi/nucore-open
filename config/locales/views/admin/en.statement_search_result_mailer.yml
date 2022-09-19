@@ -2,5 +2,5 @@ en:
   views:
     statement_search_result_mailer:
       search_result:
-        subject: '!Invoice_upcase! Export'
+        subject: '!Statement_upcase! Export'
         body: Your export is ready. Please see the attached file.

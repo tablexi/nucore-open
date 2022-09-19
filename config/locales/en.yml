@@ -747,7 +747,7 @@ en:
         badge: Can Reconcile
       ready_for_statement:
         alert: This order is ready to be !statement_downcase!ed
-        badge: Ready for !Invoice_upcase!
+        badge: Ready for !Statement_upcase!
       ready_for_journal:
         alert: This order is ready to be journaled
         badge: Ready for Journal
