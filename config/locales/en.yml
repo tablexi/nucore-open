@@ -38,10 +38,10 @@ en:
   chart_string_downcase: chart string
   chart_strings_downcase: chart strings
 
-  Invoice_upcase: "Statement"
-  Invoices_upcase: "Statements"
-  invoice_downcase: "statement"
-  invoices_downcase: "statements"
+  Statement_upcase: Statement
+  Statements_upcase: Statements
+  statement_downcase: statement
+  statements_downcase: statements
 
   admin:
     shared:
@@ -60,7 +60,7 @@ en:
         details: Details
         members: Members
         orders: Orders
-        statements: '!Invoices_upcase!'
+        statements: '!Statements_upcase!'
 
   pages:
     home: Home
@@ -150,7 +150,7 @@ en:
     tabnav_account:
       details: "Payment Source Details"
       transact: "Transactions"
-      statement: "!Invoices_upcase!"
+      statement: "!Statements_upcase!"
       members: "Members"
     tabnav_price_group:
       accounts: "Payment Sources"
@@ -196,7 +196,7 @@ en:
         all_instruct: "Enter a text description to help you and the user identify this payment source."
     account_table:
       notice: "No payment sources found."
-      foot: "* Includes transactions for which the user has not been sent a !invoice_downcase! or that are in the user review period."
+      foot: "* Includes transactions for which the user has not been sent a !statement_downcase! or that are in the user review period."
       th:
         account: "Payment Source"
         owner: "Owner"
@@ -375,7 +375,7 @@ en:
       no_orders: "No orders are currently in review"
       instructions: |
         The orders listed below are still in review by the customer.  The time the review window will close is listed.
-        You may manually mark an order as reviewed, allowing you to create a !invoice_downcase! for or journal the order immediately.
+        You may manually mark an order as reviewed, allowing you to create a !statement_downcase! for or journal the order immediately.
     index:
       head: "Send Notifications"
       no_orders: "No notifications are currently pending"
@@ -621,8 +621,8 @@ en:
     list:
       head:
         h1: "Payment Source Transactions"
-        h3: "!Invoices_upcase! for %{facility}"
-      notice: "No !invoice_downcase! exist."
+        h3: "!Statements_upcase! for %{facility}"
+      notice: "No !statement_downcase! exist."
     show:
       head:
         h1: "Payment Source Transactions"
@@ -746,13 +746,13 @@ en:
         alert: This order can be reconciled
         badge: Can Reconcile
       ready_for_statement:
-        alert: This order is ready to be !invoice_downcase!ed
+        alert: This order is ready to be !statement_downcase!ed
         badge: Ready for !Invoice_upcase!
       ready_for_journal:
         alert: This order is ready to be journaled
         badge: Ready for Journal
       awaiting_payment:
-        alert: This order has been !invoice_upcase!ed, but is not yet reconciled
+        alert: This order has been !statement_upcase!ed, but is not yet reconciled
         badge: Awaiting Payment
     note: "Note: %{note}"
 
@@ -1078,9 +1078,9 @@ en:
 
   facility_statements:
     index:
-      account_admins_hint: Account owners and business admins receive !invoices_downcase! by email.
+      account_admins_hint: Account owners and business admins receive !statements_downcase! by email.
     new:
-      no_transactions: There are no transactions requiring !invoices_downcase! matching the search parameters.
+      no_transactions: There are no transactions requiring !statements_downcase! matching the search parameters.
 
 
   instruments:
