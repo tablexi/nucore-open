@@ -180,7 +180,7 @@ en:
         other: Journal Cutoff Dates
       nufs_account:
         one: Chart String
-        other: Chart String
+        other: Chart Strings
       offline_reservation:
         one: Offline Reservation
         other: Offline Reservations
