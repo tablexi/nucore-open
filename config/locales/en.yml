@@ -221,7 +221,7 @@ en:
         edit: "Edit"
     statements:
       download: Download
-      notice: "No !invoces_downcase! have been sent for this payment source."
+      notice: "No !statements_downcase! have been sent for this payment source."
       th:
         sent_at: "Sent At"
         sent_by: "Sent By"
