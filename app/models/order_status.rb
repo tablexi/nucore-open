@@ -17,8 +17,7 @@ class OrderStatus < ApplicationRecord
     end
   end
 
-  scope :for_facility, ->(facility) { where(facility_id: [nil, facility&.id]).sort_by(&:position) }
-  scope :self_and_descendants, ->(status_id) { where(parent_id: status_id).or(where(id: status_id)) }
+  scope :for_facility, ->(facility) { where(facility_id: [nil, facility&.id]) }
 
   STATUS_ORDER = ["New", "In Process", "Canceled", "Complete", "Reconciled"].freeze
 
@@ -51,8 +50,16 @@ class OrderStatus < ApplicationRecord
     where(parent_id: nil)
   end
 
+  def self_and_descendants
+    self.class.where(parent_id: id).or(self.class.where(id: id))
+  end
+
   def self.canceled_statuses_for_facility(facility)
-    self_and_descendants(canceled.id).for_facility(current_facility)
+    canceled.self_and_descendants.for_facility(current_facility).sorted
+  end
+
+  def self.sorted
+    all.sort_by(&:position)
   end
 
   def root?
@@ -99,17 +106,17 @@ class OrderStatus < ApplicationRecord
     end
 
     def initial_statuses(facility)
-      self_and_descendants(new_status.id)
-        .or(self_and_descendants(in_process.id))
-        .for_facility(facility)
+      new_status.self_and_descendants
+        .or(in_process.self_and_descendants)
+        .for_facility(facility).sorted
     end
 
     def non_protected_statuses(facility)
-      self_and_descendants(new_status.id)
-        .or(self_and_descendants(in_process.id))
-        .or(self_and_descendants(canceled.id))
-        .or(self_and_descendants(complete.id))
-        .for_facility(facility)
+      new_status.self_and_descendants
+        .or(in_process.self_and_descendants)
+        .or(canceled.self_and_descendants)
+        .or(complete.self_and_descendants)
+        .for_facility(facility).sorted
     end
 
   end

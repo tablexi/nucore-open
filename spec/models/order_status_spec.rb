@@ -118,7 +118,7 @@ RSpec.describe OrderStatus do
   describe "#self_and_descendants" do
     it "returns the root record and its children" do
       child_status = create(:order_status, parent: root_statuses[:canceled])
-      expect(OrderStatus.self_and_descendants(OrderStatus.canceled)).to eq([
+      expect(OrderStatus.canceled.self_and_descendants).to eq([
         root_statuses[:canceled],
         child_status,
       ])
