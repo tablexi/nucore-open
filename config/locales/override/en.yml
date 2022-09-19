@@ -15,6 +15,17 @@ en:
   #   facility_account:
   #     one: Recharge Chart String
   #     other: Recharge Chart Strings
+  #   nufs_account:
+  #     one: Chart String
+  #     other: Chart Strings
+
+  # attributes:
+  #   facility_account:
+  #     account_number: Chart String Number
+  #   product:
+  #     facility_account: Recharge Chart String
+  #   order_detail:
+  #     journal_or_statement_date: Journal/Statement Date
 
   # activemodel:
   #   errors:
