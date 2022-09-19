@@ -879,7 +879,7 @@ en:
         placeholder: "Select a !chart_string_downcase!"
         explanation: "All !chart_strings_downcase! listed above are available to reassign to at least one of the selected transactions below."
       head: "Move Transactions"
-      submit: "Reassign !Chart_string_upcase!"
+      submit: Reassign !Chart_string_upcase!
 
     transactions:
       no_orders: There are no orders in this !facility_downcase! matching the search parameters

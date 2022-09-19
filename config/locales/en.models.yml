@@ -164,8 +164,8 @@ en:
         one: Facility
         other: Facilities
       facility_account:
-        one: Recharge !Chart_string_upcase!
-        other: Recharge !Chart_strings_upcase!
+        one:  Recharge Chart String
+        other: Recharge Chart Strings
       instrument:
         one: Instrument
         other: Instruments
