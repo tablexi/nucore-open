@@ -5,6 +5,7 @@ class OrderStatus < ApplicationRecord
   has_many :order_details
   belongs_to :facility
   belongs_to :parent, class_name: "OrderStatus"
+  has_many :children, class_name: "OrderStatus", foreign_key: :parent_id
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: [:parent_id, :facility_id], case_sensitive: false
