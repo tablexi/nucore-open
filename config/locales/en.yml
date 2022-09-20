@@ -29,20 +29,20 @@ en:
   facility_downcase: facility
   facilities_downcase: facilities
 
-  Sso_id: NetID
-  sso_id_downcase: NetID
-  name_or_sso_id: name, NetID, or username
+  Sso_id: OID
+  sso_id_downcase: oid
+  name_or_sso_id: name, OID, or username
 
-  Chart_string: Chart String
-  Chart_strings: Chart Strings
-  chart_string_downcase: chart string
-  chart_strings_downcase: chart strings
+  Chart_string: Index Account
+  Chart_strings: Index Accounts
+  chart_string_downcase: index account
+  chart_strings_downcase: index accounts
 
-  Statement: Statement
-  Statements: Statements
-  statement_downcase: statement
-  statements_downcase: statements
-  statemented_downcase: statemented
+  Statement: Invoice
+  Statements: Invoices
+  statement_downcase: invoice
+  statements_downcase: invoices
+  statemented_downcase: invoiced
 
   admin:
     shared:
