@@ -8,6 +8,11 @@ en:
   #     copyright_html: "&copy; Copyright 2011%{to_date} Northwestern University"
   #     logo_alt: "Northwestern University Logo"
 
+  # The sections below are provided as a starting point for customizing
+  # the preferred term for "statment" and "Chart String" in places where
+  # it is not easy to use the text_helpers `text` method instead of `I18n.t`
+  # To use, simply uncomment and update the terms here as needed.
+  #
   # models:
   #   statement:
   #     one: Statement
