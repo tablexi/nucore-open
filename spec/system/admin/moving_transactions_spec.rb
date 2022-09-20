@@ -14,8 +14,8 @@ RSpec.describe "Moving transactions between accounts" do
     (accounts + [other_account]).map { |account| create(:complete_order, product: item, account: account) }
   end
   let!(:order_details) { orders.flat_map(&:order_details) }
-  let(:chart_strings_name_upcase) { I18n.t("Chart_strings_upcase") }
-  let(:chart_string_name_upcase) { I18n.t("Chart_string_upcase") }
+  let(:chart_strings_name_upcase) { I18n.t("Chart_strings") }
+  let(:chart_string_name_upcase) { I18n.t("Chart_string") }
   let(:chart_strings_name_downcase) { I18n.t("chart_strings_downcase") }
 
   before do
