@@ -33,6 +33,17 @@ en:
   sso_id_downcase: NetID
   name_or_sso_id: name, NetID, or username
 
+  Chart_string_upcase: Chart String
+  Chart_strings_upcase: Chart Strings
+  chart_string_downcase: chart string
+  chart_strings_downcase: chart strings
+
+  Statement_upcase: Statement
+  Statements_upcase: Statements
+  statement_downcase: statement
+  statements_downcase: statements
+  statemented_downcase: statemented
+
   admin:
     shared:
       add: "Add %{model}"
@@ -50,7 +61,7 @@ en:
         details: Details
         members: Members
         orders: Orders
-        statements: Statements
+        statements: "!Statements_upcase!"
 
   pages:
     home: Home
@@ -140,7 +151,7 @@ en:
     tabnav_account:
       details: "Payment Source Details"
       transact: "Transactions"
-      statement: "Statements"
+      statement: "!Statements_upcase!"
       members: "Members"
     tabnav_price_group:
       accounts: "Payment Sources"
@@ -186,7 +197,7 @@ en:
         all_instruct: "Enter a text description to help you and the user identify this payment source."
     account_table:
       notice: "No payment sources found."
-      foot: "* Includes transactions for which the user has not been sent a statement or that are in the user review period."
+      foot: "* Includes transactions for which the user has not been sent a !statement_downcase! or that are in the user review period."
       th:
         account: "Payment Source"
         owner: "Owner"
@@ -211,7 +222,7 @@ en:
         edit: "Edit"
     statements:
       download: Download
-      notice: "No statements have been sent for this payment source."
+      notice: "No !statements_downcase! have been sent for this payment source."
       th:
         sent_at: "Sent At"
         sent_by: "Sent By"
@@ -365,7 +376,7 @@ en:
       no_orders: "No orders are currently in review"
       instructions: |
         The orders listed below are still in review by the customer.  The time the review window will close is listed.
-        You may manually mark an order as reviewed, allowing you to create a statement for or journal the order immediately.
+        You may manually mark an order as reviewed, allowing you to create a !statement_downcase! for or journal the order immediately.
     index:
       head: "Send Notifications"
       no_orders: "No notifications are currently pending"
@@ -611,8 +622,8 @@ en:
     list:
       head:
         h1: "Payment Source Transactions"
-        h3: "Statements for %{facility}"
-      notice: "No statements exist."
+        h3: "!Statements_upcase! for %{facility}"
+      notice: "No !statement_downcase! exist."
     show:
       head:
         h1: "Payment Source Transactions"
@@ -736,13 +747,13 @@ en:
         alert: This order can be reconciled
         badge: Can Reconcile
       ready_for_statement:
-        alert: This order is ready to be statemented
-        badge: Ready for Statement
+        alert: This order is ready to be !statemented_downcase!
+        badge: Ready for !Statement_upcase!
       ready_for_journal:
         alert: This order is ready to be journaled
         badge: Ready for Journal
       awaiting_payment:
-        alert: This order has been statemented, but is not yet reconciled
+        alert: This order has been !statemented_downcase!, but is not yet reconciled
         badge: Awaiting Payment
     note: "Note: %{note}"
 
@@ -866,10 +877,10 @@ en:
 
     reassign_chart_strings:
       account_select:
-        placeholder: "Select a chart string"
-        explanation: "All chart strings listed above are available to reassign to at least one of the selected transactions below."
+        placeholder: "Select a !chart_string_downcase!"
+        explanation: "All !chart_strings_downcase! listed above are available to reassign to at least one of the selected transactions below."
       head: "Move Transactions"
-      submit: "Reassign Chart String"
+      submit: Reassign !Chart_string_upcase!
 
     transactions:
       no_orders: There are no orders in this !facility_downcase! matching the search parameters
@@ -1065,13 +1076,6 @@ en:
     index:
       preference_name_header: Option
       preference_value_header: Selected
-
-  facility_statements:
-    index:
-      account_admins_hint: Account owners and business admins receive statements by email.
-    new:
-      no_transactions: There are no transactions requiring statements matching the search parameters.
-
 
   instruments:
     manage:

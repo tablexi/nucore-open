@@ -4,11 +4,11 @@
   = t(".head.h1")
 
 %h2= @account
-%h3= t(".head.h3", facility: @facility.to_s)
+%h3= text("statements.head.h3", facility: @facility.to_s)
 
 
 - if @statements.empty?
-  %p.notice= t(".notice")
+  %p.notice= text("statements.notice")
 - else
   %ul.grid_5
     - @statements.each do |statement|
