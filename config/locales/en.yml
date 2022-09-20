@@ -1076,13 +1076,6 @@ en:
       preference_name_header: Option
       preference_value_header: Selected
 
-  facility_statements:
-    index:
-      account_admins_hint: Account owners and business admins receive !statements_downcase! by email.
-    new:
-      no_transactions: There are no transactions requiring !statements_downcase! matching the search parameters.
-
-
   instruments:
     manage:
       label:
