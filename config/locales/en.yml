@@ -42,6 +42,7 @@ en:
   Statements_upcase: Statements
   statement_downcase: statement
   statements_downcase: statements
+  statemented_downcase: statemented
 
   admin:
     shared:
@@ -746,13 +747,13 @@ en:
         alert: This order can be reconciled
         badge: Can Reconcile
       ready_for_statement:
-        alert: This order is ready to be !statement_downcase!ed
+        alert: This order is ready to be !statemented_downcase!
         badge: Ready for !Statement_upcase!
       ready_for_journal:
         alert: This order is ready to be journaled
         badge: Ready for Journal
       awaiting_payment:
-        alert: This order has been !statement_upcase!ed, but is not yet reconciled
+        alert: This order has been !statemented_downcase!, but is not yet reconciled
         badge: Awaiting Payment
     note: "Note: %{note}"
 
