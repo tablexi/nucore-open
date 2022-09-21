@@ -12,17 +12,18 @@ en:
   # the preferred term for "statment" and "Chart String" in places where
   # it is not easy to use the text_helpers `text` method instead of `I18n.t`
   # To use, simply uncomment and update the terms here as needed.
-  #
-  # models:
-  #   statement:
-  #     one: Statement
-  #     other: Statements
-  #   facility_account:
-  #     one: Recharge Chart String
-  #     other: Recharge Chart Strings
-  #   nufs_account:
-  #     one: Chart String
-  #     other: Chart Strings
+  
+  # activerecord:
+  #   models:
+  #     statement:
+  #       one: Statement
+  #       other: Statements
+  #     facility_account:
+  #       one: Recharge Chart String
+  #       other: Recharge Chart Strings
+  #     nufs_account:
+  #       one: Chart String
+  #       other: Chart Strings
 
   # attributes:
   #   facility_account:
