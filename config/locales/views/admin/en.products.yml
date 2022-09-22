@@ -18,10 +18,10 @@ en:
         account_fields:
           hints:
             deposit_account: "Revenue account to which fees will be deposited"
-            account: "Expense account from which fees will be withdrawn; must be open on purchaser's !Chart_string_upcase!"
+            account: "Expense account from which fees will be withdrawn; must be open on purchaser's !Chart_string!"
           deposit_account:
-            label: "Recharge !Chart_string_upcase! and Account"
-            add: "Add !Chart_string_upcase!"
+            label: "Recharge !Chart_string! and Account"
+            add: "Add !Chart_string!"
         product_fields:
           hints:
             requires_approval: "Restrict access to approved users"
