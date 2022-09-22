@@ -29,9 +29,9 @@ en:
   facility_downcase: facility
   facilities_downcase: facilities
 
-  Sso_id: OID
-  sso_id_downcase: oid
-  name_or_sso_id: name, OID, or username
+  Sso_id: NetID
+  sso_id_downcase: NetID
+  name_or_sso_id: name, NetID, or username
 
   Chart_string: Chart String
   Chart_strings: Chart Strings

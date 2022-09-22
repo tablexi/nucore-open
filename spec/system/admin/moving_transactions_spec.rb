@@ -50,7 +50,7 @@ RSpec.describe "Moving transactions between accounts" do
       find("input[value='#{od.id}']").click
     end
 
-    click_button "Reassign #{chart_string_name_upcase}"
+    click_button "Reassign #{chart_strings_name_upcase}"
 
     expect(page).to have_content("All #{chart_strings_name_downcase} listed above are available")
 
