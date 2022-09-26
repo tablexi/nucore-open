@@ -228,10 +228,22 @@ class OrderDetailManagement {
 }
 OrderDetailManagement.initClass();
 
+function repricingButtonListener(orderDetailManagement) {
+  const repricingButton = document.querySelector(".js--recalculate-pricing");
+
+  if (repricingButton) {
+    repricingButton.addEventListener('click', () => orderDetailManagement.updatePricing());
+  }
+}
+
 $(function() {
   const prepareForm = function() {
     const elem = $('form.manage_order_detail');
-    if (elem.length > 0) { return new OrderDetailManagement(elem); }
+    if (elem.length > 0) {
+      const odm = new OrderDetailManagement(elem);
+      repricingButtonListener(odm);
+      return odm;
+    }
   };
 
   new AjaxModal('.manage-order-detail', '#order-detail-modal', {
