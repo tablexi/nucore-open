@@ -239,6 +239,7 @@ function repricingButtonListener(orderDetailManagement) {
 $(function() {
   const prepareForm = function() {
     const elem = $('form.manage_order_detail');
+
     if (elem.length > 0) {
       const odm = new OrderDetailManagement(elem);
       repricingButtonListener(odm);
