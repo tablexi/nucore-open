@@ -561,6 +561,8 @@ en:
     order_details:
       shared_details:
         remove_from_journal: "Remove From Journal"
+      form:
+        recalculate_price: "Recalculate pricing"
 
   product_access_groups:
     index:
