@@ -78,6 +78,12 @@ class OrderDetailManagement {
         if ($(evt.target).val().length > 0) { return this.updatePricing(evt); }
     });
 
+    const repricingButton = document.querySelector(".js--recalculate-pricing");
+
+    if (repricingButton) {
+      repricingButton.addEventListener('click', () => { this.updatePricing() });
+    }
+
     return this.$element.bind("reservation:times_changed", evt => {
       return this.updatePricing(evt);
     });
@@ -240,11 +246,7 @@ $(function() {
   const prepareForm = function() {
     const elem = $('form.manage_order_detail');
 
-    if (elem.length > 0) {
-      const odm = new OrderDetailManagement(elem);
-      repricingButtonListener(odm);
-      return odm;
-    }
+    if (elem.length > 0) { new OrderDetailManagement(elem); }
   };
 
   new AjaxModal('.manage-order-detail', '#order-detail-modal', {
