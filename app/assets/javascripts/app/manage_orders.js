@@ -234,14 +234,6 @@ class OrderDetailManagement {
 }
 OrderDetailManagement.initClass();
 
-function repricingButtonListener(orderDetailManagement) {
-  const repricingButton = document.querySelector(".js--recalculate-pricing");
-
-  if (repricingButton) {
-    repricingButton.addEventListener('click', () => orderDetailManagement.updatePricing());
-  }
-}
-
 $(function() {
   const prepareForm = function() {
     const elem = $('form.manage_order_detail');
