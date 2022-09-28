@@ -2,7 +2,7 @@
 %ul.nav.nav-tabs
   = tab "Details", [:manage, current_facility, @product], (secondary_tab == "details")
   - if @product.is_a?(Instrument)
-    = tab "Relays", [current_facility, @product, Relay], (secondary_tab == "relays")
+    = tab "Timers & Relays", [current_facility, @product, Relay], (secondary_tab == "relays")
   - if @product.requires_approval? && @product.respond_to?(:product_access_groups)
     = tab ProductAccessGroup.model_name.human.pluralize, facility_instrument_product_access_groups_path(current_facility, @product), (secondary_tab == "restriction_levels")
   - if @product.respond_to?(:schedule_rules)
