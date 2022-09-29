@@ -625,7 +625,7 @@ en:
       head:
         h1: "Payment Source Transactions"
         h3: "!Statements! for %{facility}"
-      notice: "No !statement_downcase! exist."
+      notice: "No !statements_downcase! exist."
     show:
       head:
         h1: "Payment Source Transactions"
