@@ -132,10 +132,10 @@ GEM
     awesome_nested_set (3.5.0)
       activerecord (>= 4.0.0, < 7.1)
     awesome_print (1.9.2)
-    axe-core-api (4.4.1)
+    axe-core-api (4.4.2)
       dumb_delegator
       virtus
-    axe-core-rspec (4.4.1)
+    axe-core-rspec (4.4.2)
       axe-core-api
       dumb_delegator
       virtus
