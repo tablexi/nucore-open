@@ -23,18 +23,18 @@ class AccountConfig
     @facility_account_types ||= []
   end
 
-  # Returns an array of subclassed Account object names that support statements.
-  # Engines can append to this list.
+  # Returns a set of subclassed Account object names that support statements.
+  # Engines can append to this list using `add_statement_account_types`
   def statement_account_types
-    @statement_account_types ||= []
+    @statement_account_types ||= Set[]
   end
 
-  def statement_account_types_uniq
-    statement_account_types.uniq
+  def add_statement_account_types(statement_types)
+    statement_types.each { |type| statement_account_types.add type }
   end
 
   def reconcilable_account_types
-    statement_account_types_uniq.map(&:constantize).select { |t| t < ReconcilableAccount }.map(&:to_s)
+    statement_account_types.map(&:constantize).select { |t| t < ReconcilableAccount }.map(&:to_s)
   end
 
   # Returns an array of subclassed Account object names that support affiliates.
@@ -88,7 +88,7 @@ class AccountConfig
   # Returns true if statements are enabled. Some downstream repositories may
   # not use statements anywhere in the app.
   def statements_enabled?
-    statement_account_types_uniq.present?
+    statement_account_types.present?
   end
 
   # Returns true if affiliates are enabled. Some downstream repositories may
@@ -114,7 +114,7 @@ class AccountConfig
 
   # Returns true if this account type supports statements.
   def using_statements?(account_type)
-    statement_account_types_uniq.include?(account_type.to_s.classify)
+    statement_account_types.include?(account_type.to_s.classify)
   end
 
   # Returns true if this account type supports journal.
