@@ -75,7 +75,7 @@ gem "ice_cube"
 
 # Optional: File uploads to Azure Blob via ActiveStorage
 # gem "azure-storage-blob", "~> 2.0", require: false
-# gem "active_storage_validations"
+gem "active_storage_validations" # only used if SettingsHelper.feature_on?(:active_storage) is true
 
 ## custom
 gem "bulk_email", path: "vendor/engines/bulk_email"
