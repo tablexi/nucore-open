@@ -26,15 +26,11 @@ class AccountConfig
   # Returns a set of subclassed Account object names that support statements.
   # Engines can append to this list using `add_statement_account_types`
   def statement_account_types
-    @statement_account_types ||= Set[]
-  end
-
-  def add_statement_account_types(statement_types)
-    statement_types.each { |type| statement_account_types.add type }
+    @statement_account_types ||= []
   end
 
   def reconcilable_account_types
-    statement_account_types.map(&:constantize).select { |t| t < ReconcilableAccount }.map(&:to_s)
+    @reconcilable_account_types ||= statement_account_types.map(&:constantize).select(&:reconcilable?).map(&:to_s)
   end
 
   # Returns an array of subclassed Account object names that support affiliates.

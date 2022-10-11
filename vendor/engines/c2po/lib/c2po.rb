@@ -7,7 +7,7 @@ module C2po
   C2PO_ACCOUNT_TYPES_APPENDER = proc do
     Account.config.account_types.concat C2po::C2PO_ACCOUNT_TYPES
     Account.config.facility_account_types.concat C2po::C2PO_ACCOUNT_TYPES
-    Account.config.add_statement_account_types C2po::C2PO_ACCOUNT_TYPES
+    Account.config.statement_account_types.concat C2po::C2PO_ACCOUNT_TYPES
     Account.config.affiliate_account_types.concat C2po::C2PO_ACCOUNT_TYPES
   end.freeze
 
@@ -31,6 +31,7 @@ module C2po
       ViewHook.add_hook "facilities.facility_fields", "before_is_active", "c2po/facilities/facility_fields"
       ViewHook.add_hook "facility_accounts.show", "additional_account_fields", "c2po/facility_accounts/show/additional_account_fields"
       ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "c2po/facility_accounts/show/remittance_information"
+      C2PO_ACCOUNT_TYPES_APPENDER.call
     end
 
     initializer :append_migrations do |app|
@@ -40,8 +41,7 @@ module C2po
     end
 
     initializer :append_account_types, before: "set_routes_reloader_hook" do |app|
-      C2PO_ACCOUNT_TYPES_APPENDER.call
-      app.reloader.to_prepare(&C2PO_ACCOUNT_TYPES_APPENDER)
+      app.reloader.to_run(&C2PO_ACCOUNT_TYPES_APPENDER)
     end
 
     initializer "model_core.factories", after: "factory_girl.set_factory_paths" do
