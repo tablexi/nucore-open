@@ -23,8 +23,8 @@ class AccountConfig
     @facility_account_types ||= []
   end
 
-  # Returns a set of subclassed Account object names that support statements.
-  # Engines can append to this list using `add_statement_account_types`
+  # Returns an array of subclassed Account object names that support statements.
+  # Engines can append to this list.
   def statement_account_types
     @statement_account_types ||= []
   end
