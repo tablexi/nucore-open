@@ -333,7 +333,7 @@ RSpec.describe Journal do
   it "should create and attach journal spreadsheet when journal rows are present" do
     journal = create(:journal, :with_completed_order)
     journal.create_spreadsheet
-    expect(journal.download_url).to be_present
+    expect(journal.file_path).to be_present
   end
 
   it "should not create and attach journal spreadsheet when no journal rows are present" do

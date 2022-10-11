@@ -34,7 +34,9 @@ module ActiveStorageFile
       attachable[:io].rewind
       read_io
     else
-      # expected to be ActiveStorage::Blob, ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile, or String
+      # attachable is expected to be an instance of
+      # ActiveStorage::Blob, ActionDispatch::Http::UploadedFile,
+      # or Rack::Test::UploadedFile
       attachable.read
     end
   end
