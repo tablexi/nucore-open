@@ -43,13 +43,15 @@ module DownloadableFile
       return file.download if persisted?
 
       attachable = attachment_changes["file"]&.attachable
-
-      if attachable.is_a?(Hash)
-        read_io = attachable[:io]&.read
+      if attachable.nil?
+        nil
+      elsif attachable.is_a?(Hash)
+        read_io = attachable[:io].read
         attachable[:io].rewind
         read_io
       else
-        attachable&.read
+        # expected to be ActiveStorage::Blob, ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile, or String
+        attachable.read
       end
     else
       Paperclip.io_adapters.for(file).read
