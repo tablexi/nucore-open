@@ -60,7 +60,8 @@ module DownloadableFile
 
   def file_path
     if SettingsHelper.feature_on?(:active_storage)
-      file.service.path_for("file")
+      # service is nil when no file is attached
+      file.service&.path_for("file")
     else
       file.path
     end
@@ -68,7 +69,7 @@ module DownloadableFile
 
   def rename(attr, value)
     if SettingsHelper.feature_on?(:active_storage)
-      file.filename = value
+      file.upate(attr, value)
     else
       file.instance_write(attr, value)
     end
