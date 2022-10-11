@@ -2,7 +2,10 @@
 
 require "rails_helper"
 
-RSpec.describe DownloadableFile, feature_setting: { active_storage: true } do
+# NOTE: feature_setting: { active_storage: true }
+# does not work as expected because the module
+# has class methods that get evaluated on load
+RSpec.describe DownloadableFile do
 
   let(:facility) { create(:setup_facility) }
   let(:item) { FactoryBot.create(:item, facility: facility) }
