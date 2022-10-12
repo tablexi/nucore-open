@@ -71,7 +71,7 @@ class AccountConfig
   # and the NullObject always returns `true` for cross_facility?.
   def account_types_for_facility(facility, action)
     types = account_types
-    types = types.select { |type| type.constantize.global? } if facility.try(:cross_facility?)
+    types = types.select { |type| type.constantize.global? }.to_set if facility.try(:cross_facility?)
     types -= creation_disabled_types if action == :create
     types
   end
