@@ -2,28 +2,28 @@
 
 class AccountConfig
 
-  # Returns an array of all subclassed Account object names - including global,
+  # Returns a set of all subclassed Account object names - including global,
   # per-facility, and statement account types.
   # Engines can append to this list.
   def account_types
     @account_types ||= Set["NufsAccount"]
   end
 
-  # Returns an array of subclassed Account object names that are available
+  # Returns a set of subclassed Account object names that are available
   # across facilities. Derived from other lists.
   # Engines should NOT append to this list.
   def global_account_types
     account_types - facility_account_types
   end
 
-  # Returns an array of subclassed Account object names that are only available
+  # Returns a set of subclassed Account object names that are only available
   # on a per-facility basis.
   # Engines can append to this list.
   def facility_account_types
     @facility_account_types ||= Set[]
   end
 
-  # Returns an array of subclassed Account object names that support statements.
+  # Returns a set of subclassed Account object names that support statements.
   # Engines can append to this list.
   def statement_account_types
     @statement_account_types ||= Set[]
@@ -33,19 +33,19 @@ class AccountConfig
     statement_account_types.map(&:constantize).select(&:reconcilable?).map(&:to_s)
   end
 
-  # Returns an array of subclassed Account object names that support affiliates.
+  # Returns a set of subclassed Account object names that support affiliates.
   # Engines can append to this list.
   def affiliate_account_types
     @affiliate_account_types ||= Set[]
   end
 
-  # Returns an array of subclassed Account object names that support journal.
+  # Returns a set of subclassed Account object names that support journal.
   # Engines can append to this list.
   def journal_account_types
     @journal_account_types ||= Set["NufsAccount"]
   end
 
-  # An array of account types where creation should be disabled
+  # A set of account types where creation should be disabled
   def creation_disabled_types
     @creation_disabled_types ||= Set[]
   end
@@ -66,7 +66,7 @@ class AccountConfig
     account_type_to_param(class_string).sub(/_account\z/, "").pluralize
   end
 
-  # Returns an array of subclassed Account objects given a facility.
+  # Returns a set of subclassed Account objects given a facility.
   # Facility can be a NullObject (used when not in the context of a facility)
   # and the NullObject always returns `true` for cross_facility?.
   def account_types_for_facility(facility, action)
