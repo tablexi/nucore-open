@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_16_233321) do
+ActiveRecord::Schema.define(version: 2022_10_10_164640) do
 
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -636,7 +636,7 @@ ActiveRecord::Schema.define(version: 2022_02_16_233321) do
     t.string "mac_address"
     t.string "building_room_number"
     t.string "circuit_number"
-    t.integer "ethernet_port_number"
+    t.string "ethernet_port_number"
     t.index ["instrument_id"], name: "index_relays_on_instrument_id"
   end
 

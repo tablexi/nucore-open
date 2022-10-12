@@ -8,7 +8,6 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Major.create(:name => 'Daley', :city => cities.first)
 
-OrderStatus.create(name: "New")
 OrderStatus.find_or_create_by(name: "New")
 OrderStatus.find_or_create_by(name: "In Process")
 OrderStatus.find_or_create_by(name: "Canceled")
