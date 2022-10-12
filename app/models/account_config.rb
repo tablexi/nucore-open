@@ -6,7 +6,7 @@ class AccountConfig
   # per-facility, and statement account types.
   # Engines can append to this list.
   def account_types
-    @account_types ||= ["NufsAccount"]
+    @account_types ||= Set["NufsAccount"]
   end
 
   # Returns an array of subclassed Account object names that are available
@@ -20,34 +20,34 @@ class AccountConfig
   # on a per-facility basis.
   # Engines can append to this list.
   def facility_account_types
-    @facility_account_types ||= []
+    @facility_account_types ||= Set[]
   end
 
   # Returns an array of subclassed Account object names that support statements.
   # Engines can append to this list.
   def statement_account_types
-    @statement_account_types ||= []
+    @statement_account_types ||= Set[]
   end
 
   def reconcilable_account_types
-    statement_account_types.uniq.map(&:constantize).select(&:reconcilable?).map(&:to_s)
+    statement_account_types.map(&:constantize).select(&:reconcilable?).map(&:to_s)
   end
 
   # Returns an array of subclassed Account object names that support affiliates.
   # Engines can append to this list.
   def affiliate_account_types
-    @affiliate_account_types ||= []
+    @affiliate_account_types ||= Set[]
   end
 
   # Returns an array of subclassed Account object names that support journal.
   # Engines can append to this list.
   def journal_account_types
-    @journal_account_types ||= ["NufsAccount"]
+    @journal_account_types ||= Set["NufsAccount"]
   end
 
   # An array of account types where creation should be disabled
   def creation_disabled_types
-    @creation_disabled_types ||= []
+    @creation_disabled_types ||= Set[]
   end
 
   def creation_enabled?(type)
