@@ -30,7 +30,10 @@ class AccountConfig
   end
 
   def reconcilable_account_types
-    statement_account_types.uniq.map(&:constantize).select(&:reconcilable?).map(&:to_s)
+    statement_account_types.map(&:constantize)
+                           .select(&:reconcilable?)
+                           .map(&:to_s)
+                           .to_set
   end
 
   # Returns a set of subclassed Account object names that support affiliates.
