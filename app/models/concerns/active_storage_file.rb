@@ -46,8 +46,8 @@ module ActiveStorageFile
     file.service&.path_for("file")
   end
 
-  def rename(attr, value)
-    file.upate(attr, value)
+  def update_filename(value)
+    file.filename = value
   end
 
   def file=(attachable)

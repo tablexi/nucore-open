@@ -38,6 +38,12 @@ RSpec.describe DownloadableFile do
       expect(stored_file).not_to be_persisted
     end
 
+    it "can rename the file" do
+      expect(stored_file.file.filename).not_to eq "error_report.csv"
+      stored_file.update_filename("error_report.csv")
+      expect(stored_file.file.filename).to eq "error_report.csv"
+    end
+
     context "with a File" do
       it "can read the file content" do
         expect(stored_file.read_attached_file).to eq(File.read(file_path))
@@ -86,6 +92,12 @@ RSpec.describe DownloadableFile do
 
     it "is not persisted" do
       expect(stored_file).not_to be_persisted
+    end
+
+    it "can rename the file" do
+      expect(stored_file.file.filename).not_to eq "error_report.csv"
+      stored_file.update_filename("error_report.csv")
+      expect(stored_file.file.filename).to eq "error_report.csv"
     end
 
     context "with a File" do

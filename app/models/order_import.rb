@@ -204,7 +204,7 @@ class OrderImport < ApplicationRecord
       created_by: creator.id,
     )
 
-    error_file.rename(:file_name, "error_report.csv")
+    error_file.update_filename("error_report.csv")
     error_file.save!
   end
 

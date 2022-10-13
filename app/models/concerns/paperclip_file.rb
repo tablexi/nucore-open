@@ -26,8 +26,8 @@ module PaperclipFile
     file.path
   end
 
-  def rename(attr, value)
-    file.instance_write(attr, value)
+  def update_filename(value)
+    file.instance_write(:file_name, value)
   end
 
   def file=(attachable)
