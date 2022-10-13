@@ -39,6 +39,7 @@ class Notifier < ActionMailer::Base
     @user = user
     @accounts = accounts
     @facility = facility
+    @email = facility.email
     @accounts_grouped_by_owner = accounts.group_by(&:owner_user)
     send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation)
   end
