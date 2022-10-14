@@ -11,4 +11,8 @@ module DownloadableFile
     include PaperclipFile
   end
 
+  def file_present?
+    file.present?
+  end
+
 end

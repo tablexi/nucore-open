@@ -227,6 +227,7 @@ class FacilitiesController < ApplicationController
       kiosk_enabled
       payment_url
       file
+      remove_file
     )
   end
 
