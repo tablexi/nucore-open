@@ -8,6 +8,8 @@
   = f.input :name
   = f.input :abbreviation
   = f.input :url_name
+  - if SettingsHelper.feature_on?(:facility_tile_list)
+    = image_tag(current_facility.download_url) if current_facility.file
   = f.input :short_description
   = f.input :description
   = f.input :banner_notice if SettingsHelper.feature_on?(:facility_banner_notice)

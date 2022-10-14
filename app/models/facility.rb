@@ -2,6 +2,10 @@
 
 class Facility < ApplicationRecord
 
+  # Migration is required if Paperclip is being used.
+  # The image is used in the UI if the facility_tile_list feature flag is enabled
+  include DownloadableFiles::Image
+
   before_validation :set_journal_mask, on: :create
 
   has_many :bundles, inverse_of: :facility
