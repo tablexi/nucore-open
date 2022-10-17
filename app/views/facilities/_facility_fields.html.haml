@@ -4,7 +4,7 @@
   = f.input :url_name, hint: facility_url(f.object.url_name || "url-name"), as: :string
   - if SettingsHelper.feature_on?(:facility_tile_list)
     = f.file_field :file, label: "Image"
-    - if current_facility.file_present?
+    - if current_facility&.file_present?
       = f.input(:remove_file, as: :boolean, inline_label: "Remove image")
       = image_tag(current_facility.download_url)
   = f.input :short_description, input_html: { class: "wide" }, hint: text(".hints.short_description")
