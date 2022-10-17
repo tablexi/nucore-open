@@ -13,8 +13,6 @@ module DownloadableFiles
       if SettingsHelper.feature_on?(:active_storage)
         validates :file, content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"]
       else
-        attr_accessor :file_file_name
-
         validates_attachment :file, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
       end
     end
@@ -22,6 +20,7 @@ module DownloadableFiles
     def remove_file=(value)
       @remove_file = !value.to_i.zero?
     end
+
   end
 
 end

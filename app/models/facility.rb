@@ -2,7 +2,7 @@
 
 class Facility < ApplicationRecord
 
-  # Migration is required if Paperclip is being used.
+  # Migration is required if Paperclip is being used (see https://github.com/thoughtbot/paperclip#migrations-1)
   # The image is used in the UI if the facility_tile_list feature flag is enabled
   include DownloadableFiles::Image
 
