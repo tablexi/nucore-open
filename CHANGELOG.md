@@ -14,7 +14,7 @@ This change is a new implementation of this feature flag and may require changes
 
 In this implementation, facilities get their attached image via the `DownloadableFiles::Image` module. This module uses either Paperclip or ActiveStorage, depending on the `active_storage` feature flag. The attachment is called `file` and, if Paperclip is being used, the following migration is needed
 
-```
+```ruby
 class AddAttachmentToFacility < ActiveRecord::Migration[6.1]
   def change
     add_attachment :facilities, :file
