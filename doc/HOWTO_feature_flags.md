@@ -9,7 +9,7 @@
 * `limit_short_description` Limit the short description section for facilities (300 characters)
 * `product_list_columns` Display product lists in columns or one long list
 * `azlist` Display one long list of facilities, or an alphabetized collection (only facilities that start with A, and ...a top nav to access facilities that start with other letters)
-* `facility_tile_list` Grid view of facility list on home page
+* `facility_tile_list` Grid view of facility list on home page, in the UI this also enables an image to be associated with a facility
 
 ## Onboarding
 
