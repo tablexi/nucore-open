@@ -45,7 +45,7 @@
 * `product_specific_contacts` Allow a different contact email for each product
 
 ## Other
-* `saml: create_user: true` create/update saml users on login
+* `saml: create_user` create/update saml users on login
 * `create_users` Should admins be able to manually add users
 * `training_requests` Allow users to request training
 * `global_billing_administrator` and `global_billing_administrator_users_tab` Do you want to use global billing admins? Should they be able to manage users?
