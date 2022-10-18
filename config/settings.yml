@@ -114,7 +114,6 @@ feature:
   cross_facility_reports: false
   product_list_columns: false
   azlist: false
-  facility_tile_list: true
   use_manage: false
   facility_banner_notice: true
   charge_full_price_on_cancellation: true
@@ -128,6 +127,7 @@ feature:
   bypass_kiosk_auth: false
   revenue_account_editable: false
   active_storage: false
+  facility_tile_list: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
