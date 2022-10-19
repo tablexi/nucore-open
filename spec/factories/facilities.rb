@@ -11,7 +11,7 @@ FactoryBot.define do
     sequence(:url_name) { |n| "facility#{n}" }
 
     trait :with_image do
-      file File.open("#{Rails.root}/spec/files/cern.jpeg")
+      file { File.open("#{Rails.root}/spec/files/cern.jpeg") }
     end
 
     trait :with_order_notification do
