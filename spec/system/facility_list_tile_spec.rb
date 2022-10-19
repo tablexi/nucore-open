@@ -3,6 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "Facility list tile", feature_setting: { facility_tile_list: true } do
+  # This spec requires that Facility have an attachement. Currently that can be done using
+  # either Paperclip or ActiveStorage. Because Paperclip requires a migration that may or
+  # may not have occurred, these specs are only set to run if ActiveStorage is being used.
   if SettingsHelper.feature_on?(:active_storage)
     Facility.include DownloadableFiles::Image
 
@@ -12,7 +15,6 @@ RSpec.describe "Facility list tile", feature_setting: { facility_tile_list: true
     it "shows image on home page" do
       facility
       visit facilities_path
-      save_and_open_page
 
       expect(page).to have_selector(".tile-image")
     end
@@ -54,6 +56,7 @@ RSpec.describe "Facility list tile", feature_setting: { facility_tile_list: true
         end
       end
     end
-
+  else
+    puts "WARNING: 'Facility list tiles' specs not run due to `active_storage` feature flag not being set to `true`"
   end
 end

@@ -126,8 +126,8 @@ feature:
   kiosk_view: true
   bypass_kiosk_auth: false
   revenue_account_editable: false
-  active_storage: true
-  facility_tile_list: true
+  active_storage: false
+  facility_tile_list: false
 
 split_accounts:
   # Roles are allowed to create Split Accounts
