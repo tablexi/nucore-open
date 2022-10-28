@@ -41,9 +41,9 @@ class Notifier < ActionMailer::Base
     @facility = facility
 
     @contact_message = if facility.email
-                         "please email #{facility.email}"
+                         "please email [#{facility.email}](mailto:#{facility.email})."
                        else
-                         "please contact the facility administrator"
+                         "please contact the facility administrator."
                        end
 
     @accounts_grouped_by_owner = accounts.group_by(&:owner_user)
