@@ -8,12 +8,16 @@ ul.facility_list_container.tile {
     min-width: 250px;
     margin-right:10px;
     max-width: 400px;
+    img {
+      margin-bottom: 1em;
+    }
   }
 
   .thumbnailFallBackContainer {
     width: 100%;
     padding-bottom: 50%;
     position: relative;
+    margin-bottom: 1em;;
   }
 	
   .thumbnailFallback {

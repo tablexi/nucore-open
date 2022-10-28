@@ -21,6 +21,14 @@ module DownloadableFiles
       @remove_file = !value.to_i.zero?
     end
 
+    def padded_image400x200
+      if SettingsHelper.feature_on?(:active_storage)
+        download_url.variant(resize_and_pad: [400, 200, { background: "rgb(231, 231, 231)" }])
+      else
+        download_url
+      end
+    end
+
   end
 
 end
