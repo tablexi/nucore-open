@@ -15,7 +15,7 @@
       "id": "1234abcd",
       "links": {
         "self": {
-          "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/1234abcd"
+          "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/1234abcd"
         }
       },
       "attributes": {
@@ -40,10 +40,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/1234abcd/user_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/1234abcd/user_id"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/1234abcd/relationships/user_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/1234abcd/relationships/user_id"
             }
           }
         },
@@ -57,10 +57,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/1234abcd/course_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/1234abcd/course_id"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/1234abcd/relationships/course_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/1234abcd/relationships/course_id"
             }
           }
         }
@@ -71,7 +71,7 @@
       "id": "888999stst",
       "links": {
         "self": {
-          "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/888999stst"
+          "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/888999stst"
         }
       },
       "attributes": {
@@ -96,10 +96,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/888999stst/user_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/888999stst/user_id"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/888999stst/relationships/user_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/888999stst/relationships/user_id"
             }
           }
         },
@@ -113,10 +113,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/888999stst/course_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/888999stst/course_id"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/888999stst/relationships/course_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/888999stst/relationships/course_id"
             }
           }
         }
@@ -127,7 +127,7 @@
       "id": "4444lll",
       "links": {
         "self": {
-          "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/4444lll"
+          "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/4444lll"
         }
       },
       "attributes": {
@@ -152,10 +152,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/4444lll/user_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/4444lll/user_id"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/4444lll/relationships/user_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/4444lll/relationships/user_id"
             }
           }
         },
@@ -169,10 +169,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/4444lll/course_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/4444lll/course_id"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record/4444lll/relationships/course_id"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record/4444lll/relationships/course_id"
             }
           }
         }
@@ -185,7 +185,7 @@
       "id": "lmnop4567",
       "links": {
         "self": {
-          "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567?resourceVersion=id%3A80006732"
+          "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567?resourceVersion=id%3A80006732"
         }
       },
       "attributes": {
@@ -228,10 +228,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567/node_type?resourceVersion=id%3A80006732"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567/node_type?resourceVersion=id%3A80006732"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567/relationships/node_type?resourceVersion=id%3A80006732"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567/relationships/node_type?resourceVersion=id%3A80006732"
             }
           }
         },
@@ -245,10 +245,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567/revision_uid?resourceVersion=id%3A80006732"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567/revision_uid?resourceVersion=id%3A80006732"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567/relationships/revision_uid?resourceVersion=id%3A80006732"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567/relationships/revision_uid?resourceVersion=id%3A80006732"
             }
           }
         },
@@ -262,10 +262,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567/uid?resourceVersion=id%3A80006732"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567/uid?resourceVersion=id%3A80006732"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567/relationships/uid?resourceVersion=id%3A80006732"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567/relationships/uid?resourceVersion=id%3A80006732"
             }
           }
         },
@@ -281,10 +281,10 @@
           ],
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567/field_training_course_category?resourceVersion=id%3A80006732"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567/field_training_course_category?resourceVersion=id%3A80006732"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/lmnop4567/relationships/field_training_course_category?resourceVersion=id%3A80006732"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/lmnop4567/relationships/field_training_course_category?resourceVersion=id%3A80006732"
             }
           }
         }
@@ -295,7 +295,7 @@
       "id": "bbb222",
       "links": {
         "self": {
-          "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222?resourceVersion=id%3A80006738"
+          "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222?resourceVersion=id%3A80006738"
         }
       },
       "attributes": {
@@ -338,10 +338,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222/node_type?resourceVersion=id%3A80006738"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222/node_type?resourceVersion=id%3A80006738"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222/relationships/node_type?resourceVersion=id%3A80006738"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222/relationships/node_type?resourceVersion=id%3A80006738"
             }
           }
         },
@@ -355,10 +355,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222/revision_uid?resourceVersion=id%3A80006738"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222/revision_uid?resourceVersion=id%3A80006738"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222/relationships/revision_uid?resourceVersion=id%3A80006738"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222/relationships/revision_uid?resourceVersion=id%3A80006738"
             }
           }
         },
@@ -372,10 +372,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222/uid?resourceVersion=id%3A80006738"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222/uid?resourceVersion=id%3A80006738"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222/relationships/uid?resourceVersion=id%3A80006738"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222/relationships/uid?resourceVersion=id%3A80006738"
             }
           }
         },
@@ -391,10 +391,10 @@
           ],
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222/field_training_course_category?resourceVersion=id%3A80006738"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222/field_training_course_category?resourceVersion=id%3A80006738"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/bbb222/relationships/field_training_course_category?resourceVersion=id%3A80006738"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/bbb222/relationships/field_training_course_category?resourceVersion=id%3A80006738"
             }
           }
         }
@@ -405,7 +405,7 @@
       "id": "7777ggg",
       "links": {
         "self": {
-          "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg?resourceVersion=id%3A80006704"
+          "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg?resourceVersion=id%3A80006704"
         }
       },
       "attributes": {
@@ -448,10 +448,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg/node_type?resourceVersion=id%3A80006704"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg/node_type?resourceVersion=id%3A80006704"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg/relationships/node_type?resourceVersion=id%3A80006704"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg/relationships/node_type?resourceVersion=id%3A80006704"
             }
           }
         },
@@ -465,10 +465,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg/revision_uid?resourceVersion=id%3A80006704"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg/revision_uid?resourceVersion=id%3A80006704"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg/relationships/revision_uid?resourceVersion=id%3A80006704"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg/relationships/revision_uid?resourceVersion=id%3A80006704"
             }
           }
         },
@@ -482,10 +482,10 @@
           },
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg/uid?resourceVersion=id%3A80006704"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg/uid?resourceVersion=id%3A80006704"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg/relationships/uid?resourceVersion=id%3A80006704"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg/relationships/uid?resourceVersion=id%3A80006704"
             }
           }
         },
@@ -508,10 +508,10 @@
           ],
           "links": {
             "related": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg/field_training_course_category?resourceVersion=id%3A80006704"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg/field_training_course_category?resourceVersion=id%3A80006704"
             },
             "self": {
-              "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/raft_training_course/7777ggg/relationships/field_training_course_category?resourceVersion=id%3A80006704"
+              "href": "https://oregonstate-b4.scishield.com/jsonapi/node/raft_training_course/7777ggg/relationships/field_training_course_category?resourceVersion=id%3A80006704"
             }
           }
         }
@@ -523,7 +523,7 @@
   },
   "links": {
     "self": {
-      "href": "https://oregonstate-b4.bioraft.com/jsonapi/raft_training_record/raft_training_record?filter%5Bstatus%5D=1&filter%5Buser%5D%5Bcondition%5D%5Bpath%5D=user_id.mail&filter%5Buser%5D%5Bcondition%5D%5Boperator%5D=%3D&filter%5Buser%5D%5Bcondition%5D%5Bvalue%5D=Todd.Miller%40oregonstate.edu&include=course_id"
+      "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record?filter%5Bstatus%5D=1&filter%5Buser%5D%5Bcondition%5D%5Bpath%5D=user_id.mail&filter%5Buser%5D%5Bcondition%5D%5Boperator%5D=%3D&filter%5Buser%5D%5Bcondition%5D%5Bvalue%5D=Todd.Miller%40oregonstate.edu&include=course_id"
     }
   }
 }

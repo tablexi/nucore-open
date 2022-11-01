@@ -16,7 +16,7 @@
       "detail": "This route can only be accessed by authenticated users.",
       "links": {
         "via": {
-          "href": "https://oregonstate-b4.bioraft.com/jsonapi/node/laboratory?fields%5Bnode--laboratory%5D=title%2Cdrupal_internal__nid"
+          "href": "https://oregonstate-b4.scishield.com/jsonapi/node/laboratory?fields%5Bnode--laboratory%5D=title%2Cdrupal_internal__nid"
         },
         "info": {
           "href": "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4"

@@ -2,13 +2,13 @@
 
 require "rails_helper"
 
-RSpec.describe OsuRelms::BioraftApiAdapter do
+RSpec.describe OsuRelms::ScishieldApiAdapter do
   subject(:adapter) { described_class.new(user) }
   let(:user) { build(:user, email: "research@osu.edu") }
   let(:api_endpoint) { "#{adapter.client.class::API_ENDPOINT}?#{adapter.client.training_query(user.email)}" }
 
   describe "with a successful response" do
-    let(:response) { File.expand_path("../../fixtures/bioraft/success.json", __dir__) }
+    let(:response) { File.expand_path("../../fixtures/scishield/success.json", __dir__) }
 
     before do
       stub_request(:get, api_endpoint)
@@ -53,7 +53,7 @@ RSpec.describe OsuRelms::BioraftApiAdapter do
   end
 
   describe "the user is not found" do
-    let(:response) { File.expand_path("../../fixtures/bioraft/user_not_found.json", __dir__) }
+    let(:response) { File.expand_path("../../fixtures/scishield/user_not_found.json", __dir__) }
     before do
       stub_request(:get, api_endpoint)
         .to_return(
@@ -69,7 +69,7 @@ RSpec.describe OsuRelms::BioraftApiAdapter do
   end
 
   describe "the user is found but the response includes an error" do
-    let(:response) { File.expand_path("../../fixtures/bioraft/errors.json", __dir__) }
+    let(:response) { File.expand_path("../../fixtures/scishield/errors.json", __dir__) }
     before do
       stub_request(:get, api_endpoint)
         .to_return(

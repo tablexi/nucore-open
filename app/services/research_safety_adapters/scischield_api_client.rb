@@ -2,14 +2,14 @@
 
 module ResearchSafetyAdapters
 
-  class BioraftApiClient
+  class ScishieldApiClient
 
     require "jwt"
 
-    KEY = Rails.application.secrets.dig(:osu, :bioraft, :key)
-    KEY_ID = Rails.application.secrets.dig(:osu, :bioraft, :key_id)
-    PRIVATE_KEY = Rails.application.secrets.dig(:osu, :bioraft, :rsa_private_key)
-    API_ENDPOINT = Rails.application.secrets.dig(:osu, :bioraft, :bioraft_endpoint)
+    KEY = Rails.application.secrets.dig(:osu, :scishield, :key)
+    KEY_ID = Rails.application.secrets.dig(:osu, :scishield, :key_id)
+    PRIVATE_KEY = Rails.application.secrets.dig(:osu, :scishield, :rsa_private_key)
+    API_ENDPOINT = Rails.application.secrets.dig(:osu, :scishield, :scishield_endpoint)
 
     def token
       return @token if @token.present?

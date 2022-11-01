@@ -2,14 +2,14 @@
 
 module ResearchSafetyAdapters
 
-  class BioraftApiAdapter
+  class ScishieldApiAdapter
 
     def initialize(user)
       @user = user
     end
 
     def client
-      @client ||= BioraftApiClient.new
+      @client ||= ScishieldApiClient.new
     end
 
     def certified?(certificate)
