@@ -4,7 +4,7 @@ class ResearchSafetyCertificationLookup
 
   # Replace the value of this attribute in your engine to connect to the school's
   # custom API.
-  cattr_accessor(:adapter_class) { ResearchSafetyAlwaysCertifiedAdapter }
+  cattr_accessor(:adapter_class) { Settings.research_safety_adapter.class_name.constantize }
 
   # This is a class method for easier stubbing in specs
   def self.adapter(user)
