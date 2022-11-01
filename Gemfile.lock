@@ -327,8 +327,9 @@ GEM
       railties (>= 3.2, < 8.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    haml (5.2.2)
-      temple (>= 0.8.0)
+    haml (6.0.8)
+      temple (>= 0.8.2)
+      thor
       tilt
     haml_lint (0.42.0)
       haml (>= 4.0, < 6.1)
@@ -592,7 +593,7 @@ GEM
       railties (>= 3.2.5)
     teaspoon-jasmine (2.9.1)
       teaspoon (>= 1.0.0)
-    temple (0.8.2)
+    temple (0.9.1)
     terrapin (0.6.0)
       climate_control (>= 0.0.3, < 1.0)
     text_helpers (1.2.0)
