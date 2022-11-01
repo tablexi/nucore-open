@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe OsuRelms::ScishieldApiAdapter do
+RSpec.describe ResearchSafetyAdapters::ScishieldApiAdapter do
   subject(:adapter) { described_class.new(user) }
   let(:user) { build(:user, email: "research@osu.edu") }
   let(:api_endpoint) { "#{adapter.client.class::API_ENDPOINT}?#{adapter.client.training_query(user.email)}" }
