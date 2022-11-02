@@ -83,7 +83,7 @@ RSpec.describe ResearchSafetyAdapters::ScishieldApiAdapter do
       stub_request(:get, api_endpoint)
         .to_return(
           body: File.new(response),
-          status: 200,
+          status: 403,
         )
     end
 
