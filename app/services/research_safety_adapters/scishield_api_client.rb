@@ -6,10 +6,10 @@ module ResearchSafetyAdapters
 
     require "jwt"
 
-    KEY = Rails.application.secrets.dig(:osu, :scishield, :key)
-    KEY_ID = Rails.application.secrets.dig(:osu, :scishield, :key_id)
-    PRIVATE_KEY = Rails.application.secrets.dig(:osu, :scishield, :rsa_private_key)
-    API_ENDPOINT = Rails.application.secrets.dig(:osu, :scishield, :scishield_endpoint)
+    KEY = Rails.application.secrets.dig(:scishield, :key)
+    KEY_ID = Rails.application.secrets.dig(:scishield, :key_id)
+    PRIVATE_KEY = Rails.application.secrets.dig(:scishield, :rsa_private_key)
+    API_ENDPOINT = Rails.application.secrets.dig(:scishield, :scishield_endpoint)
 
     def token
       return @token if @token.present?
@@ -30,13 +30,16 @@ module ResearchSafetyAdapters
     end
 
     def certifications_for(email)
-      api_endpoint = "#{API_ENDPOINT}?#{training_query(email)}"
-      uri = URI(api_endpoint)
+      uri = URI(api_endpoint(email))
       req = Net::HTTP::Get.new(uri)
       req["accept"] = "application/json"
       req["authorization"] = "UsersJwt #{token}"
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
       response.body
+    end
+
+    def api_endpoint(email)
+      "#{API_ENDPOINT}?#{training_query(email)}"
     end
 
     # Builds a nested query

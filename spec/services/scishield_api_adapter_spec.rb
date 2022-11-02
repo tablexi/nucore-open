@@ -5,10 +5,19 @@ require "rails_helper"
 RSpec.describe ResearchSafetyAdapters::ScishieldApiAdapter do
   subject(:adapter) { described_class.new(user) }
   let(:user) { build(:user, email: "research@osu.edu") }
-  let(:api_endpoint) { "#{adapter.client.class::API_ENDPOINT}?#{adapter.client.training_query(user.email)}" }
+  let(:test_endpoint) { "https://test-university.scishield.com/jsonapi/raft_training_record/raft_training_record" }
+  let(:api_endpoint) { adapter.client.api_endpoint(user.email) }
+
+  before(:each) {
+    allow(Rails.application.secrets).to receive(:dig).with(:scishield, :key).and_return(nil)
+    allow(Rails.application.secrets).to receive(:dig).with(:scishield, :key_id).and_return(nil)
+    allow(Rails.application.secrets).to receive(:dig).with(:scishield, :rsa_private_key).and_return(nil)
+    allow(Rails.application.secrets).to receive(:dig).with(:scishield, :scishield_endpoint).and_return(test_endpoint)
+
+  }
 
   describe "with a successful response" do
-    let(:response) { File.expand_path("../../fixtures/scishield/success.json", __dir__) }
+    let(:response) { File.expand_path("../fixtures/scishield/success.json", __dir__) }
 
     before do
       stub_request(:get, api_endpoint)
@@ -53,7 +62,7 @@ RSpec.describe ResearchSafetyAdapters::ScishieldApiAdapter do
   end
 
   describe "the user is not found" do
-    let(:response) { File.expand_path("../../fixtures/scishield/user_not_found.json", __dir__) }
+    let(:response) { File.expand_path("../fixtures/scishield/user_not_found.json", __dir__) }
     before do
       stub_request(:get, api_endpoint)
         .to_return(
@@ -69,7 +78,7 @@ RSpec.describe ResearchSafetyAdapters::ScishieldApiAdapter do
   end
 
   describe "the user is found but the response includes an error" do
-    let(:response) { File.expand_path("../../fixtures/scishield/errors.json", __dir__) }
+    let(:response) { File.expand_path("../fixtures/scishield/errors.json", __dir__) }
     before do
       stub_request(:get, api_endpoint)
         .to_return(
