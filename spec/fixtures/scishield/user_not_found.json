@@ -17,7 +17,7 @@
   },
   "links": {
     "self": {
-      "href": "https://oregonstate-b4.scishield.com/jsonapi/raft_training_record/raft_training_record?filter%5Bstatus%5D=1&filter%5Buser%5D%5Bcondition%5D%5Bpath%5D=user_id.mail&filter%5Buser%5D%5Bcondition%5D%5Boperator%5D=%3D&filter%5Buser%5D%5Bcondition%5D%5Bvalue%5D=gsdfgd&include=course_id"
+      "href": "https://test-university.scishield.com/jsonapi/raft_training_record/raft_training_record?filter%5Bstatus%5D=1&filter%5Buser%5D%5Bcondition%5D%5Bpath%5D=user_id.mail&filter%5Buser%5D%5Bcondition%5D%5Boperator%5D=%3D&filter%5Buser%5D%5Bcondition%5D%5Bvalue%5D=gsdfgd&include=course_id"
     }
   }
 }
