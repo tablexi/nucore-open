@@ -21,8 +21,13 @@ module ResearchSafetyAdapters
         exp: now + 3600,
         drupal: { uid: KEY }
       }
-      rsa_private = OpenSSL::PKey::RSA.new(PRIVATE_KEY)
+      rsa_private = OpenSSL::PKey::RSA.new(unescape(PRIVATE_KEY))
       @token = JWT.encode(payload, rsa_private, "RS256", { kid: KEY_ID })
+    end
+
+    # need to make sure \n gets unescaped when reading this in from ENV
+    def unescape(string)
+      "\"#{string}\"".undump
     end
 
     def keys_present?
