@@ -13,7 +13,7 @@
 
 ## Onboarding
 
-* Lock account after 5 failed attempts 
+* `devise/lock_strategy`Lock account after 5 failed attempts 
 * `password_update` Allow users to update or reset password (forgot password button)
 
 ## Account Types
@@ -26,7 +26,7 @@
 * `Account.config.facility_account_types` Which account types (CC, PO) can be used at multiple facilities or just one (CC + PO should be available cross-facility)
 * `facility_payment_urls` Store a payment url for each facility (can be used on statement PDFs to direct users to pay via CC)
 * `default_journal_cutoff_time` Journal cutoff time
-* PDF Statement formatting
+* `statement_pdf:class_name` PDF Statement formatting
 
 ## Billing and Pricing
 
@@ -34,7 +34,7 @@
 * `price_policy_note_options` Require a note when adding new price rules
 * `charge_full_price_on_cancellation` Allow option to charge full price on cancelation
 * `facility_directors_can_manage_price_groups` Can facility directors manage price groups
-* `account_reference_field` Store a reference field on accounts? Dartmouth uses this if there is something special about the account. Like is the account shared with an outside source or they only want the account used for particular reasons. It’s mainly for the odd exception that an account maybe flagged for.
+* `account_reference_field` Store a reference field on accounts. Dartmouth uses this if there is something special about the account. Like is the account shared with an outside source or they only want the account used for particular reasons. It’s mainly for the odd exception that an account maybe flagged for.
 * `set_statement_search_start_date` By default, show statements from the last month on the "create Statements" tab
 * `user_based_price_groups` Allow assigning users to specific price groups (Internal Base Rate, External, etc).  This would allow some users to potentially get cheaper (internal) rates even if they don’t have access to internal accounts.
 
