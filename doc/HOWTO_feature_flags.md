@@ -2,7 +2,7 @@
 
 ## Style/Display
 
-* Manage facilities link on the left or right
+* `use_manage` Use "Use" for the link to the home page and place the Manage Facilities link on the left, or use "Home" for the link to the home page and place the Manage Facilities link to the right
 * `facility_banner_notice` Allow setting a highly visible banner that will display when a user visits the facility homepage
 * `daily_view` Display a public daily view for facility's reservation schedule
 * `equipment_list` Display a list of instruments on facility home page
