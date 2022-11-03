@@ -25,16 +25,8 @@ table {
   }
 }
 
-/*
- * This makes sure the status column, in particular the "Status.." dropdown menu,
- * is clearly visible on the FacilityReservationsController#index page
-**/
-table.reservations {
-  tr {
-    td:nth-last-child(2) {
-      min-width: 84px;
-    }
-  }
+table.reservations select.status_dropdown {
+  min-width: 84px;
 }
 
 .table-user-accounts {
