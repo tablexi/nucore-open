@@ -2,3 +2,14 @@ td.expired {
 	background-color: $errorBackground !important;
 	color: $errorText;
 }
+
+.toggle_expired_btn {
+	float: right;
+}
+
+#result {
+	.toggle_expired_btn {
+		position: relative;
+		top: -40px;
+	}
+}
