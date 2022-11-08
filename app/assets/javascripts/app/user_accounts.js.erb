@@ -15,10 +15,10 @@ window.addEventListener("DOMContentLoaded", () => {
     
     if (hideAccounts) {
       displayStyle = "none";
-      buttonText = "Show Expired Accounts";
+      buttonText = "<%= I18n.t("accounts_table.show_text") %>";
     } else {
       displayStyle = "table-row";
-      buttonText = "Hide Expired Accounts";
+      buttonText = "<%= I18n.t("accounts_table.hide_text") %>";
     }
     
     expiredAccts.forEach((acctEle) => {

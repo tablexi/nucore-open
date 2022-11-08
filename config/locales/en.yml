@@ -44,6 +44,10 @@ en:
   statements_downcase: statements
   statemented_downcase: statemented
 
+  accounts_table:
+    show_text: Show Expired Accounts
+    hide_text: Hide Expired Accounts
+
   admin:
     shared:
       add: "Add %{model}"
