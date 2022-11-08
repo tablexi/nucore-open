@@ -135,7 +135,7 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     ast (2.4.2)
     awesome_print (1.9.2)
-    axe-core-api (4.4.2)
+    axe-core-api (4.5.0)
       dumb_delegator
       virtus
     axe-core-rspec (4.4.2)
@@ -691,8 +691,8 @@ DEPENDENCIES
   image_processing (>= 1.2)
   jquery-rails
   jquery-ui-rails
-  ldap_authentication!
   jwt
+  ldap_authentication!
   letter_opener
   mysql2
   nested_form_fields
