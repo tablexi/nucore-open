@@ -401,7 +401,7 @@ GEM
     nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
     numerizer (0.1.1)
-    oj (3.13.21)
+    oj (3.13.23)
     orm_adapter (0.5.0)
     paper_trail (13.0.0)
       activerecord (>= 5.2)
@@ -691,8 +691,8 @@ DEPENDENCIES
   image_processing (>= 1.2)
   jquery-rails
   jquery-ui-rails
-  ldap_authentication!
   jwt
+  ldap_authentication!
   letter_opener
   mysql2
   nested_form_fields
