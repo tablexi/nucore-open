@@ -15,14 +15,19 @@ module ResearchSafetyAdapters
       return @token if @token.present?
       return nil unless keys_present?
 
-      now = Time.current.to_i
       payload = {
-        iat: now,
-        exp: now + 3600,
+        iat: iat,
+        exp: iat + 3600,
         drupal: { uid: KEY }
       }
       rsa_private = OpenSSL::PKey::RSA.new(unescape(PRIVATE_KEY))
       @token = JWT.encode(payload, rsa_private, "RS256", { kid: KEY_ID })
+    end
+
+    # If our app server time is out of sync with the API server,
+    # this gives us the flexiblity to work around it.
+    def iat
+      @iat ||= Time.current.to_i + Settings.scishield_iat_offset.to_i
     end
 
     # need to make sure \n gets unescaped when reading this in from ENV

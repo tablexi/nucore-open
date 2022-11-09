@@ -175,3 +175,5 @@ google_analytics_key: ~
 
 devise:
   lock_strategy: :failed_attempts
+
+scishield_iat_offset: 0
