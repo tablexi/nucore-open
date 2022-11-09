@@ -603,7 +603,7 @@ GEM
     thor (1.2.1)
     thread_safe (0.3.6)
     tilt (2.0.11)
-    timers (4.3.4)
+    timers (4.3.5)
     ttfunk (1.7.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
