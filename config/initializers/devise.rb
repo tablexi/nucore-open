@@ -75,7 +75,7 @@ Devise.setup do |config|
   config.unlock_strategy = Settings.devise.unlock_strategy
 
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
-  config.unlock_in = Settings.devise.unlock_in.to_i.minutes
+  config.unlock_in = Settings.devise.minutes_to_unlock_in.to_i.minutes
 
   config.reset_password_within = 1.day
 
