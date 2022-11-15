@@ -47,7 +47,7 @@ gem "dynamic_form"
 gem "ckeditor", "< 5"
 gem "jquery-rails"
 gem "jquery-ui-rails"
-gem "vuejs-rails", "~> 1.0.26" # 2.0 introduces breaking changes
+gem "vuejs-rails", "~> 2.5.13" # 2.0 introduces breaking changes
 gem "clockpunch"
 gem "simple_form"
 gem "font-awesome-rails"
