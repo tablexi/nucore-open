@@ -415,7 +415,7 @@ GEM
     parallel (1.22.1)
     parallel_tests (3.13.0)
       parallel
-    paranoia (2.6.0)
+    paranoia (2.6.1)
       activerecord (>= 5.1, < 7.1)
     parser (3.1.2.1)
       ast (~> 2.4.1)
