@@ -46,6 +46,7 @@ en:
     attributes:
       purchase_order_account:
         account_number: Payment Source
+        ar_number: Account Receivable Number
       credit_card_account:
         account_number: Payment Source
         name_on_card: Name On Card
