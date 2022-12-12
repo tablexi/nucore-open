@@ -2,8 +2,11 @@
 
 class PurchaseOrderAccount < Account
 
-  include AffiliateAccount
   extend ReconcilableAccount
+
+  if SettingsHelper.feature_on? :require_affiliate_account
+    include AffiliateAccount
+  end
 
   validates_presence_of :account_number
 
