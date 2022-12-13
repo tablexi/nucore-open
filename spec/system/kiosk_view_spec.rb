@@ -182,6 +182,16 @@ RSpec.describe "Launching Kiosk View", :js, feature_setting: { kiosk_view: true,
     let(:user) { create(:user, :external, :purchaser, account: account) }
 
     it_behaves_like "kiosk_actions", "Login", "P@ssw0rd!!"
+
+    it "has a list of instruments" do
+      name1 = instrument.name
+      name2 = create(:setup_instrument, :timer, facility: facility).name
+      visit facility_kiosk_reservations_path(facility)
+      timeline = find(".timeline-wrapper")
+
+      expect(timeline).to have_content name1
+      expect(timeline).to have_content name2
+    end
   end
 
   context "with a locally authenticated user who is signed in", ignore_js_errors: true do
