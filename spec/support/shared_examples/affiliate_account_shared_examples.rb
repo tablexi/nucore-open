@@ -28,7 +28,7 @@ RSpec.shared_examples_for "AffiliateAccount" do
   end
 
   context "with the :po_require_affiliate_account flag set to false", feature_setting: { po_require_affiliate_account: false } do
-    it { is_expected.not_to validate_presence_of(:affiliate_id) }
+    it { is_expected.not_to validate_presence_of(:affiliate_id) if account.is_a? PurchaseOrderAccount }
 
     it "requires affiliate_other if affiliate is 'Other'" do
       account.affiliate = Affiliate.OTHER
