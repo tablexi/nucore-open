@@ -25,7 +25,7 @@ class KioskReservationsController < ApplicationController
     @reservations_by_instrument = todays_reservations.group_by(&:product)
 
     if params[:refresh]
-      render partial: "reservations_table", locals: { reservations: @reservations }
+      render partial: "reservations_table", locals: { reservations: @actionable_reservations }
     end
   end
 
