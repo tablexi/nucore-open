@@ -243,7 +243,7 @@ GEM
       rexml
     crass (1.0.6)
     daemons (1.4.1)
-    date (3.3.1)
+    date (3.3.2)
     deep_merge (1.2.2)
     delayed_job (4.1.11)
       activesupport (>= 3.0, < 8.0)
