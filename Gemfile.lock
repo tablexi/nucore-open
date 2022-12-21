@@ -506,7 +506,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.5)
-    rollbar (3.3.2)
+    rollbar (3.3.3)
     rspec-activejob (0.6.1)
       activejob (>= 4.2)
       rspec-mocks
