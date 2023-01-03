@@ -7,6 +7,8 @@
   collection: current_facility.facility_accounts.active,
   hint: text("hints.deposit_account")
 
+= render_view_hook("after_facility_account", { f: f })
+
 %p= link_to text("deposit_account.add"), :facility_facility_accounts
 
 - if SettingsHelper.feature_on? :expense_accounts
