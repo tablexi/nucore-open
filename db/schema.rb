@@ -859,6 +859,7 @@ ActiveRecord::Schema.define(version: 2022_10_10_164640) do
     t.string "file_content_type"
     t.integer "file_file_size"
     t.datetime "file_updated_at"
+    t.integer "user_id"
     t.index ["order_detail_id"], name: "fk_files_od"
     t.index ["product_id"], name: "fk_files_product"
   end
