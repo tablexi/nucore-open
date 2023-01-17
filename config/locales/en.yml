@@ -57,6 +57,7 @@ en:
         reservations: "Reservations"
         accounts: "Payment Sources"
         access_list: "Access List"
+        user_docs: "Docs"
       tabnav_payment_method:
         details: Details
         members: Members
