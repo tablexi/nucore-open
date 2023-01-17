@@ -57,6 +57,7 @@ en:
         reservations: "Reservations"
         accounts: "Payment Sources"
         access_list: "Access List"
+        user_docs: "Docs"
       tabnav_payment_method:
         details: Details
         members: Members
@@ -924,6 +925,21 @@ en:
         users: "Number of Users"
         accounts: "Number of Payment Sources"
 
+  user_file_uploads:
+    index:
+      submit: Upload
+      submitted: Uploading...
+      no_uploads: No uploaded files
+      confirm_delete: Are you sure?
+      th:
+        file: File
+        created_at: Date Uploaded
+        created_by: Uploaded by
+    create:
+      notice: "File uploaded"
+    destroy:
+      notice: "The file was deleted successfully"
+      error: "An error was encountered while attempting to delete the file"
   file_uploads:
     sample_result:
       title: Results Files
