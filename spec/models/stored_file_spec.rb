@@ -4,12 +4,19 @@ require "rails_helper"
 
 RSpec.describe StoredFile do
 
+  subject(:stored_file) { StoredFile.create(file_type: "user_info") }
+
   it "should require name" do
     is_expected.to validate_presence_of(:name)
   end
 
   it "should require file_type" do
     is_expected.to validate_presence_of(:file_type)
+  end
+
+  it "should limit file size for user_info files" do
+    @fu = StoredFile.create(file_type: "user_info")
+    expect(@fu).to validate_attachment_size(:file).less_than(10.megabytes)
   end
 
   context "product_id" do
