@@ -15,7 +15,7 @@ class StoredFile < ApplicationRecord
   if SettingsHelper.feature_on?(:active_storage)
     validates :file, size: { between: 1.kilobyte..10.megabytes }, if: ->(o) { o.file_type == "user_info" }
   else
-    validates_with AttachmentSizeValidator, attributes: :file, less_than: 10.megabytes,                             if: ->(o) { o.file_type == "user_info" }
+    validates_with AttachmentSizeValidator, attributes: :file, less_than: 10.megabytes, if: ->(o) { o.file_type == "user_info" }
   end
 
   delegate :user, to: :order_detail
