@@ -59,6 +59,8 @@ namespace :order_details do
   task :add_template_result, [:ids] => :environment do |_t, args|
     order_details = OrderDetail.where id: args[:ids].split
 
+    puts "Attempting to add missing files to order details..."
+
     order_details.each do |order_detail|
       next unless order_detail.missing_form?
 
@@ -69,7 +71,7 @@ namespace :order_details do
         created_by: order_detail.user.id
       )
 
-      puts "File added to order detail #{order_detail.id}"
+      puts "...missing file added to order detail #{order_detail.id}"
 
       order_detail.save
     end
