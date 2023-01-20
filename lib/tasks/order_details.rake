@@ -69,6 +69,8 @@ namespace :order_details do
         created_by: order_detail.user.id
       )
 
+      puts "File added to order detail #{order_detail.id}"
+
       order_detail.save
     end
   end
