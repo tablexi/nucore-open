@@ -32,7 +32,6 @@ namespace :order_details do
       od.assign_price_policy
       puts "#{od}|#{od.order_status}|#{od.account}|#{od.user}|#{od.product}|#{od.fulfilled_at}|#{old_price_group}|#{old_cost}|#{old_subsidy}|#{old_total}|#{od.price_policy.try(:price_group)}|#{od.actual_cost}|#{od.actual_subsidy}|#{od.actual_total}|#{od.actual_total == old_total}"
     end
-
   end
 
   desc "Uncancels a list of order details. The file should contain just the OD ID, one per line"
@@ -54,12 +53,23 @@ namespace :order_details do
   # no way to add the needed template_result file via the UI after purchase.
   # This task adds a template_result file to an order detail by copying the template
   # file from the product that was purchased.
-  desc "Adds a template_result file to an order detail"
-  task :add_template_result, [:id] => :environment do |_t, args|
-    order_detail = OrderDetail.find args[:id]
-    file = order_detail.product.stored_files.template.first.dup
-    file.file_type = "template_result"
-    order_detail.stored_files << file
-    order_detail.save
+  #
+  # Example: `rake order_details:add_template_result["44 43"]`
+  desc "Adds a template_result file to order details that are missing forms"
+  task :add_template_result, [:ids] => :environment do |_t, args|
+    order_details = OrderDetail.where id: args[:ids].split
+
+    order_details.each do |order_detail|
+      next unless order_detail.missing_form?
+
+      order_detail.stored_files << StoredFile.new(
+        file: StringIO.new("Placeholder text for missing template."),
+        file_type: "template_result",
+        name: "placeholder.csv",
+        created_by: "order_detail.user.id"
+      )
+
+      order_detail.save
+    end
   end
 end
