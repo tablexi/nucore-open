@@ -211,7 +211,7 @@ NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following fr
 
 #### Github Actions
 
-To use Github Actions for CI testing you may need to maintain a testing image with spcific versions of dependencies set.  To do this:
+To use Github Actions for CI testing you may need to maintain a testing image with specific versions of dependencies set.  To do this:
 ```
 # Set your desired version of node and bundler
 export NODE_VERSION=setup_16.x
