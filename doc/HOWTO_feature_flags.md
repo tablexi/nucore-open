@@ -10,7 +10,7 @@
 * `product_list_columns` Display product lists in columns or one long list
 * `azlist` Display one long list of facilities, or an alphabetized collection (only facilities that start with A, and ...a top nav to access facilities that start with other letters)
 * `facility_tile_list` Display a grid view of the facility list on the home page, this will include images of the facilities, if the given facility has an image. This does not enable the ability to add or remove images from facilities -- this works independently of `facility_tile_list_admin`, though you may want to use these flags together.
-* `facility_tile_list_admin` Adds the ability to add and remove images from facilities, this does not change the list UI on the home page -- it works independently of `facility_tile_list`, though you may want to use these flags together.
+* `facility_tile_list_admin` Adds the ability to add and remove images from facilities.  These images will only be displayed on the home page if `facility_tile_list` is set to true.
 
 ## Onboarding
 
