@@ -56,3 +56,4 @@
 * `kiosk_view` Kiosk mode - display a list of actionable reservations without logging in (optionally allow acting w/o auth)
 * `reservations: grace_period`, `reservations: timeout_period`, `occupancies: timeout_period`, `billing: review_period` various grace periods, time periods, and review periods
 * `active_storage` use `ActiveStorage` if `true`, or `Paperclip` if `false`
+* `active_storage_for_images_only` enables `ActiveStorage` for the `DownloadableFiles::Image` module. This flag does not need to be enabled if `active_storage` is
