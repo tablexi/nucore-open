@@ -130,7 +130,7 @@ feature:
   bypass_kiosk_auth: false
   revenue_account_editable: false
   active_storage: false
-  active_storage_for_images: true
+  active_storage_for_images_only: false
   facility_tile_list: <%= ENV.fetch("FACILITY_TILE_LIST", false) %>  
   facility_tile_list_admin: false
   po_require_affiliate_account: true

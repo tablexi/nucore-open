@@ -29,6 +29,10 @@ module SettingsHelper
     setting "relays.#{Rails.env}.reservation_enabled"
   end
 
+  def self.active_storage_enabled?
+    feature_on?(:active_storage) || feature_on?(:active_storage_for_images_only)
+  end
+
   #
   # Used to query the +Settings+ under feature:
   # [_feature_]

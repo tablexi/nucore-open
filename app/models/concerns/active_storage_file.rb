@@ -9,7 +9,7 @@ module ActiveStorageFile
     has_one_attached :file
 
     def assign_attributes(new_attributes)
-      if SettingsHelper.feature_on?(:active_storage) || SettingsHelper.feature_on?(:active_storage_for_images)
+      if SettingsHelper.active_storage_enabled?
         # Ensure the file name and file_type are set first when attaching a StringIO
         # see #file= method below
         assign_first = new_attributes.extract!(:name, :file_type)
