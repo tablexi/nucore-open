@@ -4,7 +4,7 @@ module DownloadableFiles
 
     extend ActiveSupport::Concern
 
-    if SettingsHelper.active_storage_enabled?
+    if SettingsHelper.feature_on?(:active_storage_for_images_only) 
       include ActiveStorageFile
     else
       include PaperclipFile
@@ -15,7 +15,7 @@ module DownloadableFiles
 
       before_validation { delete_file if remove_file }
 
-      if SettingsHelper.active_storage_enabled?
+      if SettingsHelper.feature_on?(:active_storage_for_images_only)
         validates :file, content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"]
       else
         validates_attachment :file, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
@@ -31,7 +31,7 @@ module DownloadableFiles
     end
 
     def padded_image(width: 400, height: 200, background_color: "rgb(231, 231, 231)")
-      if SettingsHelper.active_storage_enabled?
+      if SettingsHelper.feature_on?(:active_storage_for_images_only)
         download_url.variant(resize_and_pad: [width, height, { background: background_color }])
       else
         download_url

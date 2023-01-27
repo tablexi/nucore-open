@@ -12,6 +12,8 @@ module ActiveStorageFile
       # Ensure the file name and file_type are set first when attaching a StringIO
       # see #file= method below
       assign_first = new_attributes.extract!(:name, :file_type)
+
+      super(assign_first) unless assign_first.empty?
       super(new_attributes)
     end
   end
