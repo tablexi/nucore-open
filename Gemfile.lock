@@ -235,7 +235,7 @@ GEM
       coffee-script
       execjs
       json
-    concurrent-ruby (1.1.10)
+    concurrent-ruby (1.2.0)
     config (4.1.0)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
@@ -326,7 +326,7 @@ GEM
     ffi (1.15.5)
     font-awesome-rails (4.7.0.8)
       railties (>= 3.2, < 8.0)
-    globalid (1.0.1)
+    globalid (1.1.0)
       activesupport (>= 5.0)
     haml (6.1.1)
       temple (>= 0.8.2)
