@@ -135,6 +135,8 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     amazing_print (1.4.0)
     ast (2.4.2)
+    autoprefixer-rails (10.4.7.0)
+      execjs (~> 2)
     axe-core-api (4.4.2)
       dumb_delegator
       virtus
@@ -151,8 +153,9 @@ GEM
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
-    bootstrap-sass (2.3.2.2)
-      sass (~> 3.2)
+    bootstrap-sass (3.4.1)
+      autoprefixer-rails (>= 5.2.1)
+      sassc (>= 2.0.0)
     builder (3.2.4)
     bullet (7.0.7)
       activesupport (>= 3.0.0)
@@ -670,7 +673,7 @@ DEPENDENCIES
   axe-core-rspec
   bcrypt_pbkdf (>= 1.0, < 2.0)
   bootsnap
-  bootstrap-sass (~> 2.3.2)
+  bootstrap-sass (~> 3.4.1)
   bulk_email!
   bullet
   c2po!
