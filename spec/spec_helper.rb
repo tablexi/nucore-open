@@ -123,7 +123,7 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-core/v/3-0/docs/configuration/global-namespace-dsl
   config.expose_dsl_globally = false
 
-  # for testing paperclip attachments
+  # for testing attachment validations
   config.include Paperclip::Shoulda::Matchers
   config.include ActiveStorageValidations::Matchers
 end
