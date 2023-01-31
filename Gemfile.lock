@@ -585,7 +585,7 @@ GEM
       rubyzip (>= 1.2.2)
     shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
-    simple_form (5.1.0)
+    simple_form (5.2.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
     single_test (0.6.0)
