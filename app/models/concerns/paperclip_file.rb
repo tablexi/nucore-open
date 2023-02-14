@@ -46,7 +46,7 @@ module PaperclipFile
   # See: https://github.com/thoughtbot/paperclip/pull/1554 and
   # https://github.com/thoughtbot/paperclip/commit/2aeb491fa79df886a39c35911603fad053a201c0
   def clean_up_paperclip_errors
-    errors.delete(:file) if file_type == "user_info"
+    errors.delete(:file) if file.file_type == "user_info"
   end
 
 end
