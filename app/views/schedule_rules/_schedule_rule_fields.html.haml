@@ -15,10 +15,13 @@
       = f.label :end_time
       = time_select24(f, :end, hours: (0..24), minute_step: @product.reserve_interval)
 
-= f.input :discount_percent, label: false, hint: false do
-  = f.label :discount_percent
-  = f.hint :discount_percent
-  = f.number_field :discount_percent, size: 4
+%h3 Global Price Group Discounts
+
+= f.association :price_group_discounts do |pgd|
+  = pgd.label pgd.object.price_group.name
+  = pgd.hint :discount_percent
+  = pgd.number_field :discount_percent, size: 4, label: false
+  = pgd.hidden_field :price_group_id, value: pgd.object.price_group.id
   = "%"
 
 - if @product.has_product_access_groups?
