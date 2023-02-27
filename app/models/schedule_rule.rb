@@ -133,8 +133,13 @@ class ScheduleRule < ApplicationRecord
     ScheduleRuleCalendarPresenter.new(self, options).to_json
   end
 
-  def discount_for(start_at, end_at)
-    percent_overlap(start_at, end_at) * discount_percent.to_f
+  def discount_for(start_at, end_at, price_group)
+    price_group_discount = PriceGroupDiscount.where(
+      price_group: price_group,
+      schedule_rule: self
+    ).first
+
+    percent_overlap(start_at, end_at) * price_group_discount.discount_percent.to_f
   end
 
   # Inverts a set of rules into another set of rules representing the times the
