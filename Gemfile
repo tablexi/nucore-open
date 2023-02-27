@@ -21,7 +21,7 @@ gem "mysql2"
 # gem "ruby-oci8" # only for CRuby users
 
 ## auth
-gem "cancancan", "3.1.0"
+gem "cancancan", "3.4.0"
 gem "devise"
 gem "devise-encryptable"
 gem "devise-security"
