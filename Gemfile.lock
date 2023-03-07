@@ -557,7 +557,7 @@ GEM
       rubocop (~> 1.33)
       rubocop-capybara (~> 2.17)
     ruby-ole (1.2.12.2)
-    ruby-progressbar (1.11.0)
+    ruby-progressbar (1.13.0)
     ruby-saml (1.15.0)
       nokogiri (>= 1.13.10)
       rexml
