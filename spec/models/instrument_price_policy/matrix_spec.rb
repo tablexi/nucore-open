@@ -87,14 +87,15 @@ RSpec.describe InstrumentPricePolicy do
     end
   end
 
-  let(:product) { build_stubbed :instrument, schedule_rules: [] }
-  let(:policy) { build_stubbed :instrument_price_policy, usage_rate: 60, product: product }
-
-  before do
-    rules = [build_stubbed(:schedule_rule, start_hour: 0, end_hour: 17),
-             build_stubbed(:schedule_rule, start_hour: 17, end_hour: 21, discount_percent: 20)]
-    allow(policy.product).to receive(:schedule_rules).and_return rules
-  end
+  let(:product) {
+    prod = create(:setup_instrument, skip_schedule_rules: true)
+    rules = [build(:schedule_rule, start_hour: 0, end_hour: 17),
+             build(:schedule_rule, start_hour: 17, end_hour: 21, discount_percent: 20)]
+    prod.schedule_rules << rules
+    prod.save
+    prod
+  }
+  let(:policy) { create :instrument_price_policy, usage_rate: 60, product: product }
 
   subject(:calculation) { policy.calculate_cost_and_subsidy reservation }
 
