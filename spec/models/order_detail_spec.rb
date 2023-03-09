@@ -271,7 +271,6 @@ RSpec.describe OrderDetail do
       end
 
       it "should assign_estimated_price" do
-        # binding.pry
         expect(@order_detail.estimated_cost).to be_nil
         # will be the cheapest price policy
         @order_detail.assign_estimated_price

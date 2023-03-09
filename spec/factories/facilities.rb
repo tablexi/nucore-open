@@ -21,7 +21,6 @@ FactoryBot.define do
 
   factory :setup_facility, class: Facility, parent: :facility do
     after(:create) do |facility|
-      # binding.pry
       FactoryBot.create(:facility_account, facility: facility)
       # user is_internal => false so that we can just use .last to access it
       FactoryBot.create(:price_group, facility: facility, is_internal: false)

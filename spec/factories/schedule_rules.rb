@@ -49,9 +49,7 @@ FactoryBot.define do
     end
 
     after(:build) do |schedule_rule, evaluator|
-      # puts "building price groups.... for #{schedule_rule}"
       PriceGroup.globals.each do |price_group|
-        # binding.pry
         schedule_rule.price_group_discounts.build(price_group: price_group, discount_percent: evaluator.discount_percent)
       end
     end
