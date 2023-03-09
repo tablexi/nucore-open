@@ -134,11 +134,14 @@ class ScheduleRule < ApplicationRecord
   end
 
   def discount_for(start_at, end_at, price_group)
-    price_group_discount = price_group_discounts.where(
+    percent_overlap(start_at, end_at) * discount_for_price_group(price_group)
+  end
+
+  def discount_for_price_group(price_group)
+    pgd = price_group_discounts.where(
       price_group: effective_price_group(price_group)
     ).first
-
-    percent_overlap(start_at, end_at) * price_group_discount.discount_percent.to_f
+    pgd.discount_percent.to_f
   end
 
   def effective_price_group(price_group)
