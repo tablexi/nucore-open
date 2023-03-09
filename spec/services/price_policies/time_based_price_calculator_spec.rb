@@ -4,11 +4,11 @@ require "rails_helper"
 
 RSpec.describe PricePolicies::TimeBasedPriceCalculator do
 
-  let(:product) { build_stubbed(:instrument, schedule_rules: schedule_rules) }
+  let(:product) { create(:setup_instrument) }
   let(:schedule_rules) { [day_schedule, night_schedule, weekend_schedule] }
-  let(:day_schedule) { build_stubbed(:schedule_rule, :weekday) }
-  let(:night_schedule) { build_stubbed(:schedule_rule, :weekday, :evening, discount_percent: 10) }
-  let(:weekend_schedule) { build_stubbed(:schedule_rule, :weekend, :all_day, discount_percent: 25) }
+  let(:day_schedule) { create(:schedule_rule, :weekday, product: product) }
+  let(:night_schedule) { create(:schedule_rule, :weekday, :evening, product: product, discount_percent: 10) }
+  let(:weekend_schedule) { create(:schedule_rule, :weekend, :all_day, product: product, discount_percent: 25) }
   let(:calculator) { described_class.new(price_policy) }
   let(:price_policy) { build_stubbed(:instrument_price_policy, options.merge(product: product)) }
   let(:options) { {} }
@@ -27,7 +27,10 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
       describe "when it is all in one discounted rule" do
         let(:start_at) { Time.zone.local(2017, 4, 29, 12, 0) } # Saturday
         let(:end_at) { start_at + 1.hour }
-        it { is_expected.to eq(cost: 45, subsidy: 0) }
+        it do
+          # binding.pry
+          except(costs).to eq(cost: 45, subsidy: 0)
+        end
       end
 
       describe "when it overlaps into the evening" do

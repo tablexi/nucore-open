@@ -26,7 +26,7 @@ RSpec.describe Reservation do
   before(:each) do
     @instrument = create(:instrument, facility: facility, reserve_interval: 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
-    @rule = @instrument.schedule_rules.create(FactoryBot.attributes_for(:schedule_rule).merge(start_hour: 0, end_hour: 17))
+    @rule = FactoryBot.create(:schedule_rule, product: @instrument, start_hour: 0, end_hour: 17)
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
