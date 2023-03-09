@@ -126,7 +126,7 @@ RSpec.shared_examples_for "ReservationProduct" do |product_type|
   let(:price_group) { FactoryBot.create(:price_group, facility: facility) }
   let(:price_group2) { FactoryBot.create(:price_group, facility: facility) }
   let(:price_group3) { FactoryBot.create(:price_group, facility: facility) }
-  let(:price_group4) { FactoryBot.create(:price_group, facility: factility) }
+  let(:price_group4) { FactoryBot.create(:price_group, facility: facility) }
 
   let!(:pp_g1) { make_price_policy(usage_rate: 22, price_group: price_group) }
   let!(:pp_g2) { make_price_policy(usage_rate: 23, price_group: price_group2) }
