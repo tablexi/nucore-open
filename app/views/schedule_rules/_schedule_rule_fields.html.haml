@@ -15,7 +15,8 @@
       = f.label :end_time
       = time_select24(f, :end, hours: (0..24), minute_step: @product.reserve_interval)
 
-%h3 Global Price Group Discounts
+%h3
+  = t("views.schedule_rules.discount")
 
 = f.association :price_group_discounts do |pgd|
   = pgd.label pgd.object.price_group.name

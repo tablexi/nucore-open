@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePriceGroupDiscounts < ActiveRecord::Migration[6.1]
   def change
     create_table :price_group_discounts do |t|
