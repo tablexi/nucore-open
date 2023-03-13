@@ -28,7 +28,7 @@
         %th Start Time
         %th End Time
         - PriceGroup.globals.each do |price_group|
-          %th.currency= "#{price_group.name} Discount"
+          %th.currency= "#{price_group.name} Discount (%)"
         - if @product.product_access_groups.to_a.any?
           %th Scheduling Groups
     %tbody
@@ -47,8 +47,8 @@
           %td= human_time(Time.zone.parse(schedule_rule.start_time))
           %td= human_time(Time.zone.parse(schedule_rule.end_time))
           - PriceGroup.globals.each do |price_group|
-            - price_group_discount = schedule_rule.price_group_discounts.where(price_group: price_group).first
-            %td.currency= number_to_percentage(price_group_discount.discount_percent, strip_insignificant_zeros: true)
+            - discount = schedule_rule.discount_for_price_group(price_group)
+            %td.currency= number_to_percentage(discount, strip_insignificant_zeros: true)
           - if @product.product_access_groups.any?
             %td= schedule_rule.product_access_groups.join(", ")
 - else
