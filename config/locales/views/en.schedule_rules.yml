@@ -3,6 +3,3 @@ en:
     schedule_rules:
       discount: Price Group Discounts
       discount_hint: During the period covered by this schedule rule, overall cost will be discounted by the following percentages.
-      base_discount_hint: Discount also applies to all internal price groups
-      external_discount_hint: Discount also applies to all external price groups
-
