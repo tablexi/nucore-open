@@ -19,7 +19,7 @@
 
 %p= t("views.schedule_rules.discount_hint")
 
-= f.association :price_group_discounts, label: "hello", hint: "hi" do |pgd|
+= f.association :price_group_discounts do |pgd|
   = pgd.label pgd.object.price_group.name
   = pgd.number_field :discount_percent, size: 4
   = pgd.hidden_field :price_group_id, value: pgd.object.price_group.id
