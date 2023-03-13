@@ -6,7 +6,7 @@ namespace :schedule_rule do
     price_groups = PriceGroup.globals
 
     ScheduleRule.all.each do |schedule_rule|
-      if schedule_rule.price_group_discount.present?
+      if schedule_rule.price_group_discounts.present?
         puts "Skipping schedule rule #{schedule_rule.id}, already has price_group_discounts"
       else
         price_groups.each_with_index do |price_group, _i|
