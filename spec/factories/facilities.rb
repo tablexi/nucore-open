@@ -2,13 +2,13 @@
 
 FactoryBot.define do
   factory :facility do
-    sequence(:name, "AAAAAAAA") { |n| "Facility#{Facility.count + n}" }
+    sequence(:name, "AAAAAAAA") { |n| "Facility#{Facility.count + n.to_i}" }
     sequence(:email) { |n| "facility-#{Facility.count + n}@example.com" }
-    sequence(:abbreviation) { |n| "FA#{Facility.count + n}" }
+    sequence(:abbreviation) { |n| "FA#{Facility.count + (2 * n)}" }
     short_description { "Short Description" }
     description { "Facility Description" }
     is_active { true }
-    sequence(:url_name) { |n| "facility#{Facility.count + n}" }
+    sequence(:url_name) { |n| "facility#{Facility.count + (2 * n)}" }
 
     trait :with_image do
       file { File.open("#{Rails.root}/spec/files/cern.jpeg") }
