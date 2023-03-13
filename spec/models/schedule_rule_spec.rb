@@ -418,5 +418,22 @@ RSpec.describe ScheduleRule do
     end
   end
 
-  describe "#effective_price_group"
+  describe "#effective_price_group" do
+    let(:schedule_rule) { described_class.new }
+    let(:global_price_group) { PriceGroup.base }
+    let(:internal_price_group) { build(:price_group, is_internal: true) }
+    let(:external_price_group) { build(:price_group, is_internal: false) }
+
+    it "returns a global price group when it recieves one" do
+      expect(schedule_rule.effective_price_group(global_price_group)).to eq global_price_group
+    end
+
+    it "returns the global base price group when it recieves a non-global internal price group" do
+      expect(schedule_rule.effective_price_group(internal_price_group)).to eq PriceGroup.base
+    end
+
+    it "returns the global external group when it recieves a non-global external price gorup" do
+      expect(schedule_rule.effective_price_group(external_price_group)).to eq PriceGroup.external
+    end
+  end
 end
