@@ -40,6 +40,10 @@ FactoryBot.define do
       end_hour { 24 }
     end
 
+    trait :with_setup_product do
+      product { create(:setup_instrument, skip_schedule_rules: true) }
+    end
+
     factory :weekend_schedule_rule do
       weekend
     end

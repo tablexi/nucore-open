@@ -405,4 +405,18 @@ RSpec.describe ScheduleRule do
       end
     end
   end
+
+  # for the case where the price group doesn't exist, should return 0
+  describe "#discount_for_price_group" do
+    let(:price_group) { create(:price_group, facility: facility) }
+    let(:schedule_rule) do
+      sr = ScheduleRule.new # create(:schedule_rule, product: instrument)
+    end
+
+    it "returns 0 if no price group discount is found" do
+      expect(schedule_rule.discount_for_price_group(price_group)).to eq 0
+    end
+  end
+
+  describe "#effective_price_group"
 end

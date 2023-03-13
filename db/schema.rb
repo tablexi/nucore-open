@@ -457,7 +457,7 @@ ActiveRecord::Schema.define(version: 2023_02_23_221431) do
   create_table "price_group_discounts", charset: "utf8mb3", force: :cascade do |t|
     t.integer "price_group_id", null: false
     t.integer "schedule_rule_id", null: false
-    t.decimal "discount_percent", precision: 10
+    t.decimal "discount_percent", precision: 10, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["price_group_id"], name: "index_price_group_discounts_on_price_group_id"
