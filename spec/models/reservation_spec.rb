@@ -26,8 +26,7 @@ RSpec.describe Reservation do
   before(:each) do
     @instrument = create(:instrument, facility: facility, reserve_interval: 15)
     # add rule, available every day from 12 am to 5 pm, 60 minutes duration
-    @rule = FactoryBot.build(:schedule_rule, product: @instrument, start_hour: 0, end_hour: 17)
-    @instrument.schedule_rules << @rule
+    @rule = FactoryBot.create(:schedule_rule, product: @instrument, start_hour: 0, end_hour: 17)
     allow_any_instance_of(Reservation).to receive(:admin?).and_return(false)
   end
 
@@ -1274,10 +1273,8 @@ RSpec.describe Reservation do
         @instrument.schedule_rules.destroy_all
         @instrument.schedule_rules.reload
         @instrument.update_attribute :reserve_interval, 15
-        @rule_9to5 = FactoryBot.build(:schedule_rule, product: @instrument, start_hour: 9, end_hour: 17)
-        @rule_5to7 = FactoryBot.build(:schedule_rule, product: @instrument, start_hour: 17, end_hour: 19)
-        @instrument.schedule_rules << @rule_9to5
-        @instrument.schedule_rules << @rule_5to7
+        @rule_9to5 = FactoryBot.create(:schedule_rule, product: @instrument, start_hour: 9, end_hour: 17)
+        @rule_5to7 = FactoryBot.create(:schedule_rule, product: @instrument, start_hour: 17, end_hour: 19)
       end
 
       it "allows a reservation within the schedule rules" do
