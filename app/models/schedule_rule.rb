@@ -4,9 +4,6 @@ class ScheduleRule < ApplicationRecord
 
   belongs_to :product
 
-  # TODO - remove this column
-  self.ignored_columns = [:discount_percent]
-
   # oracle has a maximum table name length of 30, so we have to abbreviate it down
   has_and_belongs_to_many :product_access_groups, join_table: "product_access_schedule_rules"
   has_many :price_group_discounts, dependent: :destroy
