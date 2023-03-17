@@ -20,6 +20,7 @@ en:
           delete: Payment Source User removed
         journal:
           create: Journal created
+          closed: Journal closed
         statement:
           create: "!Statement! created"
         order_detail:
