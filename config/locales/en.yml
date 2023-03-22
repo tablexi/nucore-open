@@ -29,6 +29,8 @@ en:
   facility_downcase: facility
   facilities_downcase: facilities
 
+  # When updating sso, chart string, or statement, check override/en.yml for
+  # additional changes that are necessary
   Sso_id: NetID
   sso_id_downcase: NetID
   name_or_sso_id: name, NetID, or username
