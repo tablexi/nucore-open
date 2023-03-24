@@ -8,8 +8,8 @@ require "stringio"
 RSpec.describe OrderImport, :time_travel do
 
   CSV_HEADERS = [
-    "Netid / Email",
-    "Chart String",
+    I18n.t("order_row_importer.headers.user"),
+    I18n.t("Chart_string"),
     "Product Name",
     "Quantity",
     "Order Date",
