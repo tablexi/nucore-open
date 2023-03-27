@@ -64,24 +64,25 @@ RSpec.describe StatementPresenter do
     end
   end
 
-  describe "#closed_by_user_full_names" do
-    before do
-      LogEvent.log(statement, :closed, user1)
-      LogEvent.log(statement, :closed, user2)
+  context "with closed events" do
+    let!(:log_events) { [LogEvent.log(statement, :closed, user1), LogEvent.log(statement, :closed, user2)] }
+
+    after do
+      LogEvent.delete_all
     end
 
-    it "lists user full names" do
-      expect(subject.closed_by_user_full_names).to eq "#{user1.full_name}\n#{user2.full_name}"
+    describe "#closed_by_user_full_names" do
+      it "lists user full names" do
+        expect(subject.closed_by_user_full_names).to eq "#{user1.full_name}\n#{user2.full_name}"
+      end
     end
-  end
 
-  describe "#closed_by_times" do
-    let(:log_events) { [LogEvent.log(statement, :closed, user1),LogEvent.log(statement, :closed, user2) ] }
+    describe "#closed_by_times" do
+      it "lists close times" do
+        time_string = "#{format_usa_datetime(log_events.first.event_time)}\n#{format_usa_datetime(log_events.last.event_time)}"
 
-    it "lists close times" do
-      time_string = "#{format_usa_datetime(log_events.first.event_time)}\n#{format_usa_datetime(log_events.last.event_time)}"
-
-      expect(subject.closed_by_times).to eq time_string
+        expect(subject.closed_by_times).to eq time_string
+      end
     end
   end
 end
