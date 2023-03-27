@@ -68,8 +68,7 @@ RSpec.describe StatementPresenter do
     let!(:log_events) { [LogEvent.log(statement, :closed, user1), LogEvent.log(statement, :closed, user2)] }
 
     after(:each) do
-      log_events.first.destroy
-      log_events.last.destroy
+      LogEvent.destroy_all
     end
 
     describe "#closed_by_user_full_names" do
