@@ -26,6 +26,10 @@ RSpec.describe "Account Reconciliation", js: true do
     login_as director
   end
 
+  after do
+    LogEvent.delete_all
+  end
+
   describe "Credit Cards" do
     let(:accounts) { create_list(:credit_card_account, 2, :with_account_owner) }
     let(:order_detail) { orders.first.order_details.first }
