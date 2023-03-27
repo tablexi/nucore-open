@@ -58,7 +58,7 @@ RSpec.configure do |config|
     end
   end
 
-  config.before(:each) do
+  config.after(:each) do
     LogEvent.delete_all
   end
 
