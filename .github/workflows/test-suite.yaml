@@ -1,0 +1,103 @@
+name: Run test suite
+
+# Don't want to run this when tags are pushed
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  run-rspec-engines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    services:
+      mysql:
+        image: mysql:8.0.28
+        ports:
+          - 3306
+        env:
+          MYSQL_ROOT_PASSWORD: 'root'
+          MYSQL_ROOT_HOST: "%"
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+    container:
+      image: prograils/ruby-node-chrome-pack:2.7.5
+      credentials:
+        username: nucoretxi
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    env:
+      RAILS_ENV: test
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions
+
+      - name: Glob match
+        uses: tj-actions/glob@v6
+        id: glob
+        with:
+          files: |
+            vendor/engines/bulk_email/spec/**/*_spec.rb
+            vendor/engines/c2po/spec/**/*_spec.rb
+            vendor/engines/dataprobe/spec/**/*_spec.rb
+            vendor/engines/projects/spec/**/*_spec.rb
+            vendor/engines/saml_authentication/spec/**/*_spec.rb
+            vendor/engines/sanger_sequencing/spec/**/*_spec.rb
+            vendor/engines/split_accounts/spec/**/*_spec.rb
+
+      - run: bundle exec rspec ${{ steps.glob.outputs.paths }}
+
+  run-rspec:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    services:
+      mysql:
+        image: mysql:8.0.28
+        ports:
+          - 3306
+        env:
+          MYSQL_ROOT_PASSWORD: 'root'
+          MYSQL_ROOT_HOST: "%"
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+    container:
+      image: prograils/ruby-node-chrome-pack:2.7.5
+      credentials:
+        username: nucoretxi
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    env:
+      RAILS_ENV: test
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions
+      - run: bundle exec rspec
+
+  run-teaspoon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    services:
+      mysql:
+        image: mysql:8.0.28
+        ports:
+          - 3306
+        env:
+          MYSQL_ROOT_PASSWORD: 'root'
+          MYSQL_ROOT_HOST: "%"
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+    container:
+      image: prograils/ruby-node-chrome-pack:2.7.5
+      credentials:
+        username: nucoretxi
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    env:
+      RAILS_ENV: test
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions
+      - run: bundle exec teaspoon
