@@ -17,7 +17,7 @@
         %th.currency= Statement.human_attribute_name(:total_cost)
         %th= Statement.human_attribute_name(:status)
     %tbody
-      - @statements.each do |s|
+      - StatementPresenter.wrap(@statements).each do |s|
         %tr
           %td.centered
             = "##{s.invoice_number}"
