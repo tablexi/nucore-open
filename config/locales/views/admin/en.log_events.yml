@@ -23,7 +23,6 @@ en:
           closed: Journal closed
         statement:
           create: "!Statement! created"
-          closed: "!Statement! closed"
         order_detail:
           dispute: Order disputed
           resolve: Order dispute resolved
