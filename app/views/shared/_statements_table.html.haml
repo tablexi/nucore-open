@@ -12,6 +12,8 @@
         - if current_facility&.cross_facility?
           %th= Facility.model_name.human
         %th.currency # of #{Order.model_name.human.pluralize}
+        %th Closed At
+        %th Closed By
         %th.currency= Statement.human_attribute_name(:total_cost)
         %th= Statement.human_attribute_name(:status)
     %tbody
@@ -33,6 +35,8 @@
             %td= s.facility.name
           %td.currency= s.order_details.count
           %td.currency= number_to_currency(s.total_cost)
+          %td= s.closed_by_times
+          %td= s.closed_by_user_full_names
           %td= t("statements.reconciled.#{s.reconciled?}")
 
   = will_paginate(@statements)
