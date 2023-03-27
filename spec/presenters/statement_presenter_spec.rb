@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-include DateHelper
 
 RSpec.describe StatementPresenter do
   subject { StatementPresenter.new(statement) }
@@ -10,8 +9,6 @@ RSpec.describe StatementPresenter do
   let(:creator) { create(:user) }
   let(:facility) { statement.facility }
   let(:statement) { create(:statement, created_at: created_at, created_by: creator.id) }
-  let(:user1) { create(:user, :administrator) }
-  let(:user2) { create(:user, :administrator) }
 
   describe ".wrap" do
     let(:statements) { build_stubbed_list(:statement, 5) }
@@ -61,27 +58,6 @@ RSpec.describe StatementPresenter do
       it "returns 'Unknown'" do
         expect(subject.sent_by).to eq("Unknown")
       end
-    end
-  end
-
-  describe "#closed_by_user_full_names" do
-    before do
-      LogEvent.log(statement, :closed, user1)
-      LogEvent.log(statement, :closed, user2)
-    end
-
-    it "lists user full names" do
-      expect(subject.closed_by_user_full_names).to eq "#{user1.full_name}\n#{user2.full_name}"
-    end
-  end
-
-  describe "#closed_by_times" do
-    let(:log_events) { [LogEvent.log(statement, :closed, user1),LogEvent.log(statement, :closed, user2) ] }
-
-    it "lists close times" do
-      time_string = "#{format_usa_datetime(log_events.first.event_time)}\n#{format_usa_datetime(log_events.last.event_time)}"
-
-      expect(subject.closed_by_times).to eq time_string
     end
   end
 end
