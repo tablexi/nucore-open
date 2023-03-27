@@ -42,12 +42,12 @@ class FacilityAccountsReconciliationController < ApplicationController
 
     if reconciler.reconcile_all > 0
       count = reconciler.count
-      statements = Set.new
-      reconciler.order_details.each { |od| statements << od.statement }
+      # statements = Set.new
+      # reconciler.order_details.each { |od| statements << od.statement }
 
-      statements.each do |statement|
-        LogEvent.log(statement, :closed, session_user)
-      end
+      # statements.each do |statement|
+      #   LogEvent.log(statement, :closed, session_user)
+      # end
 
       flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully reconciled" if count > 0
     else
