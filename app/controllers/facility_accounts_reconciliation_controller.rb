@@ -46,6 +46,8 @@ class FacilityAccountsReconciliationController < ApplicationController
       reconciler.order_details.each { |od| statements << od.statement }
 
       statements.each do |statement|
+        next if statement.nil?
+
         LogEvent.log(statement, :closed, session_user)
       end
 
