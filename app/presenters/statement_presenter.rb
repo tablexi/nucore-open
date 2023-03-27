@@ -3,7 +3,6 @@
 class StatementPresenter < SimpleDelegator
 
   include Rails.application.routes.url_helpers
-  include DateHelper
 
   def self.wrap(statements)
     statements.map { |statement| new(statement) }
@@ -27,11 +26,4 @@ class StatementPresenter < SimpleDelegator
     I18n.t("statements.show.created_by.unknown")
   end
 
-  def closed_by_user_full_names
-    closed_events.map { |event| event.user.full_name }.join("\n")
-  end
-
-  def closed_by_times
-    closed_events.map { |event| format_usa_datetime(event.event_time) }.join("\n")
-  end
 end
