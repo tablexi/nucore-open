@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-include DateHelper
 
 RSpec.describe StatementPresenter do
   subject { StatementPresenter.new(statement) }
@@ -65,6 +64,8 @@ RSpec.describe StatementPresenter do
   end
 
   context "with closed events" do
+    include DateHelper
+
     let!(:log_events) { [LogEvent.log(statement, :closed, user1), LogEvent.log(statement, :closed, user2)] }
 
     after do
