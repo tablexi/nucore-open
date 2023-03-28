@@ -75,9 +75,12 @@ class OrderDetailsController < ApplicationController
   end
 
   def add_missing_form
+    # Eventually, the issue of an admin addressing a missing form should probably be done via
+    # a field on the OderDetail allowing the form validation to be skipped. But, given the
+    # complexity of OderDetail, this approach is simpler for now.
     if @order_detail.missing_form?
-      file_text = "This order was missing a template file, so an administrator "\
-                  "(#{current_user.full_name} <#{current_user.email}>) added this "\
+      file_text = "This order was missing a template file, so an administrator " \
+                  "(#{current_user.full_name} <#{current_user.email}>) added this " \
                   "place holder file so that it could be processed."
 
       @order_detail.stored_files << StoredFile.new(
