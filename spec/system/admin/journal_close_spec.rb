@@ -2,9 +2,10 @@
 
 require "rails_helper"
 
-include DateHelper
 
 RSpec.describe "Journal close" do
+  include DateHelper
+
   let(:facility) { create(:facility) }
   let(:director) { create(:user, :facility_director, facility: facility) }
   let(:facility_account) { create(:facility_account, facility: facility) }

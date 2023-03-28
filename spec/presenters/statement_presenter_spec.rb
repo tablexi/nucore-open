@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-include DateHelper
 
 RSpec.describe StatementPresenter do
+  include DateHelper
+
   subject { StatementPresenter.new(statement) }
   let(:account) { statement.account }
   let(:created_at) { Time.zone.local(2015, 10, 14, 17, 41) }
