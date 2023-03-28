@@ -11,9 +11,5 @@
 .hide-from-print
   = render "form"
 
-  - if @order_detail.missing_form?
-    = simple_form_for @order_detail, url: add_missing_form_order_order_detail_path(@order, @order_detail), method: :put do |f|
-      = f.submit "Add missing form", class: ["btn", "btn-danger"]
-
 .show-for-print
   = render "print_details"
