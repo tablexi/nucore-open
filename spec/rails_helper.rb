@@ -58,10 +58,6 @@ RSpec.configure do |config|
     end
   end
 
-  config.after(:each) do
-    LogEvent.delete_all
-  end
-
   # Gives more verbose output for JS errors, fails any spec with SEVERE errors
   # Based on https://medium.com/@coorasse/catch-javascript-errors-in-your-system-tests-89c2fe6773b1
   config.after(:each, type: :system, js: true) do |example|
