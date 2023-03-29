@@ -4,8 +4,6 @@ require "rails_helper"
 require "csv"
 
 RSpec.describe OrderRowImporter do
-  include DateHelper
-
   subject { OrderRowImporter.new(row, order_import) }
   let(:account) { create(:nufs_account, :with_account_owner, owner: user) }
   let(:facility) { create(:setup_facility) }
@@ -64,7 +62,7 @@ RSpec.describe OrderRowImporter do
         before { subject.import }
 
         it "has the expected ordered_at" do
-          expect(order.order_details.map(&:ordered_at)).to all(eq parse_usa_date(order_date))
+          expect(order.order_details.map(&:ordered_at)).to all(eq SpecDateHelper.parse_usa_date(order_date))
         end
 
         it "has the expected creator" do
