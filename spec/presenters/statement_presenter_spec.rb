@@ -68,10 +68,6 @@ RSpec.describe StatementPresenter do
   context "with closed events" do
     let!(:log_events) { [LogEvent.log(statement, :closed, user1), LogEvent.log(statement, :closed, user2)] }
 
-    after do
-      LogEvent.delete_all
-    end
-
     describe "#closed_by_user_full_names" do
       it "lists user full names" do
         expect(subject.closed_by_user_full_names).to eq "#{user1.full_name}\n#{user2.full_name}"
