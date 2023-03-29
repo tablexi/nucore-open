@@ -1,3 +1,5 @@
+# Including `DateHelper` at the wrong spot in specs can cause hard to debug
+# problems. So, where possible, this class should be instead.
 class SpecDateHelper
   include DateHelper
 
