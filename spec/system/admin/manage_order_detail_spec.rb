@@ -61,6 +61,7 @@ RSpec.describe "Managing an order detail" do
     end
 
     it "allows admins to add missing form" do
+      expect(order_detail).to be_missing_form
       click_button "Add missing form"
       expect(page).to have_content("Placeholder file successfully added")
       order_detail.reload
