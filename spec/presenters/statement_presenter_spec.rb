@@ -3,8 +3,6 @@
 require "rails_helper"
 
 RSpec.describe StatementPresenter do
-  include DateHelper
-
   subject { StatementPresenter.new(statement) }
   let(:account) { statement.account }
   let(:created_at) { Time.zone.local(2015, 10, 14, 17, 41) }
@@ -76,7 +74,7 @@ RSpec.describe StatementPresenter do
 
     describe "#closed_by_times" do
       it "lists close times" do
-        time_string = "#{format_usa_datetime(log_events.first.event_time)}\n#{format_usa_datetime(log_events.last.event_time)}"
+        time_string = "#{SpecDateHelper.format_usa_datetime(log_events.first.event_time)}\n#{SpecDateHelper.format_usa_datetime(log_events.last.event_time)}"
 
         expect(subject.closed_by_times).to eq time_string
       end
