@@ -343,6 +343,8 @@ en:
         journal_status: "Journal Status"
         reference: "Reference"
         description: "Notes"
+        closed_at: Closed At
+        closed_by: Closed By
       instruct:
         orders: |
           NOTE: The orders below can still be updated.  To retain a copy of the journal as originally
@@ -658,6 +660,8 @@ en:
       "true": Reconciled
       "false": Unreconciled
     resend: Resend
+    closed_at: Closed At
+    closed_by: Closed By
 
   orders:
     add_account:
