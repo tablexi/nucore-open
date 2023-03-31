@@ -34,4 +34,9 @@ class StatementPresenter < SimpleDelegator
   def closed_by_times
     closed_events.map { |event| format_usa_datetime(event.event_time) }.join("\n")
   end
+
+  def closed_events
+    @closed_events ||= LogEvent.where(loggable_type: "Statement", loggable_id: id, event_type: "closed")
+  end
+
 end

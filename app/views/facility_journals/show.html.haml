@@ -16,10 +16,10 @@
       = f.input :status_string
     - if @log_event
       %div.control-group
-        %label Closed At
+        %label= t(".label.closed_at")
         %div #{format_usa_datetime(@log_event.event_time)}
       %div.control-group
-        %label Closed By
+        %label= t(".label.closed_by")
         %div #{@log_event.user.full_name}
   .span4
     .well

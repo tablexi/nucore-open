@@ -2,7 +2,6 @@
 
 require "rails_helper"
 
-
 RSpec.describe "Journal close" do
   let(:facility) { create(:facility) }
   let(:director) { create(:user, :facility_director, facility: facility) }

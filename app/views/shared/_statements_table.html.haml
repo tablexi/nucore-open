@@ -13,8 +13,8 @@
           %th= Facility.model_name.human
         %th.currency # of #{Order.model_name.human.pluralize}
         %th.currency= Statement.human_attribute_name(:total_cost)
-        %th Closed At
-        %th Closed By
+        %th= t("statements.closed_at")
+        %th= t("statements.closed_by")
         %th= Statement.human_attribute_name(:status)
     %tbody
       - StatementPresenter.wrap(@statements).each do |s|

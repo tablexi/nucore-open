@@ -103,8 +103,4 @@ class Statement < ApplicationRecord
     end
   end
 
-  def closed_events
-    @closed_events ||= LogEvent.where(loggable_type: "Statement", loggable_id: id, event_type: "closed")
-  end
-
 end
