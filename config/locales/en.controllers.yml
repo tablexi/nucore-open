@@ -102,7 +102,7 @@ en:
       add_missing_file:
         success: Placeholder file successfully added
         saving_error: Failed to add file
-        file_not_missing: No file added, order details already has template file
+        file_not_missing: No file added, order detail already has template file
 
     price_groups:
       create:
