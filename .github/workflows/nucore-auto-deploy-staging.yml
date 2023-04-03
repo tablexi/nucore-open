@@ -35,5 +35,5 @@ jobs:
         with:
           target: staging
           deploy_key: ${{ secrets.DEPLOY_ENC_KEY }}
-          enc_rsa_key_val: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          enc_rsa_key_val: ${{ env.DEPLOY_PRIVATE_KEY }}
 
