@@ -21,6 +21,11 @@ jobs:
   deploy-staging:
     # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    container:
+      image: prograils/ruby-node-chrome-pack:2.7.5
+      credentials:
+        username: nucoretxi
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     steps:
       - run: apt-get update && apt-get -y install openssl
