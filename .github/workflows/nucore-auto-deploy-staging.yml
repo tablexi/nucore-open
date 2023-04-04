@@ -1,6 +1,6 @@
 name: Staging auto deployment
 
-When this action will be executed
+# When this action will be executed
 on:
   workflow_run:
     workflows: [ "Run test suite" ]
