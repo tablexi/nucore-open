@@ -567,6 +567,8 @@ en:
         remove_from_journal: "Remove From Journal"
       form:
         recalculate_price: "Recalculate pricing"
+      warnings:
+        missing_form_button: Add missing form
 
   product_access_groups:
     index:

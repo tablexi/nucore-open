@@ -2,7 +2,7 @@
 
 - if @order_detail.missing_form?
   = simple_form_for @order_detail, url: add_missing_form_order_order_detail_path(@order, @order_detail), method: :put do |f|
-    = f.submit "Add missing form", class: ["btn", "btn-danger"]
+    = f.submit t(".missing_form_button"), class: ["btn", "btn-danger"]
 
 - if @order_detail.errors.any?
   .alert.alert-error
