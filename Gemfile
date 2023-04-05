@@ -12,6 +12,10 @@ gem "config"
 gem "bootsnap", require: false
 gem "puma"
 gem "rack-utf8_sanitizer"
+gem "net-smtp"
+gem "net-imap"
+gem "net-pop"
+gem "tzinfo-data"
 
 ## database
 gem "mysql2"

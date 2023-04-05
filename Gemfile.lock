@@ -625,6 +625,8 @@ GEM
     ttfunk (1.7.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2023.3)
+      tzinfo (>= 1.0.0)
     uglifier (4.1.18)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (2.4.2)
@@ -714,6 +716,9 @@ DEPENDENCIES
   letter_opener
   mysql2
   nested_form_fields
+  net-imap
+  net-pop
+  net-smtp
   nokogiri
   oj
   paper_trail
@@ -756,6 +761,7 @@ DEPENDENCIES
   synaccess_connect
   teaspoon-jasmine
   text_helpers
+  tzinfo-data
   uglifier (= 4.1.18)
   unicorn
   vuejs-rails (~> 1.0.26)
