@@ -20,7 +20,7 @@ jobs:
           MYSQL_ROOT_HOST: "%"
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
     container:
-      image: prograils/ruby-node-chrome-pack:3.0.4
+      image: prograils/ruby-node-chrome-pack:3.0.2
       credentials:
         username: nucoretxi
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -61,7 +61,7 @@ jobs:
           MYSQL_ROOT_HOST: "%"
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
     container:
-      image: prograils/ruby-node-chrome-pack:3.0.4
+      image: prograils/ruby-node-chrome-pack:3.0.2
       credentials:
         username: nucoretxi
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -88,7 +88,7 @@ jobs:
           MYSQL_ROOT_HOST: "%"
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
     container:
-      image: prograils/ruby-node-chrome-pack:3.0.4
+      image: prograils/ruby-node-chrome-pack:3.0.2
       credentials:
         username: nucoretxi
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
