@@ -43,19 +43,19 @@ RUN npm install -g yarn
 
 # Install ruby
 ENV RUBY_DOWNLOAD_SHA256 2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1
-ADD https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.tar.gz /tmp/
+ADD https://cache.ruby-lang.org/pub/ruby/3.0/ruby-3.0.4.tar.gz /tmp/
 
 RUN \
   cd /tmp && \
-  echo "$RUBY_DOWNLOAD_SHA256 *ruby-2.7.5.tar.gz" | sha256sum -c - && \
-  tar -xzf ruby-2.7.5.tar.gz && \
-  cd ruby-2.7.5 && \
+  echo "$RUBY_DOWNLOAD_SHA256 *ruby-3.0.4.tar.gz" | sha256sum -c - && \
+  tar -xzf ruby-3.0.4.tar.gz && \
+  cd ruby-3.0.4 && \
   ./configure --enable-shared && \
   make && \
   make install && \
   cd .. && \
-  rm -rf ruby-2.7.5 && \
-  rm -f ruby-2.7.5.tar.gz
+  rm -rf ruby-3.0.4 && \
+  rm -f ruby-3.0.4.tar.gz
 
 ARG BUNDLER_VERSION=2.3.11
 ENV BUNDLER_VERSION=${BUNDLER_VERSION}
