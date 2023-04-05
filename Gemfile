@@ -16,6 +16,7 @@ gem "net-smtp"
 gem "net-imap"
 gem "net-pop"
 gem "tzinfo-data"
+gem "webrick"
 
 ## database
 gem "mysql2"
