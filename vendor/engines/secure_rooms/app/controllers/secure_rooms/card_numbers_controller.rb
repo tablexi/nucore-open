@@ -29,7 +29,7 @@ module SecureRooms
         flash[:notice] = text("success")
         redirect_to facility_user_path(current_facility, @user)
       else
-        flash[:error] = text("error", message: @user.errors.full_messages.to_sentence)
+        flash[:error] = text("error", message: @user.errors.to_a.to_sentence)
         render :edit
       end
     end

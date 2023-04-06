@@ -78,7 +78,7 @@ class FacilityJournalsController < ApplicationController
 
       # move error messages for pending journal into the flash
       if @pending_journal.errors.any?
-        flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
+        flash[:error] = @journal.errors.to_a.join("<br/>").html_safe
       end
 
       @earliest_journal_date = params[:journal_date] || @earliest_journal_date
@@ -187,7 +187,7 @@ class FacilityJournalsController < ApplicationController
   def flash_error_messages
     msg = ""
 
-    @journal.errors.full_messages.each do |error|
+    @journal.errors.to_a.each do |error|
       msg += "#{error}<br/>"
 
       if msg.size > 2000 # don't overflow session (flash) cookie

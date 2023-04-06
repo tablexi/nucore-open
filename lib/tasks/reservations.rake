@@ -37,7 +37,7 @@ namespace :reservations do
       puts "Moved #{success.count} instruments to a new unshared schedule:"
       success.map { |inst| puts "https://corum.umass.edu/facilities/#{inst.facility}/instruments/#{inst.url_name}/manage" }
       puts "#{failed.count} errors:"
-      failed.map { |inst| puts "#{inst.url_name} - #{inst.errors.full_messages}" }
+      failed.map { |inst| puts "#{inst.url_name} - #{inst.errors.to_a}" }
     else
       puts "Product not found"
     end

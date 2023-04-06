@@ -35,4 +35,4 @@
         - else
           %td.centered{ :colspan => 3 }
             = t("price_policies.problem")
-            = price_policy.errors.full_messages.to_sentence
+            = price_policy.errors.to_a.to_sentence

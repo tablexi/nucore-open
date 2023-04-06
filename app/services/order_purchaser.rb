@@ -39,7 +39,7 @@ class OrderPurchaser
 
     @success = true
   rescue NUCore::OrderDetailUpdateException => e
-    @errors = order.errors.full_messages
+    @errors = order.errors.to_a
   end
 
   def success?

@@ -51,7 +51,7 @@ module OrderDetails
       @count += 1
     rescue => e
       @error_fields = { order_detail.id => order_detail.errors.collect { |field, _error| field } }
-      @persist_errors = order_detail.errors.full_messages
+      @persist_errors = order_detail.errors.to_a
       @persist_errors = [e.message] if @persist_errors.empty?
       @count = 0
       raise ActiveRecord::Rollback

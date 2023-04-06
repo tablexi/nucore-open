@@ -60,7 +60,7 @@ class ProductUsersController < ApplicationController
       LogEvent.log(product_user, :create, session_user)
       flash[:notice] = text("new.success", model: downcase_product_type)
     else
-      flash[:error] = product_user.errors.full_messages.to_sentence
+      flash[:error] = product_user.errors.to_a.to_sentence
     end
     redirect_to action: :index
   end
