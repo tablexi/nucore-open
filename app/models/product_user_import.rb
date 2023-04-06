@@ -56,10 +56,10 @@ class ProductUserImport < ApplicationRecord
 
     if new_product_user.persisted?
       successes << new_product_user
-    elsif new_product_user.errors.full_messages.to_sentence == "User is already approved"
+    elsif new_product_user.errors.to_a.to_sentence == "User is already approved"
       skipped << "* #{row_username}\n"
     else
-      failures << "* #{row_username}: #{new_product_user.errors.full_messages.to_sentence}\n"
+      failures << "* #{row_username}: #{new_product_user.errors.to_a.to_sentence}\n"
     end
   rescue => e
     failures << "* #{row_username}: #{e.message}\n"
