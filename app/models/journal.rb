@@ -213,7 +213,7 @@ class Journal < ApplicationRecord
   def create_new_journal_rows
     row_errors = create_journal_rows!(@order_details_for_creation)
     if row_errors.any?
-      row_errors.each { |e| errors.add(:base, e) }
+      row_errors.to_a.each { |e| errors.add(:base, e) }
       destroy # so it's treated as a new record
       raise ActiveRecord::RecordInvalid.new(self)
     end

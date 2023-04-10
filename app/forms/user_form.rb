@@ -23,7 +23,7 @@ class UserForm < SimpleDelegator
   def valid?
     success = [super, user.valid?].all?
 
-    user.errors.each do |k, error_messages|
+    user.errors.to_a.each do |k, error_messages|
       errors.add(k, error_messages)
     end
 

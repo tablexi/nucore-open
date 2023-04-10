@@ -20,7 +20,7 @@ class Reservations::DurationChangeValidations
   end
 
   def copy_errors!
-    errors.each do |field, message|
+    errors.to_a.each do |field, message|
       reservation.errors.add(field, message)
     end
   end
