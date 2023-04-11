@@ -47,7 +47,7 @@ gem "uglifier", "= 4.1.18" # 4.1.19 has an issue https://github.com/mishoo/Uglif
 gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
-gem "dynamic_form"
+gem "dynamic_form", git: "https://github.com/payrollhero/dynamic_form"
 # 5.0 has breaking changes based which need to be addressed before we can upgrade
 gem "ckeditor", "< 5"
 gem "jquery-rails"
