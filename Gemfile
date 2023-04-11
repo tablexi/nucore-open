@@ -33,7 +33,7 @@ gem "devise-security"
 
 ## models
 gem "aasm"
-gem "paperclip"
+gem "kt-paperclip"
 gem "paper_trail"
 gem "nokogiri"
 gem "rails-observers"
