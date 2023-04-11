@@ -250,6 +250,8 @@ GEM
     delayed_job_active_record (4.1.7)
       activerecord (>= 3.0, < 8.0)
       delayed_job (>= 3.0, < 5)
+    deprecation_toolkit (2.0.3)
+      activesupport (>= 5.2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     devise (4.9.2)
@@ -278,7 +280,7 @@ GEM
     dry-core (0.7.1)
       concurrent-ruby (~> 1.0)
     dry-inflector (0.2.1)
-    dry-initializer (3.0.3)
+    dry-initializer (3.1.1)
     dry-logic (1.2.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
@@ -693,6 +695,7 @@ DEPENDENCIES
   daemons
   dataprobe!
   delayed_job_active_record
+  deprecation_toolkit
   devise
   devise-encryptable
   devise-security
@@ -773,7 +776,7 @@ DEPENDENCIES
   will_paginate
 
 RUBY VERSION
-   ruby 3.0.3
+   ruby 2.7.5
 
 BUNDLED WITH
    2.3.11
