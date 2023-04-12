@@ -778,7 +778,7 @@ DEPENDENCIES
   will_paginate
 
 RUBY VERSION
-   ruby 3.0.3p157
+   ruby 3.0.6
 
 BUNDLED WITH
    2.3.11
