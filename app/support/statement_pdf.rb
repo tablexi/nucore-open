@@ -15,11 +15,11 @@ class StatementPdf
     page_size: "LETTER", # "A4" is now the default size in prawn-rails
   }.freeze
 
-  def initialize(statement, download: false)
+  def initialize(statement, **kwargs)
     @statement = statement
     @account = statement.account
     @facility = statement.facility
-    @download = download
+    @download = kwargs[:download] || false
   end
 
   def generate(_pdf)

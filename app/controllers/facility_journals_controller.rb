@@ -187,7 +187,7 @@ class FacilityJournalsController < ApplicationController
   def flash_error_messages
     msg = ""
 
-    @journal.errors.to_a.each do |error|
+    @journal.errors.full_messages.each do |error|
       msg += "#{error}<br/>"
 
       if msg.size > 2000 # don't overflow session (flash) cookie

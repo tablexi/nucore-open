@@ -4,8 +4,8 @@ class StatementPdfFactory
 
   @@statement_pdf_class = Settings.statement_pdf.class_name.constantize
 
-  def self.instance(*args)
-    @@statement_pdf_class.new(*args)
+  def self.instance(args, **kwargs)
+    @@statement_pdf_class.new(args, **kwargs)
   end
 
 end

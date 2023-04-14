@@ -39,14 +39,10 @@ class TimeRange
     end
   end
 
-  def localize(time, *options)
-    localization = if options.empty?
-                     I18n.localize(time, *options)
-                   else
-                     I18n.localize(time, **options[0])
-                   end
+  def localize(time, options = {})
+    return "???" unless time
 
-    time ? localization : "???"
+    I18n.localize(time, **options)
   end
 
 end
