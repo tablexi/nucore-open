@@ -4,11 +4,12 @@ module BulkEmail
 
   class Mailer < ApplicationMailer
 
-    def send_mail(recipient:, subject:, body:, reply_to: nil, facility:)
-      @recipient = recipient
-      @body = body
-      @facility = facility
-      options = { from: sender, to: recipient.email, subject: subject }
+    def send_mail(**kwargs)
+      @recipient = kwargs[:recipient]
+      @body = kwargs[:body]
+      @facility = kwargs[:facility]
+      reply_to = kwargs[:reply_to]
+      options = { from: sender, to: @recipient.email, subject: kwargs[:subject] }
       options[:reply_to] = reply_to if reply_to.present?
       mail(options)
     end
