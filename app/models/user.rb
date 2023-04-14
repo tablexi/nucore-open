@@ -172,7 +172,7 @@ class User < ApplicationRecord
     OrderDetail.where(account_id: Account.administered_by(self))
   end
 
-  def full_name(kwargs = {})
+  def full_name(**kwargs)
     Users::NamePresenter.new(self, suspended_label: kwargs[:suspended_label]).full_name
   end
 
