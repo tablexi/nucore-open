@@ -621,7 +621,7 @@ RSpec.describe OrderRowImporter do
     end
 
     context "when the import has errors" do
-      before { errors.each { |error| subject.send(:add_error, error) } }
+      before { errors.to_a.each { |error| subject.send(:add_error, error) } }
 
       it "adds errors to the error column" do
         expect(subject.row_with_errors["Errors"]).to eq(errors.join(", "))
