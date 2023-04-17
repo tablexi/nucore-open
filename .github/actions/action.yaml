@@ -7,12 +7,12 @@ runs:
     # Install dependencies for mysql2 gem
     # - run: apt-get update && apt-get -y install default-libmysqlclient-dev libmariadb-dev-compat libmariadb-dev
     #  shell: bash
-    - name: cache gems
-      uses: actions/cache@v3
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: ${{ runner.os }}-bundle-
+    # - name: cache gems
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: vendor/bundle
+    #     key: ${{ runner.os }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
+    #     restore-keys: ${{ runner.os }}-bundle-
 
     - run: bundle install --path vendor/bundle
       shell: bash
