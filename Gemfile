@@ -127,6 +127,7 @@ group :development, :test do
   gem "rspec-activejob"
   gem "teaspoon", git:"https://github.com/jejacks0n/teaspoon.git", branch: :master
   gem "teaspoon-jasmine"
+  gem "phantomjs"
 end
 
 group :test do
