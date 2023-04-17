@@ -83,11 +83,7 @@ Teaspoon.configure do |config|
 
   config.asset_paths += EngineManager.loaded_nucore_engines.map { |e| File.join(e.root, "spec/javascripts") }
 
-  config.suite :engines do |suite|
-    engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
-    spec_paths = engine_names.map { |engine_name| "vendor/engines/#{engine_name}/spec/javascripts"}
-    suite.matcher = "{#{spec_paths.join(',')}}/**/*_spec.{js,js.coffee,coffee}"
-  end
+
 
   # CONSOLE RUNNER SPECIFIC
   #
@@ -120,6 +116,12 @@ Teaspoon.configure do |config|
      options: Selenium::WebDriver::Chrome::Options.new(args: ['headless', 'disable-gpu', 'no-sandbox', 'window-size=1366,768'])
    }
   }
+
+  config.suite :engines do |suite|
+    engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
+    spec_paths = engine_names.map { |engine_name| "vendor/engines/#{engine_name}/spec/javascripts"}
+    suite.matcher = "{#{spec_paths.join(',')}}/**/*_spec.{js,js.coffee,coffee}"
+  end
 
   # Specify the timeout for the driver. Specs are expected to complete within this time frame or the run will be
   # considered a failure. This is to avoid issues that can arise where tests stall.
