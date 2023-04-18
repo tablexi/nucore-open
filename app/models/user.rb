@@ -172,8 +172,8 @@ class User < ApplicationRecord
     OrderDetail.where(account_id: Account.administered_by(self))
   end
 
-  def full_name(**kwargs)
-    Users::NamePresenter.new(self, suspended_label: kwargs[:suspended_label]).full_name
+  def full_name(suspended_label: true)
+    Users::NamePresenter.new(self, suspended_label: suspended_label).full_name
   end
 
   alias to_s full_name
