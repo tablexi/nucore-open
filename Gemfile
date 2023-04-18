@@ -116,7 +116,7 @@ end
 
 group :development, :test do
   gem "amazing_print"
-  gem "axe-core-rspec", "4.4.2"
+  gem "axe-core-rspec"
   # FactoryBot 5.X has some breaking changes we haven't sorted out
   # https://github.com/tablexi/nucore-open/pull/1865
   gem "factory_bot_rails", "< 5"
