@@ -33,6 +33,7 @@ gem "devise-security"
 
 ## models
 gem "aasm"
+# TODO: switch from Paperclip to ActiveStorage
 gem "kt-paperclip"
 gem "paper_trail"
 gem "nokogiri"
@@ -47,6 +48,7 @@ gem "uglifier", "= 4.1.18" # 4.1.19 has an issue https://github.com/mishoo/Uglif
 gem "bootstrap-sass", "~> 2.3.2" # will not upgrade
 gem "haml"
 gem "will_paginate"
+# TODO: Remove dynamic_form and use Rails to display errors
 gem "dynamic_form", git: "https://github.com/payrollhero/dynamic_form"
 # 5.0 has breaking changes based which need to be addressed before we can upgrade
 gem "ckeditor", "< 5"
@@ -125,8 +127,10 @@ group :development, :test do
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rspec-activejob"
+  # master is used here to allow the use of Chrome
   gem "teaspoon", git:"https://github.com/jejacks0n/teaspoon.git", branch: :master
   gem "teaspoon-jasmine"
+  gem "selenium-webdriver"
 end
 
 group :test do
@@ -135,7 +139,6 @@ group :test do
   gem "rails-controller-testing"
   gem "rspec-collection_matchers"
   gem "rspec_junit_formatter"
-  gem "selenium-webdriver"
   gem "shoulda-matchers"
   gem "single_test"
   gem "webmock"
