@@ -12,6 +12,7 @@ class ReservationsController < ApplicationController
   include TranslationHelper
   include FacilityReservationsHelper
   include ReservationSwitch
+  include ErrorsHelper
   helper TimelineHelper
 
   def initialize
@@ -210,7 +211,7 @@ class ReservationsController < ApplicationController
     if @reservation.move_to_earliest
       flash[:notice] = "The reservation was moved successfully."
     else
-      flash[:error] = @reservation.errors.to_a.join("<br/>").html_safe
+      flash[:error] = print_error_messages(@reservation.errors, "<br/>").html_safe
     end
 
     redirect_to reservations_status_path(status: "upcoming")
