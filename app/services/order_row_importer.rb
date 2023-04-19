@@ -117,7 +117,10 @@ class OrderRowImporter
 
   def add_error(message, options = {})
     if message.present?
-      message = I18n.t(message, **options.reverse_merge(scope: "#{self.class.name.underscore}.errors")) if message.is_a?(Symbol)
+      if message.is_a?(Symbol)
+        message = I18n.t(message, **options.reverse_merge(scope: "#{self.class.name.underscore}.errors"))
+      end
+
       @errors.add(message)
     end
   end
