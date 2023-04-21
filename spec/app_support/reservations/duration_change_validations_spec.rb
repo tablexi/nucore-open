@@ -67,8 +67,8 @@ RSpec.describe Reservations::DurationChangeValidations do
               reservation.reserve_end_at -= 2.hours
 
               expect(validator).not_to be_valid
-              expect(reservation.errors.messages_for(:reserve_start_at).flatten)
-                .to include("cannot change once the reservation has started")
+              expect(reservation.errors.full_messages)
+                .to include("Reserve Start cannot change once the reservation has started")
             end
 
             it "is allowed to extend the reservation" do
@@ -80,8 +80,8 @@ RSpec.describe Reservations::DurationChangeValidations do
             it "is not allowed to shorten the reservation" do
               reservation.reserve_end_at -= 5.minutes
               expect(validator).not_to be_valid
-              expect(reservation.errors.messages_for(:duration_mins).flatten)
-                .to include("cannot be shortened inside the lock window (24 hours)")
+              expect(reservation.errors.full_messages)
+                .to include("Duration cannot be shortened inside the lock window (24 hours)")
             end
           end
         end
