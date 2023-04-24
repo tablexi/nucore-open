@@ -9,3 +9,9 @@ updates:
   open-pull-requests-limit: 99
   allow:
   - dependency-type: all
+
+# Check for updates to GitHub Actions every week
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "weekly"
