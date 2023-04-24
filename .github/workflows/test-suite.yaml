@@ -100,4 +100,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions
-      - run: rake teaspoon
+      - run: bundle exec rake teaspoon
