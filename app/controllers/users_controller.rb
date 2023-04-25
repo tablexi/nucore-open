@@ -129,7 +129,7 @@ class UsersController < ApplicationController
       flash[:notice] = text("update.success")
       redirect_to facility_user_path(current_facility, @user)
     else
-      flash[:error] = text("update.error", message: @user_form.errors.to_a.to_sentence)
+      flash[:error] = text("update.error", message: @user_form.errors.full_messages.to_sentence)
       render action: "edit"
     end
   end
@@ -188,7 +188,7 @@ class UsersController < ApplicationController
       @user.create_default_price_group!
       save_user_success(@user)
     else
-      flash[:error] = text("create.error", message: @user.errors.to_a.to_sentence)
+      flash[:error] = text("create.error", message: @user.errors.full_messages.to_sentence)
       redirect_to facility_users_path
     end
   end

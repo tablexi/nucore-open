@@ -31,7 +31,7 @@ class AddToOrderForm
     @error_message = text("invalid_status", product: product, status: order_status)
     false
   rescue ActiveRecord::RecordInvalid => e
-    @error_message = e.record.errors.to_a.to_sentence
+    @error_message = e.record.errors.full_messages.to_sentence
     false
   rescue => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
