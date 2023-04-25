@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class OrdersController < ApplicationController
-  include ErrorsHelper
 
   customer_tab  :all
 
@@ -50,7 +49,7 @@ class OrdersController < ApplicationController
 
     @order.errors.add(:base, invalid_for_orderer_message)
 
-    flash[:error] = "There are errors in your order:<br>#{print_error_messages(@order.errors, '<br>')}".html_safe
+    flash[:error] = "There are errors in your order:<br>#{@order.errors.full_messages.join('<br>')}".html_safe
   end
 
   # PUT /orders/:id/clear
@@ -128,7 +127,7 @@ class OrdersController < ApplicationController
       end
 
       if @order.errors.any?
-        flash[:error] = "There were errors adding to your cart:<br>#{print_error_messages(@order.errors, '<br>')}".html_safe
+        flash[:error] = "There were errors adding to your cart:<br>#{@order.errors.full_messages.join('<br>')}".html_safe
         raise ActiveRecord::Rollback
       end
     end
@@ -252,8 +251,8 @@ class OrdersController < ApplicationController
         # ordering on behalf of
         flash.now[:notice] = "Cart has been updated"
       else
-        logger.debug "errors #{@order.errors.to_a}"
-        flash.now[:error] = print_error_messages(@order.errors, "<br/>").html_safe
+        logger.debug "errors #{@order.errors.full_messages}"
+        flash.now[:error] = @order.errors.full_messages.join("<br/>").html_safe
       end
       render :show
     end

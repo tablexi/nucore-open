@@ -6,7 +6,6 @@ class FacilityJournalsController < ApplicationController
   include CSVHelper
   include OrderDetailsCsvExport
   include SortableBillingTable
-  include ErrorsHelper
 
   admin_tab     :all
   before_action :authenticate_user!
@@ -79,7 +78,7 @@ class FacilityJournalsController < ApplicationController
 
       # move error messages for pending journal into the flash
       if @pending_journal.errors.any?
-        flash[:error] = print_error_messages(@journal.errors, "<br/>").html_safe
+        flash[:error] = @journal.errors.full_messages.join("<br/>").html_safe
       end
 
       @earliest_journal_date = params[:journal_date] || @earliest_journal_date

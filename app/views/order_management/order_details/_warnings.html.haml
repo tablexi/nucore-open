@@ -6,4 +6,4 @@
 
 - if @order_detail.errors.any?
   .alert.alert-error
-    = print_error_messages(@order_detail.errors, "<br/>").html_safe
+    = @order_detail.errors.full_messages.join("<br/>").html_safe

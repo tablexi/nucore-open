@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module AccountSuspendActions
-  include ErrorsHelper
 
   # GET /facilities/:facility_id/accounts/:account_id/suspend
   def suspend
@@ -21,7 +20,7 @@ module AccountSuspendActions
       flash[:notice] = I18n.t("controllers.facility_accounts.unsuspend.success")
       LogEvent.log(@account, :unsuspended, current_user)
     else
-      flash[:alert] = I18n.t("controllers.facility_accounts.unsuspend.failure", errors: print_error_messages(@account.errors,"\n"))
+      flash[:alert] = I18n.t("controllers.facility_accounts.unsuspend.failure", errors: @account.errors.full_messages.join("\n"))
     end
 
     redirect_to open_or_facility_path("account", @account)
