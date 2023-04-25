@@ -95,7 +95,7 @@ RSpec.describe "Managing an order detail" do
       click_link "Update"
       fill_in "Actual Duration", with: "0"
       click_button "Save"
-      expect(page).to have_content("Actual Duration must be at least 1 minute")
+      expect(page).to have_content("Actual duration must be at least 1 minute")
 
       # Confirm the reservation is still listed as a problem
       visit show_problems_facility_reservations_path(facility)

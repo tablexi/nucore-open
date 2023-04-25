@@ -90,7 +90,7 @@ RSpec.describe FacilityJournalsController do
         @params[:journal][:reference] = ""
 
         do_request
-        expect(flash[:error]).to include "reference may not be blank"
+        expect(flash[:error]).to include "Reference may not be blank"
       end
 
       it "leaves success as nil" do
