@@ -1,12 +1,4 @@
 GIT
-  remote: https://github.com/jejacks0n/teaspoon.git
-  revision: a1687488b50765f8d01577967b700619876a024e
-  branch: master
-  specs:
-    teaspoon (1.3.0)
-      railties (>= 4.2.11)
-
-GIT
   remote: https://github.com/payrollhero/dynamic_form
   revision: 7f904005f6001a0b908dd879c34547b0e87a34e7
   specs:
@@ -428,6 +420,10 @@ GEM
     nokogiri (1.14.3)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
+    nokogiri (1.14.3-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.14.3-x86_64-linux)
+      racc (~> 1.4)
     numerizer (0.1.1)
     oj (3.14.2)
     orm_adapter (0.5.0)
@@ -463,7 +459,7 @@ GEM
     puma (6.2.1)
       nio4r (~> 2.0)
     racc (1.6.2)
-    rack (2.2.6.4)
+    rack (2.2.7)
     rack-test (2.1.0)
       rack (>= 1.3)
     rack-utf8_sanitizer (1.8.0)
@@ -613,6 +609,8 @@ GEM
     synaccess_connect (0.3.1)
       nokogiri (>= 1.6)
     sysexits (1.2.0)
+    teaspoon (1.2.2)
+      railties (>= 3.2.5)
     teaspoon-jasmine (2.9.1)
       teaspoon (>= 1.0.0)
     temple (0.10.0)
@@ -765,7 +763,7 @@ DEPENDENCIES
   sprockets (< 4)
   sprockets-rails (= 3.2.2)
   synaccess_connect
-  teaspoon!
+  teaspoon
   teaspoon-jasmine
   text_helpers
   tzinfo-data

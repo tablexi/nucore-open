@@ -128,7 +128,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "rspec-activejob"
   # master is used here to allow the use of Chrome
-  gem "teaspoon", git:"https://github.com/jejacks0n/teaspoon.git", branch: :master
+  gem "teaspoon"
   gem "teaspoon-jasmine"
   gem "selenium-webdriver"
 end
