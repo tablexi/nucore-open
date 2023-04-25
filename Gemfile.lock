@@ -763,7 +763,6 @@ DEPENDENCIES
   sprockets (< 4)
   sprockets-rails (= 3.2.2)
   synaccess_connect
-  teaspoon
   teaspoon-jasmine
   text_helpers
   tzinfo-data
