@@ -119,7 +119,7 @@ Teaspoon.configure do |config|
   config.driver_options = {
     client_driver: :chrome,
     selenium_options: {
-      options: Selenium::WebDriver::Chrome::Options.new(args: ['headless', 'disable-gpu', 'no-sandbox', 'window-size=1366,768'])
+      capabilities: Selenium::WebDriver::Chrome::Options.new(args: ['headless', 'disable-gpu', 'no-sandbox', 'window-size=1366,768'])
     }
    }
  
