@@ -107,7 +107,7 @@ Teaspoon.configure do |config|
   # PhantomJS: https://github.com/modeset/teaspoon/wiki/Using-PhantomJS
   # Selenium Webdriver: https://github.com/modeset/teaspoon/wiki/Using-Selenium-WebDriver
   # Capybara Webkit: https://github.com/modeset/teaspoon/wiki/Using-Capybara-Webkit
-  # config.driver = :phantomjs
+  config.driver = :selenium
 
   # Specify additional options for the driver.
   #
@@ -115,6 +115,19 @@ Teaspoon.configure do |config|
   # Selenium Webdriver: https://github.com/modeset/teaspoon/wiki/Using-Selenium-WebDriver
   # Capybara Webkit: https://github.com/modeset/teaspoon/wiki/Using-Capybara-Webkit
   # config.driver_options = nil
+
+  config.driver_options = {
+    client_driver: :chrome,
+    selenium_options: {
+      options: Selenium::WebDriver::Chrome::Options.new(args: ['headless', 'disable-gpu', 'no-sandbox', 'window-size=1366,768'])
+    }
+   }
+ 
+   config.suite :engines do |suite|
+     engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
+     spec_paths = engine_names.map { |engine_name| "vendor/engines/#{engine_name}/spec/javascripts"}
+     suite.matcher = "{#{spec_paths.join(',')}}/**/*_spec.{js,js.coffee,coffee}"
+   end
 
   # Specify the timeout for the driver. Specs are expected to complete within this time frame or the run will be
   # considered a failure. This is to avoid issues that can arise where tests stall.
