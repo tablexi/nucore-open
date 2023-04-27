@@ -314,7 +314,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
       reservation.actual_end_at = reservation.reserve_end_at + 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
       expect(new_costs[:cost]).to eq(29.1666669.to_d)
-      expect(new_costs[:subsidy].round(2)).to eq(8.17.to_d.round(2))
+      expect(new_costs[:subsidy]).to eq(8.1666669.to_d(Float::DIG))
     end
 
     it "charges for 90 minutes when an hour reservation is started 15 minutes late and goes over the reserved end time by 30 minutes" do
