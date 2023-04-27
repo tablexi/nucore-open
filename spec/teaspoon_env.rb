@@ -108,30 +108,29 @@ Teaspoon.configure do |config|
   # PhantomJS: https://github.com/modeset/teaspoon/wiki/Using-PhantomJS
   # Selenium Webdriver: https://github.com/modeset/teaspoon/wiki/Using-Selenium-WebDriver
   # Capybara Webkit: https://github.com/modeset/teaspoon/wiki/Using-Capybara-Webkit
+  selenium_args = ["headless", "disable-gpu", "no-sandbox", "window-size=1366,768"]
+  selenium_options = { capabilities: Selenium::WebDriver::Chrome::Options.new(args: selenium_args) }
+
+  # Using a standalone chrome container for testing.
+  # https://github.com/jejacks0n/teaspoon/wiki/Using-docker-compose-with-selenium-standalone-%2A
   if ENV['SELENIUM_HOST']
-    # Using a standalone chrome container for testing.
-    # https://github.com/jejacks0n/teaspoon/wiki/Using-docker-compose-with-selenium-standalone-%2A
     docker_ip = `hostname -i`.strip
     config.server_host = docker_ip
     config.server_port = ENV["TEST_APP_PORT"]
 
     http_client = Selenium::WebDriver::Remote::Http::Default.new(read_timeout: 120)
-    config.driver_options = {
-      client_driver: :chrome,
-      selenium_options: {
+    selenium_options.merge!(
+      {
         url: "http://#{ENV['SELENIUM_HOST']}:#{ENV['SELENIUM_PORT']}/wd/hub",
         http_client: http_client,
-        capabilities: Selenium::WebDriver::Chrome::Options.new(args: ["headless", "disable-gpu", "no-sandbox", "window-size=1366,768"])
       }
-    }
-  else
-    config.driver_options = {
-      client_driver: :chrome,
-      selenium_options: {
-        capabilities: Selenium::WebDriver::Chrome::Options.new(args: ["headless", "disable-gpu", "no-sandbox", "window-size=1366,768"])
-      }
-    }
+    )
   end
+
+  config.driver_options = {
+    client_driver: :chrome,
+    selenium_options: selenium_options
+  }
 
   config.suite :engines do |suite|
     engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
