@@ -109,4 +109,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions
-      - run: bundle exec teaspoon
+      - run: bundle exec rake teaspoon
