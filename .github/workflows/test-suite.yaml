@@ -98,6 +98,7 @@ jobs:
         username: nucoretxi
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
     env:
+      TEASPOON_RAILS_ENV: test
       RAILS_ENV: test
       MYSQL_HOST: mysql
       MYSQL_USER: root
@@ -105,8 +106,6 @@ jobs:
       SELENIUM_HOST: selenium
       SELENIUM_PORT: 4444
       TEST_APP_PORT: 3000
-      RAILS_ENV: test
-      TEASPOON_RAILS_ENV: test
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions
