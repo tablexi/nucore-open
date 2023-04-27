@@ -10,7 +10,6 @@
 
 FROM --platform=linux/amd64 ruby:3.0.6 as base
 
-
 # Install NodeJS based on https://github.com/nodesource/distributions#installation-instructions
 ARG NODE_VERSION=setup_16.x
 ENV NODE_VERISON ${NODE_VERSION}
@@ -21,9 +20,6 @@ RUN apt-get update && \
  apt-get install --yes libvips42 nodejs && \
  npm install --global yarn && \
  apt-get autoremove -y
-
-
-
 
 ARG BUNDLER_VERSION=2.3.11
 ENV BUNDLER_VERSION=${BUNDLER_VERSION}

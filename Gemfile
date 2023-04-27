@@ -127,7 +127,6 @@ group :development, :test do
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rspec-activejob"
-  # master is used here to allow the use of Chrome
   gem "teaspoon-jasmine"
   gem "selenium-webdriver"
 end

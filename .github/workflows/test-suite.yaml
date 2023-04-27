@@ -87,6 +87,11 @@ jobs:
           MYSQL_ROOT_PASSWORD: 'root'
           MYSQL_ROOT_HOST: "%"
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+      selenium:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+        options: --shm-size="2g"
     container:
       image: nucoretxi/ruby-node-chrome-pack:3.0.6
       credentials:
@@ -97,6 +102,11 @@ jobs:
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASSWORD: root
+      SELENIUM_HOST: selenium
+      SELENIUM_PORT: 4444
+      TEST_APP_PORT: 3000
+      RAILS_ENV: test
+      TEASPOON_RAILS_ENV: test
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions
