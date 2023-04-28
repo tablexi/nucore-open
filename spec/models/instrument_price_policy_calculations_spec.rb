@@ -299,7 +299,7 @@ RSpec.describe InstrumentPricePolicyCalculations do
       reservation.actual_end_at = reservation.reserve_end_at - 10.minutes
       new_costs = policy.calculate_cost_and_subsidy reservation
       expect(new_costs[:cost]).to eq(61.to_d)
-      # TODO remove the to_d parameter once in Ruby 3.1
+      # TODO: remove the to_d parameter once in Ruby 3.1
       expect(new_costs[:subsidy]).to eq(8.6083335.to_d(Float::DIG))
     end
 

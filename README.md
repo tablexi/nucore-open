@@ -286,7 +286,7 @@ You can run specs in parallel during local development using the [`parallel_test
 
 It is possible to track deprecation warnings locally with [deprecation_toolkit](https://github.com/Shopify/deprecation_toolkit). If you set the `RECORD_DEPRECATIONS` environment variable, `deprecation_toolkit` will collect deprecation warnings in YAML files in the `deprecations/` folder when specs are run.
 
-`deprecation_toolkit` is configured in `spec/deprecation_toolkit_env.rb`.
+`deprecation_toolkit` is configured in [`spec/deprecation_toolkit_env.rb`](spec/deprecation_toolkit_env.rb).
 
 ## Optional Modules
 
