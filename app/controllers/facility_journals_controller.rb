@@ -51,6 +51,8 @@ class FacilityJournalsController < ApplicationController
     @invalid_order_details += @order_details.expired_account
     @invalid_order_details = @invalid_order_details.sort_by(&:fulfilled_at)
 
+    @earliest_fulfilled_at = @order_details.last.fulfilled_at.beginning_of_day
+
     respond_to do |format|
       format.csv do
         # used for "Export as CSV" link for order details with expired accounts
