@@ -6,8 +6,10 @@ services:
     build:
       context: .
       # To debug Github Actions CI issues:
-      # Replace `target: develop` with `dockerfile: Dockerfile.github-actions`,
-      # then update the `command:` or attach to the container to run commands
+      # 1) Replace `target: develop` with `dockerfile: Dockerfile.github-actions`,
+      # 2) Update the `command:` (for example `command: cd app && bundle install && bundle exec rake teaspoon`)
+      # 3) Run `docker compose build app`.
+      # 4) Re-run as needed ot attach to the container to run other debugging commands
       target: develop
     command: bash -c "bundle install && bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
