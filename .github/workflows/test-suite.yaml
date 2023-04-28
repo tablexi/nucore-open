@@ -20,7 +20,7 @@ jobs:
           MYSQL_ROOT_HOST: "%"
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
     container:
-      image: prograils/ruby-node-chrome-pack:2.7.5
+      image: nucoretxi/ruby-node-chrome-pack:3.0.6
       credentials:
         username: nucoretxi
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -61,7 +61,7 @@ jobs:
           MYSQL_ROOT_HOST: "%"
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
     container:
-      image: prograils/ruby-node-chrome-pack:2.7.5
+      image: nucoretxi/ruby-node-chrome-pack:3.0.6
       credentials:
         username: nucoretxi
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -87,17 +87,26 @@ jobs:
           MYSQL_ROOT_PASSWORD: 'root'
           MYSQL_ROOT_HOST: "%"
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+      selenium:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+        options: --shm-size="2g"
     container:
-      image: prograils/ruby-node-chrome-pack:2.7.5
+      image: nucoretxi/ruby-node-chrome-pack:3.0.6
       credentials:
         username: nucoretxi
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
     env:
+      TEASPOON_RAILS_ENV: test
       RAILS_ENV: test
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASSWORD: root
+      SELENIUM_HOST: selenium
+      SELENIUM_PORT: 4444
+      TEST_APP_PORT: 3000
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions
-      - run: bundle exec teaspoon
+      - run: bundle exec rake teaspoon
