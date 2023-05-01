@@ -430,7 +430,7 @@ GEM
     paper_trail (13.0.0)
       activerecord (>= 5.2)
       request_store (~> 1.1)
-    parallel (1.22.1)
+    parallel (1.23.0)
     parallel_tests (3.13.0)
       parallel
     paranoia (2.6.1)
