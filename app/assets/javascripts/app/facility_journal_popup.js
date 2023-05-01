@@ -14,6 +14,10 @@ document.addEventListener("DOMContentLoaded", function() {
 				event.preventDefault();
 				$("#journal-date-popup").modal("show");
 			}
+			else if ($("#journal-creation-reminder").length) {
+				event.preventDefault();
+				$("#journal-creation-reminder").modal("show");
+			}
 		});
 	}
 });

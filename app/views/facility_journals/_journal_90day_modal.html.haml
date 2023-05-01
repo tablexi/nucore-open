@@ -1,0 +1,15 @@
+#journal-date-popup.modal.hide.fade
+  .modal-header
+    = modal_close_button
+    %h3 90-Day Justification
+
+  .modal-body
+    Please complete and file “90-Day Rule Justifications” for transactions fulfilled more than 90 days in the past.
+
+  .modal-footer
+    %button.btn{ type: "button", data: { dismiss: "modal" } } Cancel
+    - if @journal_creation_reminder
+      = link_to "OK", "#journal-creation-reminder", class: "btn btn-primary", data: { toggle: "modal", dismiss: "modal" }
+    - else
+      - submit_form = "event.preventDefault();document.getElementById('journals_create_form').submit();"
+      = submit_tag "OK", class: "btn btn-primary", onclick: submit_form

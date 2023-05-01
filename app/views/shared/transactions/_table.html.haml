@@ -19,10 +19,7 @@
             &nbsp;
         .span2
           .submit{ data: { earliest_fulfilled_at: @earliest_fulfilled_at }}
-            - if @journal_creation_reminder
-              = link_to text(@order_detail_action, scope: "admin.transaction_search.actions"), "#journal-creation-reminder", class: "btn btn-primary", data: { toggle: "modal" }
-            - else
-              = submit_tag text(@order_detail_action, scope: "admin.transaction_search.actions"), class: "btn btn-primary"
+            = submit_tag text(@order_detail_action, scope: "admin.transaction_search.actions"), class: "btn btn-primary"
       .row
         .span12= render "shared/transactions/table_inside", order_details: order_details
   - else
@@ -31,10 +28,5 @@
     .row
       .span12= render "shared/transactions/table_inside", order_details: order_details, show_statements: local_assigns[:show_statements]
 
-#journal-date-popup.modal.hide.fade
-  %h3 This is a popup
-  %p Please complete and file “90-Day Rule Justifications” for transactions fulfilled more than 90 days in the past.
 
-  %button.btn{ type: "button", data: { dismiss: "modal" } } Dismiss
-  - submit_form = "event.preventDefault();document.getElementById('journals_create_form').submit();"
-  = submit_tag text("facility_journals.journal_creation_reminder_modal.proceed"), class: "btn btn-primary", onclick: submit_form
+= render "journal_90day_modal"
