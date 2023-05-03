@@ -18,7 +18,7 @@
           - else
             &nbsp;
         .span2
-          .submit{ data: { earliest_fulfilled_at: @earliest_fulfilled_at }}
+          .submit
             = submit_tag text(@order_detail_action, scope: "admin.transaction_search.actions"), class: "btn btn-primary"
       .row
         .span12= render "shared/transactions/table_inside", order_details: order_details
