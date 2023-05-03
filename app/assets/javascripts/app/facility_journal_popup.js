@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const journalDateInput = document.querySelector("#journal_date");
 
   if (journalDateInput) {
-    const table = document.querySelector("table");
+    const table = document.querySelector("table.js--transactions-table");
     const submitDiv = document.querySelector(".submit");
     let earliestFulfilledAtDate;
     
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     function setEarliestFulfilledAtDate(event) {
       const dates = [];
-      const checked = document.querySelectorAll("tr td input[type='checkbox']:checked");
+      const checked = document.querySelectorAll("table.js--transactions-table tr td input[type='checkbox']:checked");
     
       checked.forEach(checkedBox => {
         const row = checkedBox.parentElement.parentElement;

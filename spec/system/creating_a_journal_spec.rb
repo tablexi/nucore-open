@@ -70,6 +70,20 @@ RSpec.describe "Creating a journal" do
         click_button "Create"
         expect(page).to have_content "Pending Journal"
       end
+
+      context "with order detail more than 90 days old", :js do
+        before do
+          reviewed_order_detail.fulfilled_at = 95.days.ago
+          reviewed_order_detail.save
+          visit new_facility_journal_path(facility)
+        end
+
+        it "has a pop up" do
+          # binding.pry
+          click_button "Create"
+          expect(page).to have_content "Please complete and file"
+        end
+      end
     end
 
     context "with a future journal creation reminder" do
@@ -95,7 +109,7 @@ RSpec.describe "Creating a journal" do
       it "can see a reminder message, then select order details and create a journal" do
         expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
         check "order_detail_ids_"
-        click_link "Create"
+        click_button "Create"
         expect(page).to have_content("We are in the year-end closing window.")
         click_button "Create Journal"
         expect(page).to have_content "Pending Journal"
