@@ -71,17 +71,16 @@ RSpec.describe "Creating a journal" do
         expect(page).to have_content "Pending Journal"
       end
 
-      context "with order detail more than 90 days old", :js do
+      context "with an order detail more than 90 days old", :js do
         before do
           reviewed_order_detail.fulfilled_at = 95.days.ago
           reviewed_order_detail.save
           visit new_facility_journal_path(facility)
         end
 
-        it "has a pop up" do
-          # binding.pry
+        it "has a 90 day pop up" do
           click_button "Create"
-          expect(page).to have_content "Please complete and file"
+          expect(page).to have_content "90-Day Justification"
         end
       end
     end
@@ -113,6 +112,22 @@ RSpec.describe "Creating a journal" do
         expect(page).to have_content("We are in the year-end closing window.")
         click_button "Create Journal"
         expect(page).to have_content "Pending Journal"
+      end
+    end
+
+    context "with an order detail more than 90 days old", :js do
+      before do
+        reviewed_order_detail.fulfilled_at = 95.days.ago
+        reviewed_order_detail.save
+        visit new_facility_journal_path(facility)
+      end
+
+      it "has a 90 day and journal creation reminder pop up" do
+        click_button "Create"
+        expect(page).to have_content "90-Day Justification"
+        # binding.pry
+        click_button "OK"
+        expect(page).to have_content "We are in the year-end closing window."
       end
     end
   end
