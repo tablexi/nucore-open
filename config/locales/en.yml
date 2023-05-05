@@ -960,7 +960,7 @@ en:
       intro: "You may provide an Online Order Form and/or an Order File Template.  If provided, the user must complete one before placing an order."
       order_form:
         head: "Online Order Form"
-        main: "Please contact !app_name! Support (%{email}) for more information."
+        main: "Please contact !app_name! Support ([%{email}](mailto:%{email})) for more information."
         notice: "No Online Order Forms have been added."
       download_form:
         head: "Downloadable Order Form"
