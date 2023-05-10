@@ -720,6 +720,7 @@ DEPENDENCIES
   kt-paperclip
   ldap_authentication!
   letter_opener
+  matrix
   mysql2
   nested_form_fields
   net-imap
