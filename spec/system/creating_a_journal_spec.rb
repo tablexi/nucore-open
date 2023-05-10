@@ -3,14 +3,13 @@
 require "rails_helper"
 
 RSpec.describe "Creating a journal" do
-
   let(:admin) { FactoryBot.create(:user, :administrator) }
   let(:user) { FactoryBot.create(:user) }
   let(:facility) { FactoryBot.create(:facility) }
   let(:account) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user, facility: facility) }
   let!(:reviewed_order_detail) { place_and_complete_item_order(user, facility, account, true) }
   let!(:unreviewed_order_detail) { place_and_complete_item_order(user, facility, account) }
-  let(:expiry_date) { Time.zone.now - 1.year }
+  let(:expiry_date) { 1.year.ago }
   let(:expired_payment_source) { FactoryBot.create(:nufs_account, :with_account_owner, owner: user, expires_at: expiry_date, facility: facility) }
   let!(:problem_order_detail) { place_and_complete_item_order(user, facility, expired_payment_source, true) }
 
@@ -113,21 +112,21 @@ RSpec.describe "Creating a journal" do
         click_button "Create Journal"
         expect(page).to have_content "Pending Journal"
       end
-    end
 
-    context "with an order detail more than 90 days old", :js do
-      before do
-        reviewed_order_detail.fulfilled_at = 95.days.ago
-        reviewed_order_detail.save
-        visit new_facility_journal_path(facility)
-      end
+      context "with an order detail more than 90 days old", :js do
+        before do
+          reviewed_order_detail.fulfilled_at = 95.days.ago
+          reviewed_order_detail.save
+          visit new_facility_journal_path(facility)
+        end
 
-      it "has a 90 day and journal creation reminder pop up" do
-        click_button "Create"
-        expect(page).to have_content "90-Day Justification"
-        # binding.pry
-        click_button "OK"
-        expect(page).to have_content "We are in the year-end closing window."
+        it "has a 90 day and journal creation reminder pop up" do
+          click_button "Create"
+          expect(page).to have_content "90-Day Justification"
+          # binding.pry
+          click_link "OK"
+          expect(page).to have_content "We are in the year-end closing window."
+        end
       end
     end
   end
@@ -143,5 +142,4 @@ RSpec.describe "Creating a journal" do
       expect(page).to have_content("A report is being prepared and will be emailed")
     end
   end
-
 end
