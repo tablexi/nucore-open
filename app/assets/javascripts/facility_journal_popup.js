@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-
-  console.log("heyy")
   const table = document.querySelector("table.js--transactions-table");
   const submitDiv = document.querySelector(".submit");
   let earliestFulfilledAtDate;
