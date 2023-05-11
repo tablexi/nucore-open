@@ -1,11 +1,10 @@
 #journal-date-popup.modal.hide.fade
   .modal-header
     = modal_close_button
-    %h3 90-Day Justification
+    %h3= text("facility_journals.journal_90day_modal.header")
 
-  .modal-body
-    Please complete and file “90-Day Rule Justifications” for transactions fulfilled more than 90 days in the past.
-
+  .modal-body= text("facility_journals.journal_90day_modal.body")
+    
   .modal-footer
     %button.btn{ type: "button", data: { dismiss: "modal" } } Cancel
     - if @journal_creation_reminder
