@@ -1,5 +1,6 @@
 - if @earliest_journal_date
   = content_for :head_content do
+    = javascript_include_tag "facility_journal_popup"
     :javascript
       $(function(){
         var today = "#{l(Time.zone.now.to_date, format: :usa)}";
