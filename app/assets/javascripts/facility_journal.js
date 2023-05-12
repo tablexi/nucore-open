@@ -1,4 +1,21 @@
 document.addEventListener("DOMContentLoaded", function() {
+  $(function(){
+    const dateData = document.querySelector("#js--dateData");
+    const today = dateData.dataset['today'];
+    const earliestJournalDate = dateData.dataset['earliestJournalDate'];
+
+    $("#journal_date").val(today).datepicker({
+      "minDate": earliestJournalDate,
+      "maxDate": today
+    });
+  });
+
+  $(function(){
+    $("#journals_create_form").submit(function(e) {
+      $(e.target).find(":submit").attr("disabled", "true");
+    });
+  });
+
   const table = document.querySelector("table.js--transactions-table");
   const submitDiv = document.querySelector(".submit");
   let earliestFulfilledAtDate;

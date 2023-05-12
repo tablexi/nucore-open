@@ -1,21 +1,6 @@
 - if @earliest_journal_date
   = content_for :head_content do
-    = javascript_include_tag "facility_journal_popup"
-    :javascript
-      $(function(){
-        var today = "#{l(Time.zone.now.to_date, format: :usa)}";
-
-        $("#journal_date").val(today).datepicker({
-          "minDate": "#{l(@earliest_journal_date, format: :usa)}",
-          "maxDate": today
-        });
-      });
-
-      $(function(){
-        $("#journals_create_form").submit(function(e) {
-          $(e.target).find(":submit").attr("disabled", "true");
-        });
-      });
+    = javascript_include_tag "facility_journal"
 
 - if @journal_creation_reminder
   = render "journal_creation_modal", reminder_message: @journal_creation_reminder.message
@@ -42,3 +27,6 @@
   = render "shared/reconcile_footnote"
 - if @order_details.none?
   %p.alert.alert-info= t(".no_transactions")
+
+
+%span#js--dateData{ data: { today: "#{I18n.l(Time.zone.now.to_date, format: :usa)}", earliest_journal_date: "#{I18n.l(@earliest_journal_date, format: :usa)}"} }
