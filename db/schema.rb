@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_23_221431) do
+ActiveRecord::Schema.define(version: 2023_05_05_222132) do
 
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
@@ -374,6 +374,7 @@ ActiveRecord::Schema.define(version: 2023_02_23_221431) do
     t.timestamp "problem_resolved_at"
     t.integer "problem_resolved_by_id"
     t.string "reference_id"
+    t.boolean "skip_missing_form"
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"

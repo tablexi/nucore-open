@@ -570,7 +570,7 @@ en:
       form:
         recalculate_price: "Recalculate pricing"
       warnings:
-        missing_form_button: Add missing form
+        missing_form_button: Skip missing form
 
   product_access_groups:
     index:
