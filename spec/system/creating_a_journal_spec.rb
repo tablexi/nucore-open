@@ -123,7 +123,6 @@ RSpec.describe "Creating a journal" do
         it "has a 90 day and journal creation reminder pop up" do
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
-          # binding.pry
           click_link "OK"
           expect(page).to have_content "We are in the year-end closing window."
         end

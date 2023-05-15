@@ -28,5 +28,7 @@
 - if @order_details.none?
   %p.alert.alert-info= t(".no_transactions")
 
+- today = "#{I18n.l(Time.zone.now.to_date, format: :usa)}"
+- earliest_journal_date = "#{I18n.l(@earliest_journal_date, format: :usa)}"
 
-%span#js--dateData{ data: { today: "#{I18n.l(Time.zone.now.to_date, format: :usa)}", earliest_journal_date: "#{I18n.l(@earliest_journal_date, format: :usa)}"} }
+%span#js--journal-date-data{ data: { today: today, earliest_journal_date: earliest_journal_date } }

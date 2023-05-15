@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
   $(function(){
-    const dateData = document.querySelector("#js--dateData");
-    const today = dateData.dataset['today'];
-    const earliestJournalDate = dateData.dataset['earliestJournalDate'];
+    const dateData = document.querySelector("#js--journal-date-data");
+    const today = dateData.dataset["today"];
+    const earliestJournalDate = dateData.dataset["earliestJournalDate"];
 
     $("#journal_date").val(today).datepicker({
       "minDate": earliestJournalDate,
@@ -23,15 +23,13 @@ document.addEventListener("DOMContentLoaded", function() {
   table.addEventListener("click", setEarliestFulfilledAtDate);
   submitDiv.addEventListener("click", handleModals);
   
-  
-  
   function setEarliestFulfilledAtDate(event) {
     const dates = [];
     const checked = document.querySelectorAll("table.js--transactions-table tr td input[type='checkbox']:checked");
   
     checked.forEach(checkedBox => {
       const row = checkedBox.parentElement.parentElement;
-      const date= new Date(row.querySelector(".js--date_field").innerHTML);
+      const date= new Date(row.querySelector(".js--date-field").innerHTML);
       dates.push(date);
     });
 
@@ -43,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const journalDateInput = document.querySelector("#journal_date");
     const journalDate = new Date(journalDateInput.value);
   
-    const dateDiff = moment(journalDate).diff(earliestFulfilledAtDate, 'days');
+    const dateDiff = moment(journalDate).diff(earliestFulfilledAtDate, "days");
   
     if (dateDiff >= 90) {
       event.preventDefault();
