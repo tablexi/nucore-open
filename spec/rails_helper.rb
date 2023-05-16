@@ -32,9 +32,9 @@ RSpec.configure do |config|
     if ENV["DOCKER"]
       Capybara.register_driver :selenium_remote do |app|
         options = Selenium::WebDriver::Chrome::Options.new
-        options.add_option(url: "http://chrome:4444/wd/hub")
         Capybara::Selenium::Driver.new(app,
                                        browser: :chrome,
+                                       url: "http://chrome:4444/wd/hub",
                                        options: options)
       end
 
