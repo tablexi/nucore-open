@@ -31,11 +31,11 @@ RSpec.configure do |config|
   config.before(:each, type: :system, js: true) do
     if ENV["DOCKER"]
       Capybara.register_driver :selenium_remote do |app|
-        options = { url: "http://chrome:4444/wd/hub",
-                    browser: :chrome,
-                    capabilities: [:chrome]
-                  }
-        Capybara::Selenium::Driver.new(app, options)
+        options = Selenium::WebDriver::Chrome::Options.new
+        options.add_option(url: "http://chrome:4444/wd/hub")
+        Capybara::Selenium::Driver.new(app,
+                                       browser: :chrome,
+                                       options: options)
       end
 
       driven_by(:selenium_remote)
@@ -52,7 +52,7 @@ RSpec.configure do |config|
         options.add_argument("--window-size=1366,768")
         Capybara::Selenium::Driver.new(app,
                                        browser: :chrome,
-                                       capabilities: [options])
+                                       options: options)
       end
       driven_by :headless_chrome
     end
