@@ -119,9 +119,11 @@ Teaspoon.configure do |config|
     config.server_port = ENV["TEST_APP_PORT"]
 
     http_client = Selenium::WebDriver::Remote::Http::Default.new(read_timeout: 120)
+
+    service = Selenium::WebDriver::Service.chrome(path: ENV['SELENIUM_HOST'], port:ENV['SELENIUM_PORT'])
     selenium_options.merge!(
       {
-        url: "http://#{ENV['SELENIUM_HOST']}:#{ENV['SELENIUM_PORT']}/wd/hub",
+        service: service
         http_client: http_client,
       }
     )
