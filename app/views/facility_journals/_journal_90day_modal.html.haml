@@ -6,7 +6,8 @@
   .modal-body= text("facility_journals.journal_90day_modal.body")
     
   .modal-footer
-    %button.btn{ type: "button", data: { dismiss: "modal" } } Cancel
+    %button.btn{ type: "button", data: { dismiss: "modal" } }
+      = text("facility_journals.journal_90day_modal.cancel_button") 
     - if @journal_creation_reminder
       = link_to text("facility_journals.journal_90day_modal.submit_button"), "#journal-creation-reminder", class: "btn btn-primary", data: { toggle: "modal", dismiss: "modal" }
     - else

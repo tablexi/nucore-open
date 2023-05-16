@@ -1,6 +1,21 @@
 - if @earliest_journal_date
   = content_for :head_content do
     = javascript_include_tag "facility_journal"
+    :javascript
+      $(function(){
+        var today = "#{l(Time.zone.now.to_date, format: :usa)}";
+
+        $("#journal_date").val(today).datepicker({
+          "minDate": "#{l(@earliest_journal_date, format: :usa)}",
+          "maxDate": today
+        });
+      });
+
+      $(function(){
+        $("#journals_create_form").submit(function(e) {
+          $(e.target).find(":submit").attr("disabled", "true");
+        });
+      });
 
 - if @journal_creation_reminder
   = render "journal_creation_modal", reminder_message: @journal_creation_reminder.message
@@ -28,7 +43,4 @@
 - if @order_details.none?
   %p.alert.alert-info= t(".no_transactions")
 
-- today = "#{I18n.l(Time.zone.now.to_date, format: :usa)}"
-- earliest_journal_date = "#{I18n.l(@earliest_journal_date, format: :usa)}"
 
-%span#js--journal-date-data{ data: { today: today, earliest_journal_date: earliest_journal_date } }
