@@ -109,7 +109,7 @@ Teaspoon.configure do |config|
   # Selenium Webdriver: https://github.com/modeset/teaspoon/wiki/Using-Selenium-WebDriver
   # Capybara Webkit: https://github.com/modeset/teaspoon/wiki/Using-Capybara-Webkit
   selenium_args = ["headless", "disable-gpu", "no-sandbox", "window-size=1366,768"]
-  selenium_options = { capabilities: Selenium::WebDriver::Chrome::Options.new(args: selenium_args) }
+  selenium_options = { options: Selenium::WebDriver::Chrome::Options.new(args: selenium_args) }
 
   # Using a standalone chrome container for testing.
   # https://github.com/jejacks0n/teaspoon/wiki/Using-docker-compose-with-selenium-standalone-%2A
@@ -120,14 +120,14 @@ Teaspoon.configure do |config|
 
     http_client = Selenium::WebDriver::Remote::Http::Default.new(read_timeout: 120)
 
-    service = Selenium::WebDriver::Service.chrome(path: ENV["SELENIUM_HOST"], port: ENV.fetch("SELENIUM_PORT", nil))
+    service = Selenium::WebDriver::Service.chrome(host: ENV["SELENIUM_HOST"], port: ENV.fetch("SELENIUM_PORT", nil))
     selenium_options[:service] = service
     selenium_options[:http_client] = http_client
   end
 
   config.driver_options = {
     client_driver: :chrome,
-    selenium_options:,
+    selenium_options: selenium_options,
   }
 
   config.suite :engines do |suite|
