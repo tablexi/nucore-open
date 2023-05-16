@@ -113,25 +113,21 @@ Teaspoon.configure do |config|
 
   # Using a standalone chrome container for testing.
   # https://github.com/jejacks0n/teaspoon/wiki/Using-docker-compose-with-selenium-standalone-%2A
-  if ENV['SELENIUM_HOST']
+  if ENV["SELENIUM_HOST"]
     docker_ip = `hostname -i`.strip
     config.server_host = docker_ip
-    config.server_port = ENV["TEST_APP_PORT"]
+    config.server_port = ENV.fetch("TEST_APP_PORT", nil)
 
     http_client = Selenium::WebDriver::Remote::Http::Default.new(read_timeout: 120)
 
-    service = Selenium::WebDriver::Service.chrome(path: ENV['SELENIUM_HOST'], port:ENV['SELENIUM_PORT'])
-    selenium_options.merge!(
-      {
-        service: service
-        http_client: http_client,
-      }
-    )
+    service = Selenium::WebDriver::Service.chrome(path: ENV["SELENIUM_HOST"], port: ENV.fetch("SELENIUM_PORT", nil))
+    selenium_options[:service] = service
+    selenium_options[:http_client] = http_client
   end
 
   config.driver_options = {
     client_driver: :chrome,
-    selenium_options: selenium_options
+    selenium_options:,
   }
 
   config.suite :engines do |suite|
