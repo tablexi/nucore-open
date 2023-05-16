@@ -31,8 +31,9 @@ RSpec.configure do |config|
   config.before(:each, type: :system, js: true) do
     if ENV["DOCKER"]
       Capybara.register_driver :selenium_remote do |app|
-        options = { service: "http://chrome:4444/wd/hub",
-                    browser: :remote
+        options = { url: "http://chrome:4444/wd/hub",
+                    browser: :chrome,
+                    capabilities: [:chrome]
                   }
         Capybara::Selenium::Driver.new(app, options)
       end
