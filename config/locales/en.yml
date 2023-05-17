@@ -296,6 +296,11 @@ en:
       header: Journal Date Reminder
       proceed: Create Journal
       cancel: Edit Journal Date
+    journal_90day_modal:
+      header: 90-Day Justification
+      body: Please complete and file “90-Day Rule Justifications” for transactions fulfilled more than 90 days in the past.
+      cancel_button: Cancel
+      submit_button: OK
     index:
       head:
         pending: Pending Journal
