@@ -78,8 +78,11 @@ RSpec.describe "Creating a journal" do
         end
 
         it "has a 90 day pop up" do
+          check "order_detail_ids_"
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
+          click_button "OK"
+          expect(page).to have_content "The journal file has been created successfully"
         end
       end
     end
