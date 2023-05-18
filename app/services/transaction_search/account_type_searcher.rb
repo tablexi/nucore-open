@@ -13,11 +13,11 @@ module TransactionSearch
     end
 
     def label_method
-      :type_string
+      :label_name
     end
 
     def label
-      "Payment Source Type"
+      Account.human_attribute_name(:type_string)
     end
 
   end

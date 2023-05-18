@@ -115,8 +115,8 @@ class Account < ApplicationRecord
     false
   end
 
-  def self.type_string
-    I18n.t("activerecord.models.#{self.to_s.underscore}.one", default: self.model_name.human)
+  def self.label_name
+    I18n.t("activerecord.models.#{to_s.underscore}.one", default: model_name.human)
   end
 
   def require_affiliate?
@@ -124,7 +124,7 @@ class Account < ApplicationRecord
   end
 
   def type_string
-    self.class.type_string
+    self.class.label_name
   end
 
   def <=>(other)
