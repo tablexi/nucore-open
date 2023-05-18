@@ -17,7 +17,7 @@ module TransactionSearch
     end
 
     def label
-      "Account Types"
+      "Payment Source Type"
     end
 
   end
