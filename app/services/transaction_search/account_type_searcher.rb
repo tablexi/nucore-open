@@ -9,7 +9,7 @@ module TransactionSearch
     end
 
     def search(params)
-      order_details.for_account_types(params).includes(:account)
+      order_details.for_account_types(params).references(:account).includes(:account)
     end
 
     def label_method
