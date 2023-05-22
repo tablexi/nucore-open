@@ -425,7 +425,7 @@ GEM
     nokogiri (1.14.4-x86_64-linux)
       racc (~> 1.4)
     numerizer (0.1.1)
-    oj (3.14.2)
+    oj (3.14.3)
     orm_adapter (0.5.0)
     paper_trail (13.0.0)
       activerecord (>= 5.2)
