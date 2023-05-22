@@ -582,6 +582,8 @@ class OrderDetail < ApplicationRecord
     templates = product.stored_files.template
     if templates.empty?
       nil # no file templates
+    elsif skip_missing_form?
+      nil # admin users can over-ride a missing template result file
     else
       # check for a template result
       results = stored_files.template_result
@@ -594,6 +596,8 @@ class OrderDetail < ApplicationRecord
       nil # no active survey
     elsif product.active_survey? && survey_completed?
       nil # active survey with a completed response set
+    elsif skip_missing_form?
+      nil # admin users can over-ride a missing response set
     else
       # active survey but no response
       "Please complete the online order form"

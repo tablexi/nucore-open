@@ -67,6 +67,8 @@ gem "rubyzip"
 
 ## PDF generation
 gem "prawn-rails"
+# https://github.com/prawnpdf/prawn/issues/1195
+gem "matrix"
 
 ## other
 gem "delayed_job_active_record"
@@ -109,7 +111,7 @@ group :development do
   gem "ed25519", ">= 1.2", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "haml_lint", require: false
   gem "letter_opener"
-  gem "rubocop", "1.49.0", require: false
+  gem "rubocop", "1.51.0", require: false
   gem "rubocop-performance"
   gem "rubocop-rails"
   gem "rubocop-rspec"
