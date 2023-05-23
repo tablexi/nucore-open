@@ -204,6 +204,7 @@ en:
       foot: "* Includes transactions for which the user has not been sent a !statement_downcase! or that are in the user review period."
       th:
         account: "Payment Source"
+        account_type: "Type"
         owner: "Owner"
     accounts:
       th:
