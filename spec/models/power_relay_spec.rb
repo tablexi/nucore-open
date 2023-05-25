@@ -57,6 +57,16 @@ RSpec.describe SomeRelay do
     end
   end
 
+  describe "secondary outlet" do
+    let(:relay) { SomeRelay.new(ip: "123", username: "nucore", password: "password", outlet: 1, instrument_id: 1) }
+
+    it "allows a secondary outlet allocation" do
+      relay.secondary_outlet = 3
+
+      expect(relay).to be_valid
+    end
+  end
+
   context "with auto logout" do
     before { subject.auto_logout = true }
     it { is_expected.to validate_presence_of :auto_logout_minutes }
