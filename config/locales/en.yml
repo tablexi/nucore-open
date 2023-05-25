@@ -1162,7 +1162,7 @@ en:
         instruct:
           ip_port: "Leave blank unless your device is on a non-standard port"
           outlet: "e.g. 1 or 2"
-          secondary_outlet: "will be toggled in sync with the outlet above"
+          secondary_outlet: "turned on/off in sync with the outlet above (Synaccess only)"
       reservation:
         instruct:
           reserve_interval: "The minutes of an hour on which a reservation is allowed to begin (e.g. if 5 reservations can be scheduled every 5 minutes)"

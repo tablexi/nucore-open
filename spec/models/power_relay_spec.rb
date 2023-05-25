@@ -15,6 +15,7 @@ RSpec.describe SomeRelay do
   it { is_expected.to validate_presence_of :username }
   it { is_expected.to validate_presence_of :password }
   it { is_expected.not_to validate_presence_of :auto_logout_minutes }
+  it { is_expected.not_to validate_presence_of :secondary_outlet }
 
   describe "outlet range" do
     let(:relay) { SomeRelay.new(ip: "123", username: "nucore", password: "password") }
