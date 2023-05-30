@@ -50,7 +50,7 @@ class AccountConfig
     @creation_disabled_types ||= []
   end
 
-  def creation_endabled_types
+  def creation_enabled_types
     account_types - creation_disabled_types
   end
 
