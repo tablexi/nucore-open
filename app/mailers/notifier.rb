@@ -47,7 +47,7 @@ class Notifier < ActionMailer::Base
                        end
 
     @accounts_grouped_by_owner = accounts.group_by(&:owner_user)
-    send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation)
+    send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation), nil, Settings.email.invoice_bcc
   end
 
   # Billing sends out the statement for the month. Appropriate users get
@@ -85,8 +85,8 @@ class Notifier < ActionMailer::Base
     @statement_pdf ||= StatementPdfFactory.instance(@statement)
   end
 
-  def send_nucore_mail(to, subject, template_name = nil)
-    mail(subject: subject, to: to, template_name: template_name)
+  def send_nucore_mail(to, subject, template_name = nil, bcc = nil)
+    mail(subject: subject, to: to, template_name: template_name, bcc: bcc)
   end
 
 end
